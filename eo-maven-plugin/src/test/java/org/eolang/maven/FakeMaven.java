@@ -120,7 +120,7 @@ final class FakeMaven {
     /**
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
-     * - {@link org.eolang.maven.ParsePipeline} to parse eo code
+     * - {@link org.eolang.maven.PpParse} to parse eo code
      * - see other inner classes below.
      * @param mojo Several mojos to execute
      * @return Workspace after executing Mojo

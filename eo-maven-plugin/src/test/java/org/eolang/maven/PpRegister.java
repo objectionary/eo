@@ -4,21 +4,20 @@
  */
 package org.eolang.maven;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Put the members of a package inside the object it names.
- * @since 0.68.0
+ * Single register phase.
+ * @since 0.1.0
  */
-final class MergePipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpRegister implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
-        return Arrays.<Class<? extends AbstractMojo>>asList(
-            MjParse.class,
-            MjMerge.class
+        return Collections.<Class<? extends AbstractMojo>>singletonList(
+            MjRegister.class
         ).iterator();
     }
 }

@@ -4,20 +4,21 @@
  */
 package org.eolang.maven;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Parse full pipeline.
- * @since 0.28.12
+ * Probe full pipeline.
+ * @since 0.29
  */
-final class ParsePipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpProbe implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
-        return Collections.<Class<? extends AbstractMojo>>singletonList(
-            MjParse.class
+        return Arrays.<Class<? extends AbstractMojo>>asList(
+            MjParse.class,
+            MjProbe.class
         ).iterator();
     }
 }

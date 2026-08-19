@@ -105,7 +105,7 @@ final class MjPlaceTest {
             new FakeMaven(temp)
                 .withHelloWorld()
                 .with("ignoreRuntime", true)
-                .execute(new PlacePipeline())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/jna-*.class")
@@ -162,7 +162,7 @@ final class MjPlaceTest {
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
                 .with("resolveJna", false)
-                .execute(new PlacePipeline())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
@@ -176,7 +176,7 @@ final class MjPlaceTest {
             new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
                 .with("resolveJna", false)
-                .execute(new PlacePipeline())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))

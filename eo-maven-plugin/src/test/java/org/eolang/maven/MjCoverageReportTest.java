@@ -97,7 +97,7 @@ final class MjCoverageReportTest {
             ),
             "foo.bar",
             "foo/bar.eo"
-        ).execute(MjParse.class).execute(new MergePipeline());
+        ).execute(MjParse.class).execute(new PpMerge());
         final Path hits = temp.resolve("coverage.txt");
         Files.writeString(hits, "");
         final Path lcov = temp.resolve("coverage.info");

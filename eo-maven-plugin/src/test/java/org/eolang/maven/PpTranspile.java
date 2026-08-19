@@ -4,20 +4,22 @@
  */
 package org.eolang.maven;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Printing pipeline.
- * @since 0.33.0
+ * Transpile full pipeline.
+ * @since 0.29.0
  */
-final class PrintPipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpTranspile implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
-        return Collections.<Class<? extends AbstractMojo>>singletonList(
-            MjPrint.class
+        return Arrays.<Class<? extends AbstractMojo>>asList(
+            MjParse.class,
+            MjLint.class,
+            MjTranspile.class
         ).iterator();
     }
 }

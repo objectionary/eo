@@ -9,17 +9,16 @@ import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Pull a full pipeline.
- * @since 0.31
+ * Resolve all eo dependencies.
+ * @since 0.29.0
  */
-final class PullPipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpResolve implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Arrays.<Class<? extends AbstractMojo>>asList(
             MjParse.class,
-            MjProbe.class,
-            MjPull.class
+            MjResolve.class
         ).iterator();
     }
 }

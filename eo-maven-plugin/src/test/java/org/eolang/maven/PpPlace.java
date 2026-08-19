@@ -9,17 +9,17 @@ import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Transpile full pipeline.
+ * Plan all eo dependencies full pipeline.
  * @since 0.29.0
  */
-final class TranspilePipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpPlace implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Arrays.<Class<? extends AbstractMojo>>asList(
             MjParse.class,
-            MjLint.class,
-            MjTranspile.class
+            MjResolve.class,
+            MjPlace.class
         ).iterator();
     }
 }

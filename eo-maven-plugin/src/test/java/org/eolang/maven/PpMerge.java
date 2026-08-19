@@ -9,16 +9,16 @@ import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Probe full pipeline.
- * @since 0.29
+ * Put the members of a package inside the object it names.
+ * @since 0.68.0
  */
-final class ProbePipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpMerge implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Arrays.<Class<? extends AbstractMojo>>asList(
             MjParse.class,
-            MjProbe.class
+            MjMerge.class
         ).iterator();
     }
 }

@@ -9,15 +9,15 @@ import java.util.Iterator;
 import org.apache.maven.plugin.AbstractMojo;
 
 /**
- * Single register phase.
- * @since 0.1.0
+ * Printing pipeline.
+ * @since 0.33.0
  */
-final class RegisterPipeline implements Iterable<Class<? extends AbstractMojo>> {
+final class PpPrint implements Iterable<Class<? extends AbstractMojo>> {
 
     @Override
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Collections.<Class<? extends AbstractMojo>>singletonList(
-            MjRegister.class
+            MjPrint.class
         ).iterator();
     }
 }
