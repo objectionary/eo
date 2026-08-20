@@ -165,6 +165,59 @@ final class TokensTest {
     }
 
     @Test
+    void readsChainOnHorizontalHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus", new Span("foo 0xFF.plus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg of the form `head.m1` must carry its chain — 1 link here",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void consumesEntireChainOnHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus", new Span("foo 0xFF.plus", 1)
+        );
+        tokens.readName();
+        tokens.readArgs();
+        MatcherAssert.assertThat(
+            "after reading a HEX arg, its `.method` tail must not be left dangling",
+            tokens.tail(),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void readsMultiLinkChainOnHorizontalHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus.minus", new Span("foo 0xFF.plus.minus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg of the form `head.m1.m2` must carry its full chain — 2 links here",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    void readsChainOnUppercaseDigitHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xAB.plus", new Span("foo 0xAB.plus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg with uppercase digits must carry its chain just like a lowercase one",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
     void stopsArgsBeforeSuffixMarker() {
         final Tokens tokens = new Tokens("foo a > x", new Span("foo a > x", 1));
         tokens.readName();
