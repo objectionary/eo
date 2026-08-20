@@ -474,8 +474,8 @@ final class Tokens {
 
     /**
      * Read zero or more space-separated horizontal arguments. Stops at
-     * a suffix marker ({@code >}, {@code >>}, {@code +>}) or end of
-     * body.
+     * a suffix marker ({@code >}, {@code >>}, {@code +>}, {@code ->}) or
+     * end of body.
      * @return Arguments in source order
      */
     List<Value> readArgs() {
@@ -527,7 +527,8 @@ final class Tokens {
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
-        return !this.atEnd() && (this.current() == '>' || this.plusArrow());
+        return !this.atEnd()
+            && (this.current() == '>' || this.plusArrow() || this.minusArrow());
     }
 
     /**
@@ -653,7 +654,8 @@ final class Tokens {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;
-        } else if (text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
+        } else if ("^".equals(text)
+            || text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
             valid = true;
         } else if (text.chars().allMatch(ch -> ch >= '0' && ch <= '9')) {
             valid = text.charAt(0) != '0' || "0".equals(text);
@@ -825,6 +827,12 @@ final class Tokens {
 
     private boolean plusArrow() {
         return this.current() == '+'
+            && this.cursor + 1 < this.body.length()
+            && this.body.charAt(this.cursor + 1) == '>';
+    }
+
+    private boolean minusArrow() {
+        return this.current() == '-'
             && this.cursor + 1 < this.body.length()
             && this.body.charAt(this.cursor + 1) == '>';
     }

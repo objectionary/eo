@@ -12,8 +12,9 @@ import java.util.List;
  *
  * <p>Form: {@code [params] [> name [/sig]]}. Each parameter becomes a
  * void child (R-3.4.1). The standalone {@code @} parameter maps to
- * {@code φ} in XMIR (R-3.4.2 / R-9.3). {@code ^} (RHO) is rejected as a
- * parameter name (R-3.4.3). No leading/trailing space inside the
+ * {@code φ} in XMIR (R-3.4.2 / R-9.3). The standalone {@code ^} maps to
+ * {@code ρ} and declares the formation's receiver, which only the first
+ * parameter may be (R-3.4.3 / R-3.4.11). No leading/trailing space inside the
  * brackets (R-3.4.4); exactly one space between parameter names
  * (R-3.4.5). The line may carry an optional name suffix per §3.10,
  * including the atom-signature form {@code > name /sig}. The shorthand
@@ -223,7 +224,9 @@ final class LnFormation implements Line {
                 end = end + 1;
             }
             final String raw = inside.substring(idx, end);
-            out.add(LnFormation.mapParam(raw, span, span.indent() + 1 + idx));
+            out.add(
+                LnFormation.mapParam(raw, span, span.indent() + 1 + idx)
+            );
             if (end < inside.length()) {
                 if (end + 1 < inside.length() && inside.charAt(end + 1) == ' ') {
                     throw new ParseError(
@@ -243,6 +246,8 @@ final class LnFormation implements Line {
         final String mapped;
         if ("@".equals(raw)) {
             mapped = "φ";
+        } else if ("^".equals(raw)) {
+            mapped = "ρ";
         } else if (raw.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?")) {
             mapped = raw;
         } else {

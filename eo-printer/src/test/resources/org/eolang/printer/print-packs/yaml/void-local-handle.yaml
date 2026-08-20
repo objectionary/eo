@@ -23,7 +23,7 @@ origin: |
         if.
           tup.head.eq wanted
           tup.tail.length
-          reclast tup.tail
+          ^.reclast tup.tail
 
 printed: |
   +package tuple
