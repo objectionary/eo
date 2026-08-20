@@ -65,12 +65,6 @@ final class WitnessedTest {
         );
     }
 
-    /**
-     * A program that keeps one void and fills it once per caller.
-     * @param temp The directory to write it into
-     * @param fillers What every caller puts into the void
-     * @throws IOException If the file cannot be written
-     */
     private static void program(final Path temp, final String... fillers) throws IOException {
         final StringBuilder text = new StringBuilder(
             String.join(

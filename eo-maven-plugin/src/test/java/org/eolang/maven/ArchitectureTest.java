@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaConstructorCall;
+import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
@@ -54,19 +55,10 @@ final class ArchitectureTest {
             .check(ArchitectureTest.imported());
     }
 
-    /**
-     * All the classes of this plugin.
-     * @return Imported classes
-     */
     private static JavaClasses imported() {
         return new ClassFileImporter().importPackages("org.eolang.maven");
     }
 
-    /**
-     * A {@link ConcurrentCache} built anywhere but a constructor, which is
-     * the #5720 mistake: the lock map is then per call instead of per run.
-     * @return The predicate over constructor calls
-     */
     private static DescribedPredicate<JavaConstructorCall> guardBuiltPerCall() {
         return new DescribedPredicate<JavaConstructorCall>("cache guard is built per call") {
             @Override
@@ -77,14 +69,10 @@ final class ArchitectureTest {
         };
     }
 
-    /**
-     * All the project Mojos.
-     * @return Mojos classes conjunction
-     */
     private static GivenClassesConjunction mojos() {
         return ArchRuleDefinition.classes()
             .that().haveSimpleNameStartingWith("Mj")
-            .and().doNotHaveSimpleName("MjSafe")
+            .and().doNotHaveModifier(JavaModifier.ABSTRACT)
             .and().haveSimpleNameNotEndingWith("Test")
             .and().haveSimpleNameNotEndingWith("IT");
     }

@@ -181,12 +181,6 @@ final class Xmirs {
         return found;
     }
 
-    /**
-     * Every object of the program the given XPath matches.
-     * @param xpath The XPath
-     * @return The objects, file by file
-     * @throws IOException If a file cannot be read
-     */
     private Collection<XML> matching(final String xpath) throws IOException {
         final Collection<XML> found = new ArrayList<>(0);
         for (final XML xmir : this.documents()) {
@@ -195,11 +189,6 @@ final class Xmirs {
         return found;
     }
 
-    /**
-     * Every XMIR document of the program.
-     * @return The documents
-     * @throws IOException If the directory cannot be walked
-     */
     private Collection<XML> documents() throws IOException {
         final Collection<XML> read = new ArrayList<>(0);
         for (final Path source : this.sources()) {
@@ -208,11 +197,6 @@ final class Xmirs {
         return read;
     }
 
-    /**
-     * Every XMIR file of the program, in the same order every time.
-     * @return The files
-     * @throws IOException If the directory cannot be walked
-     */
     private Collection<Path> sources() throws IOException {
         try (Stream<Path> found = Files.walk(this.dir)) {
             return found

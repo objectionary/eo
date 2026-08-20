@@ -6,8 +6,6 @@
 # still reads the same after the move, and every `loc` already says where the
 # node will be once it is an attribute of `Φ.number`. That is what makes the
 # splice a matter of moving one element.
-merged:
-  - number
 eo:
   number.eo: |
     [as-bytes] > number

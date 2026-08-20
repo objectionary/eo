@@ -40,10 +40,10 @@
                   previous.match
                 previous
                 [] >>
-                  tup.head.head > head
-                  tup.head.tail.head > match!
+                  ^.tup.head.head > head
+                  ^.tup.head.tail.head > match!
               @. > previous
-                rec-case tup.tail
+                ^.rec-case tup.tail
             | cases
       found.head
       fallback
@@ -59,13 +59,13 @@
     eq. > @
       switch *
         *
-          c1 > [] >>
+          ^.c1 > [] >>
           22
         *
-          c2 > [] >>
+          ^.c2 > [] >>
           0
         *
-          c3 > [] >>
+          ^.c3 > [] >>
           "true case"
       "true case"
     false > c1

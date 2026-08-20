@@ -7,6 +7,7 @@ package org.eolang;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
@@ -25,8 +26,7 @@ final class Heaps {
     /**
      * All.
      */
-    @SuppressWarnings("PMD.LooseCoupling")
-    private final ConcurrentHashMap<Integer, byte[]> blocks;
+    private final ConcurrentMap<Integer, byte[]> blocks;
 
     /**
      * Lock.
@@ -211,13 +211,13 @@ final class Heaps {
         }
     }
 
-    /**
-     * Allocate a block in memory.
-     * @param phi Object
-     * @param size How many bytes
-     * @return The identifier of pointer to the block in memory
-     */
     private int malloc(final Phi phi, final int size) {
+        if (size < 0) {
+            throw new ExFailure(
+                "Can't allocate block in memory with negative size '%d'",
+                size
+            );
+        }
         final int identifier = phi.hashCode();
         this.lock.lock();
         try {
@@ -234,10 +234,6 @@ final class Heaps {
         return identifier;
     }
 
-    /**
-     * Free it.
-     * @param identifier Identifier of pointer
-     */
     private void free(final int identifier) {
         this.lock.lock();
         try {

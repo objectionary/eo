@@ -53,8 +53,8 @@
                             number half
                             number half
                           b.times
-                            ipow b (n.minus 1)
-                      ipow b (n.div 2) > half!
+                            ^.ipow b (n.minus 1)
+                      ^.ipow b (n.div 2) > half!
                     | base expo.abs
                   ipow base expo.abs
                 if.
@@ -75,10 +75,10 @@
                         times.
                           div.
                             minus.
-                              number arg
-                              number k
+                              number ^.arg
+                              number ^.k
                             j
-                          fraction (j.plus 1)
+                          ^.fraction (j.plus 1)
                     floor. ((number arg).plus 0.5) > k!
                   | (expo.times base.ln)
                   nan

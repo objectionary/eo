@@ -106,18 +106,6 @@ final class Inferring implements Step {
         }
     }
 
-    /**
-     * Say how much of the program the tables turned out to say.
-     *
-     * <p>The summary is one line, because a build that says nothing about how
-     * well it understood the sources leaves every reader to open the tables and
-     * guess. The rungs it is the mean of go to the debug log, since a number
-     * nobody can take apart is a number that gets gamed: writing an empty row
-     * for every object would take the share described to a hundred and move the
-     * depth not at all.</p>
-     *
-     * @throws IOException If a table cannot be read
-     */
     private void measured() throws IOException {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
         Logger.info(
@@ -129,11 +117,6 @@ final class Inferring implements Step {
         }
     }
 
-    /**
-     * Every XMIR file of the program, prepared for the rules and saved.
-     * @return How many files were prepared
-     * @throws IOException If a file cannot be read or written
-     */
     private int ready() throws IOException {
         final Xsline train = new Xsline(
             new TrFull(
@@ -156,12 +139,6 @@ final class Inferring implements Step {
         return done;
     }
 
-    /**
-     * Every XMIR file of the program, in the same order every time, so that
-     * the tables come out the same every time too.
-     * @return The files
-     * @throws IOException If the directory cannot be walked
-     */
     private Collection<Path> sources() throws IOException {
         try (Stream<Path> found = Files.walk(this.input)) {
             return found

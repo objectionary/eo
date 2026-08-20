@@ -697,7 +697,7 @@
       <xsl:value-of select="eo:literal(eo:escape-plus(@original-name))"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
-    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+'))">
+    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+')) and not(contains(@loc, '.-'))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>

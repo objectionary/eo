@@ -276,11 +276,6 @@ final class TjForeign {
         return this.attribute(TjsForeign.Attribute.SCOPE);
     }
 
-    /**
-     * Return the attribute from the tojo.
-     * @param attribute The attribute from ForeignTojos.Attribute
-     * @return The attribute
-     */
     private String attribute(final TjsForeign.Attribute attribute) {
         final String attr = this.delegate.get(attribute.getKey());
         if (attr == null) {

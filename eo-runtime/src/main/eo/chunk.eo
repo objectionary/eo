@@ -31,38 +31,38 @@
   get > @
   [source target length] > copy
     seq * > @
-      read source length >> data!
+      ^.read source length >> data!
       if.
         gt.
           target.plus length
-          size
+          ^.size
         write.
-          resized
+          ^.resized
             target.plus length
           target
           data
-        write target data
+        ^.write target data
   read > get
     0
     size
   if. > [object] > put
     and.
-      size.gt 0
-      object.size.gt size
+      ^.size.gt 0
+      object.size.gt ^.size
     T
       "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
-        * object.size size
+        * object.size ^.size
     if.
-      size.eq 0
+      ^.size.eq 0
       seq *
         write.
-          resized object.size
+          ^.resized object.size
           0
           object
-        get
+        ^.get
       seq *
-        write 0 object
-        get
+        ^.write 0 object
+        ^.get
   [] > read /Q.bytes
     ? > offset /Q.number
     ? > length /Q.number

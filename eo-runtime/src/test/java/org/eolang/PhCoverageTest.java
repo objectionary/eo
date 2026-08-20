@@ -150,11 +150,6 @@ final class PhCoverageTest {
         );
     }
 
-    /**
-     * Failure raised while dataizing with the given value in the property.
-     * @param path Value to put into the {@code eo.coverageFile} property
-     * @return The exception thrown, or a placeholder if nothing was thrown
-     */
     private RuntimeException failure(final String path) {
         final Optional<String> before = Optional.ofNullable(System.getProperty("eo.coverageFile"));
         System.setProperty("eo.coverageFile", path);

@@ -29,8 +29,8 @@
               [] >>
                 ^.hash > hash
                 ^.kbts > kbts
-                tup.head.key > key
-                tup.head.value > value
+                ^.tup.head.key > key
+                ^.tup.head.value > value
           hash. >> hash!
             tup.head.key.as-bytes >> kbts!
           prev.filtered > others
@@ -39,17 +39,17 @@
                 ent.hash.eq hash
                 ent.kbts.eq kbts
           @. > prev
-            rec-rebuild tup.tail
+            ^.rec-rebuild tup.tail
         | pairs
   [entries] > ctor
     [key] > found
       if. > @
-        size.eq 0
+        ^.size.eq 0
         not-found
         [tup] >> rec-key-search
           if. > @
             tup.length.eq 0
-            not-found
+            ^.not-found
             prev.exists.if
               prev
               if.
@@ -58,11 +58,11 @@
                   tup.head.kbts.eq kbts
                 [] >>
                   true > exists
-                  tup.head.value > [cant-get] > get
-                not-found
+                  ^.^.tup.head.value > [cant-get] > get
+                ^.not-found
           @. > prev
-            rec-key-search tup.tail
-        | entries
+            ^.rec-key-search tup.tail
+        | ^.entries
       hash. >> hash!
         key.as-bytes >> kbts!
       [] > not-found
@@ -71,7 +71,7 @@
           "Object by hash code %d from given key does not exists".printf
             * hash
     exists. > [key] > has
-      found key
+      ^.found key
     entries.mapped > keys
       entry.key > [entry]
     entries.length > size
@@ -80,7 +80,7 @@
     [key value] > with
       map.ctor > @
         with.
-          entries.filtered
+          ^.entries.filtered
             not. > [entry] >>
               and.
                 hash.eq entry.hash
@@ -94,7 +94,7 @@
         key.as-bytes >> kbts!
     [key] > without
       map.ctor > @
-        entries.filtered
+        ^.entries.filtered
           not. > [entry] >>
             and.
               hash.eq entry.hash

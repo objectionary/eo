@@ -79,21 +79,10 @@ final class Diff {
         return result;
     }
 
-    /**
-     * Split a text into lines.
-     * @param text The text
-     * @return The lines
-     */
     private static List<String> lines(final String text) {
         return text.lines().collect(Collectors.toList());
     }
 
-    /**
-     * Render the unified diff of two already-split texts.
-     * @param before The lines before the change
-     * @param after The lines after the change
-     * @return The colored unified diff
-     */
     private static String render(final List<String> before, final List<String> after) {
         final int[][] lcs = Diff.lcs(before, after);
         final StringBuilder out = new StringBuilder(0);
@@ -117,12 +106,6 @@ final class Diff {
         return out.toString();
     }
 
-    /**
-     * Build the longest-common-subsequence length table.
-     * @param before The lines before the change
-     * @param after The lines after the change
-     * @return The table, sized {@code (before + 1) x (after + 1)}
-     */
     private static int[][] lcs(final List<String> before, final List<String> after) {
         final int rows = before.size();
         final int cols = after.size();
@@ -139,12 +122,6 @@ final class Diff {
         return table;
     }
 
-    /**
-     * Append the tail of one side that has no counterpart on the other.
-     * @param out The output
-     * @param tail The remaining lines of one side
-     * @param appender How to append a single line (as deletion or addition)
-     */
     private static void drain(
         final StringBuilder out, final List<String> tail,
         final BiConsumer<? super StringBuilder, ? super String> appender
@@ -154,29 +131,14 @@ final class Diff {
         }
     }
 
-    /**
-     * Append a common (unchanged) line.
-     * @param out The output
-     * @param line The line
-     */
     private static void common(final StringBuilder out, final String line) {
         out.append(' ').append(line).append('\n');
     }
 
-    /**
-     * Append a deleted line, in red.
-     * @param out The output
-     * @param line The line
-     */
     private static void deleted(final StringBuilder out, final String line) {
         out.append(Diff.RED).append('-').append(line).append(Diff.RESET).append('\n');
     }
 
-    /**
-     * Append an added line, in green.
-     * @param out The output
-     * @param line The line
-     */
     private static void added(final StringBuilder out, final String line) {
         out.append(Diff.GREEN).append('+').append(line).append(Diff.RESET).append('\n');
     }

@@ -5,9 +5,6 @@
 # is a package of its own, so `plus` goes into `i64` and not into `number`,
 # where it would arrive under a name that says nothing about where it came
 # from and would clash with the `plus` of any other nested package.
-merged:
-  - number
-  - number.i64
 eo:
   number.eo: |
     [as-bytes] > number

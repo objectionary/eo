@@ -38,12 +38,6 @@ final class DepDirs extends ListEnvelope<String> {
         super(DepDirs.list(dir));
     }
 
-    /**
-     * List them all.
-     * @param dir The dir
-     * @return List
-     * @throws IOException If fails
-     */
     private static List<String> list(final Path dir) throws IOException {
         final List<String> names = new ArrayList<>(0);
         if (Files.exists(dir)) {

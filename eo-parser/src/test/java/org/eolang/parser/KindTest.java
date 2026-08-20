@@ -21,8 +21,8 @@ final class KindTest {
         value = Kind.class,
         names = {
             "HAPPLICATION",
-            "REVERSED_WITH_HARGS",
-            "VMETHOD_WITH_HARGS"
+            "REVERSED_HARGS",
+            "VMETHOD_HARGS"
         }
     )
     void marksHorizontallyCompletedKinds(final Kind kind) {
@@ -38,7 +38,7 @@ final class KindTest {
         value = Kind.class,
         names = {
             "TOP_LEVEL", "HEAD", "HMETHOD", "BARE_FORMATION", "BARE_REVERSED",
-            "COMPACT_TUPLE", "ONLY_PHI_FORMATION", "VAPPLICATION", "VMETHOD",
+            "COMPACT_TUPLE", "ONLY_PHI", "VAPPLICATION", "VMETHOD",
             "TEXT_BLOCK", "IDENTITY_OBJECT"
         }
     )
@@ -53,7 +53,7 @@ final class KindTest {
     @ParameterizedTest
     @EnumSource(
         value = Kind.class,
-        names = {"BARE_FORMATION", "ONLY_PHI_FORMATION", "PIPE_APPLICATION", "IDENTITY_OBJECT"}
+        names = {"BARE_FORMATION", "ONLY_PHI", "PIPE_APPLICATION", "IDENTITY_OBJECT"}
     )
     void acceptsPipeAfterFormationLikeKinds(final Kind kind) {
         MatcherAssert.assertThat(

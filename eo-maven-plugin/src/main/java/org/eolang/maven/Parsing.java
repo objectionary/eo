@@ -64,15 +64,13 @@ final class Parsing implements Step {
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path targetDir;
+    private final Path target;
 
     /**
      * EO sources directory (used for logging).
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path sourcesDir;
+    private final Path home;
 
     /**
      * Where the results of earlier builds are looked for and kept.
@@ -93,8 +91,8 @@ final class Parsing implements Step {
         final GlobalCache store
     ) {
         this.tojos = srcs;
-        this.targetDir = target;
-        this.sourcesDir = sources;
+        this.target = target;
+        this.home = sources;
         this.cache = store;
     }
 
@@ -143,57 +141,46 @@ final class Parsing implements Step {
         }
     }
 
-    /**
-     * Parse all the given sources to XMIRs, concurrently.
-     * @param sources The sources to parse
-     * @param pipeline The canonical parsing transform to apply
-     * @param store The cache, already keyed by the set of known objects
-     * @return Amount of parsed tojos
-     */
     private int parsed(
         final Collection<TjForeign> sources,
         final UnaryOperator<XML> pipeline,
         final GlobalCache store
     ) {
         return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
+            new Filtered<>(this::unparsed, sources),
             tojo -> this.parsed(tojo, pipeline, store)
         ).total();
     }
 
-    /**
-     * Parse EO file to XML.
-     * @param tojo The tojo
-     * @param pipeline The canonical parsing transform to apply
-     * @param store The cache, already keyed by the set of known objects
-     * @return Amount of parsed tojos
-     * @throws Exception If fails
-     */
+    private boolean unparsed(final TjForeign tojo) {
+        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
+    }
+
     private int parsed(
         final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache store
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = this.targetDir.resolve(Parsing.DIR);
-        final Path target = new Place(name).make(base, MjAssemble.XMIR);
+        final Path base = this.target.resolve(Parsing.DIR);
+        final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
-            base.relativize(target),
+            base.relativize(xmir),
             new TojoHash(tojo),
             src -> {
                 final Node node = this.parsed(src, name, pipeline);
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
-        ).apply(source, target);
-        tojo.withXmir(target).withVersion(Parsing.tojoVersion(target, refs));
-        final List<Xnav> errors = new Xnav(target)
+        ).apply(source, xmir);
+        tojo.withXmir(xmir).withVersion(Parsing.tojoVersion(xmir, refs));
+        final List<Xnav> errors = new Xnav(xmir)
             .element("object")
             .element("errors")
             .elements(Filter.withName("error"))
             .collect(Collectors.toList());
         if (errors.isEmpty()) {
-            Logger.debug(this, "Parsed %[file]s to %[file]s", source, target);
+            Logger.debug(this, "Parsed %[file]s to %[file]s", source, xmir);
         } else {
             for (final Xnav error : errors) {
                 Logger.error(
@@ -208,27 +195,19 @@ final class Parsing implements Step {
         return 1;
     }
 
-    /**
-     * Source parsed to {@link Node}.
-     * @param source Relative source path
-     * @param identifier Name of the EO object as tojo identifier
-     * @param pipeline The canonical parsing transform to apply
-     * @return Parsed EO object as {@link Node}
-     * @throws IOException If fails to parse
-     */
     private Node parsed(
         final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
-        final EoSource.Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
+        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
-            identifier, this.sourcesDir.relativize(source.toAbsolutePath()), xmir
+            identifier, this.home.relativize(source.toAbsolutePath()), xmir
         );
         if (xmir.broken()) {
             new Saved(
                 new TextOf(xmir.xml().toString()),
-                this.targetDir.resolve(
+                this.target.resolve(
                     String.format("broken-%x.xmir", System.nanoTime())
                 )
             ).value();
@@ -236,16 +215,6 @@ final class Parsing implements Step {
         return xmir.xml().inner();
     }
 
-    /**
-     * Tojo version.
-     * The version can be extracted from:
-     * 1. Parsed {@link Node} if EO object was parsed for the first time
-     * 2. XML document that was already parsed before
-     * @param target Path to result XML document
-     * @param parsed List with either one parsed {@link Node} or empty
-     * @return Tojo version
-     * @throws FileNotFoundException If XML document file does not exist
-     */
     private static String tojoVersion(
         final Path target,
         final List<Node> parsed
@@ -266,9 +235,9 @@ final class Parsing implements Step {
                             Filter.withName("head"),
                             head -> head.text().map("version"::equals).orElse(false)
                         )
-                        )
-                        .findAny()
-                        .isPresent()
+                    )
+                    .findAny()
+                    .isPresent()
                 )
             )
             .findFirst()

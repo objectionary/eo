@@ -13,7 +13,7 @@
 
 [func] > filtered
   ^.filteredi > @
-    func item > [item index] >>
+    ^.func item > [item index] >>
 
   eq. ++> can-filter-a-list
     filtered.
