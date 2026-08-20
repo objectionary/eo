@@ -17,11 +17,11 @@ package org.eolang.parser;
  * <p>The three kinds in the horizontally-completed set
  * ({@link #HAPPLICATION}, {@link #REVERSED_HARGS}, {@link #VMETHOD_HARGS})
  * never receive deeper children and cannot be wrapped by a same-indent
- * {@code .method}. {@link #horizontallyCompleted()} is the single source
- * of truth for that set; R-5.2.3 and R-6.1.1 read it. An
- * {@link #ONLY_PHI} with a bare (zero-hargs) φ is instead
- * {@link Openness#OPEN}: its φ accepts deeper-indent vertical
- * arguments (§4.5).</p>
+ * {@code .method}. {@link Openness} is the single source of truth for
+ * that set: each kind starts out on the stack with the {@link Openness}
+ * its constructor picks. An {@link #ONLY_PHI} with a bare (zero-hargs)
+ * φ is instead {@link Openness#OPEN}: its φ accepts deeper-indent
+ * vertical arguments (§4.5).</p>
  *
  * <p>The {@link #TOP_LEVEL} sentinel is not a real expression kind — it is
  * the {@code parent_kind} for entries pushed at indent 0 (R-5.2.11), used
@@ -124,21 +124,6 @@ enum Kind {
      * {@link #HEAD}.
      */
     IDENTITY_OBJECT;
-
-    /**
-     * Whether this kind is in the horizontally-completed set.
-     *
-     * <p>Members of this set cannot be extended by deeper-indent children
-     * nor wrapped by a same-indent {@code .method}. Single source of truth
-     * for R-5.2.3 and R-6.1.1.</p>
-     *
-     * @return True iff this kind is horizontally completed
-     */
-    boolean horizontallyCompleted() {
-        return this == HAPPLICATION
-            || this == REVERSED_HARGS
-            || this == VMETHOD_HARGS;
-    }
 
     /**
      * Whether this kind opens a formation — a fresh naming scope whose

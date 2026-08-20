@@ -9,18 +9,21 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > deleted
-  d.exists.if > @
-    seq *
-      if. > [tup] >> r
-        tup.length.eq 0
-        true
-        seq *
-          tup.head.deleted
-          ^.r tup.tail
-      | (d.walk "**").at.^
-      d
+  seq * > @
+    if. > [tup] >> r
+      tup.length.eq 0
+      true
+      seq *
+        tup.head.deleted
+        ^.r tup.tail
+    | entries
     d
   ^ > d
+  recovered > [] > entries
+    ^.d.walk "**"
+    ^.d.exists.if
+      ^.d.walk "**"
+      *
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @
@@ -47,6 +50,10 @@
     as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
     dir.tmpfile > first
     dir.tmpfile > second
+
+  ++> can-delete-an-already-absent-directory
+    d.deleted.deleted.exists.not d > @
+    mktemp.tmpfile.deleted.as-path.as-dir > d
 
   not. ++> can-delete-an-empty-directory
     exists.
