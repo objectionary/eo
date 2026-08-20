@@ -81,4 +81,24 @@ final class AtRhoTest {
             Matchers.containsString("can't be null")
         );
     }
+
+    @Test
+    void reportsItselfVacantWhileUnset() {
+        MatcherAssert.assertThat(
+            "an unset rho attribute must report itself vacant, but it didnt",
+            new AtRho().vacant(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void stopsBeingVacantOnceBound() {
+        final AtRho attr = new AtRho();
+        attr.put(new PhDefault());
+        MatcherAssert.assertThat(
+            "a bound rho attribute must stop reporting itself vacant, but it didnt",
+            attr.vacant(),
+            Matchers.is(false)
+        );
+    }
 }

@@ -646,6 +646,26 @@ final class PhDefaultTest {
         }
     }
 
+    @Test
+    void bindsTheHostIntoADeclaredReceiverVoid() {
+        final Phi host = new PhDefault(
+            new Attrs(
+                new Attr(
+                    "kid",
+                    new AtComposite(
+                        new PhDefault(),
+                        rho -> new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO))))
+                    )
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "dispatching off a host must fill the declared ρ void of the taken object, but it didnt",
+            host.take("kid").take(Phi.RHO),
+            Matchers.is(host)
+        );
+    }
+
     private void joinsThreads(final Thread... threads) {
         for (final Thread thread : threads) {
             try {
