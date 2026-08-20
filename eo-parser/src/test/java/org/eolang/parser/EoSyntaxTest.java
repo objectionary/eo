@@ -12,6 +12,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
+import fixtures.LargeProgram;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -80,6 +81,41 @@ final class EoSyntaxTest {
                 "/object/metas/meta[head='meta2']",
                 "/object/o[@name='fibo']"
             )
+        );
+    }
+
+    @Test
+    void measuresRealParsingTime() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not a measured elapsed time",
+            Long.parseLong(
+                new EoSyntax(new LargeProgram(30)).parsed().xpath("/object/@ms").get(0)
+            ),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void reportsMsWithinSaneBound() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not within a sane bound for a small program",
+            Long.parseLong(
+                new EoSyntax(
+                    new ResourceOf("org/eolang/parser/fibonacci.eo")
+                ).parsed().xpath("/object/@ms").get(0)
+            ),
+            Matchers.lessThan(60_000L)
+        );
+    }
+
+    @Test
+    void measuresParsingTimeOnEveryCall() throws Exception {
+        final EoSyntax syntax = new EoSyntax(new LargeProgram(30));
+        syntax.parsed();
+        MatcherAssert.assertThat(
+            "second parse of the same syntax does not measure its own elapsed time",
+            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
+            Matchers.greaterThan(0L)
         );
     }
 
