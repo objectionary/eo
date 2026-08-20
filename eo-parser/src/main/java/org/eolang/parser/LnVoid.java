@@ -95,18 +95,12 @@ final class LnVoid implements Line {
         final Stack stack, final Globals globals, final Emit emit, final int slash
     ) {
         Comments.seal(globals, emit, this.span);
-        final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
+        this.checkTyped(
+            new Transition(stack, this.span).apply(
+                Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
+            ),
+            slash
         );
-        final Level host = stack.below();
-        if (host == null) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a ^ void attribute needs an enclosing formation"
-            );
-        }
-        host.receiver(this.span.line(), this.span.indent());
-        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object("ρ", "∅", this.span.line(), this.span.indent());

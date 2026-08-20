@@ -461,8 +461,8 @@ final class Tokens {
 
     /**
      * Read zero or more space-separated horizontal arguments. Stops at
-     * a suffix marker ({@code >}, {@code >>}, {@code +>}) or end of
-     * body.
+     * a suffix marker ({@code >}, {@code >>}, {@code +>}, {@code ->}) or
+     * end of body.
      * @return Arguments in source order
      */
     List<Value> readArgs() {
@@ -514,7 +514,8 @@ final class Tokens {
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
-        return !this.atEnd() && (this.current() == '>' || this.plusArrow());
+        return !this.atEnd()
+            && (this.current() == '>' || this.plusArrow() || this.minusArrow());
     }
 
     /**
@@ -811,6 +812,12 @@ final class Tokens {
 
     private boolean plusArrow() {
         return this.current() == '+'
+            && this.cursor + 1 < this.body.length()
+            && this.body.charAt(this.cursor + 1) == '>';
+    }
+
+    private boolean minusArrow() {
+        return this.current() == '-'
             && this.cursor + 1 < this.body.length()
             && this.body.charAt(this.cursor + 1) == '>';
     }

@@ -78,11 +78,29 @@ final class ValueTest {
     }
 
     @Test
-    void returnsNullBindingWhenAbsent() {
+    void returnsEmptyBindingWhenAbsent() {
         MatcherAssert.assertThat(
-            "binding() must return null when no inline binding was supplied",
+            "binding() must return an empty string when no inline binding was supplied",
             new Value(Value.Kind.IDENTIFIER, "a", 0).binding(),
-            Matchers.nullValue()
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void isBoundWhenLabelGiven() {
+        MatcherAssert.assertThat(
+            "bound() must be true when the ctor received an inline-binding tag",
+            new Value(Value.Kind.IDENTIFIER, "a", 0, "y").bound(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void isNotBoundWhenAbsent() {
+        MatcherAssert.assertThat(
+            "bound() must be false when no inline binding was supplied",
+            new Value(Value.Kind.IDENTIFIER, "a", 0).bound(),
+            Matchers.equalTo(false)
         );
     }
 
