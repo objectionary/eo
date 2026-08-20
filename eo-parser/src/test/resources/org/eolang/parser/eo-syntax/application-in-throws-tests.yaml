@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo'][count(o[not(starts-with(@name, 'a🌵'))])=3]
+  - /object/o[@name='foo']/o[@base='Φ.true' and @name='-test-throws']
+  - /object/o[@name='foo']/o[@base='Φ.false' and @name='-never-throws']
+  - /object/o[@name='foo']/o[@base='.eq' and @name='-compares-something']
+input: |-
+  [] > foo
+
+    true -> test-throws
+
+    false -> never-throws
+
+    eq. -> compares-something
+      "foo"
+      "bar"
