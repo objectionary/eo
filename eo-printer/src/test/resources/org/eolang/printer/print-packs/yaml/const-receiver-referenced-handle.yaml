@@ -28,7 +28,7 @@ origin: |
         eq.
           oname.slice 0 7
           "Windows"
-      name >> oname!
+      ^.name >> oname!
     [] > name /Q.string
 
 printed: |

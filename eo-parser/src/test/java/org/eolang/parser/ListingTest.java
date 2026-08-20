@@ -98,6 +98,20 @@ final class ListingTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {0x09, 0x0A, 0x0D, 0x20, 0x85, 0xA0, 0xFFFD})
+    void keepsCharactersOutsideRestrictedRanges(final int codepoint) {
+        final String source = String.format("x%cy", codepoint);
+        MatcherAssert.assertThat(
+            String.format(
+                "Character with code %s falls between the restricted ranges and is not dropped",
+                codepoint
+            ),
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
     private static Stream<Arguments> sources() {
         return Stream.of(
             "[] > foo",

@@ -54,11 +54,6 @@ final class Quoted implements Supplier<Optional<String>> {
         return result;
     }
 
-    /**
-     * Decode the bytes as UTF-8 and quote every glyph.
-     * @return The quoted literal
-     * @throws CharacterCodingException If the bytes are not valid UTF-8
-     */
     private String quoted() throws CharacterCodingException {
         final String text = StandardCharsets.UTF_8.newDecoder()
             .onMalformedInput(CodingErrorAction.REPORT)
