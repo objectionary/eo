@@ -18,22 +18,22 @@ final class AutoName implements Text {
     private final int line;
 
     /**
-     * The Position in line.
+     * The indent in line.
      */
-    private final int position;
+    private final int indent;
 
     /**
      * Ctor.
      * @param lne Line number
-     * @param pos Position number
+     * @param ind Indent number
      */
-    AutoName(final int lne, final int pos) {
+    AutoName(final int lne, final int ind) {
         this.line = lne;
-        this.position = pos;
+        this.indent = ind;
     }
 
     @Override
     public String asString() {
-        return String.format("a🌵%d-%d", this.line, this.position);
+        return String.format("a🌵%d-%d", this.line, this.indent);
     }
 }

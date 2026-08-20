@@ -1234,14 +1234,14 @@ Example: for `[] > foo` with body `42 > @`, `foo` emits `@loc="Φ.foo"`, its `@`
 R-9.2.1. For an object whose name suffix is `>>`, the emitted `@name` is computed as:
 
 ```
-auto_name(line, pos)  =  "a" + U+1F335 + line + "-" + pos
+auto_name(line, indent)  =  "a" + U+1F335 + line + "-" + indent
 ```
 
-where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `pos` to prevent identity collisions (e.g., distinguishing `(line=1, pos=25)` from `(line=12, pos=5)`).
+where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `indent` to prevent identity collisions (e.g., distinguishing `(line=1, indent=25)` from `(line=12, indent=5)`).
 
 R-9.2.2. The cactus 🌵 is reserved — it is excluded from the `NAME` token (§2.3), so auto-names cannot collide with user-defined names. (The hyphen `-` is permitted inside `NAME` tokens; it does not need exclusion because the cactus prefix already disambiguates auto-names from user names.)
 
-Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
+Example: a `>>` suffix on a line indented 5 columns at `line=12` emits `@name="a🌵12-5"`.
 
 R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. A reference may also name the scope of the handle instead of leaving it to that search: `$.name` binds to the handle of the innermost formation, `^.name` (one more `^` per level) to a formation further out, and `bar.name` to the enclosing formation called `bar`, which is how a helper reaches its own handle through the object that declares it. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
 
