@@ -32,11 +32,6 @@ final class DummyCentral implements BiConsumer<Dependency, Path> {
         }
     }
 
-    /**
-     * Dependency class name.
-     * @param dependency Dependency
-     * @return Class file name
-     */
     private static String className(final Dependency dependency) {
         final List<String> parts = new ArrayList<>(3);
         if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {

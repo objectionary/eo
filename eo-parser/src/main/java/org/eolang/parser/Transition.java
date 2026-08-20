@@ -69,13 +69,6 @@ final class Transition {
         return level;
     }
 
-    /**
-     * Push a fresh level after validating the indent step (R-5.1.3) and
-     * the parent's openness (R-5.2.4).
-     * @param kind Outer kind for the level
-     * @param openness Openness for the level
-     * @return The pushed level
-     */
     private Level pushed(final Kind kind, final Openness openness) {
         if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
             throw new ParseError(

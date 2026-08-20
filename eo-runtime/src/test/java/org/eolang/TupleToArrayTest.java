@@ -46,11 +46,6 @@ final class TupleToArrayTest {
         );
     }
 
-    /**
-     * A tuple-like object whose {@code length} dataizes to the given value.
-     * @param length The length to expose
-     * @return Phi with a bound {@code length} attribute
-     */
     private static Phi withLength(final double length) {
         final Phi tuple = new PhDefault(
             new Attrs(new Attr("length", new AtVoid("length")))

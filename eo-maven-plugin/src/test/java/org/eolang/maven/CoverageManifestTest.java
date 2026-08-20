@@ -163,11 +163,6 @@ final class CoverageManifestTest {
         );
     }
 
-    /**
-     * Locations found in a small formation with one attribute.
-     * @return The locations
-     * @throws Exception If parsing or deriving them fails
-     */
     private Collection<String> simpleObject() throws Exception {
         return new CoverageManifest().locations(
             new EoSyntax(

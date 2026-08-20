@@ -81,11 +81,6 @@ public final class Ladder {
         return this.share(climbed) / (rung - 1);
     }
 
-    /**
-     * This many objects, out of a hundred.
-     * @param some How many
-     * @return The share, or nothing at all when the program has no objects
-     */
     private double share(final int some) {
         final double found;
         if (this.total() == 0) {

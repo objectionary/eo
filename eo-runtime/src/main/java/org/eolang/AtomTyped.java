@@ -67,15 +67,6 @@ public final class AtomTyped implements Atom {
         return computed;
     }
 
-    /**
-     * Whether the declared type is a generic type variable — a single
-     * letter {@code A}–{@code F} (§3.10.10). A generic return depends on
-     * the atom's arguments, so a plain forma-equality check cannot verify
-     * it; such an atom is left unchecked, exactly like one that declares
-     * no type.
-     * @param declared The declared type
-     * @return True when the declared type is a generic type variable
-     */
     private static boolean generic(final String declared) {
         return declared.matches("[A-F]");
     }

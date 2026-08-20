@@ -108,15 +108,6 @@ final class PackageInfos {
         return size;
     }
 
-    /**
-     * Does the package of this directory already have a hand-written
-     * {@code package-info.java} in one of the {@link #sources}? Javac dies with
-     * an internal error when one package has two {@code package-info.java} and
-     * one of them carries an annotation, so the generated file gives way to the
-     * one a human wrote.
-     * @param dir The directory under the {@link #root}
-     * @return TRUE if the package already has its own package-info.java
-     */
     private boolean taken(final Path dir) {
         final Path pkg = this.root.relativize(dir);
         return this.sources.stream().anyMatch(

@@ -76,12 +76,6 @@ final class LnMeta implements Line {
         emit.meta(this.span.line(), head, parts);
     }
 
-    /**
-     * Validate the meta directive name against the NAME grammar and the
-     * {@code +package} arity rule.
-     * @param head The meta directive name
-     * @param parts The directive arguments
-     */
     private void checkHead(final String head, final List<String> parts) {
         if (head.isEmpty()) {
             throw new ParseError(
@@ -103,15 +97,6 @@ final class LnMeta implements Line {
         }
     }
 
-    /**
-     * Split the parts tail by single space, rejecting double spaces per
-     * R-3.2.4 and promoting any bare {@code Q} to {@code Φ} per
-     * R-3.2.3 / R-9.3.
-     * @param tail Substring after the {@code +name} prefix
-     * @param span Source span (for error reporting)
-     * @param base Body-relative offset where the tail starts
-     * @return Parts in source order
-     */
     private static List<String> split(
         final String tail, final Span span, final int base
     ) {
@@ -137,11 +122,6 @@ final class LnMeta implements Line {
         return out;
     }
 
-    /**
-     * Promote a leading {@code Q} in a part to {@code Φ}.
-     * @param part The part text
-     * @return Part with {@code Q} promoted to {@code Φ} if applicable
-     */
     private static String promoteQ(final String part) {
         final String promoted;
         if ("Q".equals(part)) {

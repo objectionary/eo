@@ -90,11 +90,6 @@ public final class SockaddrIn extends Structure {
         return Arrays.asList("family", "port", "addr", "zero");
     }
 
-    /**
-     * Validate and copy padding.
-     * @param zero Padding
-     * @return Safe padding copy
-     */
     private static byte[] checked(final byte[] zero) {
         if (zero.length != SockaddrIn.PADDING_SIZE) {
             throw new IllegalArgumentException(

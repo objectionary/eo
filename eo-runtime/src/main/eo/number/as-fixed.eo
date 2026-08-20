@@ -18,12 +18,15 @@
 
 [places cant-print] > as-fixed
   if. > @
-    or.
-      0.gt places
-      places.is-integer.not
+    n.is-finite.not.or
+      or.
+        0.gt places
+        places.is-integer.not
     cant-print
-      "Can't write a fixed-point decimal with %f fraction places".printf
-        * places
+      n.is-finite.not.if
+        "Can't write a non-finite number as a fixed-point decimal"
+        "Can't write a fixed-point decimal with %f fraction places".printf
+          * places
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
@@ -138,6 +141,18 @@
     "-0.00"
     string
       0.neg.as-fixed 2
+
+  eq. ++> can-recover-from-a-non-finite-number
+    "recovered"
+    nan.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-number
+    "recovered"
+    pinf.as-fixed
+      2
+      "recovered" > [message]
 
   eq. ++> can-recover-from-infinite-places
     "recovered"

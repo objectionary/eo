@@ -100,12 +100,6 @@ final class LnVoid implements Line {
         this.annotate(emit, tail, slash);
     }
 
-    /**
-     * The {@code ? > name} head, before any {@code /} type annotation.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the first {@code /} in {@code tail}, or -1
-     * @return The head substring
-     */
     private static String head(final String tail, final int slash) {
         final String head;
         if (slash < 0) {
@@ -116,14 +110,6 @@ final class LnVoid implements Line {
         return head;
     }
 
-    /**
-     * Emit the void's type annotation (R-3.4.8), if any. Atom-only-ness
-     * is validated by the caller; a bare {@code /type} emits
-     * {@code @type}, a brace {@code /{…}} emits {@code @args}.
-     * @param emit The directives sink
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the first {@code /} in {@code tail}, or -1
-     */
     private void annotate(final Emit emit, final String tail, final int slash) {
         if (slash >= 0) {
             if (slash + 1 < tail.length() && tail.charAt(slash + 1) == '{') {
@@ -134,16 +120,6 @@ final class LnVoid implements Line {
         }
     }
 
-    /**
-     * Parse the bare {@code /type} annotation (R-3.4.8): one type atom
-     * (a generic variable or a concrete forma) with an optional trailing
-     * {@code ?}. The forma is promoted from {@code Q.} to {@code Φ.}; the
-     * variable stays verbatim.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
-     * @return The promoted {@code @type} value, with {@code ?} preserved
-     */
     private static String type(final String tail, final int slash, final Span span) {
         int idx = slash + 1;
         final int begin = idx;
@@ -173,14 +149,6 @@ final class LnVoid implements Line {
         return result;
     }
 
-    /**
-     * Parse the brace {@code /{type …}} argument list (R-3.4.8):
-     * one or more type atoms, single-space separated, no {@code ?}.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
-     * @return The space-separated promoted {@code @args} value
-     */
     private static String args(final String tail, final int slash, final Span span) {
         final int open = slash + 1;
         final int close = tail.indexOf('}', open + 1);
@@ -194,15 +162,6 @@ final class LnVoid implements Line {
         return LnVoid.members(tail.substring(open + 1, close), span);
     }
 
-    /**
-     * Split a brace argument list on single spaces, promoting each type
-     * atom (variable verbatim, forma {@code Q.} promoted to {@code Φ.})
-     * and rejecting empty entries, double spaces, a trailing space with
-     * no member after it, and the {@code ?} optional marker.
-     * @param inside The text inside the braces
-     * @param span The source span (for errors)
-     * @return The space-separated promoted arguments
-     */
     private static String members(final String inside, final Span span) {
         if (inside.isEmpty()) {
             throw new ParseError(
@@ -245,14 +204,6 @@ final class LnVoid implements Line {
         return out.toString();
     }
 
-    /**
-     * Verify the rest of {@code tail} from {@code from} onward is only
-     * whitespace; a further {@code /} is a second annotation, anything
-     * else is trailing garbage.
-     * @param tail The line body after the {@code ?}
-     * @param from Index after the consumed annotation
-     * @param span The source span (for errors)
-     */
     private static void endsClean(final String tail, final int from, final Span span) {
         int idx = from;
         while (idx < tail.length() && tail.charAt(idx) == ' ') {

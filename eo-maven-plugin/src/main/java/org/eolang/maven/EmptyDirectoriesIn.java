@@ -47,10 +47,6 @@ final class EmptyDirectoriesIn {
         this.delete(this.root);
     }
 
-    /**
-     * Recursively delete empty directories.
-     * @param dir Directory to delete
-     */
     private void delete(final File dir) {
         if (!dir.isDirectory()) {
             return;

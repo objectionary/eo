@@ -357,15 +357,6 @@ final class MjParseTest {
         );
     }
 
-    /**
-     * The parse cache version segment for a program with a single object.
-     * It mirrors what {@link Parsing} computes: the plugin version, a
-     * fingerprint of the {@link Canonical} parse-stage XSLs, plus a
-     * SHA-256 digest of the qualified names of the local package objects
-     * (here, the identifier of the only object).
-     * @param identifier The tojo identifier of the only registered object
-     * @return The version segment used as part of the parse cache path
-     */
     private static String cacheVersion(final String identifier) {
         return String.format(
             "%s-%s-%s",
