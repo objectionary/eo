@@ -44,9 +44,9 @@ final class Bindings {
      */
     static void checkAllOrNothing(final List<Value> args, final Span span) {
         if (args.size() >= 2) {
-            final boolean head = args.get(0).binding() != null;
+            final boolean head = args.get(0).bound();
             for (int idx = 1; idx < args.size(); idx = idx + 1) {
-                final boolean bound = args.get(idx).binding() != null;
+                final boolean bound = args.get(idx).bound();
                 if (bound != head) {
                     throw new ParseError(
                         span.line(), args.get(idx).pos(),
@@ -65,7 +65,7 @@ final class Bindings {
      * @param span Source span
      */
     static void checkReceiver(final Value receiver, final Span span) {
-        if (receiver.binding() != null) {
+        if (receiver.bound()) {
             throw new ParseError(
                 span.line(), receiver.pos(),
                 "reversed-dispatch receiver cannot carry a binding"

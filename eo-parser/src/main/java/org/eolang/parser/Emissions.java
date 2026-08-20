@@ -169,7 +169,7 @@ final class Emissions {
         final List<MethodChain> tail = value.chain();
         if (tail.isEmpty()) {
             Emissions.openValue(emit, null, value, line);
-            if (value.binding() != null) {
+            if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
             if (value.constant()) {
@@ -188,7 +188,7 @@ final class Emissions {
             final MethodChain last = tail.get(tail.size() - 1);
             emit.object(null, ".".concat(last.name()), line, last.dot());
             emit.method(last.fragile());
-            if (value.binding() != null) {
+            if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
             if (value.constant()) {
