@@ -3,6 +3,14 @@
 # path already exists, it must already be a directory: if a regular file (or
 # any non-directory entry) occupies the path, the computation terminates
 # instead of returning that entry decorated as a directory.
+#
+# @todo #7080:60min Add a synchronization-based regression test that creates
+#  the target directory between the exists() probe and mkdir below, so the
+#  race this fixes is actually exercised. A single-threaded EO `++>` test
+#  can't trigger it, same reasoning as the `@todo` in file/touched.eo: it
+#  needs a JUnit test against the generated `EOmade` class with real thread
+#  interleaving (see PhDefaultRaceTest.java for the com.yegor256.Together
+#  idiom this repo already uses for exactly this kind of interleaving).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -23,23 +31,36 @@
         directory
           file d.as-path.dirname
       if.
-        created.code.eq 0
+        or.
+          created.code.eq 0
+          and.
+            errno.eq eexist
+            d.is-directory
         d
         T
           "Cant make the directory '%s': %s".printf
-            *
-              d.path
-              output.
-                called. >> created
-                  os.is-windows.if
-                    win32 *1
-                      "_mkdir"
-                      d.path
-                    posix *1
-                      "mkdir"
-                      d.path
-                      posix.permissions
+            * d.path created.output
+  called. > created
+    os.is-windows.if
+      win32 *1
+        "_mkdir"
+        d.path
+      posix *1
+        "mkdir"
+        d.path
+        posix.permissions
   ^ > d
+  os.is-windows.if > eexist
+    win32.eexist
+    posix.eexist
+  code. > errno
+    os.is-windows.if
+      win32
+        "_errno"
+        *
+      posix
+        "errno"
+        *
 
   ++> can-make-a-new-directory
     dir.exists.and dir.is-directory > @
