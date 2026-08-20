@@ -79,13 +79,6 @@ final class Bound {
         return found;
     }
 
-    /**
-     * What these arguments fill in a copy of this type.
-     * @param copied The name the copied type goes by
-     * @param given The locators of the arguments, in the order the places run
-     * @return The objects the voids hold, by the locator of the void, empty
-     *  when nothing describes the copied type or it declares fewer voids
-     */
     private Map<String, String> filled(final String copied, final List<String> given) {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (int place = 0; place < given.size(); place += 1) {

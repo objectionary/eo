@@ -66,7 +66,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         } catch (final IOException | ClassNotFoundException | ClassCastException ex) {
             throw new ExFailure("cannot deserialize the compiled regex pattern", ex);
         }
-        final int start = new Expect.Natural(
+        final int start = new Natural(
             Expect.at(this, EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
         ).it();
         final int length = text.codePointCount(0, text.length());
@@ -87,12 +87,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         return result;
     }
 
-    /**
-     * Fill the matched block with the data of a real match.
-     * @param result The matched block to fill
-     * @param matcher The matcher positioned on the found subsequence
-     * @param text Matched text
-     */
     private void fill(final Phi result, final Matcher matcher, final String text) {
         result.put(
             EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
@@ -118,12 +112,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         result.put("groups", new Data.ToPhi(groups));
     }
 
-    /**
-     * Fill the matched block as a non-existent one: start is -1 and the from,
-     * to and groups fields hold bottom, so any attempt to read them terminates
-     * the program with an explanatory cause.
-     * @param result The matched block to fill
-     */
     private void blank(final Phi result) {
         result.put(
             EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
@@ -135,15 +123,19 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         );
         result.put(
             "from",
-            PhTerminator.withCause("Matched block does not exist, can't get 'from' position")
+            new PhTerminator(
+                new Data.ToPhi("Matched block does not exist, can't get 'from' position")
+            )
         );
         result.put(
             "to",
-            PhTerminator.withCause("Matched block does not exist, can't get 'to' position")
+            new PhTerminator(
+                new Data.ToPhi("Matched block does not exist, can't get 'to' position")
+            )
         );
         result.put(
             "groups",
-            PhTerminator.withCause("Matched block does not exist, can't get groups")
+            new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
     }
 }

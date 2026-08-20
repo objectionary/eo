@@ -58,7 +58,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode '-Deo.coverageTracking=false' clean install -pl '!:eo-integration-tests'
+      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode '-Deo.coverageTracking=false' clean install site -Pqulice -Psite
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=120' '-Dheap-size=32G' clean install -pl :eo-runtime
   terminate-instance:
     needs:
@@ -78,3 +78,17 @@ jobs:
           github-token: ${{ secrets.AWS_PAT }}
           label: ${{ needs.start-instance.outputs.label }}
           ec2-instance-id: ${{ needs.start-instance.outputs.ec2-instance-id }}
+  telegram:
+    needs:
+      - start-instance
+      - runtime
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1001381878846
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ Failed to build the entire ${{ github.repository }} on EC2, see [the log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). Please, stop branching from master until it's fixed."
+          disable_web_page_preview: true
+          format: markdown

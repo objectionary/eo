@@ -157,15 +157,15 @@ malloc.empty > [args] > app
   seq * > [x] >>
     x.put 2
     while
-      x.as-number.lt 6 > [i] >>
+      ^.x.as-number.lt 6 > [i] >>
       seq * > [i] >>
         stdout
           "%d x %1$d = %d\n".printf
             *
-              x
-              x.as-number.times x
-        x.put
-          x.as-number.plus 1
+              ^.x
+              ^.x.as-number.times ^.x
+        ^.x.put
+          ^.x.as-number.plus 1
     true
 ```
 

@@ -49,13 +49,6 @@ final class ProxiesTest {
         );
     }
 
-    /**
-     * Maven settings with a single proxy in them.
-     * @param host Host of the proxy
-     * @param port Port of the proxy
-     * @param active Is the proxy active?
-     * @return Settings with the proxy
-     */
     private static Settings settings(final String host, final int port, final boolean active) {
         final org.apache.maven.settings.Proxy proxy = new org.apache.maven.settings.Proxy();
         proxy.setHost(host);

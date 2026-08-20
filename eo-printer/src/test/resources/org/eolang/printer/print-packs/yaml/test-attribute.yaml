@@ -17,8 +17,8 @@ origin: |
 
     ++> tests-something
       eq. > @
-        x
-        x
+        ^.x
+        ^.x
 
 printed: |
   +package org.eolang
@@ -26,4 +26,4 @@ printed: |
   [] > dataized /Q.bytes
     ? > x
 
-    x.eq x ++> tests-something
+    ^.x.eq ^.x ++> tests-something

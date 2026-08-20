@@ -114,11 +114,6 @@ final class ChainEmissionTest {
         );
     }
 
-    /**
-     * Render an {@link Emit} into XMIR for assertion.
-     * @param emit Emitter to render
-     * @return The rendered XMIR text
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

@@ -11,7 +11,9 @@
 [] > deleted
   f.exists.if > @
     if.
-      removed.code.eq 0
+      or.
+        removed.code.eq 0
+        f.exists.not
       f
       T
         "Cant delete the file '%s': %s".printf
@@ -30,6 +32,20 @@
           "unlink"
           f.is-directory.if "rmdir" "unlink"
         f.path
+
+  ++> can-delete-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        d.as-file.deleted
+        link.as-file.deleted
+        link.as-file.exists.not
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "broken-link" > link
 
   mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
 

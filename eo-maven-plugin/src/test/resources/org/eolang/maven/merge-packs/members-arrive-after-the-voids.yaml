@@ -6,8 +6,6 @@
 # applying `number` to an argument would bind it to the member instead of to
 # the first void, and every application in the program would mean something
 # else.
-merged:
-  - number
 eo:
   number.eo: |
     [as-bytes] > number

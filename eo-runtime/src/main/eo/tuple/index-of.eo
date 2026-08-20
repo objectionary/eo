@@ -17,10 +17,10 @@
         if.
           next.eq -1
           if.
-            tup.head.eq wanted
+            tup.head.eq ^.wanted
             tup.length.minus 1
             -1
-          recidx tup.tail >> next!
+          ^.recidx tup.tail >> next!
     | ^
 
   eq. ++> can-find-no-index-of-an-absent-item

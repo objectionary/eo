@@ -13,7 +13,6 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -99,14 +98,6 @@ final class ObjectsIndex {
         );
     }
 
-    /**
-     * Strip the leading {@code org.eolang.} package from a name, the same
-     * way the index itself omits it (see {@link #convert(String)}), so a
-     * name in either shape matches the same index entry.
-     * @param name Object or package name
-     * @return The name with the leading {@code org.eolang.} removed, or the
-     *  name itself if it doesn't start with that prefix
-     */
     private static String stripped(final String name) {
         final String root = "org.eolang";
         final String prefix = String.format("%s.", root);
@@ -121,28 +112,14 @@ final class ObjectsIndex {
         return result;
     }
 
-    /**
-     * Converts object name to the format that is used in the objectionary.
-     * - "objects/array.eo" -> "array"
-     * - "objects/io/stdout.eo" -> "io.stdout"
-     * @param name Object name in raw format
-     * @return Object name in objectionary format
-     */
     private static String convert(final String name) {
         return name.substring(0, name.length() - 3)
             .replace('/', '.')
             .substring(name.indexOf('/') + 1);
     }
 
-    /**
-     * Download from the URL and return the content.
-     * @param url The URL with tags
-     * @return The body of the web page
-     */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static Text asText(final URL url) {
-        return new TextOf(
-            new Unchecked<>(() -> new TextOf(url).asString())
-        );
+    private static Text asText(final URL url) throws Exception {
+        return new TextOf(new TextOf(url).asString());
     }
 }

@@ -62,10 +62,6 @@ final class MsgUnderlined {
         );
     }
 
-    /**
-     * Underline.
-     * @return The underlined string
-     */
     private String underline() {
         final String result;
         if (this.origin.isEmpty() || this.length <= 0 || this.from >= this.origin.length()) {
@@ -82,12 +78,6 @@ final class MsgUnderlined {
         return result;
     }
 
-    /**
-     * Repeat a symbol n times.
-     * @param symbol The symbol
-     * @param times The number of times to repeat the symbol
-     * @return The repeated symbol
-     */
     private static String repeat(final String symbol, final int times) {
         return String.join("", Collections.nCopies(times, symbol));
     }

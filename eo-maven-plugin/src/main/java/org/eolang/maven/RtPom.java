@@ -44,10 +44,6 @@ final class RtPom implements Scalar<Dep> {
         return this.runtimeFromPom().isPresent();
     }
 
-    /**
-     * Runtime dependency from pom.xml.
-     * @return Dependency if found
-     */
     private Optional<Dependency> runtimeFromPom() {
         final Optional<Dependency> res;
         if (this.project == null) {
@@ -62,11 +58,6 @@ final class RtPom implements Scalar<Dep> {
         return res;
     }
 
-    /**
-     * Checks if dependency is the eo-runtime artifact.
-     * @param dep Dependency
-     * @return True if runtime
-     */
     private static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());

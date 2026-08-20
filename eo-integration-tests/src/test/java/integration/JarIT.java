@@ -197,24 +197,10 @@ final class JarIT {
         };
     }
 
-    /**
-     * Compile EO program to XMIR and package it into a JAR.
-     * @param farea Farea to use for compilation
-     * @param program The EO program to compile
-     * @return Classpath for the compiled program, with eo-runtime jar
-     * @throws IOException If fails to compile
-     */
     private static String compile(final Farea farea, final String... program) throws IOException {
         return JarIT.compile(farea, JarIT.ElegantObject.made("simple", program));
     }
 
-    /**
-     * Compile EO program to XMIR and package it into a JAR.
-     * @param farea Farea to use for compilation
-     * @param objects The EO programs to compile
-     * @return Classpath for the compiled program, with eo-runtime jar
-     * @throws IOException If fails to compile
-     */
     private static String compile(
         final Farea farea, final ElegantObject... objects
     ) throws IOException {

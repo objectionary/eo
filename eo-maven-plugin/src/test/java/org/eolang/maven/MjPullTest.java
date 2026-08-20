@@ -54,7 +54,7 @@ final class MjPullTest {
             "    \"I am 18 years old\""
             )
             .with("objectionary", new ScalarOf<>(() -> new OyRemote(new ChRemote("master"))))
-            .execute(new FakeMaven.Pull());
+            .execute(new PpPull());
         MatcherAssert.assertThat(
             "PullMojo should have pulled from probes, but it didn't",
             MjPullTest.exists(temp, this.stdout()),
@@ -123,7 +123,7 @@ final class MjPullTest {
         final Map<String, Path> result = new FakeMaven(tmp)
             .withHelloWorld()
             .with("offline", true)
-            .execute(new FakeMaven.Pull())
+            .execute(new PpPull())
             .result();
         final String stdout = "org/eolang/stdout.eo";
         final String string = "org/eolang/string.eo";
@@ -146,7 +146,7 @@ final class MjPullTest {
     void skipsAlreadyPulled(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .withHelloWorld()
-            .execute(new FakeMaven.Pull());
+            .execute(new PpPull());
         final Path path = maven.result().get(
             String.format("target/%s/bytes.%s", Pulling.DIR, MjAssemble.EO)
         );
@@ -171,7 +171,7 @@ final class MjPullTest {
             .withHelloWorld()
             .with("cache", cache.toFile())
             .with("hash", hash)
-            .execute(new FakeMaven.Pull());
+            .execute(new PpPull());
         MatcherAssert.assertThat(
             "Pulled results must be saved to cache",
             cache.resolve(Pulling.CACHE)
@@ -214,10 +214,9 @@ final class MjPullTest {
                 "[] > main",
                 "  Q.io.stdout > @"
             )
-            )
-            .with("hash", new CommitHash.ChConstant(hash))
+        ).with("hash", new CommitHash.ChConstant(hash))
             .with("cache", cache.toFile())
-            .execute(new FakeMaven.Pull());
+            .execute(new PpPull());
         MatcherAssert.assertThat(
             "PullMojo should take source from cache, but it does not",
             new TextOf(
@@ -235,28 +234,14 @@ final class MjPullTest {
         );
     }
 
-    /**
-     * Returns the stdout path.
-     */
     private String stdout() {
         return "stdout";
     }
 
-    /**
-     * Check if the given source file exists in the target directory.
-     * @param temp Test temporary directory
-     * @param source Source file
-     * @return If given source file exists
-     */
     private static boolean exists(final Path temp, final String source) {
         return Files.exists(temp.resolve("target").resolve(MjPullTest.path(source)));
     }
 
-    /**
-     * Format given a source path.
-     * @param source Source path as object name
-     * @return Formatted source path
-     */
     private static Path path(final String source) {
         return new Place(source).make(Paths.get(Pulling.DIR), "eo");
     }

@@ -73,7 +73,7 @@
         has-userinfo.if >> host-port-bytes!
           authority.slice
             plus.
-              authority.index-of "@" >> userinfo-at-idx
+              authority.last-index-of "@" >> userinfo-at-idx
               1
             authority.length.minus
               number
@@ -184,6 +184,11 @@
       uri "http://user:pass@host:80/some/path"
     "host"
 
+  eq. ++> can-parse-a-host-past-an-at-sign-inside-userinfo
+    host.
+      uri "http://a@b@host/p"
+    "host"
+
   eq. ++> can-parse-a-path-alongside-a-userinfo-authority
     path.
       uri "http://user:pass@host:80/some/path"
@@ -213,6 +218,11 @@
     scheme.
       uri "HTTP://host/path"
     "HTTP"
+
+  eq. ++> can-parse-a-userinfo-holding-an-at-sign
+    userinfo.
+      uri "http://a@b@host/p"
+    "a@b"
 
   eq. ++> can-parse-a-userinfo-without-a-password
     userinfo.

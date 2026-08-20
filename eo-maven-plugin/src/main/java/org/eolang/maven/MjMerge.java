@@ -5,11 +5,8 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.list.ListOf;
 
 /**
  * Put every member of a package inside the object that the package names.
@@ -27,9 +24,9 @@ import org.cactoos.list.ListOf;
  * first goal that cares about the shape of the object it compiles. The
  * merged XMIR goes to {@link Merging#DIR}.</p>
  *
- * <p>No package is merged unless it is named in {@code mergedPackages}, which
- * is empty by default, so a build that says nothing keeps the runtime
- * behaviour it has today.</p>
+ * <p>Every package this build compiles an object for is merged. A package
+ * whose name no object carries keeps its members as objects of their own,
+ * reached through the package namespace as before.</p>
  *
  * @since 0.68.0
  */
@@ -41,15 +38,11 @@ import org.cactoos.list.ListOf;
 public final class MjMerge extends MjSafe {
 
     /**
-     * The packages whose members are put inside the object of the same name,
-     * as in {@code number}, one per element. A package that is not named here
-     * is left alone, and its members keep being compiled as objects of their
-     * own, found by the runtime.
-     * @checkstyle MemberNameCheck (7 lines)
+     * Ctor.
      */
-    @Parameter(property = "eo.mergedPackages")
-    @SuppressWarnings("PMD.ImmutableField")
-    private Collection<String> mergedPackages = new ListOf<>();
+    public MjMerge() {
+        // nothing
+    }
 
     @Override
     void exec() throws IOException {
@@ -57,8 +50,7 @@ public final class MjMerge extends MjSafe {
             new Timed(
                 new Merging(
                     tojos,
-                    this.targetDir.toPath().resolve(Merging.DIR),
-                    this.mergedPackages
+                    this.targetDir.toPath().resolve(Merging.DIR)
                 )
             ).exec();
         }

@@ -333,20 +333,6 @@
               work together: with the void still there the merged member never
               gets a receiver, and with '^' but no merge it has no rho to read.
               -->
-              <mergedPackages>
-                <mergedPackage>bytes</mergedPackage>
-                <mergedPackage>chunk</mergedPackage>
-                <mergedPackage>directory</mergedPackage>
-                <mergedPackage>file</mergedPackage>
-                <mergedPackage>i64</mergedPackage>
-                <mergedPackage>input</mergedPackage>
-                <mergedPackage>number</mergedPackage>
-                <mergedPackage>output</mergedPackage>
-                <mergedPackage>range</mergedPackage>
-                <mergedPackage>string</mergedPackage>
-                <mergedPackage>tuple</mergedPackage>
-                <mergedPackage>u64</mergedPackage>
-              </mergedPackages>
               <keepBinaries>
                 <glob>org/eolang/package-info.class</glob>
               </keepBinaries>
@@ -495,9 +481,6 @@
               </execution>
             </executions>
             <configuration>
-              <excludes>
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
-              </excludes>
               <errorprone>
                 <!--
                 PhDefault.equals() compares hash codes on purpose. Every

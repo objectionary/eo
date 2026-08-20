@@ -24,8 +24,7 @@ import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
 
 /**
- * Content saved to the file.
- * Returns path to the file
+ * Content saved to the file; returns path to the file.
  *
  * <p>The content is streamed into a sibling temporary file first, then moved
  * onto {@link #target} with {@link StandardCopyOption#ATOMIC_MOVE}. Streaming
@@ -132,25 +131,6 @@ final class Saved implements Scalar<Path> {
         return this.target;
     }
 
-    /**
-     * Move a temp file onto its target, atomically where the filesystem
-     * supports it, falling back to a plain (still complete-file, just not
-     * guaranteed atomic) move on filesystems that don't.
-     *
-     * <p>Retried on failure: on Windows, {@code REPLACE_EXISTING} throws
-     * {@link java.nio.file.AccessDeniedException} instead of replacing the
-     * target when a concurrent reader has it open at that instant, unlike
-     * POSIX which allows it. The window is brief, so a short retry clears
-     * it instead of failing the whole write.</p>
-     *
-     * <p>The delay is not randomized (#6109): jcabi multiplies it by a
-     * random factor that may come out zero, and then all the attempts fire
-     * back to back with no waiting at all, which defeats the retry.</p>
-     *
-     * @param tmp Temp file to move
-     * @param target Destination path
-     * @throws IOException If the move fails
-     */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS, randomize = false)
     private static void moved(final Path tmp, final Path target) throws IOException {
         try {

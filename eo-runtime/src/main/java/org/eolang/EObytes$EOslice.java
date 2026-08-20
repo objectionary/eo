@@ -36,8 +36,8 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final byte[] bytes = new Dataized(this.take(Phi.RHO)).take();
-        final int start = new Expect.Natural(Expect.at(this, "start")).it();
-        final int len = new Expect.Natural(Expect.at(this, "len")).it();
+        final int start = new Natural(Expect.at(this, "start")).it();
+        final int len = new Natural(Expect.at(this, "len")).it();
         final Phi result;
         if ((long) start + len <= bytes.length) {
             result = new Data.ToPhi(Arrays.copyOfRange(bytes, start, start + len));

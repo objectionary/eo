@@ -133,14 +133,6 @@ final class Resolving implements Step {
         }
     }
 
-    /**
-     * Resolve a single dependency.
-     * @param dep Dependency
-     * @param dest Destination directory
-     * @param versions Every version legitimately resolved in this run, by coordinate
-     * @return Count resolved
-     * @throws IOException If fails
-     */
     private int resolved(
         final Dep dep, final Path dest, final Map<String, Set<String>> versions
     ) throws IOException {
@@ -156,7 +148,7 @@ final class Resolving implements Step {
         );
         final int total;
         if (Files.exists(place)) {
-            if (new Walk(place).isEmpty()) {
+            if (new WkDefault(place).isEmpty()) {
                 Logger.debug(
                     this,
                     "Destination %[file]s exists but is empty, unpacking %s again",
@@ -177,19 +169,11 @@ final class Resolving implements Step {
         return total;
     }
 
-    /**
-     * Unpack a dependency into its destination and log the result.
-     * @param dep Dependency (for logging)
-     * @param dependency Resolved dependency coordinates
-     * @param place Destination directory
-     * @return Count resolved, always {@code 1}
-     * @throws IOException If fails
-     */
     private int unpacked(
         final Dep dep, final Dependency dependency, final Path place
     ) throws IOException {
         this.central.accept(dependency, place);
-        final int files = new Walk(place).size();
+        final int files = new WkDefault(place).size();
         if (files == 0) {
             Logger.warn(this, "No new files after unpacking of %s!", dep);
         } else {
@@ -201,20 +185,6 @@ final class Resolving implements Step {
         return 1;
     }
 
-    /**
-     * Returns directory where files should be unpacked, removing stale versions:
-     * ones no longer requested by any dependency of this coordinate in the
-     * current run, not merely ones other than the version being resolved right
-     * now. With {@code eo.ignoreVersionConflicts} on, two versions of the same
-     * coordinate can both be legitimately part of the resolution set, and
-     * neither may delete the other's just-unpacked files (#6904).
-     * @param dir Directory
-     * @param version Version
-     * @param keep Every version of this coordinate legitimately resolved in
-     *  this run
-     * @return Full path
-     * @throws IOException If fails
-     */
     private Path cleanPlace(
         final Path dir, final String version, final Set<String> keep
     ) throws IOException {
@@ -242,10 +212,6 @@ final class Resolving implements Step {
         return dir.resolve(version);
     }
 
-    /**
-     * Find all deps for all tojos.
-     * @return List of dependencies
-     */
     private Collection<Dep> deps() {
         Dependencies result = new DpsDefault(
             this.tojos, this.discover, this.skipzero, this.jna
@@ -266,12 +232,6 @@ final class Resolving implements Step {
             .collect(Collectors.toList());
     }
 
-    /**
-     * Folder size in megabytes.
-     * @param path Folder
-     * @return Size in MB
-     * @throws IOException If fails
-     */
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

@@ -78,13 +78,6 @@ final class Recovery {
         return idx;
     }
 
-    /**
-     * Step back over the run of blank lines trailing the skipped block,
-     * so the walk meets them again as the separators they are.
-     * @param stop Index the skip stopped at
-     * @param floor Last index the block covers before the skip began
-     * @return Index of the first blank of the trailing run
-     */
     private int rewound(final int stop, final int floor) {
         int idx = stop;
         while (idx - 1 > floor && this.spans.get(idx - 1).blank()) {
@@ -93,13 +86,6 @@ final class Recovery {
         return idx;
     }
 
-    /**
-     * Whether the line at {@code idx} still belongs to the block of a
-     * line that failed at {@code indent}.
-     * @param idx Index of the line
-     * @param indent Indent of the failed line
-     * @return True when the line must be skipped
-     */
     private boolean skipped(final int idx, final int indent) {
         final Span span = this.spans.get(idx);
         return span.blank() || span.indent() > indent;
