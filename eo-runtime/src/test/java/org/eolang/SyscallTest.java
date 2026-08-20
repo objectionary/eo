@@ -146,28 +146,14 @@ final class SyscallTest {
         );
     }
 
-    /**
-     * Returns the localhost address.
-     */
     private String localhost() {
         return InetAddress.getLoopbackAddress().getHostAddress();
     }
 
-    /**
-     * Convert port number from host to network byte order (htons).
-     * @param port Port number
-     * @return Port number in network byte order
-     */
     private static short htons(final int port) {
         return (short) (((port & 0xFF) << 8) | ((port >> 8) & 0xFF));
     }
 
-    /**
-     * Assert that a server thread received exactly the bytes a client sent.
-     * @param sent Bytes the client sent
-     * @param count Number of bytes the server reported as received
-     * @param received Bytes the server received
-     */
     private static void assertReceived(
         final byte[] sent, final AtomicInteger count, final AtomicReference<byte[]> received
     ) {
@@ -367,10 +353,6 @@ final class SyscallTest {
             }
         }
 
-        /**
-         * Open socket.
-         * @return Socket descriptor
-         */
         private long openSocket() {
             final long socket = Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
@@ -381,11 +363,6 @@ final class SyscallTest {
             return socket;
         }
 
-        /**
-         * Close socket.
-         * @param socket Socket descriptor
-         * @return Zero on success, -1 on error
-         */
         private int closeSocket(final long socket) {
             final int closed = Winsock.INSTANCE.closesocket(socket);
             if (closed == 0) {
@@ -396,28 +373,16 @@ final class SyscallTest {
             return closed;
         }
 
-        /**
-         * Start Winsock DLL.
-         * @return Zero on success, -1 on error
-         */
         private int startup() {
             return Winsock.INSTANCE.WSAStartup(
                 Winsock.VERSION_2_2, new WSAData()
             );
         }
 
-        /**
-         * Cleanup Winsock resources.
-         * @return Zero on success, -1 on error
-         */
         private int cleanup() {
             return Winsock.INSTANCE.WSACleanup();
         }
 
-        /**
-         * Ensure that the given condition is true, or print last error otherwise.
-         * @param condition Condition to check
-         */
         private void ensure(final boolean condition) {
             if (!condition) {
                 Logger.debug(this, "Error code: %d", this.getError());
@@ -425,20 +390,10 @@ final class SyscallTest {
             assert condition;
         }
 
-        /**
-         * Get last Winsock error code.
-         * @return Last Winsock error code
-         */
         private int getError() {
             return Winsock.INSTANCE.WSAGetLastError();
         }
 
-        /**
-         * Bind socket.
-         * @param socket Socket
-         * @param port Port
-         * @return Zero on success, -1 on error
-         */
         private int bindSocket(final long socket, final int port) throws UnknownHostException {
             return Winsock.INSTANCE.bind(
                 socket,
@@ -447,22 +402,12 @@ final class SyscallTest {
             );
         }
 
-        /**
-         * Call posix inet addr.
-         * @param address IP address
-         * @return Posix inet addr as integer
-         */
         private int inetAddr(final String address) throws UnknownHostException {
             final ByteBuffer buffer = ByteBuffer.allocate(4);
             buffer.put(InetAddress.getByName(address).getAddress());
             return Integer.reverseBytes(buffer.getInt(0));
         }
 
-        /**
-         * Get sockaddr_in structure.
-         * @param port Port
-         * @return The sockaddr_in structure
-         */
         private SockaddrIn sockaddr(final int port) throws UnknownHostException {
             return new SockaddrIn(
                 (short) Winsock.AF_INET,
@@ -676,10 +621,6 @@ final class SyscallTest {
             }
         }
 
-        /**
-         * Ensure that the given condition is true, or print last error otherwise.
-         * @param condition Condition to check
-         */
         private void ensure(final boolean condition) {
             if (!condition) {
                 Logger.debug(this, "Strerror: %s", this.getError());
@@ -687,10 +628,6 @@ final class SyscallTest {
             assert condition;
         }
 
-        /**
-         * Open posix socket.
-         * @return Posix socket descriptor
-         */
         private int openSocket() {
             final int sock = CStdLib.INSTANCE.socket(
                 CStdLib.AF_INET,
@@ -701,11 +638,6 @@ final class SyscallTest {
             return sock;
         }
 
-        /**
-         * Close posix socket.
-         * @param socket Socket to close
-         * @return Zero on success, -1 on error
-         */
         private int closeSocket(final int socket) {
             final int closed = CStdLib.INSTANCE.close(socket);
             if (closed == 0) {
@@ -716,12 +648,6 @@ final class SyscallTest {
             return closed;
         }
 
-        /**
-         * Bind socket.
-         * @param socket Socket
-         * @param port Port
-         * @return Zero on success, -1 on error
-         */
         private int bindSocket(final int socket, final int port) {
             return CStdLib.INSTANCE.bind(
                 socket,
@@ -730,28 +656,14 @@ final class SyscallTest {
             );
         }
 
-        /**
-         * Get last posix error.
-         * @return Last posix error as string
-         */
         private String getError() {
             return CStdLib.INSTANCE.strerror(Native.getLastError());
         }
 
-        /**
-         * Call posix inet addr.
-         * @param address IP address
-         * @return Posix inet addr as integer
-         */
         private int inetAddr(final String address) {
             return CStdLib.INSTANCE.inet_addr(address);
         }
 
-        /**
-         * Get sockaddr_in structure.
-         * @param port Port
-         * @return The sockaddr_in structure
-         */
         private SockaddrIn sockaddr(final int port) {
             return new SockaddrIn(
                 (short) CStdLib.AF_INET,

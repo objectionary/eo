@@ -141,18 +141,6 @@ final class Span {
         return first;
     }
 
-    /**
-     * Compute leading-whitespace count.
-     *
-     * <p>Every whitespace character counts, not only {@code ' '}. A line
-     * made of whitespace alone must yield {@code indent == text.length()},
-     * as {@link #blank()} reads blankness off exactly that equality; a
-     * tab-only line counted as space-only would report itself non-blank
-     * with indent zero and mislead the consumers of both queries.</p>
-     *
-     * @param body Line text
-     * @return Number of leading whitespace characters
-     */
     private static int leading(final String body) {
         int count = 0;
         while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
@@ -161,11 +149,6 @@ final class Span {
         return count;
     }
 
-    /**
-     * Detect a tab in the leading whitespace region.
-     * @param body Line text
-     * @return True if a tab character appears before the first non-whitespace
-     */
     private static boolean tabbed(final String body) {
         boolean found = false;
         for (int idx = 0; idx < body.length(); idx = idx + 1) {

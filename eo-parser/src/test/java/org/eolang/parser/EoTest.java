@@ -966,14 +966,6 @@ final class EoTest {
         );
     }
 
-    /**
-     * Run the EO source through the walker and render the XMIR under a
-     * fresh {@code <object/>} root. The supplied rows are joined with
-     * a literal newline (no platform-dependent separator) and a
-     * trailing newline is appended — matching what the parser expects.
-     * @param rows The EO program lines (no terminators)
-     * @return Rendered XMIR
-     */
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {

@@ -70,13 +70,6 @@ final class Pipeline implements Scalar<UnaryOperator<XML>> {
         )::pass;
     }
 
-    /**
-     * The train of those {@link Canonical#XSLS} that live in the given
-     * half-open range and take no parameters.
-     * @param from The index of the first XSL, inclusive
-     * @param till The index right after the last XSL, exclusive
-     * @return The train of shifts
-     */
     private static Train<Shift> classpath(final int from, final int till) {
         return new TrClasspath<Shift>(
             Canonical.XSLS.subList(from, till).toArray(new String[0])

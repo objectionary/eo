@@ -90,11 +90,6 @@ final class LnTextBlock implements Line {
         globals.markEmitted();
     }
 
-    /**
-     * Push or replace the stack level at the closer's indent.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     */
     private void transition(final Stack stack, final Suffix suffix) {
         new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,

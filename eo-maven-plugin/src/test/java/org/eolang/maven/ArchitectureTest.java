@@ -55,19 +55,10 @@ final class ArchitectureTest {
             .check(ArchitectureTest.imported());
     }
 
-    /**
-     * All the classes of this plugin.
-     * @return Imported classes
-     */
     private static JavaClasses imported() {
         return new ClassFileImporter().importPackages("org.eolang.maven");
     }
 
-    /**
-     * A {@link ConcurrentCache} built anywhere but a constructor, which is
-     * the #5720 mistake: the lock map is then per call instead of per run.
-     * @return The predicate over constructor calls
-     */
     private static DescribedPredicate<JavaConstructorCall> guardBuiltPerCall() {
         return new DescribedPredicate<JavaConstructorCall>("cache guard is built per call") {
             @Override
@@ -78,10 +69,6 @@ final class ArchitectureTest {
         };
     }
 
-    /**
-     * All the project Mojos, the concrete goals; an abstract one is a base.
-     * @return Mojos classes conjunction
-     */
     private static GivenClassesConjunction mojos() {
         return ArchRuleDefinition.classes()
             .that().haveSimpleNameStartingWith("Mj")

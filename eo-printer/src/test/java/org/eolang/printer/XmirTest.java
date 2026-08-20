@@ -267,12 +267,6 @@ final class XmirTest {
         );
     }
 
-    /**
-     * Convert EO to XMIR.
-     * @param program Program in EOLANG
-     * @param config The penalty weights to print with
-     * @return XMIR
-     */
     private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)
         throws IOException {
         final XML xml = new EoSyntax(new InputOf(program)).parsed();
@@ -284,17 +278,6 @@ final class XmirTest {
         return new Xmir(xml, config);
     }
 
-    /**
-     * Read the penalty weights from a story's {@code penalties} block.
-     *
-     * <p>Every print-pack pins the full set of {@link PenaltyKey} weights, so
-     * the expected layout is deterministic and does not depend on the defaults
-     * baked into the printer. The block is a plain mapping of key name to
-     * integer.</p>
-     *
-     * @param xtory The story
-     * @return The weights, by key
-     */
     private Map<PenaltyKey, Integer> weights(final Xtory xtory) {
         final Object block = xtory.map().get("penalties");
         MatcherAssert.assertThat(

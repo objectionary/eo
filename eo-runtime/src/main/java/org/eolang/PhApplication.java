@@ -77,13 +77,6 @@ public final class PhApplication extends PhOnce {
         super(sup, term);
     }
 
-    /**
-     * The φ-term of an application, rendering a literal number or string
-     * construction as its value, otherwise listing the bindings.
-     * @param phi The receiver
-     * @param binds The bindings
-     * @return The φ-term
-     */
     private static String applied(final Phi phi, final Bind... binds) {
         final String head = phi.φTerm();
         final String body = PhApplication.body(binds);
@@ -108,11 +101,6 @@ public final class PhApplication extends PhOnce {
         return result;
     }
 
-    /**
-     * Render UTF-8 bytes as an EO string literal.
-     * @param bytes Bytes to render
-     * @return Escaped literal, or null if bytes are not valid UTF-8
-     */
     private static String string(final byte[] bytes) {
         Optional<String> text;
         try {
@@ -134,11 +122,6 @@ public final class PhApplication extends PhOnce {
         return result;
     }
 
-    /**
-     * Join the φ-term fragments of the bindings, comma-separated.
-     * @param binds The bindings
-     * @return The joined fragments
-     */
     private static String body(final Bind... binds) {
         final StringBuilder out = new StringBuilder();
         for (int idx = 0; idx < binds.length; ++idx) {
@@ -150,16 +133,6 @@ public final class PhApplication extends PhOnce {
         return out.toString();
     }
 
-    /**
-     * Parse a dash-separated hex string into bytes.
-     *
-     * <p>A single byte is written with a trailing dash ("BB-") and no bytes
-     * at all as a lone pair of them ("--"), so both are taken apart before
-     * the rest is split.</p>
-     *
-     * @param hex The hex, like "40-45-00"
-     * @return The byte array
-     */
     private static byte[] bytes(final String hex) {
         final byte[] bytes;
         if (hex.isEmpty() || "--".equals(hex)) {

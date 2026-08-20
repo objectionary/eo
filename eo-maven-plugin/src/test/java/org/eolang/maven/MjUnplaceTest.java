@@ -90,13 +90,6 @@ final class MjUnplaceTest {
         );
     }
 
-    /**
-     * Place file to the placed tojos file.
-     * @param temp Temporary directory
-     * @param maven Maven instance
-     * @param ext File extension
-     * @return Path to placed file
-     */
     private static Path placed(
         final Path temp, final FakeMaven maven, final String ext
     ) throws IOException {
@@ -109,14 +102,6 @@ final class MjUnplaceTest {
         );
     }
 
-    /**
-     * Place file into the placed tojos file.
-     * @param temp Temporary directory
-     * @param maven Maven instance
-     * @param relative Relative path to file
-     * @return Path to placed file
-     * @throws IOException If Fails to place
-     */
     private static Path placed(
         final Path temp, final FakeMaven maven, final Path relative
     ) throws IOException {

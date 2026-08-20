@@ -92,16 +92,6 @@ final class StEoLoggedTest {
         );
     }
 
-    /**
-     * Example XMIR.
-     *
-     * <p>{@code
-     * [] > bar
-     * }</p>
-     *
-     * @return XML
-     * @throws IOException If fails to parse
-     */
     private static XML example() throws IOException {
         return new EoSyntax(new InputOf(String.format("[] > bar%n"))).parsed();
     }
@@ -140,26 +130,14 @@ final class StEoLoggedTest {
             this.captured.add(message);
         }
 
-        /**
-         * Get last captured message.
-         * @return Captured message
-         */
         private String last() {
             return this.captured.remove();
         }
 
-        /**
-         * Check if captured messages are empty.
-         * @return True if empty, false otherwise
-         */
         private boolean empty() {
             return this.captured.isEmpty();
         }
 
-        /**
-         * Get all captured messages.
-         * @return Captured messages
-         */
         private Collection<String> all() {
             return new ArrayList<>(this.captured);
         }

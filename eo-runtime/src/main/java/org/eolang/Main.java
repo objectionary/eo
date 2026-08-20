@@ -109,20 +109,10 @@ public final class Main {
         }
     }
 
-    /**
-     * Is it an option?
-     * @param arg The arg
-     * @return TRUE if it's an option
-     */
     private static boolean isOption(final String arg) {
         return arg.startsWith("--");
     }
 
-    /**
-     * Report exception.
-     * @param opts The options
-     * @param thr  The cause
-     */
     @SuppressWarnings("PMD.AvoidPrintStackTrace")
     private static void report(final List<String> opts, final Throwable thr) {
         if (opts.contains(Main.VERBOSE)) {
@@ -131,10 +121,6 @@ public final class Main {
         Main.print(thr);
     }
 
-    /**
-     * Print exception line.
-     * @param thr The cause
-     */
     private static void print(final Throwable thr) {
         Main.LOGGER.log(Level.SEVERE, thr.getMessage());
         final Throwable cause = thr.getCause();
@@ -143,9 +129,6 @@ public final class Main {
         }
     }
 
-    /**
-     * Setup logs.
-     */
     private static void setup() {
         Main.LOCK.lock();
         try {
@@ -160,10 +143,6 @@ public final class Main {
         Main.EOLOG.setUseParentHandlers(false);
     }
 
-    /**
-     * Make a handler for EO runtime logs.
-     * @return Configured handler
-     */
     private static Handler handler() {
         final Handler handler = new ConsoleHandler();
         handler.setFormatter(
@@ -177,12 +156,6 @@ public final class Main {
         return handler;
     }
 
-    /**
-     * Process one option.
-     * @param opt The option
-     * @return True if it's time to exit
-     * @throws IOException If fails
-     */
     private static boolean parse(final String opt) throws IOException {
         if (Main.VERBOSE.equals(opt)) {
             Main.EOLOG.setLevel(Level.FINE);
@@ -213,10 +186,6 @@ public final class Main {
         return exit;
     }
 
-    /**
-     * Run this opts.
-     * @param opts The opts left
-     */
     private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
@@ -245,11 +214,6 @@ public final class Main {
         );
     }
 
-    /**
-     * Read the version from resources and return it.
-     * @return Version string
-     * @throws IOException If fails
-     */
     private static String ver() throws IOException {
         try (
             BufferedReader input =

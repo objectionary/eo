@@ -114,7 +114,6 @@ final class Transpiling implements Step {
      * @param train The XSL train that does the transpiling
      * @param guard Cache guard, one per instance
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
@@ -167,13 +166,6 @@ final class Transpiling implements Step {
         return this.train.version();
     }
 
-    /**
-     * Transpile a single tojo.
-     * @param tojo Tojo that should be transpiled
-     * @param files Generated Java files
-     * @return Number of generated Java files
-     * @throws IOException If any issues with I/O
-     */
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -219,12 +211,6 @@ final class Transpiling implements Step {
         );
     }
 
-    /**
-     * File info for logging.
-     * @param info Path to file
-     * @return Info string
-     * @throws IOException If fails
-     */
     private static String info(final Path info) throws IOException {
         final String res;
         if (Files.exists(info)) {

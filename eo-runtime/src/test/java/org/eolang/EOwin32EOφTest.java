@@ -126,10 +126,6 @@ final class EOwin32EOφTest {
             this.cleanupsWinsock();
         }
 
-        /**
-         * Creates socket.
-         * @return Closes socket
-         */
         private long createsSocket() {
             return Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
@@ -138,19 +134,10 @@ final class EOwin32EOφTest {
             );
         }
 
-        /**
-         * Closes socket.
-         * @param socket Socket descriptor
-         * @return Status code
-         */
         private int closesSocket(final long socket) {
             return Winsock.INSTANCE.closesocket(socket);
         }
 
-        /**
-         * Startups winsock library.
-         * @return Status code
-         */
         private int startupsWinsock() {
             return Winsock.INSTANCE.WSAStartup(
                 Winsock.VERSION_2_2,
@@ -158,10 +145,6 @@ final class EOwin32EOφTest {
             );
         }
 
-        /**
-         * Cleans up winsock library.
-         * @return Status code
-         */
         private int cleanupsWinsock() {
             return Winsock.INSTANCE.WSACleanup();
         }

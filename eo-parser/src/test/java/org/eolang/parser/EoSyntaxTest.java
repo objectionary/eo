@@ -734,22 +734,12 @@ final class EoSyntaxTest {
         );
     }
 
-    /**
-     * Prepare naughty strings.
-     * @return Stream of strings
-     * @throws IOException if I/O fails
-     */
     private static Stream<Arguments> naughty() throws IOException {
         return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
     }
 
-    /**
-     * Parse a typo pack, skipping the packs that ask to be skipped.
-     * @param yaml The pack
-     * @return Parsed story
-     */
     private static Xtory typo(final String yaml) {
         final Xtory story = new XtSticky(
             new XtYaml(
@@ -761,25 +751,13 @@ final class EoSyntaxTest {
         return story;
     }
 
-    /**
-     * Parse a single-line EO source with no post-XSL transform — the
-     * resulting XMIR shows the raw parser output, useful for asserting
-     * directly on the parser's emission shape.
-     * @param line One EO source line
-     * @return Raw XMIR
-     * @throws Exception If parsing fails
-     */
-    private static XML raw(final String line) throws Exception {
+    private static XML raw(final String source) throws Exception {
         return new EoSyntax(
-            new InputOf(line.concat(String.valueOf((char) 10))),
+            new InputOf(source.concat(String.valueOf((char) 10))),
             UnaryOperator.identity()
         ).parsed();
     }
 
-    /**
-     * Inputs for {@link EoSyntaxTest#parsesSuccessfully}.
-     * @return Test cases
-     */
     private static Stream<String> parsesSuccessfullyArgs() {
         final String eol = String.valueOf((char) 10);
         final String crlf = String.valueOf((char) 13).concat(eol);

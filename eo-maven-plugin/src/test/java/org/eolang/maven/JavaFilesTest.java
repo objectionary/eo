@@ -128,12 +128,6 @@ final class JavaFilesTest {
         );
     }
 
-    /**
-     * Transpile a single-atom XMIR and report how many files were written.
-     * @param temp Temp directory to write into
-     * @return Number of files written
-     * @throws IOException If fails to save or transpile
-     */
     private static int generateAtom(final Path temp) throws IOException {
         final Path xmir = temp.resolve("main.xmir");
         new Saved(

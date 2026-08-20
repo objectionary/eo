@@ -92,39 +92,12 @@ final class ProxyIT {
         );
     }
 
-    /**
-     * Build a forward proxy handler that also tunnels CONNECT requests.
-     *
-     * <p>{@link ConnectHandler} is a handler wrapper: it serves {@code CONNECT}
-     * requests itself (HTTPS tunneling) and delegates every other request to
-     * the handler nested inside it. Nesting {@link ProxyHandler.Forward} into
-     * it therefore installs both behaviours at once. Calling
-     * {@code setHandler(...)} twice on the server, as it used to be done here,
-     * simply replaced the first handler with the second, so plain HTTP
-     * forwarding was never exercised (see #5110 and #5429).</p>
-     *
-     * @return The combined handler
-     */
     private static Handler handler() {
         final ConnectHandler connect = new ConnectHandler();
         connect.setHandler(new ProxyHandler.Forward());
         return connect;
     }
 
-    /**
-     * Start a local HTTP server that serves the local Maven repository.
-     *
-     * <p>Maven is pointed at this server through a {@code <mirror>} of {@code *}
-     * in {@code settings.xml}, so every remote access it makes (metadata update
-     * checks, and any artifact not already cached locally) goes through the proxy
-     * to this local server instead of to the live Maven Central. That keeps the
-     * test hermetic — nothing beyond localhost is touched — while still exercising
-     * the forward proxy. Depending on the live network is what used to make the
-     * test flaky (see #5429).</p>
-     *
-     * @return The started server, listening on an ephemeral port
-     * @throws Exception If fails
-     */
     private static Server repository() throws Exception {
         final Server server = new Server();
         final ServerConnector connector = new ServerConnector(server);
@@ -141,34 +114,14 @@ final class ProxyIT {
         return server;
     }
 
-    /**
-     * Path to the local Maven repository, usually {@code ~/.m2/repository}.
-     * @return The path
-     */
     private static Path localRepository() {
         return Paths.get(System.getProperty("user.home"), ".m2", "repository");
     }
 
-    /**
-     * The local port the given server is listening on.
-     * @param server The server
-     * @return The port
-     */
     private static int port(final Server server) {
         return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
     }
 
-    /**
-     * Stop the given server, if it is running.
-     *
-     * <p>We deliberately only {@code stop()} it and never {@code destroy()} it:
-     * {@link ProxyHandler} starts a shared Jetty {@code HttpClient} and destroying
-     * one server tears down state that the next test's proxy needs, failing its
-     * start with "Destroyed container cannot be restarted".</p>
-     *
-     * @param server The server to stop
-     * @throws Exception If fails
-     */
     private static void shutdown(final Server server) throws Exception {
         if (server != null && server.isStarted()) {
             server.setStopTimeout(5000L);
@@ -228,12 +181,6 @@ final class ProxyIT {
         );
     }
 
-    /**
-     * Returns proxy settings XML with the given ports.
-     * @param proxy Proxy port
-     * @param repo Local repository server port
-     * @return Proxy settings XML
-     */
     private static String settings(final int proxy, final int repo) {
         return new UncheckedText(new TextOf(new ResourceOf("proxy-settings.xml")))
             .asString()

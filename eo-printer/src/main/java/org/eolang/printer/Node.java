@@ -377,32 +377,6 @@ final class Node {
         return this.children.stream().allMatch(Node::nameless);
     }
 
-    /**
-     * Pick the lowest-penalty of this node's vertical, horizontal and
-     * trailing-star renderings.
-     *
-     * <p>The compact-tuple {@code *N} marker for {@code N >= 1} leading
-     * arguments (issue #5648) is an exception to the penalty vote: it is the
-     * canonical spelling of a tuple applied after positional arguments, so it
-     * is emitted whenever it applies, even when the verbose {@code * elem}
-     * child inlines onto fewer lines. The bare {@code *} idiom
-     * ({@code N == 0}) stays a mere candidate — it competes on penalty like
-     * any other horizontal rendering, so a short tuple such as {@code * 1 2}
-     * inlines whenever that one-liner is no worse than laying the elements out
-     * vertically (see the tie rule below).</p>
-     *
-     * <p>Between the vertical and horizontal renderings a tie resolves to the
-     * flatter horizontal one-liner: the comparison is {@code <=}, not {@code <},
-     * so an object whose inlined form scores exactly as much as its vertical
-     * form ({@code | list > @} versus {@code | > @} over an indented
-     * {@code list}, where the application space is offset by the saved indent)
-     * stays on one line, the same tie rule {@link #print} already uses for the
-     * suffix comparison (issue #5686).</p>
-     *
-     * @param style The style to lay out in
-     * @param indent The indentation level
-     * @return The rendered block
-     */
     private String shaped(final Style style, final int indent) {
         final Optional<String> star = new Starred(this).print(style, indent);
         final String result;
@@ -423,13 +397,6 @@ final class Node {
         return result;
     }
 
-    /**
-     * Render this node on a single line, if all of its children can be
-     * inlined.
-     * @param style The style to lay out in
-     * @param indent The indentation level
-     * @return The single line, or empty if inlining is impossible
-     */
     private Optional<String> horizontal(final Style style, final int indent) {
         final Optional<String> result;
         if (this.abstractt) {
@@ -444,15 +411,6 @@ final class Node {
         return result;
     }
 
-    /**
-     * Render this formation in the compact inline-phi form, when its only
-     * attribute is the {@code φ} decoratee. A formation with any other
-     * attribute keeps the vertical layout.
-     * @param style The style to lay out in
-     * @param indent The indentation level
-     * @return The rendered block, or empty if the inline-phi form doesn't apply
-     * @see Phi
-     */
     private Optional<String> phi(final Style style, final int indent) {
         final Optional<String> result;
         if (this.children.size() == 1
@@ -466,34 +424,6 @@ final class Node {
         return result;
     }
 
-    /**
-     * The suffix shape of this node, if it is a reversed dispatch whose
-     * receiver has a one-line inline form.
-     *
-     * <p>A dispatch is stored as a reversed head ({@code plus.},
-     * {@code div.}) whose first child is the receiver whenever the receiver
-     * cannot fold into a dotted {@code @base} the way a named identifier does:
-     * a data literal ({@code 5}, {@code "x"}, {@code 01-}) or a compound
-     * expression ({@code input.read 4096}, {@code a.plus b}). This rebuilds it
-     * in suffix position — the receiver glued to the method with the remaining
-     * arguments kept as children — so both shapes can be weighed against each
-     * other in {@link #print}.</p>
-     *
-     * <p>The receiver is spelled through {@link #braced()} and glued to the
-     * method as {@code receiver.method}. A receiver that itself applies
-     * arguments ({@code input.read 4096}, {@code a.plus b}) is wrapped in
-     * parentheses ({@code (input.read 4096).read}, {@code (a.plus b).div c}),
-     * exactly as an argument of the same shape is; a receiver that is a
-     * single token or a plain dispatch chain ({@code 5}, {@code 01-.as-bool},
-     * {@code (input.read 4096).read}) is glued bare, since redundant
-     * parentheses around a single token fail to parse (#5591). The parenthesis
-     * cost is modelled by {@code BRACKET}, so {@link #print} keeps the suffix
-     * shape only when it beats the reversed vertical form on penalty; a
-     * receiver with no one-line inline form yields empty and leaves the
-     * reversed head untouched (#5650).</p>
-     *
-     * @return The suffix-shaped node, or empty if it doesn't apply
-     */
     private Optional<Node> suffixed() {
         Optional<Node> result = Optional.empty();
         if (this.reversed && !this.children.isEmpty()) {
@@ -511,22 +441,11 @@ final class Node {
         return result;
     }
 
-    /**
-     * Spell this node inline, bracketed when the spelling applies
-     * arguments of its own.
-     * @return The spelling, or empty if it can't be inlined
-     */
     private Optional<String> braced() {
         final Node node = this.suffixed().orElse(this);
         return node.spelled().map(node::wrapped);
     }
 
-    /**
-     * Wrap the given spelling in parentheses, unless this node is a single
-     * token, around which they would fail to parse (#5591).
-     * @param text The spelling of this node
-     * @return The spelling, bracketed when needed
-     */
     private String wrapped(final String text) {
         final String result;
         if (this.children.isEmpty()) {
@@ -537,11 +456,6 @@ final class Node {
         return result;
     }
 
-    /**
-     * Spell this node inline, taking it exactly as it stands, without
-     * resolving a reversed dispatch into its suffix shape first.
-     * @return The inlined content, or empty
-     */
     private Optional<String> spelled() {
         final Optional<String> result;
         if (this.reversed && this.children.size() <= 1) {
@@ -557,22 +471,6 @@ final class Node {
         return result;
     }
 
-    /**
-     * The same node as it must be spelled on a line of its own.
-     *
-     * <p>An anonymous inline const argument (#5821) carries a bare {@code !}
-     * marker, and only a horizontal argument slot can hold it: on a line of
-     * its own the marker closes the expression, so the arguments below it
-     * become trailing garbage ({@code or.!}), and behind those arguments it
-     * marks the last one instead of the whole application (#5902). A name
-     * suffix, however, may carry the marker (R-3.10.4), so such a const takes
-     * the auto-name {@code >>} that the same slot already spells for a
-     * formation. The parser floats an auto-named binding up to the enclosing
-     * formation and leaves a reference in its place, which is the very graph
-     * the inline argument builds, so the two spellings agree (#5927).</p>
-     *
-     * @return The node with a suffix its own line can carry
-     */
     private Node lined() {
         final Node result;
         if (this.constant()) {
@@ -586,95 +484,28 @@ final class Node {
         return result;
     }
 
-    /**
-     * Whether this node carries no name suffix anywhere in its subtree.
-     *
-     * <p>A line is "named" when its {@code tail} holds a {@code > name},
-     * {@code > [params] > name} or {@code >>} suffix — a named or auto-named
-     * attribute. This walks the node and all its descendants, so a named line
-     * nested below the top level — inside a tuple, a dispatch, or an
-     * application — is caught too. It decides whether a decoratee's whole
-     * subtree is safe to fold into a compact only-phi formation, which binds
-     * nothing but its {@code φ} decoratee (issue #5604).</p>
-     *
-     * <p>A bare {@code > @} suffix is not a name: it marks the {@code φ}
-     * decoratee, which is exactly what an only-phi formation binds, so a
-     * nested anonymous object (an argument such as {@code m > [m]}, whose
-     * subtree carries an inner {@code m > @}) is legal and must not withhold
-     * the fold. Only a genuine named or auto-named attribute ({@code > name},
-     * {@code >>}) does, since those cannot be attributes of an only-phi
-     * formation.</p>
-     *
-     * @return True when neither this node nor any descendant is named
-     */
     private boolean nameless() {
         return (this.tail.isEmpty() || " > @".equals(this.tail))
             && this.anonymous();
     }
 
-    /**
-     * Whether this head can carry a trailing-star marker at all: not a
-     * formation (its children are bindings), not a reversed dispatch (a
-     * reversed compact-tuple head is not yet parseable), and not a bare
-     * tuple literal ({@code base == "*"}), whose elements are already
-     * tuple elements.
-     * @return True when the head may take a {@code *N} marker
-     */
     private boolean marked() {
         return !this.abstractt && !this.reversed && !"*".equals(this.base);
     }
 
-    /**
-     * Whether the trailing tuple is absorbed correctly at the given
-     * child count. With {@code N >= 1} leading arguments the {@code *N}
-     * marker sits on the head's line, so a dotted method dispatch is
-     * fine; with the bare {@code *} ({@code N == 0}) the head must be a
-     * plain base, since after a method dispatch the parser reads a
-     * complete application with an empty tuple (issues #5622, #5624).
-     * @param size The number of children
-     * @return True when the shape round-trips at this count
-     */
     private boolean absorbed(final int size) {
         return size > 1 || this.base.indexOf('.') < 0;
     }
 
-    /**
-     * Whether this node is a non-empty, unnamed {@code *} tuple — one
-     * that may be glued to the tail of an applying object's line.
-     * @return True when this node is a gluable star
-     */
     private boolean stars() {
         return "*".equals(this.base) && !this.abstractt
             && !this.children.isEmpty() && this.tail.isEmpty();
     }
 
-    /**
-     * Whether this node is an anonymous inline const, carrying the bare
-     * {@code !} marker that only an argument slot can hold (#5821).
-     * @return True when the suffix is a lone {@code !}
-     */
     private boolean constant() {
         return "!".equals(this.tail);
     }
 
-    /**
-     * Whether the horizontal rendering must win regardless of penalty.
-     *
-     * <p>A <em>nameless</em> pipe continuation ({@code | args}, base {@code |}
-     * with an empty tail, §3.14) cannot go vertical: a vertical pipe would
-     * leave a bare {@code |} on its own line, which fails to parse ("a pipe
-     * {@code |} must be followed by a space") since the printer cannot emit the
-     * legalising trailing space. So a wide or parenthesised argument
-     * ({@code | (walk "**").at.^}, #5848) is inlined onto the {@code |} line
-     * even when it scores lower broken. A <em>named</em> pipe ({@code | > @}
-     * with its arguments below) keeps content after the marker, so its vertical
-     * form parses and stays subject to the penalty vote. An anonymous inline
-     * const child forces the line for the same reason: its bare {@code !} has
-     * no spelling of its own line, and {@link #lined()} has to rename it
-     * there.</p>
-     *
-     * @return True when the horizontal rendering must be taken
-     */
     private boolean forced() {
         return "|".equals(this.base) && this.tail.isEmpty()
             || this.children.stream().anyMatch(Node::constant);

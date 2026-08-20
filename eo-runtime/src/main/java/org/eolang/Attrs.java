@@ -57,10 +57,6 @@ public final class Attrs extends AbstractMap<String, Attribute> {
         return this.resolve().size();
     }
 
-    /**
-     * Resolve the entries into a backing map, lazily.
-     * @return The backing map
-     */
     private Map<String, Attribute> resolve() {
         if (this.resolved == null) {
             final Map<String, Attribute> map = new LinkedHashMap<>(this.entries.length);

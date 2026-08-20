@@ -234,28 +234,14 @@ final class MjPullTest {
         );
     }
 
-    /**
-     * Returns the stdout path.
-     */
     private String stdout() {
         return "stdout";
     }
 
-    /**
-     * Check if the given source file exists in the target directory.
-     * @param temp Test temporary directory
-     * @param source Source file
-     * @return If given source file exists
-     */
     private static boolean exists(final Path temp, final String source) {
         return Files.exists(temp.resolve("target").resolve(MjPullTest.path(source)));
     }
 
-    /**
-     * Format given a source path.
-     * @param source Source path as object name
-     * @return Formatted source path
-     */
     private static Path path(final String source) {
         return new Place(source).make(Paths.get(Pulling.DIR), "eo");
     }

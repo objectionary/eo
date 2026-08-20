@@ -84,14 +84,6 @@ final class LnFormation implements Line {
         this.emit(emit, suffix, params, binding);
     }
 
-    /**
-     * Extract a leading {@code :label} inline binding from the tail
-     * that follows the closing {@code ]}. Returns the bare label (no
-     * leading colon) or {@code null} when the tail does not start
-     * with {@code :}.
-     * @param raw The post-{@code ]} substring
-     * @return Binding label, or {@code null}
-     */
     private static String outerBinding(final String raw) {
         final String label;
         if (raw.startsWith(":")) {
@@ -106,13 +98,6 @@ final class LnFormation implements Line {
         return label;
     }
 
-    /**
-     * Source-column width of a {@code :label} binding (label length
-     * plus the leading colon), or {@code 0} when no binding is
-     * present.
-     * @param binding The binding label, or {@code null}
-     * @return Width in characters
-     */
     private static int bindingWidth(final String binding) {
         final int width;
         if (binding == null) {
@@ -123,15 +108,6 @@ final class LnFormation implements Line {
         return width;
     }
 
-    /**
-     * Reject bracket parameters on an atom head (R-3.4.10). An atom
-     * declares its voids vertically, because only a vertical void can
-     * carry the type annotation the native contract needs (R-3.4.8), and
-     * a head that may hold untyped voids too would put them ahead of the
-     * typed ones no matter where the source wrote them.
-     * @param suffix The parsed suffix
-     * @param params Parameter names in source order
-     */
     private void checkAtomVoids(final Suffix suffix, final List<String> params) {
         if (suffix.atom() && !params.isEmpty()) {
             throw new ParseError(
@@ -141,11 +117,6 @@ final class LnFormation implements Line {
         }
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix (sets named/atom flags)
-     */
     private void transition(final Stack stack, final Suffix suffix) {
         final Level level;
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
@@ -167,14 +138,6 @@ final class LnFormation implements Line {
         }
     }
 
-    /**
-     * Validate that a deeper-indent formation is legal under its
-     * pending parent — indent step is exactly one, parent is open, and
-     * (per R-3.10.13) the parent is not an atom unless this child is
-     * itself a test attribute.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     */
     private void checkChildAllowed(final Stack stack, final Suffix suffix) {
         if (!stack.empty()
             && this.span.indent() != stack.top().indent() + 2) {
@@ -198,15 +161,6 @@ final class LnFormation implements Line {
         }
     }
 
-    /**
-     * Emit the formation's {@code <o>}, void params, and (if atom) the
-     * {@code λ} marker. The cursor remains inside the new {@code <o>}
-     * so deeper-indent children attach as siblings of the voids.
-     * @param emit The directives sink
-     * @param suffix The parsed suffix
-     * @param params Parameter names in source order
-     * @param binding Outer inline-binding label, or {@code null}
-     */
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding
     ) {
@@ -233,12 +187,6 @@ final class LnFormation implements Line {
         }
     }
 
-    /**
-     * Locate the matching {@code ]} for the leading {@code [}.
-     * @param body The line body
-     * @param span The source span (for error)
-     * @return Index of the closing bracket
-     */
     private static int findClosing(final String body, final Span span) {
         if (body.isEmpty() || body.charAt(0) != '[') {
             throw new ParseError(
@@ -256,13 +204,6 @@ final class LnFormation implements Line {
         return close;
     }
 
-    /**
-     * Parse the parameter list between the brackets per R-3.4.x.
-     * @param body The line body
-     * @param close Index of {@code ]}
-     * @param span The source span (for error)
-     * @return Parameter names in source order
-     */
     private static List<String> params(
         final String body, final int close, final Span span
     ) {
@@ -298,15 +239,6 @@ final class LnFormation implements Line {
         return out;
     }
 
-    /**
-     * Translate a raw parameter token to its emitted name. {@code @}
-     * maps to {@code φ} per R-3.4.2 / R-9.3; {@code ^} is rejected per
-     * R-3.4.3.
-     * @param raw Raw token
-     * @param span Source span
-     * @param pos Source column of the token
-     * @return Emitted name
-     */
     private static String mapParam(final String raw, final Span span, final int pos) {
         final String mapped;
         if ("@".equals(raw)) {
