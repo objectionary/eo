@@ -3,8 +3,8 @@
 ---
 # yamllint disable rule:line-length
 line: 3
-message: "a ^ void attribute must be the first attribute of its formation"
+message: "a void attribute must be declared above all other attributes"
 input: |
   [] > foo
-    ? > n
+    42 > n
     ? > ^

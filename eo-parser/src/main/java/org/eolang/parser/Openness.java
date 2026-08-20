@@ -18,8 +18,8 @@ package org.eolang.parser;
  * ended; a same-indent {@code .method} may still wrap it, but no more
  * vertical args may be added.</li>
  * <li>{@link #HCOMPLETED} — horizontally completed: cannot be extended
- * in any direction. {@link Kind#horizontallyCompleted()} pins which
- * kinds start out in this state.</li>
+ * in any direction. {@link Kind#HAPPLICATION}, {@link Kind#REVERSED_HARGS}
+ * and {@link Kind#VMETHOD_HARGS} start out in this state.</li>
  * </ul>
  *
  * @since 0.1

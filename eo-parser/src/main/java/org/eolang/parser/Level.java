@@ -100,10 +100,8 @@ final class Level {
     private int count;
 
     /**
-     * How many attributes this entry has taken — the voids its head
-     * declared between the brackets, plus its deeper-indent children.
-     * The compact-tuple count reads it (such an entry has no head
-     * voids), and so does the receiver rule of R-3.4.11.
+     * For {@link Kind#COMPACT_TUPLE}: number of deeper-indent children
+     * seen so far.
      */
     private int children;
 
@@ -414,35 +412,6 @@ final class Level {
      */
     void compact(final int value) {
         this.count = value;
-    }
-
-    /**
-     * Count the voids the head declared between its brackets among the
-     * attributes this entry has taken.
-     * @param total Number of bracket parameters
-     */
-    void heads(final int total) {
-        this.children = this.children + total;
-    }
-
-    /**
-     * Reject a {@code ^} void that is not the first attribute of this
-     * entry — R-3.4.11. The receiver has to be the first void because
-     * every caller fills it first, so a formation that declares one
-     * after anything else would take its receiver in the wrong slot.
-     * The vertical form arrives as a child, and this runs once that
-     * child has been counted, so the receiver is first exactly when it
-     * is the only attribute the entry has taken.
-     * @param line Source line (for the error)
-     * @param column Source column (for the error)
-     */
-    void receiver(final int line, final int column) {
-        if (this.children != 1) {
-            throw new ParseError(
-                line, column,
-                "a ^ void attribute must be the first attribute of its formation"
-            );
-        }
     }
 
     /**
