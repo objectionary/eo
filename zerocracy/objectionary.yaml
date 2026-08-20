@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2166.0319492
+  seconds: 2231.667526664
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-20 09:28:03.162098811 Z
+  when: 2026-08-20 10:59:07.670981405 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -105236,7 +105236,7 @@
   issue: 469
   repository: 840332960
   what: issue-was-opened
-  when: &1011 2026-04-03 11:09:15.000000000 Z
+  when: &1010 2026-04-03 11:09:15.000000000 Z
   where: github
   who: 51804353
 - _id: 1080859
@@ -105548,38 +105548,6 @@
   where: github
   who: 526301
   why: Reviewed code in objectionary/eo2js#203
-- _id: 1081101
-  _job: 24024259989
-  _time: 2026-04-06 08:13:17.216191164 Z
-  _version: 0.19.9/0.60.1/0.17.15
-  tombstone: 2026-08-12 09:27:24.120856266 Z
-  total_active_contributors: 9
-  total_commits: 49050
-  total_contributors: 489
-  total_files: 14354
-  total_forks: 368
-  total_issues: 4462
-  total_pulls: 8163
-  total_releases: 840
-  total_repositories: 37
-  total_stars: 1747
-  what: dimensions-of-terrain
-  when: 2026-04-06 08:13:17.225089230 Z
-- _id: 1081103
-  _job: 67115
-  _time: 2026-04-06 08:31:56.813491299 Z
-  _version: 0.19.9/0.60.2/0.17.15
-  ac: 14810
-  cost_of_qod: 1.2516013924797222
-  ev: 6308
-  pv: 8354
-  qod: 5040
-  qod_per_day: 19.537279843487163
-  qod_per_sec: 0.00017076015516816803
-  start: &952 2025-04-29 17:12:10.873573122 Z
-  tombstone: 2026-08-12 09:27:24.126246222 Z
-  what: earned-value
-  when: 2026-04-06 08:31:56.813777836 Z
 - _id: 1081109
   _job: 24032559184
   _time: 2026-04-06 13:00:41.472957869 Z
@@ -111389,7 +111357,7 @@
   - 0
   - 0
   what: quality-of-service
-  when: &1006 2026-04-15 08:33:30.000000000 Z
+  when: &1005 2026-04-15 08:33:30.000000000 Z
 - _id: 1082288
   _job: 68260
   _time: 2026-04-15 08:48:37.454163432 Z
@@ -111423,7 +111391,7 @@
   total_releases_published: 2
   total_reviews_submitted: 23
   what: quantity-of-deliverables
-  when: &1005 2026-04-15 09:06:33.000000000 Z
+  when: &1004 2026-04-15 09:06:33.000000000 Z
 - _id: 1082302
   _job: 24448365128
   _time: 2026-04-15 10:03:50.738399727 Z
@@ -111871,7 +111839,7 @@
   qod: 3452
   qod_per_day: 20.36956430606399
   qod_per_sec: 0.00011364242313136105
-  start: *952
+  start: &1077 2025-04-29 17:12:10.873573122 Z
   what: earned-value
   when: 2026-04-16 09:16:15.824554698 Z
 - _id: 1082440
@@ -111917,7 +111885,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: &953 2026-04-16 09:50:06.000000000 Z
+  when: &952 2026-04-16 09:50:06.000000000 Z
   where: github
   who: 8086956
 - _id: 1082449
@@ -111968,7 +111936,7 @@
   review_comments: 0
   seconds: 84584
   what: code-was-contributed
-  when: *953
+  when: *952
   where: github
   who: 29139614
 - _id: 1082465
@@ -112076,7 +112044,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &954 2026-04-16 17:16:13.000000000 Z
+  when: &953 2026-04-16 17:16:13.000000000 Z
   where: github
   who: 8086956
 - _id: 1082512
@@ -112163,7 +112131,7 @@
   review_comments: 0
   seconds: 27272
   what: code-was-contributed
-  when: *954
+  when: *953
   where: github
   who: 29139614
 - _id: 1082532
@@ -112369,7 +112337,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &955 2026-04-17 17:16:18.000000000 Z
+  when: &954 2026-04-17 17:16:18.000000000 Z
   where: github
   who: 526301
 - _id: 1082623
@@ -112395,7 +112363,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &956 2026-04-17 16:56:53.000000000 Z
+  when: &955 2026-04-17 16:56:53.000000000 Z
   where: github
   who: 8086956
 - _id: 1082624
@@ -112421,7 +112389,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &957 2026-04-17 17:15:45.000000000 Z
+  when: &956 2026-04-17 17:15:45.000000000 Z
   where: github
   who: 526301
 - _id: 1082625
@@ -112447,7 +112415,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &958 2026-04-17 17:16:02.000000000 Z
+  when: &957 2026-04-17 17:16:02.000000000 Z
   where: github
   who: 526301
 - _id: 1082627
@@ -112535,7 +112503,7 @@
   review_comments: 0
   seconds: 29962
   what: code-was-contributed
-  when: *955
+  when: *954
   where: github
   who: 29139614
 - _id: 1082647
@@ -112553,7 +112521,7 @@
   review_comments: 0
   seconds: 28792
   what: code-was-contributed
-  when: *956
+  when: *955
   where: github
   who: 29139614
 - _id: 1082648
@@ -112571,7 +112539,7 @@
   review_comments: 0
   seconds: 18098
   what: code-was-contributed
-  when: *957
+  when: *956
   where: github
   who: 37025995
 - _id: 1082649
@@ -112590,7 +112558,7 @@
   seconds: 1095
   stale: issue
   what: code-was-contributed
-  when: *958
+  when: *957
   where: github
   who: 29139614
 - _id: 1082661
@@ -112650,7 +112618,7 @@
   repository: 798766850
   review_comments: 0
   what: pull-was-reviewed
-  when: &959 2026-04-18 03:27:12.000000000 Z
+  when: &958 2026-04-18 03:27:12.000000000 Z
   where: github
   who: 526301
 - _id: 1082668
@@ -112723,7 +112691,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &961 2026-04-18 03:37:17.000000000 Z
+  when: &960 2026-04-18 03:37:17.000000000 Z
   where: github
   who: 8086956
 - _id: 1082684
@@ -112855,7 +112823,7 @@
   review_comments: 0
   seconds: 17949
   what: code-was-reviewed
-  when: *959
+  when: *958
   where: github
   who: 526301
 - _id: 1082705
@@ -112867,7 +112835,7 @@
   issue: 471
   repository: 840332960
   what: issue-was-closed
-  when: &960 2026-04-17 07:31:46.000000000 Z
+  when: &959 2026-04-17 07:31:46.000000000 Z
   where: github
   who: 526301
 - _id: 1082706
@@ -112919,7 +112887,7 @@
   succeeded_builds: 15
   suggestions: 1
   what: pull-was-merged
-  when: &962 2026-04-17 07:31:45.000000000 Z
+  when: &961 2026-04-17 07:31:45.000000000 Z
   where: github
   who: 526301
 - _id: 1082709
@@ -112945,7 +112913,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &963 2026-04-17 08:50:38.000000000 Z
+  when: &962 2026-04-17 08:50:38.000000000 Z
   where: github
   who: 526301
 - _id: 1082710
@@ -112971,7 +112939,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &964 2026-04-17 17:11:00.000000000 Z
+  when: &963 2026-04-17 17:11:00.000000000 Z
   where: github
   who: 8086956
 - _id: 1082711
@@ -112997,7 +112965,7 @@
   succeeded_builds: 15
   suggestions: 0
   what: pull-was-merged
-  when: &965 2026-04-18 03:40:12.000000000 Z
+  when: &964 2026-04-18 03:40:12.000000000 Z
   where: github
   who: 8086956
 - _id: 1082712
@@ -113023,7 +112991,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &966 2026-04-17 17:03:23.000000000 Z
+  when: &965 2026-04-17 17:03:23.000000000 Z
   where: github
   who: 8086956
 - _id: 1082713
@@ -113049,7 +113017,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &967 2026-04-18 04:34:25.000000000 Z
+  when: &966 2026-04-18 04:34:25.000000000 Z
   where: github
   who: 8086956
 - _id: 1082714
@@ -113075,7 +113043,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &968 2026-04-18 04:14:51.000000000 Z
+  when: &967 2026-04-18 04:14:51.000000000 Z
   where: github
   who: 8086956
 - _id: 1082716
@@ -113204,7 +113172,7 @@
   repository: 840332960
   seconds: 2749
   what: bug-was-resolved
-  when: *960
+  when: *959
   where: github
   who: 526301
 - _id: 1082723
@@ -113223,7 +113191,7 @@
   review_comments: 0
   seconds: 37995
   what: code-was-contributed
-  when: *961
+  when: *960
   where: github
   who: 29139614
 - _id: 1082733
@@ -113325,7 +113293,7 @@
   succeeded_builds: 13
   suggestions: 0
   what: pull-was-merged
-  when: &969 2026-04-19 04:02:50.000000000 Z
+  when: &968 2026-04-19 04:02:50.000000000 Z
   where: github
   who: 526301
 - _id: 1082749
@@ -113351,7 +113319,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &970 2026-04-19 04:21:35.000000000 Z
+  when: &969 2026-04-19 04:21:35.000000000 Z
   where: github
   who: 526301
 - _id: 1082750
@@ -113377,7 +113345,7 @@
   succeeded_builds: 13
   suggestions: 0
   what: pull-was-merged
-  when: &971 2026-04-19 04:01:52.000000000 Z
+  when: &970 2026-04-19 04:01:52.000000000 Z
   where: github
   who: 526301
 - _id: 1082751
@@ -113403,7 +113371,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &972 2026-04-19 16:42:03.000000000 Z
+  when: &971 2026-04-19 16:42:03.000000000 Z
   where: github
   who: 8086956
 - _id: 1082752
@@ -113429,7 +113397,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &973 2026-04-19 04:21:28.000000000 Z
+  when: &972 2026-04-19 04:21:28.000000000 Z
   where: github
   who: 526301
 - _id: 1082753
@@ -113480,7 +113448,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &974 2026-04-19 04:21:20.000000000 Z
+  when: &973 2026-04-19 04:21:20.000000000 Z
   where: github
   who: 526301
 - _id: 1082755
@@ -113506,7 +113474,7 @@
   succeeded_builds: 13
   suggestions: 0
   what: pull-was-merged
-  when: &975 2026-04-19 04:01:37.000000000 Z
+  when: &974 2026-04-19 04:01:37.000000000 Z
   where: github
   who: 526301
 - _id: 1082756
@@ -113532,7 +113500,7 @@
   succeeded_builds: 20
   suggestions: 0
   what: pull-was-merged
-  when: &976 2026-04-19 13:09:12.000000000 Z
+  when: &975 2026-04-19 13:09:12.000000000 Z
   where: github
   who: 526301
 - _id: 1082760
@@ -113735,7 +113703,7 @@
   review_comments: 1
   seconds: 2483
   what: code-was-contributed
-  when: *962
+  when: *961
   where: github
   who: 526301
 - _id: 1082774
@@ -113755,7 +113723,7 @@
   seconds: 645
   stale: issue
   what: code-was-contributed
-  when: *963
+  when: *962
   where: github
   who: 41898282
 - _id: 1082775
@@ -113773,7 +113741,7 @@
   review_comments: 0
   seconds: 13237
   what: code-was-contributed
-  when: *964
+  when: *963
   where: github
   who: 29139614
 - _id: 1082776
@@ -113791,7 +113759,7 @@
   review_comments: 0
   seconds: 18729
   what: code-was-contributed
-  when: *965
+  when: *964
   where: github
   who: 29139614
 - _id: 1082777
@@ -113809,7 +113777,7 @@
   review_comments: 0
   seconds: 12776
   what: code-was-contributed
-  when: *966
+  when: *965
   where: github
   who: 29139614
 - _id: 1082778
@@ -113827,7 +113795,7 @@
   review_comments: 0
   seconds: 40682
   what: code-was-contributed
-  when: *967
+  when: *966
   where: github
   who: 29139614
 - _id: 1082779
@@ -113845,7 +113813,7 @@
   review_comments: 0
   seconds: 39458
   what: code-was-contributed
-  when: *968
+  when: *967
   where: github
   who: 29139614
 - _id: 1082794
@@ -113896,7 +113864,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &977 2026-04-18 03:51:01.000000000 Z
+  when: &976 2026-04-18 03:51:01.000000000 Z
   where: github
   who: 8086956
 - _id: 1082797
@@ -114028,7 +113996,7 @@
   review_comments: 0
   seconds: 2069510
   what: code-was-contributed
-  when: *969
+  when: *968
   where: github
   who: 29139614
 - _id: 1082804
@@ -114046,7 +114014,7 @@
   review_comments: 0
   seconds: 2052728
   what: code-was-contributed
-  when: *970
+  when: *969
   where: github
   who: 29139614
 - _id: 1082805
@@ -114064,7 +114032,7 @@
   review_comments: 0
   seconds: 1508759
   what: code-was-contributed
-  when: *971
+  when: *970
   where: github
   who: 29139614
 - _id: 1082806
@@ -114082,7 +114050,7 @@
   review_comments: 0
   seconds: 80868
   what: code-was-contributed
-  when: *972
+  when: *971
   where: github
   who: 29139614
 - _id: 1082807
@@ -114100,7 +114068,7 @@
   review_comments: 0
   seconds: 2036627
   what: code-was-contributed
-  when: *973
+  when: *972
   where: github
   who: 29139614
 - _id: 1082808
@@ -114118,7 +114086,7 @@
   review_comments: 0
   seconds: 1502141
   what: code-was-contributed
-  when: *974
+  when: *973
   where: github
   who: 29139614
 - _id: 1082809
@@ -114136,7 +114104,7 @@
   review_comments: 0
   seconds: 947685
   what: code-was-contributed
-  when: *975
+  when: *974
   where: github
   who: 29139614
 - _id: 1082810
@@ -114154,7 +114122,7 @@
   review_comments: 0
   seconds: 169163
   what: code-was-contributed
-  when: *976
+  when: *975
   where: github
   who: 51804353
 - _id: 1082823
@@ -114269,7 +114237,7 @@
   review_comments: 0
   seconds: 32094
   what: code-was-contributed
-  when: *977
+  when: *976
   where: github
   who: 29139614
 - _id: 1082833
@@ -114311,7 +114279,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &978 2026-04-20 10:16:57.000000000 Z
+  when: &977 2026-04-20 10:16:57.000000000 Z
   where: github
   who: 526301
 - _id: 1082852
@@ -114429,7 +114397,7 @@
   review_comments: 0
   seconds: 2393246
   what: code-was-contributed
-  when: *978
+  when: *977
   where: github
   who: 29139614
 - _id: 1082883
@@ -114659,7 +114627,7 @@
   succeeded_builds: 13
   suggestions: 0
   what: pull-was-merged
-  when: &980 2026-04-20 15:55:32.000000000 Z
+  when: &979 2026-04-20 15:55:32.000000000 Z
   where: github
   who: 526301
 - _id: 1082907
@@ -114878,7 +114846,7 @@
   repository: 73056727
   review_comments: 10
   what: pull-was-reviewed
-  when: &979 2026-04-20 16:15:38.000000000 Z
+  when: &978 2026-04-20 16:15:38.000000000 Z
   where: github
   who: 37025995
 - _id: 1082941
@@ -114952,7 +114920,7 @@
   succeeded_builds: 13
   suggestions: 0
   what: pull-was-merged
-  when: &981 2026-04-14 16:49:03.000000000 Z
+  when: &980 2026-04-14 16:49:03.000000000 Z
   where: github
   who: 526301
 - _id: 1082946
@@ -114978,7 +114946,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &982 2026-04-20 16:59:19.000000000 Z
+  when: &981 2026-04-20 16:59:19.000000000 Z
   where: github
   who: 8086956
 - _id: 1082947
@@ -115004,7 +114972,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &983 2026-04-19 04:54:20.000000000 Z
+  when: &982 2026-04-19 04:54:20.000000000 Z
   where: github
   who: 526301
 - _id: 1082948
@@ -115030,7 +114998,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &984 2026-04-19 04:52:41.000000000 Z
+  when: &983 2026-04-19 04:52:41.000000000 Z
   where: github
   who: 526301
 - _id: 1082949
@@ -115056,7 +115024,7 @@
   succeeded_builds: 21
   suggestions: 1
   what: pull-was-merged
-  when: &985 2026-04-19 04:50:10.000000000 Z
+  when: &984 2026-04-19 04:50:10.000000000 Z
   where: github
   who: 526301
 - _id: 1082950
@@ -115082,7 +115050,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &986 2026-04-19 06:12:45.000000000 Z
+  when: &985 2026-04-19 06:12:45.000000000 Z
   where: github
   who: 526301
 - _id: 1082951
@@ -115108,7 +115076,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &987 2026-04-19 07:10:28.000000000 Z
+  when: &986 2026-04-19 07:10:28.000000000 Z
   where: github
   who: 526301
 - _id: 1082952
@@ -115134,7 +115102,7 @@
   succeeded_builds: 21
   suggestions: 1
   what: pull-was-merged
-  when: &988 2026-04-20 06:37:33.000000000 Z
+  when: &987 2026-04-20 06:37:33.000000000 Z
   where: github
   who: 526301
 - _id: 1082953
@@ -115160,7 +115128,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &989 2026-04-20 08:02:11.000000000 Z
+  when: &988 2026-04-20 08:02:11.000000000 Z
   where: github
   who: 526301
 - _id: 1082954
@@ -115186,7 +115154,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &990 2026-04-20 14:36:14.000000000 Z
+  when: &989 2026-04-20 14:36:14.000000000 Z
   where: github
   who: 526301
 - _id: 1082956
@@ -115280,7 +115248,7 @@
   review_comments: 10
   seconds: 4138
   what: code-was-reviewed
-  when: *979
+  when: *978
   where: github
   who: 37025995
 - _id: 1082962
@@ -115299,7 +115267,7 @@
   seconds: 1247
   stale: issue
   what: code-was-contributed
-  when: *980
+  when: *979
   where: github
   who: 37025995
 - _id: 1082972
@@ -115335,7 +115303,7 @@
   seconds: 13901
   stale: issue
   what: code-was-contributed
-  when: *981
+  when: *980
   where: github
   who: 37025995
 - _id: 1082974
@@ -115353,7 +115321,7 @@
   review_comments: 0
   seconds: 4879
   what: code-was-contributed
-  when: *982
+  when: *981
   where: github
   who: 29139614
 - _id: 1082975
@@ -115372,7 +115340,7 @@
   seconds: 88740
   stale: issue
   what: code-was-contributed
-  when: *983
+  when: *982
   where: github
   who: 29139614
 - _id: 1082976
@@ -115391,7 +115359,7 @@
   seconds: 87460
   stale: issue
   what: code-was-contributed
-  when: *984
+  when: *983
   where: github
   who: 29139614
 - _id: 1082977
@@ -115409,7 +115377,7 @@
   review_comments: 1
   seconds: 28988
   what: code-was-contributed
-  when: *985
+  when: *984
   where: github
   who: 37025995
 - _id: 1082978
@@ -115428,7 +115396,7 @@
   seconds: 4759
   stale: issue
   what: code-was-contributed
-  when: *986
+  when: *985
   where: github
   who: 29139614
 - _id: 1082979
@@ -115447,7 +115415,7 @@
   seconds: 1567
   stale: issue
   what: code-was-contributed
-  when: *987
+  when: *986
   where: github
   who: 41898282
 - _id: 1082980
@@ -115465,7 +115433,7 @@
   review_comments: 1
   seconds: 39789
   what: code-was-contributed
-  when: *988
+  when: *987
   where: github
   who: 37025995
 - _id: 1082981
@@ -115484,7 +115452,7 @@
   seconds: 430
   stale: issue
   what: code-was-contributed
-  when: *989
+  when: *988
   where: github
   who: 29139614
 - _id: 1082982
@@ -115503,7 +115471,7 @@
   seconds: 21783
   stale: issue
   what: code-was-contributed
-  when: *990
+  when: *989
   where: github
   who: 41898282
 - _id: 1082993
@@ -115529,7 +115497,7 @@
   succeeded_builds: 9
   suggestions: 0
   what: pull-was-merged
-  when: &991 2026-04-20 22:14:22.000000000 Z
+  when: &990 2026-04-20 22:14:22.000000000 Z
   where: github
   who: 8086956
 - _id: 1082995
@@ -115645,7 +115613,7 @@
   review_comments: 0
   seconds: 621174
   what: code-was-contributed
-  when: *991
+  when: *990
   where: github
   who: 29139614
 - _id: 1083021
@@ -115779,7 +115747,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &994 2026-04-21 05:18:28.000000000 Z
+  when: &993 2026-04-21 05:18:28.000000000 Z
   where: github
   who: 526301
 - _id: 1083040
@@ -115805,7 +115773,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &995 2026-04-21 05:17:53.000000000 Z
+  when: &994 2026-04-21 05:17:53.000000000 Z
   where: github
   who: 526301
 - _id: 1083041
@@ -115831,7 +115799,7 @@
   succeeded_builds: 20
   suggestions: 10
   what: pull-was-merged
-  when: &996 2026-04-21 05:17:41.000000000 Z
+  when: &995 2026-04-21 05:17:41.000000000 Z
   where: github
   who: 526301
 - _id: 1083042
@@ -115884,7 +115852,7 @@
   repository: 489321585
   review_comments: 0
   what: pull-was-reviewed
-  when: &992 2026-04-21 08:56:04.000000000 Z
+  when: &991 2026-04-21 08:56:04.000000000 Z
   where: github
   who: 526301
 - _id: 1083048
@@ -115904,7 +115872,7 @@
   repository: 489321585
   review_comments: 0
   what: pull-was-reviewed
-  when: &993 2026-04-21 08:55:56.000000000 Z
+  when: &992 2026-04-21 08:55:56.000000000 Z
   where: github
   who: 526301
 - _id: 1083049
@@ -116005,7 +115973,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &998 2026-04-21 09:06:50.000000000 Z
+  when: &997 2026-04-21 09:06:50.000000000 Z
   where: github
   who: 8086956
 - _id: 1083064
@@ -116165,7 +116133,7 @@
   issue: 477
   repository: 840332960
   what: issue-was-opened
-  when: &1012 2026-04-21 05:36:23.000000000 Z
+  when: &1011 2026-04-21 05:36:23.000000000 Z
   where: github
   who: 51804353
 - _id: 1083077
@@ -116227,7 +116195,7 @@
   review_comments: 0
   seconds: 189222
   what: code-was-reviewed
-  when: *992
+  when: *991
   where: github
   who: 526301
 - _id: 1083081
@@ -116245,7 +116213,7 @@
   review_comments: 0
   seconds: 85833
   what: code-was-reviewed
-  when: *993
+  when: *992
   where: github
   who: 526301
 - _id: 1083083
@@ -116263,7 +116231,7 @@
   review_comments: 0
   seconds: 56472
   what: code-was-contributed
-  when: *994
+  when: *993
   where: github
   who: 277638262
 - _id: 1083084
@@ -116282,7 +116250,7 @@
   seconds: 52703
   stale: issue
   what: code-was-contributed
-  when: *995
+  when: *994
   where: github
   who: 41898282
 - _id: 1083085
@@ -116300,7 +116268,7 @@
   review_comments: 10
   seconds: 51061
   what: code-was-contributed
-  when: *996
+  when: *995
   where: github
   who: 51804353
 - _id: 1083106
@@ -116312,7 +116280,7 @@
   issue: 892
   repository: 489321585
   what: issue-was-closed
-  when: &997 2026-04-20 08:44:47.000000000 Z
+  when: &996 2026-04-20 08:44:47.000000000 Z
   where: github
   who: 526301
 - _id: 1083107
@@ -116364,7 +116332,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &999 2026-04-20 08:44:46.000000000 Z
+  when: &998 2026-04-20 08:44:46.000000000 Z
   where: github
   who: 526301
 - _id: 1083110
@@ -116440,7 +116408,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &1000 2026-04-20 10:17:05.000000000 Z
+  when: &999 2026-04-20 10:17:05.000000000 Z
   where: github
   who: 526301
 - _id: 1083114
@@ -116476,7 +116444,7 @@
   repository: 489321585
   seconds: 103129
   what: bug-was-resolved
-  when: *997
+  when: *996
   where: github
   who: 526301
 - _id: 1083118
@@ -116494,7 +116462,7 @@
   review_comments: 0
   seconds: 79577
   what: code-was-contributed
-  when: *998
+  when: *997
   where: github
   who: 29139614
 - _id: 1083128
@@ -116550,7 +116518,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1001 2026-04-21 09:19:46.000000000 Z
+  when: &1000 2026-04-21 09:19:46.000000000 Z
   where: github
   who: 8086956
 - _id: 1083140
@@ -116576,7 +116544,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1002 2026-04-21 09:30:46.000000000 Z
+  when: &1001 2026-04-21 09:30:46.000000000 Z
   where: github
   who: 8086956
 - _id: 1083143
@@ -116644,7 +116612,7 @@
   review_comments: 0
   seconds: 102905
   what: code-was-contributed
-  when: *999
+  when: *998
   where: github
   who: 526301
 - _id: 1083148
@@ -116663,7 +116631,7 @@
   seconds: 682
   stale: issue
   what: code-was-contributed
-  when: *1000
+  when: *999
   where: github
   who: 41898282
 - _id: 1083157
@@ -116778,7 +116746,7 @@
   review_comments: 0
   seconds: 190644
   what: code-was-contributed
-  when: *1001
+  when: *1000
   where: github
   who: 29139614
 - _id: 1083163
@@ -116796,7 +116764,7 @@
   review_comments: 0
   seconds: 87923
   what: code-was-contributed
-  when: *1002
+  when: *1001
   where: github
   who: 29139614
 - _id: 1083188
@@ -116851,7 +116819,7 @@
   repository: 489321585
   review_comments: 0
   what: pull-was-reviewed
-  when: &1003 2026-04-21 16:39:59.000000000 Z
+  when: &1002 2026-04-21 16:39:59.000000000 Z
   where: github
   who: 526301
 - _id: 1083192
@@ -116912,7 +116880,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1004 2026-04-21 16:50:43.000000000 Z
+  when: &1003 2026-04-21 16:50:43.000000000 Z
   where: github
   who: 8086956
 - _id: 1083210
@@ -116948,7 +116916,7 @@
   review_comments: 0
   seconds: 27145
   what: code-was-reviewed
-  when: *1003
+  when: *1002
   where: github
   who: 526301
 - _id: 1083225
@@ -116966,7 +116934,7 @@
   review_comments: 0
   seconds: 27027
   what: code-was-contributed
-  when: *1004
+  when: *1003
   where: github
   who: 29139614
 - _id: 1083244
@@ -117086,7 +117054,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   composite: 582.827
   ffact: 676
-  since: *1005
+  since: *1004
   total_builds_ran: 4430
   total_commits_pushed: 144
   total_hoc_committed: 96240
@@ -117132,7 +117100,7 @@
   succeeded_builds: 9
   suggestions: 0
   what: pull-was-merged
-  when: &1007 2026-04-22 04:05:14.000000000 Z
+  when: &1006 2026-04-22 04:05:14.000000000 Z
   where: github
   who: 8086956
 - _id: 1083286
@@ -117158,7 +117126,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1008 2026-04-22 03:37:26.000000000 Z
+  when: &1007 2026-04-22 03:37:26.000000000 Z
   where: github
   who: 8086956
 - _id: 1083288
@@ -117216,7 +117184,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   composite: 0.815
   ffact: 942584
-  since: *1006
+  since: *1005
   some_backlog_size:
   - 2
   - 2
@@ -119699,7 +119667,7 @@
   succeeded_builds: 9
   suggestions: 0
   what: pull-was-merged
-  when: &1009 2026-03-29 10:51:31.000000000 Z
+  when: &1008 2026-03-29 10:51:31.000000000 Z
   where: github
   who: 8086956
 - _id: 1083307
@@ -119751,7 +119719,7 @@
   review_comments: 0
   seconds: 2441707
   what: code-was-contributed
-  when: *1007
+  when: *1006
   where: github
   who: 29139614
 - _id: 1083310
@@ -119769,7 +119737,7 @@
   review_comments: 0
   seconds: 30216
   what: code-was-contributed
-  when: *1008
+  when: *1007
   where: github
   who: 29139614
 - _id: 1083317
@@ -119820,7 +119788,7 @@
   issue: 482
   repository: 840332960
   what: issue-was-opened
-  when: &1013 2026-04-22 10:42:15.000000000 Z
+  when: &1012 2026-04-22 10:42:15.000000000 Z
   where: github
   who: 37025995
 - _id: 1083331
@@ -119846,7 +119814,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1010 2026-04-22 09:24:51.000000000 Z
+  when: &1009 2026-04-22 09:24:51.000000000 Z
   where: github
   who: 8086956
 - _id: 1083333
@@ -119882,7 +119850,7 @@
   review_comments: 0
   seconds: 1439955
   what: code-was-contributed
-  when: *1009
+  when: *1008
   where: github
   who: 29139614
 - _id: 1083348
@@ -119960,7 +119928,7 @@
   review_comments: 0
   seconds: 59618
   what: code-was-contributed
-  when: *1010
+  when: *1009
   where: github
   who: 29139614
 - _id: 1083355
@@ -120043,7 +120011,7 @@
   succeeded_builds: 17
   suggestions: 1
   what: pull-was-merged
-  when: &1015 2026-04-22 12:48:45.000000000 Z
+  when: &1014 2026-04-22 12:48:45.000000000 Z
   where: github
   who: 8086956
 - _id: 1083370
@@ -120069,7 +120037,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1016 2026-04-22 11:03:46.000000000 Z
+  when: &1015 2026-04-22 11:03:46.000000000 Z
   where: github
   who: 8086956
 - _id: 1083372
@@ -120134,7 +120102,7 @@
   issue: 469
   repository: 840332960
   what: dud-was-closed
-  when: *1011
+  when: *1010
   where: github
   who: 51804353
 - _id: 1083377
@@ -120149,7 +120117,7 @@
   issue: 477
   repository: 840332960
   what: dud-was-closed
-  when: *1012
+  when: *1011
   where: github
   who: 51804353
 - _id: 1083378
@@ -120164,7 +120132,7 @@
   issue: 482
   repository: 840332960
   what: dud-was-closed
-  when: *1013
+  when: *1012
   where: github
   who: 37025995
 - _id: 1083382
@@ -120194,7 +120162,7 @@
   issue: 4218
   repository: 73056727
   what: issue-was-closed
-  when: &1014 2026-04-22 18:59:10.000000000 Z
+  when: &1013 2026-04-22 18:59:10.000000000 Z
   where: github
   who: 37025995
 - _id: 1083389
@@ -120426,7 +120394,7 @@
   repository: 73056727
   seconds: 27069798
   what: bug-was-resolved
-  when: *1014
+  when: *1013
   where: github
   who: 83453843
 - _id: 1083406
@@ -120445,7 +120413,7 @@
   review_comments: 1
   seconds: 109158
   what: code-was-contributed
-  when: *1015
+  when: *1014
   where: github
   who: 51804353
 - _id: 1083407
@@ -120464,7 +120432,7 @@
   seconds: 1117
   stale: issue
   what: code-was-contributed
-  when: *1016
+  when: *1015
   where: github
   who: 37025995
 - _id: 1083426
@@ -120505,7 +120473,7 @@
   succeeded_builds: 20
   suggestions: 0
   what: pull-was-merged
-  when: &1017 2026-04-21 05:17:17.000000000 Z
+  when: &1016 2026-04-21 05:17:17.000000000 Z
   where: github
   who: 526301
 - _id: 1083445
@@ -120531,7 +120499,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1018 2026-04-21 06:04:40.000000000 Z
+  when: &1017 2026-04-21 06:04:40.000000000 Z
   where: github
   who: 526301
 - _id: 1083446
@@ -120557,7 +120525,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1019 2026-04-21 10:03:07.000000000 Z
+  when: &1018 2026-04-21 10:03:07.000000000 Z
   where: github
   who: 526301
 - _id: 1083447
@@ -120583,7 +120551,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &1020 2026-04-21 10:03:46.000000000 Z
+  when: &1019 2026-04-21 10:03:46.000000000 Z
   where: github
   who: 526301
 - _id: 1083448
@@ -120609,7 +120577,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1021 2026-04-21 10:03:23.000000000 Z
+  when: &1020 2026-04-21 10:03:23.000000000 Z
   where: github
   who: 526301
 - _id: 1083449
@@ -120635,7 +120603,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1022 2026-04-22 04:34:42.000000000 Z
+  when: &1021 2026-04-22 04:34:42.000000000 Z
   where: github
   who: 8086956
 - _id: 1083450
@@ -120661,7 +120629,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1023 2026-04-22 03:52:36.000000000 Z
+  when: &1022 2026-04-22 03:52:36.000000000 Z
   where: github
   who: 8086956
 - _id: 1083451
@@ -120687,7 +120655,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1024 2026-04-22 09:28:40.000000000 Z
+  when: &1023 2026-04-22 09:28:40.000000000 Z
   where: github
   who: 8086956
 - _id: 1083453
@@ -120866,7 +120834,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &1025 2026-04-22 03:48:10.000000000 Z
+  when: &1024 2026-04-22 03:48:10.000000000 Z
   where: github
   who: 8086956
 - _id: 1083487
@@ -120968,7 +120936,7 @@
   seconds: 32318
   stale: issue
   what: code-was-contributed
-  when: *1017
+  when: *1016
   where: github
   who: 37025995
 - _id: 1083493
@@ -120987,7 +120955,7 @@
   seconds: 2785
   stale: issue
   what: code-was-contributed
-  when: *1018
+  when: *1017
   where: github
   who: 29139614
 - _id: 1083494
@@ -121006,7 +120974,7 @@
   seconds: 3108
   stale: issue
   what: code-was-contributed
-  when: *1019
+  when: *1018
   where: github
   who: 29139614
 - _id: 1083495
@@ -121025,7 +120993,7 @@
   seconds: 2707
   stale: issue
   what: code-was-contributed
-  when: *1020
+  when: *1019
   where: github
   who: 41898282
 - _id: 1083496
@@ -121044,7 +121012,7 @@
   seconds: 1171
   stale: issue
   what: code-was-contributed
-  when: *1021
+  when: *1020
   where: github
   who: 29139614
 - _id: 1083497
@@ -121062,7 +121030,7 @@
   review_comments: 0
   seconds: 40382
   what: code-was-contributed
-  when: *1022
+  when: *1021
   where: github
   who: 29139614
 - _id: 1083498
@@ -121080,7 +121048,7 @@
   review_comments: 0
   seconds: 30449
   what: code-was-contributed
-  when: *1023
+  when: *1022
   where: github
   who: 29139614
 - _id: 1083499
@@ -121098,7 +121066,7 @@
   review_comments: 0
   seconds: 21065
   what: code-was-contributed
-  when: *1024
+  when: *1023
   where: github
   who: 29139614
 - _id: 1083506
@@ -121354,7 +121322,7 @@
   review_comments: 0
   seconds: 67537
   what: code-was-contributed
-  when: *1025
+  when: *1024
   where: github
   who: 29139614
 - _id: 1083521
@@ -121401,7 +121369,7 @@
   issue: 485
   repository: 840332960
   what: issue-was-opened
-  when: &1026 2026-04-23 05:33:42.000000000 Z
+  when: &1025 2026-04-23 05:33:42.000000000 Z
   where: github
   who: 51804353
 - _id: 1083532
@@ -121427,7 +121395,7 @@
   succeeded_builds: 8
   suggestions: 0
   what: pull-was-merged
-  when: &1027 2026-04-23 09:24:47.000000000 Z
+  when: &1026 2026-04-23 09:24:47.000000000 Z
   where: github
   who: 8086956
 - _id: 1083533
@@ -121511,7 +121479,7 @@
   issue: 485
   repository: 840332960
   what: dud-was-closed
-  when: *1026
+  when: *1025
   where: github
   who: 51804353
 - _id: 1083547
@@ -121551,7 +121519,7 @@
   review_comments: 0
   seconds: 59350
   what: code-was-contributed
-  when: *1027
+  when: *1026
   where: github
   who: 29139614
 - _id: 1083565
@@ -121564,7 +121532,7 @@
   label: bug
   repository: 889819508
   what: label-was-attached
-  when: &1028 2026-04-23 10:56:10.000000000 Z
+  when: &1027 2026-04-23 10:56:10.000000000 Z
   where: github
   who: 526301
 - _id: 1083566
@@ -121598,7 +121566,7 @@
   reporter: 125282851
   repository: 889819508
   what: bug-was-accepted
-  when: *1028
+  when: *1027
   where: github
   who: 526301
 - _id: 1083568
@@ -121644,7 +121612,7 @@
   issue: 4639
   repository: 73056727
   what: issue-was-closed
-  when: &1029 2026-04-23 12:34:46.000000000 Z
+  when: &1028 2026-04-23 12:34:46.000000000 Z
   where: github
   who: 526301
 - _id: 1083571
@@ -121673,7 +121641,7 @@
   issue: 4991
   repository: 73056727
   what: issue-was-closed
-  when: &1030 2026-04-23 12:33:27.000000000 Z
+  when: &1029 2026-04-23 12:33:27.000000000 Z
   where: github
   who: 526301
 - _id: 1083573
@@ -121756,7 +121724,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1032 2026-04-23 12:34:59.000000000 Z
+  when: &1031 2026-04-23 12:34:59.000000000 Z
   where: github
   who: 526301
 - _id: 1083587
@@ -121782,7 +121750,7 @@
   succeeded_builds: 21
   suggestions: 1
   what: pull-was-merged
-  when: &1033 2026-04-23 12:34:44.000000000 Z
+  when: &1032 2026-04-23 12:34:44.000000000 Z
   where: github
   who: 526301
 - _id: 1083588
@@ -121808,7 +121776,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1034 2026-04-23 12:33:26.000000000 Z
+  when: &1033 2026-04-23 12:33:26.000000000 Z
   where: github
   who: 526301
 - _id: 1083591
@@ -121886,7 +121854,7 @@
   repository: 73056727
   seconds: 16090174
   what: bug-was-resolved
-  when: *1029
+  when: *1028
   where: github
   who: 107937836
 - _id: 1083596
@@ -121904,7 +121872,7 @@
   repository: 73056727
   seconds: 231
   what: bug-was-resolved
-  when: *1030
+  when: *1029
   where: github
   who: 37025995
 - _id: 1083606
@@ -121928,7 +121896,7 @@
   issue: 4990
   repository: 73056727
   what: issue-was-closed
-  when: &1031 2026-04-23 13:33:39.000000000 Z
+  when: &1030 2026-04-23 13:33:39.000000000 Z
   where: github
   who: 526301
 - _id: 1083608
@@ -121967,7 +121935,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1036 2026-04-23 13:59:14.000000000 Z
+  when: &1035 2026-04-23 13:59:14.000000000 Z
   where: github
   who: 8086956
 - _id: 1083610
@@ -121993,7 +121961,7 @@
   succeeded_builds: 21
   suggestions: 1
   what: pull-was-merged
-  when: &1037 2026-04-23 13:34:04.000000000 Z
+  when: &1036 2026-04-23 13:34:04.000000000 Z
   where: github
   who: 526301
 - _id: 1083611
@@ -122019,7 +121987,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &1038 2026-04-23 13:34:28.000000000 Z
+  when: &1037 2026-04-23 13:34:28.000000000 Z
   where: github
   who: 526301
 - _id: 1083612
@@ -122045,7 +122013,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1039 2026-04-23 12:34:01.000000000 Z
+  when: &1038 2026-04-23 12:34:01.000000000 Z
   where: github
   who: 526301
 - _id: 1083613
@@ -122071,7 +122039,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1040 2026-04-23 13:30:49.000000000 Z
+  when: &1039 2026-04-23 13:30:49.000000000 Z
   where: github
   who: 526301
 - _id: 1083616
@@ -122084,7 +122052,7 @@
   label: bug
   repository: 489321585
   what: label-was-attached
-  when: &1035 2026-04-23 10:56:45.000000000 Z
+  when: &1034 2026-04-23 10:56:45.000000000 Z
   where: github
   who: 526301
 - _id: 1083617
@@ -122156,7 +122124,7 @@
   repository: 73056727
   seconds: 1719
   what: bug-was-resolved
-  when: *1031
+  when: *1030
   where: github
   who: 37025995
 - _id: 1083623
@@ -122175,7 +122143,7 @@
   seconds: 66002
   stale: issue
   what: code-was-contributed
-  when: *1032
+  when: *1031
   where: github
   who: 29139614
 - _id: 1083624
@@ -122193,7 +122161,7 @@
   review_comments: 1
   seconds: 63734
   what: code-was-contributed
-  when: *1033
+  when: *1032
   where: github
   who: 37025995
 - _id: 1083625
@@ -122212,7 +122180,7 @@
   seconds: 1216
   stale: issue
   what: code-was-contributed
-  when: *1034
+  when: *1033
   where: github
   who: 37025995
 - _id: 1083626
@@ -122226,7 +122194,7 @@
   reporter: 125282851
   repository: 489321585
   what: bug-was-accepted
-  when: *1035
+  when: *1034
   where: github
   who: 526301
 - _id: 1083629
@@ -122382,7 +122350,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1042 2026-04-23 15:15:12.000000000 Z
+  when: &1041 2026-04-23 15:15:12.000000000 Z
   where: github
   who: 526301
 - _id: 1083647
@@ -122408,7 +122376,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1043 2026-04-23 14:32:57.000000000 Z
+  when: &1042 2026-04-23 14:32:57.000000000 Z
   where: github
   who: 8086956
 - _id: 1083648
@@ -122434,7 +122402,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &1044 2026-04-23 15:14:59.000000000 Z
+  when: &1043 2026-04-23 15:14:59.000000000 Z
   where: github
   who: 526301
 - _id: 1083651
@@ -122447,7 +122415,7 @@
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: &1041 2026-04-23 15:19:06.000000000 Z
+  when: &1040 2026-04-23 15:19:06.000000000 Z
   where: github
   who: 526301
 - _id: 1083652
@@ -122561,7 +122529,7 @@
   review_comments: 0
   seconds: 181343
   what: code-was-contributed
-  when: *1036
+  when: *1035
   where: github
   who: 277638262
 - _id: 1083660
@@ -122579,7 +122547,7 @@
   review_comments: 1
   seconds: 85179
   what: code-was-contributed
-  when: *1037
+  when: *1036
   where: github
   who: 37025995
 - _id: 1083661
@@ -122598,7 +122566,7 @@
   seconds: 31391
   stale: issue
   what: code-was-contributed
-  when: *1038
+  when: *1037
   where: github
   who: 41898282
 - _id: 1083662
@@ -122617,7 +122585,7 @@
   seconds: 5209
   stale: issue
   what: code-was-contributed
-  when: *1039
+  when: *1038
   where: github
   who: 29139614
 - _id: 1083663
@@ -122636,7 +122604,7 @@
   seconds: 3274
   stale: issue
   what: code-was-contributed
-  when: *1040
+  when: *1039
   where: github
   who: 29139614
 - _id: 1083664
@@ -122650,7 +122618,7 @@
   reporter: 125282851
   repository: 73056727
   what: bug-was-accepted
-  when: *1041
+  when: *1040
   where: github
   who: 526301
 - _id: 1083677
@@ -122676,7 +122644,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1048 2026-04-23 13:33:38.000000000 Z
+  when: &1047 2026-04-23 13:33:38.000000000 Z
   where: github
   who: 526301
 - _id: 1083679
@@ -122731,7 +122699,7 @@
   review_comments: 0
   seconds: 194858
   what: code-was-contributed
-  when: *1042
+  when: *1041
   where: github
   who: 29139614
 - _id: 1083682
@@ -122750,7 +122718,7 @@
   seconds: 6406
   stale: issue
   what: code-was-contributed
-  when: *1043
+  when: *1042
   where: github
   who: 125282851
 - _id: 1083683
@@ -122769,7 +122737,7 @@
   seconds: 2079
   stale: issue
   what: code-was-contributed
-  when: *1044
+  when: *1043
   where: github
   who: 41898282
 - _id: 1083687
@@ -122855,7 +122823,7 @@
   issue: 4946
   repository: 73056727
   what: issue-was-closed
-  when: &1045 2026-04-23 16:00:37.000000000 Z
+  when: &1044 2026-04-23 16:00:37.000000000 Z
   where: github
   who: 526301
 - _id: 1083692
@@ -123041,7 +123009,7 @@
   issue: 5036
   repository: 73056727
   what: issue-was-closed
-  when: &1046 2026-04-23 15:30:32.000000000 Z
+  when: &1045 2026-04-23 15:30:32.000000000 Z
   where: github
   who: 526301
 - _id: 1083710
@@ -123055,7 +123023,7 @@
   issue: 4944
   repository: 73056727
   what: issue-was-closed
-  when: &1047 2026-04-23 15:29:54.000000000 Z
+  when: &1046 2026-04-23 15:29:54.000000000 Z
   where: github
   who: 526301
 - _id: 1083712
@@ -123138,7 +123106,7 @@
   succeeded_builds: 21
   suggestions: 1
   what: pull-was-merged
-  when: &1049 2026-04-23 16:01:21.000000000 Z
+  when: &1048 2026-04-23 16:01:21.000000000 Z
   where: github
   who: 526301
 - _id: 1083728
@@ -123164,7 +123132,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1050 2026-04-23 15:29:52.000000000 Z
+  when: &1049 2026-04-23 15:29:52.000000000 Z
   where: github
   who: 526301
 - _id: 1083729
@@ -123190,7 +123158,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1051 2026-04-23 15:30:30.000000000 Z
+  when: &1050 2026-04-23 15:30:30.000000000 Z
   where: github
   who: 526301
 - _id: 1083730
@@ -123216,7 +123184,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1052 2026-04-23 16:00:35.000000000 Z
+  when: &1051 2026-04-23 16:00:35.000000000 Z
   where: github
   who: 526301
 - _id: 1083731
@@ -123242,7 +123210,7 @@
   succeeded_builds: 36
   suggestions: 0
   what: pull-was-merged
-  when: &1053 2026-04-23 16:00:52.000000000 Z
+  when: &1052 2026-04-23 16:00:52.000000000 Z
   where: github
   who: 526301
 - _id: 1083732
@@ -123268,7 +123236,7 @@
   succeeded_builds: 0
   suggestions: 0
   what: pull-was-merged
-  when: &1054 2026-04-23 16:01:56.000000000 Z
+  when: &1053 2026-04-23 16:01:56.000000000 Z
   where: github
   who: 526301
 - _id: 1083735
@@ -123420,7 +123388,7 @@
   repository: 73056727
   seconds: 1866
   what: bug-was-resolved
-  when: *1045
+  when: *1044
   where: github
   who: 37025995
 - _id: 1083752
@@ -123438,7 +123406,7 @@
   repository: 73056727
   seconds: 683
   what: bug-was-resolved
-  when: *1046
+  when: *1045
   where: github
   who: 125282851
 - _id: 1083753
@@ -123456,7 +123424,7 @@
   repository: 73056727
   seconds: 1555
   what: bug-was-resolved
-  when: *1047
+  when: *1046
   where: github
   who: 37025995
 - _id: 1083754
@@ -123475,7 +123443,7 @@
   seconds: 1570
   stale: issue
   what: code-was-contributed
-  when: *1048
+  when: *1047
   where: github
   who: 37025995
 - _id: 1083756
@@ -123608,7 +123576,7 @@
   review_comments: 1
   seconds: 7474
   what: code-was-contributed
-  when: *1049
+  when: *1048
   where: github
   who: 51804353
 - _id: 1083777
@@ -123627,7 +123595,7 @@
   seconds: 1540
   stale: issue
   what: code-was-contributed
-  when: *1050
+  when: *1049
   where: github
   who: 37025995
 - _id: 1083778
@@ -123646,7 +123614,7 @@
   seconds: 499
   stale: issue
   what: code-was-contributed
-  when: *1051
+  when: *1050
   where: github
   who: 125282851
 - _id: 1083779
@@ -123665,7 +123633,7 @@
   seconds: 1677
   stale: issue
   what: code-was-contributed
-  when: *1052
+  when: *1051
   where: github
   who: 37025995
 - _id: 1083780
@@ -123684,7 +123652,7 @@
   seconds: 792
   stale: issue
   what: code-was-contributed
-  when: *1053
+  when: *1052
   where: github
   who: 29139614
 - _id: 1083781
@@ -123703,7 +123671,7 @@
   seconds: 40
   stale: issue
   what: code-was-contributed
-  when: *1054
+  when: *1053
   where: github
   who: 41898282
 - _id: 1083791
@@ -123729,7 +123697,7 @@
   succeeded_builds: 20
   suggestions: 2
   what: pull-was-merged
-  when: &1055 2026-04-22 12:08:59.000000000 Z
+  when: &1054 2026-04-22 12:08:59.000000000 Z
   where: github
   who: 8086956
 - _id: 1083794
@@ -123988,7 +123956,7 @@
   review_comments: 2
   seconds: 20594
   what: code-was-contributed
-  when: *1055
+  when: *1054
   where: github
   who: 51804353
 - _id: 1083832
@@ -124014,7 +123982,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &1056 2026-04-23 10:05:04.000000000 Z
+  when: &1055 2026-04-23 10:05:04.000000000 Z
   where: github
   who: 8086956
 - _id: 1083833
@@ -124163,7 +124131,7 @@
   seconds: 13764
   stale: issue
   what: code-was-contributed
-  when: *1056
+  when: *1055
   where: github
   who: 51804353
 - _id: 1083849
@@ -124553,7 +124521,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: &1060 2026-04-24 15:56:18.000000000 Z
+  when: &1059 2026-04-24 15:56:18.000000000 Z
   where: github
   who: 526301
 - _id: 1083914
@@ -124579,7 +124547,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: &1061 2026-04-24 15:56:06.000000000 Z
+  when: &1060 2026-04-24 15:56:06.000000000 Z
   where: github
   who: 526301
 - _id: 1083915
@@ -124605,7 +124573,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &1062 2026-04-24 05:49:20.000000000 Z
+  when: &1061 2026-04-24 05:49:20.000000000 Z
   where: github
   who: 526301
 - _id: 1083916
@@ -124631,7 +124599,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &1063 2026-04-24 15:56:43.000000000 Z
+  when: &1062 2026-04-24 15:56:43.000000000 Z
   where: github
   who: 526301
 - _id: 1083917
@@ -124657,7 +124625,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &1064 2026-04-24 15:55:52.000000000 Z
+  when: &1063 2026-04-24 15:55:52.000000000 Z
   where: github
   who: 526301
 - _id: 1083918
@@ -124683,7 +124651,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: &1065 2026-04-24 15:55:39.000000000 Z
+  when: &1064 2026-04-24 15:55:39.000000000 Z
   where: github
   who: 526301
 - _id: 1083919
@@ -124709,7 +124677,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: &1066 2026-04-24 05:42:50.000000000 Z
+  when: &1065 2026-04-24 05:42:50.000000000 Z
   where: github
   who: 526301
 - _id: 1083920
@@ -124735,7 +124703,7 @@
   succeeded_builds: 18
   suggestions: 4
   what: pull-was-merged
-  when: &1067 2026-04-24 15:31:06.000000000 Z
+  when: &1066 2026-04-24 15:31:06.000000000 Z
   where: github
   who: 526301
 - _id: 1083921
@@ -124761,7 +124729,7 @@
   succeeded_builds: 21
   suggestions: 2
   what: pull-was-merged
-  when: &1068 2026-04-24 05:47:44.000000000 Z
+  when: &1067 2026-04-24 05:47:44.000000000 Z
   where: github
   who: 526301
 - _id: 1083925
@@ -124790,7 +124758,7 @@
   label: bug
   repository: 671896902
   what: label-was-attached
-  when: &1057 2026-04-24 08:50:55.000000000 Z
+  when: &1056 2026-04-24 08:50:55.000000000 Z
   where: github
   who: 526301
 - _id: 1083927
@@ -124816,7 +124784,7 @@
   label: bug
   repository: 671896902
   what: label-was-attached
-  when: &1058 2026-04-24 08:50:29.000000000 Z
+  when: &1057 2026-04-24 08:50:29.000000000 Z
   where: github
   who: 526301
 - _id: 1083929
@@ -124829,7 +124797,7 @@
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: &1059 2026-04-24 05:52:03.000000000 Z
+  when: &1058 2026-04-24 05:52:03.000000000 Z
   where: github
   who: 526301
 - _id: 1083930
@@ -125067,7 +125035,7 @@
   reporter: 125282851
   repository: 671896902
   what: bug-was-accepted
-  when: *1057
+  when: *1056
   where: github
   who: 526301
 - _id: 1083947
@@ -125082,7 +125050,7 @@
   reporter: 125282851
   repository: 671896902
   what: bug-was-accepted
-  when: *1058
+  when: *1057
   where: github
   who: 526301
 - _id: 1083948
@@ -125096,7 +125064,7 @@
   reporter: 34624752
   repository: 73056727
   what: bug-was-accepted
-  when: *1059
+  when: *1058
   where: github
   who: 526301
 - _id: 1083963
@@ -125135,7 +125103,7 @@
   succeeded_builds: 20
   suggestions: 3
   what: pull-was-merged
-  when: &1071 2026-04-24 11:44:37.000000000 Z
+  when: &1070 2026-04-24 11:44:37.000000000 Z
   where: github
   who: 526301
 - _id: 1083965
@@ -125161,7 +125129,7 @@
   succeeded_builds: 20
   suggestions: 8
   what: pull-was-merged
-  when: &1072 2026-04-24 07:55:55.000000000 Z
+  when: &1071 2026-04-24 07:55:55.000000000 Z
   where: github
   who: 526301
 - _id: 1083966
@@ -125187,7 +125155,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1073 2026-04-24 08:31:14.000000000 Z
+  when: &1072 2026-04-24 08:31:14.000000000 Z
   where: github
   who: 526301
 - _id: 1083967
@@ -125238,7 +125206,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1074 2026-04-24 11:43:47.000000000 Z
+  when: &1073 2026-04-24 11:43:47.000000000 Z
   where: github
   who: 526301
 - _id: 1083971
@@ -125361,7 +125329,7 @@
   seconds: 1969924
   stale: issue
   what: code-was-contributed
-  when: *1060
+  when: *1059
   where: github
   who: 29139614
 - _id: 1083979
@@ -125380,7 +125348,7 @@
   seconds: 1953152
   stale: issue
   what: code-was-contributed
-  when: *1061
+  when: *1060
   where: github
   who: 29139614
 - _id: 1083980
@@ -125399,7 +125367,7 @@
   seconds: 21817
   stale: issue
   what: code-was-contributed
-  when: *1062
+  when: *1061
   where: github
   who: 9535539
 - _id: 1083981
@@ -125418,7 +125386,7 @@
   seconds: 625911
   stale: issue
   what: code-was-contributed
-  when: *1063
+  when: *1062
   where: github
   who: 29139614
 - _id: 1083982
@@ -125437,7 +125405,7 @@
   seconds: 495894
   stale: issue
   what: code-was-contributed
-  when: *1064
+  when: *1063
   where: github
   who: 29139614
 - _id: 1083983
@@ -125456,7 +125424,7 @@
   seconds: 369152
   stale: issue
   what: code-was-contributed
-  when: *1065
+  when: *1064
   where: github
   who: 29139614
 - _id: 1083984
@@ -125474,7 +125442,7 @@
   review_comments: 0
   seconds: 62262
   what: code-was-contributed
-  when: *1066
+  when: *1065
   where: github
   who: 9535539
 - _id: 1083985
@@ -125492,7 +125460,7 @@
   review_comments: 4
   seconds: 4279
   what: code-was-contributed
-  when: *1067
+  when: *1066
   where: github
   who: 526301
 - _id: 1083986
@@ -125510,7 +125478,7 @@
   review_comments: 2
   seconds: 23374
   what: code-was-contributed
-  when: *1068
+  when: *1067
   where: github
   who: 34624752
 - _id: 1083993
@@ -125524,7 +125492,7 @@
   issue: 651
   repository: 977982682
   what: issue-was-closed
-  when: &1069 2026-04-24 18:02:22.000000000 Z
+  when: &1068 2026-04-24 18:02:22.000000000 Z
   where: github
   who: 8086956
 - _id: 1083994
@@ -125623,7 +125591,7 @@
   issue: 845
   repository: 889819508
   what: issue-was-closed
-  when: &1070 2026-04-25 01:32:31.000000000 Z
+  when: &1069 2026-04-25 01:32:31.000000000 Z
   where: github
   who: 526301
 - _id: 1084010
@@ -125649,7 +125617,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: &1075 2026-04-24 18:02:20.000000000 Z
+  when: &1074 2026-04-24 18:02:20.000000000 Z
   where: github
   who: 8086956
 - _id: 1084011
@@ -125760,7 +125728,7 @@
   repository: 977982682
   seconds: 6108
   what: bug-was-resolved
-  when: *1069
+  when: *1068
   where: github
   who: 37025995
 - _id: 1084021
@@ -125778,7 +125746,7 @@
   repository: 889819508
   seconds: 52833
   what: bug-was-resolved
-  when: *1070
+  when: *1069
   where: github
   who: 526301
 - _id: 1084022
@@ -125796,7 +125764,7 @@
   review_comments: 3
   seconds: 26294
   what: code-was-contributed
-  when: *1071
+  when: *1070
   where: github
   who: 277638262
 - _id: 1084023
@@ -125814,7 +125782,7 @@
   review_comments: 8
   seconds: 7717
   what: code-was-contributed
-  when: *1072
+  when: *1071
   where: github
   who: 51804353
 - _id: 1084024
@@ -125833,7 +125801,7 @@
   seconds: 2065
   stale: issue
   what: code-was-contributed
-  when: *1073
+  when: *1072
   where: github
   who: 29139614
 - _id: 1084025
@@ -125852,7 +125820,7 @@
   seconds: 4013
   stale: issue
   what: code-was-contributed
-  when: *1074
+  when: *1073
   where: github
   who: 37025995
 - _id: 1084040
@@ -125922,7 +125890,7 @@
   seconds: 5963
   stale: issue
   what: code-was-contributed
-  when: *1075
+  when: *1074
   where: github
   who: 37025995
 - _id: 1084061
@@ -126075,7 +126043,7 @@
   succeeded_builds: 16
   suggestions: 0
   what: pull-was-merged
-  when: &1076 2026-04-25 08:54:14.000000000 Z
+  when: &1075 2026-04-25 08:54:14.000000000 Z
   where: github
   who: 8086956
 - _id: 1084077
@@ -126211,7 +126179,7 @@
   review_comments: 0
   seconds: 28830
   what: code-was-contributed
-  when: *1076
+  when: *1075
   where: github
   who: 29139614
 - _id: 1084100
@@ -126303,7 +126271,7 @@
   succeeded_builds: 21
   suggestions: 0
   what: pull-was-merged
-  when: &1077 2026-04-25 17:48:10.000000000 Z
+  when: &1076 2026-04-25 17:48:10.000000000 Z
   where: github
   who: 526301
 - _id: 1084180
@@ -126322,7 +126290,7 @@
   seconds: 3622
   stale: issue
   what: code-was-contributed
-  when: *1077
+  when: *1076
   where: github
   who: 9535539
 - _id: 1084191
@@ -126427,7 +126395,7 @@
   qod: 16844
   qod_per_day: 83.23031157493186
   qod_per_sec: 0.0005384626515260181
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-04-26 19:01:21.280737067 Z
 - _id: 1084261
@@ -146675,7 +146643,7 @@
   qod: 15117
   qod_per_day: 39.618147762810075
   qod_per_sec: 0.0004702146899948146
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-05-06 19:42:04.707425228 Z
 - _id: 1087166
@@ -159497,7 +159465,7 @@
   qod: 11562
   qod_per_day: 26.422514510253823
   qod_per_sec: 0.0003502072706841474
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-05-16 20:10:45.380462267 Z
 - _id: 1090624
@@ -181622,7 +181590,7 @@
   qod: 15830
   qod_per_day: 83.23031157493186
   qod_per_sec: 0.0004672470463046605
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-05-26 20:31:21.747498623 Z
 - _id: 1094326
@@ -200269,7 +200237,7 @@
   qod: 18316
   qod_per_day: 37.679501941904284
   qod_per_sec: 0.0005271699939937364
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-06-05 20:47:46.042704159 Z
 - _id: 1096930
@@ -230803,7 +230771,7 @@
   qod: 23776
   qod_per_day: 77.04415187898881
   qod_per_sec: 0.0006676631521692243
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-06-15 21:17:24.217310492 Z
 - _id: 1100588
@@ -252345,7 +252313,7 @@
   qod: 19710
   qod_per_day: 76.52863857099355
   qod_per_sec: 0.0005402516376730417
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-06-25 23:38:18.440920129 Z
 - _id: 1104122
@@ -260607,7 +260575,7 @@
   latest_issue_was_found: 46
   min_issue_was_found: 12
   repository: 531151981
-  types_were_scanned: 23
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1105351
@@ -281925,7 +281893,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 66
   merges_were_scanned: 0
-  min_issue_was_found: 82
+  min_issue_was_found: 84
   min_pull_was_found: 0
   repository: 574459304
   types_were_scanned: 0
@@ -281935,7 +281903,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18208375226
   issues_were_scanned: 0
@@ -281945,7 +281913,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 636
+  types_were_scanned: 830
   what: iterate
   where: github
 - _id: 1107889
@@ -283093,7 +283061,7 @@
   qod: 20154
   qod_per_day: 76.52863857099355
   qod_per_sec: 0.0005396297746961778
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-07-06 00:05:45.304097981 Z
 - _id: 1108127
@@ -287891,7 +287859,7 @@
   min_issue_was_found: 192
   min_pull_was_found: 0
   repository: 955159947
-  types_were_scanned: 190
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108492
@@ -288850,7 +288818,7 @@
   min_issue_was_found: 503
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 932
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -289286,7 +289254,7 @@
   min_issue_was_found: 41
   min_pull_was_found: 0
   repository: 784310467
-  types_were_scanned: 43
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108670
@@ -292573,24 +292541,24 @@
   min_issue_was_found: 177
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 207
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
   events_were_scanned: 18242433027
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
   merges_were_scanned: 0
-  min_issue_was_found: 737
+  min_issue_was_found: 748
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 892
+  types_were_scanned: 1141
   what: iterate
   where: github
 - _id: 1108989
@@ -294971,7 +294939,7 @@
   min_issue_was_found: 61
   min_pull_was_found: 0
   repository: 1219806055
-  types_were_scanned: 61
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109036
@@ -295039,7 +295007,7 @@
   min_issue_was_found: 8
   min_pull_was_found: 1572
   repository: 671896902
-  types_were_scanned: 1470
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109041
@@ -295498,9 +295466,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13570990610
+  events_were_scanned: 18262906946
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -295508,7 +295476,7 @@
   min_issue_was_found: 253
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 840
+  types_were_scanned: 1136
   what: iterate
   where: github
 - _id: 1109065
@@ -295525,24 +295493,24 @@
   min_issue_was_found: 335
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 338
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6737
+  assignees_were_scanned: 6899
   earliest_issue_was_found: 1
-  events_were_scanned: 18255203121
+  events_were_scanned: 13575346143
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
-  merges_were_scanned: 7137
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5761
+  types_were_scanned: 5902
   what: iterate
   where: github
 - _id: 1109067
@@ -326646,7 +326614,7 @@
   qod: 16980
   qod_per_day: 76.52863857099355
   qod_per_sec: 0.0004442968711188971
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-07-16 01:40:18.545568437 Z
 - _id: 1110878
@@ -374350,7 +374318,7 @@
   qod: 48440
   qod_per_day: 159.61716783557185
   qod_per_sec: 0.0012393939388349485
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-07-26 01:47:48.117318583 Z
 - _id: 1113355
@@ -432456,7 +432424,7 @@
   qod: 73533
   qod_per_day: 35.21818468817115
   qod_per_sec: 0.00184013126423587
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-08-05 05:24:56.292872031 Z
 - _id: 1116599
@@ -491193,7 +491161,7 @@
   qod: 66689
   qod_per_day: 159.61716783557185
   qod_per_sec: 0.0016335289791139338
-  start: *952
+  start: *1077
   what: earned-value
   when: 2026-08-15 05:38:55.687873013 Z
 - _id: 1119589
@@ -514487,7 +514455,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-20 04:42:25.000000000 Z
+  when: &4605 2026-08-20 04:42:25.000000000 Z
   where: github
   who: 526301
 - _id: 1120954
@@ -514512,7 +514480,7 @@
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-20 05:44:16.000000000 Z
+  when: &4606 2026-08-20 05:44:16.000000000 Z
   where: github
   who: 526301
 - _id: 1120955
@@ -514537,7 +514505,7 @@
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-20 05:44:35.000000000 Z
+  when: &4607 2026-08-20 05:44:35.000000000 Z
   where: github
   who: 526301
 - _id: 1120956
@@ -514968,8 +514936,10 @@
   failed_builds: 0
   files: 1
   hoc: 5
+  is_human: 1
   issue: 7032
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -514991,8 +514961,10 @@
   failed_builds: 0
   files: 4
   hoc: 71
+  is_human: 1
   issue: 7043
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515014,9 +514986,11 @@
   failed_builds: 0
   files: 2
   hoc: 46
+  is_human: 1
   issue: 7124
   repository: 73056727
   review: 2026-08-20 07:01:40.000000000 Z
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515038,9 +515012,11 @@
   failed_builds: 0
   files: 1
   hoc: 1
+  is_human: 1
   issue: 7125
   repository: 73056727
   review: 2026-08-20 05:45:15.000000000 Z
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515062,9 +515038,11 @@
   failed_builds: 0
   files: 2
   hoc: 63
+  is_human: 1
   issue: 7126
   repository: 73056727
   review: 2026-08-20 05:45:42.000000000 Z
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515086,8 +515064,10 @@
   failed_builds: 0
   files: 3
   hoc: 58
+  is_human: 1
   issue: 7127
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515109,8 +515089,10 @@
   failed_builds: 0
   files: 1
   hoc: 26
+  is_human: 1
   issue: 7129
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515132,8 +515114,10 @@
   failed_builds: 0
   files: 1
   hoc: 12
+  is_human: 1
   issue: 7130
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -515155,8 +515139,10 @@
   failed_builds: 1
   files: 4
   hoc: 8
+  is_human: 1
   issue: 7133
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -515178,8 +515164,10 @@
   failed_builds: 1
   files: 2
   hoc: 54
+  is_human: 1
   issue: 7136
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-merged
@@ -515191,11 +515179,12 @@
   _time: 2026-08-20 09:06:39.501900630 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7162.
+  is_human: 1
   issue: 7162
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:51:05.000000000 Z
+  when: &4608 2026-08-20 07:51:05.000000000 Z
   where: github
   who: 526301
 - _id: 1120996
@@ -515203,11 +515192,12 @@
   _time: 2026-08-20 09:06:45.577761009 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7163.
+  is_human: 1
   issue: 7163
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:50:28.000000000 Z
+  when: &4609 2026-08-20 07:50:28.000000000 Z
   where: github
   who: 526301
 - _id: 1120997
@@ -515215,11 +515205,12 @@
   _time: 2026-08-20 09:06:50.848540000 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7164.
+  is_human: 1
   issue: 7164
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:50:20.000000000 Z
+  when: &4610 2026-08-20 07:50:20.000000000 Z
   where: github
   who: 526301
 - _id: 1120998
@@ -515227,11 +515218,12 @@
   _time: 2026-08-20 09:06:54.860316493 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7165.
+  is_human: 1
   issue: 7165
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:50:10.000000000 Z
+  when: &4611 2026-08-20 07:50:10.000000000 Z
   where: github
   who: 526301
 - _id: 1120999
@@ -515239,11 +515231,12 @@
   _time: 2026-08-20 09:06:58.566108727 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7166.
+  is_human: 1
   issue: 7166
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:50:03.000000000 Z
+  when: &4612 2026-08-20 07:50:03.000000000 Z
   where: github
   who: 526301
 - _id: 1121000
@@ -515251,11 +515244,12 @@
   _time: 2026-08-20 09:07:02.405053597 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7167.
+  is_human: 1
   issue: 7167
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:56.000000000 Z
+  when: &4613 2026-08-20 07:49:56.000000000 Z
   where: github
   who: 526301
 - _id: 1121001
@@ -515263,11 +515257,12 @@
   _time: 2026-08-20 09:07:05.395412811 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7168.
+  is_human: 1
   issue: 7168
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:50.000000000 Z
+  when: &4614 2026-08-20 07:49:50.000000000 Z
   where: github
   who: 526301
 - _id: 1121002
@@ -515275,11 +515270,12 @@
   _time: 2026-08-20 09:07:08.843087151 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7169.
+  is_human: 1
   issue: 7169
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:43.000000000 Z
+  when: &4615 2026-08-20 07:49:43.000000000 Z
   where: github
   who: 526301
 - _id: 1121003
@@ -515287,11 +515283,12 @@
   _time: 2026-08-20 09:07:11.630454362 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7171.
+  is_human: 1
   issue: 7171
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:28.000000000 Z
+  when: &4616 2026-08-20 07:49:28.000000000 Z
   where: github
   who: 526301
 - _id: 1121004
@@ -515299,11 +515296,12 @@
   _time: 2026-08-20 09:07:14.599645782 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7172.
+  is_human: 1
   issue: 7172
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:14.000000000 Z
+  when: &4617 2026-08-20 07:49:14.000000000 Z
   where: github
   who: 526301
 - _id: 1121005
@@ -515311,11 +515309,12 @@
   _time: 2026-08-20 09:07:17.739429428 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7173.
+  is_human: 1
   issue: 7173
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:49:04.000000000 Z
+  when: &4618 2026-08-20 07:49:04.000000000 Z
   where: github
   who: 526301
 - _id: 1121006
@@ -515323,11 +515322,12 @@
   _time: 2026-08-20 09:07:20.634099549 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7174.
+  is_human: 1
   issue: 7174
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:51.000000000 Z
+  when: &4619 2026-08-20 07:48:51.000000000 Z
   where: github
   who: 526301
 - _id: 1121007
@@ -515335,11 +515335,12 @@
   _time: 2026-08-20 09:07:23.655713761 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7175.
+  is_human: 1
   issue: 7175
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:44.000000000 Z
+  when: &4620 2026-08-20 07:48:44.000000000 Z
   where: github
   who: 526301
 - _id: 1121008
@@ -515347,11 +515348,12 @@
   _time: 2026-08-20 09:07:26.847215389 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7176.
+  is_human: 1
   issue: 7176
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:33.000000000 Z
+  when: &4621 2026-08-20 07:48:33.000000000 Z
   where: github
   who: 526301
 - _id: 1121009
@@ -515359,11 +515361,12 @@
   _time: 2026-08-20 09:07:29.817506507 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7177.
+  is_human: 1
   issue: 7177
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:25.000000000 Z
+  when: &4622 2026-08-20 07:48:25.000000000 Z
   where: github
   who: 526301
 - _id: 1121010
@@ -515371,11 +515374,12 @@
   _time: 2026-08-20 09:07:32.532633081 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7178.
+  is_human: 1
   issue: 7178
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:18.000000000 Z
+  when: &4623 2026-08-20 07:48:18.000000000 Z
   where: github
   who: 526301
 - _id: 1121011
@@ -515383,11 +515387,12 @@
   _time: 2026-08-20 09:07:35.467481780 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7179.
+  is_human: 1
   issue: 7179
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:10.000000000 Z
+  when: &4624 2026-08-20 07:48:10.000000000 Z
   where: github
   who: 526301
 - _id: 1121012
@@ -515395,11 +515400,12 @@
   _time: 2026-08-20 09:07:38.758054206 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7180.
+  is_human: 1
   issue: 7180
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:48:02.000000000 Z
+  when: &4625 2026-08-20 07:48:02.000000000 Z
   where: github
   who: 526301
 - _id: 1121013
@@ -515407,11 +515413,12 @@
   _time: 2026-08-20 09:07:41.523506343 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7181.
+  is_human: 1
   issue: 7181
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:47:51.000000000 Z
+  when: &4626 2026-08-20 07:47:51.000000000 Z
   where: github
   who: 526301
 - _id: 1121014
@@ -515419,11 +515426,12 @@
   _time: 2026-08-20 09:07:46.273409325 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7183.
+  is_human: 1
   issue: 7183
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:47:29.000000000 Z
+  when: &4627 2026-08-20 07:47:29.000000000 Z
   where: github
   who: 526301
 - _id: 1121015
@@ -515431,11 +515439,12 @@
   _time: 2026-08-20 09:07:49.019837333 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7184.
+  is_human: 1
   issue: 7184
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:47:22.000000000 Z
+  when: &4628 2026-08-20 07:47:22.000000000 Z
   where: github
   who: 526301
 - _id: 1121016
@@ -515443,11 +515452,12 @@
   _time: 2026-08-20 09:07:51.544488274 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7185.
+  is_human: 1
   issue: 7185
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:46:26.000000000 Z
+  when: &4629 2026-08-20 07:46:26.000000000 Z
   where: github
   who: 526301
 - _id: 1121017
@@ -515455,11 +515465,12 @@
   _time: 2026-08-20 09:07:54.064677806 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7186.
+  is_human: 1
   issue: 7186
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:46:11.000000000 Z
+  when: &4630 2026-08-20 07:46:11.000000000 Z
   where: github
   who: 526301
 - _id: 1121018
@@ -515467,11 +515478,12 @@
   _time: 2026-08-20 09:07:56.580806038 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7187.
+  is_human: 1
   issue: 7187
   label: bug
   repository: 73056727
   what: label-was-attached
-  when: 2026-08-20 07:45:52.000000000 Z
+  when: &4631 2026-08-20 07:45:52.000000000 Z
   where: github
   who: 526301
 - _id: 1121019
@@ -515479,6 +515491,7 @@
   _time: 2026-08-20 09:07:59.338794621 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7189.
+  is_human: 1
   issue: 7189
   label: bug
   repository: 73056727
@@ -515495,6 +515508,7 @@
   details: The pull request objectionary/eo#7124 with 46 HoC created by @yegor256
     was reviewed by @copilot after 15h52m and 0 comments.
   hoc: 46
+  is_human: 0
   issue: 7124
   repository: 73056727
   review_comments: 0
@@ -515512,6 +515526,7 @@
   details: The pull request objectionary/eo#7125 with 1 HoC created by @yegor256 was
     reviewed by @copilot after 14h35m and 0 comments.
   hoc: 1
+  is_human: 0
   issue: 7125
   repository: 73056727
   review_comments: 0
@@ -515529,6 +515544,7 @@
   details: The pull request objectionary/eo#7126 with 63 HoC created by @yegor256
     was reviewed by @copilot after 14h35m and 0 comments.
   hoc: 63
+  is_human: 0
   issue: 7126
   repository: 73056727
   review_comments: 0
@@ -515537,3 +515553,679 @@
   when: 2026-08-20 05:45:42.000000000 Z
   where: github
   who: 175728472
+- _id: 1121023
+  _job: 87862
+  _time: 2026-08-20 09:28:42.380912770 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 3
+  details: The pull request objectionary/eo#7140 with 12 HoC created by @thayorns
+    was merged by @yegor256 after 12h44m of being in review and 3 comments.
+  hoc: 12
+  is_human: 1
+  issue: 7140
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 45893
+  what: code-was-contributed
+  when: *4605
+  where: github
+  who: 96509556
+- _id: 1121024
+  _job: 87862
+  _time: 2026-08-20 09:28:43.226071110 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#7152 with 4 HoC created by @morphqdd was
+    merged by @yegor256 after 12h32m of being in review and 2 comments.
+  hoc: 4
+  is_human: 1
+  issue: 7152
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 45131
+  what: code-was-contributed
+  when: *4606
+  where: github
+  who: 125282851
+- _id: 1121025
+  _job: 87862
+  _time: 2026-08-20 09:28:43.670367517 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 4
+  details: The pull request objectionary/eo#7153 with 15 HoC created by @vasilevnstas
+    was merged by @yegor256 after 11h59m of being in review and 4 comments.
+  hoc: 15
+  is_human: 1
+  issue: 7153
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 43186
+  what: code-was-contributed
+  when: *4607
+  where: github
+  who: 33578155
+- _id: 1121026
+  _job: 87862
+  _time: 2026-08-20 09:28:46.123043141 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7162 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7162
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4608
+  where: github
+  who: 526301
+- _id: 1121027
+  _job: 87862
+  _time: 2026-08-20 09:28:46.445294476 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7163 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7163
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4609
+  where: github
+  who: 526301
+- _id: 1121028
+  _job: 87862
+  _time: 2026-08-20 09:28:46.764133304 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7164 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7164
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4610
+  where: github
+  who: 526301
+- _id: 1121029
+  _job: 87862
+  _time: 2026-08-20 09:28:47.083381233 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7165 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7165
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4611
+  where: github
+  who: 526301
+- _id: 1121030
+  _job: 87862
+  _time: 2026-08-20 09:28:47.403392917 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7166 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7166
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4612
+  where: github
+  who: 526301
+- _id: 1121031
+  _job: 87862
+  _time: 2026-08-20 09:28:47.724671531 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7167 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7167
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4613
+  where: github
+  who: 526301
+- _id: 1121032
+  _job: 87862
+  _time: 2026-08-20 09:28:48.051935144 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7168 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7168
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4614
+  where: github
+  who: 526301
+- _id: 1121033
+  _job: 87862
+  _time: 2026-08-20 09:28:48.371322318 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7169 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7169
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4615
+  where: github
+  who: 526301
+- _id: 1121034
+  _job: 87862
+  _time: 2026-08-20 09:28:48.686191579 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7171 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7171
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4616
+  where: github
+  who: 526301
+- _id: 1121035
+  _job: 87862
+  _time: 2026-08-20 09:28:49.021333399 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7172 reported by
+    @thayorns; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7172
+  reporter: 96509556
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4617
+  where: github
+  who: 526301
+- _id: 1121036
+  _job: 87862
+  _time: 2026-08-20 09:28:49.340174355 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7173 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7173
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4618
+  where: github
+  who: 526301
+- _id: 1121037
+  _job: 87862
+  _time: 2026-08-20 09:28:49.657321106 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7174 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7174
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4619
+  where: github
+  who: 526301
+- _id: 1121038
+  _job: 87862
+  _time: 2026-08-20 09:28:49.976585742 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7175 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7175
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4620
+  where: github
+  who: 526301
+- _id: 1121039
+  _job: 87862
+  _time: 2026-08-20 09:28:50.302810161 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7176 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7176
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4621
+  where: github
+  who: 526301
+- _id: 1121040
+  _job: 87862
+  _time: 2026-08-20 09:28:50.616745941 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7177 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7177
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4622
+  where: github
+  who: 526301
+- _id: 1121041
+  _job: 87862
+  _time: 2026-08-20 09:28:50.945196993 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7178 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7178
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4623
+  where: github
+  who: 526301
+- _id: 1121042
+  _job: 87862
+  _time: 2026-08-20 09:28:51.264720637 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7179 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7179
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4624
+  where: github
+  who: 526301
+- _id: 1121043
+  _job: 87862
+  _time: 2026-08-20 09:28:51.583120596 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7180 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7180
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4625
+  where: github
+  who: 526301
+- _id: 1121044
+  _job: 87862
+  _time: 2026-08-20 09:28:51.900136463 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7181 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7181
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4626
+  where: github
+  who: 526301
+- _id: 1121045
+  _job: 87862
+  _time: 2026-08-20 09:28:52.218448690 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7183 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7183
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4627
+  where: github
+  who: 526301
+- _id: 1121046
+  _job: 87862
+  _time: 2026-08-20 09:28:52.544327512 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7184 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7184
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4628
+  where: github
+  who: 526301
+- _id: 1121047
+  _job: 87862
+  _time: 2026-08-20 09:28:52.860422673 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7185 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7185
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4629
+  where: github
+  who: 526301
+- _id: 1121048
+  _job: 87862
+  _time: 2026-08-20 09:28:53.180641531 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7186 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7186
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4630
+  where: github
+  who: 526301
+- _id: 1121049
+  _job: 87862
+  _time: 2026-08-20 09:28:53.500449773 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: "@yegor256 attached the '#bug' label to objectionary/eo#7187 reported by
+    @morphqdd; this means that a bug was accepted as valid, by the project team."
+  is_human: 1
+  issue: 7187
+  reporter: 125282851
+  repository: 73056727
+  what: bug-was-accepted
+  when: *4631
+  where: github
+  who: 526301
+- _id: 1121050
+  _job: 32352122829
+  _time: 2026-08-20 10:22:21.927417781 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  details: The pull request objectionary/eoc#1197 has been opened by @github-actions[bot].
+  event_id: 13575074149
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1197
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-20 10:10:13.000000000 Z
+  where: github
+  who: 41898282
+- _id: 1121051
+  _job: 32352122829
+  _time: 2026-08-20 10:27:02.894916832 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7074'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7139 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 25
+  issue: 7139
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:59:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121052
+  _job: 32352122829
+  _time: 2026-08-20 10:27:30.758663180 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7076'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7142 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 25
+  issue: 7142
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:56:49.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121053
+  _job: 32352122829
+  _time: 2026-08-20 10:27:56.207078423 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7078'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7143 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 22
+  issue: 7143
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:56:21.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121054
+  _job: 32352122829
+  _time: 2026-08-20 10:28:21.599489675 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7077'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7144 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 67
+  issue: 7144
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:55:54.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121055
+  _job: 32352122829
+  _time: 2026-08-20 10:28:50.358007248 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7105'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7146 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 11
+  issue: 7146
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:55:27.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121056
+  _job: 32352122829
+  _time: 2026-08-20 10:29:11.208731606 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7106'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7147 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 17
+  issue: 7147
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:53:17.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121057
+  _job: 32352122829
+  _time: 2026-08-20 10:29:30.584216354 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7104'
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7148 has been "pull-was-merged".
+  failed_builds: 1
+  files: 2
+  hoc: 31
+  issue: 7148
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:54:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121058
+  _job: 32352122829
+  _time: 2026-08-20 10:29:50.050501995 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7080'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7149 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 47
+  issue: 7149
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 06:54:31.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121059
+  _job: 32352122829
+  _time: 2026-08-20 10:30:10.177889897 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7079'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7150 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 19
+  issue: 7150
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 07:02:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121060
+  _job: 32352122829
+  _time: 2026-08-20 10:30:28.097345574 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/langchain-openai-1.x-lockfile
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eoc#1196 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 39
+  issue: 1196
+  repository: 489321585
+  review: 2026-08-20 08:52:00.000000000 Z
+  succeeded_builds: 18
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 09:06:13.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1121061
+  _job: 32352122829
+  _time: 2026-08-20 10:30:49.576970087 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/7187-correct-while-docblock
+  comments: 5
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7188 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 3
+  issue: 7188
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 07:03:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1121062
+  _job: 32352122829
+  _time: 2026-08-20 10:54:53.362130941 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  author: 29139614
+  comments: 3
+  details: The pull request objectionary/eoc#1196 with 39 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 3h26m and 0 comments.
+  hoc: 39
+  issue: 1196
+  repository: 489321585
+  review_comments: 0
+  seconds: 12364
+  what: code-was-reviewed
+  when: 2026-08-20 08:52:00.000000000 Z
+  where: github
+  who: 526301
