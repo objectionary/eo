@@ -112,10 +112,6 @@ final class ListingTest {
         );
     }
 
-    /**
-     * Sources to embed into {@code <listing>}.
-     * @return Stream of sources
-     */
     private static Stream<Arguments> sources() {
         return Stream.of(
             "[] > foo",
