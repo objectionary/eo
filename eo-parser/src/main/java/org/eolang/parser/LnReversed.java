@@ -59,7 +59,7 @@ final class LnReversed implements Line {
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
-        final Value head = LnReversed.readHead(tokens);
+        final Value head = LnReversed.readHead(tokens, this.span.indent());
         if (tokens.atEnd() || !tokens.dispatchAhead()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + tokens.cursor(),
@@ -134,13 +134,13 @@ final class LnReversed implements Line {
         );
     }
 
-    private static Value readHead(final Tokens tokens) {
+    static Value readHead(final Tokens tokens, final int indent) {
         final Value value;
         if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
             final int start = tokens.cursor();
             final String mapped = LnReversed.rootSymbol(tokens.current());
             tokens.seek(start + 1);
-            value = new Value(Value.Kind.IDENTIFIER, mapped, start, start + 1);
+            value = new Value(Value.Kind.IDENTIFIER, mapped, indent + start, start + 1);
         } else {
             value = tokens.readName();
         }
