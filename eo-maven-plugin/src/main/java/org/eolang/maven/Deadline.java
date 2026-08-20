@@ -7,8 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -54,14 +53,32 @@ final class Deadline {
 
     /**
      * Run the body and wait for it, but no longer than the deadline.
+     *
+     * <p>The body goes into a {@link FutureTask} carried by a daemon
+     * thread of its own, rather than into an executor service. A cancel
+     * only interrupts the running task, and a task blocked on something
+     * that ignores interruption (a tight CPU loop, a blocking socket read)
+     * may never terminate. An executor would then have to be shut down and
+     * waited for, and that wait would either hang this method forever -
+     * silently swallowing whatever {@link MojoFailureException} the
+     * deadline itself just raised - or give up after a bounded time and
+     * leave the thread running anyway. A daemon thread needs neither: it
+     * is abandoned where it stands and never holds the JVM back from
+     * exiting.</p>
+     *
      * @param body The body of the Mojo
      * @throws MojoFailureException If the deadline passes or the body fails
      */
-    @SuppressWarnings("PMD.CloseResource")
     void spent(final Callable<?> body) throws MojoFailureException {
-        final ExecutorService service = Executors.newSingleThreadExecutor();
+        final FutureTask<?> task = new FutureTask<>(body);
+        final Thread thread = new Thread(
+            task,
+            String.format("%s-deadline", this.mojo.getClass().getSimpleName())
+        );
+        thread.setDaemon(true);
+        thread.start();
         try {
-            service.submit(body).get(this.seconds, TimeUnit.SECONDS);
+            task.get(this.seconds, TimeUnit.SECONDS);
         } catch (final TimeoutException ex) {
             this.reported(
                 Logger.format(
@@ -82,7 +99,7 @@ final class Deadline {
                 ex
             );
         } finally {
-            Deadline.stopped(service);
+            task.cancel(true);
         }
     }
 
@@ -100,36 +117,5 @@ final class Deadline {
             }
         }
         throw new MojoFailureException(msg, problem);
-    }
-
-    /**
-     * Interrupt the service and wait a bounded time for it to stop.
-     *
-     * <p>{@code shutdownNow()} only interrupts the running task; a task
-     * blocked on something that ignores interruption (a tight CPU loop, a
-     * blocking socket read) may never terminate. Waiting for it
-     * unconditionally would hang this method, and with it the {@code
-     * finally} block of {@link #spent}, forever - silently swallowing
-     * whatever {@link MojoFailureException} the deadline itself just
-     * raised. So this gives up after one bounded wait instead of retrying
-     * without limit.</p>
-     *
-     * @param service The service that ran the body
-     */
-    private static void stopped(final ExecutorService service) {
-        service.shutdownNow();
-        boolean terminated;
-        try {
-            terminated = service.awaitTermination(60, TimeUnit.SECONDS);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            terminated = false;
-        }
-        if (!terminated) {
-            Logger.warn(
-                Deadline.class,
-                "Body thread did not terminate within 60 seconds of being interrupted, abandoning it"
-            );
-        }
     }
 }
