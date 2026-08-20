@@ -172,6 +172,14 @@ final class LnOnlyPhi implements Line {
             final String mapped;
             if ("@".equals(param)) {
                 mapped = "φ";
+            } else if ("^".equals(param)) {
+                if (column != this.span.indent() + origin) {
+                    throw new ParseError(
+                        this.span.line(), column,
+                        "a ^ void attribute must be the first attribute of its formation"
+                    );
+                }
+                mapped = "ρ";
             } else {
                 mapped = param;
             }

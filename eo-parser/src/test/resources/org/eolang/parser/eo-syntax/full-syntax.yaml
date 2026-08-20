@@ -91,14 +91,14 @@ input: |
         ^.@ > @
 
     [] > named
-      one.two.three.four.five
+      ^.one.two.three.four.five
         t.o
       .three > a1
       .five > a3
 
     [] > terminator
-      obj > x
-      .method y
+      ^.obj > x
+      .method ^.y
     test > tst
       me
         (now (f (f (f (f 1)))).f):i

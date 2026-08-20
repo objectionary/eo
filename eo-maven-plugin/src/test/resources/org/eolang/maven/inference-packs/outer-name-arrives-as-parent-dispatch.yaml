@@ -1,18 +1,18 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A name bound in the object around this one is not a reference to it: the
-# parser turns it into a dispatch on the parent. So `held` is asked of `ξ.ρ`,
-# and that parent is a thing the text names as plainly as any other reference —
-# `ξ` is the object being formed, so `ξ.ρ` is whatever `inner` sits in. Walking
-# out of the reference to the nearest formation reaches `inner`, and once more
-# reaches `outer`, which is where `held` is bound.
+# A name bound in the object around this one is reached by naming that object:
+# `^.held` is a dispatch on the parent, so `held` is asked of `ξ.ρ`, and that
+# parent is a thing the text names as plainly as any other reference — `ξ` is
+# the object being formed, so `ξ.ρ` is whatever `inner` sits in. Walking out of
+# the reference to the nearest formation reaches `inner`, and once more reaches
+# `outer`, which is where `held` is bound.
 eo:
   outer.eo: |
     [] > outer
       [] > held
       [] > inner
-        held > @
+        ^.held > @
 xmir:
   outer.eo:
     - "//o[@base='.held']/o[@base='ξ.ρ']"

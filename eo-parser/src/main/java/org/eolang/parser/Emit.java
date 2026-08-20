@@ -59,6 +59,36 @@ final class Emit {
     private final List<String> lines;
 
     /**
+     * The atom signature owed to an open {@code <o>} as its {@code λ}
+     * child, empty when nothing is owed. An atom carries its signature
+     * on the head line but declares its voids below it, and every void
+     * belongs ahead of the marker (§9.4), so the marker waits here
+     * until the object it belongs to takes a child that is not a void,
+     * or closes with none.
+     */
+    private String signature;
+
+    /**
+     * Source line of the owed marker.
+     */
+    private int sigline;
+
+    /**
+     * Source column of the owed marker.
+     */
+    private int sigpos;
+
+    /**
+     * Depth at which the object that owes the marker sits.
+     */
+    private int sigdepth;
+
+    /**
+     * How many {@code <o>} elements stand open at the cursor.
+     */
+    private int depth;
+
+    /**
      * Ctor.
      */
     Emit() {
@@ -79,6 +109,7 @@ final class Emit {
      * @param src Pre-split source lines
      */
     private Emit(final List<String> src) {
+        this.signature = "";
         this.sink = new ArrayList<>(0);
         this.lines = src;
     }
@@ -270,7 +301,11 @@ final class Emit {
             dirs.attr("base", base);
         }
         dirs.attr("line", line).attr("pos", pos);
+        if (!"∅".equals(base)) {
+            this.lambda();
+        }
         this.append(dirs);
+        this.depth = this.depth + 1;
     }
 
     /**
@@ -402,6 +437,8 @@ final class Emit {
      * one level. Must balance a prior {@link #object} call.
      */
     void close() {
+        this.lambda();
+        this.depth = this.depth - 1;
         this.append(new Directives().up());
     }
 
@@ -434,15 +471,10 @@ final class Emit {
      * @param pos Source column of the {@code /sig} marker
      */
     void atomMarker(final String sig, final int line, final int pos) {
-        this.append(
-            new Directives()
-                .add("o")
-                .attr("name", "λ")
-                .attr("atom", sig)
-                .attr("line", line)
-                .attr("pos", pos)
-                .up()
-        );
+        this.signature = sig;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = this.depth;
     }
 
     /**
@@ -455,6 +487,21 @@ final class Emit {
      */
     Iterable<Directive> directives() {
         return this.sink;
+    }
+
+    private void lambda() {
+        if (!this.signature.isEmpty() && this.depth == this.sigdepth) {
+            this.append(
+                new Directives()
+                    .add("o")
+                    .attr("name", "λ")
+                    .attr("atom", this.signature)
+                    .attr("line", this.sigline)
+                    .attr("pos", this.sigpos)
+                    .up()
+            );
+            this.signature = "";
+        }
     }
 
     private void append(final Iterable<Directive> dirs) {
