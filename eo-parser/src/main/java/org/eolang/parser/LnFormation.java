@@ -121,7 +121,7 @@ final class LnFormation implements Line {
     private void transition(final Stack stack, final Suffix suffix) {
         final Level level;
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            this.checkChildAllowed(stack, suffix);
+            this.checkChildAllowed(stack);
             level = stack.push(
                 this.span.indent(), this.span.line(),
                 Kind.BARE_FORMATION, Openness.OPEN
@@ -129,6 +129,12 @@ final class LnFormation implements Line {
         } else {
             level = stack.replace(
                 this.span.line(), Kind.BARE_FORMATION, Openness.OPEN
+            );
+        }
+        if (level.patom() && !suffix.test()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
             );
         }
         if (suffix.present()) {
@@ -139,7 +145,7 @@ final class LnFormation implements Line {
         }
     }
 
-    private void checkChildAllowed(final Stack stack, final Suffix suffix) {
+    private void checkChildAllowed(final Stack stack) {
         if (!stack.empty()
             && this.span.indent() != stack.top().indent() + 2) {
             throw new ParseError(
@@ -152,12 +158,6 @@ final class LnFormation implements Line {
             throw new ParseError(
                 this.span.line(), 0,
                 "unexpected deeper-indent line — previous expression is closed for children"
-            );
-        }
-        if (!stack.empty() && stack.top().atom() && !suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
             );
         }
     }
