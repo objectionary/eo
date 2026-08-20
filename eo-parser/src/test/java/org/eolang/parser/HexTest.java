@@ -67,4 +67,42 @@ final class HexTest {
             Matchers.equalTo("00-10-20")
         );
     }
+
+    @Test
+    void keepsOwnCopyOfConstructorArgument() {
+        final byte[] raw = {0x00, 0x10, 0x20};
+        final Hex hex = new Hex(raw);
+        raw[0] = (byte) 0xFF;
+        MatcherAssert.assertThat(
+            "mutating the caller's array after construction must not change the rendered bytes",
+            hex.asString(),
+            Matchers.equalTo("00-10-20")
+        );
+    }
+
+    @Test
+    void ignoresMutationOfSingleByteArrayAfterConstruction() {
+        final byte[] raw = {0x7A};
+        final Hex hex = new Hex(raw);
+        raw[0] = 0x00;
+        MatcherAssert.assertThat(
+            "mutating a single-byte array after construction must not change the rendered byte",
+            hex.asString(),
+            Matchers.equalTo("7A-")
+        );
+    }
+
+    @Test
+    void ignoresZeroingOfArrayAfterConstruction() {
+        final byte[] raw = {0x01, 0x02, 0x03, 0x04};
+        final Hex hex = new Hex(raw);
+        for (int idx = 0; idx < raw.length; idx = idx + 1) {
+            raw[idx] = 0x00;
+        }
+        MatcherAssert.assertThat(
+            "zeroing the caller's array after construction must not change the rendered bytes",
+            hex.asString(),
+            Matchers.equalTo("01-02-03-04")
+        );
+    }
 }
