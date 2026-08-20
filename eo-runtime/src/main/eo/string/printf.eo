@@ -194,7 +194,7 @@
               gte.
                 number numeric
                 number limit
-              lte.
+              lt.
                 number numeric
                 times.
                   number limit
@@ -537,6 +537,11 @@
     "%d".printf
       * 9.99
 
+  eq. ++> can-write-the-negative-long-boundary-as-a-decimal
+    "-9223372036854775808"
+    "%d".printf
+      * -9.223372036854776e18
+
   printf. --> stops-on-a-bool-as-a-string
     "%s"
     * true
@@ -604,7 +609,3 @@
   printf. --> stops-on-formatting-nan-as-a-decimal
     "%d"
     * nan
-
-  printf. --> stops-on-the-negative-long-boundary-as-a-decimal
-    "%d"
-    * -9.223372036854776e18

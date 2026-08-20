@@ -240,6 +240,12 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
 
+  eq. ++> can-format-the-error-message-of-the-minimum-i64-when-converting-to-i32
+    "Can't convert i64 number -9223372036854775808 to i32 because it's out of i32 bounds"
+    as-i32.
+      i64 80-00-00-00-00-00-00-00
+      I
+
   eq. ++> can-keep-the-low-bits-of-a-large-product
     2147483647.as-i64.times 2147483647.as-i64
     i64 3F-FF-FF-FF-00-00-00-01
