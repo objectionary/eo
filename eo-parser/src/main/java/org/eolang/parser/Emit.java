@@ -457,10 +457,6 @@ final class Emit {
         return this.sink;
     }
 
-    /**
-     * Append a directives iterable to the sink.
-     * @param dirs Directives to append
-     */
     private void append(final Iterable<Directive> dirs) {
         final Iterator<Directive> iterator = dirs.iterator();
         while (iterator.hasNext()) {
@@ -468,15 +464,6 @@ final class Emit {
         }
     }
 
-    /**
-     * Render the error text in the canonical
-     * {@code [L:P] error: 'message'} form, followed by the offending
-     * source line and a caret pointer when source is available.
-     * @param line Line number (1-indexed)
-     * @param pos Column (0-indexed)
-     * @param message The bare message
-     * @return Formatted error text
-     */
     private String formatted(final int line, final int pos, final String message) {
         final String located = new MsgLocated(line, pos, message).formatted();
         final String result;

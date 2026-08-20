@@ -304,13 +304,6 @@ final class Suffix {
         return promoted;
     }
 
-    /**
-     * Apply the R-9.3.1 source-token mapping of {@code @} to {@code φ}
-     * for a name carried by an explicit {@code > name} suffix. Other
-     * names pass through unchanged.
-     * @param raw Source name
-     * @return Mapped XMIR name
-     */
     private static String phi(final String raw) {
         final String mapped;
         if ("@".equals(raw)) {
@@ -321,20 +314,6 @@ final class Suffix {
         return mapped;
     }
 
-    /**
-     * Parse a suffix tail into a result struct.
-     *
-     * <p>A bare {@code !} with no name suffix — the vertical-argument
-     * counterpart of the horizontal {@code a b!} form (#5821), which
-     * {@link #named} already accepts inline but which the unnamed tail of
-     * a vertical argument line never reached (#6562) — yields
-     * {@link Form#NONE} with the const marker set.</p>
-     *
-     * @param tail Tail substring
-     * @param span Source span
-     * @param home Source column where {@code tail} begins
-     * @return Parsed suffix
-     */
     private static Suffix parse(final String tail, final Span span, final int home) {
         final int idx = Suffix.start(tail);
         final Suffix result;
@@ -360,11 +339,6 @@ final class Suffix {
         return result;
     }
 
-    /**
-     * Find the first non-space character in a suffix tail.
-     * @param tail Tail substring
-     * @return First non-space index, or the tail length
-     */
     private static int start(final String tail) {
         int idx = 0;
         while (idx < tail.length() && tail.charAt(idx) == ' ') {
@@ -373,18 +347,6 @@ final class Suffix {
         return idx;
     }
 
-    /**
-     * Parse a test-attribute suffix — the truthy {@code +> name}
-     * ({@link Form#TEST}) or the throwing {@code -> name}
-     * ({@link Form#THROWS}). Both share the same {@code NAME}-token
-     * grammar; only the resulting form and marker prefix differ.
-     * @param tail Tail substring
-     * @param after Index immediately after the two-character marker
-     * @param span Source span
-     * @param home Source column where tail begins
-     * @param form The form to record ({@code TEST} or {@code THROWS})
-     * @return Parsed suffix
-     */
     private static Suffix test(
         final String tail, final int after, final Span span, final int home, final Form form
     ) {
@@ -415,16 +377,6 @@ final class Suffix {
         return new Suffix(form, name, "", false);
     }
 
-    /**
-     * Reject a name that doesn't start with a lowercase letter — unless
-     * it's the {@code @} void/phi marker, which callers that allow it
-     * (only {@link #named}; {@link #test} rejects {@code @} earlier and
-     * never reaches here with it) pass through untouched.
-     * @param name Extracted name; may be empty
-     * @param span Source span
-     * @param home Source column where the enclosing tail begins
-     * @param pos Source column of the name's first character
-     */
     private static void checkLowercaseStart(
         final String name, final Span span, final int home, final int pos
     ) {
@@ -437,22 +389,6 @@ final class Suffix {
         }
     }
 
-    /**
-     * Reject a {@code > name} suffix whose name came out empty because
-     * {@link #skipName} stopped right where it started — any character
-     * {@link #endsName} treats as a boundary sat immediately after the
-     * single skipped space, not just {@code /} and {@code !} but also
-     * the separators in {@link #NAME_BOUNDARIES}, e.g. {@code > /sig},
-     * {@code > !}, or {@code > .foo}. A second space (rather than a real
-     * boundary character) is left alone here: that case falls through to
-     * {@link #endsClean}, which reports the more specific "trailing
-     * garbage" once whatever follows the extra space is reached.
-     * @param tail Tail substring
-     * @param begin Index where the name was expected to start
-     * @param idx Index {@link #skipName} stopped at
-     * @param span Source span
-     * @param home Source column where tail begins
-     */
     private static void checkNamePresent(
         final String tail, final int begin, final int idx, final Span span, final int home
     ) {
@@ -464,17 +400,6 @@ final class Suffix {
         }
     }
 
-    /**
-     * Parse a {@code >>} (auto) suffix, optionally carrying a trailing
-     * file-local handle ({@code >> name}, §3.10) kept as the label, and a
-     * {@code !} const marker (R-9.4) either right after {@code >>}
-     * ({@code >>!}) or after the handle ({@code >> name!}, #5817).
-     * @param tail Tail substring
-     * @param after Index immediately after {@code >>}
-     * @param span Source span
-     * @param home Source column where tail begins
-     * @return Parsed suffix
-     */
     private static Suffix auto(
         final String tail, final int after, final Span span, final int home
     ) {
@@ -517,14 +442,6 @@ final class Suffix {
         return new Suffix(Form.AUTO, handle, "", cnst);
     }
 
-    /**
-     * Parse a {@code > name} suffix.
-     * @param tail Tail substring
-     * @param from Index immediately after the leading {@code >}
-     * @param span Source span
-     * @param home Source column where tail begins
-     * @return Parsed suffix
-     */
     private static Suffix named(
         final String tail, final int from, final Span span, final int home
     ) {
@@ -570,14 +487,6 @@ final class Suffix {
         return new Suffix(Form.NAME, name, signature, cnst);
     }
 
-    /**
-     * Verify the rest of {@code tail} from {@code from} onward contains
-     * only whitespace; otherwise raise a "trailing garbage" parse error.
-     * @param tail Tail substring
-     * @param from Index after the consumed suffix
-     * @param span Source span
-     * @param home Source column where tail begins
-     */
     private static void endsClean(
         final String tail, final int from, final Span span, final int home
     ) {
@@ -594,20 +503,6 @@ final class Suffix {
         }
     }
 
-    /**
-     * Read the atom signature after the {@code /} marker.
-     *
-     * <p>The signature is a single {@code NAME} or a dotted path of
-     * names, optionally rooted at {@code Q} (R-3.10.10). A leading
-     * {@code Q.} is promoted to {@code Φ.} per R-3.10.11 / R-9.3. A
-     * bare {@code Q} (root alone) is rejected.</p>
-     *
-     * @param tail Tail substring
-     * @param after Index immediately after {@code /}
-     * @param span Source span
-     * @param home Source column where tail begins
-     * @return Promoted signature
-     */
     private static String signature(
         final String tail, final int after, final Span span, final int home
     ) {
@@ -643,19 +538,6 @@ final class Suffix {
         return Suffix.typeAtom(raw, span, home + after);
     }
 
-    /**
-     * Whether nothing but blanks is left, so no name can follow. Unlike
-     * {@link #skipSpace(String, int)}, which steps over the single space
-     * a suffix is allowed to have, this looks past every space and tab:
-     * blanks followed by a name are a separate mistake, reported later
-     * as trailing garbage, while blanks followed by nothing leave the
-     * name empty and have to be refused right here. A tab counts because
-     * {@link #terminates(char)} ends a name on it just as a space does,
-     * and nothing upstream keeps tabs out of the tail.
-     * @param tail Tail substring
-     * @param from Index to look from
-     * @return True if only blanks remain
-     */
     private static boolean blank(final String tail, final int from) {
         int idx = from;
         while (idx < tail.length()
@@ -665,12 +547,6 @@ final class Suffix {
         return idx >= tail.length();
     }
 
-    /**
-     * Skip exactly one space character.
-     * @param tail Tail substring
-     * @param from Current index
-     * @return Index after the single space (or unchanged if at end)
-     */
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
         if (idx < tail.length() && tail.charAt(idx) == ' ') {
@@ -679,15 +555,6 @@ final class Suffix {
         return idx;
     }
 
-    /**
-     * Skip the NAME token that starts at {@code from}, stopping at the
-     * first character that ends it. The text between {@code from} and the
-     * returned index is the name itself, empty when a terminator already
-     * sits at {@code from}.
-     * @param tail Tail substring
-     * @param from Current index
-     * @return Index just past the name
-     */
     private static int skipName(final String tail, final int from) {
         int idx = from;
         while (idx < tail.length() && !Suffix.endsName(tail.charAt(idx))) {
@@ -696,13 +563,6 @@ final class Suffix {
         return idx;
     }
 
-    /**
-     * Whether a character terminates a NAME / signature token. Mirrors
-     * the {@code NAME} token rule of §2.3 plus the suffix-specific
-     * separators ({@code !}, {@code /}).
-     * @param glyph The character
-     * @return True if the character ends the current token
-     */
     private static boolean terminates(final char glyph) {
         return glyph == ' '
             || glyph == '\t'
@@ -710,13 +570,6 @@ final class Suffix {
             || glyph == '/';
     }
 
-    /**
-     * Whether a character terminates a name (stricter than
-     * {@link #terminates}). NAME tokens forbid the separators
-     * enumerated in {@link #NAME_BOUNDARIES}.
-     * @param glyph The character
-     * @return True if the character ends the NAME token
-     */
     private static boolean endsName(final char glyph) {
         return Suffix.terminates(glyph)
             || Suffix.NAME_BOUNDARIES.indexOf(glyph) >= 0;

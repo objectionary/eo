@@ -94,12 +94,6 @@ final class Catalogs {
         );
     }
 
-    /**
-     * Make it.
-     * @param path Path of the file
-     * @param format Format, like "csv" or "json"
-     * @return The tojos
-     */
     private static Tojos build(final Path path, final String format) {
         final String fmt = format.trim().toLowerCase(Locale.ENGLISH);
         Mono mono;

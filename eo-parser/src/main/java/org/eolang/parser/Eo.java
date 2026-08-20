@@ -145,14 +145,6 @@ final class Eo implements Iterable<Directive> {
         return Eo.topLevelMarker(body, idx -> Eo.spacedMarker(body, idx, "-->"));
     }
 
-    /**
-     * Whether a marker sits at {@code idx} in its suffix position, that
-     * is, with a space in front of it (R-3.10.8).
-     * @param body Line body to scan
-     * @param idx Index the marker would start at
-     * @param marker The marker text
-     * @return True if such a marker starts here
-     */
     private static boolean spacedMarker(
         final String body, final int idx, final String marker
     ) {
@@ -160,18 +152,6 @@ final class Eo implements Iterable<Directive> {
             && body.startsWith(marker, idx);
     }
 
-    /**
-     * The index of the first position where {@code marker} matches, scanned
-     * at paren depth 0 and outside string literals. Both
-     * {@link Eo#topLevelGreaterBracketIndex} and
-     * {@link Eo#topLevelPlusPlusArrowIndex} drive their three-character
-     * lookahead through this shared skeleton, so the paren/string handling
-     * lives in one place. The scan stops two characters short of the end, so
-     * a marker predicate may safely read {@code idx + 1} and {@code idx + 2}.
-     * @param body Line body to scan
-     * @param marker Predicate testing whether the marker starts at an index
-     * @return Index of the first top-level match, or -1
-     */
     private static int topLevelMarker(
         final String body, final java.util.function.IntPredicate marker
     ) {
@@ -194,19 +174,6 @@ final class Eo implements Iterable<Directive> {
         return found;
     }
 
-    /**
-     * Merge a BYTES continuation starting at index {@code start} —
-     * concatenates the trailing-dash chunk with subsequent BYTES-only
-     * lines at &gt;= the same indent until a chunk without trailing
-     * dash terminates the token (R-3.13).
-     * @param spans Materialised list of source spans
-     * @param start Index of the continuation start
-     * @param stack Indent stack
-     * @param globals Global parser state
-     * @param emit Directives sink
-     * @param recovery Where the walk resumes if the merged line fails
-     * @return Next index to process
-     */
     private static int mergeBytesContinuation(
         final java.util.List<Span> spans, final int start, final Stack stack,
         final Globals globals, final Emit emit, final Recovery recovery
@@ -237,26 +204,12 @@ final class Eo implements Iterable<Directive> {
         return resumption;
     }
 
-    /**
-     * Whether a span body is the start of a multi-line BYTES literal —
-     * purely bytes-only content, length &gt;= 6, ending with {@code -}.
-     * Per R-3.13.1, single-byte form ({@code BB-}) never continues, so
-     * we require &gt;=2 bytes (6 chars or more).
-     * @param body The line body
-     * @return True if a BYTES continuation starts here
-     */
     private static boolean isBytesContinuation(final String body) {
         return body.length() >= 6
             && body.endsWith("-")
             && Eo.isBytesOnly(body);
     }
 
-    /**
-     * Whether the body is purely a sequence of hex bytes with dash
-     * separators — {@code HH-HH} or {@code HH-HH-} etc.
-     * @param body The line body
-     * @return True if the body matches the bytes-only pattern
-     */
     private static boolean isBytesOnly(final String body) {
         boolean valid = !body.isEmpty();
         int idx = 0;
@@ -277,34 +230,10 @@ final class Eo implements Iterable<Directive> {
         return valid;
     }
 
-    /**
-     * Whether a character is a valid BYTES hex digit. Per the grammar
-     * (matching ANTLR's {@code BYTE : [0-9A-F][0-9A-F]}), BYTES accept
-     * only uppercase hex — lowercase letters belong to {@code NAME}
-     * tokens. Compare with the case-insensitive {@code hexDigit}
-     * used for the {@code 0x...} HEX literal (R-9.8.3).
-     * @param glyph The character
-     * @return True if 0-9 or A-F
-     */
     private static boolean hex(final char glyph) {
         return glyph >= '0' && glyph <= '9' || glyph >= 'A' && glyph <= 'F';
     }
 
-    /**
-     * Process one source line.
-     *
-     * <p>Classifies the span into a {@link Line} per Appendix B, takes a
-     * savepoint on {@code emit}, dispatches the line, and on
-     * {@link ParseError} rolls back and emits the error. Step A pops on
-     * indent transitions run before classification when the stack is
-     * non-empty.</p>
-     *
-     * @param span The source span
-     * @param stack The indent stack
-     * @param globals The global parser state
-     * @param emit The directives sink
-     * @return True when the line failed to parse
-     */
     private static boolean process(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
@@ -327,14 +256,6 @@ final class Eo implements Iterable<Directive> {
         return failed;
     }
 
-    /**
-     * Handle a line that arrives while inside an open text block —
-     * either close the block or append the line to the body.
-     * @param span The source span
-     * @param stack The indent stack
-     * @param globals The global parser state
-     * @param emit The directives sink
-     */
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
         final Span span, final Stack stack, final Globals globals, final Emit emit
@@ -363,11 +284,6 @@ final class Eo implements Iterable<Directive> {
         }
     }
 
-    /**
-     * Count the leading space characters on a raw text line.
-     * @param raw The line text
-     * @return Number of leading spaces
-     */
     private static int leadingSpaces(final String raw) {
         int count = 0;
         while (count < raw.length() && raw.charAt(count) == ' ') {
@@ -376,11 +292,6 @@ final class Eo implements Iterable<Directive> {
         return count;
     }
 
-    /**
-     * Whether a string is empty or contains only whitespace.
-     * @param raw The string
-     * @return True when blank
-     */
     private static boolean isBlank(final String raw) {
         boolean blank = true;
         for (int idx = 0; idx < raw.length(); idx = idx + 1) {
@@ -392,15 +303,6 @@ final class Eo implements Iterable<Directive> {
         return blank;
     }
 
-    /**
-     * Classify the line and dispatch into its {@link Line} impl with
-     * the per-line savepoint applied for recovery.
-     * @param span The source span
-     * @param stack The indent stack
-     * @param globals The global parser state
-     * @param emit The directives sink
-     * @return True when the line failed to parse
-     */
     private static boolean dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
@@ -421,12 +323,6 @@ final class Eo implements Iterable<Directive> {
         return failed;
     }
 
-    /**
-     * Whether the span is a text-block opener — body is exactly
-     * {@code """} (possibly with trailing whitespace).
-     * @param span The span
-     * @return True if the line opens a text block
-     */
     private static boolean opensTextBlock(final Span span) {
         boolean opens = !span.blank() && span.body().startsWith("\"\"\"");
         if (opens) {
@@ -441,25 +337,12 @@ final class Eo implements Iterable<Directive> {
         return opens;
     }
 
-    /**
-     * Whether the span closes the current open text block. Per R-3.11.3
-     * the closer must be a {@code """} line at the opener's indent;
-     * deeper-indent {@code """} are body content.
-     * @param span The span
-     * @param globals The global parser state
-     * @return True if the line closes the current text block
-     */
     private static boolean closesTextBlock(final Span span, final Globals globals) {
         return !span.blank()
             && span.indent() == globals.textBlockOpenIndent()
             && span.body().startsWith("\"\"\"");
     }
 
-    /**
-     * Classify a span into a {@link Line} per Appendix B.
-     * @param span The span
-     * @return The classified line
-     */
     private static Line classify(final Span span) {
         final Line line;
         if (span.blank()) {
@@ -484,13 +367,6 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    /**
-     * Classify a line that opens an application (§3.1) — headed either
-     * by a name or by a root token, in each case with or without a
-     * reversed dispatch.
-     * @param span The span
-     * @return The classified line
-     */
     private static Line applied(final Span span) {
         final Line line;
         if (Eo.nameHead(span)) {
@@ -503,13 +379,6 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    /**
-     * A line whose head no rule of §3.1 accepts — dispatching it throws
-     * with the reason, so {@link #classify} itself stays free of failure
-     * paths.
-     * @param span The line span
-     * @return The line shape
-     */
     private static Line rejected(final Span span) {
         final String reason;
         if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
@@ -522,47 +391,18 @@ final class Eo implements Iterable<Directive> {
         };
     }
 
-    /**
-     * Whether a line head starts a meta directive (§3.2) — a {@code +}
-     * that does not open a signed number. Factored out of
-     * {@link #classify} beside {@link #rootHead}, so that method's
-     * complexity stays within bounds.
-     * @param span The span
-     * @return True if the head opens a meta
-     */
     private static boolean metaHead(final Span span) {
         return span.head() == '+' && !Eo.signedDigit(span);
     }
 
-    /**
-     * Whether a line head starts a throwing formation (R-6.3.6) — the
-     * {@code -->} marker.
-     * @param span The span
-     * @return True if the head opens a throwing formation
-     */
     private static boolean throwHead(final Span span) {
         return span.head() == '-' && span.body().startsWith("-->");
     }
 
-    /**
-     * Whether a line head starts a NAME-headed application group (§3.1) —
-     * a lowercase letter per §2.3.
-     * @param span The span
-     * @return True if the head belongs to the NAME-headed group
-     */
     private static boolean nameHead(final Span span) {
         return span.head() >= 'a' && span.head() <= 'z';
     }
 
-    /**
-     * Classify a {@code +}-headed non-number line (§3.1): the
-     * {@code ++>} test-attribute shorthand desugars to a bare
-     * formation with a {@code +>} suffix (R-6.3.6); anything else is
-     * a meta directive (§3.2). The throwing counterpart {@code -->}
-     * is {@code -}-headed and handled directly in {@link #classify}.
-     * @param span The line span
-     * @return The line shape
-     */
     private static Line plussed(final Span span) {
         final Line line;
         if (span.body().startsWith("++>")) {
@@ -573,24 +413,6 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    /**
-     * Classify an application-like line — the inner dispatch shared by
-     * the identifier-headed and root-headed line groups (§3.1):
-     * reversed dispatch, only-phi formation, compact tuple, or plain
-     * application.
-     *
-     * <p>An only-phi formation ({@code lhs > [voids] > name}) is
-     * recognised before a bare reversed dispatch, so a trailing-dot LHS
-     * carrying an inline void suffix ({@code if. > [t] >> rec}) is
-     * routed to {@link LnOnlyPhi} — which understands the {@code [voids]}
-     * suffix — rather than to {@link LnReversed}, which would hand the
-     * whole {@code > [t] >> rec} tail to the void-unaware suffix parser
-     * and reject the leading {@code [} as trailing garbage.</p>
-     *
-     * @param span The line span
-     * @param reversed Whether the line is a reversed dispatch
-     * @return The line shape
-     */
     private static Line applicative(final Span span, final boolean reversed) {
         final Line line;
         if (Eo.onlyPhi(span)) {
@@ -605,17 +427,6 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    /**
-     * End-of-stream checks — §8 of the spec.
-     *
-     * <p>Reports unclosed text blocks (R-8.2) and excessive trailing
-     * blanks (R-8.4), and flushes a top comment block left pending in a
-     * comment-only file (R-8.3). EOF stack popping with close-time checks
-     * already ran via {@link Stack#close()}.</p>
-     *
-     * @param globals The global parser state
-     * @param emit The directives sink
-     */
     private static void finish(final Globals globals, final Emit emit) {
         if (globals.inTextBlock()) {
             emit.error(
@@ -636,81 +447,34 @@ final class Eo implements Iterable<Directive> {
         }
     }
 
-    /**
-     * Whether a line head starts a root-headed application group (§3.1) —
-     * a literal, group, star, or one of the root/self tokens. Factored
-     * out of {@link #classify} so that method's path complexity stays
-     * within bounds; the alternatives are unchanged.
-     * @param span The span
-     * @return True if the head belongs to the root-headed group
-     */
     private static boolean rootHead(final Span span) {
         return Eo.tokenHead(span.head()) || Eo.literalHead(span);
     }
 
-    /**
-     * Whether a line head is one of the group, star, root, or self
-     * tokens of §3.1 — the non-literal members of the root-headed
-     * group.
-     * @param head The head character
-     * @return True if the head is such a token
-     */
     private static boolean tokenHead(final char head) {
         return Eo.ROOT_TOKENS.indexOf(head) >= 0;
     }
 
-    /**
-     * Whether a line head opens a literal of §3.1 — a string, a bytes
-     * literal, or a number with or without a sign.
-     * @param span The span
-     * @return True if the head opens a literal
-     */
     private static boolean literalHead(final Span span) {
         final char head = span.head();
         return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
     }
 
-    /**
-     * Whether a line head opens a BYTES literal — an uppercase hex
-     * digit, or the dash that leads the empty {@code --} form.
-     * @param head The head character
-     * @return True if the head opens a bytes literal
-     */
     private static boolean bytesHead(final char head) {
         return head >= 'A' && head <= 'F' || head == '-';
     }
 
-    /**
-     * Whether a line head opens a number — a digit, or a sign the
-     * digits of §3.2.5 follow.
-     * @param span The span
-     * @return True if the head opens a number
-     */
     private static boolean numberHead(final Span span) {
         final char head = span.head();
         return head >= '0' && head <= '9' || Eo.signedDigit(span);
     }
 
-    /**
-     * Determine whether a {@code +}-headed span is the start of a signed
-     * number (per R-3.2.5) rather than a meta directive.
-     * @param span The span (its head is {@code +})
-     * @return True if the character after {@code +} is a digit
-     */
     private static boolean signedDigit(final Span span) {
         final String body = span.body();
         return body.length() >= 2
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
     }
 
-    /**
-     * Classify a {@code ?}-headed line: a fragile method-continuation
-     * line ({@code ?.method}) when a {@code .} immediately follows the
-     * {@code ?} (R-3.5), otherwise a vertical void ({@code ? > name},
-     * §3.4).
-     * @param span The span (its head is {@code ?})
-     * @return The line shape
-     */
     private static Line questioned(final Span span) {
         final Line line;
         if (Eo.qdot(span.body(), 0)) {
@@ -721,42 +485,17 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    /**
-     * Whether the fragile {@code ?.} operator appears at {@code idx} in
-     * {@code body} — a {@code ?} immediately followed by a {@code .}.
-     * @param body The line body
-     * @param idx Index to test
-     * @return True if {@code ?.} starts at {@code idx}
-     */
     private static boolean qdot(final String body, final int idx) {
         return idx + 1 < body.length()
             && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
-    /**
-     * Whether an identifier-headed span carries an only-phi
-     * formation suffix — either the explicit {@code > [params] > name}
-     * form (detected by a {@code "> ["} search) or the compact
-     * {@code ++> name} test shorthand ({@code lhs ++> name}, R-3.10.8),
-     * which desugars to {@code lhs > [] +> name}. The authoritative
-     * parse is in {@link LnOnlyPhi}.
-     * @param span The span
-     * @return True if the line shape is only-phi
-     */
     private static boolean onlyPhi(final Span span) {
         return Eo.topLevelGreaterBracketIndex(span.body()) >= 0
             || Eo.topLevelPlusPlusArrowIndex(span.body()) >= 0
             || Eo.topLevelMinusMinusArrowIndex(span.body()) >= 0;
     }
 
-    /**
-     * Whether an identifier-headed span is a compact-tuple line —
-     * i.e., contains {@code ' *'} followed by digits, end-of-line, or
-     * a suffix marker (Appendix B + §3.9). The scan is approximate;
-     * the {@link LnCompactTuple} parser does the authoritative check.
-     * @param span The span (its head is a lowercase letter)
-     * @return True if the line shape is compact-tuple
-     */
     private static boolean compactTuple(final Span span) {
         final String body = span.body();
         int idx = 0;
@@ -771,14 +510,6 @@ final class Eo implements Iterable<Directive> {
         return compact;
     }
 
-    /**
-     * Whether what follows a compact-tuple {@code *} confirms the shape
-     * — a tuple size, a suffix marker straight away, or a space with a
-     * suffix marker behind it.
-     * @param body Line body
-     * @param after Index right after the star
-     * @return True if the shape is confirmed
-     */
     private static boolean starTail(final String body, final int after) {
         final char next = body.charAt(after);
         final boolean confirmed;
@@ -790,14 +521,6 @@ final class Eo implements Iterable<Directive> {
         return confirmed;
     }
 
-    /**
-     * Whether the body starting at {@code from} begins with a suffix
-     * marker (R-3.10) — {@code >}, {@code >>}, {@code +>}, or the
-     * throwing-test {@code ->}.
-     * @param body Line body
-     * @param from Index to inspect
-     * @return True if a suffix marker starts here
-     */
     private static boolean suffixAt(final String body, final int from) {
         final boolean starts;
         if (from >= body.length()) {
@@ -812,13 +535,6 @@ final class Eo implements Iterable<Directive> {
         return starts;
     }
 
-    /**
-     * Determine whether an identifier-headed span is a reversed
-     * dispatch — i.e., the leading NAME is immediately followed by
-     * {@code .} and then a space or end-of-body (Appendix B).
-     * @param span The span (its head is a lowercase letter)
-     * @return True if the line shape is reversed dispatch
-     */
     private static boolean reversedDispatch(final Span span) {
         final String body = span.body();
         int idx = 0;
@@ -841,16 +557,6 @@ final class Eo implements Iterable<Directive> {
         return reversed;
     }
 
-    /**
-     * Whether a root-headed line (e.g., {@code ^.} or {@code @.}) is
-     * a reversed-dispatch — the root character is immediately
-     * followed by {@code .} and then a space or end-of-body. The
-     * head's source token maps to its XMIR symbol per R-9.3 inside
-     * {@link LnReversed}.
-     * @param span The span
-     * @return True if the line shape is reversed dispatch with a
-     *  root head
-     */
     private static boolean rootReversedDispatch(final Span span) {
         final char head = span.head();
         final String body = span.body();
@@ -866,38 +572,10 @@ final class Eo implements Iterable<Directive> {
         return reversed;
     }
 
-    /**
-     * Whether a character terminates a NAME-like identifier scan per
-     * §2.3 (excluding the dot, since callers check it explicitly).
-     * @param glyph Character
-     * @return True if the character ends the name scan
-     */
     private static boolean nameTerminator(final char glyph) {
         return Eo.NAME_TERMINATORS.indexOf(glyph) >= 0;
     }
 
-    /**
-     * Close-time check hostarts (§5.3).
-     *
-     * <p>Runs semantic checks on the popped level and balances the XML
-     * cursor with an {@link Emit#close()} — every {@link Level} pushed
-     * corresponds to one open {@code <o>} that must be closed when the
-     * level pops. Two kinds open a second {@code <o>} and so emit an
-     * extra close: a compact tuple (its {@code Φ.tuple} wrapper) and an
-     * open only-phi formation (its φ application, left open for vertical
-     * arguments per §4.5). An only-phi formation whose φ is a compact
-     * tuple ({@code seq * > [m]}) opens both — the wrapper closes
-     * first.</p>
-     *
-     * <p>Checks: R-5.3.1 (naming requirement for plain children of
-     * formations and top-level objects), the only-phi argument-naming
-     * ban (§4.5), bare-reversed receiver presence, and the compact-tuple
-     * count.</p>
-     *
-     * @param level The level being closed
-     * @param emit The directives sink
-     * @param naming Whether the naming requirement applies yet
-     */
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
         try {
             level.commitArg(null);
@@ -921,14 +599,6 @@ final class Eo implements Iterable<Directive> {
         emit.close();
     }
 
-    /**
-     * Report naming violations on the popped level: a plain child of a
-     * formation or top-level object that lacks a name (R-5.3.1), and an
-     * only-phi argument that carries one, which §4.5 bans.
-     * @param level The level being closed
-     * @param emit The directives sink
-     * @param naming False while a level is only sealed - a chain is named on its last link
-     */
     private static void checkNaming(final Level level, final Emit emit, final boolean naming) {
         if (naming && !level.named()
             && (level.parent() == Kind.TOP_LEVEL
@@ -946,15 +616,6 @@ final class Eo implements Iterable<Directive> {
         }
     }
 
-    /**
-     * Compact-tuple close: report under-count, then either synthesise
-     * the empty {@code Φ.tuple star=""} wrapper (when {@code N} matched
-     * the children exactly and nothing was emitted yet) or close the
-     * already-open wrapper. Shared by a {@link Kind#COMPACT_TUPLE} head
-     * and a {@link Level#star()} only-phi φ.
-     * @param level The compact-tuple level
-     * @param emit The directives sink
-     */
     private static void closeCompactTuple(final Level level, final Emit emit) {
         if (level.children() < level.count()) {
             emit.error(
@@ -976,14 +637,6 @@ final class Eo implements Iterable<Directive> {
         }
     }
 
-    /**
-     * Pre-child hostarts (§3.9 / R-3.9.2): emit the synthesised
-     * {@code Φ.tuple} wrapper exactly once when a compact-tuple parent —
-     * a {@link Kind#COMPACT_TUPLE} head or a {@link Level#star()} only-phi
-     * φ — has accumulated its first N direct children.
-     * @param parent The parent level
-     * @param emit The directives sink
-     */
     private static void beforeChild(final Level parent, final Emit emit) {
         if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
             && !parent.tupled()

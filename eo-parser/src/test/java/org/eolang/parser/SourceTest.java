@@ -128,47 +128,22 @@ final class SourceTest {
         );
     }
 
-    /**
-     * Join the rows with the given separator (no trailing separator).
-     * @param sep Separator
-     * @param rows Rows to join
-     * @return Joined text
-     */
     private static String join(final String sep, final String... rows) {
         return String.join(sep, rows);
     }
 
-    /**
-     * LF character as a one-char string — used so source inputs avoid
-     * the {@code \n} string literal that triggers Qulice's
-     * line-separator rule.
-     * @return LF
-     */
     private static String newline() {
         return String.valueOf((char) 10);
     }
 
-    /**
-     * CR character.
-     * @return CR
-     */
     private static String creturn() {
         return String.valueOf((char) 13);
     }
 
-    /**
-     * CRLF pair.
-     * @return CRLF
-     */
     private static String crnl() {
         return SourceTest.creturn().concat(SourceTest.newline());
     }
 
-    /**
-     * Collect all spans from a source.
-     * @param source The source
-     * @return Materialised list of spans
-     */
     private static List<Span> collect(final Source source) {
         final List<Span> out = new ArrayList<>(0);
         for (final Span span : source) {
@@ -177,11 +152,6 @@ final class SourceTest {
         return out;
     }
 
-    /**
-     * Collect the text of each span.
-     * @param source The source
-     * @return Materialised list of span texts
-     */
     private static List<String> texts(final Source source) {
         final List<String> out = new ArrayList<>(0);
         for (final Span span : source) {

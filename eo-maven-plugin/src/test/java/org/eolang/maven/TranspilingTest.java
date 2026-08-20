@@ -31,10 +31,6 @@ final class TranspilingTest {
         );
     }
 
-    /**
-     * A minimal {@link Transpiling} instance for testing its private helpers.
-     * @return A new instance
-     */
     private static Transpiling transpiling() {
         return new Transpiling(
             Collections.emptyList(),

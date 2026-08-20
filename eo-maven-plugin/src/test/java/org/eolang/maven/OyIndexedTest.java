@@ -146,9 +146,6 @@ final class OyIndexedTest {
         );
     }
 
-    /**
-     * Returns the stdout path.
-     */
     private String stdout() {
         return "stdout";
     }

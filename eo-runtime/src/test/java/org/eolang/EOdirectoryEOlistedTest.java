@@ -95,11 +95,6 @@ final class EOdirectoryEOlistedTest {
         );
     }
 
-    /**
-     * The names the atom lists for the directory at this path.
-     * @param path The path of the directory to list
-     * @return The listed names, in the order the atom returns them
-     */
     private List<String> names(final Path path) {
         final List<String> names = new ArrayList<>(0);
         for (final Phi name : new TupleToArray(this.listing(path.toString())).get()) {
@@ -108,11 +103,6 @@ final class EOdirectoryEOlistedTest {
         return names;
     }
 
-    /**
-     * Make an application of the atom to a directory at this path.
-     * @param path The path of the directory to list
-     * @return The atom applied to the directory
-     */
     private Phi listing(final String path) {
         final Phi file = Phi.Φ.take("file").copy();
         file.put(0, new Data.ToPhi(path));

@@ -566,24 +566,12 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * An EO program that makes the transpiler build objects at each of the
-     * three places it emits a {@code new} of the base class: the context of
-     * a generated {@code apply()} for the nested formation, the argument of
-     * a {@code PhApplication} for the number, and an anonymous abstract
-     * object with no children for the empty argument.
-     * @return Source code of the program
-     */
     private static String instantiating() {
         return String.format(
             "+architect yegor256@gmail.com%n+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
         );
     }
 
-    /**
-     * The smallest EO program, with a single data attribute.
-     * @return Source code of the program
-     */
     private static String plain() {
         return String.join(
             System.lineSeparator(),
@@ -595,10 +583,6 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * An EO program whose only attribute is a dispatch on a number.
-     * @return Source code of the program
-     */
     private static String dispatching() {
         return String.join(
             System.lineSeparator(),
@@ -610,11 +594,6 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * An EO program whose only attribute is a throwing test dispatching on
-     * a number.
-     * @return Source code of the program
-     */
     private static String throwing() {
         return String.join(
             System.lineSeparator(),
@@ -628,11 +607,6 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * An EO program whose only attribute is a truthy test dispatching on
-     * a number.
-     * @return Source code of the program
-     */
     private static String truthy() {
         return String.join(
             System.lineSeparator(),
@@ -646,10 +620,6 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * The EO program holding two top-level objects.
-     * @return Source code of the program
-     */
     private static String pair() {
         return String.join(
             System.lineSeparator(),
@@ -664,30 +634,16 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * The EO program to transpile, taken from test resources.
-     * @return Source code of the program
-     */
     private static String program() {
         return new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/mess.eo"))
         ).asString();
     }
 
-    /**
-     * The Java file the program is transpiled into.
-     * @return Path relative to the workspace
-     */
     private static String compiled() {
         return "target/generated/org/eolang/EO_foo/EO_x/EOmain.java";
     }
 
-    /**
-     * Get all classes in directory.
-     * @param root Directory to get classes from
-     * @return Set of classes
-     * @throws IOException If fails.
-     */
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)
@@ -696,30 +652,14 @@ final class MjTranspileTest {
         }
     }
 
-    /**
-     * Is java file.
-     * @param path Path to check
-     * @return True if path is java file
-     */
     private static boolean isJava(final Path path) {
         return Files.isRegularFile(path) && path.toString().endsWith(".java");
     }
 
-    /**
-     * Get filename.
-     * @param path Path to get filename from
-     * @return Filename
-     */
     private static String filename(final Path path) {
         return path.getFileName().toString();
     }
 
-    /**
-     * Check that a generated Java source came out whole, with balanced
-     * brackets and, for the main object, a class declaration.
-     * @param file Generated Java file
-     * @return TRUE if the source is intact
-     */
     private static boolean intact(final Path file) {
         final String java = new UncheckedText(new TextOf(file)).asString();
         return MjTranspileTest.balanced(java, '{', '}')
@@ -728,13 +668,6 @@ final class MjTranspileTest {
                 || java.contains("class EOmain"));
     }
 
-    /**
-     * Check that every opening bracket has a matching closing one, in order.
-     * @param text Text to check
-     * @param open Opening bracket character
-     * @param close Closing bracket character
-     * @return TRUE if brackets are balanced
-     */
     private static boolean balanced(final String text, final char open, final char close) {
         int depth = 0;
         boolean valid = true;

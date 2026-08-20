@@ -112,10 +112,6 @@ public final class MjRegister extends MjSafe {
         }
     }
 
-    /**
-     * Exclusion GLOB filters, as they were configured.
-     * @return Set of GLOB filters, never {@code NULL}
-     */
     private Set<String> excludes() {
         final Set<String> globs;
         if (this.excludeSources == null) {
@@ -126,13 +122,6 @@ public final class MjRegister extends MjSafe {
         return globs;
     }
 
-    /**
-     * Register a single EO source file.
-     * @param file Source file
-     * @param unplace Unplace builder for naming
-     * @param tojos The foreign catalog to register into
-     * @return Always 1, to count the registered files
-     */
     private int register(
         final Path file, final Unplace unplace, final TjsForeign tojos
     ) {

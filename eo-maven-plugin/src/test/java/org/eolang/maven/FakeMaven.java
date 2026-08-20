@@ -416,11 +416,6 @@ final class FakeMaven {
         return suffix;
     }
 
-    /**
-     * Ensures the map of allowed params for the Mojo.
-     * @param mojo Mojo
-     * @return Map of params that applicable to the Mojo
-     */
     private Map<String, ?> allowedParams(final Class<? extends AbstractMojo> mojo) {
         final Map<String, Object> res = new HashMap<>();
         final Set<String> allowed = FakeMaven.mojoFields(mojo, new HashSet<>());
@@ -432,27 +427,14 @@ final class FakeMaven {
         return res;
     }
 
-    /**
-     * Returns the current scope that was set.
-     * @return The current scope
-     */
     private String scope() {
         return String.valueOf(this.params.getOrDefault("scope", "compile"));
     }
 
-    /**
-     * The id of the program in tojos file.
-     * @param id Number of the program
-     * @return String id
-     */
     private static String tojoId(final int id) {
         return String.format("foo.x.main%s", FakeMaven.suffix(id));
     }
 
-    /**
-     * Plugin descriptor with test version.
-     * @return Plugin descriptor
-     */
     private static PluginDescriptor pluginDescriptor() {
         final PluginDescriptor descriptor = new PluginDescriptor();
         descriptor.setGroupId("org.eolang");
@@ -461,12 +443,6 @@ final class FakeMaven {
         return descriptor;
     }
 
-    /**
-     * Looks for all declared fields for mojo and its parents.
-     * @param mojo Mojo or mojo parent
-     * @param fields Already collected fields
-     * @return All mojo and mojo parent fields
-     */
     private static Set<String> mojoFields(final Class<?> mojo, final Set<String> fields) {
         final Set<String> res;
         if (mojo == null) {

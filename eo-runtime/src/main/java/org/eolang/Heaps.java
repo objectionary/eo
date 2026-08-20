@@ -211,12 +211,6 @@ final class Heaps {
         }
     }
 
-    /**
-     * Allocate a block in memory.
-     * @param phi Object
-     * @param size How many bytes
-     * @return The identifier of pointer to the block in memory
-     */
     private int malloc(final Phi phi, final int size) {
         if (size < 0) {
             throw new ExFailure(
@@ -240,10 +234,6 @@ final class Heaps {
         return identifier;
     }
 
-    /**
-     * Free it.
-     * @param identifier Identifier of pointer
-     */
     private void free(final int identifier) {
         this.lock.lock();
         try {

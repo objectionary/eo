@@ -120,12 +120,6 @@ final class LnMethod implements Line {
         globals.markEmitted();
     }
 
-    /**
-     * Validate the line has a predecessor to attach to and that the
-     * predecessor's chain is not already horizontally completed —
-     * R-5.2.5 / R-5.2.10 / R-5.2.3(b).
-     * @param stack Indent stack
-     */
     private void precheck(final Stack stack) {
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             throw new ParseError(
@@ -147,13 +141,6 @@ final class LnMethod implements Line {
         }
     }
 
-    /**
-     * Build a token stream and verify the line opens a dispatch — a
-     * plain {@code .} or the fragile {@code ?.} (R-3.5). The cursor
-     * stays on the operator's first character; callers seek past it
-     * after recording the column.
-     * @return Tokens positioned on the leading dispatch operator
-     */
     private Tokens dottedTokens() {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         if (tokens.atEnd() || !tokens.dispatchAhead()) {

@@ -48,11 +48,6 @@ public final class AtomSafe implements Atom {
         }
     }
 
-    /**
-     * The failure to throw out of {@link #lambda()}.
-     * @param cause What the original atom threw
-     * @return The failure
-     */
     private static ExFailure failure(final Throwable cause) {
         return new ExFailure(
             String.format(

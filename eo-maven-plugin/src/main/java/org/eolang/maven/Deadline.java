@@ -103,12 +103,6 @@ final class Deadline {
         }
     }
 
-    /**
-     * Turn the problem into a Maven failure, logging its causes first.
-     * @param msg The message for the failure
-     * @param problem The problem itself
-     * @throws MojoFailureException For sure
-     */
     private void reported(final String msg, final Throwable problem)
         throws MojoFailureException {
         if (this.unroll) {

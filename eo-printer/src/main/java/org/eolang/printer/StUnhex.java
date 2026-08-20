@@ -82,12 +82,6 @@ final class StUnhex extends StEnvelope {
         super(origin);
     }
 
-    /**
-     * Convert given number to string.
-     * Prints as int when the fractional part is zero and the magnitude fits in long.
-     * @param num Number to convert
-     * @return Number converted to string
-     */
     private static String number(final Double num) {
         final String str;
         if (num % 1 == 0) {
@@ -104,20 +98,6 @@ final class StUnhex extends StEnvelope {
         return str;
     }
 
-    /**
-     * Make a byte buffer from a hex string.
-     *
-     * <p>Each byte is two hex characters, so a payload with an odd number of
-     * digits has a stray trailing nibble that cannot form a complete byte.
-     * Rather than reading past the end of the string and throwing, this
-     * method returns {@link Optional#empty()} for such a payload, so that
-     * callers leave the offending {@code Φ.number}/{@code Φ.string} node
-     * untouched - the same strategy the number branch already uses for a
-     * wrong byte count.</p>
-     *
-     * @param txt The text
-     * @return The buffer of bytes, or empty if the payload has odd length
-     */
     private static Optional<ByteBuffer> buffer(final String txt) {
         final int len = txt.length();
         final Optional<ByteBuffer> result;
@@ -134,18 +114,6 @@ final class StUnhex extends StEnvelope {
         return result;
     }
 
-    /**
-     * Strictly decode UTF-8 bytes into a string.
-     * The lenient JDK decoder ({@code new String(bytes, UTF_8)}) silently
-     * replaces malformed or incomplete sequences with {@code U+FFFD}, which
-     * does not round-trip: re-parsing the printed literal yields the bytes
-     * {@code EF-BF-BD} instead of the original ones, so a pure formatting pass
-     * would change the program. A strict decoder reports such input instead,
-     * and this method returns {@link Optional#empty()} for it, leaving the
-     * caller to keep the explicit {@code Φ.string}/{@code Φ.bytes} structure.
-     * @param bytes The raw bytes
-     * @return The decoded string, or empty if the bytes are not valid UTF-8
-     */
     private static Optional<String> decode(final byte[] bytes) {
         Optional<String> result;
         try {
@@ -162,16 +130,6 @@ final class StUnhex extends StEnvelope {
         return result;
     }
 
-    /**
-     * Escape a decoded string for an EO string literal. Only the
-     * characters an EO literal actually requires are escaped — the
-     * backslash, the double quote, and the control characters (as
-     * {@code \n}, {@code \t}, {@code \r}, {@code \b}, {@code \f}, or a
-     * {@code \\uXXXX} fallback). Printable Unicode glyphs are left
-     * intact, since EO sources are UTF-8.
-     * @param txt The decoded text
-     * @return The escaped text, ready to sit between double quotes
-     */
     private static String escape(final String txt) {
         final StringBuilder out = new StringBuilder(txt.length());
         int idx = 0;
@@ -183,11 +141,6 @@ final class StUnhex extends StEnvelope {
         return out.toString();
     }
 
-    /**
-     * Escape a single code point for an EO string literal.
-     * @param point The code point
-     * @return The verbatim glyph, or its escape sequence
-     */
     private static String escaped(final int point) {
         final String result;
         if (point == '\\') {
@@ -212,11 +165,6 @@ final class StUnhex extends StEnvelope {
         return result;
     }
 
-    /**
-     * Remove all dashes from the given text, like "0A-7E-43" to "0A7E43".
-     * @param txt The text
-     * @return The same text, but without dashes
-     */
     private static String undash(final String txt) {
         final StringBuilder out = new StringBuilder(txt.length());
         for (int idx = 0; idx < txt.length(); ++idx) {
@@ -229,11 +177,6 @@ final class StUnhex extends StEnvelope {
         return out.toString();
     }
 
-    /**
-     * Find elements by XPath for the given type.
-     * @param type The type to match
-     * @return XPath
-     */
     private static String elements(final String type) {
         return String.format(
             "//o[@base='Φ.%s' and o[1][@base='Φ.bytes' and string-length(normalize-space(text()))>0]]",

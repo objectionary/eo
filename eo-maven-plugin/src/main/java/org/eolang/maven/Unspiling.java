@@ -80,10 +80,6 @@ final class Unspiling implements Step {
         }
     }
 
-    /**
-     * Unspile classes.
-     * @param walk Collection of compiled classes
-     */
     private void unspile(final Walk walk) {
         final Set<String> included = new WkDefault(this.generated)
             .stream().map(
