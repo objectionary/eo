@@ -640,7 +640,8 @@ final class Tokens {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;
-        } else if (text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
+        } else if ("^".equals(text)
+            || text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
             valid = true;
         } else if (text.chars().allMatch(ch -> ch >= '0' && ch <= '9')) {
             valid = text.charAt(0) != '0' || "0".equals(text);
