@@ -216,10 +216,6 @@ final class StackTest {
         );
     }
 
-    /**
-     * Trigger the first-push-at-non-zero-indent violation and capture it.
-     * @return The thrown error
-     */
     private static ParseError firstPushIndentViolation() {
         return Assertions.assertThrows(
             ParseError.class,

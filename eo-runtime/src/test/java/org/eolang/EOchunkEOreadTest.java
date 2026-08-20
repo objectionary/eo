@@ -74,13 +74,6 @@ final class EOchunkEOreadTest {
         );
     }
 
-    /**
-     * A {@code chunk.read} Phi with a valid id and the
-     * given {@code offset} and {@code length}.
-     * @param offset Offset attribute value
-     * @param length Length attribute value
-     * @return The configured read Phi
-     */
     private static Phi read(final Phi offset, final Phi length) {
         return new PhApplication(
             new PhApplication(

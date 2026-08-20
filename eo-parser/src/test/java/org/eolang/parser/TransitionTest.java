@@ -128,12 +128,6 @@ final class TransitionTest {
         );
     }
 
-    /**
-     * Apply a happlication child at indent 2 onto the given stack.
-     * @param stack The stack
-     * @param permitted Whether the child is permitted under an atom parent
-     * @return The pushed-or-replaced level
-     */
     private Level happlicationChild(final Stack stack, final boolean permitted) {
         return new Transition(stack, new Span("  42", 2)).apply(
             Kind.HAPPLICATION, Openness.HCOMPLETED, new Admission(null, permitted)

@@ -98,21 +98,11 @@ final class Cache {
         }
     }
 
-    /**
-     * Get hash file path for the given tail.
-     * @param tail Tail path
-     * @return Hash file path
-     */
     private Path hash(final Path tail) {
         final Path full = this.base.resolve(tail.normalize());
         return full.getParent().resolve(String.format("%s.sha256", full.getFileName().toString()));
     }
 
-    /**
-     * Calculate SHA-256 hash of a file or directory.
-     * @param any File or directory path
-     * @return Base64-encoded SHA-256 hash of the file or directory contents
-     */
     private String sha(final Path any) {
         if (!Files.isDirectory(any) && !Files.isRegularFile(any)) {
             throw new IllegalArgumentException(

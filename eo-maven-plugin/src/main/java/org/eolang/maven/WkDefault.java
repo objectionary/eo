@@ -71,11 +71,6 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
         );
     }
 
-    /**
-     * List them all.
-     * @param dir The dir
-     * @return List
-     */
     private static List<Path> list(final Path dir) {
         try {
             final List<Path> files = new ArrayList<>(0);
@@ -91,12 +86,6 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
         }
     }
 
-    /**
-     * Get regular files from directory.
-     * @param dir The dir
-     * @return Collection of files
-     * @throws IOException If fails.
-     */
     private static Collection<Path> regular(final Path dir) throws IOException {
         try (Stream<Path> walk = Files.walk(dir)) {
             return walk.filter(file -> !file.toFile().isDirectory())
@@ -104,12 +93,6 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
         }
     }
 
-    /**
-     * Create glob matcher from text.
-     * @param text The pattern, e.g. "**&#47;*.java"
-     * @param file The file to match
-     * @return Matcher
-     */
     private boolean matches(final String text, final Path file) {
         return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
             Paths.get(

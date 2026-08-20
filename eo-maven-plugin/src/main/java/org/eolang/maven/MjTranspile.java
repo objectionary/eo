@@ -183,13 +183,6 @@ public final class MjTranspile extends MjSafe {
         }
     }
 
-    /**
-     * The compile source roots a human wrote, which are all of them but the
-     * ones inside the build directory, since a root a previous goal generated
-     * holds a {@code package-info.java} of its own and would fool the
-     * transpiler into skipping the file it has to write.
-     * @return The directories with hand-written Java
-     */
     private Collection<Path> roots() {
         final Path build = this.targetDir.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
@@ -198,16 +191,6 @@ public final class MjTranspile extends MjSafe {
             .collect(Collectors.toList());
     }
 
-    /**
-     * The name of the class that the generated classes extend, refused right
-     * here when it is not a Java class name. Returning the name instead of
-     * checking it apart means a caller cannot end up with a name that was
-     * never looked at, since {@code to-java.xsl} copies whatever it is given
-     * into the {@code extends} clause and an unusable name would surface as
-     * a compilation error in generated sources, far from the option that
-     * caused it.
-     * @return The name of the class to extend
-     */
     private String base() {
         if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
             throw new IllegalArgumentException(

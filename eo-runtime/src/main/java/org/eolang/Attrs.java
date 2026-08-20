@@ -19,15 +19,17 @@ import java.util.Set;
  * {@link AbstractMap.SimpleEntry} (a constructor invocation, not a method
  * call) being acceptable as a {@code Map.Entry} factory.</p>
  *
- * <p>The underlying {@link LinkedHashMap} is built lazily on first access so the
- * constructor itself remains free of method calls.</p>
+ * <p>The underlying {@link LinkedHashMap} is built lazily on first access, so
+ * the constructor does nothing but copy the entries it was given. The copy is
+ * what keeps the map immune to a caller that mutates its own array after
+ * handing it over.</p>
  *
  * @since 0.59
  */
 public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
-     * Initial entries supplied via constructor.
+     * Initial entries supplied via constructor, our own copy of them.
      */
     private final Map.Entry<String, Attribute>[] entries;
 
@@ -41,10 +43,9 @@ public final class Attrs extends AbstractMap<String, Attribute> {
      * @param initial Entries to populate the map with
      */
     @SafeVarargs
-    @SuppressWarnings("PMD.ArrayIsStoredDirectly")
     public Attrs(final Map.Entry<String, Attribute>... initial) {
         super();
-        this.entries = initial;
+        this.entries = initial.clone();
     }
 
     @Override
@@ -57,10 +58,6 @@ public final class Attrs extends AbstractMap<String, Attribute> {
         return this.resolve().size();
     }
 
-    /**
-     * Resolve the entries into a backing map, lazily.
-     * @return The backing map
-     */
     private Map<String, Attribute> resolve() {
         if (this.resolved == null) {
             final Map<String, Attribute> map = new LinkedHashMap<>(this.entries.length);

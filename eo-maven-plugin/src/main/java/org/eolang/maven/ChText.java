@@ -83,10 +83,6 @@ final class ChText implements CommitHash {
         return hash;
     }
 
-    /**
-     * Find and return Git SHA for the given tag (or throw if not found).
-     * @return The Git SHA
-     */
     private String inside() {
         return new Unchecked<>(
             new Mapped<>(

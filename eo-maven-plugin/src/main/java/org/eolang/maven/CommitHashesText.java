@@ -69,10 +69,6 @@ final class CommitHashesText extends TextEnvelope {
         super(new Synced(new Sticky(source)));
     }
 
-    /**
-     * Download from the URL and return the content.
-     * @return The body of the web page
-     */
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static String asText() throws Exception {
         String hashes;

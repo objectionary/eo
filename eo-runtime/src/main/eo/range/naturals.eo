@@ -15,7 +15,11 @@
 
 [] > naturals
   if. > @
-    r.start.is-integer.and r.end.is-integer
+    and.
+      r.start.is-integer.and r.end.is-integer
+      and.
+        r.start.abs.lt safe
+        r.end.abs.lt safe
     range
       [] >>
         build ^.r.start > @
@@ -25,9 +29,10 @@
             1.plus @
       r.end
     T
-      "Range bounds must be integers, but were %f and %f".printf
+      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
         * r.start r.end
   ^ > r
+  2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives
     naturals.
@@ -70,3 +75,13 @@
     range
       1
       3.5
+
+  naturals. --> rejects-a-lower-bound-at-the-precision-boundary
+    range
+      9007199254740992
+      9007199254740994
+
+  naturals. --> rejects-a-negative-lower-bound-at-the-precision-boundary
+    range
+      -9007199254740992
+      0

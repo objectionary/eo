@@ -98,13 +98,6 @@ public final class MjCoverageReport extends MjSafe {
         }
     }
 
-    /**
-     * Build the manifest of every instrumented location, match it against
-     * the raw hits, save the LCOV tracefile, and enforce the minimum
-     * coverage threshold.
-     * @throws IOException If reading the hits file or writing the report
-     *  fails, or the covered percentage is below {@link #minCoverage}
-     */
     private void report() throws IOException {
         final Map<String, Map<Integer, Integer>> perfile = new LinkedHashMap<>(0);
         final Map<String, Integer> lineof = new HashMap<>(0);

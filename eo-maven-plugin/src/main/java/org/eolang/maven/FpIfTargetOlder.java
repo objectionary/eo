@@ -52,13 +52,6 @@ public final class FpIfTargetOlder extends FpEnvelope {
         );
     }
 
-    /**
-     * Returns true if first given path is older in terms of last modified time.
-     * @param first First path to compare
-     * @param second Second path to compare
-     * @return True if first path is older that second path
-     * @throws IOException If fails to compare files
-     */
     private static boolean isOlder(final Path first, final Path second) throws IOException {
         return Files.getLastModifiedTime(first).toInstant().isBefore(
             Files.getLastModifiedTime(second).toInstant()

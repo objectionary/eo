@@ -108,11 +108,6 @@ final class Placing implements Step {
         }
     }
 
-    /**
-     * Place one dependency.
-     * @param dep The name of the dependency
-     * @return How many binaries were placed
-     */
     private long placeDependency(final String dep) {
         if (this.placed.findJar(dep).isPresent()) {
             Logger.debug(this, "Found placed binaries from %s", dep);
@@ -182,12 +177,6 @@ final class Placing implements Step {
                 .count();
         }
 
-        /**
-         * Check if the file has not been placed yet, or {@link #rwte} forces
-         * it to be placed again regardless.
-         * @param file The file to check
-         * @return True if the file is not already placed, or rewriting is on
-         */
         private boolean isNotAlreadyPlaced(final Path file) {
             final Path target = Placing.this.classes.resolve(
                 this.dir.relativize(file)
@@ -211,10 +200,6 @@ final class Placing implements Step {
             return res;
         }
 
-        /**
-         * Print log info about placing a binary.
-         * @param file The file to place
-         */
         private void printLogInfoAboutBinary(final Path file) {
             final Path target = Placing.this.classes.resolve(
                 this.dir.relativize(file)
@@ -245,10 +230,6 @@ final class Placing implements Step {
             }
         }
 
-        /**
-         * Place a binary file to the output directory.
-         * @param file Absolute path of the file to place
-         */
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {

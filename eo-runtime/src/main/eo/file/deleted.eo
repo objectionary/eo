@@ -11,7 +11,9 @@
 [] > deleted
   f.exists.if > @
     if.
-      removed.code.eq 0
+      or.
+        removed.code.eq 0
+        f.exists.not
       f
       T
         "Cant delete the file '%s': %s".printf

@@ -13,7 +13,9 @@ import java.nio.file.Path;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -43,6 +45,29 @@ final class CatalogsTest {
                 }
             ),
             Matchers.not(Matchers.hasItem(false))
+        );
+    }
+
+    @Test
+    void reusesTheSameFormatForTheSamePath(@Mktmp final Path tmp) {
+        final Path file = tmp.resolve("foreign");
+        Assertions.assertDoesNotThrow(
+            () -> {
+                Catalogs.INSTANCE.make(file, "csv");
+                Catalogs.INSTANCE.make(file, "csv");
+            },
+            "Asking for the same path with the same format twice must not fail"
+        );
+    }
+
+    @Test
+    void rejectsADisagreeingFormatForAnAlreadyCachedPath(@Mktmp final Path tmp) {
+        final Path file = tmp.resolve("foreign");
+        Catalogs.INSTANCE.make(file, "csv");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> Catalogs.INSTANCE.make(file, "json"),
+            "Asking for the same path with a different format must fail loudly"
         );
     }
 }

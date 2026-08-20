@@ -141,11 +141,6 @@ final class JavaPlacedTest {
         );
     }
 
-    /**
-     * Create transpiled class.
-     * @param tests Test code
-     * @return Class XML
-     */
     private Xnav clazz(final String tests) throws Exception {
         return new Xnav(
             new Xembler(
