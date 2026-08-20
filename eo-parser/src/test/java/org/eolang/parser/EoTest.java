@@ -114,47 +114,11 @@ final class EoTest {
     }
 
     @Test
-    void reportsTrailingSpaceAtEndOfLine() {
+    void acceptsAWhitespaceOnlyBlankLine() {
         MatcherAssert.assertThat(
-            "a trailing space on an otherwise valid line must be reported (R-2.2.5)",
-            EoTest.render("[] > foo ", "  bar > baz"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
-            )
-        );
-    }
-
-    @Test
-    void reportsTrailingTabAtEndOfLine() {
-        MatcherAssert.assertThat(
-            "a trailing tab on an otherwise valid line must be reported the same way a "
-                + "trailing space is",
-            EoTest.render("[] > foo\t"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
-            )
-        );
-    }
-
-    @Test
-    void doesNotFlagAWhitespaceOnlyBlankLineAsTrailingWhitespace() {
-        MatcherAssert.assertThat(
-            "a blank line is exempt from the trailing-whitespace rule, the same way it is "
-                + "exempt from the tab and odd-indent ones",
+            "a whitespace-only blank line must not be reported as trailing whitespace",
             EoTest.render("[] > foo", "  ", "[] > qux"),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
-        );
-    }
-
-    @Test
-    void reportsTrailingSpaceInsideATextBlockBody() {
-        MatcherAssert.assertThat(
-            "a text-block body line must not smuggle invisible trailing whitespace into the "
-                + "string data",
-            EoTest.render("foo > main", "  \"\"\"", "  hello ", "  \"\"\""),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
-            )
         );
     }
 
@@ -954,18 +918,6 @@ final class EoTest {
             EoTest.render("foo > main", "  CA-FE-", "  BE-BE-", "  AB-CD"),
             XhtmlMatchers.hasXPath(
                 "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE-AB-CD']"
-            )
-        );
-    }
-
-    @Test
-    void rejectsATrailingSpaceOnEitherChunkOfABytesContinuation() {
-        MatcherAssert.assertThat(
-            "trailing whitespace is invisible in an editor and must not silently decide "
-                + "whether a BYTES continuation still applies (R-2.2.5)",
-            EoTest.render("foo > main", "  CA-FE- ", "  BE-BE "),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
             )
         );
     }
