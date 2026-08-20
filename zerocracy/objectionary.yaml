@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 4m20s: execution expired'
   inserted: 8
-  seconds: 2410.833619637
+  seconds: 2160.767676125
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-20 05:48:06.792099541 Z
+  when: 2026-08-20 06:59:50.617422735 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -281936,7 +281935,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18208375226
   issues_were_scanned: 0
@@ -292579,9 +292578,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1020
   earliest_issue_was_found: 1
-  events_were_scanned: 18187327340
+  events_were_scanned: 18242433027
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -295497,9 +295496,9 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13519920998
+  events_were_scanned: 18242110614
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
@@ -295531,13 +295530,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6379
+  assignees_were_scanned: 6562
   earliest_issue_was_found: 1
-  events_were_scanned: 13561354856
+  events_were_scanned: 13564046327
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 7108
   latest_issue_was_found: 4591
-  merges_were_scanned: 7137
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -514308,6 +514307,7 @@
   _time: 2026-08-20 05:43:48.506211541 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7187 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7187
   repository: 73056727
   what: issue-was-opened
@@ -514319,6 +514319,7 @@
   _time: 2026-08-20 05:43:49.209397939 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7186 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7186
   repository: 73056727
   what: issue-was-opened
@@ -514330,6 +514331,7 @@
   _time: 2026-08-20 05:43:50.038363852 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7185 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7185
   repository: 73056727
   what: issue-was-opened
@@ -514341,6 +514343,7 @@
   _time: 2026-08-20 05:43:50.481762876 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7184 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7184
   repository: 73056727
   what: issue-was-opened
@@ -514352,6 +514355,7 @@
   _time: 2026-08-20 05:43:50.901275295 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7183 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7183
   repository: 73056727
   what: issue-was-opened
@@ -514363,6 +514367,7 @@
   _time: 2026-08-20 05:43:51.366986595 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7182 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7182
   repository: 73056727
   what: issue-was-opened
@@ -514374,9 +514379,156 @@
   _time: 2026-08-20 05:43:51.801709818 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7181 has been earlier opened by @morphqdd.
+  is_human: 1
   issue: 7181
   repository: 73056727
   what: issue-was-opened
   when: 2026-08-20 04:47:13.000000000 Z
   where: github
   who: 125282851
+- _id: 1120948
+  _job: 32337574045
+  _time: 2026-08-20 06:24:22.531854521 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/langchain-openai-1.x-lockfile
+  details: The pull request objectionary/eoc#1196 has been opened by @renovate[bot].
+  event_id: 13562005186
+  event_type: PullRequestEvent
+  is_human: 0
+  issue: 1196
+  repository: 489321585
+  what: pull-was-opened
+  when: 2026-08-20 05:25:56.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1120949
+  _job: 32337574045
+  _time: 2026-08-20 06:24:41.457295927 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: fix/7187-correct-while-docblock
+  details: The pull request objectionary/eo#7188 has been opened by @androvonx95.
+  event_id: 13563408565
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 7188
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-20 06:05:56.000000000 Z
+  where: github
+  who: 196929595
+- _id: 1120950
+  _job: 32337574045
+  _time: 2026-08-20 06:24:44.421947103 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commit: 3e3f3ae43b306567bbe73308986a557bacbf26cc
+  default_branch: master
+  details: 'A new Git push #40568021388 has arrived to objectionary/eo, made by @yegor256
+    (default branch is "master"), not associated with any pull request.'
+  event_id: 18239932325
+  event_type: PushEvent
+  is_human: 1
+  push_id: 40568021388
+  ref: refs/heads/master
+  repository: 73056727
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-08-20 05:42:48.000000000 Z
+  where: github
+  who: 526301
+- _id: 1120951
+  _job: 32337574045
+  _time: 2026-08-20 06:24:47.532933038 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7098 has been closed by @yegor256.
+  event_id: 13562630258
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 7098
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-20 05:44:36.000000000 Z
+  where: github
+  who: 526301
+- _id: 1120952
+  _job: 32337574045
+  _time: 2026-08-20 06:24:48.132097401 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7100 has been closed by @yegor256.
+  event_id: 13562619010
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 7100
+  repository: 73056727
+  what: issue-was-closed
+  when: 2026-08-20 05:44:17.000000000 Z
+  where: github
+  who: 526301
+- _id: 1120953
+  _job: 32337574045
+  _time: 2026-08-20 06:31:23.929950766 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7107'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7140 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 12
+  issue: 7140
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 04:42:25.000000000 Z
+  where: github
+  who: 526301
+- _id: 1120954
+  _job: 32337574045
+  _time: 2026-08-20 06:33:02.426267851 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7100'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7152 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 4
+  issue: 7152
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 05:44:16.000000000 Z
+  where: github
+  who: 526301
+- _id: 1120955
+  _job: 32337574045
+  _time: 2026-08-20 06:33:24.827365220 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7098-file-open-dangling-symlink
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7153 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 15
+  issue: 7153
+  repository: 73056727
+  succeeded_builds: 22
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-20 05:44:35.000000000 Z
+  where: github
+  who: 526301
