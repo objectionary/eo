@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='sized']/o[1][@name='ρ' and @base='∅' and @type='Φ.bytes']
+  - /object/o[@name='sized']/o[2][@name='n' and @base='∅' and @type='Φ.number']
+  - /object/o[@name='sized']/o[3][@name='λ' and @atom='Φ.number']
+input: |
+  [] > sized /Q.number
+    ? > ^ /Q.bytes
+    ? > n /Q.number
