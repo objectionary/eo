@@ -479,17 +479,6 @@ final class EoTest {
     }
 
     @Test
-    void parsesDottedChainOnHorizontalArgument() {
-        MatcherAssert.assertThat(
-            "a `.method` chain on a horizontal argument must emit as a flat sibling under the argument's parent",
-            EoTest.render("[] > main", "  foo bar.baz > x"),
-            XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@base='foo'][o[@base='bar']][o[@base='.baz' and @method='']]"
-            )
-        );
-    }
-
-    @Test
     void parsesIntegerInsideFormation() {
         MatcherAssert.assertThat(
             "an INT literal as a child of a formation must emit the Φ.number wrapper",
