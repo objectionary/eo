@@ -12,6 +12,6 @@ asserts:
 input: |
   [n] > fibo
 
-    n.eq 1 ++> fibo-of-one-is-one
+    ^.n.eq 1 ++> fibo-of-one-is-one
 
     true ++> fibo-fits-the-shorthand

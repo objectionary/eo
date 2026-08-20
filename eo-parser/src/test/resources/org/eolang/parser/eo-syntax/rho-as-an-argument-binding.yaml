@@ -5,11 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='∅' and @name='m']
-  - //o[@name='φ' and @base='ξ.ρ.b.put']/o[@as='α0' and @base='.lt']
+  - /object/o[@name='user']/o[@name='φ']/o[@as='ρ' and @base='Φ.y']
+  - /object/o[@name='user']/o[@name='φ']/o[@as='m' and @base='Φ.z']
 input: |
-  [b] > obj
-    ^.b.put > [m] >>
-      lt.
-        3
-        1.1
+  [] > user
+    lt x:0 y:^ z:m > @
