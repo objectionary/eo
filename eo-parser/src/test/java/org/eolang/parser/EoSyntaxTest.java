@@ -89,7 +89,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
             Long.parseLong(
-                new EoSyntax(new LargeProgram(300)).parsed().xpath("/object/@ms").get(0)
+                new EoSyntax(new LargeProgram(30)).parsed().xpath("/object/@ms").get(0)
             ),
             Matchers.greaterThan(0L)
         );
@@ -110,7 +110,7 @@ final class EoSyntaxTest {
 
     @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
-        final EoSyntax syntax = new EoSyntax(new LargeProgram(300));
+        final EoSyntax syntax = new EoSyntax(new LargeProgram(30));
         syntax.parsed();
         MatcherAssert.assertThat(
             "second parse of the same syntax does not measure its own elapsed time",
