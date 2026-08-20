@@ -764,7 +764,7 @@ final class EoSyntaxTest {
         );
     }
 
-    private static Stream<Arguments> naughty() throws IOException {
+    private static Stream<Arguments> naughty() throws Exception {
         return new TextOf(new ResourceOf("org/eolang/parser/blns.txt")).asString()
             .lines().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
