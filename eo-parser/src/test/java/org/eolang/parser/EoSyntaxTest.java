@@ -241,7 +241,7 @@ final class EoSyntaxTest {
     @Test
     void parsesCanonicalEoProgram() throws Exception {
         MatcherAssert.assertThat(
-            "We expect that all of the bytes contain a formation with data",
+            "a formation came out with empty bytes",
             new EoSyntax(
                 new TextOf(
                     new ResourceOf("org/eolang/parser/canonical.eo")
@@ -340,7 +340,7 @@ final class EoSyntaxTest {
     )
     void storesAsBytes(final String code) throws IOException {
         MatcherAssert.assertThat(
-            "We data is parsed successfully as bytes",
+            "data was not stored as bytes",
             new EoSyntax(new InputOf(code)).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
@@ -353,10 +353,13 @@ final class EoSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
     void checksTypoPacks(final String yaml) {
         final Xtory story = EoSyntaxTest.typo(yaml);
-        final Xnav after = new Xnav(story.after().inner());
         MatcherAssert.assertThat(
-            after.toString(),
-            after.path("/object/errors/error/@line").map(line -> line.text().get())
+            String.format(
+                "no error was reported on line %s of %s",
+                story.map().get("line"), yaml
+            ),
+            new Xnav(story.after().inner())
+                .path("/object/errors/error/@line").map(line -> line.text().get())
                 .collect(Collectors.toList()),
             Matchers.hasItem(story.map().get("line").toString())
         );
@@ -396,7 +399,7 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
-            "passed without exceptions",
+            String.format("pack XPaths do not match the parsed XMIR in %s", yaml),
             story,
             new XtoryMatcher()
         );
@@ -406,7 +409,7 @@ final class EoSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/eo-syntax/", glob = "**.yaml")
     void validatesEoSyntax(final String yaml) {
         MatcherAssert.assertThat(
-            "passed without exceptions",
+            String.format("pack XPaths do not match the parsed XMIR in %s", yaml),
             new XtSticky(
                 new XtYaml(
                     yaml,
