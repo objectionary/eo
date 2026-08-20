@@ -209,6 +209,8 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
+        } else if ("^".equals(raw)) {
+            tag = "ρ";
         } else {
             tag = raw;
         }
