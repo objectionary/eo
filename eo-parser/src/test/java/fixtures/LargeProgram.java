@@ -16,7 +16,6 @@ import org.cactoos.io.InputOf;
  * to last more than a single millisecond.
  * @since 0.61.0
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
 public final class LargeProgram implements Input {
 
     /**
