@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: 'Judge find-all-issues stopped by timeout after 8m47s: execution expired'
   inserted: 8
-  seconds: 2160.942731611
+  seconds: 2415.611153655
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-20 02:37:56.191537991 Z
+  when: 2026-08-20 04:05:38.457403592 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -47247,6 +47248,7 @@
   is_human: 0
   issue: 4723
   repository: 73056727
+  tombstone: 2026-08-20 02:40:34.314602168 Z
   what: pull-was-opened
   when: 2025-12-06 06:24:34.000000000 Z
   where: github
@@ -47590,6 +47592,7 @@
   review_comments: 0
   succeeded_builds: 23
   suggestions: 0
+  tombstone: 2026-08-20 02:40:34.317022947 Z
   what: pull-was-merged
   when: &317 2025-12-06 16:39:11.000000000 Z
   where: github
@@ -48171,6 +48174,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 36877
+  tombstone: 2026-08-20 02:40:34.319261836 Z
   what: code-was-contributed
   when: *317
   where: github
@@ -59075,6 +59079,7 @@
   comments: 5
   details: The pull request objectionary/eo#4723 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 10h1m and 0 comments.
+  done: 2026-08-20 02:40:34.281786071 Z
   hoc: 2
   is_human: 1
   issue: 4723
@@ -63440,6 +63445,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 36081
+  tombstone: 2026-08-20 02:40:34.321485260 Z
   what: code-review-was-rewarded
   when: 2025-12-26 23:19:22.415810422 Z
   where: github
@@ -282009,7 +282015,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 18208375226
   issues_were_scanned: 0
@@ -282019,7 +282025,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 571
+  types_were_scanned: 801
   what: iterate
   where: github
 - _id: 1107889
@@ -288922,7 +288928,7 @@
   min_issue_was_found: 503
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 999
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108618
@@ -292652,7 +292658,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18187327340
   issues_were_scanned: 982
@@ -292662,7 +292668,7 @@
   min_issue_was_found: 723
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 861
+  types_were_scanned: 1106
   what: iterate
   where: github
 - _id: 1108989
@@ -295108,7 +295114,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 1356
   merges_were_scanned: 0
-  min_issue_was_found: 1170
+  min_issue_was_found: 0
   min_pull_was_found: 1572
   repository: 671896902
   types_were_scanned: 0
@@ -295570,7 +295576,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13519920998
   issues_were_scanned: 0
@@ -295580,7 +295586,7 @@
   min_issue_was_found: 253
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1108
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -295589,7 +295595,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 18213698206
+  events_were_scanned: 18226313428
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 122
@@ -295604,17 +295610,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5809
+  assignees_were_scanned: 6068
   earliest_issue_was_found: 1
-  events_were_scanned: 18216108184
+  events_were_scanned: 18223868161
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 7108
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7137
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5297
+  types_were_scanned: 5437
   what: iterate
   where: github
 - _id: 1109067
@@ -514149,11 +514155,37 @@
   _time: 2026-08-20 00:21:03.561249239 Z
   _version: 0.19.16/0.61.1/0.17.21
   total_active_contributors: 23
+  total_commits: 54648
   total_contributors: 543
   total_files: 15521
+  total_forks: 532
   total_issues: 5915
   total_pulls: 11130
   total_releases: 946
   total_repositories: 39
+  total_stars: 1833
   what: dimensions-of-terrain
   when: 2026-08-20 00:21:03.570978324 Z
+- _id: 1120932
+  _job: 32328103651
+  _time: 2026-08-20 03:30:57.197458163 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: version-up
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo-lsp-server#428 has been "pull-was-closed".
+  failed_builds: 0
+  files: 0
+  hoc: 0
+  issue: 428
+  repository: 970961472
+  succeeded_builds: 8
+  suggestions: 0
+  what: pull-was-closed
+  when: 2026-08-20 02:49:34.000000000 Z
+  where: github
+  who: 41898282
