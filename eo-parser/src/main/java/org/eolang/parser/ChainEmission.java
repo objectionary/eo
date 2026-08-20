@@ -103,19 +103,19 @@ final class ChainEmission {
         final List<MethodChain> links, final String label
     ) {
         final int last = links.size() - 1;
-        String name = null;
         if (links.isEmpty()) {
-            name = label;
+            Emissions.openValue(sink, label, head, line);
+        } else {
+            Emissions.openValue(sink, null, head, line);
         }
-        Emissions.openValue(sink, name, head, line);
         for (int idx = 0; idx <= last; idx = idx + 1) {
             final MethodChain chained = links.get(idx);
-            name = null;
-            if (idx == last) {
-                name = label;
-            }
             sink.close();
-            sink.object(name, ".".concat(chained.name()), line, chained.dot());
+            if (idx == last) {
+                sink.object(label, ".".concat(chained.name()), line, chained.dot());
+            } else {
+                sink.object(null, ".".concat(chained.name()), line, chained.dot());
+            }
             sink.method(chained.fragile());
         }
     }
