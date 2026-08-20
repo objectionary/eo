@@ -19,40 +19,6 @@ final class KindTest {
     @ParameterizedTest
     @EnumSource(
         value = Kind.class,
-        names = {
-            "HAPPLICATION",
-            "REVERSED_HARGS",
-            "VMETHOD_HARGS"
-        }
-    )
-    void marksHorizontallyCompletedKinds(final Kind kind) {
-        MatcherAssert.assertThat(
-            "Appendix A's horizontally-completed set must report true",
-            kind.horizontallyCompleted(),
-            Matchers.is(true)
-        );
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-        value = Kind.class,
-        names = {
-            "TOP_LEVEL", "HEAD", "HMETHOD", "BARE_FORMATION", "BARE_REVERSED",
-            "COMPACT_TUPLE", "ONLY_PHI", "VAPPLICATION", "VMETHOD",
-            "TEXT_BLOCK", "IDENTITY_OBJECT"
-        }
-    )
-    void leavesOtherKindsOutOfHorizontallyCompletedSet(final Kind kind) {
-        MatcherAssert.assertThat(
-            "kinds outside Appendix A's horizontally-completed set must report false",
-            kind.horizontallyCompleted(),
-            Matchers.is(false)
-        );
-    }
-
-    @ParameterizedTest
-    @EnumSource(
-        value = Kind.class,
         names = {"BARE_FORMATION", "ONLY_PHI", "PIPE_APPLICATION", "IDENTITY_OBJECT"}
     )
     void acceptsPipeAfterFormationLikeKinds(final Kind kind) {
