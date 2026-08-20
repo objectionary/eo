@@ -114,6 +114,51 @@ final class EoTest {
     }
 
     @Test
+    void reportsTrailingSpaceAtEndOfLine() {
+        MatcherAssert.assertThat(
+            "a trailing space on an otherwise valid line must be reported (R-2.2.5)",
+            EoTest.render("[] > foo ", "  bar > baz"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
+            )
+        );
+    }
+
+    @Test
+    void reportsTrailingTabAtEndOfLine() {
+        MatcherAssert.assertThat(
+            "a trailing tab on an otherwise valid line must be reported the same way a "
+                + "trailing space is",
+            EoTest.render("[] > foo\t"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
+            )
+        );
+    }
+
+    @Test
+    void doesNotFlagAWhitespaceOnlyBlankLineAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a blank line is exempt from the trailing-whitespace rule, the same way it is "
+                + "exempt from the tab and odd-indent ones",
+            EoTest.render("[] > foo", "  ", "[] > qux"),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
+    void reportsTrailingSpaceInsideATextBlockBody() {
+        MatcherAssert.assertThat(
+            "a text-block body line must not smuggle invisible trailing whitespace into the "
+                + "string data",
+            EoTest.render("foo > main", "  \"\"\"", "  hello ", "  \"\"\""),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
+            )
+        );
+    }
+
+    @Test
     void recoversFromBadLineAndContinues() {
         MatcherAssert.assertThat(
             "after an error the walker must continue and parse subsequent valid lines",
@@ -914,12 +959,13 @@ final class EoTest {
     }
 
     @Test
-    void mergesMultiLineBytesWithATrailingSpaceOnEitherChunk() {
+    void rejectsATrailingSpaceOnEitherChunkOfABytesContinuation() {
         MatcherAssert.assertThat(
-            "a trailing space on either chunk must not break a BYTES continuation",
+            "trailing whitespace is invisible in an editor and must not silently decide "
+                + "whether a BYTES continuation still applies (R-2.2.5)",
             EoTest.render("foo > main", "  CA-FE- ", "  BE-BE "),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
+                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
             )
         );
     }
