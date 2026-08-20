@@ -4,7 +4,7 @@
  */
 package org.eolang.parser;
 
-import java.util.Random;
+import java.util.Locale;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -16,35 +16,56 @@ import org.junit.jupiter.api.Test;
 final class AutoNameTest {
 
     @Test
-    void generatesAutoNameForLineAndIndent() {
+    void generatesAutoNameForLineAndPos() {
         MatcherAssert.assertThat(
-            "auto name is not the expected line-indent placeholder",
+            "Auto name does not match with expected",
             new AutoName(42, 13).asString(),
             Matchers.equalTo("a🌵42-13")
         );
     }
 
     @Test
-    void generatesAutoNameForZeroIndent() {
-        final long seed = 7163L;
-        final int line = new Random(seed).nextInt(1000) + 1;
-        MatcherAssert.assertThat(
-            String.format("auto name is not zero-indent placeholder, seed %d", seed),
-            new AutoName(line, 0).asString(),
-            Matchers.equalTo(String.format("a🌵%d-0", line))
-        );
+    void generatesAsciiDigitsRegardlessOfDefaultLocale() {
+        final Locale saved = Locale.getDefault(Locale.Category.FORMAT);
+        Locale.setDefault(Locale.Category.FORMAT, new Locale("fa", "IR"));
+        try {
+            MatcherAssert.assertThat(
+                "Auto name is not spelled with ascii digits under fa-IR default locale",
+                new AutoName(42, 13).asString(),
+                Matchers.equalTo("a🌵42-13")
+            );
+        } finally {
+            Locale.setDefault(Locale.Category.FORMAT, saved);
+        }
     }
 
     @Test
-    void generatesAutoNameForLargeLineAndIndent() {
-        final long seed = 20260820L;
-        final Random random = new Random(seed);
-        final int line = random.nextInt(100_000) + 100_000;
-        final int indent = random.nextInt(1000) + 100;
-        MatcherAssert.assertThat(
-            String.format("auto name is not the expected placeholder, seed %d", seed),
-            new AutoName(line, indent).asString(),
-            Matchers.equalTo(String.format("a🌵%d-%d", line, indent))
-        );
+    void generatesAsciiDigitsForZeroesUnderArabicLocale() {
+        final Locale saved = Locale.getDefault(Locale.Category.FORMAT);
+        Locale.setDefault(Locale.Category.FORMAT, new Locale("ar", "EG"));
+        try {
+            MatcherAssert.assertThat(
+                "Auto name is not spelled with ascii digits under ar-EG default locale",
+                new AutoName(0, 0).asString(),
+                Matchers.equalTo("a🌵0-0")
+            );
+        } finally {
+            Locale.setDefault(Locale.Category.FORMAT, saved);
+        }
+    }
+
+    @Test
+    void generatesAsciiDigitsForLargeValuesUnderNepaliLocale() {
+        final Locale saved = Locale.getDefault(Locale.Category.FORMAT);
+        Locale.setDefault(Locale.Category.FORMAT, new Locale("ne", "NP"));
+        try {
+            MatcherAssert.assertThat(
+                "Auto name is not spelled with ascii digits under ne-NP default locale",
+                new AutoName(123_456, 7_890).asString(),
+                Matchers.equalTo("a🌵123456-7890")
+            );
+        } finally {
+            Locale.setDefault(Locale.Category.FORMAT, saved);
+        }
     }
 }

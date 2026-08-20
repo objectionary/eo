@@ -27,60 +27,63 @@
         "Invalid limit %d for nsplit, must be at least 1".printf
           * limit
     if.
-      text.size.eq 0
-      *
-      if.
-        1.eq limit
-        * text
-        [accum start current count] >> rec-nsplit
-          if. > @
-            ^.text.size.eq current
-            appended
+      1.eq limit
+      * text
+      [accum start current count] >> rec-nsplit
+        if. > @
+          ^.text.size.eq current
+          appended
+          if.
+            or.
+              size.eq 0
+              gt.
+                current.plus size
+                ^.text.size
+            ^.rec-nsplit
+              accum
+              start
+              as-number.
+                current.plus 1
+              count
             if.
-              or.
-                size.eq 0
-                gt.
+              and.
+                ^.delimiter.eq
+                  bts.slice current size
+                lt.
+                  number count
+                  minus. (number ^.limit) 1
+              ^.rec-nsplit
+                appended
+                as-number.
                   current.plus size
-                  ^.text.size
+                as-number.
+                  current.plus size
+                as-number.
+                  count.plus 1
               ^.rec-nsplit
                 accum
                 start
                 as-number.
                   current.plus 1
                 count
-              if.
-                and.
-                  ^.delimiter.eq
-                    bts.slice current size
-                  lt.
-                    number count
-                    minus. (number ^.limit) 1
-                ^.rec-nsplit
-                  appended
-                  as-number.
-                    current.plus size
-                  as-number.
-                    current.plus size
-                  as-number.
-                    count.plus 1
-                ^.rec-nsplit
-                  accum
-                  start
-                  as-number.
-                    current.plus 1
-                  count
-          accum.with > appended
-            string
-              bts.slice
-                start
-                current.minus start
-        |
-          *
-          0
-          0
-          0
+        accum.with > appended
+          string
+            bts.slice
+              start
+              current.minus start
+      |
+        *
+        0
+        0
+        0
   text.as-bytes >> bts!
   ^ > text
+
+  eq. ++> can-nsplit-an-empty-text-into-one-empty-string
+    "".nsplit
+      "-"
+      3
+    * ""
 
   eq. ++> can-recover-from-a-fractional-limit
     "recovered"

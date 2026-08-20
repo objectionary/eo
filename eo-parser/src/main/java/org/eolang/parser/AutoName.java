@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.Locale;
 import org.cactoos.Text;
 
 /**
@@ -34,6 +35,6 @@ final class AutoName implements Text {
 
     @Override
     public String asString() {
-        return String.format("a🌵%d-%d", this.line, this.indent);
+        return String.format(Locale.ROOT, "a🌵%d-%d", this.line, this.indent);
     }
 }
