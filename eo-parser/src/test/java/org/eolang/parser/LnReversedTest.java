@@ -127,10 +127,9 @@ final class LnReversedTest {
     @Test
     void reportsRootHeadColumnWithLineIndent() {
         final Span span = new Span("    @. > x", 3);
-        final Tokens tokens = new Tokens(span.body(), span);
         MatcherAssert.assertThat(
             "a root head's pos() must count the line's indent, not just the stripped-body offset",
-            LnReversed.readHead(tokens, span.indent()).pos(),
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
             Matchers.equalTo(4)
         );
     }
@@ -138,10 +137,9 @@ final class LnReversedTest {
     @Test
     void reportsRhoHeadColumnWithLineIndent() {
         final Span span = new Span("  ^. > x", 3);
-        final Tokens tokens = new Tokens(span.body(), span);
         MatcherAssert.assertThat(
             "a `^.` root head's pos() must also count the line's indent",
-            LnReversed.readHead(tokens, span.indent()).pos(),
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
             Matchers.equalTo(2)
         );
     }
@@ -149,10 +147,9 @@ final class LnReversedTest {
     @Test
     void reportsXiHeadColumnWithLineIndent() {
         final Span span = new Span("   $. > x", 3);
-        final Tokens tokens = new Tokens(span.body(), span);
         MatcherAssert.assertThat(
             "a `$.` root head's pos() must also count the line's indent",
-            LnReversed.readHead(tokens, span.indent()).pos(),
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
             Matchers.equalTo(3)
         );
     }
@@ -160,10 +157,9 @@ final class LnReversedTest {
     @Test
     void agreesWithNamedHeadOnIndentedColumn() {
         final Span span = new Span("  foo. > x", 3);
-        final Tokens tokens = new Tokens(span.body(), span);
         MatcherAssert.assertThat(
             "a root head and a named head on the same indent must report the same column convention",
-            LnReversed.readHead(tokens, span.indent()).pos(),
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
             Matchers.equalTo(2)
         );
     }
