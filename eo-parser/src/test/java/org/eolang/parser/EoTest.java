@@ -914,6 +914,17 @@ final class EoTest {
     }
 
     @Test
+    void mergesMultiLineBytesWithATrailingSpaceOnEitherChunk() {
+        MatcherAssert.assertThat(
+            "a trailing space on either chunk must not break a BYTES continuation",
+            EoTest.render("foo > main", "  CA-FE- ", "  BE-BE "),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
+            )
+        );
+    }
+
+    @Test
     void leavesSingleLineBytesAlone() {
         MatcherAssert.assertThat(
             "a single-line BYTES literal without trailing dash must NOT consume the next line",
