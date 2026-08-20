@@ -95,10 +95,10 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made()).take(Phi.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("a just-formed object must terminate on %s, but it didnt", Phi.RHO),
+            PhDefaultTest.Int.made().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
@@ -112,10 +112,10 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.RHO),
-            String.format("Object should not give %s attribute after copying", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("a copied object must terminate on %s, but it didnt", Phi.RHO),
+            PhDefaultTest.Int.made().copy().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 

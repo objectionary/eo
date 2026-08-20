@@ -16,20 +16,31 @@ import org.junit.jupiter.api.Test;
 final class AtRhoTest {
 
     @Test
-    void printsCaretAsTerm() {
+    void printsQuestionMarkAsTermWhileUnset() {
         MatcherAssert.assertThat(
-            "AtRho must render as caret in φ-term, but it didnt",
+            "an unset rho must render as a question mark in φ-term, but it didnt",
             new AtRho().φTerm(),
+            Matchers.equalTo("?")
+        );
+    }
+
+    @Test
+    void printsCaretAsTermOnceBound() {
+        final Attribute rho = new AtRho();
+        rho.put(new PhDefault());
+        MatcherAssert.assertThat(
+            "a bound rho must render as a caret in φ-term, but it didnt",
+            rho.φTerm(),
             Matchers.equalTo("^")
         );
     }
 
     @Test
-    void throwsOnEmptyRho() {
-        Assertions.assertThrows(
-            ExUnset.class,
-            new AtRho()::get,
-            "AtRho must throw an exception if attribute is not set"
+    void terminatesOnEmptyRho() {
+        MatcherAssert.assertThat(
+            "reading an unset rho must give a termination, but it didnt",
+            new AtRho().get(),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
@@ -58,15 +69,13 @@ final class AtRhoTest {
     }
 
     @Test
-    void doesNotResetObject() {
+    void rejectsSecondPut() {
         final Attribute rho = new AtRho();
-        final Phi obj = new PhDefault();
-        rho.put(obj);
         rho.put(new PhDefault());
-        MatcherAssert.assertThat(
-            "AtRho must not change state after put()",
-            rho.get(),
-            Matchers.equalTo(obj)
+        Assertions.assertThrows(
+            ExReadOnly.class,
+            () -> rho.put(new PhDefault()),
+            "a rho that is already bound must reject a second put"
         );
     }
 

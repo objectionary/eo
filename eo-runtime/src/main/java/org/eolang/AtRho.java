@@ -9,13 +9,17 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Special attribute for \rho.
+ * The attribute that holds the receiver.
  *
- * <p>The attribute can be set only once, and it ignores all other puts.</p>
+ * <p>It behaves as a void in every respect but one. A void owns what
+ * fills it, so copying the object copies the value too; a receiver
+ * points the other way, at the object this one hangs off, and
+ * duplicating that on every copy would clone the whole chain above.
+ * So {@link #copy(Phi)} carries the reference over untouched.</p>
  *
  * @since 0.36.0
  */
-final class AtRho implements Attribute {
+public final class AtRho implements Attribute {
 
     /**
      * Rho.
@@ -25,7 +29,7 @@ final class AtRho implements Attribute {
     /**
      * Ctor.
      */
-    AtRho() {
+    public AtRho() {
         this(null);
     }
 
@@ -44,18 +48,29 @@ final class AtRho implements Attribute {
 
     @Override
     public Phi get() {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
+        final Phi phi = this.rho.get();
+        final Phi result;
+        if (phi == null) {
+            result = new PhTerminator(
+                String.format("the attribute \"%s\" is not set", Phi.RHO)
             );
+        } else {
+            result = phi;
         }
-        return this.rho.get();
+        return result;
     }
 
     @Override
     public void put(final Phi phi) {
         Objects.requireNonNull(phi, "Attribute value can't be null");
-        this.rho.compareAndSet(null, phi);
+        if (!this.rho.compareAndSet(null, phi)) {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    Phi.RHO
+                )
+            );
+        }
     }
 
     @Override
@@ -65,6 +80,12 @@ final class AtRho implements Attribute {
 
     @Override
     public String φTerm() {
-        return "^";
+        final String term;
+        if (this.rho.get() == null) {
+            term = "?";
+        } else {
+            term = "^";
+        }
+        return term;
     }
 }
