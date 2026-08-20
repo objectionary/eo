@@ -1,7 +1,8 @@
 # Retrieve symbol by given index as `text`.
 # A negative `index` counts from the end of `text` (`length + index`).
-# If the resolved index is still negative or is >= `text.length`,
-# the `fallback` value is returned, or the bottom object when unbound.
+# If `index` is not a finite integer (fractional, nan or infinite), or the
+# resolved index is still negative or is >= `text.length`, the `fallback`
+# value is returned, or the bottom object when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,34 +13,35 @@
 
 [i fallback] > at
   if. > @
-    or.
-      0.gt
-        if. >> index!
-          0.gt
-            i >> idx!
-          plus.
-            number len
-            idx
-          idx
+    not.
+      eq.
+        floor.
+          number
+            if. >> index!
+              0.gt
+                i >> idx!
+              plus.
+                number len
+                idx
+              idx
+        number index
+    fallback
+      "Index must be an integer, but was %f".printf
+        * i
+    if.
       or.
+        0.gt index
         gte.
           number index
           text.length >> len!
-        not.
-          eq.
-            floor.
-              number index
-            number index
-    fallback
-      "Given index %f is out of text bounds".printf
-        * i
-    text.slice
-      index
-      1
+      fallback
+        "Given index %f is out of text bounds".printf
+          * i
+      text.slice index 1
   ^ > text
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
-    "Given index 1.500000 is out of text bounds"
+    "Index must be an integer, but was 1.500000"
     "some".at
       1.5
       I
