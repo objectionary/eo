@@ -80,7 +80,7 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
-            if (!globals.inTextBlock() && !Eo.trailingWhitespace(span)
+            if (!globals.inTextBlock() && !span.trailing()
                 && Eo.isBytesContinuation(span.body())) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
@@ -247,7 +247,7 @@ final class Eo implements Iterable<Directive> {
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
             failed = true;
-        } else if (Eo.trailingWhitespace(span)) {
+        } else if (span.trailing()) {
             emit.error(span.line(), 0, "trailing whitespace at end of line");
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
@@ -278,7 +278,7 @@ final class Eo implements Iterable<Directive> {
             }
         } else {
             final String raw = span.text();
-            if (Eo.trailingWhitespace(span)) {
+            if (span.trailing()) {
                 emit.error(span.line(), 0, "trailing whitespace at end of line");
             }
             if (!Eo.isBlank(raw) && Eo.leadingSpaces(raw) < globals.textBlockOpenIndent()) {
@@ -289,20 +289,6 @@ final class Eo implements Iterable<Directive> {
             }
             globals.appendTextLine(raw);
         }
-    }
-
-    /**
-     * Whether a non-blank line's last character is a space or a tab —
-     * R-2.2.5. Whitespace nobody can see in an editor must not decide what
-     * a program means, so this is rejected the same way as a tab in
-     * leading whitespace or an odd indent.
-     * @param span The line to check
-     * @return True if the line is non-blank and ends in whitespace
-     */
-    private static boolean trailingWhitespace(final Span span) {
-        final String raw = span.text();
-        return !span.blank() && !raw.isEmpty()
-            && (raw.charAt(raw.length() - 1) == ' ' || raw.charAt(raw.length() - 1) == '\t');
     }
 
     private static int leadingSpaces(final String raw) {
