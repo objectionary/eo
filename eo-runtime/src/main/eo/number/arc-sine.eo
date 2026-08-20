@@ -38,11 +38,11 @@
                           times.
                             minus. (depth.times 2) 1
                             minus. (depth.times 2) 1
-                          squared
+                          ^.squared
                         times.
                           depth.times 2
                           plus. (depth.times 2) 1
-                      poly (depth.plus 1)
+                      ^.poly (depth.plus 1)
                 times. > squared!
                   number bts
                   number bts

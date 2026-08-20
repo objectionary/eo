@@ -102,12 +102,6 @@ public final class Witnessed implements Clue {
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    /**
-     * The types put into one void, as one type.
-     * @param members The types put into it, at least one
-     * @return The type: the one that was put in, the choice between the ones
-     *  that were, or nothing known when there are too many of them
-     */
     private Type joined(final Collection<Type> members) {
         final Type found;
         if (members.size() > this.cap) {

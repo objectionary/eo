@@ -159,10 +159,6 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         );
     }
 
-    /**
-     * Build matched-from-index for /(a)(b)?/ against "a".
-     * @return Matched block
-     */
     private static Phi optionalGroupMatch() {
         return new PhApplication(
             new PhApplication(
@@ -181,11 +177,6 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         );
     }
 
-    /**
-     * Dataize matched-from-index and return its rejection message.
-     * @param start Start index
-     * @return Rejection message
-     */
     private static String rejection(final Phi start) {
         return Assertions.assertThrows(
             ExAbstract.class,
@@ -197,11 +188,6 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         ).toString();
     }
 
-    /**
-     * Build an internal matched-from-index application.
-     * @param start Start index
-     * @return Application
-     */
     private static Phi matchedFromIndex(final Phi start) {
         return new PhApplication(
             new PhApplication(
@@ -217,18 +203,10 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
         );
     }
 
-    /**
-     * Start attribute name.
-     * @return Start attribute name
-     */
     private static String start() {
         return "start";
     }
 
-    /**
-     * Position attribute name.
-     * @return Position attribute name
-     */
     private static String position() {
         return "position";
     }

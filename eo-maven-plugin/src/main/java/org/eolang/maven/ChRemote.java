@@ -46,7 +46,7 @@ final class ChRemote implements CommitHash {
             ).value();
             Logger.debug(this, "Git sha of %s is %s", this.tag, sha);
             return sha;
-        } catch (final ChText.NotFound ex) {
+        } catch (final HashNotFoundException ex) {
             throw new IllegalArgumentException(
                 String.format(
                     "Tag '%s' doesn't exist or the list of all tags was not loaded correctly",

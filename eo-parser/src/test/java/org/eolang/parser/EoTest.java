@@ -177,6 +177,15 @@ final class EoTest {
     }
 
     @Test
+    void parsesSiblingAfterTabOnlyLineInFailedBlock() {
+        MatcherAssert.assertThat(
+            "a tab-only line inside the block of a failed line must not swallow the next sibling",
+            EoTest.render("[] > foo", "  ???", "\t", "  d > y"),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='y']")
+        );
+    }
+
+    @Test
     void parsesWithUnixAndWindowsLineEndings() {
         final String carriage = String.valueOf((char) 13);
         MatcherAssert.assertThat(
@@ -905,6 +914,17 @@ final class EoTest {
     }
 
     @Test
+    void mergesMultiLineBytesWithATrailingSpaceOnEitherChunk() {
+        MatcherAssert.assertThat(
+            "a trailing space on either chunk must not break a BYTES continuation",
+            EoTest.render("foo > main", "  CA-FE- ", "  BE-BE "),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
+            )
+        );
+    }
+
+    @Test
     void leavesSingleLineBytesAlone() {
         MatcherAssert.assertThat(
             "a single-line BYTES literal without trailing dash must NOT consume the next line",
@@ -957,14 +977,6 @@ final class EoTest {
         );
     }
 
-    /**
-     * Run the EO source through the walker and render the XMIR under a
-     * fresh {@code <object/>} root. The supplied rows are joined with
-     * a literal newline (no platform-dependent separator) and a
-     * trailing newline is appended — matching what the parser expects.
-     * @param rows The EO program lines (no terminators)
-     * @return Rendered XMIR
-     */
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {

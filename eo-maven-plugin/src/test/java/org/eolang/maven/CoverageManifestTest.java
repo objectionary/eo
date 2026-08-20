@@ -35,22 +35,40 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void findsExactlyOneLocationInAnEmptyFormation() throws Exception {
+    void findsNoLocationsInAnEmptyFormation() throws Exception {
         MatcherAssert.assertThat(
-            "an empty formation with no body still has itself to instrument, but the count was off",
+            "an empty formation has no body and is never dispatched itself, so it must have no locations",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(System.lineSeparator(), "[] > foo", "")
                 ).parsed()
             ),
-            Matchers.iterableWithSize(1)
+            Matchers.iterableWithSize(0)
         );
     }
 
     @Test
-    void excludesLocationOfAnAtomsLambdaMarker() throws Exception {
+    void excludesLocationOfAFilesRootObject() throws Exception {
         MatcherAssert.assertThat(
-            "the lambda marker of an atom attribute never gets a PhCoverage hit, but its location was still found",
+            "a file's root object is constructed once from Java and never dispatched through PhCoverage, but its own location was still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[x] > foo",
+                        "  x > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:1:\\d+$")))
+        );
+    }
+
+    @Test
+    void excludesLocationsOfAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "an atom attribute has no body in .eo, so neither it nor its lambda marker may be counted, but a location was still found",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(
@@ -61,7 +79,46 @@ final class CoverageManifestTest {
                     )
                 ).parsed()
             ),
-            Matchers.iterableWithSize(2)
+            Matchers.iterableWithSize(0)
+        );
+    }
+
+    @Test
+    void excludesLocationsOfTheVoidsOfAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "the voids an atom attribute declares are declarations of a Java body, so they must not be counted either",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  42 > x",
+                        "  [] > bar /Q.bytes",
+                        "    ? > offset /Q.number",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:[34]:\\d+$")))
+        );
+    }
+
+    @Test
+    void keepsLocationsOfAnObjectHoldingAnAtomAttribute() throws Exception {
+        MatcherAssert.assertThat(
+            "only the atom attribute itself is left out, while the ordinary attributes beside it are still counted",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo",
+                        "  42 > x",
+                        "  [] > bar /Q.bytes",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.hasItem(Matchers.matchesPattern("^[^:]+:2:\\d+$"))
         );
     }
 
@@ -84,11 +141,28 @@ final class CoverageManifestTest {
         );
     }
 
-    /**
-     * Locations found in a small formation with one attribute.
-     * @return The locations
-     * @throws Exception If parsing or deriving them fails
-     */
+    @Test
+    void excludesLocationOfAThrowingCase() throws Exception {
+        MatcherAssert.assertThat(
+            "a throwing test never gets a PhCoverage hit for its own body, but its locations were still found",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package foo.x",
+                        "",
+                        "[] > main",
+                        "",
+                        "  --> stops-on-dispatching-on-a-number",
+                        "    42.plus 1 > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.containsString(".-")))
+        );
+    }
+
     private Collection<String> simpleObject() throws Exception {
         return new CoverageManifest().locations(
             new EoSyntax(

@@ -89,7 +89,7 @@ public final class MjAtomsTable extends MjSafe {
         }
         final Map<String, String> table = new TreeMap<>();
         final Xsline xsline = new Xsline(new StClasspath(MjAtomsTable.XSL));
-        for (final Path source : new Walk(home)) {
+        for (final Path source : new WkDefault(home)) {
             final XML before = new XMLDocument(
                 new UncheckedText(new TextOf(source)).asString()
             );
@@ -118,11 +118,6 @@ public final class MjAtomsTable extends MjSafe {
         );
     }
 
-    /**
-     * Write the atoms table to the output CSV file.
-     * @param table Forma to return-type mappings, already sorted
-     * @throws IOException If write fails
-     */
     private void write(final Map<String, String> table) throws IOException {
         final Path target = this.atomsOutput.toPath();
         final Path parent = target.getParent();

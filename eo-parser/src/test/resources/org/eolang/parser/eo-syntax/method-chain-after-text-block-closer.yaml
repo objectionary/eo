@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='txt' and @base='.as-bytes']/o[@base='Φ.string' and o/o[text()='68-69']]
+input: |
+  [] > main
+    """
+    hi
+    """.as-bytes > txt

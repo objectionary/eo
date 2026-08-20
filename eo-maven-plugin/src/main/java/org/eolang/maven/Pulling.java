@@ -156,13 +156,6 @@ final class Pulling implements Step {
         }
     }
 
-    /**
-     * Pull one object.
-     * @param object Name of the object
-     * @param hsh Git hash
-     * @return The path of .eo file
-     * @throws IOException If fails
-     */
     private Path pulled(final String object, final String hsh) throws IOException {
         final Path target = new Place(object).make(this.base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(

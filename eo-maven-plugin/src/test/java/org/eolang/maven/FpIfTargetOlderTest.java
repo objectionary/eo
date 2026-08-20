@@ -53,12 +53,6 @@ final class FpIfTargetOlderTest {
         );
     }
 
-    /**
-     * Create a file with the given last modified time.
-     * @param path Path to the file
-     * @param mtime Last modified time to set
-     * @throws IOException If fails to create or touch the file
-     */
     private static void touch(final Path path, final Instant mtime) throws IOException {
         new Saved("", path).value();
         Files.setLastModifiedTime(path, FileTime.from(mtime));

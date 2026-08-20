@@ -68,11 +68,6 @@ final class ReadmeSnippetsIT {
         return System.getProperty("eo.version", Manifests.read("EO-Version"));
     }
 
-    /**
-     * EO snippets from README.md file.
-     * @return Stream of EO snippets
-     * @throws IOException if I/O fails
-     */
     private static Stream<Arguments> snippets() throws IOException {
         final Stream.Builder<Arguments> result = Stream.builder();
         final Matcher matcher = Pattern.compile("(?ms)```eo\\s+(.*?)```").matcher(

@@ -38,6 +38,8 @@ public final class MjProbe extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Probing(this.scopedTojos(), this.objectionary(), !this.offline).exec();
+        try (TjsForeign tojos = this.tojos()) {
+            new Probing(tojos, this.objectionary(), !this.offline).exec();
+        }
     }
 }

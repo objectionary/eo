@@ -72,10 +72,6 @@ final class ChSourceTest {
         );
     }
 
-    /**
-     * Tricky inputs for {@link ChSourceTest#computesHashForDifferentTrickyValues}.
-     * @return Inputs
-     */
     private static Stream<String> trickyValues() {
         final String eol = String.valueOf((char) 10);
         final String cret = String.valueOf((char) 13);

@@ -54,28 +54,28 @@
       code. > addr
         sys.raw *1
           "inet_addr"
-          address
+          ^.address
       addr.as-i32 > addrint
       [descriptor] > closed-socket
         if. > @
           closed.eq -1
           T
             "Couldn't close the socket #%d because %s".printf
-              * descriptor sys.message
+              * descriptor ^.sys.message
           true
         code. > closed
-          sys.raw *1
-            sys.close
+          ^.sys.raw *1
+            ^.sys.close
             descriptor
       [scope cant-connect] > connect
-        safe-socket > @
+        ^.safe-socket > @
           [] >>
             if. > @
               connected.eq -1
-              cant-connect
+              ^.cant-connect
                 "Couldn't connect to %s:%d on socket #%d because %s".printf
                   * sock.address sock.port sock.sd sock.sys.message
-              scope
+              ^.scope
                 sock.scoped-socket sock.sd
             code. > connected
               sock.sys.raw *1
@@ -86,37 +86,37 @@
             ^.^.^ > sock
           cant-connect
       [scope cant-listen] > listen
-        safe-socket > @
+        ^.safe-socket > @
           [] >>
             if. > @
               bound.eq -1
-              cant-listen
+              ^.cant-listen
                 "Couldn't bind the socket #%d to %s:%d because %s".printf
                   * sock.sd sock.address sock.port sock.sys.message
               if.
                 listened.eq -1
-                cant-listen
+                ^.cant-listen
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
                     * sock.address sock.port sock.sd sock.sys.message
-                scope
+                ^.scope
                   [] >>
-                    sock.scoped-socket sock.sd > @
+                    ^.sock.scoped-socket ^.sock.sd > @
                     [scope cant-accept] > accept
                       if. > @
                         client.eq -1
                         cant-accept
                           "Failed to accept a connection on the socket #%d because %s".printf
-                            * sock.sd sock.sys.message
+                            * ^.^.sock.sd ^.^.sock.sys.message
                         seq *
-                          scope (sock.scoped-socket client) >> handled!
-                          sock.closed-socket client
+                          scope (^.^.sock.scoped-socket client) >> handled!
+                          ^.^.sock.closed-socket client
                           handled
                       code. > client
-                        sock.sys.raw *1
+                        ^.^.sock.sys.raw *1
                           "accept"
-                          sock.sd
-                          sock.sockaddr
-                          sock.sockaddr.size
+                          ^.^.sock.sd
+                          ^.^.sock.sockaddr
+                          ^.^.sock.sockaddr.size
             code. > bound
               sock.sys.raw *1
                 "bind"
@@ -133,26 +133,26 @@
       [scope cant] > safe-socket
         if. > @
           not.
-            sys.startup.eq 0
+            ^.sys.startup.eq 0
           cant
             "Couldn't start up the sockets subsystem because %s".printf
-              * sys.message
+              * ^.sys.message
           seq *
             if. >> result!
-              sd.eq -1
+              ^.sd.eq -1
               cant
                 "Couldn't create a socket because %s".printf
-                  * sys.message
+                  * ^.sys.message
               seq *
                 if. >> used!
-                  addr.eq sys.none
+                  ^.addr.eq ^.sys.none
                   cant
                     "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-                      * address sys.message
+                      * ^.^.address ^.sys.message
                   scope
-                closed-socket sd
+                ^.closed-socket ^.sd
                 used
-            sys.cleanup
+            ^.sys.cleanup
             result
       [descriptor] > scoped-socket
         ^.^.as-input recv > as-input
@@ -162,12 +162,12 @@
             received.code.eq -1
             cant-receive
               "Failed to receive data from the socket #%d because %s".printf
-                * descriptor sys.message
+                * ^.descriptor ^.^.sys.message
             received.output
           called. > received
-            sys.raw *1
+            ^.^.sys.raw *1
               "recv"
-              descriptor
+              ^.descriptor
               size
               0
         [buffer cant-send] > send
@@ -175,12 +175,12 @@
             sent.eq -1
             cant-send
               "Failed to send a message through the socket #%d because %s".printf
-                * descriptor sys.message
+                * ^.descriptor ^.^.sys.message
             sent
           code. > sent
-            sys.raw *1
+            ^.^.sys.raw *1
               "send"
-              descriptor
+              ^.descriptor
               buffer >> buff!
               buff.size
               0
@@ -192,7 +192,7 @@
           sys.tcp
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
-        htons checked-port
+        ^.htons ^.checked-port
         addrint
     |
       []
@@ -244,9 +244,9 @@
         [size] > read
           seq * > @
             chunk
-            input-block chunk
+            ^.^.input-block chunk
           as-bytes. > chunk
-            recv size
+            ^.^.^.recv size
   [send] > as-output
     [buffer] > write
       @. > @
@@ -258,24 +258,24 @@
             * sent remainder
           if. > remainder
             sent.lt buffer.size
-            output-block.write
+            ^.^.output-block.write
               buffer.slice
                 sent
                 buffer.size.minus sent
-            output-block
-          send buffer > sent
-  port.is-integer.not.if > [] > checked-port
+            ^.^.output-block
+          ^.^.^.send buffer > sent
+  ^.port.is-integer.not.if > [] > checked-port
     T
       "Port must be an integer in 0 to 65535, but was %f".printf
-        * port
+        * ^.port
     if.
       or.
-        port.lt 0
-        port.gt 65535
+        ^.port.lt 0
+        ^.port.gt 65535
       T
         "Port %d is out of range; it must be 0 to 65535".printf
-          * port
-      port
+          * ^.port
+      ^.port
   [port] > htons
     as-i16. > @
       or.

@@ -25,28 +25,12 @@
 
 [text] > uri
   text > @
-  if. > authority
-    starts-with. >> has-authority
-      has-query.if >> hier-part
-        before-fragment.slice 0 question-idx
-        before-fragment
-      "//"
-    if.
-      not. >> has-authority-path
-        eq.
-          after-slashes.index-of "/" >> authority-path-idx
-          -1
-      slice.
-        has-authority.if >> after-slashes
-          hier-part.slice
-            2
-            hier-part.length.minus
-              number 2
-          ""
-        0
-        authority-path-idx
-      after-slashes
-    ""
+  string > authority
+    has-authority.if >> authority-bytes!
+      has-authority-path.if
+        after-slashes.slice 0 authority-path-idx
+        after-slashes
+      ""
   if. > fragment
     not. >> has-fragment
       hash-idx.eq -1
@@ -85,21 +69,39 @@
           host-port.index-of ":"
         -1
     slice.
-      has-userinfo.if >> host-port
-        authority.slice
-          plus.
-            authority.index-of "@" >> userinfo-at-idx
-            1
-          authority.length.minus
-            number
-              userinfo-at-idx.plus 1
-        authority
+      string >> host-port
+        has-userinfo.if >> host-port-bytes!
+          authority.slice
+            plus.
+              authority.last-index-of "@" >> userinfo-at-idx
+              1
+            authority.length.minus
+              number
+                userinfo-at-idx.plus 1
+          authority
       0
       port-colon-idx
     host-port
-  has-authority.if > path
-    has-authority-path.if
-      after-slashes.slice
+  if. > path
+    starts-with. >> has-authority
+      string >> hier-part
+        has-query.if >> hier-bytes!
+          before-fragment.slice 0 question-idx
+          before-fragment
+      "//"
+    if.
+      not. >> has-authority-path
+        eq.
+          after-slashes.index-of "/" >> authority-path-idx
+          -1
+      slice.
+        string >> after-slashes
+          has-authority.if >> after-slashes-bytes!
+            hier-part.slice
+              2
+              hier-part.length.minus
+                number 2
+            ""
         authority-path-idx
         after-slashes.length.minus
           number authority-path-idx
@@ -182,6 +184,11 @@
       uri "http://user:pass@host:80/some/path"
     "host"
 
+  eq. ++> can-parse-a-host-past-an-at-sign-inside-userinfo
+    host.
+      uri "http://a@b@host/p"
+    "host"
+
   eq. ++> can-parse-a-path-alongside-a-userinfo-authority
     path.
       uri "http://user:pass@host:80/some/path"
@@ -211,6 +218,11 @@
     scheme.
       uri "HTTP://host/path"
     "HTTP"
+
+  eq. ++> can-parse-a-userinfo-holding-an-at-sign
+    userinfo.
+      uri "http://a@b@host/p"
+    "a@b"
 
   eq. ++> can-parse-a-userinfo-without-a-password
     userinfo.

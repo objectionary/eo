@@ -10,7 +10,7 @@
 [substrings] > contains-all
   reduced. > @
     substrings.mapped
-      text.contains x > [x] >>
+      ^.text.contains x > [x] >>
     true
     x.and a > [a x]
   ^ > text

@@ -73,11 +73,6 @@ final class ChSource implements CommitHash {
         }
     }
 
-    /**
-     * Calculate SHA-1 hash of the source text.
-     * @return SHA-1 hash
-     * @throws NoSuchAlgorithmException If SHA-1 is not supported
-     */
     private String hash() throws NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-1");
         final StringBuilder res = new StringBuilder(40);

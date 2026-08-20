@@ -33,4 +33,4 @@ printed: |
   [] > foo
     read. > @
       [buffer] >> bar
-        bar chunk > x
+        ^.bar chunk > x

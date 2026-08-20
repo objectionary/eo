@@ -40,6 +40,21 @@ final class HeapsTest {
     }
 
     @Test
+    void failsCleanlyOnMallocWithNegativeSize() {
+        final Phi phi = new HeapsTest.PhFake();
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.malloc(phi, -1, idx -> idx),
+            "Heaps must reject a negative malloc size with a clean ExFailure, not a raw JVM exception"
+        );
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.size(phi.hashCode()),
+            "Heaps must not leave a block allocated after a rejected negative malloc, but it did"
+        );
+    }
+
+    @Test
     void allocatesAndReadsEmptyBytes() {
         MatcherAssert.assertThat(
             "Heaps should return empty bytes after memory allocation, but it didn't",
@@ -350,12 +365,6 @@ final class HeapsTest {
         );
     }
 
-    /**
-     * Reject an out-of-bounds write and return the unchanged block.
-     * @param identifier Block identifier
-     * @param original Original bytes
-     * @return Bytes left in the block
-     */
     private static byte[] rejectedWrite(final int identifier, final byte[] original) {
         Heaps.INSTANCE.write(identifier, 0, original);
         MatcherAssert.assertThat(

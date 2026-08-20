@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -50,6 +51,26 @@ final class AtOnceTest {
         attr.get();
         MatcherAssert.assertThat(
             "AtOnce must execute nested attribute only once",
+            count.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void cachesAttributeInParallelThreads() {
+        final AtomicInteger count = new AtomicInteger();
+        final Attribute attr = new AtOnce(
+            new AtComposite(
+                new PhDefault(),
+                phi -> {
+                    count.incrementAndGet();
+                    return phi;
+                }
+            )
+        );
+        IntStream.range(0, 100).parallel().forEach(idx -> attr.get());
+        MatcherAssert.assertThat(
+            "AtOnce must execute nested attribute only once, even in parallel threads",
             count.get(),
             Matchers.equalTo(1)
         );
