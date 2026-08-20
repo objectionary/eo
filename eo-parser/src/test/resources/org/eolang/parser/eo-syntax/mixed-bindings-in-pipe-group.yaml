@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7175: R-3.14.6 says the all-or-nothing rule of §6.6 applies to the argument
+# group of a pipe, the same way it applies to the arguments of any other
+# application.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]
+input: |
+  [] > app
+    [x y] > add
+      x.plus y > @
+    | >>
+      "hello":foo
+      42
