@@ -9,6 +9,9 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.StrictXML;
 import com.jcabi.xml.XMLDocument;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -81,6 +84,55 @@ final class DrProgramTest {
                 .attribute("xsi:noNamespaceSchemaLocation").text().get(),
             Matchers.not(Matchers.startsWith("file:////"))
         );
+    }
+
+    @Test
+    void honorsExplicitXmirXsdProperty() throws Exception {
+        final Path file = Files.createTempFile("xmir", ".xsd");
+        Files.write(file, "<xsd/>".getBytes(StandardCharsets.UTF_8));
+        System.setProperty("xmir.xsd", file.toString());
+        try {
+            MatcherAssert.assertThat(
+                "explicit xmir.xsd property overrides the relative guesses",
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+                Matchers.equalTo(file.toUri().toString())
+            );
+        } finally {
+            System.clearProperty("xmir.xsd");
+            Files.delete(file);
+        }
+    }
+
+    @Test
+    void ignoresMissingXmirXsdProperty() throws Exception {
+        final Path missing = Paths.get("does-not-exist-1234567890.xsd").toAbsolutePath();
+        System.setProperty("xmir.xsd", missing.toString());
+        try {
+            MatcherAssert.assertThat(
+                "schema location falls back to a guess when the xmir.xsd property does not exist",
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+                Matchers.not(Matchers.equalTo(missing.toUri().toString()))
+            );
+        } finally {
+            System.clearProperty("xmir.xsd");
+        }
+    }
+
+    @Test
+    void ignoresEmptyXmirXsdProperty() throws Exception {
+        System.setProperty("xmir.xsd", "");
+        try {
+            MatcherAssert.assertThat(
+                "schema location falls back to a guess when the xmir.xsd property is empty",
+                new Xnav(new XMLDocument(new Xembler(new DrProgram()).xml()).inner())
+                    .element("object").attribute("xsi:noNamespaceSchemaLocation").text().get(),
+                Matchers.not(Matchers.emptyString())
+            );
+        } finally {
+            System.clearProperty("xmir.xsd");
+        }
     }
 
     @Test
