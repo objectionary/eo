@@ -102,12 +102,18 @@ final class ChainEmission {
         final Emit sink, final int line, final Value head,
         final List<MethodChain> links, final String label
     ) {
-        final String first = links.isEmpty() ? label : null;
-        Emissions.openValue(sink, first, head, line);
-        for (int idx = 0; idx < links.size(); idx = idx + 1) {
+        final int last = links.size() - 1;
+        String name = null;
+        if (links.isEmpty()) {
+            name = label;
+        }
+        Emissions.openValue(sink, name, head, line);
+        for (int idx = 0; idx <= last; idx = idx + 1) {
             final MethodChain chained = links.get(idx);
-            final boolean end = idx == links.size() - 1;
-            final String name = end ? label : null;
+            name = null;
+            if (idx == last) {
+                name = label;
+            }
             sink.close();
             sink.object(name, ".".concat(chained.name()), line, chained.dot());
             sink.method(chained.fragile());
