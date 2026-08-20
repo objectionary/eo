@@ -48,10 +48,6 @@ final class Numeral implements Supplier<String> {
         return txt;
     }
 
-    /**
-     * Is this a finite value with no fractional part.
-     * @return TRUE if the value has no fraction and is not infinite
-     */
     private boolean whole() {
         return this.value == Math.floor(this.value) && !Double.isInfinite(this.value);
     }
