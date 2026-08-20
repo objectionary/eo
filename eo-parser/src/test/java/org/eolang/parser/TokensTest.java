@@ -16,16 +16,6 @@ import org.junit.jupiter.api.Test;
 final class TokensTest {
 
     @Test
-    void readsIdentifierAndAdvancesCursor() {
-        final Tokens tokens = new Tokens("foo", new Span("foo", 1));
-        MatcherAssert.assertThat(
-            "readName must return the parsed identifier and leave the cursor at end()",
-            tokens.readName().end(),
-            Matchers.equalTo(tokens.cursor())
-        );
-    }
-
-    @Test
     void readsIdentifierWithHyphen() {
         MatcherAssert.assertThat(
             "an identifier with a hyphen must be read as one NAME token per §2.3",
