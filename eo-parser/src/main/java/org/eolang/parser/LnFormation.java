@@ -75,13 +75,11 @@ final class LnFormation implements Line {
             );
         }
         this.checkAtomVoids(suffix, params);
-        final Level level;
         if (suffix.test()) {
             Blanks.checkTest(this.span, blanks, emit);
         }
         Comments.seal(globals, emit, this.span);
-        level = this.transition(stack, suffix);
-        level.heads(params.size());
+        this.transition(stack, suffix);
         globals.clearBlanks();
         globals.markEmitted();
         this.emit(emit, suffix, params, binding);
@@ -120,7 +118,7 @@ final class LnFormation implements Line {
         }
     }
 
-    private Level transition(final Stack stack, final Suffix suffix) {
+    private void transition(final Stack stack, final Suffix suffix) {
         final Level level;
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             this.checkChildAllowed(stack, suffix);
@@ -139,7 +137,6 @@ final class LnFormation implements Line {
         if (suffix.atom()) {
             level.mark();
         }
-        return level;
     }
 
     private void checkChildAllowed(final Stack stack, final Suffix suffix) {
@@ -228,7 +225,7 @@ final class LnFormation implements Line {
             }
             final String raw = inside.substring(idx, end);
             out.add(
-                LnFormation.mapParam(raw, span, span.indent() + 1 + idx, out.isEmpty())
+                LnFormation.mapParam(raw, span, span.indent() + 1 + idx)
             );
             if (end < inside.length()) {
                 if (end + 1 < inside.length() && inside.charAt(end + 1) == ' ') {
@@ -245,19 +242,11 @@ final class LnFormation implements Line {
         return out;
     }
 
-    private static String mapParam(
-        final String raw, final Span span, final int pos, final boolean first
-    ) {
+    private static String mapParam(final String raw, final Span span, final int pos) {
         final String mapped;
         if ("@".equals(raw)) {
             mapped = "φ";
         } else if ("^".equals(raw)) {
-            if (!first) {
-                throw new ParseError(
-                    span.line(), pos,
-                    "a ^ void attribute must be the first attribute of its formation"
-                );
-            }
             mapped = "ρ";
         } else if (raw.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?")) {
             mapped = raw;
