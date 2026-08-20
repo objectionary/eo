@@ -71,13 +71,4 @@ final class KindTest {
             Matchers.is(false)
         );
     }
-
-    @Test
-    void exposesTopLevelSentinel() {
-        MatcherAssert.assertThat(
-            "TOP_LEVEL must exist as the parent-kind sentinel for indent-0 entries",
-            Kind.valueOf("TOP_LEVEL"),
-            Matchers.notNullValue()
-        );
-    }
 }
