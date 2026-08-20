@@ -4,7 +4,9 @@
  */
 package org.eolang.parser;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Cross-argument inline-binding validation — §6.6 of the spec.
@@ -22,6 +24,15 @@ import java.util.List;
  * @since 0.1
  */
 final class Bindings {
+
+    /**
+     * The parent kinds whose deeper children are application arguments,
+     * so the all-or-nothing rule of R-6.6.2 governs the group they form.
+     */
+    private static final Set<Kind> TRACKED = EnumSet.of(
+        Kind.HEAD, Kind.HMETHOD, Kind.VAPPLICATION, Kind.IDENTITY_OBJECT,
+        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE
+    );
 
     /**
      * No instances.
@@ -120,8 +131,7 @@ final class Bindings {
     }
 
     private static boolean tracksBindings(final Kind kind) {
-        return kind == Kind.HEAD || kind == Kind.HMETHOD
-            || kind == Kind.VAPPLICATION || kind == Kind.IDENTITY_OBJECT;
+        return Bindings.TRACKED.contains(kind);
     }
 
     private static void rejectBinding(final String outer, final Span span) {
