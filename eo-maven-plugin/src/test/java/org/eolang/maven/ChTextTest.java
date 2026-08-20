@@ -75,7 +75,7 @@ final class ChTextTest {
     @Test
     void readsHashByNonExistedTag() {
         Assertions.assertThrows(
-            ChText.NotFound.class,
+            HashNotFoundException.class,
             () -> new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 gh-pages",
                 "non-existent-tag"
@@ -87,7 +87,7 @@ final class ChTextTest {
     @Test
     void readsHashByExactValueOnly() {
         Assertions.assertThrows(
-            ChText.NotFound.class,
+            HashNotFoundException.class,
             () -> new ChText(
                 () -> "434868a411b9741fdd4f8a38a5c576e8733345c9 0.1.22",
                 "0.1.2"

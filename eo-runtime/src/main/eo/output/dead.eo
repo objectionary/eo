@@ -13,7 +13,7 @@
   [buffer] > write
     [] >> output-block
       true > @
-      output-block > [buffer] > write
+      ^.^.output-block > [buffer] > write
     | > @
 
   malloc.of ++> can-be-taken-off-any-output

@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * What every object certainly has.
@@ -60,6 +61,14 @@ import java.util.Collection;
  * skipped: {@code [] > recovered /A} comes back with whatever the caller put
  * in, and that is a variable, which nothing here understands yet.</p>
  *
+ * <p>What a void says it will hold is written down for the same reason, and
+ * skipped for the same one. {@code ? > code /Q.number} is how a formation that
+ * only Java ever copies says what goes into its voids, since it has no caller
+ * in the program to say it for it, and {@code /A} names no object and is
+ * passed over. {@link Provided} walks through such a void the way it walks
+ * behind a delegation, so a name asked of it is answered once and for all
+ * rather than left to a caller.</p>
+ *
  * <p>Not every attribute is written inside the formation it belongs to.
  * {@code ρ}, the object something sits in, is written nowhere and every
  * object has one, which {@link Parents} reads off the locator. And
@@ -94,6 +103,10 @@ final class Provides implements Clue {
                         .set("type", attr.xpath("@loc").get(0));
                     if (attr.xpath("@base").contains("∅")) {
                         row.set("void", "true");
+                        final List<String> held = attr.xpath("@type[starts-with(., 'Φ.')]");
+                        if (!held.isEmpty()) {
+                            row.set("holds", held.get(0));
+                        }
                     }
                 }
             }

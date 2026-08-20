@@ -6,8 +6,6 @@
 # runtime on the classpath; after the merge they are attributes of the class of
 # `number`, added by name in its constructor, so nothing has to be searched for
 # when the program runs.
-merged:
-  - number
 eo:
   number.eo: |
     [as-bytes] > number

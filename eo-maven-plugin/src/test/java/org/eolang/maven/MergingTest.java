@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import org.cactoos.list.ListOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -47,19 +46,12 @@ final class MergingTest {
         );
     }
 
-    /**
-     * Merge the "foo" package (with member "bar") from scratch into {@code merge}.
-     * @param pkg The package's own XMIR
-     * @param member The member's XMIR
-     * @param merge The directory for the merged XMIR
-     * @throws IOException If the merge fails
-     */
     private void merge(
         final Path pkg, final Path member, final Path merge
     ) throws IOException {
         final TjsForeign tojos = new TjsForeign();
         tojos.add("foo").withXmir(pkg);
         tojos.add("foo.bar").withXmir(member);
-        new Merging(tojos, merge, new ListOf<>("foo")).exec();
+        new Merging(tojos, merge).exec();
     }
 }

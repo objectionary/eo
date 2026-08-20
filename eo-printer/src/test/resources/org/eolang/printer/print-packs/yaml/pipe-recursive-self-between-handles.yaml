@@ -29,8 +29,8 @@ origin: |
 printed: |
   [] > foo
     [] >> bar
-      bbb bar > z
+      bbb ^.bar > z
     | > x
     [] >> zoo
-      kkk zoo > w
+      kkk ^.zoo > w
     | > y

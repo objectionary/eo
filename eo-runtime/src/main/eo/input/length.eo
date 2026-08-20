@@ -13,7 +13,7 @@
     if. > @
       chunk.size.eq 0
       length
-      rec-read
+      ^.rec-read
         chunk
         length.plus chunk.size
     ^. > chunk

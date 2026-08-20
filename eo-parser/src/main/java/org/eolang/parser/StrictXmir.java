@@ -151,13 +151,6 @@ public final class StrictXmir implements XML {
         return this.xml.value().validate(schema);
     }
 
-    /**
-     * Here, we check the location of the XSD in the XML
-     * and replace with a new one, if necessary.
-     * @param xml Original XML
-     * @param tmp Directory with cached XSD files
-     * @return New XML with the same node
-     */
     private static XML reset(final XML xml, final Path tmp) {
         final Optional<String> location = new Xnav(xml.inner())
             .element("object")
@@ -188,12 +181,6 @@ public final class StrictXmir implements XML {
         return xml;
     }
 
-    /**
-     * Fetch the XSD and place into the path.
-     * @param uri The URI
-     * @param path The file
-     * @return Where it was saved
-     */
     private static File fetch(final String uri, final Path path) {
         final File ret;
         if (StrictXmir.MINE.equals(uri)) {
@@ -204,12 +191,6 @@ public final class StrictXmir implements XML {
         return ret;
     }
 
-    /**
-     * Copy URI from local resource and save to file.
-     * @param uri The URI
-     * @param path The file
-     * @return Where it was saved
-     */
     private static File copied(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
         StrictXmir.LOCK.lock();
@@ -239,12 +220,6 @@ public final class StrictXmir implements XML {
         return abs;
     }
 
-    /**
-     * Download URI from Internet and save to file.
-     * @param uri The URI
-     * @param path The file
-     * @return Where it was saved
-     */
     private static File downloaded(final String uri, final Path path) {
         final File abs = path.toFile().getAbsoluteFile();
         StrictXmir.LOCK.lock();
@@ -261,13 +236,6 @@ public final class StrictXmir implements XML {
         return abs;
     }
 
-    /**
-     * Read the URI and write what it yields into the file, retrying a few
-     * times before giving up, since a network hiccup must not fail the
-     * whole build.
-     * @param uri The URI
-     * @param path The file
-     */
     private static void saved(final String uri, final Path path) {
         int attempt = 0;
         while (true) {

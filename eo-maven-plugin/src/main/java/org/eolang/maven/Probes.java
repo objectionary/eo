@@ -60,12 +60,6 @@ final class Probes implements Iterable<String> {
         return new Mapped<>(Probes::noPrefix, this.metas()).iterator();
     }
 
-    /**
-     * Return metas for probing.
-     * The equivalent xpath is:
-     * "/object/metas/meta[head/text()='probe' or head/text()='also']/tail[not(text()='')]/text()"
-     * @return Metas to probe
-     */
     private Iterable<String> metas() {
         return new IterableOf<>(
             new Xnav(Probes.ADD_PROBES.apply(0, this.xmir).inner())
@@ -81,24 +75,12 @@ final class Probes implements Iterable<String> {
         );
     }
 
-    /**
-     * Check if the meta is a 'probe' or 'also'.
-     * @param meta Meta XML element
-     * @return True if the meta is a 'probe' or 'also', false otherwise
-     */
     private static Boolean probeOrAlso(final Xml meta) {
         return new Xnav(meta).element("head").text()
             .map(text -> "probe".equals(text) || "also".equals(text))
             .orElse(false);
     }
 
-    /**
-     * Trim Φ prefix.
-     * Φ.a.b.c -> a.b.c
-     * a.b.c -> a.b.c
-     * @param obj Full object name
-     * @return Trimmed object name
-     */
     private static String noPrefix(final String obj) {
         final String result;
         if (obj.startsWith("Φ.")) {

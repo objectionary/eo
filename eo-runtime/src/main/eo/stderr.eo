@@ -34,7 +34,7 @@
                     code.eq -1
                     T
                       "Failed to write to standard error"
-                    output-block
+                    ^.^.output-block
                   code
                   remainder
                 code. > code
@@ -45,9 +45,9 @@
                     buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  output-block.write
+                  ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  output-block
+                  ^.^.output-block
         [] >>
           [buffer] > write
             @. > @
@@ -60,7 +60,7 @@
                     code.eq -1
                     T
                       "Failed to write to standard error"
-                    output-block
+                    ^.^.output-block
                   code
                   remainder
                 code. > code
@@ -71,9 +71,9 @@
                     buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  output-block.write
+                  ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  output-block
+                  ^.^.output-block
       text
     true
 

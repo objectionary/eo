@@ -6,6 +6,8 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
@@ -31,6 +33,11 @@ public class PhOnce implements Phi {
     private final Supplier<String> term;
 
     /**
+     * Lock guarding the first load of the reference.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      * @param obj The object
      */
@@ -46,6 +53,7 @@ public class PhOnce implements Phi {
     public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
         this.term = term;
+        this.lock = new ReentrantLock();
         this.object = () -> this.loaded(obj);
     }
 
@@ -125,18 +133,15 @@ public class PhOnce implements Phi {
         return result;
     }
 
-    /**
-     * The wrapped object, made by the supplier the first time it is wanted.
-     * @param obj Supplier of the object
-     * @return The object
-     */
-    @SuppressWarnings("PMD.AvoidSynchronizedStatement")
     private Phi loaded(final Supplier<Phi> obj) {
         if (this.ref.get() == null) {
-            synchronized (this.ref) {
+            this.lock.lock();
+            try {
                 if (this.ref.get() == null) {
                     this.ref.set(obj.get());
                 }
+            } finally {
+                this.lock.unlock();
             }
         }
         return this.ref.get();

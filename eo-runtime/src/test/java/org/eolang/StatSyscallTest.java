@@ -54,12 +54,6 @@ final class StatSyscallTest {
         );
     }
 
-    /**
-     * The type the syscall reports for the file at this path.
-     * @param path The path of the file to ask about
-     * @param call The C function filling the struct
-     * @return The type bits of the mode, telling a link from a directory
-     */
     private long type(final Path path, final ToIntBiFunction<String, Structure> call) {
         return new Dataized(
             new StatSyscall(Phi.Φ.take("posix").copy(), call)

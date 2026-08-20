@@ -50,11 +50,11 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.close(Openness.VERTICAL_COMPLETED);
+        level.close(Openness.VCOMPLETED);
         MatcherAssert.assertThat(
             "after close(), openness must reflect the new state",
             level.openness(),
-            Matchers.equalTo(Openness.VERTICAL_COMPLETED)
+            Matchers.equalTo(Openness.VCOMPLETED)
         );
     }
 

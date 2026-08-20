@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A binding merged into its reference travels into a deeper scope, and the
+# names it reads must go on meaning what they meant where it was written.
+# Here `len` is `b.size` of the `b` that `array` declares, and the formation
+# hosting it declares a `b` of its own, so the merged value has to climb past
+# that one. Printed without the hop, `slice-byte 1` reads `1.size` instead of
+# the size of what `array` was given.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [b] > array
+    b.size >> len!
+    [b] >> slice-byte
+      b.plus len > @
+    slice-byte 1 > @
+
+printed: |
+  [b] > array
+    b.plus ^.b.size! > [b] >>
+    | 1 > @

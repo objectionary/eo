@@ -106,11 +106,6 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
         }
     }
 
-    /**
-     * Take the attribute out of the origin and keep it as ours.
-     * @param key The name of the attribute
-     * @return The copy, or nothing when the origin has no such attribute
-     */
     private Attribute copied(final Object key) {
         final Attribute source = this.origin.get(key);
         final Attribute copy;

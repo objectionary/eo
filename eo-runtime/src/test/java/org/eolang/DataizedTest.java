@@ -50,7 +50,7 @@ final class DataizedTest {
             "forcing a ⊥ fails with the cause it carries",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Dataized(PhTerminator.withCause("boom")).take(),
+                () -> new Dataized(new PhTerminator(new Data.ToPhi("boom"))).take(),
                 "forcing a ⊥ was expected to fail with ExFailure"
             ).getMessage(),
             Matchers.containsString("boom")

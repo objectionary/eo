@@ -22,7 +22,7 @@ origin: |
     [] > base
       memory 0 > x
       [self v] > f
-        x.write > @
+        ^.x.write > @
           v
       [self v] > g
         self.f > @
@@ -30,7 +30,7 @@ origin: |
           v
 
     [] > derived
-      base > @
+      ^.base > @
       [self v] > f
         self.g > @
           self
@@ -42,9 +42,9 @@ printed: |
 
   [] > main
     [] > base
-      x.write v > [self v] > f
+      ^.x.write v > [self v] > f
       self.f self v > [self v] > g
       memory 0 > x
     [] > derived
-      base > @
+      ^.base > @
       self.g self v > [self v] > f

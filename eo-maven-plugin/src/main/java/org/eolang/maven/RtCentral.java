@@ -32,10 +32,6 @@ final class RtCentral implements Scalar<Dep> {
         return RtCentral.MAVEN_DEPENDENCY.value();
     }
 
-    /**
-     * Runtime dependency source from Maven Central.
-     * @return Runtime dependency from Maven Central
-     */
     private static Unchecked<Dep> mavenDependency() {
         return RtCentral.dependency(
             () -> RtCentral.download(
@@ -61,11 +57,6 @@ final class RtCentral implements Scalar<Dep> {
         }
     }
 
-    /**
-     * Runtime dependency source.
-     * @param version Version of eo-runtime
-     * @return Maven Dependency
-     */
     private static Unchecked<Dep> dependency(final Supplier<String> version) {
         return new Unchecked<>(
             new Synced<>(

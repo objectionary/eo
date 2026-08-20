@@ -86,11 +86,6 @@ final class Filled {
         return found;
     }
 
-    /**
-     * Every void filled along the chain this locator resolves through.
-     * @param bearer The locator to start from
-     * @return The types the voids hold, by the locator of the void
-     */
     private Map<String, String> fillings(final String bearer) {
         final Map<String, String> found = new HashMap<>(0);
         final Collection<String> seen = new HashSet<>(0);
@@ -111,13 +106,6 @@ final class Filled {
         return found;
     }
 
-    /**
-     * The type these names lead to, starting from this one.
-     * @param start The type to ask first
-     * @param names The names to ask for, separated by dots
-     * @param back What to give back when one of them is not there
-     * @return The type the last name gives, or the fallback
-     */
     private String asked(final String start, final String names, final String back) {
         String walked = start;
         int from = 0;
@@ -135,11 +123,6 @@ final class Filled {
         return walked;
     }
 
-    /**
-     * The end of the chain of copies this locator starts.
-     * @param locator The locator
-     * @return The name it goes by
-     */
     private String end(final String locator) {
         final Collection<String> seen = new HashSet<>(0);
         String walked = locator;

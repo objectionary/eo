@@ -15,12 +15,12 @@
     start
     if. > [tup] >> rec-reducedi
       tup.length.eq 1
-      func
-        start
+      ^.func
+        ^.start
         tup.head
         0
-      func
-        rec-reducedi tup.tail
+      ^.func
+        ^.rec-reducedi tup.tail
         tup.head
         tup.tail.length
     | list
@@ -106,8 +106,8 @@
         [acc x i]
           check x > @
           if. > [el] > check
-            x.lt 100
-            acc.plus x
-            acc.minus x
+            ^.x.lt 100
+            ^.acc.plus ^.x
+            ^.acc.minus ^.x
       10.plus
         0.minus 500

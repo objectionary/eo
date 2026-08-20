@@ -37,25 +37,12 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return this.bytes(
-            new Expect.Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
-            new Expect.Natural(Expect.at(this, "offset")).it(),
-            new Expect.Natural(Expect.at(this, "length")).it()
+            new Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
+            new Natural(Expect.at(this, "offset")).it(),
+            new Natural(Expect.at(this, "length")).it()
         );
     }
 
-    /**
-     * Read the bytes from the allocated block, or fall back when the
-     * requested range lies outside it (R-3.4.8 error-branch semantics).
-     * The predictable out-of-range case is asked of {@link Heaps#fits}
-     * up front — not caught as a failure — so it routes cleanly to the
-     * caller-supplied {@code cant-read} fallback (the bottom object when
-     * none was provided). A non-allocated block is unpredictable
-     * and {@code fits} aborts on it, which the atom does not handle.
-     * @param id Block identifier
-     * @param offset Offset to read from
-     * @param length Number of bytes to read
-     * @return The bytes read, or the {@code cant-read} fallback
-     */
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;
         if (Heaps.INSTANCE.fits(id, offset, length)) {

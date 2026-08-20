@@ -128,12 +128,12 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.through(() -> this.origin.put(pos, object));
+        this.act(() -> this.origin.put(pos, object));
     }
 
     @Override
     public void put(final String nme, final Phi object) {
-        this.through(() -> this.origin.put(nme, object));
+        this.act(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -166,11 +166,7 @@ public final class PhSafe implements Phi, Atom {
         return this.through(this.origin::φTerm);
     }
 
-    /**
-     * Helper, for other methods.
-     * @param action The action
-     */
-    private void through(final Runnable action) {
+    private void act(final Runnable action) {
         this.through(
             () -> {
                 action.run();
@@ -180,30 +176,11 @@ public final class PhSafe implements Phi, Atom {
         );
     }
 
-    /**
-     * Helper, for other methods.
-     * @param action The action
-     * @param <T> Type of result
-     * @return Result
-     */
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private <T> T through(final Supplier<T> action) {
         return this.through(action, "");
     }
 
-    /**
-     * Helper, for other methods.
-     *
-     * <p>No matter what happens inside the {@code action}, only
-     * an instance of {@link ExFailure} may be thrown out of this
-     * method, carrying this layer's location and the original cause.</p>
-     *
-     * @param action The action
-     * @param suffix The suffix to add to the label
-     * @param <T> Type of result
-     * @return Result
-     * @checkstyle IllegalCatchCheck (20 lines)
-     */
+    // @checkstyle IllegalCatchCheck (20 lines)
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
@@ -216,20 +193,10 @@ public final class PhSafe implements Phi, Atom {
         }
     }
 
-    /**
-     * Exception message safe for EO dataization.
-     * @param exp The exception
-     * @return Message
-     */
     private static String message(final Throwable exp) {
         return Objects.toString(exp.getMessage(), exp.getClass().getName());
     }
 
-    /**
-     * The label of the exception.
-     * @param suffix The suffix to add to the label
-     * @return Label
-     */
     private String label(final String suffix) {
         return String.format(
             "Error in \"%s%s\" at %s:%d:%d",

@@ -18,12 +18,15 @@
 
 [places cant-print] > as-fixed
   if. > @
-    or.
-      0.gt places
-      places.is-integer.not
+    n.is-finite.not.or
+      or.
+        0.gt places
+        places.is-integer.not
     cant-print
-      "Can't write a fixed-point decimal with %f fraction places".printf
-        * places
+      n.is-finite.not.if
+        "Can't write a non-finite number as a fixed-point decimal"
+        "Can't write a fixed-point decimal with %f fraction places".printf
+          * places
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
@@ -31,11 +34,11 @@
           if. > @
             digits.eq scale
             if. > [unit rest] >> written
-              places.eq 0
+              ^.^.places.eq 0
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
-                rec-pad rest places --
+                rec-pad rest ^.^.places --
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -44,7 +47,7 @@
                 a.minus whole
                 scale
               0.5
-          pow10 places > scale
+          pow10 ^.places > scale
           a.floor > whole
         | 0
       if.
@@ -54,7 +57,7 @@
             floor.
               plus.
                 a.times
-                  pow10 places
+                  pow10 ^.places
                 0.5
             0
           positive a
@@ -67,14 +70,14 @@
     p.eq 0
     1
     times.
-      pow10
+      ^.pow10
         as-number.
           p.minus 1
       10
   if. > [value count acc] >> rec-pad
     count.eq 0
     acc
-    rec-pad
+    ^.rec-pad
       floor.
         value.div 10
       as-number.
@@ -138,6 +141,18 @@
     "-0.00"
     string
       0.neg.as-fixed 2
+
+  eq. ++> can-recover-from-a-non-finite-number
+    "recovered"
+    nan.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-number
+    "recovered"
+    pinf.as-fixed
+      2
+      "recovered" > [message]
 
   eq. ++> can-recover-from-infinite-places
     "recovered"
