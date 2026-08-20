@@ -52,12 +52,6 @@ public class PrettyBench {
         new Xmir(this.input).toEO();
     }
 
-    /**
-     * Build a chain of {@code depth} nested reversed {@code .plus}
-     * dispatches over a numeric literal receiver.
-     * @param depth Nesting depth
-     * @return The innermost-out XML fragment
-     */
     private String chain(final int depth) {
         String xml = "<o base='Φ.number'>0</o>";
         for (int lvl = 0; lvl < depth; lvl = lvl + 1) {

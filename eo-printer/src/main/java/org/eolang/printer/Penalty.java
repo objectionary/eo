@@ -133,20 +133,10 @@ final class Penalty {
         return total;
     }
 
-    /**
-     * The weight of a key, or its default if not overridden.
-     * @param key The key
-     * @return The weight in points
-     */
     private int weight(final PenaltyKey key) {
         return this.weights.getOrDefault(key, key.fallback());
     }
 
-    /**
-     * Count indentation levels of a line.
-     * @param line The line
-     * @return The number of levels
-     */
     private int indents(final String line) {
         int spaces = 0;
         while (spaces < line.length() && line.charAt(spaces) == ' ') {
@@ -155,11 +145,6 @@ final class Penalty {
         return spaces / this.weight(PenaltyKey.STEP);
     }
 
-    /**
-     * Count the spaces in a line beyond the leading indentation.
-     * @param line The line
-     * @return The number of spaces
-     */
     private static int spaces(final String line) {
         int lead = 0;
         while (lead < line.length() && line.charAt(lead) == ' ') {
@@ -174,24 +159,6 @@ final class Penalty {
         return total;
     }
 
-    /**
-     * Count the genuine argument-applying spaces in a line — the ones that
-     * make up an application's length.
-     *
-     * <p>Only the spaces that apply an argument to an object count. A space
-     * that sits next to a name-binding marker ({@code >}, {@code >>},
-     * {@code ++>} or {@code -->}) binds a name rather than applying an
-     * argument, and the
-     * spaces between the void attributes inside a formation's {@code [..]}
-     * head are not applications either; neither is counted. So
-     * {@code foo > [] > bar} has no application spaces, while
-     * {@code foo bar 42 44} has three. This count drives the super-linear
-     * surcharge in {@link #points()}, so longer applications grow more
-     * expensive while name bindings are left alone.</p>
-     *
-     * @param line The line
-     * @return The number of argument-applying spaces
-     */
     private static int applied(final String line) {
         int lead = 0;
         while (lead < line.length() && line.charAt(lead) == ' ') {
@@ -207,13 +174,6 @@ final class Penalty {
         return total;
     }
 
-    /**
-     * Split a line's content into space-separated tokens, keeping the void
-     * attributes inside a formation's {@code [..]} head together as one
-     * token so their separators are not mistaken for applications.
-     * @param text The line content, past the leading indentation
-     * @return The tokens
-     */
     private static String[] tokens(final String text) {
         final List<String> out = new ArrayList<>(0);
         final StringBuilder token = new StringBuilder(0);
@@ -236,36 +196,11 @@ final class Penalty {
         return out.toArray(new String[0]);
     }
 
-    /**
-     * Is this token a name-binding marker rather than an applied argument?
-     * @param token The token
-     * @return TRUE for {@code >}, {@code >>}, {@code ++>} and {@code -->}
-     */
     private static boolean binding(final String token) {
         return ">".equals(token) || ">>".equals(token)
             || "++>".equals(token) || "-->".equals(token);
     }
 
-    /**
-     * Weighted count of opening parentheses in a line.
-     *
-     * <p>The cost grows progressively with nesting depth: an opening
-     * parenthesis at depth zero counts as one unit, the next one nested
-     * inside it as two, the one inside that as three, and so on. In other
-     * words, a parenthesis opening with {@code depth} brackets already open
-     * counts as {@code depth + 1} units of the flat {@link PenaltyKey#BRACKET}
-     * weight, so the printer leans away from deeply nested one-liners.</p>
-     *
-     * <p>A parenthesis that is the first non-space character of its line is
-     * charged {@link PenaltyKey#LEADING} times as much, so it counts as
-     * {@code (depth + 1) * LEADING} units. The start of a line is the worst
-     * place for a group: the reader meets it before knowing what it applies
-     * to, and the line has to be read backwards to make sense of it, so the
-     * printer is pushed away from that layout.</p>
-     *
-     * @param line The line
-     * @return The weighted number of parentheses
-     */
     private int brackets(final String line) {
         int lead = 0;
         while (lead < line.length() && line.charAt(lead) == ' ') {
@@ -289,11 +224,6 @@ final class Penalty {
         return count;
     }
 
-    /**
-     * Count explicit phi attributes ({@code @}) in a line.
-     * @param line The line
-     * @return The number of phi attributes
-     */
     private static int phis(final String line) {
         int count = 0;
         for (int idx = 0; idx < line.length(); ++idx) {
@@ -304,18 +234,6 @@ final class Penalty {
         return count;
     }
 
-    /**
-     * Count {@code if} attributes dispatched in suffix position
-     * ({@code foo.if}) in a line.
-     *
-     * <p>Only the suffix form {@code .if}, taken as a whole word (followed by
-     * a non-identifier character or the end of the line), is counted. The
-     * prefix form {@code if.} never begins with a dot, so it stays free, and
-     * longer names such as {@code .iffy} are left untouched.</p>
-     *
-     * @param line The line
-     * @return The number of suffix {@code if} attributes
-     */
     private static int ifs(final String line) {
         int count = 0;
         final String needle = ".if";

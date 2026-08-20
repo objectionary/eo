@@ -37,6 +37,6 @@ printed: |
         true
         seq *
           tup.head.deleted
-          r tup.tail
+          ^.r tup.tail
       | (walk "**").at.^
       ^

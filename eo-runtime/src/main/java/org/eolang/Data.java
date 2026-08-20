@@ -52,10 +52,17 @@ public interface Data {
          * is dataized far away from the place that made it.</p>
          *
          * @param obj Data
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ToPhi(final Object obj) {
-            this.object = Data.ToPhi.toPhi(obj);
+            this(Data.ToPhi.toPhi(obj));
+        }
+
+        /**
+         * Ctor.
+         * @param phi Already converted object
+         */
+        private ToPhi(final Phi phi) {
+            this.object = phi;
         }
 
         @Override
@@ -118,11 +125,6 @@ public interface Data {
             return this.object.φTerm();
         }
 
-        /**
-         * Convert to Phi object.
-         * @param obj Object to convert
-         * @return Constructed Phi
-         */
         private static Phi toPhi(final Object obj) {
             if (obj == null) {
                 throw new IllegalArgumentException("Cannot convert null data to Phi");
@@ -165,13 +167,6 @@ public interface Data {
             return phi;
         }
 
-        /**
-         * Convert a number to a Phi object, mapping the three IEEE-754
-         * exceptional values onto their own objects and everything else
-         * onto number-over-bytes.
-         * @param value The value
-         * @return Constructed Phi
-         */
         private static Phi number(final double value) {
             final Phi phi;
             if (Double.isNaN(value)) {

@@ -28,12 +28,12 @@ input: |-
   [x y] > first
     stdout x > std
     [std] > second
-      std x > inner
+      std ^.x > inner
       [] > third
         5 > x
-        x.plus y > sum
-        third bar > baz
-        std qwe > closest
+        x.plus ^.^.y > sum
+        ^.third bar > baz
+        ^.std qwe > closest
       [] > fourth
         "some" > inner
         ^.inner > outer

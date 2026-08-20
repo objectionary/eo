@@ -16,8 +16,8 @@ import java.util.List;
  *
  * <p>This class collects the small rule set as static helpers shared
  * by every line shape that reads an argument group — {@link
- * LnApplication}, {@link LnMethod}, {@link LnReversed}, and the
- * compact-tuple flavours.</p>
+ * LnApplication}, {@link LnMethod}, {@link LnReversed}, and {@link
+ * LnPipe}.</p>
  *
  * @since 0.1
  */
@@ -84,7 +84,7 @@ final class Bindings {
      * @param span Source span of the continuation line
      */
     static void checkReceiverUpgrade(final Level below, final Span span) {
-        if (below != null && below.kind() == Kind.BARE_REVERSED) {
+        if (below != null && below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"
@@ -119,23 +119,11 @@ final class Bindings {
         }
     }
 
-    /**
-     * Whether a parent kind is an arg-bearing context where the
-     * all-or-nothing binding rule applies to deeper children.
-     * @param kind Parent kind
-     * @return True if the parent tracks binding consistency
-     */
     private static boolean tracksBindings(final Kind kind) {
         return kind == Kind.HEAD || kind == Kind.HMETHOD
             || kind == Kind.VAPPLICATION || kind == Kind.IDENTITY_OBJECT;
     }
 
-    /**
-     * Reject a binding on a child in a context that disallows it —
-     * formation body or top-level (R-3.12.3).
-     * @param outer Outer binding (may be {@code null})
-     * @param span Source span of the child
-     */
     private static void rejectBinding(final String outer, final Span span) {
         if (outer != null) {
             throw new ParseError(
@@ -145,15 +133,6 @@ final class Bindings {
         }
     }
 
-    /**
-     * Handle a child under a {@link Kind#BARE_REVERSED} parent. The
-     * first child is the receiver and must not carry a binding
-     * (R-6.6.3); subsequent children participate in the
-     * all-or-nothing group (R-6.6.2).
-     * @param parent The bare-reversed parent
-     * @param outer Outer binding (may be {@code null})
-     * @param span Source span of the child
-     */
     private static void observeReversedChild(
         final Level parent, final String outer, final Span span
     ) {

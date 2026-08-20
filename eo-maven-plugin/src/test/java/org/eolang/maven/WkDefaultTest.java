@@ -14,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Walk}.
+ * Test case for {@link WkDefault}.
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
-final class WalkTest {
+final class WkDefaultTest {
 
     @Test
     void findsFilesMatchingGlobPattern(@Mktmp final Path temp) throws Exception {
@@ -32,7 +32,7 @@ final class WalkTest {
                 count,
                 pattern
             ),
-            new Walk(temp).includes(new ListOf<>(pattern)),
+            new WkDefault(temp).includes(new ListOf<>(pattern)),
             Matchers.iterableWithSize(count)
         );
     }

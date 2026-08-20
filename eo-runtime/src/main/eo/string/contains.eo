@@ -24,7 +24,7 @@
           end.eq index
           includes
           includes.or
-            rec-contains (index.plus 1).as-number
+            ^.rec-contains (index.plus 1).as-number
         eq. > includes
           txt.slice index size
           part

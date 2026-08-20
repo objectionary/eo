@@ -17,7 +17,7 @@
     if. > @
       index.eq b.size!
       acc.as-number
-      rec-hash-code
+      ^.rec-hash-code
         plus.
           31.as-i64.times acc
           as-i64.

@@ -7,8 +7,6 @@
 # declares itself, which is the one place the transpiler reads them from. The
 # member no longer has a class of its own, and its tests run from the test class
 # of the object its package names.
-merged:
-  - number
 eo:
   number.eo: |
     [as-bytes] > number

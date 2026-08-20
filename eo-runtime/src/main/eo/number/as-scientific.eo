@@ -45,7 +45,7 @@
   if. > [m count] >> rec-exponent
     m.lt 10
     count
-    rec-exponent
+    ^.rec-exponent
       m.div 10
       as-number.
         count.plus 1

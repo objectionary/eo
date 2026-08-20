@@ -21,21 +21,21 @@
           seq * > @
             while
               if. > [i] >>
-                i.lt n
+                i.lt ^.^.n
                 seq *
-                  sum.put
-                    sum.as-number.plus
+                  ^.sum.put
+                    ^.sum.as-number.plus
                       subsection
-                        a.plus (i.times step)
-                        a.plus ((i.plus 1).times step)
+                        ^.^.a.plus (i.times ^.step)
+                        ^.^.a.plus ((i.plus 1).times ^.step)
                   true
                 false
               true > [i]
             sum
           as-number. > step
             div.
-              b.minus a
-              n
+              ^.b.minus ^.a
+              ^.n
     T
       "the number of partitions must be a finite positive integer"
   times. > [a b] >> subsection
@@ -43,13 +43,13 @@
       b.minus a
       6
     plus.
-      fun a
+      ^.fun a
       plus.
         4.times
-          fun
+          ^.fun
             0.5.times
               a.plus b
-        fun b
+        ^.fun b
 
   ++> can-integrate-a-cubic-function
     close-to > @

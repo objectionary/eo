@@ -113,11 +113,6 @@ final class Moja<T extends AbstractMojo> {
         }
     }
 
-    /**
-     * List all fields of a class.
-     * @param cls The class
-     * @return List of fields
-     */
     private static Collection<Field> fields(final Class<?> cls) {
         final Collection<Field> fields = new ArrayList<>(0);
         Class<?> clazz = cls;
@@ -128,13 +123,6 @@ final class Moja<T extends AbstractMojo> {
         return fields;
     }
 
-    /**
-     * Init a field.
-     * @param clazz The mojo class
-     * @param mojo The mojo
-     * @param entry Field name and value
-     * @throws IllegalAccessException If can't set field
-     */
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private void initField(
         final Class<?> clazz,

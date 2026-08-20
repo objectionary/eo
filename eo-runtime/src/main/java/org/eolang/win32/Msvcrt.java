@@ -20,9 +20,8 @@ import com.sun.jna.Structure;
  * the EO side honest and the backend free of any name mapping.</p>
  *
  * @since 0.74.0
- * @checkstyle MethodNameCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface Msvcrt extends Library {
 
     /**

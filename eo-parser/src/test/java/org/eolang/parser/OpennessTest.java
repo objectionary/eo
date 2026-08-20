@@ -35,8 +35,8 @@ final class OpennessTest {
     @Test
     void offersVerticalCompletedState() {
         MatcherAssert.assertThat(
-            "VERTICAL_COMPLETED must be one of the openness states",
-            Openness.valueOf("VERTICAL_COMPLETED"),
+            "VCOMPLETED must be one of the openness states",
+            Openness.valueOf("VCOMPLETED"),
             Matchers.notNullValue()
         );
     }
@@ -44,8 +44,8 @@ final class OpennessTest {
     @Test
     void offersHorizontalCompletedState() {
         MatcherAssert.assertThat(
-            "HORIZONTAL_COMPLETED must be one of the openness states",
-            Openness.valueOf("HORIZONTAL_COMPLETED"),
+            "HCOMPLETED must be one of the openness states",
+            Openness.valueOf("HCOMPLETED"),
             Matchers.notNullValue()
         );
     }

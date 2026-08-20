@@ -33,7 +33,6 @@ import org.cactoos.set.SetOf;
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class MjRegister extends MjSafe {
 
     /**
@@ -49,14 +48,17 @@ public final class MjRegister extends MjSafe {
      *  properties since there is no way of passing it via command line.
      * @checkstyle MemberNameCheck (15 lines)
      */
-    @Parameter
+    @Parameter(defaultValue = "**.eo")
     private Set<String> includeSources;
 
     /**
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
-     * @checkstyle MemberNameCheck (7 lines)
+     * @implNote {@code defaultValue} attribute is omitted, because an empty
+     *  one is not rendered into the descriptor of the plugin by
+     *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.
+     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter
     private Set<String> excludeSources;
@@ -76,9 +78,7 @@ public final class MjRegister extends MjSafe {
      * Ctor.
      */
     public MjRegister() {
-        this.includeSources = new SetOf<>("**.eo");
-        this.excludeSources = new SetOf<>();
-        this.strictFileNames = true;
+        // nothing
     }
 
     @Override
@@ -99,26 +99,29 @@ public final class MjRegister extends MjSafe {
                 this,
                 "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
                 new Threaded<>(
-                    new Walk(this.sourcesDir.toPath())
+                    new WkDefault(this.sourcesDir.toPath())
                         .includes(this.includeSources)
-                        .excludes(this.excludeSources),
+                        .excludes(this.excludes()),
                     file -> this.register(file, unplace, tojos)
                 ).total(),
                 this.sourcesDir,
                 this.foreign,
                 this.includeSources,
-                this.excludeSources
+                this.excludes()
             );
         }
     }
 
-    /**
-     * Register a single EO source file.
-     * @param file Source file
-     * @param unplace Unplace builder for naming
-     * @param tojos The foreign catalog to register into
-     * @return Always 1, to count the registered files
-     */
+    private Set<String> excludes() {
+        final Set<String> globs;
+        if (this.excludeSources == null) {
+            globs = new SetOf<>();
+        } else {
+            globs = this.excludeSources;
+        }
+        return globs;
+    }
+
     private int register(
         final Path file, final Unplace unplace, final TjsForeign tojos
     ) {

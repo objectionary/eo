@@ -18,9 +18,9 @@
       h.plus 55
   [index acc] >> rec-hex
     if. > @
-      index.eq b.size
+      index.eq ^.b.size
       acc
-      rec-hex
+      ^.rec-hex
         as-number.
           index.plus 1
         if.
@@ -31,7 +31,7 @@
             pair
     as-ascii. > bval
       string
-        b.slice index 1
+        ^.b.slice index 1
     concat. > pair
       hex-digit
         floor.

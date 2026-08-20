@@ -98,10 +98,20 @@ final class ListingTest {
         );
     }
 
-    /**
-     * Sources to embed into {@code <listing>}.
-     * @return Stream of sources
-     */
+    @ParameterizedTest
+    @ValueSource(ints = {0x09, 0x0A, 0x0D, 0x20, 0x85, 0xA0, 0xFFFD})
+    void keepsCharactersOutsideRestrictedRanges(final int codepoint) {
+        final String source = String.format("x%cy", codepoint);
+        MatcherAssert.assertThat(
+            String.format(
+                "Character with code %s falls between the restricted ranges and is not dropped",
+                codepoint
+            ),
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
     private static Stream<Arguments> sources() {
         return Stream.of(
             "[] > foo",
@@ -126,11 +136,6 @@ final class ListingTest {
         ).map(Arguments::of);
     }
 
-    /**
-     * Read the text of {@code /object/listing} built for the given source.
-     * @param source The EO source text
-     * @return The text of the {@code listing} element
-     */
     private static String listing(final String source) {
         return new Xnav(
             new XMLDocument(

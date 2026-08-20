@@ -5,16 +5,8 @@
 package org.eolang.parser;
 
 import com.jcabi.xml.XML;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.TrJoined;
-import com.yegor256.xsline.Train;
-import com.yegor256.xsline.Xsline;
 import java.util.List;
 import java.util.function.UnaryOperator;
-import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
@@ -33,6 +25,16 @@ import org.cactoos.scalar.Unchecked;
  * into the root {@code Φ} (see {@code add-default-package.xsl}).</p>
  *
  * @since 0.60
+ * @todo #7134:45min Resolve a file-local handle to its full path in
+ *  {@code resolve-local-names.xsl}. That sheet knows the node a
+ *  {@code >>} handle declares and the node that reads it, so it knows
+ *  how many formations sit between them; today it rewrites only the
+ *  name and leaves the {@code ρ} run to {@code build-fqns.xsl}, which
+ *  is why that sheet still walks scopes for cactus names after it
+ *  stopped doing so for every other name. Once the handle arrives
+ *  with its path already built, the cactus exception in
+ *  {@code build-fqns.xsl} goes away and no name is resolved across a
+ *  scope the author did not write.
  */
 public final class Canonical implements UnaryOperator<XML> {
 
@@ -41,7 +43,7 @@ public final class Canonical implements UnaryOperator<XML> {
      * order they run, so a caller that caches this pipeline's output (see
      * {@code Parsing} in {@code eo-maven-plugin}, #6236) can fold a
      * fingerprint of them into its cache key. This very list also builds
-     * the pipeline in {@link Canonical.Pipeline#value()}, so the two can
+     * the pipeline in {@link Pipeline#value()}, so the two can
      * never drift apart, the same way {@code Transpilation.XSLS} feeds
      * both the train and the cache key in {@code eo-maven-plugin}. An
      * immutable {@link List}, not an array, since this is exported as
@@ -59,7 +61,6 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/const-to-dataized.xsl",
         "/org/eolang/parser/parse/stars-to-tuples.xsl",
         "/org/eolang/parser/parse/vars-float-up.xsl",
-        "/org/eolang/parser/parse/move-voids-up.xsl",
         "/org/eolang/parser/parse/validate-objects-count.xsl",
         "/org/eolang/parser/parse/validate-object-presence.xsl",
         "/org/eolang/parser/parse/build-fqns.xsl",
@@ -73,7 +74,7 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * Classpath resources {@code xsl:import}-ed by one or more of
-     * {@link #XSLS} (const-to-dataized, vars-float-up, move-voids-up,
+     * {@link #XSLS} (const-to-dataized, vars-float-up,
      * build-fqns, add-default-package, roll-bases and set-locators,
      * confirmed by grepping their {@code xsl:import}s), so
      * their content must also be folded into a fingerprint that means to
@@ -87,16 +88,6 @@ public final class Canonical implements UnaryOperator<XML> {
     public static final List<String> IMPORTS = List.of(
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl"
-    );
-
-    /**
-     * The position in {@link #XSLS} of {@code add-default-package.xsl},
-     * the only stylesheet of the pipeline that takes a parameter and
-     * therefore can't travel in a plain {@link TrClasspath} run, but has
-     * to be wrapped into an {@link StClasspath} of its own.
-     */
-    private static final int PACKAGED = Canonical.XSLS.indexOf(
-        "/org/eolang/parser/parse/add-default-package.xsl"
     );
 
     /**
@@ -121,69 +112,12 @@ public final class Canonical implements UnaryOperator<XML> {
      */
     public Canonical(final String objects) {
         this.pipeline = new Unchecked<>(
-            new Synced<>(new Sticky<>(new Canonical.Pipeline(objects)))
+            new Synced<>(new Sticky<>(new Pipeline(objects)))
         );
     }
 
     @Override
     public XML apply(final XML xml) {
         return this.pipeline.value().apply(xml);
-    }
-
-    /**
-     * The train of those {@link #XSLS} that live in the given half-open
-     * range and take no parameters.
-     * @param from The index of the first XSL, inclusive
-     * @param till The index right after the last XSL, exclusive
-     * @return The train of shifts
-     */
-    private static Train<Shift> classpath(final int from, final int till) {
-        return new TrClasspath<Shift>(
-            Canonical.XSLS.subList(from, till).toArray(new String[0])
-        ).back();
-    }
-
-    /**
-     * The scalar that builds the canonical pipeline.
-     * @since 0.60
-     */
-    private static final class Pipeline implements Scalar<UnaryOperator<XML>> {
-
-        /**
-         * Space separated qualified names of the local package objects.
-         */
-        private final String objects;
-
-        /**
-         * Ctor.
-         * @param objs Space separated qualified names of local package objects
-         */
-        Pipeline(final String objs) {
-            this.objects = objs;
-        }
-
-        @Override
-        public UnaryOperator<XML> value() {
-            return new Xsline(
-                new TrFull(
-                    new TrJoined<>(
-                        Canonical.classpath(0, Canonical.PACKAGED),
-                        new TrDefault<Shift>(
-                            new StClasspath(
-                                Canonical.XSLS.get(Canonical.PACKAGED),
-                                String.format("objects %s", this.objects)
-                            )
-                        ),
-                        Canonical.classpath(
-                            Canonical.PACKAGED + 1, Canonical.XSLS.size() - 1
-                        ),
-                        new TrDefault<>(new StHex()),
-                        Canonical.classpath(
-                            Canonical.XSLS.size() - 1, Canonical.XSLS.size()
-                        )
-                    )
-                )
-            )::pass;
-        }
     }
 }

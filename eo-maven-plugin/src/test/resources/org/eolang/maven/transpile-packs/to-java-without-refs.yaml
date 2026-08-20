@@ -27,7 +27,7 @@ input: |
         true > some
         false > body
         [] > abstract-as-arg
-          void-attr > @
+          ^.^.void-attr > @
             5
             [] > arg
             []
