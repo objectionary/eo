@@ -2,8 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 2
-message: "a ^ void attribute must be the first attribute of its formation"
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[1][@name='x' and @base='∅']
+  - /object/o[@name='foo']/o[2][@name='ρ' and @base='∅']
 input: |
   [x] > foo
     ? > ^
