@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.WString;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -35,8 +36,8 @@ public final class AccessFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE._access(
-                    new Dataized(params[0]).asString(),
+                Msvcrt.INSTANCE._waccess(
+                    new WString(new Dataized(params[0]).asString()),
                     new Dataized(params[1]).asNumber().intValue()
                 )
             )

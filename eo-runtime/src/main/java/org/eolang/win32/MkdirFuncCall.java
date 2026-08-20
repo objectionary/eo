@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.WString;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -31,7 +32,7 @@ public final class MkdirFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final int code = Msvcrt.INSTANCE._mkdir(new Dataized(params[0]).asString());
+        final int code = Msvcrt.INSTANCE._wmkdir(new WString(new Dataized(params[0]).asString()));
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;
