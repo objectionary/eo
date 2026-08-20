@@ -189,7 +189,7 @@ final class Eo implements Iterable<Directive> {
             }
             body.append(trimmed);
             idx = idx + 1;
-            if (!trimmed.endsWith("-")) {
+            if (!Eo.isBytesContinuation(trimmed)) {
                 break;
             }
         }
