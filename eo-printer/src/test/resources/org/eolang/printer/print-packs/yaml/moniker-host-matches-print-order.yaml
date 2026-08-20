@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7218: merge-monikers.xsl used to host a binding onto its first reference
+# in document order ("z" before "w" here), but to-eo-tree.xsl later sorts a
+# formation's bindings alphabetically by name ("w" before "z"), so the
+# printed output no longer matched the reference the merge had picked and a
+# reprint of that output picked a different "first" reference, moving the
+# handle again. Ranking candidate hosts by where they will actually print,
+# not by document order, makes the first pass already choose "w" (the name
+# that sorts first) and keeps the output stable across passes.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    [] >> h
+      5 > y
+    h.y > z
+    h.y > w
+
+printed: |
+  [] > main
+    y. > w
+      [] >> h
+        5 > y
+    h.y > z
