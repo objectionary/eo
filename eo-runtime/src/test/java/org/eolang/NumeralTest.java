@@ -55,20 +55,18 @@ final class NumeralTest {
 
     @Test
     void printsNegativeZeroComputedByDivision() {
-        final double number = -1.0d / Double.POSITIVE_INFINITY;
         MatcherAssert.assertThat(
             "Negative zero produced by division must keep its sign in φ-term",
-            new Numeral(number).get(),
+            new Numeral(-1.0d / Double.POSITIVE_INFINITY).get(),
             Matchers.equalTo("-0.0")
         );
     }
 
     @Test
     void printsNegativeZeroWidenedFromFloat() {
-        final double number = -0.0f;
         MatcherAssert.assertThat(
             "Negative zero widened from float must keep its sign in φ-term",
-            new Numeral(number).get(),
+            new Numeral(-0.0f).get(),
             Matchers.equalTo("-0.0")
         );
     }

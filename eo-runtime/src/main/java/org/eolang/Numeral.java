@@ -36,8 +36,7 @@ final class Numeral implements Supplier<String> {
     public String get() {
         final String txt;
         if (
-            this.value == Math.floor(this.value)
-                && !Double.isInfinite(this.value)
+            this.whole()
                 && Long.MIN_VALUE <= this.value
                 && this.value < Long.MAX_VALUE
                 && Double.doubleToRawLongBits(this.value) != Double.doubleToRawLongBits(-0.0d)
@@ -47,5 +46,13 @@ final class Numeral implements Supplier<String> {
             txt = Double.toString(this.value);
         }
         return txt;
+    }
+
+    /**
+     * Is this a finite value with no fractional part.
+     * @return TRUE if the value has no fraction and is not infinite
+     */
+    private boolean whole() {
+        return this.value == Math.floor(this.value) && !Double.isInfinite(this.value);
     }
 }
