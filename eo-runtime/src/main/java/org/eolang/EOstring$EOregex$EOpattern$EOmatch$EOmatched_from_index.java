@@ -87,12 +87,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         return result;
     }
 
-    /**
-     * Fill the matched block with the data of a real match.
-     * @param result The matched block to fill
-     * @param matcher The matcher positioned on the found subsequence
-     * @param text Matched text
-     */
     private void fill(final Phi result, final Matcher matcher, final String text) {
         result.put(
             EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
@@ -118,12 +112,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         result.put("groups", new Data.ToPhi(groups));
     }
 
-    /**
-     * Fill the matched block as a non-existent one: start is -1 and the from,
-     * to and groups fields hold bottom, so any attempt to read them terminates
-     * the program with an explanatory cause.
-     * @param result The matched block to fill
-     */
     private void blank(final Phi result) {
         result.put(
             EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,

@@ -92,11 +92,6 @@ final class Demands {
         return found;
     }
 
-    /**
-     * Whether this object is the void itself, or a name rooted at it.
-     * @param object The name of the object
-     * @return True when what it is depends on what fills this void
-     */
     private boolean below(final String object) {
         return object.equals(this.hollow) || object.startsWith(this.hollow.concat("."));
     }

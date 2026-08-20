@@ -29,10 +29,6 @@ final class ChNarrow implements CommitHash {
         return hash.substring(0, Math.min(7, hash.length()));
     }
 
-    /**
-     * Valid hash.
-     * @return Full valid hash
-     */
     private String validHash() {
         final String hash = this.full.value();
         if (hash.isEmpty()) {

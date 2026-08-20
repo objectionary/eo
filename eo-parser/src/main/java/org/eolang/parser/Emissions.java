@@ -209,6 +209,8 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
+        } else if ("^".equals(raw)) {
+            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -254,15 +256,6 @@ final class Emissions {
         return Emissions.unescapeRawBytes(inner);
     }
 
-    /**
-     * Open the {@code <o>} for a value that carries no data of its own —
-     * a star, a root or self token, a term, a group, or a plain base
-     * reference — where the kind alone picks the {@code base}.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value The value
-     * @param line Source line
-     */
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -285,19 +278,6 @@ final class Emissions {
         }
     }
 
-    /**
-     * Open the {@code <o>} for the identity object {@code I} (§3.16) —
-     * an anonymous formation that binds one void and decorates it, the
-     * one-glyph spelling of {@code x > [x]}. The void is always named
-     * {@link Emissions#IDENTITY}, since the glyph carries no name of
-     * its own and the body it decorates is that very void. The element
-     * stays open, so horizontal arguments land on the identity exactly
-     * as they land on a parenthesised {@code (x > [x])}.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value The identity value
-     * @param line Source line
-     */
     private static void identity(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -307,16 +287,6 @@ final class Emissions {
         emit.close();
     }
 
-    /**
-     * Emit a {@code HEX} literal as {@code Φ.number}, rejecting values that
-     * fit a signed 64-bit {@code long} but no longer round-trip exactly
-     * through an IEEE-754 double (the sibling {@code number()} check, for
-     * the base where a plain range check on {@code long} does not catch it).
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value Hex value
-     * @param line Source line
-     */
     private static void hex(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -348,15 +318,6 @@ final class Emissions {
         );
     }
 
-    /**
-     * Emit a STRING literal — the object plus a bytes carrier holding the
-     * UTF-8 bytes of the unescaped text. A malformed escape inside the
-     * literal is reported at the literal's own position.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value String value
-     * @param line Source line
-     */
     private static void string(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -379,15 +340,6 @@ final class Emissions {
         );
     }
 
-    /**
-     * Reject a decoded body containing a UTF-16 surrogate with no matching
-     * partner — a lone {@code \uD800}-{@code \uDFFF} escape has no UTF-8
-     * encoding and would otherwise be silently mangled later. A high
-     * surrogate immediately followed by a low surrogate is a valid pair
-     * (for example a supplementary character spelled as two {@code \\u}
-     * escapes) and is left untouched.
-     * @param text Decoded body to check
-     */
     private static void rejectLoneSurrogates(final CharSequence text) {
         int cursor = 0;
         while (cursor < text.length()) {
@@ -410,16 +362,6 @@ final class Emissions {
         }
     }
 
-    /**
-     * Emit an {@code INTEGER} or {@code FLOAT} as {@code Φ.number},
-     * rejecting literals whose exact decimal value differs from the
-     * IEEE-754 double they parse to (dead trailing digits). Alternate
-     * spellings of the same value ({@code +42}, {@code 1.50}) are kept.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value Integer or float value
-     * @param line Source line
-     */
     private static void number(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -454,48 +396,16 @@ final class Emissions {
         );
     }
 
-    /**
-     * Whether {@code raw} claims a decimal value the parsed double does
-     * not hold. Accepts any spelling of the exact binary value
-     * ({@code +42}, {@code 1.50}, full digit forms of exact powers of
-     * two) and any spelling of {@link Double#toString(double)}'s
-     * shortest form ({@code 0.1}); rejects only dead extra digits.
-     * @param raw Source literal text
-     * @param parsed Result of {@code Double.parseDouble(raw)}
-     * @return True when the literal is over-precise
-     */
     private static boolean overPrecise(final String raw, final double parsed) {
         final BigDecimal written = new BigDecimal(raw);
         return !Emissions.exact(written, parsed)
             && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
     }
 
-    /**
-     * Whether a decimal equals a double's exact binary value.
-     * @param decimal Exact decimal value
-     * @param value Double to compare against
-     * @return True if {@code decimal} equals the double's exact binary value
-     */
     private static boolean exact(final BigDecimal decimal, final double value) {
         return decimal.compareTo(Emissions.exactly(value)) == 0;
     }
 
-    /**
-     * The exact value of a finite double, every bit of its binary
-     * significand spelled out in decimal.
-     *
-     * <p>{@link BigDecimal#valueOf(double)} cannot be used here: it goes
-     * through {@link Double#toString(double)} and therefore returns the
-     * double's <em>shortest</em> spelling ({@code 0.1}), not the value the
-     * bits actually hold ({@code 0.1000000000000000055511151231257827…}).
-     * The value is assembled from the significand and the binary exponent
-     * instead: {@code value} is {@code mantissa × 2^exponent}, so for a
-     * negative exponent it is also {@code mantissa × 5^-exponent} shifted
-     * {@code -exponent} decimal places to the right.</p>
-     *
-     * @param value Finite double (neither infinite nor {@code NaN})
-     * @return Its exact value as a decimal
-     */
     private static BigDecimal exactly(final double value) {
         final int exponent = Math.max(
             Math.getExponent(value), Double.MIN_EXPONENT
@@ -515,14 +425,6 @@ final class Emissions {
         return exact;
     }
 
-    /**
-     * Suggested replacement spelling for a whole-valued double.
-     * Mirrors the integer branch of the printer's {@code StUnhex.number},
-     * except the large-magnitude arm keeps {@code Double.toString}'s
-     * uppercase {@code E} so the suggestion itself re-parses as FLOAT.
-     * @param num Parsed numeric value
-     * @return Shortest integer-oriented spelling for {@code num}
-     */
     private static String canonicalInteger(final double num) {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
@@ -535,14 +437,6 @@ final class Emissions {
         return str;
     }
 
-    /**
-     * Emit a parenthesised group value, either as an inline-phi formation or
-     * as a nested expression.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value The group value
-     * @param line Source line
-     */
     private static void group(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -558,12 +452,6 @@ final class Emissions {
         }
     }
 
-    /**
-     * Map a source root character to its XMIR symbol per §9.3.
-     * @param raw Source character (one of {@code Q}, {@code @},
-     *  {@code ^}, {@code $})
-     * @return XMIR symbol
-     */
     private static String rootBase(final String raw) {
         final String mapped;
         if ("Q".equals(raw)) {
@@ -580,13 +468,6 @@ final class Emissions {
         return mapped;
     }
 
-    /**
-     * Decode a string body to its byte representation. Text and Unicode
-     * escapes are UTF-8 encoded, while octal escapes contribute their raw
-     * one-byte values.
-     * @param inner Source body without surrounding quotes
-     * @return Decoded bytes
-     */
     private static byte[] unescapeRawBytes(final String inner) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(inner.length());
         final StringBuilder text = new StringBuilder(inner.length());
@@ -612,14 +493,6 @@ final class Emissions {
         return out.toByteArray();
     }
 
-    /**
-     * Append one octal escape as a raw byte.
-     * @param out Output bytes
-     * @param text Text waiting for encoding
-     * @param body Whole string body
-     * @param start First octal digit
-     * @return Index past the octal escape
-     */
     private static int rawOctal(
         final ByteArrayOutputStream out, final StringBuilder text,
         final String body, final int start
@@ -644,11 +517,6 @@ final class Emissions {
         return cursor;
     }
 
-    /**
-     * Append valid UTF-16 text as UTF-8 bytes and clear the text buffer.
-     * @param out Output bytes
-     * @param text Text waiting for encoding
-     */
     private static void appendText(
         final ByteArrayOutputStream out, final StringBuilder text
     ) {
@@ -658,16 +526,6 @@ final class Emissions {
         text.setLength(0);
     }
 
-    /**
-     * Decode the body of a {@code \\uXXXX} escape (or its legacy
-     * {@code \\uu...uXXXX} form per R-9.7.3) starting at the
-     * {@code 'u'} position and append the resulting codepoint to
-     * {@code out}.
-     * @param out Output buffer
-     * @param body String body
-     * @param start Index of the first {@code 'u'}
-     * @return Index past the consumed escape
-     */
     private static int appendUnicode(
         final StringBuilder out, final String body, final int start
     ) {
@@ -693,13 +551,6 @@ final class Emissions {
         return cursor + 4;
     }
 
-    /**
-     * Resolve a single-character escape sequence (e.g. {@code \n},
-     * {@code \t}). An unrecognised sequence is a lexical error (R-9.7.3).
-     * @param head Backslash character (always {@code '\\'})
-     * @param next The character after the backslash
-     * @return The decoded character(s)
-     */
     private static String singleCharEscape(final char head, final char next) {
         final String decoded;
         if (next == 'n') {
@@ -722,16 +573,6 @@ final class Emissions {
         return decoded;
     }
 
-    /**
-     * Whether the cursor is at a reversed-dispatch separator — a
-     * {@code .} immediately followed by a space or end-of-body. Used
-     * to recognise inner reversed-dispatch expressions inside paren
-     * groups (e.g. {@code (mod. y 4)}), where the {@code name.} form
-     * opens a new dispatch chain.
-     * @param tokens Token reader (positioned after the head)
-     * @param head Just-read head value
-     * @return True when the cursor is at a reversed-dispatch dot
-     */
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
         if (head.kind() == Value.Kind.IDENTIFIER
@@ -745,13 +586,6 @@ final class Emissions {
         return reversed;
     }
 
-    /**
-     * Find the position of a top-level {@code > [} inline-phi marker
-     * in {@code body} (depth-zero, not inside strings). Returns the
-     * index of the {@code >} char, or {@code -1} if none.
-     * @param body The inner body of a paren group
-     * @return Index of {@code >} char, or {@code -1}
-     */
     private static int topLevelInlinePhi(final String body) {
         int depth = 0;
         int found = -1;
@@ -773,17 +607,6 @@ final class Emissions {
         return found;
     }
 
-    /**
-     * Emit an inline-phi formation (§3.10) detected inside a paren
-     * group. The formation is anonymous (no {@code > name} suffix);
-     * its {@code φ} slot holds the body expression.
-     * @param emit Emitter
-     * @param name Name to attach to the formation's {@code <o>}
-     * @param inner The full inner body of the paren group
-     * @param phi Index of the {@code >} that begins {@code > [}
-     * @param column Absolute source column of the first body char
-     * @param line Source line
-     */
     private static void inlinePhi(
         final Emit emit, final String name, final String inner,
         final int phi, final int column, final int line
@@ -815,12 +638,6 @@ final class Emissions {
         emit.close();
     }
 
-    /**
-     * Split a parameter-list body into individual names by single
-     * spaces.
-     * @param text Param text (without surrounding brackets)
-     * @return Names in source order
-     */
     private static List<String> splitParams(final String text) {
         final List<String> out = new java.util.ArrayList<>(0);
         int idx = 0;

@@ -240,18 +240,10 @@ final class StrictXmirTest {
         );
     }
 
-    /**
-     * The EO version, as the manifest records it.
-     * @return Version
-     */
     private static String version() {
         return Manifests.read("EO-Version");
     }
 
-    /**
-     * Make a simple XMIR.
-     * @param schema The schema
-     */
     private static XML xmir(final String schema) {
         return new XMLDocument(
             new Xembler(
@@ -268,12 +260,6 @@ final class StrictXmirTest {
         );
     }
 
-    /**
-     * Make an XMIR, validated against the local (current-version) schema,
-     * with a single top-level object carrying the given {@code loc}.
-     * @param loc The locator to put into the {@code loc} attribute
-     * @return XMIR
-     */
     private static XML xmirWithLocator(final String loc) {
         return new XMLDocument(
             new Xembler(

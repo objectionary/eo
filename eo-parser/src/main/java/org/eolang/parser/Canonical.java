@@ -25,6 +25,16 @@ import org.cactoos.scalar.Unchecked;
  * into the root {@code Φ} (see {@code add-default-package.xsl}).</p>
  *
  * @since 0.60
+ * @todo #7134:45min Resolve a file-local handle to its full path in
+ *  {@code resolve-local-names.xsl}. That sheet knows the node a
+ *  {@code >>} handle declares and the node that reads it, so it knows
+ *  how many formations sit between them; today it rewrites only the
+ *  name and leaves the {@code ρ} run to {@code build-fqns.xsl}, which
+ *  is why that sheet still walks scopes for cactus names after it
+ *  stopped doing so for every other name. Once the handle arrives
+ *  with its path already built, the cactus exception in
+ *  {@code build-fqns.xsl} goes away and no name is resolved across a
+ *  scope the author did not write.
  */
 public final class Canonical implements UnaryOperator<XML> {
 
@@ -51,7 +61,6 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/const-to-dataized.xsl",
         "/org/eolang/parser/parse/stars-to-tuples.xsl",
         "/org/eolang/parser/parse/vars-float-up.xsl",
-        "/org/eolang/parser/parse/move-voids-up.xsl",
         "/org/eolang/parser/parse/validate-objects-count.xsl",
         "/org/eolang/parser/parse/validate-object-presence.xsl",
         "/org/eolang/parser/parse/build-fqns.xsl",
@@ -65,7 +74,7 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * Classpath resources {@code xsl:import}-ed by one or more of
-     * {@link #XSLS} (const-to-dataized, vars-float-up, move-voids-up,
+     * {@link #XSLS} (const-to-dataized, vars-float-up,
      * build-fqns, add-default-package, roll-bases and set-locators,
      * confirmed by grepping their {@code xsl:import}s), so
      * their content must also be folded into a fingerprint that means to

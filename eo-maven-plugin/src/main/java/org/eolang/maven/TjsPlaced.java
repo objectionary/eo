@@ -32,7 +32,7 @@ final class TjsPlaced implements Closeable {
      * @param file Path to the tojos file
      */
     TjsPlaced(final Path file) {
-        this(Catalogs.INSTANCE.make(file));
+        this(Catalogs.INSTANCE.make(file, "json"));
     }
 
     /**

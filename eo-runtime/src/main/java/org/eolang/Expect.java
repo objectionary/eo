@@ -113,12 +113,6 @@ public class Expect<T> {
         }
     }
 
-    /**
-     * Apply the otherwise transformation, wrapping {@link ExMust} and {@link ExThat}
-     * exceptions into {@link ExOtherwise}.
-     * @param message The error message
-     * @return The supplied value, when no exception is thrown
-     */
     private T applyOtherwise(final String message) {
         try {
             return this.sup.get();

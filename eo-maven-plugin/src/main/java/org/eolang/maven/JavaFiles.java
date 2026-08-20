@@ -170,12 +170,6 @@ final class JavaFiles {
         }
     }
 
-    /**
-     * Cached path supplier for a generated Java file.
-     * @param hsh Hash
-     * @param jname Java class name
-     * @return Supplier of cached path
-     */
     private Supplier<Path> cached(final String hsh, final String jname) {
         final Path tail = this.generated.relativize(
             new Place(jname).make(
