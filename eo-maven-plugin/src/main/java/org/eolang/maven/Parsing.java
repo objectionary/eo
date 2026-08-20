@@ -141,32 +141,21 @@ final class Parsing implements Step {
         }
     }
 
-    /**
-     * Parse all the given sources to XMIRs, concurrently.
-     * @param sources The sources to parse
-     * @param pipeline The canonical parsing transform to apply
-     * @param store The cache, already keyed by the set of known objects
-     * @return Amount of parsed tojos
-     */
     private int parsed(
         final Collection<TjForeign> sources,
         final UnaryOperator<XML> pipeline,
         final GlobalCache store
     ) {
         return new Threaded<>(
-            new Filtered<>(TjForeign::notParsed, sources),
+            new Filtered<>(this::unparsed, sources),
             tojo -> this.parsed(tojo, pipeline, store)
         ).total();
     }
 
-    /**
-     * Parse EO file to XML.
-     * @param tojo The tojo
-     * @param pipeline The canonical parsing transform to apply
-     * @param store The cache, already keyed by the set of known objects
-     * @return Amount of parsed tojos
-     * @throws Exception If fails
-     */
+    private boolean unparsed(final TjForeign tojo) {
+        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
+    }
+
     private int parsed(
         final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache store
     ) throws Exception {
@@ -206,14 +195,6 @@ final class Parsing implements Step {
         return 1;
     }
 
-    /**
-     * Source parsed to {@link Node}.
-     * @param source Relative source path
-     * @param identifier Name of the EO object as tojo identifier
-     * @param pipeline The canonical parsing transform to apply
-     * @return Parsed EO object as {@link Node}
-     * @throws IOException If fails to parse
-     */
     private Node parsed(
         final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
@@ -234,16 +215,6 @@ final class Parsing implements Step {
         return xmir.xml().inner();
     }
 
-    /**
-     * Tojo version.
-     * The version can be extracted from:
-     * 1. Parsed {@link Node} if EO object was parsed for the first time
-     * 2. XML document that was already parsed before
-     * @param target Path to result XML document
-     * @param parsed List with either one parsed {@link Node} or empty
-     * @return Tojo version
-     * @throws FileNotFoundException If XML document file does not exist
-     */
     private static String tojoVersion(
         final Path target,
         final List<Node> parsed

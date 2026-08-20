@@ -139,14 +139,16 @@
             match.
               compile.
                 regex.
-                  "".joined >>!
-                    *
-                      "/^"
-                      translated 0 "" false false
-                      "$/"
-                T > [message] >>
-                  "Can't parse '%s' as a glob pattern, %s".printf
-                    * ^.glob message
+                  string
+                    as-bytes.
+                      "".joined >>
+                        *
+                          "/^"
+                          translated 0 "" false false
+                          "$/"
+                  T > [message] >>
+                    "Can't parse '%s' as a glob pattern, %s".printf
+                      * ^.glob message
               text
     "".joined >> single
       *
@@ -418,6 +420,15 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-an-empty-directory
+    eq. > @
+      length.
+        d.as-dir.walk "*.txt"
+      0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @
       seq *
@@ -473,6 +484,25 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-with-a-double-star-immediately-before-a-suffix
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-with-a-glob-brace-group
     seq * > @
       touched.
@@ -507,6 +537,22 @@
         length.
           d.as-dir.walk "[ab].txt"
         2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-question-mark
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "?.txt"
+        d.resolved "a.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -558,6 +604,22 @@
         ",".joined
           d.as-dir.walk "[*].txt"
         d.resolved "*.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-an-escaped-character-inside-a-glob-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "&.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "[&].txt"
+        d.resolved "&.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

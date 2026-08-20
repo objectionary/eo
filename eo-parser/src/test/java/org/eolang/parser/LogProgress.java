@@ -29,11 +29,6 @@ final class LogProgress implements AfterEachCallback {
         }
     }
 
-    /**
-     * Checks if the test is parameterized.
-     * @param context Extension context
-     * @return True if parameterized test
-     */
     private static boolean parameterized(final ExtensionContext context) {
         return context.getTestMethod()
             .map(method -> method.isAnnotationPresent(ParameterizedTest.class))

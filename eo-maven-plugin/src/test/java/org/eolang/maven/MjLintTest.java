@@ -637,12 +637,6 @@ final class MjLintTest {
         );
     }
 
-    /**
-     * Program with a critical defect: its top object is named differently
-     * from the source file, so {@code EoSource} rejects the mismatch with
-     * a critical {@code validate-object-name} error.
-     * @return Program with a critical defect
-     */
     private static String[] critical() {
         return new String[]{
             "+architect yegor256@gmail.com",
@@ -653,11 +647,6 @@ final class MjLintTest {
         };
     }
 
-    /**
-     * Program with a plain-severity defect: a duplicate "+home" meta,
-     * caught by the "unique-metas" lint.
-     * @return Program with a plain-severity defect
-     */
     private static String[] erroneous() {
         return new String[]{
             "+architect yegor256@gmail.com",
@@ -670,14 +659,6 @@ final class MjLintTest {
         };
     }
 
-    /**
-     * Package-linting FakeMaven against a shared cache.
-     * @param workspace Project workspace
-     * @param cache Cache directory
-     * @param program Program lines, or none
-     * @return Maven ready to execute
-     * @throws IOException If saving the program fails
-     */
     private static FakeMaven linting(
         final Path workspace, final Path cache, final String... program
     ) throws IOException {
@@ -690,12 +671,6 @@ final class MjLintTest {
         return maven;
     }
 
-    /**
-     * Empty object with the usual unlints.
-     * @param pkg Package meta
-     * @param name Object name
-     * @return Quiet program
-     */
     private static String[] suppressed(final String pkg, final String name) {
         return new String[]{
             "+architect yegor256@gmail.com",
@@ -712,10 +687,6 @@ final class MjLintTest {
         };
     }
 
-    /**
-     * Program with WPA error.
-     * @return Program with WPA error
-     */
     private static String[] problematic() {
         return new String[]{
             "+architect yegor256@gmail.com",

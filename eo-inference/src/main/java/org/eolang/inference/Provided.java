@@ -128,11 +128,6 @@ final class Provided {
         return found;
     }
 
-    /**
-     * Whether this type is a void, or a name taken from one.
-     * @param type The name the type goes by
-     * @return True when nothing but a caller can say what it is
-     */
     private boolean hollow(final String type) {
         boolean found = false;
         String walked = type;
@@ -149,14 +144,6 @@ final class Provided {
         return found;
     }
 
-    /**
-     * The type of the attribute this type keeps, looking behind what it
-     * delegates to when it keeps none.
-     * @param type The name the type goes by
-     * @param name The name of the attribute
-     * @param walked The types passed already
-     * @return The type of the attribute, or an empty string
-     */
     private String kept(final String type, final String name, final Collection<String> walked) {
         String found = this.bound(type, name);
         final String member = String.join(".", type, name);
@@ -170,18 +157,6 @@ final class Provided {
         return found;
     }
 
-    /**
-     * The type this one hands its answers to.
-     *
-     * <p>A formation hands them to what stands behind its {@code φ}. An atom
-     * has no {@code φ} to stand behind, since its body is written in Java, but
-     * it says what it comes back with, and a copy of it answers for every name
-     * that type answers for.</p>
-     *
-     * @param type The name the type goes by
-     * @return The name of the type behind its {@code φ} or of the one it comes
-     *  back with, or an empty string when the type answers for itself
-     */
     private String behind(final String type) {
         String next = this.bound(type, "φ");
         if (next.isEmpty()) {
@@ -193,23 +168,10 @@ final class Provided {
         return this.names.getOrDefault(next, next);
     }
 
-    /**
-     * Whether this type is a void nothing says anything about.
-     * @param type The name the type goes by
-     * @return True when only a caller can say what it is, and the source has
-     *  not said it either
-     */
     private boolean blank(final String type) {
         return this.hollow(type) && !this.held.containsKey(type);
     }
 
-    /**
-     * What the row about the type itself says under the given name.
-     * @param type The name the type goes by
-     * @param cell The name of the cell
-     * @return What the cell says, or an empty string when the table has no
-     *  such cell about this type
-     */
     private String cell(final String type, final String cell) {
         String found = "";
         for (final Map<String, String> row : this.own(type)) {
@@ -220,12 +182,6 @@ final class Provided {
         return found;
     }
 
-    /**
-     * The type of the attribute this type binds itself.
-     * @param type The name the type goes by
-     * @param name The name of the attribute
-     * @return The type of the attribute, or an empty string
-     */
     private String bound(final String type, final String name) {
         String found = "";
         for (final Map<String, String> row : this.own(type)) {
@@ -236,11 +192,6 @@ final class Provided {
         return found;
     }
 
-    /**
-     * The rows about the type of the given name.
-     * @param type The name the type goes by
-     * @return The rows, empty when the table says nothing about it
-     */
     private Collection<Map<String, String>> own(final String type) {
         return this.table.getOrDefault(type, Collections.emptyList());
     }

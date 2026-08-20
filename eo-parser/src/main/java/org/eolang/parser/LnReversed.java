@@ -20,7 +20,7 @@ import java.util.List;
  * <ul>
  * <li><strong>Horizontal</strong> ({@code name. arg1 arg2}) —
  * {@code arg1} is the receiver, {@code arg2…} are method args. Outer
- * kind {@link Kind#REVERSED_WITH_HARGS},
+ * kind {@link Kind#REVERSED_HARGS},
  * {@link Openness#HCOMPLETED}. No deeper-indent children.</li>
  * <li><strong>Vertical</strong> ({@code name.} with no hargs) — the
  * next deeper-indent line is the receiver (R-5.2.9), subsequent
@@ -91,7 +91,7 @@ final class LnReversed implements Line {
             kind = Kind.BARE_REVERSED;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.REVERSED_WITH_HARGS;
+            kind = Kind.REVERSED_HARGS;
             openness = Openness.HCOMPLETED;
         }
         this.transition(stack, suffix, kind, openness);
@@ -101,19 +101,6 @@ final class LnReversed implements Line {
         this.emit(emit, suffix, ".".concat(head.raw()), fragile, args, outer);
     }
 
-    /**
-     * Emit the reversed dispatch's {@code <o base='.<name>'>}, its
-     * file-local handle (for a {@code >> name} auto suffix, #5874), the
-     * fragile/const markers, the horizontal args, and the outer binding
-     * slot. Mirrors the auto-suffix handling of {@link LnFormation},
-     * {@link LnOnlyPhi} and {@link LnVoid}.
-     * @param emit The directives sink
-     * @param suffix The parsed suffix
-     * @param base The dispatch base ({@code .<name>})
-     * @param fragile Whether the dispatch carries the fragile marker
-     * @param args Horizontal args in source order
-     * @param outer Outer inline-binding label, or {@code null}
-     */
     private void emit(
         final Emit emit, final Suffix suffix, final String base,
         final boolean fragile, final List<Value> args, final String outer
@@ -139,13 +126,6 @@ final class LnReversed implements Line {
         }
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     * @param kind Initial outer kind
-     * @param openness Initial openness
-     */
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
@@ -154,14 +134,6 @@ final class LnReversed implements Line {
         );
     }
 
-    /**
-     * Read the reversed-dispatch head — either a {@code NAME}
-     * identifier or one of the root tokens {@code @} / {@code ^} /
-     * {@code $} (mapped to {@code φ} / {@code ρ} / {@code ξ} per
-     * R-9.3). The cursor is left at the trailing dot.
-     * @param tokens Token reader positioned at the head
-     * @return Head value with the XMIR symbol already mapped
-     */
     private static Value readHead(final Tokens tokens) {
         final Value value;
         if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
@@ -175,21 +147,10 @@ final class LnReversed implements Line {
         return value;
     }
 
-    /**
-     * Whether the character is one of the reversed-dispatch root
-     * head tokens ({@code @}, {@code ^}, {@code $}).
-     * @param glyph Source character
-     * @return True for a root head
-     */
     private static boolean rootHead(final char glyph) {
         return glyph == '@' || glyph == '^' || glyph == '$';
     }
 
-    /**
-     * Map a root head character to its XMIR symbol per R-9.3.
-     * @param glyph One of {@code @}, {@code ^}, {@code $}
-     * @return XMIR symbol
-     */
     private static String rootSymbol(final char glyph) {
         final String mapped;
         if (glyph == '@') {

@@ -146,14 +146,6 @@ final class MjPrintTest {
         );
     }
 
-    /**
-     * Print XMIR to EO from given pack.
-     * @param xtory XaX story
-     * @param temp Temp directory
-     * @param reversed Should notation be reversed or not
-     * @return Result printed EO
-     * @throws Exception If fails to execute {@link MjPrint}
-     */
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
         throws Exception {
         new Saved(
@@ -180,19 +172,11 @@ final class MjPrintTest {
         );
     }
 
-    /**
-     * Translate a penalty-block key into the matching print-mojo parameter
-     * name, so a pack is laid out under the weights it pins rather than the
-     * printer's defaults; an unmatched key yields empty and lets that weight
-     * fall back to its default.
-     * @param key The penalty key, as spelled in the pack's block
-     * @return The mojo parameter name, or empty
-     */
     private static String param(final String key) {
         return new MapOf<>(
-            new MapEntry<>("INDENT", "penaltyIndent"),
-            new MapEntry<>("BRACKET", "penaltyBracket"),
-            new MapEntry<>("EXCESS", "penaltyExcess"),
+            new MapEntry<>("INDENT", "indent"),
+            new MapEntry<>("BRACKET", "bracket"),
+            new MapEntry<>("EXCESS", "excess"),
             new MapEntry<>("WIDTH", "width")
         ).getOrDefault(key, "");
     }

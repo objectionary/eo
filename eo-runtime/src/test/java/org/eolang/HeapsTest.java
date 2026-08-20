@@ -365,12 +365,6 @@ final class HeapsTest {
         );
     }
 
-    /**
-     * Reject an out-of-bounds write and return the unchanged block.
-     * @param identifier Block identifier
-     * @param original Original bytes
-     * @return Bytes left in the block
-     */
     private static byte[] rejectedWrite(final int identifier, final byte[] original) {
         Heaps.INSTANCE.write(identifier, 0, original);
         MatcherAssert.assertThat(

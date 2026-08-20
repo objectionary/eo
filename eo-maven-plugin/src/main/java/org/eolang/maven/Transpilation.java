@@ -188,11 +188,6 @@ final class Transpilation {
         return func;
     }
 
-    /**
-     * Wrap a train with XSL execution time measurements.
-     * @param base The train to wrap
-     * @return Measured train
-     */
     private Train<Shift> measured(final Train<Shift> base) {
         final Path parent = this.measures.toAbsolutePath().getParent();
         if (parent.toFile().mkdirs()) {
@@ -221,10 +216,6 @@ final class Transpilation {
         );
     }
 
-    /**
-     * The train for this thread, built once per location-tracking value.
-     * @return The train of XSL shifts
-     */
     private Train<Shift> train() {
         final boolean track = this.tracking.locations();
         final boolean instrument = this.coverage;
@@ -235,13 +226,6 @@ final class Transpilation {
         );
     }
 
-    /**
-     * Build the train of XSL shifts.
-     * @param track Whether generated objects carry their source location
-     * @param instrument Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The class that a generated class extends instead of {@code PhDefault}
-     * @return The train of XSL shifts
-     */
     private static Train<Shift> compiled(
         final boolean track, final boolean instrument, final String base
     ) {

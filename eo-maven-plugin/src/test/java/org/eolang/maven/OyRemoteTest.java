@@ -182,12 +182,6 @@ final class OyRemoteTest {
         );
     }
 
-    /**
-     * Drive {@link OyRemote#get(String)} against a local server that always
-     * answers 404, and return the "not found" message it fails with.
-     * @return The exception message
-     * @throws Exception If the test setup itself fails
-     */
     private static String notFoundMessage() throws Exception {
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0

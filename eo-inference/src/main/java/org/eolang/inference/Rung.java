@@ -96,12 +96,6 @@ final class Rung {
         return found;
     }
 
-    /**
-     * How deeply a copy of this type is understood.
-     * @param type The locator of the type
-     * @param free How many of its voids nobody has filled here
-     * @return The rung
-     */
     private int depth(final String type, final int free) {
         final int found;
         if (free > 0) {
@@ -114,11 +108,6 @@ final class Rung {
         return found;
     }
 
-    /**
-     * How many voids this type declares.
-     * @param type The locator of the type
-     * @return The voids
-     */
     private int voids(final String type) {
         int found = 0;
         for (final Map<String, String> row : this.own(type)) {
@@ -129,11 +118,6 @@ final class Rung {
         return found;
     }
 
-    /**
-     * Whether every attribute of this type was seen.
-     * @param type The locator of the type
-     * @return True when nothing about it is left to find out
-     */
     private boolean whole(final String type) {
         boolean found = false;
         for (final Map<String, String> row : this.own(type)) {
@@ -144,11 +128,6 @@ final class Rung {
         return found;
     }
 
-    /**
-     * Whether this locator is a name taken from a void.
-     * @param locator The locator
-     * @return True when nothing but a caller can say what it is
-     */
     private boolean rooted(final String locator) {
         boolean found = false;
         String walked = locator;
@@ -165,11 +144,6 @@ final class Rung {
         return found;
     }
 
-    /**
-     * The rows about the type of the given locator.
-     * @param type The locator of the type
-     * @return The rows, empty when the table says nothing about it
-     */
     private Collection<Map<String, String>> own(final String type) {
         return this.table.getOrDefault(type, Collections.emptyList());
     }

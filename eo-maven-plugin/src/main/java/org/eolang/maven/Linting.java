@@ -150,7 +150,6 @@ final class Linting implements Step {
      * @param pkg Whether to lint all sources as a package
      * @param skip Whether to skip linting entirely
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Linting(
         final TjsForeign srcs,
         final TjsForeign compiled,
@@ -289,14 +288,6 @@ final class Linting implements Step {
         }
     }
 
-    /**
-     * XMIR verified to another XMIR.
-     * @param tojo Foreign tojo
-     * @param counts Counts of errors, warnings, and critical
-     * @param seen Defects seen so far across all files
-     * @return Amount of passed tojos (1 if passed, 0 if errors)
-     * @throws Exception If failed to lint
-     */
     private int lintOne(
         final TjForeign tojo,
         final Map<Severity, Integer> counts,
@@ -342,17 +333,6 @@ final class Linting implements Step {
         return 1;
     }
 
-    /**
-     * Cache-key version segment for the per-file lint cache: the plugin
-     * version combined with {@link #sourcelints} and
-     * {@link #experimental}, since both change what
-     * {@link #linted(XML)} reports for the exact same source XMIR
-     * (see #6235). {@link #sourcelints} is hashed rather than joined
-     * in verbatim, since a project skipping a dozen full lint names would
-     * otherwise push this single path segment past the 255-byte limit
-     * ext4 and APFS enforce.
-     * @return The version segment for {@link CachePath}
-     */
     private String cacheVersion() {
         return String.format(
             "%s-%b-%s",
@@ -364,13 +344,6 @@ final class Linting implements Step {
         );
     }
 
-    /**
-     * Lint all XMIR files together.
-     * @param counts Counts of errors, warnings, and critical
-     * @param seen Defects seen so far across all files
-     * @return Amount of seen XMIR files
-     * @throws IOException If failed to lint
-     */
     private int lintAll(
         final Map<Severity, Integer> counts,
         final Collection<String> seen
@@ -437,11 +410,6 @@ final class Linting implements Step {
         return progs.size();
     }
 
-    /**
-     * Run whole-program analysis.
-     * @param progs Map of program identifiers to their XMIR
-     * @return List of defects found
-     */
     private List<org.eolang.wpa.Defect> wpa(final Map<String, XML> progs) {
         final List<org.eolang.wpa.Defect> defects = new ArrayList<>(0);
         new Program(progs)
@@ -471,11 +439,6 @@ final class Linting implements Step {
         return defects;
     }
 
-    /**
-     * Find all possible linting defects and add them to the XMIR.
-     * @param xmir The XML before linting
-     * @return XML after linting
-     */
     private XML linted(final XML xmir) {
         final Node node = xmir.inner();
         final Collection<Defect> defects = Linting.existing(new Xnav(node));
@@ -499,11 +462,6 @@ final class Linting implements Step {
         return new XMLDocument(node);
     }
 
-    /**
-     * Log one defect message.
-     * @param severity Severity mnemo (e.g. "warning", "error")
-     * @param message Formatted defect message
-     */
     private static void logOne(final String severity, final String message) {
         if (Severity.WARNING.mnemo().equals(severity)) {
             Logger.warn(Linting.class, "[LINT] %s", message);
@@ -512,12 +470,6 @@ final class Linting implements Step {
         }
     }
 
-    /**
-     * Text in plural or singular form.
-     * @param count Count
-     * @param name Name of them
-     * @return Summary text
-     */
     private static String plural(final int count, final String name) {
         final StringBuilder txt = new StringBuilder();
         txt.append(count).append(' ').append(name);
@@ -527,11 +479,6 @@ final class Linting implements Step {
         return txt.toString();
     }
 
-    /**
-     * Collection of defects existing in XMIR before linting.
-     * @param xnav XML node as Xnav
-     * @return Collection of defects
-     */
     private static Collection<Defect> existing(final Xnav xnav) {
         return xnav
             .element(Linting.OBJECT)
@@ -545,19 +492,6 @@ final class Linting implements Step {
             .orElse(new ListOf<>());
     }
 
-    /**
-     * Convert XMIR error element to a {@link Defect}.
-     *
-     * <p>Every {@code <error>} element must carry a {@code check}
-     * attribute naming the rule that reported it; a plain parser syntax
-     * error is emitted with {@code check="parser"} by
-     * {@code Emit.error()} for exactly this reason (#6215). A missing
-     * {@code check} is a bug upstream and must fail fast rather than
-     * silently fall back to a default.</p>
-     *
-     * @param error The error element
-     * @return Defect
-     */
     private static Defect toDefect(final Xnav error) {
         return new Defect.Default(
             error.attribute("check").text().orElseThrow(
@@ -583,12 +517,6 @@ final class Linting implements Step {
         );
     }
 
-    /**
-     * Inject defect into XMIR.
-     * @param dirs Directives
-     * @param defect The defect to inject
-     * @return Directives
-     */
     private static Directives embedded(final Directives dirs, final Defect defect) {
         dirs.add("error")
             .attr("check", defect.rule())
@@ -625,25 +553,12 @@ final class Linting implements Step {
         ).findAny().isEmpty();
     }
 
-    /**
-     * Format a defect for display.
-     * @param object Program or object identifier
-     * @param rule Rule name
-     * @param line Line number
-     * @param text Defect message
-     * @return Formatted string
-     */
     private static String format(
         final String object, final String rule, final int line, final String text
     ) {
         return String.format("%s:%d %s (%s)", object, line, text, rule);
     }
 
-    /**
-     * Read defects from XMIR.
-     * @param path Path to XMIR
-     * @return Collection of defects
-     */
     private static List<org.eolang.wpa.Defect> read(final Path path) {
         return new Xnav(path).path("/defects/error").map(
             node -> new org.eolang.wpa.Defect.Default(
@@ -658,12 +573,6 @@ final class Linting implements Step {
         ).collect(Collectors.toList());
     }
 
-    /**
-     * This defect is not suppressed?
-     * @param xnav The XMIR as {@link Xnav}
-     * @param defect The defect
-     * @return TRUE if not suppressed
-     */
     private static boolean notSuppressed(final Xnav xnav, final Defect defect) {
         return xnav.path(
             String.format(
@@ -673,11 +582,6 @@ final class Linting implements Step {
         ).findAny().isEmpty();
     }
 
-    /**
-     * Strip scope suffix (e.g. {@code /S}, {@code /W}) from a scoped rule name.
-     * @param rule Rule name, possibly scoped
-     * @return Base rule name without scope suffix
-     */
     private static String baseRule(final String rule) {
         final int slash = rule.lastIndexOf('/');
         final String result;

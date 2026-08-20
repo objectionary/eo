@@ -58,11 +58,6 @@ public final class InetAddrFuncCall implements Syscall {
         return result;
     }
 
-    /**
-     * Checks that every matched octet fits into a byte.
-     * @param matcher Matcher already matched against {@link #IPV4}
-     * @return True if all four octets are in range 0-255
-     */
     private static boolean octetsValid(final Matcher matcher) {
         boolean valid = true;
         for (int octet = 1; octet <= 4; ++octet) {

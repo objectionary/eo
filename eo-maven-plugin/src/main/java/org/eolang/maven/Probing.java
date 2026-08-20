@@ -94,12 +94,6 @@ final class Probing implements Step {
         }
     }
 
-    /**
-     * Probe given tojos and return amount of probed objects.
-     * @param unprobed Tojos to probe
-     * @param probed Map accumulating discovered probes
-     * @return Amount of probed objects
-     */
     private int probed(
         final Collection<TjForeign> unprobed,
         final Map<String, Boolean> probed) {
@@ -128,16 +122,6 @@ final class Probing implements Step {
         ).total();
     }
 
-    /**
-     * Register the remaining objects of the probed object's package, so the
-     * whole directory is pulled before it is parsed and bare sibling
-     * references resolve correctly (see
-     * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
-     * @param object The fully qualified name of the probed object
-     * @param src The XMIR file where the object was discovered
-     * @param completed Packages already completed, guards against re-listing
-     * @throws IOException If the package can't be listed
-     */
     private void complete(
         final String object,
         final Path src,

@@ -87,20 +87,10 @@ final class Grouped {
         return new XMLDocument(new Xembler(dirs).domQuietly());
     }
 
-    /**
-     * The rows that are about a type itself, oldest first, so that the
-     * document follows the code.
-     * @return The rows without an owner
-     */
     private List<Tojo> types() {
         return this.table.select(row -> !row.exists("owner"));
     }
 
-    /**
-     * The rows that are about an attribute, gathered by the type they
-     * belong to, each group in the order the attributes were declared.
-     * @return The rows with an owner, by owner
-     */
     private Map<String, List<Map<String, String>>> attributes() {
         final Map<String, List<Map<String, String>>> gathered = new LinkedHashMap<>(0);
         for (final Tojo row : this.table.select(one -> one.exists("owner"))) {

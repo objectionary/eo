@@ -138,7 +138,6 @@ public final class PhCoverage implements Phi {
         return this.origin.φTerm();
     }
 
-    /** Record one hit, at most once per wrapper per destination. */
     private void hit() {
         final String property = PhCoverage.property();
         if (property != null && this.hits.add(property + '\0' + this.record)) {
@@ -166,10 +165,6 @@ public final class PhCoverage implements Phi {
         }
     }
 
-    /**
-     * Value of the {@code eo.coverageFile} property.
-     * @return The value, or NULL when recording is disabled
-     */
     private static String property() {
         final String path = System.getProperty("eo.coverageFile");
         final String result;

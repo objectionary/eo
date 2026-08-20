@@ -37,6 +37,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 )
 public final class MjMerge extends MjSafe {
 
+    /**
+     * Ctor.
+     */
+    public MjMerge() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {

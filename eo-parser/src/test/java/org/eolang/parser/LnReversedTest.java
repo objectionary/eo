@@ -47,9 +47,9 @@ final class LnReversedTest {
         new LnReversed(new Span("if. cond then else > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a `name. arg1 arg2…` must push REVERSED_WITH_HARGS",
+            "a `name. arg1 arg2…` must push REVERSED_HARGS",
             stack.top().kind(),
-            Matchers.equalTo(Kind.REVERSED_WITH_HARGS)
+            Matchers.equalTo(Kind.REVERSED_HARGS)
         );
     }
 
@@ -59,7 +59,7 @@ final class LnReversedTest {
         new LnReversed(new Span("if. cond then > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "REVERSED_WITH_HARGS must be HCOMPLETED — no deeper continuation allowed",
+            "REVERSED_HARGS must be HCOMPLETED — no deeper continuation allowed",
             stack.top().openness(),
             Matchers.equalTo(Openness.HCOMPLETED)
         );
@@ -154,11 +154,6 @@ final class LnReversedTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

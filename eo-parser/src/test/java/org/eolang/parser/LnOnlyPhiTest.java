@@ -24,9 +24,9 @@ final class LnOnlyPhiTest {
         new LnOnlyPhi(new Span("right > [x] > left", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "an only-phi line must push ONLY_PHI_FORMATION",
+            "an only-phi line must push ONLY_PHI",
             stack.top().kind(),
-            Matchers.equalTo(Kind.ONLY_PHI_FORMATION)
+            Matchers.equalTo(Kind.ONLY_PHI)
         );
     }
 
@@ -275,11 +275,6 @@ final class LnOnlyPhiTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

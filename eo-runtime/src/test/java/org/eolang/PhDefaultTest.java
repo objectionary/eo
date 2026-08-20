@@ -663,16 +663,10 @@ final class PhDefaultTest {
         return phi;
     }
 
-    /**
-     * Returns the 'plus' literal.
-     */
     private String plus() {
         return "plus";
     }
 
-    /**
-     * Returns the 'void' literal.
-     */
     private String getVoid() {
         return "void";
     }

@@ -73,11 +73,6 @@ final class RecvFuncCallTest {
         );
     }
 
-    /**
-     * The recv outcome as a {@code [code, output-length]} pair.
-     * @param result The dataizable recv result
-     * @return The exit code followed by the output byte count
-     */
     private static List<Integer> outcome(final Phi result) {
         return Arrays.asList(
             new Dataized(result.take("code")).asNumber().intValue(),
