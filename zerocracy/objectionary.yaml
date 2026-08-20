@@ -2,11 +2,12 @@
 - added: 8
   cycles: 1
   deleted: 8
+  error: 'Judge find-all-issues stopped by timeout after 4m20s: execution expired'
   inserted: 8
-  seconds: 630.483577127
+  seconds: 2410.833619637
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-20 04:22:45.910441810 Z
+  when: 2026-08-20 05:48:06.792099541 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -281935,7 +281936,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
   events_were_scanned: 18208375226
   issues_were_scanned: 0
@@ -281945,7 +281946,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 0
+  types_were_scanned: 556
   what: iterate
   where: github
 - _id: 1107889
@@ -288848,7 +288849,7 @@
   min_issue_was_found: 503
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 714
+  types_were_scanned: 901
   what: iterate
   where: github
 - _id: 1108618
@@ -292578,7 +292579,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1020
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18187327340
   issues_were_scanned: 982
@@ -292588,7 +292589,7 @@
   min_issue_was_found: 737
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 836
   what: iterate
   where: github
 - _id: 1108989
@@ -295496,7 +295497,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13519920998
   issues_were_scanned: 0
@@ -295506,7 +295507,7 @@
   min_issue_was_found: 253
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1103
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
@@ -295515,7 +295516,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 18226313428
+  events_were_scanned: 18232312479
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 122
@@ -295530,17 +295531,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6236
+  assignees_were_scanned: 6379
   earliest_issue_was_found: 1
-  events_were_scanned: 18223868161
+  events_were_scanned: 13561354856
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6179
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7137
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 5596
+  types_were_scanned: 5733
   what: iterate
   where: github
 - _id: 1109067
@@ -514125,6 +514126,7 @@
   failed_builds: 1
   files: 1
   hoc: 26
+  is_human: 1
   issue: 7154
   repository: 73056727
   succeeded_builds: 22
@@ -514148,6 +514150,7 @@
   failed_builds: 2
   files: 2
   hoc: 18
+  is_human: 1
   issue: 7155
   repository: 73056727
   succeeded_builds: 21
@@ -514171,6 +514174,7 @@
   failed_builds: 1
   files: 1
   hoc: 3
+  is_human: 1
   issue: 7156
   repository: 73056727
   succeeded_builds: 22
@@ -514194,6 +514198,7 @@
   failed_builds: 2
   files: 1
   hoc: 10
+  is_human: 1
   issue: 7157
   repository: 73056727
   succeeded_builds: 21
@@ -514217,6 +514222,7 @@
   failed_builds: 1
   files: 1
   hoc: 12
+  is_human: 1
   issue: 7158
   repository: 73056727
   succeeded_builds: 22
@@ -514240,6 +514246,7 @@
   failed_builds: 1
   files: 1
   hoc: 2
+  is_human: 1
   issue: 7159
   repository: 73056727
   succeeded_builds: 22
@@ -514263,6 +514270,7 @@
   failed_builds: 2
   files: 2
   hoc: 24
+  is_human: 1
   issue: 7160
   repository: 73056727
   succeeded_builds: 21
@@ -514286,11 +514294,89 @@
   failed_builds: 1
   files: 4
   hoc: 8
+  is_human: 1
   issue: 7161
   repository: 73056727
   succeeded_builds: 22
   suggestions: 0
   what: pull-was-closed
   when: 2026-08-20 04:02:15.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120941
+  _job: 32334197589
+  _time: 2026-08-20 05:43:48.506211541 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7187 has been earlier opened by @morphqdd.
+  issue: 7187
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:57:02.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120942
+  _job: 32334197589
+  _time: 2026-08-20 05:43:49.209397939 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7186 has been earlier opened by @morphqdd.
+  issue: 7186
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:55:57.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120943
+  _job: 32334197589
+  _time: 2026-08-20 05:43:50.038363852 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7185 has been earlier opened by @morphqdd.
+  issue: 7185
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:55:55.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120944
+  _job: 32334197589
+  _time: 2026-08-20 05:43:50.481762876 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7184 has been earlier opened by @morphqdd.
+  issue: 7184
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:55:10.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120945
+  _job: 32334197589
+  _time: 2026-08-20 05:43:50.901275295 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7183 has been earlier opened by @morphqdd.
+  issue: 7183
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:55:09.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120946
+  _job: 32334197589
+  _time: 2026-08-20 05:43:51.366986595 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7182 has been earlier opened by @morphqdd.
+  issue: 7182
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:51:28.000000000 Z
+  where: github
+  who: 125282851
+- _id: 1120947
+  _job: 32334197589
+  _time: 2026-08-20 05:43:51.801709818 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7181 has been earlier opened by @morphqdd.
+  issue: 7181
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-20 04:47:13.000000000 Z
   where: github
   who: 125282851
