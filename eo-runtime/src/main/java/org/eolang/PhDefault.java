@@ -339,7 +339,7 @@ public class PhDefault implements Phi, Cloneable {
         if (this.literal(name)) {
             final byte[] raw = this.loaded().get("as-bytes").get().delta();
             if ("string".equals(name)) {
-                result = new Quoted(raw).get();
+                result = new Quoted(raw).get().orElseGet(this::structural);
             } else {
                 result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
