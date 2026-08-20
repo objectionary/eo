@@ -140,11 +140,21 @@
           * ^.format
       if.
         25-.eq conv
-        walk
-          as-number.
-            index.plus 2
-          auto
-          acc.concat 25-
+        if.
+          eq.
+            number end
+            as-number.
+              index.plus 1
+          walk
+            as-number.
+              plus.
+                number end
+                1
+            auto
+            acc.concat 25-
+          T
+            "The escaped %% conversion does not take flags, width or precision".printf
+              * ^.format
         walk
           as-number.
             plus.
@@ -554,6 +564,10 @@
     "%,x"
     * 5
 
+  printf. --> stops-on-a-flag-before-an-escaped-percent
+    "%-%s"
+    * "x"
+
   printf. --> stops-on-a-hash-flag-with-s
     "%#s"
     * "Jeff"
@@ -577,6 +591,10 @@
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
+
+  printf. --> stops-on-a-width-before-an-escaped-percent
+    "%5%s"
+    * "x"
 
   printf. --> stops-on-a-zero-flag-with-x
     "%0x"
