@@ -19,13 +19,11 @@
     | entries
     d
   ^ > d
-  [] > entries
-    recovered > @
+  recovered > [] > entries
+    ^.d.walk "**"
+    ^.d.exists.if
       ^.d.walk "**"
-      if.
-        ^.d.exists
-        ^.d.walk "**"
-        *
+      *
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @
