@@ -751,9 +751,9 @@ final class EoSyntaxTest {
         return story;
     }
 
-    private static XML raw(final String line) throws Exception {
+    private static XML raw(final String source) throws Exception {
         return new EoSyntax(
-            new InputOf(line.concat(String.valueOf((char) 10))),
+            new InputOf(source.concat(String.valueOf((char) 10))),
             UnaryOperator.identity()
         ).parsed();
     }
