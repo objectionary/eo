@@ -31,7 +31,7 @@ input: |
       [] > c
         d > @
           []
-            c > @
+            ^.c > @
             [] > named
             x > bound
               []

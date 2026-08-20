@@ -18,7 +18,6 @@ import com.sun.jna.WString;
  * active code page still reaches the kernel as it was written.</p>
  *
  * @since 0.75.0
- * @checkstyle MethodNameCheck (30 lines)
  */
 @SuppressWarnings("PMD.MethodNamingConventions")
 public interface Kernel32 extends Library {

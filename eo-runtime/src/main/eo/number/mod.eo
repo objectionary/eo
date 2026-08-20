@@ -43,12 +43,12 @@
               if. > [chunk] > grow
                 chunk.gte dividend.abs
                 chunk
-                grow
+                ^.grow
                   chunk.plus chunk
               if. > [chunk rest] > shrink
                 chunk.lt divisor.abs
                 rest
-                shrink
+                ^.shrink
                   chunk.div 2
                   if.
                     rest.gte chunk

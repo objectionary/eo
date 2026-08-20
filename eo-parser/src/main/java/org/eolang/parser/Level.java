@@ -11,8 +11,8 @@ package org.eolang.parser;
  * extend the level's expression (e.g., a {@link Kind#HEAD} entry promotes
  * to {@link Kind#VAPPLICATION} once its first deeper child arrives; its
  * {@code openness} progresses from {@link Openness#OPEN OPEN} to
- * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} when the child
- * block ends).</p>
+ * {@link Openness#VCOMPLETED VCOMPLETED} when the child block
+ * ends).</p>
  *
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
@@ -100,8 +100,10 @@ final class Level {
     private int count;
 
     /**
-     * For {@link Kind#COMPACT_TUPLE}: number of deeper-indent children
-     * seen so far.
+     * How many attributes this entry has taken — the voids its head
+     * declared between the brackets, plus its deeper-indent children.
+     * The compact-tuple count reads it (such an entry has no head
+     * voids), and so does the receiver rule of R-3.4.11.
      */
     private int children;
 
@@ -113,7 +115,7 @@ final class Level {
     private boolean tupled;
 
     /**
-     * For a {@link Kind#ONLY_PHI_FORMATION} whose φ is a compact tuple
+     * For a {@link Kind#ONLY_PHI} whose φ is a compact tuple
      * ({@code seq * > [m]}, R-3.9.1 + R-3.10.6): true so the φ absorbs
      * deeper-indent lines into a {@code Φ.tuple} wrapper like a
      * {@link Kind#COMPACT_TUPLE} head, reusing {@link #count} /
@@ -237,14 +239,14 @@ final class Level {
     /**
      * The name a child of this entry should use for its governing
      * only-phi formation: this entry's own name when it is the
-     * {@link Kind#ONLY_PHI_FORMATION}, otherwise the name propagated
+     * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
         final String owner;
-        if (this.kind == Kind.ONLY_PHI_FORMATION) {
+        if (this.kind == Kind.ONLY_PHI) {
             owner = this.label;
         } else {
             owner = this.formation;
@@ -315,7 +317,7 @@ final class Level {
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
-        return this.kind == Kind.ONLY_PHI_FORMATION
+        return this.kind == Kind.ONLY_PHI
             || this.formation != null && !this.kind.formation();
     }
 
@@ -412,6 +414,35 @@ final class Level {
      */
     void compact(final int value) {
         this.count = value;
+    }
+
+    /**
+     * Count the voids the head declared between its brackets among the
+     * attributes this entry has taken.
+     * @param total Number of bracket parameters
+     */
+    void heads(final int total) {
+        this.children = this.children + total;
+    }
+
+    /**
+     * Reject a {@code ^} void that is not the first attribute of this
+     * entry — R-3.4.11. The receiver has to be the first void because
+     * every caller fills it first, so a formation that declares one
+     * after anything else would take its receiver in the wrong slot.
+     * The vertical form arrives as a child, and this runs once that
+     * child has been counted, so the receiver is first exactly when it
+     * is the only attribute the entry has taken.
+     * @param line Source line (for the error)
+     * @param column Source column (for the error)
+     */
+    void receiver(final int line, final int column) {
+        if (this.children != 1) {
+            throw new ParseError(
+                line, column,
+                "a ^ void attribute must be the first attribute of its formation"
+            );
+        }
     }
 
     /**

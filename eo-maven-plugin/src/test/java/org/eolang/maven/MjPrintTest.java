@@ -47,16 +47,16 @@ final class MjPrintTest {
         final Path resources = new File(
             "../eo-printer/src/test/resources/org/eolang/printer/print-packs/xmir"
         ).toPath();
-        final Collection<Path> walk = new Walk(resources);
+        final Collection<Path> walk = new WkDefault(resources);
         Assumptions.assumeTrue(!walk.isEmpty());
         for (final Path source : walk) {
             new Saved(new TextOf(source), temp.resolve(source)).value();
         }
         final Path output = temp.resolve("output");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve(resources).toFile())
-            .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .with("sources", temp.resolve(resources).toFile())
+            .with("output", output.toFile())
+            .execute(new PpPrint())
             .result();
         for (final Path source : walk) {
             final String src = resources.relativize(source).toString()
@@ -92,9 +92,9 @@ final class MjPrintTest {
         ).value();
         final Path output = temp.resolve("eo");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", output.toFile())
+            .execute(new PpPrint())
             .result();
         MatcherAssert.assertThat(
             "only the trailing .xmir extension should be replaced, the .xmir substring in the directory name must survive untouched",
@@ -123,9 +123,9 @@ final class MjPrintTest {
         new Saved(new InputOf("not xml at all"), temp.resolve("xmir/README.md")).value();
         final Path output = temp.resolve("eo");
         new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", output.toFile())
-            .execute(new FakeMaven.Print())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", output.toFile())
+            .execute(new PpPrint())
             .result();
         MatcherAssert.assertThat(
             "the .xmir file should have been printed despite a non-XMIR file sitting next to it",
@@ -146,14 +146,6 @@ final class MjPrintTest {
         );
     }
 
-    /**
-     * Print XMIR to EO from given pack.
-     * @param xtory XaX story
-     * @param temp Temp directory
-     * @param reversed Should notation be reversed or not
-     * @return Result printed EO
-     * @throws Exception If fails to execute {@link MjPrint}
-     */
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
         throws Exception {
         new Saved(
@@ -163,8 +155,8 @@ final class MjPrintTest {
             temp.resolve("xmir/foo/x/main.xmir")
         ).value();
         final FakeMaven maven = new FakeMaven(temp)
-            .with("printSourcesDir", temp.resolve("xmir").toFile())
-            .with("printOutputDir", temp.resolve("eo").toFile())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("output", temp.resolve("eo").toFile())
             .with("printReversed", reversed);
         final Object pins = xtory.map().get("penalties");
         if (pins != null) {
@@ -180,19 +172,11 @@ final class MjPrintTest {
         );
     }
 
-    /**
-     * Translate a penalty-block key into the matching print-mojo parameter
-     * name, so a pack is laid out under the weights it pins rather than the
-     * printer's defaults; an unmatched key yields empty and lets that weight
-     * fall back to its default.
-     * @param key The penalty key, as spelled in the pack's block
-     * @return The mojo parameter name, or empty
-     */
     private static String param(final String key) {
         return new MapOf<>(
-            new MapEntry<>("INDENT", "penaltyIndent"),
-            new MapEntry<>("BRACKET", "penaltyBracket"),
-            new MapEntry<>("EXCESS", "penaltyExcess"),
+            new MapEntry<>("INDENT", "indent"),
+            new MapEntry<>("BRACKET", "bracket"),
+            new MapEntry<>("EXCESS", "excess"),
             new MapEntry<>("WIDTH", "width")
         ).getOrDefault(key, "");
     }

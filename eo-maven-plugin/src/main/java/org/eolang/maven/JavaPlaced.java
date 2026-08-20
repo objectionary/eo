@@ -60,11 +60,6 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         }
     }
 
-    /**
-     * Place Java tests.
-     * @param clazz Transpiled Class
-     * @throws IOException If I/O fails
-     */
     private void placeJavaTests(final Xnav clazz) throws IOException {
         final String[] jparts = clazz.attribute("java-name").text().get().split("\\.");
         final Path tests = this.generated.getParent().resolve(
@@ -101,21 +96,10 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         this.removeJavaTests(clazz, resulted);
     }
 
-    /**
-     * Remove Java tests that are no longer generated.
-     * @param clazz Transpiled class
-     * @throws IOException If I/O fails
-     */
     private void removeJavaTests(final Xnav clazz) throws IOException {
         this.removeJavaTests(clazz, null);
     }
 
-    /**
-     * Remove Java tests except the one currently generated.
-     * @param clazz Transpiled class
-     * @param retained Generated test to retain, if any
-     * @throws IOException If I/O fails
-     */
     private void removeJavaTests(final Xnav clazz, final Path retained) throws IOException {
         final String[] parts = clazz.attribute("java-name").text().get().split("\\.");
         final Path base = Arrays.stream(parts, 0, parts.length - 1).reduce(
@@ -132,11 +116,6 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         }
     }
 
-    /**
-     * Tests present?
-     * @param clazz Transpiled clazz
-     * @return True or False
-     */
     private static boolean testsPresent(final Xnav clazz) {
         return clazz.element("tests").text().map(
             s -> Stream.of(

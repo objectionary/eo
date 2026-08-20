@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
@@ -52,20 +53,22 @@ public final class MjResolve extends MjSafe {
     }
 
     @Override
-    public void exec() {
+    public void exec() throws IOException {
         if (this.central == null) {
-            this.central = new CentralMaven(this.system);
+            this.central = new CentralMaven(this.system, this.session, this.repositories);
         }
-        new Resolving(
-            this.scopedTojos(),
-            this.targetDir.toPath().resolve(MjResolve.DIR),
-            this.central,
-            this.discoverSelf,
-            this.skipZeroVersions,
-            this.resolveJna,
-            this.ignoreRuntime,
-            this.runtime(),
-            this.ignoreConflicts
-        ).exec();
+        try (TjsForeign tojos = this.tojos()) {
+            new Resolving(
+                tojos,
+                this.targetDir.toPath().resolve(MjResolve.DIR),
+                this.central,
+                this.discoverSelf,
+                this.skipZeroVersions,
+                this.resolveJna,
+                this.ignoreRuntime,
+                this.runtime(),
+                this.ignoreConflicts
+            ).exec();
+        }
     }
 }

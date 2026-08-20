@@ -18,9 +18,9 @@ import java.util.List;
  * <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
  * args — the chain stays open for further {@code .method} continuations
  * or deeper-indent vapplication children.</li>
- * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
+ * <li>{@link Kind#VMETHOD_HARGS} when this {@code .method}
  * carries one or more horizontal args — the chain becomes
- * {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * {@link Openness#HCOMPLETED}.</li>
  * </ul>
  *
  * <p>Rejection paths owned here:</p>
@@ -108,8 +108,8 @@ final class LnMethod implements Line {
             kind = Kind.VMETHOD;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.VMETHOD_WITH_HARGS;
-            openness = Openness.HORIZONTAL_COMPLETED;
+            kind = Kind.VMETHOD_HARGS;
+            openness = Openness.HCOMPLETED;
         }
         top.become(kind);
         top.close(openness);
@@ -120,12 +120,6 @@ final class LnMethod implements Line {
         globals.markEmitted();
     }
 
-    /**
-     * Validate the line has a predecessor to attach to and that the
-     * predecessor's chain is not already horizontally completed —
-     * R-5.2.5 / R-5.2.10 / R-5.2.3(b).
-     * @param stack Indent stack
-     */
     private void precheck(final Stack stack) {
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             throw new ParseError(
@@ -133,13 +127,13 @@ final class LnMethod implements Line {
                 "method continuation has no expression to attach to"
             );
         }
-        if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
+        if (stack.top().openness() == Openness.HCOMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
+        if (stack.top().kind() == Kind.ONLY_PHI) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
@@ -147,13 +141,6 @@ final class LnMethod implements Line {
         }
     }
 
-    /**
-     * Build a token stream and verify the line opens a dispatch — a
-     * plain {@code .} or the fragile {@code ?.} (R-3.5). The cursor
-     * stays on the operator's first character; callers seek past it
-     * after recording the column.
-     * @return Tokens positioned on the leading dispatch operator
-     */
     private Tokens dottedTokens() {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         if (tokens.atEnd() || !tokens.dispatchAhead()) {

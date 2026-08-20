@@ -94,7 +94,7 @@
         if. > [n minus1 minus2] >> rec
           n.eq 3
           minus1.plus minus2
-          rec
+          ^.rec
             n.minus 1
             minus1.plus minus2
             minus1
@@ -112,9 +112,9 @@
       n.lt 3
       1
       plus.
-        fibo
+        ^.fibo
           n.minus 1
-        fibo
+        ^.fibo
           n.minus 2
 
   42.as-bytes.eq 42 ++> can-compare-its-bytes-to-an-integer

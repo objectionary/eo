@@ -24,6 +24,6 @@ project.traverse(
     file ->
     String id = new XmlSlurper().parse(file).@id
     assert id == file.name - '.xsl'
-    log.info("The XSL stylesheet has correct @id: ${file}")
+    log.debug("The XSL stylesheet has correct @id: ${file}")
 }
 true

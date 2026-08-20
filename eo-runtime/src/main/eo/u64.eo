@@ -14,43 +14,43 @@
   as-bytes > @
   plus. > [] > as-number
     as-number.
-      i64 as-bytes
+      i64 ^.as-bytes
     if.
       eq.
-        as-bytes.and 80-00-00-00-00-00-00-00
+        ^.as-bytes.and 80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       1.8446744073709552e19
       0
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
   gt. > [x] > gt
-    i64 flip
+    i64 ^.flip
     i64 x.as-u64.flip
   gte. > [x] > gte
-    i64 flip
+    i64 ^.flip
     i64 x.as-u64.flip
   lt. > [x] > lt
-    i64 flip
+    i64 ^.flip
     i64 x.as-u64.flip
   lte. > [x] > lte
-    i64 flip
+    i64 ^.flip
     i64 x.as-u64.flip
   [x] > minus
     u64 > @
       as-bytes.
         minus. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
   [x] > plus
     u64 > @
       as-bytes.
         plus. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
   [x] > times
     u64 > @
       as-bytes.
         times. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
 
   eq. ++> can-add-one-to-one

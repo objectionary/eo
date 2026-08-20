@@ -12,7 +12,7 @@
     ^.reducedi
       *
       if. > [accum item index] >>
-        i.eq index
+        ^.i.eq index
         accum
         accum.with item
     T

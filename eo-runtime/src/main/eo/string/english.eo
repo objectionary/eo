@@ -21,7 +21,7 @@
   s > @
   [] > lower
     string > @
-      s.as-bytes.array.reduced
+      ^.s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @
@@ -43,7 +43,7 @@
   ^ > s
   [] > upper
     string > @
-      s.as-bytes.array.reduced
+      ^.s.as-bytes.array.reduced
         --
         [accum byte] >>
           accum.concat > @

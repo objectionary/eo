@@ -47,8 +47,7 @@ final class JavaPlacedTest {
     }
 
     @Test
-    @SuppressWarnings("JTCOP.RuleNotContainsTestWord")
-    void placesJavaTests(@Mktmp final Path temp) throws Exception {
+    void placesJavaChecks(@Mktmp final Path temp) throws Exception {
         final String expected = String.join(
             System.lineSeparator(),
             "final class FooTest {",
@@ -142,11 +141,6 @@ final class JavaPlacedTest {
         );
     }
 
-    /**
-     * Create transpiled class.
-     * @param tests Test code
-     * @return Class XML
-     */
     private Xnav clazz(final String tests) throws Exception {
         return new Xnav(
             new Xembler(

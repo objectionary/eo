@@ -35,6 +35,12 @@ package org.eolang;
 public final class PhTerminator implements Phi {
 
     /**
+     * The reason used when none is given at birth.
+     */
+    private static final String DEFAULT =
+        "the ⊥ object is a terminated computation and cannot be used";
+
+    /**
      * The reason this computation terminated, used only as the panic
      * message when the bottom is forced, or {@code null} when none was given.
      */
@@ -54,7 +60,7 @@ public final class PhTerminator implements Phi {
      * Ctor.
      */
     public PhTerminator() {
-        this("the ⊥ object is a terminated computation and cannot be used");
+        this(null, PhTerminator.DEFAULT);
     }
 
     /**
@@ -64,7 +70,7 @@ public final class PhTerminator implements Phi {
      * @param reason The default reason for the termination
      */
     public PhTerminator(final String reason) {
-        this.fallback = new Data.ToPhi(reason);
+        this(null, reason);
     }
 
     /**
@@ -74,13 +80,19 @@ public final class PhTerminator implements Phi {
      * is finally forced; until then it flows like any other bottom.</p>
      *
      * @param cause The reason for the termination
-     * @return A bottom carrying the cause
      */
-    @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
-    public static PhTerminator withCause(final String cause) {
-        final PhTerminator term = new PhTerminator();
-        term.put(0, new Data.ToPhi(cause));
-        return term;
+    public PhTerminator(final Phi cause) {
+        this(cause, PhTerminator.DEFAULT);
+    }
+
+    /**
+     * Primary ctor.
+     * @param cse The cause already carried, or {@code null} for none
+     * @param reason The default reason for the termination
+     */
+    private PhTerminator(final Phi cse, final String reason) {
+        this.cause = cse;
+        this.fallback = new Data.ToPhi(reason);
     }
 
     @Override
@@ -141,11 +153,6 @@ public final class PhTerminator implements Phi {
         return "⊥";
     }
 
-    /**
-     * The reason to panic with: the cause this bottom was explicitly given,
-     * else its birth-site default.
-     * @return The reason as an object
-     */
     private Phi reason() {
         final Phi reason;
         if (this.cause != null) {

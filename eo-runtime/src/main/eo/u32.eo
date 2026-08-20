@@ -11,7 +11,7 @@
 [as-bytes] > u32
   as-bytes > @
   i64 > [] > as-i64
-    00-00-00-00.concat as-bytes
+    00-00-00-00.concat ^.as-bytes
   as-i64.as-number > as-number
   [x cant-divide] > div
     if. > @
@@ -20,33 +20,33 @@
         00-00-00-00
       cant-divide
         "Can't divide %d by u32 zero".printf
-          * as-number
+          * ^.as-number
       u32
         slice.
           as-bytes.
-            as-i64.div other.as-i64
+            ^.as-i64.div other.as-i64
           4
           4
-  as-i64.gt x.as-u32.as-i64 > [x] > gt
-  as-i64.gte x.as-u32.as-i64 > [x] > gte
-  as-i64.lt x.as-u32.as-i64 > [x] > lt
-  as-i64.lte x.as-u32.as-i64 > [x] > lte
+  ^.as-i64.gt x.as-u32.as-i64 > [x] > gt
+  ^.as-i64.gte x.as-u32.as-i64 > [x] > gte
+  ^.as-i64.lt x.as-u32.as-i64 > [x] > lt
+  ^.as-i64.lte x.as-u32.as-i64 > [x] > lte
   u32 > [x] > minus
     slice.
       as-bytes.
-        as-i64.minus x.as-u32.as-i64
+        ^.as-i64.minus x.as-u32.as-i64
       4
       4
   u32 > [x] > plus
     slice.
       as-bytes.
-        as-i64.plus x.as-u32.as-i64
+        ^.as-i64.plus x.as-u32.as-i64
       4
       4
   u32 > [x] > times
     slice.
       as-bytes.
-        as-i64.times x.as-u32.as-i64
+        ^.as-i64.times x.as-u32.as-i64
       4
       4
 

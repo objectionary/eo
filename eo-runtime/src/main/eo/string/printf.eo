@@ -63,7 +63,7 @@
             number cursor
             auto
             acc
-          walk
+          ^.walk
             as-number.
               plus.
                 number cursor
@@ -93,14 +93,14 @@
           code i
         57.gte
           code i
-      digits-end
+      ^.digits-end
         as-number.
           i.plus 1
       i
   if. > [from to acc] >> digits-value
     from.gte to
     acc
-    digits-value
+    ^.digits-value
       as-number.
         from.plus 1
       to
@@ -121,7 +121,7 @@
           byte i
         30-.eq
           byte i
-      flags-end
+      ^.flags-end
         as-number.
           i.plus 1
       i
@@ -137,7 +137,7 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * format
+          * ^.format
       if.
         25-.eq conv
         walk
@@ -157,17 +157,17 @@
           seq *
             value
             acc.concat padded
-    args.at > arg
+    ^.args.at > arg
       number idx
     byte > conv!
       number end
     if. > converted!
       73-.eq conv
       as-bytes. > [text] >> capped
-        precise.as-bool.if
+        ^.precise.as-bool.if
           truncated.
             string text
-            number precision
+            number ^.precision
             failure
           text
       |
@@ -264,13 +264,13 @@
     if. > padded!
       if. > [i c] >> flagged
         i.gte
-          number digits
+          number ^.digits
         false
         if.
           c.eq
             byte i
           true
-          flagged
+          ^.flagged
             as-number.
               i.plus 1
             c
@@ -324,7 +324,7 @@
             index.plus 1
       T
         "The positional argument index in the format %s is too large".printf
-          * format
+          * ^.format
       if.
         positional.as-bool.and
           lt.
@@ -339,14 +339,14 @@
         if.
           gte.
             number idx
-            args.length
+            ^.args.length
           T
             "The argument index %d in the format is out of bounds, only %d given".printf
               *
                 plus.
                   number idx
                   1
-                args.length
+                ^.args.length
           if.
             precise.as-bool.and
               64-.eq conv

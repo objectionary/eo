@@ -83,10 +83,6 @@ final class ChText implements CommitHash {
         return hash;
     }
 
-    /**
-     * Find and return Git SHA for the given tag (or throw if not found).
-     * @return The Git SHA
-     */
     private String inside() {
         return new Unchecked<>(
             new Mapped<>(
@@ -102,7 +98,7 @@ final class ChText implements CommitHash {
                                     new Split(new TextOf(this.source), "\\n")
                                 ),
                                 () -> {
-                                    throw new ChText.NotFound(
+                                    throw new HashNotFoundException(
                                         String.format(
                                             "Git SHA not found for the '%s' tag, probably it doesn't exist in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                             this.tag
@@ -114,7 +110,7 @@ final class ChText implements CommitHash {
                         "\\s+"
                     ),
                     () -> {
-                        throw new ChText.NotFound(
+                        throw new HashNotFoundException(
                             String.format(
                                 "The tag '%s' was found, but there is no corresponding Git SHA for it in the line, most probably something is wrong in this file: https://github.com/objectionary/home/blob/gh-pages/tags.txt",
                                 this.tag
@@ -124,20 +120,5 @@ final class ChText implements CommitHash {
                 )
             )
         ).value();
-    }
-
-    /**
-     * The exception for case when hash not found.
-     * @since 0.28.11
-     */
-    static final class NotFound extends RuntimeException {
-
-        /**
-         * The main constructor.
-         * @param cause The cause of it
-         */
-        private NotFound(final String cause) {
-            super(cause);
-        }
     }
 }

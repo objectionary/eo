@@ -49,19 +49,23 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean addSourcesRoot;
+    @Parameter(
+        alias = "addSourcesRoot",
+        property = "eo.addSourcesRoot",
+        defaultValue = "true"
+    )
+    private boolean attach;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean transpileTests;
+    @Parameter(
+        alias = "transpileTests",
+        property = "eo.transpileTests",
+        defaultValue = "true"
+    )
+    private boolean tests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -69,10 +73,9 @@ public final class MjTranspile extends MjSafe {
      * Off by default, so a production build stays lean; turn it on (as
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations")
-    private boolean trackLocations;
+    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    private boolean located;
 
     /**
      * Whether to wrap every located object in the generated Java into
@@ -91,10 +94,9 @@ public final class MjTranspile extends MjSafe {
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.coverageTracking")
-    private boolean coverageTracking;
+    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
@@ -126,32 +128,43 @@ public final class MjTranspile extends MjSafe {
     private String superclass;
 
     /**
+     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     */
+    private final ConcurrentCache guard;
+
+    /**
      * Ctor.
      */
     public MjTranspile() {
-        this.addSourcesRoot = true;
-        this.transpileTests = true;
+        this.guard = new ConcurrentCache();
     }
 
     @Override
     public void exec() throws IOException {
-        new Timed(
-            new Transpiling(
-                this.scopedTojos().standalone(),
-                this.targetDir.toPath(),
-                this.generatedDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
-                this.plugin.getVersion(),
-                this.transpileTests,
-                this.xslMeasures.toPath(),
-                new Tracking(this.trackSteps, this.trackLocations),
-                this.coverageTracking,
-                this.base(),
-                this.roots()
-            )
-        ).exec();
-        if (this.addSourcesRoot) {
+        try (TjsForeign tojos = this.tojos()) {
+            new Timed(
+                new Transpiling(
+                    tojos.standalone(),
+                    this.targetDir.toPath(),
+                    this.generatedDir.toPath(),
+                    this.cache.toPath(),
+                    this.cacheEnabled,
+                    this.plugin.getVersion(),
+                    this.tests,
+                    this.roots(),
+                    new Transpilation(
+                        this.plugin.getVersion(),
+                        new Tracking(this.trackSteps, this.located),
+                        this.coverage,
+                        this.base(),
+                        this.xslMeasures.toPath(),
+                        this.targetDir.toPath()
+                    ),
+                    this.guard
+                )
+            ).exec();
+        }
+        if (this.attach) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.toPath().toAbsolutePath().toString()
             );
@@ -170,13 +183,6 @@ public final class MjTranspile extends MjSafe {
         }
     }
 
-    /**
-     * The compile source roots a human wrote, which are all of them but the
-     * ones inside the build directory, since a root a previous goal generated
-     * holds a {@code package-info.java} of its own and would fool the
-     * transpiler into skipping the file it has to write.
-     * @return The directories with hand-written Java
-     */
     private Collection<Path> roots() {
         final Path build = this.targetDir.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
@@ -185,16 +191,6 @@ public final class MjTranspile extends MjSafe {
             .collect(Collectors.toList());
     }
 
-    /**
-     * The name of the class that the generated classes extend, refused right
-     * here when it is not a Java class name. Returning the name instead of
-     * checking it apart means a caller cannot end up with a name that was
-     * never looked at, since {@code to-java.xsl} copies whatever it is given
-     * into the {@code extends} clause and an unusable name would surface as
-     * a compilation error in generated sources, far from the option that
-     * caused it.
-     * @return The name of the class to extend
-     */
     private String base() {
         if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
             throw new IllegalArgumentException(

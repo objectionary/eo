@@ -221,8 +221,7 @@ final class Stack {
      * on each as it is removed. After the pop sweep, if the new top has
      * indent {@code target} - 2 (a step occurred), its openness is
      * downgraded from {@link Openness#OPEN OPEN} to
-     * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} per
-     * R-5.2.2.
+     * {@link Openness#VCOMPLETED VCOMPLETED} per R-5.2.2.
      * @param target Target indent
      */
     void popDeeperThan(final int target) {
@@ -233,7 +232,7 @@ final class Stack {
             this.closer.onClose(last, true);
         }
         if (stepped && !this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
-            this.top().close(Openness.VERTICAL_COMPLETED);
+            this.top().close(Openness.VCOMPLETED);
         }
     }
 

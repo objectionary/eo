@@ -16,5 +16,5 @@ origin: |
     | list > @
 printed: |
   [] > app
-    rec t > [t] >> rec
+    ^.rec t > [t] >> rec
     | list > @

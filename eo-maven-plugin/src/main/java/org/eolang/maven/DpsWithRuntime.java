@@ -72,11 +72,6 @@ final class DpsWithRuntime implements Dependencies {
         return all.iterator();
     }
 
-    /**
-     * Is it our runtime dep?
-     * @param other The dep
-     * @return TRUE if it is
-     */
     private static boolean isRuntime(final Dependency other) {
         return "org.eolang".equals(other.getGroupId())
             && "eo-runtime".equals(other.getArtifactId());

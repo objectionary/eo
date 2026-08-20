@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object takes the members of the package it names without being merged
+# anywhere itself. `obj` lives in `hello`, which names no object, so nothing
+# above it moves and `obj` keeps the place it had. `abc` arrives all the same,
+# because a name is cut at its last dot and the merge asks only whether an
+# object carries the prefix right above the member.
+eo:
+  hello/obj.eo: |
+    +package hello
+
+    [x] > obj
+      x > @
+  hello/obj/abc.eo: |
+    +package hello.obj
+
+    [y] > abc
+      y > @
+xmir:
+  hello/obj.eo:
+    - "/object/o[@name='obj']/o[@name='abc']"
+absent:
+  - hello.eo

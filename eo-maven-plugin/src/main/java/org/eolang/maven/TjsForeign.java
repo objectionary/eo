@@ -225,11 +225,6 @@ final class TjsForeign implements Closeable {
         return String.join("/", parts);
     }
 
-    /**
-     * Select tojos.
-     * @param filter Filter
-     * @return Selected tojos
-     */
     private Collection<TjForeign> select(final Predicate<? super Tojo> filter) {
         return this.tojos.value().select(
             t -> filter.test(t)

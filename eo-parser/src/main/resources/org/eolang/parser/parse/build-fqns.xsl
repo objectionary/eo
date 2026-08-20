@@ -3,17 +3,22 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="build-fqns" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="build-fqns" version="2.0">
   <!-- An FQN-resolution stage; its per-mode templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <!--
   Here we go through all objects and find what their @base
-  are referring to. If we find the object they refer to,
-  we add either $ object (if target object in the same scope)
-  or necessary amount of '^.' objects. Those objects
-  which are skipped after this transformation
-  are not visible in the current scope. Maybe they are
-  global or just a mistake.
+  are referring to. If we find the object they refer to in the
+  current scope, we add the $ object in front of it. A name that
+  lives in an enclosing scope instead is reported: this stage used
+  to walk up and insert the '^.' hops itself, which made the same
+  source text mean one thing here and another one level down, so
+  the hops are the author's to write now. The one exception is a
+  cactus name, which no author writes: it is what a '&gt;&gt;'
+  handle resolves to, and the handle is spelled bare wherever the
+  file reads it. Those objects which are skipped after this
+  transformation are not visible in the current scope. Maybe they
+  are global or just a mistake.
 
   We must skip objects that refer to
   "bytes", "string" or "number" if such objects are inside the
@@ -148,8 +153,8 @@
       </xsl:when>
       <xsl:when test="eo:abstract($parent)">
         <xsl:choose>
-          <!-- Found reference in some abstract object above -->
-          <xsl:when test="$parent/o[@name=$find]">
+          <!-- Found reference in the current scope, or a handle above -->
+          <xsl:when test="$parent/o[@name=$find] and ($rhos=0 or contains($find, $eo:cactoos))">
             <xsl:apply-templates select="$self" mode="with-rho">
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
@@ -159,6 +164,14 @@
                 </o>
               </xsl:with-param>
             </xsl:apply-templates>
+          </xsl:when>
+          <!-- Found reference in some abstract object above -->
+          <xsl:when test="$parent/o[@name=$find]">
+            <o>
+              <xsl:apply-templates select="$self/@*"/>
+              <xsl:attribute name="hop" select="$rhos"/>
+              <xsl:apply-templates select="$self/node()"/>
+            </o>
           </xsl:when>
           <!-- No reference - go upper -->
           <xsl:otherwise>
@@ -211,20 +224,30 @@
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
   </xsl:template>
+  <!-- Drop the "@hop" marker once the report below has been collected -->
+  <xsl:template match="@hop" mode="stripped" priority="2"/>
+  <xsl:template match="node()|@*" mode="stripped" priority="1">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" mode="stripped"/>
+    </xsl:copy>
+  </xsl:template>
   <!--
   A "φ" reference left unresolved by "with-package" above stays as a
   literal "<o base='φ'>" in the transformed tree (nothing rewrites it).
   Reporting this here, after the transform, rather than terminating the
   whole XSL train mid-resolution (as this file used to), lets it surface
   as a normal <errors> entry with the offending line, consistent with
-  every other diagnostic in this pipeline (see #6042).
+  every other diagnostic in this pipeline (see #6042). A name found only
+  in an enclosing scope is marked with "@hop" the same way and reported
+  the same way, then the marker is stripped so it never reaches the
+  next stage.
   -->
   <xsl:template match="/object">
     <xsl:variable name="transformed" as="item()*">
       <xsl:apply-templates select="(node() except errors)|@*"/>
     </xsl:variable>
     <xsl:copy>
-      <xsl:sequence select="$transformed"/>
+      <xsl:apply-templates select="$transformed" mode="stripped"/>
       <xsl:variable name="errors" as="element()*">
         <xsl:for-each select="$transformed//o[@base='φ']">
           <error>
@@ -232,6 +255,19 @@
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
             <xsl:text>The φ object is used, but absent in self or parents scope</xsl:text>
+          </error>
+        </xsl:for-each>
+        <xsl:for-each select="$transformed//o[@hop]">
+          <error>
+            <xsl:attribute name="check" select="'build-fqns'"/>
+            <xsl:attribute name="line" select="if (@line) then @line else 0"/>
+            <xsl:attribute name="severity" select="'error'"/>
+            <xsl:text>The "</xsl:text>
+            <xsl:value-of select="@base"/>
+            <xsl:text>" object is declared in an enclosing scope, write it as "</xsl:text>
+            <xsl:value-of select="string-join(for $hop in 1 to xs:integer(@hop) return '^.', '')"/>
+            <xsl:value-of select="@base"/>
+            <xsl:text>"</xsl:text>
           </error>
         </xsl:for-each>
       </xsl:variable>

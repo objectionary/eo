@@ -48,7 +48,7 @@ public final class OnDefault implements ObjectName {
             () -> new IllegalStateException(
                 "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
             )
-            );
+        );
         return this.xnav.element("object")
             .elements(Filter.withName("metas"))
             .findFirst().map(
@@ -72,10 +72,6 @@ public final class OnDefault implements ObjectName {
             .orElse(obj);
     }
 
-    /**
-     * Get object name from XMIR.
-     * @return Object name
-     */
     private Optional<String> name() {
         return Optional.ofNullable(
             this.xnav
