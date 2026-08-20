@@ -249,12 +249,15 @@ final class LnFormationTest {
     }
 
     @Test
-    void rejectsRhoAfterAnotherParameter() {
-        Assertions.assertThrows(
-            ParseError.class,
-            () -> new LnFormation(new Span("[x ^] > foo", 1))
-                .into(new Stack(), new Globals(), new Emit()),
-            "`^` cannot be a formation parameter other than the first per R-3.4.11"
+    void emitsRhoForALaterParameter() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[x ^] > foo", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `^` parameter must emit as <o name='ρ' base='∅'/> wherever it stands",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[2][@name='ρ' and @base='∅']")
         );
     }
 

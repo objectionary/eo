@@ -155,12 +155,27 @@ final class Value {
     }
 
     /**
+     * Whether an inline binding (R-3.12) follows the value.
+     * @return True when a {@code :label} or {@code :N} is present
+     */
+    boolean bound() {
+        return this.binding != null;
+    }
+
+    /**
      * Inline binding label (e.g., {@code y}) or numeric slot (e.g.,
-     * {@code 0}), or {@code null} when no binding follows the value.
-     * @return Binding tag
+     * {@code 0}), or the empty string when no binding follows the
+     * value — check {@link #bound()} first.
+     * @return Binding tag, empty when absent
      */
     String binding() {
-        return this.binding;
+        final String tag;
+        if (this.binding == null) {
+            tag = "";
+        } else {
+            tag = this.binding;
+        }
+        return tag;
     }
 
     /**
