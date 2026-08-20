@@ -179,6 +179,30 @@ final class Level {
     }
 
     /**
+     * Copy ctor — a detached twin of {@code other}, carrying the same
+     * mutable state at the moment of copying. Lets {@link Stack} take a
+     * savepoint that later mutation of {@code other} cannot reach
+     * (R-7.3).
+     * @param other The entry to copy
+     */
+    Level(final Level other) {
+        this(other.indent, other.start, other.kind, other.openness, other.parent, other.patom);
+        this.label = other.label;
+        this.formation = other.formation;
+        this.atom = other.atom;
+        this.taken = other.taken;
+        this.plain = other.plain;
+        this.count = other.count;
+        this.children = other.children;
+        this.tupled = other.tupled;
+        this.star = other.star;
+        this.bindings = other.bindings;
+        this.argpending = other.argpending;
+        this.argbound = other.argbound;
+        this.argspan = other.argspan;
+    }
+
+    /**
      * Indent of this entry.
      * @return Indent
      */

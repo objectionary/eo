@@ -873,6 +873,18 @@ final class EoTest {
     }
 
     @Test
+    void reportsMissingReceiverAfterRejectedReceiver() {
+        MatcherAssert.assertThat(
+            "a receiver line that was rejected must leave the dispatch without a receiver, so R-5.3.2 still fires",
+            EoTest.render("[] > main", "  if. > @", "    cond:x"),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]",
+                "/object/errors/error[contains(text(),'reversed dispatch missing receiver')]"
+            )
+        );
+    }
+
+    @Test
     void acceptsInlineVoidsOnReversedDispatch() {
         MatcherAssert.assertThat(
             "a trailing-dot object with an inline void suffix must parse with no errors and desugar to the same φ-as-reversed-dispatch shape as its two-line form",

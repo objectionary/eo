@@ -114,10 +114,20 @@ final class Stack {
      * one back, so the count is unchanged even though the top entry
      * itself is a different object. Snapshotting the entries themselves
      * survives that case.
+     *
+     * <p>The entries are copied, not shared: a {@link Level} is mutable
+     * and a line that throws has usually already mutated the entry
+     * below it, so a shallow copy would put the damage straight back on
+     * the stack.</p>
+     *
      * @return Snapshot of the levels, bottom-to-top
      */
     List<Level> snapshot() {
-        return new ArrayList<>(this.levels);
+        final List<Level> copy = new ArrayList<>(this.levels.size());
+        for (final Level level : this.levels) {
+            copy.add(new Level(level));
+        }
+        return copy;
     }
 
     /**
