@@ -823,20 +823,11 @@ final class LnApplicationTest {
         );
     }
 
-    /**
-     * Parse one application line into a fresh stack and emit.
-     * @param body Line body
-     */
     private static void parseLine(final String body) {
         new LnApplication(new Span(body, 1))
             .into(new Stack(), new Globals(), new Emit());
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

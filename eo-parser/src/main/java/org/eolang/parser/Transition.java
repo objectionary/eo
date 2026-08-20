@@ -63,15 +63,6 @@ final class Transition {
         return level;
     }
 
-    /**
-     * Push a fresh level after validating the indent step (R-5.1.3), the
-     * parent's openness (R-5.2.4) and, when the parent is an atom, that
-     * this child is permitted under it (R-3.10.13).
-     * @param kind Outer kind for the level
-     * @param openness Openness for the level
-     * @param admission The line's naming suffix and atom-body permission
-     * @return The pushed level
-     */
     private Level pushed(final Kind kind, final Openness openness, final Admission admission) {
         if (!this.stack.empty() && this.span.indent() != this.stack.top().indent() + 2) {
             throw new ParseError(

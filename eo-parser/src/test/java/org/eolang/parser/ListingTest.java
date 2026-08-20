@@ -98,10 +98,6 @@ final class ListingTest {
         );
     }
 
-    /**
-     * Sources to embed into {@code <listing>}.
-     * @return Stream of sources
-     */
     private static Stream<Arguments> sources() {
         return Stream.of(
             "[] > foo",
@@ -126,11 +122,6 @@ final class ListingTest {
         ).map(Arguments::of);
     }
 
-    /**
-     * Read the text of {@code /object/listing} built for the given source.
-     * @param source The EO source text
-     * @return The text of the {@code listing} element
-     */
     private static String listing(final String source) {
         return new Xnav(
             new XMLDocument(

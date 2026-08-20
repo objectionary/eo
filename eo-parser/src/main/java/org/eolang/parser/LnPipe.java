@@ -103,14 +103,6 @@ final class LnPipe implements Line {
         }
     }
 
-    /**
-     * Validate the pipe has a legal predecessor — a same-indent
-     * formation or pipe that carries a name (R-3.14.2 / R-5.2.4a /
-     * R-5.2.5a / R-5.2.11a). An empty stack, a shallower top (descending
-     * pipe), an unnamed formation, or a non-pipeable kind (a plain value,
-     * an application, or a {@code .method} dispatch) all fail.
-     * @param stack Indent stack
-     */
     private void precheck(final Stack stack) {
         if (stack.empty()
             || stack.top().indent() != this.span.indent()
@@ -123,16 +115,6 @@ final class LnPipe implements Line {
         }
     }
 
-    /**
-     * Build a token stream positioned just past the leading {@code |}
-     * marker. Two shapes are legal (R-3.14.3): the horizontal form
-     * {@code | a b}, whose {@code |} is followed by a space before the
-     * argument list or suffix, and the bare vertical form {@code |}
-     * (nothing after the pipe), which opens for a deeper-indent
-     * argument block just like a {@code vapplication} head. Only a
-     * character glued directly onto the pipe ({@code |x}) is rejected.
-     * @return Tokens positioned after the {@code |}
-     */
     private Tokens piped() {
         final String body = this.span.body();
         if (!"|".equals(body) && !body.startsWith("| ")) {

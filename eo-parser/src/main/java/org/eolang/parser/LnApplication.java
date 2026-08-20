@@ -111,13 +111,6 @@ final class LnApplication implements Line {
         return label;
     }
 
-    /**
-     * Decide the outer kind based on head, chain and argument presence.
-     * @param head The line head
-     * @param chain Method-dispatch chain (may be empty)
-     * @param args Horizontal arguments (may be empty)
-     * @return Outer kind
-     */
     private static Kind classify(
         final Value head, final List<MethodChain> chain, final List<Value> args
     ) {
@@ -134,14 +127,6 @@ final class LnApplication implements Line {
         return kind;
     }
 
-    /**
-     * Decide the outer kind of a head that carries neither arguments nor
-     * a chain. An {@code I} head is an identity object, a formation a
-     * pipe may apply arguments to (R-3.16.4); every other head is a
-     * plain {@link Kind#HEAD}.
-     * @param head The line head
-     * @return Outer kind
-     */
     private static Kind bare(final Value head) {
         final Kind kind;
         if (head.kind() == Value.Kind.IDENTITY) {
@@ -152,17 +137,6 @@ final class LnApplication implements Line {
         return kind;
     }
 
-    /**
-     * Reject a head that cannot carry what follows it: bare redundant
-     * parentheses around a whole top-level expression, or a horizontal
-     * argument list applied to a head that opens a formation body of its
-     * own — a paren-group wrapping an inline-phi expression, or the
-     * identity glyph {@code I}, itself sugar for one (#6848, #6918).
-     * @param head The head value
-     * @param chain Method-dispatch chain following the head (may be empty)
-     * @param args Horizontal arguments following the head (may be empty)
-     * @param outer The outer {@code :binding} label, or {@code null}
-     */
     private void checkGroupHead(
         final Value head, final List<MethodChain> chain, final List<Value> args,
         final String outer
@@ -182,30 +156,12 @@ final class LnApplication implements Line {
         }
     }
 
-    /**
-     * Whether a head opens a formation body of its own, so any horizontal
-     * argument that follows it would land as an unnamed formation child
-     * instead of an argument (#6848, #6918).
-     * @param head The head value
-     * @return TRUE when the head opens a formation body
-     */
     private boolean opensFormationBody(final Value head) {
         return head.kind() == Value.Kind.IDENTITY
             || head.kind() == Value.Kind.GROUP && this.wrapsInlinePhi(head);
     }
 
-    /**
-     * Whether a paren-group head's own content is a top-level inline-phi
-     * expression ({@code body > [params]}, §3.10.10a) — the one paren-group
-     * shape that opens a formation without going through {@code [} at the
-     * head of {@link Tokens#readValue()}, so {@code ([x]) 5} is already
-     * rejected there but {@code (m > [m]) 5} is not (#6848). Scans depth-
-     * and string-aware, the same way {@code Emissions.topLevelInlinePhi}
-     * does for the group's own printing.
-     * @param head The paren-group head
-     * @return TRUE when the group wraps an inline-phi expression
-     * @checkstyle NonStaticMethodCheck (2 lines)
-     */
+    // @checkstyle NonStaticMethodCheck (2 lines)
     private boolean wrapsInlinePhi(final Value head) {
         final String raw = head.raw();
         final String inner = raw.substring(1, raw.length() - 1);
@@ -229,13 +185,6 @@ final class LnApplication implements Line {
         return found;
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     * @param kind Initial outer kind for the pushed level
-     * @param openness Initial openness for the pushed level
-     */
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
@@ -244,17 +193,6 @@ final class LnApplication implements Line {
         );
     }
 
-    /**
-     * Emit the head, chain (flat siblings), and horizontal args
-     * (children of the head's {@code <o>} or last chain link). The last
-     * {@code <o>} (head if no chain, last link if chain) remains open;
-     * cursor stays inside.
-     * @param emit The directives sink
-     * @param suffix The parsed suffix
-     * @param head The head value
-     * @param chain The chain links (may be empty)
-     * @param args The horizontal arguments (may be empty)
-     */
     private void emit(
         final Emit emit, final Suffix suffix, final Value head,
         final List<MethodChain> chain, final List<Value> args

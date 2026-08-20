@@ -288,17 +288,6 @@ public interface CStdLib extends Library {
      */
     String strerror(int errno);
 
-    /**
-     * Load the C standard library.
-     *
-     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy
-     * 32-bit-inode version whose struct layout differs from the 64-bit-inode
-     * one used by {@link MacFileStat}. We remap {@code stat} and
-     * {@code lstat} to their {@code $INODE64} twins to get the right layout.
-     * On arm64 macOS and Linux the plain symbols already use that layout.</p>
-     *
-     * @return Loaded CStdLib instance
-     */
     private static CStdLib load() {
         final CStdLib result;
         if (Platform.isMac() && !Platform.isARM()) {

@@ -61,19 +61,6 @@ final class DrProgram implements Iterable<Directive> {
         .iterator();
     }
 
-    /**
-     * Find the location of XSD schema.
-     *
-     * <p>In production, the XSD is located online at the eolang.org
-     * website, were we deploy it on every release cycle (see the {@code .rultor.yml}
-     * file. However, during testing cycle, we must use the local file,
-     * allowing its most recent changes to be visible to the code. However,
-     * we don't know exactly where from the tests are being executed
-     * (what is the current directory). Because of this, we try to find the
-     * file using a number of options.</p>
-     *
-     * @return The location of the XSD schema file/URL
-     */
     private static String schema() {
         String schema = String.format(
             "https://www.eolang.org/xsd/XMIR-%s.xsd",
