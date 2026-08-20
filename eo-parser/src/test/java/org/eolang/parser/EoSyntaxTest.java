@@ -112,9 +112,13 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "doesn't prohibit more than one tailing EOL",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(String.join(
-                    System.lineSeparator(), "[] > foo", "", "", "", ""
-                ))).parsed().toString()
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(), "[] > foo", "", "", "", ""
+                        )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths("/object/errors/error")
         );
@@ -556,9 +560,11 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in object name",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(
-                    "[] > foo🌵bar".concat(System.lineSeparator())
-                )).parsed().toString()
+                new EoSyntax(
+                    new InputOf(
+                        "[] > foo🌵bar".concat(System.lineSeparator())
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -571,11 +577,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute name",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(String.join(
-                    System.lineSeparator(),
-                    "[] > app",
-                    "  x > a🌵65".concat(System.lineSeparator())
-                ))).parsed().toString()
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > app",
+                            "  x > a🌵65".concat(System.lineSeparator())
+                        )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -588,11 +598,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute value",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(String.join(
-                    System.lineSeparator(),
-                    "[] > x",
-                    "  🌵 > y".concat(System.lineSeparator())
-                ))).parsed().toString()
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > x",
+                            "  🌵 > y".concat(System.lineSeparator())
+                        )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
