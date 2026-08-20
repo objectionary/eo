@@ -105,4 +105,16 @@ final class HexTest {
             Matchers.equalTo("01-02-03-04")
         );
     }
+
+    @Test
+    void keepsEarlierInstanceUnaffectedByReusingTheSameArray() {
+        final byte[] shared = {0x05, 0x06};
+        final Hex first = new Hex(shared);
+        shared[0] = 0x09;
+        MatcherAssert.assertThat(
+            "reusing the caller's array for a later Hex must not touch an earlier one",
+            first.asString(),
+            Matchers.equalTo("05-06")
+        );
+    }
 }
