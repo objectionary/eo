@@ -4,8 +4,6 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
@@ -21,7 +19,13 @@
     | entries
     d
   ^ > d
-  [] > entries /Q.tuple
+  [] > entries
+    recovered > @
+      ^.d.walk "**"
+      if.
+        ^.d.exists
+        ^.d.walk "**"
+        *
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @
