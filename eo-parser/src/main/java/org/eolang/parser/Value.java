@@ -29,7 +29,7 @@ final class Value {
      */
     private static final Set<Kind> CHAINABLE = Set.of(
         Kind.IDENTIFIER, Kind.ROOT, Kind.SELF, Kind.GROUP,
-        Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES
+        Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 
     /**
