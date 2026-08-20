@@ -133,11 +133,6 @@ public class PhOnce implements Phi {
         return result;
     }
 
-    /**
-     * The wrapped object, made by the supplier the first time it is wanted.
-     * @param obj Supplier of the object
-     * @return The object
-     */
     private Phi loaded(final Supplier<Phi> obj) {
         if (this.ref.get() == null) {
             this.lock.lock();

@@ -46,13 +46,6 @@ final class MergingTest {
         );
     }
 
-    /**
-     * Merge the "foo" package (with member "bar") from scratch into {@code merge}.
-     * @param pkg The package's own XMIR
-     * @param member The member's XMIR
-     * @param merge The directory for the merged XMIR
-     * @throws IOException If the merge fails
-     */
     private void merge(
         final Path pkg, final Path member, final Path merge
     ) throws IOException {

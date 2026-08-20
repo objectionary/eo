@@ -152,14 +152,6 @@ final class MjMergeTest {
         );
     }
 
-    /**
-     * The program of a pack, parsed and merged, and transpiled as well when the
-     * pack asks anything of the generated Java.
-     * @param pack The pack
-     * @param temp The temporary directory
-     * @return The workspace, after the merge
-     * @throws IOException If the pipeline fails
-     */
     private static FakeMaven spliced(final Xtory pack, final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         for (final Map.Entry<?, ?> source : MjMergeTest.sources(pack).entrySet()) {
@@ -174,16 +166,6 @@ final class MjMergeTest {
         return maven;
     }
 
-    /**
-     * Everything the pack asks for that is not there, each named by the
-     * document it was asked of, plus any key of the pack this runner does not
-     * know, since a key nobody reads would switch its assertions off in
-     * silence.
-     * @param pack The pack
-     * @param maven The workspace the merge has just written into
-     * @return What failed, empty when the pack is satisfied
-     * @throws IOException If a document cannot be read
-     */
     private static Collection<String> unmatched(final Xtory pack, final FakeMaven maven)
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
@@ -197,14 +179,6 @@ final class MjMergeTest {
         return failed;
     }
 
-    /**
-     * The XPaths the pack asks of the merged XMIR that match nothing, together
-     * with the files it says must not be merged at all and were.
-     * @param pack The pack
-     * @param base The directory the merged XMIR was written to
-     * @return What failed
-     * @throws IOException If a document cannot be read
-     */
     private static Collection<String> unmerged(final Xtory pack, final Path base)
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
@@ -227,15 +201,6 @@ final class MjMergeTest {
         return failed;
     }
 
-    /**
-     * The texts the pack asks of the generated Java that are not in it, which is
-     * where a member that used to be an object of its own has to show up as an
-     * attribute of the class of its package.
-     * @param pack The pack
-     * @param maven The workspace the merge has just written into
-     * @return What failed
-     * @throws IOException If a file cannot be read
-     */
     private static Collection<String> untranspiled(final Xtory pack, final FakeMaven maven)
         throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
@@ -257,15 +222,6 @@ final class MjMergeTest {
         return failed;
     }
 
-    /**
-     * The class a file of the program is transpiled into, either the object
-     * itself or the tests it declares, which land in a source root of their own.
-     * @param maven The workspace
-     * @param name The name of the file
-     * @param kind Either the object or its tests
-     * @return The path to the class
-     * @throws IOException If the workspace cannot be read
-     */
     private static Path generated(final FakeMaven maven, final String name, final String kind)
         throws IOException {
         final Path base;
@@ -284,33 +240,14 @@ final class MjMergeTest {
         );
     }
 
-    /**
-     * What the pack asks of one kind of document, by the name of the file.
-     * @param pack The pack
-     * @param key The key of the pack
-     * @return The demands, empty when the pack asks nothing
-     */
     private static Map<?, ?> asked(final Xtory pack, final String key) {
         return (Map<?, ?>) pack.map().getOrDefault(key, Collections.emptyMap());
     }
 
-    /**
-     * What the pack lists under one of its keys.
-     * @param pack The pack
-     * @param key The key of the pack
-     * @return The list, empty when the pack lists nothing
-     */
     private static List<?> listed(final Xtory pack, final String key) {
         return (List<?>) pack.map().getOrDefault(key, Collections.emptyList());
     }
 
-    /**
-     * The texts that are nowhere in the given one.
-     * @param java The text of the generated class
-     * @param about What the class is, for the message
-     * @param texts The texts
-     * @return The texts that failed
-     */
     private static Collection<String> missing(
         final String java, final String about, final List<?> texts
     ) {
@@ -323,32 +260,14 @@ final class MjMergeTest {
         return failed;
     }
 
-    /**
-     * The files of the program the pack describes.
-     * @param pack The pack
-     * @return The sources, by their names
-     */
     private static Map<?, ?> sources(final Xtory pack) {
         return (Map<?, ?>) pack.map().get("eo");
     }
 
-    /**
-     * The name a file is known by in the tojos, which is what its path says
-     * with the separators read as dots, exactly as {@link MjRegister} reads it.
-     * @param name The name of the file
-     * @return The identifier
-     */
     private static String identifier(final String name) {
         return name.replace(".eo", "").replace('/', '.');
     }
 
-    /**
-     * The XPaths that match nothing in the given document.
-     * @param document The document
-     * @param about What the document is, for the message
-     * @param xpaths The XPaths
-     * @return The XPaths that failed
-     */
     private static Collection<String> absent(
         final XML document, final String about, final List<?> xpaths
     ) {
@@ -361,13 +280,6 @@ final class MjMergeTest {
         return failed;
     }
 
-    /**
-     * A workspace holding the object {@code foo} with a void and the member
-     * {@code foo.bar}, taken through parsing and merging.
-     * @param temp The temporary directory
-     * @return The workspace, after the merge
-     * @throws IOException If the pipeline fails
-     */
     private static FakeMaven merged(final Path temp) throws IOException {
         return new FakeMaven(temp).withProgram(
             MjMergeTest.program("[n] > foo", "  n > @"),
@@ -380,12 +292,6 @@ final class MjMergeTest {
         ).execute(new PpMerge());
     }
 
-    /**
-     * The message of the deepest cause, which is where a mojo failure keeps
-     * what actually went wrong.
-     * @param thrown What the mojo threw
-     * @return The message
-     */
     private static String root(final Throwable thrown) {
         Throwable cause = thrown;
         while (cause.getCause() != null) {
@@ -394,11 +300,6 @@ final class MjMergeTest {
         return cause.getMessage();
     }
 
-    /**
-     * The lines of an EO program as one text.
-     * @param lines The lines
-     * @return The program
-     */
     private static String program(final String... lines) {
         return String.join(System.lineSeparator(), lines);
     }

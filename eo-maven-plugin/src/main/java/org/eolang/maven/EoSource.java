@@ -109,12 +109,6 @@ final class EoSource {
         return new Xmir(new XMLDocument(document), errors);
     }
 
-    /**
-     * Apply error to the document.
-     * @param check Check name
-     * @param message Error message
-     * @param document Document
-     */
     private static void applyError(
         final String check, final String message, final Node document
     ) {

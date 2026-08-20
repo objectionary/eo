@@ -72,10 +72,6 @@ public final class OnDefault implements ObjectName {
             .orElse(obj);
     }
 
-    /**
-     * Get object name from XMIR.
-     * @return Object name
-     */
     private Optional<String> name() {
         return Optional.ofNullable(
             this.xnav

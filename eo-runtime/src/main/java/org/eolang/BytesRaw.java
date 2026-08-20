@@ -178,13 +178,6 @@ final class BytesRaw implements Bytes {
         return Arrays.hashCode(this.data);
     }
 
-    /**
-     * Take the bytes of the other operand, checking they are of the same length.
-     * @param first The bytes of the receiver
-     * @param other The other operand
-     * @param operation The name of the operation, for the error message
-     * @return The bytes of the other operand
-     */
     private static byte[] ofSameLength(
         final byte[] first, final Bytes other, final String operation
     ) {
@@ -198,13 +191,6 @@ final class BytesRaw implements Bytes {
         return second;
     }
 
-    /**
-     * Shift bytes to the left.
-     * @param bytes Bytes
-     * @param mod Mod
-     * @param offset Offset
-     * @return Shifted bytes
-     */
     private static Bytes shiftLeft(final byte[] bytes, final int mod, final int offset) {
         final byte carry = (byte) ((0x01 << mod) - 1);
         for (int index = 0; index < bytes.length; index += 1) {
@@ -222,13 +208,6 @@ final class BytesRaw implements Bytes {
         return new BytesOf(bytes);
     }
 
-    /**
-     * Shift bytes to the right.
-     * @param bytes Bytes
-     * @param mod Mod
-     * @param offset Offset
-     * @return Shifted bytes
-     */
     private static Bytes shiftRight(final byte[] bytes, final int mod, final int offset) {
         final byte carry = (byte) (0xFF << (Byte.SIZE - mod));
         for (int index = bytes.length - 1; index >= 0; index -= 1) {
@@ -246,11 +225,6 @@ final class BytesRaw implements Bytes {
         return new BytesOf(bytes);
     }
 
-    /**
-     * Count leading zero bits.
-     * @param num Byte
-     * @return Number between 0 and 8
-     */
     private static byte numberOfLeadingZeros(final byte num) {
         final byte result;
         if (num == 0) {
@@ -273,13 +247,6 @@ final class BytesRaw implements Bytes {
         return result;
     }
 
-    /**
-     * Checks the buffer for its validity.
-     * @param buf The buffer
-     * @param bytes The bytes
-     * @param type The type to fit into
-     * @return The same buffer
-     */
     private static ByteBuffer whenFit(
         final ByteBuffer buf, final byte[] bytes,
         final Class<?> type

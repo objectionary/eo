@@ -44,7 +44,8 @@ final class EmitTest {
             EmitTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object/metas/meta[@line='2']/head[text()='foo']",
-                "/object/metas/meta[not(part)]"
+                "/object/metas/meta[not(part)]",
+                "/object/metas/meta[tail[not(text()) or text()='']]"
             )
         );
     }
@@ -89,7 +90,7 @@ final class EmitTest {
             "a multi-line comment must join the bodies with a newline",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath(
-                "/object/comments/comment[contains(text(),'first') and contains(text(),'second')]"
+                "/object/comments/comment[contains(text(), concat('first', codepoints-to-string(10), 'second'))]"
             )
         );
     }
@@ -371,13 +372,6 @@ final class EmitTest {
         );
     }
 
-    /**
-     * Run the emit's directives through Xembler against a fresh
-     * {@code <object/>} root so XPath assertions see the same shape the
-     * full parser would produce.
-     * @param emit The emit
-     * @return Rendered XMIR document as a string
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

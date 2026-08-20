@@ -22,7 +22,7 @@ origin: |
     [n] > inclen
       reclen n > @
     [i] >> reclen
-      inclen i > @
+      ^.inclen i > @
 
 printed: |
   [] > foo

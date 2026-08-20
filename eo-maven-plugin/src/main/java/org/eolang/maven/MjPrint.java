@@ -83,12 +83,6 @@ public final class MjPrint extends MjPenalties {
         }
     }
 
-    /**
-     * Print a single XMIR file as EO.
-     * @param source The XMIR source path
-     * @return Always 1, to count the number of printed files
-     * @throws Exception If fails
-     */
     private int print(final Path source) throws Exception {
         final Path home = this.output.toPath();
         final Path relative = Paths.get(

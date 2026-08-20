@@ -153,11 +153,6 @@ public final class PhTerminator implements Phi {
         return "⊥";
     }
 
-    /**
-     * The reason to panic with: the cause this bottom was explicitly given,
-     * else its birth-site default.
-     * @return The reason as an object
-     */
     private Phi reason() {
         final Phi reason;
         if (this.cause != null) {

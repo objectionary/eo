@@ -43,15 +43,6 @@ final class Source implements Iterable<Span> {
         return this.spans().iterator();
     }
 
-    /**
-     * Materialise all spans.
-     *
-     * <p>The walk is linear in input length. Splitting eagerly costs O(N)
-     * once, vs. O(N) over the consumer's loop; the simpler shape is worth
-     * the small allocation.</p>
-     *
-     * @return All source lines as spans in source order
-     */
     private List<Span> spans() {
         final List<Span> out = new ArrayList<>(this.text.length() / 32 + 1);
         final int len = this.text.length();

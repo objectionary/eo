@@ -119,11 +119,6 @@ final class PhPackage implements Phi {
         return this.pkg;
     }
 
-    /**
-     * Load phi object by package name from ClassLoader.
-     * @param fqn FQN of the EO object
-     * @return Phi
-     */
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());

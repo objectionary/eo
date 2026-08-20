@@ -55,28 +55,12 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
         return result;
     }
 
-    /**
-     * The caller-supplied {@code cant-compile} recovery for an expression that
-     * cannot become a pattern, or the bottom object when none was bound.
-     * @param message Why the expression could not be compiled
-     * @return The fallback object carrying the message
-     */
     private Phi fallback(final String message) {
         final Phi cant = this.take(EOstring$EOregex$EOcompile.FALLBACK);
         cant.put(0, new Data.ToPhi(message));
         return cant;
     }
 
-    /**
-     * Compile the expression into a serialized pattern, or fall back when its
-     * body is invalid. An invalid body is only discoverable by compiling, so
-     * the {@link PatternSyntaxException} is caught at that boundary and routed
-     * to the fallback; a serialization {@link IOException} on an in-memory
-     * stream is unpredictable and aborts as a system failure.
-     * @param expression The Perl-format expression, slashes included
-     * @param last Index of the closing slash in the expression
-     * @return The compiled pattern, or the {@code cant-compile} fallback
-     */
     private Phi compile(final String expression, final int last) {
         final StringBuilder builder = new StringBuilder();
         if (!expression.endsWith("/")) {

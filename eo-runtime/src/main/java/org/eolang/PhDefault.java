@@ -339,7 +339,7 @@ public class PhDefault implements Phi, Cloneable {
         if (this.literal(name)) {
             final byte[] raw = this.loaded().get("as-bytes").get().delta();
             if ("string".equals(name)) {
-                result = new Quoted(raw).get();
+                result = new Quoted(raw).get().orElseGet(this::structural);
             } else {
                 result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
@@ -349,10 +349,6 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
-    /**
-     * Derive the forma from the Java class, when the object has no XMIR locator.
-     * @return The forma built from the class name and its package
-     */
     private String derived() {
         final String form;
         final String name = this.oname();
@@ -364,17 +360,6 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
-    /**
-     * Resolve a name that this object doesn't declare among its own attributes.
-     *
-     * <p>Every object carries what it can answer: a package member is an
-     * attribute of the object the package names, put there at compile time.
-     * So a miss here can only descend, into the λ of an atom or into the
-     * decoratee. A name that nobody knows terminates the computation.</p>
-     *
-     * @param name The name of the absent attribute
-     * @return The object bound to that name
-     */
     private Phi absent(final String name) {
         final Phi object;
         if (this instanceof Atom) {
@@ -389,11 +374,6 @@ public class PhDefault implements Phi, Cloneable {
         return object;
     }
 
-    /**
-     * Build the forma from the package of this object and the given name.
-     * @param name The object name, as in source code
-     * @return The fully-qualified forma
-     */
     private String packaged(final String name) {
         final String form;
         final String pkg = PhDefault.TO_FORMA.matcher(
@@ -407,22 +387,6 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
-    /**
-     * Resolve the attribute name for a positional write, continuing partial
-     * application when needed.
-     *
-     * <p>The attribute at the requested position is used as-is when it can
-     * still receive a value. When it's a void that has already been set — as
-     * happens when a curried object is fed its next argument — the write is
-     * redirected to the first still-unset void that follows, in declaration
-     * order. This is the only case whose behavior changes: previously such a
-     * write threw {@link ExReadOnly}. Positions that point at non-void
-     * attributes keep failing, so passing too many arguments is still
-     * reported.</p>
-     *
-     * @param pos Position of the attribute
-     * @return The name of the attribute to write to
-     */
     private String vacancy(final int pos) {
         String name = this.attr(pos);
         if (!this.loaded().get(name).vacant()) {
@@ -437,11 +401,6 @@ public class PhDefault implements Phi, Cloneable {
         return name;
     }
 
-    /**
-     * Get attribute name by position.
-     * @param pos Position of the attribute
-     * @return Attribute name
-     */
     private String attr(final int pos) {
         this.loaded();
         if (0 > pos) {
@@ -467,10 +426,6 @@ public class PhDefault implements Phi, Cloneable {
         return this.order.get(pos);
     }
 
-    /**
-     * Get its object name, as in source code.
-     * @return The name
-     */
     private String oname() {
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
@@ -483,11 +438,6 @@ public class PhDefault implements Phi, Cloneable {
         return txt;
     }
 
-    /**
-     * Activate the lazy state: initialize attrs/order from the constructor-supplied
-     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
-     * @return Map of attrs
-     */
     private Map<String, Attribute> loaded() {
         this.lock.lock();
         try {
@@ -503,21 +453,12 @@ public class PhDefault implements Phi, Cloneable {
         }
     }
 
-    /**
-     * Is this a number or string object with injected bytes inside.
-     * @param name Object name, as in source code
-     * @return True if its value can be rendered directly
-     */
     private boolean literal(final String name) {
         return ("number".equals(name) || "string".equals(name))
             && this.loaded().containsKey("as-bytes")
             && !"?".equals(this.loaded().get("as-bytes").φTerm());
     }
 
-    /**
-     * Structural φ-term, listing the attributes of this object.
-     * @return The φ-term
-     */
     private String structural() {
         final List<String> list = new ArrayList<>(this.loaded().size());
         if (this.data.present()) {
@@ -541,12 +482,6 @@ public class PhDefault implements Phi, Cloneable {
         return term;
     }
 
-    /**
-     * Bytes representation for the φ-term D> slot.
-     * This is intentionally not {@link Bytes#asString()}.
-     * @param data Bytes
-     * @return Bytes as shown in φ-terms
-     */
     private static String termBytes(final byte[] data) {
         final String result;
         if (data.length == 0) {
@@ -564,20 +499,12 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
-    /**
-     * Default attributes hash map with RHO attribute put.
-     * @return Default attributes hash map
-     */
     private static Map<String, Attribute> defaults() {
         final Map<String, Attribute> attrs = new Bindings();
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }
 
-    /**
-     * Load the declared return types of all atoms from the generated table.
-     * @return The atom types table, empty when the table is absent
-     */
     private static AtomTypes atoms() {
         final Map<String, String> table;
         final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");
@@ -602,10 +529,6 @@ public class PhDefault implements Phi, Cloneable {
         return new AtomTypes(table);
     }
 
-    /**
-     * Padding according to current {@link #NESTING} level.
-     * @return Padding string
-     */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }

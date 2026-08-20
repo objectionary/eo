@@ -97,24 +97,11 @@ final class LnCompactTuple implements Line {
         new ChainEmission(emit, this.span, head, chain, suffix).run();
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     * @return The pushed/replaced level
-     */
     private Level transition(final Stack stack, final Suffix suffix) {
         return new Transition(stack, this.span)
             .apply(Kind.COMPACT_TUPLE, Openness.OPEN, new Admission(suffix.named(), suffix.test()));
     }
 
-    /**
-     * Read the {@code N} count after {@code *}. Defaults to 0 when
-     * absent.
-     * @param tokens Token reader (cursor just past the {@code *})
-     * @param span Source span, for a ParseError on overflow
-     * @return The N value
-     */
     private static int readCount(final Tokens tokens, final Span span) {
         long count = 0;
         boolean any = false;

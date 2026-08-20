@@ -118,11 +118,6 @@ public final class MjAtomsTable extends MjSafe {
         );
     }
 
-    /**
-     * Write the atoms table to the output CSV file.
-     * @param table Forma to return-type mappings, already sorted
-     * @throws IOException If write fails
-     */
     private void write(final Map<String, String> table) throws IOException {
         final Path target = this.atomsOutput.toPath();
         final Path parent = target.getParent();

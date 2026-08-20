@@ -29,7 +29,6 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  * @since 0.1
  */
-@SuppressWarnings("PMD.TooManyFields")
 abstract class MjSafe extends AbstractMojo {
 
     /**

@@ -52,12 +52,6 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
         );
     }
 
-    /**
-     * Returns whether a path matches a file pattern.
-     * @param item The path
-     * @param glob The file pattern
-     * @return True if the item matches the glob
-     */
     private static boolean matchesGlob(final Path item, final String glob) {
         try (Stream<Path> stream = Files.walk(item)) {
             return stream.anyMatch(
