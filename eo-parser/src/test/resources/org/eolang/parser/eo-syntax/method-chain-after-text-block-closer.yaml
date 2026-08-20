@@ -5,11 +5,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='∅' and @name='m']
-  - //o[@name='φ' and @base='ξ.ρ.b.put']/o[@as='α0' and @base='.lt']
+  - /object/o[@name='main']/o[@name='txt' and @base='.as-bytes']/o[@base='Φ.string' and o/o[text()='68-69']]
 input: |
-  [b] > obj
-    ^.b.put > [m] >>
-      lt.
-        3
-        1.1
+  [] > main
+    """
+    hi
+    """.as-bytes > txt
