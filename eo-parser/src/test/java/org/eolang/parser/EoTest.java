@@ -93,6 +93,30 @@ final class EoTest {
     }
 
     @Test
+    void keepsTopCommentWhenTheSealingLineFails() {
+        MatcherAssert.assertThat(
+            "a top comment block flushed by a line that then fails must survive that line's rollback",
+            EoTest.render("# top doc", "", "  [x] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[count(errors/error)=1]"
+            )
+        );
+    }
+
+    @Test
+    void keepsAcceptingCommentsAfterTheSealingLineFails() {
+        MatcherAssert.assertThat(
+            "a line failing after it sealed the header zone cannot turn the next comment line into an error",
+            EoTest.render("  [x] > foo", "# top doc", "", "[] > bar"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[count(errors/error)=1]"
+            )
+        );
+    }
+
+    @Test
     void reportsOddIndentError() {
         MatcherAssert.assertThat(
             "a line whose indent is an odd number of spaces must surface the odd-indent error",
