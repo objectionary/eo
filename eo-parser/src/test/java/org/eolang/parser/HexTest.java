@@ -60,24 +60,6 @@ final class HexTest {
     }
 
     @Test
-    void encodesAsciiStringAsBytes() {
-        MatcherAssert.assertThat(
-            "an ASCII string must encode as its UTF-8 byte sequence",
-            new Hex("ABC").asString(),
-            Matchers.equalTo("41-42-43")
-        );
-    }
-
-    @Test
-    void encodesUtfString() {
-        MatcherAssert.assertThat(
-            "a non-ASCII string must encode as its multi-byte UTF-8 sequence",
-            new Hex("ä").asString(),
-            Matchers.equalTo("C3-A4")
-        );
-    }
-
-    @Test
     void preservesByteArrayContent() {
         MatcherAssert.assertThat(
             "passing raw bytes must round-trip them unchanged",

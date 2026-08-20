@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(comments)]
+  - /object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]
+  - /object[count(o)=1]
+input: |
+  # top doc
+  [] > foo
+  [] > bar

@@ -189,7 +189,7 @@ final class Eo implements Iterable<Directive> {
             }
             body.append(trimmed);
             idx = idx + 1;
-            if (!trimmed.endsWith("-")) {
+            if (!Eo.isBytesContinuation(trimmed)) {
                 break;
             }
         }
@@ -338,9 +338,11 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean closesTextBlock(final Span span, final Globals globals) {
+        final String body = span.body();
         return !span.blank()
             && span.indent() == globals.textBlockOpenIndent()
-            && span.body().startsWith("\"\"\"");
+            && body.startsWith("\"\"\"")
+            && " .".indexOf(body.concat(" ").charAt(3)) >= 0;
     }
 
     private static Line classify(final Span span) {

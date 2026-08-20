@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 /**
  * Hex encoder for numeric and string literals.
@@ -14,12 +13,10 @@ import java.nio.charset.StandardCharsets;
  * parsed literal values into the {@code BB-BB-…} byte-string form the
  * XMIR pipeline expects inside {@code <o base='Φ.bytes'>} elements.</p>
  *
- * <p>Three constructions are supported:</p>
+ * <p>Two constructions are supported:</p>
  *
  * <ul>
  * <li>From a {@code double} — produces 8-byte IEEE-754 big-endian.</li>
- * <li>From a UTF-8 string — produces the variable-length UTF-8 byte
- * sequence.</li>
  * <li>From a raw byte array — direct encoding.</li>
  * </ul>
  *
@@ -38,15 +35,6 @@ final class Hex {
      */
     Hex(final double value) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(value).array());
-    }
-
-    /**
-     * Ctor from a UTF-8 string. Produces the variable-length UTF-8 byte
-     * sequence.
-     * @param text The text
-     */
-    Hex(final String text) {
-        this(text.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
