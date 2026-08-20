@@ -24,7 +24,7 @@
       if.
         size.eq 0
         "The delimiter must not be empty"
-        "Invalid limit %d for nsplit, must be at least 1".printf
+        "Invalid limit %f for nsplit, must be at least 1".printf
           * limit
     if.
       1.eq limit
@@ -78,6 +78,13 @@
         0
   text.as-bytes >> bts!
   ^ > text
+
+  eq. ++> can-format-the-error-message-of-a-fractional-limit
+    "Invalid limit 1.500000 for nsplit, must be at least 1"
+    "a-b-c".nsplit
+      "-"
+      1.5
+      I
 
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string
     "".nsplit
