@@ -146,12 +146,12 @@ final class Emit {
      *
      * <p>The body is the comment text with the leading {@code #} stripped
      * from each line. If the comment block spans multiple lines, they
-     * are joined by {@code \n}. The reported line number is the line of
-     * the <em>last</em> comment line in the block. Wraps absolute
-     * navigation in {@code push}/{@code pop}.</p>
+     * are joined by {@code \n}. The reported line number is the caller's
+     * choice of target line. Wraps absolute navigation in
+     * {@code push}/{@code pop}.</p>
      *
      * @param spans Comment line spans, in source order
-     * @param target Line of the last comment span in the block
+     * @param target Line to report for the flushed comment
      */
     void comment(final List<Span> spans, final int target) {
         if (spans.isEmpty()) {
