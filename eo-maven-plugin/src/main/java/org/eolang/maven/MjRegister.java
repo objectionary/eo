@@ -74,6 +74,13 @@ public final class MjRegister extends MjSafe {
     )
     private boolean strictFileNames;
 
+    /**
+     * Ctor.
+     */
+    public MjRegister() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         if (this.sourcesDir == null) {
