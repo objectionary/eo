@@ -48,7 +48,7 @@ final class MjRegisterTest {
             "The resource with incorrect id must exist, but it doesn't",
             new FakeMaven(temp)
                 .with("sourcesDir", temp.resolve("src/eo").toFile())
-                .with("strictFileNames", false)
+                .with("strict", false)
                 .execute(new PpRegister()).foreign().getById("org.eolang.maven..abc")
                 .exists("id"),
             Matchers.is(true)

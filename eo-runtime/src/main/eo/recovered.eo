@@ -21,6 +21,20 @@
       7
     7
 
+  eq. ++> can-fall-back-when-a-step-of-a-sequence-terminates
+    recovered
+      seq *
+        2.as-i64.div 0.as-i64
+        true
+      7
+    7
+
+  ++> can-fall-back-when-forcing-a-cached-value-terminates
+    eq. > @
+      recovered cached 7
+      7
+    2.as-i64.div 0.as-i64 > cached!
+
   eq. ++> can-keep-the-value-when-not-terminated
     recovered
       42

@@ -41,8 +41,8 @@ final class MjAtomsTableTest {
             temp.resolve("xmir/foo/thing.xmir")
         ).value();
         new FakeMaven(temp)
-            .with("atomsInputDir", temp.resolve("xmir").toFile())
-            .with("atomsOutput", temp.resolve("classes/org/eolang/atoms.csv").toFile())
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
             .execute(MjAtomsTable.class);
         MatcherAssert.assertThat(
             "Generated CSV must contain entries for every declared atom",
@@ -59,11 +59,11 @@ final class MjAtomsTableTest {
         final Path output = Path.of("mjatomstable-6447-test.csv");
         try {
             new FakeMaven(temp)
-                .with("atomsInputDir", temp.resolve("nothing").toFile())
-                .with("atomsOutput", output.toFile())
+                .with("sources", temp.resolve("nothing").toFile())
+                .with("csv", output.toFile())
                 .execute(MjAtomsTable.class);
             MatcherAssert.assertThat(
-                "A parentless atomsOutput must not throw and must produce the file",
+                "A parentless csv must not throw and must produce the file",
                 Files.exists(output),
                 Matchers.is(true)
             );
@@ -75,8 +75,8 @@ final class MjAtomsTableTest {
     @Test
     void writesEmptyTableWhenNoXmirSources(@Mktmp final Path temp) throws Exception {
         new FakeMaven(temp)
-            .with("atomsInputDir", temp.resolve("nothing").toFile())
-            .with("atomsOutput", temp.resolve("classes/org/eolang/atoms.csv").toFile())
+            .with("sources", temp.resolve("nothing").toFile())
+            .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
             .execute(MjAtomsTable.class);
         MatcherAssert.assertThat(
             "Output CSV should be empty when there are no XMIR sources",
