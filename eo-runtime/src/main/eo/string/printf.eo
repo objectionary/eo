@@ -32,11 +32,12 @@
 # language caches through `!` alone, and they are listed alphabetically
 # rather than in reading order, because the linter sorts them by name.
 #
-# The `%s` conversion refuses an argument whose bytes are not text: a byte
-# sequence that does not decode as UTF-8, and the single bytes `00-` and `01-`,
-# which are how `false` and `true` dataize, together with the two control
-# characters that share that encoding, because an object knows its own bytes
-# here and not its type.
+# The `%s` conversion refuses an argument whose bytes do not decode as UTF-8.
+# `false` and `true` dataize to the single bytes `00-` and `01-`, which are
+# also the valid one-character encodings of U+0000 and U+0001, so an object
+# knows its own bytes here and not its type: a boolean routed through `%s`
+# is printed as that control character instead of being rejected, and `%b`
+# remains the conversion to reach for a boolean.
 #
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
@@ -181,21 +182,11 @@
             failure
           text
       |
-        if.
-          or.
-            01-.eq datum
-            00-.eq datum
-          T
-            "The argument %d of the %%s conversion is a bool, use the %%b conversion instead".printf
-              *
-                plus.
-                  number idx
-                  1
-          seq *
-            length.
-              string datum
-            capped
-              string datum
+        seq *
+          length.
+            string datum
+          capped
+            string datum
       if.
         64-.eq conv
         as-decimal.
@@ -404,6 +395,11 @@
     "%25x".printf
       * 42.as-bytes
 
+  eq. ++> can-format-a-boolean-as-a-control-character
+    "\u0001"
+    "%s".printf
+      * true
+
   eq. ++> can-format-a-computed-string
     "abcd"
     "%s".printf
@@ -430,6 +426,11 @@
     "%d".printf
       * -9007199254740992
 
+  eq. ++> can-format-a-null-control-character-as-a-string
+    "\u0000"
+    "%s".printf
+      * "\u0000"
+
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
     "Hello, %s! Bye, %1$s!".printf
@@ -447,6 +448,11 @@
     "3.14"
     "%.2f".printf
       * 3.1415
+
+  eq. ++> can-format-a-start-of-heading-control-character-as-a-string
+    "\u0001"
+    "%s".printf
+      * "\u0001"
 
   eq. ++> can-format-a-width-with-leading-spaces
     "   42"
@@ -551,10 +557,6 @@
     "-9223372036854775808"
     "%d".printf
       * -9.223372036854776e18
-
-  printf. --> stops-on-a-bool-as-a-string
-    "%s"
-    * true
 
   printf. --> stops-on-a-comma-flag-with-s
     "%,s"
