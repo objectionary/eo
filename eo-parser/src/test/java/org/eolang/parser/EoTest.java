@@ -773,9 +773,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "mixed bound and unbound args in the same group must surface R-6.6.2",
             EoTest.render("[] > main", "  foo a:x b > z"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]"
-            )
+            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]")
         );
     }
 
@@ -793,9 +791,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "a receiver carrying `:x` must surface R-6.6.3",
             EoTest.render("[] > main", "  if. cond:x then else > z"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]"
-            )
+            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]")
         );
     }
 
@@ -804,9 +800,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "the rule still applies to args after the receiver in a reversed dispatch",
             EoTest.render("[] > main", "  if. cond then:a else > z"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]"
-            )
+            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]")
         );
     }
 
@@ -824,9 +818,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "the binding may combine with `> name`, both attaching to the same <o>",
             EoTest.render("foo > main", "  bar:tag > out"),
-            XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@name='out' and @base='bar' and @as='tag']"
-            )
+            XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@name='out' and @base='bar' and @as='tag']")
         );
     }
 
@@ -844,9 +836,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "vertical args under a vapplication must follow R-6.6.2 — mixing bound and unbound is rejected",
             EoTest.render("[] > main", "  foo > app", "    a:x", "    b"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]"
-            )
+            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]")
         );
     }
 
@@ -864,9 +854,7 @@ final class EoTest {
         MatcherAssert.assertThat(
             "args of the last link of a same-indent method chain must follow R-6.6.2 too",
             EoTest.render("[] > main", "  foo > app", "  .bar", "  .baz", "    a", "    b:y"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]"
-            )
+            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]")
         );
     }
 
