@@ -46,10 +46,9 @@ public final class MjRegister extends MjSafe {
      * pretty global (or even a root one).
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
-     * @checkstyle MemberNameCheck (15 lines)
      */
-    @Parameter(defaultValue = "**.eo")
-    private Set<String> includeSources;
+    @Parameter(alias = "includeSources", defaultValue = "**.eo")
+    private Set<String> included;
 
     /**
      * List of exclusion GLOB filters for finding EO files
@@ -58,21 +57,20 @@ public final class MjRegister extends MjSafe {
      * @implNote {@code defaultValue} attribute is omitted, because an empty
      *  one is not rendered into the descriptor of the plugin by
      *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter
-    private Set<String> excludeSources;
+    @Parameter(alias = "excludeSources")
+    private Set<String> excluded;
 
     /**
      * Whether it should fail on file names not matching required pattern.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "strictFileNames",
         property = "eo.strictFileNames",
         required = true,
         defaultValue = "true"
     )
-    private boolean strictFileNames;
+    private boolean strict;
 
     /**
      * Ctor.
@@ -100,13 +98,13 @@ public final class MjRegister extends MjSafe {
                 "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
                 new Threaded<>(
                     new WkDefault(this.sourcesDir.toPath())
-                        .includes(this.includeSources)
+                        .includes(this.included)
                         .excludes(this.excludes()),
                     file -> this.register(file, unplace, tojos)
                 ).total(),
                 this.sourcesDir,
                 this.foreign,
-                this.includeSources,
+                this.included,
                 this.excludes()
             );
         }
@@ -114,10 +112,10 @@ public final class MjRegister extends MjSafe {
 
     private Set<String> excludes() {
         final Set<String> globs;
-        if (this.excludeSources == null) {
+        if (this.excluded == null) {
             globs = new SetOf<>();
         } else {
-            globs = this.excludeSources;
+            globs = this.excluded;
         }
         return globs;
     }
@@ -126,7 +124,7 @@ public final class MjRegister extends MjSafe {
         final Path file, final Unplace unplace, final TjsForeign tojos
     ) {
         if (
-            this.strictFileNames
+            this.strict
                 && !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()
         ) {
             throw new IllegalArgumentException(
