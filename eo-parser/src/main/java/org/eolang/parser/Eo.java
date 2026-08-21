@@ -523,8 +523,17 @@ final class Eo implements Iterable<Directive> {
 
     private static boolean compactTuple(final Span span) {
         final String body = span.body();
+        int depth = 0;
         int idx = 0;
-        while (idx < body.length() && body.charAt(idx) != ' ') {
+        while (idx < body.length() && (depth > 0 || body.charAt(idx) != ' ')) {
+            final char glyph = body.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            }
             idx = idx + 1;
         }
         boolean compact = false;
