@@ -65,6 +65,9 @@ final class Emissions {
         if (Emissions.reversedDispatch(tokens, head)) {
             tokens.seek(tokens.cursor() + 1);
             final List<Value> rargs = tokens.readArgs();
+            if (!rargs.isEmpty()) {
+                Bindings.checkReceiver(rargs.get(0), new Span(tokens.body(), line));
+            }
             emit.object(name, ".".concat(head.raw()), line, head.pos());
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
