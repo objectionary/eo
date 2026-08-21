@@ -25,7 +25,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "bar", 0),
             Collections.emptyList(),
             new Suffix("> foo", new Span("bar > foo", 1), 4)
         ).run();
