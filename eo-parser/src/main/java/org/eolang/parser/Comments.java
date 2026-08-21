@@ -38,10 +38,10 @@ final class Comments {
      * <p>A non-empty top comment block must be separated from the rest
      * of the file by exactly one blank line (§6.5). If the sealing meta
      * or object follows the block with no blank in between
-     * ({@link Globals#pendingBlanks()} is zero), the block is discarded
-     * and the header zone closes before the error is thrown, so neither
-     * the block nor the error can resurface at the next meta or
-     * object.</p>
+     * ({@link Globals#pendingBlanks()} is zero), the block goes through
+     * {@link Globals#dropComments()} before the error is thrown, so
+     * neither the block nor the error resurfaces at the next meta or
+     * object, the per-line rollback notwithstanding.</p>
      *
      * @param globals Global parser state
      * @param emit XMIR emitter
@@ -53,8 +53,7 @@ final class Comments {
         }
         final List<Span> pending = globals.pendingComments();
         if (!pending.isEmpty() && globals.pendingBlanks() == 0) {
-            globals.clearComments();
-            globals.seal();
+            globals.dropComments();
             throw new ParseError(
                 span.line(), span.indent(),
                 "a blank line must separate the top comment block from the rest of the file"

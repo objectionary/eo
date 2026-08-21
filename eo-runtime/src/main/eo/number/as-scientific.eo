@@ -45,7 +45,7 @@
         number exponent
     6
   ^ > n
-  carried.if > normalized!
+  carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
   if. > [m count] >> rec-exponent
