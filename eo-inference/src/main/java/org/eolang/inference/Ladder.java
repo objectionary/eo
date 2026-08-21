@@ -11,10 +11,23 @@ import java.util.Map;
  * How much of a program was understood.
  *
  * <p>The objects of the program counted by the rung they stand on, from the
- * shallowest up, and the two numbers that summarise them. A number without the
- * rungs beside it would be a number to game: writing an empty row for every
- * object would take {@link Ladder#described()} to a hundred and leave
- * {@link Ladder#percent()} where it was.</p>
+ * shallowest up, and the numbers that summarise them. Three of those are
+ * shares of the whole and answer the question anyone actually asks: of every
+ * object in the program, how many do we know the formation of, how many can
+ * only be described by pointing at somebody else's void, and how many are we
+ * silent about. They are {@link Ladder#named()}, {@link Ladder#rooted()} and
+ * {@link Ladder#blank()}, and the three add up to a hundred.</p>
+ *
+ * <p>{@link Ladder#percent()} is a fourth and a different kind of number: the
+ * mean rung, which is an average of an ordinal scale and so means nothing on
+ * its own. It is kept because it moves when a rule gets sharper without moving
+ * an object across a band, and it is kept behind the three, never in front of
+ * them.</p>
+ *
+ * <p>None of them may be read without the rungs beside it, since a share is a
+ * number to game. Writing a row saying nothing about every object would leave
+ * every one of these where it was, which is the point of counting the rungs
+ * apart in the first place.</p>
  *
  * @since 0.69.0
  */
@@ -50,17 +63,39 @@ public final class Ladder {
     }
 
     /**
-     * How many of them we know anything at all about.
+     * How many of them we know the formation of.
+     *
+     * <p>This is coverage. An object stands here when the answer to what it
+     * was copied from is a formation of the program, whatever is still free
+     * inside it, and a datum and a termination stand here too, being answers
+     * that leave nothing to ask.</p>
+     *
      * @return The share, out of a hundred
      */
-    public double described() {
-        final double result;
-        if (this.counts.isEmpty()) {
-            result = 0.0d;
-        } else {
-            result = this.share(this.total() - this.counts.values().iterator().next());
-        }
-        return result;
+    public double named() {
+        return this.share(this.total() - this.upto(2));
+    }
+
+    /**
+     * How many of them we can only describe through somebody else's void.
+     *
+     * <p>{@code Φ.inc.x.next} is the {@code next} of whatever fills {@code x},
+     * which is true of every caller and names no formation, so it is not
+     * coverage. It is not nothing either, and counting it as either would be a
+     * lie in one direction or the other.</p>
+     *
+     * @return The share, out of a hundred
+     */
+    public double rooted() {
+        return this.share(this.upto(2) - this.upto(1));
+    }
+
+    /**
+     * How many of them we say nothing about.
+     * @return The share, out of a hundred
+     */
+    public double blank() {
+        return this.share(this.upto(1));
     }
 
     /**
@@ -79,6 +114,18 @@ public final class Ladder {
             rung = rung + 1;
         }
         return this.share(climbed) / (rung - 1);
+    }
+
+    private int upto(final int rungs) {
+        int found = 0;
+        int rung = 0;
+        for (final Integer count : this.counts.values()) {
+            if (rung < rungs) {
+                found = found + count;
+            }
+            rung = rung + 1;
+        }
+        return found;
     }
 
     private double share(final int some) {
