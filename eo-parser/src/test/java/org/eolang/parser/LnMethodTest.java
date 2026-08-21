@@ -78,9 +78,9 @@ final class LnMethodTest {
         new LnMethod(new Span(".bar 42", 2))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a .method continuation with horizontal args must promote the kind to VMETHOD_WITH_HARGS",
+            "a .method continuation with horizontal args must promote the kind to VMETHOD_HARGS",
             stack.top().kind(),
-            Matchers.equalTo(Kind.VMETHOD_WITH_HARGS)
+            Matchers.equalTo(Kind.VMETHOD_HARGS)
         );
     }
 
@@ -92,16 +92,16 @@ final class LnMethodTest {
         new LnMethod(new Span(".bar 42", 2))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "VMETHOD_WITH_HARGS must be HORIZONTAL_COMPLETED so no further extension is allowed",
+            "VMETHOD_HARGS must be HCOMPLETED so no further extension is allowed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
     @Test
     void emitsFlatSiblingForLink() {
         final Emit emit = new Emit();
-        final Stack stack = new Stack();
+        final Stack stack = new Stack((level, naming) -> emit.close());
         new LnApplication(new Span("foo", 1))
             .into(stack, new Globals(), emit);
         new LnMethod(new Span(".bar > x", 2))
@@ -153,7 +153,7 @@ final class LnMethodTest {
     @Test
     void emitsHargsAsChildrenOfLastLink() {
         final Emit emit = new Emit();
-        final Stack stack = new Stack();
+        final Stack stack = new Stack((level, naming) -> emit.close());
         new LnApplication(new Span("foo", 1))
             .into(stack, new Globals(), emit);
         new LnMethod(new Span(".bar 42 > x", 2))
@@ -198,11 +198,6 @@ final class LnMethodTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

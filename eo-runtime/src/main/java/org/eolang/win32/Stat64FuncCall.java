@@ -4,9 +4,7 @@
  */
 package org.eolang.win32;
 
-import com.sun.jna.Structure;
-import java.util.Arrays;
-import java.util.List;
+import com.sun.jna.WString;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -39,11 +37,11 @@ public final class Stat64FuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final Stat64FuncCall.WinStat info = new Stat64FuncCall.WinStat();
+        final WinStat info = new WinStat();
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE._stat64(new Dataized(params[0]).asString(), info)
+                Msvcrt.INSTANCE._wstat64(new WString(new Dataized(params[0]).asString()), info)
             )
         );
         final Phi struct = this.win.take("stat64");
@@ -51,79 +49,5 @@ public final class Stat64FuncCall implements Syscall {
         struct.put(1, new Data.ToPhi(info.bytes));
         result.put(1, struct);
         return result;
-    }
-
-    /**
-     * The {@code struct _stat64} of the Microsoft C runtime.
-     * @since 0.74.0
-     * @checkstyle VisibilityModifierCheck (60 lines)
-     */
-    public static final class WinStat extends Structure {
-
-        /**
-         * Device id.
-         */
-        public int dev;
-
-        /**
-         * Inode number.
-         */
-        public short ino;
-
-        /**
-         * Mode bits.
-         */
-        public short mode;
-
-        /**
-         * Hard link count.
-         */
-        public short nlink;
-
-        /**
-         * Owner id.
-         */
-        public short uid;
-
-        /**
-         * Group id.
-         */
-        public short gid;
-
-        /**
-         * Padding before the following device id.
-         */
-        public short padding;
-
-        /**
-         * Device id for special files.
-         */
-        public int rdev;
-
-        /**
-         * Size in bytes.
-         */
-        public long bytes;
-
-        /**
-         * Access, modification and change 64-bit timestamps EO does not read.
-         */
-        public byte[] times;
-
-        /**
-         * Ctor.
-         */
-        public WinStat() {
-            super();
-            this.times = new byte[24];
-        }
-
-        @Override
-        public List<String> getFieldOrder() {
-            return Arrays.asList(
-                "dev", "ino", "mode", "nlink", "uid",
-                "gid", "padding", "rdev", "bytes", "times"
-            );
-        }
     }
 }

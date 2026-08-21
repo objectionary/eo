@@ -7,6 +7,7 @@ package org.eolang.printer;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Together;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
@@ -32,6 +33,7 @@ import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -74,6 +76,45 @@ final class XmirTest {
                 Matchers.not(Matchers.containsString("xmlns:eo=")),
                 Matchers.not(Matchers.containsString("xmlns:xs="))
             )
+        );
+    }
+
+    @Test
+    void keepsArgumentsOfAnIdentityShapedFormation() {
+        MatcherAssert.assertThat(
+            "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/to-eo-tree.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas/><o name='y'>",
+                        "<o base='∅' name='m'/><o base='ξ.m' name='φ'/>",
+                        "<o base='Φ.number'>5</o>",
+                        "</o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("//line[@base='[m]']")
+        );
+    }
+
+    @RepeatedTest(3)
+    void printsSameEoInManyThreads() {
+        final XML xml = new XMLDocument(
+            String.join(
+                "",
+                "<object><metas/><o name='foo'>",
+                "<o name='a🌵1'><o base='Φ.number' name='@'>42</o></o>",
+                "<o base='ξ.a🌵1' name='bar'/>",
+                "</o></object>"
+            )
+        );
+        MatcherAssert.assertThat(
+            "Printing in parallel threads cannot diverge from printing in one",
+            new Together<>(thread -> new Xmir(xml).toEO()),
+            Matchers.everyItem(Matchers.equalTo(new Xmir(xml).toEO()))
         );
     }
 
@@ -226,12 +267,6 @@ final class XmirTest {
         );
     }
 
-    /**
-     * Convert EO to XMIR.
-     * @param program Program in EOLANG
-     * @param config The penalty weights to print with
-     * @return XMIR
-     */
     private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)
         throws IOException {
         final XML xml = new EoSyntax(new InputOf(program)).parsed();
@@ -243,17 +278,6 @@ final class XmirTest {
         return new Xmir(xml, config);
     }
 
-    /**
-     * Read the penalty weights from a story's {@code penalties} block.
-     *
-     * <p>Every print-pack pins the full set of {@link PenaltyKey} weights, so
-     * the expected layout is deterministic and does not depend on the defaults
-     * baked into the printer. The block is a plain mapping of key name to
-     * integer.</p>
-     *
-     * @param xtory The story
-     * @return The weights, by key
-     */
     private Map<PenaltyKey, Integer> weights(final Xtory xtory) {
         final Object block = xtory.map().get("penalties");
         MatcherAssert.assertThat(

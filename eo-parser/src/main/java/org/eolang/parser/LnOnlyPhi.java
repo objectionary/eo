@@ -32,14 +32,14 @@ import java.util.List;
  * {@code >>}).</li>
  * </ul>
  *
- * <p>Outer kind: {@link Kind#ONLY_PHI_FORMATION}. Openness depends on
+ * <p>Outer kind: {@link Kind#ONLY_PHI}. Openness depends on
  * the φ (the LHS): with zero horizontal args the φ is
  * {@link Openness#OPEN}, so deeper-indent lines attach to it as
  * vertical application arguments (§4.5) — {@code foo > [x] > bar} with
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
- * and the line is {@link Openness#HORIZONTAL_COMPLETED} — no body is
- * accepted. An only-phi argument may not carry a name suffix (the
+ * and the line is {@link Openness#HCOMPLETED} — no body is accepted.
+ * An only-phi argument may not carry a name suffix (the
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
  *
@@ -75,7 +75,7 @@ final class LnOnlyPhi implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.enterAfterMeta(this.span, globals, emit);
+        final int blanks = Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final int phi = Eo.topLevelGreaterBracketIndex(body);
         final String lhs;
@@ -121,7 +121,7 @@ final class LnOnlyPhi implements Line {
             );
         }
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, blanks, emit);
         }
         Comments.seal(globals, emit, this.span);
         final Tokens tokens = this.slot(
@@ -144,16 +144,6 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
-    /**
-     * Parse the LHS into the φ token reader and push the formation
-     * level, detecting a trailing compact-tuple marker {@code *N}
-     * (R-3.9.1 + R-3.10.6) that keeps the φ {@link Openness#OPEN} and
-     * flags the level {@link Level#star()} for tuple elements.
-     * @param stack The stack
-     * @param suffix Right-hand-side suffix
-     * @param inner The LHS as an indent-aligned span
-     * @return The φ token reader rewound to the head
-     */
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
@@ -168,13 +158,6 @@ final class LnOnlyPhi implements Line {
         return tokens;
     }
 
-    /**
-     * The top-level index of the compact test shorthand on an inline-phi
-     * line — the truthy {@code ++>} or, failing that, the throwing
-     * {@code -->} marker — or -1 when neither is present.
-     * @param body The line body
-     * @return Index of the shorthand marker, or -1
-     */
     private static int shorthandArrow(final String body) {
         int idx = Eo.topLevelPlusPlusArrowIndex(body);
         if (idx < 0) {
@@ -183,20 +166,14 @@ final class LnOnlyPhi implements Line {
         return idx;
     }
 
-    /**
-     * Emit the only-phi void parameters as empty-set-based children,
-     * mapping {@code @} to {@code φ} (R-3.4.2 / R-9.3) and advancing the
-     * source column across each name and its separating space.
-     * @param emit Emitter
-     * @param params Parameter names in source order
-     * @param origin Source column of the first parameter
-     */
     private void emitVoids(final Emit emit, final List<String> params, final int origin) {
         int column = this.span.indent() + origin;
         for (final String param : params) {
             final String mapped;
             if ("@".equals(param)) {
                 mapped = "φ";
+            } else if ("^".equals(param)) {
+                mapped = "ρ";
             } else {
                 mapped = param;
             }
@@ -205,18 +182,6 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    /**
-     * Emit the LHS as the formation's {@code φ} slot via
-     * {@link Emissions#expression} — which handles a head + chain, or a
-     * reversed dispatch ({@code if.}), leaving the outermost {@code <o>}
-     * open. When {@code open} that φ stays on the cursor so deeper-indent
-     * lines attach to it as vertical arguments (the {@link Stack.Closer}
-     * closes it and the formation); otherwise its horizontal args are
-     * complete and it is closed here.
-     * @param emit Emitter
-     * @param tokens Token reader rewound to the LHS head
-     * @param open Whether the φ stays open for vertical arguments
-     */
     private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
         Emissions.expression(emit, "φ", tokens, this.span.line());
         if (!open) {
@@ -224,18 +189,6 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    /**
-     * Whether the only-phi LHS carries no horizontal args, so its φ
-     * stays {@link Openness#OPEN} for deeper-indent vertical arguments
-     * (§4.5); otherwise the φ is a full application and the formation is
-     * {@link Openness#HORIZONTAL_COMPLETED}. The LHS may be a reversed
-     * dispatch ({@code if. > [t] >> rec}), whose trailing dot is skipped
-     * exactly as {@link Emissions#expression} does so both agree on the
-     * arg boundary. Consumes the token stream; callers rewind before
-     * emitting.
-     * @param tokens Token reader positioned at the LHS head
-     * @return True if the φ has no horizontal args
-     */
     private static boolean bare(final Tokens tokens) {
         if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
             tokens.seek(tokens.cursor() + 1);
@@ -245,15 +198,6 @@ final class LnOnlyPhi implements Line {
         return tokens.readArgs().isEmpty();
     }
 
-    /**
-     * Whether the cursor sits at a reversed-dispatch dot after the head
-     * — an identifier head immediately followed by a {@code .} that ends
-     * the body or precedes a space (§3.8). Mirrors
-     * {@link Emissions#expression} so the arg boundary agrees.
-     * @param tokens Token reader positioned after the head
-     * @param head The just-read head value
-     * @return True when a reversed-dispatch dot follows the head
-     */
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
         final boolean result;
         if (head.kind() == Value.Kind.IDENTIFIER
@@ -267,36 +211,18 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2. A bare
-     * (zero-hargs) φ opens the level for vertical arguments; a φ that
-     * already carries horizontal args is horizontally completed.
-     * @param stack The stack
-     * @param suffix Right-hand-side suffix
-     * @param open Whether the φ has no horizontal args
-     * @return The pushed-or-replaced level
-     */
     private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
         final Openness openness;
         if (open) {
             openness = Openness.OPEN;
         } else {
-            openness = Openness.HORIZONTAL_COMPLETED;
+            openness = Openness.HCOMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI_FORMATION, openness, suffix.named()
+            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test())
         );
     }
 
-    /**
-     * The {@code N} of a trailing compact-tuple marker {@code *N} on the
-     * inline-phi LHS ({@code head *N}, R-3.9.1 + R-3.10.6), or -1 when
-     * the LHS is not a compact-tuple head — its head must be a single
-     * space-free token that is not a reversed dispatch (no trailing dot).
-     * @param lhs The LHS body
-     * @param span Source span, for a ParseError on overflow
-     * @return The N count, or -1 when not a compact-tuple head
-     */
     private static int compactStar(final String lhs, final Span span) {
         final int space = lhs.indexOf(' ');
         final int result;
@@ -309,14 +235,6 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
-    /**
-     * The φ token reader: the whole LHS when {@code stars} is -1, or the
-     * head with the trailing {@code *N} marker stripped (up to the first
-     * space) when a compact tuple was detected.
-     * @param inner The LHS as an indent-aligned span
-     * @param stars The compact-tuple N, or -1
-     * @return A fresh token reader over the φ head
-     */
     private static Tokens reader(final Span inner, final int stars) {
         final String lhs = inner.body();
         final String head;
@@ -331,20 +249,6 @@ final class LnOnlyPhi implements Line {
         return new Tokens(span.body(), span);
     }
 
-    /**
-     * The non-negative integer {@code N} spelled from {@code from} to the
-     * end of {@code lhs} (0 when empty, R-3.9.1), or -1 when any character
-     * is not a digit (which also rejects trailing horizontal arguments).
-     * The digits accumulate in a {@code long} and a {@link ParseError} is
-     * thrown the moment {@code N} would exceed {@link Integer#MAX_VALUE},
-     * pointing at the digit run - mirroring {@code LnCompactTuple.readCount}
-     * for the sibling {@code *N} marker, so the count can never silently
-     * wrap and collide with the {@code -1} "not-a-digit" sentinel.
-     * @param lhs The LHS body
-     * @param from Index of the first character after {@code *}
-     * @param span Source span, for a ParseError on overflow
-     * @return The N count, or -1 when the tail is not all digits
-     */
     private static int starCount(final String lhs, final int from, final Span span) {
         long count = 0;
         boolean digits = true;
@@ -371,13 +275,6 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
-    /**
-     * Parse the only-phi parameter list.
-     * @param text The text between brackets
-     * @param span Source span (for error)
-     * @param origin Column of the first char after {@code [}
-     * @return Parameter names
-     */
     private static List<String> parseParams(
         final String text, final Span span, final int origin
     ) {

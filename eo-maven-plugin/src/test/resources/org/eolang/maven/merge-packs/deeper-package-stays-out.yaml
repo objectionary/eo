@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A member belongs to the package right above it and to no other. `Φ.number.i64`
+# is a package of its own, so `plus` goes into `i64` and not into `number`,
+# where it would arrive under a name that says nothing about where it came
+# from and would clash with the `plus` of any other nested package.
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+  number/i64.eo: |
+    +package number
+
+    [as-bytes] > i64
+      as-bytes > @
+  number/i64/plus.eo: |
+    +package number.i64
+
+    [left right] > plus
+      left > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='i64']"
+    - "/object/o[@name='number'][not(o[@name='plus'])]"
+    - "/object/o[@name='number']/o[@name='i64']/o[@name='plus']"
+  number/i64.eo:
+    - "/object/o[@name='i64']/o[@name='plus']"

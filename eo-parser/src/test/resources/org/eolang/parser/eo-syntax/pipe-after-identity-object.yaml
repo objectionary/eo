@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The `I` glyph (#6834) names a formation, so a pipe may apply arguments to
+# it (R-3.14.2), exactly as it does to the `[x] > foo` the glyph stands for.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='foo' and not(@base)][o[@base='∅' and @name='x']][o[@name='φ' and @base='ξ.x']]
+  - //o[@name='foo5' and @base='ξ.foo']/o[@base='Φ.number']
+input: |
+  [] > app
+    I > foo
+    | 5 > foo5

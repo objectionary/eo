@@ -16,16 +16,6 @@ import org.junit.jupiter.api.Test;
 final class TokensTest {
 
     @Test
-    void readsIdentifierAndAdvancesCursor() {
-        final Tokens tokens = new Tokens("foo", new Span("foo", 1));
-        MatcherAssert.assertThat(
-            "readName must return the parsed identifier and leave the cursor at end()",
-            tokens.readName().end(),
-            Matchers.equalTo(tokens.cursor())
-        );
-    }
-
-    @Test
     void readsIdentifierWithHyphen() {
         MatcherAssert.assertThat(
             "an identifier with a hyphen must be read as one NAME token per §2.3",
@@ -161,6 +151,59 @@ final class TokensTest {
             "after reading a BYTES arg, its `.method` tail must not be left dangling",
             tokens.tail(),
             Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void readsChainOnHorizontalHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus", new Span("foo 0xFF.plus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg of the form `head.m1` must carry its chain — 1 link here",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void consumesEntireChainOnHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus", new Span("foo 0xFF.plus", 1)
+        );
+        tokens.readName();
+        tokens.readArgs();
+        MatcherAssert.assertThat(
+            "after reading a HEX arg, its `.method` tail must not be left dangling",
+            tokens.tail(),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void readsMultiLinkChainOnHorizontalHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xFF.plus.minus", new Span("foo 0xFF.plus.minus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg of the form `head.m1.m2` must carry its full chain — 2 links here",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    void readsChainOnUppercaseDigitHexArg() {
+        final Tokens tokens = new Tokens(
+            "foo 0xAB.plus", new Span("foo 0xAB.plus", 1)
+        );
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "a HEX arg with uppercase digits must carry its chain just like a lowercase one",
+            tokens.readArgs().get(0).chain(),
+            Matchers.hasSize(1)
         );
     }
 
@@ -356,6 +399,15 @@ final class TokensTest {
             "`CA-FE-BE-BE` must read as a multi-byte BYTES literal",
             new Tokens("CA-FE-BE-BE", new Span("CA-FE-BE-BE", 1)).readBytes().raw(),
             Matchers.equalTo("CA-FE-BE-BE")
+        );
+    }
+
+    @Test
+    void rejectsMultiByteBytesWithADanglingDash() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("00-11-22-33-", new Span("00-11-22-33-", 1)).readBytes(),
+            "readBytes must reject a multi-byte literal ending in a dangling dash per R-3.13.1"
         );
     }
 

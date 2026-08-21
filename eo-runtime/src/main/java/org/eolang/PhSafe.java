@@ -17,8 +17,15 @@ import java.util.function.Supplier;
  * a safe processing of any runtime errors in the EO code. If, in any
  * method invocation, a runtime error occurs, it is caught and wrapped
  * into an {@link ExFailure} carrying the location of the error in the
- * EO code. Nothing intercepts an {@link ExFailure}, so the failure
- * keeps propagating until it terminates the program.</p>
+ * EO code. Only {@link EOrecovered} intercepts an {@link ExFailure}, so
+ * the failure keeps propagating until it either reaches a recovery or
+ * terminates the program.</p>
+ *
+ * <p>An {@link ExInterrupted} is the one exception to this: it passes
+ * through untouched, keeping its own type. It is not an EO-level
+ * termination the program may recover from, but a signal that this thread
+ * must stop, and wrapping it into an {@link ExFailure} would let the
+ * nearest {@link EOrecovered} intercept it.</p>
  *
  * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
  * Here we catch by hand, because {@code eo-runtime} ships with no
@@ -128,12 +135,12 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.through(() -> this.origin.put(pos, object));
+        this.act(() -> this.origin.put(pos, object));
     }
 
     @Override
     public void put(final String nme, final Phi object) {
-        this.through(() -> this.origin.put(nme, object));
+        this.act(() -> this.origin.put(nme, object));
     }
 
     @Override
@@ -166,11 +173,7 @@ public final class PhSafe implements Phi, Atom {
         return this.through(this.origin::φTerm);
     }
 
-    /**
-     * Helper, for other methods.
-     * @param action The action
-     */
-    private void through(final Runnable action) {
+    private void act(final Runnable action) {
         this.through(
             () -> {
                 action.run();
@@ -180,34 +183,17 @@ public final class PhSafe implements Phi, Atom {
         );
     }
 
-    /**
-     * Helper, for other methods.
-     * @param action The action
-     * @param <T> Type of result
-     * @return Result
-     */
-    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private <T> T through(final Supplier<T> action) {
         return this.through(action, "");
     }
 
-    /**
-     * Helper, for other methods.
-     *
-     * <p>No matter what happens inside the {@code action}, only
-     * an instance of {@link ExFailure} may be thrown out of this
-     * method, carrying this layer's location and the original cause.</p>
-     *
-     * @param action The action
-     * @param suffix The suffix to add to the label
-     * @param <T> Type of result
-     * @return Result
-     * @checkstyle IllegalCatchCheck (20 lines)
-     */
+    // @checkstyle IllegalCatchCheck (20 lines)
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
+        } catch (final ExInterrupted ex) {
+            throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format("%s; %s", this.label(suffix), PhSafe.message(ex)),
@@ -216,20 +202,10 @@ public final class PhSafe implements Phi, Atom {
         }
     }
 
-    /**
-     * Exception message safe for EO dataization.
-     * @param exp The exception
-     * @return Message
-     */
     private static String message(final Throwable exp) {
         return Objects.toString(exp.getMessage(), exp.getClass().getName());
     }
 
-    /**
-     * The label of the exception.
-     * @param suffix The suffix to add to the label
-     * @return Label
-     */
     private String label(final String suffix) {
         return String.format(
             "Error in \"%s%s\" at %s:%d:%d",

@@ -27,8 +27,8 @@ final class EOmallocEOofTest {
         ).take();
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should throw an exception on attempt to reach already freed memory, but it didn't"
         );
     }
 
@@ -47,8 +47,8 @@ final class EOmallocEOofTest {
         );
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should throw an exception on attempting to reach already freed memory after failure, but it didn't"
         );
     }
 
@@ -90,12 +90,6 @@ final class EOmallocEOofTest {
         );
     }
 
-    /**
-     * Allocated data.
-     * @param obj Init object
-     * @param dummy Dummy as scope
-     * @return Malloc object
-     */
     private static Phi allocated(final Phi obj, final Phi dummy) {
         final Phi malloc = Phi.Φ.take("malloc").take("for").copy();
         malloc.put(0, obj);

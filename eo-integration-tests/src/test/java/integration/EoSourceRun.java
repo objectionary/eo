@@ -11,6 +11,13 @@ import org.cactoos.Proc;
 
 /**
  * Execution of EO source.
+ *
+ * <p>The sandbox compiles the {@code .eo} sources of the eo-runtime from
+ * scratch, so it runs the merge the runtime's own build runs. A member that
+ * reaches its receiver through {@code ^} has no rho until the merge gives it
+ * one, and unmerged it is applied to the receiver through the first void it
+ * does not have any more, which shifts every argument by one.</p>
+ *
  * @since 0.56.3
  */
 final class EoSourceRun implements Proc<Object> {
@@ -42,7 +49,7 @@ final class EoSourceRun implements Proc<Object> {
             .appended()
             .execution("compile")
             .phase("generate-sources")
-            .goals("register", "compile", "transpile")
+            .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("failOnWarning", "false")
             .set("offline", "true")

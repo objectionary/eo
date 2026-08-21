@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What `half` does is written in Java, which this module cannot read, but what
+# it comes back with is written right here, as `/Q.number`. That is a fact
+# about the type like any other, so the table keeps it.
+eo:
+  half.eo: |
+    [] > half /Q.number
+      ? > x
+provides:
+  - "/provides/type[@id='Φ.half' and @returns='Φ.number']"

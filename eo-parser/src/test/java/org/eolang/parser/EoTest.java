@@ -83,10 +83,11 @@ final class EoTest {
     @Test
     void rejectsTopCommentWithoutBlankBelow() {
         MatcherAssert.assertThat(
-            "a top comment block not separated from the object by a blank line cannot be accepted",
+            "a top comment block not separated from the object by a blank line cannot be accepted, must not linger in the xmir, and must be reported once",
             EoTest.render("# top doc", "[] > foo"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')]"
+            XhtmlMatchers.hasXPaths(
+                "/object[not(comments)]",
+                "/object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]"
             )
         );
     }
@@ -110,6 +111,15 @@ final class EoTest {
             XhtmlMatchers.hasXPath(
                 "/object/errors/error[contains(text(),'tab character in leading whitespace')]"
             )
+        );
+    }
+
+    @Test
+    void acceptsAWhitespaceOnlyBlankLine() {
+        MatcherAssert.assertThat(
+            "a whitespace-only blank line must not be reported as trailing whitespace",
+            EoTest.render("[] > foo", "  ", "[] > qux"),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
     }
 
@@ -173,6 +183,15 @@ final class EoTest {
                 "    one > first"
             ),
             XhtmlMatchers.hasXPath("/object/errors[count(error)=1]")
+        );
+    }
+
+    @Test
+    void parsesSiblingAfterTabOnlyLineInFailedBlock() {
+        MatcherAssert.assertThat(
+            "a tab-only line inside the block of a failed line must not swallow the next sibling",
+            EoTest.render("[] > foo", "  ???", "\t", "  d > y"),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[@name='y']")
         );
     }
 
@@ -387,6 +406,28 @@ final class EoTest {
             "a bare T term inside a formation must emit the bottom object as @base='⊥'",
             EoTest.render("[] > main", "  T > x"),
             XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@name='x' and @base='⊥']")
+        );
+    }
+
+    @Test
+    void parsesIdentityObjectInsideFormation() {
+        MatcherAssert.assertThat(
+            "a bare I glyph inside a formation must expand into a formation binding one void and decorating it",
+            EoTest.render("[] > main", "  I > x"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@name='x' and not(@base)][o[@base='∅' and @name='x']][o[@name='φ' and @base='x']]"
+            )
+        );
+    }
+
+    @Test
+    void parsesIdentityObjectAsHorizontalArgument() {
+        MatcherAssert.assertThat(
+            "an I glyph in argument position must expand into the same formation the spelled-out x > [x] emits",
+            EoTest.render("[] > main", "  foo I > x"),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='main']/o[@name='x']/o[not(@base)][o[@base='∅' and @name='x']][o[@name='φ' and @base='x']]"
+            )
         );
     }
 
@@ -935,14 +976,6 @@ final class EoTest {
         );
     }
 
-    /**
-     * Run the EO source through the walker and render the XMIR under a
-     * fresh {@code <object/>} root. The supplied rows are joined with
-     * a literal newline (no platform-dependent separator) and a
-     * trailing newline is appended — matching what the parser expects.
-     * @param rows The EO program lines (no terminators)
-     * @return Rendered XMIR
-     */
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {

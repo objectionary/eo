@@ -22,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration tests for eo-maven-plugin:transpile goal.
  * @since 0.52
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleNotContainsTestWord"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjTranspileIT {
 
@@ -71,6 +71,40 @@ final class MjTranspileIT {
                     Matchers.is(true)
                 );
             }
+        );
+    }
+
+    /**
+     * The plugin must keep understanding the old name of the tracking option.
+     *
+     * <p>Caching is off on purpose: a cache hit returns the Java without
+     * running the XSL train, and it is the train that leaves the tracked
+     * XMIRs behind. The machine-wide cache is shared with the other tests
+     * of this class, which transpile the very same source.</p>
+     *
+     * @param temp Temporary directory
+     * @throws Exception If fails
+     */
+    @Test
+    void acceptsOldNameOfTrackingOption(@Mktmp final Path temp) throws Exception {
+        new Farea(temp).together(
+            f -> {
+                f.clean();
+                f.files().file("src/main/eo/foo.eo").write(
+                    MjTranspileIT.simpleApp().getBytes(StandardCharsets.UTF_8)
+                );
+                new AppendedPlugin(f).value()
+                    .goals("register", "parse", "transpile")
+                    .configuration()
+                    .set("trackTransformationSteps", "true")
+                    .set("cacheEnabled", "false");
+                f.exec("process-sources");
+            }
+        );
+        MatcherAssert.assertThat(
+            "the plugin must still understand the old name of the tracking option",
+            temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
+            Matchers.is(true)
         );
     }
 

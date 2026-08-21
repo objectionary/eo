@@ -64,30 +64,23 @@ final class Sha {
         }
     }
 
-    /**
-     * Hashes all regular files reachable from the path, sorted by relative path.
-     * A file of a directory is framed by its relative path and length, a lone file is not.
-     * @return Base64-encoded SHA-256 hash
-     * @throws IOException If reading fails
-     * @throws NoSuchAlgorithmException If SHA-256 is unavailable
-     */
     private String hash() throws IOException, NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        final Predicate<Path> active;
+        if (Files.isDirectory(this.path)) {
+            active = this.filter;
+        } else {
+            active = any -> true;
+        }
         try (Stream<Path> walk = Files.walk(this.path)) {
             walk.filter(Files::isRegularFile)
-                .filter(this.filter)
+                .filter(active)
                 .sorted(Comparator.comparing(this::relative))
                 .forEach(file -> this.feed(digest, file));
         }
         return Base64.getEncoder().encodeToString(digest.digest());
     }
 
-    /**
-     * Feeds the bytes of the file into the digest, framed by the relative path of the file and
-     * by the amount of bytes read, unless the file is the hashed path itself.
-     * @param digest Digest to feed
-     * @param file File to read
-     */
     private void feed(final MessageDigest digest, final Path file) {
         final String relative = this.relative(file);
         try (InputStream input = Files.newInputStream(file)) {
@@ -114,11 +107,6 @@ final class Sha {
         }
     }
 
-    /**
-     * Path of the file relative to the hashed root, with forward slashes on every platform.
-     * @param file File reachable from the root
-     * @return Relative path of the file
-     */
     private String relative(final Path file) {
         return this.path.relativize(file).toString().replace(File.separatorChar, '/');
     }

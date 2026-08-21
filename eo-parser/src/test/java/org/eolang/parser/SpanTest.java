@@ -33,6 +33,33 @@ final class SpanTest {
     }
 
     @Test
+    void detectsTrailingSpace() {
+        MatcherAssert.assertThat(
+            "a line ending in a space must report trailing whitespace",
+            new Span("[] > foo ", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsTrailingTab() {
+        MatcherAssert.assertThat(
+            "a line ending in a tab must report trailing whitespace",
+            new Span("[] > foo\t", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsTrailingWhitespaceOnBlankLine() {
+        MatcherAssert.assertThat(
+            "a blank line must not report trailing whitespace",
+            new Span("    ", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void detectsBlankLine() {
         MatcherAssert.assertThat(
             "a line of pure spaces must report blank",
@@ -92,6 +119,33 @@ final class SpanTest {
             "head of a blank line cannot point at any character",
             new Span("     ", 1).head(),
             Matchers.equalTo('\0')
+        );
+    }
+
+    @Test
+    void detectsTabOnlyLineAsBlank() {
+        MatcherAssert.assertThat(
+            "a line made of a single tab is entirely whitespace and must report blank",
+            new Span("\t", 4).blank(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void countsTabsInIndent() {
+        MatcherAssert.assertThat(
+            "every leading whitespace character counts towards the indent, tabs included",
+            new Span("\t\t", 4).indent(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void exposesEmptyBodyForTabOnlyLine() {
+        MatcherAssert.assertThat(
+            "body of a tab-only line cannot contain anything",
+            new Span(" \t ", 1).body(),
+            Matchers.equalTo("")
         );
     }
 

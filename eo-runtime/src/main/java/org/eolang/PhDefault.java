@@ -11,10 +11,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -70,20 +69,9 @@ public class PhDefault implements Phi, Cloneable {
     private static final Map<String, Attribute> NONE = Collections.emptyMap();
 
     /**
-     * Structural attribute names that can never be a package extension, so a
-     * miss on them must not probe the classpath.
-     */
-    private static final Set<String> SPECIAL = Set.of(Phi.LAMBDA, Phi.PHI, Phi.RHO);
-
-    /**
-     * The prefix of every forma that lives in the global scope.
-     */
-    private static final String SCOPE = String.format("%s.", PhPackage.GLOBAL);
-
-    /**
      * Data.
      */
-    private final byte[] data;
+    private final Snapshot data;
 
     /**
      * The forma of this object, taken from its XMIR locator; empty when the
@@ -99,12 +87,19 @@ public class PhDefault implements Phi, Cloneable {
     /**
      * Order of their names.
      */
-    private final Map<Integer, String> order;
+    private final List<String> order;
 
     /**
      * Attributes.
      */
     private Map<String, Attribute> attrs;
+
+    /**
+     * Guards {@link #attrs} and {@link #order} against concurrent lazy init.
+     * Not final: {@link #copy()} gives the copy its own, since a copy's
+     * lazy init is independent of the origin's.
+     */
+    private ReentrantLock lock;
 
     /**
      * Default ctor.
@@ -156,9 +151,10 @@ public class PhDefault implements Phi, Cloneable {
         final String forma, final byte[] dta, final Map<String, Attribute> attributes
     ) {
         this.fqn = forma;
-        this.data = dta;
+        this.data = new Snapshot(dta);
         this.initial = attributes;
-        this.order = new HashMap<>(0);
+        this.order = new ArrayList<>(0);
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -168,18 +164,15 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + 1;
+        return System.identityHashCode(this) + 1;
     }
 
     @Override
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            final Map<String, Attribute> map = new HashMap<>(this.loaded().size());
-            for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet()) {
-                map.put(ent.getKey(), ent.getValue().copy(copy));
-            }
-            copy.attrs = map;
+            copy.lock = new ReentrantLock();
+            copy.attrs = new CopiedAttrs(this.loaded(), copy);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -188,13 +181,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public boolean hasRho() {
-        boolean has = true;
-        try {
-            this.loaded().get(Phi.RHO).get();
-        } catch (final ExUnset exception) {
-            has = false;
-        }
-        return has;
+        return !this.loaded().get(Phi.RHO).vacant();
     }
 
     @Override
@@ -204,7 +191,8 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final String name, final Phi object) {
-        if (!this.loaded().containsKey(name)) {
+        final Attribute attr = this.loaded().get(name);
+        if (attr == null) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -212,16 +200,28 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        this.loaded().get(name).put(object);
+        attr.put(object);
     }
 
     @Override
     public Phi take(final String name) {
-        PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        if (Thread.currentThread().isInterrupted()) {
+            throw new ExInterrupted(
+                String.format(
+                    "Can't take \"%s\" from %s, because the thread was interrupted",
+                    name, this.forma()
+                )
+            );
+        }
+        final boolean logging = PhDefault.LOGGER.isLoggable(Level.FINE);
+        if (logging) {
+            PhDefault.NESTING.set(PhDefault.NESTING.get() + 1);
+        }
         try {
             final Phi resolved;
-            if (this.loaded().containsKey(name)) {
-                resolved = this.loaded().get(name).get();
+            final Attribute attr = this.loaded().get(name);
+            if (attr != null) {
+                resolved = attr.get();
             } else if (name.equals(Phi.LAMBDA)) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
@@ -229,7 +229,7 @@ public class PhDefault implements Phi, Cloneable {
             } else {
                 resolved = this.absent(name);
             }
-            if (PhDefault.LOGGER.isLoggable(Level.FINE)) {
+            if (logging) {
                 PhDefault.LOGGER.log(
                     Level.FINE,
                     String.format(
@@ -243,11 +243,8 @@ public class PhDefault implements Phi, Cloneable {
             }
             return resolved;
         } finally {
-            final int current = PhDefault.NESTING.get();
-            if (current > 0) {
-                PhDefault.NESTING.set(current - 1);
-            } else {
-                PhDefault.NESTING.set(0);
+            if (logging) {
+                PhDefault.NESTING.set(Math.max(0, PhDefault.NESTING.get() - 1));
             }
         }
     }
@@ -255,18 +252,16 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public byte[] delta() {
         final byte[] bytes;
-        if (this.data != null) {
-            bytes = this.data;
+        if (this.data.present()) {
+            bytes = this.data.bytes();
         } else if (this instanceof Atom) {
             bytes = this.take(Phi.LAMBDA).delta();
         } else if (this.loaded().containsKey(Phi.PHI)) {
             bytes = this.take(Phi.PHI).delta();
         } else {
             throw new ExFailure(
-                String.format(
-                    "There's no \"Δ\" in the object of \"%s\"",
-                    this.forma()
-                )
+                "There's no \"Δ\" in the object of \"%s\"",
+                this.forma()
             );
         }
         return bytes;
@@ -277,7 +272,7 @@ public class PhDefault implements Phi, Cloneable {
         final Phi result;
         if (this instanceof Atom) {
             result = this.take(Phi.LAMBDA).normalized();
-        } else if (this.data == null && this.loaded().containsKey(Phi.PHI)) {
+        } else if (this.data.empty() && this.loaded().containsKey(Phi.PHI)) {
             final Phi phi = this.take(Phi.PHI).normalized();
             if (phi instanceof PhTerminator) {
                 result = phi;
@@ -320,10 +315,15 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     public void add(final String name, final Attribute attr) {
-        if (PhDefault.SORTABLE.matcher(name).matches()) {
-            this.order.put(this.order.size(), name);
+        this.lock.lock();
+        try {
+            if (PhDefault.SORTABLE.matcher(name).matches()) {
+                this.order.add(name);
+            }
+            this.loaded().put(name, new AtWithRho(attr, this));
+        } finally {
+            this.lock.unlock();
         }
-        this.loaded().put(name, new AtWithRho(attr, this));
     }
 
     @Override
@@ -333,9 +333,9 @@ public class PhDefault implements Phi, Cloneable {
         if (this.literal(name)) {
             final byte[] raw = this.loaded().get("as-bytes").get().delta();
             if ("string".equals(name)) {
-                result = new Quoted(raw).get();
+                result = new Quoted(raw).get().orElseGet(this::structural);
             } else {
-                result = PhDefault.numeral(new BytesOf(raw).asNumber());
+                result = new Numeral(new BytesOf(raw).asNumber()).get();
             }
         } else {
             result = this.structural();
@@ -343,25 +343,6 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
-    /**
-     * Render a number value as a φ-term.
-     * @param value The number
-     * @return Whole values without a fraction, decimals otherwise
-     */
-    static String numeral(final double value) {
-        final String txt;
-        if (value == Math.floor(value) && !Double.isInfinite(value)) {
-            txt = Long.toString((long) value);
-        } else {
-            txt = Double.toString(value);
-        }
-        return txt;
-    }
-
-    /**
-     * Derive the forma from the Java class, when the object has no XMIR locator.
-     * @return The forma built from the class name and its package
-     */
     private String derived() {
         final String form;
         final String name = this.oname();
@@ -373,95 +354,20 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
-    /**
-     * Resolve a name that this object doesn't declare among its own attributes.
-     *
-     * <p>The object's own package goes first, because a package object belongs
-     * to the surface of the object itself and must shadow whatever the
-     * decoratee happens to expose under the same name: {@code "42.5".as-number}
-     * has to reach {@code Φ.string.as-number} and not {@code Φ.bytes.as-number}
-     * through the bytes that a string decorates. Only when the package knows
-     * nothing does the lookup descend, into the λ of an atom or into the
-     * decoratee. A name that nobody knows terminates the computation.</p>
-     *
-     * @param name The name of the absent attribute
-     * @return The object bound to that name
-     */
     private Phi absent(final String name) {
         final Phi object;
-        if (this.extended(name)) {
-            object = this.extension(name);
-        } else if (this instanceof Atom) {
+        if (this instanceof Atom) {
             object = this.take(Phi.LAMBDA).take(name);
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
         } else {
-            object = new PhTerminator();
+            object = new PhTerminator(
+                String.format("the attribute \"%s\" is not found in %s", name, this.forma())
+            );
         }
         return object;
     }
 
-    /**
-     * Does this object's own package hold an object with this name?
-     * @param name The name of the absent attribute
-     * @return TRUE if the package extends this object with such an object
-     */
-    private boolean extended(final String name) {
-        return !PhDefault.SPECIAL.contains(name)
-            && this.forma().startsWith(PhDefault.SCOPE)
-            && OnClasspath.object(this.path(name));
-    }
-
-    /**
-     * Take an object living in this object's own package.
-     *
-     * <p>When {@code (number 42).power} finds no {@code power} attribute, the
-     * runtime looks for an object {@code Φ.number.power} in the package named
-     * after this object's forma. It is returned with this object bound as its
-     * first argument ({@code α0}), so {@code (number 42).power 3} reads as
-     * {@code number.power 42 3}. The receiver of a package extension always
-     * lives in {@code α0}: implicit dispatch binds it here, while explicit
-     * dispatch through the namespace ({@code number.power 42 3}) leaves the
-     * slot for the caller to fill (see {@code PhNest.extension}). Every package
-     * member declares at least one void, so that the implicit form always has a
-     * slot to bind the receiver to; when it doesn't, a clear error is raised
-     * instead of the low-level "attribute is already set / no attributes here"
-     * message.</p>
-     *
-     * @param name The name of the absent attribute
-     * @return The package object with this one bound to it
-     */
-    private Phi extension(final String name) {
-        final String full = this.path(name);
-        final Phi taken = Phi.Φ.take(full.substring(PhDefault.SCOPE.length()));
-        try {
-            taken.put(0, this);
-        } catch (final ExAbstract ex) {
-            throw new ExFailure(
-                String.format(
-                    "Object '%s' takes no arguments, so it can't be applied to '%s' via the implicit '%s' form",
-                    full, this.forma(), name
-                ),
-                ex
-            );
-        }
-        return taken;
-    }
-
-    /**
-     * The fully-qualified name of an object in this object's own package.
-     * @param name The name of the object
-     * @return The name, as {@code Φ.string.as-number}
-     */
-    private String path(final String name) {
-        return String.join(".", this.forma(), name);
-    }
-
-    /**
-     * Build the forma from the package of this object and the given name.
-     * @param name The object name, as in source code
-     * @return The fully-qualified forma
-     */
     private String packaged(final String name) {
         final String form;
         final String pkg = PhDefault.TO_FORMA.matcher(
@@ -475,22 +381,6 @@ public class PhDefault implements Phi, Cloneable {
         return form;
     }
 
-    /**
-     * Resolve the attribute name for a positional write, continuing partial
-     * application when needed.
-     *
-     * <p>The attribute at the requested position is used as-is when it can
-     * still receive a value. When it's a void that has already been set — as
-     * happens when a curried object is fed its next argument — the write is
-     * redirected to the first still-unset void that follows, in declaration
-     * order. This is the only case whose behavior changes: previously such a
-     * write threw {@link ExReadOnly}. Positions that point at non-void
-     * attributes keep failing, so passing too many arguments is still
-     * reported.</p>
-     *
-     * @param pos Position of the attribute
-     * @return The name of the attribute to write to
-     */
     private String vacancy(final int pos) {
         String name = this.attr(pos);
         if (!this.loaded().get(name).vacant()) {
@@ -505,46 +395,31 @@ public class PhDefault implements Phi, Cloneable {
         return name;
     }
 
-    /**
-     * Get attribute name by position.
-     * @param pos Position of the attribute
-     * @return Attribute name
-     */
     private String attr(final int pos) {
         this.loaded();
         if (0 > pos) {
             throw new ExFailure(
-                String.format(
-                    "The attribute position can't be negative (%d)",
-                    pos
-                )
+                "The attribute position can't be negative (%d)",
+                pos
             );
         }
         if (this.order.isEmpty()) {
             throw new ExFailure(
-                String.format(
-                    "There are no attributes here, can't read the %d-th one",
-                    pos
-                )
+                "There are no attributes here, can't read the %d-th one",
+                pos
             );
         }
-        if (!this.order.containsKey(pos)) {
+        if (pos >= this.order.size()) {
             throw new ExFailure(
-                String.format(
-                    "%s has just %d attribute(s), can't read the %d-th one",
-                    this,
-                    this.order.size(),
-                    pos
-                )
+                "%s has just %d attribute(s), can't read the %d-th one",
+                this,
+                this.order.size(),
+                pos
             );
         }
         return this.order.get(pos);
     }
 
-    /**
-     * Get its object name, as in source code.
-     * @return The name
-     */
     private String oname() {
         String txt = this.getClass().getSimpleName();
         final XmirObject xmir = this.getClass().getAnnotation(XmirObject.class);
@@ -557,40 +432,31 @@ public class PhDefault implements Phi, Cloneable {
         return txt;
     }
 
-    /**
-     * Activate the lazy state: initialize attrs/order from the constructor-supplied
-     * map, wrapping each entry with {@link AtWithRho}. Idempotent.
-     * @return Map of attrs
-     */
     private Map<String, Attribute> loaded() {
-        if (this.attrs == null) {
-            this.attrs = PhDefault.defaults();
-            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                this.add(ent.getKey(), ent.getValue());
+        this.lock.lock();
+        try {
+            if (this.attrs == null) {
+                this.attrs = PhDefault.defaults();
+                for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                    this.add(ent.getKey(), ent.getValue());
+                }
             }
+            return this.attrs;
+        } finally {
+            this.lock.unlock();
         }
-        return this.attrs;
     }
 
-    /**
-     * Is this a number or string object with injected bytes inside.
-     * @param name Object name, as in source code
-     * @return True if its value can be rendered directly
-     */
     private boolean literal(final String name) {
         return ("number".equals(name) || "string".equals(name))
             && this.loaded().containsKey("as-bytes")
             && !"?".equals(this.loaded().get("as-bytes").φTerm());
     }
 
-    /**
-     * Structural φ-term, listing the attributes of this object.
-     * @return The φ-term
-     */
     private String structural() {
         final List<String> list = new ArrayList<>(this.loaded().size());
-        if (this.data != null) {
-            list.add(String.format("D> %s", PhDefault.termBytes(this.data)));
+        if (this.data.present()) {
+            list.add(String.format("D> %s", PhDefault.termBytes(this.data.bytes())));
         }
         for (final Map.Entry<String, Attribute> ent : this.loaded().entrySet().stream().filter(
             e -> !e.getKey().equals(Phi.RHO)
@@ -610,12 +476,6 @@ public class PhDefault implements Phi, Cloneable {
         return term;
     }
 
-    /**
-     * Bytes representation for the φ-term D> slot.
-     * This is intentionally not {@link Bytes#asString()}.
-     * @param data Bytes
-     * @return Bytes as shown in φ-terms
-     */
     private static String termBytes(final byte[] data) {
         final String result;
         if (data.length == 0) {
@@ -633,20 +493,12 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
-    /**
-     * Default attributes hash map with RHO attribute put.
-     * @return Default attributes hash map
-     */
     private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new HashMap<>(0);
+        final Map<String, Attribute> attrs = new Bindings();
         attrs.put(Phi.RHO, new AtRho());
         return attrs;
     }
 
-    /**
-     * Load the declared return types of all atoms from the generated table.
-     * @return The atom types table, empty when the table is absent
-     */
     private static AtomTypes atoms() {
         final Map<String, String> table;
         final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");
@@ -671,10 +523,6 @@ public class PhDefault implements Phi, Cloneable {
         return new AtomTypes(table);
     }
 
-    /**
-     * Padding according to current {@link #NESTING} level.
-     * @return Padding string
-     */
     private static String padding() {
         return String.join("", Collections.nCopies(PhDefault.NESTING.get(), "·"));
     }

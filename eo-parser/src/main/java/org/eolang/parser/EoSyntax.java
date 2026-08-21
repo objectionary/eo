@@ -10,6 +10,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -81,7 +82,12 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing train
      */
     EoSyntax(final Input ipt, final Train<Shift> transform) {
-        this(ipt, new Xsline(transform)::pass);
+        this(
+            ipt,
+            new Xsline(
+                Objects.requireNonNull(transform, "EoSyntax train can't be null")
+            )::pass
+        );
     }
 
     /**
@@ -96,8 +102,9 @@ public final class EoSyntax implements Syntax {
 
     @Override
     public XML parsed() throws IOException {
+        final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return this.transform.apply(
+        return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
@@ -106,7 +113,7 @@ public final class EoSyntax implements Syntax {
                         .xpath("/object")
                         .strict(1)
                         .append(new Eo(text).directives())
-                        .attr("ms", 0L)
+                        .attr("ms", (System.nanoTime() - start) / (1000L * 1000L))
                         .up()
                 ).domQuietly()
             )

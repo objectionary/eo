@@ -6,9 +6,9 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.security.SecureRandom;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
-import org.eolang.EO_string.EOregex$EOcompile;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -27,15 +27,6 @@ final class PhDefaultTest {
             "Empty object must render as empty brackets in φ-term, but it didnt",
             new PhDefault().φTerm(),
             Matchers.equalTo("[]")
-        );
-    }
-
-    @Test
-    void prefersPackageExtensionOverDecoratee() {
-        MatcherAssert.assertThat(
-            "Package object must shadow the same-named attribute of the decoratee, but it didnt",
-            new Dataized(new Data.ToPhi("42.5").take("as-number")).asNumber(),
-            Matchers.equalTo(42.5d)
         );
     }
 
@@ -125,6 +116,27 @@ final class PhDefaultTest {
             ExAbstract.class,
             () -> new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.RHO),
             String.format("Object should not give %s attribute after copying", Phi.RHO)
+        );
+    }
+
+    @Test
+    void doesNotHaveRhoWhenItIsDeclaredAsVoid() {
+        MatcherAssert.assertThat(
+            String.format("Object with %s declared as void must not report it as set", Phi.RHO),
+            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).hasRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void bindsHostToRhoDeclaredAsVoid() {
+        final Phi host = new PhDefault(new Attrs(new Attr("x", new AtVoid("x"))));
+        host.put(Phi.RHO, Phi.Φ);
+        host.put("x", new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))));
+        MatcherAssert.assertThat(
+            String.format("Dispatch must bind the host to %s declared as void", Phi.RHO),
+            host.take("x").take(Phi.RHO),
+            Matchers.equalTo(host)
         );
     }
 
@@ -386,7 +398,7 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        PhDefaultTest.EndlessRecursion.count = 2;
+        PhDefaultTest.EndlessRecursion.COUNT.set(2);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
@@ -396,7 +408,7 @@ final class PhDefaultTest {
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.count = 3;
+        PhDefaultTest.RecursivePhi.COUNT.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
             new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
@@ -406,7 +418,7 @@ final class PhDefaultTest {
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.count = 3;
+        PhDefaultTest.RecursivePhiViaNew.COUNT.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
             new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
@@ -468,7 +480,7 @@ final class PhDefaultTest {
     void keepsSubPackageInForma() {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOregex$EOcompile().forma(),
+            new EOstring$EOregex$EOcompile().forma(),
             Matchers.equalTo("Φ.string.regex.compile")
         );
     }
@@ -672,16 +684,10 @@ final class PhDefaultTest {
         return phi;
     }
 
-    /**
-     * Returns the 'plus' literal.
-     */
     private String plus() {
         return "plus";
     }
 
-    /**
-     * Returns the 'void' literal.
-     */
     private String getVoid() {
         return "void";
     }
@@ -880,12 +886,11 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         EndlessRecursion() {
             super(
                 new Attrs(
@@ -894,9 +899,8 @@ final class PhDefaultTest {
                         new AtComposite(
                             new PhDefault(),
                             self -> {
-                                --PhDefaultTest.EndlessRecursion.count;
                                 final Phi result;
-                                if (PhDefaultTest.EndlessRecursion.count <= 0) {
+                                if (PhDefaultTest.EndlessRecursion.COUNT.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new PhDefaultTest.EndlessRecursion().copy();
@@ -919,7 +923,7 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Make one, with its φ in place.
@@ -937,9 +941,8 @@ final class PhDefaultTest {
                 new AtComposite(
                     made,
                     rho -> {
-                        --PhDefaultTest.RecursivePhi.count;
                         final Phi result;
-                        if (PhDefaultTest.RecursivePhi.count <= 0) {
+                        if (PhDefaultTest.RecursivePhi.COUNT.decrementAndGet() <= 0) {
                             result = new Data.ToPhi(0L);
                         } else {
                             result = new Data.ToPhi(new Dataized(rho).asNumber());
@@ -961,12 +964,11 @@ final class PhDefaultTest {
         /**
          * Count.
          */
-        private static int count;
+        private static final AtomicInteger COUNT = new AtomicInteger();
 
         /**
          * Ctor.
          */
-        @SuppressWarnings("PMD.AssignmentToNonFinalStatic")
         RecursivePhiViaNew() {
             super(
                 new Attrs(
@@ -975,9 +977,8 @@ final class PhDefaultTest {
                         new AtComposite(
                             new PhDefault(),
                             rho -> {
-                                --PhDefaultTest.RecursivePhiViaNew.count;
                                 final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.count <= 0) {
+                                if (PhDefaultTest.RecursivePhiViaNew.COUNT.decrementAndGet() <= 0) {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new Data.ToPhi(

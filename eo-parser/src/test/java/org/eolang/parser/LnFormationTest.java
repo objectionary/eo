@@ -236,12 +236,28 @@ final class LnFormationTest {
     }
 
     @Test
-    void rejectsRhoAsParameter() {
-        Assertions.assertThrows(
-            ParseError.class,
-            () -> new LnFormation(new Span("[^] > foo", 1))
-                .into(new Stack(), new Globals(), new Emit()),
-            "`^` is not admissible as a formation parameter name per R-3.4.3"
+    void emitsRhoForTheFirstParameter() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[^ x] > lt", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a leading `^` parameter must emit as <o name='ρ' base='∅'/> per R-3.4.3",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='lt']/o[1][@name='ρ' and @base='∅']")
+        );
+    }
+
+    @Test
+    void emitsRhoForALaterParameter() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[x ^] > foo", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `^` parameter must emit as <o name='ρ' base='∅'/> wherever it stands",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[2][@name='ρ' and @base='∅']")
         );
     }
 
@@ -301,11 +317,31 @@ final class LnFormationTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
+    @Test
+    void rejectsIndentJumpGreaterThanOneLevelBetweenFormations() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1))
+            .into(stack, new Globals(), new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("    [] > bar", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation stepping deeper by more than one indent level must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsDeeperFormationUnderClosedParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.HCOMPLETED);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("  [] > bar", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a deeper-indent formation under a horizontally closed parent must be rejected"
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

@@ -79,6 +79,27 @@ final class JavaFilesTest {
     }
 
     @Test
+    void keepsAJavaFileWrittenByAnotherToolInAnUntouchedDirectory(@Mktmp final Path temp)
+        throws IOException {
+        final Path generated = temp.resolve("generated");
+        final Path foreign = generated.resolve("com/example/Foreign.java");
+        new Saved("class Foreign {}", foreign).value();
+        final Path xmir = temp.resolve("main.xmir");
+        new Saved(
+            "<object><class java-name='org.eolang.EOfirst'><java>class EOfirst {}</java></class></object>",
+            xmir
+        ).value();
+        final JavaFiles files = new JavaFiles(generated, temp.resolve("cache"), false);
+        files.total(true, xmir, "", false);
+        files.removeStale();
+        MatcherAssert.assertThat(
+            "a .java file written by another tool outside eo's own output directories must survive, but it didn't",
+            foreign.toFile().exists(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void writesExactlyOneFileForAtom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "only a test class of an atom must be written",
@@ -107,12 +128,6 @@ final class JavaFilesTest {
         );
     }
 
-    /**
-     * Transpile a single-atom XMIR and report how many files were written.
-     * @param temp Temp directory to write into
-     * @return Number of files written
-     * @throws IOException If fails to save or transpile
-     */
     private static int generateAtom(final Path temp) throws IOException {
         final Path xmir = temp.resolve("main.xmir");
         new Saved(

@@ -57,14 +57,8 @@ final class JavaPath {
         return this.java(true);
     }
 
-    /**
-     * Build the Java name, prefixing each EO name segment.
-     * @param wrap When true, the last segment is a package too (EO_), otherwise
-     *  it is the object itself (EO)
-     * @return Java notation of the path
-     */
     private String java(final boolean wrap) {
-        final String[] parts = JavaPath.PHI.matcher(this.object).replaceAll("").split("\\.");
+        final String[] parts = JavaPath.PHI.matcher(this.object).replaceAll("").split("\\.", -1);
         final StringBuilder out = new StringBuilder("org.eolang");
         for (int idx = 0; idx < parts.length; ++idx) {
             final String prefix;

@@ -9,8 +9,8 @@ package org.eolang.parser;
  *
  * <p>A {@code Span} is a value object carrying a single source line's text
  * (without trailing line terminator), its 1-indexed line number, and the
- * count of leading-space characters that precede the first non-space
- * character. The text never contains {@code \n} or {@code \r}; the
+ * count of leading-whitespace characters that precede the first
+ * non-whitespace character. The text never contains {@code \n} or {@code \r}; the
  * {@link Source} that produced this span has already normalised line
  * endings (R-2.1.2).</p>
  *
@@ -38,7 +38,8 @@ final class Span {
     private final int number;
 
     /**
-     * Count of leading space characters before the first non-space.
+     * Count of leading whitespace characters before the first
+     * non-whitespace one.
      */
     private final int indent;
 
@@ -60,7 +61,7 @@ final class Span {
      * Primary ctor.
      * @param body Line text
      * @param line Line number
-     * @param leading Count of leading space chars
+     * @param leading Count of leading whitespace chars
      * @param tabbed True if any leading char is a tab
      */
     private Span(final String body, final int line, final int leading, final boolean tabbed) {
@@ -95,7 +96,7 @@ final class Span {
     }
 
     /**
-     * Leading-space count.
+     * Leading-whitespace count.
      * @return Indent
      */
     int indent() {
@@ -119,6 +120,17 @@ final class Span {
     }
 
     /**
+     * True if the line is not blank and its last character is a space or a
+     * tab. Whitespace nobody can see in an editor must not decide what a
+     * program means (R-2.2.5).
+     * @return Trailing-whitespace flag
+     */
+    boolean trailing() {
+        return !this.blank()
+            && Character.isWhitespace(this.text.charAt(this.text.length() - 1));
+    }
+
+    /**
      * The substring after leading whitespace.
      * @return Tail text (empty for blank lines)
      */
@@ -127,8 +139,8 @@ final class Span {
     }
 
     /**
-     * The first non-space character, or {@code '\0'} for a blank line.
-     * @return First non-space character
+     * The first non-whitespace character, or {@code '\0'} for a blank line.
+     * @return First non-whitespace character
      */
     char head() {
         final char first;
@@ -140,24 +152,14 @@ final class Span {
         return first;
     }
 
-    /**
-     * Compute leading-space count.
-     * @param body Line text
-     * @return Number of leading {@code ' '} characters
-     */
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && body.charAt(count) == ' ') {
+        while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
             count = count + 1;
         }
         return count;
     }
 
-    /**
-     * Detect a tab in the leading whitespace region.
-     * @param body Line text
-     * @return True if a tab character appears before the first non-whitespace
-     */
     private static boolean tabbed(final String body) {
         boolean found = false;
         for (int idx = 0; idx < body.length(); idx = idx + 1) {

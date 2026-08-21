@@ -1,22 +1,22 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A name bound in the object around this one is not a reference to it: the
-# parser turns it into a dispatch on the parent. So `held` is asked of
-# `ξ.ρ`, and that parent reference is the one thing the links clue cannot
-# resolve - no formation binds `ρ` as an attribute. It is the whole of what
-# stays unlinked in the runtime, and the checking loop, which knows what
-# object it is inside of, is where it belongs.
+# A name bound in the object around this one is reached by naming that object:
+# `^.held` is a dispatch on the parent, so `held` is asked of `ξ.ρ`, and that
+# parent is a thing the text names as plainly as any other reference — `ξ` is
+# the object being formed, so `ξ.ρ` is whatever `inner` sits in. Walking out of
+# the reference to the nearest formation reaches `inner`, and once more reaches
+# `outer`, which is where `held` is bound.
 eo:
   outer.eo: |
     [] > outer
       [] > held
       [] > inner
-        held > @
+        ^.held > @
 xmir:
   outer.eo:
     - "//o[@base='.held']/o[@base='ξ.ρ']"
 needs:
   - "/needs/type[@id='Φ.outer.inner.φ.ρ']/attr[@name='held']"
 links:
-  - "/links[not(type)]"
+  - "/links/type[@id='Φ.outer.inner.φ.ρ']/ref[@loc='Φ.outer']"

@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A partial application fills the voids its arguments reach and leaves the rest
+# alone, so `right` is not mentioned at all. How many voids a copy has left is
+# read off what its row does not say.
+eo:
+  app.eo: |
+    [] > app
+      pair 1 > half
+  pair.eo: |
+    [left right] > pair
+      left > @
+links:
+  - "//type[@id='Φ.app.half']/ref[@loc='Φ.pair']/bind[@void='Φ.pair.left']"
+  - "//type[@id='Φ.app.half']/ref[not(bind[@void='Φ.pair.right'])]"

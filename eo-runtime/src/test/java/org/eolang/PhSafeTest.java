@@ -96,7 +96,7 @@ final class PhSafeTest {
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new PhSafe(
-                    new PhSafe(PhTerminator.withCause("oops"), "inner.eo", 1, 2),
+                    new PhSafe(new PhTerminator(new Data.ToPhi("oops")), "inner.eo", 1, 2),
                     "outer.eo", 3, 4
                 ).delta(),
                 "was expected to fail with ExFailure"
@@ -106,6 +106,63 @@ final class PhSafeTest {
                 Matchers.containsString("at inner.eo:1:2"),
                 Matchers.containsString("oops")
             )
+        );
+    }
+
+    @Test
+    void catchesNonAtomOriginOnLambda() {
+        MatcherAssert.assertThat(
+            "wraps a non-atom origin's cast failure into ExFailure instead of letting it escape",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(new PhDefault()).lambda(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString(".λ")
+        );
+    }
+
+    @Test
+    void letsInterruptedThrough() {
+        MatcherAssert.assertThat(
+            "an interrupt must keep its own message, but it was wrapped",
+            Assertions.assertThrows(
+                ExInterrupted.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new ExInterrupted("the thread must stop");
+                        }
+                    },
+                    "file.eo", 42, 7
+                ).delta(),
+                "was expected to fail with ExInterrupted"
+            ).getMessage(),
+            Matchers.equalTo("the thread must stop")
+        );
+    }
+
+    @Test
+    void doesNotLetRecoveredInterceptInterrupted() {
+        final EOrecovered recovered = new EOrecovered();
+        recovered.put(
+            "value",
+            new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi normalized() {
+                        throw new ExInterrupted("the thread must stop");
+                    }
+                },
+                "file.eo", 42, 7
+            )
+        );
+        recovered.put("alternative", new Data.ToPhi(42L));
+        Assertions.assertThrows(
+            ExInterrupted.class,
+            recovered::lambda,
+            "recovered must not intercept an interrupt, but it did"
         );
     }
 

@@ -15,41 +15,86 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[format read] > scanf
+[read] > scanf
+  ^ > format
   [pattern specifiers] >>
     [text] > as-float
-      negative.if negated magnitude > @
-      index-of unsigned "." > dot
+      negative.if negated scaled > @
+      mantissa.index-of "." > dot
+      esign.index-of "e" > eloc
+      unsigned.replaced "/[eE]/".regex "e" > esign
+      [txt] > exp-value
+        if. > @
+          eq.
+            txt.slice 0 1
+            "-"
+          folded.times -1
+          if.
+            eq.
+              txt.slice 0 1
+              "+"
+            folded
+            folded
+        ^.^.fold-digits > folded
+          signed.if
+            txt.slice
+              1
+              txt.length.minus 1
+            txt
+        or. > signed
+          eq.
+            txt.slice 0 1
+            "-"
+          eq.
+            txt.slice 0 1
+            "+"
+      if. > exponent
+        eloc.eq -1
+        0
+        exp-value
+          esign.slice
+            eloc.plus 1
+            esign.length.minus
+              eloc.plus 1
       if. > magnitude
         not.
           dot.eq -1
         plus.
-          fold-digits
-            slice unsigned 0 dot
+          ^.fold-digits
+            mantissa.slice 0 dot
           div.
-            fold-digits
-              slice
-                unsigned
+            ^.fold-digits
+              mantissa.slice
                 dot.plus 1
                 places
             10.power places
-        fold-digits unsigned
-      magnitude.times -1 > negated
+        ^.fold-digits mantissa
+      if. > mantissa
+        eloc.eq -1
+        esign
+        esign.slice 0 eloc
+      scaled.times -1 > negated
       eq. > negative
-        slice
-          text
-          0
-          1
+        text.slice 0 1
         "-"
-      unsigned.length.minus > places
+      mantissa.length.minus > places
         dot.plus 1
+      if. > scaled
+        exponent.eq 0
+        magnitude
+        if.
+          exponent.gt 0
+          magnitude.times
+            10.power exponent
+          magnitude.div
+            10.power
+              exponent.times -1
       negative.or > signed
         eq.
-          slice text 0 1
+          text.slice 0 1
           "+"
       signed.if > unsigned
-        slice
-          text
+        text.slice
           1
           text.length.minus 1
         text
@@ -64,36 +109,34 @@
                 digits-lte normalized "9223372036854775808"
                 digits-lte normalized "9223372036854775807"
         T
-          "The number doesn't fit into long range for the '%%d' conversion"
+          "The number doesn't fit into long range for the '%%d' conversion".printf
+            *
         negative.if negated folded
       [a b] > digits-lte
         if. > [index] >> rec
-          index.eq a.length
+          index.eq ^.a.length
           true
           if.
             lt.
-              as-ascii
-                slice a index 1
-              as-ascii
-                slice b index 1
+              as-ascii.
+                ^.a.slice index 1
+              as-ascii.
+                ^.b.slice index 1
             true
             if.
               gt.
-                as-ascii
-                  slice a index 1
-                as-ascii
-                  slice b index 1
+                as-ascii.
+                  ^.a.slice index 1
+                as-ascii.
+                  ^.b.slice index 1
               false
-              rec
+              ^.rec
                 index.plus 1
         | 0 > @
-      fold-digits normalized > folded
+      ^.fold-digits normalized > folded
       folded.times -1 > negated
       eq. > negative
-        slice
-          text
-          0
-          1
+        text.slice 0 1
         "-"
       if. > normalized
         stripped.eq ""
@@ -101,32 +144,31 @@
         stripped
       negative.or > signed
         eq.
-          slice text 0 1
+          text.slice 0 1
           "+"
-      replaced > stripped
+      replaced. > stripped
         signed.if
-          slice
-            text
+          text.slice
             1
             text.length.minus 1
           text
-        regex "/^0+/"
+        "/^0+/".regex
         ""
     [group acc] >> convert
-      matched.exists.not.if > @
+      ^.matched.exists.not.if > @
         *
         if.
-          group.gt specifiers.length
+          group.gt ^.specifiers.length
           acc
           next
-      convert > next
+      ^.convert > next
         group.plus 1
         acc.with
-          converted
-            specifiers.at
+          ^.converted
+            ^.specifiers.at
               group.minus 1
               T
-            matched.group group
+            ^.matched.group group
     | > @
       1
       *
@@ -135,31 +177,28 @@
       text
       if.
         spec.eq "d"
-        as-integer text
-        as-float text
+        ^.as-integer text
+        ^.as-float text
     [text] > fold-digits
       [index acc] >> rec
         if. > @
-          index.eq text.length
+          index.eq ^.text.length
           acc
           next
-        rec > next
+        ^.rec > next
           index.plus 1
           plus.
             acc.times 10
             minus.
-              as-ascii
-                slice text index 1
+              as-ascii.
+                ^.text.slice index 1
               48
       | 0 0 > @
     match. > found
-      regex
-        chained *1
-          "/"
-          "^"
-          pattern
-          "/"
-      read
+      regex.
+        "/".chained
+          * "^" pattern "/"
+      ^.read
     found.next > matched
   | > @
     tokens.at
@@ -187,13 +226,12 @@
         "}"
         "/"
       ch
-    chained *1
-      "\\"
-      ch
+    "\\".chained
+      * ch
     ch
   [position accumulated found pending] >> tokenize
     if. > @
-      position.gte format.length
+      position.gte ^.format.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -202,57 +240,52 @@
       pending.if
         if.
           ch.eq "%"
-          tokenize
+          ^.tokenize
             position.plus 1
-            chained *1
-              accumulated
-              "%"
+            accumulated.chained
+              * "%"
             found
             false
           if.
             ch.eq "d"
-            tokenize
+            ^.tokenize
               position.plus 1
-              chained *1
-                accumulated
-                "([+-]?\\d+)"
+              accumulated.chained
+                * "([+-]?\\d+)"
               found.with "d"
               false
             if.
               ch.eq "f"
-              tokenize
+              ^.tokenize
                 position.plus 1
-                chained *1
-                  accumulated
-                  "([+-]?\\d+(?:\\.\\d+)?)"
+                accumulated.chained
+                  * "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
                 found.with "f"
                 false
               if.
                 ch.eq "s"
-                tokenize
+                ^.tokenize
                   position.plus 1
-                  chained *1
-                    accumulated
-                    "(\\S+)"
+                  accumulated.chained
+                    * "(\\S+)"
                   found.with "s"
                   false
                 T "Unsupported format specifier"
         if.
           ch.eq "%"
-          tokenize
+          ^.tokenize
             position.plus 1
             accumulated
             found
             true
-          tokenize
+          ^.tokenize
             position.plus 1
-            chained *1
-              accumulated
-              escaped ch
+            accumulated.chained
+              *
+                escaped ch
             found
             false
-    slice > ch
-      format
+    ^.format.slice > ch
       position
       1
   | >> tokens
@@ -262,75 +295,70 @@
     false
 
   eq. ++> can-scan-a-complex-format
-    scanf
-      "Im%d %s old and this is! Let's calculate %f + %f= %f"
+    "Im%d %s old and this is! Let's calculate %f + %f= %f".scanf
       "Im18 years old and this is! Let's calculate 99999999.99 + 0.01= 100000000.0"
     *
       18
       "years"
-      9.999999999E7
+      9.999999999e7
       0.01
       100000000
 
   eq. ++> can-scan-a-complex-float
     1991.01
     head.
-      scanf
-        "this will be=%f"
+      "this will be=%f".scanf
         "this will be=1991.01"
 
   eq. ++> can-scan-a-complex-integer
     734987259
     head.
-      scanf "!%d!" "!734987259!"
+      "!%d!".scanf "!734987259!"
 
   eq. ++> can-scan-a-complex-string
     "test"
     head.
-      scanf "some%sstring" "someteststring"
+      "some%sstring".scanf "someteststring"
 
   eq. ++> can-scan-a-float
     0.24
     head.
-      scanf "%f" "0.24"
+      "%f".scanf "0.24"
 
   eq. ++> can-scan-an-integer
     33
     head.
-      scanf "%d" "33"
+      "%d".scanf "33"
 
   eq. ++> can-scan-a-negative-integer
     -42
     head.
-      scanf "%d" "-42"
+      "%d".scanf "-42"
 
   eq. ++> can-scan-a-positive-signed-integer
     42
     head.
-      scanf "%d" "+42"
+      "%d".scanf "+42"
 
   eq. ++> can-scan-a-zero-padded-integer
     42
     head.
-      scanf "%d" "00000000000000000042"
+      "%d".scanf "00000000000000000042"
 
   eq. ++> can-scan-a-zero-padded-negative-integer
     -42
     head.
-      scanf "%d" "-00000000000000000042"
+      "%d".scanf "-00000000000000000042"
 
   eq. ++> can-scan-many-zeroes-as-zero
     0
     head.
-      scanf "%d" "00000000000000000000"
+      "%d".scanf "00000000000000000000"
 
   eq. ++> can-scan-what-printf-wrote
-    scanf
-      "%s is about %d?"
-      printf *1
-        "%s is about %d?"
-        "This"
-        8
+    "%s is about %d?".scanf
+      "%s is about %d?".printf
+        * "This" 8
     *
       "This"
       8
@@ -338,11 +366,10 @@
   eq. ++> can-scan-a-string
     "hello"
     head.
-      scanf "%s" "hello"
+      "%s".scanf "hello"
 
   eq. ++> can-scan-a-string-an-integer-and-a-float
-    scanf
-      "%s %d %f"
+    "%s %d %f".scanf
       "hello 33 0.24"
     *
       "hello"
@@ -352,52 +379,69 @@
   eq. ++> can-scan-a-string-followed-by-a-literal
     "hello"
     head.
-      scanf "%s!" "hello!"
+      "%s!".scanf "hello!"
 
   eq. ++> can-scan-while-ignoring-trailing-text
     42
     head.
-      scanf
-        "id=%d"
+      "id=%d".scanf
         "id=42 suffix"
 
-  eq. ++> cannot-scan-past-unmatched-leading-text
+  eq. ++> can-scan-nothing-past-unmatched-leading-text
     length.
-      scanf
-        "id=%d"
+      "id=%d".scanf
         "prefix id=42"
     0
 
-  scanf --> stops-on-a-dangling-percent
-    "hello%"
-    "hello"
+  "hello%".scanf "hello" --> stops-on-a-dangling-percent
 
-  scanf --> stops-on-an-oversized-integer
-    "%d"
-    "99999999999999999999"
+  "%d".scanf "99999999999999999999" --> stops-on-an-oversized-integer
+
+  eq. ++> can-format-the-oversized-integer-message-with-a-single-percent
+    "The number doesn't fit into long range for the '%%d' conversion".printf
+      *
+    "The number doesn't fit into long range for the '%d' conversion"
 
   gt. ++> can-scan-a-nineteen-digit-value-at-long-max
     head.
-      scanf "%d" "9223372036854775807"
+      "%d".scanf "9223372036854775807"
     9000000000000000000
 
   lt. ++> can-scan-a-nineteen-digit-value-at-long-min
     head.
-      scanf "%d" "-9223372036854775808"
+      "%d".scanf "-9223372036854775808"
     -9000000000000000000
 
-  scanf --> stops-on-a-nineteen-digit-value-above-long-max
+  scanf. --> stops-on-a-nineteen-digit-value-above-long-max
     "%d"
     "9223372036854775808"
 
-  scanf --> stops-on-a-nineteen-digit-value-below-long-min
+  scanf. --> stops-on-a-nineteen-digit-value-below-long-min
     "%d"
     "-9223372036854775809"
 
-  scanf --> stops-on-a-zero-padded-integer-above-long-max
+  scanf. --> stops-on-a-zero-padded-integer-above-long-max
     "%d"
     "00009223372036854775808"
 
-  scanf --> stops-on-a-wrong-format
-    "%l"
-    "error"
+  "%l".scanf "error" --> stops-on-a-wrong-format
+
+  eq. ++> can-scan-a-float-in-scientific-notation
+    1000
+    head.
+      "%f".scanf "1e3"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-negative-exponent
+    -0.02
+    head.
+      "%f".scanf "-2E-2"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-signed-exponent
+    150
+    head.
+      "%f".scanf "1.5e+2"
+
+  eq. ++> can-scan-a-float-in-scientific-notation-with-a-zero-exponent
+    1
+    head.
+      "%f".scanf "1e0"

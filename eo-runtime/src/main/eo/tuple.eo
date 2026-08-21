@@ -6,8 +6,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [tail head length] > tuple
   [i fallback] > at
@@ -17,21 +15,21 @@
           if. >> index!
             0.gt
               i >> idx!
-            length.plus idx
+            ^.length.plus idx
             idx
-        length.lte index
+        ^.length.lte index
       fallback
         "Given index is out of tuple bounds"
       if. > [tup] >> at-fast
         0.eq tup.length
-        fallback
+        ^.fallback
           "Given index is out of tuple bounds"
         if.
           eq.
             tup.length.plus -1
             index
           tup.head
-          at-fast tup.tail
+          ^.at-fast tup.tail
       | ^
   tuple > empty
     T
@@ -41,19 +39,19 @@
     0
   [other] > eq
     and. > @
-      length.eq other.length
+      ^.length.eq other.length
       if. > [first second] >> receq
         first.length.eq 0
         true
         and.
           first.head.eq second.head
-          receq first.tail second.tail
+          ^.receq first.tail second.tail
       | ^ other
   tuple > [x] > with
     ^
     x
     as-number.
-      length.plus 1
+      ^.length.plus 1
 
   ++> can-add-an-item
     and. > @
@@ -154,13 +152,6 @@
         2
       3
 
-  tuple.contains ++> can-check-containment-through-the-package
-    *
-      1
-      2
-      3
-    2
-
   eq. ++> can-concat-with-another-tuple
     concat.
       * 0 1
@@ -170,13 +161,6 @@
       1
       2
       3
-
-  contains. ++> can-contain-an-element
-    *
-      1
-      2
-      3
-    2
 
   ++> can-create-an-empty-tuple-with-a-number
     eq. > @
@@ -204,15 +188,6 @@
       2
       3
 
-  eq. ++> can-find-the-index-of-an-element
-    index-of.
-      *
-        10
-        20
-        30
-      20
-    1
-
   ++> can-get-the-length-of-an-empty-tuple
     a.length.eq 0 > @
     * > a
@@ -227,6 +202,27 @@
     length.
       * 1 2
     2
+
+  eq. ++> can-recover-from-a-fractional-index
+    "recovered"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-index
+    "recovered"
+    at.
+      *
+        1
+        2
+        3
+        4
+      20
+      "recovered" > [message]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
@@ -272,15 +268,7 @@
       3
       4
 
-  not. ++> cannot-contain-an-absent-element
-    contains.
-      *
-        1
-        2
-        3
-      5
-
-  not. ++> cannot-equal-a-different-tuple
+  not. ++> can-tell-it-does-not-equal-a-different-tuple
     eq.
       *
         1
@@ -290,27 +278,6 @@
         3
         2
         1
-
-  eq. ++> rejects-a-fractional-index
-    "recovered"
-    at.
-      *
-        "zero"
-        "one"
-        "two"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-index
-    "recovered"
-    at.
-      *
-        1
-        2
-        3
-        4
-      20
-      "recovered" > [message]
 
   at. --> stops-on-a-wrong-index
     *

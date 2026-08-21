@@ -4,9 +4,9 @@
  */
 package org.eolang.win32;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -19,6 +19,13 @@ import org.eolang.Syscall;
  * @since 0.40.0
  */
 public final class InetAddrFuncCall implements Syscall {
+
+    /**
+     * Dotted-decimal IPv4 literal, e.g. "127.0.0.1".
+     */
+    private static final Pattern IPV4 = Pattern.compile(
+        "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})"
+    );
 
     /**
      * Win32 object.
@@ -36,22 +43,29 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        byte[] address;
-        try {
-            address = InetAddress.getByName(new Dataized(params[0]).asString()).getAddress();
-        } catch (final UnknownHostException exception) {
-            address = new byte[0];
-        }
-        if (address.length == 4) {
-            result.put(
-                0,
-                new Data.ToPhi(Integer.reverseBytes(ByteBuffer.wrap(address).getInt(0)))
-            );
+        final Matcher matcher = InetAddrFuncCall.IPV4.matcher(new Dataized(params[0]).asString());
+        if (matcher.matches() && InetAddrFuncCall.octetsValid(matcher)) {
+            final ByteBuffer buffer = ByteBuffer.allocate(4);
+            for (int octet = 1; octet <= 4; ++octet) {
+                buffer.put((byte) Integer.parseInt(matcher.group(octet)));
+            }
+            result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
         } else {
             Winsock.INSTANCE.WSASetLastError(Winsock.WSAEINVAL);
             result.put(0, new Data.ToPhi(-1));
         }
         result.put(1, new PhDefault());
         return result;
+    }
+
+    private static boolean octetsValid(final Matcher matcher) {
+        boolean valid = true;
+        for (int octet = 1; octet <= 4; ++octet) {
+            if (Integer.parseInt(matcher.group(octet)) > 255) {
+                valid = false;
+                break;
+            }
+        }
+        return valid;
     }
 }

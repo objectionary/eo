@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -50,11 +51,11 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.close(Openness.VERTICAL_COMPLETED);
+        level.close(Openness.VCOMPLETED);
         MatcherAssert.assertThat(
             "after close(), openness must reflect the new state",
             level.openness(),
-            Matchers.equalTo(Openness.VERTICAL_COMPLETED)
+            Matchers.equalTo(Openness.VCOMPLETED)
         );
     }
 
@@ -96,7 +97,7 @@ final class LevelTest {
     @Test
     void recordsParentAtomFromCtor() {
         MatcherAssert.assertThat(
-            "parentAtom must round-trip the ctor argument so R-5.3.4 can read it",
+            "patom() must round-trip the ctor argument so R-5.3.4 can read it",
             new Level(2, 3, Kind.BARE_FORMATION, Openness.OPEN, Kind.BARE_FORMATION, true)
                 .patom(),
             Matchers.is(true)
@@ -110,22 +111,50 @@ final class LevelTest {
         );
         level.consumeReceiver();
         MatcherAssert.assertThat(
-            "receiverConsumed() must flip true after consumeReceiver()",
+            "taken() must flip true after consumeReceiver()",
             level.taken(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void storesCompactNonNegative() {
+    void retainsCompactCountFromCompact() {
         final Level level = new Level(
             0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
         );
         level.compact(3);
         MatcherAssert.assertThat(
-            "compactN() must round-trip the assigned N",
+            "count() must round-trip the N passed to compact()",
             level.count(),
             Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void positionsMismatchedBindingErrorAtObservedSpan() {
+        final Level level = new Level(
+            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
+        );
+        level.observeBinding(false, new Span("first", 1));
+        level.observeBinding(true, new Span("second", 9));
+        MatcherAssert.assertThat(
+            "error must be positioned at the line of the arg that broke the rule",
+            Assertions.assertThrows(
+                ParseError.class,
+                level::commitArg,
+                "commitArg must reject a binding that flips mode mid-group"
+            ).line(),
+            Matchers.equalTo(9)
+        );
+    }
+
+    @Test
+    void toleratesCommitArgWithoutPendingArg() {
+        Assertions.assertDoesNotThrow(
+            new Level(
+                0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
+            )::commitArg,
+            "commitArg must not raise when no arg is currently pending"
         );
     }
 

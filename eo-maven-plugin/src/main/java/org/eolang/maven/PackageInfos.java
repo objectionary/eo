@@ -22,9 +22,12 @@ import java.util.stream.Stream;
 final class PackageInfos {
 
     /**
-     * Pattern for replacing EO (object) or EO_ (package) prefixes in package.
+     * Pattern for stripping the leading EO (object) or EO_ (package) prefix
+     * off each dot-separated segment of a package, anchored to the start of
+     * the string or right after a dot so an EO occurring inside a segment's
+     * own name survives.
      */
-    private static final Pattern PACKAGE = Pattern.compile("EO_?");
+    private static final Pattern PACKAGE = Pattern.compile("(^|\\.)EO_?");
 
     /**
      * Pattern for replacing first default org.eolang package, with the dot
@@ -105,15 +108,6 @@ final class PackageInfos {
         return size;
     }
 
-    /**
-     * Does the package of this directory already have a hand-written
-     * {@code package-info.java} in one of the {@link #sources}? Javac dies with
-     * an internal error when one package has two {@code package-info.java} and
-     * one of them carries an annotation, so the generated file gives way to the
-     * one a human wrote.
-     * @param dir The directory under the {@link #root}
-     * @return TRUE if the package already has its own package-info.java
-     */
     private boolean taken(final Path dir) {
         final Path pkg = this.root.relativize(dir);
         return this.sources.stream().anyMatch(
@@ -131,7 +125,7 @@ final class PackageInfos {
             String.format(
                 "@org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.BASE.matcher(
-                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("$1")
                 ).replaceFirst("")
             ),
             String.format("package %s;", PackageInfos.escaped(pkg))

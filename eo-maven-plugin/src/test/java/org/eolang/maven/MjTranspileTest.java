@@ -74,7 +74,7 @@ final class MjTranspileTest {
                     "",
                     "[] > x"
                 )
-                ).with("trackTransformationSteps", true)
+                ).with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class),
             "We should be able to transpile a simple EO program without exceptions when tracking transformation steps"
@@ -86,7 +86,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackTransformationSteps", true)
+                .with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -102,7 +102,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the second object of a tracked program did not reach the generated Java",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackTransformationSteps", true)
+                .with("trackSteps", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -117,12 +117,46 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .with("coverageTracking", true)
-                    .execute(new FakeMaven.Transpile())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
             Matchers.containsString("new PhCoverage(")
+        );
+    }
+
+    @Test
+    void excludesThrowingCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must not wrap a throwing test's body into PhCoverage when coverageTracking is on",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.throwing())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhCoverage("))
+        );
+    }
+
+    @Test
+    void excludesTruthyCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the generated Java must not wrap a truthy test's body into PhCoverage when coverageTracking is on",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.truthy())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhCoverage("))
         );
     }
 
@@ -133,7 +167,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -147,8 +181,8 @@ final class MjTranspileTest {
             "the generated class must extend PhDefault when phiDefaultClass is not set",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
-                    .execute(new FakeMaven.Transpile())
+                    .withProgram(MjTranspileTest.plain())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -162,9 +196,9 @@ final class MjTranspileTest {
             "the generated class must extend the class named by phiDefaultClass instead of PhDefault",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42 > @"))
+                    .withProgram(MjTranspileTest.plain())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -180,7 +214,7 @@ final class MjTranspileTest {
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.instantiating())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -191,11 +225,11 @@ final class MjTranspileTest {
     @Test
     void invalidatesCacheWhenPhiDefaultClassChanges(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
-        final String src = String.format("+package foo.x%n%n[] > main%n  42 > @");
+        final String src = MjTranspileTest.plain();
         new FakeMaven(temp.resolve("first"))
             .withProgram(src)
             .with("cache", cache.toFile())
-            .execute(new FakeMaven.Transpile());
+            .execute(new PpTranspile());
         MatcherAssert.assertThat(
             "the second run's generated Java must reflect its own phiDefaultClass instead of reusing the first run's cached PhDefault output",
             new TextOf(
@@ -203,7 +237,7 @@ final class MjTranspileTest {
                     .withProgram(src)
                     .with("cache", cache.toFile())
                     .with("superclass", "org.example.PhInspected")
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -219,7 +253,7 @@ final class MjTranspileTest {
             () -> new FakeMaven(temp)
                 .withProgram(MjTranspileTest.program())
                 .with("superclass", name)
-                .execute(new FakeMaven.Transpile()),
+                .execute(new PpTranspile()),
             "a phiDefaultClass that is not a Java class name must not reach the generated Java"
         );
         final StringWriter writer = new StringWriter();
@@ -237,7 +271,7 @@ final class MjTranspileTest {
             IllegalStateException.class,
             () -> new FakeMaven(temp)
                 .withProgram("# Absent.")
-                .execute(new FakeMaven.Transpile()),
+                .execute(new PpTranspile()),
             "TranspileMojo should throw an exception on invalid EO code"
         );
         final StringWriter writer = new StringWriter();
@@ -257,6 +291,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "TranspileMojo should not touch atoms, but it did",
             new FakeMaven(temp).withProgram(
+                "+architect yegor256@gmail.com",
                 "+package foo.x",
                 "+rt jvm org.eolang:eo-runtime:0.0.0",
                 "+unlint not-empty-atom",
@@ -266,7 +301,7 @@ final class MjTranspileTest {
                 "  ? > y",
                 "  ? > z"
                 )
-                .execute(new FakeMaven.Transpile())
+                .execute(new PpTranspile())
                 .result(),
             Matchers.not(
                 Matchers.allOf(
@@ -284,14 +319,15 @@ final class MjTranspileTest {
             new FakeMaven(temp).withProgram(
                 String.join(
                     System.lineSeparator(),
+                    "+architect yegor256@gmail.com",
                     "+custom-meta",
                     "+package foo.x",
                     "",
                     "[] > main"
                 )
-                )
-                .execute(new FakeMaven.Transpile())
-                .result(),
+            )
+            .execute(new PpTranspile())
+            .result(),
             Matchers.allOf(
                 Matchers.hasKey("target/generated/org/eolang/EO_foo/package-info.java"),
                 Matchers.hasKey("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
@@ -307,15 +343,16 @@ final class MjTranspileTest {
                 new FakeMaven(temp).withProgram(
                     String.join(
                         System.lineSeparator(),
+                        "+architect yegor256@gmail.com",
                         "+package foo.x",
                         "",
                         "[] > main",
                         "  true > @"
                     )
-                    )
-                    .execute(new FakeMaven.Transpile())
-                    .result()
-                    .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
+                )
+                .execute(new PpTranspile())
+                .result()
+                .get("target/generated/org/eolang/EO_foo/EO_x/package-info.java")
             ).asString(),
             Matchers.allOf(
                 Matchers.containsString("@org.eolang.XmirPackage(\"foo.x\")"),
@@ -330,8 +367,8 @@ final class MjTranspileTest {
             "TranspileMojo must skip PhSafe wrappers by default, but it did not",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
-                    .execute(new FakeMaven.Transpile())
+                    .withProgram(MjTranspileTest.dispatching())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -345,9 +382,9 @@ final class MjTranspileTest {
             "TranspileMojo must wrap dispatched objects with PhSafe when enabled, but it did not",
             new TextOf(
                 new FakeMaven(temp)
-                    .withProgram(String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @"))
-                    .with("trackLocations", true)
-                    .execute(new FakeMaven.Transpile())
+                    .withProgram(MjTranspileTest.dispatching())
+                    .with("located", true)
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -358,19 +395,19 @@ final class MjTranspileTest {
     @Test
     void invalidatesCacheWhenTrackLocationsChanges(@Mktmp final Path temp) throws Exception {
         final Path cache = temp.resolve("cache");
-        final String src = String.format("+package foo.x%n%n[] > main%n  42.plus 1 > @");
+        final String src = MjTranspileTest.dispatching();
         new FakeMaven(temp.resolve("first"))
             .withProgram(src)
             .with("cache", cache.toFile())
-            .execute(new FakeMaven.Transpile());
+            .execute(new PpTranspile());
         MatcherAssert.assertThat(
             "the second run's generated Java must reflect its own trackLocations=true setting instead of reusing the first run's cached trackLocations=false output",
             new TextOf(
                 new FakeMaven(temp.resolve("second"))
                     .withProgram(src)
                     .with("cache", cache.toFile())
-                    .with("trackLocations", true)
-                    .execute(new FakeMaven.Transpile())
+                    .with("located", true)
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -383,7 +420,7 @@ final class MjTranspileTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(MjTranspileTest.program())
-            .execute(new FakeMaven.Transpile())
+            .execute(new PpTranspile())
             .result();
         final Path java = res.get(MjTranspileTest.compiled());
         final long before = java.toFile().lastModified();
@@ -391,7 +428,7 @@ final class MjTranspileTest {
             res.get("foo/x/main.eo").toFile().setLastModified(before + 1L),
             "The filesystem refused to touch the source, cannot tell modified from intact"
         );
-        maven.execute(new FakeMaven.Transpile());
+        maven.execute(new PpTranspile());
         MatcherAssert.assertThat(
             "The Java file should be recompiled",
             java.toFile().lastModified(),
@@ -404,7 +441,7 @@ final class MjTranspileTest {
         final FakeMaven maven = new FakeMaven(temp);
         final Map<String, Path> res = maven
             .withProgram(MjTranspileTest.program())
-            .execute(new FakeMaven.Transpile())
+            .execute(new PpTranspile())
             .result();
         final Path java = res.get(MjTranspileTest.compiled());
         Assumptions.assumeTrue(
@@ -429,7 +466,7 @@ final class MjTranspileTest {
         final Path java = maven
             .withProgram(MjTranspileTest.program())
             .allTojosWithHash(CommitHash.FAKE)
-            .execute(new FakeMaven.Transpile())
+            .execute(new PpTranspile())
             .result()
             .get(MjTranspileTest.compiled());
         Assumptions.assumeTrue(
@@ -453,7 +490,7 @@ final class MjTranspileTest {
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.program())
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
@@ -477,7 +514,7 @@ final class MjTranspileTest {
         try (
             Stream<Path> list = Files.list(
                 maven
-                    .execute(new FakeMaven.Transpile())
+                    .execute(new PpTranspile())
                     .generatedPath()
                     .resolve("org/eolang/EO_foo/EO_x")
             )
@@ -506,14 +543,14 @@ final class MjTranspileTest {
             .with("generatedDir", sources.toFile())
             .with("targetDir", target.resolve("eo-sources").toFile())
             .withHelloWorld()
-            .execute(new FakeMaven.Transpile());
+            .execute(new PpTranspile());
         maven
             .with("scope", "test")
             .with("generatedDir", tests.toFile())
             .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
-            .execute(new FakeMaven.Transpile());
+            .execute(new PpTranspile());
         final Set<String> intersection = MjTranspileTest.classes(tests);
         intersection.retainAll(MjTranspileTest.classes(sources));
         MatcherAssert.assertThat(
@@ -529,27 +566,64 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * An EO program that makes the transpiler build objects at each of the
-     * three places it emits a {@code new} of the base class: the context of
-     * a generated {@code apply()} for the nested formation, the argument of
-     * a {@code PhApplication} for the number, and an anonymous abstract
-     * object with no children for the empty argument.
-     * @return Source code of the program
-     */
     private static String instantiating() {
         return String.format(
-            "+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
+            "+architect yegor256@gmail.com%n+package foo.x%n%n[] > main%n  [] > inner%n    42 > @%n  42.plus > @%n    []"
         );
     }
 
-    /**
-     * The EO program holding two top-level objects.
-     * @return Source code of the program
-     */
+    private static String plain() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "  42 > @"
+        );
+    }
+
+    private static String dispatching() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "  42.plus 1 > @"
+        );
+    }
+
+    private static String throwing() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "",
+            "  --> stops-on-dispatching-on-a-number",
+            "    42.plus 1 > @"
+        );
+    }
+
+    private static String truthy() {
+        return String.join(
+            System.lineSeparator(),
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "[] > main",
+            "",
+            "  ++> can-dispatch-on-a-number",
+            "    42.plus 1 > @"
+        );
+    }
+
     private static String pair() {
         return String.join(
             System.lineSeparator(),
+            "+architect yegor256@gmail.com",
             "+package examples",
             "",
             "# First.",
@@ -560,30 +634,16 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * The EO program to transpile, taken from test resources.
-     * @return Source code of the program
-     */
     private static String program() {
         return new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/maven/mess.eo"))
         ).asString();
     }
 
-    /**
-     * The Java file the program is transpiled into.
-     * @return Path relative to the workspace
-     */
     private static String compiled() {
         return "target/generated/org/eolang/EO_foo/EO_x/EOmain.java";
     }
 
-    /**
-     * Get all classes in directory.
-     * @param root Directory to get classes from
-     * @return Set of classes
-     * @throws IOException If fails.
-     */
     private static Set<String> classes(final Path root) throws IOException {
         try (Stream<Path> walk = Files.walk(root)) {
             return walk.filter(MjTranspileTest::isJava)
@@ -592,30 +652,14 @@ final class MjTranspileTest {
         }
     }
 
-    /**
-     * Is java file.
-     * @param path Path to check
-     * @return True if path is java file
-     */
     private static boolean isJava(final Path path) {
         return Files.isRegularFile(path) && path.toString().endsWith(".java");
     }
 
-    /**
-     * Get filename.
-     * @param path Path to get filename from
-     * @return Filename
-     */
     private static String filename(final Path path) {
         return path.getFileName().toString();
     }
 
-    /**
-     * Check that a generated Java source came out whole, with balanced
-     * brackets and, for the main object, a class declaration.
-     * @param file Generated Java file
-     * @return TRUE if the source is intact
-     */
     private static boolean intact(final Path file) {
         final String java = new UncheckedText(new TextOf(file)).asString();
         return MjTranspileTest.balanced(java, '{', '}')
@@ -624,13 +668,6 @@ final class MjTranspileTest {
                 || java.contains("class EOmain"));
     }
 
-    /**
-     * Check that every opening bracket has a matching closing one, in order.
-     * @param text Text to check
-     * @param open Opening bracket character
-     * @param close Closing bracket character
-     * @return TRUE if brackets are balanced
-     */
     private static boolean balanced(final String text, final char open, final char close) {
         int depth = 0;
         boolean valid = true;

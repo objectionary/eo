@@ -9,17 +9,16 @@ import com.jcabi.log.Logger;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Train;
+import fixtures.LargeProgram;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.log4j.Level;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
@@ -38,7 +37,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -50,21 +48,25 @@ import org.xml.sax.SAXParseException;
  * Test case for {@link EoSyntax}.
  * @since 0.1
  */
-@Execution(ExecutionMode.SAME_THREAD)
 @ExtendWith(LogProgress.class)
 final class EoSyntaxTest {
+
+    @Test
+    void runsWithoutSingleThreadRestriction() {
+        MatcherAssert.assertThat(
+            "class still carries an execution mode restriction",
+            EoSyntaxTest.class.isAnnotationPresent(Execution.class),
+            Matchers.is(false)
+        );
+    }
 
     @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
             "EoSyntax must generate valid XMIR from simple code",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new ResourceOf("org/eolang/parser/fibonacci.eo")
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(new ResourceOf("org/eolang/parser/fibonacci.eo"))
+                    .parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object[@ms and @time and @version]",
@@ -76,20 +78,67 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void parsesSimpleCodeWithDebugMode() {
-        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(EoSyntax.class);
-        final Level previous = logger.getLevel();
-        logger.setLevel(Level.DEBUG);
-        try {
-            Assertions.assertDoesNotThrow(
+    void measuresRealParsingTime() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not a measured elapsed time",
+            Long.parseLong(
+                new EoSyntax(new LargeProgram(30)).parsed().xpath("/object/@ms").get(0)
+            ),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void reportsMsWithinSaneBound() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not within a sane bound for a small program",
+            Long.parseLong(
                 new EoSyntax(
-                    "[] > x-н, 1".concat(System.lineSeparator())
-                )::parsed,
-                "EO syntax should not fail in debug mode when program has errors"
-            );
-        } finally {
-            logger.setLevel(previous);
-        }
+                    new ResourceOf("org/eolang/parser/fibonacci.eo")
+                ).parsed().xpath("/object/@ms").get(0)
+            ),
+            Matchers.lessThan(60_000L)
+        );
+    }
+
+    @Test
+    void measuresParsingTimeOnEveryCall() throws Exception {
+        final EoSyntax syntax = new EoSyntax(new LargeProgram(30));
+        syntax.parsed();
+        MatcherAssert.assertThat(
+            "second parse of the same syntax does not measure its own elapsed time",
+            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void rejectsANullTransform() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
+            "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
+    void rejectsANullTrain() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (Train<Shift>) null).parsed(),
+            "EoSyntax must reject a null train, but it didn't"
+        );
+    }
+
+    @Test
+    void acceptsANonNullTrain() throws Exception {
+        MatcherAssert.assertThat(
+            "EoSyntax must parse code with a non-null train, but it didn't",
+            XhtmlMatchers.xhtml(
+                new EoSyntax("[] > foo", new TrDefault<Shift>()).parsed().toString()
+            ),
+            XhtmlMatchers.hasXPath("/object/o[@name='foo']")
+        );
     }
 
     @Test
@@ -97,21 +146,13 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "doesn't prohibit more than one tailing EOL",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > foo",
-                                "",
-                                "",
-                                "",
-                                ""
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(), "[] > foo", "", "", "", ""
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths("/object/errors/error")
         );
@@ -123,16 +164,33 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(src)
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(new InputOf(src)).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error",
                 String.format("/object[listing='%s']", src)
+            )
+        );
+    }
+
+    @Test
+    void rejectsProgramOfMetasAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of metas alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("+package foo%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
+            )
+        );
+    }
+
+    @Test
+    void rejectsProgramOfCommentsAlone() throws Exception {
+        MatcherAssert.assertThat(
+            "a file of a top comment block alone declares no object and must be refused",
+            new EoSyntax(new InputOf(String.format("# just a note%n"))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='validate-object-presence' and @severity='critical']"
             )
         );
     }
@@ -146,12 +204,7 @@ final class EoSyntaxTest {
             "EoSyntax must copy listing to XMIR",
             new Xnav(
                 new XMLDocument(
-                    new String(
-                        new EoSyntax(
-                            new InputOf(src)
-                        ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                        StandardCharsets.UTF_8
-                    )
+                    new EoSyntax(new InputOf(src)).parsed().toString()
                 ).inner()
             ).element("object").element("listing").text().get(),
             Matchers.equalTo(src)
@@ -218,7 +271,7 @@ final class EoSyntaxTest {
             ).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
-                "/object/o[@name='base' and count(o[not(@name='xi🌵')])=2]",
+                "/object/o[@name='base' and count(o[not(starts-with(@name, 'a🌵'))])=2]",
                 "/object/o[@name='base']/o[@name='x']",
                 "/object/o[@name='base']/o[@name='f']"
             )
@@ -228,7 +281,7 @@ final class EoSyntaxTest {
     @Test
     void parsesCanonicalEoProgram() throws Exception {
         MatcherAssert.assertThat(
-            "We expect that all of the bytes contain a formation with data",
+            "a formation came out with empty bytes",
             new EoSyntax(
                 new TextOf(
                     new ResourceOf("org/eolang/parser/canonical.eo")
@@ -327,7 +380,7 @@ final class EoSyntaxTest {
     )
     void storesAsBytes(final String code) throws IOException {
         MatcherAssert.assertThat(
-            "We data is parsed successfully as bytes",
+            "data was not stored as bytes",
             new EoSyntax(new InputOf(code)).parsed(),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
@@ -340,10 +393,13 @@ final class EoSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/eo-typos/", glob = "**.yaml")
     void checksTypoPacks(final String yaml) {
         final Xtory story = EoSyntaxTest.typo(yaml);
-        final Xnav after = new Xnav(story.after().inner());
         MatcherAssert.assertThat(
-            after.toString(),
-            after.path("/object/errors/error/@line").map(line -> line.text().get())
+            String.format(
+                "no error was reported on line %s of %s",
+                story.map().get("line"), yaml
+            ),
+            new Xnav(story.after().inner())
+                .path("/object/errors/error/@line").map(line -> line.text().get())
                 .collect(Collectors.toList()),
             Matchers.hasItem(story.map().get("line").toString())
         );
@@ -383,7 +439,7 @@ final class EoSyntaxTest {
         );
         Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
-            "passed without exceptions",
+            String.format("pack XPaths do not match the parsed XMIR in %s", yaml),
             story,
             new XtoryMatcher()
         );
@@ -393,7 +449,7 @@ final class EoSyntaxTest {
     @ClasspathSource(value = "org/eolang/parser/eo-syntax/", glob = "**.yaml")
     void validatesEoSyntax(final String yaml) {
         MatcherAssert.assertThat(
-            "passed without exceptions",
+            String.format("pack XPaths do not match the parsed XMIR in %s", yaml),
             new XtSticky(
                 new XtYaml(
                     yaml,
@@ -538,14 +594,11 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in object name",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            "[] > foo🌵bar".concat(System.lineSeparator())
-                        )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(
+                    new InputOf(
+                        "[] > foo🌵bar".concat(System.lineSeparator())
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -558,18 +611,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute name",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > app",
-                                "  x > a🌵65".concat(System.lineSeparator())
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > app",
+                            "  x > a🌵65".concat(System.lineSeparator())
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -582,18 +632,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute value",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > x",
-                                "  🌵 > y".concat(System.lineSeparator())
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > x",
+                            "  🌵 > y".concat(System.lineSeparator())
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -721,22 +768,13 @@ final class EoSyntaxTest {
         );
     }
 
-    /**
-     * Prepare naughty strings.
-     * @return Stream of strings
-     * @throws IOException if I/O fails
-     */
-    private static Stream<Arguments> naughty() throws IOException {
-        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+    private static Stream<Arguments> naughty() throws Exception {
+        return new TextOf(new ResourceOf("org/eolang/parser/blns.txt")).asString()
+            .lines().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
     }
 
-    /**
-     * Parse a typo pack, skipping the packs that ask to be skipped.
-     * @param yaml The pack
-     * @return Parsed story
-     */
     private static Xtory typo(final String yaml) {
         final Xtory story = new XtSticky(
             new XtYaml(
@@ -748,25 +786,13 @@ final class EoSyntaxTest {
         return story;
     }
 
-    /**
-     * Parse a single-line EO source with no post-XSL transform — the
-     * resulting XMIR shows the raw parser output, useful for asserting
-     * directly on the parser's emission shape.
-     * @param line One EO source line
-     * @return Raw XMIR
-     * @throws Exception If parsing fails
-     */
-    private static XML raw(final String line) throws Exception {
+    private static XML raw(final String source) throws Exception {
         return new EoSyntax(
-            new InputOf(line.concat(String.valueOf((char) 10))),
+            new InputOf(source.concat(String.valueOf((char) 10))),
             UnaryOperator.identity()
         ).parsed();
     }
 
-    /**
-     * Inputs for {@link EoSyntaxTest#parsesSuccessfully}.
-     * @return Test cases
-     */
     private static Stream<String> parsesSuccessfullyArgs() {
         final String eol = String.valueOf((char) 10);
         final String crlf = String.valueOf((char) 13).concat(eol);

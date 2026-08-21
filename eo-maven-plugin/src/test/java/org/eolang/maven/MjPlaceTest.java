@@ -54,7 +54,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).withPlacedBinary(
+            new FakeMaven(temp).with("rewriteBinaries", false).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -105,7 +105,7 @@ final class MjPlaceTest {
             new FakeMaven(temp)
                 .withHelloWorld()
                 .with("ignoreRuntime", true)
-                .execute(new FakeMaven.Place())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/jna-*.class")
@@ -162,7 +162,7 @@ final class MjPlaceTest {
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
                 .with("resolveJna", false)
-                .execute(new FakeMaven.Place())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             new ContainsFiles("**/eo-runtime-*.class")
@@ -176,7 +176,7 @@ final class MjPlaceTest {
             new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
                 .with("resolveJna", false)
-                .execute(new FakeMaven.Place())
+                .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
             Matchers.not(new ContainsFiles("**/eo-runtime-*.class"))
@@ -184,8 +184,26 @@ final class MjPlaceTest {
     }
 
     @Test
-    void doesNotPlacesAgainIfWasNotUnplaced(@Mktmp final Path temp) throws Exception {
+    void rewritesAgainIfNotUnplacedButRewriteBinariesIsOn(@Mktmp final Path temp)
+        throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
+        final String binary = "some.class";
+        final String updated = "new content";
+        MjPlaceTest.saveBinary(temp, "some old content", binary);
+        maven.execute(MjPlace.class).result();
+        MjPlaceTest.saveBinary(temp, updated, binary);
+        maven.execute(MjPlace.class).result();
+        MatcherAssert.assertThat(
+            "The binary file must be replaced with new content because rewriteBinaries is on by default, but it was not",
+            new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
+            Matchers.equalTo(updated)
+        );
+    }
+
+    @Test
+    void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).with("rewriteBinaries", false);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);
@@ -193,7 +211,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "new content", binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must not be replaced with new content, but it was not",
+            "The binary file must not be replaced with new content because rewriteBinaries is off, but it was",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );
@@ -216,32 +234,14 @@ final class MjPlaceTest {
         );
     }
 
-    /**
-     * Returns the target classes.
-     */
     private String targetClasses() {
         return "target/classes";
     }
 
-    /**
-     * Save binary to {@link MjResolve#DIR} folder.
-     * The method emulates the situation when we have some resolved binaries.
-     * @param temp   Temp test directory
-     * @param binary Binary name
-     * @throws IOException In case of error.
-     */
     private static void saveBinary(final Path temp, final String binary) throws IOException {
         MjPlaceTest.saveBinary(temp, UUID.randomUUID().toString(), binary);
     }
 
-    /**
-     * Save binary to {@link MjResolve#DIR} folder.
-     * The method emulates the situation when we have some resolved binaries.
-     * @param temp    Temp test directory
-     * @param content Content of the binary
-     * @param binary  Binary name
-     * @throws IOException In case of error.
-     */
     private static void saveBinary(
         final Path temp,
         final String content,
@@ -255,13 +255,6 @@ final class MjPlaceTest {
         ).value();
     }
 
-    /**
-     * Save binary to classes folder.
-     * The method emulates the situation when we already have some placed binaries.
-     * @param temp   Temp test directory
-     * @param binary Binary name
-     * @throws IOException In case of error.
-     */
     private static void saveAlreadyPlacedBinary(
         final Path temp,
         final String binary
@@ -269,14 +262,6 @@ final class MjPlaceTest {
         MjPlaceTest.saveAlreadyPlacedBinary(temp, UUID.randomUUID().toString(), binary);
     }
 
-    /**
-     * Save binary to classes folder.
-     * The method emulates the situation when we already have some placed binaries.
-     * @param temp    Temp test directory
-     * @param content Content of the binary
-     * @param binary  Binary name
-     * @throws IOException In case of error.
-     */
     private static void saveAlreadyPlacedBinary(
         final Path temp,
         final String content,
@@ -288,12 +273,6 @@ final class MjPlaceTest {
         ).value();
     }
 
-    /**
-     * Path to the placed binary.
-     * @param temp   Temp test directory
-     * @param binary Binary name
-     * @return Path to the placed binary
-     */
     private static Path pathToPlacedBinary(final Path temp, final String binary) {
         return temp.resolve("target/classes").resolve(binary);
     }

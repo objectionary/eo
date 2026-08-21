@@ -109,7 +109,7 @@ final class StackTest {
     @Test
     void popsDeeperLevelsAndRunsCloser() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.push(4, 3, Kind.HEAD, Openness.OPEN);
@@ -128,9 +128,9 @@ final class StackTest {
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
-            "after popping a deeper level, the surviving top must drop to VERTICAL_COMPLETED",
+            "after popping a deeper level, the surviving top must drop to VCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.VERTICAL_COMPLETED)
+            Matchers.equalTo(Openness.VCOMPLETED)
         );
     }
 
@@ -138,20 +138,20 @@ final class StackTest {
     void leavesHorizontallyCompletedTopAlone() {
         final Stack stack = new Stack();
         final Level top = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        top.close(Openness.HORIZONTAL_COMPLETED);
+        top.close(Openness.HCOMPLETED);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.popDeeperThan(0);
         MatcherAssert.assertThat(
             "a horizontally-completed top must not be downgraded to vertical-completed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
     @Test
     void replacesTopAndClosesOld() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.start()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.start()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.replace(5, Kind.BARE_FORMATION, Openness.OPEN);
@@ -177,7 +177,7 @@ final class StackTest {
     @Test
     void runsCloserOnEveryRemainingEntryAtClose() {
         final List<Integer> closed = new ArrayList<>(0);
-        final Stack stack = new Stack(level -> closed.add(level.indent()));
+        final Stack stack = new Stack((level, naming) -> closed.add(level.indent()));
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
         stack.push(2, 2, Kind.HEAD, Openness.OPEN);
         stack.close();
@@ -209,17 +209,69 @@ final class StackTest {
         stack.replace(3, Kind.COMPACT_TUPLE, Openness.OPEN);
         stack.restore(snapshot);
         MatcherAssert.assertThat(
-            "restore must bring back the exact entry replace displaced"
+            "restore must bring back the entry replace displaced"
                 .concat(", not merely one at the same indent"),
-            stack.top(),
-            Matchers.sameInstance(displaced)
+            stack.top().start(),
+            Matchers.equalTo(displaced.start())
         );
     }
 
-    /**
-     * Trigger the first-push-at-non-zero-indent violation and capture it.
-     * @return The thrown error
-     */
+    @Test
+    void undoesMutationOfSurvivingEntryOnRestore() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_REVERSED, Openness.OPEN);
+        final List<Level> snapshot = stack.snapshot();
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.restore(snapshot);
+        MatcherAssert.assertThat(
+            "restore must undo the receiver the failed child consumed"
+                .concat(", not merely drop that child"),
+            stack.top().taken(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void answersTopLevelBelowAnEmptyStack() {
+        MatcherAssert.assertThat(
+            "the entry below an empty stack must be the bottom sentinel, whose kind is TOP_LEVEL",
+            new Stack().below().kind(),
+            Matchers.equalTo(Kind.TOP_LEVEL)
+        );
+    }
+
+    @Test
+    void answersTopLevelBelowTheOnlyEntry() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.HEAD, Openness.OPEN);
+        MatcherAssert.assertThat(
+            "the entry below the only entry must be the bottom sentinel, whose kind is TOP_LEVEL",
+            stack.below().kind(),
+            Matchers.equalTo(Kind.TOP_LEVEL)
+        );
+    }
+
+    @Test
+    void keepsTheBottomSentinelNonArgumentative() {
+        MatcherAssert.assertThat(
+            "the bottom sentinel cannot put its children in only-phi argument position",
+            new Stack().below().argumentative(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void answersTheRealEntryBelowTheTop() {
+        final Stack stack = new Stack();
+        final Level under = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        MatcherAssert.assertThat(
+            "the entry below the top must be the one pushed right before it",
+            stack.below(),
+            Matchers.sameInstance(under)
+        );
+    }
+
     private static ParseError firstPushIndentViolation() {
         return Assertions.assertThrows(
             ParseError.class,

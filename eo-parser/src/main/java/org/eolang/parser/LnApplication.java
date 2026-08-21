@@ -22,7 +22,7 @@ import java.util.List;
  * <li>{@link Kind#HMETHOD} — head with {@code .method} chain, 0
  * horizontal args. Open for deeper-indent children.</li>
  * <li>{@link Kind#HAPPLICATION} — head (with or without chain) plus one
- * or more horizontal args. {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * or more horizontal args. {@link Openness#HCOMPLETED}.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: method-dispatch chains emit as
@@ -68,22 +68,16 @@ final class LnApplication implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        if (head.kind() == Value.Kind.GROUP
-            && chain.isEmpty() && args.isEmpty() && outer == null) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
-            );
-        }
+        this.checkGroupHead(head, chain, args, outer);
         Comments.seal(globals, emit, this.span);
-        final Kind kind = LnApplication.classify(chain, args);
+        final Kind kind = LnApplication.classify(head, chain, args);
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {
-            openness = Openness.HORIZONTAL_COMPLETED;
+            openness = Openness.HCOMPLETED;
         } else {
             openness = Openness.OPEN;
         }
@@ -117,17 +111,13 @@ final class LnApplication implements Line {
         return label;
     }
 
-    /**
-     * Decide the outer kind based on chain and argument presence.
-     * @param chain Method-dispatch chain (may be empty)
-     * @param args Horizontal arguments (may be empty)
-     * @return Outer kind
-     */
-    private static Kind classify(final List<MethodChain> chain, final List<Value> args) {
+    private static Kind classify(
+        final Value head, final List<MethodChain> chain, final List<Value> args
+    ) {
         final Kind kind;
         if (args.isEmpty()) {
             if (chain.isEmpty()) {
-                kind = Kind.HEAD;
+                kind = LnApplication.bare(head);
             } else {
                 kind = Kind.HMETHOD;
             }
@@ -137,30 +127,72 @@ final class LnApplication implements Line {
         return kind;
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     * @param kind Initial outer kind for the pushed level
-     * @param openness Initial openness for the pushed level
-     */
+    private static Kind bare(final Value head) {
+        final Kind kind;
+        if (head.kind() == Value.Kind.IDENTITY) {
+            kind = Kind.IDENTITY_OBJECT;
+        } else {
+            kind = Kind.HEAD;
+        }
+        return kind;
+    }
+
+    private void checkGroupHead(
+        final Value head, final List<MethodChain> chain, final List<Value> args,
+        final String outer
+    ) {
+        if (head.kind() == Value.Kind.GROUP
+            && chain.isEmpty() && args.isEmpty() && outer == null) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
+            );
+        }
+        if (!args.isEmpty() && this.opensFormationBody(head)) {
+            throw new ParseError(
+                this.span.line(), head.pos(),
+                "horizontal formation not allowed as argument"
+            );
+        }
+    }
+
+    private boolean opensFormationBody(final Value head) {
+        return head.kind() == Value.Kind.IDENTITY
+            || head.kind() == Value.Kind.GROUP && this.wrapsInlinePhi(head);
+    }
+
+    // @checkstyle NonStaticMethodCheck (2 lines)
+    private boolean wrapsInlinePhi(final Value head) {
+        final String raw = head.raw();
+        final String inner = raw.substring(1, raw.length() - 1);
+        boolean found = false;
+        int depth = 0;
+        int idx = 0;
+        while (idx < inner.length() - 2 && !found) {
+            final char glyph = inner.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(inner, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == '>'
+                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
+                found = true;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
     private void transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(kind, openness, suffix.named());
+        new Transition(stack, this.span).apply(
+            kind, openness, new Admission(suffix.named(), suffix.test())
+        );
     }
 
-    /**
-     * Emit the head, chain (flat siblings), and horizontal args
-     * (children of the head's {@code <o>} or last chain link). The last
-     * {@code <o>} (head if no chain, last link if chain) remains open;
-     * cursor stays inside.
-     * @param emit The directives sink
-     * @param suffix The parsed suffix
-     * @param head The head value
-     * @param chain The chain links (may be empty)
-     * @param args The horizontal arguments (may be empty)
-     */
     private void emit(
         final Emit emit, final Suffix suffix, final Value head,
         final List<MethodChain> chain, final List<Value> args

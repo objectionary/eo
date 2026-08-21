@@ -140,13 +140,6 @@ final class InferringTest {
         );
     }
 
-    /**
-     * The files of the program the pack describes, named as they are on disk,
-     * since one table covers all of them and a locator names one object of
-     * one file.
-     * @param pack The pack
-     * @return The sources, by the name their XMIR takes
-     */
     private Map<String, String> sources(final Xtory pack) {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("eo")).entrySet()) {
@@ -158,18 +151,11 @@ final class InferringTest {
         return found;
     }
 
-    /**
-     * The XPaths of the pack that match nothing, each named by the document it
-     * was asked of, plus any key of the pack this runner does not know - a key
-     * nobody reads would silently switch its assertions off.
-     * @param pack The pack
-     * @param temp The directory the clues have just written into
-     * @return The XPaths that failed, empty when the pack is satisfied
-     * @throws IOException If a document cannot be read
-     */
     private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
-        final Collection<String> tables = Arrays.asList("provides", "needs", "links", "checks");
+        final Collection<String> tables = Arrays.asList(
+            "provides", "needs", "links"
+        );
         for (final Object key : pack.map().keySet()) {
             if (!"eo".equals(key) && !"xmir".equals(key) && !tables.contains(key)) {
                 failed.add(String.format("unknown key: %s", key));
@@ -190,15 +176,6 @@ final class InferringTest {
         return failed;
     }
 
-    /**
-     * The XPaths the pack asks of the XMIR prepared for the rules, which is
-     * per file, that match nothing.
-     * @param pack The pack
-     * @param temp The directory the clues have just written into
-     * @return The XPaths that failed, and every file named that the program
-     *  does not have
-     * @throws IOException If a document cannot be read
-     */
     private Collection<String> unprepared(final Xtory pack, final Path temp) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         if (pack.map().containsKey("xmir")) {
@@ -221,13 +198,6 @@ final class InferringTest {
         return failed;
     }
 
-    /**
-     * The XPaths that match nothing in the given document.
-     * @param document The document
-     * @param about What the document is, for the message
-     * @param xpaths The XPaths
-     * @return The XPaths that failed
-     */
     private Collection<String> absent(
         final XML document, final String about, final List<String> xpaths
     ) {

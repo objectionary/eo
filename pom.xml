@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.73.3</version>
+    <version>0.73.4</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -323,13 +323,13 @@
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>5.0.8</version>
+      <version>5.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>5.0.8</version>
+      <version>5.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -445,6 +445,29 @@
       </plugins>
     </pluginManagement>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <!--
+        By default the plugin contributes all of its goals, including the
+        two aggregators, which fork the "compile" lifecycle of every module
+        from the parent, before any module is built. The fork stops at
+        "compile", so eo-maven-plugin never gets its descriptor and
+        eo-runtime cannot transpile with it. The no-fork goals read what
+        the build has already compiled.
+        -->
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jxr-no-fork</report>
+              <report>test-jxr-no-fork</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <profile>
       <id>skipTests</id>
@@ -509,10 +532,9 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.30.7</version>
+            <version>0.31.1</version>
             <configuration>
               <excludes combine.children="append">
-                <exclude>checkstyle:/src/site/resources/.*</exclude>
                 <exclude>duplicatefinder:.*</exclude>
               </excludes>
             </configuration>
@@ -556,7 +578,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.0.8</version>
+                <version>5.1.0</version>
               </dependency>
               <dependency>
                 <groupId>net.sf.saxon</groupId>

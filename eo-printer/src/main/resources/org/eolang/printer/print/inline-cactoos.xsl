@@ -26,10 +26,26 @@
   `ξ.ρ.a🌵4-2`, everything up to the cactus prefix is stripped, so the
   resolved name is the trailing `a🌵4-2`. This mirrors the `$name`
   computation in the inlining template below.
+
+  Every call site hands over the `@base` attribute node itself, and it is turned
+  into a string here rather than declared as `xs:string` and left to the function
+  conversion rules (#6669). Saxon may bind a parameter to a closure over the
+  argument expression instead of over its converted value, and the node then
+  arrives in the body, where an expression compiled on the strength of a
+  statically atomic parameter (the `substring-before` below, or the
+  `ValueComparison` against `$name` in `eo:references`) casts it straight to an
+  atomic value and kills the whole sheet with `DOMNodeWrapper cannot be cast to
+  AtomicValue`. The `[2]` of #6638 is what made that reachable: it moved such a
+  predicate into a lazy subscript, which is exactly the context where the
+  deferred conversion is lost. Nothing is read differently for it: `string()` of
+  an attribute node is the value the conversion rules would have produced, and a
+  node carrying no `@base` at all now resolves to the empty string, which no
+  reference to an auto-name can equal, rather than raising a type error.
   -->
   <xsl:function name="eo:resolved-name" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
-    <xsl:sequence select="substring-after($base, substring-before($base, $auto))"/>
+    <xsl:param name="base" as="item()?"/>
+    <xsl:variable name="text" as="xs:string" select="string($base)"/>
+    <xsl:sequence select="substring-after($text, substring-before($text, $auto))"/>
   </xsl:function>
   <!--
   The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
@@ -252,8 +268,13 @@
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
-              <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-              <xsl:apply-templates select="$value/node()"/>
+              <xsl:variable name="folded" as="node()*">
+                <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+                <xsl:apply-templates select="$value/node()"/>
+              </xsl:variable>
+              <xsl:apply-templates select="$folded" mode="dropped">
+                <xsl:with-param name="drop" select="eo:host-drop($target, .)" tunnel="yes"/>
+              </xsl:apply-templates>
               <!--
               The reference is the base of an application (`b 42 &gt; x` over a
               based `a.plus &gt;&gt; b` handle), so it carries its own argument
@@ -310,9 +331,20 @@
   never moved its value anywhere: dropping it deletes the declaration from the
   printed source, so a private helper formation or const cache that nothing
   reads yet would silently vanish (#5914).
+
+  The handle name is atomised once here, for the reason spelled out on
+  `eo:resolved-name` above (#6669). Each of the nine questions below declares its
+  `$name` as `xs:string`, and this template is the only place that answered them
+  with the `@name` attribute node rather than its string value — every other
+  caller passes the `$name` variable of the inlining template, itself the string
+  returned by `eo:resolved-name`. Handing over the node is what let a
+  `DOMNodeWrapper` reach the `ValueComparison` inside `eo:references` and crash
+  the whole sheet. The match pattern requires `@name`, so the string is always
+  the name the nine were asked about before.
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
-    <xsl:if test="eo:recursive(., @name) or eo:dispatched(., @name) or eo:vertical-const(.) or eo:unreferenced(., @name) or (eo:multi-referenced(., @name) and eo:rebuilt(.)) or eo:piped(., @name) or eo:arg-applied(., @name) or eo:nested-applied(., @name) or eo:reapplied(., @name)">
+    <xsl:variable name="name" as="xs:string" select="string(@name)"/>
+    <xsl:if test="eo:recursive(., $name) or eo:dispatched(., $name) or eo:vertical-const(.) or eo:unreferenced(., $name) or (eo:multi-referenced(., $name) and eo:rebuilt(.)) or eo:piped(., $name) or eo:arg-applied(., $name) or eo:nested-applied(., $name) or eo:reapplied(., $name)">
       <xsl:copy>
         <xsl:apply-templates select="node()|@*"/>
       </xsl:copy>
@@ -475,11 +507,18 @@
   kept whole rather than folded into each use, which would change the object
   graph and drop the shared handle name, and "merge-monikers" then hosts the
   kept binding onto its first reference.
+
+  The second item is asked for instead of the size (#6638): Saxon may back the
+  sequence with a "MemoSequence", whose iterator refuses "getLength()", so
+  counting it crashes the whole sheet on the runs where the optimiser picks
+  that representation. Asking for "[2]" answers the same question, never counts
+  and short-circuits, the way the neighbouring "eo:unreferenced" already leans
+  on "empty()".
   -->
   <xsl:function name="eo:multi-referenced" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="count(eo:references($target, $name)) &gt; 1"/>
+    <xsl:sequence select="exists(eo:references($target, $name)[2])"/>
   </xsl:function>
   <!--
   Whether `$target` is built anew at every site it is folded into, so that
@@ -505,6 +544,68 @@
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="empty(eo:references($target, $name))"/>
   </xsl:function>
+  <!--
+  How many formations `$host` sits below `$bound`. A value folded onto a
+  reference deeper than the binding it came from is read again in a scope
+  that is not the one it was written in, so the names in it that reach out
+  of the value have to climb that difference (#7095).
+  -->
+  <xsl:function name="eo:host-drop" as="xs:integer">
+    <xsl:param name="bound" as="element()"/>
+    <xsl:param name="host" as="element()"/>
+    <xsl:sequence select="count($host/ancestor::o[eo:abstract(.)]) - count($bound/ancestor::o[eo:abstract(.)])"/>
+  </xsl:function>
+  <!--
+  The leading run of `ρ` segments, which is how far a base climbs before
+  it names anything.
+  -->
+  <xsl:function name="eo:rho-climb" as="xs:integer">
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:sequence select="if (empty($segments) or $segments[1] != $eo:rho) then 0 else 1 + eo:rho-climb(subsequence($segments, 2))"/>
+  </xsl:function>
+  <!--
+  The base `$base` as it must read after the value carrying it dropped
+  `$drop` formations, from a node `$depth` formations inside that value.
+  A climb of `$depth` lands on the value's own root, so a climb that far
+  or further has left the value and gains `$drop` hops. A shorter climb
+  stays inside, and a base rooted anywhere but `ξ`, or naming nothing
+  past its climb, is left alone.
+  -->
+  <xsl:function name="eo:dropped-base" as="xs:string">
+    <xsl:param name="base" as="xs:string"/>
+    <xsl:param name="drop" as="xs:integer"/>
+    <xsl:param name="depth" as="xs:integer"/>
+    <xsl:variable name="segments" select="tokenize($base, '\.')"/>
+    <xsl:variable name="climb" select="if ($segments[1] = $eo:xi) then eo:rho-climb(subsequence($segments, 2)) else -1"/>
+    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth or count($segments) &lt;= $climb + 1) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
+  </xsl:function>
+  <!--
+  Rewrites the bases of a folded value, counting how deep inside it each
+  node sits so that a name reaching no further than the value itself is
+  left where it is. Only the based-handle fold uses it so far; see the
+  puzzle on `Xmir` for the branches still to come.
+  -->
+  <xsl:template match="o" mode="dropped">
+    <xsl:param name="drop" as="xs:integer" tunnel="yes"/>
+    <xsl:param name="depth" as="xs:integer" select="0"/>
+    <xsl:copy>
+      <xsl:copy-of select="@*[name() != 'base']"/>
+      <xsl:if test="@base">
+        <xsl:attribute name="base" select="eo:dropped-base(@base, $drop, $depth)"/>
+      </xsl:if>
+      <xsl:apply-templates select="node()" mode="dropped">
+        <xsl:with-param name="depth" select="if (eo:abstract(.)) then $depth + 1 else $depth"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="node()|@*" mode="dropped">
+    <xsl:param name="depth" as="xs:integer" select="0"/>
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" mode="dropped">
+        <xsl:with-param name="depth" select="$depth"/>
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

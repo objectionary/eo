@@ -7,17 +7,16 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list element] > without
-  reduced > @
-    list
+[element] > without
+  ^.reduced > @
     *
     if. > [accum item] >>
-      element.eq item
+      ^.element.eq item
       accum
       accum.with item
 
   eq. ++> can-drop-an-item
-    without
+    without.
       *
         1
         2

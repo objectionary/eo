@@ -6,6 +6,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
@@ -27,14 +28,14 @@ public class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
-     * Lock for thread-safe initialization.
-     */
-    private final ReentrantLock lock;
-
-    /**
      * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
      */
     private final Supplier<String> term;
+
+    /**
+     * Lock guarding the first load of the reference.
+     */
+    private final Lock lock;
 
     /**
      * Ctor.
@@ -51,21 +52,9 @@ public class PhOnce implements Phi {
      */
     public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
-        this.lock = new ReentrantLock();
         this.term = term;
-        this.object = () -> {
-            if (this.ref.get() == null) {
-                this.lock.lock();
-                try {
-                    if (this.ref.get() == null) {
-                        this.ref.set(obj.get());
-                    }
-                } finally {
-                    this.lock.unlock();
-                }
-            }
-            return this.ref.get();
-        };
+        this.lock = new ReentrantLock();
+        this.object = () -> this.loaded(obj);
     }
 
     @Override
@@ -123,7 +112,14 @@ public class PhOnce implements Phi {
 
     @Override
     public Phi normalized() {
-        return this.object.get().normalized();
+        final Phi result = this.object.get().normalized();
+        final Phi normalized;
+        if (result instanceof PhTerminator) {
+            normalized = result;
+        } else {
+            normalized = new PhOnce(() -> result, this.term);
+        }
+        return normalized;
     }
 
     @Override
@@ -135,5 +131,19 @@ public class PhOnce implements Phi {
             result = this.term.get();
         }
         return result;
+    }
+
+    private Phi loaded(final Supplier<Phi> obj) {
+        if (this.ref.get() == null) {
+            this.lock.lock();
+            try {
+                if (this.ref.get() == null) {
+                    this.ref.set(obj.get());
+                }
+            } finally {
+                this.lock.unlock();
+            }
+        }
+        return this.ref.get();
     }
 }

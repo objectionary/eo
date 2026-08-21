@@ -28,7 +28,27 @@
     it on a box that has all the time in the world, so that a slow test
     runs to its end instead of being skipped.
     -->
-    <eo.deadline>5</eo.deadline>
+    <eo.deadline>1</eo.deadline>
+    <!--
+    Whether to wrap located objects into PhCoverage at transpile time, so
+    tests record EO-level coverage hits. Off by default; codecov.yml flips
+    it to true for the coverage CI job (see #5757).
+    -->
+    <eo.coverageTracking>false</eo.coverageTracking>
+    <!--
+    Where PhCoverage.hit() appends coverage records at runtime, and where
+    the coverage-report goal reads them back from afterwards. Shared as a
+    project property so both the surefire JVM (system property) and the
+    eo-maven-plugin goal (Maven parameter) agree on one path (see #5673).
+    -->
+    <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
+    <!--
+    Minimum percentage of dataized .eo objects that must be covered, or
+    the coverage-report goal fails the build. Only bites when coverage
+    tracking is actually on (see eo.coverageTracking above), so a build
+    that never opts in never trips it (see #5466).
+    -->
+    <eo.minCoverage>0</eo.minCoverage>
   </properties>
   <dependencies>
     <dependency>
@@ -41,6 +61,18 @@
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
       <version>5.19.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <!--
+      Only @FormatMethod is used, on the constructors that hand a format
+      string and its arguments to String.format. The annotation is not
+      retained at runtime, so the scope is "provided": it must not reach
+      the classpath of anything that depends on eo-runtime.
+      -->
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>2.50.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -58,7 +90,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -213,7 +245,7 @@
             located objects into PhCoverage at transpile time, so both ends
             agree on one file (see #5673).
             -->
-            <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
+            <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -246,6 +278,7 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
+          <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--
@@ -257,7 +290,7 @@
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
           <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>false</coverageTracking>
+          <coverageTracking>${eo.coverageTracking}</coverageTracking>
         </configuration>
         <executions>
           <execution>
@@ -268,12 +301,26 @@
               <goal>format</goal>
               <goal>compile</goal>
               <goal>inference</goal>
+              <goal>merge</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
               <goal>unspile</goal>
             </goals>
             <configuration>
+              <skipSourceLints>
+                <!-- https://github.com/objectionary/lints/issues/1279 -->
+                <lint>mandatory-package</lint>
+                <!-- https://github.com/objectionary/lints/issues/1273 -->
+                <lint>package-member-without-void</lint>
+                <!--
+                'redundant-object' sees one file at a time and counts only the
+                references written relative to the current object, so every
+                public attribute of a library object, from 'win32.rdonly' to
+                'tuple.empty', looks unused to it (objectionary/lints#1276).
+                -->
+                <lint>redundant-object</lint>
+              </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
               or 'win32', are applied with and without it on purpose, and the
@@ -282,11 +329,25 @@
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
               </skipProgramLints>
+              <!--
+              A package is named here once its members reach their receiver
+              through '^' instead of through a first void, since the two only
+              work together: with the void still there the merged member never
+              gets a receiver, and with '^' but no merge it has no rho to read.
+              -->
               <keepBinaries>
-                <glob>org/eolang/EO_number/package-info.class</glob>
-                <glob>org/eolang/EO_string/package-info.class</glob>
                 <glob>org/eolang/package-info.class</glob>
               </keepBinaries>
+            </configuration>
+          </execution>
+          <execution>
+            <id>coverage-report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>coverage-report</goal>
+            </goals>
+            <configuration>
+              <minCoverage>${eo.minCoverage}</minCoverage>
             </configuration>
           </execution>
         </executions>
@@ -408,10 +469,31 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <!--
+                The check runs before "prepare-package", where "unspile"
+                deletes the transpiled .class files from target/classes.
+                Qulice forks javac over the test sources, and those sources
+                mention generated objects like EOnumber and EOnop, which
+                javac can only resolve while their classes are still there.
+                -->
+                <id>jcabi-qulice-check</id>
+                <phase>process-test-classes</phase>
+              </execution>
+            </executions>
             <configuration>
-              <excludes>
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
-              </excludes>
+              <errorprone>
+                <!--
+                PhDefault.equals() compares hash codes on purpose. Every
+                decorator of Phi (PhOnce, PhSafe, PhCoverage, Data.ToPhi)
+                delegates both equals() and hashCode() to its origin, so a
+                wrapper has to compare equal to what it wraps. Comparing
+                identities instead breaks that, and even breaks reflexivity:
+                x.equals(x) turns into origin == x for every wrapper.
+                -->
+                <errorprone>-Xep:EqualsUsingHashCode:OFF</errorprone>
+              </errorprone>
             </configuration>
           </plugin>
           <plugin>
@@ -433,7 +515,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.0.8</version>
+                <version>5.1.0</version>
               </dependency>
             </dependencies>
           </plugin>
@@ -447,7 +529,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.29.3</version>
+            <version>0.29.4</version>
             <executions>
               <execution>
                 <goals>

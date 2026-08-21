@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void filled from Java has no caller in the program to read the answer
+# off, so the source says what will go in. A name asked of such a void is
+# then a name of the type it says it holds — the same answer for every
+# caller, which is what an annotation claims.
+eo:
+  app.eo: |
+    [] > app
+      reader.code.eq > @
+  reader.eo: |
+    [] > reader /Q.bytes
+      ? > code /Q.number
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > eq
+        x > @
+provides:
+  - "//attr[@name='code' and @void='true' and @holds='Φ.number']"
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.eq']"

@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The point of the merge is what the transpiler then writes. `lt` and `neg` were
+# objects of their own, each compiled into a class of its own and found by the
+# runtime on the classpath; after the merge they are attributes of the class of
+# `number`, added by name in its constructor, so nothing has to be searched for
+# when the program runs.
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+  number/neg.eo: |
+    +package number
+
+    [n] > neg
+      n.times -1 > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='neg']"
+java:
+  number.eo:
+    - 'class EOnumber'
+    - 'this.add("lt"'
+    - 'this.add("neg"'
+    - 'this.add("as-bytes"'

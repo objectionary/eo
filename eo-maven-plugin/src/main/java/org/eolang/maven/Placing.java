@@ -108,11 +108,6 @@ final class Placing implements Step {
         }
     }
 
-    /**
-     * Place one dependency.
-     * @param dep The name of the dependency
-     * @return How many binaries were placed
-     */
     private long placeDependency(final String dep) {
         if (this.placed.findJar(dep).isPresent()) {
             Logger.debug(this, "Found placed binaries from %s", dep);
@@ -122,12 +117,12 @@ final class Placing implements Step {
         if (copied > 0) {
             Logger.debug(
                 this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new Walk(dir).size(), dep, this.classes
+                copied, new WkDefault(dir).size(), dep, this.classes
             );
         } else {
             Logger.debug(
                 this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new Walk(dir).size(), dep, this.classes
+                new WkDefault(dir).size(), dep, this.classes
             );
         }
         return copied;
@@ -172,7 +167,7 @@ final class Placing implements Step {
 
         @Override
         public Long get() {
-            return new Walk(this.dir)
+            return new WkDefault(this.dir)
                 .includes(Placing.this.include)
                 .excludes(Placing.this.exclude)
                 .stream()
@@ -182,18 +177,14 @@ final class Placing implements Step {
                 .count();
         }
 
-        /**
-         * Check if the file has not been placed yet.
-         * @param file The file to check
-         * @return True if the file is not already placed
-         */
         private boolean isNotAlreadyPlaced(final Path file) {
             final Path target = Placing.this.classes.resolve(
                 this.dir.relativize(file)
             );
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             final boolean res;
-            if (tojo.isPresent()
+            if (!this.rwte
+                && tojo.isPresent()
                 && Files.exists(target)
                 && !tojo.get().unplaced()
             ) {
@@ -209,10 +200,6 @@ final class Placing implements Step {
             return res;
         }
 
-        /**
-         * Print log info about placing a binary.
-         * @param file The file to place
-         */
         private void printLogInfoAboutBinary(final Path file) {
             final Path target = Placing.this.classes.resolve(
                 this.dir.relativize(file)
@@ -226,7 +213,12 @@ final class Placing implements Step {
                         file, target
                     );
                 }
-                if (Files.exists(target) && !this.sameLength(target, file)) {
+                if (
+                    Files.exists(target)
+                        && new Unchecked<>(
+                            () -> Files.size(target) != Files.size(file)
+                        ).value()
+                ) {
                     Logger.debug(
                         this,
                         "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
@@ -238,10 +230,6 @@ final class Placing implements Step {
             }
         }
 
-        /**
-         * Place a binary file to the output directory.
-         * @param file Absolute path of the file to place
-         */
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
@@ -264,17 +252,6 @@ final class Placing implements Step {
                     ex
                 );
             }
-        }
-
-        /**
-         * Check if two files have the same length.
-         * @param first First file
-         * @param second Second file
-         * @return True if they have the same length
-         * @checkstyle NonStaticMethodCheck (2 lines)
-         */
-        private boolean sameLength(final Path first, final Path second) {
-            return new Unchecked<>(() -> Files.size(first) == Files.size(second)).value();
         }
     }
 }

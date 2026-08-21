@@ -4,8 +4,11 @@
  */
 package org.eolang;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import org.eolang.win32.WSAStartupFuncCall;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -41,7 +44,7 @@ final class EOwin32EOφTest {
             Matchers.equalTo(
                 Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                        .getName().split("@", -1)[0]
                 )
             )
         );
@@ -73,10 +76,35 @@ final class EOwin32EOφTest {
         );
     }
 
+    @Test
+    @DisabledOnOs({OS.LINUX, OS.MAC})
+    void accessesFileWithNonAsciiName() throws IOException {
+        final Path file = Files.createTempFile("Ж日本-", ".txt");
+        MatcherAssert.assertThat(
+            String.format("\"_access\" did not find the non-ASCII file %s", file),
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        Phi.Φ.take("win32").copy(),
+                        "name",
+                        new Data.ToPhi("_access")
+                    ),
+                    "args",
+                    new Data.ToPhi(
+                        new Phi[]{
+                            new Data.ToPhi(file.toString()),
+                            new Data.ToPhi(0),
+                        }
+                    )
+                ).take("code")
+            ).asNumber().intValue(),
+            Matchers.equalTo(0)
+        );
+    }
+
     /**
      * Test case for {@link Winsock}.
      * @since 0.40
-     * @checkstyle AbbreviationAsWordInNameCheck (300 lines)
      */
     @Nested
     @Execution(ExecutionMode.SAME_THREAD)
@@ -87,51 +115,47 @@ final class EOwin32EOφTest {
         void initializesWinsockLibrary() {
             MatcherAssert.assertThat(
                 "Winsock library should be successfully initialized, but it isn't",
-                this.startupsWSA(),
+                this.startupsWinsock(),
                 Matchers.equalTo(0)
             );
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
         @Test
         void cleansupWinsockLibrary() {
-            this.startupsWSA();
+            this.startupsWinsock();
             MatcherAssert.assertThat(
                 "Winsock library resources should be freed successfully",
-                this.cleanupsWSA(),
+                this.cleanupsWinsock(),
                 Matchers.equalTo(0)
             );
         }
 
         @Test
         void opensTcpSocket() {
-            this.startupsWSA();
-            final int socket = this.createsSocket();
+            this.startupsWinsock();
+            final long socket = this.createsSocket();
             MatcherAssert.assertThat(
                 "Winsock library should successfully create a TCP socket, but it didn't",
                 socket,
                 Matchers.not(Matchers.equalTo(Winsock.INVALID_SOCKET))
             );
             this.closesSocket(socket);
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
         @Test
         void closesTcpSocket() {
-            this.startupsWSA();
+            this.startupsWinsock();
             MatcherAssert.assertThat(
                 "Winsock library should successfully close a TCP socket, but it didn't",
                 this.closesSocket(this.createsSocket()),
                 Matchers.not(Matchers.equalTo(Winsock.SOCKET_ERROR))
             );
-            this.cleanupsWSA();
+            this.cleanupsWinsock();
         }
 
-        /**
-         * Creates socket.
-         * @return Closes socket
-         */
-        private int createsSocket() {
+        private long createsSocket() {
             return Winsock.INSTANCE.socket(
                 Winsock.AF_INET,
                 Winsock.SOCK_STREAM,
@@ -139,31 +163,18 @@ final class EOwin32EOφTest {
             );
         }
 
-        /**
-         * Closes socket.
-         * @param socket Socket descriptor
-         * @return Status code
-         */
-        private int closesSocket(final int socket) {
+        private int closesSocket(final long socket) {
             return Winsock.INSTANCE.closesocket(socket);
         }
 
-        /**
-         * Startups winsock library.
-         * @return Status code
-         */
-        private int startupsWSA() {
+        private int startupsWinsock() {
             return Winsock.INSTANCE.WSAStartup(
-                Winsock.WINSOCK_VERSION_2_2,
-                new WSAStartupFuncCall.WSAData()
+                Winsock.VERSION_2_2,
+                new WSAData()
             );
         }
 
-        /**
-         * Cleans up winsock library.
-         * @return Status code
-         */
-        private int cleanupsWSA() {
+        private int cleanupsWinsock() {
             return Winsock.INSTANCE.WSACleanup();
         }
     }

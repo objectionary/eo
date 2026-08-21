@@ -1,15 +1,11 @@
 # Path `path` that is hierarchical and composed of a sequence of
 # directory and file name elements separated by a special separator or delimiter.
 
-+alias string.last-index-of
-+alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [uri] > path
   os.is-windows.if > @
@@ -28,31 +24,33 @@
           or.
             pth.size.eq 0
             index.eq 0
-          uri >> pth!
+          ^.stripped ^.driveless >> pth!
           as-bytes.
             text.slice
               plus. >> index!
-                last-index-of text separator
+                text.last-index-of ^.separator
                 1
               text.length.minus
                 number index
       string pth > text
     [] > dirname
       string > @
-        if.
-          pth.size.eq 0
-          uri >> pth!
+        ^.drive.concat
           if.
             len.eq -1
-            "."
+            if.
+              ^.drive.size.eq 0
+              "."
+              --
             if.
               len.eq 0
-              separator
+              ^.separator
               as-bytes.
                 text.slice
                   0
-                  last-index-of text separator >> len!
-      string pth > text
+                  text.last-index-of ^.separator >> len!
+      string > text
+        ^.stripped ^.driveless
     sys.drive uri > drive
     if. > driveless
       drive.size.eq 0
@@ -73,125 +71,163 @@
         string
           as-bytes.
             text.slice
-              last-index-of text "." >> index!
+              text.last-index-of "." >> index!
               text.length.minus
                 number index
       string > text
-        basename >> base!
+        ^.basename >> base!
     and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
         separator
     [] > normalized
-      impl > @
-        sys
+      ^.^.impl > @
+        ^.sys
         if.
           normalized.eq
-            separator.concat separator
-          separator
+            ^.separator.concat ^.separator
+          ^.separator
           if.
             normalized.size.eq 0
             "."
             string normalized
-      as-bytes. > normalized
+      concat. > core!
+        ^.drive.concat
+          ^.is-absolute.if
+            ^.unc.if
+              ^.separator.concat ^.separator
+              ^.separator
+            --
+        ^.separator.joined >> body!
+          reduced.
+            ^.driveless.split ^.separator
+            *
+            if. > [accum segment] >>
+              segment.eq ".."
+              if.
+                and.
+                  accum.length.gt 0
+                  not.
+                    accum.head.eq ".."
+                if.
+                  ^.^.unc.and
+                    accum.length.lte 2
+                  accum
+                  accum.tail
+                ^.^.is-absolute.not.if
+                  accum.with segment
+                  accum
+              if.
+                or.
+                  segment.eq "."
+                  segment.eq ""
+                accum
+                accum.with segment
+      as-bytes. > normalized!
         if.
-          driveless.size.eq 0
+          ^.driveless.size.eq 0
           if.
-            drive.size.eq 0
+            ^.drive.size.eq 0
             "."
-            drive
-          concat.
-            concat.
-              drive.concat
-                is-absolute.if separator --
-              string.joined >> body!
-                separator
-                tuple.reduced
-                  string.split driveless separator
-                  *
-                  if. > [accum segment] >>
-                    segment.eq ".."
-                    if.
-                      and.
-                        accum.length.gt 0
-                        not. (accum.head.eq "..")
-                      accum.tail
-                      is-absolute.not.if (accum.with segment) accum
-                    if.
-                      or.
-                        segment.eq "."
-                        segment.eq ""
-                      accum
-                      accum.with segment
-            trailing.if separator --
+            ^.drive
+          if.
+            core.size.eq 0
+            "."
+            core.concat
+              trailing.if ^.separator --
       and. > trailing
         ubts.size.gt 0
         eq.
           slice.
-            uri >> ubts!
+            ^.uri >> ubts!
             ubts.size.plus -1
             1
-          separator
+          ^.separator
     [other] > resolved
       normalized. > @
-        impl
-          sys
+        ^.^.impl
+          ^.sys
           string
             if.
               valid.size.eq 0
-              uri
+              ^.uri
               if.
-                gt. (sys.drive valid).size 0
+                gt. (^.sys.drive valid).size 0
                 valid
                 if.
-                  eq.
-                    valid.slice 0 1
-                    separator
-                  drive.concat valid
-                  concat. (uri.concat separator) valid
+                  starts-with.
+                    string valid
+                    ^.separator.concat ^.separator
+                  valid
+                  if.
+                    eq.
+                      valid.slice 0 1
+                      ^.separator
+                    ^.drive.concat valid
+                    concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
-          sys.sanitized other
+          ^.sys.sanitized other
     sys.separator > separator
+    if. > [tail] > stripped
+      or.
+        tail.size.eq 0
+        tail.eq ^.separator
+      tail
+      if.
+        tail.ends-with ^.separator
+        ^.stripped
+          string
+            as-bytes.
+              tail.slice
+                0
+                tail.length.minus ^.separator.length
+        tail
+    string > [] > trimmed
+      ^.stripped ^.uri
+    and. > unc
+      driveless.size.gt 1
+      driveless.starts-with
+        separator.concat separator
   [paths] > joined
     normalized. > @
       os.is-windows.if
-        win32 jpath
-        posix jpath
+        ^.win32 jpath
+        ^.posix jpath
     string > jpath
       as-bytes.
-        string.joined separator paths
+        ^.separator.joined paths
   [uri] > posix
-    impl > @
+    ^.impl > @
       sys
       uri
     "/" > separator
     [] > sys
       -- > [uri] > drive
-      uri > [uri] > sanitized
+      I > sanitized
       ^.separator > separator
   os.is-windows.if > separator
     win32.separator
     posix.separator
   [uri] > win32
-    impl > @
+    ^.impl > @
       sys
       sys.sanitized uri
     "\\" > separator
     [] > sys
       if. > [uri] > drive
-        as-bool. ((regex "/^[a-zA-Z]:/").match uri).next.exists
+        as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         --
       [uri] > sanitized
         if. > @
           eq.
-            string.index-of pth path.posix.separator
+            pth.index-of path.posix.separator
             -1
           string
             uri >> ubts!
-          string (string.replaced pth (regex "/\\//") separator)!
+          string (pth.replaced "/\\//".regex ^.separator)!
         string ubts > pth
       ^.separator > separator
 
@@ -259,6 +295,11 @@
       path.posix "foo/.."
     "."
 
+  eq. ++> can-normalize-a-posix-path-collapsing-to-the-current-directory-with-a-trailing-separator
+    normalized.
+      path.posix "a/b/../../"
+    "."
+
   eq. ++> can-normalize-a-relative-posix-path
     normalized.
       path.posix "../../foo/./bar/../x/../y"
@@ -269,9 +310,64 @@
       path.win32 "..\\..\\foo\\bar\\..\\x\\y\\\\"
     "..\\..\\foo\\x\\y\\"
 
+  eq. ++> can-normalize-a-root-relative-win32-path-keeping-a-single-separator
+    normalized.
+      path.win32 "\\server\\share"
+    "\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-keeping-its-double-separator-prefix
+    normalized.
+      path.win32 "\\\\server\\share"
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-child-directory
+    normalized.
+      path.win32 "\\\\server\\share\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-current-and-a-parent-segment-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-alone-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\.."
+    "\\\\server\\share"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-and-a-trailing-separator
+    normalized.
+      path.win32 "\\\\server\\share\\..\\"
+    "\\\\server\\share\\"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-a-parent-segment-below-a-child-directory
+    normalized.
+      path.win32 "\\\\server\\share\\a\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-parent-segments-past-two-child-directories
+    normalized.
+      path.win32 "\\\\server\\share\\a\\b\\..\\..\\..\\folder"
+    "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-unc-win32-path-with-repeated-parent-segments-at-the-share-root
+    normalized.
+      path.win32 "\\\\server\\share\\..\\..\\folder"
+    "\\\\server\\share\\folder"
+
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
       path.win32 "foo\\.."
+    "."
+
+  eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory-with-a-trailing-separator
+    normalized.
+      path.win32 ".\\"
     "."
 
   eq. ++> can-normalize-a-win32-path-down-to-a-drive-with-a-separator
@@ -381,6 +477,24 @@
       "\\hello\\var"
     "\\hello\\var"
 
+  eq. ++> can-resolve-a-unc-win32-path-against-a-drive-qualified-path
+    resolved.
+      path.win32 "C:\\work\\project"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-a-relative-path
+    resolved.
+      path.win32 ".\\temp\\var"
+      "\\\\server\\share\\report.txt"
+    "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-another-unc-path
+    resolved.
+      path.win32 "\\\\server\\share\\project"
+      "\\\\other\\share\\report.txt"
+    "\\\\other\\share\\report.txt"
+
   eq. ++> can-resolve-a-win32-path-against-an-empty-one
     resolved.
       path.win32 "C:\\a\\b"
@@ -404,7 +518,7 @@
       path.posix "/var/www/html/foo\\bar"
     "foo\\bar"
 
-  eq. ++> can-return-an-empty-basename-from-a-path-ending-with-a-separator
+  eq. ++> can-return-the-basename-ignoring-a-trailing-separator
     basename.
       path.joined
         *
@@ -412,7 +526,32 @@
           "www"
           "html"
           path.separator
+    "html"
+
+  eq. ++> can-return-the-basename-ignoring-repeated-trailing-separators
+    basename.
+      path.posix "foo//"
+    "foo"
+
+  eq. ++> can-return-the-basename-of-a-drive-relative-win32-path
+    basename.
+      path.win32 "C:foo"
+    "foo"
+
+  eq. ++> can-return-the-basename-of-a-root-relative-path-ending-with-a-separator
+    basename.
+      path.posix "/foo/"
+    "foo"
+
+  eq. ++> can-return-the-basename-of-a-win32-drive-root
+    basename.
+      path.win32 "C:\\"
     ""
+
+  eq. ++> can-return-the-basename-of-an-absolute-path-with-repeated-trailing-separators
+    basename.
+      path.posix "/foo//"
+    "foo"
 
   eq. ++> can-return-the-current-dirname-of-a-hidden-relative-posix-file
     dirname.
@@ -424,6 +563,21 @@
       path.posix "plain"
     "."
 
+  eq. ++> can-return-the-current-dirname-of-a-relative-posix-file-ending-with-a-separator
+    dirname.
+      path.posix "foo/"
+    "."
+
+  eq. ++> can-return-the-current-dirname-of-an-empty-path
+    dirname.
+      path ""
+    "."
+
+  eq. ++> can-return-the-dirname-ignoring-repeated-trailing-separators
+    dirname.
+      path.posix "foo//"
+    "."
+
   eq. ++> can-return-the-dirname-of-a-directory-path
     dirname.
       path.joined
@@ -431,8 +585,12 @@
           "var"
           "www"
           path.separator
-    path.joined
-      * "var" "www"
+    "var"
+
+  eq. ++> can-return-the-dirname-of-a-drive-relative-win32-path
+    dirname.
+      path.win32 "C:foo"
+    "C:"
 
   eq. ++> can-return-the-dirname-of-a-file-path
     dirname.
@@ -454,6 +612,16 @@
     path.joined
       * "var" "www"
 
+  eq. ++> can-return-the-dirname-of-a-win32-path-with-a-drive
+    dirname.
+      path.win32 "C:\\foo"
+    "C:\\"
+
+  eq. ++> can-return-the-dirname-of-an-absolute-path-with-repeated-trailing-separators
+    dirname.
+      path.posix "/foo//"
+    "/"
+
   eq. ++> can-return-the-root-dirname-of-a-root-relative-win32-path
     dirname.
       path.win32 "\\foo"
@@ -462,6 +630,11 @@
   eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path
     dirname.
       path.posix "/foo"
+    "/"
+
+  eq. ++> can-return-the-root-dirname-of-a-single-component-posix-path-ending-with-a-separator
+    dirname.
+      path.posix "/foo/"
     "/"
 
   eq. ++> can-return-the-same-string-without-a-separator
@@ -493,17 +666,17 @@
       path.posix ".config.json"
     ".json"
 
-  eq. ++> cannot-take-an-extname-from-a-dotdot
+  eq. ++> can-take-no-extname-from-a-dotdot
     extname.
       path.posix ".."
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-dotfile
+  eq. ++> can-take-no-extname-from-a-dotfile
     extname.
       path.posix ".gitignore"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-file-without-an-extension
+  eq. ++> can-take-no-extname-from-a-file-without-an-extension
     extname.
       path.joined
         *
@@ -512,7 +685,7 @@
           "html"
     ""
 
-  eq. ++> cannot-take-an-extname-from-a-path-ending-with-a-separator
+  eq. ++> can-take-no-extname-from-a-path-ending-with-a-separator
     extname.
       path.joined
         *

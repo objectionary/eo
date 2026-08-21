@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void is asked of far from where it is declared. `book` binds no `size` and
+# hands every name it does not bind to the void it keeps, so a `size` asked of
+# a `book` in another file is a `size` asked of `pages` — which is how the core
+# of eo-runtime is written, and where most of what we know about voids is said.
+eo:
+  app.eo: |
+    [] > app
+      book.size > @
+  book.eo: |
+    [pages] > book
+      pages > @
+provides:
+  - "/provides/type[@id='Φ.book']/attr[@void='true']/demand[@name='size']"
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.book.pages.size']"

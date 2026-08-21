@@ -1,0 +1,210 @@
+# Writes the number `n` as fixed-point decimal with exactly `places` fraction
+# digits, rounding to the nearest unit in the last place, so that `2.5` with
+# four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
+# If `places` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-print` fallback is returned, or the bottom object
+# when unbound.
+#
+# The value is split into its integer and fraction parts before scaling, so
+# only the fraction is multiplied by a power of ten and every magnitude that
+# `as-decimal` writes exactly is written exactly here too.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[places cant-print] > as-fixed
+  if. > @
+    n.is-finite.not.or
+      or.
+        0.gt places
+        places.is-integer.not
+    cant-print
+      n.is-finite.not.if
+        "Can't write a non-finite number as a fixed-point decimal"
+        "Can't write a fixed-point decimal with %f fraction places".printf
+          * places
+    if.
+      n.as-bytes.eq 80-00-00-00-00-00-00-00
+      "-".as-bytes.concat
+        [a] >> positive
+          if. > @
+            digits.eq scale
+            if. > [unit rest] >> written
+              ^.^.places.eq 0
+              unit.as-decimal
+              concat.
+                unit.as-decimal.concat ".".as-bytes
+                rec-pad rest ^.^.places --
+            | (whole.plus 1) 0
+            written whole digits
+          floor. > digits
+            plus.
+              times.
+                a.minus whole
+                scale
+              0.5
+          pow10 ^.places > scale
+          a.floor > whole
+        | 0
+      if.
+        n.lt 0
+        if. > [a] >> signed
+          eq.
+            floor.
+              plus.
+                a.times
+                  pow10 ^.places
+                0.5
+            0
+          positive a
+          "-".as-bytes.concat
+            positive a
+        | (n.times -1)
+        positive n
+  ^ > n
+  if. > [p] >> pow10
+    p.eq 0
+    1
+    times.
+      ^.pow10
+        as-number.
+          p.minus 1
+      10
+  if. > [value count acc] >> rec-pad
+    count.eq 0
+    acc
+    ^.rec-pad
+      floor.
+        value.div 10
+      as-number.
+        count.minus 1
+      concat.
+        as-char.
+          plus.
+            floor.
+              value.minus
+                times. (value.div 10).floor 10
+            48
+        acc
+
+  eq. ++> can-carry-rounding-into-the-integer-part
+    "1.000000"
+    string
+      0.9999999.as-fixed 6
+
+  eq. ++> can-carry-rounding-into-the-integer-part-with-zero-places
+    "1"
+    string
+      0.9999999.as-fixed 0
+
+  eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
+    "0.00"
+    string
+      -1.0e-4.as-fixed 2
+
+  eq. ++> can-drop-the-sign-of-a-tiny-negative-rounding-to-zero
+    "0.00"
+    string
+      -0.001.as-fixed 2
+
+  eq. ++> can-format-the-error-message-of-negative-places
+    "Can't write a fixed-point decimal with -2.000000 fraction places"
+    3.14159.as-fixed
+      -2
+      I
+
+  eq. ++> can-honour-custom-places
+    "3.14"
+    string
+      3.14159.as-fixed 2
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places
+    "3"
+    string
+      2.5.as-fixed 0
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places-when-negative
+    "-3"
+    string
+      -2.5.as-fixed 0
+
+  eq. ++> can-pad-the-fraction-with-trailing-zeros
+    "1.250000"
+    string
+      1.25.as-fixed 6
+
+  eq. ++> can-preserve-the-sign-of-an-exact-negative-zero
+    "-0.00"
+    string
+      0.neg.as-fixed 2
+
+  eq. ++> can-recover-from-a-non-finite-number
+    "recovered"
+    nan.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-number
+    "recovered"
+    pinf.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-infinite-places
+    "recovered"
+    1.25.as-fixed
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-negative-places
+    "recovered"
+    3.14159.as-fixed
+      -2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-non-integer-places
+    "recovered"
+    3.14159.as-fixed
+      2.5
+      "recovered" > [message]
+
+  eq. ++> can-round-to-the-last-place
+    "0.123457"
+    string
+      0.123456789.as-fixed 6
+
+  eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
+    "100000000000000000.000000"
+    string
+      100000000000000000.as-fixed 6
+
+  eq. ++> can-scale-a-negative-magnitude-above-two-to-the-53rd
+    "-100000000000000000.000000"
+    string
+      -100000000000000000.as-fixed 6
+
+  eq. ++> can-tell-positive-zero-from-negative-zero
+    "0.00"
+    string
+      0.as-fixed 2
+
+  eq. ++> can-write-a-negative-value
+    "-2.500000"
+    string
+      -2.5.as-fixed 6
+
+  eq. ++> can-write-a-single-place
+    "2.5"
+    string
+      2.5.as-fixed 1
+
+  eq. ++> can-write-zero-with-places
+    "0.000000"
+    string
+      0.as-fixed 6
+
+  3.14159.as-fixed -2 --> stops-on-negative-places

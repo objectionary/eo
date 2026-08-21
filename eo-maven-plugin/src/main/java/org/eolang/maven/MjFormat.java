@@ -14,8 +14,7 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -23,7 +22,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.parser.EoSyntax;
-import org.eolang.printer.PenaltyKey;
 import org.eolang.printer.Xmir;
 
 /**
@@ -36,7 +34,7 @@ import org.eolang.printer.Xmir;
  * fixpoint, so the canonical form is the fixpoint of parse-and-print), and
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
- * the canonical form and fails the build. When {@link #autoFix} is turned
+ * the canonical form and fails the build. When {@link #autofix} is turned
  * on (via the {@code eo.autoFix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
@@ -64,7 +62,7 @@ import org.eolang.printer.Xmir;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjFormat extends MjSafe {
+public final class MjFormat extends MjPenalties {
 
     /**
      * The most parse-and-print passes taken to settle the moniker layout
@@ -82,37 +80,14 @@ public final class MjFormat extends MjSafe {
     /**
      * Overwrite divergent sources with their canonical form instead of
      * failing the build.
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.autoFix", required = true, defaultValue = "false")
-    private boolean autoFix;
-
-    /**
-     * Points charged for each level of indentation on a line.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyIndent")
-    private Integer penaltyIndent;
-
-    /**
-     * Points charged for each opening parenthesis.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyBracket")
-    private Integer penaltyBracket;
-
-    /**
-     * Points charged for each character past the allowed width.
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter(property = "eo.penaltyExcess")
-    private Integer penaltyExcess;
-
-    /**
-     * The column after which characters start being charged.
-     */
-    @Parameter(property = "eo.width")
-    private Integer width;
+    @Parameter(
+        alias = "autoFix",
+        property = "eo.autoFix",
+        required = true,
+        defaultValue = "false"
+    )
+    private boolean autofix;
 
     /**
      * Ctor.
@@ -124,27 +99,22 @@ public final class MjFormat extends MjSafe {
     @Override
     void exec() throws IOException {
         final long start = System.currentTimeMillis();
-        final Collection<TjForeign> sources = this.scopedTojos().withSources();
-        final String objects = sources.stream()
-            .map(TjForeign::identifier)
-            .filter(id -> id.contains("."))
-            .distinct()
-            .sorted()
-            .collect(Collectors.joining(" "));
-        this.report(
-            sources.size(),
-            new Threaded<>(sources, tojo -> this.reformat(tojo, objects)).total(),
-            System.currentTimeMillis() - start
-        );
+        try (TjsForeign tojos = this.tojos()) {
+            final Collection<TjForeign> sources = tojos.withSources();
+            final String objects = sources.stream()
+                .map(TjForeign::identifier)
+                .filter(id -> id.contains("."))
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(" "));
+            this.report(
+                sources.size(),
+                new Threaded<>(sources, tojo -> this.reformat(tojo, objects)).total(),
+                System.currentTimeMillis() - start
+            );
+        }
     }
 
-    /**
-     * Reformat a single source, either fixing it or reporting the diff.
-     * @param tojo The tojo of the {@code .eo} file
-     * @param objects Qualified names of the local package objects
-     * @return One if the file diverged from the canonical form, zero otherwise
-     * @throws IOException If fails to read or write the file
-     */
     private int reformat(final TjForeign tojo, final String objects) throws IOException {
         final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
@@ -155,7 +125,7 @@ public final class MjFormat extends MjSafe {
             diverged = 0;
         } else {
             diverged = 1;
-            if (this.autoFix) {
+            if (this.autofix) {
                 new Saved(canonical, source).value();
                 Logger.info(this, "Reformatted %[file]s", source);
             } else {
@@ -170,59 +140,31 @@ public final class MjFormat extends MjSafe {
         return diverged;
     }
 
-    /**
-     * The canonical form of a source.
-     *
-     * <p>A binding with several bare references merges onto whichever is
-     * "first" in the canonically ordered body (#5706, #5739), and that
-     * choice can move on the next pass, so a single parse-and-print is not
-     * always a fixpoint. The moniker's home is decided by the structure
-     * alone (attribute order and the XSL merge), not by the layout weights,
-     * so this settles it at the default layout and then lays the settled
-     * structure out once with the configured weights. The settling is
-     * bounded by {@link #SETTLE}; a
-     * source that has not settled by then is laid out as-is and reported
-     * divergent, so it fails loudly instead of looping.</p>
-     *
-     * @param tojo The tojo of the {@code .eo} file
-     * @param source The current text of the {@code .eo} file
-     * @param objects Qualified names of the local package objects
-     * @return The canonical text
-     * @throws IOException If fails to parse the source
-     */
     private String canonical(
         final TjForeign tojo, final String source, final String objects
     ) throws IOException {
         final Path path = tojo.source();
         String structure = source;
         XML tree = MjFormat.walked(tojo, structure, objects);
+        Optional<String> settled = Optional.empty();
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
-            final String next = new Xmir(tree).toEO();
-            if (next.equals(structure)) {
+            final String printed = new Xmir(tree).toEO();
+            if (printed.equals(structure)) {
+                settled = Optional.of(printed);
                 break;
             }
-            structure = next;
+            structure = printed;
             tree = MjFormat.parsed(path, structure);
         }
-        return new Xmir(tree, this.weights()).toEO();
+        final String canon;
+        if (settled.isPresent() && this.weights().isEmpty()) {
+            canon = settled.get();
+        } else {
+            canon = new Xmir(tree, this.weights()).toEO();
+        }
+        return canon;
     }
 
-    /**
-     * The tree of the text this source currently holds.
-     *
-     * <p>The {@code parse} goal, bound ahead of this one, has already walked
-     * this text into {@link Parsing#DIR}, so that tree is read back instead
-     * of the text being walked again. It homes a bare reference into the
-     * program's own package, which {@code unhome-package.xsl} undoes. When
-     * {@link TjForeign#notParsed()} says no such tree is waiting, the text
-     * is walked here.</p>
-     *
-     * @param tojo The tojo of the {@code .eo} file
-     * @param structure The current text of the {@code .eo} file
-     * @param objects Qualified names of the local package objects
-     * @return The parsed XMIR
-     * @throws IOException If fails to parse the source
-     */
     private static XML walked(
         final TjForeign tojo, final String structure, final String objects
     ) throws IOException {
@@ -244,38 +186,6 @@ public final class MjFormat extends MjSafe {
         return tree;
     }
 
-    /**
-     * Parse a source and verify none of the source was lost in the process.
-     * A source with a genuine syntax error still yields an XMIR carrying
-     * {@code <errors>} (see {@link Parsing}), but the parser also recovers
-     * from many purely cosmetic layout violations (e.g. extra blank lines,
-     * exactly what this goal exists to fix) the same way, tagged with the
-     * same {@code severity="error"} and no other distinguishing marker.
-     * Rejecting every {@code <errors>} entry, as suggested by the issue this
-     * fixes, would therefore also reject this goal's own core use case.
-     *
-     * <p>What actually matters is whether the recovered tree still covers
-     * the whole source: a genuine syntax error (e.g. an unterminated paren
-     * group) makes the parser stop incorporating source lines into the tree
-     * from that point on, while a cosmetic layout error does not lose any
-     * line. So instead of trusting {@code severity} alone, this also checks
-     * that some {@code <o>} element references a line at or past the
-     * source's last non-blank line; if none does, part of the source was
-     * never parsed at all, and this goal would otherwise print back (or, in
-     * {@code -Deo.autoFix} mode, save) a truncated version of it.</p>
-     *
-     * <p>Line coverage is necessary but not sufficient: the parser recovers
-     * from some <em>structural</em> errors not by dropping the remaining
-     * lines but by substituting an empty placeholder {@code <o>} for the
-     * piece it could not build and then carrying on. Coverage stays intact,
-     * yet the tree no longer describes the source, so this also rejects a
-     * tree carrying such a {@link #placeholder(XML) placeholder}.</p>
-     *
-     * @param source The path of the {@code .eo} file, for the error message
-     * @param structure The current text of the {@code .eo} file
-     * @return The parsed XMIR
-     * @throws IOException If fails to parse the source
-     */
     private static XML parsed(final Path source, final String structure) throws IOException {
         final XML xmir = new EoSyntax(structure).parsed();
         final long errors = new Xnav(xmir.inner())
@@ -285,7 +195,9 @@ public final class MjFormat extends MjSafe {
             .filter(MjFormat::severe)
             .count();
         if (errors > 0L
-            && (MjFormat.truncated(xmir, structure) || MjFormat.placeholder(xmir))) {
+            && (MjFormat.truncated(xmir, structure)
+                || MjFormat.placeholder(xmir)
+                || MjFormat.lossy(xmir))) {
             throw new IllegalStateException(
                 String.format(
                     "%s does not fully parse (%d error(s) found) and part of it was lost, won't format it",
@@ -296,13 +208,13 @@ public final class MjFormat extends MjSafe {
         return xmir;
     }
 
-    /**
-     * Whether the parsed tree stops short of the source's last non-blank
-     * line, meaning some of the source was never incorporated into it.
-     * @param xmir The parsed XMIR
-     * @param structure The source text that was parsed
-     * @return TRUE if part of the source was not recovered
-     */
+    private static boolean lossy(final XML xmir) {
+        return new Xnav(xmir.inner())
+            .path("//errors/error[@lossy]")
+            .findAny()
+            .isPresent();
+    }
+
     private static boolean truncated(final XML xmir, final String structure) {
         final String[] lines = structure.split(String.valueOf('\n'), -1);
         int last = 0;
@@ -318,33 +230,12 @@ public final class MjFormat extends MjSafe {
             .orElse(0) < last;
     }
 
-    /**
-     * Whether the parsed tree carries a recovered placeholder node.
-     *
-     * <p>Recovering from a structural error, the parser can substitute an
-     * empty {@code <o>} — one with no {@code base}, no {@code name}, no
-     * child elements and no text — for a node it could not build. A
-     * reversed dispatch left without a receiver, for instance, becomes such
-     * a node, which the printer can only render as {@code []}. Formatting a
-     * tree that carries one would silently rewrite the source into a
-     * different one the parser happens to accept.</p>
-     *
-     * @param xmir The parsed XMIR
-     * @return TRUE if a recovered placeholder stands in for lost source
-     */
     private static boolean placeholder(final XML xmir) {
         return new Xnav(xmir.inner())
             .path("//o")
             .anyMatch(MjFormat::empty);
     }
 
-    /**
-     * Whether an {@code <o>} is an empty recovery placeholder, i.e. it
-     * carries neither a {@code base} nor a {@code name} attribute, has no
-     * child elements and holds no text.
-     * @param obj The {@code <o>} element
-     * @return TRUE if the element is such a placeholder
-     */
     private static boolean empty(final Xnav obj) {
         return !obj.attribute("base").text().isPresent()
             && !obj.attribute("name").text().isPresent()
@@ -352,48 +243,11 @@ public final class MjFormat extends MjSafe {
             && obj.text().orElse("").isBlank();
     }
 
-    /**
-     * Whether an {@code <error>} element carries error or critical severity.
-     * @param error The error element
-     * @return TRUE if the error is severe
-     */
     private static boolean severe(final Xnav error) {
         final String severity = error.attribute("severity").text().orElse("");
         return "error".equals(severity) || "critical".equals(severity);
     }
 
-    /**
-     * Assemble the overridden penalty weights from the Maven properties.
-     *
-     * <p>Only the properties that the user actually set are put into the
-     * map; every absent key falls back to its {@link PenaltyKey#fallback()}
-     * default inside the printer.</p>
-     *
-     * @return The weights, keyed by {@link PenaltyKey}
-     */
-    private Map<PenaltyKey, Integer> weights() {
-        final Map<PenaltyKey, Integer> map = new EnumMap<>(PenaltyKey.class);
-        if (this.penaltyIndent != null) {
-            map.put(PenaltyKey.INDENT, this.penaltyIndent);
-        }
-        if (this.penaltyBracket != null) {
-            map.put(PenaltyKey.BRACKET, this.penaltyBracket);
-        }
-        if (this.penaltyExcess != null) {
-            map.put(PenaltyKey.EXCESS, this.penaltyExcess);
-        }
-        if (this.width != null) {
-            map.put(PenaltyKey.WIDTH, this.width);
-        }
-        return map;
-    }
-
-    /**
-     * Report the outcome, failing the build if needed.
-     * @param total The number of registered sources
-     * @param divergent How many sources diverged from the canonical form
-     * @param millis The elapsed time, in milliseconds
-     */
     private void report(final int total, final int divergent, final long millis) {
         if (divergent == 0) {
             Logger.info(
@@ -401,7 +255,7 @@ public final class MjFormat extends MjSafe {
                 "All %d EO source(s) are formatted canonically, took %[ms]s to check",
                 total, millis
             );
-        } else if (this.autoFix) {
+        } else if (this.autofix) {
             Logger.info(
                 this,
                 "Reformatted %d of %d EO source(s), took %[ms]s",

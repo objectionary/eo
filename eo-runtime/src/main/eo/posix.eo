@@ -10,8 +10,6 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-+unlint redundant-object
 
 [name args] > posix
   [] > @ /Q.posix.return
@@ -21,6 +19,7 @@
   os.is-macos.if > creat
     512
     64
+  17 > eexist
   os.is-macos.if > exclusive
     2048
     128
@@ -32,7 +31,7 @@
   2 > rdwr
   [code output] > return
     output > @
-    return > called
+    ^.return > called
       code
       output
   [family port address] > sockaddr-in

@@ -36,13 +36,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-all</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>0.4.6</version>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -259,7 +253,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.1.1</version>
+      <version>4.2.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -458,7 +452,6 @@
           <execution>
             <goals>
               <goal>helpmojo</goal>
-              <goal>descriptor</goal>
             </goals>
           </execution>
         </executions>
@@ -482,7 +475,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.0.8</version>
+            <version>5.1.0</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -577,15 +570,12 @@
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
             <configuration>
-              <excludes combine.children="append">
-                <exclude>checkstyle:/src/it.*</exclude>
-                <exclude>checkstyle:/src/test/resources/.*</exclude>
-                <exclude>pmd:/src/it.*</exclude>
-                <exclude>pmd:/src/test/resources/.*</exclude>
-                <exclude>duplicatefinder:.*</exclude>
-                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
-                <exclude>dependencies:org.hamcrest:hamcrest-core:jar:1.3:compile</exclude>
-                <exclude>dependencies:org.aspectj:aspectjrt</exclude>
+              <excludes>
+                <!--
+                Fixture reproducing the tab-separated output of
+                the "git ls-remote" tags command
+                -->
+                <exclude>checkstyle:.*/src/test/resources/org/eolang/maven/commits/tags\.txt</exclude>
               </excludes>
             </configuration>
           </plugin>

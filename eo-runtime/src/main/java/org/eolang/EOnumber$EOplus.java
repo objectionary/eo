@@ -26,8 +26,8 @@ public final class EOnumber$EOplus extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Double.sum(
-                new Expect.Number(Expect.at(this, Phi.RHO)).it(),
-                new Expect.Number(Expect.at(this, "x")).it()
+                new Numeric(Expect.at(this, Phi.RHO)).it(),
+                new Numeric(Expect.at(this, "x")).it()
             )
         );
     }

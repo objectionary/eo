@@ -8,20 +8,27 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * A node of the intermediate line tree consumed by {@link Pretty}.
+ * A node of the intermediate line tree, able to print itself.
  *
  * <p>It mirrors one {@code <line>} element of the tree produced by
  * {@code to-eo-tree.xsl}: the rendered head of an object, its optional
- * name suffix, a few flags telling {@link Pretty} how to lay it out
- * (formation, test attribute, reversed dispatch, data literal) and the
- * children (arguments or bindings). The dependency runs one way only,
- * {@link Pretty} reads a {@code Node}; a {@code Node} never refers back to
- * {@link Pretty}. Its fields and the constructor are package-private so
- * {@link Pretty} and its static helpers keep their direct field access,
- * the same exposure a nested class would grant.</p>
+ * name suffix, a few flags telling it how to lay itself out (formation,
+ * test attribute, reversed dispatch, data literal) and the children
+ * (arguments or bindings).</p>
+ *
+ * <p>Printing is the node's own business. For every object it considers a
+ * few renderings — a {@link Vertical} one, where the children go on their
+ * own indented lines, a {@link Horizontal} one, where they are inlined, a
+ * {@link Phi} one for a formation bound to nothing but its decoratee, and
+ * a {@link Starred} one for a tuple applied at the tail — and keeps the
+ * one with the smaller {@link Penalty}. The decision is made recursively,
+ * bottom-up, against a {@link Style} that carries the indentation width
+ * and the penalty weights, so the node never has to refer back to the
+ * printer that started it.</p>
  *
  * @since 0.57.0
  */
@@ -30,53 +37,64 @@ final class Node {
     /**
      * The rendered head of the object (base, method, formation
      * params, data literal or {@code *}).
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final String base;
+    private final String base;
 
     /**
      * The rendered suffix ({@code > name}, {@code >>}, {@code !},
      * {@code /atom} or {@code :label}), possibly empty.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final String tail;
+    private final String tail;
 
     /**
      * Whether this object is a formation (its children are
      * bindings, so it is laid out vertically, unless its only
      * binding is the {@code φ} decoratee and the compact inline-phi
      * form fits on one line).
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final boolean abstractt;
+    private final boolean abstractt;
 
     /**
      * Whether this object is a test attribute ({@code +> name}),
      * which R-6.5.3 requires to be preceded by a blank line.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final boolean test;
+    private final boolean test;
 
     /**
      * Whether this object is a reversed dispatch ({@code method.});
      * a receiver-only one cannot be inlined as an argument.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final boolean reversed;
+    private final boolean reversed;
 
     /**
      * Whether this object is a data literal (number, string, bytes),
      * so it may sit as a receiver in the suffix form of a reversed
      * dispatch ({@code 5.plus} instead of {@code plus. 5}).
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final boolean data;
+    private final boolean data;
 
     /**
      * The children (arguments or bindings), in order.
-     * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    final List<Node> children;
+    private final List<Node> children;
+
+    /**
+     * Ctor, from a {@code <line>} element.
+     * @param line The {@code <line>} element
+     */
+    Node(final Xnav line) {
+        this(
+            line.attribute("base").text().orElse(""),
+            line.attribute("tail").text().orElse(""),
+            "yes".equals(line.attribute("abstract").text().orElse("no")),
+            "yes".equals(line.attribute("test").text().orElse("no")),
+            "yes".equals(line.attribute("reversed").text().orElse("no")),
+            "yes".equals(line.attribute("data").text().orElse("no")),
+            line.elements(Filter.withName("line"))
+                .map(Node::new)
+                .collect(Collectors.toList())
+        );
+    }
 
     /**
      * Ctor.
@@ -101,22 +119,116 @@ final class Node {
     }
 
     /**
-     * Build a node from a {@code <line>} element.
-     * @param line The {@code <line>} element
-     * @return The node
+     * Print this node as a (possibly multi-line) block at the given
+     * indentation, picking the rendering with the lowest penalty.
+     *
+     * <p>When the node is a reversed dispatch whose receiver has a one-line
+     * inline form ({@code plus. 5 3}, {@code div. (a.plus b) c},
+     * {@code ^. read. (input.read 4096)}), its equivalent suffix shape
+     * ({@code 5.plus 3}, {@code (a.plus b).div c},
+     * {@code (input.read 4096).read.^}) is laid out too and the lower-penalty
+     * one is kept — the same penalty comparison that already decides inline
+     * versus vertical. A lone-data or plain-chain receiver glues bare and its
+     * suffix can only tie or win, so a tie (both fit the width) resolves to
+     * the suffix, the shorter form; a compound receiver pays a {@code BRACKET}
+     * for its parentheses, so its suffix is kept only when the saved
+     * indentation and repeated base characters outweigh that one bracket
+     * (#5650).</p>
+     *
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block
      */
-    static Node parse(final Xnav line) {
-        return new Node(
-            line.attribute("base").text().orElse(""),
-            line.attribute("tail").text().orElse(""),
-            "yes".equals(line.attribute("abstract").text().orElse("no")),
-            "yes".equals(line.attribute("test").text().orElse("no")),
-            "yes".equals(line.attribute("reversed").text().orElse("no")),
-            "yes".equals(line.attribute("data").text().orElse("no")),
-            line.elements(Filter.withName("line"))
-                .map(Node::parse)
-                .collect(Collectors.toList())
-        );
+    String print(final Style style, final int indent) {
+        String best = this.shaped(style, indent);
+        final Optional<Node> suffix = this.suffixed();
+        if (suffix.isPresent()) {
+            final String alt = suffix.get().shaped(style, indent);
+            if (style.points(alt) <= style.points(best)) {
+                best = alt;
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Print this node on the lines below the head of its parent: the block
+     * itself, preceded by the newline that opens it and, for a test
+     * attribute, by the blank line R-6.5.3 requires in front of it.
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block with its leading newlines
+     */
+    String indented(final Style style, final int indent) {
+        final StringBuilder block = new StringBuilder();
+        if (this.test) {
+            block.append('\n');
+        }
+        return block.append('\n')
+            .append(this.lined().print(style, indent))
+            .toString();
+    }
+
+    /**
+     * Print this node with its children laid out beneath its head.
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block
+     */
+    String vertical(final Style style, final int indent) {
+        return new Vertical(this.base.concat(this.tail), this.children)
+            .print(style, indent);
+    }
+
+    /**
+     * Spell this node as it appears in an argument slot: bracketed when
+     * it applies arguments of its own, bare when it is a single token,
+     * with the {@code !} of an anonymous inline const appended last.
+     *
+     * <p>The brackets are decided on the argument's effective
+     * (suffix-resolved) shape, not its raw one. A data-receiver dispatch
+     * such as {@code 01-.as-bool} is stored as a reversed head over a data
+     * child, so its raw node has a child (the receiver) yet it takes no
+     * arguments and is a single token — {@link #suffixed()} folds the
+     * receiver back into the base, leaving no children, so it is spelled
+     * bare. Wrapping it as {@code (01-.as-bool)} would produce EO that
+     * fails to parse with "redundant parentheses around a single token"
+     * (#5591).</p>
+     *
+     * <p>An anonymous inline const argument (#5821) is spelled bare, through
+     * {@link #bare()}, and its {@code !} marker appended afterwards — after
+     * the closing bracket when the argument is one. Inside the brackets the
+     * marker binds to the last argument instead: {@code (inc m!)} reads as
+     * {@code inc (m!)}, shrinking the const from the whole application down to
+     * one of its arguments and silently changing the program (#5902).</p>
+     *
+     * @return The spelling, or empty if this node cannot be inlined
+     */
+    Optional<String> inlined() {
+        final Optional<String> result;
+        if (this.constant()) {
+            result = this.bare().braced().map(text -> text.concat("!"));
+        } else {
+            result = this.braced();
+        }
+        return result;
+    }
+
+    /**
+     * Spell this node inline, as it would appear as an argument (without
+     * its own name suffix), or empty if it can't be inlined safely. A
+     * data-receiver dispatch is spelled in its suffix shape ({@code
+     * 5.plus 3}), never the reversed one.
+     *
+     * <p>Any suffix in the tail ({@code > name}, {@code >>}, {@code !}) has no
+     * inline spelling and blocks inlining. An anonymous inline const argument
+     * (#5821) is spelled by {@link #inlined()}, which strips the {@code !}
+     * here and appends it where it belongs (#5902).</p>
+     *
+     * @return The inlined content, or empty
+     */
+    Optional<String> flat() {
+        return this.suffixed().orElse(this).spelled();
     }
 
     /**
@@ -124,7 +236,7 @@ final class Node {
      *
      * <p>An inline const argument that applies arguments of its own is
      * parenthesised, and its {@code !} marker has to sit outside the
-     * brackets ({@code (inc m)!}), so {@link Pretty} inlines the node
+     * brackets ({@code (inc m)!}), so {@link #inlined()} spells the node
      * without the suffix and appends the marker itself (#5902).</p>
      *
      * @return The node without its suffix
@@ -137,138 +249,33 @@ final class Node {
     }
 
     /**
-     * The same node as it must be spelled on a line of its own.
+     * Build the body of the hybrid inline-phi form for this decoratee: its
+     * head kept in front of {@code marker}, its arguments as children.
      *
-     * <p>An anonymous inline const argument (#5821) carries a bare {@code !}
-     * marker, and only a horizontal argument slot can hold it: on a line of
-     * its own the marker closes the expression, so the arguments below it
-     * become trailing garbage ({@code or.!}), and behind those arguments it
-     * marks the last one instead of the whole application (#5902). A name
-     * suffix, however, may carry the marker (R-3.10.4), so such a const takes
-     * the auto-name {@code >>} that the same slot already spells for a
-     * formation. The parser floats an auto-named binding up to the enclosing
-     * formation and leaves a reference in its place, which is the very graph
-     * the inline argument builds, so the two spellings agree (#5927).</p>
+     * <p>When this decoratee applies a trailing tuple ({@code seq *},
+     * {@code sprintf *1}), the {@code *N} marker is glued onto that head
+     * line ({@code seq * > [m]}) through {@link #glued} and every argument
+     * becomes a child, mirroring the {@link Starred} idiom and saving a
+     * line and an indent level; the parser absorbs a compact tuple in
+     * inline-phi position, so this round-trips (issue #5626). Otherwise
+     * the arguments stay as this node's children, laid out vertically by
+     * the caller.</p>
      *
-     * @return The node with a suffix its own line can carry
+     * @param marker The inline-phi marker ({@code  > [params] > name})
+     * @return The body node to lay out vertically
      */
-    Node lined() {
-        final Node result;
-        if ("!".equals(this.tail)) {
-            result = new Node(
-                this.base, " >>!", this.abstractt, this.test,
-                this.reversed, this.data, this.children
-            );
+    Node hybrid(final String marker) {
+        final Node plain = new Node(
+            this.base, marker, false, false,
+            this.reversed, this.data, this.children
+        );
+        final Node body;
+        if (this.tuply()) {
+            body = plain.glued();
         } else {
-            result = this;
+            body = plain;
         }
-        return result;
-    }
-
-    /**
-     * Whether this node carries no name suffix anywhere in its subtree.
-     *
-     * <p>A line is "named" when its {@code tail} holds a {@code > name},
-     * {@code > [params] > name} or {@code >>} suffix — a named or auto-named
-     * attribute. This walks the node and all its descendants, so a named line
-     * nested below the top level — inside a tuple, a dispatch, or an
-     * application — is caught too. It decides whether a decoratee's whole
-     * subtree is safe to fold into a compact only-phi formation, which binds
-     * nothing but its {@code φ} decoratee (issue #5604).</p>
-     *
-     * <p>A bare {@code > @} suffix is not a name: it marks the {@code φ}
-     * decoratee, which is exactly what an only-phi formation binds, so a
-     * nested anonymous object (an argument such as {@code m > [m]}, whose
-     * subtree carries an inner {@code m > @}) is legal and must not withhold
-     * the fold. Only a genuine named or auto-named attribute ({@code > name},
-     * {@code >>}) does, since those cannot be attributes of an only-phi
-     * formation.</p>
-     *
-     * @return True when neither this node nor any descendant is named
-     */
-    boolean nameless() {
-        return (this.tail.isEmpty() || " > @".equals(this.tail))
-            && this.children.stream().allMatch(Node::nameless);
-    }
-
-    /**
-     * Whether this node is a plain application whose last child is a
-     * tuple that can be compacted onto its head as a trailing
-     * {@code *N} marker.
-     *
-     * <p>A formation lays its children out as bindings and a reversed
-     * dispatch keeps its receiver first, so neither is a plain
-     * application and neither qualifies (a reversed compact-tuple head
-     * such as {@code joined. *1} is not yet parseable). A bare tuple
-     * head ({@code base == "*"}) is a tuple literal, not an object
-     * applying a trailing tuple, so it is excluded too: its own elements
-     * are already tuple elements and gluing a {@code *N} marker onto it
-     * ({@code * *2}) would be a confusing self-application, never the
-     * intended compaction. The last child must itself be a gluable star
-     * (see {@link #stars()}); any leading children are the {@code N}
-     * positional arguments the marker keeps in front of the tuple.</p>
-     *
-     * <p>When the star is the sole child ({@code N == 0}) the head must
-     * be a plain base, not a dotted method dispatch
-     * ({@code "literal".printf}, {@code 5.plus}). The bare trailing
-     * {@code *} is absorbed by the parser only after a plain leading
-     * application ({@code seq *}, {@code map *}); after a method dispatch
-     * it reads as a complete application with an empty tuple and rejects
-     * the indented elements. A data-receiver dispatch is stored reversed
-     * and so already fails the {@code !reversed} guard, but
-     * {@link Pretty#suffixed} rebuilds it as a non-reversed, single-child
-     * node whose base is exactly such a dispatch — barring a dotted base
-     * for {@code N == 0} keeps it, and any genuine dotted dispatch, on the
-     * ordinary {@code * elem} child that round-trips (issues #5622,
-     * #5624). With {@code N >= 1} the count sits on the head's line, so
-     * the {@code *N} marker round-trips after a dotted dispatch too
-     * ({@code string.sprintf *1}) and a dotted base is allowed
-     * (issue #5648).</p>
-     *
-     * @return True when the trailing-star hybrid form is applicable
-     */
-    boolean tuply() {
-        final int size = this.children.size();
-        return size > 0
-            && this.marked()
-            && this.children.get(size - 1).stars()
-            && this.absorbed(size);
-    }
-
-    /**
-     * Whether this head can carry a trailing-star marker at all: not a
-     * formation (its children are bindings), not a reversed dispatch (a
-     * reversed compact-tuple head is not yet parseable), and not a bare
-     * tuple literal ({@code base == "*"}), whose elements are already
-     * tuple elements.
-     * @return True when the head may take a {@code *N} marker
-     */
-    boolean marked() {
-        return !this.abstractt && !this.reversed && !"*".equals(this.base);
-    }
-
-    /**
-     * Whether the trailing tuple is absorbed correctly at the given
-     * child count. With {@code N >= 1} leading arguments the {@code *N}
-     * marker sits on the head's line, so a dotted method dispatch is
-     * fine; with the bare {@code *} ({@code N == 0}) the head must be a
-     * plain base, since after a method dispatch the parser reads a
-     * complete application with an empty tuple (issues #5622, #5624).
-     * @param size The number of children
-     * @return True when the shape round-trips at this count
-     */
-    boolean absorbed(final int size) {
-        return size > 1 || this.base.indexOf('.') < 0;
-    }
-
-    /**
-     * Whether this node is a non-empty, unnamed {@code *} tuple — one
-     * that may be glued to the tail of an applying object's line.
-     * @return True when this node is a gluable star
-     */
-    boolean stars() {
-        return "*".equals(this.base) && !this.abstractt
-            && !this.children.isEmpty() && this.tail.isEmpty();
+        return body;
     }
 
     /**
@@ -306,32 +313,207 @@ final class Node {
     }
 
     /**
-     * Build the body of the hybrid inline-phi form for this decoratee: its
-     * head kept in front of {@code marker}, its arguments as children.
+     * Whether this node is a plain application whose last child is a
+     * tuple that can be compacted onto its head as a trailing
+     * {@code *N} marker.
      *
-     * <p>When this decoratee applies a trailing tuple ({@code seq *},
-     * {@code sprintf *1}), the {@code *N} marker is glued onto that head
-     * line ({@code seq * > [m]}) through {@link #glued} and every argument
-     * becomes a child, mirroring the {@code starred} idiom and saving a
-     * line and an indent level; the parser absorbs a compact tuple in
-     * inline-phi position, so this round-trips (issue #5626). Otherwise
-     * the arguments stay as this node's children, laid out vertically by
-     * the caller.</p>
+     * <p>A formation lays its children out as bindings and a reversed
+     * dispatch keeps its receiver first, so neither is a plain
+     * application and neither qualifies (a reversed compact-tuple head
+     * such as {@code joined. *1} is not yet parseable). A bare tuple
+     * head ({@code base == "*"}) is a tuple literal, not an object
+     * applying a trailing tuple, so it is excluded too: its own elements
+     * are already tuple elements and gluing a {@code *N} marker onto it
+     * ({@code * *2}) would be a confusing self-application, never the
+     * intended compaction. The last child must itself be a gluable star
+     * (see {@link #stars()}); any leading children are the {@code N}
+     * positional arguments the marker keeps in front of the tuple.</p>
      *
-     * @param marker The inline-phi marker ({@code  > [params] > name})
-     * @return The body node to lay out vertically
+     * <p>When the star is the sole child ({@code N == 0}) the head must
+     * be a plain base, not a dotted method dispatch
+     * ({@code "literal".printf}, {@code 5.plus}). The bare trailing
+     * {@code *} is absorbed by the parser only after a plain leading
+     * application ({@code seq *}, {@code map *}); after a method dispatch
+     * it reads as a complete application with an empty tuple and rejects
+     * the indented elements. A data-receiver dispatch is stored reversed
+     * and so already fails the {@code !reversed} guard, but
+     * {@link #suffixed()} rebuilds it as a non-reversed, single-child
+     * node whose base is exactly such a dispatch — barring a dotted base
+     * for {@code N == 0} keeps it, and any genuine dotted dispatch, on the
+     * ordinary {@code * elem} child that round-trips (issues #5622,
+     * #5624). With {@code N >= 1} the count sits on the head's line, so
+     * the {@code *N} marker round-trips after a dotted dispatch too
+     * ({@code string.sprintf *1}) and a dotted base is allowed
+     * (issue #5648).</p>
+     *
+     * @return True when the trailing-star hybrid form is applicable
      */
-    Node hybrid(final String marker) {
-        final Node plain = new Node(
-            this.base, marker, false, false,
-            this.reversed, this.data, this.children
-        );
-        final Node body;
-        if (this.tuply()) {
-            body = plain.glued();
+    boolean tuply() {
+        final int size = this.children.size();
+        return size > 0
+            && this.marked()
+            && this.children.get(size - 1).stars()
+            && this.absorbed(size);
+    }
+
+    /**
+     * Whether this node applies arguments of its own, so it has a hybrid
+     * inline-phi form: not a formation, whose children are bindings rather
+     * than arguments, and not a bare token, which has nothing to lay out
+     * beneath a marker.
+     * @return True when this node applies arguments
+     */
+    boolean applied() {
+        return !this.abstractt && !this.children.isEmpty();
+    }
+
+    /**
+     * Whether no line in this node's children carries a name suffix, so
+     * their subtrees are safe to fold into a compact only-phi formation.
+     * @return True when every child subtree is nameless
+     * @see #nameless()
+     */
+    boolean anonymous() {
+        return this.children.stream().allMatch(Node::nameless);
+    }
+
+    private String shaped(final Style style, final int indent) {
+        final Optional<String> star = new Starred(this).print(style, indent);
+        final String result;
+        if (star.isPresent() && this.children.size() > 1) {
+            result = star.get();
         } else {
-            body = plain;
+            String best = this.vertical(style, indent);
+            final Optional<String> flat = this.horizontal(style, indent);
+            if (flat.isPresent()
+                && (this.forced() || style.points(flat.get()) <= style.points(best))) {
+                best = flat.get();
+            }
+            if (star.isPresent() && style.points(star.get()) < style.points(best)) {
+                best = star.get();
+            }
+            result = best;
         }
-        return body;
+        return result;
+    }
+
+    private Optional<String> horizontal(final Style style, final int indent) {
+        final Optional<String> result;
+        if (this.abstractt) {
+            result = this.phi(style, indent);
+        } else if (this.children.isEmpty()) {
+            result = Optional.empty();
+        } else {
+            result = new Horizontal(
+                this.base, this.tail, new Arguments(this.children)
+            ).print(style, indent);
+        }
+        return result;
+    }
+
+    private Optional<String> phi(final Style style, final int indent) {
+        final Optional<String> result;
+        if (this.children.size() == 1
+            && " > @".equals(this.children.get(0).tail)) {
+            result = new Phi(
+                this.base, this.tail, this.children.get(0)
+            ).print(style, indent);
+        } else {
+            result = Optional.empty();
+        }
+        return result;
+    }
+
+    private Optional<Node> suffixed() {
+        Optional<Node> result = Optional.empty();
+        if (this.reversed && !this.children.isEmpty()) {
+            final String dot;
+            if (this.base.endsWith("?.")) {
+                dot = "?.";
+            } else {
+                dot = ".";
+            }
+            result = this.children.get(0).braced().map(
+                glued -> new Node(
+                    String.join(
+                        dot, glued,
+                        this.base.substring(0, this.base.length() - dot.length())
+                    ),
+                    this.tail, this.abstractt, this.test, false, false,
+                    this.children.subList(1, this.children.size())
+                )
+            );
+        }
+        return result;
+    }
+
+    private Optional<String> braced() {
+        final Node node = this.suffixed().orElse(this);
+        return node.spelled().map(node::wrapped);
+    }
+
+    private String wrapped(final String text) {
+        final String result;
+        if (this.children.isEmpty()) {
+            result = text;
+        } else {
+            result = "(".concat(text).concat(")");
+        }
+        return result;
+    }
+
+    private Optional<String> spelled() {
+        final Optional<String> result;
+        if (this.reversed && this.children.size() <= 1) {
+            result = Optional.empty();
+        } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
+            result = Optional.empty();
+        } else if (this.children.isEmpty()) {
+            result = Optional.of(this.base);
+        } else {
+            result = new Arguments(this.children).joined()
+                .map(args -> String.join(" ", this.base, args));
+        }
+        return result;
+    }
+
+    private Node lined() {
+        final Node result;
+        if (this.constant()) {
+            result = new Node(
+                this.base, " >>!", this.abstractt, this.test,
+                this.reversed, this.data, this.children
+            );
+        } else {
+            result = this;
+        }
+        return result;
+    }
+
+    private boolean nameless() {
+        return (this.tail.isEmpty() || " > @".equals(this.tail))
+            && this.anonymous();
+    }
+
+    private boolean marked() {
+        return !this.abstractt && !this.reversed && !"*".equals(this.base);
+    }
+
+    private boolean absorbed(final int size) {
+        return size > 1 || this.base.indexOf('.') < 0;
+    }
+
+    private boolean stars() {
+        return "*".equals(this.base) && !this.abstractt
+            && !this.children.isEmpty() && this.tail.isEmpty();
+    }
+
+    private boolean constant() {
+        return "!".equals(this.tail);
+    }
+
+    private boolean forced() {
+        return "|".equals(this.base) && this.tail.isEmpty()
+            || this.children.stream().anyMatch(Node::constant);
     }
 }

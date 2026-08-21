@@ -51,16 +51,15 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         if (clazz.element("java").text().isPresent()) {
             this.footprint.apply(Paths.get(""), this.target);
         }
-        if (tests && JavaPlaced.testsPresent(clazz)) {
-            this.placeJavaTests(clazz);
+        if (tests) {
+            if (JavaPlaced.testsPresent(clazz)) {
+                this.placeJavaTests(clazz);
+            } else {
+                this.removeJavaTests(clazz);
+            }
         }
     }
 
-    /**
-     * Place Java tests.
-     * @param clazz Transpiled Class
-     * @throws IOException If I/O fails
-     */
     private void placeJavaTests(final Xnav clazz) throws IOException {
         final String[] jparts = clazz.attribute("java-name").text().get().split("\\.");
         final Path tests = this.generated.getParent().resolve(
@@ -94,13 +93,29 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             content = clazz.element("tests").text().get();
         }
         new Saved(content, resulted).value();
+        this.removeJavaTests(clazz, resulted);
     }
 
-    /**
-     * Tests present?
-     * @param clazz Transpiled clazz
-     * @return True or False
-     */
+    private void removeJavaTests(final Xnav clazz) throws IOException {
+        this.removeJavaTests(clazz, null);
+    }
+
+    private void removeJavaTests(final Xnav clazz, final Path retained) throws IOException {
+        final String[] parts = clazz.attribute("java-name").text().get().split("\\.");
+        final Path base = Arrays.stream(parts, 0, parts.length - 1).reduce(
+            this.generated.getParent().resolve("generated-test-sources"),
+            Path::resolve,
+            Path::resolve
+        );
+        final String name = parts[parts.length - 1];
+        for (final String suffix : new String[]{"Test.java", "EOAtomTest.java"}) {
+            final Path test = base.resolve(String.format("%s%s", name, suffix));
+            if (!test.equals(retained)) {
+                Files.deleteIfExists(test);
+            }
+        }
+    }
+
     private static boolean testsPresent(final Xnav clazz) {
         return clazz.element("tests").text().map(
             s -> Stream.of(

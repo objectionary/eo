@@ -4,9 +4,12 @@
  */
 package org.eolang.parser;
 
+import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Globals}.
@@ -94,6 +97,18 @@ final class GlobalsTest {
     }
 
     @Test
+    void collapsesUnderIndentedBlankLineToEmpty() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 6);
+        globals.appendTextLine("  ");
+        MatcherAssert.assertThat(
+            "a blank line shorter than the opener's indent must collapse to an empty line",
+            globals.tbody(),
+            Matchers.contains("")
+        );
+    }
+
+    @Test
     void closesTextBlockState() {
         final Globals globals = new Globals();
         globals.openTextBlock(3);
@@ -127,5 +142,41 @@ final class GlobalsTest {
             globals.pendingComments(),
             Matchers.empty()
         );
+    }
+
+    @Test
+    void keepsFlushedCommentsWhenTheSealingLineFails() {
+        MatcherAssert.assertThat(
+            "a top comment block flushed by a line that then fails must survive that line's rollback",
+            GlobalsTest.render("# top doc", "", "  [x] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[count(errors/error)=1]"
+            )
+        );
+    }
+
+    @Test
+    void rollsTheSealBackWhenTheSealingLineFails() {
+        MatcherAssert.assertThat(
+            "a line failing after it sealed the header zone cannot turn the next comment line into an error",
+            GlobalsTest.render("  [x] > foo", "# top doc", "", "[] > bar"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[count(errors/error)=1]"
+            )
+        );
+    }
+
+    private static String render(final String... rows) {
+        final StringBuilder source = new StringBuilder(rows.length * 16);
+        for (final String row : rows) {
+            source.append(row).append((char) 10);
+        }
+        return new Xembler(
+            new Directives().add("object").append(
+                new Eo(source.toString()).directives()
+            )
+        ).xmlQuietly();
     }
 }

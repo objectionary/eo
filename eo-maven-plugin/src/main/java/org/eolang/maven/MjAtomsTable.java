@@ -26,9 +26,9 @@ import org.cactoos.text.UncheckedText;
 /**
  * Generate the atom return types table from XMIR sources.
  *
- * <p>Walks the XMIR sources in {@link #atomsInputDir}, extracts the
+ * <p>Walks the XMIR sources in {@link #sources}, extracts the
  * {@code forma} of every lambda atom together with its declared return
- * type, and writes the result as a CSV file at {@link #atomsOutput}.
+ * type, and writes the result as a CSV file at {@link #csv}.
  * Each output line has the form {@code <forma>,<return-type>}; entries
  * are sorted by {@code forma} to make the file stable across builds.</p>
  *
@@ -48,25 +48,25 @@ public final class MjAtomsTable extends MjSafe {
 
     /**
      * Directory with XMIR sources to scan for atoms.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "atomsInputDir",
         property = "eo.atomsInputDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/1-parse"
     )
-    private File atomsInputDir;
+    private File sources;
 
     /**
      * Output CSV file with the atoms table.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "atomsOutput",
         property = "eo.atomsOutput",
         required = true,
         defaultValue = "${project.build.outputDirectory}/org/eolang/atoms.csv"
     )
-    private File atomsOutput;
+    private File csv;
 
     /**
      * Ctor.
@@ -77,7 +77,7 @@ public final class MjAtomsTable extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = this.atomsInputDir.toPath();
+        final Path home = this.sources.toPath();
         if (!Files.isDirectory(home)) {
             Logger.info(
                 this,
@@ -89,7 +89,7 @@ public final class MjAtomsTable extends MjSafe {
         }
         final Map<String, String> table = new TreeMap<>();
         final Xsline xsline = new Xsline(new StClasspath(MjAtomsTable.XSL));
-        for (final Path source : new Walk(home)) {
+        for (final Path source : new WkDefault(home)) {
             final XML before = new XMLDocument(
                 new UncheckedText(new TextOf(source)).asString()
             );
@@ -114,18 +114,16 @@ public final class MjAtomsTable extends MjSafe {
             this,
             "Wrote %d atom return type(s) to %[file]s",
             table.size(),
-            this.atomsOutput.toPath()
+            this.csv.toPath()
         );
     }
 
-    /**
-     * Write the atoms table to the output CSV file.
-     * @param table Forma to return-type mappings, already sorted
-     * @throws IOException If write fails
-     */
     private void write(final Map<String, String> table) throws IOException {
-        final Path target = this.atomsOutput.toPath();
-        Files.createDirectories(target.getParent());
+        final Path target = this.csv.toPath();
+        final Path parent = target.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
         final StringBuilder out = new StringBuilder();
         for (final Map.Entry<String, String> entry : table.entrySet()) {
             out.append(entry.getKey())

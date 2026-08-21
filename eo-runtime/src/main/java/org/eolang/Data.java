@@ -52,10 +52,17 @@ public interface Data {
          * is dataized far away from the place that made it.</p>
          *
          * @param obj Data
-         * @checkstyle ConstructorsCodeFreeCheck (5 lines)
          */
         public ToPhi(final Object obj) {
-            this.object = Data.ToPhi.toPhi(obj);
+            this(Data.ToPhi.toPhi(obj));
+        }
+
+        /**
+         * Ctor.
+         * @param phi Already converted object
+         */
+        private ToPhi(final Phi phi) {
+            this.object = phi;
         }
 
         @Override
@@ -118,11 +125,6 @@ public interface Data {
             return this.object.φTerm();
         }
 
-        /**
-         * Convert to Phi object.
-         * @param obj Object to convert
-         * @return Constructed Phi
-         */
         private static Phi toPhi(final Object obj) {
             if (obj == null) {
                 throw new IllegalArgumentException("Cannot convert null data to Phi");
@@ -134,10 +136,10 @@ public interface Data {
                 } else {
                     phi = Phi.Φ.take("false");
                 }
-            } else if (obj instanceof Phi[]) {
+            } else if (obj instanceof Phi[] elements) {
                 Phi tuple = Phi.Φ.take("tuple").take("empty");
                 int length = 0;
-                for (final Phi element : (Phi[]) obj) {
+                for (final Phi element : elements) {
                     length += 1;
                     final Phi cell = Phi.Φ.take("tuple").copy();
                     cell.put(0, tuple);
@@ -146,15 +148,15 @@ public interface Data {
                     tuple = cell;
                 }
                 phi = tuple;
-            } else if (obj instanceof byte[]) {
+            } else if (obj instanceof byte[] bytes) {
                 phi = Phi.Φ.take("bytes").copy();
-                phi.put(0, new PhDefault((byte[]) obj));
-            } else if (obj instanceof Number) {
-                phi = Data.ToPhi.number(((Number) obj).doubleValue());
-            } else if (obj instanceof String) {
+                phi.put(0, new PhDefault(bytes));
+            } else if (obj instanceof Number number) {
+                phi = Data.ToPhi.number(number.doubleValue());
+            } else if (obj instanceof String text) {
                 phi = Phi.Φ.take("string").copy();
                 final Phi bts = Phi.Φ.take("bytes").copy();
-                bts.put(0, new PhDefault(((String) obj).getBytes(StandardCharsets.UTF_8)));
+                bts.put(0, new PhDefault(text.getBytes(StandardCharsets.UTF_8)));
                 phi.put(0, bts);
             } else {
                 throw new ExFailure(
@@ -165,13 +167,6 @@ public interface Data {
             return phi;
         }
 
-        /**
-         * Convert a number to a Phi object, mapping the three IEEE-754
-         * exceptional values onto their own objects and everything else
-         * onto number-over-bytes.
-         * @param value The value
-         * @return Constructed Phi
-         */
         private static Phi number(final double value) {
             final Phi phi;
             if (Double.isNaN(value)) {

@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A member declares its tests in its own file, where they are attributes of the
+# member. A test is legal only as a direct child of the top-level object, so the
+# merge lifts them out of the member and leaves them beside the tests the object
+# declares itself, which is the one place the transpiler reads them from. The
+# member no longer has a class of its own, and its tests run from the test class
+# of the object its package names.
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+
+      1.eq 1 ++> can-be-what-a-number-is
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+
+      lt 2 1 ++> can-tell-two-is-above-one
+      lt 1 2 --> stops-on-one-below-two
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='+can-tell-two-is-above-one']"
+    - "/object/o[@name='number']/o[@name='-stops-on-one-below-two']"
+    - "/object/o[@name='number']/o[@name='lt'][not(o[@name='+can-tell-two-is-above-one'])]"
+tests:
+  number.eo:
+    - 'class EOnumberTest'
+    - 'void can_be_what_a_number_is()'
+    - 'void can_tell_two_is_above_one()'
+    - 'void _stops_on_one_below_two()'
+    - 'this.add("can-tell-two-is-above-one"'
+    - 'new Dataized(this.take("can-tell-two-is-above-one")).asBool()'
+    - 'Assertions.assertThrows(Exception.class'

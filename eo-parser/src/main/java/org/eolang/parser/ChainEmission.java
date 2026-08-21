@@ -77,39 +77,46 @@ final class ChainEmission {
      * the caller can attach horizontal args, then close.
      */
     void run() {
-        final String name = this.suffix.attribute(
-            this.span.line(), this.span.indent()
+        ChainEmission.link(
+            this.emit, this.span.line(), this.head, this.chain,
+            this.suffix.attribute(this.span.line(), this.span.indent())
         );
-        if (this.chain.isEmpty()) {
-            Emissions.openValue(this.emit, name, this.head, this.span.line());
-            if (!this.suffix.handle().isEmpty()) {
-                this.emit.local(this.suffix.handle());
-            }
-            if (this.suffix.constant()) {
-                this.emit.constant();
-            }
+        if (!this.suffix.handle().isEmpty()) {
+            this.emit.local(this.suffix.handle());
+        }
+        if (this.suffix.constant()) {
+            this.emit.constant();
+        }
+    }
+
+    /**
+     * Emit the head + chain, leaving the last opened {@code <o>} open.
+     * @param sink The directives sink
+     * @param line Source line
+     * @param head The head value
+     * @param links The dispatch chain (may be empty)
+     * @param label Name for the last link, or {@code null}
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    static void link(
+        final Emit sink, final int line, final Value head,
+        final List<MethodChain> links, final String label
+    ) {
+        final int last = links.size() - 1;
+        if (links.isEmpty()) {
+            Emissions.openValue(sink, label, head, line);
         } else {
-            Emissions.openValue(this.emit, null, this.head, this.span.line());
-            this.emit.close();
-            for (int idx = 0; idx < this.chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = this.chain.get(idx);
-                this.emit.object(
-                    null, ".".concat(link.name()), this.span.line(), link.dot()
-                );
-                this.emit.method(link.fragile());
-                this.emit.close();
+            Emissions.openValue(sink, null, head, line);
+        }
+        for (int idx = 0; idx <= last; idx = idx + 1) {
+            final MethodChain chained = links.get(idx);
+            sink.close();
+            if (idx == last) {
+                sink.object(label, ".".concat(chained.name()), line, chained.dot());
+            } else {
+                sink.object(null, ".".concat(chained.name()), line, chained.dot());
             }
-            final MethodChain last = this.chain.get(this.chain.size() - 1);
-            this.emit.object(
-                name, ".".concat(last.name()), this.span.line(), last.dot()
-            );
-            this.emit.method(last.fragile());
-            if (!this.suffix.handle().isEmpty()) {
-                this.emit.local(this.suffix.handle());
-            }
-            if (this.suffix.constant()) {
-                this.emit.constant();
-            }
+            sink.method(chained.fragile());
         }
     }
 }

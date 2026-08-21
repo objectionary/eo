@@ -7,6 +7,8 @@ package org.eolang.posix;
 import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Expect;
+import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -32,7 +34,9 @@ public final class RecvSyscall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
-        final int size = new Dataized(params[1]).asNumber().intValue();
+        final int size = new Natural(
+            new Expect<>("the 'size' argument of recv", () -> params[1])
+        ).it();
         final byte[] buf = new byte[size];
         final int received = CStdLib.INSTANCE.recv(
             new Dataized(params[0]).asNumber().intValue(),

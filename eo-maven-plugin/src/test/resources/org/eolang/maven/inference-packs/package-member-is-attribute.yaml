@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An attribute may live in a file of its own. Here `minus` sits in the package
+# `number`, so it is `Φ.number.minus` and never shows up among the children of
+# the formation `number`. Its row is written all the same, or the table would
+# call `Φ.number` complete while listing a strict subset of what it has.
+eo:
+  number.eo: |
+    [] > number
+      [] > plus
+  minus.eo: |
+    +package number
+
+    [] > minus
+provides:
+  - "/provides/type[@id='Φ.number']/attr[@name='minus']"
+  - "/provides//attr[@name='minus' and @type='Φ.number.minus']"
+  - "/provides/type[@id='Φ.number' and @complete='true']"
+  - "/provides/type[@id='Φ.number'][count(attr[@name!='ρ'])=2]"
+  - "/provides/type[@id='Φ.number.minus' and @complete='true']"

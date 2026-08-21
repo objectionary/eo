@@ -46,7 +46,7 @@ public final class SendFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.send(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Dataized(params[0]).asNumber().longValue(),
                     buf,
                     size,
                     new Dataized(params[3]).asNumber().intValue()

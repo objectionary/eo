@@ -144,10 +144,7 @@ final class Tokens {
         } else {
             raw = this.readPairs(start);
         }
-        return new Value(
-            Value.Kind.BYTES, raw,
-            this.span.indent() + start, this.cursor
-        );
+        return new Value(Value.Kind.BYTES, raw, this.span.indent() + start);
     }
 
     /**
@@ -177,8 +174,7 @@ final class Tokens {
             );
         }
         return new Value(
-            Value.Kind.GROUP, this.body.substring(start, this.cursor),
-            this.span.indent() + start, this.cursor
+            Value.Kind.GROUP, this.body.substring(start, this.cursor), this.span.indent() + start
         );
     }
 
@@ -214,10 +210,7 @@ final class Tokens {
             );
         }
         this.cursor = idx;
-        return new Value(
-            Value.Kind.IDENTIFIER, raw,
-            this.span.indent() + start, idx
-        );
+        return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
 
     /**
@@ -242,7 +235,7 @@ final class Tokens {
                 this.readFloatTail(start);
                 value = new Value(
                     Value.Kind.FLOAT, this.body.substring(start, this.cursor),
-                    this.span.indent() + start, this.cursor
+                    this.span.indent() + start
                 );
             } else {
                 value = integer;
@@ -259,13 +252,13 @@ final class Tokens {
     Value readInt() {
         final int start = this.cursor;
         int idx = start;
-        if (idx < this.body.length()
-            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-')) {
+        final boolean sign = idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
+        if (sign) {
             idx = idx + 1;
         }
         final int from = idx;
-        while (idx < this.body.length()
-            && this.body.charAt(idx) >= '0' && this.body.charAt(idx) <= '9') {
+        while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
         if (idx == from) {
@@ -283,8 +276,7 @@ final class Tokens {
         }
         this.cursor = idx;
         return new Value(
-            Value.Kind.INTEGER, this.body.substring(start, idx),
-            this.span.indent() + start, idx
+            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
         );
     }
 
@@ -316,8 +308,7 @@ final class Tokens {
             );
         }
         return new Value(
-            Value.Kind.HEX, this.body.substring(start, this.cursor),
-            this.span.indent() + start, this.cursor
+            Value.Kind.HEX, this.body.substring(start, this.cursor), this.span.indent() + start
         );
     }
 
@@ -348,8 +339,7 @@ final class Tokens {
         }
         this.cursor = this.cursor + 1;
         return new Value(
-            Value.Kind.ROOT, String.valueOf(this.body.charAt(start)),
-            this.span.indent() + start, this.cursor
+            Value.Kind.ROOT, String.valueOf(this.body.charAt(start)), this.span.indent() + start
         );
     }
 
@@ -389,7 +379,7 @@ final class Tokens {
                 this.cursor = this.cursor + 1;
                 return new Value(
                     Value.Kind.STRING, this.body.substring(start, this.cursor),
-                    this.span.indent() + start, this.cursor
+                    this.span.indent() + start
                 );
             } else {
                 this.cursor = this.cursor + 1;
@@ -416,7 +406,7 @@ final class Tokens {
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
-            chain.add(new MethodChain(name.raw(), dot, name.end(), fragile));
+            chain.add(new MethodChain(name.raw(), dot, fragile));
         }
         return chain;
     }
@@ -461,10 +451,7 @@ final class Tokens {
             } else {
                 mapped = "ρ";
             }
-            value = new Value(
-                Value.Kind.IDENTIFIER, mapped,
-                this.span.indent() + this.cursor, this.cursor + 1
-            );
+            value = new Value(Value.Kind.IDENTIFIER, mapped, this.span.indent() + this.cursor);
             this.cursor = this.cursor + 1;
         } else {
             value = this.readName();
@@ -474,8 +461,8 @@ final class Tokens {
 
     /**
      * Read zero or more space-separated horizontal arguments. Stops at
-     * a suffix marker ({@code >}, {@code >>}, {@code +>}) or end of
-     * body.
+     * a suffix marker ({@code >}, {@code >>}, {@code +>}, {@code ->}) or
+     * end of body.
      * @return Arguments in source order
      */
     List<Value> readArgs() {
@@ -527,7 +514,8 @@ final class Tokens {
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
-        return !this.atEnd() && (this.current() == '>' || this.plusArrow());
+        return !this.atEnd()
+            && (this.current() == '>' || this.plusArrow() || this.minusArrow());
     }
 
     /**
@@ -568,15 +556,6 @@ final class Tokens {
         return idx;
     }
 
-    /**
-     * Whether the content of a paren group is a single token — it holds no
-     * token separator ({@code ' '}, {@code '('}, {@code ')'}, {@code '['} or
-     * {@code ']'}) outside of a quoted string literal. Characters inside
-     * double quotes are ignored, since a string literal is always one atomic
-     * token regardless of what it contains.
-     * @param inside Content between the parentheses
-     * @return True if the content is a single token
-     */
     private static boolean singleToken(final String inside) {
         boolean single = true;
         int idx = 0;
@@ -593,25 +572,10 @@ final class Tokens {
         return single;
     }
 
-    /**
-     * Whether the fragile {@code ?.} operator begins at {@code idx} —
-     * a {@code ?} immediately followed by a {@code .} (R-3.5).
-     * @param body Body
-     * @param idx Index
-     * @return True if {@code ?.} starts here
-     */
     private static boolean fragileAhead(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
+        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
-    /**
-     * Whether the position starts a BYTES literal — either {@code --}
-     * or a {@code HH-} pattern.
-     * @param body Body
-     * @param idx Index
-     * @return True if BYTES starts here
-     */
     private static boolean bytesStart(final String body, final int idx) {
         return idx + 1 < body.length()
             && body.charAt(idx) == '-'
@@ -619,71 +583,27 @@ final class Tokens {
             || Tokens.byteChunk(body, idx);
     }
 
-    /**
-     * Whether the position holds exactly a {@code HH-} byte chunk.
-     * @param body Body
-     * @param idx Index
-     * @return True if {@code HH-} appears here
-     */
     private static boolean byteChunk(final String body, final int idx) {
-        return idx + 2 < body.length()
-            && Tokens.byteDigit(body.charAt(idx))
-            && Tokens.byteDigit(body.charAt(idx + 1))
-            && body.charAt(idx + 2) == '-';
+        return idx + 2 < body.length() && Tokens.byteDigit(body.charAt(idx))
+            && Tokens.byteDigit(body.charAt(idx + 1)) && body.charAt(idx + 2) == '-';
     }
 
-    /**
-     * Whether a character is a valid hex digit (case-insensitive per
-     * R-9.8.3) for use inside a {@code 0x...} HEX literal.
-     * @param glyph Character
-     * @return True if 0-9, A-F, or a-f
-     */
     private static boolean hexDigit(final char glyph) {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
     }
 
-    /**
-     * Whether a character is a valid BYTES hex digit. Per the grammar
-     * (ANTLR's {@code BYTE : [0-9A-F][0-9A-F]}), BYTES accept only
-     * uppercase hex — lowercase belongs to {@code NAME}.
-     * @param glyph Character
-     * @return True if 0-9 or A-F
-     */
     private static boolean byteDigit(final char glyph) {
         return Tokens.digit(glyph) || glyph >= 'A' && glyph <= 'F';
     }
 
-    /**
-     * Whether the character is a root identifier source token
-     * ({@code Q}, {@code @}, {@code ^}, {@code $}).
-     * @param glyph Character
-     * @return True if it is a root token
-     */
     private static boolean rootStart(final char glyph) {
         return glyph == 'Q' || glyph == '@' || glyph == '^' || glyph == '$';
     }
 
-    /**
-     * Whether the root identifier at the index is glued to a NAME
-     * character, as the legacy {@code QQ.io.stdout} head is. A root
-     * ends at a NAME terminator, so anything else standing next to it
-     * belongs to the same token.
-     * @param body Body
-     * @param idx Index of the root character
-     * @return True if a NAME character follows the root
-     */
     private static boolean glued(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && !Tokens.terminates(body.charAt(idx + 1));
+        return idx + 1 < body.length() && !Tokens.terminates(body.charAt(idx + 1));
     }
 
-    /**
-     * Read the whole token starting at the index, up to the first
-     * {@code NAME} terminator or the end of the body.
-     * @param body Body
-     * @param idx Index of the first character
-     * @return The token, terminator excluded
-     */
     private static String token(final String body, final int idx) {
         int end = idx;
         while (end < body.length() && !Tokens.terminates(body.charAt(end))) {
@@ -692,81 +612,37 @@ final class Tokens {
         return body.substring(idx, end);
     }
 
-    /**
-     * Whether the position is the start of an INT literal (digit or
-     * signed digit).
-     * @param body Body
-     * @param idx Index
-     * @return True if INT starts here
-     */
     private static boolean digitStart(final String body, final int idx) {
         return Tokens.digitAt(body, idx) || Tokens.signedStart(body, idx);
     }
 
-    /**
-     * Whether a sign the first digit of an INT literal follows sits at
-     * the given index.
-     * @param body Body
-     * @param idx Index
-     * @return True if a signed INT starts here
-     */
     private static boolean signedStart(final String body, final int idx) {
         return idx < body.length()
-            && Tokens.sign(body.charAt(idx))
-            && Tokens.digitAt(body, idx + 1);
+            && Tokens.sign(body.charAt(idx)) && Tokens.digitAt(body, idx + 1);
     }
 
-    /**
-     * Whether a digit sits at the given index of the body, the index
-     * being inside it at all.
-     * @param body Body
-     * @param idx Index
-     * @return True if a digit is there
-     */
     private static boolean digitAt(final String body, final int idx) {
         return idx < body.length() && Tokens.digit(body.charAt(idx));
     }
 
-    /**
-     * Whether a character is a decimal digit.
-     * @param glyph Character
-     * @return True if 0-9
-     */
     private static boolean digit(final char glyph) {
         return glyph >= '0' && glyph <= '9';
     }
 
-    /**
-     * Whether a character is the sign of a number per R-3.2.5.
-     * @param glyph Character
-     * @return True if plus or minus
-     */
     private static boolean sign(final char glyph) {
         return glyph == '+' || glyph == '-';
     }
 
-    /**
-     * Whether a character terminates a {@code NAME} token per §2.3.
-     * @param glyph Character
-     * @return True if it ends the token
-     */
     private static boolean terminates(final char glyph) {
         return Tokens.TERMINATORS.indexOf(glyph) >= 0;
     }
 
-    /**
-     * Whether {@code text} is a legal inline-binding label — a NAME
-     * (lowercase letter then NAME chars) or a non-negative integer
-     * literal (digits only, no leading zero unless the value itself is
-     * {@code 0}) per §3.12.
-     * @param text The binding text
-     * @return True if legal
-     */
     private static boolean validBinding(final String text) {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;
-        } else if (text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
+        } else if ("^".equals(text)
+            || text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
             valid = true;
         } else if (text.chars().allMatch(ch -> ch >= '0' && ch <= '9')) {
             valid = text.charAt(0) != '0' || "0".equals(text);
@@ -776,12 +652,6 @@ final class Tokens {
         return valid;
     }
 
-    /**
-     * Advance the cursor just past the paren group that opens at
-     * {@code start}, counting nested parens and treating a quoted string
-     * as opaque, so a paren inside a literal never closes the group.
-     * @param start Index of the opening paren
-     */
     private void skipGroup(final int start) {
         int depth = 1;
         this.cursor = this.cursor + 1;
@@ -810,16 +680,10 @@ final class Tokens {
         }
     }
 
-    /**
-     * Read one horizontal argument at the cursor — the value itself, the
-     * method chain behind it when the value may carry one, and the
-     * optional {@code :binding} and {@code !} suffixes (§3.12).
-     * @return The argument
-     */
     private Value readArg() {
         final Value bare = this.readValue();
         final List<MethodChain> tail;
-        if (Emissions.chainable(bare)) {
+        if (bare.chainable()) {
             tail = this.readChain();
         } else {
             tail = Collections.emptyList();
@@ -838,14 +702,9 @@ final class Tokens {
         } else {
             cnst = false;
         }
-        return new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail, cnst);
+        return new Value(bare.kind(), bare.raw(), bare.pos(), tie, tail, cnst);
     }
 
-    /**
-     * Continue reading a FLOAT literal after the integer part — the
-     * fractional digits and optional exponent.
-     * @param start The starting cursor position (for error reporting)
-     */
     private void readFloatTail(final int start) {
         this.cursor = this.cursor + 1;
         this.skipDigits();
@@ -856,12 +715,6 @@ final class Tokens {
         }
     }
 
-    /**
-     * Read the exponent of a FLOAT literal — the {@code e} or {@code E}
-     * marker at the cursor, an optional sign, and at least one digit,
-     * without which the literal is malformed (R-9.8.2).
-     * @param start The starting cursor position (for error reporting)
-     */
     private void readExponent(final int start) {
         this.cursor = this.cursor + 1;
         if (this.cursor < this.body.length()
@@ -877,10 +730,6 @@ final class Tokens {
         }
     }
 
-    /**
-     * Advance the cursor past every decimal digit sitting at it.
-     * @return How many digits were passed
-     */
     private int skipDigits() {
         int count = 0;
         while (this.cursor < this.body.length()
@@ -892,19 +741,20 @@ final class Tokens {
         return count;
     }
 
-    /**
-     * Read a value that no delimiter, digit, or root token introduces —
-     * one of the reserved glyphs {@code *}, {@code T}, {@code %}, or a
-     * NAME — rejecting a head that starts no value at all.
-     * @param first The character at the cursor
-     * @return Parsed value
-     */
     private Value readGlyph(final char first) {
+        if (first == '[') {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "horizontal formation not allowed as argument"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");
         } else if (first == 'T') {
             value = this.reserved(Value.Kind.TERM, "T");
+        } else if (first == 'I') {
+            value = this.reserved(Value.Kind.IDENTITY, "I");
         } else if (first == '%') {
             value = this.reserved(Value.Kind.SELF, "%");
         } else if (first >= 'a' && first <= 'z') {
@@ -918,27 +768,11 @@ final class Tokens {
         return value;
     }
 
-    /**
-     * Make a value out of the one reserved glyph at the cursor and step
-     * over it.
-     * @param kind The kind that glyph denotes
-     * @param raw The glyph itself
-     * @return Parsed value
-     */
     private Value reserved(final Value.Kind kind, final String raw) {
         this.cursor = this.cursor + 1;
-        return new Value(
-            kind, raw, this.span.indent() + this.cursor - 1, this.cursor
-        );
+        return new Value(kind, raw, this.span.indent() + this.cursor - 1);
     }
 
-    /**
-     * Scan the non-empty form of a BYTES literal at the cursor — one
-     * {@code BB} pair, any number of {@code -BB} pairs after it, and an
-     * optional trailing {@code -} per §3.13.1.
-     * @param start Index the literal starts at, for error reporting
-     * @return The literal text
-     */
     private String readPairs(final int start) {
         if (!this.bytePair(this.cursor)) {
             throw new ParseError(
@@ -952,41 +786,38 @@ final class Tokens {
             && this.bytePair(this.cursor + 1)) {
             this.cursor = this.cursor + 3;
         }
-        if (this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '-') {
+        if (this.cursor < this.body.length() && this.body.charAt(this.cursor) == '-') {
+            if (this.cursor - start > 2) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + this.cursor,
+                    "bytes literal ends with a dangling continuation dash"
+                );
+            }
             this.cursor = this.cursor + 1;
         }
         return this.body.substring(start, this.cursor);
     }
 
-    /**
-     * Whether a {@code BB} pair of byte digits sits at the given index.
-     * @param idx Index of the first digit
-     * @return True if both characters are there and both are byte digits
-     */
     private boolean bytePair(final int idx) {
         return idx + 1 < this.body.length()
             && Tokens.byteDigit(this.body.charAt(idx))
             && Tokens.byteDigit(this.body.charAt(idx + 1));
     }
 
-    /**
-     * Whether the cursor sits on the dot of a FLOAT fraction, that is,
-     * on a dot a digit follows.
-     * @return True if a fractional tail starts here
-     */
     private boolean dottedDigit() {
         return this.cursor < this.body.length()
             && this.body.charAt(this.cursor) == '.'
             && Tokens.digitAt(this.body, this.cursor + 1);
     }
 
-    /**
-     * Whether a {@code +>} suffix marker starts at the cursor.
-     * @return True if the marker is there
-     */
     private boolean plusArrow() {
         return this.current() == '+'
+            && this.cursor + 1 < this.body.length()
+            && this.body.charAt(this.cursor + 1) == '>';
+    }
+
+    private boolean minusArrow() {
+        return this.current() == '-'
             && this.cursor + 1 < this.body.length()
             && this.body.charAt(this.cursor + 1) == '>';
     }

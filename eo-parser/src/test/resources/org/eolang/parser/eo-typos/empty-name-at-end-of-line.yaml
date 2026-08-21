@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: "name suffix requires a name"
+input: "[] > app\n  42 >\n"

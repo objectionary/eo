@@ -14,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text width fill cant-pad] > padded-right
+[width fill cant-pad] > padded-right
   if. > @
     or.
       or.
@@ -31,96 +31,82 @@
       string
         text.as-bytes.concat
           as-bytes.
-            repeated
-              fill
-              as-number.
-                width.minus len
-              cant-pad
+            fill.repeated (width.minus len).as-number cant-pad
       text
+  ^ > text
 
-  eq. ++> can-count-characters-and-not-bytes
+  eq. ++> can-count-characters-and-not-bytes-when-padding-right
     "Ж  "
-    padded-right
-      "Ж"
+    "Ж".padded-right
       3
       " "
 
-  eq. ++> can-format-the-error-message-of-a-negative-width
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-right
     "Can't pad text to -1.000000 characters with x"
-    padded-right
-      "y"
+    "y".padded-right
       -1
       "x"
-      message > [message]
+      I
 
   eq. ++> can-pad-a-text-with-trailing-spaces
     "x         "
-    padded-right
-      "x"
+    "x".padded-right
       10
       " "
 
-  eq. ++> can-pad-with-trailing-zeros
+  eq. ++> can-pad-with-trailing-zeros-when-padding-right
     "4200"
-    padded-right
-      "42"
+    "42".padded-right
       4
       "0"
 
-  eq. ++> can-return-a-longer-text-unchanged
-    "hello"
-    padded-right
-      "hello"
-      3
-      " "
-
-  eq. ++> can-return-a-text-of-the-exact-width-unchanged
-    "hey"
-    padded-right
-      "hey"
-      3
-      " "
-
-  eq. ++> can-return-a-text-unchanged-at-zero-width
-    "x"
-    padded-right
-      "x"
-      0
-      " "
-
-  eq. ++> rejects-a-multi-character-fill
+  eq. ++> can-recover-from-a-multi-character-fill-when-padding-right
     "recovered"
-    padded-right
-      "y"
+    "y".padded-right
       5
       "ab"
       "recovered" > [message]
 
-  eq. ++> rejects-a-negative-width
+  eq. ++> can-recover-from-a-negative-width-when-padding-right
     "recovered"
-    padded-right
-      "y"
+    "y".padded-right
       -1
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-width
+  eq. ++> can-recover-from-a-non-integer-width-when-padding-right
     "recovered"
-    padded-right
-      "y"
+    "y".padded-right
       2.5
       "x"
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-width
+  eq. ++> can-recover-from-an-infinite-width-when-padding-right
     "recovered"
-    padded-right
-      "y"
+    "y".padded-right
       pinf
       "x"
       "recovered" > [message]
 
-  padded-right --> stops-on-a-negative-width
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-right
+    "hello"
+    "hello".padded-right
+      3
+      " "
+
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-right
+    "hey"
+    "hey".padded-right
+      3
+      " "
+
+  eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-right
+    "x"
+    "x".padded-right
+      0
+      " "
+
+  padded-right. --> stops-on-a-negative-width-when-padding-right
     "y"
     -1
     "x"

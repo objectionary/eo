@@ -11,8 +11,8 @@ package org.eolang.parser;
  * extend the level's expression (e.g., a {@link Kind#HEAD} entry promotes
  * to {@link Kind#VAPPLICATION} once its first deeper child arrives; its
  * {@code openness} progresses from {@link Openness#OPEN OPEN} to
- * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} when the child
- * block ends).</p>
+ * {@link Openness#VCOMPLETED VCOMPLETED} when the child block
+ * ends).</p>
  *
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
@@ -113,7 +113,7 @@ final class Level {
     private boolean tupled;
 
     /**
-     * For a {@link Kind#ONLY_PHI_FORMATION} whose φ is a compact tuple
+     * For a {@link Kind#ONLY_PHI} whose φ is a compact tuple
      * ({@code seq * > [m]}, R-3.9.1 + R-3.10.6): true so the φ absorbs
      * deeper-indent lines into a {@code Φ.tuple} wrapper like a
      * {@link Kind#COMPACT_TUPLE} head, reusing {@link #count} /
@@ -131,7 +131,7 @@ final class Level {
     /**
      * Whether a child arg is currently being tracked but has not yet
      * been committed into {@link #bindings} — see
-     * {@link #observeBinding(boolean, Span)} / {@link #commitArg(Span)}.
+     * {@link #observeBinding(boolean, Span)} / {@link #commitArg()}.
      */
     private boolean argpending;
 
@@ -145,7 +145,7 @@ final class Level {
 
     /**
      * Source span recorded with the in-progress arg, used for error
-     * positioning when {@link #commitArg(Span)} rejects the arg
+     * positioning when {@link #commitArg()} rejects the arg
      * against the group mode.
      */
     private Span argspan;
@@ -237,14 +237,14 @@ final class Level {
     /**
      * The name a child of this entry should use for its governing
      * only-phi formation: this entry's own name when it is the
-     * {@link Kind#ONLY_PHI_FORMATION}, otherwise the name propagated
+     * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
         final String owner;
-        if (this.kind == Kind.ONLY_PHI_FORMATION) {
+        if (this.kind == Kind.ONLY_PHI) {
             owner = this.label;
         } else {
             owner = this.formation;
@@ -315,7 +315,7 @@ final class Level {
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
-        return this.kind == Kind.ONLY_PHI_FORMATION
+        return this.kind == Kind.ONLY_PHI
             || this.formation != null && !this.kind.formation();
     }
 
@@ -449,6 +449,19 @@ final class Level {
     }
 
     /**
+     * Forget the compact-tuple state, after the closer has already
+     * accounted for it - the entry stays on the stack as the wrapper a
+     * same-indent {@code .method} continuation put around it, and the
+     * wrapper is no tuple of its own.
+     */
+    void sealed() {
+        this.star = false;
+        this.tupled = false;
+        this.children = 0;
+        this.count = 0;
+    }
+
+    /**
      * Mark the compact-tuple wrapper as opened — emission of the
      * {@code Φ.tuple} wrapper has fired and any further children land
      * inside it.
@@ -474,7 +487,7 @@ final class Level {
      * @param span Source span of the child (for error positioning)
      */
     void observeBinding(final boolean bound, final Span span) {
-        this.commitArg(span);
+        this.commitArg();
         this.argpending = true;
         this.argbound = bound;
         this.argspan = span;
@@ -494,9 +507,8 @@ final class Level {
      * Commit the currently in-progress arg's binding state into the
      * group mode and verify against the all-or-nothing rule. Called
      * before starting a new arg and at parent close time.
-     * @param span Span for error positioning when the rule is violated
      */
-    void commitArg(final Span span) {
+    void commitArg() {
         if (this.argpending) {
             final int code;
             if (this.argbound) {
@@ -514,5 +526,35 @@ final class Level {
             }
             this.argpending = false;
         }
+    }
+
+    /**
+     * A detached twin of this entry, carrying the same mutable state at
+     * the moment of copying. Lets {@link Stack} take a savepoint that
+     * later mutation of this entry cannot reach (R-7.3).
+     * @return A copy of this entry
+     */
+    Level twin() {
+        final Level copy = new Level(
+            this.indent, this.start, this.kind, this.openness, this.parent, this.patom
+        );
+        copy.absorb(this);
+        return copy;
+    }
+
+    private void absorb(final Level other) {
+        this.label = other.label;
+        this.formation = other.formation;
+        this.atom = other.atom;
+        this.taken = other.taken;
+        this.plain = other.plain;
+        this.count = other.count;
+        this.children = other.children;
+        this.tupled = other.tupled;
+        this.star = other.star;
+        this.bindings = other.bindings;
+        this.argpending = other.argpending;
+        this.argbound = other.argbound;
+        this.argspan = other.argspan;
     }
 }

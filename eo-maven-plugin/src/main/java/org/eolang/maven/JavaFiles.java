@@ -133,6 +133,15 @@ final class JavaFiles {
 
     /**
      * Delete generated Java files absent from the current XMIR collection.
+     *
+     * <p>Only considers files inside a directory this run's own {@link
+     * #fresh} output actually landed in, never the whole {@link #generated}
+     * tree: {@code generated-sources} is the standard Maven convention
+     * directory, and other generators (antlr4, protobuf, jaxb2, the
+     * annotation-processor output of maven-compiler-plugin) can write their
+     * own {@code .java} files there too, outside any directory eo itself
+     * touched this run.</p>
+     *
      * @throws IOException If fails to inspect or remove a generated file
      */
     void removeStale() throws IOException {
@@ -150,9 +159,9 @@ final class JavaFiles {
                     .filter(path -> path.toString().endsWith(JavaFiles.JAVA)).collect(
                         Collectors.toList()
                     )) {
-                    if (!expected.contains(file) && (!"package-info.java".equals(
-                        file.getFileName().toString()
-                    ) || !dirs.contains(file.getParent()))) {
+                    if (dirs.contains(file.getParent())
+                        && !expected.contains(file)
+                        && !"package-info.java".equals(file.getFileName().toString())) {
                         Files.delete(file);
                         Logger.debug(this, "Deleted stale generated Java file %[file]s", file);
                     }
@@ -161,12 +170,6 @@ final class JavaFiles {
         }
     }
 
-    /**
-     * Cached path supplier for a generated Java file.
-     * @param hsh Hash
-     * @param jname Java class name
-     * @return Supplier of cached path
-     */
     private Supplier<Path> cached(final String hsh, final String jname) {
         final Path tail = this.generated.relativize(
             new Place(jname).make(

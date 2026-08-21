@@ -23,6 +23,33 @@ import org.junit.jupiter.api.Test;
 final class ScopeTest {
 
     @Test
+    void findsParentOfObjectTheReferenceStandsIn() {
+        MatcherAssert.assertThat(
+            "the parent of the object being formed must be named, but it wasnt",
+            new Scope(
+                Arrays.asList(
+                    "Φ.outer", "Φ.outer.held", "Φ.outer.inner",
+                    "Φ.outer.inner.φ", "Φ.outer.inner.φ.ρ"
+                ),
+                Arrays.asList("Φ.outer", "Φ.outer.held", "Φ.outer.inner")
+            ).target("Φ.outer.inner.φ.ρ", "ξ.ρ"),
+            Matchers.equalTo("Φ.outer")
+        );
+    }
+
+    @Test
+    void keepsQuietAboutParentOfTopLevelObject() {
+        MatcherAssert.assertThat(
+            "an object that sits in a package has no formation to name, but one was named",
+            new Scope(
+                Arrays.asList("Φ.app", "Φ.app.φ", "Φ.app.φ.ρ"),
+                Collections.singletonList("Φ.app")
+            ).target("Φ.app.φ.ρ", "ξ.ρ"),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
     void findsNameBoundFurtherOut() {
         MatcherAssert.assertThat(
             "a name bound by a formation above must be found by looking out, but it wasnt",

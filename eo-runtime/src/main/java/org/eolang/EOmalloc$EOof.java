@@ -27,19 +27,16 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final int identifier = Heaps.INSTANCE.malloc(
-            this, new Expect.Natural(Expect.at(this, "size")).it()
+        return Heaps.INSTANCE.malloc(
+            this,
+            new Natural(Expect.at(this, "size")).it(),
+            identifier -> {
+                final Phi chunk = Phi.Φ.take("chunk").copy();
+                chunk.put("id", new Data.ToPhi((long) identifier));
+                final Phi scope = this.take("scope").copy();
+                scope.put(0, chunk);
+                return new Data.ToPhi(new Dataized(scope).take());
+            }
         );
-        final Phi res;
-        try {
-            final Phi chunk = Phi.Φ.take("chunk").copy();
-            chunk.put("id", new Data.ToPhi((long) identifier));
-            final Phi scope = this.take("scope").copy();
-            scope.put(0, chunk);
-            res = new Data.ToPhi(new Dataized(scope).take());
-        } finally {
-            Heaps.INSTANCE.free(identifier);
-        }
-        return res;
     }
 }

@@ -228,6 +228,17 @@ final class TjForeign {
     }
 
     /**
+     * Say that this object now lives inside another one and is compiled as a
+     * part of it.
+     * @param object The name of the object it was put inside of
+     * @return The tojo itself
+     */
+    TjForeign withMerged(final String object) {
+        this.delegate.set(TjsForeign.Attribute.MERGED.getKey(), object);
+        return this;
+    }
+
+    /**
      * Set the xmir.
      * @param xmir The xmir
      * @return The tojo itself
@@ -265,11 +276,6 @@ final class TjForeign {
         return this.attribute(TjsForeign.Attribute.SCOPE);
     }
 
-    /**
-     * Return the attribute from the tojo.
-     * @param attribute The attribute from ForeignTojos.Attribute
-     * @return The attribute
-     */
     private String attribute(final TjsForeign.Attribute attribute) {
         final String attr = this.delegate.get(attribute.getKey());
         if (attr == null) {

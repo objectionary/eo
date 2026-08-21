@@ -222,16 +222,13 @@ final class CacheTest {
             temp.resolve("out.txt"),
             source.getFileName()
         );
-        final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        CacheTest.frame(instance, "file1.txt", first);
-        CacheTest.frame(instance, "file2.txt", second);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
                 cache.resolve("folder.sha256"),
                 StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(Base64.getEncoder().encodeToString(instance.digest()))
+            Matchers.equalTo(new Sha(source).toString())
         );
     }
 
@@ -310,14 +307,6 @@ final class CacheTest {
         );
     }
 
-    /**
-     * Build a cache with a valid "v1" entry, then move the source to "v2"
-     * and replace the cache payload path with a directory, so that a
-     * following write to it fails.
-     * @param temp Temporary directory
-     * @return The corrupted cache state
-     * @throws IOException If the fixture cannot be built
-     */
     private static CacheTest.Corrupted corrupted(final Path temp) throws IOException {
         final Path base = temp.resolve("cache-order");
         Files.createDirectories(base);
@@ -333,11 +322,6 @@ final class CacheTest {
         return new CacheTest.Corrupted(base, source, target, tail);
     }
 
-    /**
-     * Attempt to write "v2" into the corrupted cache and swallow the
-     * expected failure, leaving the cache exactly as it was.
-     * @param state The corrupted cache state
-     */
     private static void attemptDoomedWrite(final CacheTest.Corrupted state) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -352,28 +336,6 @@ final class CacheTest {
         );
     }
 
-    /**
-     * Feed a digest with a single file's contents, framed by its relative
-     * path and its byte length, the same way {@link Sha} frames a file
-     * inside a directory.
-     * @param digest Digest to feed
-     * @param relative Relative path of the file
-     * @param content File content
-     */
-    private static void frame(
-        final MessageDigest digest, final String relative, final String content
-    ) {
-        final byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-        digest.update(String.format("%s\0", relative).getBytes(StandardCharsets.UTF_8));
-        digest.update(bytes);
-        digest.update(String.format("\0%d\0", bytes.length).getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Marker file name for the given cached tail.
-     * @param tail Tail path in cache
-     * @return Marker file name, relative to the same directory as the tail
-     */
     private static String marker(final Path tail) {
         return String.format("%s.sha256", tail);
     }

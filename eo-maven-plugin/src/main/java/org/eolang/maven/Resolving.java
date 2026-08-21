@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -109,47 +111,44 @@ final class Resolving implements Step {
     @Override
     public void exec() {
         final Collection<Dep> deps = this.deps();
+        final int unpacked;
         if (deps.isEmpty()) {
+            unpacked = 0;
+        } else {
+            final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
+            unpacked = new Threaded<>(
+                deps,
+                dep -> this.resolved(dep, this.target, versions)
+            ).total();
+        }
+        if (unpacked == 0) {
             Logger.info(this, "No new dependencies unpacked");
         } else {
-            new Threaded<>(
-                deps,
-                dep -> this.resolved(dep, this.target)
-            ).total();
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                deps.size(), this.target,
+                unpacked, this.target,
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
     }
 
-    /**
-     * Resolve a single dependency.
-     * @param dep Dependency
-     * @param dest Destination directory
-     * @return Count resolved
-     * @throws IOException If fails
-     */
-    private int resolved(final Dep dep, final Path dest) throws IOException {
-        final String classifier;
+    private int resolved(
+        final Dep dep, final Path dest, final Map<String, Set<String>> versions
+    ) throws IOException {
         final Dependency dependency = dep.get();
-        if (dependency.getClassifier() == null || dependency.getClassifier().isEmpty()) {
-            classifier = "-";
-        } else {
-            classifier = dependency.getClassifier();
-        }
+        final DepCoordinate coords = new DepCoordinate(dependency);
         final Path place = this.cleanPlace(
             dest
                 .resolve(dependency.getGroupId())
                 .resolve(dependency.getArtifactId())
-                .resolve(classifier),
-            dependency.getVersion()
+                .resolve(coords.classifier()),
+            dependency.getVersion(),
+            versions.get(coords.value())
         );
         final int total;
         if (Files.exists(place)) {
-            if (new Walk(place).isEmpty()) {
+            if (new WkDefault(place).isEmpty()) {
                 Logger.debug(
                     this,
                     "Destination %[file]s exists but is empty, unpacking %s again",
@@ -170,19 +169,11 @@ final class Resolving implements Step {
         return total;
     }
 
-    /**
-     * Unpack a dependency into its destination and log the result.
-     * @param dep Dependency (for logging)
-     * @param dependency Resolved dependency coordinates
-     * @param place Destination directory
-     * @return Count resolved, always {@code 1}
-     * @throws IOException If fails
-     */
     private int unpacked(
         final Dep dep, final Dependency dependency, final Path place
     ) throws IOException {
         this.central.accept(dependency, place);
-        final int files = new Walk(place).size();
+        final int files = new WkDefault(place).size();
         if (files == 0) {
             Logger.warn(this, "No new files after unpacking of %s!", dep);
         } else {
@@ -194,19 +185,14 @@ final class Resolving implements Step {
         return 1;
     }
 
-    /**
-     * Returns directory where files should be unpacked, removing outdated versions.
-     * @param dir Directory
-     * @param version Version
-     * @return Full path
-     * @throws IOException If fails
-     */
-    private Path cleanPlace(final Path dir, final String version) throws IOException {
+    private Path cleanPlace(
+        final Path dir, final String version, final Set<String> keep
+    ) throws IOException {
         final File[] subs = dir.toFile().listFiles();
         if (subs != null) {
             for (final File sub : subs) {
                 final String base = sub.getName();
-                if (base.equals(version)) {
+                if (keep.contains(base)) {
                     continue;
                 }
                 final Path bad = dir.resolve(base);
@@ -218,18 +204,14 @@ final class Resolving implements Step {
                 }
                 Logger.info(
                     this,
-                    "Directory %[file]s deleted because it contained wrong version files (not %s)",
-                    bad, version
+                    "Directory %[file]s deleted because it contained a stale version (not %s)",
+                    bad, keep
                 );
             }
         }
         return dir.resolve(version);
     }
 
-    /**
-     * Find all deps for all tojos.
-     * @return List of dependencies
-     */
     private Collection<Dep> deps() {
         Dependencies result = new DpsDefault(
             this.tojos, this.discover, this.skipzero, this.jna
@@ -250,12 +232,6 @@ final class Resolving implements Step {
             .collect(Collectors.toList());
     }
 
-    /**
-     * Folder size in megabytes.
-     * @param path Folder
-     * @return Size in MB
-     * @throws IOException If fails
-     */
     private static long folderSizeInMb(final Path path) throws IOException {
         try (Stream<Path> paths = Files.walk(path)) {
             return paths.filter(Files::isRegularFile).mapToLong(

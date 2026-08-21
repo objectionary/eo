@@ -9,10 +9,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -52,13 +49,13 @@ final class OyRemote implements Objectionary {
      * @param hash Commit hash
      * @param proxies Proxies to use
      */
-    OyRemote(final CommitHash hash, final Proxy... proxies) {
+    OyRemote(final CommitHash hash, final MvnProxy... proxies) {
         this(
-            new OyRemote.UrlOy(
+            new UrlOy(
                 "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
                 hash
             ),
-            new OyRemote.UrlOy(
+            new UrlOy(
                 "https://github.com/objectionary/home/tree/%s/objects/%s",
                 hash
             ),
@@ -73,7 +70,7 @@ final class OyRemote implements Objectionary {
      * @param proxies Proxies to use
      * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
-    OyRemote(final UrlOy program, final UrlOy directory, final Proxy... proxies) {
+    OyRemote(final UrlOy program, final UrlOy directory, final MvnProxy... proxies) {
         this.program = program;
         this.directory = directory;
         this.http = OyRemote.client(proxies);
@@ -174,91 +171,12 @@ final class OyRemote implements Objectionary {
         }
     }
 
-    private static HttpClient client(final Proxy... proxies) {
+    private static HttpClient client(final MvnProxy... proxies) {
         final HttpClient.Builder builder = HttpClient.newBuilder()
             .followRedirects(HttpClient.Redirect.NORMAL);
         if (proxies.length > 0) {
-            builder.proxy(ProxySelector.of((InetSocketAddress) proxies[0].address()));
+            builder.proxy(new NonProxyHostsSelector(proxies[0]));
         }
         return builder.build();
-    }
-
-    /**
-     * Objectionary URL template.
-     *
-     * <p>Assumes two placeholders in terms of
-     * {@link String#format(String, Object...)}: 1st for version hash,
-     * 2nd for program or directory name, for
-     * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
-     * or
-     * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
-     *
-     * @since 0.1.0
-     */
-    static final class UrlOy {
-
-        /**
-         * URL template.
-         *
-         * <p>Expects two placeholders in terms of
-         * {@link String#format(String, Object...)}: 1st for hash,
-         * 2nd for program or directory name, for
-         * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
-         * or
-         * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
-         */
-        private final String template;
-
-        /**
-         * Objects version hash.
-         */
-        private final CommitHash hash;
-
-        /**
-         * Ctor for testing.
-         * @param template URL template
-         * @param hash Commit hash
-         */
-        UrlOy(final String template, final String hash) {
-            this(template, () -> hash);
-        }
-
-        /**
-         * Ctor.
-         * @param template URL template
-         * @param hash Objects version hash
-         */
-        UrlOy(final String template, final CommitHash hash) {
-            this.template = template;
-            this.hash = hash;
-        }
-
-        @Override
-        public String toString() {
-            return this.template;
-        }
-
-        /**
-         * URL for the program or directory.
-         * @param name Fully qualified EO program as specified by {@link Place} or directory name
-         * @return URL
-         * @throws MalformedURLException in case of incorrect URL
-         */
-        URL value(final String name) throws MalformedURLException {
-            final String prefix = "org.eolang.";
-            final String stripped;
-            if (name.startsWith(prefix)) {
-                stripped = name.substring(prefix.length());
-            } else {
-                stripped = name;
-            }
-            return new URL(
-                String.format(
-                    this.template,
-                    this.hash.value(),
-                    stripped.replace(".", "/")
-                )
-            );
-        }
     }
 }

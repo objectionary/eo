@@ -6,16 +6,11 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLDocument;
 import com.yegor256.Together;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -41,6 +36,23 @@ final class TrSteppedTest {
         );
     }
 
+    @Test
+    void keepsSheetsTheDocumentAlreadyHas() {
+        MatcherAssert.assertThat(
+            "We expect an earlier sheet to survive the new one",
+            new Xsline(
+                new TrStepped(
+                    new TrDefault<Shift>().with(
+                        new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
+                    )
+                )
+            ).pass(
+                new XMLDocument("<object><sheets><sheet>earlier</sheet></sheets></object>")
+            ).toString(),
+            XhtmlMatchers.hasXPath("/object/sheets[count(sheet)=2 and sheet[1]='earlier']")
+        );
+    }
+
     @RepeatedTest(10)
     void addsSheetNameConcurrently() {
         MatcherAssert.assertThat(
@@ -50,17 +62,6 @@ final class TrSteppedTest {
                     new TrStepped(
                         new TrDefault<Shift>().with(
                             new StClasspath("/org/eolang/parser/print/wrap-data.xsl")
-                        ),
-                        new Sticky<>(
-                            new TrStepped.Once<XSL>(
-                                () -> new XSLDocument(
-                                    new TextOf(
-                                        () -> new ResourceOf(
-                                            "org/eolang/parser/_stepped.xsl"
-                                        ).stream()
-                                    ).asString()
-                                )
-                            )
                         )
                     )
                 ).pass(

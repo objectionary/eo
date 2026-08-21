@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A package is merged into the object that carries its name, and a package no
+# object is named after has nothing to merge into. The members of such a
+# package stay objects of their own, reached through the package namespace,
+# which is what every program that declares a package of its own relies on.
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [n x] > lt
+      n.gt x > @
+  examples/app.eo: |
+    +package examples
+
+    [args] > app
+      args > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@name='lt']"
+absent:
+  - examples.eo

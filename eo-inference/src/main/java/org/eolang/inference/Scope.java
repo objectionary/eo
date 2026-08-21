@@ -58,17 +58,15 @@ final class Scope {
         final String found;
         if (base.startsWith("Φ.")) {
             found = this.rooted(base);
+        } else if ("ξ.ρ".equals(base)) {
+            final Nesting nesting = new Nesting(this.formations);
+            found = nesting.around(nesting.around(reference));
         } else {
             found = this.outwards(reference, base.substring(base.indexOf('.') + 1));
         }
         return found;
     }
 
-    /**
-     * The root object of the given name, if the program has one.
-     * @param base The base, which is the locator of a root object itself
-     * @return The locator, or an empty string
-     */
     private String rooted(final String base) {
         final String found;
         if (this.locators.contains(base)) {
@@ -79,12 +77,6 @@ final class Scope {
         return found;
     }
 
-    /**
-     * The nearest formation around the reference that binds the name.
-     * @param reference The locator of the reference itself
-     * @param name The name it asks for
-     * @return The locator of the attribute, or an empty string
-     */
     private String outwards(final String reference, final String name) {
         String around = reference;
         String found = "";

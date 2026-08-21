@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What a void holds is decided by whoever fills it, and until then it is a
+# variable. The row says that and nothing more: the locator it is keyed by is
+# already the name every mention of the variable is written with.
+eo:
+  inc.eo: |
+    [x] > inc
+      x > @
+links:
+  - "/links/type[@id='Φ.inc.x']/var"
+  - "/links/type[@id='Φ.inc.x'][not(ref)]"

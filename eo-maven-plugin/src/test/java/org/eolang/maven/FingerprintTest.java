@@ -70,18 +70,10 @@ final class FingerprintTest {
         );
     }
 
-    /**
-     * A real bundled transpile XSL, used as a stable input.
-     * @return Classpath path of {@code to-java.xsl}
-     */
     private static String tojava() {
         return "/org/eolang/maven/transpile/to-java.xsl";
     }
 
-    /**
-     * Another real bundled transpile XSL.
-     * @return Classpath path of {@code classes.xsl}
-     */
     private static String classes() {
         return "/org/eolang/maven/transpile/classes.xsl";
     }
