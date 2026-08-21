@@ -21,8 +21,7 @@
     n.is-finite.not.or
       or.
         0.gt places
-        or.
-          places.is-integer.not
+        places.is-integer.not.or
           places.gte 9007199254740992
     cant-print
       n.is-finite.not.if
