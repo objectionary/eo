@@ -107,7 +107,7 @@ final class LnReversed implements Line {
             final int start = tokens.cursor();
             final String mapped = LnReversed.rootSymbol(tokens.current());
             tokens.seek(start + 1);
-            value = new Value(Value.Kind.IDENTIFIER, mapped, indent + start, start + 1);
+            value = new Value(Value.Kind.IDENTIFIER, mapped, indent + start);
         } else {
             value = tokens.readName();
         }

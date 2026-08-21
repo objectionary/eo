@@ -37,6 +37,38 @@ final class LcovReportTest {
     }
 
     @Test
+    void rendersAnEmptyRecordForAFileWithoutLines() {
+        final Map<String, Map<Integer, Integer>> files = new LinkedHashMap<>(1);
+        files.put("foo.eo", new LinkedHashMap<>(0));
+        final StringBuilder expected = new StringBuilder(32);
+        for (final String line : new String[] {
+            "SF:foo.eo", "LH:0", "LF:0", "end_of_record",
+        }) {
+            expected.append(line).append('\n');
+        }
+        MatcherAssert.assertThat(
+            "a file with no lines must still be rendered as a record of its own, but it wasnt",
+            new LcovReport(files).text(),
+            Matchers.equalTo(expected.toString())
+        );
+    }
+
+    @Test
+    void ignoresAFileWithoutLinesInThePercentage() {
+        final Map<Integer, Integer> lines = new LinkedHashMap<>(2);
+        lines.put(1, 1);
+        lines.put(2, 0);
+        final Map<String, Map<Integer, Integer>> files = new LinkedHashMap<>(2);
+        files.put("a.eo", lines);
+        files.put("b.eo", new LinkedHashMap<>(0));
+        MatcherAssert.assertThat(
+            "a file with nothing to instrument must not drag the percentage down, but it did",
+            new LcovReport(files).covered(),
+            Matchers.closeTo(50.0, 0.001)
+        );
+    }
+
+    @Test
     void computesTheCoveredPercentageAcrossFiles() {
         final Map<Integer, Integer> first = new LinkedHashMap<>(2);
         first.put(1, 1);
