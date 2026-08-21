@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  [3:4] error: 'an auto-named attribute cannot be a named attribute of an only-phi formation, which binds only its φ decoratee'
+      b >>
+      ^
+input: |
+  [] > obj
+    foo > [] >>
+      b >>
