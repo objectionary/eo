@@ -151,6 +151,18 @@ final class Level {
     private Span argspan;
 
     /**
+     * Copy ctor — a detached twin of {@code other}, carrying the same
+     * mutable state at the moment of copying. Lets {@link Stack} take a
+     * savepoint that later mutation of {@code other} cannot reach
+     * (R-7.3).
+     * @param other The entry to copy
+     */
+    Level(final Level other) {
+        this(other.indent, other.start, other.kind, other.openness, other.parent, other.patom);
+        this.absorb(other);
+    }
+
+    /**
      * Ctor — fresh level pushed at {@code indent} on {@code line} under
      * {@code parent}.
      * @param ind Indent
@@ -179,14 +191,13 @@ final class Level {
     }
 
     /**
-     * Copy ctor — a detached twin of {@code other}, carrying the same
-     * mutable state at the moment of copying. Lets {@link Stack} take a
-     * savepoint that later mutation of {@code other} cannot reach
-     * (R-7.3).
-     * @param other The entry to copy
+     * Overwrite this entry's derived mutable state with {@code other}'s,
+     * for the copy ctor to call once the shared fields are set by
+     * delegation — so only one ctor performs direct field assignment
+     * (OnlyOneConstructorShouldDoInitialization).
+     * @param other The entry to copy the state of
      */
-    Level(final Level other) {
-        this(other.indent, other.start, other.kind, other.openness, other.parent, other.patom);
+    private void absorb(final Level other) {
         this.label = other.label;
         this.formation = other.formation;
         this.atom = other.atom;
