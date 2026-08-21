@@ -182,10 +182,22 @@ final class Eo implements Iterable<Directive> {
         final Span head = spans.get(start);
         final StringBuilder body = new StringBuilder(head.body().stripTrailing());
         int idx = start + 1;
+        boolean broken = false;
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
-            if (next.indent() < head.indent() || !Eo.isBytesOnly(trimmed)) {
+            if (!next.blank() && next.indent() < head.indent()) {
+                emit.error(
+                    next.line(), 0, "multi-line bytes continuation must not de-indent"
+                );
+                broken = true;
+                break;
+            }
+            if (!Eo.isBytesOnly(trimmed)) {
+                emit.error(
+                    next.line(), 0, "multi-line bytes interrupted by non-byte content"
+                );
+                broken = true;
                 break;
             }
             body.append(trimmed);
@@ -195,7 +207,9 @@ final class Eo implements Iterable<Directive> {
             }
         }
         final int resumption;
-        if (Eo.process(
+        if (broken) {
+            resumption = recovery.skip(idx, head.indent());
+        } else if (Eo.process(
             new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
             stack, globals, emit
         )) {
