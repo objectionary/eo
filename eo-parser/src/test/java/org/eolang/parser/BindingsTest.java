@@ -199,7 +199,7 @@ final class BindingsTest {
         stack.push(0, 1, Kind.HEAD, Openness.OPEN);
         Assertions.assertThrows(
             ParseError.class,
-            () -> Bindings.observeChild(stack, "\u00e4\u00df", new Span("foo", 1)),
+            () -> Bindings.observeChild(stack, "äß", new Span("foo", 1)),
             "a binding on a top-level line was accepted"
         );
     }
