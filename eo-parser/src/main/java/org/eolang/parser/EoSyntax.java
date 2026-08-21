@@ -102,6 +102,7 @@ public final class EoSyntax implements Syntax {
 
     @Override
     public XML parsed() throws IOException {
+        final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
         return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
             new XMLDocument(
@@ -112,7 +113,7 @@ public final class EoSyntax implements Syntax {
                         .xpath("/object")
                         .strict(1)
                         .append(new Eo(text).directives())
-                        .attr("ms", 0L)
+                        .attr("ms", (System.nanoTime() - start) / (1000L * 1000L))
                         .up()
                 ).domQuietly()
             )

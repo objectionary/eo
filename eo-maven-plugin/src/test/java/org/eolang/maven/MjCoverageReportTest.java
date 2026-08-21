@@ -46,8 +46,8 @@ final class MjCoverageReportTest {
         final Path hits = temp.resolve("coverage.txt");
         Files.writeString(hits, String.format("%s%n", location));
         final Path lcov = temp.resolve("coverage.info");
-        maven.with("coverageFile", hits.toFile())
-            .with("lcovFile", lcov.toFile())
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
             .execute(MjCoverageReport.class);
         MatcherAssert.assertThat(
             "the LCOV report must record at least one hit line, but LH:0 everywhere",
@@ -65,11 +65,35 @@ final class MjCoverageReportTest {
         Files.writeString(hits, "");
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.with("coverageFile", hits.toFile())
-                .with("lcovFile", temp.resolve("coverage.info").toFile())
-                .with("minCoverage", 1.0d)
+            () -> maven.with("hits", hits.toFile())
+                .with("lcov", temp.resolve("coverage.info").toFile())
+                .with("minimum", 1.0d)
                 .execute(MjCoverageReport.class),
             "coverage-report must fail the build when coverage is below the minimum, but it didnt"
+        );
+    }
+
+    @Test
+    void reportsAFileThatHasNothingToInstrument(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > foo",
+                "  [] > bar /Q.bytes"
+            ),
+            "foo",
+            "foo.eo"
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "a file the manifest names no location in must still get a record of its own, so that the report knows the file exists, but it got none",
+            Files.readString(lcov),
+            Matchers.stringContainsInOrder("SF:", "foo.eo", "LH:0", "LF:0", "end_of_record")
         );
     }
 
@@ -101,8 +125,8 @@ final class MjCoverageReportTest {
         final Path hits = temp.resolve("coverage.txt");
         Files.writeString(hits, "");
         final Path lcov = temp.resolve("coverage.info");
-        maven.with("coverageFile", hits.toFile())
-            .with("lcovFile", lcov.toFile())
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
             .execute(MjCoverageReport.class);
         MatcherAssert.assertThat(
             "the meta directives of the package file must not be reported as DA misses, while its merged member must get a coverage block of its own",

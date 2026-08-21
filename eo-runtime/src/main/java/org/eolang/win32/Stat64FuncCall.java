@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.WString;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -40,7 +41,7 @@ public final class Stat64FuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE._stat64(new Dataized(params[0]).asString(), info)
+                Msvcrt.INSTANCE._wstat64(new WString(new Dataized(params[0]).asString()), info)
             )
         );
         final Phi struct = this.win.take("stat64");

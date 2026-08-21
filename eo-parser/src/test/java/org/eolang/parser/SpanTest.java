@@ -33,6 +33,33 @@ final class SpanTest {
     }
 
     @Test
+    void detectsTrailingSpace() {
+        MatcherAssert.assertThat(
+            "a line ending in a space must report trailing whitespace",
+            new Span("[] > foo ", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsTrailingTab() {
+        MatcherAssert.assertThat(
+            "a line ending in a tab must report trailing whitespace",
+            new Span("[] > foo\t", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsTrailingWhitespaceOnBlankLine() {
+        MatcherAssert.assertThat(
+            "a blank line must not report trailing whitespace",
+            new Span("    ", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void detectsBlankLine() {
         MatcherAssert.assertThat(
             "a line of pure spaces must report blank",

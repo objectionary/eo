@@ -52,7 +52,8 @@ final class Emissions {
         Value.Kind.INTEGER,
         Value.Kind.FLOAT,
         Value.Kind.STRING,
-        Value.Kind.BYTES
+        Value.Kind.BYTES,
+        Value.Kind.HEX
     );
 
     /**

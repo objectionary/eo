@@ -200,8 +200,8 @@ final class FakeMaven {
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);
-            this.params.putIfAbsent("strictFileNames", true);
-            this.params.putIfAbsent("includeSources", new SetOf<>("**.eo"));
+            this.params.putIfAbsent("strict", true);
+            this.params.putIfAbsent("included", new SetOf<>("**.eo"));
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

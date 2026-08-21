@@ -34,8 +34,6 @@ jobs:
       # instead of pointing at a vague bucket. No expected numbers are kept
       # here, since they would conflict in every other pull request.
       - id: counts
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           metrics=${RUNNER_TEMP}/metrics.txt
           cat > "${metrics}" <<'EOF'
@@ -58,8 +56,15 @@ jobs:
                 | xargs -0 -r grep -Eoh -- "${pattern}" | wc -l) ))"
             done < "${metrics}"
           }
+          # The base must be the first parent of the merge commit we are
+          # standing on, not `pull_request.base.sha`: the latter is the
+          # base branch tip from the moment the branch was last synced,
+          # while the merge ref is recomputed against the current tip.
+          # Comparing the two makes every commit that landed on master
+          # meanwhile look like a change made by this branch.
           head=$(git rev-parse HEAD)
-          tally "${BASE}" > "${RUNNER_TEMP}/master.txt"
+          base=$(git rev-parse "${head}^1")
+          tally "${base}" > "${RUNNER_TEMP}/master.txt"
           tally "${head}" > "${RUNNER_TEMP}/branch.txt"
           declare -A was
           while read -r metric total; do
