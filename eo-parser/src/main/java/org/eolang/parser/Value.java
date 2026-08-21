@@ -53,11 +53,6 @@ final class Value {
     private final int pos;
 
     /**
-     * Index in the line body immediately past this value.
-     */
-    private final int end;
-
-    /**
      * Inline binding label (R-3.12) — {@code null} when no
      * {@code :label} or {@code :N} follows the value. Numeric bindings
      * are stored as their digit string; the emitter prefixes
@@ -86,10 +81,9 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      */
-    Value(final Kind tag, final String text, final int column, final int after) {
-        this(tag, text, column, after, null, Value.NO_CHAIN, false);
+    Value(final Kind tag, final String text, final int column) {
+        this(tag, text, column, null, Value.NO_CHAIN, false);
     }
 
     /**
@@ -97,13 +91,12 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      * @param tie Optional inline-binding label or N
      */
     Value(
-        final Kind tag, final String text, final int column, final int after, final String tie
+        final Kind tag, final String text, final int column, final String tie
     ) {
-        this(tag, text, column, after, tie, Value.NO_CHAIN, false);
+        this(tag, text, column, tie, Value.NO_CHAIN, false);
     }
 
     /**
@@ -111,19 +104,17 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      * @param tie Optional inline-binding label or N
      * @param links Method-dispatch chain on this value (empty for a bare value)
      * @param cnst Whether a trailing {@code !} const marker is present
      */
     Value(
-        final Kind tag, final String text, final int column, final int after,
+        final Kind tag, final String text, final int column,
         final String tie, final List<MethodChain> links, final boolean cnst
     ) {
         this.kind = tag;
         this.raw = text;
         this.pos = column;
-        this.end = after;
         this.binding = tie;
         this.chain = links;
         this.constant = cnst;
@@ -151,14 +142,6 @@ final class Value {
      */
     int pos() {
         return this.pos;
-    }
-
-    /**
-     * Index past this value in the body.
-     * @return End index
-     */
-    int end() {
-        return this.end;
     }
 
     /**

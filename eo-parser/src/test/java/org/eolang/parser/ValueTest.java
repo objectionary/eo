@@ -18,7 +18,7 @@ final class ValueTest {
     void retainsKindFromCtor() {
         MatcherAssert.assertThat(
             "kind() must round-trip the ctor tag so the emitter dispatches correctly",
-            new Value(Value.Kind.INTEGER, "42", 0, 2).kind(),
+            new Value(Value.Kind.INTEGER, "42", 0).kind(),
             Matchers.equalTo(Value.Kind.INTEGER)
         );
     }
@@ -27,7 +27,7 @@ final class ValueTest {
     void retainsRawTextFromCtor() {
         MatcherAssert.assertThat(
             "raw() must round-trip the source text untouched",
-            new Value(Value.Kind.IDENTIFIER, "foo-bar", 4, 11).raw(),
+            new Value(Value.Kind.IDENTIFIER, "foo-bar", 4).raw(),
             Matchers.equalTo("foo-bar")
         );
     }
@@ -36,17 +36,8 @@ final class ValueTest {
     void retainsPositionFromCtor() {
         MatcherAssert.assertThat(
             "pos() must round-trip the source column for emitter @pos",
-            new Value(Value.Kind.STAR, "*", 7, 8).pos(),
+            new Value(Value.Kind.STAR, "*", 7).pos(),
             Matchers.equalTo(7)
-        );
-    }
-
-    @Test
-    void retainsEndIndexFromCtor() {
-        MatcherAssert.assertThat(
-            "end() must round-trip the cursor advance position",
-            new Value(Value.Kind.IDENTIFIER, "foo", 0, 3).end(),
-            Matchers.equalTo(3)
         );
     }
 
@@ -63,7 +54,7 @@ final class ValueTest {
     void retainsBytesKind() {
         MatcherAssert.assertThat(
             "BYTES must be one of the recognised value kinds",
-            new Value(Value.Kind.BYTES, "CA-FE", 0, 5).kind(),
+            new Value(Value.Kind.BYTES, "CA-FE", 0).kind(),
             Matchers.equalTo(Value.Kind.BYTES)
         );
     }
@@ -72,7 +63,7 @@ final class ValueTest {
     void retainsHexKind() {
         MatcherAssert.assertThat(
             "HEX must be one of the recognised value kinds for `0xFF` literals",
-            new Value(Value.Kind.HEX, "0xFF", 0, 4).kind(),
+            new Value(Value.Kind.HEX, "0xFF", 0).kind(),
             Matchers.equalTo(Value.Kind.HEX)
         );
     }
@@ -81,7 +72,7 @@ final class ValueTest {
     void retainsBindingFromCtor() {
         MatcherAssert.assertThat(
             "binding() must round-trip the inline-binding tag from the ctor",
-            new Value(Value.Kind.IDENTIFIER, "a", 0, 1, "y").binding(),
+            new Value(Value.Kind.IDENTIFIER, "a", 0, "y").binding(),
             Matchers.equalTo("y")
         );
     }
@@ -90,7 +81,7 @@ final class ValueTest {
     void returnsEmptyBindingWhenAbsent() {
         MatcherAssert.assertThat(
             "binding() must return an empty string when no inline binding was supplied",
-            new Value(Value.Kind.IDENTIFIER, "a", 0, 1).binding(),
+            new Value(Value.Kind.IDENTIFIER, "a", 0).binding(),
             Matchers.equalTo("")
         );
     }
@@ -99,7 +90,7 @@ final class ValueTest {
     void isBoundWhenLabelGiven() {
         MatcherAssert.assertThat(
             "bound() must be true when the ctor received an inline-binding tag",
-            new Value(Value.Kind.IDENTIFIER, "a", 0, 1, "y").bound(),
+            new Value(Value.Kind.IDENTIFIER, "a", 0, "y").bound(),
             Matchers.equalTo(true)
         );
     }
@@ -108,7 +99,7 @@ final class ValueTest {
     void isNotBoundWhenAbsent() {
         MatcherAssert.assertThat(
             "bound() must be false when no inline binding was supplied",
-            new Value(Value.Kind.IDENTIFIER, "a", 0, 1).bound(),
+            new Value(Value.Kind.IDENTIFIER, "a", 0).bound(),
             Matchers.equalTo(false)
         );
     }
@@ -117,7 +108,7 @@ final class ValueTest {
     void retainsGroupKind() {
         MatcherAssert.assertThat(
             "GROUP must be one of the recognised value kinds for paren-bracketed expressions",
-            new Value(Value.Kind.GROUP, "(foo)", 0, 5).kind(),
+            new Value(Value.Kind.GROUP, "(foo)", 0).kind(),
             Matchers.equalTo(Value.Kind.GROUP)
         );
     }
@@ -126,7 +117,7 @@ final class ValueTest {
     void retainsFloatKind() {
         MatcherAssert.assertThat(
             "FLOAT must be one of the recognised value kinds",
-            new Value(Value.Kind.FLOAT, "3.14", 0, 4).kind(),
+            new Value(Value.Kind.FLOAT, "3.14", 0).kind(),
             Matchers.equalTo(Value.Kind.FLOAT)
         );
     }
@@ -135,7 +126,7 @@ final class ValueTest {
     void retainsStringKind() {
         MatcherAssert.assertThat(
             "STRING must be one of the recognised value kinds",
-            new Value(Value.Kind.STRING, "\"hi\"", 0, 4).kind(),
+            new Value(Value.Kind.STRING, "\"hi\"", 0).kind(),
             Matchers.equalTo(Value.Kind.STRING)
         );
     }
@@ -144,7 +135,7 @@ final class ValueTest {
     void retainsRootKind() {
         MatcherAssert.assertThat(
             "ROOT must be one of the recognised value kinds for Q/@/^/$",
-            new Value(Value.Kind.ROOT, "Q", 0, 1).kind(),
+            new Value(Value.Kind.ROOT, "Q", 0).kind(),
             Matchers.equalTo(Value.Kind.ROOT)
         );
     }
@@ -153,7 +144,7 @@ final class ValueTest {
     void retainsTermKind() {
         MatcherAssert.assertThat(
             "TERM must be one of the recognised value kinds for the bottom term T",
-            new Value(Value.Kind.TERM, "T", 0, 1).kind(),
+            new Value(Value.Kind.TERM, "T", 0).kind(),
             Matchers.equalTo(Value.Kind.TERM)
         );
     }
@@ -162,7 +153,7 @@ final class ValueTest {
     void retainsIdentityKind() {
         MatcherAssert.assertThat(
             "IDENTITY must be one of the recognised value kinds for the identity object I",
-            new Value(Value.Kind.IDENTITY, "I", 0, 1).kind(),
+            new Value(Value.Kind.IDENTITY, "I", 0).kind(),
             Matchers.equalTo(Value.Kind.IDENTITY)
         );
     }

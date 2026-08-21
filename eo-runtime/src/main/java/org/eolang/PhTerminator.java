@@ -11,7 +11,9 @@ package org.eolang;
  * have an object put into it — but it has no data and no behaviour.
  * It detonates only when something tries to <em>force</em> it: reading
  * its data ({@link #delta()}) aborts through an {@link ExFailure}, which
- * nothing intercepts, so forcing bottom terminates the program for good.</p>
+ * only {@link EOrecovered} intercepts, and only while it resolves its own
+ * {@code value}, so forcing bottom anywhere else terminates the program
+ * for good.</p>
  *
  * <p>The remaining operations are tolerant on purpose: {@link #copy()}
  * yields the same bottom and {@link #take(String)} yields another one carrying

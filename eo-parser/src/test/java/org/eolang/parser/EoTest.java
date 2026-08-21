@@ -115,6 +115,15 @@ final class EoTest {
     }
 
     @Test
+    void acceptsAWhitespaceOnlyBlankLine() {
+        MatcherAssert.assertThat(
+            "a whitespace-only blank line must not be reported as trailing whitespace",
+            EoTest.render("[] > foo", "  ", "[] > qux"),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
     void recoversFromBadLineAndContinues() {
         MatcherAssert.assertThat(
             "after an error the walker must continue and parse subsequent valid lines",
@@ -910,17 +919,6 @@ final class EoTest {
             EoTest.render("foo > main", "  CA-FE-", "  BE-BE-", "  AB-CD"),
             XhtmlMatchers.hasXPath(
                 "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE-AB-CD']"
-            )
-        );
-    }
-
-    @Test
-    void mergesMultiLineBytesWithATrailingSpaceOnEitherChunk() {
-        MatcherAssert.assertThat(
-            "a trailing space on either chunk must not break a BYTES continuation",
-            EoTest.render("foo > main", "  CA-FE- ", "  BE-BE "),
-            XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
             )
         );
     }
