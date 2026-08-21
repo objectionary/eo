@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Failure in repository #721146770 at #278: end of file reached'
   inserted: 8
-  seconds: 2171.011532984
+  seconds: 654.671322761
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-21 22:23:35.822271636 Z
+  when: 2026-08-21 22:40:58.491649118 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -259832,11 +259831,11 @@
   earliest_issue_was_found: 28
   events_were_scanned: 11808472403
   issues_were_scanned: 0
-  labels_were_scanned: 34
+  labels_were_scanned: 0
   latest_issue_was_found: 46
   min_issue_was_found: 12
   repository: 531151981
-  types_were_scanned: 8
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1105351
@@ -265718,7 +265717,7 @@
   min_issue_was_found: 45
   min_pull_was_found: 0
   repository: 482612876
-  types_were_scanned: 41
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1106488
@@ -278823,7 +278822,7 @@
   min_issue_was_found: 62
   min_pull_was_found: 0
   repository: 552394123
-  types_were_scanned: 41
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107622
@@ -279400,7 +279399,7 @@
   min_issue_was_found: 137
   min_pull_was_found: 0
   repository: 447446664
-  types_were_scanned: 108
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107699
@@ -281157,24 +281156,24 @@
   min_issue_was_found: 88
   min_pull_was_found: 0
   repository: 574459304
-  types_were_scanned: 89
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1107878
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18437547810
   issues_were_scanned: 0
-  labels_were_scanned: 516
+  labels_were_scanned: 0
   latest_issue_was_found: 347
   merges_were_scanned: 0
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 606
+  types_were_scanned: 805
   what: iterate
   where: github
 - _id: 1107889
@@ -282138,7 +282137,7 @@
   min_issue_was_found: 153
   min_pull_was_found: 0
   repository: 546194972
-  types_were_scanned: 128
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108010
@@ -287128,7 +287127,7 @@
   min_issue_was_found: 193
   min_pull_was_found: 0
   repository: 955159947
-  types_were_scanned: 157
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108492
@@ -288081,13 +288080,13 @@
   earliest_issue_was_found: 1
   events_were_scanned: 13009557602
   issues_were_scanned: 0
-  labels_were_scanned: 603
+  labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
   min_issue_was_found: 503
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 749
+  types_were_scanned: 919
   what: iterate
   where: github
 - _id: 1108618
@@ -288523,7 +288522,7 @@
   min_issue_was_found: 41
   min_pull_was_found: 0
   repository: 784310467
-  types_were_scanned: 30
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108670
@@ -291804,30 +291803,30 @@
   earliest_issue_was_found: 14
   events_were_scanned: 18406224404
   issues_were_scanned: 0
-  labels_were_scanned: 276
+  labels_were_scanned: 0
   latest_issue_was_found: 480
   merges_were_scanned: 0
   min_issue_was_found: 207
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 102
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
   events_were_scanned: 13666831799
   issues_were_scanned: 982
-  labels_were_scanned: 950
+  labels_were_scanned: 0
   latest_issue_was_found: 765
   merges_were_scanned: 0
   min_issue_was_found: 748
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 20
+  types_were_scanned: 866
   what: iterate
   where: github
 - _id: 1108989
@@ -294208,7 +294207,7 @@
   min_issue_was_found: 61
   min_pull_was_found: 0
   repository: 1219806055
-  types_were_scanned: 5
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109036
@@ -294225,7 +294224,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 543969974
-  types_were_scanned: 88
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109038
@@ -294259,7 +294258,7 @@
   min_issue_was_found: 41
   min_pull_was_found: 0
   repository: 396732517
-  types_were_scanned: 43
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109040
@@ -294276,7 +294275,7 @@
   min_issue_was_found: 272
   min_pull_was_found: 1572
   repository: 671896902
-  types_were_scanned: 716
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109041
@@ -294292,7 +294291,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 1260338737
-  types_were_scanned: 27
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109042
@@ -294309,7 +294308,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 501259435
-  types_were_scanned: 42
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109043
@@ -294326,7 +294325,7 @@
   min_issue_was_found: 128
   min_pull_was_found: 0
   repository: 13623548
-  types_were_scanned: 322
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109044
@@ -294377,7 +294376,7 @@
   min_issue_was_found: 69
   min_pull_was_found: 0
   repository: 492899189
-  types_were_scanned: 56
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109047
@@ -294394,7 +294393,7 @@
   min_issue_was_found: 179
   min_pull_was_found: 0
   repository: 519299365
-  types_were_scanned: 212
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109048
@@ -294735,17 +294734,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13669718787
   issues_were_scanned: 0
-  labels_were_scanned: 1111
+  labels_were_scanned: 0
   latest_issue_was_found: 686
   merges_were_scanned: 0
   min_issue_was_found: 257
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 467
+  types_were_scanned: 1114
   what: iterate
   where: github
 - _id: 1109065
@@ -294762,24 +294761,24 @@
   min_issue_was_found: 336
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 320
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6899
+  assignees_were_scanned: 7061
   earliest_issue_was_found: 1
   events_were_scanned: 13670715072
   issues_were_scanned: 0
-  labels_were_scanned: 6485
+  labels_were_scanned: 7344
   latest_issue_was_found: 4591
-  merges_were_scanned: 7325
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 7009
+  types_were_scanned: 7120
   what: iterate
   where: github
 - _id: 1109067
@@ -520434,6 +520433,1909 @@
   - 7
   - 7
   - 7
+  some_build_duration:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 13
+  - 31
+  - 34
+  - 41
+  - 45
+  - 50
+  - 56
+  - 58
+  - 66
+  - 70
+  - 72
+  - 11
+  - 11
+  - 5
+  - 13
+  - 12
+  - 13
+  - 14
+  - 12
+  - 12
+  - 14
+  - 13
+  - 17
+  - 17
+  - 18
+  - 18
+  - 24
+  - 31
+  - 35
+  - 37
+  - 58
+  - 63
+  - 1634
+  - 1895
+  - 2020
+  - 2100
+  - 2297
+  - 2312
+  - 3095
+  - 3518
+  - 3570
+  - 3966
+  - 5485
+  - 5546
+  - 5577
+  - 5706
+  - 5834
+  - 6094
+  - 6153
+  - 6337
+  - 6342
+  - 6717
+  - 6907
+  - 23
+  - 32
+  - 32
+  - 32
+  - 90
+  - 104
+  - 117
+  - 128
+  - 31
+  - 79
+  - 112
+  - 148
+  - 25
+  - 35
+  - 82
+  - 163
+  - 29
+  - 35
+  - 140
+  - 213
+  - 938
+  - 1380
+  - 1698
+  - 2442
+  - 112
+  - 306
+  - 598
+  - 3006
+  - 992
+  - 1012
+  - 1026
+  - 1063
+  - 1224
+  - 1484
+  - 1596
+  - 1596
+  - 1797
+  - 8
+  - 10
+  - 11
+  - 12
+  - 20
+  - 20
+  - 23
+  - 30
+  - 35
+  - 36
+  - 167
+  - 178
+  - 7
+  - 10
+  - 11
+  - 12
+  - 16
+  - 17
+  - 24
+  - 30
+  - 31
+  - 41
+  - 138
+  - 176
+  - 11
+  - 11
+  - 12
+  - 12
+  - 19
+  - 22
+  - 26
+  - 33
+  - 43
+  - 49
+  - 161
+  - 163
+  - 111
+  - 161
+  - 178
+  - 203
+  - 219
+  - 315
+  - 332
+  - 364
+  - 450
+  - 458
+  - 543
+  - 602
+  - 6
+  - 8
+  - 9
+  - 10
+  - 11
+  - 14
+  - 17
+  - 31
+  - 42
+  - 49
+  - 145
+  - 204
+  - 9
+  - 10
+  - 8
+  - 8
+  - 8
+  - 9
+  - 10
+  - 12
+  - 13
+  - 27
+  - 36
+  - 10
+  - 12
+  - 10
+  - 10
+  - 12
+  - 13
+  - 16
+  - 17
+  - 22
+  - 32
+  - 38
+  - 8
+  - 7
+  - 8
+  - 11
+  - 10
+  - 10
+  - 11
+  - 12
+  - 19
+  - 33
+  - 34
+  - 1609
+  - 1622
+  - 1628
+  - 1631
+  - 1816
+  - 1878
+  - 1921
+  - 1924
+  - 2104
+  - 2114
+  - 2365
+  - 16
+  - 36
+  - 55
+  - 91
+  - 104
+  - 104
+  - 117
+  - 122
+  - 133
+  - 138
+  - 146
+  - 30
+  - 48
+  - 48
+  - 51
+  - 60
+  - 74
+  - 82
+  - 87
+  - 90
+  - 97
+  - 105
+  - 2009
+  - 2921
+  - 443
+  - 55
+  - 29
+  - 14
+  - 26
+  - 14
+  - 33
+  - 13
+  - 25
+  - 13
+  - 9
+  - 25
+  - 11
+  - 27
+  - 14
+  - 29
+  - 31
+  - 391
+  - 2579
+  - 2418
+  - 156
+  - 459
+  - 5081
+  - 6373
+  - 4496
+  - 4207
+  - 1532
+  - 3057
+  - 95
+  - 17
+  - 25
+  - 16
+  - 25
+  - 15
+  - 4733
+  - 5926
+  - 8378
+  - 5842
+  - 6734
+  - 4155
+  - 1190
+  - 5432
+  - 3249
+  - 6356
+  - 5933
+  - 4198
+  - 4255
+  - 2848
+  - 3754
+  - 637
+  - 1280
+  - 22
+  - 14
+  - 29
+  - 13
+  - 7
+  - 25
+  - 10
+  - 7
+  - 8
+  - 1
+  - 59
+  - 0
+  - 1
+  - 1
+  - 30
+  - 1
+  - 7
+  - 2
+  - 192
+  - 3060
+  - 3183
+  - 2819
+  - 3263
+  - 1910
+  - 1976
+  - 3501
+  - 2000
+  - 3091
+  - 3505
+  - 2035
+  - 3542
+  - 3137
+  - 3566
+  - 2114
+  - 3220
+  - 3225
+  - 2142
+  - 3671
+  - 2171
+  - 2192
+  - 3310
+  - 3372
+  - 2311
+  - 3431
+  - 3459
+  - 2391
+  - 2455
+  - 3553
+  - 3553
+  - 3562
+  - 3624
+  - 3630
+  - 3645
+  - 1257
+  - 2615
+  - 4124
+  - 2626
+  - 2655
+  - 2663
+  - 3774
+  - 3792
+  - 2725
+  - 2745
+  - 1
+  - 27
+  - 30
+  - 30
+  - 25
+  - 27
+  - 128
+  - 31
+  - 1067
+  - 1242
+  - 1287
+  - 2205
+  - 556
+  - 3328
+  - 480
+  - 28
+  - 22
+  - 32
+  - 30
+  - 26
+  - 34
+  - 26
+  - 32
+  - 2165
+  - 213
+  - 4307
+  - 4460
+  - 2578
+  - 125
+  - 23
+  - 29
+  - 5486
+  - 5267
+  - 1
+  - 2
+  - 6862
+  - 5138
+  - 5148
+  - 5319
+  - 5391
+  - 5410
+  - 5466
+  - 5506
+  - 5525
+  - 5528
+  - 5710
+  - 5760
+  - 5827
+  - 5899
+  - 6117
+  - 6139
+  - 6169
+  - 6218
+  - 6246
+  - 5415
+  - 2191
+  - 6684
+  - 4760
+  - 4250
+  - 4120
+  - 1429
+  - 26
+  - 30
+  - 25
+  - 1003
+  - 1234
+  - 1605
+  - 1630
+  - 1691
+  - 1780
+  - 1810
+  - 1863
+  - 1916
+  - 2138
+  - 684
+  - 737
+  - 758
+  - 795
+  - 793
+  - 833
+  - 863
+  - 883
+  - 890
+  - 896
+  - 918
+  - 923
+  - 920
+  - 961
+  - 975
+  - 1018
+  - 1042
+  - 1056
+  - 1099
+  - 1154
+  - 1160
+  - 1176
+  - 1177
+  - 1203
+  - 1476
+  - 1495
+  - 1564
+  - 43
+  - 123
+  - 1374
+  - 1255
+  - 99
+  - 1036
+  - 41
+  - 44
+  - 54
+  - 71
+  - 43
+  - 36
+  - 919
+  - 39
+  - 919
+  - 918
+  - 43
+  - 107
+  - 99
+  - 710
+  - 45
+  - 61
+  - 215
+  - 54
+  - 1407
+  - 1375
+  - 3151
+  - 2610
+  - 1080
+  - 472
+  - 4185
+  - 37
+  - 74
+  - 74
+  - 33
+  - 59
+  - 39
+  - 29
+  - 31
+  - 928
+  - 2116
+  - 43
+  - 4373
+  - 5848
+  - 3225
+  - 35
+  - 34
+  - 34
+  - 5339
+  - 7243
+  - 6648
+  - 4623
+  - 1840
+  - 4609
+  - 4683
+  - 4117
+  - 1270
+  - 36
+  - 34
+  - 37
+  - 727
+  - 714
+  - 717
+  - 753
+  - 780
+  - 828
+  - 837
+  - 847
+  - 853
+  - 906
+  - 917
+  - 951
+  - 1016
+  - 1036
+  - 1022
+  - 1023
+  - 1052
+  - 1061
+  - 1040
+  - 1121
+  - 1123
+  - 1129
+  - 1141
+  - 1166
+  - 1326
+  - 1378
+  - 1443
+  - 7
+  - 7
+  - 8
+  - 8
+  - 10
+  - 9
+  - 16
+  - 29
+  - 53
+  - 2
+  - 8
+  - 8
+  - 8
+  - 10
+  - 10
+  - 14
+  - 16
+  - 29
+  - 50
+  - 54
+  - 4501
+  - 2375
+  - 2392
+  - 2514
+  - 2692
+  - 2838
+  - 3046
+  - 3079
+  - 3123
+  - 3208
+  - 3243
+  - 3386
+  - 3762
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 3842
+  - 3890
+  - 4163
+  - 4175
+  - 3539
+  - 364
+  - 30
+  - 126
+  - 5733
+  - 5187
+  - 6823
+  - 6097
+  - 2755
+  - 5634
+  - 3123
+  - 3909
+  - 2210
+  - 2243
+  - 2275
+  - 2325
+  - 2363
+  - 2594
+  - 2618
+  - 2653
+  - 2677
+  - 2877
+  - 2984
+  - 2988
+  - 3138
+  - 1637
+  - 32
+  - 31
+  - 29
+  - 36
+  - 1020
+  - 1256
+  - 1449
+  - 1457
+  - 1520
+  - 1598
+  - 1687
+  - 1696
+  - 1840
+  - 2043
+  - 2084
+  - 2410
+  - 7
+  - 10
+  - 11
+  - 11
+  - 13
+  - 16
+  - 29
+  - 29
+  - 238
+  - 335
+  - 1229
+  - 1231
+  - 1244
+  - 1318
+  - 1366
+  - 1455
+  - 1462
+  - 1535
+  - 1543
+  - 1551
+  - 1495
+  - 1523
+  - 1596
+  - 1650
+  - 1652
+  - 1701
+  - 1660
+  - 1663
+  - 1689
+  - 1705
+  - 1707
+  - 1718
+  - 1726
+  - 1797
+  - 1738
+  - 1803
+  - 1744
+  - 1749
+  - 1820
+  - 1820
+  - 1759
+  - 1774
+  - 1841
+  - 1421
+  - 1539
+  - 1387
+  - 1166
+  - 1254
+  - 1037
+  - 1025
+  - 2004
+  - 9
+  - 1964
+  - 8
+  - 1982
+  - 2086
+  - 2062
+  - 2183
+  - 2582
+  - 25
+  - 46
+  - 2978
+  - 52
+  - 33
+  - 2497
+  - 59
+  - 2607
+  - 26
+  - 2292
+  - 2140
+  - 4793
+  - 4814
+  - 4851
+  - 4863
+  - 4960
+  - 4996
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 5223
+  - 5319
+  - 5581
+  - 5668
+  - 5791
+  - 5800
+  - 5807
+  - 5907
+  - 6287
+  - 6426
+  - 6455
+  - 7285
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 12413
+  - 8
+  - 8
+  - 9
+  - 11
+  - 11
+  - 13
+  - 15
+  - 17
+  - 20
+  - 31
+  - 35
+  - 38
+  - 55
+  - 112
+  - 131
+  - 151
+  - 560
+  - 10
+  - 10
+  - 10
+  - 11
+  - 14
+  - 17
+  - 20
+  - 26
+  - 28
+  - 37
+  - 103
+  - 134
+  - 150
+  - 213
+  - 266
+  - 274
+  - 237
+  - 239
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 303
+  - 275
+  - 333
+  - 288
+  - 313
+  - 367
+  - 344
+  - 406
+  - 367
+  - 425
+  - 395
+  - 396
+  - 400
+  - 401
+  - 94
+  - 464
+  - 491
+  - 210
+  - 217
+  - 196
+  - 227
+  - 6620
+  - 6638
+  - 6641
+  - 6648
+  - 6655
+  - 6668
+  - 6705
+  - 6762
+  - 7014
+  - 7114
+  - 7215
+  - 7232
+  - 7436
+  - 7749
+  - 7991
+  - 6330
+  - 51
+  - 276
+  - 296
+  - 388
+  - 406
+  - 525
+  - 692
+  - 783
+  - 833
+  - 875
+  - 1418
+  - 691
+  - 909
+  - 959
+  - 966
+  - 968
+  - 1036
+  - 1056
+  - 1064
+  - 1215
+  - 1233
+  - 1344
+  - 1450
+  - 9
+  - 9
+  - 11
+  - 12
+  - 16
+  - 20
+  - 23
+  - 30
+  - 111
+  - 9
+  - 9
+  - 10
+  - 11
+  - 15
+  - 18
+  - 26
+  - 34
+  - 87
+  - 22
+  - 60
+  - 71
+  - 119
+  - 123
+  - 141
+  - 146
+  - 154
+  - 170
+  - 8
+  - 8
+  - 8
+  - 9
+  - 14
+  - 17
+  - 23
+  - 28
+  - 49
+  - 109
+  - 117
+  - 118
+  - 122
+  - 132
+  - 138
+  - 196
+  - 458
+  - 519
+  - 7
+  - 7
+  - 9
+  - 8
+  - 8
+  - 9
+  - 12
+  - 10
+  - 13
+  - 13
+  - 29
+  - 33
+  - 117
+  - 150
+  - 7
+  - 8
+  - 9
+  - 10
+  - 10
+  - 12
+  - 18
+  - 26
+  - 31
+  - 59
+  - 117
+  - 142
+  - 86
+  - 180
+  - 239
+  - 262
+  - 265
+  - 343
+  - 371
+  - 378
+  - 452
+  - 823
+  - 988
+  - 7
+  - 10
+  - 12
+  - 11
+  - 11
+  - 17
+  - 18
+  - 28
+  - 34
+  - 89
+  - 151
+  - 5417
+  - 5456
+  - 5476
+  - 5546
+  - 5768
+  - 5844
+  - 5880
+  - 5922
+  - 5956
+  - 6369
+  - 6619
+  - 6628
+  some_build_mttr:
+  - 78092
+  - 2375
+  - 445427
+  - 7922
+  - 238
+  - 69272
+  some_build_success_rate:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
   some_issue_lifetime:
   - 45304.0
   - 27443459.0
@@ -520657,6 +522559,18 @@
   - 8955199.0
   - 9702029.0
   - 130578.0
+  some_merged_pulls:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 11
+  - 2
   some_pull_files_size:
   - 1
   - 1
@@ -520685,6 +522599,8 @@
   - 26
   - 43
   - 2
+  some_release_commits_size: 16
+  some_release_hoc_size: 331
   some_release_interval: 195277.0
   some_review_size:
   - 0
@@ -520948,6 +522864,18 @@
   - 3380.0
   - 3755.0
   - 15889.0
+  some_unmerged_pulls:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
   what: quality-of-service
   when: 2026-08-21 02:41:27.490893992 Z
 - _id: 1121344
@@ -527168,6 +529096,7 @@
   href: https://github.com/objectionary/eo/issues/7273/#issuecomment-5374691228
   is_human: 1
   issue: 7273
+  receipt: receipt-#87825
   repository: 73056727
   review_comments: 0
   seconds: 20307
@@ -527188,6 +529117,7 @@
   href: https://github.com/objectionary/eo/issues/7275/#issuecomment-5374691446
   is_human: 1
   issue: 7275
+  receipt: receipt-#87826
   repository: 73056727
   review_comments: 0
   seconds: 14970
@@ -527208,6 +529138,7 @@
   href: https://github.com/objectionary/eo/issues/7277/#issuecomment-5374691692
   is_human: 1
   issue: 7277
+  receipt: receipt-#87827
   repository: 73056727
   review_comments: 0
   seconds: 18221
@@ -527248,6 +529179,7 @@
   href: https://github.com/objectionary/eo/issues/7285/#issuecomment-5374692146
   is_human: 1
   issue: 7285
+  receipt: receipt-#87828
   repository: 73056727
   review_comments: 0
   seconds: 13529
@@ -527288,6 +529220,7 @@
   href: https://github.com/objectionary/eo/issues/7290/#issuecomment-5374692601
   is_human: 1
   issue: 7290
+  receipt: receipt-#87829
   repository: 73056727
   review_comments: 0
   seconds: 5740
@@ -527819,6 +529752,7 @@
   href: https://github.com/objectionary/eo/issues/7301/#issuecomment-5374693462
   is_human: 1
   issue: 7301
+  receipt: receipt-#87830
   repository: 73056727
   review_comments: 0
   seconds: 4751
@@ -527835,11 +529769,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#7305,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -8 for the lack of code review; -4 for too few (29) hits-of-code. Please,
-    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
-    Your running score is [+2165](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 29
   href: https://github.com/objectionary/eo/issues/7305/#issuecomment-5375514698
   is_human: 1
@@ -527860,10 +529789,6 @@
   comments: 3
   details: It's time to reward @yegor256 for the code review in objectionary/eoc#1198,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted; -4 for too few (6) hits-of-code; +4 to give
-    you at least something.  Your running score is [+2169](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 6
   href: https://github.com/objectionary/eoc/issues/1198/#issuecomment-5375515042
   is_human: 1
@@ -528113,3 +530038,25 @@
   when: 2026-08-21 20:53:43.465602798 Z
   where: github
   who: 158751508
+- _id: 1121787
+  _job: 88113
+  _time: 2026-08-21 22:25:11.723113473 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: -6
+  branch: fix-text-block-binding
+  details: It's time to punish @fardin256 for the branch named as 'fix-text-block-binding',
+    which is wrong in objectionary/eo#7359, the penalty amount is -6.
+  greeting: 'It is [not a good idea](https://www.yegor256.com/2014/04/15/github-guidelines.html)
+    to name Git branches the way you named this one: "`fix-text-block-binding`". You''ve
+    earned -6 points. Next time, better give your branch the same name as the number
+    of the ticket that you are solving. In this case, a perfect name, for example,
+    would be "`7358`". Your running score is [-6](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  is_human: 1
+  issue: 7359
+  repository: 73056727
+  what: bad-branch-name-was-punished
+  when: 2026-08-21 22:25:11.725422716 Z
+  where: github
+  who: 158751508
+  why: Wrongly named a branch in objectionary/eo#7359
