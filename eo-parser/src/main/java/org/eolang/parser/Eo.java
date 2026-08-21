@@ -589,7 +589,7 @@ final class Eo implements Iterable<Directive> {
 
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
         try {
-            level.commitArg(null);
+            level.commitArg();
         } catch (final ParseError err) {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
