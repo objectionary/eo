@@ -386,7 +386,9 @@
     "%s %d".scanf
       "%s %d".printf
         * "" 8
-    * "" 8
+    *
+      ""
+      8
 
   eq. ++> can-scan-an-empty-value-between-two-literals
     "a%sb".scanf "ab"
