@@ -192,4 +192,25 @@ final class BindingsTest {
             "a receiver carrying a binding was accepted"
         );
     }
+
+    @Test
+    void rejectsBindingOnAChildOfTheBottomSentinel() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.HEAD, Openness.OPEN);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> Bindings.observeChild(stack, "äß", new Span("foo", 1)),
+            "a binding on a top-level line was accepted"
+        );
+    }
+
+    @Test
+    void acceptsAnUpgradeAgainstTheBottomSentinel() {
+        Assertions.assertDoesNotThrow(
+            () -> Bindings.checkReceiverUpgrade(
+                new Stack().below(), new Span(".plus 1 > x", 1)
+            ),
+            "a chain continuation with no parent below was rejected"
+        );
+    }
 }

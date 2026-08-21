@@ -9,10 +9,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.ProxySelector;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -52,7 +49,7 @@ final class OyRemote implements Objectionary {
      * @param hash Commit hash
      * @param proxies Proxies to use
      */
-    OyRemote(final CommitHash hash, final Proxy... proxies) {
+    OyRemote(final CommitHash hash, final MvnProxy... proxies) {
         this(
             new UrlOy(
                 "https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo",
@@ -73,7 +70,7 @@ final class OyRemote implements Objectionary {
      * @param proxies Proxies to use
      * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
-    OyRemote(final UrlOy program, final UrlOy directory, final Proxy... proxies) {
+    OyRemote(final UrlOy program, final UrlOy directory, final MvnProxy... proxies) {
         this.program = program;
         this.directory = directory;
         this.http = OyRemote.client(proxies);
@@ -174,11 +171,11 @@ final class OyRemote implements Objectionary {
         }
     }
 
-    private static HttpClient client(final Proxy... proxies) {
+    private static HttpClient client(final MvnProxy... proxies) {
         final HttpClient.Builder builder = HttpClient.newBuilder()
             .followRedirects(HttpClient.Redirect.NORMAL);
         if (proxies.length > 0) {
-            builder.proxy(ProxySelector.of((InetSocketAddress) proxies[0].address()));
+            builder.proxy(new NonProxyHostsSelector(proxies[0]));
         }
         return builder.build();
     }
