@@ -89,6 +89,60 @@ final class MjLintTest {
     }
 
     @Test
+    void reportsExperimentalDefectWhenSkipExperimentalIsFalse(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("skipExperimental", false).withProgram(
+                "+architect yegor256@gmail.com",
+                "+home https://www.eolang.org",
+                "+package foo.x",
+                "+version 0.0.0",
+                "+unlint empty-object",
+                "+unlint unit-test-missing",
+                "+unlint comment-too-short",
+                "+unlint object-has-data",
+                "",
+                "[] > main",
+                "  (stdout \"Hello!\").print > @"
+            );
+        maven.execute(new PpLint());
+        MatcherAssert.assertThat(
+            "an experimental lint stays unreported while eo.skipExperimentalLints is FALSE",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/object/errors/error[@check='no-attribute-formation/S']").count(),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void skipsExperimentalDefectWhenSkipExperimentalIsTrue(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("skipExperimental", true).withProgram(
+                "+architect yegor256@gmail.com",
+                "+home https://www.eolang.org",
+                "+package foo.x",
+                "+version 0.0.0",
+                "+unlint empty-object",
+                "+unlint unit-test-missing",
+                "+unlint comment-too-short",
+                "+unlint object-has-data",
+                "",
+                "[] > main",
+                "  (stdout \"Hello!\").print > @"
+            );
+        maven.execute(new PpLint());
+        MatcherAssert.assertThat(
+            "an experimental lint is still reported while eo.skipExperimentalLints is TRUE",
+            new Xnav(
+                maven.programTojo().linted()
+            ).path("/object/errors/error[@check='no-attribute-formation/S']").count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void ignoresLintNamedInSkipSourceLints(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("skipSourceLints", new SetOf<>("mandatory-spdx")).withProgram(

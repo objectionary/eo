@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - //o[@name='x' and @base='Φ.foo']/o[@base='Φ.bar.baz']
+input: |
+  foo bar.baz > x

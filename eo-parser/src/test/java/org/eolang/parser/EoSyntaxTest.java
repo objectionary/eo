@@ -14,8 +14,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import fixtures.LargeProgram;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -770,8 +768,9 @@ final class EoSyntaxTest {
         );
     }
 
-    private static Stream<Arguments> naughty() throws IOException {
-        return Files.readAllLines(Paths.get("target/blns.txt")).stream().filter(s -> !s.isEmpty())
+    private static Stream<Arguments> naughty() throws Exception {
+        return new TextOf(new ResourceOf("org/eolang/parser/blns.txt")).asString()
+            .lines().filter(s -> !s.isEmpty())
             .map(StringEscapeUtils::escapeJava)
             .map(Arguments::of);
     }

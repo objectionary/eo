@@ -59,7 +59,7 @@ final class LnReversed implements Line {
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
-        final Value head = LnReversed.readHead(tokens);
+        final Value head = LnReversed.readHead(tokens, this.span.indent());
         if (tokens.atEnd() || !tokens.dispatchAhead()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + tokens.cursor(),
@@ -101,6 +101,19 @@ final class LnReversed implements Line {
         this.emit(emit, suffix, ".".concat(head.raw()), fragile, args, outer);
     }
 
+    static Value readHead(final Tokens tokens, final int indent) {
+        final Value value;
+        if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
+            final int start = tokens.cursor();
+            final String mapped = LnReversed.rootSymbol(tokens.current());
+            tokens.seek(start + 1);
+            value = new Value(Value.Kind.IDENTIFIER, mapped, indent + start);
+        } else {
+            value = tokens.readName();
+        }
+        return value;
+    }
+
     private void emit(
         final Emit emit, final Suffix suffix, final String base,
         final boolean fragile, final List<Value> args, final String outer
@@ -132,19 +145,6 @@ final class LnReversed implements Line {
         new Transition(stack, this.span).apply(
             kind, openness, new Admission(suffix.named(), suffix.test())
         );
-    }
-
-    private static Value readHead(final Tokens tokens) {
-        final Value value;
-        if (!tokens.atEnd() && LnReversed.rootHead(tokens.current())) {
-            final int start = tokens.cursor();
-            final String mapped = LnReversed.rootSymbol(tokens.current());
-            tokens.seek(start + 1);
-            value = new Value(Value.Kind.IDENTIFIER, mapped, start);
-        } else {
-            value = tokens.readName();
-        }
-        return value;
     }
 
     private static boolean rootHead(final char glyph) {
