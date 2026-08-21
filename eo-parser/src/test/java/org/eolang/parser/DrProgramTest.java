@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -29,6 +31,7 @@ import org.xembly.Xembler;
 final class DrProgramTest {
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void buildsProgramElement() throws Exception {
         MatcherAssert.assertThat(
             "XMIR program element is built",
@@ -42,6 +45,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void setsSchemaLocation() throws Exception {
         MatcherAssert.assertThat(
             "XSD location is set",
@@ -52,6 +56,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void checksThatSchemaLocationPointToFile() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD is set to file",
@@ -62,6 +67,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void checksThatSchemaLocationPointToExistingFile() throws Exception {
         MatcherAssert.assertThat(
             "XSD file exists",
@@ -77,6 +83,7 @@ final class DrProgramTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void doesNotDuplicateSlashesInSchemaLocation() throws Exception {
         MatcherAssert.assertThat(
             "URL of XSD has no redundant slash after the scheme",
@@ -87,6 +94,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ_WRITE)
     void honorsExplicitXmirXsdProperty() throws Exception {
         final Path file = Files.createTempFile("xmir", ".xsd");
         Files.write(file, "<xsd/>".getBytes(StandardCharsets.UTF_8));
@@ -105,6 +113,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ_WRITE)
     void ignoresMissingXmirXsdProperty() throws Exception {
         final Path missing = Paths.get("does-not-exist-1234567890.xsd").toAbsolutePath();
         System.setProperty("xmir.xsd", missing.toString());
@@ -121,6 +130,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ_WRITE)
     void ignoresEmptyXmirXsdProperty() throws Exception {
         System.setProperty("xmir.xsd", "");
         try {
@@ -136,6 +146,7 @@ final class DrProgramTest {
     }
 
     @Test
+    @ResourceLock(value = "xmir.xsd", mode = ResourceAccessMode.READ)
     void validatesAgainstSchema() {
         Assertions.assertDoesNotThrow(
             new StrictXML(
