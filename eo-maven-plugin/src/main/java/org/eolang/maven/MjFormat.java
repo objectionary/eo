@@ -47,15 +47,11 @@ import org.eolang.printer.Xmir;
  *
  * @since 0.57.0
  * @todo #6627:30min Verify the tree read back from {@link Parsing#DIR}.
- *  The one this goal walks itself goes through {@link #parsed(Path, String)},
- *  which rejects a truncated or placeholder-carrying tree; the one read back
- *  is printed over its source unchecked.
+ *  The walked one goes through {@link #parsed(Path, String)}, the read one is unchecked.
  * @todo #6627:30min Name the local package objects in one place.
- *  This goal and {@link Parsing} each build the same list their own way, and
- *  the un-homing is only exact while the two agree, so they must not drift.
+ *  This goal and {@link Parsing} build that list twice; un-homing is exact only if they agree.
  * @todo #6627:30min Read the parsed tree through an object of its own.
- *  It is read and un-homed inside {@link #walked(TjForeign, String, String)},
- *  where neither half can be tested apart from the mojo.
+ *  Neither half of {@link #walked(TjForeign, String, String)} is testable apart from the mojo.
  */
 @Mojo(
     name = "format",
@@ -101,11 +97,7 @@ public final class MjFormat extends MjPenalties {
         final long start = System.currentTimeMillis();
         try (TjsForeign tojos = this.tojos()) {
             final Collection<TjForeign> sources = tojos.withSources();
-            final String objects = sources.stream()
-                .map(TjForeign::identifier)
-                .filter(id -> id.contains("."))
-                .distinct()
-                .sorted()
+            final String objects = sources.stream().map(TjForeign::identifier)
                 .collect(Collectors.joining(" "));
             this.report(
                 sources.size(),
@@ -140,10 +132,8 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(
-        final TjForeign tojo, final String source, final String objects
-    ) throws IOException {
-        final Path path = tojo.source();
+    private String canonical(final TjForeign tojo, final String source, final String objects)
+        throws IOException {
         String structure = source;
         XML tree = MjFormat.walked(tojo, structure, objects);
         Optional<String> settled = Optional.empty();
@@ -154,7 +144,7 @@ public final class MjFormat extends MjPenalties {
                 break;
             }
             structure = printed;
-            tree = MjFormat.parsed(path, structure);
+            tree = MjFormat.parsed(tojo.source(), structure);
         }
         final String canon;
         if (settled.isPresent() && this.weights().isEmpty()) {
@@ -165,23 +155,17 @@ public final class MjFormat extends MjPenalties {
         return canon;
     }
 
-    private static XML walked(
-        final TjForeign tojo, final String structure, final String objects
-    ) throws IOException {
+    private static XML walked(final TjForeign tojo, final String text, final String objects)
+        throws IOException {
         final XML tree;
         if (tojo.notParsed()) {
-            tree = MjFormat.parsed(tojo.source(), structure);
+            tree = MjFormat.parsed(tojo.source(), text);
         } else {
-            final XML saved = new XMLDocument(tojo.xmir());
-            for (final XML blank : saved.nodes("//text()[not(normalize-space())][../*]")) {
-                blank.inner().getParentNode().removeChild(blank.inner());
-            }
             tree = new Xsline(
                 new StClasspath(
-                    "/org/eolang/maven/format/unhome-package.xsl",
-                    String.format("objects %s", objects)
+                    "/org/eolang/maven/format/unhome-package.xsl", "objects ".concat(objects)
                 )
-            ).pass(saved);
+            ).pass(new XMLDocument(tojo.xmir()));
         }
         return tree;
     }
