@@ -92,6 +92,38 @@
             normalized.size.eq 0
             "."
             string normalized
+      concat. > core!
+        ^.drive.concat
+          ^.is-absolute.if
+            ^.unc.if
+              ^.separator.concat ^.separator
+              ^.separator
+            --
+        ^.separator.joined >> body!
+          reduced.
+            ^.driveless.split ^.separator
+            *
+            if. > [accum segment] >>
+              segment.eq ".."
+              if.
+                and.
+                  accum.length.gt 0
+                  not.
+                    accum.head.eq ".."
+                if.
+                  ^.^.unc.and
+                    accum.length.lte 2
+                  accum
+                  accum.tail
+                ^.^.is-absolute.not.if
+                  accum.with segment
+                  accum
+              if.
+                or.
+                  segment.eq "."
+                  segment.eq ""
+                accum
+                accum.with segment
       as-bytes. > normalized!
         if.
           ^.driveless.size.eq 0
@@ -99,34 +131,11 @@
             ^.drive.size.eq 0
             "."
             ^.drive
-          concat.
-            concat.
-              ^.drive.concat
-                ^.is-absolute.if
-                  ^.unc.if (^.separator.concat ^.separator) ^.separator
-                  --
-              ^.separator.joined >> body!
-                reduced.
-                  ^.driveless.split ^.separator
-                  *
-                  if. > [accum segment] >>
-                    segment.eq ".."
-                    if.
-                      and.
-                        accum.length.gt 0
-                        not. (accum.head.eq "..")
-                      if.
-                        ^.^.unc.and (accum.length.lte 2)
-                        accum
-                        accum.tail
-                      ^.^.is-absolute.not.if (accum.with segment) accum
-                    if.
-                      or.
-                        segment.eq "."
-                        segment.eq ""
-                      accum
-                      accum.with segment
-            trailing.if ^.separator --
+          if.
+            core.size.eq 0
+            "."
+            core.concat
+              trailing.if ^.separator --
       and. > trailing
         ubts.size.gt 0
         eq.
@@ -286,6 +295,11 @@
       path.posix "foo/.."
     "."
 
+  eq. ++> can-normalize-a-posix-path-collapsing-to-the-current-directory-with-a-trailing-separator
+    normalized.
+      path.posix "a/b/../../"
+    "."
+
   eq. ++> can-normalize-a-relative-posix-path
     normalized.
       path.posix "../../foo/./bar/../x/../y"
@@ -349,6 +363,11 @@
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
       path.win32 "foo\\.."
+    "."
+
+  eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory-with-a-trailing-separator
+    normalized.
+      path.win32 ".\\"
     "."
 
   eq. ++> can-normalize-a-win32-path-down-to-a-drive-with-a-separator
