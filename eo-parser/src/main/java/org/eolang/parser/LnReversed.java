@@ -151,7 +151,7 @@ final class LnReversed implements Line {
         return glyph == '@' || glyph == '^' || glyph == '$';
     }
 
-    private static String rootSymbol(final char glyph) {
+    static String rootSymbol(final char glyph) {
         final String mapped;
         if (glyph == '@') {
             mapped = "φ";

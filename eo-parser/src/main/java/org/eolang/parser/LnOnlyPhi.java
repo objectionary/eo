@@ -191,7 +191,7 @@ final class LnOnlyPhi implements Line {
 
     private static boolean bare(final Tokens tokens) {
         if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
-            tokens.seek(tokens.cursor() + 1);
+            tokens.consumeDispatch();
         } else {
             tokens.readChain();
         }
@@ -200,9 +200,9 @@ final class LnOnlyPhi implements Line {
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
         final boolean result;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
+            && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int probe = tokens.cursor() + (tokens.current() == '?' ? 2 : 1);
             result = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
