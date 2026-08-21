@@ -27,12 +27,8 @@
 
   A binding with several hostable references still becomes a moniker,
   landing on the first one to print (#5739, #7218), which need not be the
-  first one in document order: canonical attribute ordering (#5706) can
-  reorder the sibling bindings a reference sits inside, so document order and
-  print order disagree exactly when a later-printing binding hosts an
-  earlier-printing one. Ranking candidates by where they will actually print
-  (`eo:host-key`) keeps the chosen host stable across passes instead of
-  drifting with the resort.
+  first in document order, since canonical attribute ordering (#5706)
+  reorders the sibling bindings a reference sits inside.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -141,24 +137,17 @@
     <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
   <!--
-  The key `to-eo-tree.xsl` will sort a reference's own top-level binding
-  under, once it lays out the owning formation's bindings alphabetically by
-  `(@local, @name)[1]` (a non-sortable, void, `φ` or test binding keeps its
-  own separate bucket ahead of or behind that alphabetical run, matching that
-  sheet's own sort exactly). Host selection below picks "the first" candidate
-  reference by this key rather than by raw document order, so the chosen host
-  is the one that will actually print first; picking a document-order-first
-  host that prints later let a later resort see a different reference sort
-  first, relocate the binding again, and never settle (#7218).
+  The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
+  an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
+  or test binding in its own bucket. Hosting by this key, not by document
+  order, makes a reprint settle instead of moving the binding again.
   -->
   <xsl:function name="eo:host-key" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="owner" as="element()"/>
     <xsl:variable name="binding" select="$ref/ancestor-or-self::o[parent::*[. is $owner]][1]"/>
-    <xsl:variable name="sortable" select="eo:abstract($owner) and empty($owner/o[@pipe])"/>
-    <xsl:variable name="bucket" select="if (not($sortable)) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (eo:test-attr($binding)) then 4 else 3"/>
-    <xsl:variable name="name" select="if ($bucket = (0, 1, 2)) then '' else string(($binding/@local, $binding/@name)[1])"/>
-    <xsl:sequence select="concat($bucket, ' ', $name)"/>
+    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (eo:test-attr($binding)) then 4 else 3"/>
+    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else string(($binding/@local, $binding/@name)[1]))"/>
   </xsl:function>
   <!--
   The references that can host the binding `$attr`, shortest spelling first: a
