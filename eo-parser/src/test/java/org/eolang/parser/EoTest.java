@@ -860,6 +860,26 @@ final class EoTest {
     }
 
     @Test
+    void rejectsMixedBindingsUnderChainedVerticalMethod() {
+        MatcherAssert.assertThat(
+            "args of the last link of a same-indent method chain must follow R-6.6.2 too",
+            EoTest.render("[] > main", "  foo > app", "  .bar", "  .baz", "    a", "    b:y"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]"
+            )
+        );
+    }
+
+    @Test
+    void acceptsLoneBoundArgUnderVerticalMethod() {
+        MatcherAssert.assertThat(
+            "a single arg under a vmethod is a uniform group, so its binding is valid",
+            EoTest.render("[] > main", "  foo > app", "  .bar", "    a:x"),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
     void rejectsBindingOnFormationChild() {
         MatcherAssert.assertThat(
             "a plain child of a formation cannot carry a binding per R-3.12.3",

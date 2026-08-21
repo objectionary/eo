@@ -31,7 +31,7 @@ final class Bindings {
      */
     private static final Set<Kind> TRACKED = EnumSet.of(
         Kind.HEAD, Kind.HMETHOD, Kind.VAPPLICATION, Kind.IDENTITY_OBJECT,
-        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE
+        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD
     );
 
     /**
@@ -107,9 +107,9 @@ final class Bindings {
      * Observe a freshly-pushed child line's outer binding against its
      * parent context — cross-line R-6.6.2 / R-6.6.3 / R-3.12.3.
      *
-     * <p>For arg-bearing parents ({@code HEAD}, {@code HMETHOD},
-     * {@code VAPPLICATION}) the binding presence updates the parent's
-     * binding mode and rejects mismatches. For {@code BARE_REVERSED}
+     * <p>For arg-bearing parents — every kind of {@link #TRACKED},
+     * {@code VMETHOD} among them — the binding presence updates the
+     * parent's binding mode and rejects mismatches. For {@code BARE_REVERSED}
      * parents the first child is the receiver (no binding allowed);
      * subsequent children participate in the all-or-nothing group. For
      * formation / top-level parents, any binding is rejected per
