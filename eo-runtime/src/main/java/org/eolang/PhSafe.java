@@ -21,6 +21,12 @@ import java.util.function.Supplier;
  * the failure keeps propagating until it either reaches a recovery or
  * terminates the program.</p>
  *
+ * <p>An {@link ExInterrupted} is the one exception to this: it passes
+ * through untouched, keeping its own type. It is not an EO-level
+ * termination the program may recover from, but a signal that this thread
+ * must stop, and wrapping it into an {@link ExFailure} would let the
+ * nearest {@link EOrecovered} intercept it.</p>
+ *
  * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
  * Here we catch by hand, because {@code eo-runtime} ships with no
  * compile-scope dependencies at all.</p>
@@ -186,6 +192,8 @@ public final class PhSafe implements Phi, Atom {
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
+        } catch (final ExInterrupted ex) {
+            throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
                 String.format("%s; %s", this.label(suffix), PhSafe.message(ex)),

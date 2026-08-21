@@ -91,11 +91,11 @@ final class Bindings {
      * reversed dispatch, a binding on a later link names the whole
      * reversed expression, which is the same as binding the receiver.
      * @param below The chain head's parent (what the upgrade would
-     *  touch), or {@code null} when there is none
+     *  touch), or the stack's bottom sentinel when there is none
      * @param span Source span of the continuation line
      */
     static void checkReceiverUpgrade(final Level below, final Span span) {
-        if (below != null && below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
+        if (below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"
@@ -121,7 +121,7 @@ final class Bindings {
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
         final Level parent = stack.below();
-        if (parent == null || parent.kind() == Kind.BARE_FORMATION) {
+        if (parent.kind() == Kind.TOP_LEVEL || parent.kind() == Kind.BARE_FORMATION) {
             Bindings.rejectBinding(outer, span);
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);

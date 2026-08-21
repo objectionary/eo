@@ -335,8 +335,9 @@ final class Linting implements Step {
 
     private String cacheVersion() {
         return String.format(
-            "%s-%b-%s",
+            "%s-%s-%b-%s",
             this.version,
+            Manifests.read("Lints-Version"),
             this.experimental,
             new Hashed(
                 this.sourcelints.stream().sorted().collect(Collectors.joining(","))
@@ -375,7 +376,8 @@ final class Linting implements Step {
                         this.cache.resolve(Linting.CACHE),
                         this.version,
                         new WpaCacheKey(
-                            paths, this.programlints, this.experimental
+                            paths, this.programlints, this.experimental,
+                            Manifests.read("Wpa-Version")
                         ).get()
                     ).get(),
                     root -> {
@@ -403,9 +405,11 @@ final class Linting implements Step {
             counts.compute(
                 Severity.parsed(defect.severity().mnemo()), (sev, before) -> before + 1
             );
-            seen.add(
-                Linting.format(defect.object(), defect.rule(), defect.line(), defect.text())
+            final String message = Linting.format(
+                defect.object(), defect.rule(), defect.line(), defect.text()
             );
+            seen.add(message);
+            Linting.logOne(defect.severity().mnemo(), message);
         }
         return progs.size();
     }
@@ -427,12 +431,6 @@ final class Linting implements Step {
                     ).applyQuietly(node);
                     if (Linting.notSuppressed(new Xnav(node), defect)) {
                         defects.add(defect);
-                        Linting.logOne(
-                            defect.severity().mnemo(),
-                            Linting.format(
-                                defect.object(), defect.rule(), defect.line(), defect.text()
-                            )
-                        );
                     }
                 }
             );
