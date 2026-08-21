@@ -157,6 +157,19 @@ public class PhDefault implements Phi, Cloneable {
         this.lock = new ReentrantLock();
     }
 
+    /**
+     * Compare with another object.
+     *
+     * @param obj The object to compare with
+     * @return TRUE if they are equal
+     * @todo #7304:60min Stop deciding identity from a hash code here. The
+     *  hash of a Phi is its identity hash, which repeats: two unrelated
+     *  objects that collide compare equal today, as the run in #7304 shows
+     *  (2135 colliding pairs among three million objects, every one of them
+     *  reported equal). Memory blocks no longer depend on it, but this
+     *  method still does. Compare identity directly, and check what breaks
+     *  in the tests that lean on the current behaviour before changing it.
+     */
     @Override
     public boolean equals(final Object obj) {
         return obj instanceof Phi && this.hashCode() == obj.hashCode();
