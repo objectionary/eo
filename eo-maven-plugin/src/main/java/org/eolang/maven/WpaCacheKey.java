@@ -51,7 +51,6 @@ final class WpaCacheKey implements Supplier<String> {
      * @param programlints Program lints to skip
      * @param skip Whether experimental lints are skipped
      * @param wpa The version of the {@code org.eolang:wpa} artifact in use
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     WpaCacheKey(final Map<String, Path> files, final Collection<String> programlints,
         final boolean skip, final String wpa) {
