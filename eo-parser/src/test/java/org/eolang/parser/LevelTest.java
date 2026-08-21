@@ -96,7 +96,7 @@ final class LevelTest {
     @Test
     void recordsParentAtomFromCtor() {
         MatcherAssert.assertThat(
-            "parentAtom must round-trip the ctor argument so R-5.3.4 can read it",
+            "patom() must round-trip the ctor argument so R-5.3.4 can read it",
             new Level(2, 3, Kind.BARE_FORMATION, Openness.OPEN, Kind.BARE_FORMATION, true)
                 .patom(),
             Matchers.is(true)
@@ -110,20 +110,20 @@ final class LevelTest {
         );
         level.consumeReceiver();
         MatcherAssert.assertThat(
-            "receiverConsumed() must flip true after consumeReceiver()",
+            "taken() must flip true after consumeReceiver()",
             level.taken(),
             Matchers.is(true)
         );
     }
 
     @Test
-    void storesCompactNonNegative() {
+    void retainsCompactCountFromCompact() {
         final Level level = new Level(
             0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
         );
         level.compact(3);
         MatcherAssert.assertThat(
-            "compactN() must round-trip the assigned N",
+            "count() must round-trip the N passed to compact()",
             level.count(),
             Matchers.equalTo(3)
         );
