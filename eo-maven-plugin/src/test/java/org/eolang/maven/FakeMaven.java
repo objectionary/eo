@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.yegor256.tojos.TjSmart;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Synced;
 import org.cactoos.set.SetOf;
@@ -43,6 +45,16 @@ import org.cactoos.text.UncheckedText;
 })
 @NotThreadSafe
 final class FakeMaven {
+
+    /**
+     * Fields declared by all Mojos.
+     */
+    private static final Set<String> MOJO_FIELDS = new ClassFileImporter()
+        .importPackages("org.eolang.maven")
+        .stream()
+        .filter(clazz -> clazz.isAnnotatedWith(Mojo.class))
+        .flatMap(clazz -> FakeMaven.fields(clazz.reflect()))
+        .collect(Collectors.toUnmodifiableSet());
 
     /**
      * Test workspace where we place all programs, files, compilation results, etc.
@@ -114,6 +126,14 @@ final class FakeMaven {
      * @return The same maven instance
      */
     FakeMaven with(final String param, final Object value) {
+        if (!FakeMaven.MOJO_FIELDS.contains(param)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The parameter '%s' is not declared by any Mojo",
+                    param
+                )
+            );
+        }
         this.params.put(param, value);
         return this;
     }
@@ -441,6 +461,10 @@ final class FakeMaven {
         descriptor.setArtifactId("eo-maven-plugin");
         descriptor.setVersion(FakeMaven.pluginVersion());
         return descriptor;
+    }
+
+    private static Stream<String> fields(final Class<?> mojo) {
+        return FakeMaven.mojoFields(mojo, new HashSet<>()).stream();
     }
 
     private static Set<String> mojoFields(final Class<?> mojo, final Set<String> fields) {
