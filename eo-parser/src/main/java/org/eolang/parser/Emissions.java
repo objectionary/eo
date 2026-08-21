@@ -573,7 +573,23 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        emit.object(name, null, line, column);
+        final Span span = new Span(" ".repeat(column).concat(inner), line);
+        final Suffix suffix = new Suffix(
+            inner.substring(close + 1), span, column + close + 1
+        );
+        final String label;
+        if (suffix.present()) {
+            label = suffix.attribute(line, column);
+        } else {
+            label = name;
+        }
+        emit.object(label, null, line, column);
+        if (!suffix.handle().isEmpty()) {
+            emit.local(suffix.handle());
+        }
+        if (suffix.constant()) {
+            emit.constant();
+        }
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             final String mapped;
