@@ -21,10 +21,13 @@ import java.util.function.Supplier;
  * the failure keeps propagating until it either reaches a recovery or
  * terminates the program.</p>
  *
- * <p>An {@link ExInterrupted} is the one exception to this: it passes
- * through untouched, keeping its own type. It is not an EO-level
- * termination the program may recover from, but a signal that this thread
- * must stop, and wrapping it into an {@link ExFailure} would let the
+ * <p>An {@link ExInterrupted} and a JVM {@link Error} are the exceptions to
+ * this: they pass through untouched, keeping their own type. Neither is an
+ * EO-level termination the program may recover from — an
+ * {@link ExInterrupted} is a signal that this thread must stop, and an
+ * {@link Error} such as {@link StackOverflowError} or
+ * {@link OutOfMemoryError} means the JVM itself can no longer be trusted to
+ * carry on — and wrapping either into an {@link ExFailure} would let the
  * nearest {@link EOrecovered} intercept it.</p>
  *
  * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
@@ -193,6 +196,8 @@ public final class PhSafe implements Phi, Atom {
         try {
             return action.get();
         } catch (final ExInterrupted ex) {
+            throw ex;
+        } catch (final Error ex) {
             throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
