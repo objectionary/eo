@@ -19,7 +19,7 @@ final class PhOnceTest {
         MatcherAssert.assertThat(
             "PhOnce without explicit term must delegate φ-term to the wrapped object, but it didnt",
             new PhOnce(() -> new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 

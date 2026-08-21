@@ -20,7 +20,7 @@ final class PhSafeTest {
         MatcherAssert.assertThat(
             "PhSafe must delegate φ-term to its origin, but it didnt",
             new PhSafe(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
