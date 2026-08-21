@@ -94,6 +94,21 @@ final class SyscallTest {
     }
 
     @Test
+    void acceptsTheBroadcastAddressAsAValidConversion(@Ephemeral final int port) {
+        final Phi socket = Phi.Φ.take("socket").copy();
+        socket.put(0, new Data.ToPhi("255.255.255.255"));
+        socket.put(1, new Data.ToPhi(port));
+        final Phi listen = socket.take("listen").copy();
+        listen.put(0, new SyscallTest.Simple());
+        listen.put(1, Phi.Φ.take("dataized").copy());
+        MatcherAssert.assertThat(
+            "the limited-broadcast address 255.255.255.255 must be accepted as a valid IPv4 conversion, not rejected as unparsable",
+            new Dataized(listen).asString(),
+            Matchers.not(Matchers.containsString("into a 32-bit integer"))
+        );
+    }
+
+    @Test
     void tellsTheFallbackWhichAddressItFailedToBind(@Ephemeral final int port) throws IOException {
         final SyscallTest.RandomServer taken = new SyscallTest.RandomServer(port).started();
         try {

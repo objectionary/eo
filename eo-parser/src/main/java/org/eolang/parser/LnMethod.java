@@ -81,10 +81,9 @@ final class LnMethod implements Line {
         }
         Comments.seal(globals, emit, this.span);
         if (outer != null) {
-            Bindings.checkReceiverUpgrade(stack.below(), this.span);
-            if (stack.below() != null) {
-                stack.below().upgradeArgBinding();
-            }
+            final Level under = stack.below();
+            Bindings.checkReceiverUpgrade(under, this.span);
+            under.upgradeArgBinding();
         }
         stack.seal();
         emit.object(
