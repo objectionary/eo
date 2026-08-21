@@ -220,6 +220,21 @@ final class Emissions {
         return Emissions.unescapeRawBytes(inner);
     }
 
+    /**
+     * Reject a void parameter name the grammar does not accept — §4.5.
+     * @param raw The parameter text, as written
+     * @param line Source line (for error reporting)
+     * @param pos Source column of the parameter's first character
+     */
+    static void validParam(final String raw, final int line, final int pos) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+            throw new ParseError(
+                line, pos,
+                "parameter names in voids must be NAME or @"
+            );
+        }
+    }
+
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -601,21 +616,6 @@ final class Emissions {
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
         Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
         emit.close();
-    }
-
-    /**
-     * Reject a void parameter name the grammar does not accept — §4.5.
-     * @param raw The parameter text, as written
-     * @param line Source line (for error reporting)
-     * @param pos Source column of the parameter's first character
-     */
-    static void validParam(final String raw, final int line, final int pos) {
-        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
-            throw new ParseError(
-                line, pos,
-                "parameter names in voids must be NAME or @"
-            );
-        }
     }
 
     private static List<String> splitParams(final String text) {
