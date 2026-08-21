@@ -74,9 +74,11 @@
     <xsl:variable name="codes" select="string-to-codepoints($n)"/>
     <xsl:value-of select="concat('_', string(sum(for $i in 1 to count($codes) return $codes[$i] * $i) mod 100000000))"/>
   </xsl:function>
-  <!-- A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
-  appended after it lands inside an existing identifier segment instead of starting
-  an illegal one of its own (#7254) -->
+  <!--
+  A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
+  appended after it lands inside an existing identifier segment instead of
+  starting an illegal one of its own (#7254).
+  -->
   <xsl:function name="eo:unbroken" as="xs:string">
     <xsl:param name="s" as="xs:string"/>
     <xsl:choose>
