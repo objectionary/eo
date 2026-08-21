@@ -61,10 +61,12 @@ final class Emissions {
     static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
+        final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
             tokens.seek(tokens.cursor() + 1);
             final List<Value> rargs = tokens.readArgs();
+            Bindings.checkAllOrNothing(rargs, span);
             emit.object(name, ".".concat(head.raw()), line, head.pos());
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
@@ -73,6 +75,7 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
+        Bindings.checkAllOrNothing(args, span);
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
