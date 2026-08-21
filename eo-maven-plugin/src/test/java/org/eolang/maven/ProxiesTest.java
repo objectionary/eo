@@ -21,8 +21,9 @@ final class ProxiesTest {
     void translatesActiveProxy() {
         MatcherAssert.assertThat(
             "Active proxy of settings must keep its address",
-            new Proxies(ProxiesTest.settings("prox.eolang.org", 8431, true)).value(),
-            Matchers.arrayContaining(
+            new Proxies(ProxiesTest.settings("http", "prox.eolang.org", 8431, true)).value()[0]
+                .address(),
+            Matchers.equalTo(
                 new Proxy(
                     Proxy.Type.HTTP,
                     InetSocketAddress.createUnresolved("prox.eolang.org", 8431)
@@ -32,10 +33,20 @@ final class ProxiesTest {
     }
 
     @Test
+    void translatesActiveSocksProxyToItsOwnType() {
+        MatcherAssert.assertThat(
+            "A socks5 proxy of settings must become a SOCKS java.net.Proxy, not HTTP",
+            new Proxies(ProxiesTest.settings("socks5", "socks.eolang.org", 1080, true))
+                .value()[0].address().type(),
+            Matchers.equalTo(Proxy.Type.SOCKS)
+        );
+    }
+
+    @Test
     void skipsInactiveProxy() {
         MatcherAssert.assertThat(
             "Inactive proxy of settings must be dropped",
-            new Proxies(ProxiesTest.settings("dead.eolang.org", 3129, false)).value(),
+            new Proxies(ProxiesTest.settings("http", "dead.eolang.org", 3129, false)).value(),
             Matchers.emptyArray()
         );
     }
@@ -49,8 +60,11 @@ final class ProxiesTest {
         );
     }
 
-    private static Settings settings(final String host, final int port, final boolean active) {
+    private static Settings settings(
+        final String protocol, final String host, final int port, final boolean active
+    ) {
         final org.apache.maven.settings.Proxy proxy = new org.apache.maven.settings.Proxy();
+        proxy.setProtocol(protocol);
         proxy.setHost(host);
         proxy.setPort(port);
         proxy.setActive(active);
