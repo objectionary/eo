@@ -94,6 +94,24 @@ final class PhiTest {
     }
 
     @Test
+    void tellsWhyAPrecisionBoundaryPartitionCountIsRefused() {
+        MatcherAssert.assertThat(
+            "integrating at the unit-step precision boundary must fail before the loop starts",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("number.integral").copy(),
+                        "n",
+                        new Data.ToPhi(9007199254740992D)
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("smaller than 2^53")
+        );
+    }
+
+    @Test
     void getsLocation() {
         MatcherAssert.assertThat(
             "Phi should return correct locator, but it didn't",
