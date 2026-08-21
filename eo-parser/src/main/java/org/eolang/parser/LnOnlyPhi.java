@@ -56,6 +56,10 @@ import java.util.List;
  * scanner exclusion (formations and reversed-with-hargs LHS are not
  * accepted as inputs because their classifiers fire first). *
  *
+ * <p>The head of a line ends at the first space that sits at paren depth 0
+ * and outside any string literal, which is what {@code topLevelSpace} finds,
+ * the way {@code Eo.topLevelMarker} finds other top-level markers.</p>
+ *
  * @since 0.1
  */
 final class LnOnlyPhi implements Line {
@@ -249,14 +253,6 @@ final class LnOnlyPhi implements Line {
         return new Tokens(span.body(), span);
     }
 
-    /**
-     * The index of the first space at paren depth 0 and outside any
-     * string literal, or -1 if none exists. {@link #compactStar} and
-     * {@link #reader} both need the same head boundary, the way
-     * {@code Eo.topLevelMarker} finds other top-level markers.
-     * @param body Line body to scan
-     * @return Index of the top-level space, or -1
-     */
     private static int topLevelSpace(final String body) {
         int depth = 0;
         int found = -1;
