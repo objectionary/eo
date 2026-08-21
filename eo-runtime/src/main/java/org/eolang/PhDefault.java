@@ -317,7 +317,7 @@ public class PhDefault implements Phi, Cloneable {
     public void add(final String name, final Attribute attr) {
         this.lock.lock();
         try {
-            if (PhDefault.SORTABLE.matcher(name).matches()) {
+            if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
                 this.order.add(name);
             }
             this.loaded().put(name, new AtWithRho(attr, this));

@@ -632,6 +632,22 @@ final class PhDefaultTest {
     }
 
     @Test
+    void doesNotDuplicateOrderWhenTheSameAttributeIsAddedTwice() {
+        final PhDefault dup = new PhDefault();
+        dup.add("x", new AtVoid("x"));
+        dup.add("x", new AtVoid("x"));
+        MatcherAssert.assertThat(
+            "PhDefault must reject a positional put past its single attribute, even after that attribute was registered twice",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> dup.put(1, new Data.ToPhi(5.0)),
+                "PhDefault must reject a positional put past its only attribute"
+            ).getMessage(),
+            Matchers.containsString("has just 1 attribute")
+        );
+    }
+
+    @Test
     void verifiesThreadLocalInMultipleThreads() {
         final int threads = 10;
         final int cnt = 100;
