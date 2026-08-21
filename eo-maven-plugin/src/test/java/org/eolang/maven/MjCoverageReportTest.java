@@ -87,8 +87,8 @@ final class MjCoverageReportTest {
         final Path hits = temp.resolve("coverage.txt");
         Files.writeString(hits, "");
         final Path lcov = temp.resolve("coverage.info");
-        maven.with("coverageFile", hits.toFile())
-            .with("lcovFile", lcov.toFile())
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
             .execute(MjCoverageReport.class);
         MatcherAssert.assertThat(
             "a file the manifest names no location in must still get a record of its own, so that the report knows the file exists, but it got none",

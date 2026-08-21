@@ -14,7 +14,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import fixtures.LargeProgram;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -68,12 +67,8 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "EoSyntax must generate valid XMIR from simple code",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new ResourceOf("org/eolang/parser/fibonacci.eo")
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(new ResourceOf("org/eolang/parser/fibonacci.eo"))
+                    .parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object[@ms and @time and @version]",
@@ -153,21 +148,13 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "doesn't prohibit more than one tailing EOL",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > foo",
-                                "",
-                                "",
-                                "",
-                                ""
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(), "[] > foo", "", "", "", ""
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths("/object/errors/error")
         );
@@ -179,12 +166,7 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(src)
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(new InputOf(src)).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error",
@@ -224,12 +206,7 @@ final class EoSyntaxTest {
             "EoSyntax must copy listing to XMIR",
             new Xnav(
                 new XMLDocument(
-                    new String(
-                        new EoSyntax(
-                            new InputOf(src)
-                        ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                        StandardCharsets.UTF_8
-                    )
+                    new EoSyntax(new InputOf(src)).parsed().toString()
                 ).inner()
             ).element("object").element("listing").text().get(),
             Matchers.equalTo(src)
@@ -619,14 +596,11 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in object name",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            "[] > foo🌵bar".concat(System.lineSeparator())
-                        )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                new EoSyntax(
+                    new InputOf(
+                        "[] > foo🌵bar".concat(System.lineSeparator())
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -639,18 +613,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute name",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > app",
-                                "  x > a🌵65".concat(System.lineSeparator())
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > app",
+                            "  x > a🌵65".concat(System.lineSeparator())
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
@@ -663,18 +634,15 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "Cactus is prohibited in attribute value",
             XhtmlMatchers.xhtml(
-                new String(
-                    new EoSyntax(
-                        new InputOf(
-                            String.join(
-                                System.lineSeparator(),
-                                "[] > x",
-                                "  🌵 > y".concat(System.lineSeparator())
-                            )
+                new EoSyntax(
+                    new InputOf(
+                        String.join(
+                            System.lineSeparator(),
+                            "[] > x",
+                            "  🌵 > y".concat(System.lineSeparator())
                         )
-                    ).parsed().toString().getBytes(StandardCharsets.UTF_8),
-                    StandardCharsets.UTF_8
-                )
+                    )
+                ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors/error[contains(text(),'cactus')]"
