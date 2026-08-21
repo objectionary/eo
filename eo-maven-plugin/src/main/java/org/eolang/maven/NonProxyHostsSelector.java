@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -15,7 +16,9 @@ import java.util.List;
 /**
  * A {@link ProxySelector} of one Maven proxy, honouring its
  * {@code nonProxyHosts} exclusion instead of sending every request through
- * the proxy regardless of what the user excluded.
+ * the proxy regardless of what the user excluded. A failed connection is
+ * only logged: {@link OyRemote} retries the whole request itself, so there
+ * is no per-address bookkeeping for this selector to keep.
  * @since 0.73.4
  */
 final class NonProxyHostsSelector extends ProxySelector {
@@ -45,8 +48,7 @@ final class NonProxyHostsSelector extends ProxySelector {
     }
 
     @Override
-    public void connectFailed(final URI uri, final SocketAddress addr, final IOException ex) {
-        // OyRemote already retries the whole request through @RetryOnFailure,
-        // so there is no per-address bookkeeping for this selector to keep.
+    public void connectFailed(final URI uri, final SocketAddress addr, final IOException error) {
+        Logger.debug(this, "Failed to reach %s through %s: %[exception]s", uri, addr, error);
     }
 }

@@ -175,11 +175,7 @@ final class OyRemote implements Objectionary {
         final HttpClient.Builder builder = HttpClient.newBuilder()
             .followRedirects(HttpClient.Redirect.NORMAL);
         if (proxies.length > 0) {
-            final MvnProxy proxy = proxies[0];
-            builder.proxy(new NonProxyHostsSelector(proxy));
-            if (proxy.secured()) {
-                builder.authenticator(new ProxyAuthenticator(proxy));
-            }
+            builder.proxy(new NonProxyHostsSelector(proxies[0]));
         }
         return builder.build();
     }

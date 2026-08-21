@@ -5,14 +5,21 @@
 package org.eolang.maven;
 
 import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.Arrays;
 
 /**
- * One active proxy of Maven settings, carrying the protocol, credentials
- * and excluded hosts that a plain {@link Proxy} drops.
+ * One active proxy of Maven settings, carrying the excluded hosts that a
+ * plain {@link Proxy} drops.
  * @since 0.73.4
+ * @todo #7257:40min Honour the proxy credentials too. A proxy with a
+ *  {@code username} and {@code password} in {@code settings.xml} still gets
+ *  407 on every request, because nothing answers its authentication
+ *  challenge. Add a {@code java.net.Authenticator} built from these two
+ *  fields and hand it to the {@code HttpClient} in {@code OyRemote}. The
+ *  {@code protocol} field is a separate matter: {@code java.net.http} only
+ *  speaks to HTTP proxies, so a {@code socks5} one has to either fail loudly
+ *  or go through the {@code socksProxyHost} system properties.
  */
 final class MvnProxy {
 
@@ -30,19 +37,13 @@ final class MvnProxy {
     }
 
     /**
-     * The Java proxy this settles to, typed by the configured protocol.
+     * The Java proxy this settles to.
      * @return The Java proxy
      */
     Proxy address() {
-        final String protocol = this.origin.getProtocol();
-        final Proxy.Type type;
-        if ("socks4".equalsIgnoreCase(protocol) || "socks5".equalsIgnoreCase(protocol)) {
-            type = Proxy.Type.SOCKS;
-        } else {
-            type = Proxy.Type.HTTP;
-        }
         return new Proxy(
-            type, new InetSocketAddress(this.origin.getHost(), this.origin.getPort())
+            Proxy.Type.HTTP,
+            new InetSocketAddress(this.origin.getHost(), this.origin.getPort())
         );
     }
 
@@ -59,29 +60,5 @@ final class MvnProxy {
         return hosts != null && Arrays.stream(hosts.split("\\|")).anyMatch(
             pattern -> host.matches(pattern.trim().replace(".", "\\.").replace("*", ".*"))
         );
-    }
-
-    /**
-     * Whether this proxy carries credentials to authenticate with.
-     * @return True when a username is configured
-     */
-    boolean secured() {
-        final String user = this.origin.getUsername();
-        return user != null && !user.isEmpty();
-    }
-
-    /**
-     * The credentials to answer the proxy's authentication challenge with.
-     * @return The credentials
-     */
-    PasswordAuthentication credentials() {
-        final String pass = this.origin.getPassword();
-        final char[] chars;
-        if (pass == null) {
-            chars = new char[0];
-        } else {
-            chars = pass.toCharArray();
-        }
-        return new PasswordAuthentication(this.origin.getUsername(), chars);
     }
 }
