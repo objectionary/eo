@@ -145,7 +145,7 @@ final class PhSafeTest {
 
     @Test
     void doesNotLetRecoveredInterceptInterrupted() {
-        final Phi recovered = new EOrecovered();
+        final EOrecovered recovered = new EOrecovered();
         recovered.put(
             "value",
             new PhSafe(
@@ -161,7 +161,7 @@ final class PhSafeTest {
         recovered.put("alternative", new Data.ToPhi(42L));
         Assertions.assertThrows(
             ExInterrupted.class,
-            ((Atom) recovered)::lambda,
+            recovered::lambda,
             "recovered must not intercept an interrupt, but it did"
         );
     }
