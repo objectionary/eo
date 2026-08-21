@@ -12,6 +12,20 @@
 # ```
 #
 # or just dataize `stdin` object.
+#
+# `all-lines` forces the current line's text through `seq` before the next
+# `line-or-eof` probe is even constructed. Both the accumulated text and
+# that probe read from the same console stream: constructing the probe reads
+# its own lookahead byte, and without this ordering that read races ahead of
+# the current line's own multi-byte read, since neither was otherwise forced
+# until the whole recursion bottomed out at the final `string`.
+#
+# @todo #7259:60min Add `++>` tests exercising `all-lines` and `next-line`
+#  against real console input (a single line, several lines, an empty line
+#  in the middle, input without a trailing newline). `console.read` reaches
+#  the process's real file descriptor 0 through `posix`/`win32`, so a test
+#  needs OS-level stdin redirection for the forked test JVM, which this
+#  module has none of yet; `+unlint unit-test-missing` stays until it does.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,14 +40,16 @@
     [scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
-        ^.rec-read
-          ^.^.line-or-eof
-          is-first.if
-            buffer.concat scan.line
-            concat.
-              buffer.concat eol!
-              scan.line
-          false
+        seq *
+          scan.line
+          ^.rec-read
+            ^.^.line-or-eof
+            is-first.if
+              buffer.concat scan.line
+              concat.
+                buffer.concat eol!
+                scan.line
+            false
     | > @
       ^.line-or-eof
       ""
