@@ -21,7 +21,6 @@ import java.util.Set;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.DataClass")
 final class Value {
 
     /**
@@ -220,10 +219,6 @@ final class Value {
             || this.group() && this.wrapsInlinePhi();
     }
 
-    /**
-     * Does this group's raw text wrap an inline {@code > [...]}?
-     * @return True if found
-     */
     private boolean wrapsInlinePhi() {
         final String inner = this.raw.substring(1, this.raw.length() - 1);
         boolean found = false;
@@ -247,9 +242,8 @@ final class Value {
     }
 
     // @todo #7281:30min Move the remaining kind()/raw()-driven decisions out
-    //  of Emissions and LnOnlyPhi onto Value, then drop the
-    //  @SuppressWarnings("PMD.DataClass") above along with the accessors it
-    //  no longer needs.
+    //  of Emissions and LnOnlyPhi onto Value, then drop the kind()/raw()
+    //  accessors it no longer needs.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
