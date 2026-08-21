@@ -12,6 +12,8 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -147,6 +149,45 @@ final class OyRemoteTest {
     }
 
     @Test
+    void answersProxyAuthenticationChallenge() throws Exception {
+        final String username = "proxy-user";
+        final String password = "proxy-password";
+        final String source = "[] > authenticated";
+        final HttpServer server = OyRemoteTest.proxy(
+            String.format(
+                "Basic %s",
+                Base64.getEncoder().encodeToString(
+                    String.format("%s:%s", username, password)
+                        .getBytes(StandardCharsets.UTF_8)
+                )
+            ),
+            source
+        );
+        try {
+            final org.apache.maven.settings.Proxy origin =
+                new org.apache.maven.settings.Proxy();
+            origin.setHost(server.getAddress().getHostString());
+            origin.setPort(server.getAddress().getPort());
+            origin.setUsername(username);
+            origin.setPassword(password);
+            final String template = "http://origin.example/%s/%s.eo";
+            MatcherAssert.assertThat(
+                "OyRemote must answer the proxy challenge with Maven credentials",
+                new TextOf(
+                    new OyRemote(
+                        new UrlOy(template, "hash"),
+                        new UrlOy(template, "hash"),
+                        new MvnProxy(origin)
+                    ).get("org.eolang.authenticated")
+                ).asString(),
+                Matchers.equalTo(source)
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
     void reportsNameInTheEoObjectSlotWhenObjectNotFound() throws Exception {
         MatcherAssert.assertThat(
             "The object name must show up in the 'EO object' slot of the message",
@@ -211,5 +252,34 @@ final class OyRemoteTest {
         } finally {
             server.stop(0);
         }
+    }
+
+    private static HttpServer proxy(final String credentials, final String body)
+        throws IOException {
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/",
+            exchange -> {
+                if (
+                    credentials.equals(
+                        exchange.getRequestHeaders().getFirst("Proxy-Authorization")
+                    )
+                ) {
+                    final byte[] source = body.getBytes(StandardCharsets.UTF_8);
+                    exchange.sendResponseHeaders(200, source.length);
+                    exchange.getResponseBody().write(source);
+                } else {
+                    exchange.getResponseHeaders().add(
+                        "Proxy-Authenticate", "Basic realm=\"eo\""
+                    );
+                    exchange.sendResponseHeaders(407, -1L);
+                }
+                exchange.close();
+            }
+        );
+        server.start();
+        return server;
     }
 }
