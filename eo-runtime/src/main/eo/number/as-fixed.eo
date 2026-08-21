@@ -169,10 +169,10 @@
       18014398509481984
       "recovered" > [message]
 
-  eq. ++> can-recover-from-a-precision-one-past-the-non-decrementable-bound
+  eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
     "recovered"
     1.25.as-fixed
-      9007199254740993
+      9007199254740994
       "recovered" > [message]
 
   eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
