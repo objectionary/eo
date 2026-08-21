@@ -318,12 +318,14 @@ final class Eo implements Iterable<Directive> {
         }
         final int token = emit.savepoint();
         final java.util.List<Level> frame = stack.snapshot();
+        final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
             emit.rollback(token);
             stack.restore(frame);
+            globals.restore(saved);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
