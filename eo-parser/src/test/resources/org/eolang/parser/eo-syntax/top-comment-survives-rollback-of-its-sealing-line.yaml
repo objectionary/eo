@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/comments/comment[contains(text(),'top doc')]
+  - /object[count(errors/error)=1]
+input: |
+  # top doc
+
+    [x] > foo
