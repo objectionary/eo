@@ -17,8 +17,9 @@ import java.util.function.Supplier;
  * a safe processing of any runtime errors in the EO code. If, in any
  * method invocation, a runtime error occurs, it is caught and wrapped
  * into an {@link ExFailure} carrying the location of the error in the
- * EO code. Nothing intercepts an {@link ExFailure}, so the failure
- * keeps propagating until it terminates the program.</p>
+ * EO code. Only {@link EOrecovered} intercepts an {@link ExFailure}, so
+ * the failure keeps propagating until it either reaches a recovery or
+ * terminates the program.</p>
  *
  * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
  * Here we catch by hand, because {@code eo-runtime} ships with no

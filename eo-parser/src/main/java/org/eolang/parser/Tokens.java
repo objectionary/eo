@@ -144,10 +144,7 @@ final class Tokens {
         } else {
             raw = this.readPairs(start);
         }
-        return new Value(
-            Value.Kind.BYTES, raw,
-            this.span.indent() + start, this.cursor
-        );
+        return new Value(Value.Kind.BYTES, raw, this.span.indent() + start);
     }
 
     /**
@@ -177,8 +174,7 @@ final class Tokens {
             );
         }
         return new Value(
-            Value.Kind.GROUP, this.body.substring(start, this.cursor),
-            this.span.indent() + start, this.cursor
+            Value.Kind.GROUP, this.body.substring(start, this.cursor), this.span.indent() + start
         );
     }
 
@@ -214,10 +210,7 @@ final class Tokens {
             );
         }
         this.cursor = idx;
-        return new Value(
-            Value.Kind.IDENTIFIER, raw,
-            this.span.indent() + start, idx
-        );
+        return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
 
     /**
@@ -242,7 +235,7 @@ final class Tokens {
                 this.readFloatTail(start);
                 value = new Value(
                     Value.Kind.FLOAT, this.body.substring(start, this.cursor),
-                    this.span.indent() + start, this.cursor
+                    this.span.indent() + start
                 );
             } else {
                 value = integer;
@@ -283,8 +276,7 @@ final class Tokens {
         }
         this.cursor = idx;
         return new Value(
-            Value.Kind.INTEGER, this.body.substring(start, idx),
-            this.span.indent() + start, idx
+            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
         );
     }
 
@@ -316,8 +308,7 @@ final class Tokens {
             );
         }
         return new Value(
-            Value.Kind.HEX, this.body.substring(start, this.cursor),
-            this.span.indent() + start, this.cursor
+            Value.Kind.HEX, this.body.substring(start, this.cursor), this.span.indent() + start
         );
     }
 
@@ -348,8 +339,7 @@ final class Tokens {
         }
         this.cursor = this.cursor + 1;
         return new Value(
-            Value.Kind.ROOT, String.valueOf(this.body.charAt(start)),
-            this.span.indent() + start, this.cursor
+            Value.Kind.ROOT, String.valueOf(this.body.charAt(start)), this.span.indent() + start
         );
     }
 
@@ -389,7 +379,7 @@ final class Tokens {
                 this.cursor = this.cursor + 1;
                 return new Value(
                     Value.Kind.STRING, this.body.substring(start, this.cursor),
-                    this.span.indent() + start, this.cursor
+                    this.span.indent() + start
                 );
             } else {
                 this.cursor = this.cursor + 1;
@@ -461,10 +451,7 @@ final class Tokens {
             } else {
                 mapped = "ρ";
             }
-            value = new Value(
-                Value.Kind.IDENTIFIER, mapped,
-                this.span.indent() + this.cursor, this.cursor + 1
-            );
+            value = new Value(Value.Kind.IDENTIFIER, mapped, this.span.indent() + this.cursor);
             this.cursor = this.cursor + 1;
         } else {
             value = this.readName();
@@ -715,7 +702,7 @@ final class Tokens {
         } else {
             cnst = false;
         }
-        return new Value(bare.kind(), bare.raw(), bare.pos(), this.cursor, tie, tail, cnst);
+        return new Value(bare.kind(), bare.raw(), bare.pos(), tie, tail, cnst);
     }
 
     private void readFloatTail(final int start) {
@@ -783,9 +770,7 @@ final class Tokens {
 
     private Value reserved(final Value.Kind kind, final String raw) {
         this.cursor = this.cursor + 1;
-        return new Value(
-            kind, raw, this.span.indent() + this.cursor - 1, this.cursor
-        );
+        return new Value(kind, raw, this.span.indent() + this.cursor - 1);
     }
 
     private String readPairs(final int start) {

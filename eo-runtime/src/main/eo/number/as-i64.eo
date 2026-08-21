@@ -37,7 +37,8 @@
                 00-10-00-00-00-00-00-00
     cant-convert
       "Can't convert number %s to i64 because it's out of i64 bounds".printf
-        * string n.as-scientific
+        *
+          string n.as-scientific
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64

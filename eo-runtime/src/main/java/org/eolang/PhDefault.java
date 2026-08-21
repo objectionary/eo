@@ -181,13 +181,7 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public boolean hasRho() {
-        boolean has = true;
-        try {
-            this.loaded().get(Phi.RHO).get();
-        } catch (final ExUnset exception) {
-            has = false;
-        }
-        return has;
+        return !this.loaded().get(Phi.RHO).vacant();
     }
 
     @Override

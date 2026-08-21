@@ -120,6 +120,27 @@ final class PhDefaultTest {
     }
 
     @Test
+    void doesNotHaveRhoWhenItIsDeclaredAsVoid() {
+        MatcherAssert.assertThat(
+            String.format("Object with %s declared as void must not report it as set", Phi.RHO),
+            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).hasRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void bindsHostToRhoDeclaredAsVoid() {
+        final Phi host = new PhDefault(new Attrs(new Attr("x", new AtVoid("x"))));
+        host.put(Phi.RHO, Phi.Φ);
+        host.put("x", new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))));
+        MatcherAssert.assertThat(
+            String.format("Dispatch must bind the host to %s declared as void", Phi.RHO),
+            host.take("x").take(Phi.RHO),
+            Matchers.equalTo(host)
+        );
+    }
+
+    @Test
     void copiesKid() {
         final Phi phi = PhDefaultTest.Int.made();
         MatcherAssert.assertThat(

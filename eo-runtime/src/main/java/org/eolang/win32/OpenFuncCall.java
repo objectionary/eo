@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.WString;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
@@ -31,8 +32,8 @@ public final class OpenFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final int code = Msvcrt.INSTANCE._open(
-            new Dataized(params[0]).asString(),
+        final int code = Msvcrt.INSTANCE._wopen(
+            new WString(new Dataized(params[0]).asString()),
             new Dataized(params[1]).asNumber().intValue(),
             new Dataized(params[2]).asNumber().intValue()
         );
