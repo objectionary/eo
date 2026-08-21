@@ -206,7 +206,13 @@ final class LnOnlyPhi implements Line {
         final boolean result;
         if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
             && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int probe = tokens.cursor() + (tokens.current() == '?' ? 2 : 1);
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             result = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
