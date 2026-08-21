@@ -573,9 +573,10 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        final Span span = new Span(" ".repeat(column).concat(inner), line);
         final Suffix suffix = new Suffix(
-            inner.substring(close + 1), span, column + close + 1
+            inner.substring(close + 1),
+            new Span(" ".repeat(column).concat(inner), line),
+            column + close + 1
         );
         final String label;
         if (suffix.present()) {
