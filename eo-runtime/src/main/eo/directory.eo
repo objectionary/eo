@@ -146,9 +146,9 @@
                           "/^"
                           translated 0 "" false false
                           "$/"
-                  T > [message] >>
-                    "Can't parse '%s' as a glob pattern, %s".printf
-                      * ^.glob message
+                T > [message] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * ^.glob message
               text
     "".joined >> single
       *
