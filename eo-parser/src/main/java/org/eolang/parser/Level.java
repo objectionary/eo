@@ -131,7 +131,7 @@ final class Level {
     /**
      * Whether a child arg is currently being tracked but has not yet
      * been committed into {@link #bindings} — see
-     * {@link #observeBinding(boolean, Span)} / {@link #commitArg(Span)}.
+     * {@link #observeBinding(boolean, Span)} / {@link #commitArg()}.
      */
     private boolean argpending;
 
@@ -145,7 +145,7 @@ final class Level {
 
     /**
      * Source span recorded with the in-progress arg, used for error
-     * positioning when {@link #commitArg(Span)} rejects the arg
+     * positioning when {@link #commitArg()} rejects the arg
      * against the group mode.
      */
     private Span argspan;
@@ -487,7 +487,7 @@ final class Level {
      * @param span Source span of the child (for error positioning)
      */
     void observeBinding(final boolean bound, final Span span) {
-        this.commitArg(span);
+        this.commitArg();
         this.argpending = true;
         this.argbound = bound;
         this.argspan = span;
@@ -507,9 +507,8 @@ final class Level {
      * Commit the currently in-progress arg's binding state into the
      * group mode and verify against the all-or-nothing rule. Called
      * before starting a new arg and at parent close time.
-     * @param span Span for error positioning when the rule is violated
      */
-    void commitArg(final Span span) {
+    void commitArg() {
         if (this.argpending) {
             final int code;
             if (this.argbound) {
