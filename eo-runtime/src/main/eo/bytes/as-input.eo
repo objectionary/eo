@@ -88,3 +88,7 @@
   01-02-03-04-05-06.as-input.read 3.read nan --> stops-on-a-nan-byte-count-in-a-chained-read
 
   01-02-03-04-05-06.as-input.read 3.read -5 --> stops-on-a-negative-byte-count-in-a-chained-read
+
+  01-02-03-04-05-06.as-input.read 3.read 1.5 --> stops-on-a-fractional-byte-count-in-a-chained-read
+
+  01-02-03-04-05-06.as-input.read 3.read pinf --> stops-on-an-infinite-byte-count-in-a-chained-read
