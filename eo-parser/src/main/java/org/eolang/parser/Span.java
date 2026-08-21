@@ -120,6 +120,17 @@ final class Span {
     }
 
     /**
+     * True if the line is not blank and its last character is a space or a
+     * tab. Whitespace nobody can see in an editor must not decide what a
+     * program means (R-2.2.5).
+     * @return Trailing-whitespace flag
+     */
+    boolean trailing() {
+        return !this.blank()
+            && Character.isWhitespace(this.text.charAt(this.text.length() - 1));
+    }
+
+    /**
      * The substring after leading whitespace.
      * @return Tail text (empty for blank lines)
      */

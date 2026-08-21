@@ -317,6 +317,31 @@ final class LnFormationTest {
         );
     }
 
+    @Test
+    void rejectsIndentJumpGreaterThanOneLevelBetweenFormations() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1))
+            .into(stack, new Globals(), new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("    [] > bar", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation stepping deeper by more than one indent level must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsDeeperFormationUnderClosedParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.HCOMPLETED);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("  [] > bar", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a deeper-indent formation under a horizontally closed parent must be rejected"
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

@@ -2,6 +2,6 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 2
-message: "name suffix requires a name"
-input: "[] > app\n  42 >  \n"
+line: 3
+message: "trailing whitespace at end of line"
+input: "foo > main\n  \"\"\"\n  hello \n  \"\"\"\n"

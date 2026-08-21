@@ -60,7 +60,7 @@ final class AtRho implements Attribute {
 
     @Override
     public boolean vacant() {
-        return false;
+        return this.rho.get() == null;
     }
 
     @Override
