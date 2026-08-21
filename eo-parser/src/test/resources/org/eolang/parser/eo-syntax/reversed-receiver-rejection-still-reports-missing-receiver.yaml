@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7198: rejecting the receiver of a reversed dispatch for carrying a
+# binding left `taken` set on the rollback, so `f.` with no surviving
+# receiver was silently missing this error instead of reporting it.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'reversed-dispatch receiver cannot carry a binding')]
+  - /object/errors/error[contains(text(),'reversed dispatch missing receiver')]
+input: |
+  [] > main
+    f. > x
+      a:q

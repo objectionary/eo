@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7236: a multi-line BYTES continuation that de-indents below its opener
+# must be diagnosed as a de-indent, not reparsed alone as a dangling dash.
+line: 3
+message: "multi-line bytes continuation must not de-indent"
+input: |
+  [] > example
+    CA-FE-
+  00-01 > another
