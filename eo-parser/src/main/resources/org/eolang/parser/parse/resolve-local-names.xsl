@@ -4,6 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="xs eo" id="resolve-local-names" version="2.0">
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <!--
   The "&gt;&gt; foo" file-local handle (§3.10 / §9.2): the parser emits the
   anonymous object with its cactus @name plus a "@local='foo'" marker. A
@@ -173,11 +174,14 @@
   -->
   <xsl:template match="o[@base]">
     <xsl:variable name="captor" as="element()?" select="eo:captor(.)"/>
-    <xsl:variable name="hops" as="xs:integer?" select="if (exists($captor) and empty(@method)) then eo:hops(., $captor/ancestor::o[not(@base)][1]) else ()"/>
+    <xsl:variable name="name" as="xs:string" select="string(@base)"/>
+    <xsl:variable name="anonymous" as="element()?" select="if (exists($captor) or exists(@method) or not(contains($name, $eo:cactoos))) then () else ancestor::o[@name=$name][1]"/>
+    <xsl:variable name="holder" as="element()?" select="($captor, $anonymous)[1]"/>
+    <xsl:variable name="hops" as="xs:integer?" select="if (exists($holder) and empty(@method)) then eo:hops(., $holder/ancestor::o[not(@base)][1]) else ()"/>
     <xsl:choose>
       <xsl:when test="exists($hops) and $hops gt 0">
         <xsl:copy>
-          <xsl:attribute name="base" select="concat('.', $captor/@name)"/>
+          <xsl:attribute name="base" select="concat('.', $holder/@name)"/>
           <xsl:apply-templates select="@* except @base"/>
           <xsl:sequence select="eo:receiver($hops)"/>
           <xsl:apply-templates select="node()"/>
