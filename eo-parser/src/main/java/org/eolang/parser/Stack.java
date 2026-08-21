@@ -125,7 +125,7 @@ final class Stack {
     List<Level> snapshot() {
         final List<Level> copy = new ArrayList<>(this.levels.size());
         for (final Level level : this.levels) {
-            copy.add(new Level(level));
+            copy.add(level.twin());
         }
         return copy;
     }

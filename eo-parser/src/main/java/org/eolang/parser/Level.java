@@ -151,18 +151,6 @@ final class Level {
     private Span argspan;
 
     /**
-     * Copy ctor — a detached twin of {@code other}, carrying the same
-     * mutable state at the moment of copying. Lets {@link Stack} take a
-     * savepoint that later mutation of {@code other} cannot reach
-     * (R-7.3).
-     * @param other The entry to copy
-     */
-    Level(final Level other) {
-        this(other.indent, other.start, other.kind, other.openness, other.parent, other.patom);
-        this.absorb(other);
-    }
-
-    /**
      * Ctor — fresh level pushed at {@code indent} on {@code line} under
      * {@code parent}.
      * @param ind Indent
@@ -188,29 +176,6 @@ final class Level {
         this.children = 0;
         this.tupled = false;
         this.star = false;
-    }
-
-    /**
-     * Overwrite this entry's derived mutable state with {@code other}'s,
-     * for the copy ctor to call once the shared fields are set by
-     * delegation — so only one ctor performs direct field assignment
-     * (OnlyOneConstructorShouldDoInitialization).
-     * @param other The entry to copy the state of
-     */
-    private void absorb(final Level other) {
-        this.label = other.label;
-        this.formation = other.formation;
-        this.atom = other.atom;
-        this.taken = other.taken;
-        this.plain = other.plain;
-        this.count = other.count;
-        this.children = other.children;
-        this.tupled = other.tupled;
-        this.star = other.star;
-        this.bindings = other.bindings;
-        this.argpending = other.argpending;
-        this.argbound = other.argbound;
-        this.argspan = other.argspan;
     }
 
     /**
@@ -562,5 +527,35 @@ final class Level {
             }
             this.argpending = false;
         }
+    }
+
+    /**
+     * A detached twin of this entry, carrying the same mutable state at
+     * the moment of copying. Lets {@link Stack} take a savepoint that
+     * later mutation of this entry cannot reach (R-7.3).
+     * @return A copy of this entry
+     */
+    Level twin() {
+        final Level copy = new Level(
+            this.indent, this.start, this.kind, this.openness, this.parent, this.patom
+        );
+        copy.absorb(this);
+        return copy;
+    }
+
+    private void absorb(final Level other) {
+        this.label = other.label;
+        this.formation = other.formation;
+        this.atom = other.atom;
+        this.taken = other.taken;
+        this.plain = other.plain;
+        this.count = other.count;
+        this.children = other.children;
+        this.tupled = other.tupled;
+        this.star = other.star;
+        this.bindings = other.bindings;
+        this.argpending = other.argpending;
+        this.argbound = other.argbound;
+        this.argspan = other.argspan;
     }
 }
