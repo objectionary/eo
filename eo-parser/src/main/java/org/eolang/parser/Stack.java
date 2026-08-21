@@ -54,6 +54,15 @@ final class Stack {
     private final Opener opener;
 
     /**
+     * Bottom sentinel — the entry {@link #below()} answers when the
+     * stack holds fewer than two entries. Its kind is
+     * {@link Kind#TOP_LEVEL}, so a caller reading the parent of the
+     * bottom entry finds an object saying "top level" rather than an
+     * absence to test for.
+     */
+    private final Level bottom;
+
+    /**
      * Ctor with no-op hooks — useful in tests that exercise structural
      * transitions without semantic checks.
      */
@@ -78,6 +87,7 @@ final class Stack {
         this.levels = new ArrayList<>(8);
         this.closer = closer;
         this.opener = opener;
+        this.bottom = new Level(0, 0, Kind.TOP_LEVEL, Openness.OPEN, Kind.TOP_LEVEL, false);
     }
 
     /**
@@ -114,10 +124,20 @@ final class Stack {
      * one back, so the count is unchanged even though the top entry
      * itself is a different object. Snapshotting the entries themselves
      * survives that case.
+     *
+     * <p>The entries are copied, not shared: a {@link Level} is mutable
+     * and a line that throws has usually already mutated the entry
+     * below it, so a shallow copy would put the damage straight back on
+     * the stack.</p>
+     *
      * @return Snapshot of the levels, bottom-to-top
      */
     List<Level> snapshot() {
-        return new ArrayList<>(this.levels);
+        final List<Level> copy = new ArrayList<>(this.levels.size());
+        for (final Level level : this.levels) {
+            copy.add(level.twin());
+        }
+        return copy;
     }
 
     /**
@@ -135,14 +155,15 @@ final class Stack {
     }
 
     /**
-     * The entry directly below the top, or null if there is none. Used by
-     * the FSM to read a new entry's parent during the push step (R-5.2.8).
-     * @return Entry below top, or null
+     * The entry directly below the top, or the bottom sentinel when the
+     * stack holds fewer than two entries. Used by the FSM to read a new
+     * entry's parent during the push step (R-5.2.8).
+     * @return Entry below top, never null
      */
     Level below() {
         final Level under;
         if (this.levels.size() < 2) {
-            under = null;
+            under = this.bottom;
         } else {
             under = this.levels.get(this.levels.size() - 2);
         }

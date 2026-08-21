@@ -48,6 +48,18 @@
         2 > @
         1 > a
 
+  eq. ++> can-choose-the-left-branch-of-true
+    "yes"
+    true.if
+      "yes"
+      "no"
+
+  eq. ++> can-choose-the-right-branch-of-false
+    "no"
+    false.if
+      "yes"
+      "no"
+
   and. ++> can-compare-a-bool-to-a-string
     true.eq "\u0001"
     false.eq "\u0000"
@@ -79,6 +91,8 @@
 
   true.as-bool ++> can-convert-true-to-a-bool
 
+  true.or false ++> can-disjoin-true-with-false
+
   ++> can-extract-an-attribute-from-a-decoratee
     a.foo.eq 43 > @
     ^.return > [] > a
@@ -98,6 +112,12 @@
       123
       42
     123
+
+  false.as-bytes.size.eq 1 ++> can-keep-the-size-of-false-at-one-byte
+
+  true.as-bytes.size.eq 1 ++> can-keep-the-size-of-true-at-one-byte
+
+  false.not ++> can-negate-false
 
   true.not.eq false ++> can-negate-true
 
@@ -199,6 +219,12 @@
     [x] > a
       take > @
       ^.x > [] > take
+
+  not. ++> can-tell-false-does-not-disjoin-with-itself
+    false.or false
+
+  not. ++> can-tell-true-is-not-false
+    true.eq false
 
   --> stops-on-applying-to-a-closed-object
     closed true > @

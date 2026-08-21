@@ -138,7 +138,10 @@
               * ^.sys.message
           ^.^.guarded opened ^.sys.cleanup
         if. > converted
-          ^.addr.eq ^.sys.none
+          and.
+            ^.addr.eq ^.sys.none
+            not.
+              ^.^.address.eq "255.255.255.255"
           cant
             "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
               * ^.^.address ^.sys.message

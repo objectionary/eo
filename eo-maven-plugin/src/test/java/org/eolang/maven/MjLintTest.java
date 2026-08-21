@@ -12,10 +12,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
@@ -282,6 +289,60 @@ final class MjLintTest {
                 "Second (cached) run must report the WPA error too"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("foo.x.main")
+        );
+    }
+
+    @Test
+    void logsWholeProgramAnalysisDefectFromCache(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("lintAsPackage", true)
+            .withProgram(MjLintTest.problematic());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new PpLint()),
+            "First (uncached) run must report the WPA error"
+        );
+        final List<String> messages = new ArrayList<>(0);
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                messages.add(String.valueOf(event.getRenderedMessage()));
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Linting.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.ALL);
+        logger.addAppender(appender);
+        try {
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.execute(new PpLint()),
+                "Second (cached) run must report the WPA error too"
+            );
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        MatcherAssert.assertThat(
+            "A WPA defect read back from the cache must still be logged, but it wasn't",
+            messages,
+            Matchers.hasItem(
+                Matchers.<String>allOf(
+                    Matchers.containsString("[LINT]"),
+                    Matchers.containsString("foo.x.main"),
+                    Matchers.containsString("not in scope")
+                )
+            )
         );
     }
 

@@ -8,8 +8,22 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-string > eol
-  as-bytes.
-    os.is-windows.if
-      "\r\n"
-      "\n"
+[] > eol
+  string > @
+    as-bytes.
+      os.is-windows.if "\r\n" "\n"
+
+  eq. ++> can-carry-a-carriage-return-only-on-windows
+    eol.starts-with "\r"
+    os.is-windows
+
+  eol.ends-with "\n" ++> can-end-with-a-line-feed
+
+  eol.length.gt 0 ++> can-hold-at-least-one-character
+
+  eol.length.lt 3 ++> can-hold-fewer-than-three-characters
+
+  contains. ++> can-separate-two-joined-lines
+    eol.joined
+      * "a" "b"
+    eol

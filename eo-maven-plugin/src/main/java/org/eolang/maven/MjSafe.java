@@ -372,11 +372,17 @@ abstract class MjSafe extends AbstractMojo {
     protected Settings settings = new Settings();
 
     /**
-     * The Git hash to pull objects from.
-     * If not set, will be computed from {@code tag} field.
+     * The Git hash to pull objects from, computed from {@code tag} field.
+     *
+     * <p>Built lazily behind {@link ChCached} rather than eagerly from
+     * {@code this.tag} here: this field initializer runs during
+     * construction, before Maven injects the configured {@code eo.tag}
+     * value by reflection, so an eager {@code new ChBrief(this.tag)} would
+     * capture the {@code "master"} default forever.</p>
+     *
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
-    protected CommitHash hash = new ChBrief(this.tag);
+    protected CommitHash hash = new ChCached(() -> new ChBrief(this.tag).value());
 
     /**
      * Resolve default JNA dependency or not.

@@ -123,6 +123,50 @@ final class PhSafeTest {
     }
 
     @Test
+    void letsInterruptedThrough() {
+        MatcherAssert.assertThat(
+            "an interrupt must keep its own message, but it was wrapped",
+            Assertions.assertThrows(
+                ExInterrupted.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new ExInterrupted("the thread must stop");
+                        }
+                    },
+                    "file.eo", 42, 7
+                ).delta(),
+                "was expected to fail with ExInterrupted"
+            ).getMessage(),
+            Matchers.equalTo("the thread must stop")
+        );
+    }
+
+    @Test
+    void doesNotLetRecoveredInterceptInterrupted() {
+        final EOrecovered recovered = new EOrecovered();
+        recovered.put(
+            "value",
+            new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi normalized() {
+                        throw new ExInterrupted("the thread must stop");
+                    }
+                },
+                "file.eo", 42, 7
+            )
+        );
+        recovered.put("alternative", new Data.ToPhi(42L));
+        Assertions.assertThrows(
+            ExInterrupted.class,
+            recovered::lambda,
+            "recovered must not intercept an interrupt, but it did"
+        );
+    }
+
+    @Test
     void showsFileNameAndLineNumber() {
         MatcherAssert.assertThat(
             "shows file name, line number and the original cause",
