@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7217: a reversed dispatch whose receiver cannot fold into a dotted @base
+# (a data literal here) keeps @base="?.eq" with @fragile set. Node.suffixed()
+# stripped one trailing character assuming it was a plain dot, so the marker
+# stayed glued to the method name instead of moving in front of it: "5.eq? 3"
+# instead of "5?.eq 3". That printed form does not reparse.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    5?.eq 3 > x
+
+printed: |
+  [] > main
+    5?.eq 3 > x

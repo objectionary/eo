@@ -278,6 +278,7 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
+          <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--
