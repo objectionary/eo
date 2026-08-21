@@ -38,7 +38,10 @@
         ^.drive.concat
           if.
             len.eq -1
-            "."
+            if.
+              ^.drive.size.eq 0
+              "."
+              --
             if.
               len.eq 0
               ^.separator
