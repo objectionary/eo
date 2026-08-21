@@ -95,9 +95,7 @@ final class LnOnlyPhi implements Line {
             params = LnOnlyPhi.parseParams(
                 body.substring(bracket + 1, close), this.span, bracket + 1
             );
-            suffix = new Suffix(
-                body.substring(close + 1), this.span, this.span.indent() + close + 1
-            );
+            suffix = LnOnlyPhi.suffix(body, close, this.span);
             origin = bracket + 1;
         } else {
             final int shorthand = LnOnlyPhi.shorthandArrow(body);
@@ -164,6 +162,18 @@ final class LnOnlyPhi implements Line {
             idx = Eo.topLevelMinusMinusArrowIndex(body);
         }
         return idx;
+    }
+
+    private static Suffix suffix(final String body, final int close, final Span span) {
+        final String tail = body.substring(close + 1);
+        final int chained = Eo.topLevelGreaterBracketIndex(tail);
+        if (chained >= 0) {
+            throw new ParseError(
+                span.line(), span.indent() + close + 1 + chained,
+                "chained inline-phi suffixes are not allowed"
+            );
+        }
+        return new Suffix(tail, span, span.indent() + close + 1);
     }
 
     private void emitVoids(final Emit emit, final List<String> params, final int origin) {
