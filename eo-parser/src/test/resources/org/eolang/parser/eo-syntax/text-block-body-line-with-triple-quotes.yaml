@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7101: a body line that starts with triple quotes closes the block only when
+# nothing but a suffix follows them (R-3.11.3), so `"""hi` is content and the
+# block ends on the line after it.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object//o[@name='x']/o[@base='Φ.bytes']/o[text()='22-22-22-68-69']
+input: |
+  [] > main
+    """
+    """hi
+    """ > x

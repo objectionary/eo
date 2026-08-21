@@ -42,20 +42,19 @@
               expo.is-integer.if
                 if.
                   expo.lt 0
-                  1.div
-                    [b n] >> ipow
-                      if. > @
-                        n.eq 0
-                        1
-                        if.
-                          is-integer. (n.div 2)
-                          times.
-                            number half
-                            number half
-                          b.times
-                            ^.ipow b (n.minus 1)
-                      ^.ipow b (n.div 2) > half!
-                    | base expo.abs
+                  [b n] >> ipow
+                    if. > @
+                      n.eq 0
+                      1
+                      if.
+                        is-integer. (n.div 2)
+                        times.
+                          number half
+                          number half
+                        b.times
+                          ^.ipow b (n.minus 1)
+                    ^.ipow b (n.div 2) > half!
+                  | (1.div base) expo.abs
                   ipow base expo.abs
                 if.
                   base.gt 0
@@ -112,6 +111,10 @@
                 nan
                 pinf
   ^ > num
+
+  gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
+    10.power -315
+    0
 
   eq. ++> can-be-called-as-a-method-on-a-number
     2.power 4
