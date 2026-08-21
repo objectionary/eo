@@ -24,6 +24,15 @@ final class PhDispatchTest {
     }
 
     @Test
+    void keepsTypeAfterCopy() {
+        MatcherAssert.assertThat(
+            "copy of a dispatch is a bare wrapper, not a dispatch",
+            new PhDispatch(Phi.Φ, "foo").copy(),
+            Matchers.instanceOf(PhDispatch.class)
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(
