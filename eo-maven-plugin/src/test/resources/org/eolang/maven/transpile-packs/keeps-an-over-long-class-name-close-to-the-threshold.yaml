@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7254: a class name over 250 characters used to be cut to a 25-character stub
+# plus a disambiguating suffix, discarding almost the entire name. The cut now
+# keeps close to the 250-character threshold it tests, so the java-name still
+# carries most of the original identifier instead of just its first dozen or so
+# characters.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //@java-name[string-length(.) > 200]
+  - //@java-name[contains(., 'segment20')]
+input: |
+  [] > segment0-segment1-segment2-segment3-segment4-segment5-segment6-segment7-segment8-segment9-segment10-segment11-segment12-segment13-segment14-segment15-segment16-segment17-segment18-segment19-segment20-segment21-segment22-segment23-segment24-segment25-segment26-segment27-segment28-segment29-segment30-segment31-segment32-segment33-segment34-segment35-segment36-segment37-segment38-segment39
+    true > @
