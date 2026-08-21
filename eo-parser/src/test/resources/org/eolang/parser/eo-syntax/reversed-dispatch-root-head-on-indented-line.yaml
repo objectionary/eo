@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# #7165: LnReversed#readHead built a `@.`, `^.` or `$.` root head's
+# Value from the stripped-body offset alone, so the parser previously
+# had to bypass this indented-line path to exercise the head at all.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.φ' and @line='2' and o[@base='Φ.number']]
+  - //o[@base='.ρ' and @line='3' and o[@base='Φ.number']]
+  - //o[@base='.ξ' and @line='4' and o[@base='Φ.number']]
+input: |
+  [] > main
+    @. 1 > x
+    ^. 1 > y
+    $. 1 > z

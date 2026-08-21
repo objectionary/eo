@@ -157,4 +157,31 @@ final class ValueTest {
             Matchers.equalTo(Value.Kind.IDENTITY)
         );
     }
+
+    @Test
+    void marksIdentifierChainable() {
+        MatcherAssert.assertThat(
+            "an IDENTIFIER value must allow a .method chain behind it",
+            new Value(Value.Kind.IDENTIFIER, "foo", 0).chainable(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksHexChainable() {
+        MatcherAssert.assertThat(
+            "a HEX value must allow a .method chain behind it",
+            new Value(Value.Kind.HEX, "0xF00D", 0).chainable(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksStarNotChainable() {
+        MatcherAssert.assertThat(
+            "a STAR tuple marker must not allow a .method chain behind it",
+            new Value(Value.Kind.STAR, "*", 0).chainable(),
+            Matchers.equalTo(false)
+        );
+    }
 }

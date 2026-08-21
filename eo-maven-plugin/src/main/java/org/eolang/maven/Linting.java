@@ -416,7 +416,7 @@ final class Linting implements Step {
             .without(this.programlints.toArray(new String[0]))
             .defects()
             .stream()
-            .filter(defect -> this.experimental || !defect.experimental()).forEach(
+            .filter(defect -> !(this.experimental && defect.experimental())).forEach(
                 defect -> {
                     final Node node = progs.get(defect.object()).inner();
                     new Xembler(
@@ -446,7 +446,7 @@ final class Linting implements Step {
             .without(this.sourcelints.toArray(new String[0]))
             .defects()
             .stream().filter(
-                defect -> this.experimental || !defect.experimental()
+                defect -> !(this.experimental && defect.experimental())
             ).collect(Collectors.toList());
         defects.addAll(found);
         final Directives dirs = new Directives();

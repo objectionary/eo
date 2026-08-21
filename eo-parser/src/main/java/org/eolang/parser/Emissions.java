@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -40,21 +39,6 @@ final class Emissions {
      * The void the identity object {@code I} binds and decorates.
      */
     private static final String IDENTITY = "x";
-
-    /**
-     * Kinds of head value that a {@code .method} chain may follow.
-     */
-    private static final Set<Value.Kind> CHAINABLE = Set.of(
-        Value.Kind.IDENTIFIER,
-        Value.Kind.ROOT,
-        Value.Kind.SELF,
-        Value.Kind.GROUP,
-        Value.Kind.INTEGER,
-        Value.Kind.FLOAT,
-        Value.Kind.STRING,
-        Value.Kind.BYTES,
-        Value.Kind.HEX
-    );
 
     /**
      * No instances.
@@ -89,21 +73,7 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
-        if (chain.isEmpty()) {
-            Emissions.openValue(emit, name, head, line);
-        } else {
-            Emissions.openValue(emit, null, head, line);
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(name, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
-        }
+        ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
@@ -178,17 +148,7 @@ final class Emissions {
             }
             emit.close();
         } else {
-            Emissions.openValue(emit, null, value, line);
-            emit.close();
-            for (int idx = 0; idx < tail.size() - 1; idx = idx + 1) {
-                final MethodChain link = tail.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = tail.get(tail.size() - 1);
-            emit.object(null, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
+            ChainEmission.link(emit, line, value, tail, null);
             if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
@@ -216,15 +176,6 @@ final class Emissions {
             tag = raw;
         }
         return tag;
-    }
-
-    /**
-     * Whether a head value can carry a {@code .method} chain.
-     * @param head The head value
-     * @return True if chain may follow
-     */
-    static boolean chainable(final Value head) {
-        return Emissions.CHAINABLE.contains(head.kind());
     }
 
     /**
