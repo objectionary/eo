@@ -36,15 +36,19 @@ final class Numeral implements Supplier<String> {
     public String get() {
         final String txt;
         if (
-            this.value == Math.floor(this.value)
-                && !Double.isInfinite(this.value)
+            this.whole()
                 && Long.MIN_VALUE <= this.value
                 && this.value < Long.MAX_VALUE
+                && Double.doubleToRawLongBits(this.value) != Double.doubleToRawLongBits(-0.0d)
         ) {
             txt = Long.toString((long) this.value);
         } else {
             txt = Double.toString(this.value);
         }
         return txt;
+    }
+
+    private boolean whole() {
+        return this.value == Math.floor(this.value) && !Double.isInfinite(this.value);
     }
 }

@@ -25,7 +25,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 6, 9),
+            new Value(Value.Kind.IDENTIFIER, "bar", 6),
             Collections.emptyList(),
             new Suffix("> foo", new Span("bar > foo", 1), 4)
         ).run();
@@ -48,7 +48,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("foo.bar > wrap", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "foo", 0),
             Collections.singletonList(new MethodChain("bar", 3, false)),
             new Suffix("> wrap", new Span("foo.bar > wrap", 1), 8)
         ).run();
@@ -72,7 +72,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo!", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "bar", 0),
             Collections.emptyList(),
             new Suffix("> foo!", new Span("bar > foo!", 1), 4)
         ).run();
@@ -94,7 +94,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("foo.bar.baz > q", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "foo", 0),
             Arrays.asList(
                 new MethodChain("bar", 3, false),
                 new MethodChain("baz", 7, false)

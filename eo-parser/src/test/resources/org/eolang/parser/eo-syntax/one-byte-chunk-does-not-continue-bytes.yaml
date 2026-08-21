@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7176: R-3.13.1 says a one-byte chunk is complete on its own line and cannot
+# continue a bytes literal, so the merge stops at `BE-` and the token that was
+# merged before it keeps a dangling continuation dash.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'dangling continuation dash')]
+input: |
+  foo > main
+    CA-FE-
+    BE-
+    BE-BE

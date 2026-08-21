@@ -34,4 +34,49 @@ final class NumeralTest {
             Matchers.equalTo(Double.toString(number))
         );
     }
+
+    @Test
+    void printsNegativeZeroWithItsSign() {
+        MatcherAssert.assertThat(
+            "Negative zero must keep its sign in φ-term",
+            new Numeral(-0.0d).get(),
+            Matchers.equalTo("-0.0")
+        );
+    }
+
+    @Test
+    void printsPositiveZeroWithoutSign() {
+        MatcherAssert.assertThat(
+            "Positive zero must print without a sign in φ-term",
+            new Numeral(0.0d).get(),
+            Matchers.equalTo("0")
+        );
+    }
+
+    @Test
+    void printsNegativeZeroComputedByDivision() {
+        MatcherAssert.assertThat(
+            "Negative zero produced by division must keep its sign in φ-term",
+            new Numeral(-1.0d / Double.POSITIVE_INFINITY).get(),
+            Matchers.equalTo("-0.0")
+        );
+    }
+
+    @Test
+    void printsNegativeZeroWidenedFromFloat() {
+        MatcherAssert.assertThat(
+            "Negative zero widened from float must keep its sign in φ-term",
+            new Numeral(-0.0f).get(),
+            Matchers.equalTo("-0.0")
+        );
+    }
+
+    @Test
+    void printsRegularNegativeIntegralNumberWithoutFraction() {
+        MatcherAssert.assertThat(
+            "Ordinary negative integral double must print without a fraction in φ-term",
+            new Numeral(-5.0d).get(),
+            Matchers.equalTo("-5")
+        );
+    }
 }

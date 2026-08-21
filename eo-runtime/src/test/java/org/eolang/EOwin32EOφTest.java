@@ -4,7 +4,10 @@
  */
 package org.eolang;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
@@ -70,6 +73,32 @@ final class EOwin32EOφTest {
                 ).take("output")
             ).asString(),
             Matchers.containsString("No such file")
+        );
+    }
+
+    @Test
+    @DisabledOnOs({OS.LINUX, OS.MAC})
+    void accessesFileWithNonAsciiName() throws IOException {
+        final Path file = Files.createTempFile("Ж日本-", ".txt");
+        MatcherAssert.assertThat(
+            String.format("\"_access\" did not find the non-ASCII file %s", file),
+            new Dataized(
+                new PhApplication(
+                    new PhApplication(
+                        Phi.Φ.take("win32").copy(),
+                        "name",
+                        new Data.ToPhi("_access")
+                    ),
+                    "args",
+                    new Data.ToPhi(
+                        new Phi[]{
+                            new Data.ToPhi(file.toString()),
+                            new Data.ToPhi(0),
+                        }
+                    )
+                ).take("code")
+            ).asNumber().intValue(),
+            Matchers.equalTo(0)
         );
     }
 

@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6980: CHAINABLE skipped HEX, so a hex-literal argument lost its
+# `.method` chain when it sat inside a paren group — `g 0xFF.plus`
+# used to emit `g` with a bare `Φ.number` child and no `.plus` sibling.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.f']/o[@base='Φ.g']/o[@base='.plus']/o[@base='Φ.number']
+input: |
+  [] > main
+    f (g 0xFF.plus) > x

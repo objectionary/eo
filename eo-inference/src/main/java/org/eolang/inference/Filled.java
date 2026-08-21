@@ -71,16 +71,24 @@ final class Filled {
      *  no caller says what the void holds
      */
     String instead(final String answer, final String bearer) {
-        String found = answer;
-        for (final Map.Entry<String, String> holds : this.fillings(bearer).entrySet()) {
-            final String hollow = holds.getKey();
-            if (answer.equals(hollow)) {
-                found = holds.getValue();
-                break;
+        final Map<String, String> fillings = this.fillings(bearer);
+        final String found;
+        if (fillings.containsKey(answer)) {
+            found = fillings.get(answer);
+        } else {
+            String longest = "";
+            for (final String hollow : fillings.keySet()) {
+                if (answer.startsWith(hollow.concat("."))
+                    && hollow.length() > longest.length()) {
+                    longest = hollow;
+                }
             }
-            if (answer.startsWith(hollow.concat("."))) {
-                found = this.asked(holds.getValue(), answer.substring(hollow.length() + 1), answer);
-                break;
+            if (longest.isEmpty()) {
+                found = answer;
+            } else {
+                found = this.asked(
+                    fillings.get(longest), answer.substring(longest.length() + 1), answer
+                );
             }
         }
         return found;
