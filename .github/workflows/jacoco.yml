@@ -4,15 +4,9 @@
 # yamllint disable rule:line-length
 name: jacoco
 'on':
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
-concurrency:
-  group: jacoco-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   jacoco:
     timeout-minutes: 30
@@ -32,4 +26,4 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn clean install -DskipITs -Pjacoco --errors --batch-mode
+      - run: mvn clean install -ntp -DskipITs -Pjacoco --errors --batch-mode
