@@ -379,6 +379,7 @@ abstract class MjSafe extends AbstractMojo {
      * construction, before Maven injects the configured {@code eo.tag}
      * value by reflection, so an eager {@code new ChBrief(this.tag)} would
      * capture the {@code "master"} default forever.</p>
+     *
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     protected CommitHash hash = new ChCached(() -> new ChBrief(this.tag).value());
