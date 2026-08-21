@@ -2,8 +2,8 @@
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-print` fallback is returned, or the bottom object
-# when unbound.
+# or infinite), or is too large to decrement by one, the `cant-print` fallback
+# is returned, or the bottom object when unbound.
 #
 # The value is split into its integer and fraction parts before scaling, so
 # only the fraction is multiplied by a power of ten and every magnitude that
@@ -21,7 +21,9 @@
     n.is-finite.not.or
       or.
         0.gt places
-        places.is-integer.not
+        or.
+          places.is-integer.not
+          places.gte 9007199254740992
     cant-print
       n.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
@@ -170,6 +172,12 @@
     "recovered"
     3.14159.as-fixed
       2.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-places-too-large-to-decrement
+    "recovered"
+    1.as-fixed
+      9007199254740992
       "recovered" > [message]
 
   eq. ++> can-round-to-the-last-place
