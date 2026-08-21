@@ -61,8 +61,11 @@ final class SnippetIT {
                     "org.eolang", "eo-runtime", SnippetIT.runtimeVersion()
                 );
                 f.build().properties().set("directory", SnippetIT.targetDir(xtory));
-                new EoSourceRun(f).exec(xtory.map().get("args"));
-                log[0] = f.log().content();
+                final EoSourceRun run = new EoSourceRun(
+                    f, this.dir, SnippetIT.stdin(xtory)
+                );
+                run.exec(xtory.map().get("args"));
+                log[0] = String.format("%s%s", f.log().content(), run.output());
                 SnippetIT.succeeds(f, yml);
             }
         );
@@ -78,6 +81,16 @@ final class SnippetIT {
                 )
             )
         );
+    }
+
+    private static String stdin(final Xtory xtory) {
+        final String text;
+        if (xtory.map().containsKey("stdin")) {
+            text = xtory.map().get("stdin").toString();
+        } else {
+            text = "";
+        }
+        return text;
     }
 
     private static void succeeds(final Farea farea, final String yml) throws IOException {

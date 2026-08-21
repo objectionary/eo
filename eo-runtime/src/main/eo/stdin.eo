@@ -20,18 +20,11 @@
 # the current line's own multi-byte read, since neither was otherwise forced
 # until the whole recursion bottomed out at the final `string`.
 #
-# @todo #7259:90min Cover `all-lines` and `next-line` with a snippet test
-#  that feeds real standard input. A `++>` test cannot do it: `console.read`
-#  reaches the process's real file descriptor 0 through `posix`/`win32`, and
-#  neither can be substituted in EO. A snippet test is the right place, but
-#  the harness cannot feed that descriptor yet: `EoSourceRun` runs the
-#  program with `exec:java`, inside Maven's own process, and
-#  `exec-maven-plugin` has no `inputFile` parameter on either goal, while
-#  `Farea` offers no way to give the Maven process an input of its own. One
-#  way out is a small launcher class written into the fake project and
-#  started by `exec:exec` with `%classpath`, which re-launches
-#  `org.eolang.Main` through `ProcessBuilder.redirectInput`, portable to
-#  Windows. Until that exists, `+unlint unit-test-missing` stays.
+# Reading from the console cannot be exercised by a `++>` test, since
+# `console.read` reaches the process's real file descriptor 0 through
+# `posix`/`win32` and neither can be substituted in EO. The
+# `reads-all-lines` snippet feeds real standard input to a forked JVM and
+# checks what comes back.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
