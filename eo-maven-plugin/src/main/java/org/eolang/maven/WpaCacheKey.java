@@ -17,7 +17,8 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 /**
- * Fingerprint of XMIR inputs and skip flags that change a WPA verdict.
+ * Fingerprint of XMIR inputs, skip flags and the WPA artifact version that
+ * change a WPA verdict.
  * @since 0.62.0
  */
 final class WpaCacheKey implements Supplier<String> {
@@ -38,16 +39,26 @@ final class WpaCacheKey implements Supplier<String> {
     private final boolean experimental;
 
     /**
+     * The version of the {@code org.eolang:wpa} artifact deciding the
+     * verdict, so an artifact upgrade with everything else unchanged still
+     * invalidates the cache.
+     */
+    private final String version;
+
+    /**
      * Ctor.
      * @param files XMIR files WPA reads
      * @param programlints Program lints to skip
      * @param skip Whether experimental lints are skipped
+     * @param wpa The version of the {@code org.eolang:wpa} artifact in use
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     WpaCacheKey(final Map<String, Path> files, final Collection<String> programlints,
-        final boolean skip) {
+        final boolean skip, final String wpa) {
         this.paths = files;
         this.skips = programlints;
         this.experimental = skip;
+        this.version = wpa;
     }
 
     @Override
@@ -71,6 +82,7 @@ final class WpaCacheKey implements Supplier<String> {
             } else {
                 digest.update((byte) 0);
             }
+            digest.update(this.version.getBytes(StandardCharsets.UTF_8));
             return HexFormat.of().formatHex(digest.digest());
         } catch (final NoSuchAlgorithmException ex) {
             throw new IllegalStateException("SHA-256 is not available for WPA cache key", ex);
