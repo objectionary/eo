@@ -6,12 +6,7 @@ package integration;
 
 import com.yegor256.farea.Farea;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import org.cactoos.Proc;
 
 /**
@@ -28,37 +23,16 @@ import org.cactoos.Proc;
 final class EoSourceRun implements Proc<Object> {
 
     /**
-     * Name of the file the forked program reads its standard input from.
-     */
-    private static final String STDIN = "stdin.txt";
-
-    /**
      * Fake maven reactor.
      */
     private final Farea farea;
-
-    /**
-     * What to feed the program through its standard input, empty for
-     * nothing.
-     */
-    private final String input;
 
     /**
      * Ctor.
      * @param maven Fake maven reactor
      */
     EoSourceRun(final Farea maven) {
-        this(maven, "");
-    }
-
-    /**
-     * Ctor.
-     * @param maven Fake maven reactor
-     * @param stdin What to feed the program through its standard input
-     */
-    EoSourceRun(final Farea maven, final String stdin) {
         this.farea = maven;
-        this.input = stdin;
     }
 
     @Override
@@ -80,53 +54,15 @@ final class EoSourceRun implements Proc<Object> {
             .set("failOnWarning", "false")
             .set("offline", "true")
             .set("skipLinting", "true");
-        if (this.input.isEmpty()) {
-            this.farea.build()
-                .plugins()
-                .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
-                .execution("run")
-                .phase("compile")
-                .goals("java")
-                .configuration()
-                .set("mainClass", "org.eolang.Main")
-                .set("arguments", args);
-        } else {
-            this.farea.files()
-                .file(EoSourceRun.STDIN)
-                .write(this.input.getBytes(StandardCharsets.UTF_8));
-            this.farea.build()
-                .plugins()
-                .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
-                .execution("run")
-                .phase("compile")
-                .goals("exec")
-                .configuration()
-                .set("executable", "java")
-                .set("inputFile", EoSourceRun.STDIN)
-                .set("arguments", EoSourceRun.forked(args));
-        }
+        this.farea.build()
+            .plugins()
+            .append("org.codehaus.mojo", "exec-maven-plugin", "3.1.1")
+            .execution("run")
+            .phase("compile")
+            .goals("java")
+            .configuration()
+            .set("mainClass", "org.eolang.Main")
+            .set("arguments", args);
         this.farea.exec("clean", "compile");
-    }
-
-    /**
-     * The command line of a forked JVM running {@code Main} with the given
-     * arguments. The {@code java} goal runs in Maven's own process, whose
-     * standard input the program cannot be given, so a snippet that reads
-     * from the console has to be forked by the {@code exec} goal instead.
-     * @param args Arguments for the program
-     * @return Arguments for the {@code exec} goal
-     */
-    private static Collection<String> forked(final Object args) {
-        final List<String> line = new ArrayList<>(
-            Arrays.asList("-cp", "%classpath", "org.eolang.Main")
-        );
-        if (args instanceof Iterable) {
-            for (final Object arg : (Iterable<?>) args) {
-                line.add(arg.toString());
-            }
-        } else if (args != null) {
-            line.add(args.toString());
-        }
-        return line;
     }
 }
