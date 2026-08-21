@@ -480,6 +480,8 @@ public class PhDefault implements Phi, Cloneable {
         final String result;
         if (data.length == 0) {
             result = "--";
+        } else if (data.length == 1) {
+            result = String.format("%02X-", data[0]);
         } else {
             final StringBuilder out = new StringBuilder(data.length * 3);
             for (final byte bte : data) {
