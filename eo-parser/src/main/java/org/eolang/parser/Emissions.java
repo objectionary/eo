@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -39,6 +40,17 @@ final class Emissions {
      * The void the identity object {@code I} binds and decorates.
      */
     private static final String IDENTITY = "x";
+
+    /**
+     * A valid void parameter name, other than the {@code @} and {@code ^}
+     * special forms — §4.5. Shared by every producer of a void parameter
+     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
+     * {@link #inlinePhi}), so a bracket list is validated the same way
+     * regardless of which line shape it appears on.
+     */
+    private static final Pattern PARAM_NAME = Pattern.compile(
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?"
+    );
 
     /**
      * No instances.
@@ -576,6 +588,7 @@ final class Emissions {
         emit.object(name, null, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
+            Emissions.validParam(param, line, pcol);
             final String mapped;
             if ("@".equals(param)) {
                 mapped = "φ";
@@ -588,6 +601,21 @@ final class Emissions {
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
         Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
         emit.close();
+    }
+
+    /**
+     * Reject a void parameter name the grammar does not accept — §4.5.
+     * @param raw The parameter text, as written
+     * @param line Source line (for error reporting)
+     * @param pos Source column of the parameter's first character
+     */
+    static void validParam(final String raw, final int line, final int pos) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+            throw new ParseError(
+                line, pos,
+                "parameter names in voids must be NAME or @"
+            );
+        }
     }
 
     private static List<String> splitParams(final String text) {

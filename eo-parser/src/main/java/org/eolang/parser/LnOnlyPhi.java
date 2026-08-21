@@ -292,7 +292,9 @@ final class LnOnlyPhi implements Line {
             while (end < text.length() && text.charAt(end) != ' ') {
                 end = end + 1;
             }
-            out.add(text.substring(idx, end));
+            final String raw = text.substring(idx, end);
+            Emissions.validParam(raw, span.line(), span.indent() + origin + idx);
+            out.add(raw);
             if (end < text.length()) {
                 if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {
                     throw new ParseError(
