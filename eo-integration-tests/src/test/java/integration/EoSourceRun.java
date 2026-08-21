@@ -24,12 +24,10 @@ import org.cactoos.Proc;
  * one, and unmerged it is applied to the receiver through the first void it
  * does not have any more, which shifts every argument by one.</p>
  *
- * <p>A snippet that reads from the console is run in a JVM of its own,
- * with its standard input coming from a file. The {@code java} goal of the
- * exec plugin runs inside Maven's own process, and neither that plugin nor
- * {@code Farea} can give a process an input of its own, while
- * {@code console.read} reads the real file descriptor 0 rather than Java's
- * {@code System.in}.</p>
+ * <p>A snippet that reads from the console is run in a JVM of its own, with
+ * its standard input coming from a file: {@code console.read} reads the real
+ * file descriptor 0, and neither the exec plugin nor {@code Farea} can give
+ * a process an input of its own.</p>
  *
  * @since 0.56.3
  */
@@ -159,27 +157,25 @@ final class EoSourceRun implements Proc<Object> {
                 "org.eolang.Main"
             )
         );
-        if (args instanceof Iterable) {
-            for (final Object arg : (Iterable<?>) args) {
-                line.add(arg.toString());
-            }
-        } else if (args != null) {
-            line.add(args.toString());
+        for (final Object arg : (Iterable<?>) args) {
+            line.add(arg.toString());
         }
         final Process proc = new ProcessBuilder(line)
             .directory(this.home.toFile())
             .redirectInput(this.home.resolve(EoSourceRun.STDIN).toFile())
             .redirectErrorStream(true)
             .start();
-        final String out = new String(
-            proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8
-        );
         try {
+            final String out = new String(
+                proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8
+            );
             proc.waitFor();
+            return out;
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IOException(ex);
+        } finally {
+            proc.destroy();
         }
-        return out;
     }
 }
