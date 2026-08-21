@@ -216,6 +216,47 @@ final class StackTest {
         );
     }
 
+    @Test
+    void answersTopLevelBelowAnEmptyStack() {
+        MatcherAssert.assertThat(
+            "the entry below an empty stack must be the bottom sentinel, whose kind is TOP_LEVEL",
+            new Stack().below().kind(),
+            Matchers.equalTo(Kind.TOP_LEVEL)
+        );
+    }
+
+    @Test
+    void answersTopLevelBelowTheOnlyEntry() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.HEAD, Openness.OPEN);
+        MatcherAssert.assertThat(
+            "the entry below the only entry must be the bottom sentinel, whose kind is TOP_LEVEL",
+            stack.below().kind(),
+            Matchers.equalTo(Kind.TOP_LEVEL)
+        );
+    }
+
+    @Test
+    void keepsTheBottomSentinelNonArgumentative() {
+        MatcherAssert.assertThat(
+            "the bottom sentinel cannot put its children in only-phi argument position",
+            new Stack().below().argumentative(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void answersTheRealEntryBelowTheTop() {
+        final Stack stack = new Stack();
+        final Level under = stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        MatcherAssert.assertThat(
+            "the entry below the top must be the one pushed right before it",
+            stack.below(),
+            Matchers.sameInstance(under)
+        );
+    }
+
     private static ParseError firstPushIndentViolation() {
         return Assertions.assertThrows(
             ParseError.class,
