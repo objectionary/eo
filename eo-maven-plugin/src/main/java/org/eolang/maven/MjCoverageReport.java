@@ -39,6 +39,13 @@ import org.eolang.parser.EoSyntax;
  * own name (they all carry {@code @loc} with the {@code Φ} prefix of the
  * object they name, so the runtime hits still line up).</p>
  *
+ * <p>Every registered {@code .eo} file gets a record of its own, even one
+ * the manifest names no location in: a file of nothing but atom
+ * declarations and unit tests, like {@code bytes.eo}, has no dataizable
+ * body at all. Such a file used to be absent from the tracefile
+ * altogether, which left the report unable to tell it apart from a file
+ * that was never compiled (#7057).</p>
+ *
  * @since 0.75.0
  */
 @Mojo(
@@ -106,14 +113,16 @@ public final class MjCoverageReport extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             for (final TjForeign tojo : tojos.withXmir()) {
                 final String source = tojo.source().toString();
+                final Map<Integer, Integer> lines = perfile.computeIfAbsent(
+                    source, key -> new LinkedHashMap<>(0)
+                );
                 final XML xmir = new EoSyntax(Files.readString(tojo.source())).parsed();
                 for (final String location : manifest.locations(xmir)) {
                     final int last = location.lastIndexOf(':');
                     final int line = Integer.parseInt(
                         location.substring(location.lastIndexOf(':', last - 1) + 1, last)
                     );
-                    perfile.computeIfAbsent(source, key -> new LinkedHashMap<>(0))
-                        .putIfAbsent(line, 0);
+                    lines.putIfAbsent(line, 0);
                     lineof.put(location, line);
                     fileof.put(location, source);
                 }

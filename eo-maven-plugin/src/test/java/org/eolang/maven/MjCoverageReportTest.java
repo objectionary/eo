@@ -74,6 +74,30 @@ final class MjCoverageReportTest {
     }
 
     @Test
+    void reportsAFileThatHasNothingToInstrument(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > foo",
+                "  [] > bar /Q.bytes"
+            ),
+            "foo",
+            "foo.eo"
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("coverageFile", hits.toFile())
+            .with("lcovFile", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "a file the manifest names no location in must still get a record of its own, so that the report knows the file exists, but it got none",
+            Files.readString(lcov),
+            Matchers.stringContainsInOrder("SF:", "foo.eo", "LH:0", "LF:0", "end_of_record")
+        );
+    }
+
+    @Test
     void doesNotAttributeMergedMembersToThePackageFile(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
