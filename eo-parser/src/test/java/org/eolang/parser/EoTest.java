@@ -58,6 +58,41 @@ final class EoTest {
     }
 
     @Test
+    void flushesTopCommentBlock() {
+        MatcherAssert.assertThat(
+            "a comment block on top of the file must flush into /object/comments",
+            EoTest.render("# top doc", "", "[] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object/comments/comment[contains(text(),'top doc')]",
+                "/object[not(errors)]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsCommentAfterObject() {
+        MatcherAssert.assertThat(
+            "a comment after an object cannot be accepted — only the top block is allowed",
+            EoTest.render("[] > foo", "# late", "  bar > @"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'comment is allowed only on top of the file, before metas')]"
+            )
+        );
+    }
+
+    @Test
+    void rejectsTopCommentWithoutBlankBelow() {
+        MatcherAssert.assertThat(
+            "a top comment block not separated from the object by a blank line cannot be accepted, must not linger in the xmir, and must be reported once",
+            EoTest.render("# top doc", "[] > foo"),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(comments)]",
+                "/object[count(errors/error[contains(text(),'a blank line must separate the top comment block from the rest of the file')])=1]"
+            )
+        );
+    }
+
+    @Test
     void reportsOddIndentError() {
         MatcherAssert.assertThat(
             "a line whose indent is an odd number of spaces must surface the odd-indent error",
