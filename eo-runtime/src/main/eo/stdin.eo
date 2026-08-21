@@ -20,12 +20,11 @@
 # the current line's own multi-byte read, since neither was otherwise forced
 # until the whole recursion bottomed out at the final `string`.
 #
-# @todo #7259:60min Add `++>` tests exercising `all-lines` and `next-line`
-#  against real console input (a single line, several lines, an empty line
-#  in the middle, input without a trailing newline). `console.read` reaches
-#  the process's real file descriptor 0 through `posix`/`win32`, so a test
-#  needs OS-level stdin redirection for the forked test JVM, which this
-#  module has none of yet; `+unlint unit-test-missing` stays until it does.
+# Reading from the console cannot be exercised by a `++>` test, since
+# `console.read` reaches the process's real file descriptor 0 through
+# `posix`/`win32` and neither can be substituted in EO. The
+# `reads-all-lines` snippet test feeds real standard input to a forked JVM
+# and checks what comes out.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
