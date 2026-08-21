@@ -103,7 +103,7 @@ final class PhiTest {
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
                         "n",
-                        new Data.ToPhi(9007199254740992D)
+                        new Data.ToPhi(9_007_199_254_740_992d)
                     )
                 ).take()
             ).getMessage(),
