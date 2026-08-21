@@ -195,9 +195,7 @@ public final class PhSafe implements Phi, Atom {
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
-        } catch (final ExInterrupted ex) {
-            throw ex;
-        } catch (final Error ex) {
+        } catch (final ExInterrupted | Error ex) {
             throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
