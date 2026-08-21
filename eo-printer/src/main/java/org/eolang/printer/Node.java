@@ -427,7 +427,12 @@ final class Node {
     private Optional<Node> suffixed() {
         Optional<Node> result = Optional.empty();
         if (this.reversed && !this.children.isEmpty()) {
-            final String dot = this.base.endsWith("?.") ? "?." : ".";
+            final String dot;
+            if (this.base.endsWith("?.")) {
+                dot = "?.";
+            } else {
+                dot = ".";
+            }
             result = this.children.get(0).braced().map(
                 glued -> new Node(
                     String.join(
