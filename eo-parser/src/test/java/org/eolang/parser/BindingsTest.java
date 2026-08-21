@@ -32,7 +32,7 @@ final class BindingsTest {
     void acceptsSingleArg() {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkAllOrNothing(
-                Collections.singletonList(new Value(Value.Kind.IDENTIFIER, "a", 4, 5)),
+                Collections.singletonList(new Value(Value.Kind.IDENTIFIER, "a", 4)),
                 new Span("foo a", 1)
             ),
             "a single arg was rejected by the all-or-nothing rule"
@@ -44,9 +44,9 @@ final class BindingsTest {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7),
-                    new Value(Value.Kind.IDENTIFIER, "c", 8, 9)
+                    new Value(Value.Kind.IDENTIFIER, "a", 4),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6),
+                    new Value(Value.Kind.IDENTIFIER, "c", 8)
                 ),
                 new Span("foo a b c", 1)
             ),
@@ -59,8 +59,8 @@ final class BindingsTest {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                    new Value(Value.Kind.IDENTIFIER, "b", 8, 9, "y")
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, "x"),
+                    new Value(Value.Kind.IDENTIFIER, "b", 8, "y")
                 ),
                 new Span("foo a:x b:y", 1)
             ),
@@ -75,8 +75,8 @@ final class BindingsTest {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, Integer.toString(slot)),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, Integer.toString(slot))
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, Integer.toString(slot)),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, Integer.toString(slot))
                 ),
                 new Span(String.format("foo a:%1$d b:%1$d", slot), 1)
             ),
@@ -89,8 +89,8 @@ final class BindingsTest {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "")
+                    new Value(Value.Kind.IDENTIFIER, "a", 4, ""),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, "")
                 ),
                 new Span("foo a: b:", 1)
             ),
@@ -106,8 +106,8 @@ final class BindingsTest {
                 ParseError.class,
                 () -> Bindings.checkAllOrNothing(
                     Arrays.asList(
-                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, ""),
-                        new Value(Value.Kind.IDENTIFIER, "b", 6, 7)
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, ""),
+                        new Value(Value.Kind.IDENTIFIER, "b", 6)
                     ),
                     new Span("foo a: b", 1)
                 )
@@ -124,8 +124,8 @@ final class BindingsTest {
                 ParseError.class,
                 () -> Bindings.checkAllOrNothing(
                     Arrays.asList(
-                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5, "x"),
-                        new Value(Value.Kind.IDENTIFIER, "b", 8, 9)
+                        new Value(Value.Kind.IDENTIFIER, "a", 4, "x"),
+                        new Value(Value.Kind.IDENTIFIER, "b", 8)
                     ),
                     new Span("foo a:x b", 1)
                 ),
@@ -141,8 +141,8 @@ final class BindingsTest {
             ParseError.class,
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
-                    new Value(Value.Kind.IDENTIFIER, "a", 4, 5),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, 7, "y")
+                    new Value(Value.Kind.IDENTIFIER, "a", 4),
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, "y")
                 ),
                 new Span("foo a b:y", 1)
             ),
@@ -158,9 +158,9 @@ final class BindingsTest {
                 ParseError.class,
                 () -> Bindings.checkAllOrNothing(
                     Arrays.asList(
-                        new Value(Value.Kind.IDENTIFIER, "a", 4, 5),
-                        new Value(Value.Kind.IDENTIFIER, "b", 6, 7),
-                        new Value(Value.Kind.IDENTIFIER, "c", 8, 9, "z")
+                        new Value(Value.Kind.IDENTIFIER, "a", 4),
+                        new Value(Value.Kind.IDENTIFIER, "b", 6),
+                        new Value(Value.Kind.IDENTIFIER, "c", 8, "z")
                     ),
                     new Span("foo a b c:z", 1)
                 ),
@@ -174,7 +174,7 @@ final class BindingsTest {
     void acceptsReceiverWithoutBinding() {
         Assertions.assertDoesNotThrow(
             () -> Bindings.checkReceiver(
-                new Value(Value.Kind.IDENTIFIER, "cond", 4, 8),
+                new Value(Value.Kind.IDENTIFIER, "cond", 4),
                 new Span("if. cond then else", 1)
             ),
             "a bare receiver was rejected"
@@ -186,7 +186,7 @@ final class BindingsTest {
         Assertions.assertThrows(
             ParseError.class,
             () -> Bindings.checkReceiver(
-                new Value(Value.Kind.IDENTIFIER, "cond", 4, 8, "x"),
+                new Value(Value.Kind.IDENTIFIER, "cond", 4, "x"),
                 new Span("if. cond:x then else", 1)
             ),
             "a receiver carrying a binding was accepted"
