@@ -320,7 +320,11 @@ public class PhDefault implements Phi, Cloneable {
             if (PhDefault.SORTABLE.matcher(name).matches()) {
                 this.order.add(name);
             }
-            this.loaded().put(name, new AtWithRho(attr, this));
+            if (Phi.RHO.equals(name)) {
+                this.loaded().put(name, attr);
+            } else {
+                this.loaded().put(name, new AtWithRho(attr, this));
+            }
         } finally {
             this.lock.unlock();
         }

@@ -448,9 +448,17 @@
   <!-- Void attribute -->
   <xsl:template match="void">
     <xsl:param name="name"/>
-    <xsl:text>new AtVoid("</xsl:text>
-    <xsl:value-of select="eo:literal($name)"/>
-    <xsl:text>")</xsl:text>
+    <xsl:choose>
+      <!-- A receiver is held by reference, so it survives a copy untouched -->
+      <xsl:when test="$name=$eo:rho">
+        <xsl:text>new AtRho()</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new AtVoid("</xsl:text>
+        <xsl:value-of select="eo:literal($name)"/>
+        <xsl:text>")</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!--
   Atom as attribute.
