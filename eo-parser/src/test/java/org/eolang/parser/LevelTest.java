@@ -150,7 +150,7 @@ final class LevelTest {
     }
 
     @Test
-    void commitArgIsNoopWithoutPendingArg() {
+    void toleratesCommitArgWithoutPendingArg() {
         final Level level = new Level(
             0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
         );
