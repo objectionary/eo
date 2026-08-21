@@ -137,25 +137,23 @@ final class LevelTest {
         );
         level.observeBinding(false, new Span("first", 1));
         level.observeBinding(true, new Span("second", 9));
-        final ParseError error = Assertions.assertThrows(
-            ParseError.class,
-            level::commitArg,
-            "commitArg must reject a binding that flips mode mid-group"
-        );
         MatcherAssert.assertThat(
             "error must be positioned at the line of the arg that broke the rule",
-            error.line(),
+            Assertions.assertThrows(
+                ParseError.class,
+                level::commitArg,
+                "commitArg must reject a binding that flips mode mid-group"
+            ).line(),
             Matchers.equalTo(9)
         );
     }
 
     @Test
     void toleratesCommitArgWithoutPendingArg() {
-        final Level level = new Level(
-            0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
-        );
         Assertions.assertDoesNotThrow(
-            level::commitArg,
+            new Level(
+                0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
+            )::commitArg,
             "commitArg must not raise when no arg is currently pending"
         );
     }
