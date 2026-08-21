@@ -209,10 +209,25 @@ final class StackTest {
         stack.replace(3, Kind.COMPACT_TUPLE, Openness.OPEN);
         stack.restore(snapshot);
         MatcherAssert.assertThat(
-            "restore must bring back the exact entry replace displaced"
+            "restore must bring back the entry replace displaced"
                 .concat(", not merely one at the same indent"),
-            stack.top(),
-            Matchers.sameInstance(displaced)
+            stack.top().start(),
+            Matchers.equalTo(displaced.start())
+        );
+    }
+
+    @Test
+    void undoesMutationOfSurvivingEntryOnRestore() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_REVERSED, Openness.OPEN);
+        final List<Level> snapshot = stack.snapshot();
+        stack.push(2, 2, Kind.HEAD, Openness.OPEN);
+        stack.restore(snapshot);
+        MatcherAssert.assertThat(
+            "restore must undo the receiver the failed child consumed"
+                .concat(", not merely drop that child"),
+            stack.top().taken(),
+            Matchers.is(false)
         );
     }
 
