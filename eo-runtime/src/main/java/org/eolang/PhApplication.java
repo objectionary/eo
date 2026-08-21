@@ -73,8 +73,8 @@ public final class PhApplication extends PhOnce {
     }
 
     @Override
-    protected Phi wrapped(final Supplier<Phi> obj, final Supplier<String> term) {
-        return new PhApplication(obj, term);
+    public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+        return new PhApplication(obj, phrase);
     }
 
     private static String applied(final Phi phi, final Bind... binds) {

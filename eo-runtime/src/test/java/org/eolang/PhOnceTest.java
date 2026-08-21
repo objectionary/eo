@@ -67,7 +67,7 @@ final class PhOnceTest {
          * @param obj The object to wrap
          */
         Fake(final Supplier<Phi> obj) {
-            super(obj);
+            this(obj, null);
         }
 
         /**
@@ -80,8 +80,8 @@ final class PhOnceTest {
         }
 
         @Override
-        protected Phi wrapped(final Supplier<Phi> obj, final Supplier<String> term) {
-            return new PhOnceTest.Fake(obj, term);
+        public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+            return new PhOnceTest.Fake(obj, phrase);
         }
     }
 }

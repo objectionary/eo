@@ -138,10 +138,10 @@ public abstract class PhOnce implements Phi {
     /**
      * Wrap the given object into an object of the same type as this one.
      * @param obj The object to wrap
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term
      * @return The wrapper
      */
-    protected abstract Phi wrapped(Supplier<Phi> obj, Supplier<String> term);
+    protected abstract Phi wrapped(Supplier<Phi> obj, Supplier<String> phrase);
 
     private Phi loaded(final Supplier<Phi> obj) {
         if (this.ref.get() == null) {

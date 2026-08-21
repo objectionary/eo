@@ -35,7 +35,7 @@ public final class PhDispatch extends PhOnce {
     }
 
     @Override
-    protected Phi wrapped(final Supplier<Phi> obj, final Supplier<String> term) {
-        return new PhDispatch(obj, term);
+    public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+        return new PhDispatch(obj, phrase);
     }
 }
