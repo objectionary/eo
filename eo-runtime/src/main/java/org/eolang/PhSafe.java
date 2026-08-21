@@ -191,7 +191,7 @@ public final class PhSafe implements Phi, Atom {
     }
 
     // @checkstyle IllegalCatchCheck (20 lines)
-    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    @SuppressWarnings({"PMD.AvoidCatchingGenericException", "java:S1181"})
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
