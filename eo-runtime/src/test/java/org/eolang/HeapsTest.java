@@ -5,6 +5,8 @@
 
 package org.eolang;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -27,30 +29,36 @@ final class HeapsTest {
     }
 
     @Test
-    void allocatesDistinctBlocksEvenForColliderProneOwners() {
-        Heaps.INSTANCE.malloc(
-            10,
-            outer -> {
-                Heaps.INSTANCE.malloc(
+    void handsOutDistinctIdentifiersToNestedBlocks() {
+        MatcherAssert.assertThat(
+            "Heaps must give distinct identifiers to two blocks alive at the same time",
+            Heaps.INSTANCE.malloc(
+                10,
+                outer -> Heaps.INSTANCE.malloc(
+                    10,
+                    inner -> new HashSet<>(Arrays.asList(outer, inner)).size()
+                )
+            ),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void keepsNestedBlocksApartOnWrite() {
+        MatcherAssert.assertThat(
+            "A write to the inner block must not corrupt the outer one",
+            Heaps.INSTANCE.malloc(
+                10,
+                outer -> Heaps.INSTANCE.malloc(
                     10,
                     inner -> {
-                        MatcherAssert.assertThat(
-                            "Heaps must hand out distinct identifiers to two concurrently allocated blocks",
-                            inner,
-                            Matchers.not(Matchers.equalTo(outer))
-                        );
                         Heaps.INSTANCE.write(outer, 0, new byte[] {1});
                         Heaps.INSTANCE.write(inner, 0, new byte[] {2});
-                        MatcherAssert.assertThat(
-                            "A write to the inner block must not corrupt the outer block",
-                            Heaps.INSTANCE.read(outer, 0, 1),
-                            Matchers.equalTo(new byte[] {1})
-                        );
-                        return inner;
+                        return Heaps.INSTANCE.read(outer, 0, 1);
                     }
-                );
-                return outer;
-            }
+                )
+            ),
+            Matchers.equalTo(new byte[] {1})
         );
     }
 
