@@ -20,6 +20,11 @@ import java.util.List;
  * literals and chains in exactly the same way (§9.0.3 / §9.4 /
  * §9.4.2).</p>
  *
+ * <p>A reversed dispatch emitted here keeps the head text as the
+ * {@code .}-prefixed base, except a root glyph ({@code ^}, {@code @},
+ * {@code $}), which maps to {@code ρ}/{@code φ}/{@code ξ} the way
+ * {@link LnReversed#readHead} does.</p>
+ *
  * @since 0.1
  */
 final class Emissions {
@@ -532,7 +537,13 @@ final class Emissions {
         final boolean reversed;
         if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
             && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int probe = tokens.cursor() + (tokens.current() == '?' ? 2 : 1);
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             reversed = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
@@ -541,14 +552,6 @@ final class Emissions {
         return reversed;
     }
 
-    /**
-     * The reversed-dispatch head text to emit as the {@code .}-prefixed
-     * base — a root glyph ({@code ^}, {@code @}, {@code $}) maps to
-     * {@code ρ}/{@code φ}/{@code ξ} the way {@link LnReversed#readHead}
-     * does; any other head keeps its own text.
-     * @param head The parsed head value
-     * @return The text to append after the leading dot
-     */
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
