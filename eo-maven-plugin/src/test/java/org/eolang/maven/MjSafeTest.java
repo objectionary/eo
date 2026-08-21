@@ -39,6 +39,18 @@ final class MjSafeTest {
         );
     }
 
+    @Test
+    void computesHashFromTagInjectedAfterConstruction() {
+        final MjSafeTest.Failing mojo = new MjSafeTest.Failing();
+        final String hex = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
+        mojo.tag = hex;
+        Assertions.assertEquals(
+            hex.substring(0, 7),
+            mojo.hash.value(),
+            "hash must be computed from the tag Maven injects after construction, not from the constructor-time default"
+        );
+    }
+
     /**
      * The mojo whose exec() always fails.
      * @since 0.1
