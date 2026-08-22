@@ -28,7 +28,7 @@ final class Value {
      * Kinds of value that may carry a {@code .method} chain behind them.
      */
     private static final Set<Kind> CHAINABLE = Set.of(
-        Kind.IDENTIFIER, Kind.ROOT, Kind.SELF, Kind.GROUP,
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP,
         Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 
@@ -278,14 +278,6 @@ final class Value {
          * §3.13.1. Single-line form only in this iteration; multi-line
          * continuation lands in a later round.
          */
-        BYTES,
-
-        /**
-         * {@code SELF} — the {@code %} self-reference (§3.15). Sugar for
-         * the auto-name of the enclosing anonymous ({@code >>}) formation;
-         * emitted as a base-less {@code <o self=''>} marker that the
-         * {@code resolve-self} reshape replaces with that name.
-         */
-        SELF
+        BYTES
     }
 }

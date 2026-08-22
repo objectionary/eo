@@ -367,16 +367,6 @@ final class Emit {
     }
 
     /**
-     * Add the {@code @self=""} attribute to the most recently opened
-     * {@code <o>} — marks a base-less {@code %} self-reference node
-     * (§3.15 / §9.4) whose {@code @base} the {@code resolve-self} reshape
-     * fills in with the enclosing anonymous formation's auto-name.
-     */
-    void self() {
-        this.append(new Directives().attr("self", ""));
-    }
-
-    /**
      * Add the {@code @local="name"} attribute to the most recently
      * opened {@code <o>} — the file-local handle of an anonymous
      * ({@code >> name}) formation (§3.10 / §9.2). The
