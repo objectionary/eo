@@ -93,8 +93,12 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Order of their names.
+     *
+     * <p>Not final: {@link #copy()} gives the copy a list of its own, so an
+     * attribute registered on either side afterwards is not seen by the
+     * other one.</p>
      */
-    private final List<String> order;
+    private List<String> order;
 
     /**
      * Attributes.
@@ -180,6 +184,7 @@ public class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.lock = new ReentrantLock();
             copy.attrs = new CopiedAttrs(this.loaded(), copy);
+            copy.order = new ArrayList<>(this.order);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
