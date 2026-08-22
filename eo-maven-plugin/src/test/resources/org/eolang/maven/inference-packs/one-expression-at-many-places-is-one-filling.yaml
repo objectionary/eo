@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `one` and `two` hand their own voids on to `inc`, and what those hold is the
+# business of whoever calls them, not a fact about `inc`. An argument is
+# written afresh at every call site, so counting the two apart would make a
+# void filled one way three times look filled three ways. Only the `oak` is
+# ever seen to arrive, so the void is seen to hold an `oak` and nothing else.
+eo:
+  app.eo: |
+    [] > app
+      inc oak > @
+  one.eo: |
+    [y] > one
+      inc y > @
+  two.eo: |
+    [z] > two
+      inc z > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed[not(union)]/ref[@loc='Φ.oak']"
