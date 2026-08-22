@@ -264,7 +264,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made()).copy().take(this.getVoid())
             ).take(),
-            "Copying must preserve the unset void, which reads as the bottom object and fails when dataized"
+            "Copying must preserve the unset void, which reads as a terminator and fails when dataized"
         );
     }
 
@@ -310,7 +310,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.PHI)
             ).take(),
-            "Phi depending on an unset void (now the bottom object) must fail when dataized, but it did not"
+            "Phi depending on an unset void (now a terminator) must fail when dataized, but it did not"
         );
     }
 
@@ -368,7 +368,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(new Data.ToPhi("Hey")).take("missing-attr")
             ).take(),
-            "Dataizing a missing attribute (now the bottom object) should fail, but it didn't"
+            "Dataizing a missing attribute (now a terminator) should fail, but it didn't"
         );
     }
 
@@ -588,7 +588,7 @@ final class PhDefaultTest {
     @Test
     void returnsTerminatorForAbsentAttribute() {
         MatcherAssert.assertThat(
-            "Taking an absent attribute must return the bottom object, not throw",
+            "Taking an absent attribute must return a terminator, not throw",
             this.phiWithContextAttribute(
                 "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),

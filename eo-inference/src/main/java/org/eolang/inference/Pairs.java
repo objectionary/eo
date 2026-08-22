@@ -64,7 +64,7 @@ final class Pairs {
      * @return The locators
      */
     Collection<String> certain() {
-        return this.table.xpath("/links/type[data or bottom]/@id");
+        return this.table.xpath("/links/type[data or terminator]/@id");
     }
 
     /**
