@@ -66,7 +66,7 @@ final class LnTextBlock implements Line {
         }
         final byte[] joined;
         try {
-            joined = Emissions.unescapeBytes(
+            joined = Escapes.bytes(
                 String.join(String.valueOf('\n'), globals.tbody())
             );
         } catch (final NumberFormatException ex) {
