@@ -61,10 +61,10 @@ final class LnCompactTuple implements Line {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = tokens.readValue();
         final List<MethodChain> chain;
-        if (head.kind() == Value.Kind.STAR) {
-            chain = new java.util.ArrayList<>(0);
-        } else {
+        if (head.chainable()) {
             chain = tokens.readChain();
+        } else {
+            chain = new java.util.ArrayList<>(0);
         }
         if (tokens.atEnd() || tokens.current() != ' ') {
             throw new ParseError(

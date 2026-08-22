@@ -129,7 +129,7 @@ final class LnApplication implements Line {
 
     private static Kind bare(final Value head) {
         final Kind kind;
-        if (head.kind() == Value.Kind.IDENTITY) {
+        if (head.identity()) {
             kind = Kind.IDENTITY_OBJECT;
         } else {
             kind = Kind.HEAD;
@@ -141,48 +141,19 @@ final class LnApplication implements Line {
         final Value head, final List<MethodChain> chain, final List<Value> args,
         final String outer
     ) {
-        if (head.kind() == Value.Kind.GROUP
+        if (head.group()
             && chain.isEmpty() && args.isEmpty() && outer == null) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "redundant parentheses around a top-level expression — drop the outer `(` and `)`"
             );
         }
-        if (!args.isEmpty() && this.opensFormationBody(head)) {
+        if (!args.isEmpty() && head.opensFormationBody()) {
             throw new ParseError(
                 this.span.line(), head.pos(),
                 "horizontal formation not allowed as argument"
             );
         }
-    }
-
-    private boolean opensFormationBody(final Value head) {
-        return head.kind() == Value.Kind.IDENTITY
-            || head.kind() == Value.Kind.GROUP && this.wrapsInlinePhi(head);
-    }
-
-    // @checkstyle NonStaticMethodCheck (2 lines)
-    private boolean wrapsInlinePhi(final Value head) {
-        final String raw = head.raw();
-        final String inner = raw.substring(1, raw.length() - 1);
-        boolean found = false;
-        int depth = 0;
-        int idx = 0;
-        while (idx < inner.length() - 2 && !found) {
-            final char glyph = inner.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(inner, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
-                found = true;
-            }
-            idx = idx + 1;
-        }
-        return found;
     }
 
     private void transition(
