@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'chained inline-phi suffixes are not allowed')]
+input: |
+  value > [first] > [second] > result
