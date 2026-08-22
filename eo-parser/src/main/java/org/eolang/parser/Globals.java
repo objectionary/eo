@@ -255,7 +255,8 @@ final class Globals {
      */
     void appendTextLine(final String raw) {
         final String stripped;
-        if (raw.chars().allMatch(c -> c == ' ')) {
+        if (raw.length() < this.tindent
+            && raw.chars().allMatch(c -> c == ' ')) {
             stripped = "";
         } else if (raw.length() >= this.tindent
             && raw.substring(0, Math.min(this.tindent, raw.length()))
