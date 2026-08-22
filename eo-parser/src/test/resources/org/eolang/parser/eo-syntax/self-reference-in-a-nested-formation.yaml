@@ -9,13 +9,13 @@ input: |
   +package snippets
 
   [] > self-fibo
-    [n] >>
+    [n] >> fibo
       if. > @
         n.lt 2
         n
         plus.
-          % (n.minus 1)
-          % (n.minus 2)
+          fibo (n.minus 1)
+          fibo (n.minus 2)
     | 6 > num
     stdout > @
       "%d is the %dth number\n".printf
