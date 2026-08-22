@@ -33,6 +33,17 @@ import org.cactoos.scalar.LengthOf;
  * an atomic rename means a reader always sees either the previous complete
  * file or the new one, never a partial one.</p>
  *
+ * <p>On Windows that rename fails with
+ * {@link java.nio.file.AccessDeniedException} while somebody else keeps a
+ * handle on either of the two names: a concurrent reader of {@link #target},
+ * another writer racing on the same path, or an anti-virus scanning the
+ * freshly written temporary file. All of them let go in a moment, so the
+ * only cure is to try again. Ten attempts spread over nine seconds
+ * (200ms, 400ms, ... 1800ms) leave enough room for that, while the first
+ * retries stay short enough to keep a normal save fast. Randomization stays
+ * off on purpose: jcabi randomizes as {@code rand(0, 2^(attempt+1)) * delay},
+ * which at the tenth attempt would sleep for minutes.</p>
+ *
  * @since 0.41.0
  */
 final class Saved implements Scalar<Path> {
@@ -131,7 +142,9 @@ final class Saved implements Scalar<Path> {
         return this.target;
     }
 
-    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS, randomize = false)
+    @RetryOnFailure(
+        attempts = 10, delay = 200L, unit = TimeUnit.MILLISECONDS, randomize = false
+    )
     private static void moved(final Path tmp, final Path target) throws IOException {
         try {
             Files.move(
