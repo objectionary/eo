@@ -186,17 +186,12 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
-            if (!next.blank() && next.indent() < head.indent()) {
-                emit.error(
-                    next.line(), 0, "multi-line bytes continuation must not de-indent"
-                );
+            if (Eo.deIndented(next, head, emit)) {
                 broken = true;
                 break;
             }
             final boolean bytes = new BytesLine(trimmed).onlyBytes();
-            final boolean named = !bytes
-                && body.toString().endsWith("-")
-                && Eo.namedChunk(trimmed);
+            final boolean named = Eo.namedTerminator(body, trimmed);
             if (!bytes && !named) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
@@ -222,6 +217,22 @@ final class Eo implements Iterable<Directive> {
             resumption = idx;
         }
         return resumption;
+    }
+
+    private static boolean deIndented(final Span next, final Span head, final Emit emit) {
+        final boolean off = !next.blank() && next.indent() < head.indent();
+        if (off) {
+            emit.error(
+                next.line(), 0, "multi-line bytes continuation must not de-indent"
+            );
+        }
+        return off;
+    }
+
+    private static boolean namedTerminator(final CharSequence body, final String chunk) {
+        return body.length() > 0
+            && body.charAt(body.length() - 1) == '-'
+            && Eo.namedChunk(chunk);
     }
 
     private static boolean namedChunk(final String body) {
