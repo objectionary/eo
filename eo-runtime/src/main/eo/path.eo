@@ -187,9 +187,11 @@
     string > [] > trimmed
       ^.stripped ^.uri
     and. > unc
-      driveless.size.gt 1
-      driveless.starts-with
-        separator.concat separator
+      separator.eq "\\"
+      and.
+        driveless.size.gt 1
+        driveless.starts-with
+          separator.concat separator
   [paths] > joined
     normalized. > @
       os.is-windows.if
@@ -265,6 +267,11 @@
       path.win32.separator
       path.posix.separator
 
+  eq. ++> can-normalize-a-double-separator-posix-path-to-the-root
+    normalized.
+      path.posix "//"
+    "/"
+
   eq. ++> can-normalize-a-drive-only-win32-path
     normalized.
       path.win32 "C:"
@@ -314,6 +321,11 @@
     normalized.
       path.win32 "\\server\\share"
     "\\server\\share"
+
+  eq. ++> can-normalize-a-triple-separator-posix-path-to-the-root
+    normalized.
+      path.posix "///"
+    "/"
 
   eq. ++> can-normalize-a-unc-win32-path-keeping-its-double-separator-prefix
     normalized.
