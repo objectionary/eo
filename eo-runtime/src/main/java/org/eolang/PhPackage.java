@@ -135,8 +135,9 @@ final class PhPackage implements Phi {
             } catch (final ClassNotFoundException pckg) {
                 final ExFailure failure = new ExFailure(
                     String.format(
-                        "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist",
-                        fqn, target, pinfo
+                        "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist%s",
+                        fqn, target, pinfo,
+                        new ObjectSuggestions().suggest(fqn)
                     ),
                     pckg
                 );
