@@ -164,7 +164,9 @@
                     eq.
                       valid.slice 0 1
                       ^.separator
-                    ^.drive.concat valid
+                    ^.unc.if
+                      ^.unc-root.concat valid
+                      ^.drive.concat valid
                     concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
@@ -192,6 +194,18 @@
         driveless.size.gt 1
         driveless.starts-with
           separator.concat separator
+    concat. > unc-root
+      separator.concat separator
+      separator.joined unc-share
+    reduced. > unc-share
+      driveless.split separator
+      *
+      if. > [accum segment] >>
+        or.
+          segment.eq ""
+          accum.length.gte 2
+        accum
+        accum.with segment
   [paths] > joined
     normalized. > @
       os.is-windows.if
@@ -500,6 +514,12 @@
       path.win32 ".\\temp\\var"
       "\\\\server\\share\\report.txt"
     "\\\\server\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-path-against-a-root-relative-path
+    resolved.
+      path.win32 "\\\\server\\share\\folder"
+      "\\other"
+    "\\\\server\\share\\other"
 
   eq. ++> can-resolve-a-unc-win32-path-against-another-unc-path
     resolved.
