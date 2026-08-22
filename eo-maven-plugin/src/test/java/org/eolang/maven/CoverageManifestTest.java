@@ -163,6 +163,27 @@ final class CoverageManifestTest {
         );
     }
 
+    @Test
+    void excludesLocationsOfVoidAttributesDeclaredWithTheShorthand() throws Exception {
+        MatcherAssert.assertThat(
+            "a `? >> name` void attribute has no dataizable body, so its declaration line must not be counted",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "bool > x",
+                        "  []",
+                        "    ? >> left",
+                        "    ? >> right",
+                        "    right > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.matchesPattern("^[^:]+:[34]:\\d+$")))
+        );
+    }
+
     private Collection<String> simpleObject() throws Exception {
         return new CoverageManifest().locations(
             new EoSyntax(

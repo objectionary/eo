@@ -25,18 +25,22 @@ import java.util.LinkedHashSet;
  * attributes are already present by the time every shift except the last
  * one has run, so running that same prefix here and reading the result
  * gets the exact same set {@code to-java.xsl} would act on, structurally,
- * rather than by pattern-matching the Java it emits. Three shapes never get
+ * rather than by pattern-matching the Java it emits. Four shapes never get
  * a hit and are left out here: {@code classes.xsl} marks a whole atomic
  * class {@code @skip-java}, and {@code to-java.xsl} then writes no
  * {@code <java>} for it at all; the lambda marker of any atom (the
  * {@code o[@name='λ']} carrying {@code @atom}, whether the atom is a whole
  * class or a single attribute) is never the argument {@code to-java.xsl}
- * runs through {@code located} mode, only its parent is; and a free
- * attribute {@code attrs.xsl} wraps into a {@code <void>}, since
- * {@code to-java.xsl} compiles it to a bare {@code AtVoid} and never runs
- * it through {@code located} mode either — the formal attributes a file's
- * root object declares are free this same way, which is why its own
- * declaration line never gets a hit (#6995).</p>
+ * runs through {@code located} mode, only its parent is; a free attribute
+ * {@code attrs.xsl} wraps into a {@code <void>}, since {@code to-java.xsl}
+ * compiles it to a bare {@code AtVoid} and never runs it through
+ * {@code located} mode either — the formal attributes a file's root
+ * object declares are free this same way, which is why its own
+ * declaration line never gets a hit (#6995); and, the same way, a void
+ * attribute of any other formation (bracket-declared or written as
+ * {@code ? >> name}) parses to an {@code o} whose own {@code @base} is
+ * {@code ∅} — no body to dataize, so no {@code located} mode call and no
+ * hit ever lands on its declaration line either (#7377).</p>
  *
  * <p>An atom attribute is left out along with everything it declares,
  * even though {@code to-java.xsl} does wrap it and its voids and the
@@ -73,7 +77,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base='∅') and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
         )) {
             found.add(
                 String.format(
