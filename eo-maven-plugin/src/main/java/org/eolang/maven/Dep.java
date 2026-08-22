@@ -63,7 +63,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     @Override
     public boolean equals(@Nonnull final Object other) {
-        return this.toString().equals(String.valueOf(other));
+        return other instanceof Dep && this.toString().equals(other.toString());
     }
 
     @Override
