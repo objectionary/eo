@@ -267,7 +267,7 @@
                 ^.tokenize
                   position.plus 1
                   accumulated.chained
-                    * "(\\S+)"
+                    * "(\\S*)"
                   found.with "s"
                   false
                 T "Unsupported format specifier"
@@ -367,6 +367,20 @@
     "hello"
     head.
       "%s".scanf "hello"
+
+  eq. ++> can-scan-an-empty-string
+    "%s".scanf ""
+    * ""
+
+  eq. ++> can-scan-an-empty-string-between-literals
+    "[%s]".scanf "[]"
+    * ""
+
+  eq. ++> can-scan-an-empty-string-printed-by-printf
+    "%s".scanf
+      "%s".printf
+        * ""
+    * ""
 
   eq. ++> can-scan-a-string-an-integer-and-a-float
     "%s %d %f".scanf

@@ -10,7 +10,6 @@
 # same const-to-dataized rewrite.
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
-  - /org/eolang/parser/parse/resolve-self.xsl
   - /org/eolang/parser/parse/resolve-local-names.xsl
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/const-to-dataized.xsl
