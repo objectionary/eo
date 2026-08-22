@@ -1,9 +1,10 @@
 # Writes the number `n` as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
-# If `places` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-print` fallback is returned, or the bottom object
-# when unbound.
+# If `places` is not a finite non-negative integer below 2^53 (negative,
+# fractional, nan, infinite, or too large to reach zero by repeated
+# subtraction of one), the `cant-print` fallback is returned, or the bottom
+# object when unbound.
 #
 # The value is split into its integer and fraction parts before scaling, so
 # only the fraction is multiplied by a power of ten and every magnitude that
@@ -21,7 +22,8 @@
     n.is-finite.not.or
       or.
         0.gt places
-        places.is-integer.not
+        places.is-integer.not.or
+          places.gt 9007199254740991
     cant-print
       n.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
@@ -111,6 +113,12 @@
     string
       -0.001.as-fixed 2
 
+  eq. ++> can-format-the-error-message-of-a-non-decrementable-precision
+    "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
+    1.25.as-fixed
+      9007199254740992
+      I
+
   eq. ++> can-format-the-error-message-of-negative-places
     "Can't write a fixed-point decimal with -2.000000 fraction places"
     3.14159.as-fixed
@@ -142,10 +150,34 @@
     string
       0.neg.as-fixed 2
 
+  eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
+    "recovered"
+    -1.25.as-fixed
+      9007199254740992
+      "recovered" > [message]
+
   eq. ++> can-recover-from-a-non-finite-number
     "recovered"
     nan.as-fixed
       2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
+    "recovered"
+    1.25.as-fixed
+      18014398509481984
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
+    "recovered"
+    1.25.as-fixed
+      9007199254740994
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
+    "recovered"
+    1.25.as-fixed
+      9007199254740992
       "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-number
