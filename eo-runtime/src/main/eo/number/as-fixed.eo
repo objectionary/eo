@@ -38,11 +38,11 @@
             [unit rest] >> written
               if. > @
                 ^.^.places.eq 0
-                unit-decimal
+                decimal
                 concat.
-                  unit-decimal.concat ".".as-bytes
+                  decimal.concat ".".as-bytes
                   rec-pad rest ^.^.places --
-              if. > unit-decimal
+              if. > decimal
                 unit.eq
                   2.power 63
                 "9223372036854775808".as-bytes
