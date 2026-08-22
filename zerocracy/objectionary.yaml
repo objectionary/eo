@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 654.671322761
+  seconds: 2160.72342831
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-21 22:40:58.491649118 Z
+  when: 2026-08-22 00:27:02.535409460 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40704,6 +40704,7 @@
   is_human: 1
   issue: 4727
   repository: 73056727
+  tombstone: 2026-08-21 22:43:36.156750086 Z
   what: pull-was-opened
   when: 2025-12-08 15:15:34.000000000 Z
   where: github
@@ -40730,6 +40731,7 @@
   review_comments: 5
   succeeded_builds: 23
   suggestions: 5
+  tombstone: 2026-08-21 22:43:36.158731582 Z
   what: pull-was-merged
   when: &206 2025-12-08 17:03:59.000000000 Z
   where: github
@@ -40748,6 +40750,7 @@
   repository: 73056727
   review_comments: 5
   seconds: 6505
+  tombstone: 2026-08-21 22:43:36.160649702 Z
   what: code-was-contributed
   when: *206
   where: github
@@ -45978,6 +45981,7 @@
   is_human: 0
   issue: 376
   repository: 13623548
+  tombstone: 2026-08-21 22:43:36.049091549 Z
   what: pull-was-opened
   when: 2025-12-03 03:38:36.000000000 Z
   where: github
@@ -46793,6 +46797,7 @@
   issue: 4725
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-21 22:43:36.416741057 Z
   what: pull-was-opened
   when: 2025-12-08 09:27:39.000000000 Z
   where: github
@@ -46806,6 +46811,7 @@
   is_human: 1
   issue: 4726
   repository: 73056727
+  tombstone: 2026-08-21 22:43:36.089039814 Z
   what: pull-was-opened
   when: 2025-12-08 14:30:27.000000000 Z
   where: github
@@ -46819,6 +46825,7 @@
   is_human: 1
   issue: 4728
   repository: 73056727
+  tombstone: 2026-08-21 22:43:36.256432127 Z
   what: pull-was-opened
   when: 2025-12-08 19:29:55.000000000 Z
   where: github
@@ -47109,6 +47116,7 @@
   stale: issue
   succeeded_builds: 23
   suggestions: 0
+  tombstone: 2026-08-21 22:43:36.419245232 Z
   what: pull-was-merged
   when: &309 2025-12-08 13:32:04.000000000 Z
   where: github
@@ -47134,6 +47142,7 @@
   review: 2025-12-08 14:34:06.000000000 Z
   succeeded_builds: 22
   suggestions: 3
+  tombstone: 2026-08-21 22:43:36.091332475 Z
   what: pull-was-closed
   when: 2025-12-08 17:04:00.000000000 Z
   where: github
@@ -47160,6 +47169,7 @@
   review_comments: 1
   succeeded_builds: 23
   suggestions: 1
+  tombstone: 2026-08-21 22:43:36.258368085 Z
   what: pull-was-merged
   when: &310 2025-12-09 02:26:06.000000000 Z
   where: github
@@ -47631,6 +47641,7 @@
   comments: 2
   details: The pull request objectionary/eo#4725 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 4h4m of being in review and 2 comments.
+  done: 2026-08-21 22:43:36.382402459 Z
   hoc: 2
   is_human: 0
   issue: 4725
@@ -47657,6 +47668,7 @@
   repository: 73056727
   review_comments: 1
   seconds: 24971
+  tombstone: 2026-08-21 22:43:36.260245244 Z
   what: code-was-contributed
   when: *310
   where: github
@@ -50431,6 +50443,7 @@
   repository: 73056727
   review_comments: 5
   seconds: 6505
+  tombstone: 2026-08-21 22:43:36.162525587 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 20:17:47.899064396 Z
   where: github
@@ -51448,6 +51461,7 @@
   repository: 73056727
   review_comments: 1
   seconds: 24971
+  tombstone: 2026-08-21 22:43:36.262073684 Z
   what: code-contribution-was-rewarded
   when: 2025-12-15 04:36:29.482877944 Z
   where: github
@@ -57883,6 +57897,7 @@
   comments: 4
   details: The pull request objectionary/eo#4727 with 169 HoC created by @volodya-lombrozo
     was reviewed by @copilot after 0h2m and 4 comments.
+  done: 2026-08-21 22:43:36.125388783 Z
   hoc: 169
   is_human: 0
   issue: 4727
@@ -57901,6 +57916,7 @@
   comments: 4
   details: The pull request objectionary/eo#4727 with 169 HoC created by @volodya-lombrozo
     was reviewed by @coderabbitai[bot] after 0h2m and 1 comments.
+  done: 2026-08-21 22:43:36.166321544 Z
   hoc: 169
   is_human: 0
   issue: 4727
@@ -57919,6 +57935,7 @@
   comments: 4
   details: The pull request objectionary/eo#4727 with 169 HoC created by @volodya-lombrozo
     was reviewed by @maxonfjvipon after 1h46m and 0 comments.
+  done: 2026-08-21 22:43:36.196304528 Z
   hoc: 169
   is_human: 1
   issue: 4727
@@ -58441,6 +58458,7 @@
   comments: 3
   details: The pull request objectionary/eo#4728 with 52 HoC created by @volodya-lombrozo
     was reviewed by @copilot after 0h3m and 1 comments.
+  done: 2026-08-21 22:43:36.226643124 Z
   hoc: 52
   is_human: 0
   issue: 4728
@@ -58459,6 +58477,7 @@
   comments: 3
   details: The pull request objectionary/eo#4728 with 52 HoC created by @volodya-lombrozo
     was reviewed by @coderabbitai[bot] after 0h5m and 0 comments.
+  done: 2026-08-21 22:43:36.263923070 Z
   hoc: 52
   is_human: 0
   issue: 4728
@@ -60028,6 +60047,7 @@
   comments: 2
   details: The pull request objectionary/eo#4726 with 221 HoC created by @volodya-lombrozo
     was reviewed by @coderabbitai[bot] after 0h3m and 1 comments.
+  done: 2026-08-21 22:43:36.056393079 Z
   hoc: 221
   is_human: 0
   issue: 4726
@@ -60046,6 +60066,7 @@
   comments: 2
   details: The pull request objectionary/eo#4726 with 221 HoC created by @volodya-lombrozo
     was reviewed by @copilot after 0h4m and 2 comments.
+  done: 2026-08-21 22:43:36.093781781 Z
   hoc: 221
   is_human: 0
   issue: 4726
@@ -61488,6 +61509,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 6414
+  tombstone: 2026-08-21 22:43:36.164376459 Z
   what: code-review-was-rewarded
   when: 2025-12-26 10:19:50.139935199 Z
   where: github
@@ -281163,9 +281185,9 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 835
   earliest_issue_was_found: 1
-  events_were_scanned: 18437547810
+  events_were_scanned: 18440832656
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -291816,9 +291838,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1021
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 13666831799
+  events_were_scanned: 18442254853
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -294734,7 +294756,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1124
   earliest_issue_was_found: 1
   events_were_scanned: 13669718787
   issues_were_scanned: 0
@@ -294768,13 +294790,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 7061
+  assignees_were_scanned: 7205
   earliest_issue_was_found: 1
-  events_were_scanned: 13670715072
+  events_were_scanned: 18443128384
   issues_were_scanned: 0
-  labels_were_scanned: 7344
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7325
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -301427,6 +301449,7 @@
   review_comments: 0
   succeeded_builds: 13
   suggestions: 0
+  tombstone: 2026-08-21 22:43:36.051708948 Z
   what: pull-was-merged
   when: &2576 2026-03-23 08:33:27.000000000 Z
   where: github
@@ -305375,6 +305398,7 @@
   repository: 13623548
   review_comments: 0
   seconds: 9521691
+  tombstone: 2026-08-21 22:43:36.054104580 Z
   what: code-was-contributed
   when: *2576
   where: github
@@ -314957,6 +314981,7 @@
   comments: 3
   details: The pull request objectionary/home#376 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 124h54m and 0 comments.
+  done: 2026-08-21 22:43:36.015572517 Z
   hoc: 2
   is_human: 1
   issue: 376
@@ -530052,6 +530077,7 @@
     of the ticket that you are solving. In this case, a perfect name, for example,
     would be "`7358`". Your running score is [-6](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  href: https://github.com/objectionary/eo/issues/7359/#issuecomment-5376142445
   is_human: 1
   issue: 7359
   repository: 73056727
