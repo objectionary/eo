@@ -142,11 +142,11 @@ final class MjPrintTest {
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
             MjPrintTest.printed(xtory, this.dir, false).asString(),
-            Matchers.equalTo(MjPrintTest.expected(xtory))
+            Matchers.equalTo(this.expected(xtory))
         );
     }
 
-    private static String expected(final Xtory xtory) {
+    private String expected(final Xtory xtory) {
         return (String) xtory.map().getOrDefault(
             "printed", xtory.map().get("origin")
         );
