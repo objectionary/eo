@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.GodClass")
 final class Emissions {
 
     /**
