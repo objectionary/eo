@@ -110,8 +110,14 @@ final class LnMeta implements Line {
                 );
             }
             int end = idx;
-            while (end < tail.length() && tail.charAt(end) != ' ') {
+            while (end < tail.length() && !Character.isWhitespace(tail.charAt(end))) {
                 end = end + 1;
+            }
+            if (end < tail.length() && tail.charAt(end) != ' ') {
+                throw new ParseError(
+                    span.line(), span.indent() + base + end,
+                    "meta parts must be separated by a single ASCII space"
+                );
             }
             out.add(LnMeta.promoteQ(tail.substring(idx, end)));
             idx = end;
