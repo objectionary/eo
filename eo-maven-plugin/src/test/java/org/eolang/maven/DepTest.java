@@ -18,8 +18,8 @@ final class DepTest {
     void equalsToAnotherDepWithSameCoordinate() {
         MatcherAssert.assertThat(
             "Two deps with the same coordinate must be equal",
-            DepTest.runtime(),
-            Matchers.equalTo(DepTest.runtime())
+            this.runtime(),
+            Matchers.equalTo(this.runtime())
         );
     }
 
@@ -27,7 +27,7 @@ final class DepTest {
     void doesNotEqualToDepWithAnotherVersion() {
         MatcherAssert.assertThat(
             "Deps with different versions must not be equal",
-            DepTest.runtime(),
+            this.runtime(),
             Matchers.not(
                 Matchers.equalTo(
                     new Dep()
@@ -43,7 +43,7 @@ final class DepTest {
     void doesNotEqualToItsOwnCoordinateString() {
         MatcherAssert.assertThat(
             "Dep must not be equal to a plain string, since that breaks symmetry",
-            DepTest.runtime(),
+            this.runtime(),
             Matchers.not(Matchers.<Object>equalTo("org.eolang:eo-runtime:0.0.0"))
         );
     }
@@ -52,8 +52,8 @@ final class DepTest {
     void doesNotEqualToWrappedDependency() {
         MatcherAssert.assertThat(
             "Dep must not be equal to the Maven dependency it wraps",
-            DepTest.runtime(),
-            Matchers.not(Matchers.<Object>equalTo(DepTest.runtime().get()))
+            this.runtime(),
+            Matchers.not(Matchers.<Object>equalTo(this.runtime().get()))
         );
     }
 
@@ -61,12 +61,12 @@ final class DepTest {
     void makesSameHashCodeForSameCoordinate() {
         MatcherAssert.assertThat(
             "Equal deps must have equal hash codes",
-            DepTest.runtime().hashCode(),
-            Matchers.equalTo(DepTest.runtime().hashCode())
+            this.runtime().hashCode(),
+            Matchers.equalTo(this.runtime().hashCode())
         );
     }
 
-    private static Dep runtime() {
+    private Dep runtime() {
         return new Dep()
             .withGroupId("org.eolang")
             .withArtifactId("eo-runtime")
