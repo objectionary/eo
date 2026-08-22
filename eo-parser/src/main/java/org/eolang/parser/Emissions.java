@@ -39,10 +39,12 @@ final class Emissions {
      * special forms — §4.5. Shared by every producer of a void parameter
      * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
      * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on.
+     * regardless of which line shape it appears on. The cactus emoji is
+     * excluded along with the ordinary NAME terminators, since §2.3 keeps
+     * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?"
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
     );
 
     /**
