@@ -43,7 +43,6 @@
       T
         "Cant touch the file '%s': %s".printf
           * f.path opened.output
-  f.is-symlink false > symlink
   opened.code > descriptor
   os.is-windows.if > eexist
     win32.eexist
@@ -85,6 +84,7 @@
           f.path
           0
     0
+  f.is-symlink false > symlink
 
   ++> can-return-itself-after-touching
     temp.deleted.touched.path.eq temp.path > @
