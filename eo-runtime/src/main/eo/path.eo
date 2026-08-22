@@ -81,6 +81,9 @@
       eq.
         driveless.slice 0 1
         separator
+    concat. > mount
+      separator.concat separator
+      separator.joined share
     [] > normalized
       ^.^.impl > @
         ^.sys
@@ -172,6 +175,15 @@
         as-bytes.
           ^.sys.sanitized other
     sys.separator > separator
+    reduced. > share
+      driveless.split separator
+      *
+      if. > [accum segment]
+        or.
+          segment.eq ""
+          accum.length.gte 2
+        accum
+        accum.with segment
     if. > [tail] > stripped
       or.
         tail.size.eq 0
@@ -194,18 +206,6 @@
         driveless.size.gt 1
         driveless.starts-with
           separator.concat separator
-    concat. > mount
-      separator.concat separator
-      separator.joined share
-    reduced. > share
-      driveless.split separator
-      *
-      if. > [accum segment]
-        or.
-          segment.eq ""
-          accum.length.gte 2
-        accum
-        accum.with segment
   [paths] > joined
     normalized. > @
       os.is-windows.if
