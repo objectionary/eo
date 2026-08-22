@@ -290,7 +290,7 @@ final class Value {
          * {@code T} — the terminator term of 𝜑-calculus (§9.3). A value:
          * it may carry arguments, which are the cause of the terminator,
          * as in {@code T "why it failed"};
-         * {@link Emissions} maps it to a {@code ⊥}-based object.
+         * {@link Emissions} maps it to a terminator object.
          */
         TERM,
 

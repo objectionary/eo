@@ -77,7 +77,7 @@ final class Xmirs {
      * Every termination of the program.
      *
      * <p>The {@code T} of the code, which the parser writes down as an
-     * object based on the {@code ⊥} sign. It names no other object, so nothing
+     * object based on the terminator sign. It names no other object, so nothing
      * looks for what it is a copy of: it is not a copy of anything, it is
      * the one answer that fits everywhere.</p>
      *
