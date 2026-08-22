@@ -21,7 +21,8 @@
 +spdx SPDX-License-Identifier: MIT
 
 [] > touched
-  f.exists.if > @
+  if. > @
+    f.exists.and dangling.not
     f
     if.
       or.
@@ -43,6 +44,9 @@
       T
         "Cant touch the file '%s': %s".printf
           * f.path opened.output
+  and. > dangling
+    f.is-symlink false
+    reachable.not
   opened.code > descriptor
   os.is-windows.if > eexist
     win32.eexist
@@ -62,16 +66,28 @@
         "_open"
         f.path
         plus.
-          win32.creat.plus win32.exclusive
-          win32.wronly
+          win32.creat.plus win32.wronly
+          dangling.not.if win32.exclusive 0
         win32.mode
       posix *1
         "open"
         f.path
         plus.
-          posix.creat.plus posix.exclusive
-          posix.wronly
+          posix.creat.plus posix.wronly
+          dangling.not.if posix.exclusive 0
         posix.mode
+  eq. > reachable
+    code.
+      os.is-windows.if
+        win32 *1
+          "_access"
+          f.path
+          0
+        posix *1
+          "access"
+          f.path
+          0
+    0
 
   ++> can-return-itself-after-touching
     temp.deleted.touched.path.eq temp.path > @
