@@ -8,10 +8,14 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -42,14 +46,12 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6263:30min Parse every {@code .eo} source once per build.
- *  This goal parses each source and throws the tree away, and then the
- *  {@code compile} goal parses the very same text again seconds later,
- *  so a clean build of {@code eo-runtime} parses its 170 sources twice.
- *  Hand the settled tree of {@link #canonical(Path, String)} over to
- *  {@link Parsing} instead, keyed by the source hash the way
- *  {@link GlobalCache} already keys its footprints, so that the second
- *  parse is skipped when the format goal has just produced the same tree.
+ * @todo #6627:30min Verify the tree read back from {@link Parsing#DIR}.
+ *  The walked one goes through {@link #parsed(Path, String)}, the read one is unchecked.
+ * @todo #6627:30min Name the local package objects in one place.
+ *  This goal and {@link Parsing} build that list twice; un-homing is exact only if they agree.
+ * @todo #6627:30min Read the parsed tree through an object of its own.
+ *  Neither half of {@link #walked(TjForeign, String, String)} is testable apart from the mojo.
  */
 @Mojo(
     name = "format",
@@ -95,17 +97,20 @@ public final class MjFormat extends MjPenalties {
         final long start = System.currentTimeMillis();
         try (TjsForeign tojos = this.tojos()) {
             final Collection<TjForeign> sources = tojos.withSources();
+            final String objects = sources.stream().map(TjForeign::identifier)
+                .collect(Collectors.joining(" "));
             this.report(
                 sources.size(),
-                new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
+                new Threaded<>(sources, tojo -> this.reformat(tojo, objects)).total(),
                 System.currentTimeMillis() - start
             );
         }
     }
 
-    private int reformat(final Path source) throws IOException {
+    private int reformat(final TjForeign tojo, final String objects) throws IOException {
+        final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(source, actual);
+        final String canonical = this.canonical(tojo, actual, objects);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -127,9 +132,10 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(final Path path, final String source) throws IOException {
+    private String canonical(final TjForeign tojo, final String source, final String objects)
+        throws IOException {
         String structure = source;
-        XML tree = MjFormat.parsed(path, structure);
+        XML tree = MjFormat.walked(tojo, structure, objects);
         Optional<String> settled = Optional.empty();
         for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
             final String printed = new Xmir(tree).toEO();
@@ -138,7 +144,7 @@ public final class MjFormat extends MjPenalties {
                 break;
             }
             structure = printed;
-            tree = MjFormat.parsed(path, structure);
+            tree = MjFormat.parsed(tojo.source(), structure);
         }
         final String canon;
         if (settled.isPresent() && this.weights().isEmpty()) {
@@ -147,6 +153,21 @@ public final class MjFormat extends MjPenalties {
             canon = new Xmir(tree, this.weights()).toEO();
         }
         return canon;
+    }
+
+    private static XML walked(final TjForeign tojo, final String text, final String objects)
+        throws IOException {
+        final XML tree;
+        if (tojo.notParsed()) {
+            tree = MjFormat.parsed(tojo.source(), text);
+        } else {
+            tree = new Xsline(
+                new StClasspath(
+                    "/org/eolang/maven/format/unhome-package.xsl", "objects ".concat(objects)
+                )
+            ).pass(new XMLDocument(tojo.xmir()));
+        }
+        return tree;
     }
 
     private static XML parsed(final Path source, final String structure) throws IOException {

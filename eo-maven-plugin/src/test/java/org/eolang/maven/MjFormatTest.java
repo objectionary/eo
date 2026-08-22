@@ -56,6 +56,23 @@ final class MjFormatTest {
     }
 
     @Test
+    void readsBackTheTreeTheParseGoalLeft(@Mktmp final Path temp) throws Exception {
+        final String canonical = MjFormatTest.canonical(new HelloWorld().asString());
+        MatcherAssert.assertThat(
+            "the source must survive a check that prints from the tree the parse goal wrote",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(canonical)
+                    .execute(MjParse.class)
+                    .execute(MjFormat.class)
+                    .result()
+                    .get("foo/x/main.eo")
+            ).asString(),
+            Matchers.equalTo(canonical)
+        );
+    }
+
+    @Test
     void failsWhenSourceDiverges(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a divergent source must fail the build in check mode",
