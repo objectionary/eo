@@ -25,6 +25,13 @@ import java.util.stream.Collectors;
  * <p>The class is thread-safe.</p>
  *
  * @since 0.1
+ * @todo #7304:60min Stop deciding identity from a hash code in
+ *  {@code equals}. The hash of a Phi is its identity hash, which repeats:
+ *  two unrelated objects that collide compare equal today, as the run in
+ *  #7304 shows: 2135 colliding pairs among three million objects, every one
+ *  of them reported equal. Memory blocks no longer depend on it, but this
+ *  method still does. Compare identity directly, and check what breaks in
+ *  the tests that lean on the current behaviour before changing it.
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
 @SuppressWarnings("PMD.GodClass")
