@@ -22,7 +22,14 @@ import java.util.regex.Pattern;
  * §9.4.2).</p>
  *
  * @since 0.1
+ * @todo #7386:90min Split this class up. PMD calls it a God Class
+ *  (WMC=133, TCC=0%), which it is: the rendering recipes for literals,
+ *  for chains, for void parameter lists and for the diagnostics of all
+ *  three sit here with nothing in common but the {@link Emit} they write
+ *  to. Group them into a few classes with names of their own, then drop
+ *  the suppression below.
  */
+@SuppressWarnings("PMD.GodClass")
 final class Emissions {
 
     /**
