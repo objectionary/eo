@@ -18,12 +18,12 @@
 [] > sine
   times. > @
     minus. >> reduced
-      minus.
-        number ^.as-bytes >> arg
+      arg.minus
         times.
           floor. >> k
             plus.
-              arg.div
+              div.
+                number ^.as-bytes >> arg
                 pi.times 2
               0.5
           6.283185303211212
