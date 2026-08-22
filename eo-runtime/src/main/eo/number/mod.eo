@@ -41,7 +41,9 @@
                 grow divisor.abs
                 dividend.abs
               if. > [chunk] > grow
-                chunk.gte dividend.abs
+                or.
+                  chunk.gte dividend.abs
+                  not. (chunk.plus chunk).is-finite
                 chunk
                 ^.grow
                   chunk.plus chunk
@@ -156,6 +158,10 @@
   eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
     16.mod -200
     16
+
+  eq. ++> can-take-a-modulo-of-the-largest-finite-double-by-the-smallest-subnormal
+    1.7976931348623157e308.mod 4.9e-324
+    0
 
   eq. ++> can-take-a-modulo-of-zero-by-a-negative
     0.mod -15
