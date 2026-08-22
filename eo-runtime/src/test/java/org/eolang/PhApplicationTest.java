@@ -26,7 +26,7 @@ final class PhApplicationTest {
                 new Bind(0, new PhDefault(new byte[] {(byte) 0x01})),
                 new Bind(1, new PhDefault(new byte[] {(byte) 0x02}))
             ).φTerm(),
-            Matchers.equalTo("[](0->[D> 01],1->[D> 02])")
+            Matchers.equalTo("[](0->[D> 01-],1->[D> 02-])")
         );
     }
 
@@ -167,7 +167,7 @@ final class PhApplicationTest {
         MatcherAssert.assertThat(
             "PhApplication must render positional binding in φ-term, but it didnt",
             new PhApplication(new PhDefault(), 0, new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
-            Matchers.equalTo("[](0->[D> 2A])")
+            Matchers.equalTo("[](0->[D> 2A-])")
         );
     }
 
@@ -178,7 +178,7 @@ final class PhApplicationTest {
             new PhApplication(
                 new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})
             ).φTerm(),
-            Matchers.equalTo("[](x->[D> 2A])")
+            Matchers.equalTo("[](x->[D> 2A-])")
         );
     }
 

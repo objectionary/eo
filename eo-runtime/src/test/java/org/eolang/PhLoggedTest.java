@@ -20,7 +20,7 @@ final class PhLoggedTest {
         MatcherAssert.assertThat(
             "PhLogged must delegate φ-term to its origin, but it didnt",
             new PhLogged(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 

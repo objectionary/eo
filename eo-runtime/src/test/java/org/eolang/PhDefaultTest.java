@@ -42,9 +42,9 @@ final class PhDefaultTest {
     @Test
     void printsSingleByteDataAsTerm() {
         MatcherAssert.assertThat(
-            "Object with one data byte must render it without trailing dash in φ-term",
+            "Object with one data byte must render it with a trailing dash in φ-term, matching the R-3.13.1 BYTES literal form",
             new PhDefault(new byte[] {(byte) 0x01}).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 

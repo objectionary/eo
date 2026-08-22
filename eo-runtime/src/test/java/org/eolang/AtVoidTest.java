@@ -31,7 +31,7 @@ final class AtVoidTest {
         MatcherAssert.assertThat(
             "Set void attribute must render the value φ-term, but it didnt",
             attr.φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
