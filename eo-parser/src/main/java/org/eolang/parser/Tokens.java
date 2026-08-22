@@ -637,7 +637,16 @@ final class Tokens {
         return Tokens.TERMINATORS.indexOf(glyph) >= 0;
     }
 
-    private static boolean validBinding(final String text) {
+    /**
+     * Whether a {@code :label} outer binding is a legal NAME or a legal
+     * non-leading-zero decimal slot — R-3.7.1. Shared by {@link #readBinding}
+     * and {@link LnFormation}'s own outer-binding scan, so a bound object
+     * declaration is validated the same way on every line shape that
+     * carries one.
+     * @param text The candidate binding label, without the leading `:`
+     * @return True if the label is legal
+     */
+    static boolean validBinding(final String text) {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;

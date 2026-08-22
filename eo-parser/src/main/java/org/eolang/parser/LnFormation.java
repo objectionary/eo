@@ -62,7 +62,7 @@ final class LnFormation implements Line {
             final int close = LnFormation.findClosing(body, this.span);
             params = LnFormation.params(body, close, this.span);
             final String raw = body.substring(close + 1);
-            binding = LnFormation.outerBinding(raw);
+            binding = LnFormation.outerBinding(raw, this.span, this.span.indent() + close + 1);
             final String tail;
             if (binding == null) {
                 tail = raw;
@@ -85,7 +85,7 @@ final class LnFormation implements Line {
         this.emit(emit, suffix, params, binding);
     }
 
-    private static String outerBinding(final String raw) {
+    private static String outerBinding(final String raw, final Span span, final int pos) {
         final String label;
         if (raw.startsWith(":")) {
             int idx = 1;
@@ -93,6 +93,11 @@ final class LnFormation implements Line {
                 idx = idx + 1;
             }
             label = raw.substring(1, idx);
+            if (!Tokens.validBinding(label)) {
+                throw new ParseError(
+                    span.line(), pos + 1, "Invalid bound object declaration"
+                );
+            }
         } else {
             label = null;
         }
