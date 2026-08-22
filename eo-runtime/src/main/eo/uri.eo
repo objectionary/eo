@@ -27,19 +27,57 @@
   text > @
   string > authority
     has-authority.if >> authority-bytes!
-      has-authority-path.if
-        after-slashes.slice 0 authority-path-idx
+      if.
+        not. >> has-authority-path
+          eq.
+            after-slashes.index-of "/" >> authority-path-idx
+            -1
+        slice.
+          string >> after-slashes
+            if. >> after-slashes-bytes!
+              hier-part.starts-with "//" >> has-authority
+              slice.
+                string >> hier-part
+                  if. >> hier-bytes!
+                    not. >> has-query
+                      eq.
+                        before-fragment.index-of "?" >> question-idx
+                        -1
+                    slice.
+                      if. >> before-fragment
+                        not. (hash-idx.eq -1) >> has-fragment
+                        slice.
+                          text.slice >> rest
+                            plus.
+                              if. >> scheme-colon
+                                or.
+                                  eq.
+                                    text.index-of ":" >> raw-colon
+                                    -1
+                                  not.
+                                    "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+                                      text.slice 0 raw-colon
+                                -1
+                                raw-colon
+                              1
+                            text.length.minus
+                              number (scheme-colon.plus 1)
+                          0
+                          hash-idx
+                        rest
+                      0
+                      question-idx
+                    before-fragment
+                2
+                hier-part.length.minus
+                  number 2
+              ""
+          0
+          authority-path-idx
         after-slashes
       ""
-  if. > fragment
-    not. >> has-fragment
-      hash-idx.eq -1
-    slice.
-      text.slice >> rest
-        scheme-colon.plus 1
-        text.length.minus
-          number
-            scheme-colon.plus 1
+  has-fragment.if > fragment
+    rest.slice
       plus.
         rest.index-of "#" >> hash-idx
         1
@@ -64,44 +102,29 @@
             -1
             rel-colon.plus
               plus. >> bracket-start
-                host-port.index-of "]" >>
+                index-of. >>
+                  string >> host-port
+                    if. >> host-port-bytes!
+                      not. >> has-userinfo
+                        eq.
+                          authority.last-index-of "@" >> userinfo-at-idx
+                          -1
+                      authority.slice
+                        userinfo-at-idx.plus 1
+                        authority.length.minus
+                          number (userinfo-at-idx.plus 1)
+                      authority
+                  "]"
                 1
           host-port.index-of ":"
         -1
-    slice.
-      string >> host-port
-        has-userinfo.if >> host-port-bytes!
-          authority.slice
-            plus.
-              authority.last-index-of "@" >> userinfo-at-idx
-              1
-            authority.length.minus
-              number
-                userinfo-at-idx.plus 1
-          authority
+    host-port.slice
       0
       port-colon-idx
     host-port
-  if. > path
-    starts-with. >> has-authority
-      string >> hier-part
-        has-query.if >> hier-bytes!
-          before-fragment.slice 0 question-idx
-          before-fragment
-      "//"
-    if.
-      not. >> has-authority-path
-        eq.
-          after-slashes.index-of "/" >> authority-path-idx
-          -1
-      slice.
-        string >> after-slashes
-          has-authority.if >> after-slashes-bytes!
-            hier-part.slice
-              2
-              hier-part.length.minus
-                number 2
-            ""
+  has-authority.if > path
+    has-authority-path.if
+      after-slashes.slice
         authority-path-idx
         after-slashes.length.minus
           number authority-path-idx
@@ -120,40 +143,20 @@
       raw-port
       ""
     ""
-  if. > query
-    not. >> has-query
-      question-idx.eq -1
-    slice.
-      has-fragment.if >> before-fragment
-        rest.slice 0 hash-idx
-        rest
-      plus.
-        before-fragment.index-of "?" >> question-idx
-        1
+  has-query.if > query
+    before-fragment.slice
+      question-idx.plus 1
       before-fragment.length.minus
         number
           question-idx.plus 1
     ""
   if. > scheme
-    eq.
-      if. >> scheme-colon
-        or.
-          eq.
-            text.index-of ":" >> raw-colon
-            -1
-          not.
-            "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
-              text.slice 0 raw-colon
-        -1
-        raw-colon
-      -1
+    scheme-colon.eq -1
     ""
     text.slice
       0
       scheme-colon
-  if. > userinfo
-    not. >> has-userinfo
-      userinfo-at-idx.eq -1
+  has-userinfo.if > userinfo
     authority.slice
       0
       userinfo-at-idx

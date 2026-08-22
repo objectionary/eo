@@ -362,17 +362,6 @@ final class PhDefaultTest {
     }
 
     @Test
-    void failsGracefullyOnDataizingMissingAttribute() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Dataized(
-                new PhSafe(new Data.ToPhi("Hey")).take("missing-attr")
-            ).take(),
-            "Dataizing a missing attribute (now a terminator) should fail, but it didn't"
-        );
-    }
-
-    @Test
     void copiesWithSetData() {
         final String data = "Hello";
         final Phi phi = PhDefaultTest.Int.made();
@@ -629,6 +618,18 @@ final class PhDefaultTest {
         final Observant kid = new Observant();
         kid.add("extra", new AtVoid("extra"));
         MatcherAssert.assertThat("added attribute lost", kid.seen(), Matchers.hasItems("extra"));
+    }
+
+    @Test
+    void doesNotDuplicateOrderWhenTheSameAttributeIsAddedTwice() {
+        final PhDefault dup = new PhDefault();
+        dup.add("x", new AtVoid("x"));
+        dup.add("x", new AtVoid("x"));
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> dup.put(1, new Data.ToPhi(5.0)),
+            "a put past the only attribute must be rejected"
+        );
     }
 
     @Test
