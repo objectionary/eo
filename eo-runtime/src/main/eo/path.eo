@@ -165,7 +165,7 @@
                       valid.slice 0 1
                       ^.separator
                     ^.unc.if
-                      ^.unc-root.concat valid
+                      ^.mount.concat valid
                       ^.drive.concat valid
                     concat. (^.uri.concat ^.separator) valid
       string > valid!
@@ -194,13 +194,13 @@
         driveless.size.gt 1
         driveless.starts-with
           separator.concat separator
-    concat. > unc-root
+    concat. > mount
       separator.concat separator
-      separator.joined unc-share
-    reduced. > unc-share
+      separator.joined share
+    reduced. > share
       driveless.split separator
       *
-      if. > [accum segment] >>
+      if. > [accum segment]
         or.
           segment.eq ""
           accum.length.gte 2
