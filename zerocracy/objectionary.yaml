@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 8m33s: execution expired'
   inserted: 8
-  seconds: 2433.725803248
+  seconds: 716.108285983
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-22 17:32:49.009964470 Z
+  when: 2026-08-22 18:01:12.744921363 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -156301,7 +156300,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 6
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 568705267
   types_were_scanned: 0
@@ -244314,7 +244313,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 16
   merges_were_scanned: 0
-  min_issue_was_found: 13
+  min_issue_was_found: 18
   min_pull_was_found: 0
   repository: 519246071
   types_were_scanned: 0
@@ -258964,7 +258963,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 15
+  min_issue_was_found: 17
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -264845,7 +264844,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 47
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 482612876
   types_were_scanned: 0
@@ -278527,7 +278526,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 94
   merges_were_scanned: 0
-  min_issue_was_found: 139
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 447446664
   types_were_scanned: 0
@@ -280284,7 +280283,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 66
   merges_were_scanned: 0
-  min_issue_was_found: 90
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 574459304
   types_were_scanned: 0
@@ -280294,17 +280293,17 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 835
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18440832656
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 347
   merges_were_scanned: 0
-  min_issue_was_found: 5
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 556
+  types_were_scanned: 794
   what: iterate
   where: github
 - _id: 1107889
@@ -281265,7 +281264,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 110
   merges_were_scanned: 0
-  min_issue_was_found: 153
+  min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 546194972
   types_were_scanned: 0
@@ -287221,7 +287220,7 @@
   min_issue_was_found: 511
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 725
+  types_were_scanned: 905
   what: iterate
   where: github
 - _id: 1108618
@@ -287654,7 +287653,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 13
   merges_were_scanned: 0
-  min_issue_was_found: 42
+  min_issue_was_found: 43
   min_pull_was_found: 0
   repository: 784310467
   types_were_scanned: 0
@@ -288269,7 +288268,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 160
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 9
   min_pull_was_found: 0
   repository: 574534248
   types_were_scanned: 0
@@ -290951,17 +290950,17 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
   events_were_scanned: 13690245368
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
   merges_were_scanned: 0
-  min_issue_was_found: 769
+  min_issue_was_found: 776
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 836
   what: iterate
   where: github
 - _id: 1108989
@@ -293339,7 +293338,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 6
   merges_were_scanned: 0
-  min_issue_was_found: 66
+  min_issue_was_found: 71
   min_pull_was_found: 0
   repository: 1219806055
   types_were_scanned: 0
@@ -293407,7 +293406,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 1356
   merges_were_scanned: 0
-  min_issue_was_found: 272
+  min_issue_was_found: 396
   min_pull_was_found: 1572
   repository: 671896902
   types_were_scanned: 0
@@ -293423,7 +293422,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 0
   repository: 1260338737
   types_were_scanned: 0
@@ -293440,7 +293439,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 85
   merges_were_scanned: 0
-  min_issue_was_found: 28
+  min_issue_was_found: 39
   min_pull_was_found: 0
   repository: 501259435
   types_were_scanned: 0
@@ -293474,7 +293473,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 54
   merges_were_scanned: 0
-  min_issue_was_found: 14
+  min_issue_was_found: 21
   min_pull_was_found: 0
   repository: 493235807
   types_were_scanned: 0
@@ -293491,7 +293490,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 69
   merges_were_scanned: 0
-  min_issue_was_found: 27
+  min_issue_was_found: 72
   min_pull_was_found: 0
   repository: 551486781
   types_were_scanned: 0
@@ -293525,7 +293524,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 184
   merges_were_scanned: 0
-  min_issue_was_found: 179
+  min_issue_was_found: 187
   min_pull_was_found: 0
   repository: 519299365
   types_were_scanned: 0
@@ -293542,7 +293541,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 43
   merges_were_scanned: 0
-  min_issue_was_found: 39
+  min_issue_was_found: 50
   min_pull_was_found: 0
   repository: 501942888
   types_were_scanned: 0
@@ -293869,17 +293868,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13669718787
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
   merges_were_scanned: 0
-  min_issue_was_found: 257
+  min_issue_was_found: 467
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 0
+  types_were_scanned: 1103
   what: iterate
   where: github
 - _id: 1109065
@@ -293893,7 +293892,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 122
   merges_were_scanned: 0
-  min_issue_was_found: 337
+  min_issue_was_found: 338
   min_pull_was_found: 409
   repository: 970961472
   types_were_scanned: 0
@@ -293903,17 +293902,17 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6562
+  assignees_were_scanned: 6737
   earliest_issue_was_found: 1
   events_were_scanned: 18528894539
   issues_were_scanned: 0
-  labels_were_scanned: 6179
+  labels_were_scanned: 7108
   latest_issue_was_found: 4591
-  merges_were_scanned: 7390
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 4952
+  types_were_scanned: 5193
   what: iterate
   where: github
 - _id: 1109067
@@ -515865,28 +515864,6 @@
   when: 2026-08-20 14:39:46.000000000 Z
   where: github
   who: 29139614
-- _id: 1121133
-  _job: 87892
-  _time: 2026-08-20 15:16:02.092235797 Z
-  _version: 0.19.16/0.61.1/0.17.21
-  analyzers: 18
-  text: |-
-    The average reward per task (9.2 points) is increasing (R=0.22).
-    The average punishment per task (7.0 points) is decreasing (R=-0.18).
-    The average number of builds per week (11930.1) is increasing (R=0.84).
-    The average number of commits per week (284.5) is increasing (R=0.80).
-    The average bugs accepted per month (68.0) is increasing (R=0.81).
-    The average monthly punishment (396 points) is increasing (R=0.54).
-    The average monthly wage (10.4 points) is increasing (R=0.72).
-    The average issue cycle time (6d8h) is staying still.
-    The average pull cycle time (5d3h) is staying still.
-    The average quality of service (85%) is decreasing (R=0.68).
-    The average number of releases per month (25.3) is increasing (R=0.33).
-    The average monthly turnover (27.0 developers) is increasing (R=0.87).
-    The average weekly cost of HoC (5.87 points) is staying still.
-    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
-  what: assessment
-  when: 2026-08-20 15:16:02.109452826 Z
 - _id: 1121134
   _job: 87892
   _time: 2026-08-20 15:17:12.125432644 Z
@@ -533579,6 +533556,7 @@
   href: https://github.com/objectionary/eo/issues/7329/#issuecomment-5381186780
   is_human: 1
   issue: 7329
+  receipt: receipt-#87977
   repository: 73056727
   review_comments: 0
   seconds: 43259
@@ -533599,6 +533577,7 @@
   href: https://github.com/objectionary/eo/issues/7330/#issuecomment-5381186880
   is_human: 1
   issue: 7330
+  receipt: receipt-#87978
   repository: 73056727
   review_comments: 0
   seconds: 42710
@@ -533619,6 +533598,7 @@
   href: https://github.com/objectionary/eo/issues/7332/#issuecomment-5381187007
   is_human: 1
   issue: 7332
+  receipt: receipt-#87979
   repository: 73056727
   review_comments: 0
   seconds: 42528
@@ -533639,6 +533619,7 @@
   href: https://github.com/objectionary/eo/issues/7333/#issuecomment-5381187106
   is_human: 1
   issue: 7333
+  receipt: receipt-#87980
   repository: 73056727
   review_comments: 0
   seconds: 42420
@@ -533659,6 +533640,7 @@
   href: https://github.com/objectionary/eo/issues/7336/#issuecomment-5381187214
   is_human: 1
   issue: 7336
+  receipt: receipt-#87981
   repository: 73056727
   review_comments: 0
   seconds: 42988
@@ -533679,6 +533661,7 @@
   href: https://github.com/objectionary/eo/issues/7337/#issuecomment-5381187341
   is_human: 1
   issue: 7337
+  receipt: receipt-#87982
   repository: 73056727
   review_comments: 0
   seconds: 41834
@@ -533699,6 +533682,7 @@
   href: https://github.com/objectionary/eo/issues/7340/#issuecomment-5381187449
   is_human: 1
   issue: 7340
+  receipt: receipt-#87983
   repository: 73056727
   review_comments: 0
   seconds: 41436
@@ -533719,6 +533703,7 @@
   href: https://github.com/objectionary/eo/issues/7360/#issuecomment-5381187562
   is_human: 1
   issue: 7360
+  receipt: receipt-#87984
   repository: 73056727
   review_comments: 0
   seconds: 35850
@@ -533855,9 +533840,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7371,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+5828](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 42
   href: https://github.com/objectionary/eo/issues/7371/#issuecomment-5381322032
   is_human: 1
@@ -533878,10 +533860,6 @@
   comments: 2
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7373,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (23) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+5840](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 23
   href: https://github.com/objectionary/eo/issues/7373/#issuecomment-5381322154
   is_human: 1
@@ -533902,10 +533880,6 @@
   comments: 3
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7374,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (18) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+5852](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 18
   href: https://github.com/objectionary/eo/issues/7374/#issuecomment-5381322261
   is_human: 1
@@ -533926,9 +533900,6 @@
   comments: 2
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7375,
     the reward amount is 16.
-  greeting: 'Thanks for the contribution! You''ve earned +16 points. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+5868](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 88
   href: https://github.com/objectionary/eo/issues/7375/#issuecomment-5381322375
   is_human: 1
@@ -533949,11 +533920,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#7381,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -8 for the lack of code review; -4 for too few (15) hits-of-code. Please,
-    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
-    Your running score is [+1959](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 15
   href: https://github.com/objectionary/eo/issues/7381/#issuecomment-5381322523
   is_human: 1
@@ -533974,11 +533940,6 @@
   comments: 2
   details: It's time to reward @yegor256 for the code contributed in objectionary/eo#7382,
     the reward amount is 4.
-  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
-    a basis; -8 for the lack of code review; -4 for too few (11) hits-of-code. Please,
-    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
-    Your running score is [+1963](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 11
   href: https://github.com/objectionary/eo/issues/7382/#issuecomment-5381322640
   is_human: 1
@@ -534296,6 +534257,7 @@
     Your running score is [+1967](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 6
+  href: https://github.com/objectionary/eo/issues/7392/#issuecomment-5381707012
   is_human: 1
   issue: 7392
   repository: 73056727
@@ -534319,6 +534281,7 @@
     at least something.  Your running score is [+2669](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 24
+  href: https://github.com/objectionary/eo/issues/6325/#issuecomment-5381707126
   is_human: 1
   issue: 6325
   repository: 73056727
@@ -534342,6 +534305,7 @@
     at least something.  Your running score is [+5872](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 24
+  href: https://github.com/objectionary/eo/issues/6325/#issuecomment-5381707222
   is_human: 1
   issue: 6325
   repository: 73056727
@@ -534365,6 +534329,7 @@
     at least something.  Your running score is [+1971](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 24
+  href: https://github.com/objectionary/eo/issues/6325/#issuecomment-5381707309
   is_human: 1
   issue: 6325
   repository: 73056727
@@ -534387,6 +534352,7 @@
     -8 for absolutely no comments posted.  Your running score is [+1014](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 137
+  href: https://github.com/objectionary/eo/issues/7229/#issuecomment-5381707403
   is_human: 1
   issue: 7229
   repository: 73056727
@@ -534473,9 +534439,32 @@
   _version: 0.19.16/0.61.1/0.17.21
   branch: 7343-touched-dangling-symlink
   details: The missing pull objectionary/eo#7423 has been opened by @gemshrine.
+  is_human: 1
   issue: 7423
   repository: 73056727
   what: pull-was-opened
   when: 2026-08-22 13:58:25.000000000 Z
   where: github
   who: 113778529
+- _id: 1122092
+  _job: 88264
+  _time: 2026-08-22 17:34:48.517040334 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  analyzers: 18
+  text: |-
+    The average reward per task (9.3 points) is increasing (R=0.25).
+    The average punishment per task (7.0 points) is decreasing (R=-0.19).
+    The average number of builds per week (13360.2) is increasing (R=0.86).
+    The average number of commits per week (316.3) is increasing (R=0.80).
+    The average bugs accepted per month (75.0) is increasing (R=0.78).
+    The average monthly punishment (402 points) is increasing (R=0.58).
+    The average monthly wage (10.4 points) is increasing (R=0.73).
+    The average issue cycle time (6d2h) is staying still.
+    The average pull cycle time (4d19h) is staying still.
+    The average quality of service (85%) is decreasing (R=0.68).
+    The average number of releases per month (25.3) is increasing (R=0.16).
+    The average monthly turnover (27.0 developers) is increasing (R=0.87).
+    The average weekly cost of HoC (6.33 points) is decreasing (R=-0.12).
+    The average monthly zents/points ratio (0.38) is decreasing (R=0.91).
+  what: assessment
+  when: 2026-08-22 17:34:48.530714806 Z
