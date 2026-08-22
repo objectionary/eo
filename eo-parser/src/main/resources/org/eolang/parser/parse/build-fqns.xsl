@@ -13,12 +13,14 @@
   lives in an enclosing scope instead is reported: this stage used
   to walk up and insert the '^.' hops itself, which made the same
   source text mean one thing here and another one level down, so
-  the hops are the author's to write now. The one exception is a
-  cactus name, which no author writes: it is what a '&gt;&gt;'
-  handle resolves to, and the handle is spelled bare wherever the
-  file reads it. Those objects which are skipped after this
-  transformation are not visible in the current scope. Maybe they
-  are global or just a mistake.
+  the hops are the author's to write now. A cactus name - what a
+  '&gt;&gt;' handle resolves to - never reaches this rule at all: it
+  arrives from "resolve-local-names.xsl" with its receiver, ξ or the
+  right number of '.ρ' hops, already built, the same way an explicit
+  "^.foo" a real author wrote does, so no name is resolved across a
+  scope the author did not write. Those objects which are skipped
+  after this transformation are not visible in the current scope.
+  Maybe they are global or just a mistake.
 
   We must skip objects that refer to
   "bytes", "string" or "number" if such objects are inside the
@@ -153,8 +155,8 @@
       </xsl:when>
       <xsl:when test="eo:abstract($parent)">
         <xsl:choose>
-          <!-- Found reference in the current scope, or a handle above -->
-          <xsl:when test="$parent/o[@name=$find] and ($rhos=0 or contains($find, $eo:cactoos))">
+          <!-- Found reference in the current scope -->
+          <xsl:when test="$parent/o[@name=$find] and $rhos=0">
             <xsl:apply-templates select="$self" mode="with-rho">
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
