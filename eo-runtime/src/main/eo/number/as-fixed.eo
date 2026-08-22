@@ -35,12 +35,18 @@
         [a] >> positive
           if. > @
             digits.eq scale
-            if. > [unit rest] >> written
-              ^.^.places.eq 0
-              unit.as-decimal
-              concat.
-                unit.as-decimal.concat ".".as-bytes
-                rec-pad rest ^.^.places --
+            [unit rest] >> written
+              if. > @
+                ^.^.places.eq 0
+                unit-decimal
+                concat.
+                  unit-decimal.concat ".".as-bytes
+                  rec-pad rest ^.^.places --
+              if. > unit-decimal
+                unit.eq
+                  2.power 63
+                "9223372036854775808".as-bytes
+                unit.as-decimal
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -233,6 +239,16 @@
     "2.5"
     string
       2.5.as-fixed 1
+
+  eq. ++> can-write-the-exact-two-to-the-63rd-boundary-with-places
+    "9223372036854775808.00"
+    string
+      9.223372036854776e18.as-fixed 2
+
+  eq. ++> can-write-the-exact-two-to-the-63rd-boundary-with-zero-places
+    "9223372036854775808"
+    string
+      9.223372036854776e18.as-fixed 0
 
   eq. ++> can-write-zero-with-places
     "0.000000"
