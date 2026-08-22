@@ -569,15 +569,6 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <!--
-                Fixture reproducing the tab-separated output of
-                the "git ls-remote" tags command
-                -->
-                <exclude>checkstyle:.*/src/test/resources/org/eolang/maven/commits/tags\.txt</exclude>
-              </excludes>
-            </configuration>
           </plugin>
         </plugins>
       </build>
