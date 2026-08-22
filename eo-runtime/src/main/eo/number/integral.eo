@@ -1,6 +1,8 @@
 # Calculates the integral from `a` to `b`.
 # Here `func` is the integration function, `a` is the lower limit,
 # `b` is the upper limit, `n` is the number of partitions of the integration interval.
+# `n` must be smaller than 2^53, because the loop advances its counter by one
+# and larger IEEE-754 integers cannot advance by that amount.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,9 +13,11 @@
 
 [fun a b n] > integral
   if. > @
-    n.is-finite.and
-      n.is-integer.and
-        n.gt 0
+    and.
+      n.is-finite.and
+        n.is-integer.and
+          n.gt 0
+      n.lt safe
     as-number.
       malloc.of
         8
@@ -37,7 +41,8 @@
               ^.b.minus ^.a
               ^.n
     T
-      "the number of partitions must be a finite positive integer"
+      "the number of partitions must be a finite positive integer smaller than 2^53"
+  9007199254740992 > safe
   times. > [a b] >> subsection
     div.
       b.minus a
@@ -162,6 +167,16 @@
         value.gte 0
         value
         value.neg
+
+  eq. ++> can-recover-from-partitions-at-the-precision-boundary
+    "recovered"
+    recovered
+      integral
+        I
+        0
+        1
+        9007199254740992
+      "recovered"
 
   integral --> stops-on-fractional-partitions
     I
