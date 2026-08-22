@@ -6,6 +6,7 @@ package integration;
 
 import com.yegor256.farea.Farea;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -165,10 +166,8 @@ final class EoSourceRun implements Proc<Object> {
             .redirectInput(this.home.resolve(EoSourceRun.STDIN).toFile())
             .redirectErrorStream(true)
             .start();
-        try {
-            final String out = new String(
-                proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8
-            );
+        try (InputStream stream = proc.getInputStream()) {
+            final String out = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
             proc.waitFor();
             return out;
         } catch (final InterruptedException ex) {
