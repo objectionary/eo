@@ -246,9 +246,6 @@ final class Emissions {
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
             emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.SELF) {
-            emit.object(name, null, line, value.pos());
-            emit.self();
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.kind() == Value.Kind.IDENTITY) {

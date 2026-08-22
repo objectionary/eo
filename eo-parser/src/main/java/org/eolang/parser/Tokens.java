@@ -755,8 +755,6 @@ final class Tokens {
             value = this.reserved(Value.Kind.TERM, "T");
         } else if (first == 'I') {
             value = this.reserved(Value.Kind.IDENTITY, "I");
-        } else if (first == '%') {
-            value = this.reserved(Value.Kind.SELF, "%");
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
         } else {
