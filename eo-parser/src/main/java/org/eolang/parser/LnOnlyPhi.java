@@ -56,6 +56,10 @@ import java.util.List;
  * scanner exclusion (formations and reversed-with-hargs LHS are not
  * accepted as inputs because their classifiers fire first). *
  *
+ * <p>The head of a line ends at the first space that sits at paren depth 0
+ * and outside any string literal, which is what {@code topLevelSpace} finds,
+ * the way {@code Eo.topLevelMarker} finds other top-level markers.</p>
+ *
  * @since 0.1
  */
 final class LnOnlyPhi implements Line {
@@ -224,7 +228,7 @@ final class LnOnlyPhi implements Line {
     }
 
     private static int compactStar(final String lhs, final Span span) {
-        final int space = lhs.indexOf(' ');
+        final int space = LnOnlyPhi.topLevelSpace(lhs);
         final int result;
         if (space > 0 && lhs.charAt(space - 1) != '.'
             && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
@@ -241,12 +245,32 @@ final class LnOnlyPhi implements Line {
         if (stars < 0) {
             head = lhs;
         } else {
-            head = lhs.substring(0, lhs.indexOf(' '));
+            head = lhs.substring(0, LnOnlyPhi.topLevelSpace(lhs));
         }
         final Span span = new Span(
             " ".repeat(inner.indent()).concat(head), inner.line()
         );
         return new Tokens(span.body(), span);
+    }
+
+    private static int topLevelSpace(final String body) {
+        int depth = 0;
+        int found = -1;
+        int idx = 0;
+        while (idx < body.length() && found < 0) {
+            final char glyph = body.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == ' ') {
+                found = idx;
+            }
+            idx = idx + 1;
+        }
+        return found;
     }
 
     private static int starCount(final String lhs, final int from, final Span span) {
