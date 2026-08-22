@@ -24,13 +24,6 @@ import java.util.List;
 final class LnMeta implements Line {
 
     /**
-     * A directive name, which is a NAME — §2.3. The excluded set holds the
-     * ordinary NAME terminators and the cactus emoji, which §2.3 keeps for
-     * auto-names.
-     */
-    private static final String NAME = "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*";
-
-    /**
      * The meta line's span.
      */
     private final Span span;
@@ -90,7 +83,7 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
-        if (!head.matches(LnMeta.NAME)) {
+        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*")) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
                 "meta name must be a NAME starting with a lowercase letter"
