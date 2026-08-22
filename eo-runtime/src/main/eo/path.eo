@@ -33,6 +33,7 @@
               text.length.minus
                 number index
       string pth > text
+    driveless.split separator > chunks
     [] > dirname
       string > @
         ^.drive.concat
@@ -164,12 +165,23 @@
                     eq.
                       valid.slice 0 1
                       ^.separator
-                    ^.drive.concat valid
+                    ^.unc.if
+                      ^.share.concat valid
+                      ^.drive.concat valid
                     concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
           ^.sys.sanitized other
     sys.separator > separator
+    if. > share
+      chunks.length.gt 3
+      concat.
+        concat.
+          separator.concat separator
+          chunks.at 2
+        separator.concat
+          chunks.at 3
+      uri
     if. > [tail] > stripped
       or.
         tail.size.eq 0
@@ -501,11 +513,23 @@
       "\\\\server\\share\\report.txt"
     "\\\\server\\share\\report.txt"
 
+  eq. ++> can-resolve-a-unc-win32-path-against-a-root-relative-path
+    resolved.
+      path.win32 "\\\\server\\share\\folder"
+      "\\other"
+    "\\\\server\\share\\other"
+
   eq. ++> can-resolve-a-unc-win32-path-against-another-unc-path
     resolved.
       path.win32 "\\\\server\\share\\project"
       "\\\\other\\share\\report.txt"
     "\\\\other\\share\\report.txt"
+
+  eq. ++> can-resolve-a-unc-win32-share-root-against-a-root-relative-path
+    resolved.
+      path.win32 "\\\\server\\share"
+      "\\other"
+    "\\\\server\\share\\other"
 
   eq. ++> can-resolve-a-win32-path-against-an-empty-one
     resolved.
