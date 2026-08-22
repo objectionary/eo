@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6295: a name on the final chunk of a multi-line BYTES literal applies to the
+# whole merged token, instead of cutting the merge short and dropping the chunks
+# that came before it.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@base='Φ.bytes' and @name='ml']/o[text()='CA-FE-BE-BE-01-02']
+input: |
+  [] > main
+    CA-FE-
+    BE-BE-
+    01-02 > ml
