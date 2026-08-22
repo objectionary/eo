@@ -57,7 +57,7 @@ final class XmirTest {
                 xmir
             ),
             xmir.toEO(),
-            Matchers.equalTo(xtory.map().get("printed"))
+            Matchers.equalTo(XmirTest.printed(xtory))
         );
     }
 
@@ -168,7 +168,7 @@ final class XmirTest {
             !Boolean.FALSE.equals(xtory.map().get("reprints")),
             "'reprints: false' packs need not reprint to themselves (#5739)"
         );
-        final String printed = (String) xtory.map().get("printed");
+        final String printed = XmirTest.printed(xtory);
         MatcherAssert.assertThat(
             String.format(
                 "Expected EO should reprint to itself, but was:%n%s",
@@ -264,6 +264,12 @@ final class XmirTest {
             XhtmlMatchers.hasXPath(
                 "//o[@base='Φ.bytes' and @const and text()='01-02' and o[text()='5']]"
             )
+        );
+    }
+
+    private static String printed(final Xtory xtory) {
+        return (String) xtory.map().getOrDefault(
+            "printed", xtory.map().get("origin")
         );
     }
 
