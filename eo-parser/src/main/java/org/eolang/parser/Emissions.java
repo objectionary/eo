@@ -627,6 +627,8 @@ final class Emissions {
             final String mapped;
             if ("@".equals(param)) {
                 mapped = "φ";
+            } else if ("^".equals(param)) {
+                mapped = "ρ";
             } else {
                 mapped = param;
             }
