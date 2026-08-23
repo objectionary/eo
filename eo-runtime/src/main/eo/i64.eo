@@ -7,10 +7,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[as-bytes] > i64
+[^ as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  [cant-convert] > as-i32
+  [^ cant-convert] > as-i32
     if. > @
       ^.eq
         as-i64.
@@ -22,7 +22,7 @@
           * ^.as-number
     i32 > left
       ^.as-bytes.slice 4 4
-  [] > as-number
+  [^] > as-number
     if. > @
       ^.as-bytes.eq 00-00-00-00-00-00-00-00
       0
@@ -76,7 +76,7 @@
       kept
     guard.and > roundup
       sticky.or odd
-    [m acc step bit] > scan
+    [^ m acc step bit] > scan
       if. > @
         step.lt 1
         acc
@@ -100,7 +100,7 @@
         magnitude.left
           117.minus highest
         00-00-00-00-00-00-00-00
-  [x] > gt
+  [^ x] > gt
     if. > @
       not.
         eq.
@@ -116,23 +116,23 @@
           00-00-00-00-00-00-00-00
         not.
           difference.as-bytes.eq 00-00-00-00-00-00-00-00
-  [x] > gte
+  [^ x] > gte
     or. > @
       ^.gt
         x >> value!
       ^.eq value
-  gt. > [x] > lt
+  gt. > [^ x] > lt
     i64 x.as-bytes
     ^
-  [x] > lte
+  [^ x] > lte
     or. > @
       ^.lt
         x >> value!
       ^.eq value
-  ^.plus (i64 x!).neg > [x] > minus
+  ^.plus (i64 x!).neg > [^ x] > minus
   times -1.as-i64 > neg
-  [x] > plus
-    if. > [a b] >> carried
+  [^ x] > plus
+    if. > [^ a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
       i64 a
       ^.carried
@@ -143,8 +143,8 @@
     | > @
       ^.as-bytes
       x.as-bytes
-  [x] > times
-    if. > [acc a b] > looped
+  [^ x] > times
+    if. > [^ acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
       i64 acc
       ^.looped
@@ -265,7 +265,7 @@
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
     "recovered"
     3147483647.as-i64.as-i32
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
     as-number.

@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[substring] > last-index-of
+[^ substring] > last-index-of
   if. > @
     or.
       or.
@@ -32,7 +32,7 @@
             minus.
               number tlen
               size
-  [idx] >> rec-index-of
+  [^ idx] >> rec-index-of
     if. > @
       0.eq idx
       includes.if idx -1

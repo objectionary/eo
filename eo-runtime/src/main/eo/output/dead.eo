@@ -9,16 +9,16 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > dead
-  [buffer] > write
-    [] >> output-block
+[^] > dead
+  [^ buffer] > write
+    [^] >> output-block
       true > @
-      ^.^.output-block > [buffer] > write
+      ^.^.output-block > [^ buffer] > write
     | > @
 
   malloc.of ++> can-be-taken-off-any-output
     3
-    write. > [m]
+    write. > [^ m]
       dead.
         output m.to-output
       01-02-03

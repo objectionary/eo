@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[fun a b n] > integral
+[^ fun a b n] > integral
   if. > @
     and.
       n.is-finite.and
@@ -21,10 +21,10 @@
     as-number.
       malloc.of
         8
-        [sum] >>
+        [^ sum] >>
           seq * > @
             while
-              if. > [i] >>
+              if. > [^ i] >>
                 i.lt ^.^.n
                 seq *
                   ^.sum.put
@@ -34,7 +34,7 @@
                         ^.^.a.plus ((i.plus 1).times ^.step)
                   true
                 false
-              true > [i]
+              true > [^ i]
             sum
           as-number. > step
             div.
@@ -43,7 +43,7 @@
     T
       "the number of partitions must be a finite positive integer smaller than 2^53"
   9007199254740992 > safe
-  times. > [a b] >> subsection
+  times. > [^ a b] >> subsection
     div.
       b.minus a
       6
@@ -60,7 +60,7 @@
     close-to > @
       as-number.
         integral
-          times. > [x]
+          times. > [^ x]
             x.times x
             x
           1
@@ -68,14 +68,14 @@
           100
       2499.75
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -90,14 +90,14 @@
           15
       49.5
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -106,20 +106,20 @@
     close-to > @
       as-number.
         integral
-          x.times x > [x]
+          x.times x > [^ x]
           1
           10
           100
       333
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -134,14 +134,14 @@
           1
       0.5
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -156,14 +156,14 @@
           10
       50
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
