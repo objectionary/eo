@@ -144,6 +144,49 @@ final class Resolving implements Step {
         }
     }
 
+    /**
+     * Delete every stale sibling version found in the given directory.
+     * @param dir The directory shared by every version of one dependency
+     * @param version The version being resolved
+     * @param keep The versions to keep, everything else in {@code dir} is stale
+     * @return The place of the version being resolved
+     * @throws IOException If fails to delete a stale version
+     */
+    Path cleanPlace(
+        final Path dir, final String version, final Set<String> keep
+    ) throws IOException {
+        final ReentrantLock lock = this.locks.computeIfAbsent(
+            dir.normalize(), key -> new ReentrantLock()
+        );
+        lock.lock();
+        try {
+            final File[] subs = dir.toFile().listFiles();
+            if (subs != null) {
+                for (final File sub : subs) {
+                    final String base = sub.getName();
+                    if (keep.contains(base)) {
+                        continue;
+                    }
+                    final Path bad = dir.resolve(base);
+                    try (Stream<Path> walk = Files.walk(bad)) {
+                        walk
+                            .map(Path::toFile)
+                            .sorted(Comparator.reverseOrder())
+                            .forEach(File::delete);
+                    }
+                    Logger.info(
+                        this,
+                        "Directory %[file]s deleted because it contained a stale version (not %s)",
+                        bad, keep
+                    );
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return dir.resolve(version);
+    }
+
     private int resolved(
         final Dep dep, final Path dest, final Map<String, Set<String>> versions
     ) throws IOException {
@@ -194,41 +237,6 @@ final class Resolving implements Step {
             );
         }
         return 1;
-    }
-
-    private Path cleanPlace(
-        final Path dir, final String version, final Set<String> keep
-    ) throws IOException {
-        final ReentrantLock lock = this.locks.computeIfAbsent(
-            dir.normalize(), key -> new ReentrantLock()
-        );
-        lock.lock();
-        try {
-            final File[] subs = dir.toFile().listFiles();
-            if (subs != null) {
-                for (final File sub : subs) {
-                    final String base = sub.getName();
-                    if (keep.contains(base)) {
-                        continue;
-                    }
-                    final Path bad = dir.resolve(base);
-                    try (Stream<Path> walk = Files.walk(bad)) {
-                        walk
-                            .map(Path::toFile)
-                            .sorted(Comparator.reverseOrder())
-                            .forEach(File::delete);
-                    }
-                    Logger.info(
-                        this,
-                        "Directory %[file]s deleted because it contained a stale version (not %s)",
-                        bad, keep
-                    );
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
-        return dir.resolve(version);
     }
 
     private Collection<Dep> deps() {

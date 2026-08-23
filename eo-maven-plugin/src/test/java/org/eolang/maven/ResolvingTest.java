@@ -6,21 +6,16 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Mapped;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -39,41 +34,32 @@ final class ResolvingTest {
             null, tmp, (dep, place) -> { }, false, false, false, false,
             (Scalar<Dep>) () -> null, false
         );
-        final Method cleaner = Resolving.class.getDeclaredMethod(
-            "cleanPlace", Path.class, String.class, Set.class
-        );
-        cleaner.setAccessible(true);
         final int threads = 8;
+        final List<Integer> slots = new ArrayList<>(threads);
+        for (int idx = 0; idx < threads; ++idx) {
+            slots.add(idx);
+        }
         for (int trial = 0; trial < 20; ++trial) {
             final Path stale = tmp.resolve("stale-version");
             Files.createDirectories(stale.resolve("nested"));
-            Files.createFile(stale.resolve("nested").resolve("file.txt"));
-            final CountDownLatch ready = new CountDownLatch(threads);
-            final CountDownLatch go = new CountDownLatch(1);
-            final ExecutorService pool = Executors.newFixedThreadPool(threads);
-            final List<Future<Object>> futures = new ArrayList<>(threads);
-            try {
-                final Callable<Object> job = () -> {
-                    ready.countDown();
-                    go.await();
-                    return cleaner.invoke(
-                        resolving, tmp, "1.0.0", new HashSet<>(Collections.emptySet())
-                    );
-                };
-                for (int idx = 0; idx < threads; ++idx) {
-                    futures.add(pool.submit(job));
-                }
-                ready.await();
-                go.countDown();
-                for (final Future<Object> future : futures) {
-                    MatcherAssert.assertThat(
-                        "cleanPlace must resolve to the requested version directory, but it didnt",
-                        future.get(1, TimeUnit.MINUTES),
-                        Matchers.equalTo(tmp.resolve("1.0.0"))
-                    );
-                }
-            } finally {
-                pool.shutdownNow();
+            Files.write(
+                stale.resolve("nested").resolve("file.txt"),
+                "stale".getBytes(StandardCharsets.UTF_8)
+            );
+            for (final Path place : new Threads<Path>(
+                threads,
+                new Mapped<Scalar<Path>>(
+                    idx -> () -> resolving.cleanPlace(
+                        tmp, "1.0.0", new HashSet<>(Collections.emptySet())
+                    ),
+                    slots
+                )
+            )) {
+                MatcherAssert.assertThat(
+                    "cleanPlace must resolve to the requested version directory, but it didnt",
+                    place,
+                    Matchers.equalTo(tmp.resolve("1.0.0"))
+                );
             }
         }
     }
