@@ -5,7 +5,6 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -46,28 +45,8 @@ final class Given {
     Map<String, List<String>> arguments() {
         final Map<String, List<String>> found = new HashMap<>(0);
         for (final XML application : this.all) {
-            found.put(application.xpath("@loc").get(0), this.placed(application));
+            found.put(application.xpath("@loc").get(0), new Placed(application).args());
         }
         return found;
-    }
-
-    /**
-     * The arguments of one application, ordered by the place each one names.
-     * @param application The application
-     * @return The arguments, one per place, up to the highest place named
-     */
-    private List<String> placed(final XML application) {
-        final Map<Integer, String> byplace = new HashMap<>(1);
-        int highest = -1;
-        for (final XML arg : application.nodes("o[starts-with(@as, 'α')][@loc]")) {
-            final int place = Integer.parseInt(arg.xpath("@as").get(0).substring(1));
-            byplace.put(place, arg.xpath("@loc").get(0));
-            highest = Math.max(highest, place);
-        }
-        final List<String> args = new ArrayList<>(highest + 1);
-        for (int place = 0; place <= highest; place += 1) {
-            args.add(byplace.getOrDefault(place, ""));
-        }
-        return args;
     }
 }
