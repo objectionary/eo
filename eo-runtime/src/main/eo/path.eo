@@ -34,6 +34,16 @@
                 number index
       string pth > text
     driveless.split separator > chunks
+    unc.and > device
+      and.
+        driveless.size.gt 2
+        or.
+          eq.
+            driveless.slice 2 1
+            "."
+          eq.
+            driveless.slice 2 1
+            "?"
     [] > dirname
       string > @
         if.
@@ -136,11 +146,19 @@
                   accum.with segment
                   accum
               if.
-                or.
-                  segment.eq "."
-                  segment.eq ""
-                accum
+                ^.^.device.and
+                  and.
+                    accum.length.eq 0
+                    or.
+                      segment.eq "."
+                      segment.eq "?"
                 accum.with segment
+                if.
+                  or.
+                    segment.eq "."
+                    segment.eq ""
+                  accum
+                  accum.with segment
       as-bytes. > normalized!
         if.
           ^.driveless.size.eq 0
@@ -316,6 +334,11 @@
     os.is-windows.if
       path.win32.separator
       path.posix.separator
+
+  eq. ++> can-normalize-a-device-namespace-win32-path-reducing-a-child-directory
+    normalized.
+      path.win32 "\\\\.\\C:\\foo\\.."
+    "\\\\.\\C:"
 
   eq. ++> can-normalize-a-double-separator-posix-path-to-the-root
     normalized.
