@@ -18,11 +18,14 @@ import java.util.Collection;
  *
  * <p>A ξ-name is looked for outwards: the nearest formation around the
  * reference that binds it wins, and if none does, the next one out is tried,
- * up to the top. Nothing else is consulted — an attribute reachable only
- * through {@code φ} or through a package member is not found here, and the
- * name simply stays unresolved. The checker is allowed to know less; it is
- * not allowed to guess, because a wrong link would make every later answer
- * wrong with it.</p>
+ * up to the top. The one exception is {@code ξ.ρ}, the object one step out,
+ * which no formation binds as an attribute; it is found by walking two
+ * formations out from the reference instead of by name. Beyond that, nothing
+ * else is consulted — an attribute reachable only through {@code φ} or
+ * through a package member is not found here, and the name simply stays
+ * unresolved. The checker is allowed to know less; it is not allowed to
+ * guess, because a wrong link would make every later answer wrong with
+ * it.</p>
  *
  * @since 0.68.0
  */
