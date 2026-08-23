@@ -31,7 +31,7 @@ public final class Ladder {
      * @param rungs How many objects stand on each rung, from the shallowest up
      */
     public Ladder(final Map<String, Integer> rungs) {
-        this.counts = rungs;
+        this.counts = new LinkedHashMap<>(rungs);
     }
 
     /**
@@ -39,7 +39,7 @@ public final class Ladder {
      * @return The rungs, from the shallowest up
      */
     public Map<String, Integer> rungs() {
-        return Collections.unmodifiableMap(new LinkedHashMap<>(this.counts));
+        return Collections.unmodifiableMap(this.counts);
     }
 
     /**
