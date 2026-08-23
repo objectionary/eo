@@ -147,9 +147,20 @@ final class MjPrintTest {
     }
 
     private String expected(final Xtory xtory) {
-        return (String) xtory.map().getOrDefault(
-            "printed", xtory.map().get("origin")
-        );
+        final String origin = (String) xtory.map().get("origin");
+        final String printed = (String) xtory.map().get("printed");
+        final String expected;
+        if (printed == null) {
+            expected = origin;
+        } else {
+            MatcherAssert.assertThat(
+                "The 'printed' section repeats 'origin' verbatim and must be deleted from the pack, since a pack without 'printed' already expects the printer to reproduce its 'origin'",
+                printed,
+                Matchers.not(Matchers.equalTo(origin))
+            );
+            expected = printed;
+        }
+        return expected;
     }
 
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
