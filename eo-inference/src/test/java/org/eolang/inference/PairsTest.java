@@ -24,13 +24,13 @@ final class PairsTest {
                     new XMLDocument(
                         String.join(
                             "",
-                            "<links><type id='a'><bottom/></type>",
+                            "<links><type id='a'><terminator/></type>",
                             "<type id='b'><ref loc='x'/></type></links>"
                         )
                     )
                 ).others()
             ).asXml(),
-            XhtmlMatchers.hasXPath("/links/type[@id='a']/bottom")
+            XhtmlMatchers.hasXPath("/links/type[@id='a']/terminator")
         );
     }
 }

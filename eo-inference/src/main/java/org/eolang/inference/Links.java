@@ -82,8 +82,8 @@ final class Links implements Clue {
         for (final XML datum : world.data()) {
             found.put(datum.xpath("@loc").get(0), new Data());
         }
-        for (final XML dead : world.bottoms()) {
-            found.put(dead.xpath("@loc").get(0), new Bottom());
+        for (final XML dead : world.terminators()) {
+            found.put(dead.xpath("@loc").get(0), new Terminator());
         }
         for (final XML hollow : world.voids()) {
             found.put(hollow.xpath("@loc").get(0), new Var());

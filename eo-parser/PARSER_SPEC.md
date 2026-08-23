@@ -169,7 +169,7 @@ The parser recognises the following lexical tokens:
 | `RHO` | `^` |
 | `ROOT` | `Q` |
 | `XI` | `$` |
-| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the bottom, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
+| `TERM` | `T` — the terminator term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the terminator, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
 | `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry arguments (`I 5`) and a `.method` chain, like any other head. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
@@ -1228,7 +1228,7 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11); `@as='ρ'` for a `:^` binding (R-3.12.2a) |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
-| `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
+| `T` (TERM) | `⊥` | `@base='⊥'` for the terminator term |
 | `I` (IDENTITY) | — | base-less `<o>` with a single void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — the identity object (§3.16) |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
