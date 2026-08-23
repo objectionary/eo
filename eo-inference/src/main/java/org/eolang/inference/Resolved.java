@@ -82,9 +82,9 @@ public final class Resolved implements Clue {
                 new Dispatched(given, dispatches, args, Collections.emptyList())
             ).from(written.all())
         );
-        final Map<String, String> names = new Ends(pairs).names();
         final Map<String, Type> rows = new Refs(
-            pairs, new Bound(args, pairs, new Provided(given, names, voids)).all()
+            pairs,
+            new Bound(args, pairs, new Provided(given, new Ends(pairs).names(), voids)).all()
         ).all();
         rows.putAll(written.others());
         for (final XML dispatch : dispatches) {
