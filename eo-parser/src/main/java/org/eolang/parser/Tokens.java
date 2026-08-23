@@ -203,7 +203,7 @@ final class Tokens {
             idx = idx + 1;
         }
         final String raw = this.body.substring(start, idx);
-        if (raw.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+        if (Tokens.cactus(raw)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
@@ -500,6 +500,12 @@ final class Tokens {
             );
         }
         final String text = this.body.substring(start, this.cursor);
+        if (Tokens.cactus(text)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
@@ -635,6 +641,10 @@ final class Tokens {
 
     private static boolean terminates(final char glyph) {
         return Tokens.TERMINATORS.indexOf(glyph) >= 0;
+    }
+
+    private static boolean cactus(final String text) {
+        return text.codePoints().anyMatch(cp -> cp == 0x1F335);
     }
 
     private static boolean validBinding(final String text) {
