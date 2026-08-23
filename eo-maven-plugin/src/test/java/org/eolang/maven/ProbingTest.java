@@ -8,15 +8,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import org.cactoos.Input;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.set.SetOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.AdditionalAnswers;
+import org.mockito.Mockito;
 
 /**
  * Test cases for {@link Probing}.
@@ -62,14 +63,15 @@ final class ProbingTest {
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Probe should register tuple.eachi from the same package",
-            tojos.contains("tuple.eachi"),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Probe should register tuple.withouti from the same package",
-            tojos.contains("tuple.withouti"),
-            Matchers.is(true)
+            "Probe should register all siblings from the same package",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("tuple.eachi", tojos.contains("tuple.eachi")),
+                new MapEntry<>("tuple.withouti", tojos.contains("tuple.withouti"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("tuple.eachi", true),
+                Matchers.hasEntry("tuple.withouti", true)
+            )
         );
     }
 
@@ -99,14 +101,15 @@ final class ProbingTest {
             true
         ).exec();
         MatcherAssert.assertThat(
-            "Probe should register the probed root object itself",
-            tojos.contains("foo"),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Probe should register a sibling from the root package",
-            tojos.contains("bar"),
-            Matchers.is(true)
+            "Probe should register the object and its root-package sibling",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("foo", tojos.contains("foo")),
+                new MapEntry<>("bar", tojos.contains("bar"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("foo", true),
+                Matchers.hasEntry("bar", true)
+            )
         );
     }
 
@@ -126,67 +129,37 @@ final class ProbingTest {
         );
         final TjsForeign tojos = new TjsForeign();
         tojos.add("test").withXmir(xmir);
-        final Collection<String> completions = new ConcurrentLinkedQueue<>();
-        final Objectionary indexed = new OyIndexed(
-            new Objectionary.Fake(),
-            new ObjectsIndex(
-                () -> new SetOf<>("foo", "bar", "baz")
+        final Objectionary observed = Mockito.mock(
+            Objectionary.class,
+            AdditionalAnswers.delegatesTo(
+                new OyIndexed(
+                    new Objectionary.Fake(),
+                    new ObjectsIndex(
+                        () -> new SetOf<>("foo", "bar", "baz")
+                    )
+                )
             )
         );
         new Probing(
             tojos,
-            new Objectionary() {
-                @Override
-                public Input get(final String name) throws IOException {
-                    return indexed.get(name);
-                }
-
-                @Override
-                public boolean contains(final String name) throws IOException {
-                    return indexed.contains(name);
-                }
-
-                @Override
-                public boolean isDirectory(
-                    final String name
-                ) throws IOException {
-                    return indexed.isDirectory(name);
-                }
-
-                @Override
-                public Iterable<String> children(
-                    final String pkg
-                ) throws IOException {
-                    completions.add(pkg);
-                    return indexed.children(pkg);
-                }
-            },
+            observed,
             true
         ).exec();
+        Mockito.verify(observed).children("");
         MatcherAssert.assertThat(
-            "Multiple root probes should complete the root package exactly once",
-            completions,
-            Matchers.contains("")
-        );
-        MatcherAssert.assertThat(
-            "That single completion should still register every root object",
-            tojos.size(),
-            Matchers.is(4)
-        );
-        MatcherAssert.assertThat(
-            "Root object foo should be registered",
-            tojos.contains("foo"),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Root object bar should be registered",
-            tojos.contains("bar"),
-            Matchers.is(true)
-        );
-        MatcherAssert.assertThat(
-            "Root object baz should be registered",
-            tojos.contains("baz"),
-            Matchers.is(true)
+            "A single completion should register every root object",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("all", tojos.size() == 4),
+                new MapEntry<>("foo", tojos.contains("foo")),
+                new MapEntry<>("bar", tojos.contains("bar")),
+                new MapEntry<>("baz", tojos.contains("baz"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("all", true),
+                Matchers.hasEntry("foo", true),
+                Matchers.hasEntry("bar", true),
+                Matchers.hasEntry("baz", true)
+            )
         );
     }
 
