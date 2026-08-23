@@ -23,8 +23,13 @@
       not.
         1.eq fill.length
     cant-pad
-      "Can't pad text to %f characters with %s".printf
-        * width fill
+      width.is-finite.if
+        "Can't pad text to %f characters with %s".printf
+          * width fill
+        "Can't pad text to %s characters with %s".printf
+          *
+            string width.as-scientific
+            fill
     if.
       width.gt
         text.length >> len!
@@ -46,6 +51,13 @@
     "Can't pad text to -1.000000 characters with x"
     "y".padded-left
       -1
+      "x"
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-left
+    "Can't pad text to infinity characters with x"
+    "y".padded-left
+      pinf
       "x"
       I
 

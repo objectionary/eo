@@ -27,15 +27,23 @@
       nstart.lt 0
       nstart.is-integer.not
     T
-      "Start index must be a non-negative integer, but was %f".printf
-        * nstart
+      nstart.is-finite.if
+        "Start index must be a non-negative integer, but was %f".printf
+          * nstart
+        "Start index must be a non-negative integer, but was %s".printf
+          *
+            string nstart.as-scientific
     if.
       or.
         nlen.lt 0
         nlen.is-integer.not
       T
-        "Length to slice must be a non-negative integer, but was %f".printf
-          * nlen
+        nlen.is-finite.if
+          "Length to slice must be a non-negative integer, but was %f".printf
+            * nlen
+          "Length to slice must be a non-negative integer, but was %s".printf
+            *
+              string nlen.as-scientific
       seq *
         recidx >> bstart!
           0
@@ -308,3 +316,13 @@
     "some string"
     7
     5
+
+  slice. --> stops-on-an-infinite-length
+    "some"
+    0
+    pinf
+
+  slice. --> stops-on-an-infinite-start
+    "some"
+    pinf
+    1

@@ -20,8 +20,12 @@
       0.gt width
       width.is-integer.not
     cant-pad
-      "Can't pad text to %f characters with zeros".printf
-        * width
+      width.is-finite.if
+        "Can't pad text to %f characters with zeros".printf
+          * width
+        "Can't pad text to %s characters with zeros".printf
+          *
+            string width.as-scientific
     if.
       and.
         0.lt
@@ -54,6 +58,12 @@
     "Can't pad text to -4.000000 characters with zeros"
     "7".padded-zeros
       -4
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-with-zeros
+    "Can't pad text to infinity characters with zeros"
+    "7".padded-zeros
+      pinf
       I
 
   eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros

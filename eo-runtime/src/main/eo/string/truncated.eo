@@ -20,8 +20,12 @@
       0.gt limit
       limit.is-integer.not
     cant-truncate
-      "Can't truncate text to %f characters".printf
-        * limit
+      limit.is-finite.if
+        "Can't truncate text to %f characters".printf
+          * limit
+        "Can't truncate text to %s characters".printf
+          *
+            string limit.as-scientific
     if.
       limit.lt text.length
       text.slice 0 limit
@@ -36,6 +40,12 @@
     "Can't truncate text to -3.000000 characters"
     "Jeff".truncated
       -3
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-limit
+    "Can't truncate text to infinity characters"
+    "Jeff".truncated
+      pinf
       I
 
   eq. ++> can-recover-from-a-negative-limit

@@ -32,8 +32,12 @@
         "Can't write a non-finite number as a fixed-point decimal"
         huge.if
           "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
-          "Can't write a fixed-point decimal with %f fraction places".printf
-            * places
+          places.is-finite.if
+            "Can't write a fixed-point decimal with %f fraction places".printf
+              * places
+            "Can't write a fixed-point decimal with %s fraction places".printf
+              *
+                string places.as-scientific
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
@@ -136,6 +140,12 @@
     "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
     1.25.as-fixed
       9007199254740992
+      I
+
+  eq. ++> can-format-the-error-message-of-infinite-places
+    "Can't write a fixed-point decimal with infinity fraction places"
+    3.14159.as-fixed
+      pinf
       I
 
   eq. ++> can-format-the-error-message-of-negative-places
