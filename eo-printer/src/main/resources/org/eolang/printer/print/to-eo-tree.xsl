@@ -470,11 +470,15 @@
           <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
             <!--
-            No void params: collapse the empty `[]` head into the
-            single doubled-marker head-of-line shorthand (the head
-            template emits nothing in this case).
+            An abstract formation with no void params: collapse its
+            empty `[]` head into the single doubled-marker head-of-line
+            shorthand (the head template emits nothing in this case).
+            A non-abstract object (a plain reference or application,
+            "true +&gt; works") has a rendered head of its own, so the
+            doubled marker would glue onto it instead (#7451); that
+            case falls through to the single-marker branch below.
             -->
-            <xsl:when test="empty(o[eo:void(.)])">
+            <xsl:when test="eo:abstract(.) and empty(o[eo:void(.)])">
               <xsl:value-of select="$marker"/>
               <xsl:value-of select="$marker"/>
               <xsl:text>&gt; </xsl:text>
