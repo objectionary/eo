@@ -41,9 +41,12 @@ import org.xembly.Xembler;
  * reason.</p>
  *
  * <p>A choice longer than the cap is written as {@code unknown} instead of its
- * members. {@code Φ.tuple.head} is filled with 264 different types, and a
- * choice of 264 tells a reader nothing except that nobody has thought about
- * it; saying so outright is shorter and truer.</p>
+ * members. {@code Φ.tuple.head} is filled with 56 different types, and a
+ * choice of 56 tells a reader nothing except that nobody has thought about
+ * it; saying so outright is shorter and truer. Eleven voids of eo-runtime are
+ * over the cap, and every one of them holds whatever it is handed: the target
+ * of a {@code dataized}, the scope of a {@code malloc}, the body of a
+ * {@code while}.</p>
  *
  * @since 0.69.0
  */
@@ -84,7 +87,7 @@ public final class Witnessed implements Clue {
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
         final Map<String, Collection<Type>> filled = new Fillings(
-            new XMLDocument(tables.resolve("links.xml"))
+            new XMLDocument(tables.resolve("links.xml")), given
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(
