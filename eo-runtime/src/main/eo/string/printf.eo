@@ -185,8 +185,7 @@
         seq *
           length.
             string datum
-          capped
-            string datum
+          capped datum
       if.
         64-.eq conv
         as-decimal.
@@ -380,6 +379,11 @@
         * "Jeff"
     11
 
+  eq. ++> can-apply-a-precision-to-a-non-ascii-string
+    "Жир"
+    "%.3s".printf
+      * "Жирафы"
+
   eq. ++> can-apply-a-precision-to-a-string
     "Jef"
     "%.3s".printf
@@ -389,6 +393,11 @@
     "40-"
     "%.3x".printf
       * 42.as-bytes
+
+  eq. ++> can-apply-a-precision-wider-than-a-non-ascii-string
+    "Жирафы"
+    "%.10s".printf
+      * "Жирафы"
 
   eq. ++> can-apply-a-width-to-bytes
     "  40-45-00-00-00-00-00-00"

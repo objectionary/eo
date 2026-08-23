@@ -87,16 +87,22 @@
     count.eq 0
     acc
     ^.rec-pad
-      floor.
+      if.
+        value.gte 9007199254740992
         value.div 10
+        floor.
+          value.div 10
       as-number.
         count.minus 1
       concat.
         as-char.
           plus.
-            floor.
-              value.minus
-                times. (value.div 10).floor 10
+            if.
+              value.gte 9007199254740992
+              0
+              floor.
+                value.minus
+                  times. (value.div 10).floor 10
             48
         acc
 
@@ -243,6 +249,11 @@
     string
       0.as-fixed 2
 
+  eq. ++> can-write-a-fraction-of-places-past-the-double-accumulator-range
+    "123.45600000000000300000"
+    string
+      123.456.as-fixed 20
+
   eq. ++> can-write-a-negative-value
     "-2.500000"
     string
@@ -252,6 +263,16 @@
     "2.5"
     string
       2.5.as-fixed 1
+
+  eq. ++> can-write-a-whole-number-far-past-the-double-accumulator-range
+    "2.0000000000000000000000000000000000000000"
+    string
+      2.as-fixed 40
+
+  eq. ++> can-write-places-past-the-double-accumulator-range
+    "1.5000000000000000000000000"
+    string
+      1.5.as-fixed 25
 
   eq. ++> can-write-zero-with-places
     "0.000000"

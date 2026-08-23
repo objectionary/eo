@@ -62,6 +62,15 @@ final class PhiTest {
     }
 
     @Test
+    void takesLambdaOfNonAtomAsAbsent() {
+        MatcherAssert.assertThat(
+            "Taking λ from a non-atom must return a terminator, not throw a cast error",
+            new PhDefault().take(Phi.LAMBDA),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
     void tellsWhyANonFiniteNumberHasNoDecimalForm() {
         MatcherAssert.assertThat(
             "asking nan for its decimal form must not lose the reason written for that moment",
