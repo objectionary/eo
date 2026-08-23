@@ -135,7 +135,17 @@
             core.size.eq 0
             "."
             core.concat
-              trailing.if ^.separator --
+              if.
+                trailing.and rooted.not
+                ^.separator
+                --
+      and. > rooted
+        core.size.gt 0
+        eq.
+          core.slice
+            core.size.plus -1
+            1
+          ^.separator
       and. > trailing
         ubts.size.gt 0
         eq.
@@ -371,6 +381,11 @@
     normalized.
       path.win32 "\\\\server\\share\\..\\..\\folder"
     "\\\\server\\share\\folder"
+
+  eq. ++> can-normalize-a-win32-drive-root-keeping-a-single-separator
+    normalized.
+      path.win32 "C:\\"
+    "C:\\"
 
   eq. ++> can-normalize-a-win32-path-collapsing-to-the-current-directory
     normalized.
