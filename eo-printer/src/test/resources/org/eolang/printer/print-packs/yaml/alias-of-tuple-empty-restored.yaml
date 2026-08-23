@@ -22,11 +22,3 @@ origin: |
   [] > app
     empty > a
     empty > b
-
-printed: |
-  +alias tuple.empty
-  +package foo
-
-  [] > app
-    empty > a
-    empty > b

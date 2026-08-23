@@ -2,13 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-penalties:
-  INDENT: 3
-  BRACKET: 7
-  EXCESS: 1
-  WIDTH: 80
-  STEP: 2
-  SPACE: 7
-origin: |
+line: 2
+message: |-
+  error: 'cactus emoji is reserved for auto-names; not allowed in identifiers'
+input: |
   [] > main
-    regex "/^[\\x00-\\x7F]*$/" > rgx
+    foo bar:good🌵 > result
