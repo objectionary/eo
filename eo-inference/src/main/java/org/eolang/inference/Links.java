@@ -54,8 +54,8 @@ import java.util.Map;
  * <p>A name that resolves to nothing gets no row and no complaint: a
  * missing row makes a later check stay undecided, while a wrong row would
  * make it decide wrongly. On the runtime this still happens to references
- * such as dispatches, {@code .eq}, {@code .if}, {@code .empty}, and bottoms
- * {@code ∅} — not to {@code ξ.ρ}, the object one step out, which
+ * such as dispatches, {@code .eq}, {@code .if}, {@code .empty}, and
+ * terminators — not to {@code ξ.ρ}, the object one step out, which
  * {@link Scope#target(String, String)} resolves by walking two formations
  * outward from the reference.</p>
  *
