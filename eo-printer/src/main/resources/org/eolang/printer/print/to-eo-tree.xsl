@@ -454,7 +454,7 @@
           <xsl:value-of select="substring-after(@as, $eo:alpha)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="@as"/>
+          <xsl:value-of select="eo:translate-path(@as)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
