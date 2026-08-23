@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +39,7 @@ public final class Ladder {
      * @return The rungs, from the shallowest up
      */
     public Map<String, Integer> rungs() {
-        return Collections.unmodifiableMap(this.counts);
+        return Collections.unmodifiableMap(new LinkedHashMap<>(this.counts));
     }
 
     /**
@@ -72,13 +73,19 @@ public final class Ladder {
      * @return The depth, out of a hundred
      */
     public double percent() {
-        int climbed = 0;
-        int rung = 0;
-        for (final Integer count : this.counts.values()) {
-            climbed = climbed + rung * count;
-            rung = rung + 1;
+        final double result;
+        if (this.counts.size() < 2) {
+            result = 0.0d;
+        } else {
+            int climbed = 0;
+            int rung = 0;
+            for (final Integer count : this.counts.values()) {
+                climbed = climbed + rung * count;
+                rung = rung + 1;
+            }
+            result = this.share(climbed) / (rung - 1);
         }
-        return this.share(climbed) / (rung - 1);
+        return result;
     }
 
     private double share(final int some) {
