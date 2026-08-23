@@ -70,12 +70,15 @@ final class Emissions {
     ) {
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
-            tokens.seek(tokens.cursor() + 1);
+            final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), new Span(tokens.body(), line));
             }
-            emit.object(name, ".".concat(head.raw()), line, head.pos());
+            emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
+            if (fragile) {
+                emit.fragile();
+            }
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
@@ -413,15 +416,33 @@ final class Emissions {
 
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
+            && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int probe = tokens.cursor() + (tokens.current() == '?' ? 2 : 1);
             reversed = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
             reversed = false;
         }
         return reversed;
+    }
+
+    /**
+     * The reversed-dispatch head text to emit as the {@code .}-prefixed
+     * base — a root glyph ({@code ^}, {@code @}, {@code $}) maps to
+     * {@code ρ}/{@code φ}/{@code ξ} the way {@link LnReversed#readHead}
+     * does; any other head keeps its own text.
+     * @param head The parsed head value
+     * @return The text to append after the leading dot
+     */
+    private static String reversedHead(final Value head) {
+        final String mapped;
+        if (head.kind() == Value.Kind.ROOT) {
+            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+        } else {
+            mapped = head.raw();
+        }
+        return mapped;
     }
 
     private static int topLevelInlinePhi(final String body) {
