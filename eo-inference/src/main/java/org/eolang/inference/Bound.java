@@ -83,7 +83,7 @@ final class Bound {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (int place = 0; place < given.size(); place += 1) {
             final String hollow = this.owned.slot(copied, place);
-            if (!hollow.isEmpty()) {
+            if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                 found.put(hollow, given.get(place));
             }
         }

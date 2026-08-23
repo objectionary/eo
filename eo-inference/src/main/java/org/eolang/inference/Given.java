@@ -14,10 +14,12 @@ import java.util.Map;
 /**
  * What every application puts into the voids of what it copies.
  *
- * <p>An argument goes into a void by its place and not by its name, so the
- * order is the whole of the fact and it is kept. What the argument is stays a
- * locator here, since the type of it is a question for the links table and the
- * answer changes as the passes go on.</p>
+ * <p>An argument goes into a void by its place and not by its name, and the
+ * place is what {@code @as} says, not where the argument sits among its
+ * siblings: an inline binding such as {@code pair 5:1} names its void
+ * directly and can leave an earlier one for whoever applies next. What the
+ * argument is stays a locator here, since the type of it is a question for
+ * the links table and the answer changes as the passes go on.</p>
  *
  * @since 0.69.0
  */
@@ -38,17 +40,34 @@ final class Given {
 
     /**
      * The arguments of every application, by the locator of the application.
-     * @return The arguments, each list in the order the places run
+     * @return The arguments, each list in the order the places run, with an
+     *  empty locator where an inline binding has left a place unfilled
      */
     Map<String, List<String>> arguments() {
         final Map<String, List<String>> found = new HashMap<>(0);
         for (final XML application : this.all) {
-            final List<String> args = new ArrayList<>(1);
-            for (final XML arg : application.nodes("o[starts-with(@as, 'α')][@loc]")) {
-                args.add(arg.xpath("@loc").get(0));
-            }
-            found.put(application.xpath("@loc").get(0), args);
+            found.put(application.xpath("@loc").get(0), this.placed(application));
         }
         return found;
+    }
+
+    /**
+     * The arguments of one application, ordered by the place each one names.
+     * @param application The application
+     * @return The arguments, one per place, up to the highest place named
+     */
+    private List<String> placed(final XML application) {
+        final Map<Integer, String> byplace = new HashMap<>(1);
+        int highest = -1;
+        for (final XML arg : application.nodes("o[starts-with(@as, 'α')][@loc]")) {
+            final int place = Integer.parseInt(arg.xpath("@as").get(0).substring(1));
+            byplace.put(place, arg.xpath("@loc").get(0));
+            highest = Math.max(highest, place);
+        }
+        final List<String> args = new ArrayList<>(highest + 1);
+        for (int place = 0; place <= highest; place += 1) {
+            args.add(byplace.getOrDefault(place, ""));
+        }
+        return args;
     }
 }
