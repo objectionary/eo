@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Scalar;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -64,7 +66,11 @@ final class ResolvingTest {
                 ready.await();
                 go.countDown();
                 for (final Future<Object> future : futures) {
-                    future.get(1, TimeUnit.MINUTES);
+                    MatcherAssert.assertThat(
+                        "cleanPlace must resolve to the requested version directory, but it didnt",
+                        future.get(1, TimeUnit.MINUTES),
+                        Matchers.equalTo(tmp.resolve("1.0.0"))
+                    );
                 }
             } finally {
                 pool.shutdownNow();
