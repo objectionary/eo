@@ -26,13 +26,3 @@ origin: |
       value
       value.neg
     number num.as-bytes > value
-
-printed: |
-  +package number
-
-  [num] > abs
-    if. > @
-      value.gte 0
-      value
-      value.neg
-    number num.as-bytes > value
