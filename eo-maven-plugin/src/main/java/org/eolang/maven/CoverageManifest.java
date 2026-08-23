@@ -39,7 +39,7 @@ import java.util.LinkedHashSet;
  * declaration line never gets a hit (#6995); and, the same way, a void
  * attribute of any other formation (bracket-declared or written as
  * {@code ? >> name}) parses to an {@code o} whose own {@code @base} is
- * {@code ∅} — no body to dataize, so no {@code located} mode call and no
+ * a void, the empty-set glyph — no body to dataize, so no {@code located} mode call and no
  * hit ever lands on its declaration line either (#7377).</p>
  *
  * <p>An atom attribute is left out along with everything it declares,
@@ -77,7 +77,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base='∅') and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
+            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base=codepoints-to-string(8709)) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
         )) {
             found.add(
                 String.format(
