@@ -229,7 +229,7 @@ public class PhDefault implements Phi, Cloneable {
             final Attribute attr = this.loaded().get(name);
             if (attr != null) {
                 resolved = attr.get();
-            } else if (name.equals(Phi.LAMBDA)) {
+            } else if (name.equals(Phi.LAMBDA) && this instanceof Atom) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
                 ).lambda();
