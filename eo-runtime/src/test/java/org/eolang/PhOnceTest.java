@@ -33,9 +33,9 @@ final class PhOnceTest {
     }
 
     @Test
-    void letsANormalizedBottomPropagateBare() {
+    void letsANormalizedTerminatorPropagateBare() {
         MatcherAssert.assertThat(
-            "normalized() must not re-wrap a bottom, so callers can still detect it with instanceof, but it did",
+            "normalized() must not re-wrap a terminator, so callers can still detect it with instanceof",
             new PhOnce(PhTerminator::new).normalized(),
             Matchers.instanceOf(PhTerminator.class)
         );

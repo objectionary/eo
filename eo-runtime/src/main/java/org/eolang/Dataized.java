@@ -40,7 +40,7 @@ public final class Dataized {
      *
      * <p>This method performs the dataization process, which involves converting
      * the EO object into a byte array. If the object cannot be dataized — for
-     * example when it is a terminated computation (bottom) — the failure propagates
+     * example when it is a terminated computation (a terminator) — the failure propagates
      * as an {@link ExFailure} and is not caught here.</p>
      *
      * <p>Usage example:</p>

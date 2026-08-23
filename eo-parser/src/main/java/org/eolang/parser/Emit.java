@@ -395,7 +395,7 @@ final class Emit {
      * Add the {@code @type="type"} attribute to the most recently opened
      * {@code <o>} — the declared type of an atom's vertical void
      * attribute (R-3.4.8): a concrete forma or a generic type variable,
-     * with an optional trailing {@code ?} marking a maybe-bottom value.
+     * with an optional trailing {@code ?} marking a maybe-terminator value.
      * @param type The declared type
      */
     void type(final String type) {

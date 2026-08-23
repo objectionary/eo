@@ -1,7 +1,7 @@
 # Returns `text` repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-repeat` fallback is returned,
-# or the bottom object when unbound.
+# or the terminator when unbound.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
