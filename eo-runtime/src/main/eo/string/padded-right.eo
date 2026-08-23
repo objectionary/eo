@@ -5,7 +5,7 @@
 # or longer is returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), or `fill` is not a single character, the `cant-pad` fallback
-# is returned, or the bottom object when unbound.
+# is returned, or the terminator when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
