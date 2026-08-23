@@ -3,8 +3,8 @@
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer below 2^53 (negative,
 # fractional, nan, infinite, or too large to reach zero by repeated
-# subtraction of one), the `cant-print` fallback is returned, or the bottom
-# object when unbound.
+# subtraction of one), the `cant-print` fallback is returned, or the
+# terminator when unbound.
 #
 # The value is split into its integer and fraction parts before scaling, so
 # only the fraction is multiplied by a power of ten and every magnitude that
