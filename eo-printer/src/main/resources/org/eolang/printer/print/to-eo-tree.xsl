@@ -332,7 +332,7 @@
     self-reference to a same-file object carries after being homed
     into the package (add-default-package / build-fqns).
     -->
-    <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
+    <xsl:variable name="package" select="string((/object/metas/meta[head='package'])[1]/part[1])"/>
     <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
     <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
     <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
@@ -454,7 +454,7 @@
           <xsl:value-of select="substring-after(@as, $eo:alpha)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="@as"/>
+          <xsl:value-of select="eo:translate-path(@as)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -470,11 +470,15 @@
           <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
             <!--
-            No void params: collapse the empty `[]` head into the
-            single doubled-marker head-of-line shorthand (the head
-            template emits nothing in this case).
+            An abstract formation with no void params: collapse its
+            empty `[]` head into the single doubled-marker head-of-line
+            shorthand (the head template emits nothing in this case).
+            A non-abstract object (a plain reference or application,
+            "true +&gt; works") has a rendered head of its own, so the
+            doubled marker would glue onto it instead (#7451); that
+            case falls through to the single-marker branch below.
             -->
-            <xsl:when test="empty(o[eo:void(.)])">
+            <xsl:when test="eo:abstract(.) and empty(o[eo:void(.)])">
               <xsl:value-of select="$marker"/>
               <xsl:value-of select="$marker"/>
               <xsl:text>&gt; </xsl:text>
