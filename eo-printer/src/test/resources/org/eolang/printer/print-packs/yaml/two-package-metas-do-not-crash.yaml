@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A file may carry more than one "+package" meta (the parser accepts it,
+# eo-syntax/multiple-package-metas-do-not-crash.yaml), and the printer must
+# not crash on it either: to-eo-tree.xsl reads the "package" variable while
+# shortening a self-reference, and picking `part[1]` of every matching meta
+# instead of the first meta gave Saxon two nodes for `string()` (#7448). Only
+# the first "+package" is used to build the self-reference prefix.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package a
+  +package b
+
+  [] > main
+    (stdout "hi").print > @
+
+printed: |
+  +package a
+  +package b
+
+  print. > [] > main
+    stdout "hi"
