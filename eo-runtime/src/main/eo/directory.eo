@@ -242,7 +242,8 @@
         opening.if
           negated.if "[^" "["
           slashed.if
-            "(?:.*/)?"
+            "".joined
+              * "(?:.*" literal ")?"
             double.if
               ".*"
               if.
@@ -474,6 +475,31 @@
         length.
           d.as-dir.walk "**/*.txt"
         2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-across-nested-directories
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "**/*.txt"
+        ",".joined
+          *
+            d.resolved "foo/bar/test.txt"
+            d.resolved "x/y/z/a.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
