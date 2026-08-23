@@ -12,7 +12,3 @@ penalties:
 origin: |
   [] > main
     regex "/^[\\x00-\\x7F]*$/" > rgx
-
-printed: |
-  [] > main
-    regex "/^[\\x00-\\x7F]*$/" > rgx
