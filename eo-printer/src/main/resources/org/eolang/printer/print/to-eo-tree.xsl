@@ -332,7 +332,7 @@
     self-reference to a same-file object carries after being homed
     into the package (add-default-package / build-fqns).
     -->
-    <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
+    <xsl:variable name="package" select="string((/object/metas/meta[head='package'])[1]/part[1])"/>
     <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
     <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
     <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
