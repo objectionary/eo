@@ -19,6 +19,11 @@ import java.util.regex.Pattern;
  * literals and chains in exactly the same way (§9.0.3 / §9.4 /
  * §9.4.2).</p>
  *
+ * <p>A reversed dispatch emitted here keeps the head text as the
+ * {@code .}-prefixed base, except a root glyph ({@code ^}, {@code @},
+ * {@code $}), which maps to {@code ρ}/{@code φ}/{@code ξ} the way
+ * {@link LnReversed#readHead} does.</p>
+ *
  * @since 0.1
  */
 final class Emissions {
@@ -68,14 +73,19 @@ final class Emissions {
     static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
+        final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
-            tokens.seek(tokens.cursor() + 1);
+            final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
+            Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
-                Bindings.checkReceiver(rargs.get(0), new Span(tokens.body(), line));
+                Bindings.checkReceiver(rargs.get(0), span);
             }
-            emit.object(name, ".".concat(head.raw()), line, head.pos());
+            emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
+            if (fragile) {
+                emit.fragile();
+            }
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
@@ -83,6 +93,7 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
+        Bindings.checkAllOrNothing(args, span);
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
@@ -413,15 +424,31 @@ final class Emissions {
 
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
+            && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             reversed = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
             reversed = false;
         }
         return reversed;
+    }
+
+    private static String reversedHead(final Value head) {
+        final String mapped;
+        if (head.kind() == Value.Kind.ROOT) {
+            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+        } else {
+            mapped = head.raw();
+        }
+        return mapped;
     }
 
     private static int topLevelInlinePhi(final String body) {

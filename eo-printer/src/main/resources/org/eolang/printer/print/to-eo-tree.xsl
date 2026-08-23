@@ -291,11 +291,12 @@
   (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
   handle survives "restore-local-names" in @local and keeps the void
   anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ void reverts to its "@" surface spelling.
+  "eo:void-type"; and a φ or ρ void reverts to its "@" or "^" surface
+  spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
     <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
-    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else string(@name)"/>
+    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name)"/>
     <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->

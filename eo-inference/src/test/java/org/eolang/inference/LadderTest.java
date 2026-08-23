@@ -103,4 +103,37 @@ final class LadderTest {
             Matchers.closeTo(0.0d, 0.001d)
         );
     }
+
+    @Test
+    void takesAZeroDepthForASingleRung() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 5);
+        MatcherAssert.assertThat(
+            "a ladder with a single rung has nothing to climb, but it was NaN",
+            new Ladder(rungs).percent(),
+            Matchers.closeTo(0.0d, 0.001d)
+        );
+    }
+
+    @Test
+    void takesAZeroDepthForNoRungsAtAll() {
+        MatcherAssert.assertThat(
+            "a ladder with no rungs at all has a zero depth, but it wasnt",
+            new Ladder(new LinkedHashMap<>(0)).percent(),
+            Matchers.closeTo(0.0d, 0.001d)
+        );
+    }
+
+    @Test
+    void keepsTheRungsUnaffectedByLaterChangesToTheSourceMap() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        final Ladder ladder = new Ladder(rungs);
+        rungs.put("something", 99);
+        MatcherAssert.assertThat(
+            "the rungs handed out must not change when the source map is mutated later, but they did",
+            ladder.rungs().keySet(),
+            Matchers.not(Matchers.hasItem("something"))
+        );
+    }
 }

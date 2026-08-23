@@ -13,6 +13,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -75,6 +78,13 @@ final class Resolving implements Step {
     private final boolean noconflicts;
 
     /**
+     * Locks serializing {@link #cleanPlace(Path, String, Set)} per directory,
+     * since sibling versions of a dependency share a directory and are
+     * cleaned up concurrently by {@link Threaded}.
+     */
+    private final ConcurrentMap<Path, ReentrantLock> locks;
+
+    /**
      * Ctor.
      * @param tjs Tojos
      * @param tgt Target directory
@@ -106,6 +116,7 @@ final class Resolving implements Step {
         this.noruntime = norun;
         this.runtime = runtime;
         this.noconflicts = noconf;
+        this.locks = new ConcurrentHashMap<>(0);
     }
 
     @Override
@@ -131,6 +142,49 @@ final class Resolving implements Step {
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
+    }
+
+    /**
+     * Delete every stale sibling version found in the given directory.
+     * @param dir The directory shared by every version of one dependency
+     * @param version The version being resolved
+     * @param keep The versions to keep, everything else in {@code dir} is stale
+     * @return The place of the version being resolved
+     * @throws IOException If fails to delete a stale version
+     */
+    Path cleanPlace(
+        final Path dir, final String version, final Set<String> keep
+    ) throws IOException {
+        final ReentrantLock lock = this.locks.computeIfAbsent(
+            dir.normalize(), key -> new ReentrantLock()
+        );
+        lock.lock();
+        try {
+            final File[] subs = dir.toFile().listFiles();
+            if (subs != null) {
+                for (final File sub : subs) {
+                    final String base = sub.getName();
+                    if (keep.contains(base)) {
+                        continue;
+                    }
+                    final Path bad = dir.resolve(base);
+                    try (Stream<Path> walk = Files.walk(bad)) {
+                        walk
+                            .map(Path::toFile)
+                            .sorted(Comparator.reverseOrder())
+                            .forEach(File::delete);
+                    }
+                    Logger.info(
+                        this,
+                        "Directory %[file]s deleted because it contained a stale version (not %s)",
+                        bad, keep
+                    );
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return dir.resolve(version);
     }
 
     private int resolved(
@@ -183,33 +237,6 @@ final class Resolving implements Step {
             );
         }
         return 1;
-    }
-
-    private Path cleanPlace(
-        final Path dir, final String version, final Set<String> keep
-    ) throws IOException {
-        final File[] subs = dir.toFile().listFiles();
-        if (subs != null) {
-            for (final File sub : subs) {
-                final String base = sub.getName();
-                if (keep.contains(base)) {
-                    continue;
-                }
-                final Path bad = dir.resolve(base);
-                try (Stream<Path> walk = Files.walk(bad)) {
-                    walk
-                        .map(Path::toFile)
-                        .sorted(Comparator.reverseOrder())
-                        .forEach(File::delete);
-                }
-                Logger.info(
-                    this,
-                    "Directory %[file]s deleted because it contained a stale version (not %s)",
-                    bad, keep
-                );
-            }
-        }
-        return dir.resolve(version);
     }
 
     private Collection<Dep> deps() {

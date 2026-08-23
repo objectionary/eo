@@ -114,6 +114,18 @@ final class LnReversed implements Line {
         return value;
     }
 
+    static String rootSymbol(final char glyph) {
+        final String mapped;
+        if (glyph == '@') {
+            mapped = "φ";
+        } else if (glyph == '^') {
+            mapped = "ρ";
+        } else {
+            mapped = "ξ";
+        }
+        return mapped;
+    }
+
     private void emit(
         final Emit emit, final Suffix suffix, final String base,
         final boolean fragile, final List<Value> args, final String outer
@@ -149,17 +161,5 @@ final class LnReversed implements Line {
 
     private static boolean rootHead(final char glyph) {
         return glyph == '@' || glyph == '^' || glyph == '$';
-    }
-
-    private static String rootSymbol(final char glyph) {
-        final String mapped;
-        if (glyph == '@') {
-            mapped = "φ";
-        } else if (glyph == '^') {
-            mapped = "ρ";
-        } else {
-            mapped = "ξ";
-        }
-        return mapped;
     }
 }

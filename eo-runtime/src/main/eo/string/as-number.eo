@@ -32,6 +32,8 @@
 
   -42.eq "-42".as-number ++> can-convert-negative-text
 
+  1.0e-320.eq "1e-320".as-number ++> can-convert-subnormal-exponent-text
+
   5.eq "5".as-number ++> can-convert-text
 
   42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
