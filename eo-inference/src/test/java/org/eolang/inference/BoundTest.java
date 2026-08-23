@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 final class BoundTest {
 
     @Test
-    void secondApplicationOfAChainFillsTheSecondVoidNotTheFirst() {
+    void fillsTheSecondVoidWhenAChainAppliesTwice() {
         final Map<String, Collection<Map<String, String>>> rows = Map.of(
             "pair",
             List.of(

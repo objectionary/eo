@@ -75,12 +75,6 @@ final class Consumed {
         return mine;
     }
 
-    /**
-     * What one step of a chain fills on its own.
-     * @param step The locator of the application at this step
-     * @param before The voids the earlier steps of the chain already took
-     * @return The objects the voids hold, by the locator of the void
-     */
     private Map<String, String> stepped(final String step, final Map<String, String> before) {
         final Map<String, String> mine = new LinkedHashMap<>(0);
         final String root = this.root(step);
@@ -97,11 +91,6 @@ final class Consumed {
         return mine;
     }
 
-    /**
-     * The chain of a node's own copies, from the furthest to the nearest.
-     * @param node The locator to start from
-     * @return The applications on the way, the node itself last
-     */
     private List<String> order(final String node) {
         final List<String> steps = new ArrayList<>(0);
         final Collection<String> seen = new HashSet<>(0);
@@ -114,12 +103,6 @@ final class Consumed {
         return steps;
     }
 
-    /**
-     * The formation at the end of a node's chain of copies.
-     * @param type The locator to start from
-     * @return The locator of the formation, or the type itself when it copies
-     *  nothing
-     */
     private String root(final String type) {
         final Collection<String> seen = new HashSet<>(0);
         String walked = type;
