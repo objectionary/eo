@@ -4,8 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -29,12 +27,6 @@ import java.util.regex.Pattern;
 final class Emissions {
 
     /**
-     * Bits an IEEE-754 double keeps below the leading one of its
-     * significand.
-     */
-    private static final int SIGNIFICAND_BITS = 52;
-
-    /**
      * The void the identity object {@code I} binds and decorates.
      */
     private static final String IDENTITY = "x";
@@ -42,11 +34,10 @@ final class Emissions {
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
      * special forms — §4.5. Shared by every producer of a void parameter
-     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
-     * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on. The cactus emoji is
-     * excluded along with the ordinary NAME terminators, since §2.3 keeps
-     * that glyph for auto-names.
+     * list ({@link LnFormation}, {@link LnOnlyPhi}, {@link InlinePhi}), so a
+     * bracket list is validated the same way regardless of which line
+     * shape it appears on. The cactus emoji is excluded along with the
+     * ordinary NAME terminators, since §2.3 keeps that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
         "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
@@ -134,9 +125,9 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
-            Emissions.number(emit, name, value, line);
+            Numbers.number(emit, name, value, line);
         } else if (value.kind() == Value.Kind.HEX) {
-            Emissions.hex(emit, name, value, line);
+            Numbers.hex(emit, name, value, line);
         } else if (value.kind() == Value.Kind.BYTES) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
@@ -221,6 +212,25 @@ final class Emissions {
     }
 
     /**
+     * Wrap a numeric or escape parsing failure as a {@link ParseError}
+     * with its cause attached.
+     * @param cause The underlying failure
+     * @param line Source line
+     * @param pos Source column
+     * @param message Human-readable diagnostics
+     * @return Configured parse error
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    static ParseError numberFormat(
+        final NumberFormatException cause, final int line,
+        final int pos, final String message
+    ) {
+        final ParseError error = new ParseError(line, pos, message);
+        error.initCause(cause);
+        return error;
+    }
+
+    /**
      * Reject a void parameter name the grammar does not accept — §4.5.
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
@@ -233,6 +243,26 @@ final class Emissions {
                 "parameter names in voids must be NAME or @"
             );
         }
+    }
+
+    /**
+     * Map a void-parameter name to its decoration form: {@code @} becomes
+     * {@code φ} and {@code ^} becomes {@code ρ} (§4.5). Shared by every
+     * producer of a void parameter list so the special forms resolve the
+     * same way regardless of which line shape emits them.
+     * @param raw The parameter name, as written
+     * @return The name to bind as a void
+     */
+    static String mapVoidParam(final String raw) {
+        final String mapped;
+        if ("@".equals(raw)) {
+            mapped = "φ";
+        } else if ("^".equals(raw)) {
+            mapped = "ρ";
+        } else {
+            mapped = raw;
+        }
+        return mapped;
     }
 
     private static void openBase(
@@ -248,7 +278,7 @@ final class Emissions {
         } else if (value.kind() == Value.Kind.IDENTITY) {
             Emissions.identity(emit, name, value, line);
         } else if (value.kind() == Value.Kind.GROUP) {
-            Emissions.group(emit, name, value, line);
+            InlinePhi.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
@@ -263,37 +293,6 @@ final class Emissions {
         emit.close();
     }
 
-    private static void hex(
-        final Emit emit, final String name, final Value value, final int line
-    ) {
-        final long raw;
-        try {
-            raw = Long.parseLong(value.raw().substring(2), 16);
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(),
-                "hexadecimal literal is out of range"
-            );
-            error.initCause(ex);
-            throw error;
-        }
-        final double parsed = raw;
-        if (!Emissions.exact(new BigDecimal(raw), parsed)) {
-            throw new ParseError(
-                line, value.pos(),
-                String.format(
-                    "%s is over-precise, write %s instead",
-                    value.raw(), Emissions.canonicalInteger(parsed)
-                )
-            );
-        }
-        emit.object(name, "Φ.number", line, value.pos());
-        Emissions.bytesCarrier(
-            emit, line, value.pos(),
-            new Hex(parsed).asString()
-        );
-    }
-
     private static void string(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -304,106 +303,15 @@ final class Emissions {
                 value.raw().substring(1, value.raw().length() - 1)
             );
         } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
+            throw Emissions.numberFormat(
+                ex, line, value.pos(),
+                "invalid unicode or octal escape in string literal"
             );
-            error.initCause(ex);
-            throw error;
         }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
             new Hex(unescaped).asString()
         );
-    }
-
-    private static void number(
-        final Emit emit, final String name, final Value value, final int line
-    ) {
-        final double parsed = Double.parseDouble(value.raw());
-        if (!Double.isFinite(parsed)) {
-            throw new ParseError(
-                line, value.pos(),
-                String.format(
-                    "%s is out of the finite range of a double", value.raw()
-                )
-            );
-        }
-        if (Emissions.overPrecise(value.raw(), parsed)) {
-            final String canonical;
-            if (value.kind() == Value.Kind.INTEGER) {
-                canonical = Emissions.canonicalInteger(parsed);
-            } else {
-                canonical = Double.toString(parsed);
-            }
-            throw new ParseError(
-                line, value.pos(),
-                String.format(
-                    "%s is over-precise, write %s instead",
-                    value.raw(), canonical
-                )
-            );
-        }
-        emit.object(name, "Φ.number", line, value.pos());
-        Emissions.bytesCarrier(
-            emit, line, value.pos(),
-            new Hex(parsed).asString()
-        );
-    }
-
-    private static boolean overPrecise(final String raw, final double parsed) {
-        final BigDecimal written = new BigDecimal(raw);
-        return !Emissions.exact(written, parsed)
-            && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
-    }
-
-    private static boolean exact(final BigDecimal decimal, final double value) {
-        return decimal.compareTo(Emissions.exactly(value)) == 0;
-    }
-
-    private static BigDecimal exactly(final double value) {
-        final int exponent = Math.max(
-            Math.getExponent(value), Double.MIN_EXPONENT
-        ) - Emissions.SIGNIFICAND_BITS;
-        final BigInteger mantissa = BigInteger.valueOf(
-            (long) Math.scalb(value, -exponent)
-        );
-        final BigDecimal exact;
-        if (exponent < 0) {
-            exact = new BigDecimal(
-                mantissa.multiply(BigInteger.valueOf(5L).pow(-exponent)),
-                -exponent
-            );
-        } else {
-            exact = new BigDecimal(mantissa.shiftLeft(exponent));
-        }
-        return exact;
-    }
-
-    private static String canonicalInteger(final double num) {
-        final String str;
-        if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
-            str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
-            str = Long.toString((long) num);
-        } else {
-            str = Double.toString(num);
-        }
-        return str;
-    }
-
-    private static void group(
-        final Emit emit, final String name, final Value value, final int line
-    ) {
-        final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Emissions.topLevelInlinePhi(inner);
-        if (phi >= 0) {
-            Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
-        } else {
-            final Span sub = new Span(
-                " ".repeat(value.pos() + 1).concat(inner), line
-            );
-            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
-        }
     }
 
     private static String rootBase(final String raw) {
@@ -440,7 +348,6 @@ final class Emissions {
         }
         return reversed;
     }
-
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
@@ -451,93 +358,4 @@ final class Emissions {
         return mapped;
     }
 
-    private static int topLevelInlinePhi(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() - 2 && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' ' && body.charAt(idx + 2) == '[') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
-    }
-
-    private static void inlinePhi(
-        final Emit emit, final String name, final String inner,
-        final int phi, final int column, final int line
-    ) {
-        final int bracket = phi + 2;
-        final int close = inner.indexOf(']', bracket);
-        if (close < 0) {
-            throw new ParseError(
-                line, column + bracket,
-                "only-phi parameter list missing closing `]`"
-            );
-        }
-        final String lhs = inner.substring(0, phi).stripTrailing();
-        final String params = inner.substring(bracket + 1, close);
-        final Suffix suffix = new Suffix(
-            inner.substring(close + 1),
-            new Span(" ".repeat(column).concat(inner), line),
-            column + close + 1
-        );
-        final String label;
-        if (suffix.present()) {
-            label = suffix.attribute(line, column);
-        } else {
-            label = name;
-        }
-        emit.object(label, null, line, column);
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
-        if (suffix.constant()) {
-            emit.constant();
-        }
-        int pcol = column + bracket + 1;
-        for (final String param : Emissions.splitParams(params)) {
-            Emissions.validParam(param, line, pcol);
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, line, pcol);
-            pcol = pcol + param.length() + 1;
-        }
-        final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
-        emit.close();
-    }
-
-    private static List<String> splitParams(final String text) {
-        final List<String> out = new java.util.ArrayList<>(0);
-        int idx = 0;
-        while (idx < text.length()) {
-            int end = idx;
-            while (end < text.length() && text.charAt(end) != ' ') {
-                end = end + 1;
-            }
-            out.add(text.substring(idx, end));
-            if (end < text.length()) {
-                idx = end + 1;
-            } else {
-                idx = end;
-            }
-        }
-        return out;
-    }
 }
