@@ -348,6 +348,7 @@ final class Emissions {
         }
         return reversed;
     }
+
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
