@@ -151,11 +151,23 @@
           if.
             core.size.eq 0
             "."
-            core.concat
-              if.
-                trailing.and rooted.not
-                ^.separator
-                --
+            if.
+              and.
+                body.size.eq 0
+                and.
+                  ^.drive.size.gt 0
+                  ^.is-absolute.not
+              core.concat
+                ".".concat
+                  if.
+                    trailing.and rooted.not
+                    ^.separator
+                    --
+              core.concat
+                if.
+                  trailing.and rooted.not
+                  ^.separator
+                  --
       and. > rooted
         core.size.gt 0
         eq.
@@ -320,6 +332,11 @@
       path.win32 "C:\\Ж"
     "C:\\Ж"
 
+  eq. ++> can-normalize-a-drive-relative-win32-path-collapsing-to-the-current-directory-with-a-trailing-separator
+    normalized.
+      path.win32 "C:foo\\..\\"
+    "C:.\\"
+
   eq. ++> can-normalize-a-drive-relative-win32-path-keeping-a-leading-dotdot
     normalized.
       path.win32 "C:..\\foo"
@@ -433,7 +450,7 @@
   eq. ++> can-normalize-a-win32-path-down-to-a-drive-without-a-separator
     normalized.
       path.win32 "C:hello\\.."
-    "C:"
+    "C:."
 
   eq. ++> can-normalize-a-win32-path-replacing-slashes
     normalized.
