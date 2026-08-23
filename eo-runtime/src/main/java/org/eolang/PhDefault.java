@@ -25,6 +25,13 @@ import java.util.stream.Collectors;
  * <p>The class is thread-safe.</p>
  *
  * @since 0.1
+ * @todo #7304:60min Stop deciding identity from a hash code in
+ *  {@code equals}. The hash of a Phi is its identity hash, which repeats:
+ *  two unrelated objects that collide compare equal today, as the run in
+ *  #7304 shows: 2135 colliding pairs among three million objects, every one
+ *  of them reported equal. Memory blocks no longer depend on it, but this
+ *  method still does. Compare identity directly, and check what breaks in
+ *  the tests that lean on the current behaviour before changing it.
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
 @SuppressWarnings("PMD.GodClass")
@@ -317,10 +324,14 @@ public class PhDefault implements Phi, Cloneable {
     public void add(final String name, final Attribute attr) {
         this.lock.lock();
         try {
-            if (PhDefault.SORTABLE.matcher(name).matches()) {
+            if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
                 this.order.add(name);
             }
-            this.loaded().put(name, new AtWithRho(attr, this));
+            if (Phi.RHO.equals(name)) {
+                this.loaded().put(name, attr);
+            } else {
+                this.loaded().put(name, new AtWithRho(attr, this));
+            }
         } finally {
             this.lock.unlock();
         }
@@ -480,6 +491,8 @@ public class PhDefault implements Phi, Cloneable {
         final String result;
         if (data.length == 0) {
             result = "--";
+        } else if (data.length == 1) {
+            result = String.format("%02X-", data[0]);
         } else {
             final StringBuilder out = new StringBuilder(data.length * 3);
             for (final byte bte : data) {

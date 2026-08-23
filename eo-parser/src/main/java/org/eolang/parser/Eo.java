@@ -36,9 +36,9 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Head characters of §3.1 that open a root-headed line without
-     * opening a literal — group, star, root, identity, and self tokens.
+     * opening a literal — group, star, root, and identity tokens.
      */
-    private static final String ROOT_TOKENS = "*(QTI@^$%";
+    private static final String ROOT_TOKENS = "*(QTI@^$";
 
     /**
      * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
@@ -523,8 +523,17 @@ final class Eo implements Iterable<Directive> {
 
     private static boolean compactTuple(final Span span) {
         final String body = span.body();
+        int depth = 0;
         int idx = 0;
-        while (idx < body.length() && body.charAt(idx) != ' ') {
+        while (idx < body.length() && (depth > 0 || body.charAt(idx) != ' ')) {
+            final char glyph = body.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(body, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            }
             idx = idx + 1;
         }
         boolean compact = false;

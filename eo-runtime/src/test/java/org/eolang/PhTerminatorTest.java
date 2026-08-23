@@ -22,14 +22,14 @@ final class PhTerminatorTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new Dataized(new PhTerminator()).take(),
-            "dataizing the bottom object must abort instead of returning data"
+            "dataizing the terminator must abort instead of returning data"
         );
     }
 
     @Test
     void propagatesOnDispatch() {
         MatcherAssert.assertThat(
-            "dispatching an attribute on the bottom object must propagate another bottom, not abort",
+            "dispatching an attribute on the terminator must propagate another one, not abort",
             new PhTerminator().take("any"),
             Matchers.instanceOf(PhTerminator.class)
         );
@@ -38,7 +38,7 @@ final class PhTerminatorTest {
     @Test
     void copiesIntoAnotherTerminator() {
         MatcherAssert.assertThat(
-            "copying the bottom object must yield another bottom, not abort",
+            "copying the terminator must yield another one, not abort",
             new PhTerminator().copy(),
             Matchers.instanceOf(PhTerminator.class)
         );
@@ -48,19 +48,19 @@ final class PhTerminatorTest {
     void toleratesBinding() {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(0, new PhTerminator()),
-            "putting an object into the bottom object must not abort"
+            "putting an object into the terminator must not abort"
         );
     }
 
     @Test
     void reportsTheGivenCauseOnPanic() {
-        final PhTerminator bottom = new PhTerminator();
-        bottom.put(0, new Data.ToPhi("cannot proceed here"));
+        final PhTerminator terminator = new PhTerminator();
+        terminator.put(0, new Data.ToPhi("cannot proceed here"));
         MatcherAssert.assertThat(
-            "forcing the bottom object must not hide the cause that was put into it",
+            "forcing the terminator must not hide the cause that was put into it",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Dataized(bottom).take()
+                () -> new Dataized(terminator).take()
             ).getMessage(),
             Matchers.containsString("cannot proceed here")
         );
@@ -69,12 +69,12 @@ final class PhTerminatorTest {
     @Test
     void preservesPercentSignsInCause() {
         final String cause = "100% complete";
-        final PhTerminator bottom = new PhTerminator(new Data.ToPhi(cause));
+        final PhTerminator terminator = new PhTerminator(new Data.ToPhi(cause));
         MatcherAssert.assertThat(
-            "forcing the bottom object must treat its cause as literal text",
+            "forcing the terminator must treat its cause as literal text",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Dataized(bottom).take()
+                () -> new Dataized(terminator).take()
             ).getMessage(),
             Matchers.equalTo(cause)
         );
@@ -82,14 +82,14 @@ final class PhTerminatorTest {
 
     @Test
     void keepsTheFirstCause() {
-        final PhTerminator bottom = new PhTerminator();
-        bottom.put(0, new Data.ToPhi("the birth reason"));
-        bottom.put(0, new Data.ToPhi("a later reason"));
+        final PhTerminator terminator = new PhTerminator();
+        terminator.put(0, new Data.ToPhi("the birth reason"));
+        terminator.put(0, new Data.ToPhi("a later reason"));
         MatcherAssert.assertThat(
-            "a later object put into the bottom object must not overwrite its first cause",
+            "a later object put into the terminator must not overwrite its first cause",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Dataized(bottom).take()
+                () -> new Dataized(terminator).take()
             ).getMessage(),
             Matchers.containsString("the birth reason")
         );
@@ -97,11 +97,11 @@ final class PhTerminatorTest {
 
     @Test
     void hidesTheCauseFromTake() {
-        final PhTerminator bottom = new PhTerminator();
-        bottom.put(0, new Data.ToPhi("secret cause"));
+        final PhTerminator terminator = new PhTerminator();
+        terminator.put(0, new Data.ToPhi("secret cause"));
         MatcherAssert.assertThat(
-            "taking an attribute must not hand back the cause, only another bottom",
-            bottom.take("cause"),
+            "taking an attribute must not hand back the cause, only another terminator",
+            terminator.take("cause"),
             Matchers.instanceOf(PhTerminator.class)
         );
     }
@@ -147,7 +147,7 @@ final class PhTerminatorTest {
     @Test
     void keepsDispatchArgumentsOutOfTheCause() {
         MatcherAssert.assertThat(
-            "a bottom reached by a dispatch names the argument it was handed, not the termination",
+            "a terminator reached by a dispatch names the argument it got, not the termination",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(
@@ -165,7 +165,7 @@ final class PhTerminatorTest {
     @Test
     void carriesTheCauseThroughDispatch() {
         MatcherAssert.assertThat(
-            "the reason a bottom was born with is lost once it travels through a dispatch",
+            "the reason a terminator was born with is lost once it travels through a dispatch",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(
@@ -183,7 +183,7 @@ final class PhTerminatorTest {
     void toleratesPutAtOtherPositions() {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(1, new Data.ToPhi("nope")),
-            "putting into the bottom object away from position 0 must not abort"
+            "putting into the terminator away from position 0 must not abort"
         );
     }
 
@@ -192,7 +192,7 @@ final class PhTerminatorTest {
         Assertions.assertThrows(
             ExFailure.class,
             () -> new PhTerminator().put("cause", new Data.ToPhi("nope")),
-            "putting into the bottom object by name, even cause, must abort"
+            "putting into the terminator by name, even cause, must abort"
         );
     }
 
@@ -200,32 +200,32 @@ final class PhTerminatorTest {
     void toleratesRhoBinding() {
         Assertions.assertDoesNotThrow(
             () -> new PhTerminator().put(Phi.RHO, new PhDefault()),
-            "binding ρ onto the bottom object must not abort"
+            "binding ρ onto the terminator must not abort"
         );
     }
 
     @Test
-    void resolvesADataValueToNonBottom() {
+    void resolvesADataValueToNonTerminator() {
         MatcherAssert.assertThat(
-            "resolving a real data value must not be seen as a bottom",
+            "resolving a real data value must not be seen as a terminator",
             new Data.ToPhi(42L).normalized(),
             Matchers.not(Matchers.instanceOf(PhTerminator.class))
         );
     }
 
     @Test
-    void resolvesTheBottomToItself() {
+    void resolvesTheTerminatorToItself() {
         MatcherAssert.assertThat(
-            "resolving the bottom object must reveal a bottom",
+            "resolving the terminator must reveal a terminator",
             new PhTerminator().normalized(),
             Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
-    void resolvesALazyDispatchToBottom() {
+    void resolvesALazyDispatchToTerminator() {
         MatcherAssert.assertThat(
-            "a lazy dispatch that yields a bottom must resolve to a PhTerminator without forcing",
+            "a lazy dispatch that yields a terminator must resolve to a PhTerminator lazily",
             new PhDispatch(new PhDefault(), "missing").normalized(),
             Matchers.instanceOf(PhTerminator.class)
         );

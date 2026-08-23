@@ -146,9 +146,9 @@
                           "/^"
                           translated 0 "" false false
                           "$/"
-                  T > [message] >>
-                    "Can't parse '%s' as a glob pattern, %s".printf
-                      * ^.glob message
+                T > [message] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * ^.glob message
               text
     "".joined >> single
       *
@@ -190,10 +190,12 @@
                 false
                 braced
           within
-      if. > advance
-        double.or negated
-        2
-        1
+      slashed.if > advance
+        3
+        if.
+          double.or negated
+          2
+          1
       if. > alternated
         char.eq "{"
         "("
@@ -226,6 +228,12 @@
           char.eq "["
           closes
             index.plus 1
+      double.and > slashed
+        eq.
+          ^.glob.at
+            index.plus 2
+            "" > [space]
+          "/"
       classed.if > token
         if.
           char.eq "]"
@@ -233,19 +241,21 @@
           classified char
         opening.if
           negated.if "[^" "["
-          double.if
-            ".*"
-            if.
-              char.eq "*"
-              "".joined
-                * single "*"
+          slashed.if
+            "(?:.*/)?"
+            double.if
+              ".*"
               if.
-                char.eq "?"
-                single
+                char.eq "*"
+                "".joined
+                  * single "*"
                 if.
-                  char.eq "/"
-                  literal
-                  alternated
+                  char.eq "?"
+                  single
+                  if.
+                    char.eq "/"
+                    literal
+                    alternated
       opening.if > within
         true
         if.
@@ -460,6 +470,25 @@
       touched.
         as-file.
           d.resolved "x/y/z/a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-including-direct-children
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "root.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/nested.txt"
       eq.
         length.
           d.as-dir.walk "**/*.txt"

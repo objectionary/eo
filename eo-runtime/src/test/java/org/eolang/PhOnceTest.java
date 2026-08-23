@@ -19,7 +19,7 @@ final class PhOnceTest {
         MatcherAssert.assertThat(
             "PhOnce without explicit term must delegate φ-term to the wrapped object, but it didnt",
             new PhOnce(() -> new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
@@ -33,9 +33,9 @@ final class PhOnceTest {
     }
 
     @Test
-    void letsANormalizedBottomPropagateBare() {
+    void letsANormalizedTerminatorPropagateBare() {
         MatcherAssert.assertThat(
-            "normalized() must not re-wrap a bottom, so callers can still detect it with instanceof, but it did",
+            "normalized() must not re-wrap a terminator, so callers can still detect it with instanceof",
             new PhOnce(PhTerminator::new).normalized(),
             Matchers.instanceOf(PhTerminator.class)
         );

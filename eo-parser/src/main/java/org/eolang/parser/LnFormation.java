@@ -209,18 +209,14 @@ final class LnFormation implements Line {
     }
 
     private static String mapParam(final String raw, final Span span, final int pos) {
+        Emissions.validParam(raw, span.line(), pos);
         final String mapped;
         if ("@".equals(raw)) {
             mapped = "φ";
         } else if ("^".equals(raw)) {
             mapped = "ρ";
-        } else if (raw.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?")) {
-            mapped = raw;
         } else {
-            throw new ParseError(
-                span.line(), pos,
-                "parameter names in voids must be NAME or @"
-            );
+            mapped = raw;
         }
         return mapped;
     }

@@ -110,9 +110,9 @@ final class AtWithRhoTest {
     }
 
     @Test
-    void keepsCauseVisibleWhenBindingRhoOntoWrappedBottom() {
+    void keepsCauseVisibleWhenBindingRhoOntoWrappedTerminator() {
         MatcherAssert.assertThat(
-            "AtWithRho must not mask the cause of a wrapped bottom object when it binds ρ",
+            "AtWithRho must not mask the cause of a wrapped terminator when it binds ρ",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(
@@ -128,6 +128,20 @@ final class AtWithRhoTest {
                 ).take()
             ).getMessage(),
             Matchers.containsString("the deep reason")
+        );
+    }
+
+    @Test
+    void leavesADeclaredReceiverUnwrapped() {
+        final PhDefault host = new PhDefault();
+        host.add(
+            "kid",
+            new AtComposite(host, rho -> new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho()))))
+        );
+        MatcherAssert.assertThat(
+            "a declared receiver must hand out the host itself, but it didnt",
+            host.take("kid").take(Phi.RHO),
+            Matchers.is(host)
         );
     }
 }

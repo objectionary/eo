@@ -344,10 +344,39 @@
   -->
   <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
     <xsl:variable name="name" as="xs:string" select="string(@name)"/>
-    <xsl:if test="eo:recursive(., $name) or eo:dispatched(., $name) or eo:vertical-const(.) or eo:unreferenced(., $name) or (eo:multi-referenced(., $name) and eo:rebuilt(.)) or eo:piped(., $name) or eo:arg-applied(., $name) or eo:nested-applied(., $name) or eo:reapplied(., $name)">
-      <xsl:copy>
-        <xsl:apply-templates select="node()|@*"/>
-      </xsl:copy>
+    <xsl:if test="eo:kept-binding(., $name)">
+      <!--
+      This kept binding's own value may itself be a bare reference to
+      another based handle (`p >> r` over `E0- >> p`, #7297) — a
+      transparent alias exactly like the one `eo:alias-target` resolves
+      for an ordinary reference above. When the aliased handle is not
+      itself kept (none of the same nine conditions apply to it), the
+      priority-0 template above never runs for it either — it never
+      matches this element, whose higher-priority binding-drop match
+      wins — so its binding vanishes and a naive verbatim copy would
+      leave this node's `@base` pointing at nothing, printed as an
+      orphaned synthetic name (#7297). Resolve the alias chain here too,
+      landing the real value directly, and skip this for an abstract or
+      void alias target, whose own name (or const layout) still matters
+      and is handled by the ordinary reference path instead.
+      -->
+      <xsl:variable name="ref-name" select="if (contains(@base, concat('.', $auto))) then eo:resolved-name(@base) else ()"/>
+      <xsl:variable name="ref-target" select="if (exists($ref-name)) then ancestor::o/o[@name=$ref-name][1] else ()"/>
+      <xsl:choose>
+        <xsl:when test="exists($ref-target) and not(eo:void($ref-target)) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
+          <xsl:variable name="alias" select="eo:alias-target($ref-target, ())"/>
+          <xsl:copy>
+            <xsl:apply-templates select="@*[name() != 'base']"/>
+            <xsl:attribute name="base" select="$alias/@base"/>
+            <xsl:apply-templates select="$alias/node()"/>
+          </xsl:copy>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:copy>
+            <xsl:apply-templates select="node()|@*"/>
+          </xsl:copy>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
   </xsl:template>
   <!--
@@ -486,6 +515,17 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="not(eo:abstract($target)) and not(eo:dataized-const($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
+  </xsl:function>
+  <!--
+  Whether the auto-named binding `$target` survives the drop template
+  below — the same nine questions the template's own "xsl:if" asks,
+  shared so a binding's kept/dropped status can be looked up for a
+  target other than the current node (#7297).
+  -->
+  <xsl:function name="eo:kept-binding" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="eo:recursive($target, $name) or eo:dispatched($target, $name) or eo:vertical-const($target) or eo:unreferenced($target, $name) or (eo:multi-referenced($target, $name) and eo:rebuilt($target)) or eo:piped($target, $name) or eo:arg-applied($target, $name) or eo:nested-applied($target, $name) or eo:reapplied($target, $name)"/>
   </xsl:function>
   <!--
   The references in the binding's owner that reach the auto-name `$name`
