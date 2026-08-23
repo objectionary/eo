@@ -3,12 +3,14 @@
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer below 2^53 (negative,
 # fractional, nan, infinite, or too large to reach zero by repeated
-# subtraction of one), the `cant-print` fallback is returned, or the bottom
-# object when unbound.
+# subtraction of one), the `cant-print` fallback is returned, or the
+# terminator when unbound.
 #
 # The value is split into its integer and fraction parts before scaling, so
 # only the fraction is multiplied by a power of ten and every magnitude that
-# `as-decimal` writes exactly is written exactly here too.
+# `as-decimal` writes exactly is written exactly here too. A magnitude of
+# 2^63 or larger is past what `as-decimal` can write, so it returns the
+# `cant-print` fallback as well, instead of terminating.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -20,15 +22,18 @@
 [places cant-print] > as-fixed
   if. > @
     n.is-finite.not.or
-      or.
-        0.gt places
-        places.is-integer.not.or
-          places.gt 9007199254740991
+      huge.or
+        or.
+          0.gt places
+          places.is-integer.not.or
+            places.gt 9007199254740991
     cant-print
       n.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
-        "Can't write a fixed-point decimal with %f fraction places".printf
-          * places
+        huge.if
+          "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
+          "Can't write a fixed-point decimal with %f fraction places".printf
+            * places
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
@@ -67,6 +72,8 @@
             positive a
         | (n.times -1)
         positive n
+  n.abs.gte > huge
+    2.power 63
   ^ > n
   if. > [p] >> pow10
     p.eq 0
@@ -113,6 +120,12 @@
     string
       -0.001.as-fixed 2
 
+  eq. ++> can-format-the-error-message-of-a-magnitude-past-the-decimal-range
+    "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
+    9.223372036854776e18.as-fixed
+      0
+      I
+
   eq. ++> can-format-the-error-message-of-a-non-decrementable-precision
     "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
     1.25.as-fixed
@@ -149,6 +162,12 @@
     "-0.00"
     string
       0.neg.as-fixed 2
+
+  eq. ++> can-recover-from-a-magnitude-past-the-decimal-range
+    "recovered"
+    9.223372036854776e18.as-fixed
+      2
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
     "recovered"

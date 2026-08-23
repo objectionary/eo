@@ -16,11 +16,3 @@ origin: |
     "x".eq "y" > c
     01-.eq 02- > d
     foo.plus 3 > e
-
-printed: |
-  [foo] > app
-    5.plus 3 > a
-    -1.times 228 > b
-    "x".eq "y" > c
-    01-.eq 02- > d
-    foo.plus 3 > e

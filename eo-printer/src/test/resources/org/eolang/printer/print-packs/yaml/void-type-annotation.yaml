@@ -17,12 +17,3 @@ origin: |
     ? > len
     ? > cant-slice /{Q.string}
     ? > bad-range /{Q.string Q.a.b.c}
-
-printed: |
-  +package org.eolang
-
-  [] > slice /Q.bytes
-    ? > start
-    ? > len
-    ? > cant-slice /{Q.string}
-    ? > bad-range /{Q.string Q.a.b.c}
