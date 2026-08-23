@@ -41,9 +41,18 @@
     n.abs
     0
   as-fixed. > mantissa
-    n.div
-      10.power
-        number exponent
+    if. > [v e] >> scaled
+      e.eq 0
+      v
+      if.
+        e.lt 0
+        ^.scaled
+          v.times 10
+          e.plus 1
+        ^.scaled
+          v.div 10
+          e.minus 1
+    | n (number exponent)
     6
   ^ > n
   carried.as-bool.if > normalized!
@@ -99,6 +108,10 @@
     "1.000000e-7"
     string 1.0e-7.as-scientific
 
+  eq. ++> can-name-a-subnormal-magnitude
+    "1.000000e-320"
+    string 1.0e-320.as-scientific
+
   eq. ++> can-name-nan
     "nan"
     string nan.as-scientific
@@ -110,3 +123,7 @@
   eq. ++> can-name-positive-infinity
     "infinity"
     string pinf.as-scientific
+
+  eq. ++> can-name-the-smallest-positive-subnormal
+    "4.900000e-324"
+    string 4.9e-324.as-scientific
