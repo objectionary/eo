@@ -14,17 +14,20 @@ concurrency:
   cancel-in-progress: true
 jobs:
   counts:
-    timeout-minutes: 15
+    timeout-minutes: 3
     runs-on: ubuntu-24.04
     steps:
       # The branch is checked out only to be read by `grep`, nothing from
       # it is executed and the token is not left in the workspace, thus
       # the checkout is safe here. Never add a build step to this job: it
       # runs with write permissions and would then be a "pwn request".
+      # The depth is two, not zero: we only ever read the merge commit and
+      # its first parent. A full clone drags in `gh-pages`, which is about
+      # three gigabytes of generated site snapshots, and takes 13 minutes.
       - uses: actions/checkout@v7
         with:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
-          fetch-depth: 0
+          fetch-depth: 2
           persist-credentials: false
           allow-unsafe-pr-checkout: true
       # Every metric must track exactly one pattern. Merging a few of them

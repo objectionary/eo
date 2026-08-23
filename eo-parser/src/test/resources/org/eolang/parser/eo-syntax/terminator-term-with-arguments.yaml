@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# #6707: `T` takes arguments - they are the cause of the bottom, the way
+# #6707: `T` takes arguments - they are the cause of the terminator, the way
 # `T "why it failed"` is used across the runtime. Both the horizontal and the
 # vertical form are accepted, the arguments land under the `⊥` object, and a
-# `.method` chain on `T` is read as a dispatch on the bottom.
+# `.method` chain on `T` is read as a dispatch on the terminator.
 sheets: []
 asserts:
   - /object[not(errors)]
