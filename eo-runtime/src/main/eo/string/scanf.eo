@@ -7,6 +7,16 @@
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
+#
+# The `%f` conversion never materializes the whole power of ten at once,
+# because `10.power 309` is already infinity: a single multiplication by it
+# turns every mantissa into infinity and a single division by it turns every
+# mantissa into zero, whatever the written value is. `raised` and `lowered`
+# therefore scale in steps of at most `10^300`, so every intermediate stays
+# inside the double range and an underflow happens only when the value itself
+# underflows. Both stop as soon as the value is zero or infinite, since no
+# further step can move it, and that is what keeps the recursion short for an
+# exponent written far outside the range, such as `1e999999999`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -56,6 +66,16 @@
             eloc.plus 1
             esign.length.minus
               eloc.plus 1
+      if. > [value power] > lowered
+        and.
+          power.gt 300
+          ^.scalable value
+        ^.lowered
+          value.div
+            10.power 300
+          power.minus 300
+        value.div
+          10.power power
       if. > magnitude
         not.
           dot.eq -1
@@ -79,16 +99,29 @@
         "-"
       mantissa.length.minus > places
         dot.plus 1
+      if. > [value power] > raised
+        and.
+          power.gt 300
+          ^.scalable value
+        ^.raised
+          value.times
+            10.power 300
+          power.minus 300
+        value.times
+          10.power power
+      and. > [value] > scalable
+        not.
+          value.eq 0
+        value.is-finite
       if. > scaled
         exponent.eq 0
         magnitude
         if.
           exponent.gt 0
-          magnitude.times
-            10.power exponent
-          magnitude.div
-            10.power
-              exponent.times -1
+          raised magnitude exponent
+          lowered
+            magnitude
+            exponent.times -1
       negative.or > signed
         eq.
           text.slice 0 1
@@ -459,3 +492,27 @@
     1
     head.
       "%f".scanf "1e0"
+
+  eq. ++> can-scan-a-float-at-the-edge-of-the-power-of-ten-range
+    1.0e-309
+    head.
+      "%f".scanf "0.1e-308"
+
+  eq. ++> can-scan-a-subnormal-float-with-an-exponent-below-the-range
+    1.0e-320
+    head.
+      "%f".scanf "1e-320"
+
+  eq. ++> can-scan-the-smallest-positive-float
+    4.9e-324
+    head.
+      "%f".scanf "5e-324"
+
+  gt. ++> can-scan-a-normal-float-with-an-exponent-below-the-range
+    head.
+      "%f".scanf "123.456e-310"
+    1.0e-308
+
+  is-finite. ++> can-scan-a-finite-float-with-an-exponent-above-the-range
+    head.
+      "%f".scanf "0.001e311"
