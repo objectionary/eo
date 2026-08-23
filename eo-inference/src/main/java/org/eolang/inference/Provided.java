@@ -109,19 +109,24 @@ final class Provided {
     }
 
     /**
-     * The void this type keeps in the given place.
+     * The void this type keeps in the given place, among the voids nothing
+     * has taken yet.
      * @param type The name the type goes by
-     * @param place The place of the void among the voids of this type
+     * @param place The place of the void among the voids of this type that
+     *  are not in {@code taken}
+     * @param taken The locators of the voids to walk past, already filled
+     *  earlier in the same chain of copies
      * @return The locator of the void, or an empty string when this type keeps
-     *  fewer voids than that
+     *  fewer untaken voids than that
      */
-    String slot(final String type, final int place) {
+    String slot(final String type, final int place, final Collection<String> taken) {
         String found = "";
         int seen = 0;
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
+            final String hollow = row.getOrDefault("type", "");
+            if ("true".equals(row.get("void")) && !taken.contains(hollow)) {
                 if (seen == place) {
-                    found = row.getOrDefault("type", "");
+                    found = hollow;
                     break;
                 }
                 seen += 1;

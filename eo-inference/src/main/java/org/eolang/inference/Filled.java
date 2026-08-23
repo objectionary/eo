@@ -33,11 +33,6 @@ import java.util.Map;
 final class Filled {
 
     /**
-     * The arguments of every application, from {@link Given}.
-     */
-    private final Map<String, List<String>> args;
-
-    /**
      * The pairs, each name against the one it is a copy of.
      */
     private final Map<String, String> pairs;
@@ -46,6 +41,11 @@ final class Filled {
      * The provides table, by the name a type goes by.
      */
     private final Provided owned;
+
+    /**
+     * What every application in a copy chain has already filled.
+     */
+    private final Consumed consumed;
 
     /**
      * Ctor.
@@ -58,9 +58,9 @@ final class Filled {
         final Map<String, String> links,
         final Provided provided
     ) {
-        this.args = arguments;
         this.pairs = links;
         this.owned = provided;
+        this.consumed = new Consumed(arguments, links, provided);
     }
 
     /**
@@ -100,14 +100,8 @@ final class Filled {
         String walked = bearer;
         while (this.pairs.containsKey(walked) && seen.add(walked)) {
             final String copied = this.pairs.get(walked);
-            if (this.args.containsKey(walked)) {
-                final List<String> given = this.args.get(walked);
-                for (int place = 0; place < given.size(); place += 1) {
-                    final String hollow = this.owned.slot(this.end(copied), place);
-                    if (!hollow.isEmpty()) {
-                        found.putIfAbsent(hollow, this.end(given.get(place)));
-                    }
-                }
+            for (final Map.Entry<String, String> fill : this.consumed.filled(walked).entrySet()) {
+                found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
             }
             walked = copied;
         }
