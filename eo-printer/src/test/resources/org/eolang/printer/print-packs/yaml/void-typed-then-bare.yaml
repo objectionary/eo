@@ -15,10 +15,3 @@ origin: |
   [] > write /Q.bool
     ? > offset /Q.number
     ? > data
-
-printed: |
-  +package org.eolang
-
-  [] > write /Q.bool
-    ? > offset /Q.number
-    ? > data
