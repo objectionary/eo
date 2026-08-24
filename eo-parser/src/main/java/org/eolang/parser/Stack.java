@@ -22,7 +22,7 @@ import java.util.List;
  * {@link Closer} when a level is popped or replaced, so the same checks
  * fire whether closing happens mid-parse (a shallower or sibling line
  * arrived) or at end-of-stream (R-5.4 / §8). The stack itself is
- * structural; semantics live with the caller. *
+ * structural; semantics live with the caller.</p>
  *
  * @since 0.1
  */

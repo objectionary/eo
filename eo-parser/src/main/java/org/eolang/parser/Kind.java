@@ -26,7 +26,7 @@ package org.eolang.parser;
  * <p>The {@link #TOP_LEVEL} sentinel is not a real expression kind — it is
  * the {@code parent_kind} for entries pushed at indent 0 (R-5.2.11), used
  * by close-time checks to recognise top-level naming requirements
- * (R-5.3.1). *
+ * (R-5.3.1).</p>
  *
  * @since 0.1
  */
