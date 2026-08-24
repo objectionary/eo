@@ -109,8 +109,9 @@ final class Inferring implements Step {
     private void measured() throws IOException {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
         Logger.info(
-            this, "%d objects, %.1f%% of them described, depth %.1f%%",
-            ladder.total(), ladder.described(), ladder.percent()
+            this,
+            "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
+            ladder.total(), ladder.named(), ladder.rooted(), ladder.blank(), ladder.percent()
         );
         for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
             Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());

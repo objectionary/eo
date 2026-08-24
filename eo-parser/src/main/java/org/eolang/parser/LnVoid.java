@@ -206,13 +206,13 @@ final class LnVoid implements Line {
             );
         }
         LnVoid.endsClean(tail, close + 1, span);
-        return LnVoid.members(tail.substring(open + 1, close), span);
+        return LnVoid.members(tail.substring(open + 1, close), open + 1, span);
     }
 
-    private static String members(final String inside, final Span span) {
+    private static String members(final String inside, final int offset, final Span span) {
         if (inside.isEmpty()) {
             throw new ParseError(
-                span.line(), span.indent(),
+                span.line(), span.indent() + 1 + offset,
                 "a `/{…}` argument list must name at least one type"
             );
         }
@@ -225,25 +225,25 @@ final class LnVoid implements Line {
             }
             if (end == idx) {
                 throw new ParseError(
-                    span.line(), span.indent(),
+                    span.line(), span.indent() + 1 + offset + idx,
                     "types in a `/{…}` list must be separated by exactly one space"
                 );
             }
             final String member = inside.substring(idx, end);
             if (member.indexOf('?') >= 0) {
                 throw new ParseError(
-                    span.line(), span.indent(),
+                    span.line(), span.indent() + 1 + offset + idx,
                     "? is not allowed inside a /{…} argument list"
                 );
             }
             if (out.length() > 0) {
                 out.append(' ');
             }
-            out.append(Suffix.typeAtom(member, span, span.indent()));
+            out.append(Suffix.typeAtom(member, span, span.indent() + 1 + offset + idx));
             idx = end + 1;
             if (idx == inside.length()) {
                 throw new ParseError(
-                    span.line(), span.indent(),
+                    span.line(), span.indent() + 1 + offset + idx,
                     "types in a `/{…}` list must be separated by exactly one space"
                 );
             }

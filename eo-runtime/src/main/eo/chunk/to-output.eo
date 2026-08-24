@@ -19,13 +19,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > to-output
+[^] > to-output
   ^ > allocated
-  [buffer] > write
+  [^ buffer] > write
     write. > @
-      [offset] >> output-block
+      [^ offset] >> output-block
         true > @
-        seq * > [buffer] > write
+        seq * > [^ buffer] > write
           if.
             gt.
               ^.offset.plus buffer.size
@@ -44,7 +44,7 @@
   eq. ++> can-make-an-output-from-malloc-and-write-to-it
     malloc.of
       10
-      seq * > [mem]
+      seq * > [^ mem]
         write.
           write.
             mem.to-output.write 01-02-03
@@ -56,7 +56,7 @@
   eq. ++> can-make-an-output-via-a-chunk-extension
     malloc.of
       3
-      seq * > [mem]
+      seq * > [^ mem]
         mem.to-output.write 01-02-03
         mem
     01-02-03
@@ -64,7 +64,7 @@
   eq. ++> can-write-data-larger-than-the-block
     malloc.of
       2
-      seq * > [mem]
+      seq * > [^ mem]
         mem.to-output.write 01-02-03
         mem
     01-02-03

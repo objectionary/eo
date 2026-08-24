@@ -23,7 +23,8 @@ final class TranspilationTest {
                 false,
                 "PhDefault",
                 Paths.get("xsl-measures.csv"),
-                Paths.get("target")
+                Paths.get("target"),
+                Paths.get("target/eo/6-inference")
             ).forSource("foo"),
             "forSource() must not throw when eo.xslMeasuresFile is a bare relative path with no parent directory"
         );

@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > arc-sine
+[^] > arc-sine
   if. > @
     arg.as-bytes.eq 80-00-00-00-00-00-00-00
     arg
@@ -23,12 +23,12 @@
           minus.
             pi.div 2
             2.times
-              [point] >> series
+              [^ point] >> series
                 times. > @
                   number
                     point >> bts!
                   poly 1
-                if. > [depth] > poly
+                if. > [^ depth] > poly
                   depth.gt 30
                   1
                   1.plus

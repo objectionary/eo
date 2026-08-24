@@ -29,6 +29,15 @@ final class DataTest {
     }
 
     @Test
+    void doesNotNeedRho() {
+        MatcherAssert.assertThat(
+            "Data must arrive with its receiver in place, but it didnt",
+            new Data.ToPhi("hello").needsRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void failsWhenObjectTypeIsUnknown() {
         Assertions.assertThrows(
             ExFailure.class,

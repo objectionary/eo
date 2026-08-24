@@ -7,8 +7,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[tail head length] > tuple
-  [i fallback] > at
+[^ tail head length] > tuple
+  [^ i fallback] > at
     if. > @
       or.
         0.gt
@@ -20,7 +20,7 @@
         ^.length.lte index
       fallback
         "Given index is out of tuple bounds"
-      if. > [tup] >> at-fast
+      if. > [^ tup] >> at-fast
         0.eq tup.length
         ^.fallback
           "Given index is out of tuple bounds"
@@ -37,17 +37,17 @@
     T
       "Can't get head from the empty tuple"
     0
-  [other] > eq
+  [^ other] > eq
     and. > @
       ^.length.eq other.length
-      if. > [first second] >> receq
+      if. > [^ first second] >> receq
         first.length.eq 0
         true
         and.
           first.head.eq second.head
           ^.receq first.tail second.tail
       | ^ other
-  tuple > [x] > with
+  tuple > [^ x] > with
     ^
     x
     as-number.
@@ -211,7 +211,7 @@
         "one"
         "two"
       1.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
@@ -222,7 +222,7 @@
         3
         4
       20
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
@@ -235,7 +235,7 @@
             "d"
             "e"
       5
-    [elements] > array
+    [^ elements] > array
 
   ++> can-report-the-length-of-an-empty-tuple
     eq. > @
@@ -244,7 +244,7 @@
           array
             *
       0
-    [elements] > array
+    [^ elements] > array
 
   ++> can-take-the-first-item-by-a-negative-index
     eq. > @

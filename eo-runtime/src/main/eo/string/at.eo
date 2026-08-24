@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[i fallback] > at
+[^ i fallback] > at
   if. > @
     not.
       eq.
@@ -50,19 +50,19 @@
     "recovered"
     "some".at
       1.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-negative-fractional-index-in-bounds
     "recovered"
     "some".at
       -1.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
     "some".at
       10
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-return-a-character-at-a-negative-index
     "m"

@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An atom keeps its body in Java, where XMIR cannot see what it does, so it
+# waits for the other half of #5165 and is not marked here, even though its
+# only void is filled with a number everywhere. The formation next to it,
+# which says what it does in EO, is marked.
+eo:
+  app.eo: |
+    [] > app
+      hidden 42 > @
+      halved 42 > @
+  hidden.eo: |
+    [] > hidden /Q.number
+      ? > x /Q.number
+  halved.eo: |
+    [x] > halved
+      x.div 2 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > div
+        x > @
+pure:
+  - "//o[@name='hidden' and not(@pure)]"
+  - "//o[@name='halved' and @pure='true']"

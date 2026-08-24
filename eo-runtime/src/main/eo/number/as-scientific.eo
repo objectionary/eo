@@ -6,6 +6,9 @@
 # digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,
 # having no digits at all. The mantissa is always normalized to `[1, 10)`, so
 # a magnitude below one carries a negative power, as `5.000000e-1` for `0.5`.
+# A magnitude below the normal range of a `double` is brought up into that range
+# before the mantissa is taken, since the power of ten that would scale it in
+# one step is itself subnormal and carries too few bits to divide by.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,7 +17,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-scientific
+[^] > as-scientific
   n.is-finite.not.if > @
     n.is-nan.if
       "nan".as-bytes
@@ -36,20 +39,24 @@
         mantissa.concat "e".as-bytes
         as-decimal.
           number exponent
+  10.power 300 > boost!
   mantissa.eq "-10.000000".as-bytes > carried!
-  rec-exponent > exponent!
-    n.abs
-    0
+  minus. > exponent!
+    number raw
+    number shift
   as-fixed. > mantissa
-    n.div
+    scaled.div
       10.power
-        number exponent
+        number raw
     6
   ^ > n
   carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
-  if. > [m count] >> rec-exponent
+  rec-exponent > raw!
+    scaled.abs
+    0
+  if. > [^ m count] >> rec-exponent
     or.
       m.eq 0
       and.
@@ -66,6 +73,17 @@
         m.div 10
         as-number.
           count.plus 1
+  tiny.as-bool.if > scaled
+    n.times boost
+    n
+  tiny.as-bool.if > shift!
+    300
+    0
+  and. > tiny!
+    n.abs.lt
+      1.div boost
+    not.
+      n.eq 0
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"
@@ -83,6 +101,10 @@
     "-1.000000e20"
     string -9.9999996e19.as-scientific
 
+  eq. ++> can-name-a-magnitude-at-the-bottom-of-the-subnormal-range
+    "4.940656e-324"
+    string 4.9e-324.as-scientific
+
   eq. ++> can-name-a-magnitude-past-the-long-range
     "1.000000e19"
     string 1.0e19.as-scientific
@@ -98,6 +120,14 @@
   eq. ++> can-name-a-small-magnitude-with-a-negative-power
     "1.000000e-7"
     string 1.0e-7.as-scientific
+
+  eq. ++> can-name-a-subnormal-magnitude
+    "9.999889e-321"
+    string 1.0e-320.as-scientific
+
+  eq. ++> can-name-a-subnormal-magnitude-with-few-significant-bits
+    "9.980126e-322"
+    string 1.0e-321.as-scientific
 
   eq. ++> can-name-nan
     "nan"
