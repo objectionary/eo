@@ -10,7 +10,7 @@ eo: |
   +package snippets
 
   [] > fibo
-    [n] > f
+    [^ n] > f
       if. > @
         n.lt 2
         n

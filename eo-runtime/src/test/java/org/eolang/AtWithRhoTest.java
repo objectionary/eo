@@ -143,10 +143,6 @@ final class AtWithRhoTest {
         );
     }
 
-    /**
-     * Make an object that declares a receiver, the way a formation does.
-     * @return The object
-     */
     private Phi formation() {
         return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }

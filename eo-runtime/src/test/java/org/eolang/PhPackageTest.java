@@ -55,7 +55,7 @@ final class PhPackageTest {
     }
 
     @Test
-    void neverNeedsRho() {
+    void doesNotNeedRho() {
         MatcherAssert.assertThat(
             "The global object must never ask a dispatch for a receiver",
             Phi.Φ.needsRho(),

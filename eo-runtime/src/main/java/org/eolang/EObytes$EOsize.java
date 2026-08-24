@@ -19,7 +19,6 @@ public final class EObytes$EOsize extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOsize() {
-        // nothing
         super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 

@@ -516,7 +516,6 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
-
     private static AtomTypes atoms() {
         final Map<String, String> table;
         final InputStream source = PhDefault.class.getResourceAsStream("atoms.csv");

@@ -42,7 +42,7 @@ final class PhOnceTest {
     }
 
     @Test
-    void neverNeedsRhoWithoutEvaluatingWrappedObject() {
+    void doesNotNeedRhoWithoutEvaluatingWrappedObject() {
         MatcherAssert.assertThat(
             "PhOnce must never ask for a receiver, and must not evaluate itself to say so",
             new PhOnce(

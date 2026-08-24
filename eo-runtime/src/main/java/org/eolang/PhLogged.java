@@ -39,7 +39,10 @@ public final class PhLogged implements Phi {
 
     @Override
     public boolean needsRho() {
-        return this.origin.needsRho();
+        System.out.printf("%d.needsRho()...%n", this.hashCode());
+        final boolean ret = this.origin.needsRho();
+        System.out.printf("%d.needsRho()! -> %b%n", this.hashCode(), ret);
+        return ret;
     }
 
     @Override

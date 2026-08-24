@@ -117,16 +117,6 @@ final class PhPackage implements Phi {
         return this.pkg;
     }
 
-    /**
-     * Load the object and bind this package as its receiver.
-     *
-     * <p>A package does not overwrite a receiver that is already bound: a
-     * decorated top-level object gets its \rho from the dispatch that
-     * resolved its decoratee, and that binding stays.</p>
-     *
-     * @param fqn Fully qualified name of the object
-     * @return The object, with its receiver in place
-     */
     private Phi bound(final String fqn) {
         final Phi loaded = this.loadPhi(fqn);
         if (loaded.needsRho()) {

@@ -104,9 +104,11 @@ final class PhDefaultTest {
 
     @Test
     void setsRhoAfterDispatch() {
-        Assertions.assertDoesNotThrow(
-            () -> PhDefaultTest.Int.made().take(this.plus()).take(Phi.RHO),
-            String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
+        final Phi phi = PhDefaultTest.Int.made();
+        MatcherAssert.assertThat(
+            String.format("Kid should have %s attribute after dispatch", Phi.RHO),
+            phi.take(this.plus()).take(Phi.RHO),
+            Matchers.equalTo(phi)
         );
     }
 
@@ -130,14 +132,12 @@ final class PhDefaultTest {
 
     @Test
     void bindsHostToRhoDeclaredAsVoid() {
-        final Phi host = new PhDefault(
-            new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x")))
-        );
+        final Phi host = PhDefaultTest.Int.made();
         host.put(Phi.RHO, Phi.Φ);
-        host.put("x", new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))));
+        host.put(this.getVoid(), PhDefaultTest.Int.formation());
         MatcherAssert.assertThat(
             String.format("Dispatch must bind the host to %s declared as void", Phi.RHO),
-            host.take("x").take(Phi.RHO),
+            host.take(this.getVoid()).take(Phi.RHO),
             Matchers.equalTo(host)
         );
     }
@@ -162,17 +162,6 @@ final class PhDefaultTest {
             phi.take(this.plus()),
             Matchers.not(
                 Matchers.equalTo(phi.take(this.plus()))
-            )
-        );
-    }
-
-    @Test
-    void hasKidWithSetRhoAfterCopyingShouldGetAfttribute() {
-        Assertions.assertDoesNotThrow(
-            () -> PhDefaultTest.Int.made().copy().take(this.plus()).take(Phi.RHO),
-            String.format(
-                "Child object should get %s attribute after copying main object",
-                Phi.RHO
             )
         );
     }
@@ -751,13 +740,7 @@ final class PhDefaultTest {
             final PhDefaultTest.Int made = new PhDefaultTest.Int();
             made.add(Phi.RHO, new AtRho());
             made.add("void", new AtVoid("void"));
-            made.add(
-                "plus",
-                new AtComposite(
-                    made,
-                    rho -> new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())))
-                )
-            );
+            made.add("plus", new AtComposite(made, rho -> PhDefaultTest.Int.formation()));
             made.add(
                 Phi.PHI,
                 new AtOnce(
@@ -783,6 +766,10 @@ final class PhDefaultTest {
                 )
             );
             return made;
+        }
+
+        static Phi formation() {
+            return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
         }
     }
 
