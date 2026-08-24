@@ -39,7 +39,7 @@ final class WithRho {
      * @return TRUE if it was made from it
      */
     boolean made(final Phi phi) {
-        return this.origin.equals(phi);
+        return this.origin == phi;
     }
 
     /**
