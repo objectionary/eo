@@ -171,6 +171,23 @@ final class Stack {
     }
 
     /**
+     * The outermost entry — the indent-0 top-level object of the file —
+     * or the bottom sentinel when nothing has been pushed yet. Read by
+     * R-6.3.3, which admits a {@code +>} test attribute only under a
+     * top-level object that is a formation.
+     * @return Outermost entry, never null
+     */
+    Level root() {
+        final Level outer;
+        if (this.levels.isEmpty()) {
+            outer = this.bottom;
+        } else {
+            outer = this.levels.get(0);
+        }
+        return outer;
+    }
+
+    /**
      * Push a fresh level at the given indent.
      *
      * <p>If the stack is non-empty, the new indent must equal {@code

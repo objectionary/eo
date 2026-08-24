@@ -36,7 +36,7 @@
                 false
               true > [^ i]
             sum
-          as-number. > step
+          as-number. > step!
             div.
               ^.b.minus ^.a
               ^.n
