@@ -12,11 +12,16 @@
 # because `10.power 309` is already infinity: a single multiplication by it
 # turns every mantissa into infinity and a single division by it turns every
 # mantissa into zero, whatever the written value is. `raised` and `lowered`
-# therefore scale in steps of at most `10^300`, so every intermediate stays
+# therefore scale in steps of at most `10^308`, so every intermediate stays
 # inside the double range and an underflow happens only when the value itself
 # underflows. Both stop as soon as the value is zero or infinite, since no
 # further step can move it, and that is what keeps the recursion short for an
 # exponent written far outside the range, such as `1e999999999`.
+#
+# `pow-ten` replaces `number.power` here: squaring drifts enough at this size
+# to carry a mantissa past `Double.MAX_VALUE` on text naming a representable
+# value, so `pow-ten` tracks each multiplication's rounding error as a
+# companion low-order double, Dekker's technique, and keeps only the high one.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -68,14 +73,14 @@
               eloc.plus 1
       if. > [^ value power] > lowered
         and.
-          power.gt 300
+          power.gt 308
           ^.scalable value
         ^.lowered
           value.div
-            10.power 300
-          power.minus 300
+            ^.pow-ten 308
+          power.minus 308
         value.div
-          10.power power
+          ^.pow-ten power
       if. > magnitude
         not.
           dot.eq -1
@@ -101,18 +106,87 @@
         dot.plus 1
       if. > [^ value power] > raised
         and.
-          power.gt 300
+          power.gt 308
           ^.scalable value
         ^.raised
           value.times
-            10.power 300
-          power.minus 300
+            ^.pow-ten 308
+          power.minus 308
         value.times
-          10.power power
+          ^.pow-ten power
       and. > [^ value] > scalable
         not.
           value.eq 0
         value.is-finite
+      [^ n] >> pow-ten
+        (^.dd-power n).at 0 T > @
+      [^ n] >> dd-power
+        if. > @
+          n.eq 0
+          * 1 0
+          if.
+            is-integer. (n.div 2)
+            ^.product
+              half.at 0 T
+              half.at 1 T
+              half.at 0 T
+              half.at 1 T
+            ^.product
+              10
+              0
+              odd.at 0 T
+              odd.at 1 T
+        ^.dd-power (n.div 2) > half!
+        ^.dd-power (n.minus 1) > odd!
+      [^ a-hi a-lo b-hi b-lo] >> product
+        ^.two-product a-hi b-hi > tp
+        tp.at 0 T > p
+        plus. > e
+          tp.at 1 T
+          plus.
+            a-hi.times b-lo
+            a-lo.times b-hi
+        p.plus e > hi
+        if. > @
+          hi.is-finite.not
+          * hi 0
+          * hi
+            e.minus
+              hi.minus p
+      [^ a b] >> two-product
+        a.times b > p
+        ^.split a > sa
+        ^.split b > sb
+        sa.at 0 T > a-hi
+        sa.at 1 T > a-lo
+        sb.at 0 T > b-hi
+        sb.at 1 T > b-lo
+        if. > @
+          or.
+            p.is-finite.not
+            p.eq 0
+          * p 0
+          * p
+            plus.
+              plus.
+                minus.
+                  a-hi.times b-hi
+                  p
+                a-hi.times b-lo
+              a-lo.times b-hi
+      [^ v] >> split
+        if. > reduced
+          v.abs.gt 1.0e290
+          v.times 3.7252902984619140625e-9
+          v
+        reduced.times 134217729.0 > t
+        t.minus > hi
+          t.minus reduced
+        reduced.minus hi > lo
+        if. > @
+          v.abs.gt 1.0e290
+          * (hi.times 268435456.0) (lo.times 268435456.0)
+          * hi lo
       if. > scaled
         exponent.eq 0
         magnitude
@@ -516,3 +590,8 @@
   is-finite. ++> can-scan-a-finite-float-with-an-exponent-above-the-range
     head.
       "%f".scanf "0.001e311"
+
+  eq. ++> can-scan-the-exact-text-of-double-max-value
+    1.7976931348623157e308
+    head.
+      "%f".scanf "1.7976931348623157e308"
