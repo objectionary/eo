@@ -296,7 +296,6 @@ final class Emit {
     /**
      * Open an unnamed {@code <o base="...">} element, i.e. one with
      * no {@code @name} — §9.0.2 / §9.4.2.
-     *
      * @param base Value for {@code @base}
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
@@ -309,7 +308,6 @@ final class Emit {
      * Open a named, base-less {@code <o>} element — one whose
      * {@code @base} is absent because the {@code wrap-applications}
      * reshape fills it in later — §9.0.2 / §9.4.2.
-     *
      * @param name Value for {@code @name}, or {@code null} to omit
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
@@ -321,42 +319,11 @@ final class Emit {
     /**
      * Open an unnamed, base-less {@code <o>} element — neither
      * {@code @name} nor {@code @base} is written — §9.0.2 / §9.4.2.
-     *
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
      */
     void bareObject(final int line, final int pos) {
         this.open(null, null, line, pos);
-    }
-
-    /**
-     * Open an {@code <o>} element at the current cursor, omitting
-     * {@code @name} and/or {@code @base} when either is {@code null}.
-     * {@code line} and {@code pos} are written as {@code @line} /
-     * {@code @pos} per R-9.1.
-     *
-     * @param name Value for {@code @name}, or {@code null} to omit
-     * @param base Value for {@code @base}, or {@code null} to omit
-     * @param line Source line for {@code @line}
-     * @param pos Source column for {@code @pos}
-     * @checkstyle ParameterNumberCheck (10 lines)
-     */
-    private void open(
-        final String name, final String base, final int line, final int pos
-    ) {
-        final Directives dirs = new Directives().add("o");
-        if (name != null) {
-            dirs.attr("name", name);
-        }
-        if (base != null) {
-            dirs.attr("base", base);
-        }
-        dirs.attr("line", line).attr("pos", pos);
-        if (!"∅".equals(base)) {
-            this.lambda();
-        }
-        this.append(dirs);
-        this.depth = this.depth + 1;
     }
 
     /**
@@ -528,6 +495,24 @@ final class Emit {
      */
     Iterable<Directive> directives() {
         return this.sink;
+    }
+
+    private void open(
+        final String name, final String base, final int line, final int pos
+    ) {
+        final Directives dirs = new Directives().add("o");
+        if (name != null) {
+            dirs.attr("name", name);
+        }
+        if (base != null) {
+            dirs.attr("base", base);
+        }
+        dirs.attr("line", line).attr("pos", pos);
+        if (!"∅".equals(base)) {
+            this.lambda();
+        }
+        this.append(dirs);
+        this.depth = this.depth + 1;
     }
 
     private void lambda() {
