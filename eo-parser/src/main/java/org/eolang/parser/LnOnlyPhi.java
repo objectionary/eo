@@ -125,7 +125,7 @@ final class LnOnlyPhi implements Line {
             );
         }
         if (suffix.test()) {
-            Blanks.checkTest(this.span, blanks, emit);
+            Blanks.checkTest(this.span, stack, blanks, emit);
         }
         Comments.seal(globals, emit, this.span);
         final Tokens tokens = this.slot(
