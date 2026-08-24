@@ -132,6 +132,37 @@ final class MjTranspileTest {
     }
 
     @Test
+    void wrapsSafeToCacheFormationInPhSticky(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
+            new TextOf(
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
+    void leavesUnmarkedFormationBare(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
+            new TextOf(
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhSticky("))
+        );
+    }
+
+    @Test
     void transpilesSecondObjectOfProgramWhileTrackingSteps(@Mktmp final Path temp)
         throws IOException {
         MatcherAssert.assertThat(
@@ -719,5 +750,21 @@ final class MjTranspileTest {
             }
         }
         return valid && depth == 0;
+    }
+
+    private static FakeMaven pure(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package examples",
+                "",
+                "# Outer.",
+                "[] > x",
+                "  inner > @",
+                "  # Inner.",
+                "  [] > inner",
+                "    42 > @"
+            )
+        );
     }
 }
