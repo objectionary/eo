@@ -507,6 +507,15 @@ final class EoTest {
     }
 
     @Test
+    void rejectsHeadThatIsNeitherSignedNorNumeric() {
+        MatcherAssert.assertThat(
+            "a head such as 'Z9-' must not be claimed as a number just because a digit follows it",
+            EoTest.render("[] > main", "  Z9- > x"),
+            XhtmlMatchers.hasXPath("/object/errors/error")
+        );
+    }
+
+    @Test
     void promotesHeadToVapplicationWhenChildrenLand() {
         MatcherAssert.assertThat(
             "a head followed by deeper-indent children must end up containing them",

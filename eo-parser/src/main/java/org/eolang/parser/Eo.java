@@ -497,6 +497,7 @@ final class Eo implements Iterable<Directive> {
     private static boolean signedDigit(final Span span) {
         final String body = span.body();
         return body.length() >= 2
+            && (span.head() == '+' || span.head() == '-')
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
     }
 
