@@ -35,9 +35,7 @@
           places.is-finite.if
             "Can't write a fixed-point decimal with %f fraction places".printf
               * places
-            "Can't write a fixed-point decimal with %s fraction places".printf
-              *
-                string places.as-scientific
+            "Can't write a fixed-point decimal with a non-finite number of fraction places"
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
@@ -143,7 +141,7 @@
       I
 
   eq. ++> can-format-the-error-message-of-infinite-places
-    "Can't write a fixed-point decimal with infinity fraction places"
+    "Can't write a fixed-point decimal with a non-finite number of fraction places"
     3.14159.as-fixed
       pinf
       I
