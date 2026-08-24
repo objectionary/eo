@@ -407,7 +407,7 @@ This section number is reserved; the method-dispatch line continuation rules pre
 
 The trailing-dot prefix-notation form.
 
-R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), or `RHO` (`^`) token** — no dotted paths and no `ROOT`/`XI`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
+R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), `RHO` (`^`), or `XI` (`$`) token** — no dotted paths and no `ROOT`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
 R-3.8.2. **Horizontal form** — `name. arg1 arg2 …`:
   - `arg1` is the **receiver** (the dispatch target of `.name`).
   - `arg2…` are method arguments of `.name`.
