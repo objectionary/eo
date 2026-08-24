@@ -9,7 +9,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +80,7 @@ public final class PhSticky implements Phi {
     public PhSticky(final Phi obj, final int capacity) {
         this(
             obj,
-            PhSticky.bounded(capacity),
+            Collections.synchronizedMap(new Lru(capacity)),
             Collections.synchronizedList(new ArrayList<>(0))
         );
     }
@@ -212,49 +211,5 @@ public final class PhSticky implements Phi {
             key = Optional.of(out.toString());
         }
         return key;
-    }
-
-    /**
-     * A thread-safe map that holds no more than the given number of entries,
-     * letting the entry asked for longest ago go first.
-     * @param capacity How many entries to keep
-     * @return The map
-     */
-    private static Map<String, byte[]> bounded(final int capacity) {
-        return Collections.synchronizedMap(new PhSticky.Lru(capacity));
-    }
-
-    /**
-     * The map under the bound: {@link LinkedHashMap} in access order is the
-     * one map the JDK lets evict by age of use, and the extension point it
-     * offers for that is an override, not an argument.
-     *
-     * @since 0.75
-     */
-    private static final class Lru extends LinkedHashMap<String, byte[]> {
-
-        /**
-         * Serialization marker, demanded by the parent.
-         */
-        private static final long serialVersionUID = 5165L;
-
-        /**
-         * How many entries to keep.
-         */
-        private final int capacity;
-
-        /**
-         * Ctor.
-         * @param cap How many entries to keep
-         */
-        Lru(final int cap) {
-            super(16, 0.75f, true);
-            this.capacity = cap;
-        }
-
-        @Override
-        protected boolean removeEldestEntry(final Map.Entry<String, byte[]> eldest) {
-            return this.size() > this.capacity;
-        }
     }
 }
