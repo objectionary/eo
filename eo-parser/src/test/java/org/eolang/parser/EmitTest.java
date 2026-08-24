@@ -196,9 +196,7 @@ final class EmitTest {
         emit.rollback(token);
         emit.close();
         MatcherAssert.assertThat(
-            "a rollback must restore depth and the owed atom signature "
-            + "alongside the sink, so a recovered error inside the atom's "
-            + "body cannot drop its λ marker (#7539)",
+            "a rollback must restore depth and the owed atom signature alongside the sink, so a recovered error inside the atom's body cannot drop its λ marker (#7539)",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object[count(o)=1]",
