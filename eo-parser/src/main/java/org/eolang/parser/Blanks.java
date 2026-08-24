@@ -57,14 +57,30 @@ final class Blanks {
      * blank line before every test attribute — and a test attribute
      * that sits deeper than a direct child of the top-level object,
      * illegal per R-6.3.3.
+     *
+     * <p>Indent 2 alone does not say "direct child of the top-level
+     * object": it says so only when that object is a formation. When
+     * the file's top-level object is an application — {@code bool >
+     * true}, {@code number > nan}, {@code string > eol} — indent 2 is
+     * an argument position, and a test attribute landing there would
+     * silently become an argument named {@code Φ.+can-…} while its body
+     * vanished from the XMIR. The outermost entry of {@code stack} is
+     * therefore read as well, and anything but a formation is rejected
+     * with the same error.</p>
+     *
      * @param span The offending line's span (used for error position)
+     * @param stack The indent stack, read for the top-level object's kind
      * @param blanks How many blank lines precede the line - read by the
      *  caller before {@link #enterAfterMeta(Span, Globals, Emit)} had a
      *  chance to consume them
      * @param emit The directives sink
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
-    static void checkTest(final Span span, final int blanks, final Emit emit) {
-        if (span.indent() != 2) {
+    static void checkTest(
+        final Span span, final Stack stack, final int blanks, final Emit emit
+    ) {
+        final Kind top = stack.root().kind();
+        if (span.indent() != 2 || top != Kind.BARE_FORMATION && top != Kind.ONLY_PHI) {
             emit.error(
                 span.line(), span.indent(),
                 "test attribute legal only as direct child of top-level object"

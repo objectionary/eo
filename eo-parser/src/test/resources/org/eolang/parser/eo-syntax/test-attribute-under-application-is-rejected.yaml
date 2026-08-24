@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7313: indent 2 is an attribute position only under a top-level formation.
+# Under a top-level application it is an argument position, so the test
+# attribute below used to be accepted, land in the XMIR as an argument
+# named `Φ.+can-hold-a-line-feed`, and take its body with it.
+sheets: []
+asserts:
+  - /object/errors[count(error[@check='parser'])=1]
+  - /object/errors/error[@check='parser' and contains(text(),'direct child of top-level object')]
+input: |
+  +package foo
+
+  string > eol
+    "\n"
+
+    eol.ends-with "\n" ++> can-hold-a-line-feed
