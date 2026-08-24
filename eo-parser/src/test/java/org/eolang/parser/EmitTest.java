@@ -142,7 +142,7 @@ final class EmitTest {
     void returnsZeroSavepointForFreshEmit() {
         MatcherAssert.assertThat(
             "the initial savepoint of an empty Emit must be 0",
-            new Emit().savepoint(),
+            new Emit().savepoint().sink(),
             Matchers.equalTo(0)
         );
     }
@@ -150,11 +150,11 @@ final class EmitTest {
     @Test
     void growsSavepointAfterEmission() {
         final Emit emit = new Emit();
-        final int before = emit.savepoint();
+        final int before = emit.savepoint().sink();
         emit.meta(1, "x", Collections.emptyList());
         MatcherAssert.assertThat(
             "after emitting, the savepoint must advance past the pre-emit position",
-            emit.savepoint(),
+            emit.savepoint().sink(),
             Matchers.greaterThan(before)
         );
     }
@@ -162,7 +162,7 @@ final class EmitTest {
     @Test
     void dropsDirectivesAfterTokenOnRollback() {
         final Emit emit = new Emit();
-        final int token = emit.savepoint();
+        final Emit.Savepoint token = emit.savepoint();
         emit.error(1, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
@@ -176,13 +176,34 @@ final class EmitTest {
     void keepsDirectivesBeforeTokenOnRollback() {
         final Emit emit = new Emit();
         emit.meta(1, "keep", Collections.emptyList());
-        final int token = emit.savepoint();
+        final Emit.Savepoint token = emit.savepoint();
         emit.error(2, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
             "rollback must preserve directives appended before the savepoint",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/metas/meta/head[text()='keep']")
+        );
+    }
+
+    @Test
+    void restoresDepthAndOwedAtomMarkerOnRollback() {
+        final Emit emit = new Emit();
+        emit.object("foo", null, 1, 0);
+        emit.atomMarker("number", 1, 5);
+        final Emit.Savepoint token = emit.savepoint();
+        emit.object("bar", "Φ.string", 2, 0);
+        emit.rollback(token);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a rollback must restore depth and the owed atom signature "
+            + "alongside the sink, so a recovered error inside the atom's "
+            + "body cannot drop its λ marker (#7539)",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object[count(o)=1]",
+                "/object/o[@name='foo']/o[@name='λ' and @atom='number']"
+            )
         );
     }
 

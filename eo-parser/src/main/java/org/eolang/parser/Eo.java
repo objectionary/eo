@@ -280,7 +280,7 @@ final class Eo implements Iterable<Directive> {
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int token = emit.savepoint();
+            final Emit.Savepoint token = emit.savepoint();
             final java.util.List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
@@ -330,7 +330,7 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int token = emit.savepoint();
+        final Emit.Savepoint token = emit.savepoint();
         final java.util.List<Level> frame = stack.snapshot();
         final Globals saved = globals.savepoint();
         boolean failed = false;

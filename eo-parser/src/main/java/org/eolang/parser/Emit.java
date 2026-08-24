@@ -17,7 +17,7 @@ import org.xembly.Directives;
  * <p>Wraps a growing list of {@link Directive} that downstream
  * {@code Xembler} converts into XMIR. Each emission method appends to the
  * sink in source order; the caller controls when to take a
- * {@link #savepoint()} and how to {@link #rollback(int)} on a per-line
+ * {@link #savepoint()} and how to {@link #rollback(Savepoint)} on a per-line
  * recovery (R-7.2).</p>
  *
  * <p>The class exposes two families of methods:</p>
@@ -115,28 +115,36 @@ final class Emit {
     }
 
     /**
-     * Take a savepoint of the current sink size.
+     * Take a savepoint of the emitter's cursor: sink size, {@link #depth},
+     * and any atom signature owed to an open {@code <o>} — R-7.2. All
+     * three must roll back together via {@link #rollback(Savepoint)}, or
+     * an error recovered mid-formation leaves {@link #depth} drifted from
+     * the tree it describes (#7539).
      *
-     * <p>R-7.2 — the parser takes one of these at the start of each line.
-     * On a parse error inside that line, the caller invokes
-     * {@link #rollback(int)} with this token to drop the line's
-     * half-built directives.</p>
-     *
-     * @return Savepoint token (current sink size)
+     * @return Savepoint token
      */
-    int savepoint() {
-        return this.sink.size();
+    Savepoint savepoint() {
+        return new Savepoint(
+            this.sink.size(), this.depth, this.signature,
+            this.sigline, this.sigpos, this.sigdepth
+        );
     }
 
     /**
-     * Roll the sink back to the given savepoint, discarding any
-     * directives appended after it.
+     * Roll the sink and cursor back to the given savepoint, discarding
+     * any directives appended after it and restoring {@link #depth} and
+     * the owed atom signature to what they were at that point.
      * @param token Savepoint token from {@link #savepoint()}
      */
-    void rollback(final int token) {
-        while (this.sink.size() > token) {
+    void rollback(final Savepoint token) {
+        while (this.sink.size() > token.sink) {
             this.sink.remove(this.sink.size() - 1);
         }
+        this.depth = token.depth;
+        this.signature = token.signature;
+        this.sigline = token.sigline;
+        this.sigpos = token.sigpos;
+        this.sigdepth = token.sigdepth;
     }
 
     /**
@@ -514,5 +522,64 @@ final class Emit {
             result = located;
         }
         return result;
+    }
+
+    /**
+     * Opaque token from {@link #savepoint()}, restored by
+     * {@link #rollback(Savepoint)} — bundles the sink size with
+     * {@link #depth} and the owed atom signature so a rollback puts all
+     * three back in step (#7539).
+     *
+     * @since 0.1
+     */
+    static final class Savepoint {
+
+        /** Sink size at the savepoint. */
+        private final int sink;
+
+        /** {@link Emit#depth} at the savepoint. */
+        private final int depth;
+
+        /** {@link Emit#signature} at the savepoint. */
+        private final String signature;
+
+        /** {@link Emit#sigline} at the savepoint. */
+        private final int sigline;
+
+        /** {@link Emit#sigpos} at the savepoint. */
+        private final int sigpos;
+
+        /** {@link Emit#sigdepth} at the savepoint. */
+        private final int sigdepth;
+
+        /**
+         * Ctor.
+         * @param sink Sink size at the savepoint
+         * @param depth Open element depth at the savepoint
+         * @param signature Owed atom signature at the savepoint
+         * @param sigline Source line of the owed marker
+         * @param sigpos Source column of the owed marker
+         * @param sigdepth Depth of the object owing the marker
+         * @checkstyle ParameterNumberCheck (5 lines)
+         */
+        Savepoint(
+            final int sink, final int depth, final String signature,
+            final int sigline, final int sigpos, final int sigdepth
+        ) {
+            this.sink = sink;
+            this.depth = depth;
+            this.signature = signature;
+            this.sigline = sigline;
+            this.sigpos = sigpos;
+            this.sigdepth = sigdepth;
+        }
+
+        /**
+         * Sink size at the savepoint.
+         * @return Sink size
+         */
+        int sink() {
+            return this.sink;
+        }
     }
 }
