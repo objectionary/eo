@@ -19,7 +19,7 @@ package org.eolang.parser;
  * copy-on-write would allocate a new object on every line transition,
  * pushing the parser's per-line cost from O(1) to O(D). Mutation is
  * confined to the {@link Stack} that owns this entry; no other class
- * keeps a reference. *
+ * keeps a reference.</p>
  *
  * @since 0.1
  */
