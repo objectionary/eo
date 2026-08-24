@@ -211,4 +211,31 @@ final class ValueTest {
             Matchers.equalTo("ρ")
         );
     }
+
+    @Test
+    void marksFloatAsNumber() {
+        MatcherAssert.assertThat(
+            "number() must be true for a FLOAT value",
+            new Value(Value.Kind.FLOAT, "3.14", 0).number(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksHexAsHex() {
+        MatcherAssert.assertThat(
+            "hex() must be true for a HEX value",
+            new Value(Value.Kind.HEX, "0xFF", 0).hex(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksTermAsTerm() {
+        MatcherAssert.assertThat(
+            "term() must be true for a TERM value",
+            new Value(Value.Kind.TERM, "T", 0).term(),
+            Matchers.equalTo(true)
+        );
+    }
 }
