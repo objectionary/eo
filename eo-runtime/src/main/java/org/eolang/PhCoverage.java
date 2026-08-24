@@ -92,8 +92,8 @@ public final class PhCoverage implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.origin.hasRho();
+    public boolean needsRho() {
+        return this.origin.needsRho();
     }
 
     @Override

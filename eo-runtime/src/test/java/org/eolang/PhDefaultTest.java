@@ -95,10 +95,10 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made()).take(Phi.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("Object should not have %s attribute when it's just formed", Phi.RHO),
+            PhDefaultTest.Int.made().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
@@ -112,25 +112,27 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.RHO),
-            String.format("Object should not give %s attribute after copying", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("Object should not give %s attribute after copying", Phi.RHO),
+            PhDefaultTest.Int.made().copy().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
-    void doesNotHaveRhoWhenItIsDeclaredAsVoid() {
+    void needsRhoWhenItIsDeclaredAsVoid() {
         MatcherAssert.assertThat(
-            String.format("Object with %s declared as void must not report it as set", Phi.RHO),
-            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).hasRho(),
-            Matchers.is(false)
+            String.format("Object with %s declared as void must await a receiver", Phi.RHO),
+            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).needsRho(),
+            Matchers.is(true)
         );
     }
 
     @Test
     void bindsHostToRhoDeclaredAsVoid() {
-        final Phi host = new PhDefault(new Attrs(new Attr("x", new AtVoid("x"))));
+        final Phi host = new PhDefault(
+            new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x")))
+        );
         host.put(Phi.RHO, Phi.Φ);
         host.put("x", new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))));
         MatcherAssert.assertThat(
@@ -747,8 +749,15 @@ final class PhDefaultTest {
          */
         static Phi made() {
             final PhDefaultTest.Int made = new PhDefaultTest.Int();
+            made.add(Phi.RHO, new AtRho());
             made.add("void", new AtVoid("void"));
-            made.add("plus", new AtComposite(made, rho -> new PhDefault()));
+            made.add(
+                "plus",
+                new AtComposite(
+                    made,
+                    rho -> new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())))
+                )
+            );
             made.add(
                 Phi.PHI,
                 new AtOnce(

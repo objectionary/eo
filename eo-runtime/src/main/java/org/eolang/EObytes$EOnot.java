@@ -20,6 +20,7 @@ public final class EObytes$EOnot extends PhDefault implements Atom {
      */
     public EObytes$EOnot() {
         // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override

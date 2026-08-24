@@ -16,20 +16,31 @@ import org.junit.jupiter.api.Test;
 final class AtRhoTest {
 
     @Test
-    void printsCaretAsTerm() {
+    void printsQuestionMarkAsTermWhenUnset() {
         MatcherAssert.assertThat(
-            "AtRho must render as caret in φ-term, but it didnt",
+            "AtRho must render as question mark in φ-term while unset, but it didnt",
             new AtRho().φTerm(),
+            Matchers.equalTo("?")
+        );
+    }
+
+    @Test
+    void printsCaretAsTermWhenSet() {
+        final Attribute rho = new AtRho();
+        rho.put(new PhDefault());
+        MatcherAssert.assertThat(
+            "AtRho must render as caret in φ-term once set, but it didnt",
+            rho.φTerm(),
             Matchers.equalTo("^")
         );
     }
 
     @Test
-    void throwsOnEmptyRho() {
-        Assertions.assertThrows(
-            ExUnset.class,
-            new AtRho()::get,
-            "AtRho must throw an exception if attribute is not set"
+    void terminatesOnEmptyRho() {
+        MatcherAssert.assertThat(
+            "AtRho must terminate, not throw, while the attribute is not set",
+            new AtRho().get(),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
@@ -58,15 +69,16 @@ final class AtRhoTest {
     }
 
     @Test
-    void doesNotResetObject() {
+    void rejectsSecondPut() {
         final Attribute rho = new AtRho();
-        final Phi obj = new PhDefault();
-        rho.put(obj);
         rho.put(new PhDefault());
         MatcherAssert.assertThat(
-            "AtRho must not change state after put()",
-            rho.get(),
-            Matchers.equalTo(obj)
+            "AtRho must reject the second put instead of dropping it silently",
+            Assertions.assertThrows(
+                ExReadOnly.class,
+                () -> rho.put(new PhDefault())
+            ).getMessage(),
+            Matchers.containsString("already set")
         );
     }
 

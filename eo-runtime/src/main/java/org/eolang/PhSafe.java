@@ -127,8 +127,8 @@ public final class PhSafe implements Phi, Atom {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.through(this.origin::hasRho);
+    public boolean needsRho() {
+        return this.through(this.origin::needsRho);
     }
 
     @Override

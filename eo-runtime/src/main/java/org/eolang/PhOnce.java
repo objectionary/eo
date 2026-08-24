@@ -75,9 +75,16 @@ public class PhOnce implements Phi {
         );
     }
 
+    /**
+     * A receiver is bound onto a formation, never onto the result of an
+     * expression: the dispatch that produced this object has already given
+     * it the receiver it deserves. Answering without forcing the wrapped
+     * object keeps a lazy expression lazy while it is dispatched over.
+     * @return Always FALSE
+     */
     @Override
-    public boolean hasRho() {
-        return this.object.get().hasRho();
+    public boolean needsRho() {
+        return false;
     }
 
     @Override

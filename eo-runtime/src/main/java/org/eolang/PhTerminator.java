@@ -103,7 +103,7 @@ public final class PhTerminator implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
+    public boolean needsRho() {
         return false;
     }
 

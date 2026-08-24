@@ -152,7 +152,7 @@ final class ExpectTest {
                 () -> new Numeric(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -174,7 +174,7 @@ final class ExpectTest {
                 () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -196,7 +196,7 @@ final class ExpectTest {
                 () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
                         ),
@@ -218,7 +218,7 @@ final class ExpectTest {
                 () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -240,7 +240,7 @@ final class ExpectTest {
                 () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
                         ),
@@ -262,7 +262,7 @@ final class ExpectTest {
                 () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(-42)
                         ),
@@ -284,7 +284,7 @@ final class ExpectTest {
                 () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(1.0e15)
                         ),
@@ -306,7 +306,7 @@ final class ExpectTest {
                 () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(1.0e15)
                         ),
@@ -375,5 +375,13 @@ final class ExpectTest {
             ).getMessage(),
             Matchers.equalTo("the 'ρ' attribute must be a number")
         );
+    }
+
+    /**
+     * Make an object that declares a receiver, the way a formation does.
+     * @return The object
+     */
+    private Phi formation() {
+        return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 }

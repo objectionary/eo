@@ -81,8 +81,8 @@ public interface Data {
         }
 
         @Override
-        public boolean hasRho() {
-            return this.object.hasRho();
+        public boolean needsRho() {
+            return this.object.needsRho();
         }
 
         @Override

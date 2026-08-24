@@ -55,8 +55,8 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.objects.containsKey(Phi.RHO);
+    public boolean needsRho() {
+        return false;
     }
 
     @Override
@@ -84,9 +84,7 @@ final class PhPackage implements Phi {
             }
             taken = next;
         } else {
-            final Phi loaded = this.loadPhi(fqn);
-            loaded.put(Phi.RHO, this);
-            this.put(fqn, loaded);
+            this.put(fqn, this.bound(fqn));
             taken = this.take(name);
         }
         return taken;
@@ -117,6 +115,24 @@ final class PhPackage implements Phi {
     @Override
     public String φTerm() {
         return this.pkg;
+    }
+
+    /**
+     * Load the object and bind this package as its receiver.
+     *
+     * <p>A package does not overwrite a receiver that is already bound: a
+     * decorated top-level object gets its \rho from the dispatch that
+     * resolved its decoratee, and that binding stays.</p>
+     *
+     * @param fqn Fully qualified name of the object
+     * @return The object, with its receiver in place
+     */
+    private Phi bound(final String fqn) {
+        final Phi loaded = this.loadPhi(fqn);
+        if (loaded.needsRho()) {
+            loaded.put(Phi.RHO, this);
+        }
+        return loaded;
     }
 
     private Phi loadPhi(final String fqn) {

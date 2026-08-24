@@ -20,6 +20,7 @@ public final class EOchunk$EOwrite extends PhDefault implements Atom {
      */
     public EOchunk$EOwrite() {
         super(new Attrs(
+            new Attr(Phi.RHO, new AtRho()),
             new Attr("offset", new AtVoid("offset")),
             new Attr("data", new AtVoid("data"))
         ));
