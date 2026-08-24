@@ -92,6 +92,91 @@ final class LnMetaTest {
     }
 
     @Test
+    void namesTheIndentItFoundInsteadOfBlamingOrdering() {
+        MatcherAssert.assertThat(
+            "an indented meta must name the indent it found, not the ordering rule",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("  +package foo", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line at indent 2 must be rejected per R-3.2.1"
+            ).getMessage(),
+            Matchers.equalTo("meta directive must sit at indent 0, found indent 2")
+        );
+    }
+
+    @Test
+    void namesADeeperIndentToo() {
+        MatcherAssert.assertThat(
+            "the message must carry whatever indent the meta actually sat at, not a fixed one",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("    +package foo", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line at indent 4 must be rejected per R-3.2.1"
+            ).getMessage(),
+            Matchers.equalTo("meta directive must sit at indent 0, found indent 4")
+        );
+    }
+
+    @Test
+    void reportsIndentAtAnOddDepthToo() {
+        MatcherAssert.assertThat(
+            "an odd, not just an even, indent must still be named in the message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span(" +foo", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line at indent 1 must be rejected per R-3.2.1"
+            ).getMessage(),
+            Matchers.equalTo("meta directive must sit at indent 0, found indent 1")
+        );
+    }
+
+    @Test
+    void keepsPointingAtTheIndentedColumn() {
+        MatcherAssert.assertThat(
+            "the error position must still be the column of the offending indent",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("  +foo", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line at indent 2 must be rejected per R-3.2.1"
+            ).pos(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void keepsReportingTheOffendingLineNumber() {
+        MatcherAssert.assertThat(
+            "the error must still name the source line the indented meta sat on",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("  +foo", 9))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line at indent 2 on line 9 must be rejected per R-3.2.1"
+            ).line(),
+            Matchers.equalTo(9)
+        );
+    }
+
+    @Test
+    void stillRejectsOrderingSeparatelyFromIndent() {
+        final Globals globals = new Globals();
+        globals.markEmitted();
+        MatcherAssert.assertThat(
+            "a meta at indent 0 arriving after the first object keeps the ordering message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("+foo", 5)).into(new Stack(), globals, new Emit()),
+                "a meta arriving after the first non-meta object must be rejected per R-3.2.2"
+            ).getMessage(),
+            Matchers.equalTo("meta directive must precede all other objects")
+        );
+    }
+
+    @Test
     void rejectsMetaAfterFirstObject() {
         final Globals globals = new Globals();
         globals.markEmitted();
