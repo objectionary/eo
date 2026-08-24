@@ -11,7 +11,9 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Special attribute for \rho.
  *
- * <p>The attribute can be set only once, and it ignores all other puts.</p>
+ * <p>The attribute behaves like a void one, except that it keeps the
+ * receiver by reference: copying an object must not clone the chain
+ * above it.</p>
  *
  * @since 0.36.0
  */
@@ -44,18 +46,29 @@ public final class AtRho implements Attribute {
 
     @Override
     public Phi get() {
-        if (this.rho.get() == null) {
-            throw new ExUnset(
-                String.format("The \"%s\" attribute is not set", Phi.RHO)
+        final Phi phi = this.rho.get();
+        final Phi result;
+        if (phi == null) {
+            result = new PhTerminator(
+                String.format("the attribute \"%s\" is not set", Phi.RHO)
             );
+        } else {
+            result = phi;
         }
-        return this.rho.get();
+        return result;
     }
 
     @Override
     public void put(final Phi phi) {
         Objects.requireNonNull(phi, "Attribute value can't be null");
-        this.rho.compareAndSet(null, phi);
+        if (!this.rho.compareAndSet(null, phi)) {
+            throw new ExReadOnly(
+                String.format(
+                    "This void attribute \"%s\" is already set, can't reset",
+                    Phi.RHO
+                )
+            );
+        }
     }
 
     @Override
@@ -65,6 +78,13 @@ public final class AtRho implements Attribute {
 
     @Override
     public String φTerm() {
-        return "^";
+        final Phi phi = this.rho.get();
+        final String term;
+        if (phi == null) {
+            term = "?";
+        } else {
+            term = "^";
+        }
+        return term;
     }
 }

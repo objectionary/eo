@@ -20,7 +20,7 @@ public final class EOwin32$EOφ extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOφ() {
-        // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override

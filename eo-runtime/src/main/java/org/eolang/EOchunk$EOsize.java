@@ -19,7 +19,7 @@ public final class EOchunk$EOsize extends PhDefault implements Atom {
      * Ctor.
      */
     public EOchunk$EOsize() {
-        // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override
