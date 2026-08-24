@@ -447,7 +447,18 @@
   </xsl:template>
   <!-- TAIL: SUFFIX, NAME, CONST, ATOM -->
   <xsl:template match="o" mode="tail">
-    <xsl:if test="@as">
+    <!--
+    "@as" labels the void this object fills when it stands as an
+    argument (R-3.12). The same node keeps that stale "@as" when it is
+    also bound to a real, written-out name and printed as its own body
+    line, "then.baz > z" (#7453): a label only means something at the
+    call site, so it is dropped whenever "@name" shows this node is
+    defined there instead - unless "@name" is only the auto-generated
+    cactus placeholder of an anonymous inline handle ("[f]:1 &gt;&gt;"),
+    which is itself the argument the label belongs to, not a separate
+    definition.
+    -->
+    <xsl:if test="@as and (not(@name) or starts-with(@name, concat('a', $eo:cactoos)))">
       <xsl:text>:</xsl:text>
       <xsl:choose>
         <xsl:when test="starts-with(@as, $eo:alpha)">
