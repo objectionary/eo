@@ -54,9 +54,15 @@ final class LineTest {
 
     @Test
     void dispatchesTwoLinesOntoTheSameStack() {
-        final Line line = (stack, globals, emit) -> stack.push(
-            stack.empty() ? 0 : stack.top().indent() + 2, 0, Kind.TOP_LEVEL, Openness.OPEN
-        );
+        final Line line = (stack, globals, emit) -> {
+            final int indent;
+            if (stack.empty()) {
+                indent = 0;
+            } else {
+                indent = stack.top().indent() + 2;
+            }
+            stack.push(indent, 0, Kind.TOP_LEVEL, Openness.OPEN);
+        };
         final Stack stack = new Stack();
         line.into(stack, new Globals(), new Emit());
         line.into(stack, new Globals(), new Emit());
