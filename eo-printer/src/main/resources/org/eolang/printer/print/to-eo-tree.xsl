@@ -19,10 +19,10 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:output method="xml" encoding="UTF-8"/>
-  <!-- Translate a dotted path to EO surface form: ρ -> ^, φ -> @. -->
+  <!-- Translate a dotted path to EO surface form: ρ -> ^, φ -> @, ξ -> $. -->
   <xsl:function name="eo:translate-path" as="xs:string">
     <xsl:param name="path" as="xs:string"/>
-    <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else if ($seg = $eo:bottom) then 'T' else $seg), '.')"/>
+    <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else if ($seg = $eo:xi) then '$' else if ($seg = $eo:bottom) then 'T' else $seg), '.')"/>
   </xsl:function>
   <!--
   Render a base as an EO head: drop implicit ξ./Φ. roots, render a
