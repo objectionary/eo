@@ -56,6 +56,25 @@
     <xsl:sequence select="if ($fragile and contains($surface, '.')) then concat(substring($surface, 1, string-length($surface) - string-length($last) - 1), '?.', $last) else $surface"/>
   </xsl:function>
   <!--
+  The name of the sibling a nameless method-dispatch continuation
+  (§3.5) dispatches on, or "" when "$o" is not that shape: its parent
+  is not a formation (an application's own receiver and positional
+  arguments are nameless too, but they are not this construct), it has
+  a name of its own, its base carries no dot, or the segment before
+  the last dot is not a plain one-hop self-reference ("ξ.<name>").
+  Such a continuation carries no receiver child - the base is already
+  qualified with the receiver's name by an earlier shift - and is
+  legal without a name only because the parser reconstructs that
+  receiver from source position, not from an explicit head (#7452).
+  -->
+  <xsl:function name="eo:continuation-receiver" as="xs:string">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="base" select="string($o/@base)"/>
+    <xsl:variable name="last" select="tokenize($base, '\.')[last()]"/>
+    <xsl:variable name="rest" select="substring($base, 1, string-length($base) - string-length($last) - 1)"/>
+    <xsl:sequence select="if (eo:abstract($o/..) and not($o/@name) and contains($base, '.') and starts-with($rest, concat($eo:xi, '.')) and not(contains(substring-after($rest, concat($eo:xi, '.')), '.'))) then substring-after($rest, concat($eo:xi, '.')) else ''"/>
+  </xsl:function>
+  <!--
   First name segment of a program-rooted base (Φ.foo.bar -> foo). The raw
   "@base" node is atomised here for the reason spelled out on "eo:surface"
   above (#6669).
@@ -253,11 +272,19 @@
       below the named formation it applies to (R-3.14.7) — reordering
       would strand it. In both cases the sort key collapses to a
       constant, and since xsl:sort is stable the original order stands.
+      A nameless method-dispatch continuation (§3.5) has no @name to
+      sort by either, but it is not source-order-stable like the two
+      cases above (an earlier shift may have floated it ahead of the
+      sibling it dispatches on), so it cannot simply collapse to a
+      constant key: it sorts on that sibling's own name instead, one
+      character past it (eo:continuation-receiver, #7452), which places
+      it immediately below the sibling it depends on regardless of
+      where the shift left it.
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
       <xsl:apply-templates select="o[not(eo:void(.)) or eo:vertical-void(.)]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
-        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else if (eo:continuation-receiver(.) != '') then concat(eo:continuation-receiver(.), '~') else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
   </xsl:template>
@@ -313,6 +340,16 @@
   -->
   <xsl:template match="o[@pipe and (@base = concat($eo:xi, '.', preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
     <xsl:text>|</xsl:text>
+  </xsl:template>
+  <!-- METHOD-DISPATCH CONTINUATION (§3.5) -->
+  <!--
+  Writing the receiver back into the head of a nameless continuation
+  (see "eo:continuation-receiver" above) turns it into an ordinary
+  application, which reparsing then rejects as unnamed (#7452); print
+  only the trailing continuation, the same way the source wrote it.
+  -->
+  <xsl:template match="o[eo:continuation-receiver(.) != '']" mode="head" priority="2">
+    <xsl:value-of select="concat(if (@fragile) then '?' else '', '.', eo:printable(tokenize(@base, '\.')[last()]))"/>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
