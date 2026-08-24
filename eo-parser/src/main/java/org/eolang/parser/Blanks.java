@@ -74,6 +74,7 @@ final class Blanks {
      *  caller before {@link #enterAfterMeta(Span, Globals, Emit)} had a
      *  chance to consume them
      * @param emit The directives sink
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     static void checkTest(
         final Span span, final Stack stack, final int blanks, final Emit emit
