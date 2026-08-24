@@ -5,6 +5,7 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,35 @@ final class LineTest {
             "an impl must reach Stack through the supplied reference and push a level",
             stack.depth(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void letsImplementationReadExistingStackState() {
+        final Stack stack = new Stack();
+        stack.push(0, 0, Kind.TOP_LEVEL, Openness.OPEN);
+        final AtomicInteger observed = new AtomicInteger(-1);
+        final Line line = (stk, globals, emit) -> observed.set(stk.top().indent());
+        line.into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "an impl must observe the indent of a level pushed before dispatch",
+            observed.get(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void dispatchesTwoLinesOntoTheSameStack() {
+        final Line line = (stack, globals, emit) -> stack.push(
+            stack.empty() ? 0 : stack.top().indent() + 2, 0, Kind.TOP_LEVEL, Openness.OPEN
+        );
+        final Stack stack = new Stack();
+        line.into(stack, new Globals(), new Emit());
+        line.into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a Stack passed across two dispatches must carry over the first push",
+            stack.depth(),
+            Matchers.equalTo(2)
         );
     }
 
