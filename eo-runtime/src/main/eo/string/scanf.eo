@@ -12,11 +12,17 @@
 # because `10.power 309` is already infinity: a single multiplication by it
 # turns every mantissa into infinity and a single division by it turns every
 # mantissa into zero, whatever the written value is. `raised` and `lowered`
-# therefore scale in steps of at most `10^300`, so every intermediate stays
+# therefore scale in steps of at most `10^200`, so every intermediate stays
 # inside the double range and an underflow happens only when the value itself
 # underflows. Both stop as soon as the value is zero or infinite, since no
 # further step can move it, and that is what keeps the recursion short for an
-# exponent written far outside the range, such as `1e999999999`.
+# exponent written far outside the range, such as `1e999999999`. The step was
+# `10^300` until #7456: `number.power`'s exponentiation by squaring drifts
+# further from the exact power of ten the larger the exponent it is asked
+# for, and at 300 that drift was already enough to carry a text naming a
+# value inside the double range past its edge into infinity; 200 keeps the
+# same one-step shape for every exponent this parser is ever asked to
+# handle while landing on a smaller power of ten to start the drift from.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -68,12 +74,12 @@
               eloc.plus 1
       if. > [value power] > lowered
         and.
-          power.gt 300
+          power.gt 200
           ^.scalable value
         ^.lowered
           value.div
-            10.power 300
-          power.minus 300
+            10.power 200
+          power.minus 200
         value.div
           10.power power
       if. > magnitude
@@ -101,12 +107,12 @@
         dot.plus 1
       if. > [value power] > raised
         and.
-          power.gt 300
+          power.gt 200
           ^.scalable value
         ^.raised
           value.times
-            10.power 300
-          power.minus 300
+            10.power 200
+          power.minus 200
         value.times
           10.power power
       and. > [value] > scalable
@@ -516,3 +522,11 @@
   is-finite. ++> can-scan-a-finite-float-with-an-exponent-above-the-range
     head.
       "%f".scanf "0.001e311"
+
+  is-finite. ++> can-scan-a-value-at-the-double-maximum
+    head.
+      "%f".scanf "1.7976931348623157e308"
+
+  is-finite. ++> can-scan-a-value-below-the-double-maximum
+    head.
+      "%f".scanf "1.7976931348623156e308"
