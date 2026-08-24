@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7499: the parser marks a fragile `?.` dispatch with an empty `fragile`
+# attribute, and the schema has to know about it, or the XMIR of a program
+# the parser accepts does not validate.
+errors: 0
+document: |
+  <object author="eo-parser">
+    <o name="main">
+      <o base=".b" fragile="" name="x">
+        <o base="Φ.a"/>
+      </o>
+    </o>
+  </object>
