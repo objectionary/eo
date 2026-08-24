@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -26,12 +25,14 @@ final class LineTest {
 
     @Test
     void deliversAllThreeArgumentsToImplementation() {
-        final AtomicInteger seen = new AtomicInteger(0);
-        final Line line = (stack, globals, emit) -> seen.incrementAndGet();
-        line.into(new Stack(), new Globals(), new Emit());
+        final Line line = (stack, globals, emit) -> stack.push(
+            0, 0, Kind.TOP_LEVEL, Openness.OPEN
+        );
+        final Stack stack = new Stack();
+        line.into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a Line impl must observe exactly one invocation of into() per dispatch",
-            seen.get(),
+            "an impl must reach Stack through the supplied reference and push a level",
+            stack.depth(),
             Matchers.equalTo(1)
         );
     }
