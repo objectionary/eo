@@ -112,6 +112,28 @@ final class PhCoverageTest {
     }
 
     @Test
+    void recordsALocationTouchedThroughANormalizedObject(@Mktmp final Path temp)
+        throws Exception {
+        final Path hits = temp.resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        System.setProperty("eo.coverageFile", hits.toString());
+        try {
+            new PhCoverage(new Data.ToPhi(1L), "Φ.normalized:3:5").normalized().delta();
+            MatcherAssert.assertThat(
+                "a location touched through a normalized object must still be recorded, but it wasnt",
+                Files.readAllLines(hits, StandardCharsets.UTF_8),
+                Matchers.contains("Φ.normalized:3:5")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
     void writesToEachConfiguredDestinationOnce(@Mktmp final Path temp) throws Exception {
         final Path first = temp.resolve("first.txt");
         final Path second = temp.resolve("second.txt");
