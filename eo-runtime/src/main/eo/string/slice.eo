@@ -21,7 +21,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[start len] > slice
+[^ start len] > slice
   if. > @
     or.
       nstart.lt 0
@@ -50,7 +50,7 @@
           string
             text.as-bytes.slice bstart blen
   minus. > blen
-    [index accum result cause] >> recidx
+    [^ index accum result cause] >> recidx
       if. > @
         accum.eq result
         index
@@ -161,7 +161,7 @@
         *
           nstart.plus nlen
     bstart
-  if. > [index csize valid] > increase
+  if. > [^ index csize valid] > increase
     gt.
       index.plus csize
       size

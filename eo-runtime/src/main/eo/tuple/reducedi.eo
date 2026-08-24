@@ -10,10 +10,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[start func] > reducedi
+[^ start func] > reducedi
   list.is-empty.if > @
     start
-    if. > [tup] >> rec-reducedi
+    if. > [^ tup] >> rec-reducedi
       tup.length.eq 1
       ^.func
         ^.start
@@ -31,7 +31,7 @@
     reducedi.
       * 1 1
       0
-      x.plus > [a x i]
+      x.plus > [^ a x i]
         a.plus
           at.
             * 2 2
@@ -86,7 +86,7 @@
         0
         1
       0
-      x.plus a > [a x i]
+      x.plus a > [^ a x i]
     1
 
   not. ++> can-reduce-bools-with-indexes
@@ -96,16 +96,16 @@
         true
         false
       true
-      x.and a > [a x i]
+      x.and a > [^ a x i]
 
   ++> can-reduce-with-nested-functions
     eq. > @
       reducedi.
         * 10 500
         0
-        [acc x i]
+        [^ acc x i]
           check x > @
-          if. > [el] > check
+          if. > [^ el] > check
             ^.x.lt 100
             ^.acc.plus ^.x
             ^.acc.minus ^.x

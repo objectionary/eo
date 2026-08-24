@@ -8,9 +8,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[as-bytes] > i8
+[^ as-bytes] > i8
   as-bytes > @
-  [] > as-i16
+  [^] > as-i16
     i16 > @
       concat.
         if. >>
@@ -21,7 +21,7 @@
           FF-
         ^.as-bytes
   as-i16.as-number > as-number
-  [x cant-divide] > div
+  [^ x cant-divide] > div
     if. > @
       eq.
         x.as-i8 >> other
@@ -35,24 +35,24 @@
             ^.as-i16.div other.as-i16
           1
           1
-  ^.as-i16.gt x.as-i8.as-i16 > [x] > gt
-  ^.as-i16.gte x.as-i8.as-i16 > [x] > gte
-  ^.as-i16.lt x.as-i8.as-i16 > [x] > lt
-  ^.as-i16.lte x.as-i8.as-i16 > [x] > lte
-  i8 > [x] > minus
+  ^.as-i16.gt x.as-i8.as-i16 > [^ x] > gt
+  ^.as-i16.gte x.as-i8.as-i16 > [^ x] > gte
+  ^.as-i16.lt x.as-i8.as-i16 > [^ x] > lt
+  ^.as-i16.lte x.as-i8.as-i16 > [^ x] > lte
+  i8 > [^ x] > minus
     slice.
       as-bytes.
         ^.as-i16.minus x.as-i8.as-i16
       1
       1
   times FF-.as-i8 > neg
-  i8 > [x] > plus
+  i8 > [^ x] > plus
     slice.
       as-bytes.
         ^.as-i16.plus x.as-i8.as-i16
       1
       1
-  i8 > [x] > times
+  i8 > [^ x] > times
     slice.
       as-bytes.
         ^.as-i16.times x.as-i8.as-i16
@@ -111,7 +111,7 @@
     "recovered"
     02-.as-i8.div
       00-.as-i8
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8

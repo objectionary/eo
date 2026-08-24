@@ -14,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-scientific
+[^] > as-scientific
   n.is-finite.not.if > @
     n.is-nan.if
       "nan".as-bytes
@@ -49,7 +49,7 @@
   carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
-  if. > [m count] >> rec-exponent
+  if. > [^ m count] >> rec-exponent
     or.
       m.eq 0
       and.

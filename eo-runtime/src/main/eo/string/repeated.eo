@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[times cant-repeat] > repeated
+[^ times cant-repeat] > repeated
   if. > @
     or.
       0.gt times
@@ -20,7 +20,7 @@
       "Can't repeat text %f times".printf
         * times
     string
-      [n] >> rec-repeated
+      [^ n] >> rec-repeated
         if. > @
           0.eq n
           --
@@ -45,19 +45,19 @@
     "recovered"
     "x".repeated
       -1
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-non-integer-count
     "recovered"
     "x".repeated
       2.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-infinite-count
     "recovered"
     "x".repeated
       pinf
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"

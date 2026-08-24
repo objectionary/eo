@@ -25,15 +25,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[read] > scanf
+[^ read] > scanf
   ^ > format
-  [pattern specifiers] >>
-    [text] > as-float
+  [^ pattern specifiers] >>
+    [^ text] > as-float
       negative.if negated scaled > @
       mantissa.index-of "." > dot
       esign.index-of "e" > eloc
       unsigned.replaced "/[eE]/".regex "e" > esign
-      [txt] > exp-value
+      [^ txt] > exp-value
         if. > @
           eq.
             txt.slice 0 1
@@ -66,7 +66,7 @@
             eloc.plus 1
             esign.length.minus
               eloc.plus 1
-      if. > [value power] > lowered
+      if. > [^ value power] > lowered
         and.
           power.gt 300
           ^.scalable value
@@ -99,7 +99,7 @@
         "-"
       mantissa.length.minus > places
         dot.plus 1
-      if. > [value power] > raised
+      if. > [^ value power] > raised
         and.
           power.gt 300
           ^.scalable value
@@ -109,7 +109,7 @@
           power.minus 300
         value.times
           10.power power
-      and. > [value] > scalable
+      and. > [^ value] > scalable
         not.
           value.eq 0
         value.is-finite
@@ -131,7 +131,7 @@
           1
           text.length.minus 1
         text
-    [text] > as-integer
+    [^ text] > as-integer
       if. > @
         or.
           normalized.length.gt 19
@@ -145,8 +145,8 @@
           "The number doesn't fit into long range for the '%%d' conversion".printf
             *
         negative.if negated folded
-      [a b] > digits-lte
-        if. > [index] >> rec
+      [^ a b] > digits-lte
+        if. > [^ index] >> rec
           index.eq ^.a.length
           true
           if.
@@ -187,7 +187,7 @@
           text
         "/^0+/".regex
         ""
-    [group acc] >> convert
+    [^ group acc] >> convert
       ^.matched.exists.not.if > @
         *
         if.
@@ -205,15 +205,15 @@
     | > @
       1
       *
-    if. > [spec text] > converted
+    if. > [^ spec text] > converted
       spec.eq "s"
       text
       if.
         spec.eq "d"
         ^.as-integer text
         ^.as-float text
-    [text] > fold-digits
-      [index acc] >> rec
+    [^ text] > fold-digits
+      [^ index acc] >> rec
         if. > @
           index.eq ^.text.length
           acc
@@ -240,7 +240,7 @@
     tokens.at
       1
       T
-  if. > [ch] >> escaped
+  if. > [^ ch] >> escaped
     contains.
       *
         "\\"
@@ -262,7 +262,7 @@
     "\\".chained
       * ch
     ch
-  [position accumulated found pending] >> tokenize
+  [^ position accumulated found pending] >> tokenize
     if. > @
       position.gte ^.format.length
       pending.if *1

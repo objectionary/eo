@@ -14,11 +14,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[file] > directory
+[^ file] > directory
   file > @
   [] > listed /Q.tuple
-  [dir time process random] > retried
-    [index] >> attempted
+    ? > ^
+  [^ dir time process random] > retried
+    [^ index] >> attempted
       if. > @
         descriptor.eq -1
         if.
@@ -43,7 +44,7 @@
             *
       ^.candidate index > path!
     | 0 > @
-    [index] > candidate
+    [^ index] > candidate
       path.separator.joined > @
         * ^.dir name
       "%d-%d-%d-%f".printf > name!
@@ -52,7 +53,7 @@
           ^.process
           index
           ^.random
-    code. > [descriptor] > closed
+    code. > [^ descriptor] > closed
       os.is-windows.if
         win32 *1
           "_close"
@@ -60,7 +61,7 @@
         posix *1
           "close"
           descriptor
-    code. > [name] > opened
+    code. > [^ name] > opened
       os.is-windows.if
         win32 *1
           "_open"
@@ -76,13 +77,13 @@
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.mode
-  [] > tmpfile
+  [^] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
           * ^.file
-    ^.^.retried > [] > touch
+    ^.^.retried > [^] > touch
       ^.^.path
       clock.as-number
       code.
@@ -94,9 +95,9 @@
             "getpid"
             *
       clock.as-number.random
-  [glob] > walk
-    [accum prefix dir] >> walked
-      [rest] >> stepped
+  [^ glob] > walk
+    [^ accum prefix dir] >> walked
+      [^ rest] >> stepped
         if. > @
           rest.length.eq 0
           picked ^.accum ^.prefix
@@ -121,18 +122,18 @@
       *
       ""
       ^
-    if. > [accum rel] >> picked
+    if. > [^ accum rel] >> picked
       matched rel
       accum.with
         Q.file (base.resolved rel).as-bytes
       accum
     ^.as-path >> base
-    if. > [char] >> escaped
+    if. > [^ char] >> escaped
       ".+()|^$[]\\".contains char
       "".joined
         * "\\" char
       char
-    [text] >> matched
+    [^ text] >> matched
       as-bool. > @
         exists.
           next.
@@ -146,7 +147,7 @@
                           "/^"
                           translated 0 "" false false
                           "$/"
-                T > [message] >>
+                T > [^ message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
                     * ^.glob message
               text
@@ -155,24 +156,24 @@
         "[^"
         escaped path.separator >> literal
         "]"
-    if. > [char] >> classified
+    if. > [^ char] >> classified
       "\\[&".contains char
       "".joined
         * "\\" char
       char
-    if. > [from] >> closes
+    if. > [^ from] >> closes
       from.gte ^.glob.length
       false
       if.
         eq.
           ^.glob.at
             from
-            "" > [absent]
+            "" > [^ absent]
           "]"
         true
         ^.closes
           from.plus 1
-    [index acc braced classed] >> translated
+    [^ index acc braced classed] >> translated
       if. > @
         index.gte ^.glob.length
         acc
@@ -215,13 +216,13 @@
           eq.
             ^.glob.at
               index.plus 1
-              "" > [message]
+              "" > [^ message]
             "*"
       opening.and > negated
         eq.
           ^.glob.at
             index.plus 1
-            "" > [missing]
+            "" > [^ missing]
           "!"
       classed.not.and > opening
         and.
@@ -232,7 +233,7 @@
         eq.
           ^.glob.at
             index.plus 2
-            "" > [space]
+            "" > [^ space]
           "/"
       classed.if > token
         if.
