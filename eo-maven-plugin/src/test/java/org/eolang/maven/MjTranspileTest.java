@@ -148,6 +148,49 @@ final class MjTranspileTest {
     }
 
     @Test
+    void marksTopLevelPureFormationWithPureMarker(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
+            new TextOf(
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.containsString("implements Pure")
+        );
+    }
+
+    @Test
+    void wrapsAnonymousPureFormationInPhSticky(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "an anonymous formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
+            new TextOf(
+                new FakeMaven(temp).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package examples",
+                        "",
+                        "# Outer.",
+                        "[] > x",
+                        "  seq > @",
+                        "    []",
+                        "      42 > @"
+                    )
+                )
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
     void leavesUnmarkedFormationBare(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
