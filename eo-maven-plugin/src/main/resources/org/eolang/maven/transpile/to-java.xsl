@@ -536,7 +536,13 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Abstract object as attribute -->
+  <!--
+  Abstract object as attribute. A formation that purify.xsl marked with
+  @pure is returned wrapped in PhSticky, so that at run time it remembers
+  the results of its own dataization (see #5165). A pure top-level class
+  and a pure anonymous formation are not wrapped yet (see the puzzle in
+  PhSticky.java).
+  -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
     <xsl:param name="name"/>
@@ -578,7 +584,16 @@
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>return </xsl:text>
-    <xsl:value-of select="$ctx"/>
+    <xsl:choose>
+      <xsl:when test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+        <xsl:value-of select="$ctx"/>
+        <xsl:text>)</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$ctx"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>}</xsl:text>
