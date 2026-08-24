@@ -211,6 +211,37 @@ final class Value {
     }
 
     /**
+     * May this value open a reversed dispatch as the line's head — a
+     * bare identifier or a root glyph, the only kinds R-9.0.3 allows in
+     * that position?
+     * @return True for {@link Kind#IDENTIFIER} or {@link Kind#ROOT}
+     */
+    boolean reversible() {
+        return this.kind == Kind.IDENTIFIER || this.kind == Kind.ROOT;
+    }
+
+    /**
+     * The XMIR symbol a {@link Kind#ROOT} glyph maps to per §9.3 —
+     * {@code Q} to {@code Φ}, {@code @} to {@code φ}, {@code ^} to
+     * {@code ρ}, {@code $} to {@code ξ}. Call only when {@link #kind()}
+     * is {@link Kind#ROOT}.
+     * @return The mapped symbol
+     */
+    String rootSymbol() {
+        final String mapped;
+        if ("Q".equals(this.raw)) {
+            mapped = "Φ";
+        } else if ("@".equals(this.raw)) {
+            mapped = "φ";
+        } else if ("^".equals(this.raw)) {
+            mapped = "ρ";
+        } else {
+            mapped = "ξ";
+        }
+        return mapped;
+    }
+
+    /**
      * Does this head open a formation body?
      * @return True for identity, or a group wrapping inline {@code > [...]}
      */
@@ -241,9 +272,11 @@ final class Value {
         return found;
     }
 
-    // @todo #7281:30min Move the remaining kind()/raw()-driven decisions out
-    //  of Emissions and LnOnlyPhi onto Value, then drop the kind()/raw()
-    //  accessors it no longer needs.
+    // @todo #7379:30min Move the remaining kind()-driven branches in
+    //  Emissions#openValue and Emissions#openBase (INTEGER/FLOAT, HEX,
+    //  BYTES, STRING, STAR, TERM) onto Value as named predicates, the
+    //  way reversible() and rootSymbol() already replaced the
+    //  IDENTIFIER/ROOT and ROOT-glyph decisions.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
