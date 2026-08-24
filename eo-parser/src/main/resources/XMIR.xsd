@@ -239,6 +239,20 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="pure" type="xs:boolean">
+      <xs:annotation>
+        <xs:appinfo>The marker of a formation that is safe to cache (#5165)</xs:appinfo>
+        <xs:documentation>
+          Set by "purify.xsl" on a formation whose voids the program only ever
+          fills with data, whose body copies nothing from the root of the
+          program besides the literals, and which is not an atom. It says
+          "pure when the inputs are data" and nothing stronger: at run time
+          the object still asks the actual arguments, and the context where
+          the body reads it, what they are before it keeps the result of
+          dataizing itself.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>

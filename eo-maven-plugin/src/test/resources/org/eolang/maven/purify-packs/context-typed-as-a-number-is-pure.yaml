@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The object a formation is attached to is an input like any other. When the
+# tables say the body reads a number there, the read is fine and those bytes
+# simply join the cache key at run time.
+eo:
+  app.eo: |
+    [] > app
+      42.halved > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > div
+        x > @
+      [] > halved
+        ^.div 2 > @
+pure:
+  - "//o[@name='halved' and @pure='true']"
