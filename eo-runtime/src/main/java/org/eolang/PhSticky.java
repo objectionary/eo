@@ -5,19 +5,19 @@
 
 package org.eolang;
 
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * An object remembering the results of its own dataization (see #5165).
  *
  * <p>The transpiler puts this decorator on a formation that {@code purify.xsl}
- * marked with {@code @pure}: one whose answer is decided by the bytes of its
+ * marked as pure: one whose answer is decided by the bytes of its
  * inputs and by nothing else. The cache belongs to the decorated object alone
  * and holds only what is its own — there is no table shared between objects
  * and no name under which a stranger could find an entry. A copy shares the
@@ -27,19 +27,34 @@ import java.util.Optional;
  *
  * <p>The inputs are whatever is put into the object — a void, a receiver, it
  * makes no difference — and the key is those puts in the order they came,
- * each reduced to the bytes of its object. The label of the transpiler is a
- * promise about the callers of yesterday and not about those of tomorrow, so
- * before trusting an input the decorator resolves it and looks at what it is:
- * anything that is not a number or a string makes the whole dataization pass
- * through, computed and not remembered.</p>
+ * each reduced to the bytes of its object. A put is remembered under the slot
+ * it came through, so the same void filled by position once and by name later
+ * makes two entries: a second computation, never a wrong answer. The label of
+ * the transpiler is a promise about the callers of yesterday and not about
+ * those of tomorrow, so before trusting an input the decorator resolves it
+ * and looks at what it is: anything that is not a number or a string makes
+ * the whole dataization pass through, computed and not remembered.</p>
  *
  * <p>Only dataization is remembered. Taking an attribute, putting one,
  * copying, normalizing — all of it reaches the decorated object untouched,
- * and the cache is bounded, letting the entry asked for longest ago go first.</p>
+ * and the cache is bounded, letting the entry asked for longest ago go
+ * first.</p>
  *
  * @since 0.75
+ * @todo #5165:60min Wrap the pure top-level classes and the anonymous
+ *  formations in PhSticky too. Today only a named formation nested in
+ *  another one (an "abstract" XMIR element) is decorated when purify.xsl
+ *  marks it as pure: a top-level "class" is instantiated by PhPackage
+ *  through reflection and an anonymous formation by the "o" template in
+ *  mode "object", and neither site in to-java.xsl knows about the label
+ *  yet.
  */
 public final class PhSticky implements Phi {
+
+    /**
+     * How many answers a decorated object keeps before evicting.
+     */
+    private static final int CAPACITY = 256;
 
     /**
      * The formae whose objects are decided by their bytes alone.
@@ -69,7 +84,7 @@ public final class PhSticky implements Phi {
      * @param obj The object to decorate
      */
     public PhSticky(final Phi obj) {
-        this(obj, 256);
+        this(obj, PhSticky.CAPACITY);
     }
 
     /**
@@ -81,7 +96,7 @@ public final class PhSticky implements Phi {
         this(
             obj,
             Collections.synchronizedMap(new Lru(capacity)),
-            Collections.synchronizedList(new ArrayList<>(0))
+            new CopyOnWriteArrayList<>()
         );
     }
 
@@ -113,11 +128,11 @@ public final class PhSticky implements Phi {
 
     @Override
     public Phi copy() {
-        final List<Map.Entry<String, Phi>> puts;
-        synchronized (this.inputs) {
-            puts = Collections.synchronizedList(new ArrayList<>(this.inputs));
-        }
-        return new PhSticky(this.origin.copy(), this.cache, puts);
+        return new PhSticky(
+            this.origin.copy(),
+            this.cache,
+            new CopyOnWriteArrayList<>(this.inputs)
+        );
     }
 
     @Override
@@ -133,13 +148,13 @@ public final class PhSticky implements Phi {
     @Override
     public void put(final int pos, final Phi object) {
         this.origin.put(pos, object);
-        this.inputs.add(new AbstractMap.SimpleImmutableEntry<>(String.valueOf(pos), object));
+        this.inputs.add(Map.entry(String.valueOf(pos), object));
     }
 
     @Override
     public void put(final String name, final Phi object) {
         this.origin.put(name, object);
-        this.inputs.add(new AbstractMap.SimpleImmutableEntry<>(name, object));
+        this.inputs.add(Map.entry(name, object));
     }
 
     @Override
@@ -184,32 +199,26 @@ public final class PhSticky implements Phi {
         return this.origin.φTerm();
     }
 
-    /**
-     * The key of this copy in the cache, or nothing when some input
-     * is not data and the cache must stay out of the way.
-     * @return The key, or empty
-     */
     private Optional<String> key() {
-        final List<Map.Entry<String, Phi>> puts;
-        synchronized (this.inputs) {
-            puts = new ArrayList<>(this.inputs);
+        final Optional<String> result;
+        final List<Map.Entry<String, Phi>> normal = this.inputs.stream()
+            .map(put -> Map.entry(put.getKey(), put.getValue().normalized()))
+            .collect(Collectors.toList());
+        if (normal.stream().allMatch(put -> PhSticky.DATA.contains(put.getValue().forma()))) {
+            result = Optional.of(
+                normal.stream().map(
+                    put -> String.format(
+                        "%s=%s",
+                        put.getKey(),
+                        Base64.getEncoder().encodeToString(
+                            new Dataized(put.getValue()).take()
+                        )
+                    )
+                ).collect(Collectors.joining("|"))
+            );
+        } else {
+            result = Optional.empty();
         }
-        final StringBuilder out = new StringBuilder(0);
-        Optional<String> key = Optional.empty();
-        boolean data = true;
-        for (final Map.Entry<String, Phi> put : puts) {
-            final Phi norm = put.getValue().normalized();
-            if (!PhSticky.DATA.contains(norm.forma())) {
-                data = false;
-                break;
-            }
-            out.append(put.getKey()).append('=')
-                .append(Base64.getEncoder().encodeToString(new Dataized(norm).take()))
-                .append('|');
-        }
-        if (data) {
-            key = Optional.of(out.toString());
-        }
-        return key;
+        return result;
     }
 }

@@ -6,12 +6,8 @@ package org.eolang;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -26,11 +22,13 @@ final class PhStickyTest {
 
     @Test
     void computesThroughTheDecorator() {
-        final Phi twice = new PhSticky(PhStickyTest.doubler(new AtomicInteger()));
         MatcherAssert.assertThat(
             "the decorated formation must dataize to the doubled input, but it didnt",
             new Dataized(
-                new PhApplication(twice, new Bind(0, new Data.ToPhi(21.0d)))
+                new PhApplication(
+                    new PhSticky(PhStickyTest.doubler(new AtomicInteger())),
+                    new Bind(0, new Data.ToPhi(21.0d))
+                )
             ).asNumber(),
             Matchers.equalTo(42.0d)
         );
@@ -150,40 +148,32 @@ final class PhStickyTest {
     @Timeout(20L)
     void staysCorrectUnderConcurrentDataization() throws Exception {
         final Phi twice = new PhSticky(PhStickyTest.doubler(new AtomicInteger()));
-        final int threads = 8;
-        final ExecutorService pool = Executors.newFixedThreadPool(threads);
-        try {
-            final Collection<Callable<Double>> tasks = new ArrayList<>(threads);
-            for (int idx = 0; idx < threads; ++idx) {
-                tasks.add(
-                    () -> new Dataized(
-                        new PhApplication(twice, new Bind(0, new Data.ToPhi(21.0d)))
-                    ).asNumber()
-                );
-            }
-            final List<Future<Double>> answers = pool.invokeAll(
-                tasks, 10L, TimeUnit.SECONDS
+        final List<Double> results = Collections.synchronizedList(new ArrayList<>(8));
+        final Collection<Thread> threads = new ArrayList<>(8);
+        for (int idx = 0; idx < 8; ++idx) {
+            threads.add(
+                new Thread(
+                    () -> results.add(
+                        new Dataized(
+                            new PhApplication(twice, new Bind(0, new Data.ToPhi(21.0d)))
+                        ).asNumber()
+                    )
+                )
             );
-            final Collection<Double> results = new ArrayList<>(threads);
-            for (final Future<Double> answer : answers) {
-                results.add(answer.get());
-            }
-            MatcherAssert.assertThat(
-                "every concurrent dataization must answer the same doubled input, but some didnt",
-                results,
-                Matchers.everyItem(Matchers.equalTo(42.0d))
-            );
-        } finally {
-            pool.shutdownNow();
         }
+        for (final Thread thread : threads) {
+            thread.start();
+        }
+        for (final Thread thread : threads) {
+            thread.join(10_000L);
+        }
+        MatcherAssert.assertThat(
+            "every concurrent dataization must answer the same doubled input, but some didnt",
+            results,
+            Matchers.equalTo(Collections.nCopies(8, 42.0d))
+        );
     }
 
-    /**
-     * A formation like {@code [x] > twice} with {@code x.times 2 > @},
-     * counting how many times its body runs.
-     * @param count The counter of body evaluations
-     * @return The formation
-     */
     private static Phi doubler(final AtomicInteger count) {
         final PhDefault twice = new PhDefault();
         twice.add("x", new AtVoid("x"));
@@ -204,12 +194,6 @@ final class PhStickyTest {
         return twice;
     }
 
-    /**
-     * A formation like {@code [x] > length} answering the size of the
-     * bytes of its input, counting how many times its body runs.
-     * @param count The counter of body evaluations
-     * @return The formation
-     */
     private static Phi measurer(final AtomicInteger count) {
         final PhDefault length = new PhDefault();
         length.add("x", new AtVoid("x"));
@@ -230,12 +214,6 @@ final class PhStickyTest {
         return length;
     }
 
-    /**
-     * A formation like {@code [^] > halver} with {@code ^.div 2 > @},
-     * counting how many times its body runs.
-     * @param count The counter of body evaluations
-     * @return The formation
-     */
     private static Phi receiver(final AtomicInteger count) {
         final PhDefault halver = new PhDefault();
         halver.add(Phi.RHO, new AtRho());

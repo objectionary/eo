@@ -136,24 +136,12 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "+package examples",
-                        "",
-                        "# Outer.",
-                        "[] > x",
-                        "  inner > @",
-                        "  # Inner.",
-                        "  [] > inner",
-                        "    42 > @"
-                    )
-                )
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .execute(MjTranspile.class)
-                .result()
-                .get("target/generated/org/eolang/EO_examples/EOx.java")
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
         );
@@ -164,23 +152,11 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
             new TextOf(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "+package examples",
-                        "",
-                        "# Outer.",
-                        "[] > x",
-                        "  inner > @",
-                        "  # Inner.",
-                        "  [] > inner",
-                        "    42 > @"
-                    )
-                )
-                .execute(MjParse.class)
-                .execute(MjTranspile.class)
-                .result()
-                .get("target/generated/org/eolang/EO_examples/EOx.java")
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.not(Matchers.containsString("new PhSticky("))
         );
@@ -774,5 +750,21 @@ final class MjTranspileTest {
             }
         }
         return valid && depth == 0;
+    }
+
+    private static FakeMaven pure(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package examples",
+                "",
+                "# Outer.",
+                "[] > x",
+                "  inner > @",
+                "  # Inner.",
+                "  [] > inner",
+                "    42 > @"
+            )
+        );
     }
 }
