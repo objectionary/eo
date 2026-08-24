@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +65,7 @@ final class LnCompactTuple implements Line {
         if (head.chainable()) {
             chain = tokens.readChain();
         } else {
-            chain = new java.util.ArrayList<>(0);
+            chain = new ArrayList<>(0);
         }
         if (tokens.atEnd() || tokens.current() != ' ') {
             throw new ParseError(

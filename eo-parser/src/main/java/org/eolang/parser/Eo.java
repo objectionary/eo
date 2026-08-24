@@ -4,7 +4,9 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.xembly.Directive;
 
 /**
@@ -74,7 +76,7 @@ final class Eo implements Iterable<Directive> {
             (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        final List<Span> spans = new ArrayList<>(Eo.SPANS_CAPACITY);
         new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
         int idx = 0;
@@ -176,7 +178,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start, final Stack stack,
+        final List<Span> spans, final int start, final Stack stack,
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
@@ -281,7 +283,7 @@ final class Eo implements Iterable<Directive> {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
             final int token = emit.savepoint();
-            final java.util.List<Level> frame = stack.snapshot();
+            final List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
@@ -331,7 +333,7 @@ final class Eo implements Iterable<Directive> {
             stack.popDeeperThan(span.indent());
         }
         final int token = emit.savepoint();
-        final java.util.List<Level> frame = stack.snapshot();
+        final List<Level> frame = stack.snapshot();
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
@@ -463,7 +465,7 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!globals.pendingComments().isEmpty()) {
-            final java.util.List<Span> pending = globals.pendingComments();
+            final List<Span> pending = globals.pendingComments();
             emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
