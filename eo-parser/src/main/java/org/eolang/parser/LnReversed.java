@@ -84,7 +84,7 @@ final class LnReversed implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Kind kind;
         final Openness openness;
         if (args.isEmpty()) {

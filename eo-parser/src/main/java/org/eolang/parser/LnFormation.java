@@ -80,7 +80,7 @@ final class LnFormation implements Line {
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, blanks, emit);
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.transition(stack, suffix);
         globals.clearBlanks();
         globals.markEmitted();
