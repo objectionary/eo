@@ -28,7 +28,8 @@ import org.xembly.Directives;
  * {@code /object} (metas, comments, errors). These wrap their
  * navigation in {@code push}/{@code pop} so the caller's cursor
  * position survives the call. Safe to invoke at any depth.</li>
- * <li><strong>Object tree</strong> ({@link #object}, {@link #close},
+ * <li><strong>Object tree</strong> ({@link #object}, {@link #unnamedObject},
+ * {@link #baselessObject}, {@link #bareObject}, {@link #close},
  * {@link #voidParam}, {@link #atomMarker}) — emit relative to the
  * current cursor, descending into the new {@code <o>} on
  * {@link #object} and ascending on {@link #close}. The caller must
@@ -272,17 +273,67 @@ final class Emit {
     }
 
     /**
-     * Open an {@code <o>} element at the current cursor — §9.0.2 /
-     * §9.4.2.
+     * Open an {@code <o base="...">} element at the current cursor —
+     * §9.0.2 / §9.4.2.
      *
      * <p>The cursor descends into the new element so subsequent
      * {@link #voidParam}, {@link #atomMarker}, and child {@link #object}
      * calls add as children. Must be balanced by {@link #close()} when
      * the element's body ends.</p>
      *
-     * <p>{@code name} and {@code base} may be {@code null} (omitted on
-     * the emitted element). {@code line} and {@code pos} are written as
-     * {@code @line} / {@code @pos} per R-9.1.</p>
+     * @param name Value for {@code @name}, or {@code null} to omit
+     * @param base Value for {@code @base}
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void object(
+        final String name, final String base, final int line, final int pos
+    ) {
+        this.open(name, base, line, pos);
+    }
+
+    /**
+     * Open an unnamed {@code <o base="...">} element, i.e. one with
+     * no {@code @name} — §9.0.2 / §9.4.2.
+     *
+     * @param base Value for {@code @base}
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void unnamedObject(final String base, final int line, final int pos) {
+        this.open(null, base, line, pos);
+    }
+
+    /**
+     * Open a named, base-less {@code <o>} element — one whose
+     * {@code @base} is absent because the {@code wrap-applications}
+     * reshape fills it in later — §9.0.2 / §9.4.2.
+     *
+     * @param name Value for {@code @name}, or {@code null} to omit
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void baselessObject(final String name, final int line, final int pos) {
+        this.open(name, null, line, pos);
+    }
+
+    /**
+     * Open an unnamed, base-less {@code <o>} element — neither
+     * {@code @name} nor {@code @base} is written — §9.0.2 / §9.4.2.
+     *
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void bareObject(final int line, final int pos) {
+        this.open(null, null, line, pos);
+    }
+
+    /**
+     * Open an {@code <o>} element at the current cursor, omitting
+     * {@code @name} and/or {@code @base} when either is {@code null}.
+     * {@code line} and {@code pos} are written as {@code @line} /
+     * {@code @pos} per R-9.1.
      *
      * @param name Value for {@code @name}, or {@code null} to omit
      * @param base Value for {@code @base}, or {@code null} to omit
@@ -290,7 +341,7 @@ final class Emit {
      * @param pos Source column for {@code @pos}
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    void object(
+    private void open(
         final String name, final String base, final int line, final int pos
     ) {
         final Directives dirs = new Directives().add("o");

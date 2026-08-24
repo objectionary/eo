@@ -134,9 +134,9 @@ final class LnFormation implements Line {
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding
     ) {
-        emit.object(
+        emit.baselessObject(
             suffix.attribute(this.span.line(), this.span.indent()),
-            null, this.span.line(), this.span.indent()
+            this.span.line(), this.span.indent()
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
