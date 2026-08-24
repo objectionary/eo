@@ -242,12 +242,12 @@ final class Emissions {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
+            emit.object(name, value.rootSymbol(), line, value.pos());
         } else if (value.kind() == Value.Kind.TERM) {
             emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.IDENTITY) {
+        } else if (value.identity()) {
             Emissions.identity(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.GROUP) {
+        } else if (value.group()) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
@@ -406,26 +406,9 @@ final class Emissions {
         }
     }
 
-    private static String rootBase(final String raw) {
-        final String mapped;
-        if ("Q".equals(raw)) {
-            mapped = "Φ";
-        } else if ("@".equals(raw)) {
-            mapped = "φ";
-        } else if ("^".equals(raw)) {
-            mapped = "ρ";
-        } else if ("$".equals(raw)) {
-            mapped = "ξ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
-    }
-
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
-            && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;

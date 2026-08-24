@@ -184,4 +184,31 @@ final class ValueTest {
             Matchers.equalTo(false)
         );
     }
+
+    @Test
+    void marksIdentifierReversible() {
+        MatcherAssert.assertThat(
+            "an IDENTIFIER value must be allowed as a reversed-dispatch head",
+            new Value(Value.Kind.IDENTIFIER, "foo", 0).reversible(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void mapsRootGlyphQToUpperPhi() {
+        MatcherAssert.assertThat(
+            "rootSymbol() must map Q to the top-level Φ per §9.3",
+            new Value(Value.Kind.ROOT, "Q", 0).rootSymbol(),
+            Matchers.equalTo("Φ")
+        );
+    }
+
+    @Test
+    void mapsRootGlyphCaretToRho() {
+        MatcherAssert.assertThat(
+            "rootSymbol() must map ^ to ρ per §9.3",
+            new Value(Value.Kind.ROOT, "^", 0).rootSymbol(),
+            Matchers.equalTo("ρ")
+        );
+    }
 }
