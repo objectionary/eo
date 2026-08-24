@@ -6,4 +6,4 @@ line: 2
 message: "the identity object takes no horizontal arguments; put the argument on a deeper-indent line"
 input: |
   [] > app
-    I 5 > y
+    foo (I 5) > y

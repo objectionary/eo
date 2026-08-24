@@ -151,11 +151,7 @@ final class LnApplication implements Line {
         if (!args.isEmpty() && head.opensFormationBody()) {
             final String reason;
             if (head.identity()) {
-                reason = String.join(
-                    " ",
-                    "the identity object takes no horizontal arguments;",
-                    "put the argument on the next line, or apply it inside parentheses"
-                );
+                reason = Emissions.NO_IDENTITY_ARGS;
             } else {
                 reason = "horizontal formation not allowed as argument";
             }

@@ -687,13 +687,13 @@ An `I` token is *the one-character spelling of the identity object* `x > [x]` �
 "hello".at 1.5 I                      ← the error branch hands the message back
 ```
 
-R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes a `.method` chain with the ordinary application shape (§3.6). It takes **no horizontal arguments**: an argument is given on a deeper-indent line, or inside a paren group where the identity is applied to it.
+R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes a `.method` chain with the ordinary application shape (§3.6). It takes **no horizontal arguments**, in any position: an argument is given on a deeper-indent line.
 
 ```
 I 5 > r                               ← rejected: the identity takes no horizontal arguments
+foo (I 5) > r                         ← rejected: the same application, inside a group
 I > r                                 ← the vertical form of the same
   5
-foo (I 5) > r                         ← accepted: the application is inside the group
 ```
 
 R-3.16.2. **The void.** The void `I` binds is always named `x`, since nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `x`, so scope resolution binds to it.
