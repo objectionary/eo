@@ -274,19 +274,16 @@ final class Eo implements Iterable<Directive> {
         return failed;
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int token = emit.savepoint();
-            final java.util.List<Level> frame = stack.snapshot();
+            final Rollback point = new Rollback(stack, emit);
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
-                emit.rollback(token);
-                stack.restore(frame);
+                point.apply();
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
             }
@@ -330,15 +327,13 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int token = emit.savepoint();
-        final java.util.List<Level> frame = stack.snapshot();
+        final Rollback point = new Rollback(stack, emit);
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
-            emit.rollback(token);
-            stack.restore(frame);
+            point.apply();
             globals.restore(saved);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
@@ -682,5 +677,55 @@ final class Eo implements Iterable<Directive> {
             parent.openTuple();
         }
         parent.child();
+    }
+
+    /**
+     * A joint savepoint over the {@link Emit} sink and the {@link Stack}
+     * levels, taken before a recoverable parse and rolled back together
+     * on a {@link ParseError} (§7).
+     *
+     * @since 0.1
+     */
+    private static final class Rollback {
+
+        /**
+         * The stack to restore on {@link #apply()}.
+         */
+        private final Stack stack;
+
+        /**
+         * The sink to roll back on {@link #apply()}.
+         */
+        private final Emit emit;
+
+        /**
+         * The sink savepoint taken at construction.
+         */
+        private final int token;
+
+        /**
+         * The stack levels snapshot taken at construction.
+         */
+        private final java.util.List<Level> frame;
+
+        /**
+         * Ctor.
+         * @param stack The stack to snapshot and later restore
+         * @param emit The sink to mark and later roll back
+         */
+        Rollback(final Stack stack, final Emit emit) {
+            this.stack = stack;
+            this.emit = emit;
+            this.token = emit.savepoint();
+            this.frame = stack.snapshot();
+        }
+
+        /**
+         * Roll the sink and the stack back to this savepoint.
+         */
+        void apply() {
+            this.emit.rollback(this.token);
+            this.stack.restore(this.frame);
+        }
     }
 }
