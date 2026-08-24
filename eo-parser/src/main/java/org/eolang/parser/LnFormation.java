@@ -116,7 +116,7 @@ final class LnFormation implements Line {
         if (suffix.atom() && !params.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "an atom must declare its void attributes vertically, as `? > name` lines"
+                "an atom must declare its void attributes vertically, as ? > name lines"
             );
         }
     }

@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:8] error: 'trailing garbage after expression'
+  [2:8] error: 'unexpected content after name suffix'
     stdout|1.2.3 42
           ^
 input: |

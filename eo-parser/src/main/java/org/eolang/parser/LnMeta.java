@@ -56,6 +56,13 @@ final class LnMeta implements Line {
                 "blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block"
             );
         }
+        if (!globals.inMetaHeader() && globals.pendingBlanks() > 0
+            && globals.pendingComments().isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "meta header must appear at the top of the file"
+            );
+        }
         final String body = this.span.body();
         final int space = body.indexOf(' ');
         final String head;

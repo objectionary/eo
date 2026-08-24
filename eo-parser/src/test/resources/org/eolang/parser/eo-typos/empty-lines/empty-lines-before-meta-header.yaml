@@ -2,10 +2,16 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
+line: 3
 message: |-
-  [1:7] error: 'unexpected content after name suffix'
-  [] > a [] > b [] > c [] > d hello world
-         ^
+  [3:0] error: 'meta header must appear at the top of the file'
+  +package foo
+  ^
 input: |
-  [] > a [] > b [] > c [] > d hello world
+
+
+  +package foo
+
+  [] > main
+    [] > @
+      hello > test

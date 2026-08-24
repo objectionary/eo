@@ -2,10 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: |-
-  [1:8] error: 'unexpected content after name suffix'
-  [] > foo.x.main
-          ^
+line: 2
+message: "types in a `/{…}` list must be separated by exactly one space"
 input: |
-  [] > foo.x.main
+  [] > fopen /file
+    ? > missing /{string  int}
