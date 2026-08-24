@@ -55,6 +55,9 @@ final class Parents {
         final Nesting nesting = new Nesting(owners);
         for (final XML formation : this.made) {
             final String owner = formation.xpath("@loc").get(0);
+            if (!formation.nodes("o[@name='ρ'][@base='∅']").isEmpty()) {
+                continue;
+            }
             final String sits = nesting.around(owner);
             final String root;
             if (sits.isEmpty()) {

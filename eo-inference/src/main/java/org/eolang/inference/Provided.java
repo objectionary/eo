@@ -119,12 +119,35 @@ final class Provided {
         String found = "";
         int seen = 0;
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
+            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))) {
                 if (seen == place) {
                     found = row.getOrDefault("type", "");
                     break;
                 }
                 seen += 1;
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The void this type declares for the object a dispatch takes it from.
+     *
+     * <p>Since #6657 the receiver is a void like any other, named {@code ρ}
+     * and written down where the formation wants it, so it is filled by
+     * whoever dispatches into the type and never by an argument counted from
+     * the left. That is why {@link #slot(String, int)} steps over it.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the void, or an empty string when this type
+     *  declares none
+     */
+    String receiver(final String type) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void")) && "ρ".equals(row.get("name"))) {
+                found = row.getOrDefault("type", "");
+                break;
             }
         }
         return found;

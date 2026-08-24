@@ -24,6 +24,11 @@ import java.util.Map;
  * and naming {@code Φ.dec} here would throw that half away. The argument has a
  * row of its own, which says both.</p>
  *
+ * <p>The receiver of a dispatch fills a void too, when the formation it
+ * dispatches into declares one for it. That void is named {@code ρ} and is
+ * not counted among the places, since it is answered by whoever dispatches
+ * and not by an argument written to the right of the name.</p>
+ *
  * @since 0.69.0
  */
 final class Bound {
@@ -32,6 +37,11 @@ final class Bound {
      * The arguments of every application, from {@link Given}.
      */
     private final Map<String, List<String>> args;
+
+    /**
+     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     */
+    private final Map<String, String> receivers;
 
     /**
      * The name every type goes by.
@@ -46,15 +56,18 @@ final class Bound {
     /**
      * Ctor.
      * @param arguments The arguments of every application, from {@link Given}
+     * @param taken What every dispatch takes its attribute from
      * @param aliases The name every type goes by, from {@link Ends}
      * @param provided What the types certainly have
      */
     Bound(
         final Map<String, List<String>> arguments,
+        final Map<String, String> taken,
         final Map<String, String> aliases,
         final Provided provided
     ) {
         this.args = arguments;
+        this.receivers = taken;
         this.names = aliases;
         this.owned = provided;
     }
@@ -74,6 +87,15 @@ final class Bound {
             );
             if (!filled.isEmpty()) {
                 found.put(application.getKey(), filled);
+            }
+        }
+        for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
+            final String hollow = this.owned.receiver(
+                this.names.getOrDefault(dispatch.getKey(), dispatch.getKey())
+            );
+            if (!hollow.isEmpty()) {
+                found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
+                    .put(hollow, dispatch.getValue());
             }
         }
         return found;
