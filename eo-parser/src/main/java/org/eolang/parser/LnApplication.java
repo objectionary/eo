@@ -149,10 +149,17 @@ final class LnApplication implements Line {
             );
         }
         if (!args.isEmpty() && head.opensFormationBody()) {
-            throw new ParseError(
-                this.span.line(), head.pos(),
-                "horizontal formation not allowed as argument"
-            );
+            final String reason;
+            if (head.identity()) {
+                reason = String.join(
+                    " ",
+                    "the identity object takes no horizontal arguments;",
+                    "put the argument on the next line, or apply it inside parentheses"
+                );
+            } else {
+                reason = "horizontal formation not allowed as argument";
+            }
+            throw new ParseError(this.span.line(), head.pos(), reason);
         }
     }
 
