@@ -122,6 +122,16 @@
         count.minus 1
       acc.concat "0".as-bytes
 
+  eq. ++> can-agree-with-fewer-places-on-their-shared-digits
+    "1.1000000000000000000"
+    string
+      1.1.as-fixed 19
+
+  eq. ++> can-agree-with-more-places-on-their-shared-digits
+    "1.100000000000000000000"
+    string
+      1.1.as-fixed 21
+
   eq. ++> can-carry-rounding-into-the-integer-part
     "1.000000"
     string
@@ -264,16 +274,6 @@
     "0.00"
     string
       0.as-fixed 2
-
-  eq. ++> can-agree-with-fewer-places-on-their-shared-digits
-    "1.1000000000000000000"
-    string
-      1.1.as-fixed 19
-
-  eq. ++> can-agree-with-more-places-on-their-shared-digits
-    "1.100000000000000000000"
-    string
-      1.1.as-fixed 21
 
   eq. ++> can-write-a-fraction-of-places-past-the-double-accumulator-range
     "123.45600000000000300000"
