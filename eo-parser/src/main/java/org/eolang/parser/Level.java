@@ -462,7 +462,6 @@ final class Level {
         this.bindings = 0;
         this.argpending = false;
         this.argbound = false;
-        this.argspan = null;
     }
 
     /**
