@@ -8,6 +8,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.BiConsumer;
 
 /**
  * The attributes of a copy, taken out of the origin one at a time.
@@ -18,6 +19,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * that is asked for is copied out of the origin, once, and remembered. A
  * copy of an attribute is cheap — a fresh wrapper around the very same
  * expression — so nothing travels but the binding to the new owner.</p>
+ *
+ * <p>The empty attributes are the exception: they are copied here and now,
+ * when the copy is made. An empty attribute is the only part of an object
+ * whose content can still change afterwards — {@code put} fills it, nothing
+ * else in an object is writable — so leaving it for later would let the
+ * moment the copy is first read decide what the copy holds, and a value the
+ * origin received after the copy was made would show up in the copy
+ * (#7407). Everything else stays lazy, because its content is already
+ * decided and reads the same whenever it is copied out.</p>
  *
  * @since 0.63
  */
@@ -54,6 +64,7 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
         this.owner = phi;
         this.taken = new Bindings();
         this.lock = new ReentrantLock();
+        this.freeze();
     }
 
     @Override
@@ -103,6 +114,54 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
             return this.taken.entrySet();
         } finally {
             this.lock.unlock();
+        }
+    }
+
+    /**
+     * Copy the attributes that are still empty out of the origin, right now.
+     *
+     * <p>Only the empty ones have to travel here, and only the ones the origin
+     * keeps itself have to be looked at. An attribute never becomes empty
+     * again once it is filled, so an attribute the origin left behind in a
+     * copy of its own was already decided when that copy was made, and every
+     * attribute that was empty back then is in the origin's own
+     * {@code taken}.</p>
+     *
+     * @see CopiedAttrs the class-level note on why only the empty ones
+     */
+    private void freeze() {
+        if (this.origin instanceof CopiedAttrs) {
+            ((CopiedAttrs) this.origin).each(this::snapshot);
+        } else if (this.origin instanceof Bindings) {
+            ((Bindings) this.origin).each(this::snapshot);
+        } else {
+            for (final Map.Entry<String, Attribute> ent : this.origin.entrySet()) {
+                this.snapshot(ent.getKey(), ent.getValue());
+            }
+        }
+    }
+
+    /**
+     * Hand every attribute this map keeps of its own to the action.
+     * @param action What to do with each name and attribute
+     */
+    private void each(final BiConsumer<String, Attribute> action) {
+        this.lock.lock();
+        try {
+            this.taken.each(action);
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * Take a copy of the attribute now, if it is still empty.
+     * @param key The name of the attribute
+     * @param attr The attribute itself
+     */
+    private void snapshot(final String key, final Attribute attr) {
+        if (attr.vacant()) {
+            this.taken.put(key, attr.copy(this.owner));
         }
     }
 

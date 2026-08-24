@@ -304,6 +304,35 @@ final class PhDefaultTest {
     }
 
     @Test
+    void keepsCopyEmptyAfterLatePutOnOrigin() {
+        final Phi origin = new PhDefault(new Attrs(new Attr("v", new AtVoid("v"))));
+        final Phi copy = origin.copy();
+        origin.put("v", new Data.ToPhi(7L));
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(new PhSafe(copy).take("v")).take(),
+            "A copy must not carry a value the origin received after the copy was made"
+        );
+    }
+
+    @Test
+    void readsTheSameCopyWhicheverWayItIsOrdered() {
+        final Phi origin = new PhDefault(new Attrs(new Attr("v", new AtVoid("v"))));
+        final Phi copy = origin.copy();
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(new PhSafe(copy).take("v")).take(),
+            "A copy of an object with an empty attribute must start empty, but it did not"
+        );
+        origin.put("v", new Data.ToPhi(7L));
+        Assertions.assertThrows(
+            ExAbstract.class,
+            () -> new Dataized(new PhSafe(copy).take("v")).take(),
+            "Reading a copy before the origin was filled must not change what the copy holds"
+        );
+    }
+
+    @Test
     void hasAccessToDependentOnContextAttributeThrows() {
         Assertions.assertThrows(
             ExAbstract.class,

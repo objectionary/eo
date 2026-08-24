@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * Attributes of one object, kept in a pair of lists.
@@ -78,6 +79,20 @@ final class Bindings extends AbstractMap<String, Attribute> {
             before = this.values.set(idx, value);
         }
         return before;
+    }
+
+    /**
+     * Hand every name and attribute to the action, in the order they arrived.
+     *
+     * <p>{@link #entrySet()} builds a map of them first, which is too much
+     * for a caller that only wants to walk past them once.</p>
+     *
+     * @param action What to do with each name and attribute
+     */
+    void each(final BiConsumer<String, Attribute> action) {
+        for (int idx = 0; idx < this.names.size(); ++idx) {
+            action.accept(this.names.get(idx), this.values.get(idx));
+        }
     }
 
     @Override
