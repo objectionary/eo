@@ -56,14 +56,14 @@ public final class WinStat extends Structure {
     public int rdev;
 
     /**
-     * Size in bytes.
-     */
-    public long bytes;
-
-    /**
      * Access, modification and change 64-bit timestamps EO does not read.
      */
     public byte[] times;
+
+    /**
+     * Size in bytes.
+     */
+    public long bytes;
 
     /**
      * Ctor.
@@ -77,7 +77,7 @@ public final class WinStat extends Structure {
     public List<String> getFieldOrder() {
         return Arrays.asList(
             "dev", "ino", "mode", "nlink", "uid",
-            "gid", "padding", "rdev", "bytes", "times"
+            "gid", "padding", "rdev", "times", "bytes"
         );
     }
 }
