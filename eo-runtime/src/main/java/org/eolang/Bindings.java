@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
  *
  * @since 0.63
  */
-final class Bindings extends AbstractMap<String, Attribute> {
+final class Bindings extends AbstractMap<String, Attribute> implements Walkable {
 
     /**
      * Names of the attributes, in the order they arrived.
@@ -81,20 +81,6 @@ final class Bindings extends AbstractMap<String, Attribute> {
         return before;
     }
 
-    /**
-     * Hand every name and attribute to the action, in the order they arrived.
-     *
-     * <p>{@link #entrySet()} builds a map of them first, which is too much
-     * for a caller that only wants to walk past them once.</p>
-     *
-     * @param action What to do with each name and attribute
-     */
-    void each(final BiConsumer<String, Attribute> action) {
-        for (int idx = 0; idx < this.names.size(); ++idx) {
-            action.accept(this.names.get(idx), this.values.get(idx));
-        }
-    }
-
     @Override
     public Set<Map.Entry<String, Attribute>> entrySet() {
         final Map<String, Attribute> all = new LinkedHashMap<>(this.names.size());
@@ -102,5 +88,12 @@ final class Bindings extends AbstractMap<String, Attribute> {
             all.put(this.names.get(idx), this.values.get(idx));
         }
         return all.entrySet();
+    }
+
+    @Override
+    public void each(final BiConsumer<String, Attribute> action) {
+        for (int idx = 0; idx < this.names.size(); ++idx) {
+            action.accept(this.names.get(idx), this.values.get(idx));
+        }
     }
 }

@@ -31,7 +31,7 @@ import java.util.function.BiConsumer;
  *
  * @since 0.63
  */
-final class CopiedAttrs extends AbstractMap<String, Attribute> {
+final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkable {
 
     /**
      * Attributes of the object this one was copied from.
@@ -64,7 +64,6 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
         this.owner = phi;
         this.taken = new Bindings();
         this.lock = new ReentrantLock();
-        this.freeze();
     }
 
     @Override
@@ -117,35 +116,8 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
         }
     }
 
-    /**
-     * Copy the attributes that are still empty out of the origin, right now.
-     *
-     * <p>Only the empty ones have to travel here, and only the ones the origin
-     * keeps itself have to be looked at. An attribute never becomes empty
-     * again once it is filled, so an attribute the origin left behind in a
-     * copy of its own was already decided when that copy was made, and every
-     * attribute that was empty back then is in the origin's own
-     * {@code taken}.</p>
-     *
-     * @see CopiedAttrs the class-level note on why only the empty ones
-     */
-    private void freeze() {
-        if (this.origin instanceof CopiedAttrs) {
-            ((CopiedAttrs) this.origin).each(this::snapshot);
-        } else if (this.origin instanceof Bindings) {
-            ((Bindings) this.origin).each(this::snapshot);
-        } else {
-            for (final Map.Entry<String, Attribute> ent : this.origin.entrySet()) {
-                this.snapshot(ent.getKey(), ent.getValue());
-            }
-        }
-    }
-
-    /**
-     * Hand every attribute this map keeps of its own to the action.
-     * @param action What to do with each name and attribute
-     */
-    private void each(final BiConsumer<String, Attribute> action) {
+    @Override
+    public void each(final BiConsumer<String, Attribute> action) {
         this.lock.lock();
         try {
             this.taken.each(action);
@@ -155,10 +127,26 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> {
     }
 
     /**
-     * Take a copy of the attribute now, if it is still empty.
-     * @param key The name of the attribute
-     * @param attr The attribute itself
+     * Copy the attributes that are still empty out of the origin, right now.
+     *
+     * <p>Only the empty ones have to travel here, and only the ones the origin
+     * keeps of its own have to be looked at. An attribute never becomes empty
+     * again once it is filled, so an attribute the origin left behind in a
+     * copy of its own was already decided when that copy was made, and every
+     * attribute that was empty back then is in the origin's own store.</p>
+     *
+     * @see CopiedAttrs the class-level note on why only the empty ones
      */
+    void freeze() {
+        if (this.origin instanceof Walkable walkable) {
+            walkable.each(this::snapshot);
+        } else {
+            for (final Map.Entry<String, Attribute> ent : this.origin.entrySet()) {
+                this.snapshot(ent.getKey(), ent.getValue());
+            }
+        }
+    }
+
     private void snapshot(final String key, final Attribute attr) {
         if (attr.vacant()) {
             this.taken.put(key, attr.copy(this.owner));
