@@ -26,7 +26,7 @@ public final class EOdirectory$EOlisted extends PhDefault implements Atom {
      * Ctor.
      */
     public EOdirectory$EOlisted() {
-        // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override

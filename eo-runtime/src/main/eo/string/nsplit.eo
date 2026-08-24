@@ -2,7 +2,7 @@
 # The last element contains the remainder of the string after splitting.
 # If `delimiter` is empty, or `limit` is not a finite integer of at least 1
 # (fractional, nan, infinite, zero or negative), the `cant-split` fallback is
-# returned, or the bottom object when unbound, the same way `split` behaves.
+# returned, or the terminator when unbound, the same way `split` behaves.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[delimiter limit cant-split] > nsplit
+[^ delimiter limit cant-split] > nsplit
   if. > @
     or.
       eq.
@@ -29,7 +29,7 @@
     if.
       1.eq limit
       * text
-      [accum start current count] >> rec-nsplit
+      [^ accum start current count] >> rec-nsplit
         if. > @
           ^.text.size.eq current
           appended
@@ -97,28 +97,28 @@
     "a-b-c".nsplit
       "-"
       1.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
     "recovered"
     "abc".nsplit
       ""
       3
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
     "recovered"
     "a-b-c".nsplit
       "-"
       pinf
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-invalid-limit
     "fallback"
     "text".nsplit
       "-"
       0
-      "fallback" > [message]
+      "fallback" > [^ message]
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit

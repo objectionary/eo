@@ -33,10 +33,10 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
 
-[] > stdin
+[^] > stdin
   all-lines > @
-  [] > all-lines
-    [scan buffer is-first] >> rec-read
+  [^] > all-lines
+    [^ scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
         seq *
@@ -53,13 +53,13 @@
       ^.line-or-eof
       ""
       true
-  [] > line-or-eof
+  [^] > line-or-eof
     first.as-bytes.size.eq 0 > eof
     @. > first
       console.read 1
     eof.if > line
       ""
-      [input buffer] >> rec-read
+      [^ input buffer] >> rec-read
         if. > @
           or.
             char.eq --
@@ -76,4 +76,4 @@
         @. > next
           input.read 1
       | first --
-  ^.line-or-eof.line > [] > next-line
+  ^.line-or-eof.line > [^] > next-line

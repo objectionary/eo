@@ -15,9 +15,12 @@ jobs:
     timeout-minutes: 90
     runs-on: ubuntu-24.04
     steps:
+      # The depth is two, not zero: the step below reads only the merge
+      # commit and its first parent. A full clone drags in `gh-pages`, which
+      # is about three gigabytes of generated site snapshots.
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0
+          fetch-depth: 2
       # A test written inside an .eo file runs nowhere but the `codecov` job,
       # on master, where `eo.deadline` is one second and `org.eolang.Deadline`
       # reports anything slower as skipped. A broken .eo file therefore lands

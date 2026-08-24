@@ -29,11 +29,13 @@ import java.util.Map;
  *
  * <p>The walk stops at a type it has already passed, so an object that
  * delegates in a circle is walked once and answers nothing. A void answers
- * nothing either: the table has no row for one, since what a void holds is
- * decided by whoever fills it — unless the source has said what will go in,
- * which a formation only Java ever copies has to do (#6189). Such a void is
- * walked through like a delegation, and the answer is the same for every
- * caller, which is what an annotation claims.</p>
+ * too, but with the name rooted at itself: the table has no row for one,
+ * since what a void holds is decided by whoever fills it, so the answer
+ * holds for every caller and is concrete for none — unless the source has
+ * said what will go in, which a formation only Java ever copies has to do
+ * (#6189). Such a void is walked through like a delegation instead, and the
+ * answer is the same for every caller, which is what an annotation
+ * claims.</p>
  *
  * @since 0.68.0
  */

@@ -4,10 +4,8 @@
  */
 package org.eolang.parser;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -21,14 +19,14 @@ import java.util.regex.Pattern;
  * literals and chains in exactly the same way (§9.0.3 / §9.4 /
  * §9.4.2).</p>
  *
+ * <p>A reversed dispatch emitted here keeps the head text as the
+ * {@code .}-prefixed base, except a root glyph ({@code ^}, {@code @},
+ * {@code $}), which maps to {@code ρ}/{@code φ}/{@code ξ} the way
+ * {@link LnReversed#readHead} does.</p>
+ *
  * @since 0.1
  */
 final class Emissions {
-
-    /**
-     * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
-     */
-    private static final int MAX_OCTAL_BYTE = 0xFF;
 
     /**
      * Bits an IEEE-754 double keeps below the leading one of its
@@ -46,10 +44,12 @@ final class Emissions {
      * special forms — §4.5. Shared by every producer of a void parameter
      * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
      * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on.
+     * regardless of which line shape it appears on. The cactus emoji is
+     * excluded along with the ordinary NAME terminators, since §2.3 keeps
+     * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?"
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
     );
 
     /**
@@ -73,14 +73,19 @@ final class Emissions {
     static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
+        final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
-            tokens.seek(tokens.cursor() + 1);
+            final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
+            Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
-                Bindings.checkReceiver(rargs.get(0), new Span(tokens.body(), line));
+                Bindings.checkReceiver(rargs.get(0), span);
             }
-            emit.object(name, ".".concat(head.raw()), line, head.pos());
+            emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
+            if (fragile) {
+                emit.fragile();
+            }
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
@@ -88,6 +93,7 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
+        Bindings.checkAllOrNothing(args, span);
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
@@ -127,16 +133,16 @@ final class Emissions {
     static void openValue(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
+        if (value.number()) {
             Emissions.number(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.HEX) {
+        } else if (value.hex()) {
             Emissions.hex(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.BYTES) {
+        } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
             emit.set(value.raw());
             emit.close();
-        } else if (value.kind() == Value.Kind.STRING) {
+        } else if (value.string()) {
             Emissions.string(emit, name, value, line);
         } else {
             Emissions.openBase(emit, name, value, line);
@@ -215,15 +221,6 @@ final class Emissions {
     }
 
     /**
-     * Decode a string body to its raw byte representation.
-     * @param inner Source body without surrounding quotes
-     * @return Decoded bytes
-     */
-    static byte[] unescapeBytes(final String inner) {
-        return Emissions.unescapeRawBytes(inner);
-    }
-
-    /**
      * Reject a void parameter name the grammar does not accept — §4.5.
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
@@ -241,16 +238,16 @@ final class Emissions {
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.STAR) {
+        if (value.star()) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.TERM) {
+            emit.object(name, value.rootSymbol(), line, value.pos());
+        } else if (value.term()) {
             emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.IDENTITY) {
+        } else if (value.identity()) {
             Emissions.identity(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.GROUP) {
+        } else if (value.group()) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
@@ -303,7 +300,7 @@ final class Emissions {
         emit.object(name, "Φ.string", line, value.pos());
         final byte[] unescaped;
         try {
-            unescaped = Emissions.unescapeBytes(
+            unescaped = Escapes.bytes(
                 value.raw().substring(1, value.raw().length() - 1)
             );
         } catch (final NumberFormatException ex) {
@@ -317,28 +314,6 @@ final class Emissions {
             emit, line, value.pos(),
             new Hex(unescaped).asString()
         );
-    }
-
-    private static void rejectLoneSurrogates(final CharSequence text) {
-        int cursor = 0;
-        while (cursor < text.length()) {
-            final char glyph = text.charAt(cursor);
-            if (Character.isHighSurrogate(glyph)
-                && cursor + 1 < text.length()
-                && Character.isLowSurrogate(text.charAt(cursor + 1))) {
-                cursor = cursor + 2;
-                continue;
-            }
-            if (Character.isSurrogate(glyph)) {
-                throw new NumberFormatException(
-                    String.format(
-                        "unicode escape \\u%04X is a lone surrogate, not a valid standalone codepoint",
-                        (int) glyph
-                    )
-                );
-            }
-            cursor = cursor + 1;
-        }
     }
 
     private static void number(
@@ -431,138 +406,32 @@ final class Emissions {
         }
     }
 
-    private static String rootBase(final String raw) {
-        final String mapped;
-        if ("Q".equals(raw)) {
-            mapped = "Φ";
-        } else if ("@".equals(raw)) {
-            mapped = "φ";
-        } else if ("^".equals(raw)) {
-            mapped = "ρ";
-        } else if ("$".equals(raw)) {
-            mapped = "ξ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
-    }
-
-    private static byte[] unescapeRawBytes(final String inner) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(inner.length());
-        final StringBuilder text = new StringBuilder(inner.length());
-        int idx = 0;
-        while (idx < inner.length()) {
-            final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
-                text.append(glyph);
-                idx = idx + 1;
-                continue;
-            }
-            final char next = inner.charAt(idx + 1);
-            if (next == 'u') {
-                idx = Emissions.appendUnicode(text, inner, idx + 1);
-            } else if (next >= '0' && next <= '7') {
-                idx = Emissions.rawOctal(out, text, inner, idx + 1);
-            } else {
-                text.append(Emissions.singleCharEscape(glyph, next));
-                idx = idx + 2;
-            }
-        }
-        Emissions.appendText(out, text);
-        return out.toByteArray();
-    }
-
-    private static int rawOctal(
-        final ByteArrayOutputStream out, final StringBuilder text,
-        final String body, final int start
-    ) {
-        Emissions.appendText(out, text);
-        int cursor = start;
-        int value = 0;
-        while (cursor < body.length() && cursor < start + 3
-            && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
-            value = value * 8 + body.charAt(cursor) - '0';
-            cursor = cursor + 1;
-        }
-        if (value > Emissions.MAX_OCTAL_BYTE) {
-            throw new NumberFormatException(
-                String.format(
-                    "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
-                    body.substring(start, cursor), value
-                )
-            );
-        }
-        out.write(value);
-        return cursor;
-    }
-
-    private static void appendText(
-        final ByteArrayOutputStream out, final StringBuilder text
-    ) {
-        Emissions.rejectLoneSurrogates(text);
-        final byte[] bytes = text.toString().getBytes(StandardCharsets.UTF_8);
-        out.write(bytes, 0, bytes.length);
-        text.setLength(0);
-    }
-
-    private static int appendUnicode(
-        final StringBuilder out, final String body, final int start
-    ) {
-        int cursor = start;
-        while (cursor < body.length() && body.charAt(cursor) == 'u') {
-            cursor = cursor + 1;
-        }
-        boolean valid = cursor + 4 <= body.length();
-        for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
-            valid = Character.digit(body.charAt(idx), 16) >= 0;
-        }
-        if (!valid) {
-            throw new NumberFormatException(
-                String.format(
-                    "unicode escape \\%s is not exactly four hexadecimal digits",
-                    body.substring(start, Math.min(body.length(), cursor + 4))
-                )
-            );
-        }
-        out.append(
-            (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
-        );
-        return cursor + 4;
-    }
-
-    private static String singleCharEscape(final char head, final char next) {
-        final String decoded;
-        if (next == 'n') {
-            decoded = String.valueOf((char) 10);
-        } else if (next == 't') {
-            decoded = String.valueOf((char) 9);
-        } else if (next == 'r') {
-            decoded = String.valueOf((char) 13);
-        } else if (next == 'b') {
-            decoded = String.valueOf((char) 8);
-        } else if (next == 'f') {
-            decoded = String.valueOf((char) 12);
-        } else if (next == '"' || next == '\'' || next == '\\') {
-            decoded = String.valueOf(next);
-        } else {
-            throw new NumberFormatException(
-                String.format("unrecognised escape sequence '%c%c'", head, next)
-            );
-        }
-        return decoded;
-    }
-
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             reversed = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
             reversed = false;
         }
         return reversed;
+    }
+
+    private static String reversedHead(final Value head) {
+        final String mapped;
+        if (head.kind() == Value.Kind.ROOT) {
+            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+        } else {
+            mapped = head.raw();
+        }
+        return mapped;
     }
 
     private static int topLevelInlinePhi(final String body) {

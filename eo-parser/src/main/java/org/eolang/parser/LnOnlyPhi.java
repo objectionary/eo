@@ -125,7 +125,7 @@ final class LnOnlyPhi implements Line {
             );
         }
         if (suffix.test()) {
-            Blanks.checkTest(this.span, blanks, emit);
+            Blanks.checkTest(this.span, stack, blanks, emit);
         }
         Comments.seal(globals, emit, this.span);
         final Tokens tokens = this.slot(
@@ -195,7 +195,7 @@ final class LnOnlyPhi implements Line {
 
     private static boolean bare(final Tokens tokens) {
         if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
-            tokens.seek(tokens.cursor() + 1);
+            tokens.consumeDispatch();
         } else {
             tokens.readChain();
         }
@@ -204,9 +204,14 @@ final class LnOnlyPhi implements Line {
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
         final boolean result;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             result = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {

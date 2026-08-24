@@ -7,7 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-bool
+[^] > as-bool
   ^.eq 01- > @
 
   not. ++> can-convert-bytes-to-a-bool

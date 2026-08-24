@@ -17,7 +17,7 @@
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
 # retrieved from scope dataization. On failure at any of the described steps, the fallback of the
-# corresponding operation is returned (or the bottom object when it is left unbound).
+# corresponding operation is returned (or the terminator when it is left unbound).
 #
 # To listen to the incoming connections as server you should do:
 #
@@ -40,7 +40,7 @@
 # and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
-# returned (or the bottom object when it is left unbound).
+# returned (or the terminator when it is left unbound).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -48,15 +48,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[address port] > socket
+[^ address port] > socket
   os.is-windows.if > @
-    [sys] >> impl
+    [^ sys] >> impl
       code. > addr
         sys.raw *1
           "inet_addr"
           ^.address
       addr.as-i32 > addrint
-      [descriptor] > closed-socket
+      [^ descriptor] > closed-socket
         if. > @
           closed.eq -1
           T
@@ -67,9 +67,9 @@
           ^.sys.raw *1
             ^.sys.close
             descriptor
-      [scope cant-connect] > connect
+      [^ scope cant-connect] > connect
         ^.safe-socket > @
-          [] >>
+          [^] >>
             if. > @
               connected.eq -1
               ^.cant-connect
@@ -85,9 +85,9 @@
                 sock.sockaddr.size
             ^.^.^ > sock
           cant-connect
-      [scope cant-listen] > listen
+      [^ scope cant-listen] > listen
         ^.safe-socket > @
-          [] >>
+          [^] >>
             if. > @
               bound.eq -1
               ^.cant-listen
@@ -99,9 +99,9 @@
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
                     * sock.address sock.port sock.sd sock.sys.message
                 ^.scope
-                  [] >>
+                  [^] >>
                     ^.sock.scoped-socket ^.sock.sd > @
-                    [scope cant-accept] > accept
+                    [^ scope cant-accept] > accept
                       if. > @
                         client.eq -1
                         cant-accept
@@ -129,7 +129,7 @@
                 2048
             ^.^.^ > sock
           cant-listen
-      [scope cant] > safe-socket
+      [^ scope cant] > safe-socket
         if. > @
           not.
             ^.sys.startup.eq 0
@@ -154,10 +154,10 @@
           ^.^.guarded
             converted
             ^.closed-socket ^.sd
-      [descriptor] > scoped-socket
+      [^ descriptor] > scoped-socket
         ^.^.as-input recv > as-input
         ^.^.as-output send > as-output
-        [size cant-receive] > recv
+        [^ size cant-receive] > recv
           if. > @
             received.code.eq -1
             cant-receive
@@ -170,7 +170,7 @@
               ^.descriptor
               size
               0
-        [buffer cant-send] > send
+        [^ buffer cant-send] > send
           if. > @
             sent.eq -1
             cant-send
@@ -195,7 +195,7 @@
         ^.htons ^.checked-port
         addrint
     |
-      []
+      [^]
         raw > @
         if. > cleanup
           eq.
@@ -220,7 +220,7 @@
             "WSAStartup"
             win32.version
     impl
-      []
+      [^]
         raw > @
         true > cleanup
         "close" > close
@@ -233,27 +233,27 @@
                 *
         posix > raw
         0 > startup
-  [recv] > as-input
-    [size] > read
+  [^ recv] > as-input
+    [^ size] > read
       @. > @
         read.
           input-block --
           size
-      [buffer] > input-block
+      [^ buffer] > input-block
         buffer > @
-        [size] > read
+        [^ size] > read
           seq * > @
             chunk
             ^.^.input-block chunk
           as-bytes. > chunk
             ^.^.^.recv size
-  [send] > as-output
-    [buffer] > write
+  [^ send] > as-output
+    [^ buffer] > write
       @. > @
         output-block.write buffer
-      [] > output-block
+      [^] > output-block
         true > @
-        [buffer] > write
+        [^ buffer] > write
           seq > @
             * sent remainder
           if. > remainder
@@ -264,7 +264,7 @@
                 buffer.size.minus sent
             ^.^.output-block
           ^.^.^.send buffer > sent
-  ^.port.is-integer.not.if > [] > checked-port
+  ^.port.is-integer.not.if > [^] > checked-port
     T
       "Port must be an integer in 0 to 65535, but was %f".printf
         * ^.port
@@ -276,13 +276,13 @@
         "Port %d is out of range; it must be 0 to 65535".printf
           * ^.port
       ^.port
-  [scope cleanup] > guarded
+  [^ scope cleanup] > guarded
     seq * > @
       recovered value true
       cleanup
       value
     scope > value!
-  [port] > htons
+  [^ port] > htons
     as-i16. > @
       or.
         left.
@@ -302,7 +302,7 @@
   eq. ++> can-dataize-a-guarded-scope-once
     malloc.for
       0
-      seq * > [m]
+      seq * > [^ m]
         socket.guarded
           m.put
             m.as-number.plus 1
@@ -320,14 +320,14 @@
     eq. > @
       malloc.of
         2
-        [c]
+        [^ c]
           seq * > @
             write.
               socket.as-output
                 partial-send c
               01-02
             c.get
-          seq * > [acc buffer] > partial-send
+          seq * > [^ acc buffer] > partial-send
             acc.write
               2.minus buffer.size
               buffer.slice 0 1
@@ -337,7 +337,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [^ m]
         socket.guarded
           42
           m.put
@@ -348,7 +348,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [^ m]
         recovered
           socket.guarded
             2.as-i64.div 0.as-i64

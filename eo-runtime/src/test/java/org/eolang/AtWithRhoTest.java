@@ -29,14 +29,15 @@ final class AtWithRhoTest {
         final Phi rho = new PhDefault();
         MatcherAssert.assertThat(
             "AtWithRho must set RHO if it is not set before",
-            new AtWithRho(new AtComposite(new PhDefault(), phi -> phi), rho).get().take(Phi.RHO),
+            new AtWithRho(new AtComposite(this.formation(), phi -> phi), rho)
+                .get().take(Phi.RHO),
             Matchers.is(rho)
         );
     }
 
     @Test
     void copiesAndSetsRhoIfNotSetMustCopyOriginal() {
-        final Phi obj = new PhDefault();
+        final Phi obj = this.formation();
         final Phi phi = new AtWithRho(new AtComposite(obj, p -> p), new PhDefault()).get();
         phi.take(Phi.RHO);
         MatcherAssert.assertThat(
@@ -61,7 +62,7 @@ final class AtWithRhoTest {
 
     @Test
     void doesNotCopyAndSetRhoIfAlreadySetMustNotResetRho() {
-        final Phi obj = new PhDefault();
+        final Phi obj = this.formation();
         final Phi rho = new PhDefault();
         obj.put(Phi.RHO, rho);
         MatcherAssert.assertThat(
@@ -73,7 +74,7 @@ final class AtWithRhoTest {
 
     @Test
     void doesNotCopyAndSetRhoIfAlreadySetMustCopyOriginalIfRhoIsSet() {
-        final Phi obj = new PhDefault();
+        final Phi obj = this.formation();
         obj.put(Phi.RHO, new PhDefault());
         final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), new PhDefault()).get();
         res.take(Phi.RHO);
@@ -86,18 +87,18 @@ final class AtWithRhoTest {
 
     @Test
     void copiesWithNewRhoMustSetNewPhoOnCopy() {
-        final Phi self = new PhDefault();
+        final Phi self = this.formation();
         MatcherAssert.assertThat(
             "AtWithRho must set new RHO on copy() operation",
-            new AtWithRho(new AtComposite(new PhDefault(), phi -> phi), new PhDefault()).copy(self)
-                .get().take(Phi.RHO),
+            new AtWithRho(new AtComposite(this.formation(), phi -> phi), new PhDefault())
+                .copy(self).get().take(Phi.RHO),
             Matchers.is(self)
         );
     }
 
     @Test
     void copiesWithNewRhoMustCallCopyOnOriginal() {
-        final Phi obj = new PhDefault();
+        final Phi obj = this.formation();
         final Phi res = new AtWithRho(new AtComposite(obj, phi -> phi), new PhDefault()).copy(
             new PhDefault()
         ).get();
@@ -110,9 +111,9 @@ final class AtWithRhoTest {
     }
 
     @Test
-    void keepsCauseVisibleWhenBindingRhoOntoWrappedBottom() {
+    void keepsCauseVisibleWhenBindingRhoOntoWrappedTerminator() {
         MatcherAssert.assertThat(
-            "AtWithRho must not mask the cause of a wrapped bottom object when it binds ρ",
+            "AtWithRho must not mask the cause of a wrapped terminator when it binds ρ",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(
@@ -134,14 +135,15 @@ final class AtWithRhoTest {
     @Test
     void leavesADeclaredReceiverUnwrapped() {
         final PhDefault host = new PhDefault();
-        host.add(
-            "kid",
-            new AtComposite(host, rho -> new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho()))))
-        );
+        host.add("kid", new AtComposite(host, rho -> this.formation()));
         MatcherAssert.assertThat(
             "a declared receiver must hand out the host itself, but it didnt",
             host.take("kid").take(Phi.RHO),
             Matchers.is(host)
         );
+    }
+
+    private Phi formation() {
+        return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 }

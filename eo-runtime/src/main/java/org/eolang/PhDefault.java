@@ -93,8 +93,12 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Order of their names.
+     *
+     * <p>Not final: {@link #copy()} gives the copy a list of its own, so an
+     * attribute registered on either side afterwards is not seen by the
+     * other one.</p>
      */
-    private final List<String> order;
+    private List<String> order;
 
     /**
      * Attributes.
@@ -180,6 +184,7 @@ public class PhDefault implements Phi, Cloneable {
             final PhDefault copy = (PhDefault) this.clone();
             copy.lock = new ReentrantLock();
             copy.attrs = new CopiedAttrs(this.loaded(), copy);
+            copy.order = new ArrayList<>(this.order);
             return copy;
         } catch (final CloneNotSupportedException ex) {
             throw new ExFailure("cannot copy the object", ex);
@@ -187,8 +192,9 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public boolean hasRho() {
-        return !this.loaded().get(Phi.RHO).vacant();
+    public boolean needsRho() {
+        final Attribute attr = this.loaded().get(Phi.RHO);
+        return attr != null && attr.vacant();
     }
 
     @Override
@@ -229,7 +235,7 @@ public class PhDefault implements Phi, Cloneable {
             final Attribute attr = this.loaded().get(name);
             if (attr != null) {
                 resolved = attr.get();
-            } else if (name.equals(Phi.LAMBDA)) {
+            } else if (name.equals(Phi.LAMBDA) && this instanceof Atom) {
                 resolved = new AtomTyped(
                     this, PhDefault.ATOMS.declared(this.forma())
                 ).lambda();
@@ -367,7 +373,11 @@ public class PhDefault implements Phi, Cloneable {
 
     private Phi absent(final String name) {
         final Phi object;
-        if (this instanceof Atom) {
+        if (Phi.RHO.equals(name)) {
+            object = new PhTerminator(
+                String.format("the object %s declares no receiver", this.forma())
+            );
+        } else if (this instanceof Atom) {
             object = this.take(Phi.LAMBDA).take(name);
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
@@ -447,7 +457,7 @@ public class PhDefault implements Phi, Cloneable {
         this.lock.lock();
         try {
             if (this.attrs == null) {
-                this.attrs = PhDefault.defaults();
+                this.attrs = new Bindings();
                 for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                     this.add(ent.getKey(), ent.getValue());
                 }
@@ -504,12 +514,6 @@ public class PhDefault implements Phi, Cloneable {
             result = out.toString();
         }
         return result;
-    }
-
-    private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new Bindings();
-        attrs.put(Phi.RHO, new AtRho());
-        return attrs;
     }
 
     private static AtomTypes atoms() {

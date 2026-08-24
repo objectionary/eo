@@ -95,47 +95,49 @@ final class PhDefaultTest {
 
     @Test
     void doesNotHaveRhoWhenFormed() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made()).take(Phi.RHO),
-            String.format("Object should not have %s attribute when it's just formed", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("Object should not have %s attribute when it's just formed", Phi.RHO),
+            PhDefaultTest.Int.made().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
     void setsRhoAfterDispatch() {
-        Assertions.assertDoesNotThrow(
-            () -> PhDefaultTest.Int.made().take(this.plus()).take(Phi.RHO),
-            String.format("Kid of should have %s attribute after dispatch", Phi.RHO)
+        final Phi phi = PhDefaultTest.Int.made();
+        MatcherAssert.assertThat(
+            String.format("Kid should have %s attribute after dispatch", Phi.RHO),
+            phi.take(this.plus()).take(Phi.RHO),
+            Matchers.equalTo(phi)
         );
     }
 
     @Test
     void doesNotHaveRhoAfterCopying() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.RHO),
-            String.format("Object should not give %s attribute after copying", Phi.RHO)
+        MatcherAssert.assertThat(
+            String.format("Object should not give %s attribute after copying", Phi.RHO),
+            PhDefaultTest.Int.made().copy().take(Phi.RHO),
+            Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
-    void doesNotHaveRhoWhenItIsDeclaredAsVoid() {
+    void needsRhoWhenItIsDeclaredAsVoid() {
         MatcherAssert.assertThat(
-            String.format("Object with %s declared as void must not report it as set", Phi.RHO),
-            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).hasRho(),
-            Matchers.is(false)
+            String.format("Object with %s declared as void must await a receiver", Phi.RHO),
+            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).needsRho(),
+            Matchers.is(true)
         );
     }
 
     @Test
     void bindsHostToRhoDeclaredAsVoid() {
-        final Phi host = new PhDefault(new Attrs(new Attr("x", new AtVoid("x"))));
+        final Phi host = PhDefaultTest.Int.made();
         host.put(Phi.RHO, Phi.Φ);
-        host.put("x", new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))));
+        host.put(this.getVoid(), PhDefaultTest.Int.formation());
         MatcherAssert.assertThat(
             String.format("Dispatch must bind the host to %s declared as void", Phi.RHO),
-            host.take("x").take(Phi.RHO),
+            host.take(this.getVoid()).take(Phi.RHO),
             Matchers.equalTo(host)
         );
     }
@@ -160,17 +162,6 @@ final class PhDefaultTest {
             phi.take(this.plus()),
             Matchers.not(
                 Matchers.equalTo(phi.take(this.plus()))
-            )
-        );
-    }
-
-    @Test
-    void hasKidWithSetRhoAfterCopyingShouldGetAfttribute() {
-        Assertions.assertDoesNotThrow(
-            () -> PhDefaultTest.Int.made().copy().take(this.plus()).take(Phi.RHO),
-            String.format(
-                "Child object should get %s attribute after copying main object",
-                Phi.RHO
             )
         );
     }
@@ -264,7 +255,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made()).copy().take(this.getVoid())
             ).take(),
-            "Copying must preserve the unset void, which reads as the bottom object and fails when dataized"
+            "Copying must preserve the unset void, which reads as a terminator and fails when dataized"
         );
     }
 
@@ -310,7 +301,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.PHI)
             ).take(),
-            "Phi depending on an unset void (now the bottom object) must fail when dataized, but it did not"
+            "Phi depending on an unset void (now a terminator) must fail when dataized, but it did not"
         );
     }
 
@@ -577,7 +568,7 @@ final class PhDefaultTest {
     @Test
     void returnsTerminatorForAbsentAttribute() {
         MatcherAssert.assertThat(
-            "Taking an absent attribute must return the bottom object, not throw",
+            "Taking an absent attribute must return a terminator, not throw",
             this.phiWithContextAttribute(
                 "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
@@ -747,8 +738,9 @@ final class PhDefaultTest {
          */
         static Phi made() {
             final PhDefaultTest.Int made = new PhDefaultTest.Int();
+            made.add(Phi.RHO, new AtRho());
             made.add("void", new AtVoid("void"));
-            made.add("plus", new AtComposite(made, rho -> new PhDefault()));
+            made.add("plus", new AtComposite(made, rho -> PhDefaultTest.Int.formation()));
             made.add(
                 Phi.PHI,
                 new AtOnce(
@@ -774,6 +766,10 @@ final class PhDefaultTest {
                 )
             );
             return made;
+        }
+
+        static Phi formation() {
+            return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
         }
     }
 
