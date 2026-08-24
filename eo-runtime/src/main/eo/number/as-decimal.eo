@@ -34,7 +34,7 @@
           |
             as-i64.
               n.times -1
-              T message > [^ message] >> failure
+              T message > [message] >> failure
           [^ n] >> digits
             if. > @
               n.lt ^.ten

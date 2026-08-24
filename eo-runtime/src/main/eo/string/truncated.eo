@@ -42,19 +42,19 @@
     "recovered"
     "Jeff".truncated
       -3
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-limit
     "recovered"
     "Jeff".truncated
       1.75
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-truncating
     "recovered"
     "Jeff".truncated
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-shorter-text-unchanged
     "hi"

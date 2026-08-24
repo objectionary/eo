@@ -72,19 +72,19 @@
     "recovered"
     "7".padded-zeros
       -4
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-width-when-padding-with-zeros
     "recovered"
     "7".padded-zeros
       3.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-width-when-padding-with-zeros
     "recovered"
     "7".padded-zeros
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-with-zeros
     "12345"

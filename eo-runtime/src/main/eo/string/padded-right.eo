@@ -65,28 +65,28 @@
     "y".padded-right
       5
       "ab"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-negative-width-when-padding-right
     "recovered"
     "y".padded-right
       -1
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-width-when-padding-right
     "recovered"
     "y".padded-right
       2.5
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-width-when-padding-right
     "recovered"
     "y".padded-right
       pinf
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-right
     "hello"

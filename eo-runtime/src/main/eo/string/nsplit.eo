@@ -97,28 +97,28 @@
     "a-b-c".nsplit
       "-"
       1.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
     "recovered"
     "abc".nsplit
       ""
       3
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
     "recovered"
     "a-b-c".nsplit
       "-"
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-invalid-limit
     "fallback"
     "text".nsplit
       "-"
       0
-      "fallback" > [^ message]
+      "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit
