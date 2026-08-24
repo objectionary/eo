@@ -4,9 +4,13 @@
  */
 package org.eolang;
 
+import com.yegor256.Together;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -140,6 +144,49 @@ final class AtWithRhoTest {
             "a declared receiver must hand out the host itself, but it didnt",
             host.take("kid").take(Phi.RHO),
             Matchers.is(host)
+        );
+    }
+
+    @RepeatedTest(20)
+    void handsOutOneCopyToConcurrentCallers() {
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            new PhDefault()
+        );
+        MatcherAssert.assertThat(
+            "concurrent calls must take one and the same copy, but they took different ones",
+            new HashSet<>(
+                new Together<>(16, thread -> attr.get())
+                    .withTimeout(1L, TimeUnit.MINUTES)
+                    .asList()
+            ),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void handsOutOneCopyOnEveryCall() {
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            new PhDefault()
+        );
+        MatcherAssert.assertThat(
+            "the second call took another copy of the very same object, but it must not",
+            attr.get(),
+            Matchers.sameInstance(attr.get())
+        );
+    }
+
+    @Test
+    void handsOutFreshCopyForFreshObject() {
+        final Attribute attr = new AtWithRho(
+            new AtComposite(new PhDefault(), phi -> this.formation()),
+            new PhDefault()
+        );
+        MatcherAssert.assertThat(
+            "an object built anew must be bound anew, but the previous copy was taken",
+            attr.get(),
+            Matchers.not(Matchers.sameInstance(attr.get()))
         );
     }
 

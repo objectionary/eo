@@ -5,20 +5,18 @@
 
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * The attribute that copies the object and binds itself as its \rho, but
  * only when the object declares a \rho and has not been bound to one yet.
  * The terminator ({@link PhTerminator}) silently ignores this \rho itself, so no container
  * leaks into it and its cause is not masked as it propagates.
- * This attribute is NOT thread safe!
+ * The copy it makes is kept ({@link WithRho}), so that every caller, on its own thread
+ * or not, takes the very same object for as long as the one being bound does not change.
  * @since 0.36.0
- * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
- *  call get() concurrently when the underlying object lacks RHO, each thread will:
- *  1. Pass the ret.needsRho() check
- *  2. Create its own copy via ret.copy()
- *  3. Attempt to set RHO on its copy
- *  This results in different threads receiving different copies, violating the expectation
- *  that get() returns a consistent view of the attribute's value.
  */
 final class AtWithRho implements Attribute {
 
@@ -33,6 +31,16 @@ final class AtWithRho implements Attribute {
     private final Phi rho;
 
     /**
+     * The copy that carries the rho, once it is made.
+     */
+    private final AtomicReference<WithRho> bound;
+
+    /**
+     * Lock guarding the making of the copy.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      * @param attr Attribute
      * @param rho Rho
@@ -40,6 +48,8 @@ final class AtWithRho implements Attribute {
     AtWithRho(final Attribute attr, final Phi rho) {
         this.original = attr;
         this.rho = rho;
+        this.bound = new AtomicReference<>(null);
+        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -54,8 +64,18 @@ final class AtWithRho implements Attribute {
     public Phi get() {
         Phi ret = this.original.get();
         if (ret.needsRho()) {
-            ret = ret.copy();
-            ret.put(Phi.RHO, this.rho);
+            this.lock.lock();
+            try {
+                final WithRho previous = this.bound.get();
+                if (previous == null || !previous.made(ret)) {
+                    final Phi copy = ret.copy();
+                    copy.put(Phi.RHO, this.rho);
+                    this.bound.set(new WithRho(ret, copy));
+                }
+                ret = this.bound.get().phi();
+            } finally {
+                this.lock.unlock();
+            }
         }
         return ret;
     }
