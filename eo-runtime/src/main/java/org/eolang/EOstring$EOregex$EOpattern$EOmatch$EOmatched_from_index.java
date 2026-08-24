@@ -39,6 +39,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
     public EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index() {
         super(
             new Attrs(
+                new Attr(Phi.RHO, new AtRho()),
                 new Attr(
                     EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
                     new AtVoid(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)

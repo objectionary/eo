@@ -156,10 +156,10 @@ This is how you iterate:
 [args] > app
   malloc.for > @
     2
-    [x] >>
+    [^ x] >>
       while > @
-        ^.x.as-number.lt 6 > [i] >>
-        seq * > [i] >>
+        ^.x.as-number.lt 6 > [^ i] >>
+        seq * > [^ i] >>
           stdout
             "%d x %1$d = %d\n".printf
               *
