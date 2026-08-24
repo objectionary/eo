@@ -28,16 +28,16 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-input
+[^] > as-input
   ^ > b
-  [size] > read
+  [^ size] > read
     @. > @
       read.
         input-block ^.b --
         size
-    [data buffer] > input-block
+    [^ data buffer] > input-block
       buffer > @
-      [size] > read
+      [^ size] > read
         if. > @
           size.is-finite.not.or
             size.is-integer.not.or

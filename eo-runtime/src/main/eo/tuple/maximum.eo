@@ -9,13 +9,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[cant-max] > maximum
+[^ cant-max] > maximum
   sequence.is-empty.if > @
     cant-max
       "cannot get the maximum number from an empty sequence"
     sequence.reduced
       ninf
-      if. > [max item]
+      if. > [^ max item]
         item.as-number.is-nan.or
           item.as-number.gt max
         item
@@ -36,7 +36,7 @@
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
     "recovered"
     tuple.empty.maximum
-      "recovered" > [msg]
+      "recovered" > [^ msg]
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.

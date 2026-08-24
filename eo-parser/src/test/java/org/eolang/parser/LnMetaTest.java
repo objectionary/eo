@@ -117,6 +117,16 @@ final class LnMetaTest {
     }
 
     @Test
+    void rejectsATabBetweenParts() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+rt jvm\torg.eolang:eo-runtime:0.0.0", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a tab between meta parts must be rejected, since only a single ASCII space separates them"
+        );
+    }
+
+    @Test
     void clearsPendingBlanksOnEmission() {
         final Globals globals = new Globals();
         globals.blank();

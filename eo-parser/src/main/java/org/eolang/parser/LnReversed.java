@@ -35,9 +35,9 @@ import java.util.List;
  * For vertical form, deeper-indent lines (dispatched through
  * {@link LnApplication} etc.) attach as children automatically.</p>
  *
- * <p>R-3.8.1 restricts the receiver-identifier to a single {@code NAME}
- * token (or {@code @} / {@code ^}). This iteration accepts {@code NAME}
- * only; {@code @} and {@code ^} attach in a later round. *
+ * <p>R-3.8.1 restricts the head identifier to a single {@code NAME},
+ * {@code @}, {@code ^}, or {@code $} token — no dotted paths and no
+ * {@code ROOT}/literal-rooted prefixes.</p>
  *
  * @since 0.1
  */
@@ -80,7 +80,7 @@ final class LnReversed implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals.pendingBlanks(), emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }

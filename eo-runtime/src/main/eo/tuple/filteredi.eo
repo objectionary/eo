@@ -12,8 +12,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[func] > filteredi
-  [tup] >> recfilter
+[^ func] > filteredi
+  [^ tup] >> recfilter
     if. > @
       tup.length.eq 0
       *
@@ -32,7 +32,7 @@
         4
         2
         5
-      v.lt 3 > [v i]
+      v.lt 3 > [^ v i]
     *
       1
       2
@@ -44,12 +44,12 @@
         "Name"
         "EO"
         "List"
-      v.length.gt 4 > [v i]
+      v.length.gt 4 > [^ v i]
     * "Hello"
 
   is-empty. ++> can-filter-an-empty-list
     tuple.empty.filteredi
-      v.lt 3 > [v i]
+      v.lt 3 > [^ v i]
 
   eq. ++> can-filter-by-index
     filteredi.
@@ -57,7 +57,7 @@
         3
         1
         4
-      i.gt 0 > [v i]
+      i.gt 0 > [^ v i]
     *
       1
       4
@@ -68,5 +68,5 @@
         true
         false
         true
-      v.not > [v i]
+      v.not > [^ v i]
     * false

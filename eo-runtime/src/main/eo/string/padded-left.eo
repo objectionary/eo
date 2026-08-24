@@ -14,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[width fill cant-pad] > padded-left
+[^ width fill cant-pad] > padded-left
   if. > @
     or.
       or.
@@ -66,28 +66,28 @@
     "y".padded-left
       5
       "ab"
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-negative-width-when-padding-left
     "recovered"
     "y".padded-left
       -1
       "x"
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-non-integer-width-when-padding-left
     "recovered"
     "y".padded-left
       2.5
       "x"
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-infinite-width-when-padding-left
     "recovered"
     "y".padded-left
       pinf
       "x"
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-left
     "hello"

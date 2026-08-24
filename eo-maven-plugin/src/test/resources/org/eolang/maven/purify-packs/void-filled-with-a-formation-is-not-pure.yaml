@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation put into a void is not data: its bytes are not what identifies
+# it, so the answer worked out for one of them is not the answer for another.
+# The void that only ever gets a number is a different matter.
+eo:
+  app.eo: |
+    [] > app
+      wraps t > @
+      counts 42 > @
+      [] > t
+        [] > next
+      [x] > wraps
+        x.next > @
+      [x] > counts
+        x.as-bytes > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='wraps' and not(@pure)]"
+  - "//o[@name='counts' and @pure='true']"

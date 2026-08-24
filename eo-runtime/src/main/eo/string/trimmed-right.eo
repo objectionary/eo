@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > trimmed-right
+[^] > trimmed-right
   if. > @
     0.eq
       b.size >> len!
@@ -20,7 +20,7 @@
       slice.
         text >> b!
         0
-        [index] >> first-non-ws-index
+        [^ index] >> first-non-ws-index
           if. > @
             -1.eq index
             0
@@ -29,7 +29,7 @@
               ^.first-non-ws-index (index.plus -1).as-number
               index.plus 1
         | ((number len).plus -1)
-  or. > [c] >> is-ws
+  or. > [^ c] >> is-ws
     c.eq 20-
     or.
       c.eq 09-

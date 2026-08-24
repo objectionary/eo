@@ -10,7 +10,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x cant-divide] > div
+[^ x cant-divide] > div
   if. > @
     x.as-bytes.eq 00-00-00-00-00-00-00-00
     cant-divide
@@ -28,8 +28,8 @@
               looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
           i64 00-00-00-00-00-00-00-01
       i64 quotient
-  00-00-00-00-00-00-00-01.left i > [i] >> bit
-  [index remainder quot] >> looped
+  00-00-00-00-00-00-00-01.left i > [^ i] >> bit
+  [^ index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -66,7 +66,7 @@
     plus.
       i64
         not.
-          if. > [b] >> magnitude
+          if. > [^ b] >> magnitude
             eq.
               b.and 80-00-00-00-00-00-00-00
               80-00-00-00-00-00-00-00
@@ -110,7 +110,7 @@
     "recovered"
     2.as-i64.div
       0.as-i64
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64

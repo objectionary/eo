@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[cant-convert] > as-i64
+[^ cant-convert] > as-i64
   if. > @
     or.
       eq.
@@ -81,7 +81,7 @@
   eq. ++> can-recover-from-an-out-of-range-number
     "recovered"
     1.0e30.as-i64
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

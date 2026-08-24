@@ -31,6 +31,7 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
      */
     public EOstring$EOregex$EOcompile() {
         super(new Attrs(
+            new Attr(Phi.RHO, new AtRho()),
             new Attr(
                 EOstring$EOregex$EOcompile.FALLBACK,
                 new AtVoid(EOstring$EOregex$EOcompile.FALLBACK)

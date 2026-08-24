@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x] > power
+[^ x] > power
   if. > @
     eq.
       number x.as-bytes >> expo
@@ -42,7 +42,7 @@
               expo.is-integer.if
                 if.
                   expo.lt 0
-                  [b n] >> ipow
+                  [^ b n] >> ipow
                     if. > @
                       n.eq 0
                       1
@@ -58,7 +58,7 @@
                   ipow base expo.abs
                 if.
                   base.gt 0
-                  [y] >> expon
+                  [^ y] >> expon
                     times. > @
                       if.
                         lt. (number k) 0
@@ -67,7 +67,7 @@
                         ipow e (number k).abs
                       fraction 1
                     y > arg!
-                    if. > [j] > fraction
+                    if. > [^ j] > fraction
                       j.gt 20
                       1
                       1.plus

@@ -62,15 +62,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > console
+[^] > console
   os.is-windows.if > @
-    [] >>
-      [size] > read
+    [^] >>
+      [^ size] > read
         @. > @
           read.
-            [buffer] >> input-block
+            [^ buffer] >> input-block
               buffer > @
-              [size] > read
+              [^ size] > read
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
@@ -86,12 +86,12 @@
                     size
             | --
             size
-      [buffer] > write
+      [^ buffer] > write
         @. > @
           write.
-            [] >> output-block
+            [^] >> output-block
               true > @
-              [buffer] > write
+              [^ buffer] > write
                 seq * > @
                   if. >>!
                     code.eq -1
@@ -112,13 +112,13 @@
                     buffer.slice code (buffer.size.minus code)
                   ^.^.output-block
             buffer
-    [] >>
-      [size] > read
+    [^] >>
+      [^ size] > read
         @. > @
           read.
-            [buffer] >> input-block
+            [^ buffer] >> input-block
               buffer > @
-              [size] > read
+              [^ size] > read
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
@@ -134,12 +134,12 @@
                     size
             | --
             size
-      [buffer] > write
+      [^ buffer] > write
         @. > @
           write.
-            [] >> output-block
+            [^] >> output-block
               true > @
-              [buffer] > write
+              [^ buffer] > write
                 seq * > @
                   if. >>!
                     code.eq -1

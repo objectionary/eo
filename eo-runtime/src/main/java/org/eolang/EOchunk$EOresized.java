@@ -26,6 +26,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
     public EOchunk$EOresized() {
         super(
             new Attrs(
+                new Attr(Phi.RHO, new AtRho()),
                 new Attr(
                     EOchunk$EOresized.CAPACITY,
                     new AtVoid(EOchunk$EOresized.CAPACITY)

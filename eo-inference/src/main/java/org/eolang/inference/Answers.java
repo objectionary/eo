@@ -30,9 +30,14 @@ import java.util.Map;
  * about {@code 01-} is asking nothing; an object that never comes back with a
  * value has nothing further to say either.</p>
  *
+ * <p>Where the walk stopped is given back along with the rung, in one
+ * {@link Answer}, because that locator is the answer a reader wants and it was
+ * already worked out on the way to the rung. Whoever counts the program and
+ * whoever shows it to somebody read the same one.</p>
+ *
  * @since 0.69.0
  */
-final class Rung {
+final class Answers {
 
     /**
      * The rows of the provides table, by the locator of their owner.
@@ -63,7 +68,7 @@ final class Rung {
      *  {@link Pairs}
      * @param names Every chain of copies, walked to its end
      */
-    Rung(
+    Answers(
         final Map<String, Collection<Map<String, String>>> rows,
         final Collection<String> voids,
         final Collection<String> answered,
@@ -76,24 +81,24 @@ final class Rung {
     }
 
     /**
-     * The rung this object stands on.
+     * What this object turns out to be.
      * @param locator The locator of the object
      * @param filled How many voids this object has filled itself
-     * @return The rung, from nothing at all up to nothing left to find out
+     * @return The answer, saying what it settled on and how deep that is
      */
-    int reached(final String locator, final int filled) {
+    Answer of(final String locator, final int filled) {
         final String end = this.ends.getOrDefault(locator, locator);
-        final int found;
+        final int rung;
         if (this.ground.contains(end)) {
-            found = 4;
+            rung = 4;
         } else if (this.table.containsKey(end)) {
-            found = this.depth(end, this.voids(end) - filled);
+            rung = this.depth(end, this.voids(end) - filled);
         } else if (this.rooted(end)) {
-            found = 1;
+            rung = 1;
         } else {
-            found = 0;
+            rung = 0;
         }
-        return found;
+        return new Answer(end, rung);
     }
 
     private int depth(final String type, final int free) {

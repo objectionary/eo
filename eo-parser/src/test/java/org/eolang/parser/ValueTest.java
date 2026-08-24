@@ -184,4 +184,58 @@ final class ValueTest {
             Matchers.equalTo(false)
         );
     }
+
+    @Test
+    void marksIdentifierReversible() {
+        MatcherAssert.assertThat(
+            "an IDENTIFIER value must be allowed as a reversed-dispatch head",
+            new Value(Value.Kind.IDENTIFIER, "foo", 0).reversible(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void mapsRootGlyphQToUpperPhi() {
+        MatcherAssert.assertThat(
+            "rootSymbol() must map Q to the top-level Φ per §9.3",
+            new Value(Value.Kind.ROOT, "Q", 0).rootSymbol(),
+            Matchers.equalTo("Φ")
+        );
+    }
+
+    @Test
+    void mapsRootGlyphCaretToRho() {
+        MatcherAssert.assertThat(
+            "rootSymbol() must map ^ to ρ per §9.3",
+            new Value(Value.Kind.ROOT, "^", 0).rootSymbol(),
+            Matchers.equalTo("ρ")
+        );
+    }
+
+    @Test
+    void marksFloatAsNumber() {
+        MatcherAssert.assertThat(
+            "number() must be true for a FLOAT value",
+            new Value(Value.Kind.FLOAT, "3.14", 0).number(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksHexAsHex() {
+        MatcherAssert.assertThat(
+            "hex() must be true for a HEX value",
+            new Value(Value.Kind.HEX, "0xFF", 0).hex(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksTermAsTerm() {
+        MatcherAssert.assertThat(
+            "term() must be true for a TERM value",
+            new Value(Value.Kind.TERM, "T", 0).term(),
+            Matchers.equalTo(true)
+        );
+    }
 }
