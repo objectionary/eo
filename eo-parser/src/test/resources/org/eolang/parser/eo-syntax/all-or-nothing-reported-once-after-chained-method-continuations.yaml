@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7503: chaining several same-indent `.method` continuations onto the
+# sealed entry must still surface the all-or-nothing violation only once.
+sheets: []
+asserts:
+  - /object[count(errors/error[contains(text(),'argument bindings must be all-or-nothing')])=1]
+input: |
+  [] > main
+    foo > app
+      a:x
+      b
+    .bar > z
+    .baz > y
