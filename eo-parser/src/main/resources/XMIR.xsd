@@ -196,6 +196,18 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="fragile" type="empty">
+      <xs:annotation>
+        <xs:appinfo>The marker of a fragile dispatch "?." (R-3.5.3a)</xs:appinfo>
+        <xs:documentation>
+          Set on the dispatch node that a "?." link parses into, in a method
+          chain as well as in a reversed dispatch, and says that the receiver
+          may be ⊥ and the dispatch is to answer ⊥ rather than terminate.
+          A regular "." dispatch straight after such a link is reported by
+          the "fragile-dispatch" check.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="atom" type="signature">
       <xs:annotation>
