@@ -204,8 +204,7 @@ final class LnOnlyPhi implements Line {
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
         final boolean result;
-        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
-            && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;
