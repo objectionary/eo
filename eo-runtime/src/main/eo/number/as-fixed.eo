@@ -54,9 +54,7 @@
                 unit.as-decimal.concat ".".as-bytes
                 concat.
                   rec-pad rest ^.k --
-                  zeros
-                    ^.^.places.minus ^.k
-                    --
+                  zeros (^.^.places.minus ^.k) --
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -65,11 +63,11 @@
                 a.minus whole
                 scale
               0.5
-          pow10 k > scale
           if. > k
             ^.places.gt 15
             15
             ^.places
+          pow10 k > scale
           a.floor > whole
         | 0
       if.
