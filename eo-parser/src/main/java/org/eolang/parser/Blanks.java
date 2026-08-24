@@ -46,7 +46,7 @@ final class Blanks {
         if (globals.pendingBlanks() > 0) {
             emit.error(
                 span.line(), span.indent(),
-                "blank line before a plain object is forbidden (R-6.5.4); only master objects (formations, atoms, only-phi formations, +> tests) may be preceded by a blank line"
+                "blank line not allowed between non-master siblings"
             );
         }
     }
@@ -110,7 +110,7 @@ final class Blanks {
             if (globals.pendingBlanks() == 0) {
                 emit.error(
                     span.line(), span.indent(),
-                    "missing blank line between meta header and the first non-meta line (R-6.5.5); exactly one blank must separate them"
+                    "meta header must be followed by exactly one blank line"
                 );
             } else {
                 globals.clearBlanks();

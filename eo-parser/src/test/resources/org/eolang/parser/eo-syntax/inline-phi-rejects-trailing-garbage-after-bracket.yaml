@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/errors/error[contains(text(),'trailing garbage')]
+  - /object/errors/error[contains(text(),'unexpected content after name suffix')]
 input: |
   [] > main
     q.f (a > [x] this is garbage) > z

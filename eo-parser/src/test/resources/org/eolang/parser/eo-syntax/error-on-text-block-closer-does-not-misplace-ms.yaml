@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object[@ms]
   - /object[not(.//o[@ms])]
-  - /object/errors/error[contains(text(),'garbage')]
+  - /object/errors/error[contains(text(),'unexpected content after name suffix')]
 input: |
   [] > app
     seq > s
