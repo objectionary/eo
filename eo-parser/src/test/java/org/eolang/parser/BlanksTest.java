@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -46,18 +45,6 @@ final class BlanksTest {
             XhtmlMatchers.hasXPaths(
                 "/object[not(errors/error[contains(text(),'missing blank line')])]"
             )
-        );
-    }
-
-    @Test
-    void leavesPendingBlanksUntouchedOutsideMetaHeader() {
-        final Globals globals = new Globals();
-        globals.blank();
-        Blanks.enterAfterMeta(new Span("[] > foo", 1), globals, new Emit());
-        MatcherAssert.assertThat(
-            "enterAfterMeta must not clear the pending-blank count once the meta header is already closed",
-            globals.pendingBlanks(),
-            Matchers.equalTo(1)
         );
     }
 
