@@ -53,11 +53,11 @@ import java.util.Map;
  *
  * <p>A name that resolves to nothing gets no row and no complaint: a
  * missing row makes a later check stay undecided, while a wrong row would
- * make it decide wrongly. On the runtime this happens to 730 references out
- * of 21,555, and every one of them is {@code ξ.ρ} — the object one step
- * out, which no formation binds as an attribute and which therefore cannot
- * be found by looking for a name. Linking it needs the notion of "the
- * object I am inside of", which the checking loop will have anyway.</p>
+ * make it decide wrongly. On the runtime this still happens to references
+ * such as dispatches, {@code .eq}, {@code .if}, {@code .empty}, and
+ * terminators — not to {@code ξ.ρ}, the object one step out, which
+ * {@link Scope#target(String, String)} resolves by walking two formations
+ * outward from the reference.</p>
  *
  * @since 0.68.0
  */
@@ -82,8 +82,8 @@ final class Links implements Clue {
         for (final XML datum : world.data()) {
             found.put(datum.xpath("@loc").get(0), new Data());
         }
-        for (final XML dead : world.bottoms()) {
-            found.put(dead.xpath("@loc").get(0), new Bottom());
+        for (final XML dead : world.terminators()) {
+            found.put(dead.xpath("@loc").get(0), new Terminator());
         }
         for (final XML hollow : world.voids()) {
             found.put(hollow.xpath("@loc").get(0), new Var());

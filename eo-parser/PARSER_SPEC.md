@@ -169,9 +169,8 @@ The parser recognises the following lexical tokens:
 | `RHO` | `^` |
 | `ROOT` | `Q` |
 | `XI` | `$` |
-| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the bottom, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
+| `TERM` | `T` — the terminator term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the terminator, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
 | `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry arguments (`I 5`) and a `.method` chain, like any other head. |
-| `SELF` | `%` — self-reference (§3.15). Sugar for the auto-name of the enclosing anonymous (`>>`-named) formation; substituted at compile time. A value: it may carry arguments (`% 5`) and a `.method` chain, like any other head. |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
@@ -216,7 +215,6 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | literal (`"…"`, `42`, `--`, `AB-CD`, `0xFF`, signed number) | — | application starting with literal (§3.6) |
 | `*` | — | star tuple as application head (§3.6) |
 | `(` | — | application starting with group (§3.6) |
-| `%` | — | self-reference as application head (§3.15) |
 | `I` | — | identity object as application head (§3.16) |
 
 The classifier emits a **line-shape record**:
@@ -680,35 +678,6 @@ Illegal:
 
 | 5 > n                               ← rejected: no object above
 ```
-
-### 3.15 Self-reference — `%`
-
-A `%` token is *syntactic sugar for the auto-generated name of the anonymous formation that surrounds it* — the closest ancestor introduced by the `>>` suffix (§3.10). It is not a new reference mechanism: at compile time `%` is simply replaced by that name, exactly as if the (otherwise untypeable) auto-name had been written by hand. Its purpose is recursion without exposing a name — an anonymous helper (`fibo`, say) can call itself with `%` while staying inlined, invisible to the enclosing scope.
-
-R-3.15.1. `%` is a value: it is recognised wherever a value is expected — as a line head (`% (n.minus 1)`), as a horizontal argument, and inside a paren group — and takes horizontal arguments (§3.6) and a `.method` chain (§3.5) with the ordinary application shape.
-
-R-3.15.2. **Scope.** `%` stands for the **nearest enclosing anonymous formation** — the closest ancestor whose auto-generated name carries the cactus prefix (§9.2). A named formation (`> name`) is not a target; reference such an object by its name. A `%` with no enclosing anonymous formation is a compile-time error.
-
-R-3.15.3. **Emission / XMIR.** The parser emits a base-less `<o self=''>` marker; the `resolve-self` reshape (§9) substitutes the name — it sets `@base` to the enclosing anonymous formation's `@name` and drops `@self` — so every downstream pass sees a plain reference by the auto-name. A `%` outside any anonymous formation is rejected there with a `resolve-self` check error (a post-parse check, like the compact-tuple index check, not a §9.9 parser error).
-
-```
-io.stdout > @                         ← prints the 5th Fibonacci number
-  tt.sprintf *1
-    "The 5th Fibonacci number is %d\n"
-    [n] >>                            ← anonymous (auto-named) formation a🌵…
-      if. > @
-        n.lt 2
-        n
-        plus.
-          % (n.minus 1)               ← % = the anonymous formation's auto-name
-          % (n.minus 2)               ← % = the anonymous formation's auto-name
-    | 5                               ← applies the formation to 5 (§3.14)
-
-[] > app
-  % 6 > @                             ← rejected: no enclosing anonymous formation
-```
-
-Outer kind: that of the underlying application (§3.6), since `%` is just a head value.
 
 ### 3.16 Identity object — `I`
 
@@ -1238,16 +1207,16 @@ Example: for `[] > foo` with body `42 > @`, `foo` emits `@loc="Φ.foo"`, its `@`
 R-9.2.1. For an object whose name suffix is `>>`, the emitted `@name` is computed as:
 
 ```
-auto_name(line, pos)  =  "a" + U+1F335 + line + "-" + pos
+auto_name(line, indent)  =  "a" + U+1F335 + line + "-" + indent
 ```
 
-where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `pos` to prevent identity collisions (e.g., distinguishing `(line=1, pos=25)` from `(line=12, pos=5)`).
+where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `indent` to prevent identity collisions (e.g., distinguishing `(line=1, indent=25)` from `(line=12, indent=5)`).
 
 R-9.2.2. The cactus 🌵 is reserved — it is excluded from the `NAME` token (§2.3), so auto-names cannot collide with user-defined names. (The hyphen `-` is permitted inside `NAME` tokens; it does not need exclusion because the cactus prefix already disambiguates auto-names from user names.)
 
-Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
+Example: a `>>` suffix on a line indented 5 columns at `line=12` emits `@name="a🌵12-5"`.
 
-R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. A reference may also name the scope of the handle instead of leaving it to that search: `$.name` binds to the handle of the innermost formation, `^.name` (one more `^` per level) to a formation further out, and `bar.name` to the enclosing formation called `bar`, which is how a helper reaches its own handle through the object that declares it. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
+R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. A reference may also name the scope of the handle instead of leaving it to that search: `$.name` binds to the handle of the innermost formation, `^.name` (one more `^` per level) to a formation further out, and `bar.name` to the enclosing formation called `bar`, which is how a helper reaches its own handle through the object that declares it. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
 
 R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follows resolves a bare `<o base='name'>` against the formation it sits in: a name that formation owns becomes `ξ.name`, a name the file's own package owns becomes `Φ.<package>.name`, and a name nothing in scope owns is left for `add-default-package` to home into `Φ`. A name owned by an *enclosing* formation is none of those — it is reported (`The "name" object is declared in an enclosing scope, write it as "^.name"`), because the `^.` hops that reach it are the author's to write. The one name this does not apply to is a cactus one, which no author writes: it is what a `>>` handle resolves to (R-9.2.3), and the handle is spelled bare wherever the file reads it, so the hops that reach it are still inserted here.
 
@@ -1259,8 +1228,7 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11); `@as='ρ'` for a `:^` binding (R-3.12.2a) |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
-| `%` (SELF) | — | base-less `<o self=''>` marker; `resolve-self` (§9) later sets `@base` to the enclosing anonymous formation's auto-name (§3.15) |
-| `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
+| `T` (TERM) | `⊥` | `@base='⊥'` for the terminator term |
 | `I` (IDENTITY) | — | base-less `<o>` with a single void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — the identity object (§3.16) |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |

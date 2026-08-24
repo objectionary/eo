@@ -15,10 +15,3 @@ origin: |
   [] > as-bool
     ? >> bts
     bts.eq 01- > @
-
-printed: |
-  +package org.eolang
-
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @

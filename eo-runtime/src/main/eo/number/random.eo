@@ -7,9 +7,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > random
+[^] > random
   seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
-  [clock] > clocked
+  [^ clock] > clocked
     random. > @
       as-number.
         plus.

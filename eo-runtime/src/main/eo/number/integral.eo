@@ -1,6 +1,8 @@
 # Calculates the integral from `a` to `b`.
 # Here `func` is the integration function, `a` is the lower limit,
 # `b` is the upper limit, `n` is the number of partitions of the integration interval.
+# `n` must be smaller than 2^53, because the loop advances its counter by one
+# and larger IEEE-754 integers cannot advance by that amount.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,18 +11,20 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[fun a b n] > integral
+[^ fun a b n] > integral
   if. > @
-    n.is-finite.and
-      n.is-integer.and
-        n.gt 0
+    and.
+      n.is-finite.and
+        n.is-integer.and
+          n.gt 0
+      n.lt safe
     as-number.
       malloc.of
         8
-        [sum] >>
+        [^ sum] >>
           seq * > @
             while
-              if. > [i] >>
+              if. > [^ i] >>
                 i.lt ^.^.n
                 seq *
                   ^.sum.put
@@ -30,15 +34,16 @@
                         ^.^.a.plus ((i.plus 1).times ^.step)
                   true
                 false
-              true > [i]
+              true > [^ i]
             sum
           as-number. > step
             div.
               ^.b.minus ^.a
               ^.n
     T
-      "the number of partitions must be a finite positive integer"
-  times. > [a b] >> subsection
+      "the number of partitions must be a finite positive integer smaller than 2^53"
+  9007199254740992 > safe
+  times. > [^ a b] >> subsection
     div.
       b.minus a
       6
@@ -55,7 +60,7 @@
     close-to > @
       as-number.
         integral
-          times. > [x]
+          times. > [^ x]
             x.times x
             x
           1
@@ -63,14 +68,14 @@
           100
       2499.75
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -85,14 +90,14 @@
           15
       49.5
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -101,20 +106,20 @@
     close-to > @
       as-number.
         integral
-          x.times x > [x]
+          x.times x > [^ x]
           1
           10
           100
       333
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -129,14 +134,14 @@
           1
       0.5
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
@@ -151,17 +156,27 @@
           10
       50
       1.0e-7
-    [value operand err] > close-to
+    [^ value operand err] > close-to
       lte. > @
         minus.
           abs.
             value.minus operand
           err
         0
-      if. > [value] > abs
+      if. > [^ value] > abs
         value.gte 0
         value
         value.neg
+
+  eq. ++> can-recover-from-partitions-at-the-precision-boundary
+    "recovered"
+    recovered
+      integral
+        I
+        0
+        1
+        9007199254740992
+      "recovered"
 
   integral --> stops-on-fractional-partitions
     I

@@ -433,16 +433,16 @@ final class Node {
             } else {
                 dot = ".";
             }
-            result = this.children.get(0).braced().map(
-                glued -> new Node(
-                    String.join(
-                        dot, glued,
-                        this.base.substring(0, this.base.length() - dot.length())
-                    ),
-                    this.tail, this.abstractt, this.test, false, false,
-                    this.children.subList(1, this.children.size())
-                )
-            );
+            final String head = this.base.substring(0, this.base.length() - dot.length());
+            if (!"$".equals(head)) {
+                result = this.children.get(0).braced().map(
+                    glued -> new Node(
+                        String.join(dot, glued, head),
+                        this.tail, this.abstractt, this.test, false, false,
+                        this.children.subList(1, this.children.size())
+                    )
+                );
+            }
         }
         return result;
     }

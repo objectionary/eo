@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A reversed dispatch whose head is "$" (xi) must reprint with the "$"
+# surface spelling, the way "@" (phi) and "^" (rho) already do in a leading
+# reversed marker: "eo:translate-path" mapped rho and phi but not xi, so the
+# marker printed as the raw internal "xi" glyph instead and the result did
+# not reparse. Unlike "@" and "^", "$" is not a real attribute a chain can
+# dispatch through, so it also keeps its prefix ("$. receiver") shape rather
+# than folding into a "receiver.$" suffix the grammar does not accept (#7449).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    $. 1 > z

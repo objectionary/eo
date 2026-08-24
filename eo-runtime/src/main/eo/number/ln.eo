@@ -13,7 +13,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > ln
+[^] > ln
   n.is-nan.if > @
     nan
     if.
@@ -25,7 +25,7 @@
         n.is-finite.if
           lnp n
           pinf
-  [p] > lnp
+  [^ p] > lnp
     if. > @
       p.gte e
       climb 9 p
@@ -34,7 +34,7 @@
           1.div e
         descend 9 p
         series p
-    if. > [level p] > climb
+    if. > [^ level p] > climb
       level.lt 0
       ^.series p
       if.
@@ -49,7 +49,7 @@
         ^.climb
           level.minus 1
           p
-    if. > [level p] > descend
+    if. > [^ level p] > descend
       level.lt 0
       ^.series p
       if.
@@ -65,18 +65,18 @@
         ^.descend
           level.minus 1
           p
-    [level] > epow
+    [^ level] > epow
       if. > @
         level.eq 0
         e
         prev.times prev
       ^.epow > prev
         level.minus 1
-    [m] > series
+    [^ m] > series
       2.times > @
         t.times
           horner 0
-      if. > [k] > horner
+      if. > [^ k] > horner
         k.gt 40
         0
         plus.
@@ -91,7 +91,7 @@
       div. > t
         m.minus 1
         m.plus 1
-    [level] > step
+    [^ level] > step
       if. > @
         level.eq 0
         1

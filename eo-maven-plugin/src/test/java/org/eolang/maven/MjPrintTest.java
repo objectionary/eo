@@ -142,8 +142,24 @@ final class MjPrintTest {
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
             MjPrintTest.printed(xtory, this.dir, false).asString(),
-            Matchers.equalTo((String) xtory.map().get("printed"))
+            Matchers.equalTo(this.expected(xtory))
         );
+    }
+
+    private String expected(final Xtory xtory) {
+        final String origin = (String) xtory.map().get("origin");
+        final String expected;
+        if (xtory.map().containsKey("printed")) {
+            expected = (String) xtory.map().get("printed");
+            MatcherAssert.assertThat(
+                "The 'printed' section repeats 'origin' verbatim and must be deleted from the pack, since a pack without 'printed' already expects the printer to reproduce its 'origin'",
+                expected,
+                Matchers.not(Matchers.equalTo(origin))
+            );
+        } else {
+            expected = origin;
+        }
+        return expected;
     }
 
     private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)

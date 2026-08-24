@@ -62,16 +62,37 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
   </xsl:function>
-  <!-- Get object name with suffix -->
-  <xsl:function name="eo:suffix" as="xs:string">
-    <xsl:param name="s1"/>
-    <xsl:param name="s2"/>
-    <xsl:value-of select="concat(concat($s1, '_'), $s2)"/>
+  <!--
+  A deterministic digit fingerprint of a name, computed purely from the name's own
+  characters rather than from any surrounding XML node. Two over-long names sharing
+  their first 240-odd characters still disambiguate, and the same name always
+  fingerprints the same way regardless of which call site of "eo:class-name" asks,
+  so a declaration and a reference to the same over-long name never diverge (#7254).
+  -->
+  <xsl:function name="eo:fingerprint" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="codes" select="string-to-codepoints($n)"/>
+    <xsl:value-of select="concat('_', string(sum(for $i in 1 to count($codes) return $codes[$i] * $i) mod 100000000))"/>
+  </xsl:function>
+  <!--
+  A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
+  appended after it lands inside an existing identifier segment instead of
+  starting an illegal one of its own (#7254).
+  -->
+  <xsl:function name="eo:unbroken" as="xs:string">
+    <xsl:param name="s" as="xs:string"/>
+    <xsl:choose>
+      <xsl:when test="ends-with($s, '.')">
+        <xsl:value-of select="eo:unbroken(substring($s, 1, string-length($s) - 1))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- Get class name for the object -->
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:param name="alt" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
     <xsl:variable name="package">
       <xsl:for-each select="$parts">
@@ -94,7 +115,8 @@
     <xsl:variable name="pre" select="concat($package, eo:clean($class))"/>
     <xsl:choose>
       <xsl:when test="string-length($pre)&gt;250">
-        <xsl:value-of select="concat(substring($pre, 1, 25), $alt)"/>
+        <xsl:variable name="fingerprint" select="eo:fingerprint($n)"/>
+        <xsl:value-of select="concat(eo:unbroken(substring($pre, 1, 250 - string-length($fingerprint))), $fingerprint)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$pre"/>
@@ -299,7 +321,7 @@
         <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
-      <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
+      <xsl:value-of select="eo:class-name(.)"/>
     </xsl:attribute>
   </xsl:template>
   <!-- Class body -->
@@ -320,7 +342,7 @@
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:text> extends PhOnce {</xsl:text>
@@ -333,7 +355,7 @@
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:if test="@base">
       <xsl:call-template name="wrapper">
-        <xsl:with-param name="class" select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+        <xsl:with-param name="class" select="eo:class-name(@name)"/>
       </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="nested"/>
@@ -410,7 +432,7 @@
   </xsl:template>
   <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
-    <xsl:variable name="class" select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:variable name="class" select="eo:class-name(@name)"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
@@ -485,9 +507,17 @@
   <!-- Void attribute -->
   <xsl:template match="void">
     <xsl:param name="name"/>
-    <xsl:text>new AtVoid("</xsl:text>
-    <xsl:value-of select="eo:literal($name)"/>
-    <xsl:text>")</xsl:text>
+    <xsl:choose>
+      <!-- A receiver is held by reference, so it survives a copy untouched -->
+      <xsl:when test="$name=$eo:rho">
+        <xsl:text>new AtRho()</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new AtVoid("</xsl:text>
+        <xsl:value-of select="eo:literal($name)"/>
+        <xsl:text>")</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!--
   Atom as attribute.
@@ -507,7 +537,7 @@
     <xsl:variable name="class">
       <xsl:value-of select="$parent"/>
       <xsl:value-of select="'$'"/>
-      <xsl:value-of select="eo:class-name($name, eo:suffix($argument/@line, $argument/@pos))"/>
+      <xsl:value-of select="eo:class-name($name)"/>
     </xsl:variable>
     <xsl:variable name="variable">
       <xsl:if test="$context!='this'">
@@ -575,7 +605,7 @@
       <xsl:with-param name="parent">
         <xsl:value-of select="$parent"/>
         <xsl:text>$</xsl:text>
-        <xsl:value-of select="eo:class-name($name, eo:suffix(@line, @pos))"/>
+        <xsl:value-of select="eo:class-name($name)"/>
       </xsl:with-param>
       <xsl:with-param name="context" select="$ctx"/>
     </xsl:apply-templates>
@@ -830,7 +860,7 @@
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:value-of select="concat(eo:class-name(@name), 'Test')"/>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:text> extends PhOnce {</xsl:text>
@@ -843,7 +873,7 @@
     <xsl:apply-templates select="." mode="testing-ctors"/>
     <xsl:if test="@base">
       <xsl:call-template name="wrapper">
-        <xsl:with-param name="class" select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+        <xsl:with-param name="class" select="concat(eo:class-name(@name), 'Test')"/>
       </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="." mode="tests"/>
@@ -853,7 +883,7 @@
   </xsl:template>
   <!-- Testing ctors. -->
   <xsl:template match="class" mode="testing-ctors">
-    <xsl:variable name="class" select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:variable name="class" select="concat(eo:class-name(@name), 'Test')"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>

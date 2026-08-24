@@ -1,10 +1,11 @@
 # Writes the number `n` in scientific notation, as a mantissa with six fraction
 # digits, the letter `e`, and the power of ten that scales the mantissa back to
-# `n`, so that `1.0e19` becomes `1.000000e19`. A magnitude past the range of a
-# signed 64-bit integer is named this way, since `as-decimal` writes only what
-# it spells out digit by digit, and a non-finite number becomes `nan`,
-# `infinity` or `-infinity`, having no digits at all. The power is never
-# negative, so a magnitude below one keeps it at zero, as `0.500000e0` for `0.5`.
+# `n`, so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
+# `1.000000e-7`. A magnitude past the range of a signed 64-bit integer is
+# named this way, since `as-decimal` writes only what it spells out digit by
+# digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,
+# having no digits at all. The mantissa is always normalized to `[1, 10)`, so
+# a magnitude below one carries a negative power, as `5.000000e-1` for `0.5`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-scientific
+[^] > as-scientific
   n.is-finite.not.if > @
     n.is-nan.if
       "nan".as-bytes
@@ -48,13 +49,23 @@
   carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
-  if. > [m count] >> rec-exponent
-    m.lt 10
+  if. > [^ m count] >> rec-exponent
+    or.
+      m.eq 0
+      and.
+        m.gte 1
+        m.lt 10
     count
-    ^.rec-exponent
-      m.div 10
-      as-number.
-        count.plus 1
+    if.
+      m.lt 1
+      ^.rec-exponent
+        m.times 10
+        as-number.
+          count.minus 1
+      ^.rec-exponent
+        m.div 10
+        as-number.
+          count.plus 1
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"
@@ -79,6 +90,14 @@
   eq. ++> can-name-a-negative-magnitude
     "-9.223372e18"
     string -9.223372036854776e18.as-scientific
+
+  eq. ++> can-name-a-negative-small-magnitude-with-a-negative-power
+    "-1.000000e-7"
+    string -1.0e-7.as-scientific
+
+  eq. ++> can-name-a-small-magnitude-with-a-negative-power
+    "1.000000e-7"
+    string 1.0e-7.as-scientific
 
   eq. ++> can-name-nan
     "nan"

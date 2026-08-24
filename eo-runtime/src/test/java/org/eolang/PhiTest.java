@@ -62,6 +62,15 @@ final class PhiTest {
     }
 
     @Test
+    void takesLambdaOfNonAtomAsAbsent() {
+        MatcherAssert.assertThat(
+            "Taking λ from a non-atom must return a terminator, not throw a cast error",
+            new PhDefault().take(Phi.LAMBDA),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
     void tellsWhyANonFiniteNumberHasNoDecimalForm() {
         MatcherAssert.assertThat(
             "asking nan for its decimal form must not lose the reason written for that moment",
@@ -90,6 +99,24 @@ final class PhiTest {
                 ).take()
             ).getMessage(),
             Matchers.containsString("the number of partitions must be a finite positive integer")
+        );
+    }
+
+    @Test
+    void tellsWhyAPrecisionBoundaryPartitionCountIsRefused() {
+        MatcherAssert.assertThat(
+            "integrating at the unit-step precision boundary must fail before the loop starts",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        Phi.Φ.take("number.integral").copy(),
+                        "n",
+                        new Data.ToPhi(9_007_199_254_740_992d)
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.containsString("smaller than 2^53")
         );
     }
 

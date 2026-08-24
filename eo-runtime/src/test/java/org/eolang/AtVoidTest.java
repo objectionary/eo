@@ -31,7 +31,7 @@ final class AtVoidTest {
         MatcherAssert.assertThat(
             "Set void attribute must render the value φ-term, but it didnt",
             attr.φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
@@ -58,7 +58,7 @@ final class AtVoidTest {
     @Test
     void returnsTerminatorOnGettingUnsetAttribute() {
         MatcherAssert.assertThat(
-            "AtVoid must return the bottom object when getting an unset attribute",
+            "AtVoid must return a terminator when getting an unset attribute",
             new AtVoid("attr").get(),
             Matchers.instanceOf(PhTerminator.class)
         );
@@ -67,7 +67,7 @@ final class AtVoidTest {
     @Test
     void namesTheUnsetAttributeInTheTerminatorsCause() {
         MatcherAssert.assertThat(
-            "The bottom object returned for an unset attribute must name it in its cause",
+            "The terminator returned for an unset attribute must name it in its cause",
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new Dataized(new AtVoid("attr").get()).take()

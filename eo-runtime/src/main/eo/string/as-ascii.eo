@@ -2,8 +2,8 @@
 # The byte of `char` is left-padded with a zero byte into a 16-bit word,
 # read as an integer and then expressed as a number. If `char` is not
 # exactly one byte wide (an empty string, or a multi-byte UTF-8
-# character), the `cant-read` fallback is returned, or the bottom
-# object when unbound.
+# character), the `cant-read` fallback is returned, or the terminator
+# when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,7 +12,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[cant-read] > as-ascii
+[^ cant-read] > as-ascii
   if. > @
     char.as-bytes.size.eq 1
     as-number.
@@ -46,12 +46,12 @@
   eq. ++> can-recover-from-a-multi-byte-character
     "recovered"
     "Ж".as-ascii
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-empty-string
     "recovered"
     "".as-ascii
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   "Ж".as-ascii --> stops-on-a-multi-byte-character
 

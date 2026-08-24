@@ -5,29 +5,29 @@
 package org.eolang;
 
 /**
- * The bottom object of φ-calculus — a terminated computation.
+ * The terminator of φ-calculus — a terminated computation.
  *
  * <p>It is a value that can be carried around — returned, copied, and
  * have an object put into it — but it has no data and no behaviour.
  * It detonates only when something tries to <em>force</em> it: reading
  * its data ({@link #delta()}) aborts through an {@link ExFailure}, which
  * only {@link EOrecovered} intercepts, and only while it resolves its own
- * {@code value}, so forcing bottom anywhere else terminates the program
+ * {@code value}, so forcing a terminator anywhere else terminates the program
  * for good.</p>
  *
  * <p>The remaining operations are tolerant on purpose: {@link #copy()}
- * yields the same bottom and {@link #take(String)} yields another one carrying
+ * yields the same terminator and {@link #take(String)} yields another one carrying
  * the same reason, so it propagates through copying and dispatch and surfaces
  * the failure at the outer dataization, not at the point it was produced.</p>
  *
- * <p>A bottom may carry a <em>cause</em>: it has a single slot, addressable only
- * at position 0 (as in {@code T "why it failed"}). Only a bottom without a cause
- * listens to that slot, and a dispatch hands one to the bottom it yields, so the
- * arguments that follow a propagated bottom, as in {@code (T).if a b}, are
+ * <p>A terminator may carry a <em>cause</em>: it has a single slot, addressable only
+ * at position 0 (as in {@code T "why it failed"}). Only a terminator without a cause
+ * listens to that slot, and a dispatch hands one to the terminator it yields, so the
+ * arguments that follow a propagated terminator, as in {@code (T).if a b}, are
  * dropped instead of being read as the reason it terminated. A {@code put} by
- * name other than ρ aborts — bottom has no named attributes. The ρ-binding the
+ * name other than ρ aborts — a terminator has no named attributes. The ρ-binding the
  * runtime attempts on every take (via {@link AtWithRho}) is silently ignored,
- * since a bottom has no ρ; this keeps its cause from being masked by a
+ * since a terminator has no ρ; this keeps its cause from being masked by a
  * ρ-rejection while it propagates. The cause is write-once and never handed back
  * by {@link #take(String)}, so EO code can neither read it nor catch it — it
  * exists only to explain the termination at the very top.</p>
@@ -44,15 +44,15 @@ public final class PhTerminator implements Phi {
 
     /**
      * The reason this computation terminated, used only as the panic
-     * message when the bottom is forced, or {@code null} when none was given.
+     * message when the terminator is forced, or {@code null} when none was given.
      */
     private Phi cause;
 
     /**
      * The reason to fall back to if nothing is ever {@code put} into this
-     * bottom. Unlike {@link #cause}, a birth-site default never blocks a
+     * terminator. Unlike {@link #cause}, a birth-site default never blocks a
      * later, more specific {@code put} — a caller that takes a void
-     * attribute's bottom and immediately puts its own reason (as
+     * attribute's terminator and immediately puts its own reason (as
      * {@code bytes.slice} does with its {@code cant-slice} fallback) must
      * still win.
      */
@@ -66,7 +66,7 @@ public final class PhTerminator implements Phi {
     }
 
     /**
-     * Make a bottom that explains, by default, why it was born without a
+     * Make a terminator that explains, by default, why it was born without a
      * dispatch ever reaching it, while still letting a caller that takes it
      * and puts its own, more specific reason override that default.
      * @param reason The default reason for the termination
@@ -76,10 +76,10 @@ public final class PhTerminator implements Phi {
     }
 
     /**
-     * Make a bottom that already carries the given reason as its cause.
+     * Make a terminator that already carries the given reason as its cause.
      *
-     * <p>The reason is remembered and used as the panic message when this bottom
-     * is finally forced; until then it flows like any other bottom.</p>
+     * <p>The reason is remembered and used as the panic message when this
+     * terminator is finally forced; until then it flows like any other one.</p>
      *
      * @param cause The reason for the termination
      */

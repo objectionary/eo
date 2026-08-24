@@ -25,7 +25,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 6),
+            new Value(Value.Kind.IDENTIFIER, "bar", 0),
             Collections.emptyList(),
             new Suffix("> foo", new Span("bar > foo", 1), 4)
         ).run();
@@ -36,7 +36,7 @@ final class ChainEmissionTest {
             ChainEmissionTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@name='foo']/o[@base='bar' and @name='foo']",
-                "/object/o[@name='foo' and not(o/o)]"
+                "/object/o[@name='foo' and not(o[@method])]"
             )
         );
     }
@@ -52,7 +52,6 @@ final class ChainEmissionTest {
             Collections.singletonList(new MethodChain("bar", 3, false)),
             new Suffix("> wrap", new Span("foo.bar > wrap", 1), 8)
         ).run();
-        emit.close();
         emit.close();
         emit.close();
         MatcherAssert.assertThat(

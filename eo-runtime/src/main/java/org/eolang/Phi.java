@@ -12,7 +12,8 @@ package org.eolang;
  * name would be "Object", but it's already occupied by Java. That's why
  * we call it Phi.</p>
  *
- * <p>It is guaranteed that the hash codes of different Phi are different.</p>
+ * <p>The hash code of a Phi is its identity hash, which is not unique:
+ * two different objects can share one (see #7304).</p>
  *
  * @since 0.1
  */
@@ -91,12 +92,12 @@ public interface Phi extends Data, Term {
      * without extracting its data.
      *
      * <p>The point is to reveal whether the object is a terminated
-     * computation (bottom) without forcing it: a bottom — whether written as {@code T},
-     * produced by an unset void, or returned by a failing atom — surfaces here
-     * as a {@link PhTerminator} instance, detectable by identity. A genuine,
-     * unrecoverable failure encountered while resolving (a type violation, a
-     * missing Δ) propagates as an {@link ExFailure}, exactly as it would
-     * during dataization.</p>
+     * computation (a terminator) without forcing it: a terminator — whether
+     * written as {@code T}, produced by an unset void, or returned by a
+     * failing atom — surfaces here as a {@link PhTerminator} instance,
+     * detectable by identity. A genuine, unrecoverable failure encountered
+     * while resolving (a type violation, a missing Δ) propagates as an
+     * {@link ExFailure}, exactly as it would during dataization.</p>
      *
      * @return The object in its normal form
      */

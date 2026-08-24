@@ -1,6 +1,6 @@
 # Returns the original `text` as `number`.
 # If the text is not numeric, the `cant-parse` fallback is returned,
-# or the bottom object when unbound.
+# or the terminator when unbound.
 # The whole `text` must be the number: `scanf` matches its `%f` pattern
 # unanchored (via `find`), so on its own it would accept any text that
 # merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.
@@ -14,7 +14,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[cant-parse] > as-number
+[^ cant-parse] > as-number
   if. > @
     not.
       "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches text
@@ -32,6 +32,8 @@
 
   -42.eq "-42".as-number ++> can-convert-negative-text
 
+  1.0e-320.eq "1e-320".as-number ++> can-convert-subnormal-exponent-text
+
   5.eq "5".as-number ++> can-convert-text
 
   42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
@@ -39,36 +41,36 @@
   eq. ++> can-recover-from-a-bare-exponent-marker
     42
     "1e".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-an-exponent-without-a-mantissa
     42
     "e3".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-currency-prefixed-text
     42
     "$100".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-non-numeric-text
     42
     "Hello".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-space-separated-numbers
     42
     "1 2 3".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-text-with-an-embedded-number
     42
     "abc5".as-number
-      42 > [message]
+      42 > [^ message]
 
   eq. ++> can-recover-from-text-with-multiple-dots
     42
     "12.34.56".as-number
-      42 > [message]
+      42 > [^ message]
 
   "Hello".as-number --> stops-on-converting-non-numeric-text
