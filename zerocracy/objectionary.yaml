@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2160.822902496
+  seconds: 2160.446055175
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-24 07:07:56.866999427 Z
+  when: 2026-08-24 08:15:30.332209795 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -43258,20 +43258,6 @@
   when: 2025-11-20 17:48:38.000000000 Z
   where: github
   who: 29139614
-- _id: 1056796
-  _job: 20190889594
-  _time: 2025-12-13 11:15:54.657323382 Z
-  _version: 0.19.2/0.58.1/0.17.6
-  branch: '516'
-  details: The missing pull objectionary/phino#517 has been opened by @yegor256.
-  is_human: 1
-  issue: 517
-  repository: 977982682
-  tombstone: 2026-08-24 06:03:18.138415233 Z
-  what: pull-was-opened
-  when: 2025-12-11 05:42:20.000000000 Z
-  where: github
-  who: 526301
 - _id: 1056797
   _job: 20190889594
   _time: 2025-12-13 11:15:55.784640483 Z
@@ -43835,20 +43821,6 @@
   when: *254
   where: github
   who: 29139614
-- _id: 1057207
-  _job: 20194895295
-  _time: 2025-12-13 17:17:12.373366209 Z
-  _version: 0.19.2/0.58.1/0.17.6
-  branch: 4526-compilation-caching
-  details: The missing pull objectionary/eo#4738 has been opened by @volodya-lombrozo.
-  is_human: 1
-  issue: 4738
-  repository: 73056727
-  tombstone: 2026-08-24 04:11:39.862470104 Z
-  what: pull-was-opened
-  when: 2025-12-10 14:54:06.000000000 Z
-  where: github
-  who: 51804353
 - _id: 1057208
   _job: 20194895295
   _time: 2025-12-13 17:17:13.801613842 Z
@@ -54480,25 +54452,6 @@
   when: 2025-12-12 03:10:26.000000000 Z
   where: github
   who: 526301
-- _id: 1065526
-  _job: 20510000789
-  _time: 2025-12-25 20:12:06.037255286 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 526301
-  comments: 3
-  details: The pull request objectionary/phino#517 with 1002 HoC created by @yegor256
-    was reviewed by @copilot after 0h2m and 26 comments.
-  done: 2026-08-24 06:03:18.103223396 Z
-  hoc: 1002
-  is_human: 0
-  issue: 517
-  repository: 977982682
-  review_comments: 26
-  seconds: 165
-  what: code-was-reviewed
-  when: 2025-12-11 05:45:05.000000000 Z
-  where: github
-  who: 175728472
 - _id: 1065527
   _job: 20510000789
   _time: 2025-12-25 20:12:07.205780230 Z
@@ -54769,26 +54722,6 @@
   when: 2025-12-15 17:49:55.000000000 Z
   where: github
   who: 136622811
-- _id: 1065593
-  _job: 20510000789
-  _time: 2025-12-25 20:13:52.695638065 Z
-  _version: 0.19.2/0.58.1/0.17.8
-  author: 51804353
-  comments: 5
-  details: The pull request objectionary/eo#4738 with 200 HoC created by @volodya-lombrozo
-    was reviewed by @copilot after 0h7m and 12 comments.
-  done: 2026-08-24 04:11:39.834844292 Z
-  hoc: 200
-  is_human: 0
-  issue: 4738
-  repository: 73056727
-  review_comments: 12
-  seconds: 478
-  tombstone: 2026-08-24 04:40:10.330335074 Z
-  what: code-was-reviewed
-  when: 2025-12-10 15:02:04.000000000 Z
-  where: github
-  who: 175728472
 - _id: 1065594
   _job: 20510637865
   _time: 2025-12-25 20:42:09.809064863 Z
@@ -276936,7 +276869,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 836
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18440832656
   issues_were_scanned: 0
@@ -278057,6 +277990,7 @@
   - 154-217
   - 219-355
   - 358-515
+  - '517'
   repository: 977982682
   what: tombstone
   where: github
@@ -278752,7 +278686,7 @@
   - 4714-4717
   - 4719-4720
   - 4722-4728
-  - 4731-4737
+  - 4731-4738
   repository: 73056727
   what: tombstone
   where: github
@@ -287600,9 +287534,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
-  events_were_scanned: 13740712279
+  events_were_scanned: 13741709444
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -290518,7 +290452,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13719674401
   issues_were_scanned: 0
@@ -290552,13 +290486,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6244
+  assignees_were_scanned: 6388
   earliest_issue_was_found: 1
-  events_were_scanned: 18682305464
+  events_were_scanned: 13743580429
   issues_were_scanned: 0
-  labels_were_scanned: 6182
+  labels_were_scanned: 7110
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7482
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -537432,11 +537366,222 @@
   failed_builds: 0
   files: 2
   hoc: 65
+  is_human: 1
   issue: 7483
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
   when: 2026-08-24 05:52:49.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122460
+  _job: 32702397611
+  _time: 2026-08-24 07:46:01.566044576 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '516'
+  details: The pull objectionary/phino#517 has been opened earlier by @yegor256.
+  issue: 517
+  repository: 977982682
+  what: pull-was-opened
+  when: 2025-12-11 05:42:20.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122461
+  _job: 32702397611
+  _time: 2026-08-24 07:48:42.547834693 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7355-meta-tab-separator
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7403 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 26
+  issue: 7403
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:52:09.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122462
+  _job: 32702397611
+  _time: 2026-08-24 07:49:15.694862868 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7425'
+  comments: 5
+  comments_appreciated: 0
+  comments_by_author: 2
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7430 has been "pull-was-merged".
+  failed_builds: 1
+  files: 1
+  hoc: 52
+  issue: 7430
+  repository: 73056727
+  review: 2026-08-24 05:56:34.000000000 Z
+  succeeded_builds: 24
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:56:58.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122463
+  _job: 32702397611
+  _time: 2026-08-24 07:49:40.260598482 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7445-inline-binding-index
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7460 has been "pull-was-merged".
+  failed_builds: 0
+  files: 5
+  hoc: 134
+  issue: 7460
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:51:46.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122464
+  _job: 32702397611
+  _time: 2026-08-24 07:50:05.062890614 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7449-xi-surface-mapping
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7464 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 45
+  issue: 7464
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:51:11.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122465
+  _job: 32702397611
+  _time: 2026-08-24 07:50:28.679829607 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#6985/every-formation-declares-its-receiver
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7466 has been "pull-was-merged".
+  failed_builds: 1
+  files: 168
+  hoc: 1812
+  issue: 7466
+  repository: 73056727
+  succeeded_builds: 23
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:55:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122466
+  _job: 32702397611
+  _time: 2026-08-24 07:50:52.916645898 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: bug/#7326/one-answer-per-object
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7468 has been "pull-was-merged".
+  failed_builds: 0
+  files: 4
+  hoc: 168
+  issue: 7468
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:49:55.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122467
+  _job: 32702397611
+  _time: 2026-08-24 07:51:15.954160903 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7453-argument-label-on-body-line
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7469 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 43
+  issue: 7469
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:49:29.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122468
+  _job: 32702397611
+  _time: 2026-08-24 07:51:39.766467419 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7457-sine-precision-doc
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7476 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 16
+  issue: 7476
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-24 05:47:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1122469
+  _job: 32702397611
+  _time: 2026-08-24 07:53:50.085014794 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 526301
+  details: objectionary/lints#520 was assigned to @yegor256 by @yegor256.
+  issue: 520
+  repository: 889819508
+  what: issue-was-assigned
+  when: 2026-08-24 06:17:59.000000000 Z
   where: github
   who: 526301
