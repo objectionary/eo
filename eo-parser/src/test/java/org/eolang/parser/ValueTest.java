@@ -211,4 +211,76 @@ final class ValueTest {
             Matchers.equalTo("ρ")
         );
     }
+
+    @Test
+    void marksFloatAsNumber() {
+        MatcherAssert.assertThat(
+            "number() must be true for a FLOAT value",
+            new Value(Value.Kind.FLOAT, "3.14", 0).number(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksStringNotNumber() {
+        MatcherAssert.assertThat(
+            "number() must be false for a STRING value",
+            new Value(Value.Kind.STRING, "\"hi\"", 0).number(),
+            Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    void marksHexAsHex() {
+        MatcherAssert.assertThat(
+            "hex() must be true for a HEX value",
+            new Value(Value.Kind.HEX, "0xFF", 0).hex(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksBytesAsBytes() {
+        MatcherAssert.assertThat(
+            "bytes() must be true for a BYTES value",
+            new Value(Value.Kind.BYTES, "CA-FE", 0).bytes(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksStringAsString() {
+        MatcherAssert.assertThat(
+            "string() must be true for a STRING value",
+            new Value(Value.Kind.STRING, "\"hi\"", 0).string(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksStarAsStar() {
+        MatcherAssert.assertThat(
+            "star() must be true for a STAR value",
+            new Value(Value.Kind.STAR, "*", 0).star(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksTermAsTerm() {
+        MatcherAssert.assertThat(
+            "term() must be true for a TERM value",
+            new Value(Value.Kind.TERM, "T", 0).term(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void marksIdentifierNotStar() {
+        MatcherAssert.assertThat(
+            "star() must be false for an IDENTIFIER value",
+            new Value(Value.Kind.IDENTIFIER, "foo", 0).star(),
+            Matchers.equalTo(false)
+        );
+    }
 }
