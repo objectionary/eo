@@ -9,17 +9,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[as-bytes] > number
+[^ as-bytes] > number
   as-bytes > @
   as-i32.as-i16 > as-i16
   $.as-i64.as-i32 > as-i32
   [] > div /Q.number
+    ? > ^
     ? > x /Q.number
   [] > gt /Q.bool
+    ? > ^
     ? > x /Q.number
   [] > plus /Q.number
+    ? > ^
     ? > x /Q.number
   [] > times /Q.number
+    ? > ^
     ? > x /Q.number
 
   eq. ++> can-add-a-negative-float-to-negative-infinity
@@ -87,11 +91,11 @@
     eq. > @
       fibonacci 4
       3
-    [n] > fibonacci
+    [^ n] > fibonacci
       if. > @
         n.lt 3
         small n
-        if. > [n minus1 minus2] >> rec
+        if. > [^ n minus1 minus2] >> rec
           n.eq 3
           minus1.plus minus2
           ^.rec
@@ -99,7 +103,7 @@
             minus1.plus minus2
             minus1
         | n 1 1
-      if. > [n] > small
+      if. > [^ n] > small
         n.eq 2
         1
         n
@@ -108,7 +112,7 @@
     eq. > @
       fibo 4
       3
-    if. > [n] > fibo
+    if. > [^ n] > fibo
       n.lt 3
       1
       plus.

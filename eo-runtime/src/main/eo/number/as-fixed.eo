@@ -19,7 +19,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[places cant-print] > as-fixed
+[^ places cant-print] > as-fixed
   if. > @
     n.is-finite.not.or
       huge.or
@@ -37,10 +37,10 @@
     if.
       n.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
-        [a] >> positive
+        [^ a] >> positive
           if. > @
             digits.eq scale
-            if. > [unit rest] >> written
+            if. > [^ unit rest] >> written
               ^.^.places.eq 0
               unit.as-decimal
               concat.
@@ -59,7 +59,7 @@
         | 0
       if.
         n.lt 0
-        if. > [a] >> signed
+        if. > [^ a] >> signed
           eq.
             floor.
               plus.
@@ -75,7 +75,7 @@
   n.abs.gte > huge
     2.power 63
   ^ > n
-  if. > [p] >> pow10
+  if. > [^ p] >> pow10
     p.eq 0
     1
     times.
@@ -83,7 +83,7 @@
         as-number.
           p.minus 1
       10
-  if. > [value count acc] >> rec-pad
+  if. > [^ value count acc] >> rec-pad
     count.eq 0
     acc
     ^.rec-pad
@@ -173,61 +173,61 @@
     "recovered"
     9.223372036854776e18.as-fixed
       2
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
     "recovered"
     -1.25.as-fixed
       9007199254740992
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-non-finite-number
     "recovered"
     nan.as-fixed
       2
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
     "recovered"
     1.25.as-fixed
       18014398509481984
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
     "recovered"
     1.25.as-fixed
       9007199254740994
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
     "recovered"
     1.25.as-fixed
       9007199254740992
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-an-infinite-number
     "recovered"
     pinf.as-fixed
       2
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-infinite-places
     "recovered"
     1.25.as-fixed
       pinf
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-negative-places
     "recovered"
     3.14159.as-fixed
       -2
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-recover-from-non-integer-places
     "recovered"
     3.14159.as-fixed
       2.5
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-round-to-the-last-place
     "0.123457"

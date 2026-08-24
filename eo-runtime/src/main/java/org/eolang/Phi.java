@@ -49,10 +49,16 @@ public interface Phi extends Data, Term {
     Phi copy();
 
     /**
-     * Returns true if object has bound rho attribute.
-     * @return True if object has rho bound attribute
+     * Does this object still await a receiver?
+     *
+     * <p>True only when the object carries a rho attribute that nothing has
+     * filled yet. An object that declares no rho wants no receiver, and one
+     * whose rho is already bound must keep it, so both answer FALSE and a
+     * dispatch leaves them alone.</p>
+     *
+     * @return TRUE if a rho attribute is present and empty
      */
-    boolean hasRho();
+    boolean needsRho();
 
     /**
      * Take object by name of the attribute.

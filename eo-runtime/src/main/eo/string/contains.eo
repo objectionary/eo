@@ -7,7 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[substring] > contains
+[^ substring] > contains
   and. > @
     gte.
       number
@@ -19,7 +19,7 @@
         eq.
           text >> txt!
           substring >> part!
-      [index] >> rec-contains
+      [^ index] >> rec-contains
         if. > @
           end.eq index
           includes

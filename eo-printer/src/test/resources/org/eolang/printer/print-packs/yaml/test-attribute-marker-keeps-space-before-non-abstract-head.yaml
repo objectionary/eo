@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A "+>" test attribute on a plain reference ("true +> works", XMIR
+# <o base="Phi.true" name="+works"/>) must keep the single-marker, spaced
+# " +> " form. The TAIL template's doubled-marker head-of-line shorthand
+# ("++> works", used to collapse an EMPTY anonymous formation's own bracket
+# head, "[] +> works") was firing here too, since it only checked for the
+# absence of void children and not for the object actually being such a
+# formation - the doubled marker then glued straight onto "true"'s own
+# rendered head instead of standing in for the (nonexistent) bracket (#7451).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+
+    true +> works

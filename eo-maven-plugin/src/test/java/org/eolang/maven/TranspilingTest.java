@@ -47,7 +47,8 @@ final class TranspilingTest {
                 false,
                 "PhDefault",
                 Paths.get("target/xsl-measures.csv"),
-                Paths.get("target")
+                Paths.get("target"),
+                Paths.get("target/eo/6-inference")
             ),
             new ConcurrentCache()
         );

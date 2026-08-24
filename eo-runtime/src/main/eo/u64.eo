@@ -10,9 +10,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[as-bytes] > u64
+[^ as-bytes] > u64
   as-bytes > @
-  plus. > [] > as-number
+  plus. > [^] > as-number
     as-number.
       i64 ^.as-bytes
     if.
@@ -22,31 +22,31 @@
       1.8446744073709552e19
       0
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
-  gt. > [x] > gt
+  gt. > [^ x] > gt
     i64 ^.flip
     i64 x.as-u64.flip
-  gte. > [x] > gte
+  gte. > [^ x] > gte
     i64 ^.flip
     i64 x.as-u64.flip
-  lt. > [x] > lt
+  lt. > [^ x] > lt
     i64 ^.flip
     i64 x.as-u64.flip
-  lte. > [x] > lte
+  lte. > [^ x] > lte
     i64 ^.flip
     i64 x.as-u64.flip
-  [x] > minus
+  [^ x] > minus
     u64 > @
       as-bytes.
         minus. >>
           i64 ^.as-bytes
           i64 x.as-u64.as-bytes
-  [x] > plus
+  [^ x] > plus
     u64 > @
       as-bytes.
         plus. >>
           i64 ^.as-bytes
           i64 x.as-u64.as-bytes
-  [x] > times
+  [^ x] > times
     u64 > @
       as-bytes.
         times. >>

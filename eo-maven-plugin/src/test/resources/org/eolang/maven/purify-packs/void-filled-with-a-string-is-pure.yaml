@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A string is data as much as a number is, and a void the program only ever
+# fills with one is an input a cache key can be made of.
+eo:
+  app.eo: |
+    [] > app
+      shout "boom" > @
+      [x] > shout
+        x.as-bytes > @
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+pure:
+  - "//o[@name='shout' and @pure='true']"

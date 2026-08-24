@@ -19,7 +19,7 @@ public final class EOnumber$EOplus extends PhDefault implements Atom {
      * Ctor.
      */
     public EOnumber$EOplus() {
-        super(new Attrs(new Attr("x", new AtVoid("x"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x"))));
     }
 
     @Override

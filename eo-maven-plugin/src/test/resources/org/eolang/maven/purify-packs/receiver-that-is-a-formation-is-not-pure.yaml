@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A receiver is asked the same question as every other void, so one the
+# program only ever attaches to a formation is no better than a void filled
+# with a formation: the bytes of a formation are not what identifies it.
+eo:
+  app.eo: |
+    [] > app
+      reads box > @
+      [] > box
+        7 > tag
+  reads.eo: |
+    [^] > reads
+      ^.tag > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='reads' and not(@pure)]"

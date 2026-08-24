@@ -10,10 +10,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[func] > mappedi
+[^ func] > mappedi
   ^.reducedi > @
     *
-    accum.with > [accum item idx] >>
+    accum.with > [^ accum item idx] >>
       ^.func item idx
 
   eq. ++> can-map-a-list-with-indexes
@@ -23,7 +23,7 @@
         2
         3
         4
-      i.times x > [x i]
+      i.times x > [^ x i]
     *
       0
       2

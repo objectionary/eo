@@ -192,8 +192,9 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public boolean hasRho() {
-        return !this.loaded().get(Phi.RHO).vacant();
+    public boolean needsRho() {
+        final Attribute attr = this.loaded().get(Phi.RHO);
+        return attr != null && attr.vacant();
     }
 
     @Override
@@ -372,7 +373,11 @@ public class PhDefault implements Phi, Cloneable {
 
     private Phi absent(final String name) {
         final Phi object;
-        if (this instanceof Atom) {
+        if (Phi.RHO.equals(name)) {
+            object = new PhTerminator(
+                String.format("the object %s declares no receiver", this.forma())
+            );
+        } else if (this instanceof Atom) {
             object = this.take(Phi.LAMBDA).take(name);
         } else if (this.loaded().containsKey(Phi.PHI)) {
             object = this.take(Phi.PHI).take(name);
@@ -452,7 +457,7 @@ public class PhDefault implements Phi, Cloneable {
         this.lock.lock();
         try {
             if (this.attrs == null) {
-                this.attrs = PhDefault.defaults();
+                this.attrs = new Bindings();
                 for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
                     this.add(ent.getKey(), ent.getValue());
                 }
@@ -509,12 +514,6 @@ public class PhDefault implements Phi, Cloneable {
             result = out.toString();
         }
         return result;
-    }
-
-    private static Map<String, Attribute> defaults() {
-        final Map<String, Attribute> attrs = new Bindings();
-        attrs.put(Phi.RHO, new AtRho());
-        return attrs;
     }
 
     private static AtomTypes atoms() {

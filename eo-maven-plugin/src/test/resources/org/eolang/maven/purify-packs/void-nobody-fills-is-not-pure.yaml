@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What goes into a void is read off the callers, so a void nobody calls says
+# nothing about itself and the formation around it is left alone. The one the
+# program does call, with the very same body, is marked.
+eo:
+  app.eo: |
+    [] > app
+      called 42 > @
+      [x] > free
+        x > @
+      [x] > called
+        x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='free' and not(@pure)]"
+  - "//o[@name='called' and @pure='true']"

@@ -86,7 +86,7 @@ final class LnCompactTuple implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals.pendingBlanks(), emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }

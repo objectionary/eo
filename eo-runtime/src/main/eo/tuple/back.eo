@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[index] > back
+[^ index] > back
   index.is-integer.if > @
     if.
       0.gt
@@ -16,7 +16,7 @@
       list
       list.reducedi
         *
-        if. > [accum item idx] >>
+        if. > [^ accum item idx] >>
           idx.gte start
           accum.with item
           accum

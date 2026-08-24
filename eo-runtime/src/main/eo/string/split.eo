@@ -9,7 +9,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[delimiter cant-split] > split
+[^ delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
     cant-split
@@ -20,7 +20,7 @@
           text >> bts!
         0
       * ""
-      [accum start current] >> rec-split
+      [^ accum start current] >> rec-split
         if. > @
           len.eq current
           appended
@@ -62,7 +62,7 @@
     "recovered"
     "abc".split
       ""
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"
