@@ -133,16 +133,16 @@ final class Emissions {
     static void openValue(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
+        if (value.number()) {
             Emissions.number(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.HEX) {
+        } else if (value.hex()) {
             Emissions.hex(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.BYTES) {
+        } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
             emit.object(null, null, line, value.pos());
             emit.set(value.raw());
             emit.close();
-        } else if (value.kind() == Value.Kind.STRING) {
+        } else if (value.string()) {
             Emissions.string(emit, name, value, line);
         } else {
             Emissions.openBase(emit, name, value, line);
@@ -238,12 +238,12 @@ final class Emissions {
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.STAR) {
+        if (value.star()) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
             emit.object(name, value.rootSymbol(), line, value.pos());
-        } else if (value.kind() == Value.Kind.TERM) {
+        } else if (value.term()) {
             emit.object(name, "⊥", line, value.pos());
         } else if (value.identity()) {
             Emissions.identity(emit, name, value, line);

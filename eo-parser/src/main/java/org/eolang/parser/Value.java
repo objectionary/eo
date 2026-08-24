@@ -195,6 +195,54 @@ final class Value {
     }
 
     /**
+     * A numeric literal — {@code INT} or {@code FLOAT} (§9.0.3)?
+     * @return True for {@link Kind#INTEGER} or {@link Kind#FLOAT}
+     */
+    boolean number() {
+        return this.kind == Kind.INTEGER || this.kind == Kind.FLOAT;
+    }
+
+    /**
+     * A {@code HEX} numeric literal — {@code 0xFF} form (§9.0.3)?
+     * @return True for {@link Kind#HEX}
+     */
+    boolean hex() {
+        return this.kind == Kind.HEX;
+    }
+
+    /**
+     * A {@code BYTES} literal (§3.13.1)?
+     * @return True for {@link Kind#BYTES}
+     */
+    boolean bytes() {
+        return this.kind == Kind.BYTES;
+    }
+
+    /**
+     * A {@code STRING} literal (§9.0.3)?
+     * @return True for {@link Kind#STRING}
+     */
+    boolean string() {
+        return this.kind == Kind.STRING;
+    }
+
+    /**
+     * The {@code STAR} tuple marker (§9.0.3)?
+     * @return True for {@link Kind#STAR}
+     */
+    boolean star() {
+        return this.kind == Kind.STAR;
+    }
+
+    /**
+     * The {@code T} terminator term (§9.3)?
+     * @return True for {@link Kind#TERM}
+     */
+    boolean term() {
+        return this.kind == Kind.TERM;
+    }
+
+    /**
      * The {@code I} identity object (§3.16)?
      * @return True for {@link Kind#IDENTITY}
      */
@@ -272,11 +320,6 @@ final class Value {
         return found;
     }
 
-    // @todo #7379:30min Move the remaining kind()-driven branches in
-    //  Emissions#openValue and Emissions#openBase (INTEGER/FLOAT, HEX,
-    //  BYTES, STRING, STAR, TERM) onto Value as named predicates, the
-    //  way reversible() and rootSymbol() already replaced the
-    //  IDENTIFIER/ROOT and ROOT-glyph decisions.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
