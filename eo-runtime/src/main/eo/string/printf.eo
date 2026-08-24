@@ -32,11 +32,12 @@
 # language caches through `!` alone, and they are listed alphabetically
 # rather than in reading order, because the linter sorts them by name.
 #
-# The `%s` conversion refuses an argument whose bytes are not text: a byte
-# sequence that does not decode as UTF-8, and the single bytes `00-` and `01-`,
-# which are how `false` and `true` dataize, together with the two control
-# characters that share that encoding, because an object knows its own bytes
-# here and not its type.
+# The `%s` conversion refuses an argument whose bytes do not decode as UTF-8.
+# `false` and `true` dataize to the single bytes `00-` and `01-`, which are
+# also the valid one-character encodings of U+0000 and U+0001, so an object
+# knows its own bytes here and not its type: a boolean routed through `%s`
+# is printed as that control character instead of being rejected, and `%b`
+# remains the conversion to reach for a boolean.
 #
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
@@ -49,9 +50,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[args] > printf
+[^ args] > printf
   string > @
-    [index auto acc] >> walk
+    [^ index auto acc] >> walk
       if. > @
         gte.
           number cursor
@@ -76,14 +77,14 @@
         1
       index > cursor!
     | 0 0 --
-  slice. > [i] >> byte
+  slice. > [^ i] >> byte
     bytes raw
     i
     1
-  as-ascii. > [i] >> code
+  as-ascii. > [^ i] >> code
     string
       byte i
-  if. > [i] >> digits-end
+  if. > [^ i] >> digits-end
     i.gte
       number span
     i
@@ -97,7 +98,7 @@
         as-number.
           i.plus 1
       i
-  if. > [from to acc] >> digits-value
+  if. > [^ from to acc] >> digits-value
     from.gte to
     acc
     ^.digits-value
@@ -110,8 +111,8 @@
           minus.
             code from
             48
-  T message > [message] >> failure
-  if. > [i] >> flags-end
+  T message > [^ message] >> failure
+  if. > [^ i] >> flags-end
     i.gte
       number span
     i
@@ -130,7 +131,7 @@
   size. >> span!
     bytes
       format.as-bytes >> raw!
-  [index auto acc] >> spec
+  [^ index auto acc] >> spec
     if. > @
       gte.
         number end
@@ -173,7 +174,7 @@
       number end
     if. > converted!
       73-.eq conv
-      as-bytes. > [text] >> capped
+      as-bytes. > [^ text] >> capped
         ^.precise.as-bool.if
           truncated.
             string text
@@ -181,21 +182,10 @@
             failure
           text
       |
-        if.
-          or.
-            01-.eq datum
-            00-.eq datum
-          T
-            "The argument %d of the %%s conversion is a bool, use the %%b conversion instead".printf
-              *
-                plus.
-                  number idx
-                  1
-          seq *
-            length.
-              string datum
-            capped
-              string datum
+        seq *
+          length.
+            string datum
+          capped datum
       if.
         64-.eq conv
         as-decimal.
@@ -272,7 +262,7 @@
       auto
     number arg > numeric!
     if. > padded!
-      if. > [i c] >> flagged
+      if. > [^ i c] >> flagged
         i.gte
           number ^.digits
         false
@@ -389,6 +379,11 @@
         * "Jeff"
     11
 
+  eq. ++> can-apply-a-precision-to-a-non-ascii-string
+    "Жир"
+    "%.3s".printf
+      * "Жирафы"
+
   eq. ++> can-apply-a-precision-to-a-string
     "Jef"
     "%.3s".printf
@@ -399,10 +394,20 @@
     "%.3x".printf
       * 42.as-bytes
 
+  eq. ++> can-apply-a-precision-wider-than-a-non-ascii-string
+    "Жирафы"
+    "%.10s".printf
+      * "Жирафы"
+
   eq. ++> can-apply-a-width-to-bytes
     "  40-45-00-00-00-00-00-00"
     "%25x".printf
       * 42.as-bytes
+
+  eq. ++> can-format-a-boolean-as-a-control-character
+    "\u0001"
+    "%s".printf
+      * true
 
   eq. ++> can-format-a-computed-string
     "abcd"
@@ -430,6 +435,11 @@
     "%d".printf
       * -9007199254740992
 
+  eq. ++> can-format-a-null-control-character-as-a-string
+    "\u0000"
+    "%s".printf
+      * "\u0000"
+
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
     "Hello, %s! Bye, %1$s!".printf
@@ -447,6 +457,11 @@
     "3.14"
     "%.2f".printf
       * 3.1415
+
+  eq. ++> can-format-a-start-of-heading-control-character-as-a-string
+    "\u0001"
+    "%s".printf
+      * "\u0001"
 
   eq. ++> can-format-a-width-with-leading-spaces
     "   42"
@@ -551,10 +566,6 @@
     "-9223372036854775808"
     "%d".printf
       * -9.223372036854776e18
-
-  printf. --> stops-on-a-bool-as-a-string
-    "%s"
-    * true
 
   printf. --> stops-on-a-comma-flag-with-s
     "%,s"

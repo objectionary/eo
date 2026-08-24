@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7452: a fragile dispatch written as a nameless body line, continuing on
+# the object right above it ("z", §3.5), had already been shifted ahead of
+# that object by an earlier shift by the time the printer sorted the body -
+# the sort key for a nameless entry collapsed to the empty string, so it
+# floated to the front of the alphabetical order. Writing the receiver "z"
+# into the head on top of that made the reparsed line an ordinary nameless
+# application, which the parser rejects. The fix sorts a continuation on
+# its receiver's own name and prints it without the receiver, exactly as
+# the source wrote it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > m
+    x > z
+      1
+      2
+    ?.y

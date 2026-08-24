@@ -57,7 +57,7 @@ final class XmirTest {
                 xmir
             ),
             xmir.toEO(),
-            Matchers.equalTo(xtory.map().get("printed"))
+            Matchers.equalTo(this.printed(xtory))
         );
     }
 
@@ -168,7 +168,7 @@ final class XmirTest {
             !Boolean.FALSE.equals(xtory.map().get("reprints")),
             "'reprints: false' packs need not reprint to themselves (#5739)"
         );
-        final String printed = (String) xtory.map().get("printed");
+        final String printed = this.printed(xtory);
         MatcherAssert.assertThat(
             String.format(
                 "Expected EO should reprint to itself, but was:%n%s",
@@ -265,6 +265,22 @@ final class XmirTest {
                 "//o[@base='Φ.bytes' and @const and text()='01-02' and o[text()='5']]"
             )
         );
+    }
+
+    private String printed(final Xtory xtory) {
+        final String origin = (String) xtory.map().get("origin");
+        final String expected;
+        if (xtory.map().containsKey("printed")) {
+            expected = (String) xtory.map().get("printed");
+            MatcherAssert.assertThat(
+                "The 'printed' section repeats 'origin' verbatim and must be deleted from the pack, since a pack without 'printed' already expects the printer to reproduce its 'origin'",
+                expected,
+                Matchers.not(Matchers.equalTo(origin))
+            );
+        } else {
+            expected = origin;
+        }
+        return expected;
     }
 
     private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)

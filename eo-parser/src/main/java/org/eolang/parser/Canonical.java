@@ -25,16 +25,6 @@ import org.cactoos.scalar.Unchecked;
  * into the root {@code Φ} (see {@code add-default-package.xsl}).</p>
  *
  * @since 0.60
- * @todo #7134:45min Resolve a file-local handle to its full path in
- *  {@code resolve-local-names.xsl}. That sheet knows the node a
- *  {@code >>} handle declares and the node that reads it, so it knows
- *  how many formations sit between them; today it rewrites only the
- *  name and leaves the {@code ρ} run to {@code build-fqns.xsl}, which
- *  is why that sheet still walks scopes for cactus names after it
- *  stopped doing so for every other name. Once the handle arrives
- *  with its path already built, the cactus exception in
- *  {@code build-fqns.xsl} goes away and no name is resolved across a
- *  scope the author did not write.
  */
 public final class Canonical implements UnaryOperator<XML> {
 
@@ -52,7 +42,6 @@ public final class Canonical implements UnaryOperator<XML> {
      */
     public static final List<String> XSLS = List.of(
         "/org/eolang/parser/parse/wrap-applications.xsl",
-        "/org/eolang/parser/parse/resolve-self.xsl",
         "/org/eolang/parser/parse/resolve-local-names.xsl",
         "/org/eolang/parser/parse/validate-before-stars.xsl",
         "/org/eolang/parser/parse/resolve-before-stars.xsl",

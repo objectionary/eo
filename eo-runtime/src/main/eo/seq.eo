@@ -17,7 +17,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[steps] > seq
+[^ steps] > seq
   if. > @
     steps.length.eq 0
     true
@@ -46,10 +46,10 @@
   ++> can-dataize-a-float-once-when-greater
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             gt.
               seq *
                 m.put
@@ -60,10 +60,10 @@
   ++> can-dataize-a-float-once-when-less
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             lt.
               seq *
                 m.put
@@ -74,10 +74,10 @@
   ++> can-dataize-an-integer-once-when-equal
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             eq.
               seq *
                 m.put 0
@@ -89,10 +89,10 @@
   ++> can-dataize-an-integer-once-when-equal-and-cached
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             eq.
               seq *
                 at.
@@ -106,10 +106,10 @@
   ++> can-dataize-an-integer-once-when-less
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             lt.
               seq *
                 m.put
@@ -120,10 +120,10 @@
   ++> can-dataize-an-integer-once-when-less-or-equal
     malloc.of > @
       1
-      [b]
+      [^ b]
         malloc.for > @
           0
-          ^.b.put > [m] >>
+          ^.b.put > [^ m] >>
             lte.
               seq *
                 m.put

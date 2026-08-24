@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  error: 'cactus emoji is reserved for auto-names; not allowed in identifiers'
+input: |
+  [] > main /foo🌵bar
+    5 > x

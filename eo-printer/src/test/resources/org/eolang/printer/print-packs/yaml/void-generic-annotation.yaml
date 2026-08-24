@@ -18,12 +18,3 @@ origin: |
     ? > y /B
     ? > s /Q.string?
     ? > cant /{Q.string B}
-printed: |
-  +package org.eolang
-
-  [] > atom /A
-    ? > a
-    ? > x /A?
-    ? > y /B
-    ? > s /Q.string?
-    ? > cant /{Q.string B}

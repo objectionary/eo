@@ -22,18 +22,18 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[output] > tee
+[^ output] > tee
   ^ > origin
-  [size] > read
+  [^ size] > read
     read. > @
       input-block
         ^.origin
         ^.output
         --
       size
-    [input output buffer] > input-block
+    [^ input output buffer] > input-block
       buffer > @
-      [size] > read
+      [^ size] > read
         seq * > @
           written
           ^.^.input-block chunk written chunk.as-bytes
@@ -43,7 +43,7 @@
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
       5
-      read. > [mem]
+      read. > [^ mem]
         tee.
           input 01-02-03-04-05.as-input
           mem.to-output
@@ -53,7 +53,7 @@
   eq. ++> can-read-from-bytes-and-write-to-memory-by-portions
     malloc.of
       5
-      seq * > [m]
+      seq * > [^ m]
         read.
           read.
             read.
@@ -70,10 +70,10 @@
     eq. > @
       malloc.of
         6
-        [m1]
+        [^ m1]
           malloc.of > @
             5
-            seq * > [m2] >>
+            seq * > [^ m2] >>
               read.
                 tee.
                   input ((input 01-02-03-04-05.as-input).tee m2.to-output)

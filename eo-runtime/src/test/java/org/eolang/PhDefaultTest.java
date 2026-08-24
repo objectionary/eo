@@ -42,9 +42,9 @@ final class PhDefaultTest {
     @Test
     void printsSingleByteDataAsTerm() {
         MatcherAssert.assertThat(
-            "Object with one data byte must render it without trailing dash in φ-term",
+            "Object with one data byte must render it with a trailing dash in φ-term, matching the R-3.13.1 BYTES literal form",
             new PhDefault(new byte[] {(byte) 0x01}).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
@@ -264,7 +264,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made()).copy().take(this.getVoid())
             ).take(),
-            "Copying must preserve the unset void, which reads as the bottom object and fails when dataized"
+            "Copying must preserve the unset void, which reads as a terminator and fails when dataized"
         );
     }
 
@@ -310,7 +310,7 @@ final class PhDefaultTest {
             () -> new Dataized(
                 new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.PHI)
             ).take(),
-            "Phi depending on an unset void (now the bottom object) must fail when dataized, but it did not"
+            "Phi depending on an unset void (now a terminator) must fail when dataized, but it did not"
         );
     }
 
@@ -358,17 +358,6 @@ final class PhDefaultTest {
                 )
             ),
             Matchers.iterableWithSize(threads)
-        );
-    }
-
-    @Test
-    void failsGracefullyOnDataizingMissingAttribute() {
-        Assertions.assertThrows(
-            ExAbstract.class,
-            () -> new Dataized(
-                new PhSafe(new Data.ToPhi("Hey")).take("missing-attr")
-            ).take(),
-            "Dataizing a missing attribute (now the bottom object) should fail, but it didn't"
         );
     }
 
@@ -588,7 +577,7 @@ final class PhDefaultTest {
     @Test
     void returnsTerminatorForAbsentAttribute() {
         MatcherAssert.assertThat(
-            "Taking an absent attribute must return the bottom object, not throw",
+            "Taking an absent attribute must return a terminator, not throw",
             this.phiWithContextAttribute(
                 "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
@@ -629,6 +618,18 @@ final class PhDefaultTest {
         final Observant kid = new Observant();
         kid.add("extra", new AtVoid("extra"));
         MatcherAssert.assertThat("added attribute lost", kid.seen(), Matchers.hasItems("extra"));
+    }
+
+    @Test
+    void doesNotDuplicateOrderWhenTheSameAttributeIsAddedTwice() {
+        final PhDefault dup = new PhDefault();
+        dup.add("x", new AtVoid("x"));
+        dup.add("x", new AtVoid("x"));
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> dup.put(1, new Data.ToPhi(5.0)),
+            "a put past the only attribute must be rejected"
+        );
     }
 
     @Test

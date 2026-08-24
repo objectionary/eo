@@ -28,7 +28,6 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return Heaps.INSTANCE.malloc(
-            this,
             new Natural(Expect.at(this, "size")).it(),
             identifier -> {
                 final Phi chunk = Phi.Φ.take("chunk").copy();

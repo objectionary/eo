@@ -20,7 +20,7 @@ final class PhSafeTest {
         MatcherAssert.assertThat(
             "PhSafe must delegate φ-term to its origin, but it didnt",
             new PhSafe(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
@@ -140,6 +140,50 @@ final class PhSafeTest {
                 "was expected to fail with ExInterrupted"
             ).getMessage(),
             Matchers.equalTo("the thread must stop")
+        );
+    }
+
+    @Test
+    void letsErrorThrough() {
+        MatcherAssert.assertThat(
+            "a JVM Error must keep its own type, but it was wrapped",
+            Assertions.assertThrows(
+                StackOverflowError.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new StackOverflowError("the stack is exhausted");
+                        }
+                    },
+                    "file.eo", 42, 7
+                ).delta(),
+                "was expected to fail with StackOverflowError"
+            ).getMessage(),
+            Matchers.equalTo("the stack is exhausted")
+        );
+    }
+
+    @Test
+    void doesNotLetRecoveredInterceptError() {
+        final EOrecovered recovered = new EOrecovered();
+        recovered.put(
+            "value",
+            new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi normalized() {
+                        throw new OutOfMemoryError("the heap is exhausted");
+                    }
+                },
+                "file.eo", 42, 7
+            )
+        );
+        recovered.put("alternative", new Data.ToPhi(42L));
+        Assertions.assertThrows(
+            OutOfMemoryError.class,
+            recovered::lambda,
+            "recovered must not intercept a JVM Error, but it did"
         );
     }
 

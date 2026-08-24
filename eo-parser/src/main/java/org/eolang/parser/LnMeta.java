@@ -83,7 +83,7 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
-        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*")) {
+        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*")) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
                 "meta name must be a NAME starting with a lowercase letter"
@@ -110,8 +110,14 @@ final class LnMeta implements Line {
                 );
             }
             int end = idx;
-            while (end < tail.length() && tail.charAt(end) != ' ') {
+            while (end < tail.length() && !Character.isWhitespace(tail.charAt(end))) {
                 end = end + 1;
+            }
+            if (end < tail.length() && tail.charAt(end) != ' ') {
+                throw new ParseError(
+                    span.line(), span.indent() + base + end,
+                    "meta parts must be separated by a single ASCII space"
+                );
             }
             out.add(LnMeta.promoteQ(tail.substring(idx, end)));
             idx = end;

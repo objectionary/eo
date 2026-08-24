@@ -23,7 +23,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[as-bytes] > string
+[^ as-bytes] > string
   as-bytes > @
 
   not. ++> can-compare-a-string-with-nan
@@ -86,3 +86,5 @@
     78-5C-62-5C-66-5C-75-5C-72-5C-74-5C-6E-5C-27
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> can-unescape-symbols
+
+  "Hey".missing-attr --> stops-on-taking-a-missing-attribute

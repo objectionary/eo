@@ -320,6 +320,39 @@
                 'tuple.empty', looks unused to it (objectionary/lints#1276).
                 -->
                 <lint>redundant-object</lint>
+                <!--
+                @todo #6985:30min Stop skipping 'anemic-getter' here. Every
+                formation now declares its receiver, so a '^ &gt; name' binding
+                reads to the lint as a getter that renames 'ρ' and adds
+                nothing. It does add something: a name that survives nesting,
+                where the alternative '^.^' spelling counts hops and silently
+                retargets when a block is re-indented. Drop this entry once
+                objectionary/lints#1300 stops reporting a getter whose source
+                is the receiver, and check that no genuine anemic getter crept
+                in behind the suppression meanwhile.
+                -->
+                <lint>anemic-getter</lint>
+                <!--
+                @todo #6985:30min Stop skipping 'redundant-attachment' here. A
+                declared 'ρ' counts as one of the object's own voids, so
+                'outer-refs' comes back empty for formations that do reach into
+                the enclosing scope, and their '&gt;&gt;' names look
+                unreferenced. Dropping those names made the formatter reshape
+                the call sites and broke 'map', 'while', 'range' and 'input'.
+                Remove this entry once objectionary/lints#1301 treats the
+                receiver as reaching outward even when the head declares it.
+                -->
+                <lint>redundant-attachment</lint>
+                <!--
+                @todo #6985:30min Stop skipping 'many-void-attributes' here.
+                The rule caps a formation at five voids to keep it callable,
+                but it counts 'ρ' among them, and 'string.regex.matched' has
+                five real ones. Writing the receiver down did not add an
+                argument, so the cap now bites any head honest enough to
+                declare what it already had. Remove this entry once
+                objectionary/lints#1299 leaves the receiver out of the count.
+                -->
+                <lint>many-void-attributes</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'

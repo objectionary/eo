@@ -288,6 +288,7 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
+        Suffix.checkCactus(raw, span, pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z' && !raw.matches("[A-F]") && !raw.startsWith("Q.")) {
             throw new ParseError(
@@ -366,15 +367,19 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-            throw new ParseError(
-                span.line(), home + start,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkCactus(name, span, home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
+    }
+
+    private static void checkCactus(final String name, final Span span, final int pos) {
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                span.line(), pos,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
     }
 
     private static void checkLowercaseStart(
@@ -420,12 +425,7 @@ final class Suffix {
                 )
             );
         }
-        if (handle.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-            throw new ParseError(
-                span.line(), home + begin,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkCactus(handle, span, home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -455,12 +455,7 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-            throw new ParseError(
-                span.line(), home + begin,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkCactus(name, span, home + begin);
         Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {

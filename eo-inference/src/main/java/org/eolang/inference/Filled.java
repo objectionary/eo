@@ -104,7 +104,7 @@ final class Filled {
                 final List<String> given = this.args.get(walked);
                 for (int place = 0; place < given.size(); place += 1) {
                     final String hollow = this.owned.slot(this.end(copied), place);
-                    if (!hollow.isEmpty()) {
+                    if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                         found.putIfAbsent(hollow, this.end(given.get(place)));
                     }
                 }

@@ -109,6 +109,18 @@ final class GlobalsTest {
     }
 
     @Test
+    void keepsSurplusSpacesOnIndentedBlankLine() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 2);
+        globals.appendTextLine("    ");
+        MatcherAssert.assertThat(
+            "a blank line must retain spaces beyond the opener's indent",
+            globals.tbody(),
+            Matchers.contains("  ")
+        );
+    }
+
+    @Test
     void closesTextBlockState() {
         final Globals globals = new Globals();
         globals.openTextBlock(3);
