@@ -76,11 +76,17 @@ final class Transition {
                 "indent increased by more than one level"
             );
         }
-        if (!this.stack.empty() && this.stack.top().openness() != Openness.OPEN) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "unexpected deeper-indent line — previous expression is closed for children"
-            );
+        if (!this.stack.empty()) {
+            final Level top = this.stack.top();
+            if (top.openness() != Openness.OPEN) {
+                throw new ParseError(
+                    this.span.line(), 0,
+                    "unexpected deeper-indent line — previous expression is closed for children"
+                );
+            }
+            if (top.kind() == Kind.HEAD || top.kind() == Kind.HMETHOD) {
+                top.become(Kind.VAPPLICATION);
+            }
         }
         return this.stack.push(this.span.indent(), this.span.line(), kind, openness);
     }
