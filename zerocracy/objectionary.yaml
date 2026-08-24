@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 9m26s: execution expired'
   inserted: 8
-  seconds: 2457.833204839
+  seconds: 2161.083945981
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-24 02:49:47.866437704 Z
+  when: 2026-08-24 04:08:42.248024807 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -278133,7 +278132,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 836
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18440832656
   issues_were_scanned: 0
@@ -282974,6 +282973,7 @@
   - 5.578494570643264
   - 5.578494570643264
   - 5.578494570643264
+  - 5.578494570643264
   qod_per_day:
   - 20.262571430008
   - 42.95057143129291
@@ -283727,8 +283727,9 @@
   - 114.76473023882572
   - 114.76473023882572
   - 114.76473023882572
+  - 114.76473023882572
   what: learn-eva
-  when: 2026-08-23 15:35:57.059103852 Z
+  when: 2026-08-24 02:53:34.020152707 Z
 - _id: 1108432
   _job: 28880449411
   _time: 2026-07-07 16:03:53.193694149 Z
@@ -288798,7 +288799,7 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
   events_were_scanned: 13721768030
   issues_were_scanned: 982
@@ -291716,7 +291717,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 13719674401
   issues_were_scanned: 0
@@ -291750,13 +291751,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 5308
+  assignees_were_scanned: 5512
   earliest_issue_was_found: 1
-  events_were_scanned: 18654711557
+  events_were_scanned: 18665484509
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6182
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7482
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -538504,10 +538505,6 @@
   comments: 2
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7463,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (32) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+6190](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 32
   href: https://github.com/objectionary/eo/issues/7463/#issuecomment-5389076833
   is_human: 1
@@ -538529,10 +538526,6 @@
   comments: 2
   details: It's time to reward @morphqdd for the code contributed in objectionary/eo#7465,
     the reward amount is 12.
-  greeting: 'Thanks for the contribution! You''ve earned +12 points for this: +16
-    as a basis; -4 for too few (26) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
-    them coming. Your running score is [+6202](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 26
   href: https://github.com/objectionary/eo/issues/7465/#issuecomment-5389076935
   is_human: 1
@@ -538574,8 +538567,10 @@
     them coming. Your running score is [+1062](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 296
+  href: https://github.com/objectionary/eo/issues/7328/#issuecomment-5390146928
   is_human: 1
   issue: 7328
+  receipt: receipt-#88241
   repository: 73056727
   review_comments: 0
   seconds: 177060
@@ -538597,8 +538592,10 @@
     them coming. Your running score is [+1074](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 296
+  href: https://github.com/objectionary/eo/issues/7331/#issuecomment-5390147051
   is_human: 1
   issue: 7331
+  receipt: receipt-#88242
   repository: 73056727
   review_comments: 0
   seconds: 176128
@@ -538620,8 +538617,10 @@
     them coming. Your running score is [+6130](https://www.eolang.org/zerocracy/objectionary-vitals.html);
     don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 35
+  href: https://github.com/objectionary/eo/issues/7467/#issuecomment-5390147182
   is_human: 1
   issue: 7467
+  receipt: receipt-#88243
   repository: 73056727
   review_comments: 0
   seconds: 2913
@@ -538630,3 +538629,9 @@
   where: github
   who: 125282851
   why: Contributed code in objectionary/eo#7467
+- _id: 1122457
+  _job: 32686735871
+  _time: 2026-08-24 04:08:42.109552261 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  what: dimensions-of-terrain
+  when: 2026-08-24 04:08:42.115987801 Z
