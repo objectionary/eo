@@ -36,7 +36,7 @@ import java.util.List;
  * <p>This iteration handles identifier and star heads with optional
  * dotted chains and identifier / INT horizontal args. Paren groups,
  * string / float / hex / bytes literals, and inline bindings attach in
- * subsequent iterations. *
+ * subsequent iterations.</p>
  *
  * @since 0.1
  */

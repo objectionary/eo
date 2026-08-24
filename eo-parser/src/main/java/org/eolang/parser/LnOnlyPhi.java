@@ -54,7 +54,7 @@ import java.util.List;
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
  * ROOT horizontal args. R-3.10.6 LHS restrictions are honoured by
  * scanner exclusion (formations and reversed-with-hargs LHS are not
- * accepted as inputs because their classifiers fire first). *
+ * accepted as inputs because their classifiers fire first).</p>
  *
  * <p>The head of a line ends at the first space that sits at paren depth 0
  * and outside any string literal, which is what {@code topLevelSpace} finds,

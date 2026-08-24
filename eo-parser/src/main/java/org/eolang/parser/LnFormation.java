@@ -26,7 +26,7 @@ import java.util.List;
  * indent (Step C/D) or replaces the current top (Step B), with
  * {@link Kind#BARE_FORMATION} and {@link Openness#OPEN}. The atom flag
  * is set if the suffix carries {@code /sig}; the named flag is set when
- * the suffix is present. *
+ * the suffix is present.</p>
  *
  * @since 0.1
  */

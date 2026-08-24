@@ -17,7 +17,7 @@ import java.util.List;
  *
  * <p>A leading {@code Q} in any part is promoted to {@code Φ} in the
  * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
- * emission time. *
+ * emission time.</p>
  *
  * @since 0.1
  */
