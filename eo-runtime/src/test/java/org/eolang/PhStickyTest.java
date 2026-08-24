@@ -35,6 +35,33 @@ final class PhStickyTest {
     }
 
     @Test
+    void computesWithoutACache() {
+        MatcherAssert.assertThat(
+            "a decorator asked to keep nothing must still compute its answer, but it didnt",
+            new Dataized(
+                new PhApplication(
+                    new PhSticky(PhStickyTest.doubler(new AtomicInteger()), 0),
+                    new Bind(0, new Data.ToPhi(21.0d))
+                )
+            ).asNumber(),
+            Matchers.equalTo(42.0d)
+        );
+    }
+
+    @Test
+    void recomputesWithoutACache() {
+        final AtomicInteger count = new AtomicInteger();
+        final Phi twice = new PhSticky(PhStickyTest.doubler(count), 0);
+        new Dataized(new PhApplication(twice, new Bind(0, new Data.ToPhi(21.0d)))).take();
+        new Dataized(new PhApplication(twice, new Bind(0, new Data.ToPhi(21.0d)))).take();
+        MatcherAssert.assertThat(
+            "a decorator that keeps nothing must recompute the same input, but it didnt",
+            count.get(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void dataizesBodyOnceForEqualInputs() {
         final AtomicInteger count = new AtomicInteger();
         final Phi twice = new PhSticky(PhStickyTest.doubler(count));

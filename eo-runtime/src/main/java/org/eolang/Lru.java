@@ -19,6 +19,10 @@ import java.util.Set;
  * {@link java.util.Collections#synchronizedMap(Map)} when several
  * threads share it.</p>
  *
+ * <p>A capacity below one keeps nothing: every {@code put} is accepted
+ * and forgotten, so a caller that asks for no cache gets no cache rather
+ * than a failure.</p>
+ *
  * @since 0.75
  */
 final class Lru implements Map<String, byte[]> {
@@ -69,12 +73,18 @@ final class Lru implements Map<String, byte[]> {
 
     @Override
     public byte[] put(final String key, final byte[] value) {
-        if (this.origin.size() >= this.capacity && !this.origin.containsKey(key)) {
-            final Iterator<String> eldest = this.origin.keySet().iterator();
-            eldest.next();
-            eldest.remove();
+        final byte[] before;
+        if (this.capacity < 1) {
+            before = this.origin.remove(key);
+        } else {
+            if (this.origin.size() >= this.capacity && !this.origin.containsKey(key)) {
+                final Iterator<String> eldest = this.origin.keySet().iterator();
+                eldest.next();
+                eldest.remove();
+            }
+            before = this.origin.put(key, value);
         }
-        return this.origin.put(key, value);
+        return before;
     }
 
     @Override
