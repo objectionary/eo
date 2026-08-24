@@ -35,6 +35,35 @@ final class PhSafeTest {
     }
 
     @Test
+    void keepsProtectingANormalizedObject() {
+        MatcherAssert.assertThat(
+            "a failure of a normalized object must still name its location, but it didnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public Phi normalized() {
+                            return new PhDefault() {
+                                @Override
+                                public byte[] delta() {
+                                    throw new IllegalArgumentException("boom");
+                                }
+                            };
+                        }
+                    },
+                    "example.eo", 3, 5
+                ).normalized().delta(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("at example.eo:3:5"),
+                Matchers.containsString("boom")
+            )
+        );
+    }
+
+    @Test
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
             "wraps a runtime exception into ExFailure with location and cause",
