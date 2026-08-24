@@ -100,7 +100,10 @@
       [^ rest] >> stepped
         if. > @
           rest.length.eq 0
-          picked ^.accum ^.prefix
+          if.
+            ^.prefix.length.eq 0
+            ^.accum
+            picked ^.accum ^.prefix
           if.
             and.
               entry.is-directory false
@@ -441,6 +444,15 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
+    eq. > @
+      length.
+        d.as-dir.walk "*"
+      0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @
       seq *
@@ -520,6 +532,28 @@
         length.
           d.as-dir.walk "**/*.txt"
         2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**"
+        7
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -692,6 +726,22 @@
         ",".joined
           d.as-dir.walk "[.txt"
         d.resolved "[.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "*"
+        2
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
