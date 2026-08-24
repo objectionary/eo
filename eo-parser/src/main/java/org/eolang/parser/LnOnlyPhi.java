@@ -79,7 +79,6 @@ final class LnOnlyPhi implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final int phi = Eo.topLevelGreaterBracketIndex(body);
         final String lhs;
@@ -127,6 +126,7 @@ final class LnOnlyPhi implements Line {
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
+        Blanks.enterAfterMeta(this.span, globals, emit);
         Comments.seal(globals, emit, this.span);
         final Tokens tokens = this.slot(
             stack, suffix,

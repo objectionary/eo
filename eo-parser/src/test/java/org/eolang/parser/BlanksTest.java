@@ -17,7 +17,7 @@ import org.xembly.Xembler;
 final class BlanksTest {
 
     @Test
-    void reportsMissingBlankBeforeTestAttributeThroughGlobals() {
+    void reportsMissingBlankBeforeAttributeThroughGlobals() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
@@ -32,7 +32,7 @@ final class BlanksTest {
     }
 
     @Test
-    void staysSilentAboutTestAttributeBlankWhenGlobalsHasPendingBlanks() {
+    void staysSilentAboutAttributeBlankWhenGlobalsHasPendingBlanks() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
