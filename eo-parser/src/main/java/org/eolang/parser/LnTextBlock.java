@@ -70,12 +70,7 @@ final class LnTextBlock implements Line {
                 String.join(String.valueOf('\n'), globals.tbody())
             );
         } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                this.span.line(), this.span.indent(),
-                "invalid unicode or octal escape in text block"
-            );
-            error.initCause(ex);
-            throw error;
+            throw new ParseError(this.span.line(), this.span.indent(), ex.getMessage());
         }
         this.transition(stack, suffix);
         this.emit(emit, suffix, chain, joined);

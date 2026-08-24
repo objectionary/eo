@@ -304,11 +304,7 @@ final class Emissions {
                 value.raw().substring(1, value.raw().length() - 1)
             );
         } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
-            );
-            error.initCause(ex);
-            throw error;
+            throw new ParseError(line, value.pos(), ex.getMessage());
         }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
