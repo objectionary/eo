@@ -19,10 +19,10 @@ import org.xembly.Directives;
  *
  * @since 0.69.0
  */
-final class Bottom implements Type {
+final class Terminator implements Type {
 
     @Override
     public Directives directives() {
-        return new Directives().add("bottom").up();
+        return new Directives().add("terminator").up();
     }
 }

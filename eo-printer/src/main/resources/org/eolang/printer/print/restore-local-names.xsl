@@ -196,6 +196,21 @@
     <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and o and not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <!--
+  Whether a reference in the auto-named binding's owner reaches it through a
+  method dispatch "ξ.&lt;name&gt;.&lt;seg&gt;" — its base carries the binding's name
+  followed by a further segment. "inline-cactoos" refuses to inline such a
+  reference (its receiver is not a bare cactus name) and keeps the binding
+  for "merge-monikers" instead (see "eo:dispatched" there, #6015); this sheet
+  must agree, or the binding survives with its readable "@local" handle
+  dropped and "to-eo-tree" prints the bare cactus reference with no
+  declaration to back it (#7300).
+  -->
+  <xsl:function name="eo:dispatched" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string?"/>
+    <xsl:sequence select="exists($target/../o[contains(@base, concat($name, '.')) and not(. is $target)])"/>
+  </xsl:function>
+  <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
   R-3.10.12) that is referenced more than once. "const-to-dataized" wraps such
   a const in a `.as-bytes` over `Φ.dataized` node carrying the obfuscated
@@ -288,7 +303,7 @@
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

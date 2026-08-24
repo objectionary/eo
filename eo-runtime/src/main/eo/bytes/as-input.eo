@@ -28,40 +28,40 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-input
+[^] > as-input
   ^ > b
-  [size] > read
-    if. > @
-      size.is-finite.not.or
-        size.is-integer.not.or
-          0.gt size
-      T
-        "Can't read a non-integer, non-finite, or negative byte count"
-      @.
-        read.
-          input-block ^.b --
-          size
-    [data buffer] > input-block
+  [^ size] > read
+    @. > @
+      read.
+        input-block ^.b --
+        size
+    [^ data buffer] > input-block
       buffer > @
-      [size] > read
+      [^ size] > read
         if. > @
-          available.eq 0
-          ^.^.input-block -- --
-          ^.^.input-block
-            as-bytes.
-              ^.data.slice
-                if. >> next!
-                  gt.
-                    number available
-                    size >> requested!
-                  requested
-                  available
-                minus.
-                  number
-                    ^.data.size >> available!
-                  number next
-            as-bytes.
-              ^.data.slice 0 next
+          size.is-finite.not.or
+            size.is-integer.not.or
+              0.gt size
+          T
+            "Can't read a non-integer, non-finite, or negative byte count"
+          if.
+            available.eq 0
+            ^.^.input-block -- --
+            ^.^.input-block
+              as-bytes.
+                ^.data.slice
+                  if. >> next!
+                    gt.
+                      number available
+                      size >> requested!
+                    requested
+                    available
+                  minus.
+                    number
+                      ^.data.size >> available!
+                    number next
+              as-bytes.
+                ^.data.slice 0 next
 
   ++> can-make-an-input-from-bytes-and-read-it
     and. > @
@@ -81,6 +81,26 @@
 
   01-02-03.as-input.read 0.5 --> stops-on-a-fractional-byte-count-below-available
 
+  read. --> stops-on-a-fractional-byte-count-in-a-chained-read
+    01-02-03-04-05-06.as-input
+    3.read
+    1.5
+
   01-02-03.as-input.read nan --> stops-on-a-nan-byte-count
 
+  read. --> stops-on-a-nan-byte-count-in-a-chained-read
+    01-02-03-04-05-06.as-input
+    3.read
+    nan
+
+  read. --> stops-on-a-negative-byte-count-in-a-chained-read
+    01-02-03-04-05-06.as-input
+    3.read
+    -5
+
   01-02-03.as-input.read pinf --> stops-on-an-infinite-byte-count
+
+  read. --> stops-on-an-infinite-byte-count-in-a-chained-read
+    01-02-03-04-05-06.as-input
+    3.read
+    pinf

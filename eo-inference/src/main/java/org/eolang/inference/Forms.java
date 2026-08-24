@@ -48,7 +48,7 @@ final class Forms {
     Forms(final XML links) {
         this(
             new HashSet<>(links.xpath("/links/type[data]/@id")),
-            new HashSet<>(links.xpath("/links/type[bottom]/@id")),
+            new HashSet<>(links.xpath("/links/type[terminator]/@id")),
             new HashSet<>(links.xpath("/links/type[var]/@id"))
         );
     }
@@ -56,16 +56,16 @@ final class Forms {
     /**
      * Ctor.
      * @param data The objects that are data
-     * @param bottoms The objects that terminate
+     * @param terminators The objects that terminate
      * @param voids The objects that are voids
      */
     Forms(
         final Collection<String> data,
-        final Collection<String> bottoms,
+        final Collection<String> terminators,
         final Collection<String> voids
     ) {
         this.ground = data;
-        this.dead = bottoms;
+        this.dead = terminators;
         this.free = voids;
     }
 
@@ -80,7 +80,7 @@ final class Forms {
         if (this.ground.contains(object)) {
             found = "data";
         } else if (this.dead.contains(object)) {
-            found = "bottom";
+            found = "terminator";
         } else {
             found = object;
         }
@@ -97,7 +97,7 @@ final class Forms {
         if (this.ground.contains(object)) {
             found = new Data();
         } else if (this.dead.contains(object)) {
-            found = new Bottom();
+            found = new Terminator();
         } else if (this.free.contains(object)) {
             found = new Var(object);
         } else {

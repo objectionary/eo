@@ -401,9 +401,9 @@ final class EoTest {
     }
 
     @Test
-    void parsesBottomTermInsideFormation() {
+    void parsesTerminatorTermInsideFormation() {
         MatcherAssert.assertThat(
-            "a bare T term inside a formation must emit the bottom object as @base='⊥'",
+            "a bare T term inside a formation must emit the terminator as @base='⊥'",
             EoTest.render("[] > main", "  T > x"),
             XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@name='x' and @base='⊥']")
         );

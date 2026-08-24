@@ -2,21 +2,20 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-out:
-  - ".*8 is the 6th number.*"
-file: snippets/self-fibo.eo
-args: ["snippets.self-fibo"]
-eo: |
+sheets: []
+asserts:
+  - /object[not(errors)]
+input: |
   +package snippets
 
   [] > self-fibo
-    [n] >>
+    [n] >> fibo
       if. > @
         n.lt 2
         n
         plus.
-          % (n.minus 1)
-          % (n.minus 2)
+          fibo (n.minus 1)
+          fibo (n.minus 2)
     | 6 > num
     stdout > @
       "%d is the %dth number\n".printf

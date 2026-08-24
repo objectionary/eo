@@ -9,7 +9,7 @@ asserts:
   # the file-local handle keeps its "@local" marker and gets a cactus name
   - //o[@local='blk' and @name]
   # only the handle's own body reference is rewritten to the cactus name
-  - /object[count(//o[@base=//o[@local='blk']/@name])=1]
+  - /object[count(//o[@base=concat('.', //o[@local='blk']/@name)])=1]
   # the sibling formation's own "> blk" reference is NOT hijacked by the handle
   - //o[@base='blk']
 input: |

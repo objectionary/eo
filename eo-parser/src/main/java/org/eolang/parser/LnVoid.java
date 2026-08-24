@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * <ul>
  * <li>{@code /type} — the void's own type: a concrete forma or a
  * generic type variable ({@code A}–{@code F}), with an optional
- * trailing {@code ?} marking a maybe-bottom value. Emits
+ * trailing {@code ?} marking a maybe-terminator value. Emits
  * {@code @type}.</li>
  * <li>{@code /{type …}} — the void is a callback formation;
  * the brace list gives the types of its void parameters (the arguments

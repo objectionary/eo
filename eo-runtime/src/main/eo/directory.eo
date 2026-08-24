@@ -14,11 +14,12 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[file] > directory
+[^ file] > directory
   file > @
   [] > listed /Q.tuple
-  [dir time process random] > retried
-    [index] >> attempted
+    ? > ^
+  [^ dir time process random] > retried
+    [^ index] >> attempted
       if. > @
         descriptor.eq -1
         if.
@@ -43,7 +44,7 @@
             *
       ^.candidate index > path!
     | 0 > @
-    [index] > candidate
+    [^ index] > candidate
       path.separator.joined > @
         * ^.dir name
       "%d-%d-%d-%f".printf > name!
@@ -52,7 +53,7 @@
           ^.process
           index
           ^.random
-    code. > [descriptor] > closed
+    code. > [^ descriptor] > closed
       os.is-windows.if
         win32 *1
           "_close"
@@ -60,7 +61,7 @@
         posix *1
           "close"
           descriptor
-    code. > [name] > opened
+    code. > [^ name] > opened
       os.is-windows.if
         win32 *1
           "_open"
@@ -76,13 +77,13 @@
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.mode
-  [] > tmpfile
+  [^] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
           * ^.file
-    ^.^.retried > [] > touch
+    ^.^.retried > [^] > touch
       ^.^.path
       clock.as-number
       code.
@@ -94,12 +95,15 @@
             "getpid"
             *
       clock.as-number.random
-  [glob] > walk
-    [accum prefix dir] >> walked
-      [rest] >> stepped
+  [^ glob] > walk
+    [^ accum prefix dir] >> walked
+      [^ rest] >> stepped
         if. > @
           rest.length.eq 0
-          picked ^.accum ^.prefix
+          if.
+            ^.prefix.length.eq 0
+            ^.accum
+            picked ^.accum ^.prefix
           if.
             and.
               entry.is-directory false
@@ -121,18 +125,18 @@
       *
       ""
       ^
-    if. > [accum rel] >> picked
+    if. > [^ accum rel] >> picked
       matched rel
       accum.with
         Q.file (base.resolved rel).as-bytes
       accum
     ^.as-path >> base
-    if. > [char] >> escaped
+    if. > [^ char] >> escaped
       ".+()|^$[]\\".contains char
       "".joined
         * "\\" char
       char
-    [text] >> matched
+    [^ text] >> matched
       as-bool. > @
         exists.
           next.
@@ -146,33 +150,33 @@
                           "/^"
                           translated 0 "" false false
                           "$/"
-                  T > [message] >>
-                    "Can't parse '%s' as a glob pattern, %s".printf
-                      * ^.glob message
+                T > [^ message] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * ^.glob message
               text
     "".joined >> single
       *
         "[^"
         escaped path.separator >> literal
         "]"
-    if. > [char] >> classified
+    if. > [^ char] >> classified
       "\\[&".contains char
       "".joined
         * "\\" char
       char
-    if. > [from] >> closes
+    if. > [^ from] >> closes
       from.gte ^.glob.length
       false
       if.
         eq.
           ^.glob.at
             from
-            "" > [absent]
+            "" > [^ absent]
           "]"
         true
         ^.closes
           from.plus 1
-    [index acc braced classed] >> translated
+    [^ index acc braced classed] >> translated
       if. > @
         index.gte ^.glob.length
         acc
@@ -190,10 +194,12 @@
                 false
                 braced
           within
-      if. > advance
-        double.or negated
-        2
-        1
+      slashed.if > advance
+        3
+        if.
+          double.or negated
+          2
+          1
       if. > alternated
         char.eq "{"
         "("
@@ -213,19 +219,25 @@
           eq.
             ^.glob.at
               index.plus 1
-              "" > [message]
+              "" > [^ message]
             "*"
       opening.and > negated
         eq.
           ^.glob.at
             index.plus 1
-            "" > [missing]
+            "" > [^ missing]
           "!"
       classed.not.and > opening
         and.
           char.eq "["
           closes
             index.plus 1
+      double.and > slashed
+        eq.
+          ^.glob.at
+            index.plus 2
+            "" > [^ space]
+          "/"
       classed.if > token
         if.
           char.eq "]"
@@ -233,19 +245,22 @@
           classified char
         opening.if
           negated.if "[^" "["
-          double.if
-            ".*"
-            if.
-              char.eq "*"
-              "".joined
-                * single "*"
+          slashed.if
+            "".joined
+              * "(?:.*" literal ")?"
+            double.if
+              ".*"
               if.
-                char.eq "?"
-                single
+                char.eq "*"
+                "".joined
+                  * single "*"
                 if.
-                  char.eq "/"
-                  literal
-                  alternated
+                  char.eq "?"
+                  single
+                  if.
+                    char.eq "/"
+                    literal
+                    alternated
       opening.if > within
         true
         if.
@@ -429,6 +444,15 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
+    eq. > @
+      length.
+        d.as-dir.walk "*"
+      0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @
       seq *
@@ -464,6 +488,72 @@
         length.
           d.as-dir.walk "**/*.txt"
         2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-across-nested-directories
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "**/*.txt"
+        ",".joined
+          *
+            d.resolved "foo/bar/test.txt"
+            d.resolved "x/y/z/a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-including-direct-children
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "root.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/nested.txt"
+      eq.
+        length.
+          d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**"
+        7
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -636,6 +726,22 @@
         ",".joined
           d.as-dir.walk "[.txt"
         d.resolved "[.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "*"
+        2
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

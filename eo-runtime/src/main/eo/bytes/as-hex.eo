@@ -8,30 +8,31 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > as-hex
+[^] > as-hex
   ^ > b
-  if. > [h] >> hex-digit
+  if. > [^ h] >> hex-digit
     h.lt 10
     as-char.
       h.plus 48
     as-char.
       h.plus 55
-  [index acc] >> rec-hex
+  [^ index acc] >> rec-hex
     if. > @
       index.eq ^.b.size
       acc
       ^.rec-hex
         as-number.
           index.plus 1
-        if.
-          index.eq 0
-          pair
-          concat.
-            acc.concat "-".as-bytes
-            pair
+        next
     as-ascii. > bval
       string
         ^.b.slice index 1
+    if. > next!
+      index.eq 0
+      pair
+      concat.
+        acc.concat "-".as-bytes
+        pair
     concat. > pair
       hex-digit
         floor.
@@ -65,3 +66,8 @@
   eq. ++> can-write-empty-bytes
     ""
     string --.as-hex
+
+  eq. ++> can-write-a-64-byte-input-promptly
+    "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00"
+    string
+      00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00.as-hex

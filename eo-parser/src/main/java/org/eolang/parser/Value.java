@@ -21,14 +21,13 @@ import java.util.Set;
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.DataClass")
 final class Value {
 
     /**
      * Kinds of value that may carry a {@code .method} chain behind them.
      */
     private static final Set<Kind> CHAINABLE = Set.of(
-        Kind.IDENTIFIER, Kind.ROOT, Kind.SELF, Kind.GROUP,
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP,
         Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 
@@ -195,10 +194,56 @@ final class Value {
         return Value.CHAINABLE.contains(this.kind);
     }
 
-    // @todo #7016:30min Move the remaining kind()/raw()-driven decisions out
-    //  of Emissions, LnMethod, LnPipe, LnCompactTuple, LnApplication and
-    //  LnOnlyPhi onto Value, then drop the @SuppressWarnings("PMD.DataClass")
-    //  above along with the accessors it no longer needs.
+    /**
+     * The {@code I} identity object (§3.16)?
+     * @return True for {@link Kind#IDENTITY}
+     */
+    boolean identity() {
+        return this.kind == Kind.IDENTITY;
+    }
+
+    /**
+     * A paren group — {@code (expr)} (§3.6)?
+     * @return True for {@link Kind#GROUP}
+     */
+    boolean group() {
+        return this.kind == Kind.GROUP;
+    }
+
+    /**
+     * Does this head open a formation body?
+     * @return True for identity, or a group wrapping inline {@code > [...]}
+     */
+    boolean opensFormationBody() {
+        return this.identity()
+            || this.group() && this.wrapsInlinePhi();
+    }
+
+    private boolean wrapsInlinePhi() {
+        final String inner = this.raw.substring(1, this.raw.length() - 1);
+        boolean found = false;
+        int depth = 0;
+        int idx = 0;
+        while (idx < inner.length() - 2 && !found) {
+            final char glyph = inner.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(inner, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == '>'
+                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
+                found = true;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
+    // @todo #7281:30min Move the remaining kind()/raw()-driven decisions out
+    //  of Emissions and LnOnlyPhi onto Value, then drop the kind()/raw()
+    //  accessors it no longer needs.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
@@ -242,10 +287,10 @@ final class Value {
         ROOT,
 
         /**
-         * {@code T} — the bottom term of 𝜑-calculus (§9.3). A value:
-         * it may carry arguments, which are the cause of the bottom,
+         * {@code T} — the terminator term of 𝜑-calculus (§9.3). A value:
+         * it may carry arguments, which are the cause of the terminator,
          * as in {@code T "why it failed"};
-         * {@link Emissions} maps it to a bottom-based object.
+         * {@link Emissions} maps it to a terminator object.
          */
         TERM,
 
@@ -278,14 +323,6 @@ final class Value {
          * §3.13.1. Single-line form only in this iteration; multi-line
          * continuation lands in a later round.
          */
-        BYTES,
-
-        /**
-         * {@code SELF} — the {@code %} self-reference (§3.15). Sugar for
-         * the auto-name of the enclosing anonymous ({@code >>}) formation;
-         * emitted as a base-less {@code <o self=''>} marker that the
-         * {@code resolve-self} reshape replaces with that name.
-         */
-        SELF
+        BYTES
     }
 }

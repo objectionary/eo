@@ -12,6 +12,7 @@ import org.cactoos.Scalar;
 import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -108,6 +109,23 @@ final class CopiedAttrsTest {
                 ).spliterator(), false
             ).collect(Collectors.toList()),
             Matchers.everyItem(Matchers.is(true))
+        );
+    }
+
+    @Test
+    void doesNotShareOrderWithOriginAfterCopy() {
+        final PhDefault origin = new PhDefault();
+        origin.add("x", new AtVoid("x"));
+        final Phi copy = origin.copy();
+        origin.add("y", new AtVoid("y"));
+        MatcherAssert.assertThat(
+            "a copy must not see an attribute the origin registered later",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> copy.put(1, new Data.ToPhi(5.0)),
+                "the copy must reject a put past the attribute it had when copied"
+            ).getMessage(),
+            Matchers.containsString("has just 1 attribute")
         );
     }
 

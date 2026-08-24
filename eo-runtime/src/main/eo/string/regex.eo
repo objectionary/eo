@@ -23,18 +23,19 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > regex
+[^] > regex
   compile > @
   [] > compile /Q.string.regex.pattern
+    ? > ^
     ? > cant-compile /{Q.string}
   ^ > expression
-  [serialized] > pattern
+  [^ serialized] > pattern
     ^.pattern serialized > compiled
-    [txt] > match
-      [position start from to groups] > matched
+    [^ txt] > match
+      [^ position start from to groups] > matched
         groups.length > count
         start.gte 0 > exists
-        ^.groups.at index > [index] > group
+        ^.groups.at index > [^ index] > group
         $ > matched
         exists.if > next
           if.
@@ -56,15 +57,16 @@
           T
             "Matched block does not exist, can't get text"
       [] > matched-from-index /Q.string.regex.pattern.match.matched
+        ? > ^
         ? > position /Q.number
         ? > start /Q.number
-      [] > missing
+      [^] > missing
         T > count
           "Matched block does not exist, can't get count"
         start.gte 0 > exists
         T > from
           "Matched block does not exist, can't get 'from' position"
-        T > [index] > group
+        T > [^ index] > group
           "Matched block does not exist, can't get group"
         T > groups
           "Matched block does not exist, can't get groups"
@@ -78,7 +80,7 @@
           "Matched block does not exist, can't get 'to' position"
       matched. > next
         matched-from-index 1 0
-    [txt] > matches
+    [^ txt] > matches
       found.exists.and > @
         and.
           found.to.eq txt.length
@@ -97,8 +99,8 @@
         "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.expression
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
         * group1 group2
-      ^.commented.regex.compile ^.retry-quoted > [message] > retry-commented
-      ^.quoted.regex.compile > [message] > retry-quoted
+      ^.commented.regex.compile ^.retry-quoted > [^ message] > retry-commented
+      ^.quoted.regex.compile > [^ message] > retry-quoted
 
   eq. ++> can-advance-after-a-zero-width-match
     1
@@ -179,12 +181,12 @@
   eq. ++> can-recover-from-a-pattern-with-a-missing-slash
     "no-slash"
     "(.)+".regex.compile
-      "no-slash" > [message]
+      "no-slash" > [^ message]
 
   eq. ++> can-recover-from-invalid-regex-syntax
     "recovered"
     "/[a-z/".regex.compile
-      "recovered" > [message]
+      "recovered" > [^ message]
 
   ++> can-report-the-border-indexes-of-a-match
     and. > @

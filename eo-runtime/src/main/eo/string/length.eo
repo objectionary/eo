@@ -17,13 +17,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > length
+[^] > length
   if. > @
     eq.
       text.as-bytes.size >> size!
       0
     0
-    [index accum] >> reclen
+    [^ index accum] >> reclen
       if. > @
         index.eq size
         accum
@@ -116,7 +116,7 @@
       b2cont.and second3 > threevalid
       leadc0c1.not.and b1cont > twovalid
     | 0 0
-  if. > [idx csize valid accum] >> step
+  if. > [^ idx csize valid accum] >> step
     gt.
       idx.plus csize
       size

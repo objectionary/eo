@@ -2,7 +2,7 @@
 # Here's how you can use it:
 # ```
 # while > last
-#   i.lt 5 > [i]
+#   i.lt 5 > [^ i]
 #   [i]
 #     "Iteration %d\n".printf > @
 #       * i
@@ -29,11 +29,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[condition body] > while
+[^ condition body] > while
   if. > @
     as-bool.
       condition 0
-    [index] >> loop
+    [^ index] >> loop
       if. > @
         as-bool.
           ^.condition
@@ -51,10 +51,10 @@
     0.eq > @
       malloc.for
         42
-        [m]
+        [^ m]
           while > @
-            i.eq 0 > [i]
-            ^.m.put i > [i] >>
+            i.eq 0 > [^ i]
+            ^.m.put i > [^ i] >>
 
   ++> can-iterate-a-tuple-with-an-external-iterator
     data.eq array.length > @
@@ -65,13 +65,13 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             while > @
-              ^.^.^.max.gt ^.iter > [i] >>
-              seq * > [i] >>
+              ^.^.^.max.gt ^.iter > [^ i] >>
+              seq * > [^ i] >>
                 ^.^.acc.put
                   ^.^.acc.as-number.plus
                     ^.^.^.array.at ^.iter
@@ -88,18 +88,18 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             if. > @
               ^.^.max.eq 0
               ^.acc.put
                 ^.acc.as-number.plus
                   ^.^.array.at 0
               while
-                ^.^.^.max.gt ^.iter > [i] >>
-                seq * > [i] >>
+                ^.^.^.max.gt ^.iter > [^ i] >>
+                seq * > [^ i] >>
                   ^.^.acc.put
                     ^.^.acc.as-number.plus (^.^.^.array.at i)
                   ^.iter.put
@@ -114,13 +114,13 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             seq * > @
               while
-                if. > [i] >>
+                if. > [^ i] >>
                   ^.^.^.max.gt ^.iter
                   seq *
                     ^.^.acc.put
@@ -128,7 +128,7 @@
                     ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
-                true > [i]
+                true > [^ i]
               ^.acc
     array.length > max
 
@@ -137,13 +137,13 @@
     * 1 > array
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             seq * > @
               while
-                if. > [i] >>
+                if. > [^ i] >>
                   ^.^.^.max.gt ^.iter
                   seq *
                     ^.^.acc.put
@@ -151,7 +151,7 @@
                     ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
-                true > [i]
+                true > [^ i]
               ^.acc
     array.length > max
 
@@ -159,39 +159,39 @@
     eq. > @
       malloc.for
         true
-        [m]
+        [^ m]
           while > @
-            ^.m > [i] >>
-            ^.m.put false > [i] >>
+            ^.m > [^ i] >>
+            ^.m.put false > [^ i] >>
       false
 
   ++> can-loop-over-a-simple-iteration
     eq. > @
       malloc.for
         0
-        [m]
+        [^ m]
           while > @
-            i.lt 10 > [i]
-            ^.m.put i > [i] >>
+            i.lt 10 > [^ i]
+            ^.m.put i > [^ i] >>
       9
 
   not. ++> can-loop-when-the-condition-is-false-first
     while
-      false > [i]
-      true > [i]
+      false > [^ i]
+      true > [^ i]
 
   ++> can-return-the-last-dataized-object
     eq. > @
       malloc.for
         0
-        [m]
+        [^ m]
           while > @
-            2.gt ^.m > [i] >>
-            ^.m.put > [i] >>
+            2.gt ^.m > [^ i] >>
+            ^.m.put > [^ i] >>
               ^.m.as-number.plus 1
       3
 
   not. ++> can-return-the-last-dataized-object-with-a-false-condition
     while
-      1.gt 2 > [i]
-      true > [i]
+      1.gt 2 > [^ i]
+      true > [^ i]

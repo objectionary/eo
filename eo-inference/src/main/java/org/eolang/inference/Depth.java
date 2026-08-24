@@ -19,7 +19,7 @@ import java.util.Map;
  * How much of a program the tables turned out to say.
  *
  * <p>This reads the tables back and puts every object of the program on the
- * ladder {@link Rung} describes. It is a measurement of ourselves rather than a
+ * ladder {@link Answers} describes. It is a measurement of ourselves rather than a
  * fact about the program, so it writes nothing: what comes out is meant for the
  * log of the goal, where two builds of the same sources can be compared by
  * anybody, and not for a document beside the tables.</p>
@@ -56,7 +56,7 @@ public final class Depth {
     public Ladder ladder() throws IOException {
         final XML given = new XMLDocument(this.tables.resolve("provides.xml"));
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
-        final Rung rung = new Rung(
+        final Answers answers = new Answers(
             new Ungrouped(given, Collections.emptyMap()).rows(),
             new HashSet<>(given.xpath("//attr[@void='true']/@type")),
             new HashSet<>(pairs.certain()),
@@ -75,7 +75,8 @@ public final class Depth {
             counts.put(name, 0);
         }
         for (final String locator : new Xmirs(this.world).locators()) {
-            final String name = names.get(rung.reached(locator, filled.getOrDefault(locator, 0)));
+            final Answer answer = answers.of(locator, filled.getOrDefault(locator, 0));
+            final String name = names.get(answer.rung());
             counts.put(name, counts.get(name) + 1);
         }
         return new Ladder(counts);

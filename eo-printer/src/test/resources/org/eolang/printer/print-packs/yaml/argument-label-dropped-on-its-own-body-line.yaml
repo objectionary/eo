@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An object bound by an inline argument label (".baz:x > z") keeps "@as"
+# on its own XMIR node alongside the "@name" that binds it, since the
+# reference using that label ("z:x" inside the application) is a separate
+# node. The TAIL template printed "@as" unconditionally, so "z"'s own
+# body line kept the label it has no use for ("then.baz:x > z"), which a
+# body line may not carry ("binding allowed only in argument position",
+# #7453).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    if. > first
+      cond
+      then
+      .baz:x > z
+
+printed: |
+  [] > main
+    cond.if > first
+      z:x
+    then.baz > z

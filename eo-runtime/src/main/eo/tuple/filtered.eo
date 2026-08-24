@@ -11,9 +11,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[func] > filtered
+[^ func] > filtered
   ^.filteredi > @
-    ^.func item > [item index] >>
+    ^.func item > [^ item index] >>
 
   eq. ++> can-filter-a-list
     filtered.
@@ -23,7 +23,7 @@
         4
         2
         5
-      v.gt 2 > [v]
+      v.gt 2 > [^ v]
     *
       3
       4
@@ -35,5 +35,5 @@
         true
         false
         true
-      v.not > [v]
+      v.not > [^ v]
     * false
