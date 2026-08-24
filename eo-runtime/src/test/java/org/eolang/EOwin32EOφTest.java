@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import com.sun.jna.Pointer;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
@@ -156,15 +157,17 @@ final class EOwin32EOφTest {
         }
 
         private long createsSocket() {
-            return Winsock.INSTANCE.socket(
-                Winsock.AF_INET,
-                Winsock.SOCK_STREAM,
-                Winsock.IPPROTO_TCP
+            return Pointer.nativeValue(
+                Winsock.INSTANCE.socket(
+                    Winsock.AF_INET,
+                    Winsock.SOCK_STREAM,
+                    Winsock.IPPROTO_TCP
+                )
             );
         }
 
         private int closesSocket(final long socket) {
-            return Winsock.INSTANCE.closesocket(socket);
+            return Winsock.INSTANCE.closesocket(new Pointer(socket));
         }
 
         private int startupsWinsock() {
