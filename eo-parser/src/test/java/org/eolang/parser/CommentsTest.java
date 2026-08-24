@@ -13,10 +13,10 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Test case for {@link Globals#seal(Emit, Span)}.
+ * Test case for {@link Comments}.
  * @since 0.1
  */
-final class GlobalsSealTest {
+final class CommentsTest {
 
     @Test
     void flushesTopBlockIntoComments() {
@@ -24,10 +24,10 @@ final class GlobalsSealTest {
         globals.addComment(new Span("# hello", 1));
         globals.blank();
         final Emit emit = new Emit();
-        globals.seal(emit, new Span("+package foo", 3));
+        Comments.seal(globals, emit, new Span("+package foo", 3));
         MatcherAssert.assertThat(
             "the top comment block must flush into /object/comments when the header seals",
-            GlobalsSealTest.render(emit),
+            CommentsTest.render(emit),
             XhtmlMatchers.hasXPath("/object/comments/comment[contains(text(),'hello')]")
         );
     }
@@ -39,10 +39,10 @@ final class GlobalsSealTest {
         globals.addComment(new Span("# second", 2));
         globals.blank();
         final Emit emit = new Emit();
-        globals.seal(emit, new Span("+package foo", 4));
+        Comments.seal(globals, emit, new Span("+package foo", 4));
         MatcherAssert.assertThat(
             "a multi-line top comment block must report the line of its first span, not its last",
-            GlobalsSealTest.render(emit),
+            CommentsTest.render(emit),
             XhtmlMatchers.hasXPath("/object/comments/comment[@line='1']")
         );
     }
@@ -52,7 +52,7 @@ final class GlobalsSealTest {
         final Globals globals = new Globals();
         globals.addComment(new Span("# x", 1));
         globals.blank();
-        globals.seal(new Emit(), new Span("[] > foo", 3));
+        Comments.seal(globals, new Emit(), new Span("[] > foo", 3));
         MatcherAssert.assertThat(
             "the comment buffer must be empty after the top block flushes",
             globals.pendingComments(),
@@ -66,7 +66,7 @@ final class GlobalsSealTest {
         globals.addComment(new Span("# doc", 1));
         Assertions.assertThrows(
             ParseError.class,
-            () -> globals.seal(new Emit(), new Span("[] > foo", 2)),
+            () -> Comments.seal(globals, new Emit(), new Span("[] > foo", 2)),
             "a top comment block not followed by a blank line cannot be sealed"
         );
     }
@@ -74,7 +74,7 @@ final class GlobalsSealTest {
     @Test
     void sealsHeaderZone() {
         final Globals globals = new Globals();
-        globals.seal(new Emit(), new Span("+package foo", 1));
+        Comments.seal(globals, new Emit(), new Span("+package foo", 1));
         MatcherAssert.assertThat(
             "the header zone must be sealed once the first meta or object lands",
             globals.sealed(),
@@ -88,10 +88,10 @@ final class GlobalsSealTest {
         globals.seal();
         globals.addComment(new Span("# late", 1));
         final Emit emit = new Emit();
-        globals.seal(emit, new Span("[] > foo", 2));
+        Comments.seal(globals, emit, new Span("[] > foo", 2));
         MatcherAssert.assertThat(
             "a second seal cannot flush anything — the header is already closed",
-            GlobalsSealTest.render(emit),
+            CommentsTest.render(emit),
             Matchers.not(XhtmlMatchers.hasXPath("/object/comments"))
         );
     }
@@ -99,10 +99,10 @@ final class GlobalsSealTest {
     @Test
     void emitsNothingWhenBufferEmpty() {
         final Emit emit = new Emit();
-        new Globals().seal(emit, new Span("[] > foo", 1));
+        Comments.seal(new Globals(), emit, new Span("[] > foo", 1));
         MatcherAssert.assertThat(
             "sealing with no pending comments cannot emit any comment element",
-            GlobalsSealTest.render(emit),
+            CommentsTest.render(emit),
             Matchers.not(XhtmlMatchers.hasXPath("/object/comments"))
         );
     }
