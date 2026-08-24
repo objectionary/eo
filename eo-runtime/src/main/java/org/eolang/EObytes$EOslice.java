@@ -27,6 +27,7 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
      */
     public EObytes$EOslice() {
         super(new Attrs(
+            new Attr(Phi.RHO, new AtRho()),
             new Attr("start", new AtVoid("start")),
             new Attr("len", new AtVoid("len")),
             new Attr(EObytes$EOslice.FALLBACK, new AtVoid(EObytes$EOslice.FALLBACK))
