@@ -459,6 +459,9 @@ final class Level {
         this.tupled = false;
         this.children = 0;
         this.count = 0;
+        this.bindings = 0;
+        this.argpending = false;
+        this.argbound = false;
     }
 
     /**
@@ -519,6 +522,7 @@ final class Level {
             if (this.bindings == 0) {
                 this.bindings = code;
             } else if (this.bindings != code) {
+                this.argpending = false;
                 throw new ParseError(
                     this.argspan.line(), this.argspan.indent(),
                     "argument bindings must be all-or-nothing"
