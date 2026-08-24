@@ -536,7 +536,17 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Abstract object as attribute -->
+  <!--
+  Abstract object as attribute. A formation that purify.xsl marked with
+  @pure is returned wrapped in PhSticky, so that at run time it remembers
+  the results of its own dataization (see #5165).
+  @todo #5165:60min Wrap the pure top-level classes and the anonymous
+   formations in PhSticky too. Today only a named formation nested in
+   another one (an "abstract" element) is decorated when purify.xsl marks
+   it with @pure: a top-level "class" is instantiated by PhPackage through
+   reflection and an anonymous formation by the "o" template in mode
+   "object", and neither site knows about the label yet.
+  -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
     <xsl:param name="name"/>
@@ -578,7 +588,16 @@
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>return </xsl:text>
-    <xsl:value-of select="$ctx"/>
+    <xsl:choose>
+      <xsl:when test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+        <xsl:value-of select="$ctx"/>
+        <xsl:text>)</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$ctx"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>}</xsl:text>
