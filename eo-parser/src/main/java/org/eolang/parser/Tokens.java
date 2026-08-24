@@ -500,19 +500,32 @@ final class Tokens {
             );
         }
         final String text = this.body.substring(start, this.cursor);
+        Tokens.checkBinding(text, this.span, this.span.indent() + start);
+        return text;
+    }
+
+    /**
+     * Check an inline-binding label or numeric slot against §3.12 and
+     * reject anything that is neither a NAME-initial label nor a plain
+     * slot number. Shared by {@link Tokens#readBinding()} and the outer
+     * binding of a vertical formation, so both spell the same grammar.
+     * @param text Binding text, without the leading {@code :}
+     * @param span Source span
+     * @param pos Source column of the label (for errors)
+     */
+    static void checkBinding(final String text, final Span span, final int pos) {
         if (Tokens.cactus(text)) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                span.line(), pos,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                span.line(), pos,
                 "Invalid bound object declaration"
             );
         }
-        return text;
     }
 
     /**
