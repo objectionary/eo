@@ -60,7 +60,7 @@ final class Transition {
         if (level.patom() && !admission.permitted()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
+                "atom may contain only test attributes"
             );
         }
         if (admission.label() != null) {

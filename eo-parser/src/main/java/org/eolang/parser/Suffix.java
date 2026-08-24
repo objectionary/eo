@@ -334,7 +334,7 @@ final class Suffix {
         } else {
             throw new ParseError(
                 span.line(), home + idx,
-                "trailing garbage after expression"
+                "unexpected content after name suffix"
             );
         }
         return result;
@@ -493,7 +493,7 @@ final class Suffix {
         if (idx < tail.length()) {
             throw new ParseError(
                 span.line(), home + idx,
-                "trailing garbage after name suffix"
+                "unexpected content after name suffix"
             );
         }
     }
