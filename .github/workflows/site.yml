@@ -7,9 +7,6 @@ name: site
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 concurrency:
   group: site-${{ github.ref }}
   cancel-in-progress: true
@@ -59,7 +56,7 @@ jobs:
   recovered:
     needs: site
     runs-on: ubuntu-24.04
-    if: ${{ success() && github.ref == 'refs/heads/master' }}
+    if: ${{ success() }}
     permissions:
       actions: read
     steps:
