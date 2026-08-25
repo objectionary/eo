@@ -61,7 +61,8 @@ public final class PhSticky implements Phi {
      */
     private static final List<String> DATA = List.of(
         String.join(".", PhPackage.GLOBAL, "number"),
-        String.join(".", PhPackage.GLOBAL, "string")
+        String.join(".", PhPackage.GLOBAL, "string"),
+        String.join(".", PhPackage.GLOBAL, "bytes")
     );
 
     /**
