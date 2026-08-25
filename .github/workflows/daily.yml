@@ -33,6 +33,33 @@ jobs:
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "⚠️ Failed the daily build of ${{ github.repository }}, see [the log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          message: "⚠️ Daily build of ${{ github.repository }} [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs: daily
+    runs-on: ubuntu-24.04
+    if: ${{ success() }}
+    permissions:
+      actions: read
+    steps:
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          latest() {
+            gh api "/repos/${{ github.repository }}/actions/workflows/daily.yml/runs?branch=${{ github.ref_name }}&status=$1&per_page=1" \
+              --jq '[ .workflow_runs[] | select(.id != ${{ github.run_id }}) | .id ][0] // 0'
+          }
+          if [ "$(latest failure)" -gt "$(latest success)" ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "👍🏻 Daily build of ${{ github.repository }} [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
           disable_web_page_preview: true
           format: markdown
