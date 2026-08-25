@@ -40,8 +40,42 @@ jobs:
     steps:
       - uses: appleboy/telegram-action@master
         with:
-          to: -1001381878846
+          to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "⚠️ Failed to publish code coverage of ${{ github.repository }}, see [the log](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          message: "⚠️ Code coverage of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs: codecov
+    runs-on: ubuntu-24.04
+    if: ${{ success() }}
+    permissions:
+      actions: read
+    steps:
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          for _ in 1 2 3 4 5 6; do
+            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/codecov.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
+              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
+                then [ .workflow_runs[]
+                  | select(.id < ${{ github.run_id }})
+                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
+                else "stale" end')
+            [ "${state}" = 'stale' ] || break
+            sleep 10
+          done
+          echo "The previous run of this workflow: ${state}"
+          if [ "${state}" = 'failure' ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "👍🏻 Code coverage of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). The report is [here](https://app.codecov.io/gh/objectionary/eo)."
           disable_web_page_preview: true
           format: markdown

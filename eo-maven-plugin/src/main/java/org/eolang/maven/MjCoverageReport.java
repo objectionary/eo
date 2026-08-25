@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -45,6 +45,18 @@ import org.eolang.parser.EoSyntax;
  * body at all. Such a file used to be absent from the tracefile
  * altogether, which left the report unable to tell it apart from a file
  * that was never compiled (#7057).</p>
+ *
+ * <p>The raw hits are read one line at a time and never held together in
+ * memory. What the report keeps out of them is one counter per line of
+ * source, so its own size is bounded by the manifest, but the file the
+ * runtime appends to is not: every {@code PhCoverage} wrapper starts with
+ * a dedup set of its own, so a location touched through many instances of
+ * the same object is appended once per instance (#6508), and a whole test
+ * suite leaves gigabytes of duplicates behind for the few thousand
+ * distinct locations in them. Reading that file into a list first is what
+ * killed the {@code eo-runtime} coverage build with an
+ * {@code OutOfMemoryError} once it outgrew the 4Gb heap
+ * {@code .mvn/jvm.config} gives Maven.</p>
  *
  * @since 0.75.0
  */
@@ -126,12 +138,15 @@ public final class MjCoverageReport extends MjSafe {
                 }
             }
         }
-        final List<String> records = Files.readAllLines(this.hits.toPath());
-        for (final String hit : records) {
-            final String source = fileof.get(hit);
-            if (source != null) {
-                perfile.get(source).merge(lineof.get(hit), 1, Integer::sum);
-            }
+        try (Stream<String> records = Files.lines(this.hits.toPath())) {
+            records.forEach(
+                hit -> {
+                    final String source = fileof.get(hit);
+                    if (source != null) {
+                        perfile.get(source).merge(lineof.get(hit), 1, Integer::sum);
+                    }
+                }
+            );
         }
         final LcovReport report = new LcovReport(perfile);
         new Saved(report.text(), this.lcov.toPath()).value();

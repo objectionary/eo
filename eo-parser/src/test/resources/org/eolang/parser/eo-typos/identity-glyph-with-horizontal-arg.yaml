@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "horizontal formation not allowed as argument"
+message: "the identity object takes no horizontal arguments; put the argument on a deeper-indent line"
 input: |
   [] > app
     I 5 > y

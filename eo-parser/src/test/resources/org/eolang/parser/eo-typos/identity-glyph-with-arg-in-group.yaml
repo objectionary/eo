@@ -2,10 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: |-
-  [1:8] error: 'type must be a dotted name with no leading, trailing, or empty segment'
-  [] > f /Q.
-          ^
+line: 2
+message: "the identity object takes no horizontal arguments; put the argument on a deeper-indent line"
 input: |
-  [] > f /Q.
+  [] > app
+    foo (I 5) > y
