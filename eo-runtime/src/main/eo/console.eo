@@ -171,3 +171,12 @@
 
   console.write ++> can-write-to-the-console
     "Hello, console-test!\n"
+
+  console.write ++> can-write-an-empty-string-to-the-console
+    ""
+
+  console.write ++> can-write-a-non-ascii-string-to-the-console
+    "héllo, wörld! 日本語\n"
+
+  --> cannot-dataize-console-directly
+    console
