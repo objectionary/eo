@@ -115,3 +115,13 @@
   is-empty. ++> can-build-an-empty-range-when-descending-in-negatives
     naturals.
       range -1 -5
+
+  naturals. --> rejects-a-non-finite-lower-bound
+    range
+      pinf
+      0
+
+  naturals. --> rejects-a-nan-upper-bound
+    range
+      0
+      nan
