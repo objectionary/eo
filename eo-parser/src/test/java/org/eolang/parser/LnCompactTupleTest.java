@@ -7,6 +7,7 @@ package org.eolang.parser;
 import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -50,6 +51,65 @@ final class LnCompactTupleTest {
             "an absent N must default to 0 per R-3.9.1",
             stack.top().count(),
             Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void recordsNFromMultiDigitInteger() {
+        final Stack stack = new Stack();
+        new LnCompactTuple(new Span("sprintf *123 > x", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a multi-digit *N value must accumulate across every digit read",
+            stack.top().count(),
+            Matchers.equalTo(123)
+        );
+    }
+
+    @Test
+    void recordsZeroFromExplicitZeroDigit() {
+        final Stack stack = new Stack();
+        new LnCompactTuple(new Span("sprintf *0 > x", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "an explicit *0 must record the same count as an absent N",
+            stack.top().count(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void recordsNFromLeadingZeroDigits() {
+        final Stack stack = new Stack();
+        new LnCompactTuple(new Span("sprintf *007 > x", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "leading zero digits must not change the accumulated count",
+            stack.top().count(),
+            Matchers.equalTo(7)
+        );
+    }
+
+    @Test
+    void rejectsCountAboveIntegerMax() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnCompactTuple(new Span("sprintf *99999999999 > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a *N value past Integer.MAX_VALUE must raise a positioned ParseError"
+        );
+    }
+
+    @Test
+    void rejectsCountAboveIntegerMaxWithCanonicalMessage() {
+        MatcherAssert.assertThat(
+            "the overflow error must carry the canonical §9.9 message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnCompactTuple(new Span("sprintf *99999999999 > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("compact tuple count is too large")
         );
     }
 

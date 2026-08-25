@@ -87,7 +87,7 @@ final class LnCompactTuple implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, stack, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
@@ -105,7 +105,6 @@ final class LnCompactTuple implements Line {
 
     private static int readCount(final Tokens tokens, final Span span) {
         long count = 0;
-        boolean any = false;
         final int start = tokens.cursor();
         while (!tokens.atEnd()) {
             final char glyph = tokens.current();
@@ -120,10 +119,6 @@ final class LnCompactTuple implements Line {
                 );
             }
             tokens.seek(tokens.cursor() + 1);
-            any = true;
-        }
-        if (!any) {
-            count = 0;
         }
         return (int) count;
     }

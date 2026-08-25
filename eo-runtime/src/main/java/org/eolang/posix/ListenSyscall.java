@@ -5,7 +5,7 @@
 package org.eolang.posix;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -36,8 +36,8 @@ public final class ListenSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.listen(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).asNumber().intValue()
+                    new Int("the 'descriptor' argument of listen", params[0]).it(),
+                    new Int("the 'backlog' argument of listen", params[1]).it()
                 )
             )
         );

@@ -5,9 +5,10 @@
 package org.eolang.parser;
 
 /**
- * A line's naming suffix, as {@link Transition#apply} needs it: the
- * label to attach to the pushed-or-replaced level, and whether the line
- * shape is allowed to sit under an atom parent (R-3.10.13).
+ * A line's naming suffix, as {@link Transition#apply} needs it: names
+ * the pushed-or-replaced level when the line carries a name suffix, and
+ * says whether the line shape is allowed to sit under an atom parent
+ * (R-3.10.13).
  * @since 0.1
  */
 final class Admission {
@@ -34,11 +35,13 @@ final class Admission {
     }
 
     /**
-     * The suffix's source name.
-     * @return The label, or {@code null}
+     * Name the level with this suffix's label, when there is one.
+     * @param level The level to name
      */
-    String label() {
-        return this.label;
+    void name(final Level level) {
+        if (this.label != null) {
+            level.name(this.label);
+        }
     }
 
     /**

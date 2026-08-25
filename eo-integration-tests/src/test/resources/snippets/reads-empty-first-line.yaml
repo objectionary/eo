@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+out:
+  - '.*<next-line>.*'
+file: snippets/reads-empty-first-line.eo
+args: ["snippets.reads-empty-first-line"]
+stdin: "\nвторая\n"
+eo: |
+  +package snippets
+
+  [] > reads-empty-first-line
+    stdout > @
+      "<".concat
+        stdin.next-line.concat "next-line>"

@@ -11,6 +11,13 @@
 # `as-decimal` writes exactly is written exactly here too. A magnitude of
 # 2^63 or larger is past what `as-decimal` can write, so it returns the
 # `cant-print` fallback as well, instead of terminating.
+#
+# The fraction is scaled by at most 10^15, the largest power of ten that
+# keeps the scaled value an exact integer below 2^53, and never by 10^places
+# directly. Only that many digits are peeled off; any place beyond them is a
+# trailing zero. This keeps the digits shared by two calls with different
+# `places` in agreement, instead of drifting as an unfloored accumulator was
+# carried through more divisions the larger `places` was.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -47,7 +54,9 @@
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
-                rec-pad rest ^.^.places --
+                concat.
+                  rec-pad rest ^.k --
+                  zeros (^.^.places.minus ^.k) --
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -56,7 +65,11 @@
                 a.minus whole
                 scale
               0.5
-          pow10 ^.places > scale
+          if. > k
+            ^.places.gt 15
+            15
+            ^.places
+          pow10 k > scale
           a.floor > whole
         | 0
       if.
@@ -74,8 +87,7 @@
             positive a
         | (n.times -1)
         positive n
-  n.abs.gte > huge
-    2.power 63
+  n.abs.gte 9.223372036854776e18 > huge
   ^ > n
   if. > [^ p] >> pow10
     p.eq 0
@@ -89,24 +101,35 @@
     count.eq 0
     acc
     ^.rec-pad
-      if.
-        value.gte 9007199254740992
+      floor.
         value.div 10
-        floor.
-          value.div 10
       as-number.
         count.minus 1
       concat.
         as-char.
           plus.
-            if.
-              value.gte 9007199254740992
-              0
-              floor.
-                value.minus
-                  times. (value.div 10).floor 10
+            floor.
+              value.minus
+                times. (value.div 10).floor 10
             48
         acc
+  if. > [^ count acc] >> zeros
+    count.eq 0
+    acc
+    ^.zeros
+      as-number.
+        count.minus 1
+      acc.concat "0".as-bytes
+
+  eq. ++> can-agree-with-fewer-places-on-their-shared-digits
+    "1.1000000000000000000"
+    string
+      1.1.as-fixed 19
+
+  eq. ++> can-agree-with-more-places-on-their-shared-digits
+    "1.100000000000000000000"
+    string
+      1.1.as-fixed 21
 
   eq. ++> can-carry-rounding-into-the-integer-part
     "1.000000"

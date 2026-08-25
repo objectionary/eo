@@ -10,6 +10,9 @@ name: qulice
   pull_request:
     branches:
       - master
+concurrency:
+  group: qulice-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   qulice:
     timeout-minutes: 15

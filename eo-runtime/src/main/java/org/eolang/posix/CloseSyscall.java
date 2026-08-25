@@ -5,7 +5,7 @@
 package org.eolang.posix;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -31,11 +31,11 @@ public final class CloseSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int descriptor = new Int(
+            "the 'descriptor' argument of close", params[0]
+        ).it();
         final Phi result = this.posix.take("return").copy();
-        result.put(
-            0,
-            new Data.ToPhi(CStdLib.INSTANCE.close(new Dataized(params[0]).asNumber().intValue()))
-        );
+        result.put(0, new Data.ToPhi(CStdLib.INSTANCE.close(descriptor)));
         result.put(1, new PhDefault());
         return result;
     }
