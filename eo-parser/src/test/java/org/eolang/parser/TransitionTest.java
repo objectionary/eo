@@ -54,6 +54,22 @@ final class TransitionTest {
     }
 
     @Test
+    void capturesCanonicalMessageOfIndentJumpViolation() {
+        final Stack stack = new Stack();
+        new Transition(stack, new Span("delta", 1))
+            .apply(Kind.BARE_FORMATION, Openness.OPEN, new Admission(null, false));
+        MatcherAssert.assertThat(
+            "the error message must name the indent-step requirement",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Transition(stack, new Span("    epsilon", 2))
+                    .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false))
+            ).getMessage(),
+            Matchers.equalTo("indent increased by more than one level")
+        );
+    }
+
+    @Test
     void rejectsDeeperChildUnderHorizontallyCompletedParent() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("zeta", 1))

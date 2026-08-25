@@ -28,3 +28,49 @@ jobs:
         with:
           path: ~/.m2/repository/org/eolang
       - run: mvn clean site -Psite
+  telegram:
+    needs: site
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    steps:
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ Maven site build of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs: site
+    runs-on: ubuntu-24.04
+    if: ${{ success() && github.ref == 'refs/heads/master' }}
+    permissions:
+      actions: read
+    steps:
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          for _ in 1 2 3 4 5 6; do
+            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/site.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
+              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
+                then [ .workflow_runs[]
+                  | select(.id < ${{ github.run_id }})
+                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
+                else "stale" end')
+            [ "${state}" = 'stale' ] || break
+            sleep 10
+          done
+          echo "The previous run of this workflow: ${state}"
+          if [ "${state}" = 'failure' ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "👍🏻 Maven site build of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          disable_web_page_preview: true
+          format: markdown

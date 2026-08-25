@@ -282,6 +282,10 @@ final class Suffix {
      * and rejected. Every other token is a concrete forma, returned
      * verbatim for {@code add-default-package} to home.</p>
      *
+     * <p>A concrete forma is a {@code NAME ('.' NAME)*} path, so a
+     * leading dot, a trailing dot, or an empty segment is rejected
+     * here, for the signature and the annotation alike.</p>
+     *
      * @param raw Raw token, without a trailing {@code ?}
      * @param span Source span
      * @param pos Source column of the token (for errors)
@@ -294,6 +298,12 @@ final class Suffix {
             throw new ParseError(
                 span.line(), pos,
                 "type variable must be one of A-F"
+            );
+        }
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), pos,
+                "type must be a dotted name with no leading, trailing, or empty segment"
             );
         }
         final String promoted;
@@ -334,7 +344,7 @@ final class Suffix {
         } else {
             throw new ParseError(
                 span.line(), home + idx,
-                "trailing garbage after expression"
+                "unexpected content after name suffix"
             );
         }
         return result;
@@ -493,7 +503,7 @@ final class Suffix {
         if (idx < tail.length()) {
             throw new ParseError(
                 span.line(), home + idx,
-                "trailing garbage after name suffix"
+                "unexpected content after name suffix"
             );
         }
     }
@@ -522,12 +532,6 @@ final class Suffix {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
-            );
-        }
-        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
-            throw new ParseError(
-                span.line(), home + after,
-                "atom signature must be a dotted name with no leading, trailing, or empty segment"
             );
         }
         return Suffix.typeAtom(raw, span, home + after);

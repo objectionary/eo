@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:8] error: 'trailing garbage after name suffix'
+  [2:8] error: 'unexpected content after name suffix'
     a > x (b > x)
           ^
 input: |
