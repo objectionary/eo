@@ -29,6 +29,13 @@ import org.junit.jupiter.api.parallel.Isolated;
  * instrumentation is on, a concurrent test would append its own hits to
  * this test's file and break the exact-contents assertion.</p>
  *
+ * <p>For the same reason every test that asserts on the contents of that
+ * file wraps a plain {@link PhDefault} and never a transpiled object like
+ * {@link Data.ToPhi}: with {@code eo.coverageTracking} on, the generated
+ * objects are themselves wrapped into {@link PhCoverage}, so dataizing one
+ * appends its own locations to the very file the test has just pointed the
+ * property at.</p>
+ *
  * @since 0.58
  */
 @Isolated
@@ -80,7 +87,9 @@ final class PhCoverageTest {
         final String before = System.getProperty("eo.coverageFile");
         System.setProperty("eo.coverageFile", hits.toString());
         try {
-            final Phi covered = new PhCoverage(new Data.ToPhi(1L), "Φ.retry:4:2");
+            final Phi covered = new PhCoverage(
+                new PhDefault(new byte[] {(byte) 0x01}), "Φ.retry:4:2"
+            );
             Assertions.assertThrows(
                 UncheckedIOException.class,
                 covered::delta,
