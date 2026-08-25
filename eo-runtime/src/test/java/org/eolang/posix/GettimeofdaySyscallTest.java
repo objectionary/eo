@@ -4,7 +4,6 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -21,23 +20,27 @@ final class GettimeofdaySyscallTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void reportsAPlausibleCurrentTimestamp() {
-        final Phi result = new GettimeofdaySyscall(Phi.Φ.take("posix").copy()).make();
-        final long secs = new Dataized(
-            result.take("output").take("seconds")
-        ).asNumber().longValue();
-        final long micros = new Dataized(
-            result.take("output").take("micros")
-        ).asNumber().longValue();
+    void reportsSecondsCloseToCurrentWallClockTime() {
+        final long secs = new Dataized(this.output().take("seconds")).asNumber().longValue();
         MatcherAssert.assertThat(
             "gettimeofday must report seconds close to the current wall-clock time, not a value corrupted by a mismatched NativeLong/Java long field width",
             (double) secs,
-            Matchers.closeTo((double) (System.currentTimeMillis() / 1000L), 5.0)
+            Matchers.closeTo(System.currentTimeMillis() / 1000.0, 5.0)
         );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void reportsMicrosecondFractionBelowOneSecond() {
+        final long micros = new Dataized(this.output().take("micros")).asNumber().longValue();
         MatcherAssert.assertThat(
             "gettimeofday must report a microsecond fraction below one second, not bytes read past what the native call wrote",
             micros,
             Matchers.allOf(Matchers.greaterThanOrEqualTo(0L), Matchers.lessThan(1_000_000L))
         );
+    }
+
+    private Phi output() {
+        return new GettimeofdaySyscall(Phi.Φ.take("posix").copy()).make().take("output");
     }
 }
