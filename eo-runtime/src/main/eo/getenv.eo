@@ -28,6 +28,18 @@
         "not found"
       "not found"
 
+  eq. ++> can-treat-an-empty-name-as-a-missing-variable
+    getenv
+      ""
+      "not found"
+    "not found"
+
+  eq. ++> can-return-the-fallback-object-itself-when-variable-is-absent
+    getenv
+      "EO_UNSET_VARIABLE_6142"
+      42
+    42
+
   eq. ++> can-use-fallback-when-variable-does-not-exist
     getenv
       "EO_UNSET_VARIABLE_6142"
