@@ -76,6 +76,6 @@ jobs:
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "👍🏻 Code coverage of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). The report is [here](https://app.codecov.io/gh/objectionary/eo)."
+          message: "🍓 Code coverage of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}). The report is [here](https://app.codecov.io/gh/objectionary/eo)."
           disable_web_page_preview: true
           format: markdown
