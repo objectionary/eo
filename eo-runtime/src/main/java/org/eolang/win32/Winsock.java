@@ -5,6 +5,7 @@
 package org.eolang.win32;
 
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
@@ -77,19 +78,25 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Creates a socket.
+     *
+     * <p>The return type is {@link Pointer} rather than a fixed-width
+     * primitive because a {@code SOCKET} is a Windows {@code UINT_PTR}:
+     * 4 bytes on Win32, 8 on Win64 (#7577). JNA marshals {@link Pointer}
+     * at the platform's actual pointer width, matching that either way.</p>
+     *
      * @param domain Socket domain
      * @param type Socket type
      * @param protocol Socket protocol
      * @return Socket descriptor
      */
-    long socket(int domain, int type, int protocol);
+    Pointer socket(int domain, int type, int protocol);
 
     /**
      * Closes a socket.
      * @param socket Socket descriptor
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int closesocket(long socket);
+    int closesocket(Pointer socket);
 
     /**
      * Connects to the server at the specified IP address and port.
@@ -98,7 +105,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int connect(long sockfd, SockaddrIn addr, int addrlen);
+    int connect(Pointer sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -108,7 +115,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(long sockfd, SockaddrIn addr, int addrlen);
+    int bind(Pointer sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.
@@ -117,7 +124,7 @@ public interface Winsock extends StdCallLibrary {
      *  waiting to be accepted
      * @return Zero on success, -1 on error
      */
-    int listen(long sockfd, int backlog);
+    int listen(Pointer sockfd, int backlog);
 
     /**
      * Accept connection on socket.
@@ -127,7 +134,7 @@ public interface Winsock extends StdCallLibrary {
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
      *  is returned. On error, -1 is returned
      */
-    long accept(long sockfd, SockaddrIn addr, IntByReference addrlen);
+    Pointer accept(Pointer sockfd, SockaddrIn addr, IntByReference addrlen);
 
     /**
      * Send a message to a socket.
@@ -137,7 +144,7 @@ public interface Winsock extends StdCallLibrary {
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
      */
-    int send(long sockfd, byte[] buf, int len, int flags);
+    int send(Pointer sockfd, byte[] buf, int len, int flags);
 
     /**
      * Receive a message from a socket.
@@ -147,7 +154,7 @@ public interface Winsock extends StdCallLibrary {
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
      */
-    int recv(long sockfd, byte[] buf, int len, int flags);
+    int recv(Pointer sockfd, byte[] buf, int len, int flags);
 
     /**
      * Retrieve the last error from winsock.
