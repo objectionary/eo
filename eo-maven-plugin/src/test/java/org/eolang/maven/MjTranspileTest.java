@@ -16,6 +16,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,10 +70,15 @@ final class MjTranspileTest {
 
     @Test
     void givesDistinctClassNamesToLongNamesDifferingBeyondTheLimit() throws IOException {
+        final String head = String.join("", Collections.nCopies(249, "a"));
         MatcherAssert.assertThat(
             "two names that differ only past the length limit must not share a Java class name",
-            this.javaName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAaaaazaaaaaaaaaaaaaaa"),
-            Matchers.not(Matchers.equalTo(this.javaName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaataaaaHaaaaaaaaaaaaaaa")))
+            this.javaName(String.format("%sAaaaazaaaaaaaaaaaaaaa", head)),
+            Matchers.not(
+                Matchers.equalTo(
+                    this.javaName(String.format("%staaaaHaaaaaaaaaaaaaaa", head))
+                )
+            )
         );
     }
 
@@ -779,11 +785,6 @@ final class MjTranspileTest {
         );
     }
 
-    /**
-     * The Java class name the transpiler gives to an object with this name.
-     * @param name The name of the object in EO
-     * @return The Java name of the class
-     */
     private String javaName(final String name) throws IOException {
         return new Xsline(
             new TrClasspath<>(
