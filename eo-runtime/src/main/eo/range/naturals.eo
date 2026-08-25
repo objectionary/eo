@@ -85,3 +85,33 @@
     range
       -9007199254740992
       0
+
+  naturals. --> rejects-an-upper-bound-at-the-precision-boundary
+    range
+      0
+      9007199254740992
+
+  naturals. --> rejects-a-negative-upper-bound-at-the-precision-boundary
+    range
+      0
+      -9007199254740992
+
+  eq. ++> can-build-a-range-with-a-single-element
+    naturals.
+      range 5 6
+    *
+      5
+
+  eq. ++> can-build-naturals-crossing-zero
+    naturals.
+      range -2 3
+    *
+      -2
+      -1
+      0
+      1
+      2
+
+  is-empty. ++> can-build-an-empty-range-when-descending-in-negatives
+    naturals.
+      range -1 -5
