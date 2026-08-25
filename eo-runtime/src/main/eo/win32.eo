@@ -113,3 +113,99 @@
         "NUL"
         win32.wronly
         0
+
+  os.is-windows.not.or ++> can-close-a-tcp-socket
+    seq *
+      sd
+      not.
+        eq.
+          code.
+            win32 *1
+              "closesocket"
+              sd
+          -1
+    code. > sd
+      win32 *1
+        "socket"
+        win32.inet
+        win32.stream
+        win32.tcp
+
+  ++> can-compute-the-size-of-a-sockaddr-in
+    eq.
+      addr.size
+      16
+    win32.sockaddr-in > addr
+      00-00
+      00-00
+      00-00-00-00
+
+  os.is-windows.not.or ++> can-open-a-file-with-the-append-flag
+    seq *
+      code.
+        win32 *1
+          "_close"
+          fd
+      fd.gt -1
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly.plus win32.append
+        0
+
+  os.is-windows.not.or ++> can-open-a-file-with-the-trunc-flag
+    seq *
+      code.
+        win32 *1
+          "_close"
+          fd
+      fd.gt -1
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly.plus win32.trunc
+        0
+
+  os.is-windows.not.or ++> can-open-a-tcp-socket
+    seq *
+      code.
+        win32 *1
+          "closesocket"
+          sd
+      sd.gt 0
+    code. > sd
+      win32 *1
+        "socket"
+        win32.inet
+        win32.stream
+        win32.tcp
+
+  os.is-windows.not.or ++> can-stat-the-size-of-nul
+    eq.
+      info.size
+      0
+    output. > info
+      win32 *1
+        "_stat64"
+        "NUL"
+
+  --> stops-on-creating-an-existing-file-exclusively
+    os.is-windows.not.if > @
+      1.div 0
+      seq *
+        code.
+          win32 *1
+            "_open"
+            "NUL"
+            plus.
+              win32.rdonly.plus win32.creat
+              win32.exclusive
+            win32.mode
+        eq.
+          code.
+            win32
+              "_errno"
+              *
+          win32.eexist
