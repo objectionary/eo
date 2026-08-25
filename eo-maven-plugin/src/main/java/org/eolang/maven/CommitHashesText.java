@@ -71,17 +71,6 @@ final class CommitHashesText extends TextEnvelope {
         super(new Synced(new Sticky(() -> CommitHashesText.safe(source))));
     }
 
-    /**
-     * Read the source, falling back to {@link CommitHashesText#FALLBACK} when
-     * every retried attempt to read it fails with an I/O error.
-     *
-     * <p>Malformed content that a successful read did return is not this
-     * class's concern: {@code source} answers for its own shape, and a
-     * caller downstream of the cache diagnoses that separately.</p>
-     *
-     * @param source Text source
-     * @return The source's text, or the fallback table
-     */
     private static String safe(final Text source) throws Exception {
         String hashes;
         try {

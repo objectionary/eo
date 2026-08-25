@@ -33,7 +33,7 @@ final class CommitHashesTextTest {
     }
 
     @Test
-    void propagatesAFailureThatIsNotAnIOException() {
+    void propagatesAFailureThatIsNotAnIoError() {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new CommitHashesText(
