@@ -37,7 +37,9 @@ public final class Timeval extends Structure {
      * Ctor.
      */
     public Timeval() {
-        // nothing
+        super();
+        this.sec = new NativeLong(0);
+        this.usec = new NativeLong(0);
     }
 
     @Override
