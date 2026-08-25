@@ -6,8 +6,8 @@ package org.eolang.posix;
 
 import java.util.Arrays;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Expect;
+import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -39,10 +39,10 @@ public final class RecvSyscall implements Syscall {
         ).it();
         final byte[] buf = new byte[size];
         final int received = CStdLib.INSTANCE.recv(
-            new Dataized(params[0]).asNumber().intValue(),
+            new Int("the 'descriptor' argument of recv", params[0]).it(),
             buf,
             size,
-            new Dataized(params[2]).asNumber().intValue()
+            new Int("the 'flags' argument of recv", params[2]).it()
         );
         result.put(0, new Data.ToPhi(received));
         result.put(1, new Data.ToPhi(Arrays.copyOf(buf, Math.max(received, 0))));
