@@ -58,8 +58,9 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode '-Deo.coverageTracking=false' clean install site -Pqulice -Psite
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=120' '-Dheap-size=32G' clean install -pl :eo-runtime
+      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode -Pqulice -Psite clean install site
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=120' '-Dheap-size=32G' -pl :eo-runtime install
+      - run: mvn -ntp --errors --batch-mode '-Deo.transpileTests=false' '-Dheap-size=32G' install -pl :eo-integration-tests
   terminate-instance:
     needs:
       - start-instance
