@@ -21,6 +21,23 @@
         "getenv"
         name
 
+  not. ++> can-distinguish-different-fallbacks-for-different-missing-variables
+    eq.
+      getenv
+        "EO_UNSET_VARIABLE_6142"
+        "first"
+      getenv
+        "EO_UNSET_VARIABLE_7253"
+        "second"
+
+  eq. ++> can-read-a-variable-consistently-across-repeated-calls
+    getenv
+      "PATH"
+      "not found"
+    getenv
+      "PATH"
+      "not found"
+
   not. ++> can-read-an-existing-variable
     eq.
       getenv
@@ -28,9 +45,21 @@
         "not found"
       "not found"
 
-  eq. ++> can-treat-an-empty-name-as-a-missing-variable
+  eq. ++> can-return-fallback-for-a-name-containing-an-equals-sign
     getenv
-      ""
+      "EO=UNSET"
+      "not found"
+    "not found"
+
+  eq. ++> can-return-fallback-for-a-name-that-is-only-whitespace
+    getenv
+      "   "
+      "not found"
+    "not found"
+
+  eq. ++> can-return-fallback-for-a-very-long-variable-name
+    getenv
+      "EO_UNSET_VARIABLE_WITH_A_VERY_LONG_NAME_THAT_IS_UNLIKELY_TO_EVER_BE_SET_1234567890"
       "not found"
     "not found"
 
@@ -39,6 +68,40 @@
       "EO_UNSET_VARIABLE_6142"
       42
     42
+
+  eq. ++> can-treat-an-empty-name-as-a-missing-variable
+    getenv
+      ""
+      "not found"
+    "not found"
+
+  os.is-windows.or ++> can-treat-variable-names-case-sensitively
+    not.
+      eq.
+        getenv
+          "path"
+          "not found"
+        getenv
+          "PATH"
+          "not found"
+
+  eq. ++> can-use-a-boolean-fallback-when-variable-does-not-exist
+    getenv
+      "EO_UNSET_VARIABLE_6142"
+      true
+    true
+
+  eq. ++> can-use-a-tuple-fallback-when-variable-does-not-exist
+    getenv
+      "EO_UNSET_VARIABLE_6142"
+      * 1 2 3
+    * 1 2 3
+
+  eq. ++> can-use-an-empty-string-fallback-when-variable-does-not-exist
+    getenv
+      "EO_UNSET_VARIABLE_6142"
+      ""
+    ""
 
   eq. ++> can-use-fallback-when-variable-does-not-exist
     getenv
