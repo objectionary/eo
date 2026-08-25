@@ -150,7 +150,6 @@ final class Globals {
      * zone — idempotent once {@link #sealed()} is true. A non-empty
      * block with no blank line before the sealing line (§6.5) is
      * dropped via {@link #dropComments()} and reported as an error.
-     *
      * @param emit XMIR emitter
      * @param span Source span of the meta or object closing the header
      */
