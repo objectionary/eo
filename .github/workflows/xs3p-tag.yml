@@ -7,6 +7,9 @@ name: xs3p-tag
   push:
     tags:
       - '*'
+concurrency:
+  group: xs3p-tag-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   xs3p-tag:
     timeout-minutes: 15

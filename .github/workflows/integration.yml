@@ -10,6 +10,9 @@ name: integration
   pull_request:
     branches:
       - master
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   integration:
     timeout-minutes: 15

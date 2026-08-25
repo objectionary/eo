@@ -10,6 +10,9 @@ name: simian
   pull_request:
     branches:
       - master
+concurrency:
+  group: simian-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   simian:
     timeout-minutes: 15

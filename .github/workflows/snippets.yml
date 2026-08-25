@@ -10,6 +10,9 @@ name: snippets
   pull_request:
     branches:
       - master
+concurrency:
+  group: snippets-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   snippets:
     timeout-minutes: 15

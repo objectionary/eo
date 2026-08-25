@@ -10,6 +10,9 @@ name: site
   pull_request:
     branches:
       - master
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   site:
     runs-on: ubuntu-24.04

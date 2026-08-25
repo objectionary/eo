@@ -10,6 +10,9 @@ run-name: "eo-maven-plugin site publication"
       - '*'
   workflow_dispatch:
 
+concurrency:
+  group: eo-maven-plugin-site-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   site:
     if: github.repository_owner == 'objectionary'
