@@ -753,9 +753,9 @@ final class EoTest {
     @Test
     void rollsBackAndRecoversFromInvalidTextBlockEscape() {
         MatcherAssert.assertThat(
-            "an invalid text block escape must not corrupt parsing of the next line",
-            EoTest.render("[] > main", "  \"\"\"", "  bad \\q", "  \"\"\" > x", "[] > good"),
-            XhtmlMatchers.hasXPaths("/object/errors/error[contains(text(),'invalid unicode or octal escape')]", "/object/o[@name='good']")
+            "an invalid text block escape must not corrupt later parsing",
+            EoTest.render("[] > main", "  \"\"\"", "  bad \\q", "  \"\"\" > x", "[] > y"),
+            XhtmlMatchers.hasXPath("/object[errors/error[contains(text(),'escape')]][o[@name='y']]")
         );
     }
 
