@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,16 @@ import java.util.stream.Collectors;
  * @since 0.57.0
  */
 final class Diff {
+
+    /**
+     * The line feed every line ends with.
+     */
+    private static final Pattern FEED = Pattern.compile("\\n");
+
+    /**
+     * The carriage return a line may end with.
+     */
+    private static final Pattern RETURN = Pattern.compile("\\r");
 
     /**
      * ANSI escape that resets all coloring.
@@ -89,8 +100,8 @@ final class Diff {
 
     private static List<String> lines(final String text) {
         final List<String> out = new ArrayList<>(
-            Arrays.stream(text.split("\\n", -1))
-                .map(line -> line.replaceAll("\\r", "\\\\r"))
+            Arrays.stream(Diff.FEED.split(text, -1))
+                .map(line -> Diff.RETURN.matcher(line).replaceAll("\\\\r"))
                 .collect(Collectors.toList())
         );
         if (out.get(out.size() - 1).isEmpty()) {
