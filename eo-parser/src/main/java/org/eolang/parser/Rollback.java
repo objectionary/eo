@@ -14,24 +14,16 @@ import java.util.List;
  */
 final class Rollback {
 
-    /**
-     * The stack to restore on {@link #apply()}.
-     */
+    /** The stack to restore on {@link #apply()}. */
     private final Stack stack;
 
-    /**
-     * The sink to roll back on {@link #apply()}.
-     */
+    /** The sink to roll back on {@link #apply()}. */
     private final Emit emit;
 
-    /**
-     * The sink savepoint taken at construction.
-     */
+    /** The sink savepoint taken at construction. */
     private final int token;
 
-    /**
-     * The stack levels snapshot taken at construction.
-     */
+    /** The stack levels snapshot taken at construction. */
     private final List<Level> frame;
 
     /**
@@ -60,9 +52,7 @@ final class Rollback {
         return new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
     }
 
-    /**
-     * Roll the sink and the stack back to this savepoint.
-     */
+    /** Roll the sink and the stack back to this savepoint. */
     void apply() {
         this.emit.rollback(this.token);
         this.stack.restore(this.frame);
