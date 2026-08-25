@@ -162,7 +162,7 @@ final class LnMetaTest {
     }
 
     @Test
-    void stillRejectsOrderingSeparatelyFromIndent() {
+    void rejectsOrderingSeparatelyFromIndent() {
         final Globals globals = new Globals();
         globals.markEmitted();
         MatcherAssert.assertThat(
