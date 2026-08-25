@@ -51,6 +51,7 @@
   6 > tcp
   [^ time millitm] > timeb
   512 > trunc
+  4294967295 > unresolved
   02-02 > version
   32769 > wronly
 
@@ -60,7 +61,7 @@
         win32 *1
           "inet_addr"
           "localhost"
-      win32.invalid
+      win32.unresolved
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
@@ -68,7 +69,15 @@
         win32 *1
           "inet_addr"
           "::1"
-      win32.invalid
+      win32.unresolved
+
+  os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "10.0.0.200"
+      3355443210
 
   os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
