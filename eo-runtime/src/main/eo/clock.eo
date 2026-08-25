@@ -55,3 +55,85 @@
       clock
       100000.as-i64
     clock
+
+  clock.gt 4294967295.as-i64 ++> can-exceed-a-32-bit-integer-range
+
+  clock.gt 1000000000000.as-i64 ++> can-exceed-the-year-2001-epoch
+
+  clock.lt 4102444800000.as-i64 ++> can-stay-below-the-year-2100-epoch
+
+  ++> can-round-trip-through-bytes-and-back
+    eq. > @
+      as-i64.
+        as-bytes. a
+      a
+    clock > a
+
+  ++> can-equal-itself-when-read-once
+    eq. > @
+      a
+      a
+    clock > a
+
+  ++> can-differ-from-a-value-offset-by-one
+    not. > @
+      eq.
+        a
+        plus.
+          a
+          1.as-i64
+    clock > a
+
+  ++> can-grow-when-a-positive-offset-is-added
+    gt. > @
+      plus.
+        a
+        1000.as-i64
+      a
+    clock > a
+
+  ++> can-shrink-when-a-positive-offset-is-subtracted
+    lt. > @
+      minus.
+        a
+        1000.as-i64
+      a
+    clock > a
+
+  ++> can-return-to-itself-after-adding-and-subtracting-the-same-offset
+    eq. > @
+      minus.
+        plus.
+          a
+          500.as-i64
+        500.as-i64
+      a
+    clock > a
+
+  ++> can-double-in-value-when-multiplied-by-two
+    gt. > @
+      times.
+        a
+        2.as-i64
+      a
+    clock > a
+
+  ++> can-be-negative-when-subtracted-from-zero
+    lt. > @
+      minus.
+        0.as-i64
+        a
+      0.as-i64
+    clock > a
+
+  ++> can-be-greater-than-or-equal-to-itself
+    gte. > @
+      a
+      a
+    clock > a
+
+  ++> can-be-less-than-or-equal-to-itself
+    lte. > @
+      a
+      a
+    clock > a
