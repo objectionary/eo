@@ -106,11 +106,13 @@ final class Globals {
         this.tbody = new ArrayList<>(0);
         this.emitted = false;
         this.closed = false;
+        this.meta = false;
         this.discarded = false;
         this.blanks = 0;
         this.trailing = 0;
         this.intext = false;
         this.tline = 0;
+        this.tindent = 0;
     }
 
     /**

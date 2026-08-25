@@ -7,6 +7,9 @@ name: jacoco
   pull_request:
     branches:
       - master
+concurrency:
+  group: jacoco-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   jacoco:
     timeout-minutes: 30

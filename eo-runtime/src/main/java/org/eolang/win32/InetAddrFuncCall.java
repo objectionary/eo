@@ -21,6 +21,14 @@ import org.eolang.Syscall;
 public final class InetAddrFuncCall implements Syscall {
 
     /**
+     * {@code INADDR_NONE}, what {@code inet_addr} answers with when it cannot
+     * convert the text. It is an {@code in_addr_t}, that is unsigned, so it
+     * reaches EO as 4294967295 and not as -1, matching {@code win32.unresolved}
+     * and the POSIX half of the same call.
+     */
+    private static final long NONE = 4_294_967_295L;
+
+    /**
      * Dotted-decimal IPv4 literal, e.g. "127.0.0.1".
      */
     private static final Pattern IPV4 = Pattern.compile(
@@ -49,10 +57,15 @@ public final class InetAddrFuncCall implements Syscall {
             for (int octet = 1; octet <= 4; ++octet) {
                 buffer.put((byte) Integer.parseInt(matcher.group(octet)));
             }
-            result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
+            result.put(
+                0,
+                new Data.ToPhi(
+                    Integer.toUnsignedLong(Integer.reverseBytes(buffer.getInt(0)))
+                )
+            );
         } else {
             Winsock.INSTANCE.WSASetLastError(Winsock.WSAEINVAL);
-            result.put(0, new Data.ToPhi(-1));
+            result.put(0, new Data.ToPhi(InetAddrFuncCall.NONE));
         }
         result.put(1, new PhDefault());
         return result;

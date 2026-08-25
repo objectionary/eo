@@ -63,9 +63,7 @@ final class Transition {
                 "atom may contain only test attributes"
             );
         }
-        if (admission.label() != null) {
-            level.name(admission.label());
-        }
+        admission.name(level);
         return level;
     }
 

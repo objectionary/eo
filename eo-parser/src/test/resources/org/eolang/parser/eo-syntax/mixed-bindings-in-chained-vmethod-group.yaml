@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7251: every link of a same-indent method chain stays a vmethod, so the args
+# hanging under the last link are governed by R-6.6.2 just like the first link's.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]
+input: |
+  [] > main
+    foo > app
+    .bar
+    .baz
+      a
+      b:y

@@ -86,6 +86,42 @@ final class OyCachedTest {
         );
     }
 
+    @RepeatedTest(10)
+    void checksPresenceInConcurrentEnvironment() {
+        final AtomicInteger calls = new AtomicInteger(0);
+        final Objectionary objectionary = new OyCached(
+            new Objectionary.Fake(
+                nme -> new InputOf("[] > foo"),
+                nme -> {
+                    calls.incrementAndGet();
+                    return true;
+                },
+                nme -> false
+            )
+        );
+        new Together<>(30, thread -> objectionary.contains("parallel")).asList();
+        final int expected = 1;
+        MatcherAssert.assertThat(
+            String.format("Original objectionary should be asked only %d time", expected),
+            calls.get(),
+            Matchers.equalTo(expected)
+        );
+    }
+
+    @Test
+    void propagatesOriginFailureFromContainsAsIoException() {
+        final IOException failure = new IOException("origin failed");
+        MatcherAssert.assertThat(
+            "the original IOException must stay in the cause chain",
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyCached(new FailingObjectionary(failure)).contains("foo"),
+                "a failure from the origin objectionary must surface as IOException"
+            ).getCause().getCause(),
+            Matchers.sameInstance(failure)
+        );
+    }
+
     @Test
     void checksIsDirectoryWithEmptyCache() throws IOException {
         MatcherAssert.assertThat(
