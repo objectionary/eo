@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,11 @@ import java.util.Map;
 final class Filled {
 
     /**
+     * The arguments of every application, from {@link Given}.
+     */
+    private final Map<String, List<String>> args;
+
+    /**
      * The pairs, each name against the one it is a copy of.
      */
     private final Map<String, String> pairs;
@@ -41,11 +47,6 @@ final class Filled {
      * The provides table, by the name a type goes by.
      */
     private final Provided owned;
-
-    /**
-     * What every application in a copy chain has already filled.
-     */
-    private final Consumed consumed;
 
     /**
      * Ctor.
@@ -58,9 +59,9 @@ final class Filled {
         final Map<String, String> links,
         final Provided provided
     ) {
+        this.args = arguments;
         this.pairs = links;
         this.owned = provided;
-        this.consumed = new Consumed(arguments, links, provided);
     }
 
     /**
@@ -94,14 +95,31 @@ final class Filled {
         return found;
     }
 
+    /**
+     * @todo #7446:35min Let this pass skip the voids already taken too.
+     *  The walk below asks {@link Provided#slot(String, int, Collection)}
+     *  with nothing taken, so an application that copies a copy lands its
+     *  argument on a void an earlier application in the same chain has
+     *  already filled, which is the bug #7446 is about. {@link Bound} walks
+     *  the chain and keeps what each step took; do the same here, and add a
+     *  test that a chain applying twice fills the second void.
+     */
     private Map<String, String> fillings(final String bearer) {
         final Map<String, String> found = new HashMap<>(0);
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
         while (this.pairs.containsKey(walked) && seen.add(walked)) {
             final String copied = this.pairs.get(walked);
-            for (final Map.Entry<String, String> fill : this.consumed.filled(walked).entrySet()) {
-                found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
+            if (this.args.containsKey(walked)) {
+                final List<String> given = this.args.get(walked);
+                for (int place = 0; place < given.size(); place += 1) {
+                    final String hollow = this.owned.slot(
+                        this.end(copied), place, Collections.emptySet()
+                    );
+                    if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
+                        found.putIfAbsent(hollow, this.end(given.get(place)));
+                    }
+                }
             }
             walked = copied;
         }

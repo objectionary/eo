@@ -109,13 +109,10 @@ final class Provided {
     }
 
     /**
-     * The void this type keeps in the given place, among the voids nothing
-     * has taken yet.
+     * The void this type keeps in the given place, among the untaken ones.
      * @param type The name the type goes by
-     * @param place The place of the void among the voids of this type that
-     *  are not in {@code taken}
-     * @param taken The locators of the voids to walk past, already filled
-     *  earlier in the same chain of copies
+     * @param place The place of the void among the untaken voids of this type
+     * @param taken The locators of the voids to walk past, filled already
      * @return The locator of the void, or an empty string when this type keeps
      *  fewer untaken voids than that
      */
