@@ -754,8 +754,18 @@ final class EoTest {
     void rollsBackAndRecoversFromInvalidTextBlockEscape() {
         MatcherAssert.assertThat(
             "an invalid escape in a text block body must surface an error and not corrupt state for the next line",
-            EoTest.render("[] > main", "  \"\"\"", "  bad \\q escape", "  \"\"\" > x", "  [] > good", "    one > first"),
-            XhtmlMatchers.hasXPaths("/object/errors/error[contains(text(),'invalid unicode or octal escape in text block')]", "/object/o[@name='main']/o[@name='good']/o[@name='first']")
+            EoTest.render(
+                "[] > main",
+                "  \"\"\"",
+                "  bad \\q escape",
+                "  \"\"\" > x",
+                "  [] > good",
+                "    one > first"
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[contains(text(),'invalid unicode or octal escape in text block')]",
+                "/object/o[@name='main']/o[@name='good']/o[@name='first']"
+            )
         );
     }
 
