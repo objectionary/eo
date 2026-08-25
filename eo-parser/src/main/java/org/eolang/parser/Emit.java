@@ -156,6 +156,7 @@ final class Emit {
      * @param line Source line of the owed marker
      * @param pos Source column of the owed marker
      * @param level Depth of the object owing the marker
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     void signature(final String owed, final int line, final int pos, final int level) {
         this.signature = owed;
