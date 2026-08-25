@@ -58,3 +58,60 @@
   not. ++> can-delete-an-empty-directory
     exists.
       deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made
+
+  ++> can-return-itself-after-deleting-a-directory
+    dir.deleted.path.eq dir.path > @
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+
+  ++> can-delete-a-directory-containing-a-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target.as-path
+            dir.as-path.resolved "link"
+        and.
+          dir.deleted.exists.not
+          target.exists
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > target
+
+  ++> can-delete-a-directory-containing-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target.as-path
+            dir.as-path.resolved "broken-link"
+        target.deleted
+        dir.deleted.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > target
+
+  ++> can-delete-a-directory-with-nested-subdirectories
+    and. > @
+      f.exists
+      dir.deleted.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory dir.tmpfile.deleted).made.as-path > mid
+    as-dir. (directory mid.tmpfile.deleted).made.as-path > leaf
+    leaf.tmpfile > f
+
+  ++> can-preserve-a-sibling-file-when-deleting-a-directory
+    and. > @
+      dir.deleted.exists.not
+      sibling.exists
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > parent
+    as-dir. (directory parent.tmpfile.deleted).made.as-path > dir
+    parent.tmpfile > sibling
+
+  ++> can-delete-a-directory-with-a-unicode-named-entry
+    and. > @
+      f.exists
+      seq *
+        dir.deleted
+        f.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    touched. as-file. (dir.as-path.resolved "приветствие.txt") > f
