@@ -41,13 +41,6 @@ import java.util.stream.Collectors;
  * first.</p>
  *
  * @since 0.75
- * @todo #5165:60min Wrap the pure top-level classes and the anonymous
- *  formations in PhSticky too. Today only a named formation nested in
- *  another one (an "abstract" XMIR element) is decorated when purify.xsl
- *  marks it as pure: a top-level "class" is instantiated by PhPackage
- *  through reflection and an anonymous formation by the "o" template in
- *  mode "object", and neither site in to-java.xsl knows about the label
- *  yet.
  */
 public final class PhSticky implements Phi {
 
