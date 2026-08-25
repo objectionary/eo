@@ -47,6 +47,14 @@
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "broken-link" > link
 
+  ++> can-delete-a-directory
+    d.as-file.deleted.exists.not > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
+  ++> can-delete-a-directory-twice
+    d.as-file.deleted.deleted.exists.not > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
   mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
 
   ++> can-delete-a-symlink-to-a-directory
@@ -67,4 +75,15 @@
     temp.deleted.path.eq temp.path > @
     mktemp.tmpfile > temp
 
+  ++> can-return-itself-after-deleting-a-directory
+    temp.deleted.path.eq temp.path > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path.as-file > temp
+
   mktemp.tmpfile.deleted.exists.not ++> can-tell-that-a-file-is-gone-after-deleting
+
+  --> stops-on-deleting-a-non-empty-directory
+    seq * > @
+      child.as-file.touched
+      d.as-file.deleted
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "child.txt" > child
