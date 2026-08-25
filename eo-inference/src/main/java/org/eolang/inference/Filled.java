@@ -95,15 +95,6 @@ final class Filled {
         return found;
     }
 
-    /**
-     * @todo #7446:35min Let this pass skip the voids already taken too.
-     *  The walk below asks {@link Provided#slot(String, int, Collection)}
-     *  with nothing taken, so an application that copies a copy lands its
-     *  argument on a void an earlier application in the same chain has
-     *  already filled, which is the bug #7446 is about. {@link Bound} walks
-     *  the chain and keeps what each step took; do the same here, and add a
-     *  test that a chain applying twice fills the second void.
-     */
     private Map<String, String> fillings(final String bearer) {
         final Map<String, String> found = new HashMap<>(0);
         final Collection<String> seen = new HashSet<>(0);

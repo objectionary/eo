@@ -47,11 +47,6 @@ final class Bound {
     private final Map<String, String> chain;
 
     /**
-     * The name every type goes by.
-     */
-    private final Map<String, String> names;
-
-    /**
      * What the types certainly have.
      */
     private final Provided owned;
@@ -69,7 +64,6 @@ final class Bound {
     ) {
         this.args = arguments;
         this.chain = copies;
-        this.names = new Ends(copies).names();
         this.owned = provided;
     }
 
@@ -102,7 +96,7 @@ final class Bound {
 
     private Map<String, String> stepped(final String step, final Collection<String> taken) {
         final Map<String, String> mine = new LinkedHashMap<>(0);
-        final String copied = this.names.getOrDefault(step, step);
+        final String copied = this.root(step);
         final List<String> given = this.args.get(step);
         for (int place = 0; place < given.size(); place += 1) {
             final String hollow = this.owned.slot(copied, place, taken);
@@ -111,6 +105,15 @@ final class Bound {
             }
         }
         return mine;
+    }
+
+    private String root(final String type) {
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = type;
+        while (this.chain.containsKey(walked) && seen.add(walked)) {
+            walked = this.chain.get(walked);
+        }
+        return walked;
     }
 
     private List<String> order(final String node) {
