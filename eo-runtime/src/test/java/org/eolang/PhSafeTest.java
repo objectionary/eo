@@ -251,7 +251,7 @@ final class PhSafeTest {
      * An atom that fails with a JVM error.
      * @since 0.60.0
      */
-    private final class Broken extends PhDefault implements Atom {
+    private static final class Broken extends PhDefault implements Atom {
 
         @Override
         public Phi lambda() {
