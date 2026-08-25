@@ -52,6 +52,7 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/vars-float-up.xsl",
         "/org/eolang/parser/parse/validate-objects-count.xsl",
         "/org/eolang/parser/parse/validate-object-presence.xsl",
+        "/org/eolang/parser/parse/validate-attribute-names.xsl",
         "/org/eolang/parser/parse/build-fqns.xsl",
         "/org/eolang/parser/parse/expand-aliases.xsl",
         "/org/eolang/parser/parse/resolve-aliases.xsl",

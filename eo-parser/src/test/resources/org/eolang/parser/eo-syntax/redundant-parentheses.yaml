@@ -7,24 +7,24 @@ asserts:
   - /object[not(errors)]
 input: |
   [] > main
-    1.add (a.add 5) 4 > x
-    add. 1 (a.add 5) > x
-    add. 1 2 3 4 > x
-    add. 1 2 3 4 > x
-    add 1 2 3 4 > x
-    1.add 4 > x
-    (add 1).add 2 > x
-    1.add (1.add (1.add (1.add 1))) > x
-    (1.add 1).add (1.add 1) > x
-    add > x
+    1.add (a.add 5) 4 > x1
+    add. 1 (a.add 5) > x2
+    add. 1 2 3 4 > x3
+    add. 1 2 3 4 > x4
+    add 1 2 3 4 > x5
+    1.add 4 > x6
+    (add 1).add 2 > x7
+    1.add (1.add (1.add (1.add 1))) > x8
+    (1.add 1).add (1.add 1) > x9
+    add > x10
       1
       1
-    1.with-text "(text) with parentheses a(n)..." > x
-    "=(" > x
-    "=)" > x
-    ")" > x
-    "(-_-)" > x
+    1.with-text "(text) with parentheses a(n)..." > x11
+    "=(" > x12
+    "=)" > x13
+    ")" > x14
+    "(-_-)" > x15
     """
     (-_-)
-    """ > x
+    """ > x16
     [] > obj
