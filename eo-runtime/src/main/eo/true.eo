@@ -13,3 +13,35 @@ bool > true
     ? >> left
     ? >> right
     left > @
+
+  eq. ++> can-pick-the-left-argument-of-if
+    true.if 42 8
+    42
+
+  not. ++> can-ignore-the-right-argument-of-if
+    eq.
+      true.if 1 2
+      2
+
+  eq. ++> can-pick-the-left-argument-among-different-types
+    true.if "left" 8
+    "left"
+
+  true.if true false ++> can-pick-itself-as-the-left-branch
+
+  eq. ++> can-pick-the-left-branch-when-nested
+    true.if
+      true.if 1 2
+      3
+    1
+
+  true.as-bytes.eq 01- ++> can-turn-into-a-single-true-byte
+
+  true.and true ++> can-conjoin-true-with-true
+
+  true.or true ++> can-disjoin-true-with-true
+
+  not. ++> can-tell-true-is-not-its-own-negation
+    true.eq true.not
+
+  true.if --> stops-on-if-without-arguments
