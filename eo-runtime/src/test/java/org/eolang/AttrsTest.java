@@ -39,6 +39,19 @@ final class AttrsTest {
     }
 
     @Test
+    void ignoresLaterChangesToTheEntryItWasGiven() {
+        final Attribute attr = new AtVoid("x");
+        final Attr entry = new Attr("x", attr);
+        final Attrs attrs = new Attrs(entry);
+        entry.setValue(new AtVoid("y"));
+        MatcherAssert.assertThat(
+            "a change to the entry must not reach the attributes, but it did",
+            attrs.get("x"),
+            Matchers.sameInstance(attr)
+        );
+    }
+
+    @Test
     void countsTheEntriesWithoutReadingThemAll() {
         MatcherAssert.assertThat(
             "the size must count every entry given, but it didnt",

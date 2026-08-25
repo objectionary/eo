@@ -20,18 +20,23 @@ import java.util.Set;
  * call) being acceptable as a {@code Map.Entry} factory.</p>
  *
  * <p>The underlying {@link LinkedHashMap} is built lazily on first access, so
- * the constructor does nothing but copy the entries it was given. The copy is
- * what keeps the map immune to a caller that mutates its own array after
- * handing it over.</p>
+ * the constructor does nothing but copy the key and the value of every entry
+ * it was given. The copy is what keeps the map immune to a caller that
+ * mutates its own array, or any entry inside it, after handing it over.</p>
  *
  * @since 0.59
  */
 public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
-     * Initial entries supplied via constructor, our own copy of them.
+     * Names of the initial entries, our own copy of them.
      */
-    private final Map.Entry<String, Attribute>[] entries;
+    private final String[] names;
+
+    /**
+     * Attributes of the initial entries, our own copy of them.
+     */
+    private final Attribute[] attributes;
 
     /**
      * Lazily-resolved backing map.
@@ -45,7 +50,12 @@ public final class Attrs extends AbstractMap<String, Attribute> {
     @SafeVarargs
     public Attrs(final Map.Entry<String, Attribute>... initial) {
         super();
-        this.entries = initial.clone();
+        this.names = new String[initial.length];
+        this.attributes = new Attribute[initial.length];
+        for (int idx = 0; idx < initial.length; ++idx) {
+            this.names[idx] = initial[idx].getKey();
+            this.attributes[idx] = initial[idx].getValue();
+        }
     }
 
     @Override
@@ -60,9 +70,9 @@ public final class Attrs extends AbstractMap<String, Attribute> {
 
     private Map<String, Attribute> resolve() {
         if (this.resolved == null) {
-            final Map<String, Attribute> map = new LinkedHashMap<>(this.entries.length);
-            for (final Map.Entry<String, Attribute> ent : this.entries) {
-                map.put(ent.getKey(), ent.getValue());
+            final Map<String, Attribute> map = new LinkedHashMap<>(this.names.length);
+            for (int idx = 0; idx < this.names.length; ++idx) {
+                map.put(this.names[idx], this.attributes[idx]);
             }
             this.resolved = map;
         }
