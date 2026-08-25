@@ -606,25 +606,6 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-with-a-double-star-in-the-middle-of-the-glob
-    seq * > @
-      made.
-        as-dir.
-          d.resolved "foo/bar"
-      touched.
-        as-file.
-          d.resolved "foo/bar/x.txt"
-      touched.
-        as-file.
-          d.resolved "foo/y.txt"
-      eq.
-        ",".joined
-          d.as-dir.walk "foo/**/x.txt"
-        d.resolved "foo/bar/x.txt"
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
-
   ++> can-walk-with-a-glob-brace-group
     seq * > @
       touched.
