@@ -348,7 +348,10 @@ final class SyscallTest {
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
-                    this.ensure(Winsock.INSTANCE.connect(new Pointer(client), sockaddr, sockaddr.size()) == 0);
+                    final int connected = Winsock.INSTANCE.connect(
+                        new Pointer(client), sockaddr, sockaddr.size()
+                    );
+                    this.ensure(connected == 0);
                     final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
                     final int sent = Winsock.INSTANCE.send(new Pointer(client), buf, buf.length, 0);
                     MatcherAssert.assertThat(
