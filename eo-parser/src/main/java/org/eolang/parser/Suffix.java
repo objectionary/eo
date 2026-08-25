@@ -288,6 +288,12 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), pos,
+                "atom signature must be a dotted name with no leading, trailing, or empty segment"
+            );
+        }
         Suffix.checkCactus(raw, span, pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z' && !raw.matches("[A-F]") && !raw.startsWith("Q.")) {
