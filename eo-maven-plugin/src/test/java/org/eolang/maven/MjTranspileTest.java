@@ -8,7 +8,9 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
+import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -62,6 +64,15 @@ final class MjTranspileTest {
             "passed without exceptions",
             story,
             new XtoryMatcher()
+        );
+    }
+
+    @Test
+    void givesDistinctClassNamesToLongNamesDifferingBeyondTheLimit() throws IOException {
+        MatcherAssert.assertThat(
+            "two names that differ only past the length limit must not share a Java class name",
+            this.javaName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAaaaazaaaaaaaaaaaaaaa"),
+            Matchers.not(Matchers.equalTo(this.javaName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaataaaaHaaaaaaaaaaaaaaa")))
         );
     }
 
@@ -766,5 +777,25 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         );
+    }
+
+    /**
+     * The Java class name the transpiler gives to an object with this name.
+     * @param name The name of the object in EO
+     * @return The Java name of the class
+     */
+    private String javaName(final String name) throws IOException {
+        return new Xsline(
+            new TrClasspath<>(
+                "/org/eolang/parser/parse/set-locators.xsl",
+                "/org/eolang/maven/transpile/set-original-names.xsl",
+                "/org/eolang/maven/transpile/classes.xsl",
+                "/org/eolang/maven/transpile/attrs.xsl",
+                "/org/eolang/maven/transpile/data.xsl",
+                "/org/eolang/maven/transpile/to-java.xsl"
+            ).back()
+        ).pass(
+            new EoSyntax(String.format("[] > %s%n  42 > @%n", name)).parsed()
+        ).xpath("//@java-name").get(0);
     }
 }
