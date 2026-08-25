@@ -21,10 +21,9 @@ final class GettimeofdaySyscallTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void reportsSecondsCloseToCurrentWallClockTime() {
-        final long secs = new Dataized(this.output().take("seconds")).asNumber().longValue();
         MatcherAssert.assertThat(
             "gettimeofday must report seconds close to the current wall-clock time, not a value corrupted by a mismatched NativeLong/Java long field width",
-            (double) secs,
+            new Dataized(this.output().take("seconds")).asNumber().doubleValue(),
             Matchers.closeTo(System.currentTimeMillis() / 1000.0, 5.0)
         );
     }
@@ -32,10 +31,9 @@ final class GettimeofdaySyscallTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void reportsMicrosecondFractionBelowOneSecond() {
-        final long micros = new Dataized(this.output().take("micros")).asNumber().longValue();
         MatcherAssert.assertThat(
             "gettimeofday must report a microsecond fraction below one second, not bytes read past what the native call wrote",
-            micros,
+            new Dataized(this.output().take("micros")).asNumber().longValue(),
             Matchers.allOf(Matchers.greaterThanOrEqualTo(0L), Matchers.lessThan(1_000_000L))
         );
     }
