@@ -7,14 +7,9 @@ name: fast
   pull_request:
     branches:
       - master
-concurrency:
-  group: fast-${{ github.ref }}
-  cancel-in-progress: true
 jobs:
   fast:
     runs-on: ubuntu-24.04
-    env:
-      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
@@ -29,7 +24,4 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      # The `eo.transpileTests` flag keeps the tests written inside .eo files
-      # out of this run: they are slow and `eo-tests.yml` already runs the ones
-      # that belong to the .eo files a pull request touches.
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' clean install
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
