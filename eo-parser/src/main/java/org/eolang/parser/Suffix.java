@@ -282,18 +282,34 @@ final class Suffix {
      * and rejected. Every other token is a concrete forma, returned
      * verbatim for {@code add-default-package} to home.</p>
      *
+     * <p>A concrete forma is a {@code NAME ('.' NAME)*} path, so a
+     * leading dot, a trailing dot, or an empty segment is rejected
+     * here, for the signature and the annotation alike.</p>
+     *
      * @param raw Raw token, without a trailing {@code ?}
      * @param span Source span
      * @param pos Source column of the token (for errors)
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), pos,
+                "atom signature must be a dotted name with no leading, trailing, or empty segment"
+            );
+        }
         Suffix.checkCactus(raw, span, pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z' && !raw.matches("[A-F]") && !raw.startsWith("Q.")) {
             throw new ParseError(
                 span.line(), pos,
                 "type variable must be one of A-F"
+            );
+        }
+        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
+            throw new ParseError(
+                span.line(), pos,
+                "type must be a dotted name with no leading, trailing, or empty segment"
             );
         }
         final String promoted;
@@ -522,12 +538,6 @@ final class Suffix {
             throw new ParseError(
                 span.line(), home + after,
                 "atom signature requires a name"
-            );
-        }
-        if (raw.startsWith(".") || raw.endsWith(".") || raw.contains("..")) {
-            throw new ParseError(
-                span.line(), home + after,
-                "atom signature must be a dotted name with no leading, trailing, or empty segment"
             );
         }
         return Suffix.typeAtom(raw, span, home + after);

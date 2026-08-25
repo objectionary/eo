@@ -189,10 +189,10 @@ final class EmitTest {
     @Test
     void opensObjectWithNameAndPosition() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 3, 0);
+        emit.baselessObject("foo", 3, 0);
         emit.close();
         MatcherAssert.assertThat(
-            "object() must add an <o> at the current cursor with @name, @line, @pos",
+            "baselessObject() must add an <o> at the current cursor with @name, @line, @pos",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='foo' and @line='3' and @pos='0']")
         );
@@ -211,22 +211,36 @@ final class EmitTest {
     }
 
     @Test
-    void omitsNameAttributeWhenNull() {
+    void omitsNameAttributeWhenUnnamed() {
         final Emit emit = new Emit();
-        emit.object(null, "bar", 1, 0);
+        emit.unnamedObject("bar", 1, 0);
         emit.close();
         MatcherAssert.assertThat(
-            "passing a null name must omit @name on the emitted <o>",
+            "unnamedObject() must omit @name on the emitted <o>",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@base='bar' and not(@name)]")
         );
     }
 
     @Test
+    void omitsNameAndBaseAttributesWhenBare() {
+        final Emit emit = new Emit();
+        emit.bareObject(1, 0);
+        emit.close();
+        MatcherAssert.assertThat(
+            "bareObject() must omit both @name and @base on the emitted <o>",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@line='1' and @pos='0' and not(@name) and not(@base)]"
+            )
+        );
+    }
+
+    @Test
     void nestsChildObjectInsideOpenParent() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
-        emit.object("inner", null, 2, 2);
+        emit.baselessObject("outer", 1, 0);
+        emit.baselessObject("inner", 2, 2);
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -239,7 +253,7 @@ final class EmitTest {
     @Test
     void emitsVoidParam() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 1, 0);
+        emit.baselessObject("foo", 1, 0);
         emit.voidParam("x", 1, 1);
         emit.close();
         MatcherAssert.assertThat(
@@ -254,7 +268,7 @@ final class EmitTest {
     @Test
     void emitsAtomMarker() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 1, 0);
+        emit.baselessObject("foo", 1, 0);
         emit.atomMarker("number", 1, 5);
         emit.close();
         MatcherAssert.assertThat(
@@ -282,7 +296,7 @@ final class EmitTest {
     @Test
     void marksObjectWithSlotAttribute() {
         final Emit emit = new Emit();
-        emit.object(null, "foo", 1, 0);
+        emit.unnamedObject("foo", 1, 0);
         emit.slot("label");
         emit.close();
         MatcherAssert.assertThat(
@@ -295,7 +309,7 @@ final class EmitTest {
     @Test
     void marksObjectAsStar() {
         final Emit emit = new Emit();
-        emit.object(null, "Φ.tuple", 1, 0);
+        emit.unnamedObject("Φ.tuple", 1, 0);
         emit.star();
         emit.close();
         MatcherAssert.assertThat(
@@ -308,7 +322,7 @@ final class EmitTest {
     @Test
     void setsTextContent() {
         final Emit emit = new Emit();
-        emit.object(null, "Φ.bytes", 1, 0);
+        emit.unnamedObject("Φ.bytes", 1, 0);
         emit.set("CA-FE-BE");
         emit.close();
         MatcherAssert.assertThat(
@@ -334,9 +348,9 @@ final class EmitTest {
     @Test
     void preservesCursorAcrossSidePanelEmissions() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
+        emit.baselessObject("outer", 1, 0);
         emit.error(99, 7, "boom");
-        emit.object("inner", null, 2, 2);
+        emit.baselessObject("inner", 2, 2);
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -349,7 +363,7 @@ final class EmitTest {
     @Test
     void retainsSidePanelErrorAlongsideTree() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
+        emit.baselessObject("outer", 1, 0);
         emit.error(5, 0, "boom");
         emit.close();
         MatcherAssert.assertThat(
