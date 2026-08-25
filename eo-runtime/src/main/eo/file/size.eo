@@ -61,6 +61,19 @@
         "w"
         f.write "Hello, world" > [^ f]
 
+  ++> can-measure-a-symbolic-link-by-its-target-size
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.size.eq
+          target.as-file.size
+    mktemp.tmpfile.touched.as-path > target
+    target.resolved "link-to-file" > link
+
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0
 
