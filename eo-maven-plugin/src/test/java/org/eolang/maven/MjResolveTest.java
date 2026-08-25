@@ -145,7 +145,8 @@ final class MjResolveTest {
     }
 
     @Test
-    void reportsRtJvmLocationWithAnEmptyComponentClearly(@Mktmp final Path temp) throws IOException {
+    void reportsRtJvmLocationWithAnEmptyComponentClearly(@Mktmp final Path temp)
+        throws IOException {
         final Path xmir = temp.resolve("dep.xmir");
         Files.writeString(
             xmir,
