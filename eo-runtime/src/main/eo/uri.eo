@@ -262,6 +262,11 @@
       uri "http://host/path"
     "host"
 
+  eq. ++> can-parse-the-authority-of-a-bare-scheme-uri
+    authority.
+      uri "pgsql:localhost:899"
+    ""
+
   eq. ++> can-parse-the-authority-of-a-userinfo-and-port-uri
     authority.
       uri "http://user:pass@host:80/some/path"
@@ -291,6 +296,11 @@
     host.
       uri "//host/path"
     "host"
+
+  eq. ++> can-parse-the-host-of-a-schemeless-uri
+    host.
+      uri "foo/bar"
+    ""
 
   eq. ++> can-parse-the-host-of-an-authority-with-a-port
     host.
@@ -327,6 +337,11 @@
       uri "http://[::1]:8080/p"
     "8080"
 
+  eq. ++> can-parse-the-port-of-a-bracketed-ipv6-host-without-a-port
+    port.
+      uri "http://[2001:db8::1]/p"
+    ""
+
   eq. ++> can-parse-the-port-of-a-schemeless-uri-as-empty
     port.
       uri "foo/bar"
@@ -356,6 +371,11 @@
     scheme.
       uri "http2://host/path"
     "http2"
+
+  eq. ++> can-parse-the-scheme-of-an-empty-text
+    scheme.
+      uri ""
+    ""
 
   eq. ++> can-parse-the-userinfo-of-a-bracketed-ipv6-authority
     userinfo.
