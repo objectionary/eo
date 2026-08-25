@@ -208,8 +208,9 @@ public final class PhSticky implements Phi {
             result = Optional.of(
                 normal.stream().map(
                     put -> String.format(
-                        "%s=%s",
+                        "%s=%s:%s",
                         put.getKey(),
+                        put.getValue().forma(),
                         Base64.getEncoder().encodeToString(
                             new Dataized(put.getValue()).take()
                         )

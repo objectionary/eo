@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# #7251: the uniform half of R-6.6.2 — every arg of a vmethod group carries a
+# binding, so the group is valid and every binding reaches the XMIR.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.app.bar']/o[@base='Φ.a' and @as='x']
+  - //o[@base='ξ.app.bar']/o[@base='Φ.b' and @as='y']
+input: |
+  [] > main
+    foo > app
+    .bar
+      a:x
+      b:y

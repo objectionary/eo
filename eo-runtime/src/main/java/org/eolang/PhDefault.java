@@ -199,7 +199,12 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.put(this.vacancy(pos), object);
+        this.lock.lock();
+        try {
+            this.put(this.vacancy(pos), object);
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     @Override

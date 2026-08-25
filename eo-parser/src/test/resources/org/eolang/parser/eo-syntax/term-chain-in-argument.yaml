@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The terminator term is a value wherever a value is expected and may
+# carry a method chain (§2.3), in argument position as well as at the head
+# of a line. `T` is the receiver of the chain here, not a head taking
+# arguments of its own.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='first' and @base='Φ.foo']/o[@as='α0' and @base='⊥.bar']
+  - //o[@name='second' and @base='⊥.bar']
+input: |
+  [] > app
+    foo T.bar > first
+    T.bar > second

@@ -662,8 +662,8 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!level.tupled() && level.children() == level.count()) {
-            emit.object(
-                null, "Φ.tuple", level.start(), level.indent()
+            emit.unnamedObject(
+                "Φ.tuple", level.start(), level.indent()
             );
             emit.star();
             emit.close();
@@ -676,8 +676,8 @@ final class Eo implements Iterable<Directive> {
         if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
             && !parent.tupled()
             && parent.children() == parent.count()) {
-            emit.object(
-                null, "Φ.tuple", parent.start(), parent.indent()
+            emit.unnamedObject(
+                "Φ.tuple", parent.start(), parent.indent()
             );
             emit.star();
             parent.openTuple();
