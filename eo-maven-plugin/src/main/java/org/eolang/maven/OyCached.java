@@ -70,7 +70,6 @@ final class OyCached implements Objectionary {
      * @param progs The cache for programs
      * @param dirs The cache for directories
      * @param present The cache for presence checks
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     OyCached(final Objectionary oby, final Map<String, Input> progs,
         final Map<String, Boolean> dirs, final Map<String, Boolean> present) {
