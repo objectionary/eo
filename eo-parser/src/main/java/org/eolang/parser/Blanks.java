@@ -46,7 +46,7 @@ final class Blanks {
         if (globals.pendingBlanks() > 0) {
             emit.error(
                 span.line(), span.indent(),
-                "blank line before a plain object is forbidden (R-6.5.4); only master objects (formations, atoms, only-phi formations, +> tests) may be preceded by a blank line"
+                "blank line not allowed between non-master siblings"
             );
         }
     }
@@ -70,14 +70,12 @@ final class Blanks {
      *
      * @param span The offending line's span (used for error position)
      * @param stack The indent stack, read for the top-level object's kind
-     * @param blanks How many blank lines precede the line - read by the
-     *  caller before {@link #enterAfterMeta(Span, Globals, Emit)} had a
-     *  chance to consume them
+     * @param globals The global parser state, read for the blank count
      * @param emit The directives sink
      * @checkstyle ParameterNumberCheck (3 lines)
      */
     static void checkTest(
-        final Span span, final Stack stack, final int blanks, final Emit emit
+        final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         final Kind top = stack.root().kind();
         if (span.indent() != 2 || top != Kind.BARE_FORMATION && top != Kind.ONLY_PHI) {
@@ -86,7 +84,7 @@ final class Blanks {
                 "test attribute legal only as direct child of top-level object"
             );
         }
-        if (blanks == 0) {
+        if (globals.pendingBlanks() == 0) {
             emit.error(
                 span.line(), span.indent(),
                 "missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute"
@@ -95,28 +93,25 @@ final class Blanks {
     }
 
     /**
-     * Report R-6.5.5 — the first non-meta non-blank line after the
-     * meta header must be preceded by exactly one blank line. Closes
-     * the meta-header window so subsequent lines are not re-checked.
+     * Close the meta header — called from the first non-meta non-blank
+     * line, reporting R-6.5.5 when that line is not preceded by
+     * exactly one blank line. Does nothing once the header is already
+     * closed.
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink
-     * @return How many blank lines preceded the line, counted before
-     *  this method consumed them
      */
-    static int enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
-        final int blanks = globals.pendingBlanks();
+    static void enterAfterMeta(final Span span, final Globals globals, final Emit emit) {
         if (globals.inMetaHeader()) {
             if (globals.pendingBlanks() == 0) {
                 emit.error(
                     span.line(), span.indent(),
-                    "missing blank line between meta header and the first non-meta line (R-6.5.5); exactly one blank must separate them"
+                    "meta header must be followed by exactly one blank line"
                 );
             } else {
                 globals.clearBlanks();
             }
             globals.closeMetaHeader();
         }
-        return blanks;
     }
 }

@@ -24,8 +24,12 @@
       if.
         size.eq 0
         "The delimiter must not be empty"
-        "Invalid limit %f for nsplit, must be at least 1".printf
-          * limit
+        limit.is-finite.if
+          "Invalid limit %f for nsplit, must be at least 1".printf
+            * limit
+          "Invalid limit %s for nsplit, must be at least 1".printf
+            *
+              string limit.as-scientific
     if.
       1.eq limit
       * text
@@ -84,6 +88,13 @@
     "a-b-c".nsplit
       "-"
       1.5
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-limit-when-splitting
+    "Invalid limit infinity for nsplit, must be at least 1"
+    "a-b-c".nsplit
+      "-"
+      pinf
       I
 
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string

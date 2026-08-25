@@ -17,9 +17,10 @@ package org.eolang.parser;
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
  * copy-on-write would allocate a new object on every line transition,
- * pushing the parser's per-line cost from O(1) to O(D). Mutation is
- * confined to the {@link Stack} that owns this entry; no other class
- * keeps a reference. *
+ * pushing the parser's per-line cost from O(1) to O(D). Mutation is not
+ * confined to {@link Stack}: {@link LnMethod}, {@link LnCompactTuple},
+ * {@link LnOnlyPhi}, {@link Bindings} and {@link Eo} all hold a reference
+ * to a live entry and call its mutators directly.
  *
  * @since 0.1
  */
@@ -459,6 +460,9 @@ final class Level {
         this.tupled = false;
         this.children = 0;
         this.count = 0;
+        this.bindings = 0;
+        this.argpending = false;
+        this.argbound = false;
     }
 
     /**
@@ -519,6 +523,7 @@ final class Level {
             if (this.bindings == 0) {
                 this.bindings = code;
             } else if (this.bindings != code) {
+                this.argpending = false;
                 throw new ParseError(
                     this.argspan.line(), this.argspan.indent(),
                     "argument bindings must be all-or-nothing"

@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7352: an outer binding on a vertical formation obeys the same :label
+# grammar as every other inline binding, so a NAME label and a slot number
+# both stay legal.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@as='slot' and @base='ξ.named']
+  - //o[@as='α0' and @base='ξ.numbered']
+input: |
+  [] > main
+    x > y
+      []:slot > named
+    x > z
+      []:0 > numbered

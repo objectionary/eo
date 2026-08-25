@@ -87,9 +87,9 @@ final class LnPipe implements Line {
         );
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object(
+        emit.baselessObject(
             suffix.attribute(this.span.line(), this.span.indent()),
-            null, this.span.line(), this.span.indent()
+            this.span.line(), this.span.indent()
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());

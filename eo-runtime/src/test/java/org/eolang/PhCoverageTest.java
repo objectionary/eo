@@ -7,6 +7,7 @@ package org.eolang;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -26,6 +28,13 @@ import org.junit.jupiter.api.parallel.Isolated;
  * property, which every {@code PhCoverage} touches: when coverage
  * instrumentation is on, a concurrent test would append its own hits to
  * this test's file and break the exact-contents assertion.</p>
+ *
+ * <p>For the same reason every test that asserts on the contents of that
+ * file wraps a plain {@link PhDefault} and never a transpiled object like
+ * {@link Data.ToPhi}: with {@code eo.coverageTracking} on, the generated
+ * objects are themselves wrapped into {@link PhCoverage}, so dataizing one
+ * appends its own locations to the very file the test has just pointed the
+ * property at.</p>
  *
  * @since 0.58
  */
@@ -61,6 +70,37 @@ final class PhCoverageTest {
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
                 Matchers.containsInAnyOrder("Φ.foo:7:3", "Φ.bar:9:5")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void recordsALocationOnceTheDestinationBecomesWritable(@Mktmp final Path temp)
+        throws Exception {
+        final Path hits = temp.resolve("absent").resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        System.setProperty("eo.coverageFile", hits.toString());
+        try {
+            final Phi covered = new PhCoverage(
+                new PhDefault(new byte[] {(byte) 0x01}), "Φ.retry:4:2"
+            );
+            Assertions.assertThrows(
+                UncheckedIOException.class,
+                covered::delta,
+                "a hit that cannot be appended must fail loudly, but it didnt"
+            );
+            Files.createDirectory(hits.getParent());
+            covered.delta();
+            MatcherAssert.assertThat(
+                "a location must be recorded once the destination becomes writable, but it wasnt",
+                Files.readAllLines(hits, StandardCharsets.UTF_8),
+                Matchers.contains("Φ.retry:4:2")
             );
         } finally {
             if (before == null) {
