@@ -10,7 +10,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +77,13 @@ public final class PhSticky implements Phi {
     private final List<Map.Entry<String, Phi>> inputs;
 
     /**
+     * The dataizations going on right now, by key, shared with every copy,
+     * so that two callers asking for the same answer wait for one
+     * computation instead of running two.
+     */
+    private final Map<String, FutureTask<byte[]>> running;
+
+    /**
      * Ctor.
      * @param obj The object to decorate
      */
@@ -90,7 +100,8 @@ public final class PhSticky implements Phi {
         this(
             obj,
             Collections.synchronizedMap(new Lru(capacity)),
-            new CopyOnWriteArrayList<>()
+            new CopyOnWriteArrayList<>(),
+            new ConcurrentHashMap<>(0)
         );
     }
 
@@ -99,15 +110,19 @@ public final class PhSticky implements Phi {
      * @param obj The object to decorate
      * @param map The answers remembered so far
      * @param puts The puts received so far
+     * @param busy The dataizations going on right now
+     * @checkstyle ParameterNumberCheck (7 lines)
      */
     private PhSticky(
         final Phi obj,
         final Map<String, byte[]> map,
-        final List<Map.Entry<String, Phi>> puts
+        final List<Map.Entry<String, Phi>> puts,
+        final Map<String, FutureTask<byte[]>> busy
     ) {
         this.origin = obj;
         this.cache = map;
         this.inputs = puts;
+        this.running = busy;
     }
 
     @Override
@@ -125,7 +140,8 @@ public final class PhSticky implements Phi {
         return new PhSticky(
             this.origin.copy(),
             this.cache,
-            new CopyOnWriteArrayList<>(this.inputs)
+            new CopyOnWriteArrayList<>(this.inputs),
+            this.running
         );
     }
 
@@ -166,13 +182,7 @@ public final class PhSticky implements Phi {
         final byte[] result;
         final Optional<String> key = this.key();
         if (key.isPresent()) {
-            final byte[] found = this.cache.get(key.get());
-            if (found == null) {
-                result = this.origin.delta();
-                this.cache.put(key.get(), result.clone());
-            } else {
-                result = found.clone();
-            }
+            result = this.remembered(key.get());
         } else {
             result = this.origin.delta();
         }
@@ -191,6 +201,50 @@ public final class PhSticky implements Phi {
     @Override
     public String φTerm() {
         return this.origin.φTerm();
+    }
+
+    private byte[] remembered(final String key) {
+        byte[] found = this.cache.get(key);
+        if (found == null) {
+            found = this.computed(key);
+        }
+        return found.clone();
+    }
+
+    private byte[] computed(final String key) {
+        final FutureTask<byte[]> fresh = new FutureTask<>(this.origin::delta);
+        final FutureTask<byte[]> found = this.running.putIfAbsent(key, fresh);
+        final byte[] bytes;
+        if (found == null) {
+            try {
+                fresh.run();
+                bytes = this.answer(fresh);
+                this.cache.put(key, bytes.clone());
+            } finally {
+                this.running.remove(key);
+            }
+        } else {
+            bytes = this.answer(found);
+        }
+        return bytes;
+    }
+
+    private byte[] answer(final FutureTask<byte[]> task) {
+        try {
+            return task.get();
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new ExInterrupted("Interrupted while waiting for a shared dataization");
+        } catch (final ExecutionException ex) {
+            final Throwable cause = ex.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+            if (cause instanceof Error) {
+                throw (Error) cause;
+            }
+            throw new ExFailure("The shared dataization failed", cause);
+        }
     }
 
     private Optional<String> key() {
