@@ -183,7 +183,7 @@
   <!-- Convert location to class name -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize($loc, '\.'), ''), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
