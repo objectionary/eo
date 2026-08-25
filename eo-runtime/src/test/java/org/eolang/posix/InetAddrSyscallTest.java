@@ -5,6 +5,7 @@
 package org.eolang.posix;
 
 import com.sun.jna.Native;
+import java.util.Collections;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
@@ -27,6 +28,20 @@ final class InetAddrSyscallTest {
             "inet_addr does not set errno on failure, so the syscall wrapper must set it itself, to EINVAL, or a later strerror(errno) reads whatever an unrelated earlier call left behind",
             Native.getLastError(),
             Matchers.equalTo(22)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void doesNotReportInvalidForTheBroadcastAddress() {
+        Native.setLastError(0);
+        new InetAddrSyscall(Phi.Φ.take("posix").copy()).make(
+            new Data.ToPhi(String.join(".", Collections.nCopies(4, "255")))
+        );
+        MatcherAssert.assertThat(
+            "the limited-broadcast address converts to -1 like an unparsable one does, but it is valid, so EINVAL must not be reported for it",
+            Native.getLastError(),
+            Matchers.not(Matchers.equalTo(22))
         );
     }
 
