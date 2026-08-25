@@ -343,12 +343,21 @@
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
-        <xsl:text> extends PhOnce {</xsl:text>
+        <xsl:text> extends PhOnce</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat(' extends ', $phiDefaultClass, ' {')"/>
+        <xsl:value-of select="concat(' extends ', $phiDefaultClass)"/>
       </xsl:otherwise>
     </xsl:choose>
+    <!--
+    A top-level formation purify.xsl marked @pure implements this marker, so
+    that PhPackage, which loads it through reflection and never sees @pure
+    itself, can still wrap the instance in PhSticky.
+    -->
+    <xsl:if test="@pure='true'">
+      <xsl:text> implements Pure</xsl:text>
+    </xsl:if>
+    <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="nested"/>
@@ -540,8 +549,9 @@
   Abstract object as attribute. A formation that purify.xsl marked with
   @pure is returned wrapped in PhSticky, so that at run time it remembers
   the results of its own dataization (see #5165). A pure top-level class
-  and a pure anonymous formation are not wrapped yet (see the puzzle in
-  PhSticky.java).
+  and a pure anonymous formation are wrapped the same way, see the "class"
+  template's "implements Pure" and the "Anonymous abstract object" template
+  below.
   -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
@@ -629,24 +639,42 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Anonymous abstract object -->
+  <!--
+  Anonymous abstract object. A formation that purify.xsl marked with @pure
+  is returned wrapped in PhSticky, the same way a named nested formation
+  already is in the "abstract" template above.
+  -->
   <xsl:template match="o[not(@base) and not(@name)]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>PhDefault </xsl:text>
+    <xsl:choose>
+      <xsl:when test="o and @pure='true'">
+        <xsl:text>Phi </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>PhDefault </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>new PhSticky(</xsl:text>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+        <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('new ', $phiDefaultClass)"/>
+        <xsl:value-of select="concat('new ', $phiDefaultClass, '()')"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>();</xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]" mode="object">

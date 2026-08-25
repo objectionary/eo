@@ -134,6 +134,9 @@ final class PhPackage implements Phi {
                 .asSubclass(Phi.class)
                 .getConstructor()
                 .newInstance();
+            if (loaded instanceof Pure) {
+                loaded = new PhSticky(loaded);
+            }
         } catch (final ClassNotFoundException phi) {
             try {
                 Class.forName(pinfo);
