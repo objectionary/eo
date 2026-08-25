@@ -309,8 +309,7 @@ final class Globals {
      * leave the file without its top comment block and with every later
      * comment rejected. {@link Eo} takes one of these next to
      * {@link Emit#savepoint()} and hands it back to
-     * {@link #restore(Globals)} next to {@link Emit#rollback(int)}.</p>
-     *
+     * {@link #restore(Globals)} next to {@link Emit#rollback(Savepoint)}.</p>
      * @return Detached copy of the current state
      */
     Globals savepoint() {

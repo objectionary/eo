@@ -120,7 +120,6 @@ final class Emit {
      * three must roll back together via {@link #rollback(Savepoint)}, or
      * an error recovered mid-formation leaves {@link #depth} drifted from
      * the tree it describes (#7539).
-     *
      * @return Savepoint token
      */
     Savepoint savepoint() {
@@ -137,14 +136,14 @@ final class Emit {
      * @param token Savepoint token from {@link #savepoint()}
      */
     void rollback(final Savepoint token) {
-        while (this.sink.size() > token.sink) {
+        while (this.sink.size() > token.sink()) {
             this.sink.remove(this.sink.size() - 1);
         }
-        this.depth = token.depth;
-        this.signature = token.signature;
-        this.sigline = token.sigline;
-        this.sigpos = token.sigpos;
-        this.sigdepth = token.sigdepth;
+        this.depth = token.depth();
+        this.signature = token.signature();
+        this.sigline = token.sigline();
+        this.sigpos = token.sigpos();
+        this.sigdepth = token.sigdepth();
     }
 
     /**
@@ -522,64 +521,5 @@ final class Emit {
             result = located;
         }
         return result;
-    }
-
-    /**
-     * Opaque token from {@link #savepoint()}, restored by
-     * {@link #rollback(Savepoint)} — bundles the sink size with
-     * {@link #depth} and the owed atom signature so a rollback puts all
-     * three back in step (#7539).
-     *
-     * @since 0.1
-     */
-    static final class Savepoint {
-
-        /** Sink size at the savepoint. */
-        private final int sink;
-
-        /** {@link Emit#depth} at the savepoint. */
-        private final int depth;
-
-        /** {@link Emit#signature} at the savepoint. */
-        private final String signature;
-
-        /** {@link Emit#sigline} at the savepoint. */
-        private final int sigline;
-
-        /** {@link Emit#sigpos} at the savepoint. */
-        private final int sigpos;
-
-        /** {@link Emit#sigdepth} at the savepoint. */
-        private final int sigdepth;
-
-        /**
-         * Ctor.
-         * @param sink Sink size at the savepoint
-         * @param depth Open element depth at the savepoint
-         * @param signature Owed atom signature at the savepoint
-         * @param sigline Source line of the owed marker
-         * @param sigpos Source column of the owed marker
-         * @param sigdepth Depth of the object owing the marker
-         * @checkstyle ParameterNumberCheck (5 lines)
-         */
-        Savepoint(
-            final int sink, final int depth, final String signature,
-            final int sigline, final int sigpos, final int sigdepth
-        ) {
-            this.sink = sink;
-            this.depth = depth;
-            this.signature = signature;
-            this.sigline = sigline;
-            this.sigpos = sigpos;
-            this.sigdepth = sigdepth;
-        }
-
-        /**
-         * Sink size at the savepoint.
-         * @return Sink size
-         */
-        int sink() {
-            return this.sink;
-        }
     }
 }

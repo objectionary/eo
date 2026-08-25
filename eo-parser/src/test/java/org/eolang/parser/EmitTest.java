@@ -162,7 +162,7 @@ final class EmitTest {
     @Test
     void dropsDirectivesAfterTokenOnRollback() {
         final Emit emit = new Emit();
-        final Emit.Savepoint token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         emit.error(1, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
@@ -176,7 +176,7 @@ final class EmitTest {
     void keepsDirectivesBeforeTokenOnRollback() {
         final Emit emit = new Emit();
         emit.meta(1, "keep", Collections.emptyList());
-        final Emit.Savepoint token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         emit.error(2, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
@@ -191,7 +191,7 @@ final class EmitTest {
         final Emit emit = new Emit();
         emit.object("foo", null, 1, 0);
         emit.atomMarker("number", 1, 5);
-        final Emit.Savepoint token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         emit.object("bar", "Φ.string", 2, 0);
         emit.rollback(token);
         emit.close();
