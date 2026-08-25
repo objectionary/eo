@@ -92,8 +92,8 @@ public final class PhCoverage implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.origin.hasRho();
+    public boolean needsRho() {
+        return this.origin.needsRho();
     }
 
     @Override
@@ -140,27 +140,32 @@ public final class PhCoverage implements Phi {
 
     private void hit() {
         final String property = PhCoverage.property();
-        if (property != null && this.hits.add(property + '\0' + this.record)) {
-            try {
-                Files.write(
-                    Paths.get(property),
-                    String.format("%s%n", this.record).getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
-                );
-            } catch (final IOException ex) {
-                throw new UncheckedIOException(
-                    String.format("Failed to append a coverage hit to '%s'", property),
-                    ex
-                );
-            } catch (final InvalidPathException ex) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Invalid path '%s' in the 'eo.coverageFile' system property",
-                        property
-                    ),
-                    ex
-                );
+        if (property != null) {
+            final String seen = property + '\0' + this.record;
+            if (this.hits.add(seen)) {
+                try {
+                    Files.write(
+                        Paths.get(property),
+                        String.format("%s%n", this.record).getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.APPEND
+                    );
+                } catch (final IOException ex) {
+                    this.hits.remove(seen);
+                    throw new UncheckedIOException(
+                        String.format("Failed to append a coverage hit to '%s'", property),
+                        ex
+                    );
+                } catch (final InvalidPathException ex) {
+                    this.hits.remove(seen);
+                    throw new IllegalArgumentException(
+                        String.format(
+                            "Invalid path '%s' in the 'eo.coverageFile' system property",
+                            property
+                        ),
+                        ex
+                    );
+                }
             }
         }
     }

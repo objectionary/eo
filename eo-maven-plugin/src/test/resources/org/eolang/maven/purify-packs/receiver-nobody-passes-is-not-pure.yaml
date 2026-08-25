@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A receiver has to be handed over for the table to have seen it, and a
+# dispatch hands nothing: "42.halved" says where the formation is attached
+# without any caller writing it down as an argument, so the row stays empty
+# and the formation is left alone. The one that is passed a number is marked.
+eo:
+  app.eo: |
+    [] > app
+      42.halved > @
+      doubled 42 > @
+  doubled.eo: |
+    [^] > doubled
+      ^.plus 0 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > plus
+        x > @
+      [^] > halved
+        ^.plus 0 > @
+pure:
+  - "//o[@name='halved' and not(@pure)]"
+  - "//o[@name='doubled' and @pure='true']"

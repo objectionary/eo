@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7502: an atom may name what it comes back with as a dotted chain with no
+# "Φ."/"Q." root ("/org.eolang.number", "/x.y.z"), and the parser keeps that
+# spelling verbatim, but the "signature" pattern only let a chain of names
+# follow "Φ" or "ξ", so neither validated.
+errors: 0
+input: |-
+  [] > parent
+    [] > dotted /org.eolang.number
+
+    [] > deep /x.y.z

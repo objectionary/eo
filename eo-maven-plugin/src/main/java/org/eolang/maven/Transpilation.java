@@ -36,9 +36,10 @@ final class Transpilation {
 
     /**
      * The XSL steps of the transpile train, in order, ending with
-     * {@code to-java.xsl}. Kept as a single list so both the train in
-     * {@link #compiled(boolean, boolean, String)} and the cache-key fingerprint in
-     * {@link #version()} are derived from the same source.
+     * {@code purify.xsl} and {@code to-java.xsl}, the two that take
+     * parameters. Kept as a single list so both the train in
+     * {@link #compiled(boolean, boolean, String, Path)} and the cache-key
+     * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
         "/org/eolang/parser/parse/set-locators.xsl",
@@ -49,6 +50,7 @@ final class Transpilation {
         "/org/eolang/maven/transpile/package.xsl",
         "/org/eolang/maven/transpile/attrs.xsl",
         "/org/eolang/maven/transpile/data.xsl",
+        "/org/eolang/maven/transpile/purify.xsl",
         "/org/eolang/maven/transpile/to-java.xsl",
     };
 
@@ -60,8 +62,9 @@ final class Transpilation {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean, String)}, where its last
-     * element is special-cased as {@code to-java.xsl}.
+     * train in {@link #compiled(boolean, boolean, String, Path)}, where its
+     * last two elements are special-cased as {@code purify.xsl} and
+     * {@code to-java.xsl}.
      */
     static final String[] IMPORTS = {
         "/org/eolang/parser/_funcs.xsl",
@@ -116,6 +119,17 @@ final class Transpilation {
     private final Path target;
 
     /**
+     * The directory with the tables of {@link MjInference}, which
+     * {@code purify.xsl} reads to find out which formations are safe to
+     * cache. It stays out of {@link #version()} on purpose: nothing in the
+     * generated Java depends on the label yet, so a result cached by an
+     * earlier build is still the right one, and a path differs from one
+     * machine to another anyway, which would keep a shared cache from ever
+     * being hit.
+     */
+    private final Path inference;
+
+    /**
      * Ctor.
      * @param ver Plugin version string
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
@@ -123,6 +137,7 @@ final class Transpilation {
      * @param base The class that a generated class extends instead of {@code PhDefault}
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
+     * @param tables The directory with the tables of {@link MjInference}
      */
     Transpilation(
         final String ver,
@@ -130,7 +145,8 @@ final class Transpilation {
         final boolean cvrg,
         final String base,
         final Path measures,
-        final Path dir
+        final Path dir,
+        final Path tables
     ) {
         this.version = ver;
         this.tracking = diagnostics;
@@ -138,6 +154,7 @@ final class Transpilation {
         this.superclass = base;
         this.measures = measures;
         this.target = dir;
+        this.inference = tables;
     }
 
     /**
@@ -220,23 +237,26 @@ final class Transpilation {
         final boolean track = this.tracking.locations();
         final boolean instrument = this.coverage;
         final String base = this.superclass;
+        final Path tables = this.inference;
         return Transpilation.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b|%s", track, instrument, base),
-            ignored -> Transpilation.compiled(track, instrument, base)
+            String.format("%b|%b|%s|%s", track, instrument, base, tables),
+            ignored -> Transpilation.compiled(track, instrument, base, tables)
         );
     }
 
     private static Train<Shift> compiled(
-        final boolean track, final boolean instrument, final String base
+        final boolean track, final boolean instrument, final String base, final Path tables
     ) {
+        final int last = Transpilation.XSLS.length - 1;
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
-                    Arrays.copyOf(Transpilation.XSLS, Transpilation.XSLS.length - 1)
+                    Arrays.copyOf(Transpilation.XSLS, last - 1)
                 ).back(),
                 new TrDefault<>(
+                    new StPure(Transpilation.XSLS[last - 1], tables),
                     new StClasspath(
-                        Transpilation.XSLS[Transpilation.XSLS.length - 1],
+                        Transpilation.XSLS[last],
                         String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track),
                         String.format("coverage %b", instrument),

@@ -21,7 +21,7 @@ public final class EObytes$EOeq extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOeq() {
-        super(new Attrs(new Attr("b", new AtVoid("b"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b", new AtVoid("b"))));
     }
 
     @Override

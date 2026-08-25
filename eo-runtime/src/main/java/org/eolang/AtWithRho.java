@@ -6,14 +6,15 @@
 package org.eolang;
 
 /**
- * The attribute that tries to copy object and set \rho to it if it has not already set.
+ * The attribute that copies the object and binds itself as its \rho, but
+ * only when the object declares a \rho and has not been bound to one yet.
  * The terminator ({@link PhTerminator}) silently ignores this \rho itself, so no container
  * leaks into it and its cause is not masked as it propagates.
  * This attribute is NOT thread safe!
  * @since 0.36.0
  * @todo #4673:30min The {@link AtWithRho#get()} is not thread safe. If multiple threads
  *  call get() concurrently when the underlying object lacks RHO, each thread will:
- *  1. Pass the !ret.hasRho() check
+ *  1. Pass the ret.needsRho() check
  *  2. Create its own copy via ret.copy()
  *  3. Attempt to set RHO on its copy
  *  This results in different threads receiving different copies, violating the expectation
@@ -52,7 +53,7 @@ final class AtWithRho implements Attribute {
     @Override
     public Phi get() {
         Phi ret = this.original.get();
-        if (!ret.hasRho()) {
+        if (ret.needsRho()) {
             ret = ret.copy();
             ret.put(Phi.RHO, this.rho);
         }

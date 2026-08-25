@@ -7,9 +7,15 @@ package org.eolang;
 
 /**
  * Transform {@link Expect} to Integer.
+ *
+ * <p>Public because the syscall adapters, which live in another package,
+ * map EO numbers onto C {@code int} parameters and have to refuse the
+ * numbers no such parameter can mean, the way {@link Natural} refuses the
+ * sizes.</p>
+ *
  * @since 0.51
  */
-final class Int {
+public final class Int {
 
     /**
      * Expect.
@@ -18,9 +24,18 @@ final class Int {
 
     /**
      * Ctor.
+     * @param subject What the number is, for the failure message
+     * @param phi The object holding the number
+     */
+    public Int(final String subject, final Phi phi) {
+        this(new Expect<>(subject, () -> phi));
+    }
+
+    /**
+     * Ctor.
      * @param expect Expect
      */
-    Int(final Expect<Phi> expect) {
+    public Int(final Expect<Phi> expect) {
         this.expect = expect;
     }
 
@@ -28,7 +43,7 @@ final class Int {
      * Return it.
      * @return The token
      */
-    Integer it() {
+    public Integer it() {
         return this.expect
             .that(phi -> new Dataized(phi).asNumber())
             .otherwise("must be a number")

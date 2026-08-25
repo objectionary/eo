@@ -68,7 +68,7 @@ final class LnApplication implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, stack, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
@@ -149,10 +149,13 @@ final class LnApplication implements Line {
             );
         }
         if (!args.isEmpty() && head.opensFormationBody()) {
-            throw new ParseError(
-                this.span.line(), head.pos(),
-                "horizontal formation not allowed as argument"
-            );
+            final String reason;
+            if (head.identity()) {
+                reason = Emissions.NO_IDENTITY_ARGS;
+            } else {
+                reason = "horizontal formation not allowed as argument";
+            }
+            throw new ParseError(this.span.line(), head.pos(), reason);
         }
     }
 

@@ -7,6 +7,9 @@ package org.eolang.posix;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.Expect;
+import org.eolang.Int;
+import org.eolang.Natural;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -33,8 +36,10 @@ public final class WriteSyscall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final byte[] buf = new Dataized(params[1]).take();
-        final int size = new Dataized(params[2]).asNumber().intValue();
-        if (size < 0 || size > buf.length) {
+        final int size = new Natural(
+            new Expect<>("the 'size' argument of write", () -> params[2])
+        ).it();
+        if (size > buf.length) {
             throw new ExFailure(
                 "Can't write %d bytes from a buffer of only %d bytes",
                 size, buf.length
@@ -45,7 +50,7 @@ public final class WriteSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.write(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Int("the 'descriptor' argument of write", params[0]).it(),
                     buf,
                     size
                 )

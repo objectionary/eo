@@ -4,6 +4,11 @@
  */
 package org.eolang;
 
+import com.yegor256.Together;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CyclicBarrier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +28,34 @@ final class PhTerminatorTest {
             ExFailure.class,
             () -> new Dataized(new PhTerminator()).take(),
             "dataizing the terminator must abort instead of returning data"
+        );
+    }
+
+    @Test
+    void keepsOneCauseWhenManyThreadsPutAtOnce() {
+        final int threads = 8;
+        final Phi term = new PhTerminator();
+        final Set<String> seen = Collections.synchronizedSet(new HashSet<>());
+        final CyclicBarrier gate = new CyclicBarrier(threads);
+        new Together<>(
+            threads,
+            thread -> {
+                gate.await();
+                term.put(0, new Data.ToPhi(String.format("cause %d", thread)));
+                seen.add(
+                    Assertions.assertThrows(
+                        ExFailure.class,
+                        () -> new Dataized(term).take(),
+                        "forcing the terminator must abort"
+                    ).getMessage()
+                );
+                return true;
+            }
+        ).asList();
+        MatcherAssert.assertThat(
+            "the cause is written once, so every thread must be told the same reason, but they werent",
+            seen,
+            Matchers.hasSize(1)
         );
     }
 

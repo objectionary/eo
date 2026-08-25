@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -128,6 +129,21 @@ public final class MjTranspile extends MjSafe {
     private String superclass;
 
     /**
+     * The directory with the tables that {@link MjInference} writes, read by
+     * {@code purify.xsl} to find out which formations are safe to cache. The
+     * default is the one {@link MjInference} saves them to, so a build that
+     * runs the goals in their usual order needs to say nothing here. A build
+     * that skips {@code eo:inference} leaves the directory absent, and then
+     * nothing is marked.
+     */
+    @Parameter(
+        property = "eo.inferenceDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/6-inference"
+    )
+    private File tables;
+
+    /**
      * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
      */
     private final ConcurrentCache guard;
@@ -158,7 +174,8 @@ public final class MjTranspile extends MjSafe {
                         this.coverage,
                         this.base(),
                         this.xslMeasures.toPath(),
-                        this.targetDir.toPath()
+                        this.targetDir.toPath(),
+                        this.tables.toPath()
                     ),
                     this.guard
                 )

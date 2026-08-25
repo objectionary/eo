@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The parser compiles every literal into a "number" or a "string" applied to
+# a "bytes", all three of them objects of the root, so a body that only
+# mentions data has to be let through - otherwise nothing at all would ever
+# be marked.
+eo:
+  app.eo: |
+    [] > app
+      shifted 42 > @
+      [x] > shifted
+        x.div 2 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > div
+        x > @
+pure:
+  - "//o[@name='shifted' and @pure='true']"

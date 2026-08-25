@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object of the root belongs to the whole program and its bytes are not
+# part of what a caller passes in, so a body that copies one is not cached by
+# what it was given. The formation next to it says the same thing about its
+# own input instead, and is marked.
+eo:
+  app.eo: |
+    [] > app
+      loud "boom" > @
+      quiet "boom" > @
+      [x] > loud
+        (Q.stdout x).as-bool > @
+      [x] > quiet
+        x.as-bytes > @
+  stdout.eo: |
+    [text] > stdout
+      text > @
+      [] > as-bool
+        text > @
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+pure:
+  - "//o[@name='loud' and not(@pure)]"
+  - "//o[@name='quiet' and @pure='true']"

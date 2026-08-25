@@ -35,6 +35,10 @@ public interface Data {
      * return applied;
      * }
      *
+     * <p>It never needs a receiver: data becomes one of the root objects — a
+     * number, a string, a bytes, a tuple — and every one of them takes its
+     * receiver from the package that handed it out.</p>
+     *
      * @since 0.1
      */
     final class ToPhi implements Phi {
@@ -81,8 +85,8 @@ public interface Data {
         }
 
         @Override
-        public boolean hasRho() {
-            return this.object.hasRho();
+        public boolean needsRho() {
+            return false;
         }
 
         @Override

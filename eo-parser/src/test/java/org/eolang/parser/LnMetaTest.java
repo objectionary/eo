@@ -129,8 +129,9 @@ final class LnMetaTest {
     @Test
     void clearsPendingBlanksOnEmission() {
         final Globals globals = new Globals();
+        globals.addComment(new Span("# doc", 1));
         globals.blank();
-        new LnMeta(new Span("+foo", 2)).into(new Stack(), globals, new Emit());
+        new LnMeta(new Span("+foo", 3)).into(new Stack(), globals, new Emit());
         MatcherAssert.assertThat(
             "a meta line is non-blank so it must reset pendingBlanks to zero",
             globals.pendingBlanks(),

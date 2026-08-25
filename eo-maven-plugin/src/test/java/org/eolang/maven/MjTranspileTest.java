@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.xsline.TrDefault;
@@ -93,6 +95,70 @@ final class MjTranspileTest {
             Matchers.hasKey(
                 String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
             )
+        );
+    }
+
+    @Test
+    void marksSafeToCacheFormationOfTranspiledProgram(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
+            new XMLDocument(
+                new FakeMaven(temp).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package examples",
+                        "",
+                        "# Outer.",
+                        "[] > x",
+                        "  inner > @",
+                        "  # Inner.",
+                        "  [] > inner",
+                        "    42 > @"
+                    )
+                )
+                .with("trackSteps", true)
+                .execute(MjParse.class)
+                .execute(MjInference.class)
+                .execute(MjTranspile.class)
+                .targetPath()
+                .resolve(Transpiling.PRE)
+                .resolve("examples")
+                .resolve("x")
+                .resolve("08-purify.xml")
+            ),
+            XhtmlMatchers.hasXPath("//abstract[@name='inner' and @pure='true']")
+        );
+    }
+
+    @Test
+    void wrapsSafeToCacheFormationInPhSticky(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
+            new TextOf(
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
+    void leavesUnmarkedFormationBare(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
+            new TextOf(
+                MjTranspileTest.pure(temp)
+                    .execute(MjParse.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+            ).asString(),
+            Matchers.not(Matchers.containsString("new PhSticky("))
         );
     }
 
@@ -684,5 +750,21 @@ final class MjTranspileTest {
             }
         }
         return valid && depth == 0;
+    }
+
+    private static FakeMaven pure(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package examples",
+                "",
+                "# Outer.",
+                "[] > x",
+                "  inner > @",
+                "  # Inner.",
+                "  [] > inner",
+                "    42 > @"
+            )
+        );
     }
 }
