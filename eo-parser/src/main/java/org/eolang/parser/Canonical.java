@@ -44,6 +44,7 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/wrap-applications.xsl",
         "/org/eolang/parser/parse/resolve-local-names.xsl",
         "/org/eolang/parser/parse/validate-before-stars.xsl",
+        "/org/eolang/parser/parse/validate-bindings.xsl",
         "/org/eolang/parser/parse/resolve-before-stars.xsl",
         "/org/eolang/parser/parse/fragile-dispatch.xsl",
         "/org/eolang/parser/parse/wrap-method-calls.xsl",
@@ -60,7 +61,6 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/add-default-package.xsl",
         "/org/eolang/parser/parse/roll-bases.xsl",
         "/org/eolang/parser/parse/mandatory-as.xsl",
-        "/org/eolang/parser/parse/validate-bindings.xsl",
         "/org/eolang/parser/parse/set-locators.xsl"
     );
 
