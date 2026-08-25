@@ -24,6 +24,12 @@ import java.util.stream.Collectors;
  *
  * <p>The class is thread-safe.</p>
  *
+ * <p>An object that declares no rho declines the receiver a dispatch offers
+ * it, instead of refusing the whole put. Every other absent attribute is still
+ * a mistake worth an exception, but a missing rho is a deliberate statement
+ * that the object reads no receiver, and the dispatch has no way of knowing
+ * that before it asks.</p>
+ *
  * @since 0.1
  * @todo #7304:60min Stop deciding identity from a hash code in
  *  {@code equals}. The hash of a Phi is its identity hash, which repeats:
@@ -194,7 +200,7 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public boolean needsRho() {
         final Attribute attr = this.loaded().get(Phi.RHO);
-        return attr != null && attr.vacant();
+        return attr == null || attr.vacant();
     }
 
     @Override
@@ -210,7 +216,9 @@ public class PhDefault implements Phi, Cloneable {
     @Override
     public void put(final String name, final Phi object) {
         final Attribute attr = this.loaded().get(name);
-        if (attr == null) {
+        if (attr != null) {
+            attr.put(object);
+        } else if (!Phi.RHO.equals(name)) {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
@@ -218,7 +226,6 @@ public class PhDefault implements Phi, Cloneable {
                 )
             );
         }
-        attr.put(object);
     }
 
     @Override
