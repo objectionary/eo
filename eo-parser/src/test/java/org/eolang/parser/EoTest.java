@@ -613,6 +613,22 @@ final class EoTest {
     }
 
     @Test
+    void parsesCompactTupleWithTerminatorHead() {
+        MatcherAssert.assertThat(
+            "a bare T head is non-chainable, but a compact-tuple line must still parse it and its children",
+            EoTest.render(
+                "[] > main",
+                "  T *1 > x",
+                "    \"boom\""
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='main']/o[@name='x' and @base='⊥']/o[1][@base='Φ.string']",
+                "/object[not(errors)]"
+            )
+        );
+    }
+
+    @Test
     void rejectsCompactTupleWithFewerThanNChildren() {
         MatcherAssert.assertThat(
             "a *N requiring N children with only some present must surface R-5.3.3",
