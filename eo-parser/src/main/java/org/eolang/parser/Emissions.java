@@ -29,6 +29,19 @@ import java.util.regex.Pattern;
 final class Emissions {
 
     /**
+     * What the parser says when the identity object is applied to
+     * arguments (R-3.16.1). Shared by every position an application may
+     * be written in — a line head ({@link LnApplication}), a paren
+     * group, an inline φ, and the φ of an only-phi line — so the writer
+     * gets the same instruction wherever the glyph carries arguments.
+     */
+    static final String NO_IDENTITY_ARGS = String.join(
+        " ",
+        "the identity object takes no horizontal arguments;",
+        "put the argument on a deeper-indent line"
+    );
+
+    /**
      * Bits an IEEE-754 double keeps below the leading one of its
      * significand.
      */
@@ -94,6 +107,9 @@ final class Emissions {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, span);
+        if (head.identity() && !args.isEmpty()) {
+            throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
+        }
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
