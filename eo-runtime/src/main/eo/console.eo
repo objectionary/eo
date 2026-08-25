@@ -178,5 +178,8 @@
   console.write ++> can-write-a-non-ascii-string-to-the-console
     "héllo, wörld! 日本語\n"
 
+  console.write ++> can-write-raw-bytes-to-the-console
+    48-65-6C-6C-6F-0A
+
   --> cannot-dataize-console-directly
     console
