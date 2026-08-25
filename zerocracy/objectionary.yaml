@@ -3,10 +3,10 @@
   cycles: 1
   deleted: 8
   inserted: 8
-  seconds: 2164.377654954
+  seconds: 2160.403913424
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-25 06:45:02.348900680 Z
+  when: 2026-08-25 07:50:33.024204284 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -276518,7 +276518,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 836
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18758168305
   issues_were_scanned: 0
@@ -287188,9 +287188,9 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1030
   earliest_issue_was_found: 1
-  events_were_scanned: 13805747725
+  events_were_scanned: 13808991848
   issues_were_scanned: 982
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -290106,7 +290106,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18763694780
   issues_were_scanned: 0
@@ -290140,13 +290140,13 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6079
+  assignees_were_scanned: 6237
   earliest_issue_was_found: 1
-  events_were_scanned: 13806688687
+  events_were_scanned: 13809579929
   issues_were_scanned: 0
-  labels_were_scanned: 7110
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 7582
+  merges_were_scanned: 0
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
@@ -545187,6 +545187,7 @@
   href: https://github.com/objectionary/eo/issues/7573/#issuecomment-5404374810
   is_human: 1
   issue: 7573
+  receipt: receipt-#88508
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:54.588548138 Z
@@ -545203,6 +545204,7 @@
   href: https://github.com/objectionary/eo/issues/7574/#issuecomment-5404374978
   is_human: 1
   issue: 7574
+  receipt: receipt-#88509
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:55.081183126 Z
@@ -545219,6 +545221,7 @@
   href: https://github.com/objectionary/eo/issues/7576/#issuecomment-5404375145
   is_human: 1
   issue: 7576
+  receipt: receipt-#88510
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:55.585634541 Z
@@ -545235,6 +545238,7 @@
   href: https://github.com/objectionary/eo/issues/7577/#issuecomment-5404375320
   is_human: 1
   issue: 7577
+  receipt: receipt-#88511
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:56.197995698 Z
@@ -545251,6 +545255,7 @@
   href: https://github.com/objectionary/eo/issues/7578/#issuecomment-5404375485
   is_human: 1
   issue: 7578
+  receipt: receipt-#88512
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:56.690420533 Z
@@ -545267,6 +545272,7 @@
   href: https://github.com/objectionary/eo/issues/7579/#issuecomment-5404375629
   is_human: 1
   issue: 7579
+  receipt: receipt-#88513
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:57.185657126 Z
@@ -545283,6 +545289,7 @@
   href: https://github.com/objectionary/eo/issues/7580/#issuecomment-5404375783
   is_human: 1
   issue: 7580
+  receipt: receipt-#88514
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:57.755869436 Z
@@ -545299,6 +545306,7 @@
   href: https://github.com/objectionary/eo/issues/7583/#issuecomment-5404935595
   is_human: 1
   issue: 7583
+  receipt: receipt-#88515
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:58.337956172 Z
@@ -545315,6 +545323,7 @@
   href: https://github.com/objectionary/eo/issues/7584/#issuecomment-5404935762
   is_human: 1
   issue: 7584
+  receipt: receipt-#88516
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-08-24 23:47:58.857064652 Z
@@ -545761,7 +545770,7 @@
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
-  when: 2026-08-25 04:11:51.000000000 Z
+  when: &4942 2026-08-25 04:11:51.000000000 Z
   where: github
   who: 526301
 - _id: 1123005
@@ -546087,8 +546096,10 @@
   failed_builds: 0
   files: 1
   hoc: 64
+  is_human: 0
   issue: 1015
   repository: 977982682
+  review_comments: 0
   succeeded_builds: 23
   suggestions: 0
   what: pull-was-merged
@@ -546110,8 +546121,10 @@
   failed_builds: 0
   files: 4
   hoc: 24
+  is_human: 0
   issue: 1306
   repository: 889819508
+  review_comments: 0
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
@@ -546133,8 +546146,10 @@
   failed_builds: 0
   files: 5
   hoc: 70
+  is_human: 1
   issue: 7274
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
@@ -546156,8 +546171,10 @@
   failed_builds: 0
   files: 2
   hoc: 16
+  is_human: 1
   issue: 7411
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
@@ -546179,8 +546196,10 @@
   failed_builds: 0
   files: 3
   hoc: 27
+  is_human: 1
   issue: 7415
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
@@ -546202,8 +546221,10 @@
   failed_builds: 0
   files: 1
   hoc: 48
+  is_human: 1
   issue: 7494
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
@@ -546225,8 +546246,10 @@
   failed_builds: 0
   files: 5
   hoc: 51
+  is_human: 1
   issue: 7504
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
@@ -546239,9 +546262,408 @@
   _version: 0.19.16/0.61.1/0.17.21
   assigner: 526301
   details: objectionary/eo#6067 was assigned to @yegor256 by @yegor256.
+  is_human: 1
   issue: 6067
   repository: 73056727
   what: issue-was-assigned
   when: 2026-08-24 07:22:20.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123035
+  _job: 88684
+  _time: 2026-08-25 06:46:08.317189107 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  comments: 2
+  details: The pull request objectionary/eo#7625 with 138 HoC created by @gemshrine
+    was merged by @yegor256 after 8h17m of being in review and 2 comments.
+  hoc: 138
+  is_human: 1
+  issue: 7625
+  merger: 526301
+  repository: 73056727
+  review_comments: 0
+  seconds: 29838
+  what: code-was-contributed
+  when: *4942
+  where: github
+  who: 113778529
+- _id: 1123036
+  _job: 88684
+  _time: 2026-08-25 06:48:09.695601392 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  ac: 49710
+  cost_of_qod: 3.4216095294263997
+  ev: 211263
+  pv: 211035
+  qod: 61744
+  qod_per_day: 127.8109710512717
+  qod_per_sec: 0.0014809023314589903
+  start: *996
+  what: earned-value
+  when: 2026-08-25 06:48:09.696167352 Z
+- _id: 1123037
+  _job: 32814956286
+  _time: 2026-08-25 07:15:07.325075714 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7642 has been opened by @yegor256.
+  event_id: 13809158937
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 7642
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-25 07:04:46.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123038
+  _job: 32814956286
+  _time: 2026-08-25 07:15:11.435806824 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/eo#7641 has been opened by @yegor256.
+  event_id: 13807215681
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 7641
+  repository: 73056727
+  what: issue-was-opened
+  when: 2026-08-25 06:20:25.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123039
+  _job: 32814956286
+  _time: 2026-08-25 07:15:36.252541099 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/eager-planck-bcoz49
+  details: The pull request objectionary/lints#1310 has been opened by @yegor256.
+  event_id: 13807425012
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1310
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-25 06:25:26.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123040
+  _job: 32814956286
+  _time: 2026-08-25 07:19:52.195686191 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7547'
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7586 has been "pull-was-merged".
+  failed_builds: 0
+  files: 9
+  hoc: 95
+  issue: 7586
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 05:38:48.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123041
+  _job: 32814956286
+  _time: 2026-08-25 07:21:03.222582348 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7545'
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7589 has been "pull-was-merged".
+  failed_builds: 0
+  files: 3
+  hoc: 59
+  issue: 7589
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:46:38.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123042
+  _job: 32814956286
+  _time: 2026-08-25 07:21:31.839852920 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7544'
+  comments: 4
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7590 has been "pull-was-merged".
+  failed_builds: 0
+  files: 9
+  hoc: 158
+  issue: 7590
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 05:38:07.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123043
+  _job: 32814956286
+  _time: 2026-08-25 07:21:58.431598709 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7543'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7591 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 47
+  issue: 7591
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 05:37:15.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123044
+  _job: 32814956286
+  _time: 2026-08-25 07:23:02.090637089 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7524'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7598 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 76
+  issue: 7598
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 05:42:19.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123045
+  _job: 32814956286
+  _time: 2026-08-25 07:23:33.616340894 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7520'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7603 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 65
+  issue: 7603
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:42:49.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123046
+  _job: 32814956286
+  _time: 2026-08-25 07:24:00.839120531 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: '7514'
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7607 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 7
+  issue: 7607
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:42:09.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123047
+  _job: 32814956286
+  _time: 2026-08-25 07:24:23.409894532 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7568-term-arg-chain
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7612 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 19
+  issue: 7612
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:41:19.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123048
+  _job: 32814956286
+  _time: 2026-08-25 07:24:42.121857395 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7583-coverage-retry
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7615 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 78
+  issue: 7615
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:40:23.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123049
+  _job: 32814956286
+  _time: 2026-08-25 07:25:02.285158387 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7580-sticky-key-forma
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7618 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 3
+  issue: 7618
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:39:45.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123050
+  _job: 32814956286
+  _time: 2026-08-25 07:25:22.109345001 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7563-inet-broadcast-errno
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7620 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 33
+  issue: 7620
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:38:47.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123051
+  _job: 32814956286
+  _time: 2026-08-25 07:25:41.686134534 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7566-terminator-atomic
+  comments: 3
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7622 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 54
+  issue: 7622
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:12:54.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123052
+  _job: 32814956286
+  _time: 2026-08-25 07:25:59.678622953 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: 7569-default-put-sync
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 2
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#7624 has been "pull-was-merged".
+  failed_builds: 0
+  files: 2
+  hoc: 31
+  issue: 7624
+  repository: 73056727
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-25 04:12:17.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123053
+  _job: 32814956286
+  _time: 2026-08-25 07:27:41.371607201 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 526301
+  details: objectionary/lints#601 was assigned to @yegor256 by @yegor256.
+  issue: 601
+  repository: 889819508
+  what: issue-was-assigned
+  when: 2026-08-25 06:25:04.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123054
+  _job: 32814956286
+  _time: 2026-08-25 07:32:35.340670098 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/eo#7642.
+  issue: 7642
+  label: bug
+  repository: 73056727
+  what: label-was-attached
+  when: 2026-08-25 07:04:46.000000000 Z
   where: github
   who: 526301
