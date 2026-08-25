@@ -61,42 +61,12 @@ final class Savepoint {
     }
 
     /**
-     * Open element depth at the savepoint.
-     * @return Depth
+     * Put {@link Emit}'s depth and owed atom signature back to what they
+     * were at this savepoint.
+     * @param emit Emitter to restore
      */
-    int depth() {
-        return this.depth;
-    }
-
-    /**
-     * Owed atom signature at the savepoint.
-     * @return Signature
-     */
-    String signature() {
-        return this.signature;
-    }
-
-    /**
-     * Source line of the owed marker.
-     * @return Line
-     */
-    int sigline() {
-        return this.sigline;
-    }
-
-    /**
-     * Source column of the owed marker.
-     * @return Column
-     */
-    int sigpos() {
-        return this.sigpos;
-    }
-
-    /**
-     * Depth of the object owing the marker.
-     * @return Depth
-     */
-    int sigdepth() {
-        return this.sigdepth;
+    void restore(final Emit emit) {
+        emit.depth(this.depth);
+        emit.signature(this.signature, this.sigline, this.sigpos, this.sigdepth);
     }
 }

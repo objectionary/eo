@@ -139,11 +139,29 @@ final class Emit {
         while (this.sink.size() > token.sink()) {
             this.sink.remove(this.sink.size() - 1);
         }
-        this.depth = token.depth();
-        this.signature = token.signature();
-        this.sigline = token.sigline();
-        this.sigpos = token.sigpos();
-        this.sigdepth = token.sigdepth();
+        token.restore(this);
+    }
+
+    /**
+     * Put {@link #depth} back to what it was at a savepoint.
+     * @param cursor Depth to restore
+     */
+    void depth(final int cursor) {
+        this.depth = cursor;
+    }
+
+    /**
+     * Put the owed atom signature back to what it was at a savepoint.
+     * @param owed Signature owed to the open object, empty when nothing is owed
+     * @param line Source line of the owed marker
+     * @param pos Source column of the owed marker
+     * @param level Depth of the object owing the marker
+     */
+    void signature(final String owed, final int line, final int pos, final int level) {
+        this.signature = owed;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = level;
     }
 
     /**
