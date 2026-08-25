@@ -180,11 +180,11 @@ final class MjTranspileTest {
                         "      42 > @"
                     )
                 )
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
-                    .get("target/generated/org/eolang/EO_examples/EOx.java")
+                .execute(MjParse.class)
+                .execute(MjInference.class)
+                .execute(MjTranspile.class)
+                .result()
+                .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
         );
