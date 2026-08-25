@@ -110,12 +110,12 @@ final class LnTextBlock implements Line {
             }
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
         } else {
-            emit.object(null, "Φ.string", this.span.line(), this.span.indent());
+            emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
             emit.close();
             for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), this.span.line(), link.dot());
+                emit.unnamedObject(".".concat(link.name()), this.span.line(), link.dot());
                 emit.method(link.fragile());
                 emit.close();
             }

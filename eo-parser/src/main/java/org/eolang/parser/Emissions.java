@@ -139,7 +139,7 @@ final class Emissions {
             Emissions.hex(emit, name, value, line);
         } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
-            emit.object(null, null, line, value.pos());
+            emit.bareObject(line, value.pos());
             emit.set(value.raw());
             emit.close();
         } else if (value.string()) {
@@ -213,8 +213,8 @@ final class Emissions {
     static void bytesCarrier(
         final Emit emit, final int line, final int pos, final String hex
     ) {
-        emit.object(null, "Φ.bytes", line, pos);
-        emit.object(null, null, line, pos);
+        emit.unnamedObject("Φ.bytes", line, pos);
+        emit.bareObject(line, pos);
         emit.set(hex);
         emit.close();
         emit.close();
@@ -257,7 +257,7 @@ final class Emissions {
     private static void identity(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        emit.object(name, null, line, value.pos());
+        emit.baselessObject(name, line, value.pos());
         emit.voidParam(Emissions.IDENTITY, line, value.pos());
         emit.object("φ", Emissions.IDENTITY, line, value.pos());
         emit.close();
@@ -480,7 +480,7 @@ final class Emissions {
         } else {
             label = name;
         }
-        emit.object(label, null, line, column);
+        emit.baselessObject(label, line, column);
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }
