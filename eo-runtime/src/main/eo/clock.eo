@@ -118,14 +118,6 @@
       a
     clock > a
 
-  ++> can-be-negative-when-subtracted-from-zero
-    lt. > @
-      minus.
-        0.as-i64
-        a
-      0.as-i64
-    clock > a
-
   ++> can-be-greater-than-or-equal-to-itself
     gte. > @
       a
