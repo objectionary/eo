@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.Pointer;
 import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -40,7 +41,7 @@ public final class RecvFuncCall implements Syscall {
         ).it();
         final byte[] buf = new byte[size];
         final int received = Winsock.INSTANCE.recv(
-            new Dataized(params[0]).asNumber().longValue(),
+            new Pointer(new Dataized(params[0]).asNumber().longValue()),
             buf,
             size,
             new Dataized(params[2]).asNumber().intValue()

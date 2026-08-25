@@ -76,7 +76,7 @@
           plus.
             posix.rdonly.plus posix.creat
             posix.exclusive
-          posix.mode
+          posix.private
   [^] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
@@ -275,6 +275,19 @@
       temp.deleted
       regular
     temp.is-directory.not > regular!
+    mktemp.tmpfile > temp
+
+  ++> can-create-a-tmpfile-only-its-owner-can-read
+    seq * > @
+      owned
+      temp.deleted
+      owned
+    called. > info
+      posix *1
+        "stat"
+        temp.path
+    os.is-windows.or > owned!
+      info.output.mode.eq 33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile

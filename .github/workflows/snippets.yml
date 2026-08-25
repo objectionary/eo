@@ -7,9 +7,9 @@ name: snippets
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+concurrency:
+  group: snippets-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   snippets:
     timeout-minutes: 15
@@ -26,3 +26,73 @@ jobs:
           key: ubuntu-qulice-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-qulice-jdk-21-maven-
       - run: mvn clean install -ntp -Psnippets --errors --batch-mode
+  telegram:
+    needs: snippets
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ Snippets build of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs: snippets
+    runs-on: ubuntu-24.04
+    if: ${{ success() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          for _ in 1 2 3 4 5 6; do
+            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/snippets.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
+              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
+                then [ .workflow_runs[]
+                  | select(.id < ${{ github.run_id }})
+                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
+                else "stale" end')
+            [ "${state}" = 'stale' ] || break
+            sleep 10
+          done
+          echo "The previous run of this workflow: ${state}"
+          if [ "${state}" = 'failure' ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "🍓 Snippets build of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
+          disable_web_page_preview: true
+          format: markdown

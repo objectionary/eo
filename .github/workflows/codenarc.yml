@@ -10,6 +10,9 @@ name: codenarc
   pull_request:
     branches:
       - master
+concurrency:
+  group: codenarc-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   codenarc:
     timeout-minutes: 15

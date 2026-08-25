@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * The terminator of φ-calculus — a terminated computation.
  *
@@ -44,9 +46,13 @@ public final class PhTerminator implements Phi {
 
     /**
      * The reason this computation terminated, used only as the panic
-     * message when the terminator is forced, or {@code null} when none was given.
+     * message when the terminator is forced, empty when none was given.
+     * Atomic because {@link #copy()} hands the same terminator to every
+     * branch of a concurrent evaluation: the write-once rule the class
+     * promises has to hold when two of those branches put at once, and the
+     * cause one of them stores has to be visible to the one that forces it.
      */
-    private Phi cause;
+    private final AtomicReference<Phi> cause;
 
     /**
      * The reason to fall back to if nothing is ever {@code put} into this
@@ -93,7 +99,7 @@ public final class PhTerminator implements Phi {
      * @param reason The default reason for the termination
      */
     private PhTerminator(final Phi cse, final String reason) {
-        this.cause = cse;
+        this.cause = new AtomicReference<>(cse);
         this.fallback = new Data.ToPhi(reason);
     }
 
@@ -116,8 +122,8 @@ public final class PhTerminator implements Phi {
 
     @Override
     public void put(final int pos, final Phi object) {
-        if (pos == 0 && this.cause == null) {
-            this.cause = object;
+        if (pos == 0) {
+            this.cause.compareAndSet(null, object);
         }
     }
 
@@ -157,8 +163,9 @@ public final class PhTerminator implements Phi {
 
     private Phi reason() {
         final Phi reason;
-        if (this.cause != null) {
-            reason = this.cause;
+        final Phi carried = this.cause.get();
+        if (carried != null) {
+            reason = carried;
         } else {
             reason = this.fallback;
         }

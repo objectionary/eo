@@ -10,6 +10,9 @@ name: bashate
   pull_request:
     branches:
       - master
+concurrency:
+  group: bashate-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   bashate:
     timeout-minutes: 15

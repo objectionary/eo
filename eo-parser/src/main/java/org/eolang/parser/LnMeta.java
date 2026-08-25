@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A meta-directive line — §3.2 of the spec.
@@ -41,7 +42,11 @@ final class LnMeta implements Line {
         if (this.span.indent() != 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "meta directive must precede all other objects"
+                String.format(
+                    Locale.ROOT,
+                    "meta directive must sit at indent 0, found indent %d",
+                    this.span.indent()
+                )
             );
         }
         if (globals.firstObjectEmitted()) {
