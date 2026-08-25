@@ -111,7 +111,6 @@ public final class PhSticky implements Phi {
      * @param map The answers remembered so far
      * @param puts The puts received so far
      * @param busy The dataizations going on right now
-     * @checkstyle ParameterNumberCheck (7 lines)
      */
     private PhSticky(
         final Phi obj,
@@ -229,6 +228,7 @@ public final class PhSticky implements Phi {
         return bytes;
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     private byte[] answer(final FutureTask<byte[]> task) {
         try {
             return task.get();
@@ -243,7 +243,9 @@ public final class PhSticky implements Phi {
             if (cause instanceof Error) {
                 throw (Error) cause;
             }
-            throw new ExFailure("The shared dataization failed", cause);
+            throw new ExFailure(
+                String.format("The shared dataization of %s failed", this.origin), cause
+            );
         }
     }
 
