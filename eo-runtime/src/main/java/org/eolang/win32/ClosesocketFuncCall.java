@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -36,7 +37,9 @@ public final class ClosesocketFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Winsock.INSTANCE.closesocket(new Dataized(params[0]).asNumber().longValue())
+                Winsock.INSTANCE.closesocket(
+                    new Pointer(new Dataized(params[0]).asNumber().longValue())
+                )
             )
         );
         result.put(1, new PhDefault());
