@@ -43,11 +43,6 @@ final class TranspilationTest {
         );
     }
 
-    /**
-     * A transpilation with the given tracking and everything else fixed.
-     * @param tracking Which diagnostic artifacts to emit
-     * @return The transpilation
-     */
     private Transpilation transpilation(final Tracking tracking) {
         return new Transpilation(
             "1.0-SNAPSHOT",
