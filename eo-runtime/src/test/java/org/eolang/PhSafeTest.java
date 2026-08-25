@@ -252,6 +252,7 @@ final class PhSafeTest {
      * @since 0.60.0
      */
     private final class Broken extends PhDefault implements Atom {
+
         @Override
         public Phi lambda() {
             throw new StackOverflowError("the stack is exhausted");
