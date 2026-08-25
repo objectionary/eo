@@ -237,11 +237,11 @@ public final class PhSticky implements Phi {
             throw new ExInterrupted("Interrupted while waiting for a shared dataization");
         } catch (final ExecutionException ex) {
             final Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
+            if (cause instanceof RuntimeException runtime) {
+                throw runtime;
             }
-            if (cause instanceof Error) {
-                throw (Error) cause;
+            if (cause instanceof Error error) {
+                throw error;
             }
             throw new ExFailure(
                 String.format("The shared dataization of %s failed", this.origin), cause
