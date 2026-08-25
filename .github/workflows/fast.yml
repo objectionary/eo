@@ -7,6 +7,9 @@ name: fast
   pull_request:
     branches:
       - master
+concurrency:
+  group: fast-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   fast:
     runs-on: ubuntu-24.04
