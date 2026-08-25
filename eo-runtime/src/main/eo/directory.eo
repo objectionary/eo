@@ -606,6 +606,25 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-with-a-double-star-in-the-middle-of-the-glob
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/x.txt"
+      touched.
+        as-file.
+          d.resolved "foo/y.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "foo/**/x.txt"
+        d.resolved "foo/bar/x.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-with-a-glob-brace-group
     seq * > @
       touched.
@@ -644,6 +663,22 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-with-a-glob-containing-a-regex-special-character
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a+b.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "a+b.txt"
+        d.resolved "a+b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-with-a-glob-question-mark
     seq * > @
       touched.
@@ -656,6 +691,25 @@
         ",".joined
           d.as-dir.walk "?.txt"
         d.resolved "a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-literal-path-separator-in-the-glob
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "sub/b.txt"
+        d.resolved "sub/b.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
