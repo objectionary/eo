@@ -89,8 +89,8 @@ final class Diff {
 
     private static List<String> lines(final String text) {
         final List<String> out = new ArrayList<>(
-            Arrays.stream(text.split("\n", -1))
-                .map(line -> line.replace("\r", "\\r"))
+            Arrays.stream(text.split("\\n", -1))
+                .map(line -> line.replaceAll("\\r", "\\\\r"))
                 .collect(Collectors.toList())
         );
         if (out.get(out.size() - 1).isEmpty()) {

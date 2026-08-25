@@ -54,6 +54,7 @@ final class DiffTest {
 
     @Test
     void showsTheCarriageReturnThatMakesTheTextsDiffer() {
+        // @checkstyle ProhibitLineSeparatorInStringsCheck (5 lines)
         MatcherAssert.assertThat(
             "a difference in line terminators must be shown as a changed line",
             new Diff("a\r\nb\r\n", "a\nb\n").colored(),
@@ -63,6 +64,7 @@ final class DiffTest {
 
     @Test
     void showsTheMissingNewlineAtTheEnd() {
+        // @checkstyle ProhibitLineSeparatorInStringsCheck (5 lines)
         MatcherAssert.assertThat(
             "a missing newline at the end must be shown, not passed over",
             new Diff("a\n", "a").colored(),
