@@ -148,6 +148,12 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
+    static List<String> inlineParams(
+        final String text, final Span span, final int origin
+    ) {
+        return LnOnlyPhi.parseParams(text, span, origin);
+    }
+
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
@@ -173,15 +179,7 @@ final class LnOnlyPhi implements Line {
     private void emitVoids(final Emit emit, final List<String> params, final int origin) {
         int column = this.span.indent() + origin;
         for (final String param : params) {
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, this.span.line(), column);
+            emit.voidParam(Emissions.mapVoidParam(param), this.span.line(), column);
             column = column + param.length() + 1;
         }
     }
