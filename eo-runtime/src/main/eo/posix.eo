@@ -154,3 +154,74 @@
         "/dev/null"
         posix.wronly
         0
+
+  os.is-windows.or ++> can-open-a-file-with-the-append-flag
+    seq *
+      code.
+        posix *1
+          "close"
+          fd
+      fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly.plus posix.append
+        0
+
+  os.is-windows.or ++> can-open-a-file-with-the-trunc-flag
+    seq *
+      code.
+        posix *1
+          "close"
+          fd
+      fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly.plus posix.trunc
+        0
+
+  --> stops-on-creating-an-existing-file-exclusively
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "open"
+            "/dev/null"
+            plus.
+              posix.rdonly.plus posix.creat
+              posix.exclusive
+            posix.private
+        eq.
+          code.
+            posix
+              "errno"
+              *
+          posix.eexist
+
+  os.is-windows.or ++> can-stat-the-size-of-dev-null
+    eq.
+      info.size
+      0
+    output. > info
+      posix *1
+        "stat"
+        "/dev/null"
+
+  ++> can-compute-the-size-of-a-sockaddr-in
+    eq.
+      addr.size
+      16
+    posix.sockaddr-in > addr
+      00-00
+      00-00
+      00-00-00-00
+
+  ++> can-store-seconds-in-a-timeval
+    eq.
+      tv.seconds
+      5
+    posix.timeval 5 100 > tv
