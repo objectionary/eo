@@ -23,6 +23,17 @@
         "stat"
         f.path
 
+  eq. ++> can-ignore-the-fallback-when-a-file-exists
+    0
+    mktemp.tmpfile.touched.size -1
+
+  eq. ++> can-measure-a-file-with-content
+    12
+    size.
+      mktemp.tmpfile.open
+        "w"
+        f.write "Hello, world" > [^ f]
+
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0
 
