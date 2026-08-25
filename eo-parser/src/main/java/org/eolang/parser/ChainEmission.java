@@ -114,7 +114,7 @@ final class ChainEmission {
             if (idx == last) {
                 sink.object(label, ".".concat(chained.name()), line, chained.dot());
             } else {
-                sink.object(null, ".".concat(chained.name()), line, chained.dot());
+                sink.unnamedObject(".".concat(chained.name()), line, chained.dot());
             }
             sink.method(chained.fragile());
         }

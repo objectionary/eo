@@ -7,7 +7,7 @@
 # through unchecked.
 line: 4
 message: |-
-  [4:2] error: 'Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body'
+  [4:2] error: 'atom may contain only test attributes'
     42 > bar
     ^
 input: |

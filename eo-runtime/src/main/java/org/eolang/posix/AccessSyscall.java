@@ -6,6 +6,7 @@ package org.eolang.posix;
 
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -37,7 +38,7 @@ public final class AccessSyscall implements Syscall {
             new Data.ToPhi(
                 CStdLib.INSTANCE.access(
                     new Dataized(params[0]).asString(),
-                    new Dataized(params[1]).asNumber().intValue()
+                    new Int("the 'mode' argument of access", params[1]).it()
                 )
             )
         );

@@ -17,6 +17,30 @@ import org.junit.jupiter.api.RepeatedTest;
 final class PhDefaultRaceTest {
 
     @RepeatedTest(20)
+    void appliesPositionallyWhileAttributesAreAdded() {
+        final PhDefault phi = new PhDefault();
+        phi.add("first", new AtVoid("first"));
+        final Phi value = new Data.ToPhi(42L);
+        new Together<>(
+            16,
+            thread -> {
+                if (thread == 0) {
+                    phi.put(0, value);
+                } else {
+                    final String name = String.format("a%d", thread);
+                    phi.add(name, new AtVoid(name));
+                }
+                return true;
+            }
+        ).asList();
+        MatcherAssert.assertThat(
+            "a positional put must land on the attribute that was first when it was made, but it didnt",
+            new Dataized(phi.take("first")).asNumber(),
+            Matchers.equalTo(42.0d)
+        );
+    }
+
+    @RepeatedTest(20)
     void loadsAttributesOnceUnderConcurrentTake() {
         final int threads = 32;
         final Phi phi = new PhDefault(
