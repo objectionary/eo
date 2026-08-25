@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7251: a `.method` continuation with no horizontal args becomes a vapplication
+# over a vmethod head, so its deeper children are an ordinary argument group and
+# the all-or-nothing rule of R-6.6.2 governs them too.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'argument bindings must be all-or-nothing')]
+input: |
+  [] > main
+    foo > app
+    .bar
+      a:x
+      b

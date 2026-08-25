@@ -29,6 +29,19 @@ import java.util.regex.Pattern;
 final class Emissions {
 
     /**
+     * What the parser says when the identity object is applied to
+     * arguments (R-3.16.1). Shared by every position an application may
+     * be written in — a line head ({@link LnApplication}), a paren
+     * group, an inline φ, and the φ of an only-phi line — so the writer
+     * gets the same instruction wherever the glyph carries arguments.
+     */
+    static final String NO_IDENTITY_ARGS = String.join(
+        " ",
+        "the identity object takes no horizontal arguments;",
+        "put the argument on a deeper-indent line"
+    );
+
+    /**
      * Bits an IEEE-754 double keeps below the leading one of its
      * significand.
      */
@@ -94,6 +107,9 @@ final class Emissions {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, span);
+        if (head.identity() && !args.isEmpty()) {
+            throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
+        }
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
@@ -139,7 +155,7 @@ final class Emissions {
             Emissions.hex(emit, name, value, line);
         } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
-            emit.object(null, null, line, value.pos());
+            emit.bareObject(line, value.pos());
             emit.set(value.raw());
             emit.close();
         } else if (value.string()) {
@@ -213,8 +229,8 @@ final class Emissions {
     static void bytesCarrier(
         final Emit emit, final int line, final int pos, final String hex
     ) {
-        emit.object(null, "Φ.bytes", line, pos);
-        emit.object(null, null, line, pos);
+        emit.unnamedObject("Φ.bytes", line, pos);
+        emit.bareObject(line, pos);
         emit.set(hex);
         emit.close();
         emit.close();
@@ -257,7 +273,7 @@ final class Emissions {
     private static void identity(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        emit.object(name, null, line, value.pos());
+        emit.baselessObject(name, line, value.pos());
         emit.voidParam(Emissions.IDENTITY, line, value.pos());
         emit.object("φ", Emissions.IDENTITY, line, value.pos());
         emit.close();
@@ -476,7 +492,7 @@ final class Emissions {
         } else {
             label = name;
         }
-        emit.object(label, null, line, column);
+        emit.baselessObject(label, line, column);
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }
