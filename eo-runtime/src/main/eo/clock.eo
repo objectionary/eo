@@ -30,3 +30,28 @@
           timeval.micros.as-i64.div 1000.as-i64
 
   clock.gt 0 ++> can-read-positive-millis
+
+  eq. ++> can-be-eight-bytes-long
+    clock.as-bytes.size
+    8
+
+  ++> can-stay-close-on-successive-reads
+    and. > @
+      gte.
+        plus.
+          a
+          60000.as-i64
+        b
+      gte.
+        plus.
+          b
+          60000.as-i64
+        a
+    clock > a
+    clock > b
+
+  gte. ++> can-remain-ahead-when-offset-by-a-large-margin
+    plus.
+      clock
+      100000.as-i64
+    clock
