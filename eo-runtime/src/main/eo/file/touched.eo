@@ -103,3 +103,71 @@
   mktemp.tmpfile.deleted.touched.exists ++> can-touch-a-file
 
   mktemp.tmpfile.deleted.touched.touched.exists ++> can-touch-a-file-twice
+
+  ++> can-touch-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        and.
+          link.as-file.touched.exists
+          target.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "missing-target" > target
+    d.resolved "broken-link" > link
+
+  eq. ++> can-preserve-content-of-an-existing-file-when-touched
+    13
+    size.
+      touched.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world!" > [^ f]
+
+  (mktemp.tmpfile.deleted.as-path.resolved "missing-dir/file").as-file.touched --> stops-on-touching-a-file-in-a-missing-directory
+
+  ++> can-touch-a-file-with-a-unicode-name
+    target.as-file.touched.exists > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "файл-тест.txt" > target
+
+  ++> can-touch-a-file-with-a-long-name
+    target.as-file.touched.exists > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved name > target
+    "a".repeated 200 > name
+
+  ++> can-touch-a-non-dangling-symlink-without-truncating-its-target
+    os.is-windows.or > @
+      seq *
+        target.as-file.open
+          "w"
+          f.write "seed-content" > [^ f]
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        and.
+          link.as-file.touched.exists
+          link.as-file.size.eq 12
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "target.txt" > target
+    d.resolved "existing-link" > link
+
+  ++> can-keep-the-symlink-path-after-touching-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.touched.path.eq link
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "missing-target-2" > target
+    d.resolved "broken-link-2" > link
+
