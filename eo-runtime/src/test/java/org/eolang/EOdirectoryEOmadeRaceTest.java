@@ -15,7 +15,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link EOdirectory$EOmade} under concurrency.
+ * Test case for {@code directory.made} under concurrency.
  *
  * <p>{@code made} asks whether the path is there and makes it when it is not,
  * and the two questions are not one step: another thread can make the very
@@ -66,6 +66,6 @@ final class EOdirectoryEOmadeRaceTest {
         file.put(0, new Data.ToPhi(path));
         final Phi directory = Phi.Φ.take("directory").copy();
         directory.put(0, file);
-        return new PhApplication(new EOdirectory$EOmade(), Phi.RHO, directory);
+        return directory.take("made");
     }
 }
