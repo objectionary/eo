@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
 final class LnPipeTest {
 
     @Test
-    void rejectsTestAttributeSuffix() {
+    void rejectsPlusGreaterSuffix() {
         final Stack stack = new Stack();
         new LnFormation(new Span("[] > foo", 1)).into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a pipe with a `+>` test suffix must be rejected instead of silently accepted",
+            "a pipe carrying a `+>` suffix must be rejected instead of silently accepted",
             Assertions.assertThrows(
                 ParseError.class,
                 () -> new LnPipe(new Span("| +> x", 2))
@@ -34,7 +34,7 @@ final class LnPipeTest {
     void rejectsPipeUnderAtomFormation() {
         final Stack stack = new Stack();
         new LnFormation(new Span("[] > foo /number", 1)).into(stack, new Globals(), new Emit());
-        new LnFormation(new Span("  [] > bar", 2)).into(stack, new Globals(), new Emit());
+        new LnFormation(new Span("  [] +> can-x", 2)).into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
             "a pipe replacing the top under an atom-bodied formation must be rejected,"
                 .concat(" proving the Admission built for it is never permitted"),
