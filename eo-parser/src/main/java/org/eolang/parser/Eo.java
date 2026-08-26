@@ -280,7 +280,7 @@ final class Eo implements Iterable<Directive> {
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int token = emit.savepoint();
+            final Savepoint token = emit.savepoint();
             final java.util.List<Level> frame = stack.snapshot();
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
@@ -330,7 +330,7 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         final java.util.List<Level> frame = stack.snapshot();
         final Globals saved = globals.savepoint();
         boolean failed = false;
@@ -661,8 +661,8 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!level.tupled() && level.children() == level.count()) {
-            emit.object(
-                null, "Φ.tuple", level.start(), level.indent()
+            emit.unnamedObject(
+                "Φ.tuple", level.start(), level.indent()
             );
             emit.star();
             emit.close();
@@ -675,8 +675,8 @@ final class Eo implements Iterable<Directive> {
         if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
             && !parent.tupled()
             && parent.children() == parent.count()) {
-            emit.object(
-                null, "Φ.tuple", parent.start(), parent.indent()
+            emit.unnamedObject(
+                "Φ.tuple", parent.start(), parent.indent()
             );
             emit.star();
             parent.openTuple();

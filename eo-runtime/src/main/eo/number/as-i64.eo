@@ -81,7 +81,7 @@
   eq. ++> can-recover-from-an-out-of-range-number
     "recovered"
     1.0e30.as-i64
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

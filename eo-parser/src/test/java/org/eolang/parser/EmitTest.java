@@ -142,7 +142,7 @@ final class EmitTest {
     void returnsZeroSavepointForFreshEmit() {
         MatcherAssert.assertThat(
             "the initial savepoint of an empty Emit must be 0",
-            new Emit().savepoint(),
+            new Emit().savepoint().sink(),
             Matchers.equalTo(0)
         );
     }
@@ -150,11 +150,11 @@ final class EmitTest {
     @Test
     void growsSavepointAfterEmission() {
         final Emit emit = new Emit();
-        final int before = emit.savepoint();
+        final int before = emit.savepoint().sink();
         emit.meta(1, "x", Collections.emptyList());
         MatcherAssert.assertThat(
             "after emitting, the savepoint must advance past the pre-emit position",
-            emit.savepoint(),
+            emit.savepoint().sink(),
             Matchers.greaterThan(before)
         );
     }
@@ -162,7 +162,7 @@ final class EmitTest {
     @Test
     void dropsDirectivesAfterTokenOnRollback() {
         final Emit emit = new Emit();
-        final int token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         emit.error(1, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
@@ -176,7 +176,7 @@ final class EmitTest {
     void keepsDirectivesBeforeTokenOnRollback() {
         final Emit emit = new Emit();
         emit.meta(1, "keep", Collections.emptyList());
-        final int token = emit.savepoint();
+        final Savepoint token = emit.savepoint();
         emit.error(2, 0, "boom");
         emit.rollback(token);
         MatcherAssert.assertThat(
@@ -187,12 +187,31 @@ final class EmitTest {
     }
 
     @Test
-    void opensObjectWithNameAndPosition() {
+    void restoresDepthAndOwedAtomMarkerOnRollback() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 3, 0);
+        emit.object("foo", null, 1, 0);
+        emit.atomMarker("number", 1, 5);
+        final Savepoint token = emit.savepoint();
+        emit.object("bar", "Φ.string", 2, 0);
+        emit.rollback(token);
         emit.close();
         MatcherAssert.assertThat(
-            "object() must add an <o> at the current cursor with @name, @line, @pos",
+            "a rollback must restore depth and the owed atom signature alongside the sink, so a recovered error inside the atom's body cannot drop its λ marker (#7539)",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPaths(
+                "/object[count(o)=1]",
+                "/object/o[@name='foo']/o[@name='λ' and @atom='number']"
+            )
+        );
+    }
+
+    @Test
+    void opensObjectWithNameAndPosition() {
+        final Emit emit = new Emit();
+        emit.baselessObject("foo", 3, 0);
+        emit.close();
+        MatcherAssert.assertThat(
+            "baselessObject() must add an <o> at the current cursor with @name, @line, @pos",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='foo' and @line='3' and @pos='0']")
         );
@@ -211,22 +230,36 @@ final class EmitTest {
     }
 
     @Test
-    void omitsNameAttributeWhenNull() {
+    void omitsNameAttributeWhenUnnamed() {
         final Emit emit = new Emit();
-        emit.object(null, "bar", 1, 0);
+        emit.unnamedObject("bar", 1, 0);
         emit.close();
         MatcherAssert.assertThat(
-            "passing a null name must omit @name on the emitted <o>",
+            "unnamedObject() must omit @name on the emitted <o>",
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@base='bar' and not(@name)]")
         );
     }
 
     @Test
+    void omitsNameAndBaseAttributesWhenBare() {
+        final Emit emit = new Emit();
+        emit.bareObject(1, 0);
+        emit.close();
+        MatcherAssert.assertThat(
+            "bareObject() must omit both @name and @base on the emitted <o>",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@line='1' and @pos='0' and not(@name) and not(@base)]"
+            )
+        );
+    }
+
+    @Test
     void nestsChildObjectInsideOpenParent() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
-        emit.object("inner", null, 2, 2);
+        emit.baselessObject("outer", 1, 0);
+        emit.baselessObject("inner", 2, 2);
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -239,7 +272,7 @@ final class EmitTest {
     @Test
     void emitsVoidParam() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 1, 0);
+        emit.baselessObject("foo", 1, 0);
         emit.voidParam("x", 1, 1);
         emit.close();
         MatcherAssert.assertThat(
@@ -254,7 +287,7 @@ final class EmitTest {
     @Test
     void emitsAtomMarker() {
         final Emit emit = new Emit();
-        emit.object("foo", null, 1, 0);
+        emit.baselessObject("foo", 1, 0);
         emit.atomMarker("number", 1, 5);
         emit.close();
         MatcherAssert.assertThat(
@@ -282,7 +315,7 @@ final class EmitTest {
     @Test
     void marksObjectWithSlotAttribute() {
         final Emit emit = new Emit();
-        emit.object(null, "foo", 1, 0);
+        emit.unnamedObject("foo", 1, 0);
         emit.slot("label");
         emit.close();
         MatcherAssert.assertThat(
@@ -295,7 +328,7 @@ final class EmitTest {
     @Test
     void marksObjectAsStar() {
         final Emit emit = new Emit();
-        emit.object(null, "Φ.tuple", 1, 0);
+        emit.unnamedObject("Φ.tuple", 1, 0);
         emit.star();
         emit.close();
         MatcherAssert.assertThat(
@@ -308,7 +341,7 @@ final class EmitTest {
     @Test
     void setsTextContent() {
         final Emit emit = new Emit();
-        emit.object(null, "Φ.bytes", 1, 0);
+        emit.unnamedObject("Φ.bytes", 1, 0);
         emit.set("CA-FE-BE");
         emit.close();
         MatcherAssert.assertThat(
@@ -334,9 +367,9 @@ final class EmitTest {
     @Test
     void preservesCursorAcrossSidePanelEmissions() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
+        emit.baselessObject("outer", 1, 0);
         emit.error(99, 7, "boom");
-        emit.object("inner", null, 2, 2);
+        emit.baselessObject("inner", 2, 2);
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -349,7 +382,7 @@ final class EmitTest {
     @Test
     void retainsSidePanelErrorAlongsideTree() {
         final Emit emit = new Emit();
-        emit.object("outer", null, 1, 0);
+        emit.baselessObject("outer", 1, 0);
         emit.error(5, 0, "boom");
         emit.close();
         MatcherAssert.assertThat(

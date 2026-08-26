@@ -17,8 +17,12 @@
       0.gt times
       times.is-integer.not
     cant-repeat
-      "Can't repeat text %f times".printf
-        * times
+      times.is-finite.if
+        "Can't repeat text %f times".printf
+          * times
+        "Can't repeat text %s times".printf
+          *
+            string times.as-scientific
     string
       [^ n] >> rec-repeated
         if. > @
@@ -41,23 +45,29 @@
       -1
       I
 
+  eq. ++> can-format-the-error-message-of-an-infinite-count
+    "Can't repeat text infinity times"
+    "x".repeated
+      pinf
+      I
+
   eq. ++> can-recover-from-a-negative-count
     "recovered"
     "x".repeated
       -1
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-count
     "recovered"
     "x".repeated
       2.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-count
     "recovered"
     "x".repeated
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"

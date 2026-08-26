@@ -106,11 +106,13 @@ final class Globals {
         this.tbody = new ArrayList<>(0);
         this.emitted = false;
         this.closed = false;
+        this.meta = false;
         this.discarded = false;
         this.blanks = 0;
         this.trailing = 0;
         this.intext = false;
         this.tline = 0;
+        this.tindent = 0;
     }
 
     /**
@@ -309,7 +311,7 @@ final class Globals {
      * leave the file without its top comment block and with every later
      * comment rejected. {@link Eo} takes one of these next to
      * {@link Emit#savepoint()} and hands it back to
-     * {@link #restore(Globals)} next to {@link Emit#rollback(int)}.</p>
+     * {@link #restore(Globals)} next to {@link Emit#rollback(Savepoint)}.</p>
      *
      * @return Detached copy of the current state
      */

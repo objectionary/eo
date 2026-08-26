@@ -15,6 +15,7 @@
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
+    <!-- Don't upgrade to 2.x: there is no maven-resolver-supplier there and Maven 3.9 ships resolver 1.x -->
     <maven.resolver.version>1.9.27</maven.resolver.version>
   </properties>
   <dependencies>
@@ -36,7 +37,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.6</version>
+      <version>0.4.8</version>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>

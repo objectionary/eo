@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -177,6 +179,32 @@ final class Xmirs {
         final Collection<String> found = new ArrayList<>(0);
         for (final XML xmir : this.documents()) {
             found.addAll(xmir.xpath("//o/@loc"));
+        }
+        return found;
+    }
+
+    /**
+     * What every dispatch takes its attribute from.
+     *
+     * <p>The receiver of a dispatch is the child that carries no {@code @as},
+     * the arguments being the ones that do, and the parser gives it the
+     * locator of the dispatch with {@code ρ} on the end. It is looked for by
+     * that locator rather than by the absence alone, because a formation
+     * bound inside a dispatch carries no {@code @as} either.</p>
+     *
+     * @return The locator of the receiver, by the locator of the dispatch
+     * @throws IOException If a file cannot be read
+     */
+    Map<String, String> receivers() throws IOException {
+        final Map<String, String> found = new HashMap<>(0);
+        for (final XML xmir : this.documents()) {
+            for (final XML kid : xmir.nodes("//o[@loc]/o[@loc][not(@as)]")) {
+                final String owner = kid.xpath("../@loc").get(0);
+                final String loc = kid.xpath("@loc").get(0);
+                if (loc.equals(owner.concat(".ρ"))) {
+                    found.put(owner, loc);
+                }
+            }
         }
         return found;
     }

@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ name args] > posix
+[name args] > posix
   [] > @ /Q.posix.return
     ? > ^
   os.is-macos.if > append
@@ -28,6 +28,7 @@
   420 > mode
   -1 > none
   511 > permissions
+  384 > private
   0 > rdonly
   2 > rdwr
   [^ code output] > return
@@ -35,23 +36,24 @@
     ^.return > called
       code
       output
-  [^ family port address] > sockaddr-in
+  [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
       plus.
         family.size.plus port.size
         address.size
       padding.size
-  [^ mode size] > stat
+  [mode size] > stat
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [^ seconds micros] > timeval
+  [seconds micros] > timeval
   os.is-macos.if > trunc
     1024
     512
+  4294967295 > unresolved
   1 > wronly
 
   ++> can-close-a-tcp-socket
@@ -110,6 +112,14 @@
         0
         0
 
+  os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "10.0.0.200"
+      3355443210
+
   os.is-windows.or ++> can-return-an-inet-address-for-localhost
     eq.
       code.
@@ -117,6 +127,14 @@
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  os.is-windows.or ++> can-return-the-limited-broadcast-address
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "255.255.255.255"
+      posix.unresolved
 
   --> stops-on-write-size-being-negative
     os.is-windows.if > @

@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+out:
+  - ".*HelloWorld!.*"
+file: snippets/reads-via-independent-console-calls.eo
+args: ["snippets.reads-via-independent-console-calls"]
+stdin: |-
+  HelloWorld!
+eo: |
+  +package snippets
+
+  [] > reads-via-independent-console-calls
+    stdout > @
+      "%s%s".printf
+        *
+          string c1
+          string c2
+    console.read 6 > c1
+    console.read 5 > c2

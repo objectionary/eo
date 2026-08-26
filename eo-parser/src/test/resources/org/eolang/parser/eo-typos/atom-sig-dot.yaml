@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 1
 message: |-
-  [1:8] error: 'atom signature must be a dotted name with no leading, trailing, or empty segment'
+  [1:8] error: 'type must be a dotted name with no leading, trailing, or empty segment'
   [] > f /Q.
           ^
 input: |

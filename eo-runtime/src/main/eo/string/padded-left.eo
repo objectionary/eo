@@ -23,8 +23,13 @@
       not.
         1.eq fill.length
     cant-pad
-      "Can't pad text to %f characters with %s".printf
-        * width fill
+      width.is-finite.if
+        "Can't pad text to %f characters with %s".printf
+          * width fill
+        "Can't pad text to %s characters with %s".printf
+          *
+            string width.as-scientific
+            fill
     if.
       width.gt
         text.length >> len!
@@ -49,6 +54,13 @@
       "x"
       I
 
+  eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-left
+    "Can't pad text to infinity characters with x"
+    "y".padded-left
+      pinf
+      "x"
+      I
+
   eq. ++> can-pad-a-number-with-leading-spaces
     "   42"
     "42".padded-left
@@ -66,28 +78,28 @@
     "y".padded-left
       5
       "ab"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-negative-width-when-padding-left
     "recovered"
     "y".padded-left
       -1
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-width-when-padding-left
     "recovered"
     "y".padded-left
       2.5
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-width-when-padding-left
     "recovered"
     "y".padded-left
       pinf
       "x"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-left
     "hello"

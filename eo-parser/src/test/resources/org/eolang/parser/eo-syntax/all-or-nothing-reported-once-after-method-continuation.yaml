@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7503: a same-indent `.method` continuation reuses the sealed stack entry,
+# so the all-or-nothing violation caught by `Stack.seal` must not be reported
+# again when the entry is finally popped at EOF.
+sheets: []
+asserts:
+  - /object[count(errors/error[contains(text(),'argument bindings must be all-or-nothing')])=1]
+input: |
+  [] > main
+    foo > app
+      a:x
+      b
+    .bar > z
