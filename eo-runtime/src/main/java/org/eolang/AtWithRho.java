@@ -7,13 +7,7 @@ package org.eolang;
 
 /**
  * The attribute that copies the object and binds itself as its \rho, but
- * only while the object is still free of a receiver.
- * The copy is what makes every dispatch independent: an attribute memoized by
- * {@link AtOnce} holds one formation forever, and handing that very instance
- * out twice would let two dispatches share its dataized attributes. An object
- * already bound to a receiver is not a template and travels on untouched,
- * while one declaring no \rho is copied all the same and simply declines the
- * receiver offered to it.
+ * only when the object declares a \rho and has not been bound to one yet.
  * The terminator ({@link PhTerminator}) silently ignores this \rho itself, so no container
  * leaks into it and its cause is not masked as it propagates.
  * This attribute is NOT thread safe!

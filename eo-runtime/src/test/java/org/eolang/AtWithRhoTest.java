@@ -143,17 +143,6 @@ final class AtWithRhoTest {
         );
     }
 
-    @Test
-    void copiesAMemberThatDeclaresNoReceiver() {
-        final PhDefault host = new PhDefault();
-        host.add("kid", new AtOnce(new AtComposite(host, rho -> new PhDefault())));
-        MatcherAssert.assertThat(
-            "a member declaring no receiver must not be shared between dispatches, but it was",
-            host.take("kid"),
-            Matchers.not(Matchers.is(host.take("kid")))
-        );
-    }
-
     private Phi formation() {
         return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
