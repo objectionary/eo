@@ -35,7 +35,7 @@ jobs:
   runtime:
     needs: start-instance
     runs-on: ${{ needs.start-instance.outputs.label }}
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -58,9 +58,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs -DskipTests --errors --batch-mode -Pqulice -Psite clean install site
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.deadline=120' '-Dheap-size=32G' -pl :eo-runtime install
-      - run: mvn -ntp --errors --batch-mode '-Deo.transpileTests=false' '-Dheap-size=32G' install -pl :eo-integration-tests
+      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Dheap-size=32G' -Psite -Pjacoco clean install site
   terminate-instance:
     needs:
       - start-instance
