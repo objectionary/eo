@@ -56,7 +56,7 @@ final class InetAddrFuncCallTest {
         Winsock.INSTANCE.WSASetLastError(0);
         InetAddrFuncCallTest.converted(String.join(".", Collections.nCopies(4, "255")));
         MatcherAssert.assertThat(
-            "the limited-broadcast address converts to INADDR_NONE like unconvertable text does, but it is valid, so WSAEINVAL must not be reported for it",
+            "the limited-broadcast address converts to INADDR_NONE like unconvertible text does, but it is valid, so WSAEINVAL must not be reported for it",
             Winsock.INSTANCE.WSAGetLastError(),
             Matchers.not(Matchers.equalTo(Winsock.WSAEINVAL))
         );
@@ -64,7 +64,7 @@ final class InetAddrFuncCallTest {
 
     @Test
     @DisabledOnOs({OS.MAC, OS.LINUX})
-    void reportsInvalidOnUnconvertableText() {
+    void reportsInvalidOnUnconvertibleText() {
         InetAddrFuncCallTest.converted("nope");
         MatcherAssert.assertThat(
             "inet_addr does not set the last winsock error itself, so the call must set it, or a later WSAGetLastError reads whatever an unrelated earlier call left behind",
