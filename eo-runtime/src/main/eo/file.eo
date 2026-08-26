@@ -398,8 +398,7 @@
           d.as-file.is-symlink true
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
-  not. ++> can-tell-that-a-regular-file-is-not-a-directory
-    mktemp.tmpfile.is-directory
+  mktemp.tmpfile.is-directory.not ++> can-tell-that-a-regular-file-is-not-a-directory
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
     mktemp.tmpfile.is-symlink true
@@ -420,8 +419,7 @@
     exists.
       file "absent.txt"
 
-  exists. ++> can-tell-that-an-existing-file-exists
-    mktemp.tmpfile
+  mktemp.tmpfile.exists ++> can-tell-that-an-existing-file-exists
 
   is-directory. ++> can-tell-that-the-current-directory-is-a-directory
     file "."
