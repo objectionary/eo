@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 10m3s: execution expired'
   inserted: 8
-  seconds: 2410.085463079
+  seconds: 2166.318837269
   version: 0.61.1
   what: judges-summary
-  when: 2026-08-26 06:42:14.456641144 Z
+  when: 2026-08-26 08:03:17.600718827 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -40398,6 +40397,7 @@
   issue: 123
   repository: 546194972
   stale: issue
+  tombstone: 2026-08-26 06:47:39.771389830 Z
   what: pull-was-opened
   when: 2025-11-26 21:37:29.000000000 Z
   where: github
@@ -40606,6 +40606,7 @@
   issue: 124
   repository: 546194972
   stale: issue
+  tombstone: 2026-08-26 06:47:39.729507365 Z
   what: pull-was-opened
   when: 2025-12-09 09:56:16.000000000 Z
   where: github
@@ -40622,6 +40623,7 @@
   issue: 125
   repository: 546194972
   stale: issue
+  tombstone: 2026-08-26 06:47:39.671632475 Z
   what: pull-was-opened
   when: 2025-12-09 18:04:16.000000000 Z
   where: github
@@ -40664,6 +40666,7 @@
   issue: 211
   repository: 970961472
   stale: issue
+  tombstone: 2026-08-26 06:47:40.294078350 Z
   what: pull-was-opened
   when: 2025-12-10 03:43:17.000000000 Z
   where: github
@@ -40686,6 +40689,7 @@
   is_human: 0
   issue: 213
   repository: 970961472
+  tombstone: 2026-08-26 06:47:38.183247544 Z
   what: pull-was-opened
   when: 2025-12-10 20:39:15.000000000 Z
   where: github
@@ -40701,6 +40705,7 @@
   is_human: 0
   issue: 212
   repository: 970961472
+  tombstone: 2026-08-26 06:47:38.226684563 Z
   what: pull-was-opened
   when: 2025-12-10 20:04:20.000000000 Z
   where: github
@@ -40756,6 +40761,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-lsp-server#211 has been "pull-was-closed".
+  done: 2026-08-26 06:47:40.261875324 Z
   failed_builds: 0
   files: 1
   hoc: 2
@@ -40791,6 +40797,7 @@
   review_comments: 0
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.228904946 Z
   what: pull-was-merged
   when: &206 2025-12-11 09:09:20.000000000 Z
   where: github
@@ -40817,6 +40824,7 @@
   review_comments: 0
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.185576372 Z
   what: pull-was-merged
   when: &207 2025-12-11 08:57:14.000000000 Z
   where: github
@@ -40835,6 +40843,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 47100
+  tombstone: 2026-08-26 06:47:38.231156374 Z
   what: code-was-contributed
   when: *206
   where: github
@@ -40853,6 +40862,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 44279
+  tombstone: 2026-08-26 06:47:38.188150748 Z
   what: code-was-contributed
   when: *207
   where: github
@@ -40868,6 +40878,7 @@
   is_human: 1
   issue: 523
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.304597377 Z
   what: pull-was-opened
   when: 2025-12-11 12:39:46.000000000 Z
   where: github
@@ -40894,6 +40905,7 @@
   review_comments: 0
   succeeded_builds: 18
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.306966228 Z
   what: pull-was-merged
   when: &208 2025-12-11 13:16:16.000000000 Z
   where: github
@@ -40908,6 +40920,7 @@
   is_human: 1
   issue: 525
   repository: 977982682
+  tombstone: 2026-08-26 06:47:40.600836702 Z
   what: issue-was-opened
   when: 2025-12-11 13:47:23.000000000 Z
   where: github
@@ -40924,6 +40937,7 @@
   issue: 524
   repository: 977982682
   stale: issue
+  tombstone: 2026-08-26 06:47:39.529751168 Z
   what: pull-was-opened
   when: 2025-12-11 13:25:58.000000000 Z
   where: github
@@ -40933,6 +40947,7 @@
   _time: 2025-12-11 14:24:09.052101330 Z
   _version: 0.17.1/0.58.1/0.17.3
   details: Apparently, objectionary/phino#525 has been "issue-was-closed".
+  done: 2026-08-26 06:47:40.563581701 Z
   is_human: 1
   issue: 525
   repository: 977982682
@@ -40949,6 +40964,7 @@
   issue: 525
   label: bug
   repository: 977982682
+  tombstone: 2026-08-26 06:47:40.603599363 Z
   what: label-was-attached
   when: 2025-12-11 13:47:31.000000000 Z
   where: github
@@ -40967,6 +40983,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 2190
+  tombstone: 2026-08-26 06:47:38.308996680 Z
   what: code-was-contributed
   when: *208
   where: github
@@ -40982,6 +40999,7 @@
   is_human: 1
   issue: 526
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.381247488 Z
   what: pull-was-opened
   when: 2025-12-11 14:06:52.000000000 Z
   where: github
@@ -41024,6 +41042,7 @@
   stale: issue
   succeeded_builds: 18
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.532083946 Z
   what: pull-was-merged
   when: &209 2025-12-11 14:38:09.000000000 Z
   where: github
@@ -41050,6 +41069,7 @@
   review_comments: 0
   succeeded_builds: 14
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.383373339 Z
   what: pull-was-merged
   when: &210 2025-12-11 14:08:55.000000000 Z
   where: github
@@ -41062,6 +41082,7 @@
   is_human: 1
   issue: 529
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.867907598 Z
   what: issue-was-opened
   when: 2025-12-11 15:15:44.000000000 Z
   where: github
@@ -41074,6 +41095,7 @@
   is_human: 1
   issue: 528
   repository: 977982682
+  tombstone: 2026-08-26 06:47:40.084240925 Z
   what: issue-was-opened
   when: &225 2025-12-11 14:55:47.000000000 Z
   where: github
@@ -41085,6 +41107,7 @@
   comments: 7
   details: The pull request objectionary/phino#524 with 28 HoC created by @maxonfjvipon
     was merged by @rultor after 1h12m of being in review and 7 comments.
+  done: 2026-08-26 06:47:39.497165631 Z
   hoc: 28
   is_human: 1
   issue: 524
@@ -41111,6 +41134,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 123
+  tombstone: 2026-08-26 06:47:38.385489606 Z
   what: code-was-contributed
   when: *210
   where: github
@@ -41126,6 +41150,7 @@
   is_human: 0
   issue: 144
   repository: 551486781
+  tombstone: 2026-08-26 06:47:38.525163772 Z
   what: pull-was-opened
   when: 2025-12-11 22:39:23.000000000 Z
   where: github
@@ -41141,6 +41166,7 @@
   is_human: 0
   issue: 808
   repository: 489321585
+  tombstone: 2026-08-26 06:47:38.769097984 Z
   what: pull-was-opened
   when: 2025-12-12 02:51:35.000000000 Z
   where: github
@@ -41161,6 +41187,7 @@
   issue: 144
   repository: 551486781
   review_comments: 0
+  tombstone: 2026-08-26 06:47:38.527076208 Z
   what: pull-was-reviewed
   when: &211 2025-12-12 03:02:51.000000000 Z
   where: github
@@ -41187,6 +41214,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.528817272 Z
   what: pull-was-merged
   when: &213 2025-12-12 03:15:43.000000000 Z
   where: github
@@ -41207,6 +41235,7 @@
   issue: 66
   repository: 574459304
   review_comments: 0
+  tombstone: 2026-08-26 06:47:38.722546576 Z
   what: pull-was-reviewed
   when: &212 2025-12-12 03:13:59.000000000 Z
   where: github
@@ -41223,6 +41252,7 @@
   issue: 217
   repository: 970961472
   stale: issue
+  tombstone: 2026-08-26 06:47:40.327678818 Z
   what: pull-was-opened
   when: 2025-12-12 03:26:35.000000000 Z
   where: github
@@ -41236,6 +41266,7 @@
   is_human: 0
   issue: 66
   repository: 574459304
+  tombstone: 2026-08-26 06:47:38.725147952 Z
   what: pull-was-opened
   when: 2025-12-11 22:14:55.000000000 Z
   where: github
@@ -41262,6 +41293,7 @@
   review_comments: 0
   succeeded_builds: 14
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.728096924 Z
   what: pull-was-merged
   when: &214 2025-12-12 03:27:51.000000000 Z
   where: github
@@ -41288,6 +41320,7 @@
   review_comments: 0
   succeeded_builds: 16
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.771421804 Z
   what: pull-was-merged
   when: &215 2025-12-12 03:40:55.000000000 Z
   where: github
@@ -41300,6 +41333,7 @@
   comments: 2
   details: The pull request objectionary/eo-vscode#144 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 4h23m and 2 comments.
+  done: 2026-08-26 06:47:38.493729762 Z
   hoc: 2
   is_human: 1
   issue: 144
@@ -41318,6 +41352,7 @@
   comments: 3
   details: The pull request objectionary/jucs#66 with 4 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 4h59m and 3 comments.
+  done: 2026-08-26 06:47:38.686467802 Z
   hoc: 4
   is_human: 1
   issue: 66
@@ -41342,6 +41377,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 16580
+  tombstone: 2026-08-26 06:47:38.530588284 Z
   what: code-was-contributed
   when: *213
   where: github
@@ -41357,6 +41393,7 @@
   is_human: 0
   issue: 379
   repository: 13623548
+  tombstone: 2026-08-26 06:47:39.309677870 Z
   what: pull-was-opened
   when: 2025-12-12 04:34:11.000000000 Z
   where: github
@@ -41374,6 +41411,7 @@
   issue: 1451
   repository: 671896902
   stale: issue
+  tombstone: 2026-08-26 06:47:39.602479588 Z
   what: pull-was-opened
   when: 2025-12-12 04:11:34.000000000 Z
   where: github
@@ -41389,6 +41427,7 @@
   is_human: 0
   issue: 531
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.953392942 Z
   what: pull-was-opened
   when: 2025-12-12 04:50:07.000000000 Z
   where: github
@@ -41405,6 +41444,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-lsp-server#217 has been "pull-was-closed".
+  done: 2026-08-26 06:47:40.296272244 Z
   failed_builds: 0
   files: 1
   hoc: 2
@@ -41440,6 +41480,7 @@
   stale: issue
   succeeded_builds: 19
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.604414925 Z
   what: pull-was-merged
   when: &216 2025-12-12 04:36:43.000000000 Z
   where: github
@@ -41458,6 +41499,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 18776
+  tombstone: 2026-08-26 06:47:38.730485070 Z
   what: code-was-contributed
   when: *214
   where: github
@@ -41476,6 +41518,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 2960
+  tombstone: 2026-08-26 06:47:38.773582599 Z
   what: code-was-contributed
   when: *215
   where: github
@@ -41487,6 +41530,7 @@
   comments: 5
   details: The pull request objectionary/jeo-maven-plugin#1451 with 14 HoC created
     by @renovate[bot] was merged by @rultor after 25m8s of being in review and 5 comments.
+  done: 2026-08-26 06:47:39.571884453 Z
   hoc: 14
   is_human: 0
   issue: 1451
@@ -41510,6 +41554,7 @@
   is_human: 0
   issue: 185
   repository: 798766850
+  tombstone: 2026-08-26 06:47:39.162006810 Z
   what: pull-was-opened
   when: 2025-12-12 06:13:44.000000000 Z
   where: github
@@ -41530,6 +41575,7 @@
   issue: 810
   repository: 489321585
   review_comments: 0
+  tombstone: 2026-08-26 06:47:38.890224622 Z
   what: pull-was-reviewed
   when: &217 2025-12-12 08:40:18.000000000 Z
   where: github
@@ -41543,6 +41589,7 @@
   is_human: 0
   issue: 810
   repository: 489321585
+  tombstone: 2026-08-26 06:47:38.892506701 Z
   what: pull-was-opened
   when: 2025-12-12 05:42:34.000000000 Z
   where: github
@@ -41569,6 +41616,7 @@
   stale: issue
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.774403545 Z
   what: pull-was-merged
   when: &219 2025-12-12 08:53:24.000000000 Z
   where: github
@@ -41595,6 +41643,7 @@
   stale: issue
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.732416631 Z
   what: pull-was-merged
   when: &220 2025-12-12 08:53:17.000000000 Z
   where: github
@@ -41621,6 +41670,7 @@
   stale: issue
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.673421085 Z
   what: pull-was-merged
   when: &221 2025-12-12 08:53:10.000000000 Z
   where: github
@@ -41647,6 +41697,7 @@
   review_comments: 0
   succeeded_builds: 16
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.894508513 Z
   what: pull-was-merged
   when: &222 2025-12-12 08:57:14.000000000 Z
   where: github
@@ -41659,6 +41710,7 @@
   comments: 2
   details: The pull request objectionary/eoc#810 with 6 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 2h57m and 2 comments.
+  done: 2026-08-26 06:47:38.857034136 Z
   hoc: 6
   is_human: 1
   issue: 810
@@ -41682,6 +41734,7 @@
   comments_to_code: 0
   details: The pull request objectionary/eoc#811 has been closed by @github-actions[bot],
     with 4 HoC and 0 comments.
+  done: 2026-08-26 06:47:40.329685788 Z
   event_id: 5261877341
   event_type: PullRequestEvent
   failed_builds: 0
@@ -41709,6 +41762,7 @@
   issue: 811
   repository: 489321585
   stale: issue
+  tombstone: 2026-08-26 06:47:40.360269544 Z
   what: pull-was-opened
   when: 2025-12-12 08:57:26.000000000 Z
   where: github
@@ -41729,6 +41783,7 @@
   issue: 531
   repository: 977982682
   review_comments: 0
+  tombstone: 2026-08-26 06:47:38.955678100 Z
   what: pull-was-reviewed
   when: &218 2025-12-12 09:03:39.000000000 Z
   where: github
@@ -41741,6 +41796,7 @@
   comments: 3
   details: The pull request objectionary/phino#531 with 10 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 4h13m and 3 comments.
+  done: 2026-08-26 06:47:38.900270590 Z
   hoc: 10
   is_human: 1
   issue: 531
@@ -41758,6 +41814,7 @@
   comments: 0
   details: The pull request objectionary/eolang.sty#123 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 2w1d of being in review and 0 comments.
+  done: 2026-08-26 06:47:39.734949141 Z
   hoc: 2
   is_human: 0
   issue: 123
@@ -41777,6 +41834,7 @@
   comments: 0
   details: The pull request objectionary/eolang.sty#124 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 2d22h of being in review and 0 comments.
+  done: 2026-08-26 06:47:39.681010805 Z
   hoc: 2
   is_human: 0
   issue: 124
@@ -41796,6 +41854,7 @@
   comments: 0
   details: The pull request objectionary/eolang.sty#125 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 2d14h of being in review and 0 comments.
+  done: 2026-08-26 06:47:39.641312925 Z
   hoc: 2
   is_human: 0
   issue: 125
@@ -41822,6 +41881,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 11680
+  tombstone: 2026-08-26 06:47:38.896439086 Z
   what: code-was-contributed
   when: *222
   where: github
@@ -41836,6 +41896,7 @@
   is_human: 1
   issue: 126
   repository: 546194972
+  tombstone: 2026-08-26 06:47:37.952241512 Z
   what: issue-was-closed
   when: &223 2025-12-12 09:52:57.000000000 Z
   where: github
@@ -41848,6 +41909,7 @@
   is_human: 1
   issue: 126
   repository: 546194972
+  tombstone: 2026-08-26 06:47:37.954248920 Z
   what: issue-was-opened
   when: 2025-12-12 08:56:17.000000000 Z
   where: github
@@ -41861,6 +41923,7 @@
   issue: 126
   label: bug
   repository: 546194972
+  tombstone: 2026-08-26 06:47:37.956182315 Z
   what: label-was-attached
   when: 2025-12-12 08:56:18.000000000 Z
   where: github
@@ -41876,6 +41939,7 @@
   is_human: 0
   issue: 162
   repository: 552394123
+  tombstone: 2026-08-26 06:47:39.350316199 Z
   what: pull-was-opened
   when: 2025-12-12 10:57:15.000000000 Z
   where: github
@@ -41892,6 +41956,7 @@
   is_human: 0
   issue: 391
   repository: 840332960
+  tombstone: 2026-08-26 06:47:39.214767981 Z
   what: pull-was-opened
   when: 2025-12-12 11:34:58.000000000 Z
   where: github
@@ -41907,6 +41972,7 @@
   is_human: 0
   issue: 533
   repository: 977982682
+  tombstone: 2026-08-26 06:47:39.062829701 Z
   what: pull-was-opened
   when: 2025-12-12 12:23:21.000000000 Z
   where: github
@@ -41920,6 +41986,7 @@
   is_human: 1
   issue: 126
   repository: 546194972
+  tombstone: 2026-08-26 06:47:37.958077543 Z
   what: issue-was-assigned
   when: 2025-12-12 08:56:17.000000000 Z
   where: github
@@ -41946,6 +42013,7 @@
   review_comments: 0
   succeeded_builds: 0
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.064676415 Z
   what: pull-was-merged
   when: &224 2025-12-12 12:55:44.000000000 Z
   where: github
@@ -41958,6 +42026,7 @@
   details: The bug/feature in the issue objectionary/eolang.sty#126 opened @yegor256
     by was resolved, after 56m39s of waiting, because it was closed by @yegor256 and
     earlier it was assigned to @yegor256 and the label '#bug' was attached.
+  done: 2026-08-26 06:47:37.920512847 Z
   is_human: 1
   issue: 126
   label: bug
@@ -42006,6 +42075,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 1943
+  tombstone: 2026-08-26 06:47:39.066443057 Z
   what: code-was-contributed
   when: *224
   where: github
@@ -42032,6 +42102,7 @@
   is_human: 0
   issue: 528
   repository: 977982682
+  tombstone: 2026-08-26 06:47:40.086279560 Z
   what: issue-was-closed
   when: 2025-12-12 14:55:06.000000000 Z
   where: github
@@ -42044,6 +42115,7 @@
   details: 'In the repository #977982682, the user #526301 submitted the issue #528
     which was later closed by the user #8086956 not becoming a bug or enhancement;
     this means that the issue was not valid, maybe a duplicate or simply a mistake.'
+  done: 2026-08-26 06:47:40.050239819 Z
   is_human: 1
   issue: 528
   repository: 977982682
@@ -42067,6 +42139,7 @@
   issue: 185
   repository: 798766850
   review_comments: 0
+  tombstone: 2026-08-26 06:47:39.164543894 Z
   what: pull-was-reviewed
   when: &226 2025-12-12 16:37:19.000000000 Z
   where: github
@@ -42087,6 +42160,7 @@
   issue: 390
   repository: 840332960
   review_comments: 0
+  tombstone: 2026-08-26 06:47:39.263832852 Z
   what: pull-was-reviewed
   when: &227 2025-12-12 16:39:15.000000000 Z
   where: github
@@ -42107,6 +42181,7 @@
   issue: 391
   repository: 840332960
   review_comments: 0
+  tombstone: 2026-08-26 06:47:39.217490047 Z
   what: pull-was-reviewed
   when: &228 2025-12-12 16:39:10.000000000 Z
   where: github
@@ -42121,6 +42196,7 @@
   is_human: 0
   issue: 390
   repository: 840332960
+  tombstone: 2026-08-26 06:47:39.266685442 Z
   what: pull-was-opened
   when: 2025-12-12 03:35:41.000000000 Z
   where: github
@@ -42134,6 +42210,7 @@
   is_human: 1
   issue: 529
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.869898500 Z
   what: issue-was-assigned
   when: 2025-12-12 14:19:30.000000000 Z
   where: github
@@ -42173,6 +42250,7 @@
   review_comments: 0
   succeeded_builds: 18
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.957854074 Z
   what: pull-was-merged
   when: &229 2025-12-12 14:33:29.000000000 Z
   where: github
@@ -42199,6 +42277,7 @@
   review_comments: 0
   succeeded_builds: 11
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.167746550 Z
   what: pull-was-merged
   when: &230 2025-12-12 16:53:43.000000000 Z
   where: github
@@ -42225,6 +42304,7 @@
   review_comments: 0
   succeeded_builds: 15
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.269054456 Z
   what: pull-was-merged
   when: &231 2025-12-12 16:55:28.000000000 Z
   where: github
@@ -42251,6 +42331,7 @@
   review_comments: 0
   succeeded_builds: 15
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.219939557 Z
   what: pull-was-merged
   when: &232 2025-12-12 16:47:25.000000000 Z
   where: github
@@ -42263,6 +42344,7 @@
   comments: 2
   details: The pull request objectionary/eo2js#185 with 9 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 10h23m and 2 comments.
+  done: 2026-08-26 06:47:39.118062943 Z
   hoc: 9
   is_human: 1
   issue: 185
@@ -42281,6 +42363,7 @@
   comments: 1
   details: The pull request objectionary/hone-maven-plugin#390 with 14 HoC created
     by @renovate[bot] was reviewed by @yegor256 after 13h3m and 1 comments.
+  done: 2026-08-26 06:47:39.228212073 Z
   hoc: 14
   is_human: 1
   issue: 390
@@ -42299,6 +42382,7 @@
   comments: 2
   details: The pull request objectionary/hone-maven-plugin#391 with 2 HoC created
     by @renovate[bot] was reviewed by @yegor256 after 5h4m and 2 comments.
+  done: 2026-08-26 06:47:39.176202500 Z
   hoc: 2
   is_human: 1
   issue: 391
@@ -42323,6 +42407,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 35002
+  tombstone: 2026-08-26 06:47:38.960045229 Z
   what: code-was-contributed
   when: *229
   where: github
@@ -42341,6 +42426,7 @@
   repository: 798766850
   review_comments: 0
   seconds: 38399
+  tombstone: 2026-08-26 06:47:39.170645885 Z
   what: code-was-contributed
   when: *230
   where: github
@@ -42360,6 +42446,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 47987
+  tombstone: 2026-08-26 06:47:39.271259349 Z
   what: code-was-contributed
   when: *231
   where: github
@@ -42378,6 +42465,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 18747
+  tombstone: 2026-08-26 06:47:39.222589009 Z
   what: code-was-contributed
   when: *232
   where: github
@@ -42409,6 +42497,7 @@
   is_human: 0
   issue: 218
   repository: 970961472
+  tombstone: 2026-08-26 06:47:39.392907760 Z
   what: pull-was-opened
   when: 2025-12-12 23:06:08.000000000 Z
   where: github
@@ -42465,6 +42554,7 @@
   review_comments: 0
   succeeded_builds: 9
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.395448548 Z
   what: pull-was-merged
   when: &233 2025-12-13 03:11:57.000000000 Z
   where: github
@@ -42491,6 +42581,7 @@
   review_comments: 0
   succeeded_builds: 9
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.352445843 Z
   what: pull-was-merged
   when: &234 2025-12-13 03:08:29.000000000 Z
   where: github
@@ -42507,6 +42598,7 @@
   issue: 219
   repository: 970961472
   stale: issue
+  tombstone: 2026-08-26 06:47:40.482350598 Z
   what: pull-was-opened
   when: 2025-12-13 03:12:17.000000000 Z
   where: github
@@ -42585,6 +42677,7 @@
   issue: 529
   label: bug
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.871817249 Z
   what: label-was-attached
   when: &235 2025-12-12 14:19:32.000000000 Z
   where: github
@@ -42678,6 +42771,7 @@
   issue: 1450
   repository: 671896902
   stale: issue
+  tombstone: 2026-08-26 06:47:39.567795855 Z
   what: pull-was-opened
   when: 2025-12-11 20:39:03.000000000 Z
   where: github
@@ -42696,6 +42790,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 14749
+  tombstone: 2026-08-26 06:47:39.397777123 Z
   what: code-was-contributed
   when: *233
   where: github
@@ -42714,6 +42809,7 @@
   repository: 552394123
   review_comments: 0
   seconds: 58274
+  tombstone: 2026-08-26 06:47:39.354618684 Z
   what: code-was-contributed
   when: *234
   where: github
@@ -42724,6 +42820,7 @@
   _version: 0.18.0/0.58.1/0.17.5!0.17.6
   details: "@maxonfjvipon attached the '#bug' label to objectionary/phino#529 reported
     by @yegor256; this means that a bug was accepted as valid, by the project team."
+  done: 2026-08-26 06:47:37.835392786 Z
   is_human: 1
   issue: 529
   reporter: 526301
@@ -42754,6 +42851,7 @@
   stale: issue
   succeeded_builds: 19
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.569914228 Z
   what: pull-was-merged
   when: &236 2025-12-11 21:33:36.000000000 Z
   where: github
@@ -42778,6 +42876,7 @@
   is_human: 1
   issue: 4749
   repository: 73056727
+  tombstone: 2026-08-26 06:47:40.642320867 Z
   what: issue-was-opened
   when: 2025-12-13 05:33:05.000000000 Z
   where: github
@@ -42790,6 +42889,7 @@
   details: The pull request objectionary/jeo-maven-plugin#1450 with 2 HoC created
     by @renovate[bot] was merged by @rultor after 54m32s of being in review and 5
     comments.
+  done: 2026-08-26 06:47:39.536462713 Z
   hoc: 2
   is_human: 0
   issue: 1450
@@ -42807,6 +42907,7 @@
   _time: 2025-12-13 07:04:20.555731977 Z
   _version: 0.19.2/0.58.1/0.17.6
   details: Apparently, objectionary/eo#4749 has been "issue-was-closed".
+  done: 2026-08-26 06:47:40.605936478 Z
   is_human: 1
   issue: 4749
   repository: 73056727
@@ -42823,6 +42924,7 @@
   issue: 4749
   label: bug
   repository: 73056727
+  tombstone: 2026-08-26 06:47:40.645352837 Z
   what: label-was-attached
   when: 2025-12-13 05:33:06.000000000 Z
   where: github
@@ -42963,6 +43065,7 @@
   issue: 809
   repository: 489321585
   stale: issue
+  tombstone: 2026-08-26 06:47:40.432109797 Z
   what: pull-was-opened
   when: 2025-12-12 03:41:24.000000000 Z
   where: github
@@ -42991,6 +43094,7 @@
   issue: 527
   repository: 977982682
   stale: issue
+  tombstone: 2026-08-26 06:47:39.898158811 Z
   what: pull-was-opened
   when: 2025-12-11 14:47:51.000000000 Z
   where: github
@@ -43004,6 +43108,7 @@
   is_human: 1
   issue: 530
   repository: 977982682
+  tombstone: 2026-08-26 06:47:39.025723058 Z
   what: pull-was-opened
   when: 2025-12-11 15:57:00.000000000 Z
   where: github
@@ -43017,6 +43122,7 @@
   is_human: 1
   issue: 532
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.812344694 Z
   what: pull-was-opened
   when: 2025-12-12 08:05:08.000000000 Z
   where: github
@@ -43030,6 +43136,7 @@
   is_human: 0
   issue: 534
   repository: 977982682
+  tombstone: 2026-08-26 06:47:39.097873078 Z
   what: pull-was-opened
   when: 2025-12-12 13:01:01.000000000 Z
   where: github
@@ -43056,6 +43163,7 @@
   is_human: 0
   issue: 142
   repository: 551486781
+  tombstone: 2026-08-26 06:47:38.138976195 Z
   what: pull-was-opened
   when: 2025-12-10 21:58:03.000000000 Z
   where: github
@@ -43069,6 +43177,7 @@
   is_human: 0
   issue: 143
   repository: 551486781
+  tombstone: 2026-08-26 06:47:38.093031178 Z
   what: pull-was-opened
   when: 2025-12-10 21:58:11.000000000 Z
   where: github
@@ -43083,6 +43192,7 @@
   issue: 214
   repository: 970961472
   stale: issue
+  tombstone: 2026-08-26 06:47:40.392512199 Z
   what: pull-was-opened
   when: 2025-12-11 09:09:33.000000000 Z
   where: github
@@ -43096,6 +43206,7 @@
   is_human: 0
   issue: 215
   repository: 970961472
+  tombstone: 2026-08-26 06:47:38.674755421 Z
   what: pull-was-opened
   when: 2025-12-11 20:12:50.000000000 Z
   where: github
@@ -43109,6 +43220,7 @@
   is_human: 0
   issue: 216
   repository: 970961472
+  tombstone: 2026-08-26 06:47:38.626062029 Z
   what: pull-was-opened
   when: 2025-12-11 22:38:25.000000000 Z
   where: github
@@ -43125,6 +43237,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eo-lsp-server#214 has been "pull-was-closed".
+  done: 2026-08-26 06:47:40.362247574 Z
   failed_builds: 0
   files: 1
   hoc: 2
@@ -43160,6 +43273,7 @@
   review_comments: 0
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.677948160 Z
   what: pull-was-merged
   when: &240 2025-12-12 04:32:18.000000000 Z
   where: github
@@ -43186,6 +43300,7 @@
   review_comments: 0
   succeeded_builds: 8
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.629841351 Z
   what: pull-was-merged
   when: &241 2025-12-12 03:25:37.000000000 Z
   where: github
@@ -43212,6 +43327,7 @@
   stale: issue
   succeeded_builds: 0
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.900850450 Z
   what: pull-was-merged
   when: &242 2025-12-12 14:43:55.000000000 Z
   where: github
@@ -43238,6 +43354,7 @@
   review_comments: 1
   succeeded_builds: 18
   suggestions: 1
+  tombstone: 2026-08-26 06:47:39.027606317 Z
   what: pull-was-merged
   when: &243 2025-12-12 14:55:05.000000000 Z
   where: github
@@ -43254,6 +43371,7 @@
   comments_resolved: 0
   comments_to_code: 0
   details: Apparently, objectionary/eoc#809 has been "pull-was-closed".
+  done: 2026-08-26 06:47:40.394690959 Z
   failed_builds: 0
   files: 1
   hoc: 4
@@ -43289,6 +43407,7 @@
   review_comments: 0
   succeeded_builds: 0
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.107497681 Z
   what: pull-was-merged
   when: &244 2025-12-12 13:08:10.000000000 Z
   where: github
@@ -43315,6 +43434,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.141800897 Z
   what: pull-was-merged
   when: &245 2025-12-11 09:10:19.000000000 Z
   where: github
@@ -43341,6 +43461,7 @@
   review_comments: 0
   succeeded_builds: 10
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.095497446 Z
   what: pull-was-merged
   when: &246 2025-12-11 08:55:11.000000000 Z
   where: github
@@ -43359,6 +43480,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 29968
+  tombstone: 2026-08-26 06:47:38.680887677 Z
   what: code-was-contributed
   when: *240
   where: github
@@ -43377,6 +43499,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 17232
+  tombstone: 2026-08-26 06:47:38.632640122 Z
   what: code-was-contributed
   when: *241
   where: github
@@ -43414,6 +43537,7 @@
   comments: 7
   details: The pull request objectionary/phino#527 with 2 HoC created by @github-actions[bot]
     was merged by @rultor after 23h56m of being in review and 7 comments.
+  done: 2026-08-26 06:47:39.861485739 Z
   hoc: 2
   is_human: 0
   issue: 527
@@ -43440,6 +43564,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 82685
+  tombstone: 2026-08-26 06:47:39.029387897 Z
   what: code-was-contributed
   when: *243
   where: github
@@ -43458,6 +43583,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 429
+  tombstone: 2026-08-26 06:47:39.113407778 Z
   what: code-was-contributed
   when: *244
   where: github
@@ -43476,6 +43602,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 40336
+  tombstone: 2026-08-26 06:47:38.144212861 Z
   what: code-was-contributed
   when: *245
   where: github
@@ -43494,6 +43621,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 39420
+  tombstone: 2026-08-26 06:47:38.097878122 Z
   what: code-was-contributed
   when: *246
   where: github
@@ -43507,6 +43635,7 @@
   is_human: 1
   issue: 4739
   repository: 73056727
+  tombstone: 2026-08-26 06:47:38.453332643 Z
   what: pull-was-opened
   when: 2025-12-11 14:44:21.000000000 Z
   where: github
@@ -43520,6 +43649,7 @@
   is_human: 0
   issue: 4740
   repository: 73056727
+  tombstone: 2026-08-26 06:47:38.564406268 Z
   what: pull-was-opened
   when: 2025-12-11 17:29:44.000000000 Z
   where: github
@@ -43534,6 +43664,7 @@
   issue: 4741
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-26 06:47:39.815256471 Z
   what: pull-was-opened
   when: 2025-12-11 22:21:39.000000000 Z
   where: github
@@ -43548,6 +43679,7 @@
   issue: 4742
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-26 06:47:39.855778187 Z
   what: pull-was-opened
   when: 2025-12-12 07:29:54.000000000 Z
   where: github
@@ -43562,6 +43694,7 @@
   issue: 4745
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-26 06:47:39.936524959 Z
   what: pull-was-opened
   when: 2025-12-12 15:22:13.000000000 Z
   where: github
@@ -43576,6 +43709,7 @@
   issue: 4746
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-26 06:47:39.977652768 Z
   what: pull-was-opened
   when: 2025-12-12 20:20:16.000000000 Z
   where: github
@@ -43590,6 +43724,7 @@
   issue: 4747
   repository: 73056727
   stale: issue
+  tombstone: 2026-08-26 06:47:40.016041173 Z
   what: pull-was-opened
   when: 2025-12-12 20:20:19.000000000 Z
   where: github
@@ -43616,6 +43751,7 @@
   review_comments: 8
   succeeded_builds: 23
   suggestions: 8
+  tombstone: 2026-08-26 06:47:38.455693639 Z
   what: pull-was-merged
   when: &247 2025-12-12 13:05:47.000000000 Z
   where: github
@@ -43642,6 +43778,7 @@
   review_comments: 0
   succeeded_builds: 23
   suggestions: 0
+  tombstone: 2026-08-26 06:47:38.566236806 Z
   what: pull-was-merged
   when: &248 2025-12-12 03:23:32.000000000 Z
   where: github
@@ -43668,6 +43805,7 @@
   stale: issue
   succeeded_builds: 22
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.817965742 Z
   what: pull-was-merged
   when: &249 2025-12-12 13:06:14.000000000 Z
   where: github
@@ -43694,6 +43832,7 @@
   stale: issue
   succeeded_builds: 22
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.858601803 Z
   what: pull-was-merged
   when: &250 2025-12-12 13:06:50.000000000 Z
   where: github
@@ -43720,6 +43859,7 @@
   stale: issue
   succeeded_builds: 22
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.939307344 Z
   what: pull-was-merged
   when: &251 2025-12-12 16:23:06.000000000 Z
   where: github
@@ -43746,6 +43886,7 @@
   stale: issue
   succeeded_builds: 22
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.979922984 Z
   what: pull-was-merged
   when: &252 2025-12-13 04:34:13.000000000 Z
   where: github
@@ -43772,6 +43913,7 @@
   stale: issue
   succeeded_builds: 18
   suggestions: 0
+  tombstone: 2026-08-26 06:47:40.018308278 Z
   what: pull-was-merged
   when: &253 2025-12-13 04:35:45.000000000 Z
   where: github
@@ -43790,6 +43932,7 @@
   repository: 73056727
   review_comments: 8
   seconds: 80486
+  tombstone: 2026-08-26 06:47:38.457881021 Z
   what: code-was-contributed
   when: *247
   where: github
@@ -43808,6 +43951,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 35628
+  tombstone: 2026-08-26 06:47:38.567989320 Z
   what: code-was-contributed
   when: *248
   where: github
@@ -43819,6 +43963,7 @@
   comments: 2
   details: The pull request objectionary/eo#4741 with 22 HoC created by @renovate[bot]
     was merged by @yegor256 after 14h44m of being in review and 2 comments.
+  done: 2026-08-26 06:47:39.777260712 Z
   hoc: 22
   is_human: 0
   issue: 4741
@@ -43838,6 +43983,7 @@
   comments: 2
   details: The pull request objectionary/eo#4742 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 5h36m of being in review and 2 comments.
+  done: 2026-08-26 06:47:39.820300782 Z
   hoc: 2
   is_human: 0
   issue: 4742
@@ -43857,6 +44003,7 @@
   comments: 2
   details: The pull request objectionary/eo#4745 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 1h of being in review and 2 comments.
+  done: 2026-08-26 06:47:39.903311145 Z
   hoc: 2
   is_human: 0
   issue: 4745
@@ -43876,6 +44023,7 @@
   comments: 2
   details: The pull request objectionary/eo#4746 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 8h13m of being in review and 2 comments.
+  done: 2026-08-26 06:47:39.942004349 Z
   hoc: 2
   is_human: 0
   issue: 4746
@@ -43895,6 +44043,7 @@
   comments: 2
   details: The pull request objectionary/eo#4747 with 2 HoC created by @renovate[bot]
     was merged by @yegor256 after 8h15m of being in review and 2 comments.
+  done: 2026-08-26 06:47:39.982365000 Z
   hoc: 2
   is_human: 0
   issue: 4747
@@ -43936,6 +44085,7 @@
   comments_to_code: 0
   details: The pull request objectionary/eo-lsp-server#219 has been closed by @github-actions[bot],
     with 2 HoC and 0 comments.
+  done: 2026-08-26 06:47:40.438317839 Z
   event_id: 5285866455
   event_type: PullRequestEvent
   failed_builds: 0
@@ -44821,6 +44971,7 @@
   is_human: 1
   issue: 126
   repository: 546194972
+  tombstone: 2026-08-26 06:47:37.959939287 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-14 07:23:21.451102182 Z
   where: github
@@ -45300,6 +45451,7 @@
   is_human: 1
   issue: 529
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.873680400 Z
   what: bug-report-was-rewarded
   when: 2025-12-14 09:21:49.117859892 Z
   where: github
@@ -46602,6 +46754,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 2190
+  tombstone: 2026-08-26 06:47:38.311110058 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 21:19:37.700329701 Z
   where: github
@@ -46656,6 +46809,7 @@
   is_human: 1
   issue: 528
   repository: 977982682
+  tombstone: 2026-08-26 06:47:40.088270162 Z
   what: dud-was-punished
   when: 2025-12-14 21:19:57.830756510 Z
   where: github
@@ -46719,6 +46873,7 @@
   review_comments: 0
   seconds: 4331
   stale: issue
+  tombstone: 2026-08-26 06:47:39.534332414 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 22:17:28.762690269 Z
   where: github
@@ -46739,6 +46894,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 123
+  tombstone: 2026-08-26 06:47:38.418454650 Z
   what: code-contribution-was-rewarded
   when: 2025-12-14 22:17:34.062286015 Z
   where: github
@@ -47012,6 +47168,7 @@
   repository: 977982682
   review_comments: 1
   seconds: 82685
+  tombstone: 2026-08-26 06:47:39.031213245 Z
   what: code-contribution-was-rewarded
   when: 2025-12-15 00:17:36.993495539 Z
   where: github
@@ -47612,6 +47769,7 @@
   repository: 73056727
   review_comments: 8
   seconds: 80486
+  tombstone: 2026-08-26 06:47:38.459958887 Z
   what: code-contribution-was-rewarded
   when: 2025-12-15 05:28:32.157180726 Z
   where: github
@@ -48101,6 +48259,7 @@
   review_comments: 14
   succeeded_builds: 18
   suggestions: 10
+  tombstone: 2026-08-26 06:47:38.814571268 Z
   what: pull-was-merged
   when: &263 2025-12-15 11:51:32.000000000 Z
   where: github
@@ -48247,6 +48406,7 @@
   is_human: 0
   issue: 529
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.875589300 Z
   what: issue-was-closed
   when: &262 2025-12-15 12:20:55.000000000 Z
   where: github
@@ -48349,6 +48509,7 @@
   opener: 526301
   repository: 977982682
   seconds: 252085
+  tombstone: 2026-08-26 06:47:37.877420351 Z
   what: bug-was-resolved
   when: *262
   where: github
@@ -48367,6 +48528,7 @@
   repository: 977982682
   review_comments: 14
   seconds: 272784
+  tombstone: 2026-08-26 06:47:38.816637214 Z
   what: code-was-contributed
   when: *263
   where: github
@@ -48453,6 +48615,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 15808
+  tombstone: 2026-08-26 06:47:38.532316447 Z
   what: code-review-was-rewarded
   when: 2025-12-15 12:18:16.746576802 Z
   where: github
@@ -48473,6 +48636,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 17944
+  tombstone: 2026-08-26 06:47:38.732532157 Z
   what: code-review-was-rewarded
   when: 2025-12-15 12:18:22.999018457 Z
   where: github
@@ -48493,6 +48657,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 10664
+  tombstone: 2026-08-26 06:47:38.898334714 Z
   what: code-review-was-rewarded
   when: 2025-12-15 12:18:28.795343129 Z
   where: github
@@ -48513,6 +48678,7 @@
   repository: 977982682
   review_comments: 0
   seconds: 15212
+  tombstone: 2026-08-26 06:47:38.962083689 Z
   what: code-review-was-rewarded
   when: 2025-12-15 12:18:35.393613452 Z
   where: github
@@ -48610,6 +48776,7 @@
   repository: 798766850
   review_comments: 0
   seconds: 37415
+  tombstone: 2026-08-26 06:47:39.173168189 Z
   what: code-review-was-rewarded
   when: 2025-12-15 13:32:09.118697397 Z
   where: github
@@ -48630,6 +48797,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 47014
+  tombstone: 2026-08-26 06:47:39.273744351 Z
   what: code-review-was-rewarded
   when: 2025-12-15 13:32:16.644875881 Z
   where: github
@@ -48650,6 +48818,7 @@
   repository: 840332960
   review_comments: 0
   seconds: 18252
+  tombstone: 2026-08-26 06:47:39.225823056 Z
   what: code-review-was-rewarded
   when: 2025-12-15 13:32:22.367565084 Z
   where: github
@@ -50862,6 +51031,7 @@
   is_human: 1
   issue: 529
   repository: 977982682
+  tombstone: 2026-08-26 06:47:37.879311160 Z
   what: resolved-bug-was-rewarded
   when: 2025-12-18 13:02:33.276502973 Z
   where: github
@@ -51073,6 +51243,7 @@
   repository: 977982682
   review_comments: 14
   seconds: 272784
+  tombstone: 2026-08-26 06:47:38.818827950 Z
   what: code-contribution-was-rewarded
   when: 2025-12-18 13:04:01.245120476 Z
   where: github
@@ -53927,6 +54098,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#212 with 6 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 12h45m and 0 comments.
+  done: 2026-08-26 06:47:38.192677095 Z
   hoc: 6
   is_human: 1
   issue: 212
@@ -53945,6 +54117,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#213 with 6 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 12h10m and 0 comments.
+  done: 2026-08-26 06:47:38.149459192 Z
   hoc: 6
   is_human: 1
   issue: 213
@@ -53963,6 +54136,7 @@
   comments: 4
   details: The pull request objectionary/phino#523 with 23 HoC created by @maxonfjvipon
     was reviewed by @coderabbitai[bot] after 0h5m and 0 comments.
+  done: 2026-08-26 06:47:38.270965098 Z
   hoc: 23
   is_human: 0
   issue: 523
@@ -53981,6 +54155,7 @@
   comments: 5
   details: The pull request objectionary/phino#518 with 21 HoC created by @yegor256
     was reviewed by @coderabbitai[bot] after 6h38m and 1 comments.
+  done: 2026-08-26 06:47:38.313151815 Z
   hoc: 21
   is_human: 0
   issue: 518
@@ -53999,6 +54174,7 @@
   comments: 1
   details: The pull request objectionary/phino#526 with 6 HoC created by @yegor256
     was reviewed by @copilot after 0h1m and 0 comments.
+  done: 2026-08-26 06:47:38.348605489 Z
   hoc: 6
   is_human: 0
   issue: 526
@@ -54017,6 +54193,7 @@
   comments: 3
   details: The pull request objectionary/eoc#808 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 0h24m and 0 comments.
+  done: 2026-08-26 06:47:38.735113240 Z
   hoc: 2
   is_human: 1
   issue: 808
@@ -54035,6 +54212,7 @@
   comments: 1
   details: The pull request objectionary/phino#533 with 39 HoC created by @copilot
     was reviewed by @copilot after 0h34m and 0 comments.
+  done: 2026-08-26 06:47:39.032978727 Z
   hoc: 39
   is_human: 0
   issue: 533
@@ -54053,6 +54231,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#218 with 14 HoC created by
     @renovate[bot] was reviewed by @yegor256 after 3h58m and 0 comments.
+  done: 2026-08-26 06:47:39.358874186 Z
   hoc: 14
   is_human: 1
   issue: 218
@@ -54071,6 +54250,7 @@
   comments: 3
   details: The pull request objectionary/aoi#162 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 16h3m and 0 comments.
+  done: 2026-08-26 06:47:39.316709450 Z
   hoc: 2
   is_human: 1
   issue: 162
@@ -54107,6 +54287,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#215 with 14 HoC created by
     @renovate[bot] was reviewed by @yegor256 after 6h57m and 0 comments.
+  done: 2026-08-26 06:47:38.637931419 Z
   hoc: 14
   is_human: 1
   issue: 215
@@ -54125,6 +54306,7 @@
   comments: 3
   details: The pull request objectionary/phino#517 with 1002 HoC created by @yegor256
     was reviewed by @coderabbitai[bot] after 6h50m and 0 comments.
+  done: 2026-08-26 06:47:38.235296067 Z
   hoc: 1002
   is_human: 0
   issue: 517
@@ -54143,6 +54325,7 @@
   comments: 3
   details: The pull request objectionary/eo-lsp-server#216 with 4 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 4h31m and 0 comments.
+  done: 2026-08-26 06:47:38.571622263 Z
   hoc: 4
   is_human: 1
   issue: 216
@@ -54161,6 +54344,7 @@
   comments: 4
   details: The pull request objectionary/phino#530 with 32 HoC created by @maxonfjvipon
     was reviewed by @coderabbitai[bot] after 19h16m and 1 comments.
+  done: 2026-08-26 06:47:38.995291987 Z
   hoc: 32
   is_human: 0
   issue: 530
@@ -54179,6 +54363,7 @@
   comments: 1
   details: The pull request objectionary/phino#534 with 21 HoC created by @copilot
     was reviewed by @copilot after 0h11m and 0 comments.
+  done: 2026-08-26 06:47:39.068166530 Z
   hoc: 21
   is_human: 0
   issue: 534
@@ -54197,6 +54382,7 @@
   comments: 3
   details: The pull request objectionary/eo-vscode#142 with 12 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 10h45m and 0 comments.
+  done: 2026-08-26 06:47:38.102738303 Z
   hoc: 12
   is_human: 1
   issue: 142
@@ -54215,6 +54401,7 @@
   comments: 3
   details: The pull request objectionary/eo-vscode#143 with 12 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 10h44m and 0 comments.
+  done: 2026-08-26 06:47:38.036281104 Z
   hoc: 12
   is_human: 1
   issue: 143
@@ -54233,6 +54420,7 @@
   comments: 8
   details: The pull request objectionary/eo#4739 with 144 HoC created by @volodya-lombrozo
     was reviewed by @coderabbitai[bot] after 0h4m and 2 comments.
+  done: 2026-08-26 06:47:38.420962165 Z
   hoc: 144
   is_human: 0
   issue: 4739
@@ -54251,6 +54439,7 @@
   comments: 8
   details: The pull request objectionary/eo#4739 with 144 HoC created by @volodya-lombrozo
     was reviewed by @copilot after 0h4m and 5 comments.
+  done: 2026-08-26 06:47:38.462046992 Z
   hoc: 144
   is_human: 0
   issue: 4739
@@ -54269,6 +54458,7 @@
   comments: 5
   details: The pull request objectionary/eo#4740 with 4 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 9h37m and 0 comments.
+  done: 2026-08-26 06:47:38.534103749 Z
   hoc: 4
   is_human: 1
   issue: 4740
@@ -54287,6 +54477,7 @@
   comments: 8
   details: The pull request objectionary/phino#532 with 421 HoC created by @yegor256
     was reviewed by @copilot after 0h3m and 7 comments.
+  done: 2026-08-26 06:47:38.778140804 Z
   hoc: 421
   is_human: 0
   issue: 532
@@ -54305,6 +54496,7 @@
   comments: 8
   details: The pull request objectionary/phino#532 with 421 HoC created by @yegor256
     was reviewed by @coderabbitai[bot] after 0h3m and 1 comments.
+  done: 2026-08-26 06:47:38.823186896 Z
   hoc: 421
   is_human: 0
   issue: 532
@@ -54323,6 +54515,7 @@
   comments: 8
   details: The pull request objectionary/phino#532 with 421 HoC created by @yegor256
     was reviewed by @maxonfjvipon after 2h54m and 2 comments.
+  done: 2026-08-26 06:47:38.964184300 Z
   hoc: 421
   is_human: 1
   issue: 532
@@ -57211,6 +57404,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 45957
+  tombstone: 2026-08-26 06:47:38.233183826 Z
   what: code-review-was-rewarded
   when: 2025-12-26 11:21:01.630402133 Z
   where: github
@@ -57231,6 +57425,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 43858
+  tombstone: 2026-08-26 06:47:38.190408174 Z
   what: code-review-was-rewarded
   when: 2025-12-26 11:21:07.298954074 Z
   where: github
@@ -57251,6 +57446,7 @@
   repository: 489321585
   review_comments: 0
   seconds: 1454
+  tombstone: 2026-08-26 06:47:38.775943428 Z
   what: code-review-was-rewarded
   when: 2025-12-26 11:21:12.581445630 Z
   where: github
@@ -57296,6 +57492,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 14297
+  tombstone: 2026-08-26 06:47:39.399941575 Z
   what: code-review-was-rewarded
   when: 2025-12-26 12:17:48.129403283 Z
   where: github
@@ -57316,6 +57513,7 @@
   repository: 552394123
   review_comments: 0
   seconds: 57832
+  tombstone: 2026-08-26 06:47:39.356710707 Z
   what: code-review-was-rewarded
   when: 2025-12-26 12:17:53.809126303 Z
   where: github
@@ -57805,6 +58003,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 25056
+  tombstone: 2026-08-26 06:47:38.683687222 Z
   what: code-review-was-rewarded
   when: 2025-12-26 16:19:22.481302202 Z
   where: github
@@ -57867,6 +58066,7 @@
   repository: 970961472
   review_comments: 0
   seconds: 16318
+  tombstone: 2026-08-26 06:47:38.635367063 Z
   what: code-review-was-rewarded
   when: 2025-12-26 16:19:44.658397367 Z
   where: github
@@ -58034,6 +58234,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 38711
+  tombstone: 2026-08-26 06:47:38.146711368 Z
   what: code-review-was-rewarded
   when: 2025-12-26 19:24:16.758841957 Z
   where: github
@@ -58054,6 +58255,7 @@
   repository: 551486781
   review_comments: 0
   seconds: 38699
+  tombstone: 2026-08-26 06:47:38.100366616 Z
   what: code-review-was-rewarded
   when: 2025-12-26 19:24:23.452344571 Z
   where: github
@@ -58494,6 +58696,7 @@
   repository: 73056727
   review_comments: 0
   seconds: 34665
+  tombstone: 2026-08-26 06:47:38.569730317 Z
   what: code-review-was-rewarded
   when: 2025-12-27 00:18:45.410306823 Z
   where: github
@@ -58514,6 +58717,7 @@
   repository: 977982682
   review_comments: 2
   seconds: 10444
+  tombstone: 2026-08-26 06:47:38.821012173 Z
   what: code-review-was-rewarded
   when: 2025-12-27 00:18:50.950931595 Z
   where: github
@@ -66467,6 +66671,7 @@
   issue: 137
   repository: 955159947
   stale: issue
+  tombstone: 2026-08-26 06:47:39.637480370 Z
   what: pull-was-opened
   when: 2025-12-12 04:01:09.000000000 Z
   where: github
@@ -66631,6 +66836,7 @@
   stale: issue
   succeeded_builds: 15
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.639489112 Z
   what: pull-was-merged
   when: &443 2025-12-12 05:41:42.000000000 Z
   where: github
@@ -67230,6 +67436,7 @@
   details: The pull request objectionary/sodg-maven-plugin#137 with 6 HoC created
     by @renovate[bot] was merged by @renovate[bot] after 1h40m of being in review
     and 0 comments.
+  done: 2026-08-26 06:47:39.606678063 Z
   hoc: 6
   is_human: 0
   issue: 137
@@ -161286,6 +161493,7 @@
   is_human: 1
   issue: 77
   repository: 574459304
+  stale: who
   what: pull-was-opened
   when: 2026-05-19 07:27:55.000000000 Z
   where: github
@@ -161472,17 +161680,6 @@
   when: &1350 2026-05-19 06:30:13.000000000 Z
   where: github
   who: 526301
-- _id: 1091751
-  _job: 26083900702
-  _time: 2026-05-19 08:02:29.755463730 Z
-  _version: 0.19.9/0.60.2/0.17.17
-  details: 'We found out that the user #240962040 is known in GitHub as @say-5.'
-  is_human: 1
-  name: say-5
-  what: who-has-name
-  when: 2026-05-19 08:02:29.759133808 Z
-  where: github
-  who: 240962040
 - _id: 1091752
   _job: 26083900702
   _time: 2026-05-19 08:21:42.722553158 Z
@@ -161885,6 +162082,7 @@
   is_human: 1
   issue: 77
   repository: 574459304
+  stale: who
   what: bad-branch-name-was-punished
   when: 2026-05-19 08:24:00.417068001 Z
   where: github
@@ -255060,7 +255258,7 @@
   latest_issue_was_found: 46
   min_issue_was_found: 27
   repository: 531151981
-  types_were_scanned: 0
+  types_were_scanned: 33
   what: iterate
   where: github
 - _id: 1105351
@@ -276388,7 +276586,7 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 836
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18877615622
   issues_were_scanned: 0
@@ -276398,7 +276596,7 @@
   min_issue_was_found: 0
   min_pull_was_found: 0
   repository: 840332960
-  types_were_scanned: 564
+  types_were_scanned: 657
   what: iterate
   where: github
 - _id: 1107889
@@ -282374,7 +282572,7 @@
   min_issue_was_found: 19
   min_pull_was_found: 0
   repository: 955159947
-  types_were_scanned: 0
+  types_were_scanned: 202
   what: iterate
   where: github
 - _id: 1108492
@@ -283334,7 +283532,7 @@
   min_issue_was_found: 525
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 919
+  types_were_scanned: 964
   what: iterate
   where: github
 - _id: 1108618
@@ -287057,24 +287255,24 @@
   min_issue_was_found: 276
   min_pull_was_found: 0
   repository: 721146770
-  types_were_scanned: 0
+  types_were_scanned: 249
   what: iterate
   where: github
 - _id: 1108977
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1021
   earliest_issue_was_found: 1
-  events_were_scanned: 13871137282
+  events_were_scanned: 13878549258
   issues_were_scanned: 982
-  labels_were_scanned: 0
+  labels_were_scanned: 1305
   latest_issue_was_found: 765
   merges_were_scanned: 0
   min_issue_was_found: 797
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 0
+  types_were_scanned: 318
   what: iterate
   where: github
 - _id: 1108989
@@ -289455,7 +289653,7 @@
   min_issue_was_found: 3
   min_pull_was_found: 0
   repository: 1219806055
-  types_were_scanned: 0
+  types_were_scanned: 73
   what: iterate
   where: github
 - _id: 1109036
@@ -289523,7 +289721,7 @@
   min_issue_was_found: 1137
   min_pull_was_found: 1572
   repository: 671896902
-  types_were_scanned: 0
+  types_were_scanned: 1577
   what: iterate
   where: github
 - _id: 1109041
@@ -289982,7 +290180,7 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
+  assignees_were_scanned: 0
   earliest_issue_was_found: 1
   events_were_scanned: 18873453738
   issues_were_scanned: 0
@@ -289992,7 +290190,7 @@
   min_issue_was_found: 467
   min_pull_was_found: 1039
   repository: 489321585
-  types_were_scanned: 1103
+  types_were_scanned: 1147
   what: iterate
   where: github
 - _id: 1109065
@@ -290009,24 +290207,24 @@
   min_issue_was_found: 343
   min_pull_was_found: 409
   repository: 970961472
-  types_were_scanned: 0
+  types_were_scanned: 343
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 6091
+  assignees_were_scanned: 6238
   earliest_issue_was_found: 1
-  events_were_scanned: 18915861915
+  events_were_scanned: 18925547778
   issues_were_scanned: 0
-  labels_were_scanned: 0
+  labels_were_scanned: 6182
   latest_issue_was_found: 4591
-  merges_were_scanned: 0
+  merges_were_scanned: 7601
   min_issue_was_found: 4341
   min_pull_was_found: 5337
   repository: 73056727
-  types_were_scanned: 4707
+  types_were_scanned: 4828
   what: iterate
   where: github
 - _id: 1109067
@@ -297504,6 +297702,7 @@
   review_comments: 0
   succeeded_builds: 13
   suggestions: 0
+  tombstone: 2026-08-26 06:47:39.312035442 Z
   what: pull-was-merged
   when: &2523 2026-03-23 08:04:59.000000000 Z
   where: github
@@ -299848,6 +300047,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 2626604
+  stale: who
   what: code-was-contributed
   when: *2488
   where: github
@@ -300979,6 +301179,7 @@
   repository: 13623548
   review_comments: 0
   seconds: 8739048
+  tombstone: 2026-08-26 06:47:39.314332714 Z
   what: code-was-contributed
   when: *2523
   where: github
@@ -302070,6 +302271,7 @@
   repository: 574459304
   review_comments: 0
   seconds: 2626604
+  stale: who
   what: code-contribution-was-rewarded
   when: 2026-07-10 21:54:14.511252166 Z
   where: github
@@ -310321,6 +310523,7 @@
   comments: 3
   details: The pull request objectionary/home#379 with 2 HoC created by @renovate[bot]
     was reviewed by @yegor256 after 12h19m and 0 comments.
+  done: 2026-08-26 06:47:39.276153087 Z
   hoc: 2
   is_human: 1
   issue: 379
@@ -334858,6 +335061,7 @@
   is_human: 1
   issue: 219
   repository: 519299365
+  stale: who
   what: pull-was-opened
   when: 2026-07-10 01:38:16.000000000 Z
   where: github
@@ -335318,6 +335522,7 @@
   is_human: 1
   issue: 219
   repository: 519299365
+  stale: who
   what: bad-branch-name-was-punished
   when: 2026-07-19 01:43:09.290045276 Z
   where: github
@@ -536873,6 +537078,7 @@
   is_human: 1
   issue: 517
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.268756654 Z
   what: pull-was-opened
   when: 2025-12-11 05:42:20.000000000 Z
   where: github
@@ -538548,6 +538754,7 @@
   is_human: 1
   issue: 518
   repository: 977982682
+  tombstone: 2026-08-26 06:47:38.346502337 Z
   what: pull-was-opened
   when: 2025-12-11 07:26:28.000000000 Z
   where: github
@@ -552690,9 +552897,6 @@
   comments: 4
   details: It's time to reward @yegor256 for the code review in objectionary/eo#7561,
     the reward amount is 4.
-  greeting: 'Thanks for the review! You''ve earned +4 points for this: +12 as a basis;
-    -8 for absolutely no comments posted.  Your running score is [+1944](https://www.eolang.org/zerocracy/objectionary-vitals.html);
-    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
   hoc: 32
   href: https://github.com/objectionary/eo/issues/7561/#issuecomment-5421132382
   is_human: 1
@@ -552738,8 +552942,10 @@
   failed_builds: 0
   files: 2
   hoc: 41
+  is_human: 1
   issue: 7675
   repository: 73056727
+  review_comments: 0
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
@@ -552751,6 +552957,7 @@
   _time: 2026-08-26 06:33:55.629690249 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7726 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7726
   repository: 73056727
   what: issue-was-opened
@@ -552762,6 +552969,7 @@
   _time: 2026-08-26 06:33:57.719301933 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7724 has been earlier opened by @yegor256.
+  is_human: 1
   issue: 7724
   repository: 73056727
   what: issue-was-opened
@@ -552773,6 +552981,7 @@
   _time: 2026-08-26 06:34:00.212918193 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7723 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7723
   repository: 73056727
   what: issue-was-opened
@@ -552784,6 +552993,7 @@
   _time: 2026-08-26 06:34:00.689690360 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7722 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7722
   repository: 73056727
   what: issue-was-opened
@@ -552795,6 +553005,7 @@
   _time: 2026-08-26 06:34:01.041610735 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7721 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7721
   repository: 73056727
   what: issue-was-opened
@@ -552806,6 +553017,7 @@
   _time: 2026-08-26 06:34:01.486124123 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7720 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7720
   repository: 73056727
   what: issue-was-opened
@@ -552817,6 +553029,7 @@
   _time: 2026-08-26 06:34:01.878763790 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7719 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7719
   repository: 73056727
   what: issue-was-opened
@@ -552828,6 +553041,7 @@
   _time: 2026-08-26 06:34:02.374383720 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7718 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7718
   repository: 73056727
   what: issue-was-opened
@@ -552839,6 +553053,7 @@
   _time: 2026-08-26 06:34:02.743137054 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7717 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7717
   repository: 73056727
   what: issue-was-opened
@@ -552850,6 +553065,7 @@
   _time: 2026-08-26 06:34:03.181942325 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7716 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7716
   repository: 73056727
   what: issue-was-opened
@@ -552861,6 +553077,7 @@
   _time: 2026-08-26 06:34:03.536580286 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7715 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7715
   repository: 73056727
   what: issue-was-opened
@@ -552872,6 +553089,7 @@
   _time: 2026-08-26 06:34:03.921362462 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7714 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7714
   repository: 73056727
   what: issue-was-opened
@@ -552883,6 +553101,7 @@
   _time: 2026-08-26 06:34:04.267855610 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7713 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7713
   repository: 73056727
   what: issue-was-opened
@@ -552894,6 +553113,7 @@
   _time: 2026-08-26 06:34:04.724229578 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7712 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7712
   repository: 73056727
   what: issue-was-opened
@@ -552905,6 +553125,7 @@
   _time: 2026-08-26 06:34:05.055632451 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7711 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7711
   repository: 73056727
   what: issue-was-opened
@@ -552916,9 +553137,288 @@
   _time: 2026-08-26 06:34:05.612227443 Z
   _version: 0.19.16/0.61.1/0.17.21
   details: The issue objectionary/eo#7710 has been earlier opened by @gemshrine.
+  is_human: 1
   issue: 7710
   repository: 73056727
   what: issue-was-opened
   when: 2026-08-26 00:31:17.000000000 Z
   where: github
   who: 113778529
+- _id: 1123418
+  _job: 88837
+  _time: 2026-08-26 06:46:27.442489096 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  award: 8
+  comments: 3
+  details: It's time to reward @yegor256 for the code contributed in objectionary/eo#7703,
+    the reward amount is 8.
+  greeting: 'Thanks for the contribution! You''ve earned +8 points for this: +16 as
+    a basis; -8 for the lack of code review. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html)
+    them coming. Your running score is [+1952](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 96
+  is_human: 1
+  issue: 7703
+  repository: 73056727
+  review_comments: 0
+  seconds: 29360
+  what: code-contribution-was-rewarded
+  when: 2026-08-26 06:46:27.448539433 Z
+  where: github
+  who: 526301
+  why: Contributed code in objectionary/eo#7703
+- _id: 1123419
+  _job: 32942734093
+  _time: 2026-08-26 07:27:46.095921019 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#797 has been closed by @volodya-lombrozo.
+  event_id: 13878549258
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 797
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:26:13.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123420
+  _job: 32942734093
+  _time: 2026-08-26 07:27:47.736728082 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#639 has been closed by @volodya-lombrozo.
+  event_id: 13878507388
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 639
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:25:21.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123421
+  _job: 32942734093
+  _time: 2026-08-26 07:27:48.597727728 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#601 has been closed by @volodya-lombrozo.
+  event_id: 13878400849
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 601
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:23:08.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123422
+  _job: 32942734093
+  _time: 2026-08-26 07:27:49.429728125 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#536 has been closed by @volodya-lombrozo.
+  event_id: 13878324140
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 536
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:21:30.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123423
+  _job: 32942734093
+  _time: 2026-08-26 07:27:50.281664932 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  commits: 38
+  contributors:
+  - 33578155
+  - 29139614
+  - 8086956
+  - 526301
+  - 81847
+  - 51804353
+  details: A new release "0.4.8" has been published in objectionary/lints by @rultor.
+  event_id: 13878271185
+  event_type: ReleaseEvent
+  hoc: 1080
+  is_human: 0
+  last_commit: 3f27062bc8816e3074e38e877152ca8052039cb7
+  release: 376944310
+  repository: 889819508
+  tag: 0.4.8
+  what: release-published
+  when: 2026-08-26 07:20:20.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1123424
+  _job: 32942734093
+  _time: 2026-08-26 07:27:51.856370790 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#364 has been closed by @volodya-lombrozo.
+  event_id: 13878264681
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 364
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:20:14.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123425
+  _job: 32942734093
+  _time: 2026-08-26 07:27:53.458923402 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#318 has been closed by @volodya-lombrozo.
+  event_id: 13878196810
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 318
+  repository: 889819508
+  what: issue-was-closed
+  when: 2026-08-26 07:18:50.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123426
+  _job: 32942734093
+  _time: 2026-08-26 07:27:55.977376033 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/eager-planck-pjk05a
+  details: The pull request objectionary/lints#1313 has been opened by @yegor256.
+  event_id: 13876800510
+  event_type: PullRequestEvent
+  is_human: 1
+  issue: 1313
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-26 06:47:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123427
+  _job: 32942734093
+  _time: 2026-08-26 07:27:57.234281689 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#1312 has been opened by @volodya-lombrozo.
+  event_id: 13876303100
+  event_type: IssuesEvent
+  is_human: 1
+  issue: 1312
+  repository: 889819508
+  what: issue-was-opened
+  when: 2026-08-26 06:36:03.000000000 Z
+  where: github
+  who: 51804353
+- _id: 1123428
+  _job: 32942734093
+  _time: 2026-08-26 07:31:38.022824793 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: claude/brave-davinci-i629j3
+  details: The missing pull objectionary/eo#7725 has been opened by @yegor256.
+  issue: 7725
+  repository: 73056727
+  what: pull-was-opened
+  when: 2026-08-26 06:27:29.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123429
+  _job: 32942734093
+  _time: 2026-08-26 07:31:39.975067921 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/com.qulice-qulice-maven-plugin-0.x
+  details: The missing pull objectionary/lints#1311 has been opened by @renovate[bot].
+  issue: 1311
+  repository: 889819508
+  what: pull-was-opened
+  when: 2026-08-25 23:46:41.000000000 Z
+  where: github
+  who: 29139614
+- _id: 1123430
+  _job: 32942734093
+  _time: 2026-08-26 07:31:50.376662751 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#639 has been opened earlier by @h1alexbel.
+  issue: 639
+  repository: 889819508
+  what: issue-was-opened
+  when: 2025-06-13 15:30:54.000000000 Z
+  where: github
+  who: 83453843
+- _id: 1123431
+  _job: 32942734093
+  _time: 2026-08-26 07:31:50.948454477 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The issue objectionary/lints#536 has been opened earlier by @marat-tim.
+  issue: 536
+  repository: 889819508
+  what: issue-was-opened
+  when: 2025-05-03 12:10:59.000000000 Z
+  where: github
+  who: 108345628
+- _id: 1123432
+  _job: 32942734093
+  _time: 2026-08-26 07:33:58.476505080 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  branch: renovate/com.qulice-qulice-maven-plugin-0.x
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/lints#1311 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  issue: 1311
+  repository: 889819508
+  succeeded_builds: 21
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-08-26 05:51:44.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1123433
+  _job: 32942734093
+  _time: 2026-08-26 07:36:37.314078684 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  assigner: 526301
+  details: objectionary/lints#639 was assigned to @yegor256 by @yegor256.
+  issue: 639
+  repository: 889819508
+  what: issue-was-assigned
+  when: 2026-08-22 06:12:56.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123434
+  _job: 32942734093
+  _time: 2026-08-26 07:39:25.869912000 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#536.
+  issue: 536
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2025-05-04 10:27:09.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123435
+  _job: 32942734093
+  _time: 2026-08-26 07:39:38.609361419 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#639.
+  issue: 639
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2025-06-15 11:40:21.000000000 Z
+  where: github
+  who: 526301
+- _id: 1123436
+  _job: 32942734093
+  _time: 2026-08-26 07:40:15.438903044 Z
+  _version: 0.19.16/0.61.1/0.17.21
+  details: The "bug" label was attached by @volodya-lombrozo to the issue objectionary/lints#950.
+  issue: 950
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-08-26 07:28:39.000000000 Z
+  where: github
+  who: 51804353
