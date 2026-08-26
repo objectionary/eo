@@ -5,9 +5,11 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,23 +111,24 @@ final class Provided {
     }
 
     /**
-     * The void this type keeps in the given place.
+     * The void this type keeps in the given place among the ones still empty.
      * @param type The name the type goes by
-     * @param place The place of the void among the voids of this type
+     * @param taken The locator of every void that is no longer empty
+     * @param place The place of the void among the ones still empty
      * @return The locator of the void, or an empty string when this type keeps
-     *  fewer voids than that
+     *  fewer empty voids than that
      */
-    String slot(final String type, final int place) {
-        String found = "";
-        int seen = 0;
+    String vacant(final String type, final Collection<String> taken, final int place) {
+        final List<String> free = new ArrayList<>(0);
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
-                if (seen == place) {
-                    found = row.getOrDefault("type", "");
-                    break;
-                }
-                seen += 1;
+            final String hollow = row.getOrDefault("type", "");
+            if ("true".equals(row.get("void")) && !taken.contains(hollow)) {
+                free.add(hollow);
             }
+        }
+        String found = "";
+        if (place < free.size()) {
+            found = free.get(place);
         }
         return found;
     }

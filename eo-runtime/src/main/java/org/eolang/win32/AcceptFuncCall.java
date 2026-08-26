@@ -4,6 +4,7 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
@@ -38,15 +39,17 @@ public final class AcceptFuncCall implements Syscall {
         result.put(
             0,
             new Data.ToPhi(
-                Winsock.INSTANCE.accept(
-                    new Dataized(params[0]).asNumber().longValue(),
-                    new SockaddrIn(
-                        new Dataized(params[1].take("family")).take(Short.class),
-                        new Dataized(params[1].take("port")).take(Short.class),
-                        new Dataized(params[1].take("address")).take(Integer.class),
-                        new Dataized(params[1].take("padding")).take()
-                    ),
-                    new IntByReference(new Dataized(params[2]).asNumber().intValue())
+                Pointer.nativeValue(
+                    Winsock.INSTANCE.accept(
+                        new Pointer(new Dataized(params[0]).asNumber().longValue()),
+                        new SockaddrIn(
+                            new Dataized(params[1].take("family")).take(Short.class),
+                            new Dataized(params[1].take("port")).take(Short.class),
+                            new Dataized(params[1].take("address")).take(Integer.class),
+                            new Dataized(params[1].take("padding")).take()
+                        ),
+                        new IntByReference(new Dataized(params[2]).asNumber().intValue())
+                    )
                 )
             )
         );

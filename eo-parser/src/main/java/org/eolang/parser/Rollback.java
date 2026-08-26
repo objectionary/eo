@@ -21,7 +21,7 @@ final class Rollback {
     private final Emit emit;
 
     /** The sink savepoint taken at construction. */
-    private final int token;
+    private final Savepoint token;
 
     /** The stack levels snapshot taken at construction. */
     private final List<Level> frame;
@@ -34,7 +34,7 @@ final class Rollback {
      * @param frame The stack levels snapshot already taken
      */
     private Rollback(
-        final Stack stack, final Emit emit, final int token, final List<Level> frame
+        final Stack stack, final Emit emit, final Savepoint token, final List<Level> frame
     ) {
         this.stack = stack;
         this.emit = emit;

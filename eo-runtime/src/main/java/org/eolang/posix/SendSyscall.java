@@ -8,6 +8,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Expect;
+import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -49,10 +50,10 @@ public final class SendSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.send(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Int("the 'descriptor' argument of send", params[0]).it(),
                     buf,
                     size,
-                    new Dataized(params[3]).asNumber().intValue()
+                    new Int("the 'flags' argument of send", params[3]).it()
                 )
             )
         );

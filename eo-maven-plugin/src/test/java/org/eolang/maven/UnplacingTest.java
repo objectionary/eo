@@ -13,6 +13,7 @@ import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -39,6 +40,10 @@ final class UnplacingTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void keepsCatalogEntryWhenDeletionFails(@TempDir final Path temp) throws IOException {
+        Assumptions.assumeTrue(
+            this.protects(temp.resolve("probe")),
+            "read-only directories don't stop deletions for this user (root?), can't test"
+        );
         final Path classes = temp.resolve("classes");
         Files.createDirectories(classes);
         final Path binary = classes.resolve("Foo.class");
@@ -60,5 +65,22 @@ final class UnplacingTest {
             placed.classes().iterator().next().placed(),
             Matchers.is(true)
         );
+    }
+
+    private boolean protects(final Path dir) throws IOException {
+        Files.createDirectories(dir);
+        final Path file = dir.resolve("probe.txt");
+        Files.write(file, "probe".getBytes(StandardCharsets.UTF_8));
+        Files.setPosixFilePermissions(dir, PosixFilePermissions.fromString("r-xr-xr-x"));
+        boolean protects;
+        try {
+            Files.deleteIfExists(file);
+            protects = false;
+        } catch (final IOException ex) {
+            protects = true;
+        } finally {
+            Files.setPosixFilePermissions(dir, PosixFilePermissions.fromString("rwxr-xr-x"));
+        }
+        return protects;
     }
 }

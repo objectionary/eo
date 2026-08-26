@@ -10,6 +10,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -53,6 +54,34 @@ final class MjCoverageReportTest {
             "the LCOV report must record at least one hit line, but LH:0 everywhere",
             Files.readString(lcov),
             Matchers.not(Matchers.containsString("LH:0"))
+        );
+    }
+
+    @Test
+    void countsEveryRepeatOfTheSameLocation(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        final String location = new CoverageManifest().locations(
+            new XMLDocument(maven.programTojo().xmir())
+        ).iterator().next();
+        final int last = location.lastIndexOf(':');
+        final String line = location.substring(
+            location.lastIndexOf(':', last - 1) + 1, last
+        );
+        final int repeats = 10_000;
+        final Path hits = temp.resolve("coverage.txt");
+        Files.write(hits, Collections.nCopies(repeats, location));
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "every repeat of a location must be counted, however many of them the raw hits file holds, but they werent",
+            Files.readString(lcov),
+            Matchers.containsString(
+                String.format("DA:%s,%d", line, repeats)
+            )
         );
     }
 

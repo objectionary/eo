@@ -5,7 +5,7 @@
 package org.eolang.posix;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -36,9 +36,9 @@ public final class SocketSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.socket(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new Dataized(params[1]).asNumber().intValue(),
-                    new Dataized(params[2]).asNumber().intValue()
+                    new Int("the 'domain' argument of socket", params[0]).it(),
+                    new Int("the 'type' argument of socket", params[1]).it(),
+                    new Int("the 'protocol' argument of socket", params[2]).it()
                 )
             )
         );
