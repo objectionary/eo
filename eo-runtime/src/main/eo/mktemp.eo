@@ -86,7 +86,7 @@
     path.separator.joined
       * mktemp.path "eo-mktemp-child"
 
-  ++> can-return-a-tmpfile-whose-path-differs-from-the-temp-directorys-path
+  ++> can-return-a-tmpfile-whose-path-differs-from-the-temp-directory-path
     seq * > @
       different
       temp.deleted
