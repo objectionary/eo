@@ -33,7 +33,7 @@ final class InetAddrFuncCallTest {
     void readsALeadingZeroAsOctal() {
         MatcherAssert.assertThat(
             "a part behind a leading zero is octal to inet_addr, so 010 is 8, and reading it as decimal ten sends an EO program to a different host than the POSIX half of this call sends it to",
-            InetAddrFuncCallTest.converted("010.1.1.1"),
+            this.converted("010.1.1.1"),
             Matchers.equalTo(16_843_016.0d)
         );
     }
@@ -43,7 +43,7 @@ final class InetAddrFuncCallTest {
     void acceptsTheTwoPartForm() {
         MatcherAssert.assertThat(
             "the last part of a shortened address fills the bytes still left, so 127.1 is 127.0.0.1, not text to refuse",
-            InetAddrFuncCallTest.converted("127.1"),
+            this.converted("127.1"),
             Matchers.equalTo(16_777_343.0d)
         );
     }
@@ -53,7 +53,7 @@ final class InetAddrFuncCallTest {
     void widensTheAddressToUnsigned() {
         MatcherAssert.assertThat(
             "inet_addr answers with an in_addr_t, which is unsigned, so an address whose last byte is 128 or above must not reach EO as a negative number",
-            InetAddrFuncCallTest.converted("10.0.0.200"),
+            this.converted("10.0.0.200"),
             Matchers.equalTo(3_355_443_210.0d)
         );
     }
@@ -62,7 +62,7 @@ final class InetAddrFuncCallTest {
     @DisabledOnOs({OS.MAC, OS.LINUX})
     void doesNotReportInvalidForTheBroadcastAddress() {
         Native.setLastError(0);
-        InetAddrFuncCallTest.made(String.join(".", Collections.nCopies(4, "255")));
+        this.made(String.join(".", Collections.nCopies(4, "255")));
         MatcherAssert.assertThat(
             "the limited-broadcast address converts to INADDR_NONE like unconvertible text does, but it is valid, so WSAEINVAL must not be reported for it",
             Native.getLastError(),
@@ -74,7 +74,7 @@ final class InetAddrFuncCallTest {
     @DisabledOnOs({OS.MAC, OS.LINUX})
     void reportsInvalidOnUnconvertibleText() {
         Native.setLastError(0);
-        InetAddrFuncCallTest.made("nope");
+        this.made("nope");
         MatcherAssert.assertThat(
             "inet_addr does not set the last winsock error itself, so the call must set it, or a later read of the last error answers with whatever an unrelated earlier call left behind",
             Native.getLastError(),
@@ -82,13 +82,13 @@ final class InetAddrFuncCallTest {
         );
     }
 
-    private static Double converted(final String address) {
+    private Double converted(final String address) {
         return new Dataized(
-            InetAddrFuncCallTest.made(address).take("code")
+            this.made(address).take("code")
         ).asNumber();
     }
 
-    private static Phi made(final String address) {
+    private Phi made(final String address) {
         return new InetAddrFuncCall(Phi.Φ.take("win32").copy())
             .make(new Data.ToPhi(address));
     }
