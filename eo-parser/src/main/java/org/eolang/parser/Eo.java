@@ -279,7 +279,7 @@ final class Eo implements Iterable<Directive> {
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final Rollback point = Rollback.of(stack, emit);
+            final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
@@ -327,7 +327,7 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final Rollback point = Rollback.of(stack, emit);
+        final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {

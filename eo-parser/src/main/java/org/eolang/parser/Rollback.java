@@ -33,23 +33,13 @@ final class Rollback {
      * @param token The sink savepoint already taken
      * @param frame The stack levels snapshot already taken
      */
-    private Rollback(
+    Rollback(
         final Stack stack, final Emit emit, final Savepoint token, final List<Level> frame
     ) {
         this.stack = stack;
         this.emit = emit;
         this.token = token;
         this.frame = frame;
-    }
-
-    /**
-     * Take a joint savepoint over the given stack and sink.
-     * @param stack The stack to snapshot and later restore
-     * @param emit The sink to mark and later roll back
-     * @return The savepoint
-     */
-    static Rollback of(final Stack stack, final Emit emit) {
-        return new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
     }
 
     /** Roll the sink and the stack back to this savepoint. */
