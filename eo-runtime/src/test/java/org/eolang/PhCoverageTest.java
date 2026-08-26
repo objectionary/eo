@@ -118,7 +118,9 @@ final class PhCoverageTest {
         final String before = System.getProperty("eo.coverageFile");
         System.setProperty("eo.coverageFile", hits.toString());
         try {
-            new PhCoverage(new Data.ToPhi(1L), "Φ.normalized:3:5").normalized().delta();
+            new PhCoverage(
+                new PhDefault(new byte[] {(byte) 0x01}), "Φ.normalized:3:5"
+            ).normalized().delta();
             MatcherAssert.assertThat(
                 "a location touched through a normalized object must still be recorded, but it wasnt",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
