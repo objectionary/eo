@@ -90,14 +90,17 @@
     seq * > @
       different
       temp.deleted
+      different
     not. > different!
       temp.path.eq mktemp.path
     mktemp.tmpfile > temp
 
   ++> can-return-a-tmpfile-with-a-non-empty-basename
     seq * > @
-      temp.as-path.basename.length.gt 0
+      named
       temp.deleted
+      named
+    temp.as-path.basename.length.gt 0 > named!
     mktemp.tmpfile > temp
 
   mktemp.as-path.eq ++> can-return-the-same-path-through-as-path-and-path
@@ -107,6 +110,8 @@
 
   ++> can-tell-that-a-fresh-tmpfile-is-not-a-directory
     seq * > @
-      temp.is-directory.not
+      regular
       temp.deleted
+      regular
+    temp.is-directory.not > regular!
     mktemp.tmpfile > temp
