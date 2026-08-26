@@ -97,10 +97,10 @@ final class Bound {
     private Collection<String> taken(final String application) {
         final List<String> chain = new ArrayList<>(0);
         final Collection<String> seen = new HashSet<>(0);
-        String walked = this.pairs.get(application);
-        while (walked != null && seen.add(walked)) {
-            chain.add(walked);
+        String walked = application;
+        while (this.pairs.containsKey(walked) && seen.add(walked)) {
             walked = this.pairs.get(walked);
+            chain.add(walked);
         }
         Collections.reverse(chain);
         final Collection<String> found = new HashSet<>(0);
