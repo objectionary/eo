@@ -85,5 +85,5 @@
     seq * > @
       child.as-file.touched
       d.as-file.deleted
-    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "child.txt" > child
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
