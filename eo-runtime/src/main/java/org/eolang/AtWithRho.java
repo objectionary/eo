@@ -5,7 +5,6 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,8 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * only when the object declares a \rho and has not been bound to one yet.
  * The terminator ({@link PhTerminator}) silently ignores this \rho itself, so no container
  * leaks into it and its cause is not masked as it propagates.
- * The copy it makes is kept ({@link WithRho}), so that every caller, on its own thread
- * or not, takes the very same object for as long as the one being bound does not change.
+ * Every caller takes a copy of its own, since that copy is where the caller puts its
+ * own arguments, and the copying happens under a lock, so that no thread reads the
+ * object being bound while another one is still copying it.
  * @since 0.36.0
  */
 final class AtWithRho implements Attribute {
@@ -31,12 +31,7 @@ final class AtWithRho implements Attribute {
     private final Phi rho;
 
     /**
-     * The copy that carries the rho, once it is made.
-     */
-    private final AtomicReference<WithRho> bound;
-
-    /**
-     * Lock guarding the making of the copy.
+     * Lock guarding the copying of the object being bound.
      */
     private final Lock lock;
 
@@ -48,7 +43,6 @@ final class AtWithRho implements Attribute {
     AtWithRho(final Attribute attr, final Phi rho) {
         this.original = attr;
         this.rho = rho;
-        this.bound = new AtomicReference<>(null);
         this.lock = new ReentrantLock();
     }
 
@@ -66,13 +60,8 @@ final class AtWithRho implements Attribute {
         if (ret.needsRho()) {
             this.lock.lock();
             try {
-                final WithRho previous = this.bound.get();
-                if (previous == null || !previous.made(ret)) {
-                    final Phi copy = ret.copy();
-                    copy.put(Phi.RHO, this.rho);
-                    this.bound.set(new WithRho(ret, copy));
-                }
-                ret = this.bound.get().phi();
+                ret = ret.copy();
+                ret.put(Phi.RHO, this.rho);
             } finally {
                 this.lock.unlock();
             }

@@ -148,43 +148,49 @@ final class AtWithRhoTest {
     }
 
     @RepeatedTest(20)
-    void handsOutOneCopyToConcurrentCallers() {
+    void handsOutItsOwnCopyToEveryConcurrentCaller() {
+        final int callers = 16;
         final Attribute attr = new AtWithRho(
             new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
             new PhDefault()
         );
         MatcherAssert.assertThat(
-            "concurrent calls must take one and the same copy, but they took different ones",
+            "every concurrent call must take a copy of its own, but some of them shared one",
             new HashSet<>(
-                new Together<>(16, thread -> attr.get())
+                new Together<>(callers, thread -> attr.get())
                     .withTimeout(1L, TimeUnit.MINUTES)
                     .asList()
             ),
-            Matchers.hasSize(1)
+            Matchers.hasSize(callers)
+        );
+    }
+
+    @RepeatedTest(20)
+    void bindsOneReceiverOntoEveryConcurrentCopy() {
+        final Phi rho = new PhDefault();
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            rho
+        );
+        MatcherAssert.assertThat(
+            "every concurrent copy must carry the very same receiver, but some carried another",
+            new HashSet<>(
+                new Together<>(16, thread -> attr.get().take(Phi.RHO))
+                    .withTimeout(1L, TimeUnit.MINUTES)
+                    .asList()
+            ),
+            Matchers.contains(rho)
         );
     }
 
     @Test
-    void handsOutOneCopyOnEveryCall() {
+    void handsOutItsOwnCopyOnEveryCall() {
         final Attribute attr = new AtWithRho(
             new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
             new PhDefault()
         );
         MatcherAssert.assertThat(
-            "the second call took another copy of the very same object, but it must not",
-            attr.get(),
-            Matchers.sameInstance(attr.get())
-        );
-    }
-
-    @Test
-    void handsOutFreshCopyForFreshObject() {
-        final Attribute attr = new AtWithRho(
-            new AtComposite(new PhDefault(), phi -> this.formation()),
-            new PhDefault()
-        );
-        MatcherAssert.assertThat(
-            "an object built anew must be bound anew, but the previous copy was taken",
+            "the second call took the copy the first one took, but each call must take its own",
             attr.get(),
             Matchers.not(Matchers.sameInstance(attr.get()))
         );
