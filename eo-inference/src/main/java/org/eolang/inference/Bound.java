@@ -30,7 +30,19 @@ import java.util.Map;
  * and naming {@code Φ.dec} here would throw that half away. The argument has a
  * row of its own, which says both.</p>
  *
+ * <p>The receiver of a dispatch fills a void too, when the formation it
+ * dispatches into declares one for it. That void is named {@code ρ} and is
+ * not counted among the places, since it is answered by whoever dispatches
+ * and not by an argument written to the right of the name.</p>
+ *
  * @since 0.69.0
+ * @todo #7491:45min Substitute a receiver filling into an answer, the way
+ *  {@link Filled} already substitutes an argument. {@link Dispatched} asks
+ *  this class about arguments alone, through the ctor that leaves the
+ *  receivers empty, because it is handed the arguments of the program and no
+ *  XMIR to read a receiver off. Once it has them, the {@code plus} of
+ *  {@code ^} inside a formation could be answered with the type of whoever
+ *  dispatched on it rather than left rooted at the void.
  */
 final class Bound {
 
@@ -38,6 +50,11 @@ final class Bound {
      * The arguments of every application, from {@link Given}.
      */
     private final Map<String, List<String>> args;
+
+    /**
+     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     */
+    private final Map<String, String> receivers;
 
     /**
      * The pairs, each name against the one it is a copy of.
@@ -50,7 +67,7 @@ final class Bound {
     private final Provided owned;
 
     /**
-     * Ctor.
+     * Ctor, for the callers that ask only about arguments.
      * @param arguments The arguments of every application, from {@link Given}
      * @param links The pairs, each name against the one it is a copy of
      * @param provided What the types certainly have
@@ -60,7 +77,24 @@ final class Bound {
         final Map<String, String> links,
         final Provided provided
     ) {
+        this(arguments, Collections.emptyMap(), links, provided);
+    }
+
+    /**
+     * Ctor.
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param taken What every dispatch takes its attribute from
+     * @param links The pairs, each name against the one it is a copy of
+     * @param provided What the types certainly have
+     */
+    Bound(
+        final Map<String, List<String>> arguments,
+        final Map<String, String> taken,
+        final Map<String, String> links,
+        final Provided provided
+    ) {
         this.args = arguments;
+        this.receivers = taken;
         this.pairs = links;
         this.owned = provided;
     }
@@ -77,6 +111,13 @@ final class Bound {
             final Map<String, String> filled = this.filled(application, this.taken(application));
             if (!filled.isEmpty()) {
                 found.put(application, filled);
+            }
+        }
+        for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
+            final String hollow = this.owned.receiver(this.base(dispatch.getKey()));
+            if (!hollow.isEmpty()) {
+                found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
+                    .put(hollow, dispatch.getValue());
             }
         }
         return found;

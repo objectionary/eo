@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that declares a receiver declares it first, and an argument is
+# not what fills it. `inc oak` hands the `oak` to `x`, the first void a caller
+# can reach, and counting the receiver among the places an argument can land
+# would put it one off and leave `x` holding nothing.
+eo:
+  app.eo: |
+    [] > app
+      inc oak > @
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+provides:
+  - "//type[@id='Φ.inc']/attr[@name='x'][@void='true']/witnessed/ref[@loc='Φ.oak']"
