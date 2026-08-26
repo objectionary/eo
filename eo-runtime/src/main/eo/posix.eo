@@ -97,7 +97,6 @@
             "close"
             fd
         fd.gt -1
-      fd
     code. > fd
       posix *1
         "open"
@@ -113,7 +112,6 @@
             "close"
             fd
         fd.gt -1
-      fd
     code. > fd
       posix *1
         "open"
@@ -151,6 +149,24 @@
         0
         0
 
+  ++> can-report-eexist-when-creating-an-existing-file-exclusively
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "open"
+            "/dev/null"
+            plus.
+              posix.rdonly.plus posix.creat
+              posix.exclusive
+            posix.private
+        eq.
+          code.
+            posix
+              "errno"
+              *
+          posix.eexist
+
   os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
       code.
@@ -178,7 +194,6 @@
   ++> can-stat-the-size-of-dev-null
     os.is-windows.or > @
       info.size.eq 0
-      info
     output. > info
       posix *1
         "stat"
@@ -189,24 +204,6 @@
     posix.timeval > tv
       5
       100
-
-  os.is-windows.if --> stops-on-creating-an-existing-file-exclusively
-    1.div 0
-    seq *
-      code.
-        posix *1
-          "open"
-          "/dev/null"
-          plus.
-            posix.rdonly.plus posix.creat
-            posix.exclusive
-          posix.private
-      eq.
-        code.
-          posix
-            "errno"
-            *
-        posix.eexist
 
   --> stops-on-write-size-being-negative
     os.is-windows.if > @
