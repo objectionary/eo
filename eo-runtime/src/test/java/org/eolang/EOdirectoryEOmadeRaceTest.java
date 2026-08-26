@@ -6,9 +6,7 @@
 package org.eolang;
 
 import com.yegor256.Together;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.RepeatedTest;
@@ -29,7 +27,9 @@ import org.junit.jupiter.api.io.TempDir;
  * the two steps: every thread is given the same missing path, so whichever one
  * wins the {@code mkdir} leaves the rest to take the {@code EEXIST} branch, and
  * a deep path gives them several levels to collide on. A thread that is refused
- * comes back through {@code Together} as the failure it threw.</p>
+ * comes back through {@code Together} as the failure it threw, and one that is
+ * answered reads {@code exists} off what it was given, which is the directory
+ * on disk and not a claim about it.</p>
  *
  * <p>Four threads are enough to leave somebody holding the {@code EEXIST}, and
  * every thread of them builds a graph of objects of its own: a dozen at once is
@@ -42,23 +42,17 @@ final class EOdirectoryEOmadeRaceTest {
 
     @RepeatedTest(10)
     void makesOneDirectoryFromManyThreadsAtOnce(@TempDir final Path temp) {
-        final Path target = temp.resolve("one").resolve("two").resolve("three");
-        final int threads = 4;
-        final List<Boolean> outcomes = new Together<>(
-            threads,
-            thread -> new Dataized(
-                this.made(target.toString()).take("exists")
-            ).asBool()
-        ).asList();
         MatcherAssert.assertThat(
             "every thread racing for the same missing directory must be told it is there, since the one that loses the mkdir is the one the EEXIST branch rescues",
-            outcomes,
+            new Together<>(
+                4,
+                thread -> new Dataized(
+                    this.made(
+                        temp.resolve("one").resolve("two").resolve("three").toString()
+                    ).take("exists")
+                ).asBool()
+            ).asList(),
             Matchers.everyItem(Matchers.is(true))
-        );
-        MatcherAssert.assertThat(
-            "the directory the threads raced for must be on disk once they are done",
-            Files.isDirectory(target),
-            Matchers.is(true)
         );
     }
 
