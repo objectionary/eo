@@ -10,6 +10,9 @@ name: reuse
   pull_request:
     branches:
       - master
+concurrency:
+  group: reuse-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   reuse:
     timeout-minutes: 15

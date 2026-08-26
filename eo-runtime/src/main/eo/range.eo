@@ -26,7 +26,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ start end] > range
+[start end] > range
   if. > @
     start.lt end
     if. > [^ acc current] >> appended
@@ -53,7 +53,7 @@
         8
         9
     range > rng
-      [^]
+      []
         build 1 > @
         [^ i] > build
           i > @
@@ -73,7 +73,7 @@
         4
         4.5
     range > rng
-      [^]
+      []
         x 1 > @
         [^ i] > x
           i > @
@@ -85,7 +85,7 @@
     rng.eq > @
       * 1 6
     range > rng
-      [^]
+      []
         b 1 > @
         [^ num] > b
           num > @
@@ -96,10 +96,10 @@
   ++> can-build-an-empty-range-from-wrong-items
     rng.is-empty > @
     range > rng
-      [^]
+      []
         y 10 > @
-        [^ num] > y
+        [num] > y
           num > @
-          [^] > next
+          [] > next
             42 > nothing
       1

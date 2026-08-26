@@ -20,38 +20,58 @@
       n.eq -9.223372036854776e18
       "-9223372036854775808".as-bytes
       if.
-        n.abs.gte
-          2.power 63
+        n.abs.gte 9.223372036854776e18
         T
           "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
         if.
-          n.lt 0
-          if. > [^ m] >> negative
-            m.as-number.eq 0
-            digits m
+          n.abs.lt 9007199254740992
+          if.
+            and.
+              n.lt 0
+              not.
+                truncated.eq 0
             "-".as-bytes.concat
+              [^ m] >> quick
+                if. > @
+                  m.lt 10
+                  as-char.
+                    m.plus 48
+                  concat.
+                    ^.quick head
+                    as-char.
+                      plus.
+                        m.minus (head.times 10)
+                        48
+                floor. > head
+                  m.div 10
+              | truncated
+            quick truncated
+          if.
+            n.lt 0
+            if. > [^ m] >> negative
+              m.as-number.eq 0
               digits m
-          |
-            as-i64.
-              n.times -1
-              T message > [^ message] >> failure
-          [^ n] >> digits
-            if. > @
-              n.lt ^.ten
-              as-char.
-                n.as-number.plus 48
-              concat.
-                ^.digits q
+              "-".as-bytes.concat
+                digits m
+            |
+              as-i64.
+                n.times -1
+                T message > [message] >> failure
+            [^ n] >> digits
+              if. > @
+                n.lt ^.ten
                 as-char.
-                  plus.
-                    as-number.
-                      n.minus (q.times ^.ten)
-                    48
-            n.div ^.ten failure > bits!
-            i64 bits > q
-          | (n.as-i64 failure)
+                  n.as-number.plus 48
+                concat.
+                  ^.digits q
+                  as-char.
+                    plus. (n.minus (q.times ^.ten)).as-number 48
+              n.div ^.ten failure > bits!
+              i64 bits > q
+            | (n.as-i64 failure)
   ^ > n
   10.as-i64 failure > ten!
+  n.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"

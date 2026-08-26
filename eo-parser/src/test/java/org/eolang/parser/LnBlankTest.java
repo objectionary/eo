@@ -53,8 +53,8 @@ final class LnBlankTest {
         new LnBlank(new Span("", 1)).into(new Stack(), new Globals(), emit);
         MatcherAssert.assertThat(
             "a blank line cannot append directives — its only effect is the counter bump",
-            emit.savepoint(),
-            Matchers.equalTo(0)
+            emit.directives(),
+            Matchers.emptyIterable()
         );
     }
 }

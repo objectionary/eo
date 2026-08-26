@@ -31,7 +31,7 @@
         is-ws (b.slice index 1)!
         ^.first-non-ws-index (index.plus 1).as-number
         index
-  or. > [^ c] >> is-ws
+  or. > [c] >> is-ws
     c.eq 20-
     or.
       c.eq 09-

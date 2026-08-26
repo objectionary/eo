@@ -10,14 +10,16 @@ import java.util.AbstractMap;
  * A {@link java.util.Map.Entry} of an attribute name to its {@link Attribute}.
  *
  * <p>This is just a typed alias for
- * {@link AbstractMap.SimpleEntry SimpleEntry&lt;String, Attr&gt;}, kept short
- * so that subclasses of {@link PhDefault} can write
+ * {@link AbstractMap.SimpleImmutableEntry SimpleImmutableEntry&lt;String,
+ * Attr&gt;}, kept short so that subclasses of {@link PhDefault} can write
  * {@code super(new Attrs(new Attr("x", new AtVoid("x"))))} without
- * any method calls in the constructor body.</p>
+ * any method calls in the constructor body. The entry is immutable, so an
+ * {@link Attrs} it was handed to keeps what it was given, no matter what the
+ * caller does with its own copy of the entry afterwards.</p>
  *
  * @since 0.59
  */
-public final class Attr extends AbstractMap.SimpleEntry<String, Attribute> {
+public final class Attr extends AbstractMap.SimpleImmutableEntry<String, Attribute> {
 
     /**
      * Serialization identifier.

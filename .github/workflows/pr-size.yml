@@ -4,6 +4,9 @@
 # yamllint disable rule:line-length
 name: pr-size
 on: pull_request
+concurrency:
+  group: pr-size-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   pr-size:
     runs-on: ubuntu-24.04

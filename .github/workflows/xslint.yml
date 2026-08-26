@@ -10,6 +10,9 @@ name: xslint
   pull_request:
     branches:
       - master
+concurrency:
+  group: xslint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   xslint:
     timeout-minutes: 15

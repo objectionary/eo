@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  Attribute "x" is declared more than once in the same formation
+input: |
+  [] > main
+    1 > x
+    2 > x

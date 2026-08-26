@@ -163,7 +163,16 @@ public final class PhSafe implements Phi, Atom {
 
     @Override
     public Phi normalized() {
-        return this.through(this.origin::normalized);
+        final Phi normal = this.through(this.origin::normalized);
+        final Phi result;
+        if (normal instanceof PhTerminator) {
+            result = normal;
+        } else {
+            result = new PhSafe(
+                normal, this.program, this.line, this.position, this.location, this.oname
+            );
+        }
+        return result;
     }
 
     @Override
