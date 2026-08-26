@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  [3:0] error: 'meta header must appear at the top of the file'
+  +package foo
+  ^
+input: |
+
+
+  +package foo
+
+  [] > main
+    [] > @
+      hello > test

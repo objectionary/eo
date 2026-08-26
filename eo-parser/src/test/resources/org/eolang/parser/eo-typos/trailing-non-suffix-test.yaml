@@ -3,7 +3,7 @@
 ---
 line: 1
 message: |-
-  [1:10] error: 'trailing garbage after name suffix'
+  [1:10] error: 'unexpected content after name suffix'
   [] +> foo garbage
             ^
 input: |

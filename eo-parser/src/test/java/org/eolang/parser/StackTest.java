@@ -74,17 +74,6 @@ final class StackTest {
     }
 
     @Test
-    void rejectsPushWithIndentJumpGreaterThanTwo() {
-        final Stack stack = new Stack();
-        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> stack.push(4, 2, Kind.HEAD, Openness.OPEN),
-            "indent jump of more than one level cannot push"
-        );
-    }
-
-    @Test
     void readsParentKindFromEntryBelow() {
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);

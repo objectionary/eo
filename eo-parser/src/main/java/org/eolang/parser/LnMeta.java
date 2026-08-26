@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A meta-directive line — §3.2 of the spec.
@@ -41,7 +42,11 @@ final class LnMeta implements Line {
         if (this.span.indent() != 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "meta directive must precede all other objects"
+                String.format(
+                    Locale.ROOT,
+                    "meta directive must sit at indent 0, found indent %d",
+                    this.span.indent()
+                )
             );
         }
         if (globals.firstObjectEmitted()) {
@@ -54,6 +59,13 @@ final class LnMeta implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block"
+            );
+        }
+        if (!globals.inMetaHeader() && globals.pendingBlanks() > 0
+            && globals.pendingComments().isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "meta header must appear at the top of the file"
             );
         }
         final String body = this.span.body();

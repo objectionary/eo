@@ -82,7 +82,7 @@ final class PhPackageTest {
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            pckg.take("nop").take(Phi.RHO),
+            pckg.take("bytes$eq").take(Phi.RHO),
             Matchers.equalTo(pckg)
         );
     }
@@ -94,7 +94,7 @@ final class PhPackageTest {
                 "A package member must not still await %s once dispatch has bound it",
                 Phi.RHO
             ),
-            Phi.Φ.take("nop").needsRho(),
+            Phi.Φ.take("bytes$eq").needsRho(),
             Matchers.is(false)
         );
     }

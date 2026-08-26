@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object/errors[count(error)=2]
   - /object/errors/error[contains(text(),'expected identifier')]
-  - /object/errors/error[contains(text(),'R-6.5.4')]
+  - /object/errors/error[contains(text(),'blank line not allowed between non-master siblings')]
 input: |
   # Sample.
 

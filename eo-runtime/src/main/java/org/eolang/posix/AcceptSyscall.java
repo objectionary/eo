@@ -7,6 +7,7 @@ package org.eolang.posix;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.SockaddrIn;
@@ -38,14 +39,14 @@ public final class AcceptSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.accept(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Int("the 'descriptor' argument of accept", params[0]).it(),
                     new SockaddrIn(
                         new Dataized(params[1].take("family")).take(Short.class),
                         new Dataized(params[1].take("port")).take(Short.class),
                         new Dataized(params[1].take("address")).take(Integer.class),
                         new Dataized(params[1].take("padding")).take()
                     ),
-                    new IntByReference(new Dataized(params[2]).asNumber().intValue())
+                    new IntByReference(new Int("the 'length' argument of accept", params[2]).it())
                 )
             )
         );
