@@ -23,12 +23,8 @@
 
   not. ++> can-distinguish-different-fallbacks-for-different-missing-variables
     eq.
-      getenv
-        "EO_UNSET_VARIABLE_6142"
-        "first"
-      getenv
-        "EO_UNSET_VARIABLE_7253"
-        "second"
+      getenv "EO_UNSET_VARIABLE_6142" "first"
+      getenv "EO_UNSET_VARIABLE_7253" "second"
 
   eq. ++> can-read-a-variable-consistently-across-repeated-calls
     getenv
@@ -92,10 +88,15 @@
     true
 
   eq. ++> can-use-a-tuple-fallback-when-variable-does-not-exist
-    getenv
+    getenv *1
       "EO_UNSET_VARIABLE_6142"
-      * 1 2 3
-    * 1 2 3
+      1
+      2
+      3
+    *
+      1
+      2
+      3
 
   eq. ++> can-use-an-empty-string-fallback-when-variable-does-not-exist
     getenv
