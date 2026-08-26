@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -77,11 +77,12 @@ public final class PhSticky implements Phi {
     private final List<Map.Entry<String, Phi>> inputs;
 
     /**
-     * The dataizations going on right now, by key, shared with every copy,
-     * so that two callers asking for the same answer wait for one
-     * computation instead of running two.
+     * What a caller holds while it computes an answer, by key, shared with
+     * every copy, so that two callers asking for the same answer wait for
+     * one computation instead of running two. An entry lives no longer than
+     * the computation it guards.
      */
-    private final Map<String, FutureTask<byte[]>> running;
+    private final Map<String, Lock> guards;
 
     /**
      * Ctor.
@@ -110,18 +111,18 @@ public final class PhSticky implements Phi {
      * @param obj The object to decorate
      * @param map The answers remembered so far
      * @param puts The puts received so far
-     * @param busy The dataizations going on right now
+     * @param busy What a caller holds while it computes an answer
      */
     private PhSticky(
         final Phi obj,
         final Map<String, byte[]> map,
         final List<Map.Entry<String, Phi>> puts,
-        final Map<String, FutureTask<byte[]>> busy
+        final Map<String, Lock> busy
     ) {
         this.origin = obj;
         this.cache = map;
         this.inputs = puts;
-        this.running = busy;
+        this.guards = busy;
     }
 
     @Override
@@ -140,7 +141,7 @@ public final class PhSticky implements Phi {
             this.origin.copy(),
             this.cache,
             new CopyOnWriteArrayList<>(this.inputs),
-            this.running
+            this.guards
         );
     }
 
@@ -203,50 +204,22 @@ public final class PhSticky implements Phi {
     }
 
     private byte[] remembered(final String key) {
-        byte[] found = this.cache.get(key);
-        if (found == null) {
-            found = this.computed(key);
-        }
-        return found.clone();
-    }
-
-    private byte[] computed(final String key) {
-        final FutureTask<byte[]> fresh = new FutureTask<>(this.origin::delta);
-        final FutureTask<byte[]> found = this.running.putIfAbsent(key, fresh);
-        final byte[] bytes;
-        if (found == null) {
-            try {
-                fresh.run();
-                bytes = this.answer(fresh);
-                this.cache.put(key, bytes.clone());
-            } finally {
-                this.running.remove(key);
-            }
-        } else {
-            bytes = this.answer(found);
-        }
-        return bytes;
-    }
-
-    @SuppressWarnings("PMD.PreserveStackTrace")
-    private byte[] answer(final FutureTask<byte[]> task) {
+        final byte[] result;
+        final Lock guard = this.guards.computeIfAbsent(key, ignored -> new ReentrantLock());
+        guard.lock();
         try {
-            return task.get();
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new ExInterrupted("Interrupted while waiting for a shared dataization");
-        } catch (final ExecutionException ex) {
-            final Throwable cause = ex.getCause();
-            if (cause instanceof RuntimeException runtime) {
-                throw runtime;
+            final byte[] found = this.cache.get(key);
+            if (found == null) {
+                result = this.origin.delta();
+                this.cache.put(key, result.clone());
+            } else {
+                result = found;
             }
-            if (cause instanceof Error error) {
-                throw error;
-            }
-            throw new ExFailure(
-                String.format("The shared dataization of %s failed", this.origin), cause
-            );
+        } finally {
+            this.guards.remove(key, guard);
+            guard.unlock();
         }
+        return result.clone();
     }
 
     private Optional<String> key() {
