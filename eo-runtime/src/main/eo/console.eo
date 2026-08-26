@@ -169,5 +169,14 @@
     console.write > o1
       "part one, "
 
+  console.write ++> can-write-a-non-ascii-string-to-the-console
+    "héllo, wörld! 日本語\n"
+
+  console.write "" ++> can-write-an-empty-string-to-the-console
+
+  console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
+
   console.write ++> can-write-to-the-console
     "Hello, console-test!\n"
+
+  console --> cannot-dataize-console-directly
