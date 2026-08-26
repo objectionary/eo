@@ -48,6 +48,11 @@ final class Filled {
     private final Provided owned;
 
     /**
+     * The void every argument lands in.
+     */
+    private final Vacancy spots;
+
+    /**
      * Ctor.
      * @param arguments The arguments of every application, from {@link Given}
      * @param links The pairs, each name against the one it is a copy of
@@ -61,6 +66,7 @@ final class Filled {
         this.args = arguments;
         this.pairs = links;
         this.owned = provided;
+        this.spots = new Vacancy(arguments, links, provided);
     }
 
     /**
@@ -103,7 +109,7 @@ final class Filled {
             if (this.args.containsKey(walked)) {
                 final List<String> given = this.args.get(walked);
                 for (int place = 0; place < given.size(); place += 1) {
-                    final String hollow = this.owned.slot(this.end(copied), place);
+                    final String hollow = this.spots.at(walked, place);
                     if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                         found.putIfAbsent(hollow, this.end(given.get(place)));
                     }

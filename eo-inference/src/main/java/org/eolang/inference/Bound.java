@@ -14,8 +14,9 @@ import java.util.Map;
  * <p>An application is the one place in a program where a void stops being a
  * question: {@code inc t} says that the {@code x} of that {@code inc} holds a
  * {@code t}. The place of an argument says which void it lands in, counted
- * through the voids in the order the formation declares them, which is the
- * order {@link Ungrouped} keeps.</p>
+ * through the voids still empty at that point of the copy chain, since an object
+ * built by more than one application fills a fresh void each time — the work
+ * {@link Vacancy} does.</p>
  *
  * <p>What fills the void is written down as the argument itself and not as
  * what the argument turns out to be. The two differ exactly when the argument
@@ -34,29 +35,23 @@ final class Bound {
     private final Map<String, List<String>> args;
 
     /**
-     * The name every type goes by.
+     * The void every argument lands in.
      */
-    private final Map<String, String> names;
-
-    /**
-     * What the types certainly have.
-     */
-    private final Provided owned;
+    private final Vacancy spots;
 
     /**
      * Ctor.
      * @param arguments The arguments of every application, from {@link Given}
-     * @param aliases The name every type goes by, from {@link Ends}
+     * @param links The pairs, each name against the one it is a copy of
      * @param provided What the types certainly have
      */
     Bound(
         final Map<String, List<String>> arguments,
-        final Map<String, String> aliases,
+        final Map<String, String> links,
         final Provided provided
     ) {
         this.args = arguments;
-        this.names = aliases;
-        this.owned = provided;
+        this.spots = new Vacancy(arguments, links, provided);
     }
 
     /**
@@ -69,8 +64,7 @@ final class Bound {
         final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
             final Map<String, String> filled = this.filled(
-                this.names.getOrDefault(application.getKey(), application.getKey()),
-                application.getValue()
+                application.getKey(), application.getValue()
             );
             if (!filled.isEmpty()) {
                 found.put(application.getKey(), filled);
@@ -79,10 +73,10 @@ final class Bound {
         return found;
     }
 
-    private Map<String, String> filled(final String copied, final List<String> given) {
+    private Map<String, String> filled(final String application, final List<String> given) {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (int place = 0; place < given.size(); place += 1) {
-            final String hollow = this.owned.slot(copied, place);
+            final String hollow = this.spots.at(application, place);
             if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                 found.put(hollow, given.get(place));
             }
