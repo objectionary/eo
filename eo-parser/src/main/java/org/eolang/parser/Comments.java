@@ -28,6 +28,24 @@ final class Comments {
     }
 
     /**
+     * Is the blank line the parser is holding the one R-6.5.2 demands
+     * after the top comment block?
+     *
+     * <p>That blank belongs to the comment block, not to the object
+     * that follows it, so R-6.5.4 must not read it as a blank between
+     * two plain siblings. A master object never notices the
+     * difference, being exempt from R-6.5.4 anyway; a plain one is
+     * not exempt, and without this the first object of a documented
+     * file is rejected unless it happens to be a formation.</p>
+     *
+     * @param globals Global parser state
+     * @return TRUE if the block is still pending, so the blank is its own
+     */
+    static boolean afterBlock(final Globals globals) {
+        return !globals.sealed() && !globals.pendingComments().isEmpty();
+    }
+
+    /**
      * Flush the pending top comment block, if any, and close the header
      * zone.
      *

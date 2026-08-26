@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7741: the blank line R-6.5.2 demands after the top comment block belongs
+# to the block, not to the object that follows it, so R-6.5.4 must not read
+# it as a blank between two plain siblings. A formation was exempt anyway;
+# an application was not, and got rejected for being documented.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/comments/comment[contains(text(),'Doc')]
+  - //o[@base='Φ.number' and @name='foo']
+input: |
+  # Doc.
+
+  42 > foo
