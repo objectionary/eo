@@ -83,7 +83,7 @@
 
   eq. ++> can-resolve-a-child-path-under-the-temp-directory
     mktemp.as-path.resolved "eo-mktemp-child"
-    path.separator.joined
+    path.joined
       * mktemp.path "eo-mktemp-child"
 
   ++> can-return-a-tmpfile-whose-path-differs-from-the-temp-directory-path
