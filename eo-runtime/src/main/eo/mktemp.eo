@@ -75,24 +75,16 @@
 
   mktemp.exists ++> can-point-at-an-existing-global-temp-directory
 
-  eq. ++> can-report-being-a-directory-consistently-across-repeated-calls
-    mktemp.is-directory
-    mktemp.is-directory
+  ++> can-report-being-a-directory-consistently-across-repeated-calls
+    mktemp.is-directory.eq mktemp.is-directory > @
 
-  eq. ++> can-report-existing-consistently-across-repeated-calls
-    mktemp.exists
+  mktemp.exists.eq ++> can-report-existing-consistently-across-repeated-calls
     mktemp.exists
 
   eq. ++> can-resolve-a-child-path-under-the-temp-directory
     mktemp.as-path.resolved "eo-mktemp-child"
     path.separator.joined
       * mktemp.path "eo-mktemp-child"
-
-  ++> can-return-a-tmpfile-with-a-non-empty-basename
-    seq * > @
-      temp.as-path.basename.length.gt 0
-      temp.deleted
-    mktemp.tmpfile > temp
 
   ++> can-return-a-tmpfile-whose-path-differs-from-the-temp-directorys-path
     seq * > @
@@ -102,13 +94,19 @@
       temp.path.eq mktemp.path
     mktemp.tmpfile > temp
 
-  mktemp.as-path.eq mktemp.path ++> can-return-the-same-path-through-as-path-and-path
+  ++> can-return-a-tmpfile-with-a-non-empty-basename
+    seq * > @
+      temp.as-path.basename.length.gt 0
+      temp.deleted
+    mktemp.tmpfile > temp
+
+  mktemp.as-path.eq ++> can-return-the-same-path-through-as-path-and-path
+    mktemp.path
 
   mktemp.path.eq mktemp.path ++> can-return-the-same-temp-directory
 
   ++> can-tell-that-a-fresh-tmpfile-is-not-a-directory
     seq * > @
-      not.
-        temp.is-directory
+      temp.is-directory.not
       temp.deleted
     mktemp.tmpfile > temp
