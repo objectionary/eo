@@ -40,6 +40,20 @@ final class EoSourceRun implements Proc<Object> {
     private static final String STDIN = "stdin.txt";
 
     /**
+     * How much stack the forked JVM gets.
+     *
+     * <p>Dataizing an EO object walks the whole chain of its nested
+     * objects on the Java stack, and a recursive object adds its own chain
+     * on every step, so the depth grows with the input and not with the
+     * length of the program. Every other JVM this project starts to run EO
+     * is given a stack of its own for that reason, {@code JarIT} and the
+     * {@code argLine} of both Surefire and Failsafe among them; on the
+     * default stack a snippet reading a few hundred lines already dies
+     * with a {@link StackOverflowError}.</p>
+     */
+    private static final String STACK = "-Xss64M";
+
+    /**
      * Name of the file the dependency plugin writes the classpath into.
      */
     private static final String CLASSPATH = "target/cp.txt";
@@ -145,6 +159,7 @@ final class EoSourceRun implements Proc<Object> {
         final List<String> line = new ArrayList<>(
             java.util.Arrays.asList(
                 ProcessHandle.current().info().command().orElse("java"),
+                EoSourceRun.STACK,
                 "-cp",
                 String.format(
                     "%s%s%s",

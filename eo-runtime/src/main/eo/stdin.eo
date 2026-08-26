@@ -20,6 +20,15 @@
 # the current line's own multi-byte read, since neither was otherwise forced
 # until the whole recursion bottomed out at the final `string`.
 #
+# That next probe is named through the root `stdin` and not through the
+# receiver, because an attribute answers with the very same object every
+# time it is taken: a probe taken twice from one `stdin` is one probe,
+# holding the one lookahead byte it has already read and the one line it has
+# already assembled. Through the receiver the recursion would see that same
+# line and that same `eof` at every level and never end, while the root
+# names a `stdin` of its own, whose probe reads the next byte of the stream
+# where the previous probe left off.
+#
 # Reading from the console cannot be exercised by a `++>` test, since
 # `console.read` reaches the process's real file descriptor 0 through
 # `posix`/`win32` and neither can be substituted in EO. The
@@ -42,7 +51,7 @@
         seq *
           scan.line
           ^.rec-read
-            ^.^.line-or-eof
+            stdin.line-or-eof
             is-first.if
               buffer.concat scan.line
               concat.
