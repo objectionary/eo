@@ -320,7 +320,7 @@ final class Emissions {
                 value.raw().substring(1, value.raw().length() - 1)
             );
         } catch (final NumberFormatException ex) {
-            throw new ParseError(line, value.pos(), ex.getMessage());
+            throw new ParseError(line, value.pos(), ex);
         }
         Emissions.bytesCarrier(
             emit, line, value.pos(),

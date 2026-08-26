@@ -51,6 +51,17 @@ final class ParseError extends RuntimeException {
     }
 
     /**
+     * Ctor.
+     * @param row Source line
+     * @param col Column position
+     * @param cause The escape failure whose own text explains the error
+     */
+    ParseError(final int row, final int col, final Throwable cause) {
+        this(row, col, cause.getMessage());
+        this.initCause(cause);
+    }
+
+    /**
      * Source line of the failure.
      * @return Line
      */

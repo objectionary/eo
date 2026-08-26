@@ -70,7 +70,7 @@ final class LnTextBlock implements Line {
                 String.join(String.valueOf('\n'), globals.tbody())
             );
         } catch (final NumberFormatException ex) {
-            throw new ParseError(this.span.line(), this.span.indent(), ex.getMessage());
+            throw new ParseError(this.span.line(), this.span.indent(), ex);
         }
         this.transition(stack, suffix);
         this.emit(emit, suffix, chain, joined);
