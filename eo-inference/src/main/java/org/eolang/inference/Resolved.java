@@ -85,7 +85,8 @@ public final class Resolved implements Clue {
         final Map<String, Type> rows = new Refs(
             pairs,
             new Bound(
-                args, pairs, new Provided(given, new Ends(pairs).names(), voids)
+                args, world.receivers(), pairs,
+                new Provided(given, new Ends(pairs).names(), voids)
             ).all()
         ).all();
         rows.putAll(written.others());

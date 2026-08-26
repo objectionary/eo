@@ -55,19 +55,19 @@
     "recovered"
     "x".repeated
       -1
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-count
     "recovered"
     "x".repeated
       2.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-count
     "recovered"
     "x".repeated
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"

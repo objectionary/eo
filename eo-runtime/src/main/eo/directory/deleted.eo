@@ -45,6 +45,14 @@
     dir.tmpfile > f
     as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
 
+  ++> can-delete-a-directory-with-a-nested-file
+    and. > @
+      nested.exists.and dir.deleted.exists.not
+      nested.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
+    inner.tmpfile > nested
+
   ++> can-delete-a-directory-with-files-recursively
     and. > @
       and.

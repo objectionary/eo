@@ -15,7 +15,7 @@
   ++> can-tell-it-is-not-empty-with-one-anonymous-object
     xs.is-empty.not > @
     * > xs
-      [^ f]
+      [f]
 
   not. ++> can-tell-it-is-not-empty-with-one-item
     is-empty.
@@ -24,6 +24,6 @@
   ++> can-tell-it-is-not-empty-with-three-objects
     xs.is-empty.not > @
     * > xs
-      [^ x]
-      [^ y]
-      [^ z]
+      [x]
+      [y]
+      [z]

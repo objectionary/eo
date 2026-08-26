@@ -30,6 +30,15 @@ import org.cactoos.Proc;
  * file descriptor 0, and neither the exec plugin nor {@code Farea} can give
  * a process an input of its own.</p>
  *
+ * <p>That JVM is given a stack of its own too. Dataizing an EO object walks
+ * the whole chain of its nested objects on the Java stack, and a recursive
+ * object adds its own chain on every step, so the depth grows with the
+ * input and not with the length of the program. Every other JVM this
+ * project starts to run EO is handed the same flag, {@code JarIT} and the
+ * {@code argLine} of both Surefire and Failsafe among them; on the default
+ * stack a snippet reading a few hundred lines already dies with a
+ * {@link StackOverflowError}.</p>
+ *
  * @since 0.56.3
  */
 final class EoSourceRun implements Proc<Object> {
@@ -145,6 +154,7 @@ final class EoSourceRun implements Proc<Object> {
         final List<String> line = new ArrayList<>(
             java.util.Arrays.asList(
                 ProcessHandle.current().info().command().orElse("java"),
+                "-Xss64M",
                 "-cp",
                 String.format(
                     "%s%s%s",

@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^] > clock
+[] > clock
   as-i64. > @
     os.is-windows.if
       plus.
