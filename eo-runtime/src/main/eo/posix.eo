@@ -149,23 +149,22 @@
         0
         0
 
-  ++> can-report-eexist-when-creating-an-existing-file-exclusively
-    os.is-windows.or > @
-      seq *
+  os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
+    seq *
+      code.
+        posix *1
+          "open"
+          "/dev/null"
+          plus.
+            posix.rdonly.plus posix.creat
+            posix.exclusive
+          posix.private
+      eq.
         code.
-          posix *1
-            "open"
-            "/dev/null"
-            plus.
-              posix.rdonly.plus posix.creat
-              posix.exclusive
-            posix.private
-        eq.
-          code.
-            posix
-              "errno"
-              *
-          posix.eexist
+          posix
+            "errno"
+            *
+        posix.eexist
 
   os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
