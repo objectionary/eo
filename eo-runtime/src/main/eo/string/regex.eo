@@ -60,13 +60,13 @@
         ? > ^
         ? > position /Q.number
         ? > start /Q.number
-      [^] > missing
+      [] > missing
         T > count
           "Matched block does not exist, can't get count"
         start.gte 0 > exists
         T > from
           "Matched block does not exist, can't get 'from' position"
-        T > [^ index] > group
+        T > [index] > group
           "Matched block does not exist, can't get group"
         T > groups
           "Matched block does not exist, can't get groups"
@@ -181,12 +181,12 @@
   eq. ++> can-recover-from-a-pattern-with-a-missing-slash
     "no-slash"
     "(.)+".regex.compile
-      "no-slash" > [^ message]
+      "no-slash" > [message]
 
   eq. ++> can-recover-from-invalid-regex-syntax
     "recovered"
     "/[a-z/".regex.compile
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   ++> can-report-the-border-indexes-of-a-match
     and. > @

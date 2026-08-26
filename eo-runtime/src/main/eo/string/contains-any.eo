@@ -12,7 +12,7 @@
     substrings.mapped
       ^.text.contains x > [^ x] >>
     false
-    x.or a > [^ a x]
+    x.or a > [a x]
   ^ > text
 
   contains-any. ++> can-contain-any-substring

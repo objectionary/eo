@@ -35,7 +35,7 @@
   eq. ++> can-copy-all-bytes-to-an-output-and-return-the-length
     malloc.of
       10
-      seq * > [^ m]
+      seq * > [m]
         length.
           input
             tee.

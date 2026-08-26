@@ -9,7 +9,7 @@
 
 [^] > random
   seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
-  [^ clock] > clocked
+  [clock] > clocked
     random. > @
       as-number.
         plus.
