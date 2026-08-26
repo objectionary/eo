@@ -25,6 +25,11 @@ final class EOmallocEOofTest {
                 dummy
             )
         ).take();
+        MatcherAssert.assertThat(
+            "the dummy must capture the identifier of the allocated block",
+            dummy.id,
+            Matchers.greaterThanOrEqualTo(0.0d)
+        );
         Assertions.assertThrows(
             ExAbstract.class,
             () -> Heaps.INSTANCE.size((int) dummy.id),
@@ -44,6 +49,11 @@ final class EOmallocEOofTest {
                 )
             ).take(),
             "Should throw an exception on attempting to use ErrorDummy, but it didn't"
+        );
+        MatcherAssert.assertThat(
+            "the dummy must capture the identifier of the allocated block before failing",
+            dummy.id,
+            Matchers.greaterThanOrEqualTo(0.0d)
         );
         Assertions.assertThrows(
             ExAbstract.class,
@@ -110,10 +120,11 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (20 lines)
+         * @checkstyle ConstructorsCodeFreeCheck (21 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
+            this.id = -1.0d;
             this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
@@ -143,10 +154,11 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (25 lines)
+         * @checkstyle ConstructorsCodeFreeCheck (26 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
+            this.id = -1.0d;
             this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
@@ -154,7 +166,7 @@ final class EOmallocEOofTest {
                     this,
                     rho -> {
                         this.id = new Dataized(
-                            this.take("m").take("id")
+                            rho.take("m").take("id")
                         ).asNumber();
                         return new PhApplication(
                             Phi.Φ.take("error").copy(),

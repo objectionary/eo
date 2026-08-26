@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation reads the object it is attached to without declaring it. It has
+# no voids of its own, so the question about its inputs is asked of an empty
+# list and answered before it is put, yet the body still reads "^" and nothing
+# ever witnessed what that is. The receiver is an input like any other, so the
+# label is withheld until the formation declares it and the table sees it
+# filled with data. The nested one is the other half of the same rule: "kept"
+# declares its own receiver and reads that, which says nothing about "outer"
+# above it, and "outer" keeps the label.
+eo:
+  app.eo: |
+    [] > app
+      probe > @
+      42 > pattern
+      [] > probe
+        ^.pattern > @
+      [] > outer
+        kept > @
+        [^] > kept
+          ^ > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='probe' and not(@pure)]"
+  - "//o[@name='outer' and @pure='true']"

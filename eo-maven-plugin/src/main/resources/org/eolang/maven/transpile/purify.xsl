@@ -105,7 +105,7 @@
             <xsl:sequence select="false()"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:sequence select="eo:closed($f)"/>
+            <xsl:sequence select="eo:closed($f) and not(eo:borrowed($f, $row))"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>
@@ -115,6 +115,34 @@
   <xsl:function name="eo:closed" as="xs:boolean">
     <xsl:param name="f" as="element()"/>
     <xsl:sequence select="empty($f/descendant-or-self::*[@base = $eo:program or (starts-with(@base, concat($eo:program, '.')) and not(@base = $eo:literals))])"/>
+  </xsl:function>
+  <!--
+  Whether this element is a formation, the same shape the template below
+  matches: an object with a locator of its own, copying nothing, that is
+  neither the "λ" of an atom nor a piece of data.
+  -->
+  <xsl:function name="eo:formation" as="xs:boolean">
+    <xsl:param name="e" as="element()"/>
+    <xsl:sequence select="exists($e/@loc) and empty($e/@base) and not($e/@name = $eo:lambda) and not($e/text()[normalize-space()])"/>
+  </xsl:function>
+  <!--
+  Whether this formation reads the object it is attached to without declaring
+  it. Rule 1 above judges the receiver like any other input, and "eo:filled"
+  asks that of every void the row has; a receiver the formation never declared
+  has no void to be witnessed, so an empty list of voids answers the question
+  before it is put and the label goes on with the receiver never looked at
+  (#7613). The cheap half is asked first: a formation that declares "ρ" has
+  been judged on it already.
+  Only the reads of this very formation count, which is why the nearest
+  formation around each read has to be this one. A nested formation declaring
+  its own receiver and reading that says nothing about the formation around
+  it - its "ρ" is another attribute of another object - and counting those
+  would withhold the label from most of the formations of a program.
+  -->
+  <xsl:function name="eo:borrowed" as="xs:boolean">
+    <xsl:param name="f" as="element()"/>
+    <xsl:param name="row" as="element()"/>
+    <xsl:sequence select="empty($row/attr[@void = 'true'][@name = $eo:rho]) and exists($f/descendant::*[(@base = concat($eo:xi, '.', $eo:rho) or starts-with(@base, concat($eo:xi, '.', $eo:rho, '.'))) and (ancestor::*[eo:formation(.)][1] is $f)])"/>
   </xsl:function>
   <!--
   Whether every void of this row is witnessed as a number or a string, the

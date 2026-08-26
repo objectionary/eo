@@ -182,15 +182,19 @@ public interface Winsock extends StdCallLibrary {
     int inet_addr(byte[] address);
 
     /**
-     * Retrieve the last error from winsock.
-     * @return The code of the last winsock error
-     */
-    int WSAGetLastError();
-
-    /**
-     * Set the last winsock error, so a following {@code WSAGetLastError} reads it
-     * back. It is the winsock counterpart of Kernel32's {@code SetLastError} and
-     * writes the same per-thread last-error slot.
+     * Set the last winsock error. It is the winsock counterpart of Kernel32's
+     * {@code SetLastError} and writes the same per-thread last-error slot.
+     *
+     * <p>There is no {@code WSAGetLastError} here on purpose. The slot it reads
+     * is overwritten by the JNI and JNA machinery that stands between a mapped
+     * call and the Java code around it, so a mapped {@code WSAGetLastError}
+     * answers with whatever that machinery left behind, usually zero, instead
+     * of the code the previous call set. The code is read back from
+     * {@link com.sun.jna.Native#getLastError()}, which hands over the copy JNA
+     * takes of the slot the instant every mapped call returns — this one
+     * included. JNA short-circuits Kernel32's {@code GetLastError} to that same
+     * copy for the same reason.</p>
+     *
      * @param error The error code to set
      */
     void WSASetLastError(int error);
