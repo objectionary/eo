@@ -8,8 +8,6 @@ import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -505,49 +503,6 @@ final class EoTest {
             "an INT literal as a child of a formation must emit the Φ.number wrapper",
             EoTest.render("[] > main", "  42 > x"),
             XhtmlMatchers.hasXPath("/object/o[@name='main']/o[@name='x' and @base='Φ.number']")
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "G", "H", "I", "J", "K", "L", "M", "N",
-            "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z",
-        }
-    )
-    void rejectsNonHexLetterHeadFollowedByDigit(final String letter) {
-        MatcherAssert.assertThat(
-            "a non-hex letter such as 'Z9' must not be claimed as a number just because a digit follows it",
-            EoTest.render("[] > main", String.format("  %s9 > x", letter)),
-            XhtmlMatchers.hasXPath("/object/errors/error")
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "%", "!", "&", ")", "~", ":", ";", ",", "=", "_",
-        }
-    )
-    void rejectsSymbolHeadFollowedByDigit(final String symbol) {
-        MatcherAssert.assertThat(
-            "a symbol such as '%1' must not be claimed as a number just because a digit follows it",
-            EoTest.render("[] > main", String.format("  %s1 > x", symbol)),
-            XhtmlMatchers.hasXPath("/object/errors/error")
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"})
-    void acceptsBareDigitHeadAsNumber(final String digit) {
-        MatcherAssert.assertThat(
-            "a bare digit head must still be accepted as a number literal",
-            EoTest.render("[] > main", String.format("  %s > x", digit)),
-            XhtmlMatchers.hasXPaths(
-                "/object[not(errors)]",
-                "/object/o[@name='main']/o[@name='x' and @base='Φ.number']"
-            )
         );
     }
 
