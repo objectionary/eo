@@ -73,6 +73,12 @@
   <xsl:variable name="eo:dir" as="xs:string" select="if ($inference = '' or ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
   <xsl:variable name="eo:provides" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'provides.xml'))) then doc(concat($eo:dir, 'provides.xml')) else ()"/>
   <!--
+  The table that says what every part of an application is, by the locator of
+  that part. Absent for the same reasons "provides.xml" may be absent, and
+  then no application is labeled.
+  -->
+  <xsl:variable name="eo:links" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'links.xml'))) then doc(concat($eo:dir, 'links.xml')) else ()"/>
+  <!--
   The objects whose bytes a caller may pass in: a number, a string and a bytes
   are the kinds of data a formation can be given and still be worth caching by
   what it was given, since each one of them is decided by its bytes alone.
@@ -152,6 +158,46 @@
     <xsl:param name="row" as="element()"/>
     <xsl:sequence select="every $v in $row/attr[@void = 'true'] satisfies (exists($v/witnessed) and empty($v/witnessed/descendant::*[not(self::union or (self::ref and @loc = $eo:data))]))"/>
   </xsl:function>
+  <!--
+  Whether this application is decided by the bytes of its own parts. Every
+  part it has, the receiver among them, must be a copy of data, which is what
+  a row of "links.xml" holding one "ref" to a data object says:
+  &lt;type id="Φ.app.x.ρ"&gt;
+  &lt;ref loc="Φ.number"/&gt;
+  &lt;/type&gt;
+  A part with no row of its own, or one holding anything else, leaves the
+  application unlabeled.
+  -->
+  <xsl:function name="eo:applied" as="xs:boolean">
+    <xsl:param name="a" as="element()"/>
+    <xsl:sequence select="exists($eo:links) and exists($a/o[@loc]) and (every $p in $a/o[@loc] satisfies eo:copies-data(key('eo:row', $p/@loc, $eo:links)))"/>
+  </xsl:function>
+  <!-- Whether this row of "links.xml" says its object is a copy of data. -->
+  <xsl:function name="eo:copies-data" as="xs:boolean">
+    <xsl:param name="row" as="element()?"/>
+    <xsl:sequence select="exists($row) and count($row/*) = 1 and exists($row/ref[@loc = $eo:data])"/>
+  </xsl:function>
+  <!--
+  An application whose parts are all data is labeled too, so that the answer
+  it works out is remembered instead of being worked out on every read.
+  @todo #7656:90min Label an application whose parts are data by the other
+  kinds of evidence "links.xml" holds. Today only a part that is a copy of
+  data - a literal, or a local that holds one - counts, and the three other
+  cases the table already carries are ignored: a "var" of a void whose row
+  in "provides.xml" is witnessed as data (the same question "eo:filled"
+  asks), a "ref" to a formation whose row says "returns" a data object, and
+  a "union" all of whose members are one of those. Each of them widens the
+  set of applications that stop being recomputed, and none of them needs a
+  new table.
+  -->
+  <xsl:template match="*[@loc][@base][not(@base = $eo:literals)][o[@loc]]">
+    <xsl:copy>
+      <xsl:if test="eo:applied(.)">
+        <xsl:attribute name="pure">true</xsl:attribute>
+      </xsl:if>
+      <xsl:apply-templates select="node()|@*"/>
+    </xsl:copy>
+  </xsl:template>
   <xsl:template match="*[@loc][not(@base)][not(@name = $eo:lambda)][not(text()[normalize-space()])]">
     <xsl:copy>
       <xsl:if test="eo:pure(.)">
