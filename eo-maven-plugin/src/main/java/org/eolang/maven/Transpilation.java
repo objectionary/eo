@@ -161,28 +161,32 @@ final class Transpilation {
      * Cache-key version segment: the plugin version combined with a
      * fingerprint of the bundled transpile XSLs and the libraries they
      * {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code coverageTracking} flags. Folding the XSL content in means
+     * {@code trackSteps}/{@code coverageTracking} flags. Folding the XSL
+     * content in means
      * that a change in the transformation logic invalidates the global
      * transpile cache even when the plugin version is unchanged (a
      * constant {@code -SNAPSHOT} during development), see #5578; folding
      * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the two flags and the name
+     * {@link #XSLS} itself, see #6032. Folding the three flags and the name
      * of the base class in means changing any of them also invalidates the
-     * cache, since all of them change what {@code to-java.xsl} emits (see
-     * #6031 and #5955).
+     * cache, since all of them change what a build of the same source
+     * produces: the first two and the base class change what
+     * {@code to-java.xsl} emits (see #6031 and #5955), and
+     * {@code trackSteps} decides whether the XMIRs of the train are written
+     * at all, which a cache hit would otherwise skip (see #7628).
      * @return The version segment for {@link CachePath}
      */
     String version() {
         return String.format(
-            "%s-%s-%b-%b-%s",
+            "%s-%s-%b-%b-%b-%s",
             this.version,
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.coverage, this.superclass
+            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
         );
     }
 
