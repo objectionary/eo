@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * One active proxy of Maven settings, carrying the excluded hosts that a
@@ -51,14 +52,19 @@ final class MvnProxy {
      * Whether the given host is excluded from this proxy by its
      * {@code nonProxyHosts} pattern, the same {@code |}-separated,
      * {@code *}-wildcard glob syntax the JDK's own {@code http.nonProxyHosts}
-     * property uses.
+     * property uses, read without regard to case: host names are
+     * case-insensitive, and the JDK matches them that way, so a host the user
+     * excluded stays excluded however it is capitalised in a repository URL.
      * @param host The host a request is bound for
      * @return True when the host must be reached directly
      */
     boolean excludes(final String host) {
         final String hosts = this.origin.getNonProxyHosts();
         return hosts != null && Arrays.stream(hosts.split("\\|")).anyMatch(
-            pattern -> host.matches(pattern.trim().replace(".", "\\.").replace("*", ".*"))
+            pattern -> Pattern.compile(
+                pattern.trim().replace(".", "\\.").replace("*", ".*"),
+                Pattern.CASE_INSENSITIVE
+            ).matcher(host).matches()
         );
     }
 }

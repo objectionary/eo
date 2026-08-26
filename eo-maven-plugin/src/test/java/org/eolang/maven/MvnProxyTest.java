@@ -28,6 +28,19 @@ final class MvnProxyTest {
     }
 
     @Test
+    void excludesAHostWrittenInAnotherCase() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(8080);
+        origin.setNonProxyHosts("localhost|*.internal.example.com");
+        MatcherAssert.assertThat(
+            "A host name is case-insensitive, so its capitals must not send it through the proxy",
+            new MvnProxy(origin).excludes("Build.Internal.EXAMPLE.com"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void doesNotExcludeAHostAbsentFromNonProxyHosts() {
         final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
         origin.setHost("prox.eolang.org");
