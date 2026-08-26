@@ -82,7 +82,7 @@ final class PiecesTest {
                     new Written("Φ.grove.oak.ρ", 2, "ρ", new Answer("Φ.grove", 3))
                 )
             ),
-            XhtmlMatchers.hasXPath("/line/bit/told[@label='the object it sits in (ρ)']")
+            XhtmlMatchers.hasXPath("/line/bit/told[@label='what it is dispatched on (ρ)']")
         );
     }
 

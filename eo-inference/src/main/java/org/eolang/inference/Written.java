@@ -12,12 +12,12 @@ package org.eolang.inference;
  * locator, the column it was written at, the name it goes by, and the answer
  * the tables gave for it.</p>
  *
- * <p>Some names are written nowhere. Every object sits in something, and that
- * {@code ρ} appears in no source line; a formation that delegates has a
- * {@code φ} that may be spelled {@code @} or not spelled at all. Such an
- * object still has a place, since it was found at some line and column, and
- * still deserves saying out loud, so the name it goes by is what a reader
- * would call it rather than the glyph.</p>
+ * <p>Some names are written nowhere. The object a dispatch is taken from
+ * answers to {@code ρ} without that name appearing anywhere in the line, and
+ * a formation that delegates has a {@code φ} that may be spelled {@code @} or
+ * not spelled at all. Such an object still has a place, since it was found at
+ * some line and column, and still deserves saying out loud, so the name it
+ * goes by is what a reader would call it rather than the glyph.</p>
  *
  * @since 0.70.0
  */
@@ -95,7 +95,7 @@ final class Written {
         } else if ("λ".equals(plain)) {
             found = "what the atom comes back with (λ)";
         } else if ("ρ".equals(plain)) {
-            found = "the object it sits in (ρ)";
+            found = "what it is dispatched on (ρ)";
         } else if (plain.startsWith("α")) {
             found = "argument ".concat(plain.substring(1));
         } else {
