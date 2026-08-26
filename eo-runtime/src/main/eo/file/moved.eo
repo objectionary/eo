@@ -30,33 +30,6 @@
         f.path
         target
 
-  ++> can-move-a-file
-    and. > @
-      exists.
-        temp.moved
-          "%s.dest".printf
-            * temp.path
-      temp.exists.not
-    mktemp.tmpfile > temp
-
-  ++> can-preserve-content-after-moving
-    "Hello, world".eq > @
-      malloc.of
-        12
-        [^ m]
-          seq * > @
-            open.
-              temp.moved
-                "%s.dest".printf
-                  * temp.path
-              "r"
-              ^.m.put > [^ f] >>
-                f.read 12
-            m
-    mktemp.tmpfile.open > temp
-      "w"
-      f.write "Hello, world" > [^ f]
-
   ++> can-move-a-directory
     and. > @
       exists.
@@ -66,7 +39,14 @@
       d.as-file.exists.not
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
-  mktemp.tmpfile.deleted.moved "irrelevant-target" --> stops-on-moving-an-absent-file
+  ++> can-move-a-file
+    and. > @
+      exists.
+        temp.moved
+          "%s.dest".printf
+            * temp.path
+      temp.exists.not
+    mktemp.tmpfile > temp
 
   ++> can-overwrite-an-existing-destination-on-moving
     os.is-windows.or > @
@@ -78,8 +58,7 @@
             5
             [^ m]
               seq * > @
-                open.
-                  target
+                Q.target.open
                   "r"
                   ^.m.put > [^ f] >>
                     f.read 5
@@ -90,3 +69,25 @@
     mktemp.tmpfile.open > target
       "w"
       f.write "second" > [^ f]
+
+  ++> can-preserve-content-after-moving
+    "Hello, world".eq > @
+      malloc.of
+        12
+        [^ m]
+          seq * > @
+            open.
+              Q.temp.moved
+                "%s.dest".printf
+                  * Q.temp.path
+              "r"
+              ^.m.put > [^ f] >>
+                f.read 12
+            m
+    mktemp.tmpfile.open > temp
+      "w"
+      f.write > [^ f]
+        "Hello, world"
+
+  mktemp.tmpfile.deleted.moved --> stops-on-moving-an-absent-file
+    "irrelevant-target"
