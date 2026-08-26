@@ -114,4 +114,4 @@
         dir.deleted
         f.exists.not
     as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
-    touched. as-file. (dir.as-path.resolved "приветствие.txt") > f
+    (dir.as-path.resolved "приветствие.txt").as-file.touched > f
