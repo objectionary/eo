@@ -116,7 +116,7 @@ final class Provided {
      * <p>The {@code ρ} a formation declares is not one of them. It is filled
      * by whoever dispatches into the type and is out of reach of an argument
      * counted from the left, the way {@code PhDefault.SORTABLE} keeps it out
-     * of the order a positional argument walks. {@link #receiver(String)}
+     * of the order a positional argument walks. The {@code receiver} method
      * answers for it instead.</p>
      *
      * @param type The name the type goes by
@@ -148,7 +148,7 @@ final class Provided {
      * <p>Since #6657 the receiver is a void like any other, named {@code ρ}
      * and written down where the formation wants it, so it is filled by
      * whoever dispatches into the type and never by an argument counted from
-     * the left. That is why {@link #slot(String, int)} steps over it.</p>
+     * the left. That is why the {@code vacant} method steps over it.</p>
      *
      * @param type The name the type goes by
      * @return The locator of the void, or an empty string when this type

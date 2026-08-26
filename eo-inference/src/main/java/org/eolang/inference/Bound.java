@@ -35,6 +35,7 @@ import java.util.Map;
  * not counted among the places, since it is answered by whoever dispatches
  * and not by an argument written to the right of the name.</p>
  *
+ * @since 0.69.0
  * @todo #7491:45min Substitute a receiver filling into an answer, the way
  *  {@link Filled} already substitutes an argument. {@link Dispatched} asks
  *  this class about arguments alone, through the ctor that leaves the
@@ -42,8 +43,6 @@ import java.util.Map;
  *  XMIR to read a receiver off. Once it has them, the {@code plus} of
  *  {@code ^} inside a formation could be answered with the type of whoever
  *  dispatched on it rather than left rooted at the void.
- *
- * @since 0.69.0
  */
 final class Bound {
 
