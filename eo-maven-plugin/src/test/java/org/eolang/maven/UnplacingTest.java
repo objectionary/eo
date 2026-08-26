@@ -41,7 +41,7 @@ final class UnplacingTest {
     @DisabledOnOs(OS.WINDOWS)
     void keepsCatalogEntryWhenDeletionFails(@TempDir final Path temp) throws IOException {
         Assumptions.assumeTrue(
-            UnplacingTest.protects(temp.resolve("probe")),
+            this.protects(temp.resolve("probe")),
             "read-only directories don't stop deletions for this user (root?), can't test"
         );
         final Path classes = temp.resolve("classes");
@@ -67,7 +67,7 @@ final class UnplacingTest {
         );
     }
 
-    private static boolean protects(final Path dir) throws IOException {
+    private boolean protects(final Path dir) throws IOException {
         Files.createDirectories(dir);
         final Path file = dir.resolve("probe.txt");
         Files.write(file, "probe".getBytes(StandardCharsets.UTF_8));
