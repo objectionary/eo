@@ -12,10 +12,11 @@ eo: |
   +package snippets
 
   [] > reads-via-independent-console-calls
-    stdout > @
-      "%s%s".printf
-        *
-          string c1
-          string c2
-    console.read 6 > c1
-    console.read 5 > c2
+    seq > @
+      *
+        stdout
+          string
+            console.read 6
+        stdout
+          string
+            console.read 5
