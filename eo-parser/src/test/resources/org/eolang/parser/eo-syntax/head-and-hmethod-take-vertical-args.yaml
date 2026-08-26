@@ -5,8 +5,7 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@name='first' and @base='Φ.format' and count(o)=2]
-  - //o[@base='Φ.malloc']
-  - //o[@name='second' and @base='.for' and @method='' and count(o)=2]
+  - //o[@name='second' and @base='Φ.malloc.for' and count(o)=2]
 input: |
   [] > main
     format > first
