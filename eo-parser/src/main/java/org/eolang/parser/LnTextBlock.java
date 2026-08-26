@@ -64,14 +64,10 @@ final class LnTextBlock implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final byte[] joined;
-        try {
-            joined = Escapes.bytes(
-                String.join(String.valueOf('\n'), globals.tbody())
-            );
-        } catch (final NumberFormatException ex) {
-            throw new ParseError(this.span.line(), this.span.indent(), ex);
-        }
+        final byte[] joined = new Unescaped(
+            String.join(String.valueOf('\n'), globals.tbody()),
+            this.span.line(), this.span.indent()
+        ).bytes();
         this.transition(stack, suffix);
         this.emit(emit, suffix, chain, joined);
         if (outer != null) {
