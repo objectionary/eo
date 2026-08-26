@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+out:
+  - '.*<первая>.*'
+file: snippets/reads-next-line.eo
+args: ["snippets.reads-next-line"]
+stdin: |
+  первая
+  вторая
+  третья
+eo: |
+  +package snippets
+
+  [] > reads-next-line
+    stdout > @
+      "<".concat
+        stdin.next-line.concat ">"

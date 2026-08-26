@@ -87,8 +87,7 @@
             positive a
         | (n.times -1)
         positive n
-  n.abs.gte > huge
-    2.power 63
+  n.abs.gte 9.223372036854776e18 > huge
   ^ > n
   if. > [^ p] >> pow10
     p.eq 0

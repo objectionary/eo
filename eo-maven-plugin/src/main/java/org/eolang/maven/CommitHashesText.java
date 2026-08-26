@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.aspects.RetryOnFailure;
 import com.jcabi.log.Logger;
+import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Text;
@@ -58,23 +59,23 @@ final class CommitHashesText extends TextEnvelope {
      * Constructor.
      */
     CommitHashesText() {
-        this(CommitHashesText::asText);
+        this(CommitHashesText::fetch);
     }
 
     /**
      * Constructor.
-     * @param source Text source
+     * @param source Text source, retried on its own before this class falls
+     *  back to {@link CommitHashesText#FALLBACK}
      */
-    private CommitHashesText(final Text source) {
-        super(new Synced(new Sticky(source)));
+    CommitHashesText(final Text source) {
+        super(new Synced(new Sticky(() -> CommitHashesText.safe(source))));
     }
 
-    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private static String asText() throws Exception {
+    private static String safe(final Text source) throws Exception {
         String hashes;
         try {
-            hashes = new TextOf(new URL(CommitHashesText.HOME)).asString();
-        } catch (final java.net.UnknownHostException ex) {
+            hashes = source.asString();
+        } catch (final IOException ex) {
             Logger.warn(
                 CommitHashesText.class,
                 "Can't load hashes: %[exception]s",
@@ -83,5 +84,10 @@ final class CommitHashesText extends TextEnvelope {
             hashes = CommitHashesText.FALLBACK;
         }
         return hashes;
+    }
+
+    @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
+    private static String fetch() throws Exception {
+        return new TextOf(new URL(CommitHashesText.HOME)).asString();
     }
 }

@@ -51,8 +51,79 @@
   6 > tcp
   [time millitm] > timeb
   512 > trunc
+  4294967295 > unresolved
   02-02 > version
   32769 > wronly
+
+  ++> can-close-a-tcp-socket
+    os.is-windows.not.or > @
+      seq *
+        sd
+        not.
+          eq.
+            code.
+              win32 *1
+                "closesocket"
+                sd
+            -1
+    code. > sd
+      win32 *1
+        "socket"
+        win32.inet
+        win32.stream
+        win32.tcp
+
+  ++> can-compute-the-size-of-a-sockaddr-in
+    addr.size.eq 16 > @
+    win32.sockaddr-in > addr
+      00-00
+      00-00
+      00-00-00-00
+
+  ++> can-open-a-file-with-the-append-flag
+    os.is-windows.not.or > @
+      seq *
+        code.
+          win32 *1
+            "_close"
+            fd
+        fd.gt -1
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly.plus win32.append
+        0
+
+  ++> can-open-a-file-with-the-trunc-flag
+    os.is-windows.not.or > @
+      seq *
+        code.
+          win32 *1
+            "_close"
+            fd
+        fd.gt -1
+    code. > fd
+      win32 *1
+        "_open"
+        "NUL"
+        win32.wronly.plus win32.trunc
+        0
+
+  ++> can-open-a-tcp-socket
+    os.is-windows.not.or > @
+      seq *
+        code.
+          win32 *1
+            "closesocket"
+            sd
+        sd.gt 0
+    code. > sd
+      win32 *1
+        "socket"
+        win32.inet
+        win32.stream
+        win32.tcp
 
   os.is-windows.not.or ++> can-report-a-host-name-as-invalid
     eq.
@@ -60,7 +131,7 @@
         win32 *1
           "inet_addr"
           "localhost"
-      win32.invalid
+      win32.unresolved
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
@@ -68,7 +139,15 @@
         win32 *1
           "inet_addr"
           "::1"
-      win32.invalid
+      win32.unresolved
+
+  os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
+    eq.
+      code.
+        win32 *1
+          "inet_addr"
+          "10.0.0.200"
+      3355443210
 
   os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
@@ -77,6 +156,32 @@
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  ++> can-stat-the-size-of-nul
+    os.is-windows.not.or > @
+      info.size.eq 0
+    output. > info
+      win32 *1
+        "_stat64"
+        "NUL"
+
+  os.is-windows.not.if --> stops-on-creating-an-existing-file-exclusively
+    1.div 0
+    seq *
+      code.
+        win32 *1
+          "_open"
+          "NUL"
+          plus.
+            win32.rdonly.plus win32.creat
+            win32.exclusive
+          win32.mode
+      eq.
+        code.
+          win32
+            "_errno"
+            *
+        win32.eexist
 
   --> stops-on-write-size-being-negative
     os.is-windows.not.if > @

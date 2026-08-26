@@ -73,11 +73,11 @@
   <xsl:variable name="eo:dir" as="xs:string" select="if ($inference = '' or ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
   <xsl:variable name="eo:provides" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'provides.xml'))) then doc(concat($eo:dir, 'provides.xml')) else ()"/>
   <!--
-  The objects whose bytes a caller may pass in: a number and a string are the
-  two kinds of data a formation can be given and still be worth caching by
-  what it was given.
+  The objects whose bytes a caller may pass in: a number, a string and a bytes
+  are the kinds of data a formation can be given and still be worth caching by
+  what it was given, since each one of them is decided by its bytes alone.
   -->
-  <xsl:variable name="eo:data" as="xs:string+" select="for $n in ('number', 'string') return concat($eo:program, '.', $n)"/>
+  <xsl:variable name="eo:data" as="xs:string+" select="for $n in ('number', 'string', 'bytes') return concat($eo:program, '.', $n)"/>
   <!--
   The bases the parser writes for a literal. Every one of them is a copy of
   an object of the root, so the rule about the root has to let them through.

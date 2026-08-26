@@ -55,7 +55,11 @@
         sys.raw *1
           "inet_addr"
           ^.address
-      addr.as-i32 > addrint
+      as-i32. > addrint
+        if.
+          addr.gt 2147483647
+          addr.minus 4294967296
+          addr
       [^ descriptor] > closed-socket
         if. > @
           closed.eq -1
@@ -139,7 +143,7 @@
           ^.^.guarded opened ^.sys.cleanup
         if. > converted
           and.
-            ^.addr.eq ^.sys.none
+            ^.addr.eq ^.sys.unresolved
             not.
               ^.^.address.eq "255.255.255.255"
           cant

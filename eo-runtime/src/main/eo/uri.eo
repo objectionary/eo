@@ -162,6 +162,16 @@
       userinfo-at-idx
     ""
 
+  eq. ++> can-ignore-a-question-mark-that-appears-inside-the-fragment
+    query.
+      uri "http://host/path#frag?not-a-query"
+    ""
+
+  eq. ++> can-keep-extra-hash-characters-inside-the-fragment
+    fragment.
+      uri "http://host/path?x=1#a#b"
+    "a#b"
+
   eq. ++> can-parse-a-bracketed-ipv6-host-with-a-port
     host.
       uri "http://[::1]:8080/p"
@@ -247,6 +257,11 @@
       uri "http://host/path"
     ""
 
+  eq. ++> can-parse-an-empty-userinfo-of-a-bracketed-ipv6-authority
+    userinfo.
+      uri "http://[::1]:8080/p"
+    ""
+
   eq. ++> can-parse-an-empty-userinfo-when-absent
     userinfo.
       uri "http://host/path"
@@ -261,6 +276,11 @@
     authority.
       uri "http://host/path"
     "host"
+
+  eq. ++> can-parse-the-authority-of-a-bare-scheme-uri
+    authority.
+      uri "pgsql:localhost:899"
+    ""
 
   eq. ++> can-parse-the-authority-of-a-userinfo-and-port-uri
     authority.
@@ -291,6 +311,11 @@
     host.
       uri "//host/path"
     "host"
+
+  eq. ++> can-parse-the-host-of-a-schemeless-uri
+    host.
+      uri "foo/bar"
+    ""
 
   eq. ++> can-parse-the-host-of-an-authority-with-a-port
     host.
@@ -327,6 +352,11 @@
       uri "http://[::1]:8080/p"
     "8080"
 
+  eq. ++> can-parse-the-port-of-a-bracketed-ipv6-host-without-a-port
+    port.
+      uri "http://[2001:db8::1]/p"
+    ""
+
   eq. ++> can-parse-the-port-of-a-schemeless-uri-as-empty
     port.
       uri "foo/bar"
@@ -356,6 +386,11 @@
     scheme.
       uri "http2://host/path"
     "http2"
+
+  eq. ++> can-parse-the-scheme-of-an-empty-text
+    scheme.
+      uri ""
+    ""
 
   eq. ++> can-parse-the-userinfo-of-a-bracketed-ipv6-authority
     userinfo.
@@ -390,4 +425,9 @@
   eq. ++> can-treat-a-scheme-with-an-underscore-as-invalid
     scheme.
       uri "ht_tp:foo"
+    ""
+
+  eq. ++> can-treat-a-uri-starting-with-a-colon-as-schemeless
+    scheme.
+      uri ":foo"
     ""

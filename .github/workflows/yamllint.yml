@@ -10,6 +10,9 @@ name: yamllint
   pull_request:
     branches:
       - master
+concurrency:
+  group: yamllint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   yamllint:
     timeout-minutes: 15
