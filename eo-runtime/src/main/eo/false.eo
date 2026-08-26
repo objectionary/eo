@@ -22,7 +22,9 @@
     42
 
   eq. ++> can-choose-the-right-argument
-    false.if 1 2
+    false.if
+      1
+      2
     2
 
   false.eq false ++> can-equal-itself
