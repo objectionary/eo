@@ -5,6 +5,9 @@
 name: labeler
 'on':
   - pull_request_target
+concurrency:
+  group: labeler-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 jobs:
   labeler:
     permissions:

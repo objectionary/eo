@@ -10,6 +10,9 @@ name: pdd
   pull_request:
     branches:
       - master
+concurrency:
+  group: pdd-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   pdd:
     timeout-minutes: 15

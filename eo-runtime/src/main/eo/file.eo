@@ -243,7 +243,6 @@
   ++> can-create-the-target-of-a-dangling-symlink-on-writing
     os.is-windows.or > @
       seq *
-        target.as-file.exists
         code.
           posix *1
             "symlink"
@@ -252,8 +251,10 @@
         link.as-file.open
           "w"
           f.write "created" > [^ f]
-    target.resolved "dangling-link" > link
-    mktemp.tmpfile.deleted.as-path > target
+        target.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "dangling-link" > link
+    d.resolved "absent-target" > target
 
   eq. ++> can-keep-the-size-of-a-file-opened-for-appending
     size.

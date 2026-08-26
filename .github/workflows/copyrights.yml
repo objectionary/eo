@@ -10,6 +10,9 @@ name: copyrights
   pull_request:
     branches:
       - master
+concurrency:
+  group: copyrights-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   copyrights:
     timeout-minutes: 15
