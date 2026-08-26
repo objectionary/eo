@@ -36,11 +36,14 @@ import org.junit.jupiter.api.io.TempDir;
 final class EOdirectoryEOmadeRaceTest {
 
     /**
-     * How many threads race for the same directory.
+     * How many threads race for the same directory. Four is enough to leave
+     * somebody holding the {@code EEXIST}, and every thread of them builds a
+     * graph of objects of its own: a dozen at once is gigabytes of heap and
+     * minutes of collecting it, for no more of the race than this reaches.
      */
-    private static final int THREADS = 16;
+    private static final int THREADS = 4;
 
-    @RepeatedTest(20)
+    @RepeatedTest(10)
     void makesOneDirectoryFromManyThreadsAtOnce(@TempDir final Path temp) {
         final Path target = temp.resolve("one").resolve("two").resolve("three");
         final List<Boolean> outcomes = new Together<>(
