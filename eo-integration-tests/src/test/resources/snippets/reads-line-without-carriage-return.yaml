@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+out:
+  - '.*<日本語>.*'
+file: snippets/reads-line-without-carriage-return.eo
+args: ["snippets.reads-line-without-carriage-return"]
+stdin: "日本語\r\n"
+eo: |
+  +package snippets
+
+  [] > reads-line-without-carriage-return
+    stdout > @
+      "<".concat
+        stdin.all-lines.concat ">"

@@ -6,6 +6,7 @@ package org.eolang;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,6 +36,23 @@ final class AttrsTest {
             "a change to the array must not reach the attributes, but it did",
             attrs.keySet(),
             Matchers.contains("x")
+        );
+    }
+
+    @Test
+    void refusesToChangeTheEntryItWasGiven() {
+        final Attribute attr = new AtVoid("x");
+        final Attr entry = new Attr("x", attr);
+        final Attrs attrs = new Attrs(entry);
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            () -> entry.setValue(new AtVoid("y")),
+            "an entry already given away must not be changeable, but it was"
+        );
+        MatcherAssert.assertThat(
+            "the attributes must still hold what the entry was made with, but they didnt",
+            attrs.get("x"),
+            Matchers.sameInstance(attr)
         );
     }
 

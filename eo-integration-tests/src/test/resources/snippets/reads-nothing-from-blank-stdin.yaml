@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+out:
+  - '.*<all-lines>.*'
+file: snippets/reads-nothing-from-blank-stdin.eo
+args: ["snippets.reads-nothing-from-blank-stdin"]
+stdin: "\n"
+eo: |
+  +package snippets
+
+  [] > reads-nothing-from-blank-stdin
+    stdout > @
+      "<".concat
+        stdin.all-lines.concat "all-lines>"

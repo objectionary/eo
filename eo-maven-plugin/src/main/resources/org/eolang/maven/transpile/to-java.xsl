@@ -68,11 +68,32 @@
   their first 240-odd characters still disambiguate, and the same name always
   fingerprints the same way regardless of which call site of "eo:class-name" asks,
   so a declaration and a reference to the same over-long name never diverge (#7254).
+  Two polynomial hashes with different bases and different prime moduli, since a
+  single weighted sum of the code points cancels out for names that differ in two
+  positions only (#7633).
   -->
   <xsl:function name="eo:fingerprint" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="codes" select="string-to-codepoints($n)"/>
-    <xsl:value-of select="concat('_', string(sum(for $i in 1 to count($codes) return $codes[$i] * $i) mod 100000000))"/>
+    <xsl:value-of select="concat('_', string(eo:polynomial($codes, 131, 1000000007, 0)), '_', string(eo:polynomial($codes, 137, 998244353, 0)))"/>
+  </xsl:function>
+  <!--
+  A polynomial hash of the code points, folded left to right, so that the same
+  characters in another order hash differently.
+  -->
+  <xsl:function name="eo:polynomial" as="xs:integer">
+    <xsl:param name="codes" as="xs:integer*"/>
+    <xsl:param name="base" as="xs:integer"/>
+    <xsl:param name="modulo" as="xs:integer"/>
+    <xsl:param name="acc" as="xs:integer"/>
+    <xsl:choose>
+      <xsl:when test="empty($codes)">
+        <xsl:sequence select="$acc"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:polynomial(subsequence($codes, 2), $base, $modulo, ($acc * $base + $codes[1]) mod $modulo)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!--
   A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
@@ -183,7 +204,7 @@
   <!-- Convert location to class name -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize($loc, '\.'), ''), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
@@ -314,7 +335,7 @@
     </xsl:attribute>
     <xsl:attribute name="java-name">
       <xsl:text>org.eolang.</xsl:text>
-      <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
@@ -1008,7 +1029,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package']/tail)"/>
+      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package'][1]/tail)"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
