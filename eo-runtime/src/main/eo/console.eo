@@ -179,5 +179,4 @@
   console.write ++> can-write-to-the-console
     "Hello, console-test!\n"
 
-  --> cannot-dataize-console-directly
-    console
+  console --> cannot-dataize-console-directly
