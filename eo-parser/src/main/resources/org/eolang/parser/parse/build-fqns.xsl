@@ -83,7 +83,7 @@
         <xsl:apply-templates select="." mode="to-method">
           <xsl:with-param name="of">
             <xsl:apply-templates select="$start" mode="recursive-package">
-              <xsl:with-param name="pkg" select="/object/metas/meta[head='package']/part[1]/text()"/>
+              <xsl:with-param name="pkg" select="(/object/metas/meta[head='package'])[1]/part[1]/text()"/>
             </xsl:apply-templates>
           </xsl:with-param>
         </xsl:apply-templates>

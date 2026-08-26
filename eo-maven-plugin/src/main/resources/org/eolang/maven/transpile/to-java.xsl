@@ -183,7 +183,7 @@
   <!-- Convert location to class name -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize($loc, '\.'), ''), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
@@ -314,7 +314,7 @@
     </xsl:attribute>
     <xsl:attribute name="java-name">
       <xsl:text>org.eolang.</xsl:text>
-      <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
@@ -1008,7 +1008,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package']/tail)"/>
+      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package'][1]/tail)"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

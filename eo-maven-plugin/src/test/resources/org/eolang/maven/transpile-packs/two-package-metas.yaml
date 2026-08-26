@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/package.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //class[@java-name='org.eolang.EO_a.EOmain']
+  - //java[contains(text(), 'package org.eolang.EO_a;')]
+input: |
+  +package a
+  +package b
+
+  [] > main
+    5 > x

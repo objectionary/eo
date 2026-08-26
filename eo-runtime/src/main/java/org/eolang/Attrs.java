@@ -20,9 +20,9 @@ import java.util.Set;
  * call) being acceptable as a {@code Map.Entry} factory.</p>
  *
  * <p>The underlying {@link LinkedHashMap} is built lazily on first access, so
- * the constructor does nothing but copy the entries it was given. The copy is
- * what keeps the map immune to a caller that mutates its own array after
- * handing it over.</p>
+ * the constructor does nothing but copy the array it was given. The copy of
+ * the array, together with the immutability of {@link Attr}, is what keeps the
+ * map immune to a caller that changes what it handed over.</p>
  *
  * @since 0.59
  */
@@ -31,7 +31,7 @@ public final class Attrs extends AbstractMap<String, Attribute> {
     /**
      * Initial entries supplied via constructor, our own copy of them.
      */
-    private final Map.Entry<String, Attribute>[] entries;
+    private final Attr[] entries;
 
     /**
      * Lazily-resolved backing map.
@@ -42,8 +42,7 @@ public final class Attrs extends AbstractMap<String, Attribute> {
      * Ctor.
      * @param initial Entries to populate the map with
      */
-    @SafeVarargs
-    public Attrs(final Map.Entry<String, Attribute>... initial) {
+    public Attrs(final Attr... initial) {
         super();
         this.entries = initial.clone();
     }
