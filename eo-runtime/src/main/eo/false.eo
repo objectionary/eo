@@ -27,11 +27,11 @@
       2
     2
 
+  not. ++> can-differ-from-true
+    false.eq true
+
   false.eq false ++> can-equal-itself
 
   false.as-bytes.eq 00- ++> can-expose-the-byte-representation-of-false
 
   false.not.eq true ++> can-negate-to-true
-
-  not. ++> cannot-equal-true
-    false.eq true
