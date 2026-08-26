@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,9 +34,9 @@ import java.util.Map;
 final class Filled {
 
     /**
-     * The arguments of every application, from {@link Given}.
+     * What every application fills, from {@link Bound}.
      */
-    private final Map<String, List<String>> args;
+    private final Map<String, Map<String, String>> fills;
 
     /**
      * The pairs, each name against the one it is a copy of.
@@ -48,11 +49,6 @@ final class Filled {
     private final Provided owned;
 
     /**
-     * The void every argument lands in.
-     */
-    private final Vacancy spots;
-
-    /**
      * Ctor.
      * @param arguments The arguments of every application, from {@link Given}
      * @param links The pairs, each name against the one it is a copy of
@@ -63,10 +59,23 @@ final class Filled {
         final Map<String, String> links,
         final Provided provided
     ) {
-        this.args = arguments;
+        this(links, provided, new Bound(arguments, links, provided).all());
+    }
+
+    /**
+     * Ctor.
+     * @param links The pairs, each name against the one it is a copy of
+     * @param provided The provides table, by the name a type goes by
+     * @param bound What every application fills, from {@link Bound}
+     */
+    private Filled(
+        final Map<String, String> links,
+        final Provided provided,
+        final Map<String, Map<String, String>> bound
+    ) {
+        this.fills = bound;
         this.pairs = links;
         this.owned = provided;
-        this.spots = new Vacancy(arguments, links, provided);
     }
 
     /**
@@ -105,17 +114,11 @@ final class Filled {
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
         while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            final String copied = this.pairs.get(walked);
-            if (this.args.containsKey(walked)) {
-                final List<String> given = this.args.get(walked);
-                for (int place = 0; place < given.size(); place += 1) {
-                    final String hollow = this.spots.at(walked, place);
-                    if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
-                        found.putIfAbsent(hollow, this.end(given.get(place)));
-                    }
-                }
+            for (final Map.Entry<String, String> fill
+                : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
+                found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
             }
-            walked = copied;
+            walked = this.pairs.get(walked);
         }
         return found;
     }

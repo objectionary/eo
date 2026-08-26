@@ -111,60 +111,24 @@ final class Provided {
     }
 
     /**
-     * The voids this type keeps, in the order it declares them.
+     * The void this type keeps in the given place among the ones still empty.
      * @param type The name the type goes by
-     * @return The locator of every void, by its place
-     */
-    List<String> voids(final String type) {
-        final List<String> found = new ArrayList<>(0);
-        for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
-                found.add(row.getOrDefault("type", ""));
-            }
-        }
-        return found;
-    }
-
-    /**
-     * The place of the void this type keeps in the given place among the ones
-     * not yet filled.
-     * @param type The name the type goes by
-     * @param taken The places of the voids that are no longer empty
-     * @param place The place of the void among those still empty
-     * @return The place of the void among all of them, or -1 when this type
-     *  keeps fewer empty voids than that
-     */
-    int index(final String type, final Collection<Integer> taken, final int place) {
-        final List<String> all = this.voids(type);
-        int seen = 0;
-        int found = -1;
-        for (int idx = 0; idx < all.size(); idx += 1) {
-            if (!taken.contains(idx)) {
-                if (seen == place) {
-                    found = idx;
-                    break;
-                }
-                seen += 1;
-            }
-        }
-        return found;
-    }
-
-    /**
-     * The void this type keeps in the given place among the ones not yet filled.
-     * @param type The name the type goes by
-     * @param taken The places of the voids that are no longer empty
-     * @param place The place of the void among those still empty
+     * @param taken The locator of every void that is no longer empty
+     * @param place The place of the void among the ones still empty
      * @return The locator of the void, or an empty string when this type keeps
      *  fewer empty voids than that
      */
-    String vacant(final String type, final Collection<Integer> taken, final int place) {
-        final int idx = this.index(type, taken, place);
-        final String found;
-        if (idx < 0) {
-            found = "";
-        } else {
-            found = this.voids(type).get(idx);
+    String vacant(final String type, final Collection<String> taken, final int place) {
+        final List<String> free = new ArrayList<>(0);
+        for (final Map<String, String> row : this.own(type)) {
+            final String hollow = row.getOrDefault("type", "");
+            if ("true".equals(row.get("void")) && !taken.contains(hollow)) {
+                free.add(hollow);
+            }
+        }
+        String found = "";
+        if (place < free.size()) {
+            found = free.get(place);
         }
         return found;
     }
