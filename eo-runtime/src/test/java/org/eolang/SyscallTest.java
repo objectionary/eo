@@ -8,6 +8,7 @@ import codes.ivanov.ephpo.Ephemeral;
 import codes.ivanov.ephpo.EphemeralResolver;
 import com.jcabi.log.Logger;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import io.github.artsok.RepeatedIfExceptionsTest;
 import java.io.IOException;
@@ -208,7 +209,7 @@ final class SyscallTest {
                             "Windows socket should have been connected to local server via syscall, but it didn't, error code is: %d",
                             this.getError()
                         ),
-                        Winsock.INSTANCE.connect(socket, addr, addr.size()),
+                        Winsock.INSTANCE.connect(new Pointer(socket), addr, addr.size()),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -230,7 +231,7 @@ final class SyscallTest {
                     final SockaddrIn addr = this.sockaddr(port);
                     MatcherAssert.assertThat(
                         "Connection via windows syscall to a loopback port nobody listens on must be refused",
-                        Winsock.INSTANCE.connect(socket, addr, addr.size()),
+                        Winsock.INSTANCE.connect(new Pointer(socket), addr, addr.size()),
                         Matchers.equalTo(-1)
                     );
                 } finally {
@@ -279,7 +280,7 @@ final class SyscallTest {
                             "Posix socket should have been bound to localhost via syscall, but it didn't, reason: %s",
                             this.getError()
                         ),
-                        Winsock.INSTANCE.listen(socket, 2),
+                        Winsock.INSTANCE.listen(new Pointer(socket), 2),
                         Matchers.equalTo(0)
                     );
                 } finally {
@@ -311,7 +312,7 @@ final class SyscallTest {
                             "Socket should have been connected to local server on sockets, but it didn't, reason: %s",
                             this.getError()
                         ),
-                        Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()),
+                        Winsock.INSTANCE.connect(new Pointer(client), sockaddr, sockaddr.size()),
                         Matchers.equalTo(0)
                     );
                     server.join();
@@ -347,9 +348,12 @@ final class SyscallTest {
                 try {
                     this.ensure(client >= 0);
                     final SockaddrIn sockaddr = this.sockaddr(port);
-                    this.ensure(Winsock.INSTANCE.connect(client, sockaddr, sockaddr.size()) == 0);
+                    this.ensure(
+                        Winsock.INSTANCE.connect(new Pointer(client), sockaddr, sockaddr.size())
+                            == 0
+                    );
                     final byte[] buf = "Hello, Socket!".getBytes(StandardCharsets.UTF_8);
-                    final int sent = Winsock.INSTANCE.send(client, buf, buf.length, 0);
+                    final int sent = Winsock.INSTANCE.send(new Pointer(client), buf, buf.length, 0);
                     MatcherAssert.assertThat(
                         String.format(
                             "Client had to send %d bytes to the server, but sent %d, reason: %s",
@@ -369,17 +373,19 @@ final class SyscallTest {
         }
 
         private long openSocket() {
-            final long socket = Winsock.INSTANCE.socket(
-                Winsock.AF_INET,
-                Winsock.SOCK_STREAM,
-                Winsock.IPPROTO_TCP
+            final long socket = Pointer.nativeValue(
+                Winsock.INSTANCE.socket(
+                    Winsock.AF_INET,
+                    Winsock.SOCK_STREAM,
+                    Winsock.IPPROTO_TCP
+                )
             );
             Logger.debug(this, "Opened socket: %d", socket);
             return socket;
         }
 
         private int closeSocket(final long socket) {
-            final int closed = Winsock.INSTANCE.closesocket(socket);
+            final int closed = Winsock.INSTANCE.closesocket(new Pointer(socket));
             if (closed == 0) {
                 Logger.debug(this, "Closed socket: %d", socket);
             } else {
@@ -406,12 +412,12 @@ final class SyscallTest {
         }
 
         private int getError() {
-            return Winsock.INSTANCE.WSAGetLastError();
+            return Native.getLastError();
         }
 
         private int bindSocket(final long socket, final int port) throws UnknownHostException {
             return Winsock.INSTANCE.bind(
-                socket,
+                new Pointer(socket),
                 this.sockaddr(port),
                 16
             );
@@ -438,10 +444,12 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);
-                this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                this.ensure(Winsock.INSTANCE.listen(new Pointer(socket), 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
-                final long accepted = Winsock.INSTANCE.accept(
-                    socket, addr, new IntByReference(addr.size())
+                final long accepted = Pointer.nativeValue(
+                    Winsock.INSTANCE.accept(
+                        new Pointer(socket), addr, new IntByReference(addr.size())
+                    )
                 );
                 Logger.debug(this, "Accepted socket: %d", accepted);
                 accept.set((int) accepted);
@@ -467,15 +475,17 @@ final class SyscallTest {
             try {
                 this.ensure(socket > 0);
                 this.ensure(this.bindSocket(socket, port) == 0);
-                this.ensure(Winsock.INSTANCE.listen(socket, 5) == 0);
+                this.ensure(Winsock.INSTANCE.listen(new Pointer(socket), 5) == 0);
                 final SockaddrIn addr = new SockaddrIn();
-                accepted = Winsock.INSTANCE.accept(
-                    socket, addr, new IntByReference(addr.size())
+                accepted = Pointer.nativeValue(
+                    Winsock.INSTANCE.accept(
+                        new Pointer(socket), addr, new IntByReference(addr.size())
+                    )
                 );
                 Logger.debug(this, "Accepted socket: %d", accepted);
                 this.ensure(accepted > 0);
                 final byte[] buf = new byte[1024];
-                received.set(Winsock.INSTANCE.recv(accepted, buf, buf.length, 0));
+                received.set(Winsock.INSTANCE.recv(new Pointer(accepted), buf, buf.length, 0));
                 bytes.set(Arrays.copyOf(buf, received.get()));
             } catch (final UnknownHostException exception) {
                 throw new IllegalStateException(exception);

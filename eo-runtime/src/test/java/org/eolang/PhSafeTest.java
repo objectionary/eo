@@ -35,6 +35,35 @@ final class PhSafeTest {
     }
 
     @Test
+    void keepsProtectingANormalizedObject() {
+        MatcherAssert.assertThat(
+            "a failure of a normalized object must still name its location, but it didnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public Phi normalized() {
+                            return new PhDefault() {
+                                @Override
+                                public byte[] delta() {
+                                    throw new IllegalArgumentException("boom");
+                                }
+                            };
+                        }
+                    },
+                    "example.eo", 3, 5
+                ).normalized().delta(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("at example.eo:3:5"),
+                Matchers.containsString("boom")
+            )
+        );
+    }
+
+    @Test
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
             "wraps a runtime exception into ExFailure with location and cause",
@@ -165,6 +194,19 @@ final class PhSafeTest {
     }
 
     @Test
+    void letsErrorThroughFromAtom() {
+        MatcherAssert.assertThat(
+            "a JVM Error from an atom must keep its own type, but it was wrapped",
+            Assertions.assertThrows(
+                StackOverflowError.class,
+                () -> new PhSafe(new PhSafeTest.Broken(), "file.eo", 3, 5).lambda(),
+                "was expected to fail with StackOverflowError"
+            ).getMessage(),
+            Matchers.equalTo("the stack is exhausted")
+        );
+    }
+
+    @Test
     void doesNotLetRecoveredInterceptError() {
         final EOrecovered recovered = new EOrecovered();
         recovered.put(
@@ -232,5 +274,17 @@ final class PhSafeTest {
                 Matchers.containsString("intentional error")
             )
         );
+    }
+
+    /**
+     * An atom that fails with a JVM error.
+     * @since 0.60.0
+     */
+    private static final class Broken extends PhDefault implements Atom {
+
+        @Override
+        public Phi lambda() {
+            throw new StackOverflowError("the stack is exhausted");
+        }
     }
 }

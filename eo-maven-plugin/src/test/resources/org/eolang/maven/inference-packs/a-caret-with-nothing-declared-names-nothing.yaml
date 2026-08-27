@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that declares no receiver has none at all, since the runtime
+# terminates on the `ρ` of such an object. A `^` written inside one names
+# nothing the table can point at, and saying "the object it is written inside"
+# would be a guess with nothing behind it.
+eo:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [] > inner
+        ^.held > @
+links:
+  - "/links[not(type[@id='Φ.outer.inner.φ.ρ'])]"
+  - "/links/type[@id='Φ.outer.inner.φ']/unknown"

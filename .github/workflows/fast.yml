@@ -2,18 +2,24 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: eo-tests
+name: fast
 'on':
   pull_request:
     branches:
       - master
 concurrency:
-  group: eo-tests-${{ github.event.pull_request.number }}
+  group: fast-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  eo-tests:
+  fast:
     timeout-minutes: 90
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       # The depth is two, not zero: the step below reads only the merge
       # commit and its first parent. A full clone drags in `gh-pages`, which
@@ -25,8 +31,8 @@ jobs:
       # on master, where `eo.deadline` is one second and `org.eolang.Deadline`
       # reports anything slower as skipped. A broken .eo file therefore lands
       # green and surfaces days later on a run that happened to be fast enough
-      # to reach it. This job runs the tests of every .eo file the branch
-      # touches, with a deadline long enough that nothing gets skipped.
+      # to reach it. The last step below runs the tests of every .eo file the
+      # branch touches, with a deadline long enough that nothing gets skipped.
       - id: eo
         run: |
           # The base must be the first parent of the merge commit we are
@@ -68,23 +74,24 @@ jobs:
             echo "Test classes to run: ${classes}"
           fi
           echo "classes=${classes}" >> "${GITHUB_OUTPUT}"
-      - uses: actions/setup-java@v5
-        if: steps.eo.outputs.classes != ''
+      - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 26
       - uses: actions/cache@v6
-        if: steps.eo.outputs.classes != ''
         with:
           path: ~/.m2/repository
-          key: eo-tests-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            eo-tests-
-      - if: steps.eo.outputs.classes != ''
-        run: mvn clean install -ntp -DskipTests -DskipITs
-      # An hour per test leaves `Deadline` nothing to swallow, so a test that
-      # fails here is reported as a failure and not as a skip.
+          key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-26-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
+      # The build above transpiled no tests at all, so `eo-runtime` is rebuilt
+      # here from a clean target with them. An hour per test leaves `Deadline`
+      # nothing to swallow, so a test that fails is reported as a failure and
+      # not as a skip.
       - if: steps.eo.outputs.classes != ''
         env:
           CLASSES: ${{ steps.eo.outputs.classes }}
-        run: mvn clean test -ntp -pl :eo-runtime -Deo.deadline=3600 "-Dtest=${CLASSES}"
+        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"

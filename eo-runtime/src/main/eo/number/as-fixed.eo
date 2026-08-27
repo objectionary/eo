@@ -87,8 +87,7 @@
             positive a
         | (n.times -1)
         positive n
-  n.abs.gte > huge
-    2.power 63
+  n.abs.gte 9.223372036854776e18 > huge
   ^ > n
   if. > [^ p] >> pow10
     p.eq 0
@@ -205,61 +204,61 @@
     "recovered"
     9.223372036854776e18.as-fixed
       2
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
     "recovered"
     -1.25.as-fixed
       9007199254740992
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-finite-number
     "recovered"
     nan.as-fixed
       2
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
     "recovered"
     1.25.as-fixed
       18014398509481984
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
     "recovered"
     1.25.as-fixed
       9007199254740994
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
     "recovered"
     1.25.as-fixed
       9007199254740992
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-number
     "recovered"
     pinf.as-fixed
       2
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-infinite-places
     "recovered"
     1.25.as-fixed
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-negative-places
     "recovered"
     3.14159.as-fixed
       -2
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-non-integer-places
     "recovered"
     3.14159.as-fixed
       2.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-round-to-the-last-place
     "0.123457"

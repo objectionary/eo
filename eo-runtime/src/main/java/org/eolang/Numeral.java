@@ -10,10 +10,12 @@ import java.util.function.Supplier;
  * A number value rendered as a φ-term.
  *
  * <p>A whole value inside the {@code long} range prints without a
- * fraction, so {@code 42} rather than {@code 42.0}. Everything else —
- * fractional, infinite, or beyond {@code long} — keeps its full
- * {@code double} spelling: casting an out-of-range value to {@code long}
- * would saturate and denote a different number.</p>
+ * fraction, so {@code 42} rather than {@code 42.0}. A fractional value, or
+ * one beyond {@code long}, keeps its full {@code double} spelling: casting
+ * an out-of-range value to {@code long} would saturate and denote a
+ * different number. The three non-finite values print the way EO spells
+ * them — {@code nan}, {@code pinf} and {@code ninf} — since Java's own
+ * spellings are not EO numbers and cannot be parsed back.</p>
  *
  * @since 0.73.3
  */
@@ -35,7 +37,13 @@ final class Numeral implements Supplier<String> {
     @Override
     public String get() {
         final String txt;
-        if (
+        if (Double.isNaN(this.value)) {
+            txt = "nan";
+        } else if (this.value == Double.POSITIVE_INFINITY) {
+            txt = "pinf";
+        } else if (this.value == Double.NEGATIVE_INFINITY) {
+            txt = "ninf";
+        } else if (
             this.whole()
                 && Long.MIN_VALUE <= this.value
                 && this.value < Long.MAX_VALUE

@@ -7,6 +7,9 @@ name: xs3p
   push:
     branches:
       - master
+concurrency:
+  group: xs3p-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   xs3p:
     timeout-minutes: 15

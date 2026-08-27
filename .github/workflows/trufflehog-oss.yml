@@ -7,6 +7,9 @@ name: trufflehog-oss
   push:
     branches:
       - master
+concurrency:
+  group: trufflehog-oss-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   trufflehog:
     timeout-minutes: 25

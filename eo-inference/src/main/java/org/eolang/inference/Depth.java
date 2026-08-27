@@ -4,13 +4,9 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,15 +50,6 @@ public final class Depth {
      * @throws IOException If a table or a file cannot be read
      */
     public Ladder ladder() throws IOException {
-        final XML given = new XMLDocument(this.tables.resolve("provides.xml"));
-        final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
-        final Answers answers = new Answers(
-            new Ungrouped(given, Collections.emptyMap()).rows(),
-            new HashSet<>(given.xpath("//attr[@void='true']/@type")),
-            new HashSet<>(pairs.certain()),
-            new Ends(pairs.all()).names()
-        );
-        final Map<String, Integer> filled = pairs.binds();
         final List<String> names = Arrays.asList(
             "nothing at all",
             "a name rooted at a void",
@@ -74,8 +61,7 @@ public final class Depth {
         for (final String name : names) {
             counts.put(name, 0);
         }
-        for (final String locator : new Xmirs(this.world).locators()) {
-            final Answer answer = answers.of(locator, filled.getOrDefault(locator, 0));
+        for (final Answer answer : new Answered(this.world, this.tables).all().values()) {
             final String name = names.get(answer.rung());
             counts.put(name, counts.get(name) + 1);
         }

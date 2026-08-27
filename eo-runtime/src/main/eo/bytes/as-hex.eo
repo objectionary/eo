@@ -10,7 +10,7 @@
 
 [^] > as-hex
   ^ > b
-  if. > [^ h] >> hex-digit
+  if. > [h] >> hex-digit
     h.lt 10
     as-char.
       h.plus 48

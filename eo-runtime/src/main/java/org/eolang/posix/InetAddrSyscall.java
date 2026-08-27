@@ -14,6 +14,13 @@ import org.eolang.Syscall;
 
 /**
  * The 'inet_addr' syscall.
+ *
+ * <p>{@code inet_addr} returns {@code in_addr_t}, which POSIX defines as an
+ * unsigned 32-bit integer, so the C {@code int} is widened before it becomes
+ * an EO number: {@code 10.0.0.200} reads as 3355443210, not as -939524086,
+ * and the {@code INADDR_NONE} the function reports for text it cannot parse
+ * reads as 4294967295, the {@code posix.unresolved} constant.</p>
+ *
  * @since 0.40
  */
 public final class InetAddrSyscall implements Syscall {
@@ -25,10 +32,11 @@ public final class InetAddrSyscall implements Syscall {
     private static final int EINVAL = 22;
 
     /**
-     * The limited-broadcast address, whose conversion is {@code -1} — the
-     * same value {@code inet_addr} returns for text it cannot parse, which
-     * is why the two are told apart by the text rather than by the result.
-     * {@code socket.eo} makes the same comparison for the same reason.
+     * The limited-broadcast address, whose conversion is {@code INADDR_NONE}
+     * — the same value {@code inet_addr} returns for text it cannot parse,
+     * which is why the two are told apart by the text rather than by the
+     * result. {@code socket.eo} makes the same comparison for the same
+     * reason.
      */
     private static final String BROADCAST = String.join(
         ".", Collections.nCopies(4, "255")
@@ -55,7 +63,7 @@ public final class InetAddrSyscall implements Syscall {
         if (converted == -1 && !InetAddrSyscall.BROADCAST.equals(address)) {
             Native.setLastError(InetAddrSyscall.EINVAL);
         }
-        result.put(0, new Data.ToPhi(converted));
+        result.put(0, new Data.ToPhi(Integer.toUnsignedLong(converted)));
         result.put(1, new PhDefault());
         return result;
     }

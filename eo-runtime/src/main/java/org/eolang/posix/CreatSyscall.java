@@ -4,8 +4,8 @@
  */
 package org.eolang.posix;
 
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -31,9 +31,10 @@ public final class CreatSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String path = new Cstring("the 'path' argument of creat", params[0]).it();
         final Phi result = this.posix.take("return").copy();
         final int code = CStdLib.INSTANCE.creat(
-            new Dataized(params[0]).asString(),
+            path,
             new Int("the 'mode' argument of creat", params[1]).it()
         );
         result.put(0, new Data.ToPhi(code));

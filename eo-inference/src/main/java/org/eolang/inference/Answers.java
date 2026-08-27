@@ -116,7 +116,7 @@ final class Answers {
     private int voids(final String type) {
         int found = 0;
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
+            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))) {
                 found = found + 1;
             }
         }
