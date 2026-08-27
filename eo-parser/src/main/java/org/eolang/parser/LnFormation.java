@@ -169,7 +169,7 @@ final class LnFormation implements Line {
         if (close < 0) {
             throw new ParseError(
                 span.line(), span.indent(),
-                "formation brackets must not contain leading or trailing space"
+                "formation is missing its closing bracket"
             );
         }
         return close;
