@@ -43,6 +43,19 @@ final class PhOnceTest {
     }
 
     @Test
+    void doesNotNeedRhoWithoutEvaluatingWrappedObject() {
+        MatcherAssert.assertThat(
+            "PhOnce must never ask for a receiver, and must not evaluate itself to say so",
+            new PhOnce(
+                () -> {
+                    throw new IllegalStateException("must not be evaluated");
+                }
+            ).needsRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void doesNotEvaluateWrappedObjectForTerm() {
         MatcherAssert.assertThat(
             "wrapper with explicit term must render it without evaluating the wrapped object, but it didnt",

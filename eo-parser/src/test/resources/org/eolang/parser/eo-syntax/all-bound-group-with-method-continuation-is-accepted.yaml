@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7503: Level.sealed() resets the all-or-nothing tracking fields, so a
+# legitimately all-bound argument group followed by a same-indent
+# `.method` continuation must not be flagged as a violation.
+sheets: []
+asserts:
+  - /object[not(errors/error[contains(text(),'argument bindings must be all-or-nothing')])]
+input: |
+  [] > main
+    foo > app
+      a:x
+      b:y
+    .bar > z

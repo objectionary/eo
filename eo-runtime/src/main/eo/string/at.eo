@@ -26,8 +26,12 @@
               idx
         number index
     fallback
-      "Index must be an integer, but was %f".printf
-        * i
+      i.is-finite.if
+        "Index must be an integer, but was %f".printf
+          * i
+        "Index must be an integer, but was %s".printf
+          *
+            string i.as-scientific
     if.
       or.
         0.gt index
@@ -46,23 +50,29 @@
       1.5
       I
 
+  eq. ++> can-format-the-error-message-of-a-non-finite-index
+    "Index must be an integer, but was nan"
+    "some".at
+      nan
+      I
+
   eq. ++> can-recover-from-a-fractional-index-in-bounds
     "recovered"
     "some".at
       1.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-negative-fractional-index-in-bounds
     "recovered"
     "some".at
       -1.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
     "some".at
       10
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-character-at-a-negative-index
     "m"

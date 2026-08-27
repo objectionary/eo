@@ -47,7 +47,6 @@ final class LnFormation implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        final int blanks = Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final List<String> params;
         final String binding;
@@ -62,7 +61,9 @@ final class LnFormation implements Line {
             final int close = LnFormation.findClosing(body, this.span);
             params = LnFormation.params(body, close, this.span);
             final String raw = body.substring(close + 1);
-            binding = LnFormation.outerBinding(raw);
+            binding = LnFormation.outerBinding(
+                raw, this.span, this.span.indent() + close + 2
+            );
             final String tail;
             if (binding == null) {
                 tail = raw;
@@ -76,16 +77,18 @@ final class LnFormation implements Line {
         }
         this.checkAtomVoids(suffix, params);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, blanks, emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         }
+        Blanks.enterAfterMeta(this.span, globals, emit);
         Comments.seal(globals, emit, this.span);
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();
         globals.markEmitted();
         this.emit(emit, suffix, params, binding);
     }
 
-    private static String outerBinding(final String raw) {
+    private static String outerBinding(final String raw, final Span span, final int pos) {
         final String label;
         if (raw.startsWith(":")) {
             int idx = 1;
@@ -93,6 +96,7 @@ final class LnFormation implements Line {
                 idx = idx + 1;
             }
             label = raw.substring(1, idx);
+            Tokens.checkBinding(label, span, pos);
         } else {
             label = null;
         }
@@ -113,7 +117,7 @@ final class LnFormation implements Line {
         if (suffix.atom() && !params.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "an atom must declare its void attributes vertically, as `? > name` lines"
+                "an atom must declare its void attributes vertically, as ? > name lines"
             );
         }
     }
@@ -131,9 +135,9 @@ final class LnFormation implements Line {
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding
     ) {
-        emit.object(
+        emit.baselessObject(
             suffix.attribute(this.span.line(), this.span.indent()),
-            null, this.span.line(), this.span.indent()
+            this.span.line(), this.span.indent()
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());

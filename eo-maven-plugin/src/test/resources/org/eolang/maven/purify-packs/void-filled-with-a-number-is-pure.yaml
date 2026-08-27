@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation whose only void the program fills with a number, and whose body
+# stands on nothing but its own input and a literal, is safe to cache: two
+# callers that pass the same bytes get the same answer.
+eo:
+  app.eo: |
+    [] > app
+      half 42 > @
+      [x] > half
+        x.div 2 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > div
+        x > @
+pure:
+  - "//o[@name='half' and @pure='true']"

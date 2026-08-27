@@ -15,7 +15,7 @@
     string
       others.reduced
         text.as-bytes
-        accum.concat str.as-bytes > [^ accum str]
+        accum.concat str.as-bytes > [accum str]
   ^ > text
 
   eq. ++> can-chain-with-other-strings

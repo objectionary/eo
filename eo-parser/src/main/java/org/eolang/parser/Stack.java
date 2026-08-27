@@ -12,10 +12,10 @@ import java.util.List;
  *
  * <p>The stack carries one {@link Level} per occupied indent level. Indents
  * grow strictly bottom-to-top in steps of exactly two (R-5.1.1, R-5.1.2);
- * this class enforces the step at {@link #push(int, int, Kind, Openness)}.
- * The bottom entry's {@code parent} is always {@link Kind#TOP_LEVEL};
- * higher entries carry the kind of the entry directly below them as their
- * parent.</p>
+ * the caller enforces the step (R-5.1.3) before calling
+ * {@link #push(int, int, Kind, Openness)}. The bottom entry's
+ * {@code parent} is always {@link Kind#TOP_LEVEL}; higher entries carry the
+ * kind of the entry directly below them as their parent.</p>
  *
  * <p>This class manages structural transitions only. Close-time semantic
  * checks (R-5.3.1 through R-5.3.5) are dispatched to a caller-supplied
@@ -27,12 +27,6 @@ import java.util.List;
  * @since 0.1
  */
 final class Stack {
-
-    /**
-     * Indent step between adjacent stack entries — fixed at 2 spaces by
-     * R-2.2.1.
-     */
-    private static final int STEP = 2;
 
     /**
      * The levels, bottom-to-top.
@@ -171,6 +165,23 @@ final class Stack {
     }
 
     /**
+     * The outermost entry — the indent-0 top-level object of the file —
+     * or the bottom sentinel when nothing has been pushed yet. Read by
+     * R-6.3.3, which admits a {@code +>} test attribute only under a
+     * top-level object that is a formation.
+     * @return Outermost entry, never null
+     */
+    Level root() {
+        final Level outer;
+        if (this.levels.isEmpty()) {
+            outer = this.bottom;
+        } else {
+            outer = this.levels.get(0);
+        }
+        return outer;
+    }
+
+    /**
      * Push a fresh level at the given indent.
      *
      * <p>If the stack is non-empty, the new indent must equal {@code
@@ -205,14 +216,6 @@ final class Stack {
             owner = "";
         } else {
             final Level under = this.top();
-            if (indent != under.indent() + Stack.STEP) {
-                throw new IllegalStateException(
-                    String.format(
-                        "push at indent %d violates step rule from indent %d",
-                        indent, under.indent()
-                    )
-                );
-            }
             parent = under.kind();
             patom = under.atom();
             argues = under.argumentative();

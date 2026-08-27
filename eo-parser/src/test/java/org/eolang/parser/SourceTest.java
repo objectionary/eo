@@ -5,9 +5,11 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -125,6 +127,44 @@ final class SourceTest {
                 )
             ),
             Matchers.contains("alpha", "beta", "gamma")
+        );
+    }
+
+    @Test
+    void reusesTheSameSpansOnEveryIteration() {
+        final Source source = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta", "gamma")
+        );
+        MatcherAssert.assertThat(
+            "a second iteration must hand back the very same span objects, not fresh ones",
+            SourceTest.collect(source),
+            Matchers.contains(SourceTest.collect(source).toArray(new Span[0]))
+        );
+    }
+
+    @Test
+    void iteratesTwiceOverTheSameInstance() {
+        final Source source = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta")
+        );
+        SourceTest.texts(source);
+        MatcherAssert.assertThat(
+            "iterating an already-iterated source must still yield all of its lines",
+            SourceTest.texts(source),
+            Matchers.contains("alpha", "beta")
+        );
+    }
+
+    @Test
+    void forbidsRemovalThroughTheIterator() {
+        final Iterator<Span> iter = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta")
+        ).iterator();
+        iter.next();
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            iter::remove,
+            "the iterator must not let a caller drop a span from the source"
         );
     }
 

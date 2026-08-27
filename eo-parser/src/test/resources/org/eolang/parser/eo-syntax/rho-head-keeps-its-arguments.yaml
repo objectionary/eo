@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/o/o[@base='ξ.ρ' and @name='z']/o[@as='α0' and @base='Φ.number']
+input: |
+  [] > main
+    ^ 1 > z

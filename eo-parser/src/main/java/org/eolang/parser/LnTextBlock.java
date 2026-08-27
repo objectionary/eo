@@ -60,24 +60,16 @@ final class LnTextBlock implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final byte[] joined;
-        try {
-            joined = Escapes.bytes(
-                String.join(String.valueOf('\n'), globals.tbody())
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                this.span.line(), this.span.indent(),
-                "invalid unicode or octal escape in text block"
-            );
-            error.initCause(ex);
-            throw error;
-        }
+        final byte[] joined = new Unescaped(
+            String.join(String.valueOf('\n'), globals.tbody()),
+            this.span.line(), this.span.indent()
+        ).bytes();
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (outer != null) {
             emit.slot(Emissions.bindingTag(outer));
@@ -110,12 +102,12 @@ final class LnTextBlock implements Line {
             }
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
         } else {
-            emit.object(null, "Φ.string", this.span.line(), this.span.indent());
+            emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
             emit.close();
             for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
                 final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), this.span.line(), link.dot());
+                emit.unnamedObject(".".concat(link.name()), this.span.line(), link.dot());
                 emit.method(link.fragile());
                 emit.close();
             }

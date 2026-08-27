@@ -29,6 +29,19 @@ import java.util.regex.Pattern;
 final class Emissions {
 
     /**
+     * What the parser says when the identity object is applied to
+     * arguments (R-3.16.1). Shared by every position an application may
+     * be written in — a line head ({@link LnApplication}), a paren
+     * group, an inline φ, and the φ of an only-phi line — so the writer
+     * gets the same instruction wherever the glyph carries arguments.
+     */
+    static final String NO_IDENTITY_ARGS = String.join(
+        " ",
+        "the identity object takes no horizontal arguments;",
+        "put the argument on a deeper-indent line"
+    );
+
+    /**
      * Bits an IEEE-754 double keeps below the leading one of its
      * significand.
      */
@@ -94,6 +107,9 @@ final class Emissions {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, span);
+        if (head.identity() && !args.isEmpty()) {
+            throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
+        }
         ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
@@ -133,16 +149,16 @@ final class Emissions {
     static void openValue(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
+        if (value.number()) {
             Emissions.number(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.HEX) {
+        } else if (value.hex()) {
             Emissions.hex(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.BYTES) {
+        } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
-            emit.object(null, null, line, value.pos());
+            emit.bareObject(line, value.pos());
             emit.set(value.raw());
             emit.close();
-        } else if (value.kind() == Value.Kind.STRING) {
+        } else if (value.string()) {
             Emissions.string(emit, name, value, line);
         } else {
             Emissions.openBase(emit, name, value, line);
@@ -213,8 +229,8 @@ final class Emissions {
     static void bytesCarrier(
         final Emit emit, final int line, final int pos, final String hex
     ) {
-        emit.object(null, "Φ.bytes", line, pos);
-        emit.object(null, null, line, pos);
+        emit.unnamedObject("Φ.bytes", line, pos);
+        emit.bareObject(line, pos);
         emit.set(hex);
         emit.close();
         emit.close();
@@ -238,16 +254,16 @@ final class Emissions {
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.STAR) {
+        if (value.star()) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.TERM) {
+            emit.object(name, value.rootSymbol(), line, value.pos());
+        } else if (value.term()) {
             emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.IDENTITY) {
+        } else if (value.identity()) {
             Emissions.identity(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.GROUP) {
+        } else if (value.group()) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
@@ -257,7 +273,7 @@ final class Emissions {
     private static void identity(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        emit.object(name, null, line, value.pos());
+        emit.baselessObject(name, line, value.pos());
         emit.voidParam(Emissions.IDENTITY, line, value.pos());
         emit.object("φ", Emissions.IDENTITY, line, value.pos());
         emit.close();
@@ -298,21 +314,13 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         emit.object(name, "Φ.string", line, value.pos());
-        final byte[] unescaped;
-        try {
-            unescaped = Escapes.bytes(
-                value.raw().substring(1, value.raw().length() - 1)
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
-            );
-            error.initCause(ex);
-            throw error;
-        }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
-            new Hex(unescaped).asString()
+            new Hex(
+                new Unescaped(
+                    value.raw().substring(1, value.raw().length() - 1), line, value.pos()
+                ).bytes()
+            ).asString()
         );
     }
 
@@ -406,26 +414,9 @@ final class Emissions {
         }
     }
 
-    private static String rootBase(final String raw) {
-        final String mapped;
-        if ("Q".equals(raw)) {
-            mapped = "Φ";
-        } else if ("@".equals(raw)) {
-            mapped = "φ";
-        } else if ("^".equals(raw)) {
-            mapped = "ρ";
-        } else if ("$".equals(raw)) {
-            mapped = "ξ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
-    }
-
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if ((head.kind() == Value.Kind.IDENTIFIER || head.kind() == Value.Kind.ROOT)
-            && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;
@@ -497,7 +488,7 @@ final class Emissions {
         } else {
             label = name;
         }
-        emit.object(label, null, line, column);
+        emit.baselessObject(label, line, column);
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }

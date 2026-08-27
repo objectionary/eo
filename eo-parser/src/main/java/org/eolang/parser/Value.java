@@ -27,7 +27,7 @@ final class Value {
      * Kinds of value that may carry a {@code .method} chain behind them.
      */
     private static final Set<Kind> CHAINABLE = Set.of(
-        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP,
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM,
         Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 
@@ -195,6 +195,54 @@ final class Value {
     }
 
     /**
+     * A numeric literal — {@code INT} or {@code FLOAT} (§9.0.3)?
+     * @return True for {@link Kind#INTEGER} or {@link Kind#FLOAT}
+     */
+    boolean number() {
+        return this.kind == Kind.INTEGER || this.kind == Kind.FLOAT;
+    }
+
+    /**
+     * A {@code HEX} numeric literal — {@code 0xFF} form (§9.0.3)?
+     * @return True for {@link Kind#HEX}
+     */
+    boolean hex() {
+        return this.kind == Kind.HEX;
+    }
+
+    /**
+     * A {@code BYTES} literal (§3.13.1)?
+     * @return True for {@link Kind#BYTES}
+     */
+    boolean bytes() {
+        return this.kind == Kind.BYTES;
+    }
+
+    /**
+     * A {@code STRING} literal (§9.0.3)?
+     * @return True for {@link Kind#STRING}
+     */
+    boolean string() {
+        return this.kind == Kind.STRING;
+    }
+
+    /**
+     * The {@code STAR} tuple marker (§9.0.3)?
+     * @return True for {@link Kind#STAR}
+     */
+    boolean star() {
+        return this.kind == Kind.STAR;
+    }
+
+    /**
+     * The {@code T} terminator term (§9.3)?
+     * @return True for {@link Kind#TERM}
+     */
+    boolean term() {
+        return this.kind == Kind.TERM;
+    }
+
+    /**
      * The {@code I} identity object (§3.16)?
      * @return True for {@link Kind#IDENTITY}
      */
@@ -208,6 +256,37 @@ final class Value {
      */
     boolean group() {
         return this.kind == Kind.GROUP;
+    }
+
+    /**
+     * May this value open a reversed dispatch as the line's head — a
+     * bare identifier or a root glyph, the only kinds R-9.0.3 allows in
+     * that position?
+     * @return True for {@link Kind#IDENTIFIER} or {@link Kind#ROOT}
+     */
+    boolean reversible() {
+        return this.kind == Kind.IDENTIFIER || this.kind == Kind.ROOT;
+    }
+
+    /**
+     * The XMIR symbol a {@link Kind#ROOT} glyph maps to per §9.3 —
+     * {@code Q} to {@code Φ}, {@code @} to {@code φ}, {@code ^} to
+     * {@code ρ}, {@code $} to {@code ξ}. Call only when {@link #kind()}
+     * is {@link Kind#ROOT}.
+     * @return The mapped symbol
+     */
+    String rootSymbol() {
+        final String mapped;
+        if ("Q".equals(this.raw)) {
+            mapped = "Φ";
+        } else if ("@".equals(this.raw)) {
+            mapped = "φ";
+        } else if ("^".equals(this.raw)) {
+            mapped = "ρ";
+        } else {
+            mapped = "ξ";
+        }
+        return mapped;
     }
 
     /**
@@ -241,9 +320,6 @@ final class Value {
         return found;
     }
 
-    // @todo #7281:30min Move the remaining kind()/raw()-driven decisions out
-    //  of Emissions and LnOnlyPhi onto Value, then drop the kind()/raw()
-    //  accessors it no longer needs.
     /**
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line

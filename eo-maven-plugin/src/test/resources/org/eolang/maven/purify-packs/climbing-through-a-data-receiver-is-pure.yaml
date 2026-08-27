@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nothing has to be defended against a body climbing further out. Once the
+# receiver is a number, "^.^" is an attribute of that number like any other,
+# and what is taken from it is decided by the same bytes that already went
+# into the cache key.
+eo:
+  app.eo: |
+    [] > app
+      42.deep > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [^] > deep
+        ^.^.as-bytes > @
+pure:
+  - "//o[@name='deep' and @pure='true']"

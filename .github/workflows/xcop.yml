@@ -10,6 +10,9 @@ name: xcop
   pull_request:
     branches:
       - master
+concurrency:
+  group: xcop-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   xcop:
     timeout-minutes: 15

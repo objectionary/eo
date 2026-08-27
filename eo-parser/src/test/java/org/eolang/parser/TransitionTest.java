@@ -41,6 +41,34 @@ final class TransitionTest {
     }
 
     @Test
+    void promotesHeadToVapplicationWhenDeeperChildArrives() {
+        final Stack stack = new Stack();
+        new Transition(stack, new Span("nu", 1))
+            .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false));
+        new Transition(stack, new Span("  xi", 2))
+            .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false));
+        MatcherAssert.assertThat(
+            "a head must promote to vapplication once its first deeper-indent child pushes",
+            stack.below().kind(),
+            Matchers.equalTo(Kind.VAPPLICATION)
+        );
+    }
+
+    @Test
+    void promotesHmethodToVapplicationWhenDeeperChildArrives() {
+        final Stack stack = new Stack();
+        new Transition(stack, new Span("omicron", 1))
+            .apply(Kind.HMETHOD, Openness.OPEN, new Admission(null, false));
+        new Transition(stack, new Span("  pi", 2))
+            .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false));
+        MatcherAssert.assertThat(
+            "an hmethod must promote to vapplication once its first deeper-indent child pushes",
+            stack.below().kind(),
+            Matchers.equalTo(Kind.VAPPLICATION)
+        );
+    }
+
+    @Test
     void rejectsIndentJumpGreaterThanOneLevel() {
         final Stack stack = new Stack();
         new Transition(stack, new Span("delta", 1))
@@ -50,6 +78,22 @@ final class TransitionTest {
             () -> new Transition(stack, new Span("    epsilon", 2))
                 .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false)),
             "indent jump of four spaces from indent zero must be rejected"
+        );
+    }
+
+    @Test
+    void capturesCanonicalMessageOfIndentJumpViolation() {
+        final Stack stack = new Stack();
+        new Transition(stack, new Span("delta", 1))
+            .apply(Kind.BARE_FORMATION, Openness.OPEN, new Admission(null, false));
+        MatcherAssert.assertThat(
+            "the error message must name the indent-step requirement",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Transition(stack, new Span("    epsilon", 2))
+                    .apply(Kind.HEAD, Openness.OPEN, new Admission(null, false))
+            ).getMessage(),
+            Matchers.equalTo("indent increased by more than one level")
         );
     }
 

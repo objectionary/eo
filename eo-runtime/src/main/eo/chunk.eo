@@ -27,7 +27,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ id] > chunk
+[id] > chunk
   get > @
   [^ source target length] > copy
     seq * > @
@@ -81,7 +81,7 @@
   eq. ++> can-get-what-was-put
     malloc.of
       8
-      seq * > [^ c]
+      seq * > [c]
         c.put 42
         c.get
     42.as-bytes
@@ -89,13 +89,13 @@
   eq. ++> can-know-its-size
     malloc.of
       3
-      c.size > [^ c]
+      c.size > [c]
     3
 
   eq. ++> can-read-a-slice-of-what-was-written
     malloc.of
       5
-      seq * > [^ c]
+      seq * > [c]
         c.write 0 "hello"
         c.read 1 3
     "ell".as-bytes

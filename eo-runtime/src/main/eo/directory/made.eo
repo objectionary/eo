@@ -4,13 +4,10 @@
 # any non-directory entry) occupies the path, the computation terminates
 # instead of returning that entry decorated as a directory.
 #
-# @todo #7080:60min Add a synchronization-based regression test that creates
-#  the target directory between the exists() probe and mkdir below, so the
-#  race this fixes is actually exercised. A single-threaded EO `++>` test
-#  can't trigger it, same reasoning as the puzzle in file/touched.eo: it
-#  needs a JUnit test against the generated `EOmade` class with real thread
-#  interleaving (see PhDefaultRaceTest.java for the com.yegor256.Together
-#  idiom this repo already uses for exactly this kind of interleaving).
+# The path may be made by somebody else between the question and the answer,
+# so a `mkdir` coming back with `EEXIST` over a directory is taken for the
+# directory it names rather than for a failure. `EOdirectoryEOmadeRaceTest`
+# holds the interleaving that reaches that branch.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -62,10 +59,54 @@
         "errno"
         *
 
+  ++> can-make-a-directory-and-return-the-same-path
+    dir.made.path.eq dir.path > @
+    as-dir. > dir
+      mktemp.tmpfile.deleted.as-path.resolved "foo-same"
+
+  ++> can-make-a-directory-with-a-unicode-name
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "плюшка-目录"
+
   ++> can-make-a-new-directory
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
+  ++> can-make-an-already-existing-directory
+    dir.made.exists.and dir.made.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-existing"
+
+  ++> can-make-deeply-nested-directories
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-1/foo-2/foo-3/foo-4"
+
+  ++> can-make-nested-directories-under-an-existing-parent
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        parent.resolved "foo-inner/foo-deepest"
+    made. > parent
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-partial"
+
+  ++> can-make-nested-directories-with-missing-parents
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-parent/foo-child"
+
   mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
+
+  --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
+    made. > @
+      as-dir.
+        occupied.resolved "foo-child"
+    mktemp.tmpfile.as-path > occupied

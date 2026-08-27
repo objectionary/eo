@@ -4,9 +4,12 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
+import org.eolang.Expect;
+import org.eolang.Natural;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -34,8 +37,10 @@ public final class SendFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final byte[] buf = new Dataized(params[1]).take();
-        final int size = new Dataized(params[2]).asNumber().intValue();
-        if (size < 0 || size > buf.length) {
+        final int size = new Natural(
+            new Expect<>("the 'size' argument of send", () -> params[2])
+        ).it();
+        if (size > buf.length) {
             throw new ExFailure(
                 "Can't send %d bytes from a buffer of only %d bytes",
                 size, buf.length
@@ -46,7 +51,7 @@ public final class SendFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.send(
-                    new Dataized(params[0]).asNumber().longValue(),
+                    new Pointer(new Dataized(params[0]).asNumber().longValue()),
                     buf,
                     size,
                     new Dataized(params[3]).asNumber().intValue()

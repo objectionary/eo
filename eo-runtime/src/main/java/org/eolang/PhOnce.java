@@ -12,6 +12,13 @@ import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
+ *
+ * <p>It never needs a receiver. A receiver is bound onto a formation, never
+ * onto the result of an expression: the dispatch that produced this object
+ * has already given it the receiver it deserves. Saying so without forcing
+ * the wrapped object keeps a lazy expression lazy while it is dispatched
+ * over.</p>
+ *
  * @since 0.1
  * @todo #7062:30min Stop passing a null term through {@link PhOnce#wrapped}.
  *  The one-argument constructor still passes {@code null} to mean "render the

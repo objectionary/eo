@@ -60,12 +60,10 @@ final class Transition {
         if (level.patom() && !admission.permitted()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` and `->` test attributes are allowed in an atom body"
+                "atom may contain only test attributes"
             );
         }
-        if (admission.label() != null) {
-            level.name(admission.label());
-        }
+        admission.name(level);
         return level;
     }
 
@@ -76,11 +74,17 @@ final class Transition {
                 "indent increased by more than one level"
             );
         }
-        if (!this.stack.empty() && this.stack.top().openness() != Openness.OPEN) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "unexpected deeper-indent line — previous expression is closed for children"
-            );
+        if (!this.stack.empty()) {
+            final Level top = this.stack.top();
+            if (top.openness() != Openness.OPEN) {
+                throw new ParseError(
+                    this.span.line(), 0,
+                    "unexpected deeper-indent line — previous expression is closed for children"
+                );
+            }
+            if (top.kind() == Kind.HEAD || top.kind() == Kind.HMETHOD) {
+                top.become(Kind.VAPPLICATION);
+            }
         }
         return this.stack.push(this.span.indent(), this.span.line(), kind, openness);
     }

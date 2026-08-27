@@ -75,7 +75,7 @@ final class LnMethod implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals.pendingBlanks(), emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }

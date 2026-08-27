@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that takes nothing has nothing to be asked about its inputs,
+# and every question about them is answered before it is put.
+eo:
+  app.eo: |
+    [] > app
+      forty-two > @
+      [] > forty-two
+        42 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='forty-two' and @pure='true']"

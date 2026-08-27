@@ -25,6 +25,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u64
     "recovered"
     01-01-01-01.as-u64
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   01-01-01-01.as-u64 --> stops-on-bytes-of-wrong-size-when-converting-to-u64

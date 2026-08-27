@@ -24,8 +24,12 @@
       if.
         size.eq 0
         "The delimiter must not be empty"
-        "Invalid limit %f for nsplit, must be at least 1".printf
-          * limit
+        limit.is-finite.if
+          "Invalid limit %f for nsplit, must be at least 1".printf
+            * limit
+          "Invalid limit %s for nsplit, must be at least 1".printf
+            *
+              string limit.as-scientific
     if.
       1.eq limit
       * text
@@ -86,6 +90,13 @@
       1.5
       I
 
+  eq. ++> can-format-the-error-message-of-an-infinite-limit-when-splitting
+    "Invalid limit infinity for nsplit, must be at least 1"
+    "a-b-c".nsplit
+      "-"
+      pinf
+      I
+
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string
     "".nsplit
       "-"
@@ -97,28 +108,28 @@
     "a-b-c".nsplit
       "-"
       1.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
     "recovered"
     "abc".nsplit
       ""
       3
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
     "recovered"
     "a-b-c".nsplit
       "-"
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-invalid-limit
     "fallback"
     "text".nsplit
       "-"
       0
-      "fallback" > [^ message]
+      "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit

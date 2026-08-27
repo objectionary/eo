@@ -23,7 +23,7 @@
           minus.
             pi.div 2
             2.times
-              [^ point] >> series
+              [point] >> series
                 times. > @
                   number
                     point >> bts!

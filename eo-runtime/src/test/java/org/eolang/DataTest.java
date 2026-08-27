@@ -29,6 +29,15 @@ final class DataTest {
     }
 
     @Test
+    void doesNotNeedRho() {
+        MatcherAssert.assertThat(
+            "Data must arrive with its receiver in place, but it didnt",
+            new Data.ToPhi("hello").needsRho(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void failsWhenObjectTypeIsUnknown() {
         Assertions.assertThrows(
             ExFailure.class,
@@ -108,7 +117,7 @@ final class DataTest {
     void comparesVertexWithFormation() {
         MatcherAssert.assertThat(
             "Hash code of a formation should differ from the one of a data object, but it didn't",
-            new EOnumber().hashCode(),
+            new PhDefault().hashCode(),
             Matchers.not(new Data.ToPhi(0L).hashCode())
         );
     }

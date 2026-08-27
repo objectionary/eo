@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# #7251: a group of one is uniform by definition, so the single arg of a vmethod
+# may carry a binding — the newly tracked parent must not reject it.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.app.bar']/o[@base='Φ.a' and @as='x']
+input: |
+  [] > main
+    foo > app
+    .bar
+      a:x

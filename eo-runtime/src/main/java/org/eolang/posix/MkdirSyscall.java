@@ -4,8 +4,9 @@
  */
 package org.eolang.posix;
 
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -30,10 +31,11 @@ public final class MkdirSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String path = new Cstring("the 'path' argument of mkdir", params[0]).it();
         final Phi result = this.posix.take("return").copy();
         final int code = CStdLib.INSTANCE.mkdir(
-            new Dataized(params[0]).asString(),
-            new Dataized(params[1]).asNumber().intValue()
+            path,
+            new Int("the 'mode' argument of mkdir", params[1]).it()
         );
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());

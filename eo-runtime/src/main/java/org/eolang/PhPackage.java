@@ -55,8 +55,8 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.objects.containsKey(Phi.RHO);
+    public boolean needsRho() {
+        return false;
     }
 
     @Override
@@ -84,9 +84,7 @@ final class PhPackage implements Phi {
             }
             taken = next;
         } else {
-            final Phi loaded = this.loadPhi(fqn);
-            loaded.put(Phi.RHO, this);
-            this.put(fqn, loaded);
+            this.put(fqn, this.bound(fqn));
             taken = this.take(name);
         }
         return taken;
@@ -119,6 +117,14 @@ final class PhPackage implements Phi {
         return this.pkg;
     }
 
+    private Phi bound(final String fqn) {
+        final Phi loaded = this.loadPhi(fqn);
+        if (loaded.needsRho()) {
+            loaded.put(Phi.RHO, this);
+        }
+        return loaded;
+    }
+
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
@@ -128,6 +134,9 @@ final class PhPackage implements Phi {
                 .asSubclass(Phi.class)
                 .getConstructor()
                 .newInstance();
+            if (loaded instanceof Pure) {
+                loaded = new PhSticky(loaded);
+            }
         } catch (final ClassNotFoundException phi) {
             try {
                 Class.forName(pinfo);

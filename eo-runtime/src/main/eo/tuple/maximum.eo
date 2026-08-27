@@ -15,7 +15,7 @@
       "cannot get the maximum number from an empty sequence"
     sequence.reduced
       ninf
-      if. > [^ max item]
+      if. > [max item]
         item.as-number.is-nan.or
           item.as-number.gt max
         item
@@ -36,7 +36,7 @@
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
     "recovered"
     tuple.empty.maximum
-      "recovered" > [^ msg]
+      "recovered" > [msg]
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.

@@ -170,7 +170,7 @@ The parser recognises the following lexical tokens:
 | `ROOT` | `Q` |
 | `XI` | `$` |
 | `TERM` | `T` — the terminator term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the terminator, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
-| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry arguments (`I 5`) and a `.method` chain, like any other head. |
+| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry vertical arguments and a `.method` chain, like any other head, but no horizontal ones (R-3.16.1). |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
@@ -407,7 +407,7 @@ This section number is reserved; the method-dispatch line continuation rules pre
 
 The trailing-dot prefix-notation form.
 
-R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), or `RHO` (`^`) token** — no dotted paths and no `ROOT`/`XI`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
+R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), `RHO` (`^`), or `XI` (`$`) token** — no dotted paths and no `ROOT`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
 R-3.8.2. **Horizontal form** — `name. arg1 arg2 …`:
   - `arg1` is the **receiver** (the dispatch target of `.name`).
   - `arg2…` are method arguments of `.name`.
@@ -687,13 +687,20 @@ An `I` token is *the one-character spelling of the identity object* `x > [x]` �
 "hello".at 1.5 I                      ← the error branch hands the message back
 ```
 
-R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes horizontal arguments (`I 5`) and a `.method` chain with the ordinary application shape (§3.6).
+R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes a `.method` chain with the ordinary application shape (§3.6). It takes **no horizontal arguments**, in any position: an argument is given on a deeper-indent line.
+
+```
+I 5 > r                               ← rejected: the identity takes no horizontal arguments
+foo (I 5) > r                         ← rejected: the same application, inside a group
+I > r                                 ← the vertical form of the same
+  5
+```
 
 R-3.16.2. **The void.** The void `I` binds is always named `x`, since nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `x`, so scope resolution binds to it.
 
 R-3.16.3. **Emission / XMIR.** The parser emits a base-less `<o>` with two children in this order — the void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — which is exactly what the spelled-out `x > [x]` emits.
 
-R-3.16.4. **Outer kind.** A bare `I` line is an `identity-object` (Appendix A): a pipe may apply arguments to it (R-3.14.2), because `I` names a formation, while its own deeper-indent children stay arguments, not bindings, as under any other head. An `I` carrying a chain or horizontal args takes the outer kind of the underlying application (§3.6).
+R-3.16.4. **Outer kind.** A bare `I` line is an `identity-object` (Appendix A): a pipe may apply arguments to it (R-3.14.2), because `I` names a formation, while its own deeper-indent children stay arguments, not bindings, as under any other head. An `I` carrying a chain takes the outer kind of the underlying application (§3.6).
 
 ---
 
@@ -885,9 +892,10 @@ R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the pop
 R-5.3.4a. **R-5.3.4 and R-5.3.5 are disjoint.** Both rules check the popped entry's suffix and parent, but on disjoint conditions: R-5.3.4 fires *only when* the popped entry is **not** a `+>` test (so it can't have `+>` to feed R-5.3.5); R-5.3.5 fires *only when* the popped entry **is** a `+>` test (so the atom-body check passes vacuously). A single popped entry cannot trigger both rules. Multiple errors per source line are possible only when the line introduces *multiple* level records that each independently fail (e.g., a nested atom *and* a deeply-placed test in the same file), but in that case each error attaches to its own entry's `start_line`.
 R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped entry's *immediate parent* must itself be a top-level formation (sitting at indent 0). Concretely:
   - the popped entry's `parent_kind` must **not** be `top-level` (otherwise the popped entry is itself at indent 0, which is illegal), AND
-  - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal).
+  - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal), AND
+  - the parent's own kind must be a formation — `bare-formation` or `inline-phi-formation` (otherwise indent 2 is an argument position of a top-level application, not an attribute position, so the test would be taken as an argument).
 
-  Either failure yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first failure case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4.
+  Any of the three failures yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4; the third covers `+>` at indent 2 under a top-level object that is an application (`bool > true`, `number > nan`, `string > eol`) rather than a formation.
 R-5.3.6. **Inline-phi argument rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, deeper children attach as φ's vertical arguments; because the formation binds only φ, such an argument may not be named — at close time an argument entry that carries a name suffix yields error `argument of an only-phi formation cannot carry a name suffix` (§9.9). The ban propagates down through nested applications and resets at a formation boundary (§4.5).
 
 ### 5.4 End-of-file (FSM action)
@@ -985,7 +993,7 @@ Illegal:
 
 R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. Besides the `? > name` void declarations every atom carries in its body (R-3.4.10), an atom may contain only test attributes (truthy `+>` or throwing `->`); regular bound or master children are rejected.
 R-6.3.2. A non-atom formation may contain any mix of plain children, master children, and test attributes.
-R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) — i.e., as a direct child of the top-level object. Test attributes at any other depth are rejected.
+R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) **of a top-level object that is a formation** — i.e., as a direct child of that formation. Test attributes at any other depth are rejected, and so is one at indent 2 of a top-level *application*, where indent 2 is an argument position rather than an attribute position: an object declared as an application (`bool > true`, `number > nan`, `string > eol`, and likewise `false.eo`, `pi.eo`, `pinf.eo`, `ninf.eo`, `e.eo`) can carry no tests at all, which is why `unit-test-missing` excuses it via `not(/object/o/@base)`.
 R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body holds nothing but its `? > name` void declarations (R-3.4.10), which every atom declares vertically.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
@@ -1352,6 +1360,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
 | Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
+| Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |
 | Root identifier glued to a letter or a digit (e.g. the legacy `QQ.io.stdout`) | `<token> is not a valid object name, root <root> must be followed by a dot` (token and root substituted) |
 | Atom containing non-test child | `atom may contain only test attributes` |

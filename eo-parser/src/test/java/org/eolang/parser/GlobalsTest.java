@@ -97,6 +97,80 @@ final class GlobalsTest {
     }
 
     @Test
+    void startsOutOfMetaHeader() {
+        MatcherAssert.assertThat(
+            "a fresh Globals cannot be inside the meta header yet",
+            new Globals().inMetaHeader(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void entersMetaHeaderOnMark() {
+        final Globals globals = new Globals();
+        globals.markMeta();
+        MatcherAssert.assertThat(
+            "markMeta must open the meta header for R-6.5.5 timing",
+            globals.inMetaHeader(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void leavesMetaHeaderOnClose() {
+        final Globals globals = new Globals();
+        globals.markMeta();
+        globals.closeMetaHeader();
+        MatcherAssert.assertThat(
+            "closeMetaHeader must drop the meta-header flag back to false",
+            globals.inMetaHeader(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void startsWithZeroTextBlockOpenIndent() {
+        MatcherAssert.assertThat(
+            "a fresh Globals cannot have a recorded text-block indent yet",
+            new Globals().textBlockOpenIndent(),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void recordsTextBlockOpenIndent() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 4);
+        MatcherAssert.assertThat(
+            "textBlockOpenIndent must round-trip the opener indent used to strip body lines",
+            globals.textBlockOpenIndent(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void restoresMetaHeaderFlagFromSavepoint() {
+        final Globals globals = new Globals();
+        globals.markMeta();
+        MatcherAssert.assertThat(
+            "savepoint must capture the meta-header flag set before it was taken",
+            globals.savepoint().inMetaHeader(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void restoresTextBlockIndentFromSavepoint() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 6);
+        MatcherAssert.assertThat(
+            "savepoint must capture the text-block indent recorded before it was taken",
+            globals.savepoint().textBlockOpenIndent(),
+            Matchers.equalTo(6)
+        );
+    }
+
+    @Test
     void collapsesUnderIndentedBlankLineToEmpty() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 6);

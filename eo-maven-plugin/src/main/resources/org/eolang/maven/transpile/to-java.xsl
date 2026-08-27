@@ -68,11 +68,32 @@
   their first 240-odd characters still disambiguate, and the same name always
   fingerprints the same way regardless of which call site of "eo:class-name" asks,
   so a declaration and a reference to the same over-long name never diverge (#7254).
+  Two polynomial hashes with different bases and different prime moduli, since a
+  single weighted sum of the code points cancels out for names that differ in two
+  positions only (#7633).
   -->
   <xsl:function name="eo:fingerprint" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
     <xsl:variable name="codes" select="string-to-codepoints($n)"/>
-    <xsl:value-of select="concat('_', string(sum(for $i in 1 to count($codes) return $codes[$i] * $i) mod 100000000))"/>
+    <xsl:value-of select="concat('_', string(eo:polynomial($codes, 131, 1000000007, 0)), '_', string(eo:polynomial($codes, 137, 998244353, 0)))"/>
+  </xsl:function>
+  <!--
+  A polynomial hash of the code points, folded left to right, so that the same
+  characters in another order hash differently.
+  -->
+  <xsl:function name="eo:polynomial" as="xs:integer">
+    <xsl:param name="codes" as="xs:integer*"/>
+    <xsl:param name="base" as="xs:integer"/>
+    <xsl:param name="modulo" as="xs:integer"/>
+    <xsl:param name="acc" as="xs:integer"/>
+    <xsl:choose>
+      <xsl:when test="empty($codes)">
+        <xsl:sequence select="$acc"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:polynomial(subsequence($codes, 2), $base, $modulo, ($acc * $base + $codes[1]) mod $modulo)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!--
   A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
@@ -183,7 +204,7 @@
   <!-- Convert location to class name -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize($loc, '\.'), ''), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
@@ -316,7 +337,7 @@
     </xsl:attribute>
     <xsl:attribute name="java-name">
       <xsl:text>org.eolang.</xsl:text>
-      <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
@@ -345,12 +366,21 @@
     <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
-        <xsl:text> extends PhOnce {</xsl:text>
+        <xsl:text> extends PhOnce</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat(' extends ', $phiDefaultClass, ' {')"/>
+        <xsl:value-of select="concat(' extends ', $phiDefaultClass)"/>
       </xsl:otherwise>
     </xsl:choose>
+    <!--
+    A top-level formation purify.xsl marked @pure implements this marker, so
+    that PhPackage, which loads it through reflection and never sees @pure
+    itself, can still wrap the instance in PhSticky.
+    -->
+    <xsl:if test="@pure='true'">
+      <xsl:text> implements Pure</xsl:text>
+    </xsl:if>
+    <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:if test="@base">
@@ -573,7 +603,14 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Abstract object as attribute -->
+  <!--
+  Abstract object as attribute. A formation that purify.xsl marked with
+  @pure is returned wrapped in PhSticky, so that at run time it remembers
+  the results of its own dataization (see #5165). A pure top-level class
+  and a pure anonymous formation are wrapped the same way, see the "class"
+  template's "implements Pure" and the "Anonymous abstract object" template
+  below.
+  -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
     <xsl:param name="name"/>
@@ -615,7 +652,16 @@
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>return </xsl:text>
-    <xsl:value-of select="$ctx"/>
+    <xsl:choose>
+      <xsl:when test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+        <xsl:value-of select="$ctx"/>
+        <xsl:text>)</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$ctx"/>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>}</xsl:text>
@@ -651,24 +697,42 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Anonymous abstract object -->
+  <!--
+  Anonymous abstract object. A formation that purify.xsl marked with @pure
+  is returned wrapped in PhSticky, the same way a named nested formation
+  already is in the "abstract" template above.
+  -->
   <xsl:template match="o[not(@base) and not(@name)]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>PhDefault </xsl:text>
+    <xsl:choose>
+      <xsl:when test="o and @pure='true'">
+        <xsl:text>Phi </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>PhDefault </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>new PhSticky(</xsl:text>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+        <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('new ', $phiDefaultClass)"/>
+        <xsl:value-of select="concat('new ', $phiDefaultClass, '()')"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>();</xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]" mode="object">
@@ -1007,7 +1071,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package']/tail)"/>
+      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package'][1]/tail)"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
