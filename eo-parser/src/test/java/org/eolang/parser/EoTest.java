@@ -779,6 +779,15 @@ final class EoTest {
     }
 
     @Test
+    void rollsBackAndRecoversFromInvalidTextBlockEscape() {
+        MatcherAssert.assertThat(
+            "an invalid text block escape must not corrupt later parsing",
+            EoTest.render("[] > main", "  \"\"\"", "  bad \\q", "  \"\"\" > x", "[] > y"),
+            XhtmlMatchers.hasXPath("/object[errors/error[contains(text(),'escape')]][o[@name='y']]")
+        );
+    }
+
+    @Test
     void acceptsAllUnboundHorizontalArgs() {
         MatcherAssert.assertThat(
             "all-unbound is a valid mode per R-6.6.2 and must parse without errors",
