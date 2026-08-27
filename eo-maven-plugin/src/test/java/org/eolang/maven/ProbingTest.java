@@ -75,6 +75,43 @@ final class ProbingTest {
     }
 
     @Test
+    void doesNotCompletePackageThatLocalSourcesProvide(
+        @TempDir final Path temp
+    ) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo",
+                    "",
+                    "[] > test",
+                    "  Q.tuple.each > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        tojos.add("tuple.each").withSource(temp.resolve("tuple").resolve("each.eo"));
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>("tuple.each", "tuple.eachi", "tuple.withouti")
+                )
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should not register the siblings of a package that is on disk already",
+            tojos.contains("tuple.eachi") || tojos.contains("tuple.withouti"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void avoidsDuplicateTojoForAnOrgEolangPrefixedReference(
         @TempDir final Path temp
     ) throws IOException {
