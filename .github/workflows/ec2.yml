@@ -58,7 +58,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Dheap-size=64G' -Psite -Pjacoco clean install site
+      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Dheap-size=48G' -Psite -Pjacoco clean install site
   terminate-instance:
     needs:
       - start-instance
