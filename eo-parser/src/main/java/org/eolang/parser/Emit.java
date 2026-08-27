@@ -57,7 +57,7 @@ final class Emit {
      * lookup). Empty when no source is wired through — in that case
      * {@link #error} falls back to the bare {@code [L:P] message} form.
      */
-    private final List<String> lines;
+    private final Lines lines;
 
     /**
      * The atom signature owed to an open {@code <o>} as its {@code λ}
@@ -93,7 +93,7 @@ final class Emit {
      * Ctor.
      */
     Emit() {
-        this(List.of());
+        this(new Lines(List.of()));
     }
 
     /**
@@ -102,14 +102,14 @@ final class Emit {
      *  messages — pass empty string to disable)
      */
     Emit(final String source) {
-        this(List.of(Emit.EOL.split(source, -1)));
+        this(new Lines(List.of(Emit.EOL.split(source, -1))));
     }
 
     /**
      * Primary ctor.
-     * @param src Pre-split source lines
+     * @param src The source in lines
      */
-    private Emit(final List<String> src) {
+    private Emit(final Lines src) {
         this.signature = "";
         this.sink = new ArrayList<>(0);
         this.lines = src;
@@ -292,7 +292,7 @@ final class Emit {
             dirs.attr("lossy", "");
         }
         this.append(
-            dirs.set(this.formatted(line, pos, message))
+            dirs.set(this.lines.underlined(line, pos, message))
                 .up().up()
                 .pop()
         );
@@ -561,20 +561,5 @@ final class Emit {
         while (iterator.hasNext()) {
             this.sink.add(iterator.next());
         }
-    }
-
-    private String formatted(final int line, final int pos, final String message) {
-        final String located = new MsgLocated(line, pos, message).formatted();
-        final String result;
-        if (line >= 1 && line <= this.lines.size()) {
-            result = String.format(
-                "%s%n%s",
-                located,
-                new MsgUnderlined(this.lines.get(line - 1), pos, 1).formatted()
-            );
-        } else {
-            result = located;
-        }
-        return result;
     }
 }

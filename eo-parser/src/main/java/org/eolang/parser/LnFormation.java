@@ -80,7 +80,7 @@ final class LnFormation implements Line {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
         Blanks.enterAfterMeta(this.span, globals, emit);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.transition(stack, suffix);
         Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();

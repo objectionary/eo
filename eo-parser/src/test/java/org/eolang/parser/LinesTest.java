@@ -4,16 +4,10 @@
  */
 package org.eolang.parser;
 
-import java.util.Arrays;
-import java.util.Collections;
-import org.cactoos.Text;
-import org.cactoos.text.TextOf;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Lines}.
@@ -22,95 +16,20 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class LinesTest {
 
     @Test
-    void readsTheFirstLine() {
+    void underlinesTheOffendingLine() {
         MatcherAssert.assertThat(
-            "line 1 must be the first line of the source",
-            new Lines(
-                Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-            ).line(1),
-            Matchers.equalTo("alpha")
+            "the line at the given number is not quoted with a caret under its position",
+            new Lines(List.of("привет мир", "второй")).underlined(1, 7, "боль"),
+            Matchers.equalTo(String.format("[1:7] error: 'боль'%nпривет мир%n       ^"))
         );
     }
 
     @Test
-    void readsTheLastLine() {
+    void keepsMessageBareWhenLineIsUnknown() {
         MatcherAssert.assertThat(
-            "the highest valid number must be the last line",
-            new Lines(
-                Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-            ).line(2),
-            Matchers.equalTo("beta")
-        );
-    }
-
-    @Test
-    void readsAGenuinelyEmptyLine() {
-        MatcherAssert.assertThat(
-            "an empty line at a valid number must come back as an empty string",
-            new Lines(
-                Arrays.asList(new TextOf("alpha"), new TextOf(""))
-            ).line(2),
-            Matchers.equalTo("")
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(ints = {-1, 0, 3, 500, Integer.MAX_VALUE})
-    void rejectsANumberThatIsNotALine(final int number) {
-        final Lines lines = new Lines(
-            Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-        );
-        Assertions.assertThrows(
-            IndexOutOfBoundsException.class,
-            () -> lines.line(number),
-            "a number outside the range of lines must be reported, not folded into an empty string"
-        );
-    }
-
-    @Test
-    void rejectsAnyNumberWhenThereAreNoLines() {
-        final Lines lines = new Lines(Collections.emptyList());
-        Assertions.assertThrows(
-            IndexOutOfBoundsException.class,
-            () -> lines.line(1),
-            "an empty source must have no line 1"
-        );
-    }
-
-    @Test
-    void namesTheNumberAndTheSizeWhenItRejects() {
-        final Lines lines = new Lines(
-            Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-        );
-        MatcherAssert.assertThat(
-            "the message must name the number asked for and how many lines there are",
-            Assertions.assertThrows(
-                IndexOutOfBoundsException.class,
-                () -> lines.line(500),
-                "a number outside the range of lines must be reported"
-            ).getMessage(),
-            Matchers.allOf(
-                Matchers.containsString("500"),
-                Matchers.containsString("2")
-            )
-        );
-    }
-
-    @Test
-    void namesFailingNumberWhenTextThrows() {
-        final Lines lines = new Lines(
-            Collections.singletonList(
-                (Text) () -> {
-                    throw new IllegalStateException("broken line");
-                }
-            )
-        );
-        MatcherAssert.assertThat(
-            "the thrown exception message must name the failing line number",
-            Assertions.assertThrows(
-                Exception.class, () -> lines.line(1)
-            ).getMessage(),
-            Matchers.containsString("1")
+            "a number past the end of the source is not answered with the bare message",
+            new Lines(List.of("")).underlined(9, 2, "ошибка"),
+            Matchers.equalTo("[9:2] error: 'ошибка'")
         );
     }
 }

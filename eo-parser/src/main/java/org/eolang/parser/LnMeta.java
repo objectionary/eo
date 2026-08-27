@@ -82,7 +82,7 @@ final class LnMeta implements Line {
             );
         }
         this.checkHead(head, parts);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         globals.markMeta();
         globals.clearBlanks();
         emit.meta(this.span.line(), head, parts);

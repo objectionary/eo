@@ -29,6 +29,15 @@ final class WatchedTest {
     }
 
     @Test
+    void stopsBodyWhenTheWatcherIsInterrupted() {
+        MatcherAssert.assertThat(
+            "A body must be stopped when the thread watching it is interrupted, but it wasnt",
+            WatchedTest.interrupted(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void skipsBodyThatAteTooMuchAndFinished() {
         Assertions.assertThrows(
             TestAbortedException.class,
@@ -96,6 +105,33 @@ final class WatchedTest {
         return WatchedTest.awaited(stopped);
     }
 
+    private static boolean interrupted() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        final Thread watcher = Thread.currentThread();
+        final Thread bell = new Thread(
+            () -> {
+                WatchedTest.nap();
+                watcher.interrupt();
+            }
+        );
+        bell.setDaemon(true);
+        bell.start();
+        Assertions.assertThrows(
+            InterruptedException.class,
+            () -> new Watched(64L * 1024L * 1024L).through(
+                () -> {
+                    while (!Thread.currentThread().isInterrupted()) {
+                        WatchedTest.rest();
+                    }
+                    stopped.set(true);
+                    return null;
+                }
+            ),
+            "The interrupt of the watching thread must be reported, but it wasnt"
+        );
+        return WatchedTest.awaited(stopped);
+    }
+
     private static Thread where(final long limit) {
         final AtomicReference<Thread> ran = new AtomicReference<>();
         Assertions.assertDoesNotThrow(
@@ -108,6 +144,14 @@ final class WatchedTest {
             "A body that eats almost nothing must not be touched, but it was"
         );
         return ran.get();
+    }
+
+    private static void nap() {
+        try {
+            Thread.sleep(100L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private static void rest() {

@@ -79,7 +79,7 @@ final class LnMethod implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         if (outer != null) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
