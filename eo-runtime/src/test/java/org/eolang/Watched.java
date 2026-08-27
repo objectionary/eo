@@ -28,6 +28,16 @@ import org.opentest4j.TestAbortedException;
  * fails the test with its own problem, whatever it ate: a broken test is
  * worth more than a tidy skip.</p>
  *
+ * <p>The watching thread is the one JUnit runs the test on, so it is also
+ * the one JUnit interrupts when the test outlives {@code eo.deadline}: the
+ * timeout of a test is scheduled against the thread that enters the
+ * interceptor, not against the thread the body ends up on. That interrupt
+ * therefore has to be carried over to the group by hand. Without it the
+ * deadline stops watching and nothing else, the body is left running on a
+ * thread nobody waits for any more, and a suite where many tests outlive
+ * their second ends up with as many runaway threads, all of them
+ * allocating, until the heap is gone.</p>
+ *
  * <p>The test itself is reported as skipped rather than as failed, for the
  * same reason {@link Deadline} reports a slow one as skipped: a budget that
  * a box with more memory would never have reached says nothing about the
@@ -89,7 +99,7 @@ final class Watched {
         }
     }
 
-    // @checkstyle IllegalThrowsCheck (30 lines)
+    // @checkstyle IllegalThrowsCheck (37 lines)
     private void guarded(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
         final ThreadGroup group = new ThreadGroup(
             String.format("maxmem-%d", Watched.COUNT.incrementAndGet())
@@ -104,11 +114,16 @@ final class Watched {
         thread.setDaemon(true);
         thread.start();
         boolean over = false;
-        while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
-            if (consumed.bytes() > this.limit) {
-                over = true;
-                break;
+        try {
+            while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
+                if (consumed.bytes() > this.limit) {
+                    over = true;
+                    break;
+                }
             }
+        } catch (final InterruptedException ex) {
+            group.interrupt();
+            throw ex;
         }
         if (over) {
             group.interrupt();
