@@ -736,6 +736,34 @@ final class EoTest {
     }
 
     @Test
+    void acceptsTabIndentedTextBlockBodyMatchingOpenerIndent() {
+        MatcherAssert.assertThat(
+            "a body line whose leading whitespace character count equals the opener's must not surface indented-less-than-opener, whether that whitespace is spaces or tabs",
+            EoTest.render(
+                "[] > main",
+                "  \"\"\"",
+                "\t\tfoo",
+                "  \"\"\" > x"
+            ),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
+    void acceptsTabOnlyBlankLineInsideTextBlock() {
+        MatcherAssert.assertThat(
+            "a text block body line made entirely of tabs is blank and must not surface indented-less-than-opener",
+            EoTest.render(
+                "[] > main",
+                "  \"\"\"",
+                "\t\t\t",
+                "  \"\"\" > x"
+            ),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
     void reportsUnclosedTextBlockAtEof() {
         MatcherAssert.assertThat(
             "a text block opened without a closer must surface unclosed-text-block at EOF",

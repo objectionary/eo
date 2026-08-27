@@ -295,7 +295,7 @@ final class Eo implements Iterable<Directive> {
             if (span.trailing()) {
                 emit.error(span.line(), 0, "trailing whitespace at end of line");
             }
-            if (!Eo.isBlank(raw) && Eo.leadingSpaces(raw) < globals.textBlockOpenIndent()) {
+            if (!span.blank() && span.indent() < globals.textBlockOpenIndent()) {
                 emit.error(
                     span.line(), 0,
                     "text block body line indented less than opener"
@@ -303,25 +303,6 @@ final class Eo implements Iterable<Directive> {
             }
             globals.appendTextLine(raw);
         }
-    }
-
-    private static int leadingSpaces(final String raw) {
-        int count = 0;
-        while (count < raw.length() && raw.charAt(count) == ' ') {
-            count = count + 1;
-        }
-        return count;
-    }
-
-    private static boolean isBlank(final String raw) {
-        boolean blank = true;
-        for (int idx = 0; idx < raw.length(); idx = idx + 1) {
-            if (!Character.isWhitespace(raw.charAt(idx))) {
-                blank = false;
-                break;
-            }
-        }
-        return blank;
     }
 
     private static boolean dispatch(
