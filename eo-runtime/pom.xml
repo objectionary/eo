@@ -219,7 +219,9 @@
           </argLine>
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
-            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
+            <junit.jupiter.execution.timeout.test.method.default>
+              ${eo.deadline}s
+            </junit.jupiter.execution.timeout.test.method.default>
             <eo.maxmem>${eo.maxmem}</eo.maxmem>
             <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
             <java.util.logging.config.file>
