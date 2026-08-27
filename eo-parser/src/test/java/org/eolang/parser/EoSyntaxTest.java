@@ -160,7 +160,7 @@ final class EoSyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = "[] > x-н, 1".concat(System.lineSeparator());
+        final String src = "[] > x-н, 1".concat("\n");
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
             XhtmlMatchers.xhtml(
@@ -214,7 +214,7 @@ final class EoSyntaxTest {
     @Test
     void keepsListingVerbatimWithXmlSpecialCharacters() throws Exception {
         final String src = String.join(
-            System.lineSeparator(),
+            "\n",
             "# Sample.",
             "[] > app",
             "  \"a < b & c > d\" > x",

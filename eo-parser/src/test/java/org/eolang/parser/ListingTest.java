@@ -35,6 +35,21 @@ final class ListingTest {
     }
 
     @Test
+    void keepsSourceVerbatimWithCrlf() {
+        final String source = String.join(
+            "\r\n",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "the text of <listing> must preserve CRLF verbatim, regardless of platform",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
+    @Test
     void dropsCharactersForbiddenInXml() {
         MatcherAssert.assertThat(
             "characters that XML text nodes can't hold must be dropped",
@@ -116,19 +131,19 @@ final class ListingTest {
         return Stream.of(
             "[] > foo",
             String.join(
-                System.lineSeparator(),
+                "\n",
                 "[] > app",
                 "  \"a < b & c > d\" > x",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                "\n",
                 "# Comment with 'quotes' and \"double quotes\".",
                 "[] > bar",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                "\n",
                 "[] > x",
                 "  Q.io.stdout \"守规矩\" > @",
                 ""
