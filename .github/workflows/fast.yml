@@ -88,4 +88,4 @@ jobs:
       - if: steps.eo.outputs.classes != ''
         env:
           CLASSES: ${{ steps.eo.outputs.classes }}
-        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' "-Dtest=${CLASSES}"
+        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"
