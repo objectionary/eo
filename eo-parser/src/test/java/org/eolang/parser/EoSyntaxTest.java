@@ -749,6 +749,32 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsUnrecognisedEscapeSequence() throws Exception {
+        MatcherAssert.assertThat(
+            "an unrecognised escape sequence must name the offending characters, not blame unicode or octal escapes",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\q\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),\"unrecognised escape sequence\")]"
+            )
+        );
+    }
+
+    @Test
+    void namesLoneSurrogateInErrorMessage() throws Exception {
+        MatcherAssert.assertThat(
+            "a lone surrogate escape must name the offending codepoint, not blame unicode or octal escapes generically",
+            EoSyntaxTest.raw(
+                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\uD800\" > @")
+            ).toString(),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'lone surrogate')]"
+            )
+        );
+    }
+
+    @Test
     void acceptsValidSurrogatePairEscape() throws Exception {
         MatcherAssert.assertThat(
             "a high surrogate immediately followed by a low surrogate is a valid pair and must not be rejected",

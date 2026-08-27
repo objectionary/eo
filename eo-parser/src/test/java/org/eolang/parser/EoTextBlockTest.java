@@ -113,6 +113,17 @@ final class EoTextBlockTest {
         );
     }
 
+    @Test
+    void rollsBackAndRecoversFromInvalidTextBlockEscape() {
+        MatcherAssert.assertThat(
+            "an invalid text block escape must not corrupt later parsing",
+            EoTextBlockTest.render(
+                "[] > main", "  \"\"\"", "  bad \\q", "  \"\"\" > x", "[] > y"
+            ),
+            XhtmlMatchers.hasXPath("/object[errors/error[contains(text(),'escape')]][o[@name='y']]")
+        );
+    }
+
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {

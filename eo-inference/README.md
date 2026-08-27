@@ -93,6 +93,34 @@ empty row for every object would leave all four exactly where they are:
   9728  nothing left to find out
 ```
 
+## What it draws
+
+The three numbers say how much of a program we understand without saying which
+part. A page per source file says both, with the author's own source on it and
+a mark on every object: green where we can name the formation, amber where the
+answer is somebody else's void, red where there is nothing. Hovering over a
+mark says what the tables hold about it, and an amber one names what the
+program was seen putting into the void besides.
+
+Off by default, since the tables are what the compiler needs and the pages are
+for a person. The goal runs in whichever module uses the plugin, so this is
+the shortest way to the pages of eo-runtime:
+
+```bash
+mvn -pl eo-runtime process-sources -Deo.inferenceReport
+open eo-runtime/target/site/inference/index.html
+```
+
+They land in the `target/site/inference/` of the module they describe, beside
+the coverage report and every other generated page a person opens. They are
+not written into `target/eo/`, which is the compiler's scratch space, however
+much the tables they are made from live there.
+
+A property and not a profile, though coverage next door is turned on with
+`-Pjacoco`. A profile is what you need to add an execution to a build, and
+there is nothing to add here: the goal already runs, and one flag decides
+whether it writes.
+
 ## How it works
 
 Every rule is a `Clue`: it reads the program and writes down one kind of fact.
