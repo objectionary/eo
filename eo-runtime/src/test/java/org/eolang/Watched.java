@@ -1,0 +1,145 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.jupiter.api.extension.InvocationInterceptor;
+import org.opentest4j.TestAbortedException;
+
+/**
+ * A body of a test that may allocate no more than the memory it is given.
+ *
+ * <p>The body runs in a thread of its own, born into a group of its own, so
+ * that the threads it starts land in the same group and are counted with
+ * it. While it runs, the group is asked every few milliseconds how much it
+ * has allocated. The moment the answer is over the limit, the group is
+ * interrupted and the body is abandoned where it stands: dataization gives
+ * up on the very next attribute lookup of an interrupted thread (see
+ * {@link ExInterrupted}), so the objects it was building become garbage and
+ * the heap comes back to the tests that still need it.</p>
+ *
+ * <p>A body that ends between two readings is judged all the same, on the
+ * reading it took of itself on the way out. A body that failed, though,
+ * fails the test with its own problem, whatever it ate: a broken test is
+ * worth more than a tidy skip.</p>
+ *
+ * <p>The test itself is reported as skipped rather than as failed, for the
+ * same reason {@link Deadline} reports a slow one as skipped: a budget that
+ * a box with more memory would never have reached says nothing about the
+ * code under test.</p>
+ *
+ * @since 0.75.0
+ */
+@SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
+final class Watched {
+
+    /**
+     * How many milliseconds pass between two readings of the appetite.
+     */
+    private static final long TICK = 50L;
+
+    /**
+     * What is said about a test that ate more than it was given.
+     */
+    private static final String MESSAGE = String.join(
+        " ",
+        "The test allocated %d bytes, which is over the %d bytes",
+        "of eo.maxmem it was given, so it was terminated"
+    );
+
+    /**
+     * How many tests have been watched, to give every group its own name.
+     */
+    private static final AtomicLong COUNT = new AtomicLong();
+
+    /**
+     * How many bytes the body may allocate, or zero if it may allocate all.
+     */
+    private final long limit;
+
+    /**
+     * Ctor.
+     * @param bytes How many bytes the body may allocate, zero for no limit
+     */
+    Watched(final long bytes) {
+        this.limit = bytes;
+    }
+
+    // @checkstyle IllegalThrowsCheck (13 lines)
+    /**
+     * Run the body and let it allocate no more than the limit.
+     *
+     * <p>A test runs on the very thread that called this method when there
+     * is no limit to keep, or when the JVM does not count what a thread
+     * allocates: watching would cost a thread and buy nothing.</p>
+     *
+     * @param body The body of the test
+     * @throws Throwable If the body fails, or if it eats too much
+     */
+    void through(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
+        if (this.limit <= 0L || !Consumed.counting()) {
+            body.proceed();
+        } else {
+            this.guarded(body);
+        }
+    }
+
+    // @checkstyle IllegalThrowsCheck (30 lines)
+    private void guarded(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
+        final ThreadGroup group = new ThreadGroup(
+            String.format("maxmem-%d", Watched.COUNT.incrementAndGet())
+        );
+        final AtomicReference<Throwable> failure = new AtomicReference<>();
+        final CountDownLatch done = new CountDownLatch(1);
+        final Consumed consumed = new Consumed(group);
+        final Thread thread = new Thread(
+            group,
+            () -> Watched.run(body, failure, done, consumed)
+        );
+        thread.setDaemon(true);
+        thread.start();
+        boolean over = false;
+        while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
+            if (consumed.bytes() > this.limit) {
+                over = true;
+                break;
+            }
+        }
+        if (over) {
+            group.interrupt();
+            throw this.aborted(consumed.bytes());
+        }
+        final Throwable error = failure.get();
+        if (error != null) {
+            throw error;
+        }
+        if (consumed.bytes() > this.limit) {
+            throw this.aborted(consumed.bytes());
+        }
+    }
+
+    private TestAbortedException aborted(final long taken) {
+        return new TestAbortedException(
+            String.format(Watched.MESSAGE, taken, this.limit)
+        );
+    }
+
+    // @checkstyle IllegalCatchCheck (12 lines)
+    private static void run(final InvocationInterceptor.Invocation<Void> body,
+        final AtomicReference<Throwable> failure, final CountDownLatch done,
+        final Consumed consumed) {
+        try {
+            body.proceed();
+        } catch (final Throwable error) {
+            failure.set(error);
+        } finally {
+            consumed.refresh();
+            done.countDown();
+        }
+    }
+}

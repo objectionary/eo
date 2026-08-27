@@ -33,6 +33,22 @@ final class CommitHashesTextTest {
     }
 
     @Test
+    void findsEveryTagOfTheFallbackTable() {
+        MatcherAssert.assertThat(
+            "ChText must find a tag in the built-in fallback table, whatever the platform's line separator is",
+            new ChText(
+                new CommitHashesText(
+                    () -> {
+                        throw new SSLException("handshake failed");
+                    }
+                )::asString,
+                "0.23.15"
+            ).value(),
+            Matchers.equalTo("5fe5ad8d21dbe418038fa4c86e096fb037f290a9")
+        );
+    }
+
+    @Test
     void propagatesAFailureThatIsNotAnIoError() {
         Assertions.assertThrows(
             IllegalStateException.class,

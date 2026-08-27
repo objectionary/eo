@@ -13,8 +13,12 @@ import java.util.Collection;
  * one name at a time and stopping at the first formation is how the object
  * something is written inside is found, and nobody has to be asked. Applied to
  * a reference it answers with the object being formed around it, which is what
- * {@code ξ} names; applied to that answer it gives what the object sits in,
- * which is what {@code ξ.ρ} names.</p>
+ * {@code ξ} names.</p>
+ *
+ * <p>It does not answer {@code ξ.ρ}. It did, once, by walking out one formation
+ * further, and that was the object something sits in. Since #6657 a receiver is
+ * declared or absent and a caller decides what it holds, so where the text sits
+ * says nothing about it.</p>
  *
  * <p>A top-level object is written inside a package rather than a formation,
  * and nothing is answered about it here.</p>
