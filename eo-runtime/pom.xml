@@ -30,7 +30,7 @@
     and no watching either, which is the default: a box with memory to
     spare should run every test to its end.
     -->
-    <eo.maxmem/>
+    <eo.maxmem>256M</eo.maxmem>
   </properties>
   <dependencies>
     <dependency>
