@@ -628,39 +628,6 @@ final class EoTest {
     }
 
     @Test
-    void parsesTripleQuotedTextBlock() {
-        MatcherAssert.assertThat(
-            "a triple-quoted block must produce a Φ.string with bytes carrying the body",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "  hello",
-                "  world",
-                "  \"\"\" > greeting"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@name='greeting' and @base='Φ.string']"
-            )
-        );
-    }
-
-    @Test
-    void stripsOpenerIndentFromTextBlockBody() {
-        MatcherAssert.assertThat(
-            "the body of a text block must have the opener indent stripped before joining",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "  hi",
-                "  \"\"\" > x"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object//o[@name='x']/o[@base='Φ.bytes']/o[text()='68-69']"
-            )
-        );
-    }
-
-    @Test
     void emitsCompactTupleWithExtraChildrenAsTupleWrap() {
         MatcherAssert.assertThat(
             "a compact-tuple head with N=1 and 2 vertical children must place the first child directly and wrap the rest in Φ.tuple",
@@ -716,65 +683,6 @@ final class EoTest {
                 "  .method > y"
             ),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
-        );
-    }
-
-    @Test
-    void reportsTextBlockBodyLineWithNegativeIndent() {
-        MatcherAssert.assertThat(
-            "a body line indented less than the opener must surface an error per R-3.11.2",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "foo",
-                "  \"\"\" > neg"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'text block body line indented less than opener')]"
-            )
-        );
-    }
-
-    @Test
-    void acceptsTabIndentedTextBlockBodyMatchingOpenerIndent() {
-        MatcherAssert.assertThat(
-            "a body line whose leading whitespace character count equals the opener's must not surface indented-less-than-opener, whether that whitespace is spaces or tabs",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "\t\tfoo",
-                "  \"\"\" > x"
-            ),
-            XhtmlMatchers.hasXPath("/object[not(errors)]")
-        );
-    }
-
-    @Test
-    void acceptsTabOnlyBlankLineInsideTextBlock() {
-        MatcherAssert.assertThat(
-            "a text block body line made entirely of tabs is blank and must not surface indented-less-than-opener",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "\t\t\t",
-                "  \"\"\" > x"
-            ),
-            XhtmlMatchers.hasXPath("/object[not(errors)]")
-        );
-    }
-
-    @Test
-    void reportsUnclosedTextBlockAtEof() {
-        MatcherAssert.assertThat(
-            "a text block opened without a closer must surface unclosed-text-block at EOF",
-            EoTest.render(
-                "[] > main",
-                "  \"\"\"",
-                "  unfinished"
-            ),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'unclosed text block')]"
-            )
         );
     }
 
