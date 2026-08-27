@@ -19,7 +19,8 @@ final class LinesTest {
     void underlinesTheOffendingLine() {
         MatcherAssert.assertThat(
             "the line at the given number is not quoted with a caret under its position",
-            new Lines(List.of("привет мир", "второй")).underlined(1, 7, "боль"),
+            new Lines(List.of(new Span("привет мир", 1), new Span("второй", 2)))
+                .underlined(1, 7, "боль"),
             Matchers.equalTo(String.format("[1:7] error: 'боль'%nпривет мир%n       ^"))
         );
     }
@@ -28,7 +29,7 @@ final class LinesTest {
     void keepsMessageBareWhenLineIsUnknown() {
         MatcherAssert.assertThat(
             "a number past the end of the source is not answered with the bare message",
-            new Lines(List.of("")).underlined(9, 2, "ошибка"),
+            new Lines(List.of(new Span("", 1))).underlined(9, 2, "ошибка"),
             Matchers.equalTo("[9:2] error: 'ошибка'")
         );
     }

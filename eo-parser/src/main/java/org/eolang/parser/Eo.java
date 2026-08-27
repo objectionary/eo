@@ -69,13 +69,13 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final Emit emit = new Emit(this.source);
+        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        new Source(this.source).forEach(spans::add);
+        final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
             (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
-        new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
         int idx = 0;
         while (idx < spans.size()) {
