@@ -174,6 +174,28 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void reportsErrorOnLineWithCharacterForbiddenInXml() throws Exception {
+        MatcherAssert.assertThat(
+            "a broken line quoting a forbidden character must still produce an <error>",
+            new EoSyntax(
+                new InputOf(String.format("[] > x-%cn, 1%n", 0x07))
+            ).parsed(),
+            XhtmlMatchers.hasXPaths("/object/errors/error")
+        );
+    }
+
+    @Test
+    void keepsCommentWithCharacterForbiddenInXml() throws Exception {
+        MatcherAssert.assertThat(
+            "a comment carrying a forbidden character must still reach <comments>",
+            new EoSyntax(
+                new InputOf(String.format("# note %c here%n%n[] > x%n", 0x07))
+            ).parsed(),
+            XhtmlMatchers.hasXPaths("/object/comments/comment[.='note  here']")
+        );
+    }
+
+    @Test
     void rejectsProgramOfMetasAlone() throws Exception {
         MatcherAssert.assertThat(
             "a file of metas alone declares no object and must be refused",

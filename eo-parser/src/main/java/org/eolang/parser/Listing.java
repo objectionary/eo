@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import java.util.Iterator;
-import java.util.regex.Pattern;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -16,14 +15,8 @@ import org.xembly.Directives;
  *
  * <p>The text is set as is, without any manual escaping: the XML writer
  * escapes it exactly once, so the text value of {@code /object/listing}
- * equals the source. A few characters are dropped first, for two
- * different reasons. The XML 1.1 restricted set — {@code 0x00-0x08},
- * {@code 0x0B-0x0C}, {@code 0x0E-0x1F}, {@code 0x7F-0x84} and
- * {@code 0x86-0x9F} — goes because {@link Directives#set(Object)}
- * refuses those and throws, whatever version the writer emits later.
- * {@code U+FFFE} and {@code U+FFFF} go because they are not XML
- * characters at all and would make the document not well-formed;
- * Xembly says nothing about them.</p>
+ * equals the source. A few characters are dropped first, by
+ * {@link Scrubbed}, because an XML text node cannot hold them.</p>
  *
  * <p>The directives leave the cursor on {@code /object}, not inside the
  * {@code <listing>} they add, so that whatever the caller appends next
@@ -33,15 +26,6 @@ import org.xembly.Directives;
  * @since 0.1
  */
 final class Listing implements Iterable<Directive> {
-
-    /**
-     * Characters that must not reach an XML text node: the XML 1.1
-     * restricted set, which Xembly refuses, plus {@code U+FFFE} and
-     * {@code U+FFFF}, which are not XML characters.
-     */
-    private static final Pattern FORBIDDEN = Pattern.compile(
-        "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\x7F-\\x84\\x86-\\x9F\\uFFFE\\uFFFF]"
-    );
 
     /**
      * Raw EO source text to embed verbatim under {@code <listing>}.
@@ -62,7 +46,7 @@ final class Listing implements Iterable<Directive> {
             .xpath("/object")
             .strict(1)
             .add("listing")
-            .set(Listing.FORBIDDEN.matcher(this.source).replaceAll(""))
+            .set(new Scrubbed(this.source))
             .up()
             .iterator();
     }
