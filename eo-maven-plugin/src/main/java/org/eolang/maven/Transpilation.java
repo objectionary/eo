@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.cactoos.Scalar;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 import org.eolang.parser.TrFull;
 
 /**
@@ -121,13 +124,16 @@ final class Transpilation {
     /**
      * The directory with the tables of {@link MjInference}, which
      * {@code purify.xsl} reads to find out which formations are safe to
-     * cache. It stays out of {@link #version()} on purpose: nothing in the
-     * generated Java depends on the label yet, so a result cached by an
-     * earlier build is still the right one, and a path differs from one
-     * machine to another anyway, which would keep a shared cache from ever
-     * being hit.
+     * cache.
      */
     private final Path inference;
+
+    /**
+     * The fingerprint of those tables, worked out once and kept, since
+     * {@link #version()} is asked for every source file of the build and
+     * the tables of {@code eo-runtime} are tens of megabytes.
+     */
+    private final Scalar<String> fingerprint;
 
     /**
      * Ctor.
@@ -155,34 +161,46 @@ final class Transpilation {
         this.measures = measures;
         this.target = dir;
         this.inference = tables;
+        this.fingerprint = new Sticky<>(() -> new Fingerprint(tables).get());
     }
 
     /**
      * Cache-key version segment: the plugin version combined with a
      * fingerprint of the bundled transpile XSLs and the libraries they
      * {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code coverageTracking} flags. Folding the XSL content in means
+     * {@code trackSteps}/{@code coverageTracking} flags. Folding the XSL
+     * content in means
      * that a change in the transformation logic invalidates the global
      * transpile cache even when the plugin version is unchanged (a
      * constant {@code -SNAPSHOT} during development), see #5578; folding
      * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the two flags and the name
+     * {@link #XSLS} itself, see #6032. Folding the three flags and the name
      * of the base class in means changing any of them also invalidates the
-     * cache, since all of them change what {@code to-java.xsl} emits (see
-     * #6031 and #5955).
+     * cache, since all of them change what a build of the same source
+     * produces: the first two and the base class change what
+     * {@code to-java.xsl} emits (see #6031 and #5955), and
+     * {@code trackSteps} decides whether the XMIRs of the train are written
+     * at all, which a cache hit would otherwise skip (see #7628).
+     * The content of the inference tables is folded in for the same reason:
+     * {@code purify.xsl} reads them and stamps {@code @pure}, which
+     * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so the same
+     * source with different tables, or with none, is different Java (see
+     * #7627). The content and not the path, since a path differs from one
+     * machine to another and a shared cache would never be hit again.
      * @return The version segment for {@link CachePath}
      */
     String version() {
         return String.format(
-            "%s-%s-%b-%b-%s",
+            "%s-%s-%s-%b-%b-%b-%s",
             this.version,
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.coverage, this.superclass
+            new Unchecked<>(this.fingerprint).value(),
+            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
         );
     }
 

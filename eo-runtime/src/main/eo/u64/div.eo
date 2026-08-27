@@ -69,7 +69,7 @@
     "recovered"
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   div. --> stops-on-division-by-zero
     00-00-00-00-00-00-00-02.as-u64

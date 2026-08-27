@@ -14,11 +14,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ file] > directory
+[file] > directory
   file > @
   [] > listed /Q.tuple
     ? > ^
-  [^ dir time process random] > retried
+  [dir time process random] > retried
     [^ index] >> attempted
       if. > @
         descriptor.eq -1
@@ -53,7 +53,7 @@
           ^.process
           index
           ^.random
-    code. > [^ descriptor] > closed
+    code. > [descriptor] > closed
       os.is-windows.if
         win32 *1
           "_close"
@@ -61,7 +61,7 @@
         posix *1
           "close"
           descriptor
-    code. > [^ name] > opened
+    code. > [name] > opened
       os.is-windows.if
         win32 *1
           "_open"
@@ -131,7 +131,7 @@
         Q.file (base.resolved rel).as-bytes
       accum
     ^.as-path >> base
-    if. > [^ char] >> escaped
+    if. > [char] >> escaped
       ".+()|^$[]\\".contains char
       "".joined
         * "\\" char
@@ -159,7 +159,7 @@
         "[^"
         escaped path.separator >> literal
         "]"
-    if. > [^ char] >> classified
+    if. > [char] >> classified
       "\\[&".contains char
       "".joined
         * "\\" char
@@ -171,7 +171,7 @@
         eq.
           ^.glob.at
             from
-            "" > [^ absent]
+            "" > [absent]
           "]"
         true
         ^.closes
@@ -219,13 +219,13 @@
           eq.
             ^.glob.at
               index.plus 1
-              "" > [^ message]
+              "" > [message]
             "*"
       opening.and > negated
         eq.
           ^.glob.at
             index.plus 1
-            "" > [^ missing]
+            "" > [missing]
           "!"
       classed.not.and > opening
         and.
@@ -236,7 +236,7 @@
         eq.
           ^.glob.at
             index.plus 2
-            "" > [^ space]
+            "" > [space]
           "/"
       classed.if > token
         if.

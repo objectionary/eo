@@ -10,6 +10,9 @@ name: markdown-lint
   pull_request:
     branches:
       - master
+concurrency:
+  group: markdown-lint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   markdown-lint:
     timeout-minutes: 15

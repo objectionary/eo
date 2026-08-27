@@ -8,12 +8,11 @@
 eo:
   app.eo: |
     [] > app
-      deep 42 > @
-  deep.eo: |
-    [^] > deep
-      ^.^.as-bytes > @
+      42.deep > @
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+      [^] > deep
+        ^.^.as-bytes > @
 pure:
   - "//o[@name='deep' and @pure='true']"

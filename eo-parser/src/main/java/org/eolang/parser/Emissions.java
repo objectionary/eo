@@ -314,21 +314,13 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         emit.object(name, "Φ.string", line, value.pos());
-        final byte[] unescaped;
-        try {
-            unescaped = Escapes.bytes(
-                value.raw().substring(1, value.raw().length() - 1)
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
-            );
-            error.initCause(ex);
-            throw error;
-        }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
-            new Hex(unescaped).asString()
+            new Hex(
+                new Unescaped(
+                    value.raw().substring(1, value.raw().length() - 1), line, value.pos()
+                ).bytes()
+            ).asString()
         );
     }
 

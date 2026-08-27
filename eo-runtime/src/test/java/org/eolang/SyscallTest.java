@@ -412,7 +412,7 @@ final class SyscallTest {
         }
 
         private int getError() {
-            return Winsock.INSTANCE.WSAGetLastError();
+            return Native.getLastError();
         }
 
         private int bindSocket(final long socket, final int port) throws UnknownHostException {

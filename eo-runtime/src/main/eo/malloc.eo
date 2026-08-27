@@ -60,11 +60,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^] > malloc
-  malloc.of > [^ scope] > empty
+[] > malloc
+  malloc.of > [scope] > empty
     0
     scope
-  [^ object scope] > for
+  [object scope] > for
     malloc.of > @
       size.
         object >> bts!
@@ -79,26 +79,26 @@
   ++> can-allocate-a-block-of-the-right-size
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.of > @
           10
           ^.b.put > [^ m] >>
             m.size.eq 10
 
   malloc.empty ++> can-allocate-an-empty-block
-    m.size.eq 0 > [^ m]
+    m.size.eq 0 > [m]
 
   eq. ++> can-allocate-zero-bytes
     0
     malloc.of
       0
-      m.size > [^ m]
+      m.size > [m]
 
   ++> can-calculate-only-once
     eq. > @
       malloc.for 0 x
       1
-    [^ m] > x
+    [m] > x
       seq * > @
         a.neg.neg.neg.neg.eq 42
         m
@@ -110,7 +110,7 @@
   ++> can-concat-strings-with-an-offset
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.of > @
           3
           seq * > [^ m] >>
@@ -123,7 +123,7 @@
 
   malloc.for ++> can-copy-and-resize-to-a-target
     0
-    seq * > [^ m]
+    seq * > [m]
       m.copy
         3
         9
@@ -132,7 +132,7 @@
 
   malloc.for ++> can-copy-data-from-start-to-end
     01-02-03-04-05-06
-    and. > [^ m]
+    and. > [m]
       m.copy
         0
         3
@@ -141,7 +141,7 @@
 
   malloc.for ++> can-copy-data-inside-itself
     01-02-03-04-05
-    and. > [^ m]
+    and. > [m]
       m.copy
         1
         2
@@ -152,7 +152,7 @@
     2.eq > @
       malloc.for
         0
-        [^ f]
+        [f]
           seq > @
             * second second
           malloc.of > second
@@ -163,7 +163,7 @@
   ++> can-decrease-the-block-size
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.for > @
           01-02-03-04-05
           ^.b.put > [^ m] >>
@@ -180,25 +180,25 @@
             num.times num
           number (^.inc m)! > num
       64
-    seq * > [^ x] > inc
+    seq * > [x] > inc
       x.put
         x.as-number.plus 1
       x.as-number
 
   malloc.of ++> can-give-an-id-to-an-allocated-block
     1
-    m.put > [^ m]
+    m.put > [m]
       m.id.gt 0
 
   eq. ++> can-grow-an-empty-block-on-the-first-put
     malloc.empty
-      m.put 42 > [^ m]
+      m.put 42 > [m]
     42
 
   ++> can-increase-the-block-size
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.for > @
           01-02-03-04
           ^.b.put > [^ m] >>
@@ -208,31 +208,31 @@
 
   malloc.for ++> can-keep-the-size-of-a-bool-block
     false
-    m.put true > [^ m]
+    m.put true > [m]
 
   eq. ++> can-keep-the-size-of-a-float-block
     malloc.for
       245.88
-      m.put 82.22 > [^ m]
+      m.put 82.22 > [m]
     82.22
 
   eq. ++> can-keep-the-size-of-a-string-block
     malloc.for
       "Hello"
-      m.put "Prot" > [^ m]
+      m.put "Prot" > [m]
     "Proto"
 
   eq. ++> can-keep-the-size-of-an-integer-block
     malloc.for
       12248
-      m.put 2556 > [^ m]
+      m.put 2556 > [m]
     2556
 
   ++> can-put-into-a-block-made-by-for
     mem.eq 10 > @
     malloc.for > mem
       0
-      m.put 10 > [^ m]
+      m.put 10 > [m]
 
   ++> can-put-over-the-previous-data
     eq. > @
@@ -240,7 +240,7 @@
       mem
     malloc.of > mem
       13
-      seq * > [^ m]
+      seq * > [m]
         m.put
           "Hello, world!"
         m.put 42
@@ -248,7 +248,7 @@
   ++> can-read-with-an-offset-and-a-length
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.of > @
           10
           seq * > [^ m] >>
@@ -262,10 +262,10 @@
     01-02
     malloc.of
       1
-      m.read > [^ m]
+      m.read > [m]
         0
         10
-        01-02 > [^ ex]
+        01-02 > [ex]
 
   ++> can-recurse-without-arguments
     eq. > @
@@ -284,14 +284,14 @@
   eq. ++> can-return-the-size-from-a-scope
     malloc.of
       5
-      m.size > [^ m]
+      m.size > [m]
     5
 
   ++> can-rewrite-and-increment-itself
     mem.eq 6 > @
     malloc.of > mem
       8
-      seq * > [^ m]
+      seq * > [m]
         m.write 0 1
         m.put
           m.as-number.plus 5
@@ -299,7 +299,7 @@
   ++> can-write-and-read
     malloc.of > @
       1
-      [^ b]
+      [b]
         malloc.of > @
           12
           seq * > [^ m] >>
@@ -316,7 +316,7 @@
     mem.eq 10 > @
     malloc.of > mem
       8
-      seq * > [^ m]
+      seq * > [m]
         m.write 0 10
         m
 
@@ -324,12 +324,12 @@
     eq.
       malloc.of
         8
-        m.put 10 > [^ m]
+        m.put 10 > [m]
       10
     eq.
       malloc.of
         8
-        m.put 20 > [^ m]
+        m.put 20 > [m]
       20
 
   eq. ++> can-write-the-initial-value
@@ -340,43 +340,43 @@
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction
     1
-    m.resized 1.5 > [^ m]
+    m.resized 1.5 > [m]
 
   malloc.of --> stops-on-changing-the-size-to-a-negative
     1
-    m.resized -1 > [^ m]
+    m.resized -1 > [m]
 
   malloc.for --> stops-on-copying-with-a-wrong-length
     0
-    m.copy > [^ m]
+    m.copy > [m]
       3
       1
       9
 
   malloc.for --> stops-on-copying-with-a-wrong-source
     0
-    m.copy > [^ m]
+    m.copy > [m]
       9
       1
       1
 
   malloc.for --> stops-on-overflowing-a-bool-block
     false
-    m.put 8.612486788e7 > [^ m]
+    m.put 8.612486788e7 > [m]
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
-    m.put > [^ m]
+    m.put > [m]
       "Much longer string!"
 
   malloc.for --> stops-on-reading-over-the-limit
     10
-    m.read > [^ m]
+    m.read > [m]
       0
       100
 
   malloc.of --> stops-on-writing-beyond-an-offset
     1
-    m.write > [^ m]
+    m.write > [m]
       1
       true

@@ -262,6 +262,29 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsBindingOnFormationChildUnderFormationParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("  []:tag > x", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation child under a formation parent cannot carry a binding per R-3.12.3"
+        );
+    }
+
+    @Test
+    void acceptsBindingOnFormationChildUnderArgumentPositionParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.VAPPLICATION, Openness.OPEN);
+        Assertions.assertDoesNotThrow(
+            () -> new LnFormation(new Span("  []:tag > x", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation child in argument position may still carry a binding"
+        );
+    }
+
+    @Test
     void replacesTopOnSameIndentSibling() {
         final Stack stack = new Stack();
         new LnFormation(new Span("[] > first", 1))

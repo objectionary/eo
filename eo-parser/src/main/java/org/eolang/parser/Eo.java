@@ -274,19 +274,16 @@ final class Eo implements Iterable<Directive> {
         return failed;
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
             stack.popDeeperThan(span.indent());
-            final int token = emit.savepoint();
-            final java.util.List<Level> frame = stack.snapshot();
+            final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
-                emit.rollback(token);
-                stack.restore(frame);
+                point.apply();
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
             }
@@ -330,15 +327,13 @@ final class Eo implements Iterable<Directive> {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int token = emit.savepoint();
-        final java.util.List<Level> frame = stack.snapshot();
+        final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
-            emit.rollback(token);
-            stack.restore(frame);
+            point.apply();
             globals.restore(saved);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
@@ -497,7 +492,12 @@ final class Eo implements Iterable<Directive> {
     private static boolean signedDigit(final Span span) {
         final String body = span.body();
         return body.length() >= 2
+            && Eo.signHead(span.head())
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
+    }
+
+    private static boolean signHead(final char head) {
+        return head == '+' || head == '-';
     }
 
     private static Line questioned(final Span span) {

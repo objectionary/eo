@@ -8,7 +8,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ as-bytes] > u8
+[as-bytes] > u8
   as-bytes > @
   i16 > [^] > as-i16
     00-.concat ^.as-bytes
@@ -92,7 +92,7 @@
     "recovered"
     02-.as-u8.div
       00-.as-u8
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-subtract
     05-.as-u8.minus 03-.as-u8
