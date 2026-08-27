@@ -97,14 +97,14 @@ public final class EoSyntax implements Syntax {
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
         this.input = ipt;
-        this.transform = transform;
+        this.transform = Objects.requireNonNull(transform, "EoSyntax has no transform");
     }
 
     @Override
     public XML parsed() throws IOException {
         final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
+        return this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
