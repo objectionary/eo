@@ -56,33 +56,36 @@ final class LinesTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 0, 3, 500, Integer.MAX_VALUE})
     void rejectsANumberThatIsNotALine(final int number) {
+        final Lines lines = new Lines(
+            Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
+        );
         Assertions.assertThrows(
             IndexOutOfBoundsException.class,
-            () -> new Lines(
-                Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-            ).line(number),
+            () -> lines.line(number),
             "a number outside the range of lines must be reported, not folded into an empty string"
         );
     }
 
     @Test
     void rejectsAnyNumberWhenThereAreNoLines() {
+        final Lines lines = new Lines(Collections.emptyList());
         Assertions.assertThrows(
             IndexOutOfBoundsException.class,
-            () -> new Lines(Collections.emptyList()).line(1),
+            () -> lines.line(1),
             "an empty source must have no line 1"
         );
     }
 
     @Test
     void namesTheNumberAndTheSizeWhenItRejects() {
+        final Lines lines = new Lines(
+            Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
+        );
         MatcherAssert.assertThat(
             "the message must name the number asked for and how many lines there are",
             Assertions.assertThrows(
                 IndexOutOfBoundsException.class,
-                () -> new Lines(
-                    Arrays.asList(new TextOf("alpha"), new TextOf("beta"))
-                ).line(500),
+                () -> lines.line(500),
                 "a number outside the range of lines must be reported"
             ).getMessage(),
             Matchers.allOf(
