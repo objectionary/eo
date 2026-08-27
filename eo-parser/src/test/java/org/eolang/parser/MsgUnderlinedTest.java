@@ -31,4 +31,13 @@ final class MsgUnderlinedTest {
             Matchers.equalTo(String.format("0123456789%n        ^^"))
         );
     }
+
+    @Test
+    void leavesUnderlineEmptyWhenFromReachesLineEnd() {
+        MatcherAssert.assertThat(
+            "a from at the line length must draw no caret since no position is left to underline",
+            new MsgUnderlined("abc", 3, 2).formatted(),
+            Matchers.equalTo(String.format("abc%n"))
+        );
+    }
 }
