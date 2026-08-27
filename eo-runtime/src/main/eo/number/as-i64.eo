@@ -1,7 +1,7 @@
-# Converts the number `n` to an `i64`, truncating the fractional part toward
-# zero. The exponent and the mantissa are pulled out of the IEEE 754 layout of
-# `n` and the magnitude is shifted into place, with the two's complement taken
-# when `n` is negative. When `n` does not fit into the bounds of an `i64`,
+# Converts the number to an `i64`, truncating the fractional part toward
+# zero. The exponent and the mantissa are pulled out of its IEEE 754 layout
+# and the magnitude is shifted into place, with the two's complement taken
+# when it is negative. When it does not fit into the bounds of an `i64`,
 # the caller-supplied `cant-convert` fallback is returned.
 
 +architect yegor256@gmail.com

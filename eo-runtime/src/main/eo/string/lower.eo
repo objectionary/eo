@@ -1,4 +1,4 @@
-# Returns the `text` in lower case, using the default English casing rules.
+# Returns the string in lower case, using the default English casing rules.
 # This is a thin string method: `"HELLO".lower` is the same as
 # `(string.english "HELLO").lower`. Only the ASCII letters `A`-`Z` are
 # folded; every other byte, including accented Latin, Cyrillic and Greek

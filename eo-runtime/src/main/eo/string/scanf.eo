@@ -1,8 +1,7 @@
-# Reads formatted input from a string.
-# This object has two free attributes:
-# 1. `format` - is a formatter string (e.g. "Hello, %s!")
-# 2. `read` - is a string where data exists (e.g. "Hello, John!")
-# returns a `org.eolang.tuple` of formatted values (e.g. * "John").
+# Reads formatted input from a string. It is a method of the formatter
+# string (e.g. "Hello, %s!"), with one free attribute `read`, the string
+# where the data exists (e.g. "Hello, John!"). It returns a
+# `org.eolang.tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`

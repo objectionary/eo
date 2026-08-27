@@ -1,5 +1,5 @@
 # Deletes a file from the filesystem, returning the same file, unchanged, if it
-# does not exist. It is a method of `file`, and `f` is the file it is taken off.
+# does not exist. It is a method of `file`, taken off the file it deletes.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

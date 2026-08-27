@@ -1,4 +1,4 @@
-# Counts the characters in the `text`, and not its bytes. The UTF-8 sequence
+# Counts the characters in the string, and not its bytes. The UTF-8 sequence
 # is walked character by character, so a multi-byte character counts as one.
 # Every multi-byte sequence is validated against the UTF-8 rules of the
 # Unicode standard (Table 3-7): the leading byte fixes the character width and

@@ -1,4 +1,4 @@
-# Unsigned division of the `u64` number `n` by the `u64` number `x`. The
+# Unsigned division of a `u64` number by the `u64` number `x`. The
 # dividend is halved first, so the signed `i64` division underneath never
 # sees a negative operand, and the quotient is corrected back afterwards.
 # When `x` is zero, the caller-supplied `cant-divide` fallback is returned.

@@ -1,4 +1,4 @@
-# Integer division of the `i64` number `n` by the `i64` number `x`, truncated
+# Integer division of an `i64` number by the `i64` number `x`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `x` is
 # zero, the caller-supplied `cant-divide` fallback is returned.

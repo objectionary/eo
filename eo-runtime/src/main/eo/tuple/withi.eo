@@ -1,4 +1,4 @@
-# Insert `item` into collection `list` at the given `index`.
+# Insert `item` into the tuple at the given `index`.
 # The `index` must be an integer, the same requirement `tuple.front` and
 # `tuple.back` make; anything else terminates. A negative index is clamped
 # to the front of the list and an index past the end appends the item.

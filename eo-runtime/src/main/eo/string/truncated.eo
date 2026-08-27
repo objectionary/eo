@@ -1,8 +1,9 @@
-# Returns the first `limit` characters of `text`, so that `Jeffrey` truncated
-# to three characters becomes `Jef`. Characters are counted, and not bytes,
-# so a multi-byte character counts as one. A `text` of `limit` characters
-# or shorter is returned unchanged, which is how this differs from `slice`,
-# where a `limit` beyond the end of the `text` terminates the computation.
+# Returns the first `limit` characters of the string, so that `Jeffrey`
+# truncated to three characters becomes `Jef`. Characters are counted, and
+# not bytes, so a multi-byte character counts as one. A string of `limit`
+# characters or shorter is returned unchanged, which is how this differs
+# from `slice`, where a `limit` beyond the end of the string terminates the
+# computation.
 # If `limit` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-truncate` fallback is returned, or the terminator
 # when unbound.

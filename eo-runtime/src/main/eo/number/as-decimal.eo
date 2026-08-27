@@ -1,4 +1,4 @@
-# Writes the number `n` as signed decimal digits, truncating its fraction
+# Writes the number as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
 #
 # The digits are peeled off an `i64`, where division by ten is exact, so every

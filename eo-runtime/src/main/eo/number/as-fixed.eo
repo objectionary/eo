@@ -1,4 +1,4 @@
-# Writes the number `n` as fixed-point decimal with exactly `places` fraction
+# Writes the number as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer below 2^53 (negative,

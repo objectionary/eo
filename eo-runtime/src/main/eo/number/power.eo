@@ -1,8 +1,8 @@
-# Raises `num` to the power of `x` as `org.eolang.number`. A zero exponent gives
-# one, an integer exponent is expanded by exponentiation-by-squaring so integer
-# results stay exact, and a fractional exponent of a positive base is taken as
-# e raised to `x` times the natural logarithm of the base. Zeros, infinities and
-# nan follow the same IEEE rules that Math.pow obeys.
+# Raises the number to the power of `x` as `org.eolang.number`. A zero exponent
+# gives one, an integer exponent is expanded by exponentiation-by-squaring so
+# integer results stay exact, and a fractional exponent of a positive base is
+# taken as e raised to `x` times the natural logarithm of the base. Zeros,
+# infinities and nan follow the same IEEE rules that Math.pow obeys.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

@@ -1,5 +1,5 @@
 # Represents sequence of bytes as array.
-# Here `b` is `bytes` objects, the return value is `tuple` where
+# It is a method of `bytes`, and the return value is `tuple` where
 # each element is one `byte`.
 
 +architect yegor256@gmail.com

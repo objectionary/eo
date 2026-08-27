@@ -1,5 +1,5 @@
 # Creates a directory, making missing parent directories as needed. It is a
-# method of `directory`, and `d` is the directory it is taken off. When the
+# method of `directory`, taken off the directory it creates. When the
 # path already exists, it must already be a directory: if a regular file (or
 # any non-directory entry) occupies the path, the computation terminates
 # instead of returning that entry decorated as a directory.

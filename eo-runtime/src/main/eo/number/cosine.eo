@@ -1,7 +1,7 @@
-# Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
-# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2). The
-# finite approximation of `pi` used in that shift misses the exact extremum
-# at zero, so zero is special-cased to return the exact unit value.
+# Cosine of the angle in radians as `org.eolang.number`, taken from the sine
+# of the angle advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
+# The finite approximation of `pi` used in that shift misses the exact
+# extremum at zero, so zero is special-cased to return the exact unit value.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

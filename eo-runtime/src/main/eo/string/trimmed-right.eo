@@ -1,4 +1,4 @@
-# Returns `text` trimmed from right side.
+# Returns the string trimmed from right side.
 # Removes all trailing ASCII whitespace bytes: `20-` (space), `09-`
 # (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
 # (form feed), and `0D-` (carriage return). Matches the strip-set

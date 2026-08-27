@@ -1,6 +1,6 @@
 # Tee input is an input that reads from the input it is taken off, writes to
 # provided `output` and behaves as that same input. It is a method of
-# `input`, and `origin` is the input it is taken off.
+# `input`.
 # To copy bytes input to memory you can do:
 # ```
 # malloc.of > copied

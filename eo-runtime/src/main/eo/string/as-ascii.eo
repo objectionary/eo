@@ -1,7 +1,7 @@
-# Reads the single character `char` as its ASCII numeric value (0-255).
-# The byte of `char` is left-padded with a zero byte into a 16-bit word,
-# read as an integer and then expressed as a number. If `char` is not
-# exactly one byte wide (an empty string, or a multi-byte UTF-8
+# Reads the single character as its ASCII numeric value (0-255).
+# The byte of the character is left-padded with a zero byte into a 16-bit
+# word, read as an integer and then expressed as a number. If the character
+# is not exactly one byte wide (an empty string, or a multi-byte UTF-8
 # character), the `cant-read` fallback is returned, or the terminator
 # when unbound.
 

@@ -1,6 +1,6 @@
 # Turkish locale specializing the default `english` casing with the dotted
 # and dotless I mappings that Turkish and Azeri override the default with.
-# Being a decorator of its `s` string, a `turkish` object behaves like the
+# Being a decorator of its string, a `turkish` object behaves like the
 # string itself (`.length`, `.eq` and so on pass through), while adding
 # `lower` and `upper` that honour those mappings. Lower casing maps capital
 # dotless I (U+0049) to small dotless i (U+0131) and capital dotted I

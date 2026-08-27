@@ -1,4 +1,4 @@
-# TRUE when the number `n` equals `x`, FALSE otherwise. The comparison follows
+# TRUE when the number equals `x`, FALSE otherwise. The comparison follows
 # IEEE 754: a not-a-number value is equal to nothing, not even to itself, while
 # positive and negative zero are equal to each other. Everything else is
 # compared byte by byte, so a value of any other type is simply not equal.

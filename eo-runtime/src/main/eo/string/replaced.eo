@@ -1,4 +1,4 @@
-# Returns `text` where all regex target changed to replacement.
+# Returns the string where all regex target changed to replacement.
 # Here `target` must be a `org.eolang.string.regex` object.
 # The `replacement` here is a `string` that would be pasted instead of
 # matched text in original one.

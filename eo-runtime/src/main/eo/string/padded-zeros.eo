@@ -1,7 +1,7 @@
-# Returns `text` padded on the left with zeros until it counts `width`
+# Returns the string padded on the left with zeros until it counts `width`
 # characters, keeping a leading minus sign in front of them, so that `-42`
 # padded to five characters becomes `-0042` and not `00-42`. Characters are
-# counted, and not bytes. A `text` of `width` characters or longer is
+# counted, and not bytes. A string of `width` characters or longer is
 # returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-pad` fallback is returned, or the terminator

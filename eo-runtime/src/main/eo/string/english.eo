@@ -1,5 +1,5 @@
 # English locale wrapping a `string` and exposing case conversion for it.
-# Being a decorator of its `s` string, an `english` object behaves like the
+# Being a decorator of its string, an `english` object behaves like the
 # string itself (`.length`, `.eq`, `.slice` and so on pass through), while
 # adding `lower` and `upper` that map the ASCII letters `A`-`Z` and `a`-`z`
 # to their counterparts one-to-one. Every other byte, including accented

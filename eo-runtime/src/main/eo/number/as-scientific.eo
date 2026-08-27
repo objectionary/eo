@@ -1,6 +1,6 @@
-# Writes the number `n` in scientific notation, as a mantissa with six fraction
-# digits, the letter `e`, and the power of ten that scales the mantissa back to
-# `n`, so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
+# Writes the number in scientific notation, as a mantissa with six fraction
+# digits, the letter `e`, and the power of ten that scales the mantissa back,
+# so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
 # `1.000000e-7`. A magnitude past the range of a signed 64-bit integer is
 # named this way, since `as-decimal` writes only what it spells out digit by
 # digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,

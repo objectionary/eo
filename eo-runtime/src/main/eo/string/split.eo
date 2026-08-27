@@ -1,4 +1,4 @@
-# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+# Returns a `tuple` of `strings`: the string separated by `delimiter`.
 # If `delimiter` is empty, the `cant-split` fallback is returned, or the
 # terminator when unbound.
 

@@ -1,5 +1,5 @@
-# Makes an output from a `chunk` of memory. It is a method of `chunk`, and
-# `allocated` is the chunk it is taken off:
+# Makes an output from a `chunk` of memory. It is a method of `chunk`,
+# taken off the chunk it writes into:
 #
 # ```
 # malloc.of > result

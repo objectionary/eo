@@ -1,10 +1,10 @@
-# Takes a piece of the `text` as another `text`, counting characters and not
+# Takes a piece of the string as another string, counting characters and not
 # bytes. Here `start` must be a non-negative integer index to start slicing
 # from, while `len` must be a non-negative integer amount of characters to
 # take. A fractional, `nan` or infinite `start` or `len` terminates the
 # computation immediately. Both of them walk the UTF-8 sequence character by
 # character, so a multi-byte character counts as one. An index outside the
-# bounds of the `text` terminates the computation. Every multi-byte sequence is
+# bounds of the string terminates the computation. Every multi-byte sequence is
 # validated against the UTF-8 rules of the Unicode standard (Table 3-7), the
 # same way `length` does: each following byte must be a `10xxxxxx` continuation
 # byte, and the second byte is range-checked so that overlong encodings
