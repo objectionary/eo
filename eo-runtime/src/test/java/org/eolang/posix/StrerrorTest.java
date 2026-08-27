@@ -8,12 +8,18 @@ import com.sun.jna.Native;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link Strerror}.
  *
  * <p>The number 17 below is {@code EEXIST}, the error a failing exclusive
  * creation leaves behind on every platform we support.</p>
+ *
+ * <p>The tests that go through the real library are off on Windows, where
+ * there is no {@code libc} to load and {@link CStdLib} cannot be built at
+ * all.</p>
  *
  * @since 0.75
  */
@@ -46,6 +52,7 @@ final class StrerrorTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void namesTheErrorThroughTheRealLibrary() {
         MatcherAssert.assertThat(
             "libc must name the error",
@@ -55,6 +62,7 @@ final class StrerrorTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
     void keepsTheLastErrorThroughTheRealLibrary() {
         Native.setLastError(17);
         new Strerror(17).it();
