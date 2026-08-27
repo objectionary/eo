@@ -69,6 +69,7 @@ final class LnTextBlock implements Line {
             this.span.line(), this.span.indent()
         ).bytes();
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (outer != null) {
             emit.slot(Emissions.bindingTag(outer));
