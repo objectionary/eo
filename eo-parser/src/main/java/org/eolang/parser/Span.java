@@ -126,8 +126,8 @@ final class Span {
      * @return Trailing-whitespace flag
      */
     boolean trailing() {
-        return !this.blank()
-            && Character.isWhitespace(this.text.charAt(this.text.length() - 1));
+        final char last = this.text.charAt(this.text.length() - 1);
+        return !this.blank() && (last == ' ' || last == '\t');
     }
 
     /**
