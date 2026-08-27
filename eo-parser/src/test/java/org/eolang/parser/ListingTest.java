@@ -62,7 +62,7 @@ final class ListingTest {
     @Test
     void buildsListingForEmptySource() {
         MatcherAssert.assertThat(
-            "An empty source must produce an empty listing",
+            "an empty source leaves a listing that is not empty",
             ListingTest.listing(""),
             Matchers.emptyString()
         );
@@ -88,13 +88,38 @@ final class ListingTest {
         }
     )
     void removesForbiddenCharacters(final int codepoint) {
-        final String source = new String(Character.toChars(codepoint));
         MatcherAssert.assertThat(
             String.format(
-                "Character '%s' (%s code) must be removed from EO listing", source, codepoint
+                "the character with code %s is not removed, or its neighbours went with it",
+                codepoint
             ),
-            ListingTest.listing(source),
+            ListingTest.listing(
+                String.format("a%sb", new String(Character.toChars(codepoint)))
+            ),
+            Matchers.equalTo("ab")
+        );
+    }
+
+    @Test
+    void emptiesSourceOfForbiddenCharactersOnly() {
+        MatcherAssert.assertThat(
+            "a source holding nothing but forbidden characters leaves a listing that is not empty",
+            ListingTest.listing(
+                String.format("%c%c%c%c", (char) 0x00, (char) 0x0B, (char) 0x9F, (char) 0xFFFF)
+            ),
             Matchers.emptyString()
+        );
+    }
+
+    @Test
+    void keepsSupplementaryCharacters() {
+        final String source = String.format(
+            "[] > x%s", new String(Character.toChars(0x1F600))
+        );
+        MatcherAssert.assertThat(
+            "a character outside the Basic Multilingual Plane is not kept in the listing",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
         );
     }
 
@@ -143,6 +168,13 @@ final class ListingTest {
                     new Directives().add("object").up().append(new Listing(source))
                 ).xmlQuietly()
             ).inner()
-        ).element("object").element("listing").text().orElse("");
+        ).element("object").element("listing").text().orElseThrow(
+            () -> new IllegalStateException(
+                String.format(
+                    "no <listing> element for the source \"%s\" of %d characters",
+                    source, source.length()
+                )
+            )
+        );
     }
 }
