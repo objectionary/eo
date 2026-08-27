@@ -497,7 +497,12 @@ final class Eo implements Iterable<Directive> {
     private static boolean signedDigit(final Span span) {
         final String body = span.body();
         return body.length() >= 2
+            && Eo.signHead(span.head())
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
+    }
+
+    private static boolean signHead(final char head) {
+        return head == '+' || head == '-';
     }
 
     private static Line questioned(final Span span) {
