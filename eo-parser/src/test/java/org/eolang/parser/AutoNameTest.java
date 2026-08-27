@@ -8,11 +8,18 @@ import java.util.Locale;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Tests {@link AutoName}.
+ *
+ * <p>Three of these tests change the process-wide default formatting locale,
+ * which every other test of the module would see while they run. The whole
+ * class is therefore isolated: nothing else runs beside it.</p>
+ *
  * @since 0.58.1
  */
+@Isolated
 final class AutoNameTest {
 
     @Test

@@ -24,7 +24,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ cases fallback] > switch
+[cases fallback] > switch
   if. > @
     cases.length.eq 0
     fallback
@@ -53,7 +53,7 @@
     "recovered"
     switch
       *
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   ++> can-switch-on-a-complex-case
     eq. > @
@@ -84,7 +84,7 @@
       *
         * false "false1"
         * false "false2"
-      "fallback" > [^ message]
+      "fallback" > [message]
 
   ++> can-switch-on-strings
     eq. > @

@@ -72,6 +72,16 @@ public final class MjInference extends MjSafe {
     private File tables;
 
     /**
+     * Whether to write a page per source file, for a reader to look at.
+     *
+     * <p>Off by default. The tables are what the compiler needs and the pages
+     * are for a person, so they are written when somebody asks and not on
+     * every build.</p>
+     */
+    @Parameter(property = "eo.inferenceReport", required = true, defaultValue = "false")
+    private boolean report;
+
+    /**
      * Ctor.
      */
     public MjInference() {
@@ -84,7 +94,8 @@ public final class MjInference extends MjSafe {
             new Inferring(
                 this.targetDir.toPath().resolve(Parsing.DIR),
                 this.prepared.toPath(),
-                this.tables.toPath()
+                this.tables.toPath(),
+                this.report
             )
         ).exec();
     }

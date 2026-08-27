@@ -18,8 +18,8 @@ asserts:
   - //java[contains(text(), 'r = new PhApplication(r, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
 input: |
   [] > data
-    true > @
-    bool 00- > @
-    42 > @
-    number 3.5 > @
-    01-AF > @
+    true > first
+    bool 00- > second
+    42 > third
+    number 3.5 > fourth
+    01-AF > fifth

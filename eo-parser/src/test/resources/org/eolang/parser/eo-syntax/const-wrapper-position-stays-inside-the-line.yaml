@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/o/o[@base='.as-bytes' and @pos='9']
+input: |
+  # Sample.
+
+  [x] > main
+    number x! > @

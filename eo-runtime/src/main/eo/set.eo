@@ -6,8 +6,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ lst] > set
-  [^ mp] >> ctor
+[lst] > set
+  [mp] >> ctor
     mp.keys > @
     ^.mp.has item > [^ item] > has
     mp.size > size
@@ -18,7 +18,7 @@
   | > @
     map
       lst.mapped
-        map.entry item true > [^ item]
+        map.entry item true > [item]
 
   has. ++> can-append-a-new-item
     with.

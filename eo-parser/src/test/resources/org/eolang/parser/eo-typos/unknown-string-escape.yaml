@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:2] error: 'invalid unicode or octal escape in string literal'
+  [2:2] error: 'unrecognised escape sequence '\q''
     "\q" > x
     ^
 input: |

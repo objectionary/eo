@@ -18,11 +18,17 @@ import java.util.Collection;
  *
  * <p>A ξ-name is looked for outwards: the nearest formation around the
  * reference that binds it wins, and if none does, the next one out is tried,
- * up to the top. The one exception is {@code ξ.ρ}, the object one step out,
- * which no formation binds as an attribute; it is found by walking two
- * formations out from the reference instead of by name. Beyond that, nothing
- * else is consulted — an attribute reachable only through {@code φ} or
- * through a package member is not found here, and the name simply stays
+ * up to the top. The one exception is {@code ξ.ρ}, written {@code ^}, which
+ * names the receiver the formation around it declares rather than anything
+ * bound by name. It used to be found by walking two formations out, as the
+ * object one step out from the one being formed, and that answer died with
+ * #6657: a receiver is now declared or absent, and what it holds is decided
+ * by whoever dispatches, so the void itself is the whole of the answer the
+ * text can give. A formation that declares none leaves the caret unresolved,
+ * since the runtime terminates on the {@code ρ} of such an object and there
+ * is nothing to point at. Beyond that, nothing else is consulted — an
+ * attribute reachable only through {@code φ} or through a package member is
+ * not found here, and the name simply stays
  * unresolved. The checker is allowed to know less; it is not allowed to
  * guess, because a wrong link would make every later answer wrong with
  * it.</p>
@@ -62,10 +68,22 @@ final class Scope {
         if (base.startsWith("Φ.")) {
             found = this.rooted(base);
         } else if ("ξ.ρ".equals(base)) {
-            final Nesting nesting = new Nesting(this.formations);
-            found = nesting.around(nesting.around(reference));
+            found = this.declared(reference);
         } else {
             found = this.outwards(reference, base.substring(base.indexOf('.') + 1));
+        }
+        return found;
+    }
+
+    private String declared(final String reference) {
+        final String hollow = String.join(
+            ".", new Nesting(this.formations).around(reference), "ρ"
+        );
+        final String found;
+        if (this.locators.contains(hollow)) {
+            found = hollow;
+        } else {
+            found = "";
         }
         return found;
     }

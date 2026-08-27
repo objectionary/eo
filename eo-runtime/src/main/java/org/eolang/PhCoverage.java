@@ -124,6 +124,7 @@ public final class PhCoverage implements Phi {
 
     @Override
     public Phi normalized() {
+        this.hit();
         return this.origin.normalized();
     }
 
