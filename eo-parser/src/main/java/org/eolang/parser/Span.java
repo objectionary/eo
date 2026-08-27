@@ -139,17 +139,19 @@ final class Span {
     }
 
     /**
-     * The first non-whitespace character, or {@code '\0'} for a blank line.
+     * The first non-whitespace character.
      * @return First non-whitespace character
      */
     char head() {
-        final char first;
         if (this.blank()) {
-            first = '\0';
-        } else {
-            first = this.text.charAt(this.indent);
+            throw new IllegalStateException(
+                String.format(
+                    "line %d is blank, has no first non-whitespace character",
+                    this.number
+                )
+            );
         }
-        return first;
+        return this.text.charAt(this.indent);
     }
 
     private static int leading(final String body) {

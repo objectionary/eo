@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -114,11 +115,29 @@ final class SpanTest {
     }
 
     @Test
-    void exposesNullCharAsHeadOfBlank() {
-        MatcherAssert.assertThat(
-            "head of a blank line cannot point at any character",
-            new Span("     ", 1).head(),
-            Matchers.equalTo('\0')
+    void rejectsHeadOfBlank() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("     ", 1).head(),
+            "head of a blank line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfEmptyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("", 1).head(),
+            "head of an empty line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfTabOnlyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("\t", 4).head(),
+            "head of a tab-only line has no first non-whitespace character to return"
         );
     }
 
