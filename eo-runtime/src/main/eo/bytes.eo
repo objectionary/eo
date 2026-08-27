@@ -20,7 +20,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ @] > bytes
+[@] > bytes
   [] > and /Q.bytes
     ? > ^
     ? > b /Q.bytes
@@ -173,14 +173,14 @@
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-out-of-bounds-slice
     "recovered"
     20-1F-EE-B5-90.slice
       3
       10
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1

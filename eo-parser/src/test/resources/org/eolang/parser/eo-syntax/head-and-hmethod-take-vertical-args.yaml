@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='first' and @base='Φ.format' and count(o)=2]
+  - //o[@name='second' and @base='Φ.malloc.for' and count(o)=2]
+input: |
+  [] > main
+    format > first
+      0
+      1
+    malloc.for > second
+      2
+      3

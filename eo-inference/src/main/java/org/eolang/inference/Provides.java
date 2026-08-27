@@ -69,14 +69,18 @@ import java.util.List;
  * behind a delegation, so a name asked of it is answered once and for all
  * rather than left to a caller.</p>
  *
- * <p>Not every attribute is written inside the formation it belongs to.
- * {@code ρ}, the object something sits in, is written nowhere and every
- * object has one, which {@link Parents} reads off the locator. And
+ * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
  * belongs to {@code Φ.number} without ever appearing among its children,
- * which {@link Members} finds. Both go into this table after the attributes
+ * which {@link Members} finds. It goes into this table after the attributes
  * a formation binds itself, since the order of those is what binds the
- * arguments of an application and neither of these two is one of them.</p>
+ * arguments of an application and this is not one of them.</p>
+ *
+ * <p>Nothing is written down about what an object sits in. It was once read
+ * off the locator, on the grounds that {@code ρ} is written nowhere and
+ * everything has one, and since #6657 neither half holds: a formation says
+ * outright what it is dispatched on, and one that says nothing has no
+ * {@code ρ} at all for anybody to name.</p>
  *
  * @since 0.67.0
  */
@@ -110,7 +114,6 @@ final class Provides implements Clue {
                     }
                 }
             }
-            new Parents(made).fill(rows);
             new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
             Files.write(

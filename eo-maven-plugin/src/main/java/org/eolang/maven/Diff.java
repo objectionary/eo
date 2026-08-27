@@ -4,8 +4,11 @@
  */
 package org.eolang.maven;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -18,9 +21,25 @@ import java.util.stream.Collectors;
  * in green. When the two texts are identical, {@link #colored()} returns
  * an empty string and {@link #same()} returns {@code true}.</p>
  *
+ * <p>Line terminators are part of what is compared, since two texts that
+ * differ only in them are not the same text and a diff that shows nothing
+ * changed would say the opposite. A carriage return is rendered as
+ * {@code \r}, and a text that does not end with a newline carries the
+ * note {@code git} prints for it.</p>
+ *
  * @since 0.57.0
  */
 final class Diff {
+
+    /**
+     * The line feed every line ends with.
+     */
+    private static final Pattern FEED = Pattern.compile("\\n");
+
+    /**
+     * The carriage return a line may end with.
+     */
+    private static final Pattern RETURN = Pattern.compile("\\r");
 
     /**
      * ANSI escape that resets all coloring.
@@ -80,7 +99,17 @@ final class Diff {
     }
 
     private static List<String> lines(final String text) {
-        return text.lines().collect(Collectors.toList());
+        final List<String> out = new ArrayList<>(
+            Arrays.stream(Diff.FEED.split(text, -1))
+                .map(line -> Diff.RETURN.matcher(line).replaceAll("\\\\r"))
+                .collect(Collectors.toList())
+        );
+        if (out.get(out.size() - 1).isEmpty()) {
+            out.remove(out.size() - 1);
+        } else {
+            out.add("\\ No newline at end of file");
+        }
+        return out;
     }
 
     private static String render(final List<String> before, final List<String> after) {

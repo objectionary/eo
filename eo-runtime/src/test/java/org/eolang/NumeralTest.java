@@ -72,6 +72,33 @@ final class NumeralTest {
     }
 
     @Test
+    void printsNotANumberTheWayEoSpellsIt() {
+        MatcherAssert.assertThat(
+            "NaN must print as an EO number in φ-term",
+            new Numeral(Double.NaN).get(),
+            Matchers.equalTo("nan")
+        );
+    }
+
+    @Test
+    void printsPositiveInfinityTheWayEoSpellsIt() {
+        MatcherAssert.assertThat(
+            "Positive infinity must print as an EO number in φ-term",
+            new Numeral(Double.POSITIVE_INFINITY).get(),
+            Matchers.equalTo("pinf")
+        );
+    }
+
+    @Test
+    void printsNegativeInfinityTheWayEoSpellsIt() {
+        MatcherAssert.assertThat(
+            "Negative infinity must print as an EO number in φ-term",
+            new Numeral(Double.NEGATIVE_INFINITY).get(),
+            Matchers.equalTo("ninf")
+        );
+    }
+
+    @Test
     void printsRegularNegativeIntegralNumberWithoutFraction() {
         MatcherAssert.assertThat(
             "Ordinary negative integral double must print without a fraction in φ-term",
