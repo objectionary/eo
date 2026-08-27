@@ -7,7 +7,6 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -40,12 +39,6 @@ import org.xembly.Directives;
  * @since 0.1
  */
 final class Emit {
-
-    /**
-     * Pre-compiled line-break splitter for the source text passed to
-     * the {@link #Emit(String)} constructor.
-     */
-    private static final Pattern EOL = Pattern.compile("\\R");
 
     /**
      * Flat list of directives, appended in source order.
@@ -93,26 +86,19 @@ final class Emit {
      * Ctor.
      */
     Emit() {
-        this(new Lines(List.of()));
-    }
-
-    /**
-     * Ctor.
-     * @param source Raw EO source text (for caret-underlined error
-     *  messages — pass empty string to disable)
-     */
-    Emit(final String source) {
-        this(new Lines(List.of(Emit.EOL.split(source, -1))));
+        this(List.of());
     }
 
     /**
      * Primary ctor.
-     * @param src The source in lines
+     * @param source The source lines {@link Source} split off the text
+     *  being parsed (for caret-underlined error messages — pass an
+     *  empty list to disable)
      */
-    private Emit(final Lines src) {
+    Emit(final List<Span> source) {
         this.signature = "";
         this.sink = new ArrayList<>(0);
-        this.lines = src;
+        this.lines = new Lines(source);
     }
 
     /**
