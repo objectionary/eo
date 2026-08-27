@@ -103,16 +103,18 @@ mark says what the tables hold about it, and an amber one names what the
 program was seen putting into the void besides.
 
 Off by default, since the tables are what the compiler needs and the pages are
-for a person:
+for a person. The goal runs in whichever module uses the plugin, so this is
+the shortest way to the pages of eo-runtime:
 
 ```bash
-mvn install -Deo.inferenceReport
+mvn -pl eo-runtime process-sources -Deo.inferenceReport
+open eo-runtime/target/site/inference/index.html
 ```
 
-The pages land in `target/site/inference/`, beside the coverage report and
-every other generated page a person opens. They are not written into
-`target/eo/`, which is the compiler's scratch space, however much the tables
-they are made from live there.
+They land in the `target/site/inference/` of the module they describe, beside
+the coverage report and every other generated page a person opens. They are
+not written into `target/eo/`, which is the compiler's scratch space, however
+much the tables they are made from live there.
 
 A property and not a profile, though coverage next door is turned on with
 `-Pjacoco`. A profile is what you need to add an execution to a build, and
