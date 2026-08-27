@@ -21,6 +21,7 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
+import org.eolang.inference.Report;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
@@ -74,6 +75,11 @@ final class Inferring implements Step {
     private final Path tables;
 
     /**
+     * Whether to write the pages a reader looks at, beside the tables.
+     */
+    private final boolean shown;
+
+    /**
      * Ctor.
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
@@ -81,9 +87,22 @@ final class Inferring implements Step {
      * @param rows The directory for the tables
      */
     Inferring(final Path parsed, final Path pre, final Path rows) {
+        this(parsed, pre, rows, false);
+    }
+
+    /**
+     * Ctor.
+     * @param parsed The directory with XMIR files, as the parser leaves them
+     *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
+     * @param pre The directory for the prepared XMIR files
+     * @param rows The directory for the tables
+     * @param report Whether to write the pages a reader looks at
+     */
+    Inferring(final Path parsed, final Path pre, final Path rows, final boolean report) {
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
+        this.shown = report;
     }
 
     @Override
@@ -98,6 +117,13 @@ final class Inferring implements Step {
                 ready, this.tables
             );
             this.measured();
+            if (this.shown) {
+                final Path pages = this.tables.resolve("report");
+                Logger.info(
+                    this, "Wrote %d page(s) to look at, they are in %[file]s",
+                    new Report(this.prepared, this.tables).written(pages), pages
+                );
+            }
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to infer from it",

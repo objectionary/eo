@@ -4,9 +4,9 @@
  */
 package org.eolang.win32;
 
-import java.nio.ByteBuffer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.sun.jna.Native;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -15,16 +15,30 @@ import org.eolang.Syscall;
 
 /**
  * The 'inet_addr' WS2_32 function call.
+ *
+ * <p>The text is handed to {@code ws2_32} rather than read here, because
+ * {@code inet_addr} takes four forms — {@code a.b.c.d}, {@code a.b.c},
+ * {@code a.b} and {@code a} — and reads every part the way C does, octal behind
+ * a leading zero and hexadecimal behind a leading {@code 0x}. A parser of our
+ * own accepted only the first form and read every part as decimal, so the two
+ * halves of this call answered the same program differently: {@code 010.1.1.1}
+ * is 8.1.1.1 to both C libraries and was 10.1.1.1 here, a different host with
+ * no error on either side, and {@code 127.1} was refused outright (#7512).</p>
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-inet_addr">here for details</a>
  * @since 0.40.0
  */
 public final class InetAddrFuncCall implements Syscall {
 
     /**
-     * Dotted-decimal IPv4 literal, e.g. "127.0.0.1".
+     * The limited-broadcast address, whose conversion is {@code INADDR_NONE}
+     * — the same value {@code inet_addr} answers with for text it cannot
+     * convert, which is why the two are told apart by the text rather than by
+     * the result. The POSIX half of this call makes the same comparison for
+     * the same reason.
      */
-    private static final Pattern IPV4 = Pattern.compile(
-        "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})"
+    private static final String BROADCAST = String.join(
+        ".", Collections.nCopies(4, "255")
     );
 
     /**
@@ -43,29 +57,15 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final Matcher matcher = InetAddrFuncCall.IPV4.matcher(new Dataized(params[0]).asString());
-        if (matcher.matches() && InetAddrFuncCall.octetsValid(matcher)) {
-            final ByteBuffer buffer = ByteBuffer.allocate(4);
-            for (int octet = 1; octet <= 4; ++octet) {
-                buffer.put((byte) Integer.parseInt(matcher.group(octet)));
-            }
-            result.put(0, new Data.ToPhi(Integer.reverseBytes(buffer.getInt(0))));
-        } else {
+        final String address = new Dataized(params[0]).asString();
+        final int converted = Winsock.INSTANCE.inet_addr(
+            Native.toByteArray(address, StandardCharsets.UTF_8)
+        );
+        if (converted == -1 && !InetAddrFuncCall.BROADCAST.equals(address)) {
             Winsock.INSTANCE.WSASetLastError(Winsock.WSAEINVAL);
-            result.put(0, new Data.ToPhi(-1));
         }
+        result.put(0, new Data.ToPhi(Integer.toUnsignedLong(converted)));
         result.put(1, new PhDefault());
         return result;
-    }
-
-    private static boolean octetsValid(final Matcher matcher) {
-        boolean valid = true;
-        for (int octet = 1; octet <= 4; ++octet) {
-            if (Integer.parseInt(matcher.group(octet)) > 255) {
-                valid = false;
-                break;
-            }
-        }
-        return valid;
     }
 }

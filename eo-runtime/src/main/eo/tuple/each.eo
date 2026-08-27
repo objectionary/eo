@@ -17,7 +17,7 @@
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           each. > @
             * 1 2 3
             ^.m.put > [^ i] >>
@@ -37,7 +37,7 @@
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           each. > @
             * 10 20 30
             ^.m.put > [^ i] >>
@@ -48,7 +48,7 @@
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           each. > @
             * 7
             ^.m.put > [^ i] >>
@@ -56,4 +56,4 @@
       7
 
   tuple.empty.each ++> can-walk-an-empty-list
-    false > [^ x]
+    false > [x]

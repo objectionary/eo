@@ -43,7 +43,7 @@
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
       5
-      read. > [^ mem]
+      read. > [mem]
         tee.
           input 01-02-03-04-05.as-input
           mem.to-output
@@ -53,7 +53,7 @@
   eq. ++> can-read-from-bytes-and-write-to-memory-by-portions
     malloc.of
       5
-      seq * > [^ m]
+      seq * > [m]
         read.
           read.
             read.
@@ -70,7 +70,7 @@
     eq. > @
       malloc.of
         6
-        [^ m1]
+        [m1]
           malloc.of > @
             5
             seq * > [^ m2] >>

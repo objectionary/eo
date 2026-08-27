@@ -63,7 +63,7 @@
     "recovered"
     5.mod
       0
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5

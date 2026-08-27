@@ -32,6 +32,11 @@ final class OyCached implements Objectionary {
     private final Map<String, Boolean> directories;
 
     /**
+     * The cache for presence checks.
+     */
+    private final Map<String, Boolean> presence;
+
+    /**
      * Ctor.
      * @param oby The objectionary
      */
@@ -56,9 +61,22 @@ final class OyCached implements Objectionary {
      */
     OyCached(final Objectionary oby, final Map<String, Input> progs,
         final Map<String, Boolean> dirs) {
+        this(oby, progs, dirs, new ConcurrentHashMap<>(0));
+    }
+
+    /**
+     * Ctor.
+     * @param oby The objectionary
+     * @param progs The cache for programs
+     * @param dirs The cache for directories
+     * @param present The cache for presence checks
+     */
+    OyCached(final Objectionary oby, final Map<String, Input> progs,
+        final Map<String, Boolean> dirs, final Map<String, Boolean> present) {
         this.origin = oby;
         this.programs = progs;
         this.directories = dirs;
+        this.presence = present;
     }
 
     @Override
@@ -82,9 +100,28 @@ final class OyCached implements Objectionary {
 
     @Override
     public boolean contains(final String name) throws IOException {
-        return this.programs.containsKey(name)
-            || Boolean.TRUE.equals(this.directories.get(name))
-            || this.origin.contains(name);
+        final boolean found;
+        if (this.programs.containsKey(name)
+            || Boolean.TRUE.equals(this.directories.get(name))) {
+            found = true;
+        } else {
+            try {
+                found = this.presence.computeIfAbsent(
+                    name, key -> {
+                        try {
+                            return this.origin.contains(name);
+                        } catch (final IOException exception) {
+                            throw new UncheckedIOException(exception);
+                        }
+                    }
+                );
+            } catch (final UncheckedIOException wrap) {
+                throw new IOException(
+                    String.format("Failed to check whether '%s' exists", name), wrap
+                );
+            }
+        }
+        return found;
     }
 
     @Override

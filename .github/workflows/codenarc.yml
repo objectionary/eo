@@ -10,13 +10,16 @@ name: codenarc
   pull_request:
     branches:
       - master
+concurrency:
+  group: codenarc-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   codenarc:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 17

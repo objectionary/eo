@@ -11,7 +11,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ if] > bool
+[if] > bool
   if > @
     01-
     00-
@@ -39,12 +39,12 @@
 
   ++> can-call-a-function-from-an-app
     app.eq 2 > @
-    [^] > app
+    [] > app
       f * > @
         1
         2
         3
-      [^ args] > f
+      [args] > f
         2 > @
         1 > a
 
@@ -79,11 +79,11 @@
 
   ++> can-compile-deeply-duplicated-names
     true > @
-    [^] > long-object-name
-      [^] > long-object-name
-        [^] > long-object-name
-          [^] > long-object-name
-            [^] > long-object-name
+    [] > long-object-name
+      [] > long-object-name
+        [] > long-object-name
+          [] > long-object-name
+            [] > long-object-name
               42 > x
 
   not. ++> can-conjoin-true-with-false
@@ -97,7 +97,7 @@
     a.foo.eq 43 > @
     ^.return > [^] > a
       42.plus 1
-    [^ foo] > return
+    [foo] > return
 
   eq. ++> can-fork-on-a-false-condition
     if.
@@ -125,90 +125,90 @@
     eq. > @
       blah0 0
       39
-    [^ x] > blah0
+    [x] > blah0
       blah1 > @
         x.plus 1
-      [^ x] > blah1
+      [x] > blah1
         blah2 > @
           x.plus 1
-        [^ x] > blah2
+        [x] > blah2
           blah3 > @
             x.plus 1
-          [^ x] > blah3
+          [x] > blah3
             blah4 > @
               x.plus 1
-            [^ x] > blah4
+            [x] > blah4
               blah5 > @
                 x.plus 1
-              [^ x] > blah5
+              [x] > blah5
                 blah6 > @
                   x.plus 1
-                [^ x] > blah6
+                [x] > blah6
                   blah7 > @
                     x.plus 1
-                  [^ x] > blah7
+                  [x] > blah7
                     blah8 (x.plus 1) > @
-                    [^ x] > blah8
+                    [x] > blah8
                       blah9 (x.plus 1) > @
-                      [^ x] > blah9
+                      [x] > blah9
                         blah10 (x.plus 1) > @
-                        [^ x] > blah10
+                        [x] > blah10
                           blah11 (x.plus 1) > @
-                          [^ x] > blah11
+                          [x] > blah11
                             blah12 (x.plus 1) > @
-                            [^ x] > blah12
+                            [x] > blah12
                               blah13 (x.plus 1) > @
-                              [^ x] > blah13
+                              [x] > blah13
                                 blah14 (x.plus 1) > @
-                                [^ x] > blah14
+                                [x] > blah14
                                   blah15 (x.plus 1) > @
-                                  [^ x] > blah15
+                                  [x] > blah15
                                     blah16 (x.plus 1) > @
-                                    [^ x] > blah16
+                                    [x] > blah16
                                       blah17 (x.plus 1) > @
-                                      [^ x] > blah17
+                                      [x] > blah17
                                         blah18 (x.plus 1) > @
-                                        [^ x] > blah18
+                                        [x] > blah18
                                           blah19 (x.plus 1) > @
-                                          [^ x] > blah19
+                                          [x] > blah19
                                             blah20 (x.plus 1) > @
-                                            [^ x] > blah20
+                                            [x] > blah20
                                               blah21 (x.plus 1) > @
-                                              [^ x] > blah21
+                                              [x] > blah21
                                                 blah22 (x.plus 1) > @
-                                                [^ x] > blah22
+                                                [x] > blah22
                                                   blah23 (x.plus 1) > @
-                                                  [^ x] > blah23
+                                                  [x] > blah23
                                                     blah24 (x.plus 1) > @
-                                                    [^ x] > blah24
+                                                    [x] > blah24
                                                       blah25 (x.plus 1) > @
-                                                      [^ x] > blah25
+                                                      [x] > blah25
                                                         blah26 (x.plus 1) > @
-                                                        [^ x] > blah26
+                                                        [x] > blah26
                                                           blah27 (x.plus 1) > @
-                                                          [^ x] > blah27
+                                                          [x] > blah27
                                                             blah28 (x.plus 1) > @
-                                                            [^ x] > blah28
+                                                            [x] > blah28
                                                               blah29 (x.plus 1) > @
-                                                              [^ x] > blah29
+                                                              [x] > blah29
                                                                 blah30 (x.plus 1) > @
-                                                                [^ x] > blah30
+                                                                [x] > blah30
                                                                   blah31 (x.plus 1) > @
-                                                                  [^ x] > blah31
+                                                                  [x] > blah31
                                                                     blah32 (x.plus 1) > @
-                                                                    [^ x] > blah32
+                                                                    [x] > blah32
                                                                       blah33 (x.plus 1) > @
-                                                                      [^ x] > blah33
+                                                                      [x] > blah33
                                                                         blah34 (x.plus 1) > @
-                                                                        [^ x] > blah34
+                                                                        [x] > blah34
                                                                           blah35 (x.plus 1) > @
-                                                                          [^ x] > blah35
+                                                                          [x] > blah35
                                                                             blah36 (x.plus 1) > @
-                                                                            [^ x] > blah36
+                                                                            [x] > blah36
                                                                               blah37 (x.plus 1) > @
-                                                                              [^ x] > blah37
+                                                                              [x] > blah37
                                                                                 blah38 (x.plus 1) > @
-                                                                                [^ x] > blah38
+                                                                                [x] > blah38
                                                                                   blah39 (x.plus 1) > @
                                                                                   I > blah39
 
@@ -216,7 +216,7 @@
     eq. > @
       a 42
       42
-    [^ x] > a
+    [x] > a
       take > @
       ^.x > [^] > take
 

@@ -157,15 +157,44 @@ public interface Winsock extends StdCallLibrary {
     int recv(Pointer sockfd, byte[] buf, int len, int flags);
 
     /**
-     * Retrieve the last error from winsock.
-     * @return The code of the last winsock error
+     * Convert an IPv4 address from text into a 32-bit number in network byte
+     * order.
+     *
+     * <p>Four forms are accepted — {@code a.b.c.d}, {@code a.b.c}, {@code a.b}
+     * and {@code a} — and every part is read the way C reads a number: decimal,
+     * octal behind a leading zero, or hexadecimal behind a leading {@code 0x}.
+     * A part that is not the last one stands for one byte, and the last one
+     * fills all the bytes still left, so {@code 127.1} is {@code 127.0.0.1}.</p>
+     *
+     * <p>The address arrives as NUL-terminated bytes and not as a
+     * {@link String} because this library is loaded with
+     * {@link W32APIOptions#DEFAULT_OPTIONS}, whose type mapper hands a
+     * {@link String} over as {@code wchar_t*}. That is right for the wide
+     * entry points of WS2_32 and wrong for this one, which takes a narrow
+     * {@code const char*}: {@code 127.0.0.1} would reach it as UTF-16 and be
+     * read as {@code 1}, the byte after the first one being NUL. An array
+     * bypasses the mapper and is passed as the bytes it holds.</p>
+     *
+     * @param address The address to convert, NUL-terminated
+     * @return The address in network byte order, or {@code INADDR_NONE} when
+     *  the text is not one of those forms
      */
-    int WSAGetLastError();
+    int inet_addr(byte[] address);
 
     /**
-     * Set the last winsock error, so a following {@code WSAGetLastError} reads it
-     * back. It is the winsock counterpart of Kernel32's {@code SetLastError} and
-     * writes the same per-thread last-error slot.
+     * Set the last winsock error. It is the winsock counterpart of Kernel32's
+     * {@code SetLastError} and writes the same per-thread last-error slot.
+     *
+     * <p>There is no {@code WSAGetLastError} here on purpose. The slot it reads
+     * is overwritten by the JNI and JNA machinery that stands between a mapped
+     * call and the Java code around it, so a mapped {@code WSAGetLastError}
+     * answers with whatever that machinery left behind, usually zero, instead
+     * of the code the previous call set. The code is read back from
+     * {@link com.sun.jna.Native#getLastError()}, which hands over the copy JNA
+     * takes of the slot the instant every mapped call returns — this one
+     * included. JNA short-circuits Kernel32's {@code GetLastError} to that same
+     * copy for the same reason.</p>
+     *
      * @param error The error code to set
      */
     void WSASetLastError(int error);

@@ -549,7 +549,7 @@ final class PhDefaultTest {
             "the message explains what's going on",
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new EOnumber().put(1, new Data.ToPhi(1)),
+                () -> new PhCached().put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
             Matchers.containsString("Can't overwrite the cached attribute ")
