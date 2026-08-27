@@ -59,6 +59,7 @@ public final class MjInference extends MjSafe {
      * The directory where the XMIR prepared for the rules is saved.
      */
     @Parameter(
+        alias = "preInferenceDir",
         property = "eo.preInferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-pre-inference"
@@ -69,6 +70,7 @@ public final class MjInference extends MjSafe {
      * The directory where the tables are saved.
      */
     @Parameter(
+        alias = "inferenceDir",
         property = "eo.inferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-inference"
@@ -85,13 +87,19 @@ public final class MjInference extends MjSafe {
      * to add an execution to a build, and there is nothing to add here — the
      * goal already runs and one flag decides whether it writes.</p>
      */
-    @Parameter(property = "eo.inferenceReport", required = true, defaultValue = "false")
+    @Parameter(
+        alias = "inferenceReport",
+        property = "eo.inferenceReport",
+        required = true,
+        defaultValue = "false"
+    )
     private boolean report;
 
     /**
      * The directory where the pages are written.
      */
     @Parameter(
+        alias = "inferenceReportDir",
         property = "eo.inferenceReportDir",
         required = true,
         defaultValue = "${project.build.directory}/site/inference"
