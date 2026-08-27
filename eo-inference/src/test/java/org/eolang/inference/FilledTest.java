@@ -29,15 +29,18 @@ final class FilledTest {
                 Map.of("void", "true", "type", "Φ.node")
             )
         );
+        final Provided owned = new Provided(
+            rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
+        );
         MatcherAssert.assertThat(
             "an exact fill of the whole answer must win over a fill of one of its prefixes",
             new Filled(
-                Map.of("app", List.of("value-x", "value-foo")),
                 Map.of("app", "form"),
-                new Provided(
-                    rows, Collections.emptyMap(),
-                    Collections.emptyList(), Collections.emptyMap()
-                )
+                owned,
+                new Bound(
+                    Map.of("app", List.of("value-x", "value-foo")),
+                    Collections.emptyMap(), Map.of("app", "form"), owned
+                ).all()
             ).instead("Φ.node.x", "app"),
             Matchers.equalTo("value-x")
         );
@@ -54,15 +57,18 @@ final class FilledTest {
             )
         );
         rows.put("long-fill", List.of(Map.of("name", "y", "type", "Φ.result")));
+        final Provided owned = new Provided(
+            rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
+        );
         MatcherAssert.assertThat(
             "the more specific (longer) filled prefix must win, not whichever the map yields first",
             new Filled(
-                Map.of("app", List.of("short-fill", "long-fill")),
                 Map.of("app", "form"),
-                new Provided(
-                    rows, Collections.emptyMap(),
-                    Collections.emptyList(), Collections.emptyMap()
-                )
+                owned,
+                new Bound(
+                    Map.of("app", List.of("short-fill", "long-fill")),
+                    Collections.emptyMap(), Map.of("app", "form"), owned
+                ).all()
             ).instead("Φ.node.x.y", "app"),
             Matchers.equalTo("Φ.result")
         );
