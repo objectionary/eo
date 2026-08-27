@@ -79,12 +79,34 @@ SPDX-License-Identifier: MIT
             <xsl:value-of select="@where"/>
           </code>
           <xsl:text> turns out to be</xsl:text>
+          <xsl:apply-templates select="seen"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:text> — we know nothing about it</xsl:text>
         </xsl:otherwise>
       </xsl:choose>
     </span>
+  </xsl:template>
+  <xsl:template match="seen">
+    <xsl:text>, and callers were seen putting </xsl:text>
+    <xsl:for-each select="*">
+      <xsl:if test="position() &gt; 1">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+      <xsl:apply-templates select="."/>
+    </xsl:for-each>
+    <xsl:text> in it</xsl:text>
+  </xsl:template>
+  <xsl:template match="seen/ref">
+    <code>
+      <xsl:value-of select="@loc"/>
+    </code>
+  </xsl:template>
+  <xsl:template match="seen/data">
+    <xsl:text>a datum</xsl:text>
+  </xsl:template>
+  <xsl:template match="seen/unknown">
+    <xsl:text>too many things to name</xsl:text>
   </xsl:template>
   <xsl:template name="style">
     <style>

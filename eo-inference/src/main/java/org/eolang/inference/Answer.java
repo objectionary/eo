@@ -4,6 +4,9 @@
  */
 package org.eolang.inference;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * What one object of the program turns out to be.
  *
@@ -17,6 +20,14 @@ package org.eolang.inference;
  * colours an object green while the printed number counts it among the ones
  * we know nothing about is worse than either alone, and the only way to be
  * sure that cannot happen is for both to read the same answer.</p>
+ *
+ * <p>An object that settled on nothing better than somebody else's void
+ * carries what the program was seen putting into that void as well. It is
+ * evidence and not an answer — the callers of today do not oblige the one
+ * written tomorrow — but a reader told that their object is whatever
+ * {@code Φ.bool.and.x} turns out to be has nowhere to go next, and a reader
+ * told that {@code Φ.true} and {@code Φ.false} have both been put there has.
+ * The rung is untouched by it.</p>
  *
  * @since 0.70.0
  */
@@ -33,6 +44,11 @@ final class Answer {
     private final int climbed;
 
     /**
+     * What the program was seen putting into the void it is rooted at.
+     */
+    private final Collection<Type> witnesses;
+
+    /**
      * Ctor.
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
@@ -40,8 +56,22 @@ final class Answer {
      *  left to find out
      */
     Answer(final String where, final int rung) {
+        this(where, rung, Collections.emptyList());
+    }
+
+    /**
+     * Ctor.
+     * @param where The object this one settled on, which is the object itself
+     *  when the walk went nowhere
+     * @param rung The rung it stands on, from nothing at all up to nothing
+     *  left to find out
+     * @param seen What the program was seen putting into the void it is
+     *  rooted at, empty when it is rooted at none or nobody fills it
+     */
+    Answer(final String where, final int rung, final Collection<Type> seen) {
         this.settled = where;
         this.climbed = rung;
+        this.witnesses = seen;
     }
 
     /**
@@ -58,5 +88,13 @@ final class Answer {
      */
     int rung() {
         return this.climbed;
+    }
+
+    /**
+     * What the program was seen putting into the void it is rooted at.
+     * @return The types, empty when nobody was seen filling it
+     */
+    Collection<Type> seen() {
+        return this.witnesses;
     }
 }
