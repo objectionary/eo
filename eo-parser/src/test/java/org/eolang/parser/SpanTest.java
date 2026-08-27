@@ -159,6 +159,24 @@ final class SpanTest {
     }
 
     @Test
+    void detectsTabAfterNonSpaceNonTabWhitespace() {
+        MatcherAssert.assertThat(
+            "a tab past a form-feed that indent() already counted must still be reported",
+            new Span("\f\tfoo", 1).tab(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresNonTabWhitespaceWithNoTabPresent() {
+        MatcherAssert.assertThat(
+            "leading whitespace with no tab at all must not be reported as tabbed",
+            new Span("\ffoo", 1).tab(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void ignoresTabAfterFirstNonSpace() {
         MatcherAssert.assertThat(
             "a tab past the first non-space character is irrelevant for the indent error",

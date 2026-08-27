@@ -54,7 +54,17 @@ final class Span {
      * @param line Line number (1-indexed)
      */
     Span(final String body, final int line) {
-        this(body, line, Span.leading(body), Span.tabbed(body));
+        this(body, line, Span.leading(body));
+    }
+
+    /**
+     * Ctor.
+     * @param body Line text
+     * @param line Line number
+     * @param leading Count of leading whitespace chars
+     */
+    private Span(final String body, final int line, final int leading) {
+        this(body, line, leading, Span.tabbed(body, leading));
     }
 
     /**
@@ -160,15 +170,11 @@ final class Span {
         return count;
     }
 
-    private static boolean tabbed(final String body) {
+    private static boolean tabbed(final String body, final int leading) {
         boolean found = false;
-        for (int idx = 0; idx < body.length(); idx = idx + 1) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '\t') {
+        for (int idx = 0; idx < leading; idx = idx + 1) {
+            if (body.charAt(idx) == '\t') {
                 found = true;
-                break;
-            }
-            if (glyph != ' ') {
                 break;
             }
         }
