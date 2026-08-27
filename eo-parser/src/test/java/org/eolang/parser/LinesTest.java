@@ -98,16 +98,18 @@ final class LinesTest {
 
     @Test
     void namesFailingNumberWhenTextThrows() {
-        final Text broken = () -> {
-            throw new IllegalStateException("broken line");
-        };
-        final Lines lines = new Lines(Collections.singletonList(broken));
-        final Exception thrown = Assertions.assertThrows(
-            Exception.class, () -> lines.line(1)
+        final Lines lines = new Lines(
+            Collections.singletonList(
+                (Text) () -> {
+                    throw new IllegalStateException("broken line");
+                }
+            )
         );
         MatcherAssert.assertThat(
             "the thrown exception message must name the failing line number",
-            thrown.getMessage(),
+            Assertions.assertThrows(
+                Exception.class, () -> lines.line(1)
+            ).getMessage(),
             Matchers.containsString("1")
         );
     }
