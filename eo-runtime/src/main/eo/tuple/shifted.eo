@@ -9,15 +9,14 @@
 
 [^ shift] > shifted
   shift.is-integer.if > @
-    list.slice
+    ^.slice
       if.
         shift.lt 0
         0
         shift
-      list.length
+      ^.length
     T
       "Given shift must be an integer"
-  ^ > list
 
   eq. ++> can-ignore-a-negative-shift
     shifted.

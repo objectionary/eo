@@ -10,10 +10,9 @@
 [^ substrings] > contains-any
   reduced. > @
     substrings.mapped
-      ^.text.contains x > [^ x] >>
+      ^.^.contains x > [^ x] >>
     false
     x.or a > [a x]
-  ^ > text
 
   contains-any. ++> can-contain-any-substring
     "Good morning"

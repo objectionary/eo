@@ -14,10 +14,9 @@
 
 [^] > trimmed
   if. > @
-    0.eq text.as-bytes.size
-    text
-    text.trimmed-right.trimmed-left
-  ^ > text
+    0.eq ^.as-bytes.size
+    ^
+    ^.trimmed-right.trimmed-left
 
   "no-whitespace".trimmed.eq "no-whitespace" ++> can-preserve-inner-content
 

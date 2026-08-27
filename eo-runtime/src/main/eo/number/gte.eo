@@ -9,10 +9,9 @@
 
 [^ x] > gte
   or. > @
-    n.gt
+    ^.gt
       x >> value!
-    n.eq value
-  ^ > n
+    ^.eq value
 
   eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity
     pinf.gte 42.5

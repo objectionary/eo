@@ -29,7 +29,7 @@
 
 [^] > touched
   reachable.if > @
-    f
+    ^
     if.
       or.
         descriptor.gte 0
@@ -47,19 +47,19 @@
                 "close"
                 descriptor
           0
-        f
+        ^
       T
         "Cant touch the file '%s': %s".printf
-          * f.path opened.output
+          * ^.path opened.output
   code. > accessible
     os.is-windows.if
       win32 *1
         "_access"
-        f.path
+        ^.path
         0
       posix *1
         "access"
-        f.path
+        ^.path
         0
   opened.code > descriptor
   os.is-windows.if > eexist
@@ -76,20 +76,19 @@
   linked.not.if > exclusive
     posix.exclusive
     0
-  ^ > f
-  f.is-symlink false > linked
+  ^.is-symlink false > linked
   called. > opened
     os.is-windows.if
       win32 *1
         "_open"
-        f.path
+        ^.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
       posix *1
         "open"
-        f.path
+        ^.path
         plus.
           posix.creat.plus exclusive
           posix.wronly

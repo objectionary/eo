@@ -15,10 +15,10 @@
   if. > @
     0.eq
       b.size >> len!
-    text
+    ^
     string
       slice.
-        text >> b!
+        ^ >> b!
         first-non-ws-index 0 >> idx!
         minus.
           number len
@@ -42,7 +42,6 @@
           or.
             c.eq 0C-
             c.eq 0D-
-  ^ > text
 
   "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 

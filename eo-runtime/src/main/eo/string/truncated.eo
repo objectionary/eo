@@ -27,10 +27,9 @@
           *
             string limit.as-scientific
     if.
-      limit.lt text.length
-      text.slice 0 limit
-      text
-  ^ > text
+      limit.lt ^.length
+      ^.slice 0 limit
+      ^
 
   eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"

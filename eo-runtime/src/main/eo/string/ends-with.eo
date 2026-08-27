@@ -15,13 +15,12 @@
       txt.size >> length!
     eq.
       slice.
-        text >> txt!
+        ^ >> txt!
         minus.
           number length
           size
         size
       substring >> part!
-  ^ > text
 
   ends-with. ++> can-end-with-a-substring
     "Hello world!"

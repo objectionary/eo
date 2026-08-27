@@ -29,14 +29,14 @@
     if.
       and.
         0.lt
-          text.length >> len!
+          ^.length >> len!
         "-".eq
-          text.slice 0 1
+          ^.slice 0 1
       string
         2D-.concat
           as-bytes.
             padded-left.
-              text.slice 1 ((number len).minus 1).as-number
+              ^.slice 1 ((number len).minus 1).as-number
               if.
                 1.gt width
                 0
@@ -44,11 +44,10 @@
                   width.minus 1
               "0"
               cant-pad
-      text.padded-left
+      ^.padded-left
         width
         "0"
         cant-pad
-  ^ > text
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-with-zeros
     "00Ж"

@@ -28,7 +28,6 @@
   [] > compile /Q.string.regex.pattern
     ? > ^
     ? > cant-compile /{Q.string}
-  ^ > expression
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     [^ txt] > match
@@ -36,20 +35,18 @@
         groups.length > count
         start.gte 0 > exists
         ^.groups.at index > [^ index] > group
-        $ > matched
         exists.if > next
           if.
             and.
               from.eq to
               to.eq ^.txt.length
             ^.missing
-            matched.
-              ^.matched-from-index
-                position.plus 1
-                if.
-                  from.eq to
-                  to.plus 1
-                  to
+            ^.matched-from-index
+              position.plus 1
+              if.
+                from.eq to
+                to.plus 1
+                to
           T
             "Matched block does not exist, can't get next"
         exists.if > text
@@ -78,8 +75,7 @@
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
-      matched. > next
-        matched-from-index 1 0
+      matched-from-index 1 0 > next
     [^ txt] > matches
       found.exists.and > @
         and.
@@ -96,7 +92,7 @@
       parsed.group 1 > group1!
       parsed.group 2 > group2!
       next. > parsed
-        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.expression
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.^
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
         * group1 group2
       ^.commented.regex.compile ^.retry-quoted > [^ message] > retry-commented

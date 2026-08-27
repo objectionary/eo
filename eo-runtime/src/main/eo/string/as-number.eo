@@ -17,12 +17,11 @@
 [^ cant-parse] > as-number
   if. > @
     not.
-      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches text
+      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches ^
     cant-parse
       "Can't convert text %s to number".printf
-        * text
-    head. ("%f".scanf text).at.^
-  ^ > text
+        * ^
+    head. ("%f".scanf ^).at.^
 
   1000.eq "1e3".as-number ++> can-convert-exponent-text
 

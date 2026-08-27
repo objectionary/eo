@@ -56,7 +56,7 @@
           nlen.eq 0
           ""
           string
-            text.as-bytes.slice bstart blen
+            ^.as-bytes.slice bstart blen
   minus. > blen
     [^ index accum result cause] >> recidx
       if. > @
@@ -102,7 +102,7 @@
                   T
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
-      ^.text.as-bytes.slice > b1
+      ^.^.as-bytes.slice > b1
         index.plus 1
         1
       eq. > b1808f
@@ -124,19 +124,19 @@
       eq. > b1cont
         b1.and C0-
         80-
-      ^.text.as-bytes.slice > b2
+      ^.^.as-bytes.slice > b2
         index.plus 2
         1
       eq. > b2cont
         b2.and C0-
         80-
-      ^.text.as-bytes.slice > b3
+      ^.^.as-bytes.slice > b3
         index.plus 3
         1
       eq. > b3cont
         b3.and C0-
         80-
-      ^.text.as-bytes.slice index 1 > byte
+      ^.^.as-bytes.slice index 1 > byte
       b2cont.and > fourvalid
         b3cont.and second4
       eq. > leadc0c1
@@ -178,13 +178,13 @@
         *
           csize
           index
-          ^.text.as-bytes
+          ^.^.as-bytes
     valid.if
       index.plus csize
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.text.as-bytes.slice index csize
+            ^.^.as-bytes.slice index csize
             index
   number len! > nlen
   number start! > nstart
@@ -196,8 +196,7 @@
   C0- > r2
   E0- > r3
   F0- > r4
-  text.as-bytes.size >> size!
-  ^ > text
+  ^.as-bytes.size >> size!
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice

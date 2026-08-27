@@ -14,20 +14,19 @@
   index.is-integer.if > @
     concat.
       with.
-        list.front bounded
+        ^.front bounded
         item
-      list.back
-        list.length.minus bounded
+      ^.back
+        ^.length.minus bounded
     T
       "Given index must be an integer"
   if. > bounded
     0.gt index
     0
     if.
-      index.gt list.length
-      list.length
+      index.gt ^.length
+      ^.length
       index
-  ^ > list
 
   eq. ++> can-clamp-a-negative-index-to-the-front-without-duplicating
     withi.

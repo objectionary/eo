@@ -28,13 +28,13 @@
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if
-        divisor.is-nan.if nan x
+        divisor.is-nan.if nan ^
         if.
-          x.as-bytes.eq 80-00-00-00-00-00-00-00
-          x
+          ^.as-bytes.eq 80-00-00-00-00-00-00-00
+          ^
           if.
             gte.
-              number x.as-bytes >> dividend
+              number ^.as-bytes >> dividend
               0
             [^] >> abs-mod
               shrink > @
@@ -57,7 +57,6 @@
                     rest.minus chunk
                     rest
             abs-mod.neg
-  ^ > x
 
   eq. ++> can-recover-from-a-modulo-by-zero
     "recovered"

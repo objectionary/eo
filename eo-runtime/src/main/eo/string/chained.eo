@@ -11,12 +11,11 @@
 [^ others] > chained
   if. > @
     0.eq others.length
-    text
+    ^
     string
       others.reduced
-        text.as-bytes
+        ^.as-bytes
         accum.concat str.as-bytes > [accum str]
-  ^ > text
 
   eq. ++> can-chain-with-other-strings
     "Hello, world!"

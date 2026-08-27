@@ -15,11 +15,10 @@
       txt.size >> length!
     eq.
       slice.
-        text >> txt!
+        ^ >> txt!
         0
         size
       substring >> part!
-  ^ > text
 
   starts-with. ++> can-start-with-a-substring
     "Hello, world"

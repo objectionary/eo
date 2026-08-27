@@ -9,10 +9,9 @@
 
 [^ x] > lte
   or. > @
-    n.lt
+    ^.lt
       x >> value!
-    n.eq value
-  ^ > n
+    ^.eq value
 
   eq. ++> can-be-less-than-or-equal-to-a-float-when-negative-infinity
     ninf.lte 42.5

@@ -13,21 +13,21 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > as-decimal
-  n.is-finite.not.if > @
+  ^.is-finite.not.if > @
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.eq -9.223372036854776e18
+      ^.eq -9.223372036854776e18
       "-9223372036854775808".as-bytes
       if.
-        n.abs.gte 9.223372036854776e18
+        ^.abs.gte 9.223372036854776e18
         T
           "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
         if.
-          n.abs.lt 9007199254740992
+          ^.abs.lt 9007199254740992
           if.
             and.
-              n.lt 0
+              ^.lt 0
               not.
                 truncated.eq 0
             "-".as-bytes.concat
@@ -47,13 +47,13 @@
               | truncated
             quick truncated
           if.
-            n.lt 0
+            ^.lt 0
             if. > [^ m] >> negative
               m.as-number.eq 0
               digits m
               "-".as-bytes.concat
                 digits m
-            | ((n.times -1).as-i64 I)
+            | ((^.times -1).as-i64 I)
             [^ n] >> digits
               if. > @
                 n.lt ^.ten
@@ -65,10 +65,9 @@
                     plus. (n.minus (q.times ^.ten)).as-number 48
               n.div ^.ten I > bits!
               i64 bits > q
-            | (n.as-i64 I)
-  ^ > n
+            | (^.as-i64 I)
   10.as-i64 I > ten!
-  n.abs.floor > truncated
+  ^.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"

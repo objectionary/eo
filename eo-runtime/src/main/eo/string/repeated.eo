@@ -35,9 +35,8 @@
             concat.
               half.concat >> twice
                 ^.rec-repeated (n.div 2).floor >> half!
-              ^.text.as-bytes
+              ^.^.as-bytes
       | times
-  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"

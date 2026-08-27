@@ -125,11 +125,10 @@
         as-number.
           i.plus 1
       i
-  ^ > format
   2.power 63 >> limit!
   size. >> span!
     bytes
-      format.as-bytes >> raw!
+      ^.as-bytes >> raw!
   [^ index auto acc] >> spec
     if. > @
       gte.
@@ -137,7 +136,7 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * ^.format
+          * ^.^
       if.
         25-.eq conv
         if.
@@ -154,7 +153,7 @@
             acc.concat 25-
           T
             "The escaped %% conversion does not take flags, width or precision".printf
-              * ^.format
+              * ^.^
         walk
           as-number.
             plus.
@@ -323,7 +322,7 @@
             index.plus 1
       T
         "The positional argument index in the format %s is too large".printf
-          * ^.format
+          * ^.^
       if.
         positional.as-bool.and
           lt.

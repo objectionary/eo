@@ -15,20 +15,19 @@
       if.
         0.gt
           index >> idx!
-        list.back (number idx).neg
+        ^.back (number idx).neg
         if.
           gte.
             number idx
-            list.length
-          list
+            ^.length
+          ^
           if. > [^ tup] >> rechead
             tup.length.eq idx
             tup
             ^.rechead tup.tail
-          | list
+          | ^
     T
       "Given index must be an integer"
-  ^ > list
 
   eq. ++> can-take-a-front-slice
     front.

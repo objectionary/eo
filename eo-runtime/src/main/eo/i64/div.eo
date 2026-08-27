@@ -18,7 +18,7 @@
     if.
       eq.
         and.
-          n.as-bytes.xor x.as-bytes
+          ^.as-bytes.xor x.as-bytes
           80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       as-bytes.
@@ -57,11 +57,10 @@
             remainder.left 1
             and.
               right.
-                magnitude ^.n.as-bytes
+                magnitude ^.^.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot
-  ^ > n
   as-bytes. >> subtrahend
     plus.
       i64

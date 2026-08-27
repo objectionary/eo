@@ -23,9 +23,8 @@
       read.
         input.read 1048576
   | > @
-    origin
+    ^
     0
-  ^ > origin
 
   eq. ++> can-read-all-bytes-and-return-the-length
     length.

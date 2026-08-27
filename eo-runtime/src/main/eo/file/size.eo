@@ -13,15 +13,14 @@
     info.code.eq 0
     info.output.size
     cant-measure
-  ^ > f
   called. > info
     os.is-windows.if
       win32 *1
         "_stat64"
-        f.path
+        ^.path
       posix *1
         "stat"
-        f.path
+        ^.path
 
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0

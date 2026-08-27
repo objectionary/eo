@@ -32,14 +32,13 @@
             fill
     if.
       width.gt
-        text.length >> len!
+        ^.length >> len!
       string
         concat.
           as-bytes.
             fill.repeated (width.minus len).as-number cant-pad
-          text.as-bytes
-      text
-  ^ > text
+          ^.as-bytes
+      ^
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-left
     "  Ж"

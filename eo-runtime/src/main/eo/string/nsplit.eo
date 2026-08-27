@@ -32,17 +32,17 @@
               string limit.as-scientific
     if.
       1.eq limit
-      * text
+      * ^
       [^ accum start current count] >> rec-nsplit
         if. > @
-          ^.text.size.eq current
+          ^.^.size.eq current
           appended
           if.
             or.
               size.eq 0
               gt.
                 current.plus size
-                ^.text.size
+                ^.^.size
             ^.rec-nsplit
               accum
               start
@@ -80,8 +80,7 @@
         0
         0
         0
-  text.as-bytes >> bts!
-  ^ > text
+  ^.as-bytes >> bts!
 
   eq. ++> can-format-the-error-message-of-a-fractional-limit
     "Invalid limit 1.500000 for nsplit, must be at least 1"

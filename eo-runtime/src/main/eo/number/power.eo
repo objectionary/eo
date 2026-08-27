@@ -25,11 +25,11 @@
           base.is-finite.if
             if.
               eq.
-                number num.as-bytes >> base
+                number ^.as-bytes >> base
                 0
               if.
                 and.
-                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  ^.as-bytes.eq 80-00-00-00-00-00-00-00
                   odd
                 if.
                   expo.gt 0
@@ -110,7 +110,6 @@
                 base.abs.eq 1
                 nan
                 pinf
-  ^ > num
 
   gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
     10.power -315

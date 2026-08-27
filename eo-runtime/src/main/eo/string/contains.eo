@@ -17,7 +17,7 @@
       and.
         length.eq size
         eq.
-          text >> txt!
+          ^ >> txt!
           substring >> part!
       [^ index] >> rec-contains
         if. > @
@@ -32,7 +32,6 @@
   minus. >> end!
     number length
     size
-  ^ > text
 
   contains. ++> can-contain-a-substring
     "Hello, world!"

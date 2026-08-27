@@ -22,13 +22,12 @@
         tup.head.deleted
         ^.r tup.tail
     | entries
-    d.as-path.as-file.deleted
-    d
-  ^ > d
+    ^.as-path.as-file.deleted
+    ^
   recovered > [^] > entries
-    ^.d.walk "**"
-    ^.d.exists.if
-      ^.d.walk "**"
+    ^.^.walk "**"
+    ^.^.exists.if
+      ^.^.walk "**"
       *
 
   ++> can-delete-a-directory-containing-a-dangling-symlink

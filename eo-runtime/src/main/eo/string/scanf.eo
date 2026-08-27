@@ -32,7 +32,6 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^ read] > scanf
-  ^ > format
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -270,7 +269,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.format.length
+      position.gte ^.^.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -324,7 +323,7 @@
                 escaped ch
             found
             false
-    ^.format.slice > ch
+    ^.^.slice > ch
       position
       1
   | >> tokens

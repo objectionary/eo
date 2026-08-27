@@ -37,12 +37,11 @@
         0.gt index
         gte.
           number index
-          text.length >> len!
+          ^.length >> len!
       fallback
         "Given index %f is out of text bounds".printf
           * i
-      text.slice index 1
-  ^ > text
+      ^.slice index 1
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Index must be an integer, but was 1.500000"

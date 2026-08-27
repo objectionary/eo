@@ -15,10 +15,10 @@
   if. > @
     0.eq
       b.size >> len!
-    text
+    ^
     string
       slice.
-        text >> b!
+        ^ >> b!
         0
         [^ index] >> first-non-ws-index
           if. > @
@@ -40,7 +40,6 @@
           or.
             c.eq 0C-
             c.eq 0D-
-  ^ > text
 
   eq. ++> can-trim-a-text-of-trailing-spaces-only
     "     ".trimmed-right
