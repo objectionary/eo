@@ -25,7 +25,7 @@ final class Lines {
      * @param lines The source in lines
      */
     Lines(final List<Text> lines) {
-        this.source = lines;
+        this.source = List.copyOf(lines);
     }
 
     /**
