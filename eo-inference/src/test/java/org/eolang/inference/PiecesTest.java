@@ -86,6 +86,29 @@ final class PiecesTest {
         );
     }
 
+    @Test
+    void saysWhatCallersWereSeenPassing() {
+        MatcherAssert.assertThat(
+            "an amber mark must say what turned up in the void, but it didnt",
+            PiecesTest.drawn(
+                "[if] > bool",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bool.if", 1, "if",
+                        new Answer(
+                            "Φ.bool.if", 1,
+                            Arrays.asList(new Ref("Φ.true"), new Ref("Φ.false"))
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit/told/seen/ref[@loc='Φ.true']",
+                "/line/bit/told/seen/ref[@loc='Φ.false']"
+            )
+        );
+    }
+
     private static String drawn(final String line, final Collection<Written> written) {
         return new Xembler(
             new Directives()

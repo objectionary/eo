@@ -59,10 +59,54 @@
         "errno"
         *
 
+  ++> can-make-a-directory-and-return-the-same-path
+    dir.made.path.eq dir.path > @
+    as-dir. > dir
+      mktemp.tmpfile.deleted.as-path.resolved "foo-same"
+
+  ++> can-make-a-directory-with-a-unicode-name
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "плюшка-目录"
+
   ++> can-make-a-new-directory
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
+  ++> can-make-an-already-existing-directory
+    dir.made.exists.and dir.made.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-existing"
+
+  ++> can-make-deeply-nested-directories
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-1/foo-2/foo-3/foo-4"
+
+  ++> can-make-nested-directories-under-an-existing-parent
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        parent.resolved "foo-inner/foo-deepest"
+    made. > parent
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-partial"
+
+  ++> can-make-nested-directories-with-missing-parents
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-parent/foo-child"
+
   mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
+
+  --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
+    made. > @
+      as-dir.
+        occupied.resolved "foo-child"
+    mktemp.tmpfile.as-path > occupied
