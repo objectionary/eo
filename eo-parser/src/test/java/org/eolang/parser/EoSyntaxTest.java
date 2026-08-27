@@ -163,13 +163,23 @@ final class EoSyntaxTest {
         final String src = "[] > x-н, 1".concat(System.lineSeparator());
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void printsErrorsWhenSyntaxIsBroken() throws Exception {
+        MatcherAssert.assertThat(
+            "EO syntax is broken, thus errors should be printed",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(src)).parsed().toString()
+                new EoSyntax(
+                    new InputOf("[] > x-н, 1".concat(System.lineSeparator()))
+                ).parsed().toString()
             ),
-            XhtmlMatchers.hasXPaths(
-                "/object/errors/error",
-                String.format("/object[listing='%s']", src)
-            )
+            XhtmlMatchers.hasXPaths("/object/errors/error")
         );
     }
 
