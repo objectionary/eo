@@ -29,6 +29,13 @@ import org.cactoos.text.TextOf;
  * be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9
  * }</pre></p>
  *
+ * <p>Lines may be terminated by {@code \n} or by {@code \r\n}. The
+ * carriage return has to be consumed by the split, because each line is
+ * then matched with a regular expression that must consume the whole line
+ * and {@code .} does not match a {@code \r}. A table written on Windows —
+ * such as the built-in fallback of {@link CommitHashesText}, joined with
+ * {@link System#lineSeparator()} — would otherwise match no tag at all.</p>
+ *
  * @since 0.28.11
  */
 final class ChText implements CommitHash {
@@ -95,7 +102,7 @@ final class ChText implements CommitHash {
                                     t -> t.asString().matches(
                                         String.format("^.+\\s\\Q%s\\E$", this.tag)
                                     ),
-                                    new Split(new TextOf(this.source), "\\n")
+                                    new Split(new TextOf(this.source), "\\r?\\n")
                                 ),
                                 () -> {
                                     throw new HashNotFoundException(

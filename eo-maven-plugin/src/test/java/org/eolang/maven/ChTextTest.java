@@ -143,6 +143,38 @@ final class ChTextTest {
     }
 
     @Test
+    void readsCorrectHashFromWindowsLineEndings() {
+        MatcherAssert.assertThat(
+            "a table whose lines end with CRLF must still yield the hash of the requested tag",
+            new ChText(
+                () -> String.join(
+                    ChTextTest.crnl(),
+                    "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
+                    "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17"
+                ),
+                "0.23.15"
+            ).value(),
+            Matchers.equalTo("5fe5ad8d21dbe418038fa4c86e096fb037f290a9")
+        );
+    }
+
+    @Test
+    void readsLastHashFromWindowsLineEndings() {
+        MatcherAssert.assertThat(
+            "the last line of a CRLF table must be matched as well as the first one",
+            new ChText(
+                () -> String.join(
+                    ChTextTest.crnl(),
+                    "5fe5ad8d21dbe418038fa4c86e096fb037f290a9 0.23.15",
+                    "15c85d7f8cffe15b0deba96e90bdac98a76293bb 0.23.17"
+                ),
+                "0.23.17"
+            ).value(),
+            Matchers.equalTo("15c85d7f8cffe15b0deba96e90bdac98a76293bb")
+        );
+    }
+
+    @Test
     void executesNotAtTagMatchesHash() {
         final AtomicInteger count = new AtomicInteger(0);
         new ChText(
@@ -179,5 +211,9 @@ final class ChTextTest {
             count.get(),
             Matchers.equalTo(2)
         );
+    }
+
+    private static String crnl() {
+        return new String(new char[] {(char) 13, (char) 10});
     }
 }
