@@ -2,10 +2,6 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-// @todo #7588:30min No production caller resolves to Comments#seal anymore
-//  since it was moved into Globals#seal(Emit, Span); only CommentsTest still
-//  exercises it. Delete this class and CommentsTest once that test's cases
-//  are confirmed to be covered by GlobalsTest.
 package org.eolang.parser;
 
 import java.util.List;
