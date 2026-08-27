@@ -89,6 +89,17 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void measuresSubMillisecondParsingTime() throws Exception {
+        final EoSyntax syntax = new EoSyntax("# Ünïcödé.\n[] > tiny\n");
+        syntax.parsed();
+        MatcherAssert.assertThat(
+            "ms attribute of a sub-millisecond parse is not rounded up to one",
+            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
     void reportsMsWithinSaneBound() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not within a sane bound for a small program",
