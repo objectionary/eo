@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Arrays;
 import java.util.Collections;
+import org.cactoos.Text;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -92,6 +93,24 @@ final class LinesTest {
                 Matchers.containsString("500"),
                 Matchers.containsString("2")
             )
+        );
+    }
+
+    @Test
+    void namesFailingNumberWhenTextThrows() {
+        final Lines lines = new Lines(
+            Collections.singletonList(
+                (Text) () -> {
+                    throw new IllegalStateException("broken line");
+                }
+            )
+        );
+        MatcherAssert.assertThat(
+            "the thrown exception message must name the failing line number",
+            Assertions.assertThrows(
+                Exception.class, () -> lines.line(1)
+            ).getMessage(),
+            Matchers.containsString("1")
         );
     }
 }

@@ -5,7 +5,6 @@
 package org.eolang.parser;
 
 import java.util.List;
-import java.util.Optional;
 import org.cactoos.Text;
 import org.cactoos.text.UncheckedText;
 
@@ -50,9 +49,13 @@ final class Lines {
                 )
             );
         }
-        return Optional.ofNullable(this.source.get(number - 1))
-            .map(UncheckedText::new)
-            .map(UncheckedText::asString)
-            .orElse("");
+        return new UncheckedText(
+            this.source.get(number - 1),
+            error -> {
+                throw new IllegalStateException(
+                    String.format("Failed to read line #%d", number), error
+                );
+            }
+        ).asString();
     }
 }
