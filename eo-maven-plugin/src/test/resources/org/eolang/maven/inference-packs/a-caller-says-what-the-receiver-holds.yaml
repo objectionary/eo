@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Inside the body of `halved` there is nothing to say about `^` but the void
+# declared for it, since every caller may hand over something different. At a
+# call site there is: `42.halved` says the receiver is a number, so what the
+# body reads through `^` can be followed from there. The answer in the body
+# stays rooted at the void and the answer at the call site does not, which is
+# the same substitution an argument already gets.
+eo:
+  app.eo: |
+    [] > app
+      42.halved.as-bytes > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > plus
+        x > @
+      [^] > halved
+        ^.plus 0 > @
+links:
+  - "/links/type[@id='Φ.number.halved.φ']/ref[@loc='Φ.number.halved.ρ.plus']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.plus.x.as-bytes']"

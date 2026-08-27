@@ -211,6 +211,7 @@
         <xsl:attribute name="pos" select="@pos - 1"/>
         <xsl:attribute name="base" select="'ξ'"/>
       </o>
+      <xsl:apply-templates select="o"/>
     </o>
   </xsl:template>
   <xsl:template match="o[@base!='ξ' and @base!='ρ' and @base!=$eo:empty and @base!=$eo:bottom]" mode="no-dots">

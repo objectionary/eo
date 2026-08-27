@@ -38,7 +38,7 @@ final class BoundTest {
         MatcherAssert.assertThat(
             "the second application of a chain must fill the void the first one left empty",
             new Bound(
-                args, pairs,
+                args, Collections.emptyMap(), pairs,
                 new Provided(
                     rows, Collections.emptyMap(),
                     Collections.emptyList(), Collections.emptyMap()

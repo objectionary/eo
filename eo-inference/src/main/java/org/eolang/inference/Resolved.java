@@ -76,10 +76,12 @@ public final class Resolved implements Clue {
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Pairs written = new Pairs(new XMLDocument(links));
         final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, voids)
+            new Dispatched(given, dispatches, args, world.receivers(), voids)
         ).from(
             new Settled(
-                new Dispatched(given, dispatches, args, Collections.emptyList())
+                new Dispatched(
+                    given, dispatches, args, world.receivers(), Collections.emptyList()
+                )
             ).from(written.all())
         );
         final Map<String, Type> rows = new Refs(

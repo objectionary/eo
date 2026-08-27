@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,25 +49,12 @@ final class Filled {
 
     /**
      * Ctor.
-     * @param arguments The arguments of every application, from {@link Given}
      * @param links The pairs, each name against the one it is a copy of
      * @param provided The provides table, by the name a type goes by
+     * @param bound What every application and every dispatch fills, from
+     *  {@link Bound}
      */
     Filled(
-        final Map<String, List<String>> arguments,
-        final Map<String, String> links,
-        final Provided provided
-    ) {
-        this(links, provided, new Bound(arguments, links, provided).all());
-    }
-
-    /**
-     * Ctor.
-     * @param links The pairs, each name against the one it is a copy of
-     * @param provided The provides table, by the name a type goes by
-     * @param bound What every application fills, from {@link Bound}
-     */
-    private Filled(
         final Map<String, String> links,
         final Provided provided,
         final Map<String, Map<String, String>> bound

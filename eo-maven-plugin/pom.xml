@@ -78,6 +78,7 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
       <version>1.9.25.1</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -476,7 +477,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.1.0</version>
+            <version>5.1.1</version>
           </dependency>
         </dependencies>
       </plugin>

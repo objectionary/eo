@@ -13,7 +13,13 @@ concurrency:
 jobs:
   fast:
     timeout-minutes: 90
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     steps:
       # The depth is two, not zero: the step below reads only the merge
       # commit and its first parent. A full clone drags in `gh-pages`, which
@@ -88,4 +94,4 @@ jobs:
       - if: steps.eo.outputs.classes != ''
         env:
           CLASSES: ${{ steps.eo.outputs.classes }}
-        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' "-Dtest=${CLASSES}"
+        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"

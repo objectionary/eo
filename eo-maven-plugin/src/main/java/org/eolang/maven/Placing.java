@@ -207,7 +207,7 @@ final class Placing implements Step {
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             if (tojo.isPresent()) {
                 if (!Files.exists(target)) {
-                    Logger.info(
+                    Logger.debug(
                         this,
                         "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
                         file, target
