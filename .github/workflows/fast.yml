@@ -67,7 +67,13 @@ jobs:
                   fi
                 done \
               | paste -sd, -
-          )
+          ) || true
+          # The `|| true` is what lets the guard below run at all. A step
+          # script runs under `-e -o pipefail`, so a branch that touches no
+          # `.eo` file leaves `grep` with nothing to match, `grep` exits 1,
+          # the pipeline inherits it and the assignment dies before anything
+          # reads `classes`. On the left of `||` the status is nobody's
+          # business and `classes` simply comes out empty.
           if [ -z "${classes}" ]; then
             echo 'This branch touches no .eo file that owns tests, nothing to run'
           else
