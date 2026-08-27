@@ -111,7 +111,6 @@
           minus.
             code from
             48
-  T message > [message] >> failure
   if. > [^ i] >> flags-end
     i.gte
       number span
@@ -179,7 +178,7 @@
           truncated.
             string text
             number ^.precision
-            failure
+            I
           text
       |
         seq *
@@ -211,7 +210,7 @@
             precise.as-bool.if
               number precision
               6
-            failure
+            I
           if.
             78-.eq conv
             capped (bytes datum).as-hex
@@ -242,7 +241,7 @@
       padded-zeros.
         string value
         number width
-        failure
+        I
     positional.as-bool.if > flags!
       as-number.
         plus.
@@ -280,7 +279,7 @@
           string value
           number width
           " "
-          failure
+          I
       zero.as-bool.if
         filled
         as-bytes.
@@ -288,7 +287,7 @@
             string value
             number width
             " "
-            failure
+            I
     and. > positional!
       gt.
         number dollar

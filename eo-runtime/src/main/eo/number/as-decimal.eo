@@ -53,10 +53,7 @@
               digits m
               "-".as-bytes.concat
                 digits m
-            |
-              as-i64.
-                n.times -1
-                T message > [message] >> failure
+            | ((n.times -1).as-i64 I)
             [^ n] >> digits
               if. > @
                 n.lt ^.ten
@@ -66,11 +63,11 @@
                   ^.digits q
                   as-char.
                     plus. (n.minus (q.times ^.ten)).as-number 48
-              n.div ^.ten failure > bits!
+              n.div ^.ten I > bits!
               i64 bits > q
-            | (n.as-i64 failure)
+            | (n.as-i64 I)
   ^ > n
-  10.as-i64 failure > ten!
+  10.as-i64 I > ten!
   n.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
