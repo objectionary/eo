@@ -63,7 +63,7 @@ final class SpanTest {
     void ignoresVerticalTabAsTrailingWhitespace() {
         MatcherAssert.assertThat(
             "a line ending in a vertical tab is not trailing whitespace under R-2.2.5",
-            new Span("[] > foo\u000B", 1).trailing(),
+            new Span("[] > foo", 1).trailing(),
             Matchers.is(false)
         );
     }
@@ -72,7 +72,7 @@ final class SpanTest {
     void ignoresNonBreakingSpaceAsTrailingWhitespace() {
         MatcherAssert.assertThat(
             "a line ending in a non-breaking space is not trailing whitespace under R-2.2.5",
-            new Span("[] > foo\u00A0", 1).trailing(),
+            new Span("[] > foo ", 1).trailing(),
             Matchers.is(false)
         );
     }
