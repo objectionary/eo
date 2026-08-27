@@ -10,7 +10,7 @@ import org.cactoos.Text;
 import org.cactoos.text.UncheckedText;
 
 /**
- * The source in lines.
+ * Addresses a source's lines by number.
  * @since 0.50
  */
 final class Lines {
