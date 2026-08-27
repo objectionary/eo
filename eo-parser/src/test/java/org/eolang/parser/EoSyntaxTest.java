@@ -229,6 +229,24 @@ final class EoSyntaxTest {
         );
     }
 
+    @Test
+    void keepsListingVerbatimWithCrlf() throws Exception {
+        final String src = String.join(
+            "\r\n",
+            "# Sample.",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "listing must hold CRLF verbatim, regardless of platform",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
+        );
+    }
+
     @ParameterizedTest
     @MethodSource("parsesSuccessfullyArgs")
     void parsesSuccessfully(final String code) {
