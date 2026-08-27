@@ -62,7 +62,7 @@
     "recovered"
     "abc".split
       ""
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"

@@ -48,14 +48,18 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ address port] > socket
+[address port] > socket
   os.is-windows.if > @
     [^ sys] >> impl
       code. > addr
         sys.raw *1
           "inet_addr"
           ^.address
-      addr.as-i32 > addrint
+      as-i32. > addrint
+        if.
+          addr.gt 2147483647
+          addr.minus 4294967296
+          addr
       [^ descriptor] > closed-socket
         if. > @
           closed.eq -1
@@ -139,7 +143,7 @@
           ^.^.guarded opened ^.sys.cleanup
         if. > converted
           and.
-            ^.addr.eq ^.sys.none
+            ^.addr.eq ^.sys.unresolved
             not.
               ^.^.address.eq "255.255.255.255"
           cant
@@ -195,7 +199,7 @@
         ^.htons ^.checked-port
         addrint
     |
-      [^]
+      []
         raw > @
         if. > cleanup
           eq.
@@ -220,7 +224,7 @@
             "WSAStartup"
             win32.version
     impl
-      [^]
+      []
         raw > @
         true > cleanup
         "close" > close
@@ -233,7 +237,7 @@
                 *
         posix > raw
         0 > startup
-  [^ recv] > as-input
+  [recv] > as-input
     [^ size] > read
       @. > @
         read.
@@ -247,7 +251,7 @@
             ^.^.input-block chunk
           as-bytes. > chunk
             ^.^.^.recv size
-  [^ send] > as-output
+  [send] > as-output
     [^ buffer] > write
       @. > @
         output-block.write buffer
@@ -276,13 +280,13 @@
         "Port %d is out of range; it must be 0 to 65535".printf
           * ^.port
       ^.port
-  [^ scope cleanup] > guarded
+  [scope cleanup] > guarded
     seq * > @
       recovered value true
       cleanup
       value
     scope > value!
-  [^ port] > htons
+  [port] > htons
     as-i16. > @
       or.
         left.
@@ -302,7 +306,7 @@
   eq. ++> can-dataize-a-guarded-scope-once
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         socket.guarded
           m.put
             m.as-number.plus 1
@@ -320,14 +324,14 @@
     eq. > @
       malloc.of
         2
-        [^ c]
+        [c]
           seq * > @
             write.
               socket.as-output
                 partial-send c
               01-02
             c.get
-          seq * > [^ acc buffer] > partial-send
+          seq * > [acc buffer] > partial-send
             acc.write
               2.minus buffer.size
               buffer.slice 0 1
@@ -337,7 +341,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         socket.guarded
           42
           m.put
@@ -348,7 +352,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         recovered
           socket.guarded
             2.as-i64.div 0.as-i64

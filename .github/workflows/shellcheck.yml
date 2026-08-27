@@ -10,6 +10,9 @@ name: shellcheck
   pull_request:
     branches:
       - master
+concurrency:
+  group: shellcheck-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   shellcheck:
     timeout-minutes: 15

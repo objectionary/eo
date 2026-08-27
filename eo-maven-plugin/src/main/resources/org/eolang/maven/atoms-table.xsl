@@ -13,7 +13,7 @@
   skipped. The collected list is wrapped in a single `<atoms>` element.
   -->
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
-  <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]/text()"/>
+  <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]/text()"/>
   <xsl:template match="/">
     <atoms>
       <xsl:for-each select="//o[@name='λ' and @atom and string-length(@atom) &gt; 0]">

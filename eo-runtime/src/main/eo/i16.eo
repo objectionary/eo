@@ -7,7 +7,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ as-bytes] > i16
+[as-bytes] > i16
   as-bytes > @
   [^] > as-i32
     i32 > @
@@ -145,7 +145,7 @@
     "recovered"
     2.as-i64.as-i32.as-i16.div
       0.as-i64.as-i32.as-i16
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16
