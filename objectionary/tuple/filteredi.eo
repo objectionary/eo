@@ -8,24 +8,24 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > filteredi
-  [tup] >> recfilter
+[^ func] > filteredi
+  [^ tup] >> recfilter
     if. > @
       tup.length.eq 0
       *
       if.
-        func tup.head tup.tail.length
+        ^.func tup.head tup.tail.length
         next.with tup.head
         next
-    recfilter tup.tail > next
-  | list > @
+    ^.recfilter tup.tail > next
+  | ^ > @
 
   eq. ++> can-filter-by-a-less-than-condition
-    filteredi
+    filteredi.
       *
         3
         1
@@ -38,7 +38,7 @@
       2
 
   eq. ++> can-filter-by-string-length
-    filteredi
+    filteredi.
       *
         "Hello"
         "Name"
@@ -47,13 +47,12 @@
       v.length.gt 4 > [v i]
     * "Hello"
 
-  is-empty ++> can-filter-an-empty-list
-    filteredi
-      *
+  is-empty. ++> can-filter-an-empty-list
+    tuple.empty.filteredi
       v.lt 3 > [v i]
 
   eq. ++> can-filter-by-index
-    filteredi
+    filteredi.
       *
         3
         1
@@ -64,7 +63,7 @@
       4
 
   eq. ++> can-filter-bools-with-indexes
-    filteredi
+    filteredi.
       *
         true
         false

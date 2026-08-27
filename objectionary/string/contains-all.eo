@@ -1,45 +1,45 @@
 # Checks if `text` contains all elements from `substrings`.
 
-+alias tuple.mapped
-+alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substrings] > contains-all
-  tuple.reduced > @
-    tuple.mapped
-      substrings
-      contains text x > [x] >>
+[^ substrings] > contains-all
+  reduced. > @
+    substrings.mapped
+      ^.text.contains x > [^ x] >>
     true
     x.and a > [a x]
+  ^ > text
 
-  contains-all ++> can-contain-all-of-no-substrings
+  contains-all. ++> can-contain-all-of-no-substrings
     "xyz"
     *
 
-  contains-all ++> can-contain-all-of-no-substrings-when-empty
+  contains-all. ++> can-contain-all-of-no-substrings-when-empty
     ""
     *
 
-  contains-all *1 ++> can-contain-all-substrings
+  contains-all. ++> can-contain-all-substrings
     "abcdefghijk"
-    "abc"
-    "ghi"
-
-  contains-all *1 ++> can-contain-all-substrings-written-vertically
-    "Hello, world!"
-    "ell"
-    " "
-    ","
-    "d!"
-
-  not. ++> cannot-contain-all-substrings
-    contains-all *1
-      "qwerty"
-      "qer"
-      "ty"
+    *
       "abc"
+      "ghi"
+
+  contains-all. ++> can-contain-all-substrings-written-vertically
+    "Hello, world!"
+    *
+      "ell"
+      " "
+      ","
+      "d!"
+
+  not. ++> can-tell-it-does-not-contain-all-substrings
+    "qwerty".contains-all
+      *
+        "qer"
+        "ty"
+        "abc"

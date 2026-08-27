@@ -3,56 +3,63 @@
 # interpreted without a sign. Addition, subtraction and multiplication
 # share the bit pattern of their signed `i64` counterparts, while
 # comparisons and division are made unsigned.
+# `as-number` rounds exactly once. Above `2^63` the eight bytes are
+# shifted right by one bit, the bit that falls off is put back as the
+# lowest bit of the shifted value, and the result is doubled. That
+# lowest bit keeps the shifted value odd whenever something was
+# discarded, so it can never sit on a tie and be rounded the wrong way.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > u64
   as-bytes > @
-  plus. > [] > as-number
+  if. > [^] > as-number
+    eq.
+      ^.as-bytes.and 80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    times.
+      as-number.
+        i64
+          or.
+            ^.as-bytes.right 1
+            ^.as-bytes.and 00-00-00-00-00-00-00-01
+      2
     as-number.
-      i64 as-bytes
-    if.
-      eq.
-        as-bytes.and 80-00-00-00-00-00-00-00
-        80-00-00-00-00-00-00-00
-      1.8446744073709552e19
-      0
+      i64 ^.as-bytes
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
-  gt. > [x] > gt
-    i64 flip
+  gt. > [^ x] > gt
+    i64 ^.flip
     i64 x.as-u64.flip
-  gte. > [x] > gte
-    i64 flip
+  gte. > [^ x] > gte
+    i64 ^.flip
     i64 x.as-u64.flip
-  lt. > [x] > lt
-    i64 flip
+  lt. > [^ x] > lt
+    i64 ^.flip
     i64 x.as-u64.flip
-  lte. > [x] > lte
-    i64 flip
+  lte. > [^ x] > lte
+    i64 ^.flip
     i64 x.as-u64.flip
-  [x] > minus
+  [^ x] > minus
     u64 > @
       as-bytes.
         minus. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
-  [x] > plus
+  [^ x] > plus
     u64 > @
       as-bytes.
         plus. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
-  [x] > times
+  [^ x] > times
     u64 > @
       as-bytes.
         times. >>
-          i64 as-bytes
+          i64 ^.as-bytes
           i64 x.as-u64.as-bytes
 
   eq. ++> can-add-one-to-one
@@ -83,9 +90,29 @@
     00-00-00-00-00-00-00-2A.as-u64.as-number
     42
 
+  eq. ++> can-convert-a-value-just-above-two-to-the-63rd
+    80-00-00-00-00-00-04-01.as-u64.as-number
+    9.223372036854778e18
+
+  eq. ++> can-convert-a-value-just-below-two-to-the-63rd
+    7F-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    9.223372036854776e18
+
+  eq. ++> can-convert-a-value-with-two-high-bits-to-a-number
+    C0-00-00-00-00-00-04-01.as-u64.as-number
+    1.3835058055282166e19
+
+  eq. ++> can-convert-the-maximum-to-a-number
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    1.8446744073709552e19
+
   gt. ++> can-convert-to-an-unsigned-number
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
     0
+
+  eq. ++> can-convert-two-to-the-63rd-to-a-number
+    80-00-00-00-00-00-00-00.as-u64.as-number
+    9.223372036854776e18
 
   eq. ++> can-equal-the-same-u64
     00-00-00-00-00-00-00-2A.as-u64
@@ -107,6 +134,15 @@
     00-00-00-00-00-00-00-00.as-u64.minus 00-00-00-00-00-00-00-01.as-u64
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64
 
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u64
+    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u64
+    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64
+
   gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64
     00-00-00-00-00-00-00-01.as-u64
@@ -114,12 +150,3 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     00-00-00-01-00-00-00-00.as-u64.times 00-00-00-01-00-00-00-00.as-u64
     00-00-00-00-00-00-00-00.as-u64
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u64
-    00-00-00-00-00-00-00-00.as-u64.gte 00-00-00-00-00-00-00-0A.as-u64
-
-  not. ++> cannot-be-less-than-an-equal-u64
-    00-00-00-00-00-00-00-0A.as-u64.lt 00-00-00-00-00-00-00-0A.as-u64
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.lt 00-00-00-00-00-00-00-01.as-u64

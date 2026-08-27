@@ -1,0 +1,313 @@
+# Writes the number `n` as fixed-point decimal with exactly `places` fraction
+# digits, rounding to the nearest unit in the last place, so that `2.5` with
+# four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
+# If `places` is not a finite non-negative integer below 2^53 (negative,
+# fractional, nan, infinite, or too large to reach zero by repeated
+# subtraction of one), the `cant-print` fallback is returned, or the
+# terminator when unbound.
+#
+# The value is split into its integer and fraction parts before scaling, so
+# only the fraction is multiplied by a power of ten and every magnitude that
+# `as-decimal` writes exactly is written exactly here too. A magnitude of
+# 2^63 or larger is past what `as-decimal` can write, so it returns the
+# `cant-print` fallback as well, instead of terminating.
+#
+# The fraction is scaled by at most 10^15, the largest power of ten that
+# keeps the scaled value an exact integer below 2^53, and never by 10^places
+# directly. Only that many digits are peeled off; any place beyond them is a
+# trailing zero. This keeps the digits shared by two calls with different
+# `places` in agreement, instead of drifting as an unfloored accumulator was
+# carried through more divisions the larger `places` was.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ places cant-print] > as-fixed
+  if. > @
+    n.is-finite.not.or
+      huge.or
+        or.
+          0.gt places
+          places.is-integer.not.or
+            places.gt 9007199254740991
+    cant-print
+      n.is-finite.not.if
+        "Can't write a non-finite number as a fixed-point decimal"
+        huge.if
+          "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
+          places.is-finite.if
+            "Can't write a fixed-point decimal with %f fraction places".printf
+              * places
+            "Can't write a fixed-point decimal with a non-finite number of fraction places"
+    if.
+      n.as-bytes.eq 80-00-00-00-00-00-00-00
+      "-".as-bytes.concat
+        [^ a] >> positive
+          if. > @
+            digits.eq scale
+            if. > [^ unit rest] >> written
+              ^.^.places.eq 0
+              unit.as-decimal
+              concat.
+                unit.as-decimal.concat ".".as-bytes
+                concat.
+                  rec-pad rest ^.k --
+                  zeros (^.^.places.minus ^.k) --
+            | (whole.plus 1) 0
+            written whole digits
+          floor. > digits
+            plus.
+              times.
+                a.minus whole
+                scale
+              0.5
+          if. > k
+            ^.places.gt 15
+            15
+            ^.places
+          pow10 k > scale
+          a.floor > whole
+        | 0
+      if.
+        n.lt 0
+        if. > [^ a] >> signed
+          eq.
+            floor.
+              plus.
+                a.times
+                  pow10 ^.places
+                0.5
+            0
+          positive a
+          "-".as-bytes.concat
+            positive a
+        | (n.times -1)
+        positive n
+  n.abs.gte 9.223372036854776e18 > huge
+  ^ > n
+  if. > [^ p] >> pow10
+    p.eq 0
+    1
+    times.
+      ^.pow10
+        as-number.
+          p.minus 1
+      10
+  if. > [^ value count acc] >> rec-pad
+    count.eq 0
+    acc
+    ^.rec-pad
+      floor.
+        value.div 10
+      as-number.
+        count.minus 1
+      concat.
+        as-char.
+          plus.
+            floor.
+              value.minus
+                times. (value.div 10).floor 10
+            48
+        acc
+  if. > [^ count acc] >> zeros
+    count.eq 0
+    acc
+    ^.zeros
+      as-number.
+        count.minus 1
+      acc.concat "0".as-bytes
+
+  eq. ++> can-agree-with-fewer-places-on-their-shared-digits
+    "1.1000000000000000000"
+    string
+      1.1.as-fixed 19
+
+  eq. ++> can-agree-with-more-places-on-their-shared-digits
+    "1.100000000000000000000"
+    string
+      1.1.as-fixed 21
+
+  eq. ++> can-carry-rounding-into-the-integer-part
+    "1.000000"
+    string
+      0.9999999.as-fixed 6
+
+  eq. ++> can-carry-rounding-into-the-integer-part-with-zero-places
+    "1"
+    string
+      0.9999999.as-fixed 0
+
+  eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
+    "0.00"
+    string
+      -1.0e-4.as-fixed 2
+
+  eq. ++> can-drop-the-sign-of-a-tiny-negative-rounding-to-zero
+    "0.00"
+    string
+      -0.001.as-fixed 2
+
+  eq. ++> can-format-the-error-message-of-a-magnitude-past-the-decimal-range
+    "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
+    9.223372036854776e18.as-fixed
+      0
+      I
+
+  eq. ++> can-format-the-error-message-of-a-non-decrementable-precision
+    "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
+    1.25.as-fixed
+      9007199254740992
+      I
+
+  eq. ++> can-format-the-error-message-of-infinite-places
+    "Can't write a fixed-point decimal with a non-finite number of fraction places"
+    3.14159.as-fixed
+      pinf
+      I
+
+  eq. ++> can-format-the-error-message-of-negative-places
+    "Can't write a fixed-point decimal with -2.000000 fraction places"
+    3.14159.as-fixed
+      -2
+      I
+
+  eq. ++> can-honour-custom-places
+    "3.14"
+    string
+      3.14159.as-fixed 2
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places
+    "3"
+    string
+      2.5.as-fixed 0
+
+  eq. ++> can-omit-the-decimal-point-with-zero-places-when-negative
+    "-3"
+    string
+      -2.5.as-fixed 0
+
+  eq. ++> can-pad-the-fraction-with-trailing-zeros
+    "1.250000"
+    string
+      1.25.as-fixed 6
+
+  eq. ++> can-preserve-the-sign-of-an-exact-negative-zero
+    "-0.00"
+    string
+      0.neg.as-fixed 2
+
+  eq. ++> can-recover-from-a-magnitude-past-the-decimal-range
+    "recovered"
+    9.223372036854776e18.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
+    "recovered"
+    -1.25.as-fixed
+      9007199254740992
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-finite-number
+    "recovered"
+    nan.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
+    "recovered"
+    1.25.as-fixed
+      18014398509481984
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
+    "recovered"
+    1.25.as-fixed
+      9007199254740994
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
+    "recovered"
+    1.25.as-fixed
+      9007199254740992
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-number
+    "recovered"
+    pinf.as-fixed
+      2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-infinite-places
+    "recovered"
+    1.25.as-fixed
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-negative-places
+    "recovered"
+    3.14159.as-fixed
+      -2
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-non-integer-places
+    "recovered"
+    3.14159.as-fixed
+      2.5
+      "recovered" > [message]
+
+  eq. ++> can-round-to-the-last-place
+    "0.123457"
+    string
+      0.123456789.as-fixed 6
+
+  eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
+    "100000000000000000.000000"
+    string
+      100000000000000000.as-fixed 6
+
+  eq. ++> can-scale-a-negative-magnitude-above-two-to-the-53rd
+    "-100000000000000000.000000"
+    string
+      -100000000000000000.as-fixed 6
+
+  eq. ++> can-tell-positive-zero-from-negative-zero
+    "0.00"
+    string
+      0.as-fixed 2
+
+  eq. ++> can-write-a-fraction-of-places-past-the-double-accumulator-range
+    "123.45600000000000300000"
+    string
+      123.456.as-fixed 20
+
+  eq. ++> can-write-a-negative-value
+    "-2.500000"
+    string
+      -2.5.as-fixed 6
+
+  eq. ++> can-write-a-single-place
+    "2.5"
+    string
+      2.5.as-fixed 1
+
+  eq. ++> can-write-a-whole-number-far-past-the-double-accumulator-range
+    "2.0000000000000000000000000000000000000000"
+    string
+      2.as-fixed 40
+
+  eq. ++> can-write-places-past-the-double-accumulator-range
+    "1.5000000000000000000000000"
+    string
+      1.5.as-fixed 25
+
+  eq. ++> can-write-zero-with-places
+    "0.000000"
+    string
+      0.as-fixed 6
+
+  3.14159.as-fixed -2 --> stops-on-negative-places

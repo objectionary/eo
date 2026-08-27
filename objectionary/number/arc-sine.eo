@@ -7,72 +7,80 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > arc-sine
+[^] > arc-sine
   if. > @
-    lt.
-      number num.as-bytes >> arg
-      0
-    neg.
-      if. >> base
-        gt.
-          abs arg >> magnitude
-          0.5
-        minus.
-          pi.div 2
-          2.times
-            [point] >> series
-              point.times > @
-                poly 1
-              if. > [depth] > poly
-                depth.gt 30
-                1
-                1.plus
-                  times.
-                    div.
-                      times.
+    arg.as-bytes.eq 80-00-00-00-00-00-00-00
+    arg
+    if.
+      arg.lt 0
+      neg.
+        if. >> base
+          arg.abs.gt 0.5
+          minus.
+            pi.div 2
+            2.times
+              [point] >> series
+                times. > @
+                  number
+                    point >> bts!
+                  poly 1
+                if. > [^ depth] > poly
+                  depth.gt 30
+                  1
+                  1.plus
+                    times.
+                      div.
                         times.
-                          minus. (depth.times 2) 1
-                          minus. (depth.times 2) 1
-                        squared
-                      times.
-                        depth.times 2
-                        plus. (depth.times 2) 1
-                    poly (depth.plus 1)
-              point.times point > squared
-            | (sqrt ((1.minus magnitude).div 2))
-        series magnitude
-    base
+                          times.
+                            minus. (depth.times 2) 1
+                            minus. (depth.times 2) 1
+                          ^.squared
+                        times.
+                          depth.times 2
+                          plus. (depth.times 2) 1
+                      ^.poly (depth.plus 1)
+                times. > squared!
+                  number bts
+                  number bts
+              | ((1.minus arg.abs).div 2).sqrt
+          series arg.abs
+      base
+  number ^.as-bytes > arg
 
-  lt. ++> can-behave-as-an-odd-function
-    abs
+  lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
+    abs.
       times.
-        plus.
-          arc-sine 0.6
-          arc-sine -0.6
+        0.6.arc-sine.plus -0.6.arc-sine
         1000
     1
 
+  2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-above-one
+
+  -2.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-below-minus-one
+
+  nan.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-nan
+
+  ninf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-negative-infinity
+
+  pinf.arc-sine.is-nan ++> can-return-nan-for-an-arc-sine-of-positive-infinity
+
   lt. ++> can-take-an-arc-sine-of-a-half
-    abs
+    abs.
       minus.
-        times.
-          arc-sine 0.5
-          1000
+        0.5.arc-sine.times 1000
         times.
           pi.div 6
           1000
     1
 
   lt. ++> can-take-an-arc-sine-of-minus-a-half
-    abs
+    abs.
       minus.
-        times.
-          arc-sine -0.5
-          1000
+        -0.5.arc-sine.times 1000
         times.
           neg.
             pi.div 6
@@ -80,52 +88,54 @@
     1
 
   lt. ++> can-take-an-arc-sine-of-minus-one
-    abs
+    abs.
       minus.
-        times.
-          arc-sine -1
-          1000
+        -1.arc-sine.times 1000
         times.
           neg.
             pi.div 2
           1000
     1
 
-  lt. ++> can-take-an-arc-sine-of-one
-    abs
+  lt. ++> can-take-an-arc-sine-of-minus-zero-point-nine
+    abs.
       minus.
-        times.
-          arc-sine 1
-          1000
+        -0.9.arc-sine.times 1000
+        -1119.7695
+    1
+
+  eq. ++> can-take-an-arc-sine-of-negative-zero-preserving-sign
+    0.neg.arc-sine.as-bytes
+    80-00-00-00-00-00-00-00
+
+  lt. ++> can-take-an-arc-sine-of-one
+    abs.
+      minus.
+        1.arc-sine.times 1000
         times.
           pi.div 2
           1000
     1
 
-  eq. ++> can-take-an-arc-sine-of-zero
-    arc-sine 0
-    0
+  0.arc-sine.eq 0 ++> can-take-an-arc-sine-of-zero
 
-  lt. ++> can-take-an-arc-sine-of-zero-point-six
-    abs
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine
+    abs.
       minus.
-        times.
-          arc-sine 0.6
-          1000
-        643.5
+        0.9.arc-sine.times 1000
+        1119.7695
     1
 
-  is-nan. ++> cannot-take-an-arc-sine-above-one
-    arc-sine 2
+  lt. ++> can-take-an-arc-sine-of-zero-point-nine-nine-nine
+    abs.
+      minus.
+        0.999.arc-sine.times 1000
+        1526.0712
+    1
 
-  is-nan. ++> cannot-take-an-arc-sine-below-minus-one
-    arc-sine -2
-
-  is-nan. ++> cannot-take-an-arc-sine-of-nan
-    arc-sine nan
-
-  is-nan. ++> cannot-take-an-arc-sine-of-negative-infinity
-    arc-sine ninf
-
-  is-nan. ++> cannot-take-an-arc-sine-of-positive-infinity
-    arc-sine pinf
+  lt. ++> can-take-an-arc-sine-of-zero-point-six
+    abs.
+      minus.
+        0.6.arc-sine.times 1000
+        643.5
+    1

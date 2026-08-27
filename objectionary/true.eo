@@ -4,13 +4,51 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
-bool > true
-  []
-    ? >> left
-    ? >> right
-    left > @
+[^] > true
+  bool > @
+    [^]
+      ? >> left
+      ? >> right
+      left > @
+
+  true.and true ++> can-conjoin-true-with-true
+
+  true.or true ++> can-disjoin-true-with-true
+
+  not. ++> can-ignore-the-right-argument-of-if
+    eq.
+      true.if 1 2
+      2
+
+  true.if ++> can-pick-itself-as-the-left-branch
+    true
+    false
+
+  eq. ++> can-pick-the-left-argument-among-different-types
+    true.if
+      "left"
+      8
+    "left"
+
+  eq. ++> can-pick-the-left-argument-of-if
+    true.if
+      42
+      8
+    42
+
+  eq. ++> can-pick-the-left-branch-when-nested
+    true.if
+      true.if 1 2
+      3
+    1
+
+  not. ++> can-tell-true-is-not-its-own-negation
+    true.eq true.not
+
+  true.as-bytes.eq 01- ++> can-turn-into-a-single-true-byte
+
+  true.if --> stops-on-if-without-arguments

@@ -17,30 +17,39 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
-[expression] > regex
+[^] > regex
   compile > @
   [] > compile /Q.string.regex.pattern
+    ? > ^
     ? > cant-compile /{Q.string}
-  [serialized] > pattern
-    pattern serialized > compiled
-    [txt] > match
-      [position start from to groups] > matched
+  ^ > expression
+  [^ serialized] > pattern
+    ^.pattern serialized > compiled
+    [^ txt] > match
+      [^ position start from to groups] > matched
         groups.length > count
         start.gte 0 > exists
-        groups.at index > [index] > group
+        ^.groups.at index > [^ index] > group
         $ > matched
         exists.if > next
-          matched.
-            matched-from-index
-              position.plus 1
-              to
+          if.
+            and.
+              from.eq to
+              to.eq ^.txt.length
+            ^.missing
+            matched.
+              ^.matched-from-index
+                position.plus 1
+                if.
+                  from.eq to
+                  to.plus 1
+                  to
           T
             "Matched block does not exist, can't get next"
         exists.if > text
@@ -48,17 +57,66 @@
           T
             "Matched block does not exist, can't get text"
       [] > matched-from-index /Q.string.regex.pattern.match.matched
+        ? > ^
         ? > position /Q.number
         ? > start /Q.number
+      [] > missing
+        T > count
+          "Matched block does not exist, can't get count"
+        start.gte 0 > exists
+        T > from
+          "Matched block does not exist, can't get 'from' position"
+        T > [index] > group
+          "Matched block does not exist, can't get group"
+        T > groups
+          "Matched block does not exist, can't get groups"
+        T > next
+          "Matched block does not exist, can't get next"
+        0 > position
+        -1 > start
+        T > text
+          "Matched block does not exist, can't get text"
+        T > to
+          "Matched block does not exist, can't get 'to' position"
       matched. > next
         matched-from-index 1 0
-    [txt] > matches
+    [^ txt] > matches
       found.exists.and > @
         and.
           found.to.eq txt.length
           found.from.eq 0
+      "/(?:%s)(?![\\s\\S])/%s".printf > anchored
+        * group1 group2
+      "/(?:%s\n)(?![\\s\\S])/%s".printf > commented
+        * group1 group2
       next. > found
-        match txt
+        match.
+          anchored.regex.compile retry-commented
+          txt
+      parsed.group 1 > group1!
+      parsed.group 2 > group2!
+      next. > parsed
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.expression
+      "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
+        * group1 group2
+      ^.commented.regex.compile ^.retry-quoted > [^ message] > retry-commented
+      ^.quoted.regex.compile > [^ message] > retry-quoted
+
+  eq. ++> can-advance-after-a-zero-width-match
+    1
+    from. ("/a*/".regex.match "xa").next.next
+
+  ++> can-count-supplementary-characters-as-one-position
+    and. > @
+      and.
+        0.eq first.from
+        1.eq first.to
+      and.
+        1.eq second.from
+        2.eq second.to
+    next. > first
+      "/./".regex.compiled.match "😀x"
+    first.next > second
 
   ++> can-expose-groups-on-each-matched-block
     and. > @
@@ -81,57 +139,54 @@
           second.group 2
           "2"
     next. > first
-      match.
-        compiled.
-          regex "/([a-z]+)([1-9]{1})/"
-        "!hello1!world2"
+      "/([a-z]+)([1-9]{1})/".regex.compiled.match "!hello1!world2"
     first.next > second
 
   matches. ++> can-ignore-comments-in-a-pattern
-    compiled.
-      regex
-        "/(\\d) #ignore this comment/x"
+    "/(\\d) #ignore this comment/x".regex.compiled
     "4"
 
-  matches. ++> can-match-a-text-against-a-pattern
-    compiled.
-      regex "/[a-z]+/"
-    "hello"
+  "/[a-z]+/".regex.compiled.matches "hello" ++> can-match-a-text-against-a-pattern
 
-  matches. ++> can-match-an-entire-pattern
-    compiled.
-      regex "/[0-9]/\\d+/"
-    "2/75"
+  matches. ++> can-match-a-text-containing-supplementary-characters
+    "/😀x/".regex.compiled
+    "😀x"
+
+  "/[0-9]/\\d+/".regex.compiled.matches "2/75" ++> can-match-an-entire-pattern
 
   matches. ++> can-match-with-the-case-insensitive-option
-    compiled.
-      regex "/(string)/i"
+    "/(string)/i".regex.compiled
     "StRiNg"
 
   matches. ++> can-match-with-the-case-insensitive-option-and-capitals
-    compiled.
-      regex "/(word)/i"
+    "/(word)/i".regex.compiled
     "WORD"
 
   matches. ++> can-match-with-the-dotall-option
-    compiled.
-      regex "/(.*)/s"
+    "/(.*)/s".regex.compiled
     "too \\n many \\n line \\n Feed\\n"
 
   matches. ++> can-match-with-the-multiline-option
-    compiled.
-      regex "/(^([0-9]+).*)/m"
+    "/(^([0-9]+).*)/m".regex.compiled
     "1 bottle of water on the wall. \\n1 bottle of water."
 
   matches. ++> can-match-with-the-unicode-case-option
-    compiled.
-      regex "/(yildirim)/ui"
+    "/(yildirim)/ui".regex.compiled
     "Yıldırım"
 
   matches. ++> can-match-with-the-unix-lines-option
-    compiled.
-      regex "/(.+)/d"
+    "/(.+)/d".regex.compiled
     "A\\r\\nB\\rC\\nD"
+
+  eq. ++> can-recover-from-a-pattern-with-a-missing-slash
+    "no-slash"
+    "(.)+".regex.compile
+      "no-slash" > [message]
+
+  eq. ++> can-recover-from-invalid-regex-syntax
+    "recovered"
+    "/[a-z/".regex.compile
+      "recovered" > [message]
 
   ++> can-report-the-border-indexes-of-a-match
     and. > @
@@ -140,16 +195,12 @@
         1.eq n.from
         6.eq n.to
     next. > n
-      match.
-        regex "/[a-z]+/"
-        "!hello!"
+      "/[a-z]+/".regex.match "!hello!"
 
   eq. ++> can-return-the-matched-string-sequence
     text.
       next.
-        match.
-          regex "/[a-z]+/"
-          "!hello!"
+        "/[a-z]+/".regex.match "!hello!"
     "hello"
 
   ++> can-return-the-second-matched-block
@@ -164,88 +215,77 @@
       second.to.eq 12
     next. > second
       next.
-        match.
-          regex "/[a-z]+/"
-          "!hello!world!"
+        "/[a-z]+/".regex.match "!hello!world!"
 
-  not. ++> cannot-match-a-text-against-a-wrong-pattern
-    matches.
-      compiled.
-        regex "/[a-z]+/"
-      "123"
+  not. ++> can-stop-at-a-terminal-zero-width-match
+    exists. ("/$/".regex.match "x").next.next
 
-  not. ++> cannot-match-an-anchored-pattern-with-a-trailing-newline
-    matches.
-      compiled.
-        regex "/^[0-9]+$/"
-      "123\n"
+  not. ++> can-tell-it-does-not-match-a-text-against-a-wrong-pattern
+    "/[a-z]+/".regex.compiled.matches "123"
 
-  not. ++> cannot-match-with-unmatched-leading-characters
-    matches.
-      compiled.
-        regex "/[a-z]+/"
-      "1abc"
+  not. ++> can-tell-it-does-not-match-an-anchored-pattern-with-a-trailing-newline
+    "/^[0-9]+$/".regex.compiled.matches "123\n"
 
-  eq. ++> rejects-a-pattern-with-a-missing-slash
-    "no-slash"
-    compile.
-      regex "(.)+"
-      "no-slash" > [message]
+  not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
+    "/[a-z]+/".regex.compiled.matches "1abc"
 
-  eq. ++> rejects-invalid-regex-syntax
-    "recovered"
-    compile.
-      regex "/[a-z/"
-      "recovered" > [message]
+  next. --> rejects-serialized-bytes-of-the-wrong-type
+    match.
+      ^.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+      "hello"
 
-  compiled. --> stops-on-a-missing-closing-slash
-    regex "/pattern"
+  "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 
-  compiled. --> stops-on-a-missing-first-slash
-    regex "(.)+"
+  "(.)+".regex.compiled --> stops-on-a-missing-first-slash
 
-  compile. --> stops-on-compiling-an-invalid-pattern
-    regex "/[a-z/"
+  "/[a-z/".regex.compile --> stops-on-compiling-an-invalid-pattern
+
+  group. --> stops-on-taking-a-group-of-a-terminal-zero-width-match
+    next.
+      next.
+        "/$/".regex.match "x"
+    1
 
   group. --> stops-on-taking-a-group-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
     1
 
   to. --> stops-on-taking-the-end-position-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
+
+  count. --> stops-on-taking-the-group-count-of-a-terminal-zero-width-match
+    next.
+      next.
+        "/$/".regex.match "x"
 
   count. --> stops-on-taking-the-group-count-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
 
   groups. --> stops-on-taking-the-groups-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
+
+  next. --> stops-on-taking-the-next-of-a-terminal-zero-width-match
+    next.
+      next.
+        "/$/".regex.match "x"
 
   next. --> stops-on-taking-the-next-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
 
   from. --> stops-on-taking-the-start-position-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"
+
+  text. --> stops-on-taking-the-text-of-a-terminal-zero-width-match
+    next.
+      next.
+        "/$/".regex.match "x"
 
   text. --> stops-on-taking-the-text-of-an-unmatched-block
     next.
-      match.
-        regex "/[a-z]+/"
-        "123"
+      "/[a-z]+/".regex.match "123"

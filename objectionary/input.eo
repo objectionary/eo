@@ -7,10 +7,13 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-+unlint unit-test-missing
 
 [@] > input
+
+  eq. ++> can-decorate-a-source-of-bytes
+    as-bytes.
+      input 01-02-03-04-05.as-input
+    01-02-03-04-05

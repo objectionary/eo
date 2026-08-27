@@ -5,17 +5,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b cant-convert] > as-i64
+[^ cant-convert] > as-i64
   if. > @
     b.size.eq 8
     i64 b
     cant-convert
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
         * b
+  ^ > b
 
   00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> can-convert-bytes-to-i64
 
@@ -23,12 +24,12 @@
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
 
-  not. ++> cannot-match-the-bytes-of-the-same-number
-    00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes
-
-  eq. ++> rejects-bytes-of-wrong-size
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
     "recovered"
     01-01-01-01.as-i64
       "recovered" > [message]
 
-  01-01-01-01.as-i64 --> stops-on-bytes-of-wrong-size
+  not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
+    00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes
+
+  01-01-01-01.as-i64 --> stops-on-bytes-of-wrong-size-when-converting-to-i64

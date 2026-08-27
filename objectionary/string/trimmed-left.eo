@@ -7,11 +7,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed-left
+[^] > trimmed-left
   if. > @
     0.eq
       b.size >> len!
@@ -23,13 +23,13 @@
         minus.
           number len
           idx
-  [index] >> first-non-ws-index
+  [^ index] >> first-non-ws-index
     if. > @
       len.eq index
       index
       if.
         is-ws (b.slice index 1)!
-        first-non-ws-index (index.plus 1).as-number
+        ^.first-non-ws-index (index.plus 1).as-number
         index
   or. > [c] >> is-ws
     c.eq 20-
@@ -42,43 +42,30 @@
           or.
             c.eq 0C-
             c.eq 0D-
+  ^ > text
 
-  eq. ++> can-trim-a-leading-carriage-return
-    trimmed-left "\rvalue"
-    "value"
+  "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 
-  eq. ++> can-trim-a-leading-form-feed
-    trimmed-left "\fvalue"
-    "value"
+  "\fvalue".trimmed-left.eq "value" ++> can-trim-a-leading-form-feed
 
-  eq. ++> can-trim-a-leading-line-feed
-    trimmed-left "\nvalue"
-    "value"
+  "\nvalue".trimmed-left.eq "value" ++> can-trim-a-leading-line-feed
 
-  eq. ++> can-trim-a-leading-tab
-    trimmed-left "\tvalue"
-    "value"
+  "\tvalue".trimmed-left.eq "value" ++> can-trim-a-leading-tab
 
   eq. ++> can-trim-a-text-of-leading-spaces-only
-    trimmed-left
-      "     "
+    "     ".trimmed-left
     ""
 
-  eq. ++> can-trim-an-empty-text
-    trimmed-left ""
-    ""
+  "".trimmed-left.eq "" ++> can-trim-an-empty-text-from-the-left
 
   eq. ++> can-trim-many-leading-spaces
-    trimmed-left
-      "     some"
+    "     some".trimmed-left
     "some"
 
   eq. ++> can-trim-mixed-leading-whitespace
-    trimmed-left
-      " \t\n\f\rvalue"
+    " \t\n\f\rvalue".trimmed-left
     "value"
 
-  eq. ++> can-trim-one-leading-space
-    trimmed-left
-      " s"
+  eq. ++> can-trim-one-leading-space-from-the-left
+    " s".trimmed-left
     "s"

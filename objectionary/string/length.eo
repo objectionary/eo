@@ -1,63 +1,141 @@
 # Counts the characters in the `text`, and not its bytes. The UTF-8 sequence
 # is walked character by character, so a multi-byte character counts as one.
-# A sequence that does not end with a complete character terminates
-# the computation.
+# Every multi-byte sequence is validated against the UTF-8 rules of the
+# Unicode standard (Table 3-7): the leading byte fixes the character width and
+# each following byte must be a `10xxxxxx` continuation byte, while the second
+# byte is additionally range-checked so that overlong encodings (`C0`/`C1`
+# leads, `E0` with an `80`-`9F` second byte, `F0` with an `80`-`8F` second
+# byte), UTF-16 surrogates (`ED` with an `A0`-`BF` second byte) and code points
+# above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads) are
+# rejected. A sequence that is incomplete or malformed terminates the
+# computation, exactly like `slice` does for a truncated character.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > length
+[^] > length
   if. > @
     eq.
       text.as-bytes.size >> size!
       0
     0
-    [index accum] >> reclen
+    [^ index accum] >> reclen
       if. > @
         index.eq size
         accum
         if.
           eq.
-            byte.and 80-
+            lead.and 80-
             00-
-          inclen index 1 accum
+          ^.reclen
+            index.plus 1
+            accum.plus 1
           if.
             eq.
-              byte.and E0-
+              lead.and E0-
               C0-
-            inclen index 2 accum
+            step
+              index
+              2
+              twovalid
+              accum
             if.
               eq.
-                byte.and F0-
+                lead.and F0-
                 E0-
-              inclen index 3 accum
+              step index 3 threevalid accum
               if.
                 eq.
-                  byte.and F8-
+                  lead.and F8-
                   F0-
-                inclen index 4 accum
+                step index 4 fourvalid accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
-                    * byte
-      text.as-bytes.slice index 1 > byte
+                    * lead
+      ^.text.as-bytes.slice > b1
+        index.plus 1
+        1
+      eq. > b1808f
+        b1.and F0-
+        80-
+      eq. > b1809f
+        b1.and E0-
+        80-
+      or. > b190bf
+        eq.
+          b1.and F0-
+          90-
+        eq.
+          b1.and E0-
+          A0-
+      eq. > b1a0bf
+        b1.and E0-
+        A0-
+      eq. > b1cont
+        b1.and C0-
+        80-
+      ^.text.as-bytes.slice > b2
+        index.plus 2
+        1
+      eq. > b2cont
+        b2.and C0-
+        80-
+      ^.text.as-bytes.slice > b3
+        index.plus 3
+        1
+      eq. > b3cont
+        b3.and C0-
+        80-
+      b2cont.and > fourvalid
+        b3cont.and second4
+      ^.text.as-bytes.slice index 1 > lead
+      eq. > leadc0c1
+        lead.and FE-
+        C0-
+      lead.eq E0- > leade0
+      lead.eq ED- > leaded
+      lead.eq F0- > leadf0
+      lead.eq F1- > leadf1
+      leadf1.or > leadf1f3
+        leadf2.or leadf3
+      lead.eq F2- > leadf2
+      lead.eq F3- > leadf3
+      lead.eq F4- > leadf4
+      leade0.if > second3
+        b1a0bf
+        leaded.if b1809f b1cont
+      leadf0.if > second4
+        b190bf
+        leadf4.if
+          b1808f
+          leadf1f3.if b1cont false
+      b2cont.and second3 > threevalid
+      leadc0c1.not.and b1cont > twovalid
     | 0 0
-  if. > [index csize len] >> inclen
+  if. > [^ idx csize valid accum] >> step
     gt.
-      index.plus csize
+      idx.plus csize
       size
     T
       "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
         *
           csize
-          index
-          text.as-bytes
-    reclen
-      index.plus csize
-      len.plus 1
+          idx
+          ^.text.as-bytes
+    valid.if
+      reclen
+        idx.plus csize
+        accum.plus 1
+      T
+        "Malformed UTF-8 sequence (%x) at %d index".printf
+          *
+            ^.text.as-bytes.slice idx csize
+            idx
+  ^ > text
 
   eq. ++> can-count-a-text-of-spaces-only
     " ".length
@@ -70,8 +148,7 @@
     "The 😀 smile" > str
 
   eq. ++> can-count-the-characters-of-the-origin-text
-    length
-      "Hello, world!"
+    "Hello, world!".length
     13
 
   ++> can-count-three-byte-characters
@@ -86,5 +163,17 @@
       str.as-bytes.size.eq 16
     "Hello, друг!" > str
 
-  length --> stops-on-an-incomplete-four-byte-character
+  length. --> rejects-a-non-continuation-after-a-four-byte-lead
+    string F0-90-80-41
+
+  length. --> rejects-a-non-continuation-after-a-three-byte-lead-when-measuring
+    string E1-80-41
+
+  length. --> rejects-a-non-continuation-after-a-two-byte-lead
+    string C2-41
+
+  length. --> rejects-an-overlong-two-byte-encoding-when-measuring
+    string C0-80
+
+  length. --> stops-on-an-incomplete-four-byte-character
     string F0-9F-98

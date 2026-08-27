@@ -3,34 +3,35 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list index] > front
-  if. > @
-    idx.eq 0
-    *
+[^ index] > front
+  index.is-integer.if > @
     if.
-      0.gt
-        index >> idx!
-      back
-        list
-        neg.
-          number idx
+      idx.eq 0
+      *
       if.
-        gte.
-          number idx
-          list.length
-        list
-        if. > [tup] >> rechead
-          tup.length.eq idx
-          tup
-          rechead tup.tail
-        | list
+        0.gt
+          index >> idx!
+        list.back (number idx).neg
+        if.
+          gte.
+            number idx
+            list.length
+          list
+          if. > [^ tup] >> rechead
+            tup.length.eq idx
+            tup
+            ^.rechead tup.tail
+          | list
+    T
+      "Given index must be an integer"
+  ^ > list
 
   eq. ++> can-take-a-front-slice
-    front
+    front.
       *
         1
         2
@@ -41,7 +42,7 @@
     * 1
 
   eq. ++> can-take-a-front-slice-of-a-complex-list
-    front
+    front.
       *
         "foo"
         2.2
@@ -53,7 +54,7 @@
       2.2
 
   eq. ++> can-take-a-front-slice-of-a-complex-list-with-a-negative-index
-    front
+    front.
       *
         "foo"
         2.2
@@ -66,7 +67,7 @@
       "bar"
 
   eq. ++> can-take-a-front-slice-with-a-negative-index
-    front
+    front.
       *
         1
         2
@@ -74,8 +75,8 @@
       -1
     * 3
 
-  is-empty ++> can-take-a-front-slice-with-a-zero-index
-    front
+  is-empty. ++> can-take-a-front-slice-with-a-zero-index
+    front.
       *
         1
         2
@@ -83,7 +84,7 @@
       0
 
   eq. ++> can-take-a-front-slice-with-the-length-as-index
-    front
+    front.
       *
         1
         2
@@ -93,3 +94,9 @@
       1
       2
       3
+
+  front. --> stops-on-a-fractional-index-when-taking-the-front
+    *
+      "a"
+      "b"
+    0.5

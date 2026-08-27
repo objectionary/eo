@@ -1,113 +1,190 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing `x` by `y`. When `y`
 # is zero, the result is the caller-supplied `cant-mod` fallback, or the
-# bottom object when none was provided, which terminates on use.
+# terminator when none was provided, which terminates on use. Otherwise
+# the divisor is doubled until it reaches the dividend and then halved back
+# down, subtracting it from the dividend whenever it fits. Doubling and
+# halving a double are exact, and every subtraction happens while the
+# remainder is below twice the subtracted value, which is exact too, so the
+# answer matches the true remainder for any pair of finite numbers, however
+# far apart their magnitudes are, at the cost of two recursive steps per
+# bit of the quotient. When the dividend is `nan` or infinite, the result is
+# `nan`, regardless of the divisor.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[x y cant-mod] > mod
+[^ y cant-mod] > mod
   if. > @
     eq.
       number y.as-bytes >> divisor
       0
     cant-mod
       "cannot calculate mod by zero"
-    divisor.is-finite.not.if
-      x
-      if.
-        gt.
-          number x.as-bytes >> dividend
-          0
-        [] >> abs-mod
-          minus. > @
-            abs dividend >> absx
-            times.
-              abs divisor >> absy
-              floor.
-                absx.div absy
-        abs-mod.neg
+    dividend.is-finite.not.if
+      nan
+      divisor.is-finite.not.if
+        divisor.is-nan.if nan x
+        if.
+          x.as-bytes.eq 80-00-00-00-00-00-00-00
+          x
+          if.
+            gte.
+              number x.as-bytes >> dividend
+              0
+            [^] >> abs-mod
+              shrink > @
+                grow divisor.abs
+                dividend.abs
+              if. > [^ chunk] > grow
+                or.
+                  chunk.gte dividend.abs
+                  not. (chunk.plus chunk).is-finite
+                chunk
+                ^.grow
+                  chunk.plus chunk
+              if. > [^ chunk rest] > shrink
+                chunk.lt divisor.abs
+                rest
+                ^.shrink
+                  chunk.div 2
+                  if.
+                    rest.gte chunk
+                    rest.minus chunk
+                    rest
+            abs-mod.neg
+  ^ > x
+
+  eq. ++> can-recover-from-a-modulo-by-zero
+    "recovered"
+    5.mod
+      0
+      "recovered" > [message]
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-infinite
+    pinf.mod 5
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-nan
+    nan.mod 5
+
+  is-nan. ++> can-return-nan-when-the-divisor-is-nan
+    5.mod nan
+
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-a-finite-divisor
+    as-bytes.
+      0.neg.mod 3
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-negative-infinite-divisor
+    as-bytes.
+      0.neg.mod ninf
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-positive-infinite-divisor
+    as-bytes.
+      0.neg.mod pinf
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero
+    as-bytes.
+      0.mod 3
+    0.as-bytes
+
+  eq. ++> can-return-positive-zero-when-dividend-is-zero-and-divisor-is-negative
+    as-bytes.
+      0.mod -3
+    0.as-bytes
 
   ++> can-stay-compatible-with-division
     eq. > @
       plus.
-        mod dividend divisor
+        dividend.mod divisor
         divisor.times (dividend.div divisor).as-i64.as-number
       dividend
     -13 > dividend
     5 > divisor
 
+  is-nan. ++> can-take-a-modulo-by-nan
+    5.mod nan
+
   eq. ++> can-take-a-modulo-by-one
-    mod
-      133
-      1
+    133.mod 1
     0
 
   eq. ++> can-take-a-modulo-of-a-dividend-below-the-divisor
-    mod
-      -1
-      5
+    -1.mod 5
     -1
 
+  eq. ++> can-take-a-modulo-of-a-large-dividend-by-a-fractional-divisor
+    1000000000000000.mod 0.1
+    0.04448884876874218
+
   eq. ++> can-take-a-modulo-of-a-negative-by-positive-infinity
-    mod
-      -5
-      pinf
+    -5.mod pinf
     -5
 
+  eq. ++> can-take-a-modulo-of-a-negative-large-dividend-by-a-fractional-divisor
+    -1000000000000000.mod 0.1
+    -0.04448884876874218
+
   eq. ++> can-take-a-modulo-of-a-positive-by-negative-infinity
-    mod
-      5
-      ninf
+    5.mod ninf
     5
 
   eq. ++> can-take-a-modulo-of-a-positive-by-positive-infinity
-    mod
-      5
-      pinf
+    5.mod pinf
     5
 
   eq. ++> can-take-a-modulo-of-minus-one-by-seven
-    mod
-      -1
-      7
+    -1.mod 7
+    -1
+
+  eq. ++> can-take-a-modulo-of-minus-seven-by-three
+    -7.mod 3
     -1
 
   eq. ++> can-take-a-modulo-of-one-by-two
-    mod
-      1
-      2
+    1.mod 2
+    1
+
+  eq. ++> can-take-a-modulo-of-seven-by-three
+    7.mod 3
     1
 
   eq. ++> can-take-a-modulo-of-sixteen-by-a-large-negative
-    mod
-      16
-      -200
+    16.mod -200
     16
 
+  eq. ++> can-take-a-modulo-of-the-largest-finite-double-by-the-smallest-subnormal
+    1.7976931348623157e308.mod 4.9e-324
+    0
+
   eq. ++> can-take-a-modulo-of-zero-by-a-negative
-    mod
-      0
-      -15
+    0.mod -15
     0
 
   eq. ++> can-take-a-modulo-of-zero-by-five
-    mod
-      0
-      5
+    0.mod 5
     0
 
-  eq. ++> rejects-a-modulo-by-zero
-    "recovered"
-    mod
-      5
-      0
-      "recovered" > [message]
+  eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-thirteen
+    10000000000000000.mod 13
+    3
 
-  mod --> stops-on-a-modulo-by-zero
+  eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-three
+    10000000000000000.mod 3
+    1
+
+  eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-seven
+    9200000000000000000.mod 7
     5
-    0
+
+  eq. ++> can-take-an-exact-modulo-of-a-very-large-dividend-by-three
+    9200000000000000000.mod 3
+    2
+
+  5.mod 0 --> stops-on-a-modulo-by-zero

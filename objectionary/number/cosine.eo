@@ -1,33 +1,39 @@
 # Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
-# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
+# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2). The
+# finite approximation of `pi` used in that shift misses the exact extremum
+# at zero, so zero is special-cased to return the exact unit value.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > cosine
-  sine > @
-    num.plus
-      pi.div 2
+[^] > cosine
+  if. > @
+    num.eq 0
+    1
+    sine.
+      num.plus
+        pi.div 2
+  ^ > num
 
   lt. ++> can-behave-as-an-even-function
-    abs
+    abs.
       times.
         minus.
-          cosine
+          cosine.
             pi.div 3
-          cosine (pi.div 3).neg
+          cosine. (pi.div 3).neg
         1000
     1
 
-  lt. ++> can-reduce-a-large-angle
-    abs
+  lt. ++> can-reduce-a-large-angle-when-taking-cosine
+    abs.
       minus.
         times.
-          cosine
+          cosine.
             plus.
               pi.times 10
               pi.div 3
@@ -35,56 +41,49 @@
         500
     1
 
+  nan.cosine.is-nan ++> can-return-nan-for-a-cosine-of-nan
+
+  ninf.cosine.is-nan ++> can-return-nan-for-a-cosine-of-negative-infinity
+
+  pinf.cosine.is-nan ++> can-return-nan-for-a-cosine-of-positive-infinity
+
   lt. ++> can-take-a-cosine-of-pi
-    abs
+    abs.
       minus.
-        times.
-          cosine pi
-          1000
+        pi.cosine.times 1000
         -1000
     1
 
   lt. ++> can-take-a-cosine-of-pi-halves
-    abs
+    abs.
       times.
-        cosine
+        cosine.
           pi.div 2
         1000
     1
 
   lt. ++> can-take-a-cosine-of-pi-thirds
-    abs
+    abs.
       minus.
         times.
-          cosine
+          cosine.
             pi.div 3
           1000
         500
     1
 
   lt. ++> can-take-a-cosine-of-seventeen-radians
-    abs
+    abs.
       minus.
-        times.
-          cosine 17
-          1000
+        17.cosine.times 1000
         -275
     1
 
   lt. ++> can-take-a-cosine-of-zero
-    abs
+    abs.
       minus.
-        times.
-          cosine 0
-          1000
+        0.cosine.times 1000
         1000
     1
 
-  is-nan. ++> cannot-take-a-cosine-of-nan
-    cosine nan
-
-  is-nan. ++> cannot-take-a-cosine-of-negative-infinity
-    cosine ninf
-
-  is-nan. ++> cannot-take-a-cosine-of-positive-infinity
-    cosine pinf
+  1.eq 0.cosine ++> can-take-an-exact-cosine-of-zero

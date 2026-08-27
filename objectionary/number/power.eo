@@ -7,11 +7,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num x] > power
+[^ x] > power
   if. > @
     eq.
       number x.as-bytes >> expo
@@ -28,44 +28,58 @@
                 number num.as-bytes >> base
                 0
               if.
-                expo.gt 0
-                0
-                pinf
+                and.
+                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  odd
+                if.
+                  expo.gt 0
+                  0.neg
+                  ninf
+                if.
+                  expo.gt 0
+                  0
+                  pinf
               expo.is-integer.if
                 if.
                   expo.lt 0
-                  1.div
-                    [b n] >> ipow
-                      if. > @
-                        n.eq 0
-                        1
-                        if.
-                          is-integer. (n.div 2)
-                          half.times half
-                          b.times
-                            ipow b (n.minus 1)
-                      ipow b (n.div 2) > half
-                    | base (abs expo)
-                  ipow base (abs expo)
+                  [^ b n] >> ipow
+                    if. > @
+                      n.eq 0
+                      1
+                      if.
+                        is-integer. (n.div 2)
+                        times.
+                          number half
+                          number half
+                        b.times
+                          ^.ipow b (n.minus 1)
+                    ^.ipow b (n.div 2) > half!
+                  | (1.div base) expo.abs
+                  ipow base expo.abs
                 if.
                   base.gt 0
-                  [y] >> expon
+                  [^ y] >> expon
                     times. > @
                       if.
-                        k.lt 0
+                        lt. (number k) 0
                         1.div
-                          ipow e (abs k)
-                        ipow e (abs k)
+                          ipow e (number k).abs
+                        ipow e (number k).abs
                       fraction 1
-                    if. > [j] > fraction
+                    y > arg!
+                    if. > [^ j] > fraction
                       j.gt 20
                       1
                       1.plus
                         times.
-                          div. (y.minus k) j
-                          fraction (j.plus 1)
-                    floor. (y.plus 0.5) > k
-                  | (expo.times (ln base))
+                          div.
+                            minus.
+                              number ^.arg
+                              number ^.k
+                            j
+                          ^.fraction (j.plus 1)
+                    floor. ((number arg).plus 0.5) > k!
+                  | (expo.times base.ln)
                   nan
             if.
               base.gt 0
@@ -83,27 +97,24 @@
           if.
             expo.gt 0
             if.
-              gt.
-                abs base
-                1
+              base.abs.gt 1
               pinf
               if.
-                eq.
-                  abs base
-                  1
+                base.abs.eq 1
                 nan
                 0
             if.
-              gt.
-                abs base
-                1
+              base.abs.gt 1
               0
               if.
-                eq.
-                  abs base
-                  1
+                base.abs.eq 1
                 nan
                 pinf
+  ^ > num
+
+  gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
+    10.power -315
+    0
 
   eq. ++> can-be-called-as-a-method-on-a-number
     2.power 4
@@ -113,279 +124,232 @@
     3.power 2
     9
 
-  eq. ++> can-be-reached-through-the-package
-    power
-      2
-      4
-    16
-
   eq. ++> can-raise-a-float-to-zero
-    power
-      42.5
-      0
+    42.5.power 0
     1
 
+  lt. ++> can-raise-a-fraction-to-a-fraction
+    abs.
+      minus.
+        0.5.power 1.5
+        0.35355339059327373
+    1.0e-9
+
   eq. ++> can-raise-a-negative-float-to-negative-infinity
-    power
-      -42.5
-      ninf
+    -42.5.power ninf
     0
 
   eq. ++> can-raise-a-negative-float-to-positive-infinity
-    power
-      -4.2
-      pinf
+    -4.2.power pinf
     pinf
 
   eq. ++> can-raise-a-negative-integer-to-negative-infinity
-    power
-      -42
-      ninf
+    -42.power ninf
     0
 
   eq. ++> can-raise-a-negative-integer-to-positive-infinity
-    power
-      -10
-      pinf
+    -10.power pinf
     pinf
 
   eq. ++> can-raise-a-positive-float-to-a-positive-integer
-    power
-      3.5
-      4
+    3.5.power 4
     150.0625
 
   eq. ++> can-raise-a-positive-float-to-negative-infinity
-    power
-      42.5
-      ninf
+    42.5.power ninf
     0
 
   eq. ++> can-raise-a-positive-float-to-positive-infinity
-    power
-      42.5
-      pinf
+    42.5.power pinf
     pinf
 
   eq. ++> can-raise-a-positive-integer-to-a-positive-integer
-    power
-      2
-      3
+    2.power 3
     8
 
   eq. ++> can-raise-a-positive-integer-to-negative-infinity
-    power
-      42
-      ninf
+    42.power ninf
     0
 
   eq. ++> can-raise-a-positive-integer-to-positive-infinity
-    power
-      42
-      pinf
+    42.power pinf
     pinf
 
   eq. ++> can-raise-a-zero-base
-    power
-      0
-      145
+    0.power 145
     0
 
   eq. ++> can-raise-an-integer-to-zero
-    power
-      42
-      0
+    42.power 0
     1
 
   eq. ++> can-raise-four-to-five
-    power
-      4
-      5
+    4.power 5
     1024
 
   eq. ++> can-raise-four-to-minus-three
-    power
-      4
-      -3
+    4.power -3
     0.015625
 
   eq. ++> can-raise-negative-infinity-to-a-positive-float
-    power
-      ninf
-      9.9
+    ninf.power 9.9
     pinf
 
   eq. ++> can-raise-negative-infinity-to-an-even-integer
-    power
-      ninf
-      10
+    ninf.power 10
     pinf
 
   eq. ++> can-raise-negative-infinity-to-an-odd-integer
-    power
-      ninf
-      9
+    ninf.power 9
     ninf
 
   eq. ++> can-raise-negative-infinity-to-negative-infinity
-    power
-      ninf
-      ninf
+    ninf.power ninf
     0
 
+  eq. ++> can-raise-negative-zero-to-even-negative
+    -0.power -4
+    pinf
+
+  eq. ++> can-raise-negative-zero-to-even-positive
+    -0.power 4
+    0
+
+  eq. ++> can-raise-negative-zero-to-odd-negative
+    -0.power -3
+    ninf
+
+  eq. ++> can-raise-negative-zero-to-odd-positive
+    -0.power 3
+    -0
+
+  lt. ++> can-raise-one-to-a-fraction
+    abs.
+      minus.
+        1.power 0.75
+        1
+    1.0e-9
+
   eq. ++> can-raise-positive-infinity-to-a-negative-float
-    power
-      pinf
-      -42.2
+    pinf.power -42.2
     0
 
   eq. ++> can-raise-positive-infinity-to-a-negative-integer
-    power
-      pinf
-      -42
+    pinf.power -42
     0
 
   eq. ++> can-raise-positive-infinity-to-a-positive-float
-    power
-      pinf
-      10.8
+    pinf.power 10.8
     pinf
 
   eq. ++> can-raise-positive-infinity-to-a-positive-integer
-    power
-      pinf
-      42
+    pinf.power 42
     pinf
 
   eq. ++> can-raise-positive-infinity-to-negative-infinity
-    power
-      pinf
-      ninf
+    pinf.power ninf
     0
 
   eq. ++> can-raise-positive-infinity-to-positive-infinity
-    power
-      pinf
-      pinf
+    pinf.power pinf
     pinf
 
   eq. ++> can-raise-three-to-two
-    power
-      3
-      2
+    3.power 2
     9
 
   eq. ++> can-raise-to-a-large-negative-exponent
-    power
-      984782
-      -12341
+    984782.power -12341
     0
 
   eq. ++> can-raise-to-a-zero-exponent
-    power
-      2
-      0
+    2.power 0
     1
 
+  lt. ++> can-raise-two-to-a-negative-fraction
+    abs.
+      minus.
+        2.power -0.5
+        0.7071067811865476
+    1.0e-9
+
   eq. ++> can-raise-two-to-four
-    power
-      2
-      4
+    2.power 4
     16
 
   eq. ++> can-raise-two-to-minus-one
-    power
-      2
-      -1
+    2.power -1
     0.5
 
   eq. ++> can-raise-two-to-minus-three
-    power
-      2
-      -3
+    2.power -3
     0.125
 
   eq. ++> can-raise-two-to-minus-two
-    power
-      2
-      -2
+    2.power -2
     0.25
 
+  lt. ++> can-raise-two-to-three-and-a-half
+    abs.
+      minus.
+        2.power 3.5
+        11.313708498984761
+    1.0e-9
+
   eq. ++> can-raise-zero-to-a-negative
-    power
-      0
-      -52
+    0.power -52
     pinf
 
   eq. ++> can-raise-zero-to-a-negative-odd-integer
-    power
-      0
-      -567
+    0.power -567
     pinf
 
   eq. ++> can-raise-zero-to-a-positive-float
-    power
-      0
-      4.2
+    0.power 4.2
     0
 
   eq. ++> can-raise-zero-to-a-positive-integer
-    power
-      0
-      4
+    0.power 4
     0
 
   eq. ++> can-raise-zero-to-negative-infinity
-    power
-      0
-      ninf
+    0.power ninf
     pinf
 
   eq. ++> can-raise-zero-to-positive-infinity
-    power
-      0
-      pinf
+    0.power pinf
     0
 
+  is-nan. ++> can-return-nan-when-raising-a-negative-to-a-fraction
+    -4.power 0.5
+
+  is-nan. ++> can-return-nan-when-raising-anything-to-nan
+    52.power nan
+
+  is-nan. ++> can-return-nan-when-raising-nan-to-anything
+    nan.power 42
+
+  is-nan. ++> can-return-nan-when-raising-nan-to-nan
+    nan.power nan
+
   lt. ++> can-take-a-cube-root-of-twenty-seven
-    abs
+    abs.
       minus.
-        power
-          27
+        27.power
           1.div 3
         3
-    1.0E-9
+    1.0e-9
 
   lt. ++> can-take-a-square-root-of-nine
-    abs
+    abs.
       minus.
-        power 9 0.5
+        9.power 0.5
         3
-    1.0E-9
+    1.0e-9
 
-  lt. ++> can-take-a-square-root-of-two
-    abs
+  lt. ++> can-take-a-square-root-of-two-by-raising-to-a-power
+    abs.
       minus.
-        power 2 0.5
+        2.power 0.5
         1.4142135623730951
-    1.0E-9
-
-  is-nan. ++> cannot-raise-a-negative-to-a-fraction
-    power
-      -4
-      0.5
-
-  is-nan. ++> cannot-raise-anything-to-nan
-    power
-      52
-      nan
-
-  is-nan. ++> cannot-raise-nan-to-anything
-    power
-      nan
-      42
-
-  is-nan. ++> cannot-raise-nan-to-nan
-    power
-      nan
-      nan
+    1.0e-9

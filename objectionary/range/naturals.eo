@@ -1,27 +1,41 @@
 # Range of natural numbers from `start` to `end` (soft border) with step = 1.
-# The `r` is an instance of `range`, which provides `start` and `end`.
+# It is a method of `range`, so it reads `start` and `end` from the range it
+# is taken from. Both bounds must be integers, otherwise the computation
+# terminates: a fractional or non-finite seed would otherwise stay fractional
+# or non-finite through the whole generated sequence, contradicting the range
+# of natural numbers. `is-integer` already excludes `nan` and the infinities,
+# so it doubles as the finiteness check.
 
-+alias tuple.is-empty
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
-[r] > naturals
-  range > @
-    [] >>
-      build r.start > @
-      [num] > build
-        num > @
-        build > next
-          1.plus @
-    r.end
+[^] > naturals
+  if. > @
+    and.
+      r.start.is-integer.and r.end.is-integer
+      and.
+        r.start.abs.lt safe
+        r.end.abs.lt safe
+    range
+      [^] >>
+        build ^.r.start > @
+        [^ num] > build
+          num > @
+          ^.build > next
+            1.plus @
+      r.end
+    T
+      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
+        * r.start r.end
+  ^ > r
+  2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives
-    naturals
+    naturals.
       range -5 0
     *
       -5
@@ -30,16 +44,35 @@
       -2
       -1
 
-  tuple.is-empty ++> can-build-an-empty-range-from-ten-to-ten
-    naturals
+  eq. ++> can-build-a-range-with-a-single-element
+    naturals.
+      range 5 6
+    * 5
+
+  is-empty. ++> can-build-an-empty-range-from-ten-to-ten
+    naturals.
       range 10 10
 
-  tuple.is-empty ++> can-build-an-empty-range-when-descending
-    naturals
+  is-empty. ++> can-build-an-empty-range-when-descending
+    naturals.
       range 10 1
 
+  is-empty. ++> can-build-an-empty-range-when-descending-in-negatives
+    naturals.
+      range -1 -5
+
+  eq. ++> can-build-naturals-crossing-zero
+    naturals.
+      range -2 3
+    *
+      -2
+      -1
+      0
+      1
+      2
+
   eq. ++> can-build-naturals-from-one-to-ten
-    naturals
+    naturals.
       range 1 10
     *
       1
@@ -51,3 +84,43 @@
       7
       8
       9
+
+  naturals. --> rejects-a-fractional-lower-bound
+    range
+      0.5
+      2
+
+  naturals. --> rejects-a-fractional-upper-bound
+    range
+      1
+      3.5
+
+  naturals. --> rejects-a-lower-bound-at-the-precision-boundary
+    range
+      9007199254740992
+      9007199254740994
+
+  naturals. --> rejects-a-nan-upper-bound
+    range
+      0
+      nan
+
+  naturals. --> rejects-a-negative-lower-bound-at-the-precision-boundary
+    range
+      -9007199254740992
+      0
+
+  naturals. --> rejects-a-negative-upper-bound-at-the-precision-boundary
+    range
+      0
+      -9007199254740992
+
+  naturals. --> rejects-a-non-finite-lower-bound
+    range
+      pinf
+      0
+
+  naturals. --> rejects-an-upper-bound-at-the-precision-boundary
+    range
+      0
+      9007199254740992

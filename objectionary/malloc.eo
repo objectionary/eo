@@ -54,12 +54,11 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > malloc
   malloc.of > [scope] > empty
@@ -69,10 +68,11 @@
     malloc.of > @
       size.
         object >> bts!
-      seq * > [m] >>
+      seq * > [^ m] >>
         m.write 0 bts
-        scope m
+        ^.scope m
   [] > of /Q.bytes
+    ? > ^
     ? > size /Q.number
     ? > scope /{Q.chunk}
 
@@ -82,7 +82,7 @@
       [b]
         malloc.of > @
           10
-          b.put > [m] >>
+          ^.b.put > [^ m] >>
             m.size.eq 10
 
   malloc.empty ++> can-allocate-an-empty-block
@@ -102,9 +102,9 @@
       seq * > @
         a.neg.neg.neg.neg.eq 42
         m
-      seq * > [] > a
-        m.put
-          m.as-number.plus 1
+      seq * > [^] > a
+        ^.m.put
+          ^.m.as-number.plus 1
         42
 
   ++> can-concat-strings-with-an-offset
@@ -113,10 +113,10 @@
       [b]
         malloc.of > @
           3
-          seq * > [m] >>
+          seq * > [^ m] >>
             m.write 0 "XXX"
             m.write 1 "Y"
-            b.put
+            ^.b.put
               eq.
                 m.read 0 3
                 "XYX"
@@ -157,8 +157,8 @@
             * second second
           malloc.of > second
             1
-            f.put > [s] >>
-              f.as-number.plus 1
+            ^.f.put > [^ s] >>
+              ^.f.as-number.plus 1
 
   ++> can-decrease-the-block-size
     malloc.of > @
@@ -166,7 +166,7 @@
       [b]
         malloc.for > @
           01-02-03-04-05
-          b.put > [m] >>
+          ^.b.put > [^ m] >>
             and.
               eq. (m.resized 3).size 3
               m.get.eq 01-02-03
@@ -175,10 +175,10 @@
     eq. > @
       malloc.for
         7
-        [m] >>
+        [^ m] >>
           m.put > @
             num.times num
-          number (inc m)! > num
+          number (^.inc m)! > num
       64
     seq * > [x] > inc
       x.put
@@ -201,7 +201,7 @@
       [b]
         malloc.for > @
           01-02-03-04
-          b.put > [m] >>
+          ^.b.put > [^ m] >>
             and.
               eq. (m.resized 6).size 6
               m.get.eq 01-02-03-04-00-00
@@ -251,25 +251,34 @@
       [b]
         malloc.of > @
           10
-          seq * > [m] >>
+          seq * > [^ m] >>
             m.write 2 "Hello"
-            b.put
+            ^.b.put
               eq.
                 m.read 2 5
                 "Hello"
+
+  eq. ++> can-recover-from-reading-over-the-limit
+    01-02
+    malloc.of
+      1
+      m.read > [m]
+        0
+        10
+        01-02 > [ex]
 
   ++> can-recurse-without-arguments
     eq. > @
       malloc.for
         4
-        func m > [m] >>
+        func m > [^ m] >>
       0
-    if. > [n] >> func
+    if. > [^ n] >> func
       n.as-number.gt 0
       seq *
         n.put
           n.as-number.minus 1
-        func n
+        ^.func n
       n
 
   eq. ++> can-return-the-size-from-a-scope
@@ -293,21 +302,15 @@
       [b]
         malloc.of > @
           12
-          seq * > [m] >>
+          seq * > [^ m] >>
             m.write
               0
               "Hello, "
             m.write 7 "Jeff!"
-            b.put
+            ^.b.put
               eq.
                 m.read 0 12
                 "Hello, Jeff!"
-
-  malloc.of ++> can-write-beyond-an-offset-and-resize
-    1
-    seq * > [m]
-      m.write 1 true
-      m.size.eq 2
 
   ++> can-write-into-a-block-made-by-of
     mem.eq 10 > @
@@ -332,17 +335,8 @@
   eq. ++> can-write-the-initial-value
     malloc.for
       42
-      m > [m]
+      I
     42
-
-  eq. ++> rejects-reading-over-the-limit
-    01-02
-    malloc.of
-      1
-      m.read > [m]
-        0
-        10
-        01-02 > [ex]
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction
     1
@@ -368,7 +362,7 @@
 
   malloc.for --> stops-on-overflowing-a-bool-block
     false
-    m.put 8.612486788E7 > [m]
+    m.put 8.612486788e7 > [m]
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
@@ -380,3 +374,9 @@
     m.read > [m]
       0
       100
+
+  malloc.of --> stops-on-writing-beyond-an-offset
+    1
+    m.write > [m]
+      1
+      true

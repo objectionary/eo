@@ -1,35 +1,89 @@
-# Deletes the file `f` from the filesystem.
-# Returns the same file, unchanged, if it does not exist.
+# Deletes a file from the filesystem, returning the same file, unchanged, if it
+# does not exist. It is a method of `file`, and `f` is the file it is taken off.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[f] > deleted
+[^] > deleted
   f.exists.if > @
     if.
-      removed.code.eq 0
+      or.
+        removed.code.eq 0
+        f.exists.not
       f
       T
         "Cant delete the file '%s': %s".printf
           * f.path removed.output
     f
+  ^ > f
   called. > removed
     os.is-windows.if
       win32 *1
-        f.is-directory.if "_rmdir" "_unlink"
+        f.is-symlink.if
+          "_unlink"
+          f.is-directory.if "_rmdir" "_unlink"
         f.path
       posix *1
-        f.is-directory.if "rmdir" "unlink"
+        f.is-symlink.if
+          "unlink"
+          f.is-directory.if "rmdir" "unlink"
         f.path
 
+  ++> can-delete-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        d.as-file.deleted
+        link.as-file.deleted
+        link.as-file.exists.not
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "broken-link" > link
+
+  ++> can-delete-a-directory
+    d.as-file.deleted.exists.not > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
+  ++> can-delete-a-directory-twice
+    d.as-file.deleted.deleted.exists.not > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
   mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
+
+  ++> can-delete-a-symlink-to-a-directory
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        link.as-file.deleted
+        link.as-file.exists.not
+        d.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "ссылка" > link
 
   ++> can-return-itself-after-deleting
     temp.deleted.path.eq temp.path > @
     mktemp.tmpfile > temp
 
+  ++> can-return-itself-after-deleting-a-directory
+    temp.deleted.path.eq temp.path > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path.as-file > temp
+
   mktemp.tmpfile.deleted.exists.not ++> can-tell-that-a-file-is-gone-after-deleting
+
+  --> stops-on-deleting-a-non-empty-directory
+    seq * > @
+      child.as-file.touched
+      d.as-file.deleted
+    d.resolved "child.txt" > child
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d

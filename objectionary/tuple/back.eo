@@ -4,25 +4,28 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list index] > back
-  if. > @
-    0.gt
-      list.length.minus index! >> start!
-    list
-    reducedi
+[^ index] > back
+  index.is-integer.if > @
+    if.
+      0.gt
+        list.length.minus index! >> start!
       list
-      *
-      if. > [accum item idx] >>
-        idx.gte start
-        accum.with item
-        accum
+      list.reducedi
+        *
+        if. > [^ accum item idx] >>
+          idx.gte start
+          accum.with item
+          accum
+    T
+      "Given index must be an integer"
+  ^ > list
 
   eq. ++> can-take-a-back-slice
-    back
+    back.
       *
         1
         2
@@ -35,7 +38,7 @@
       5
 
   eq. ++> can-take-a-back-slice-with-a-large-index
-    back
+    back.
       *
         1
         2
@@ -50,8 +53,8 @@
       4
       5
 
-  is-empty ++> can-take-a-back-slice-with-a-zero-index
-    back
+  is-empty. ++> can-take-a-back-slice-with-a-zero-index
+    back.
       *
         1
         2
@@ -59,3 +62,9 @@
         4
         5
       0
+
+  back. --> stops-on-a-fractional-index-when-taking-the-back
+    *
+      "a"
+      "b"
+    0.5

@@ -9,22 +9,22 @@
 # string "Hello, \u4e16\u754c!"  # Unicode string creation
 # "text".length                  # Character count (not bytes)
 # "text".slice 0 2               # Character-based slicing
+# "TEXT".lower                   # Lower case, default English rules
+# "text".upper                   # Upper case, default English rules
+# "text".turkish.upper           # Upper case, Turkish dotted/dotless I
 # ```
+# Case conversion is exposed as string methods `lower` and `upper`, backed
+# by the locale wrappers `string.english` (the default) and `string.turkish`.
 # .
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [as-bytes] > string
   as-bytes > @
-
-  string.contains ++> can-check-containment-through-the-package
-    "hello, world"
-    "world"
 
   not. ++> can-compare-a-string-with-nan
     nan.eq "друг"
@@ -49,25 +49,9 @@
     "x".eq "x"
     true
 
-  contains. ++> can-contain-a-word-in-a-sentence
-    "hello, world, how are you?"
-    "how"
-
-  "eEo".is-alpha ++> can-detect-alphabetic-text
-
-  "2026".is-digit ++> can-detect-digits
-
-  ends-with. ++> can-end-with-a-suffix
-    "hello, world"
-    "world"
-
   D0-B4-D1-80-D1-83-D0-B3.eq "друг" ++> can-equal-a-string-through-bytes
 
   "друг".eq D0-B4-D1-80-D1-83-D0-B3 ++> can-equal-bytes
-
-  eq. ++> can-find-the-index-of-a-character
-    "hello".index-of "l"
-    2
 
   "Abc".eq "Abc" ++> can-hold-a-one-line-text-block
 
@@ -77,19 +61,9 @@
 
   "e\ne\ne".eq 65-0A-65-0A-65 ++> can-hold-a-three-line-text-block
 
-  "HELLO".low-cased.eq "hello" ++> can-lower-case-text
-
   eq. ++> can-preserve-indentation-in-a-text-block
     "a\n b\n  c"
     "a\n b\n  c"
-
-  eq. ++> can-repeat-text
-    "ha".repeated 3
-    "hahaha"
-
-  starts-with. ++> can-start-with-a-prefix
-    "hello, world"
-    "hello"
 
   "\n".eq "\n" ++> can-support-a-line-break-escape-sequence
 
@@ -103,14 +77,6 @@
     "Hello, друг!\n"
     "Hello, друг!\n"
 
-  eq. ++> can-take-a-character-at-an-index
-    "some".at 1
-    "o"
-
-  eq. ++> can-trim-surrounding-spaces
-    "  spaced  ".trimmed
-    "spaced"
-
   eq. ++> can-turn-into-bytes
     "€ друг".as-bytes
     E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
@@ -121,4 +87,4 @@
 
   "\b\f\n\r\t⟦".eq 08-0C-0A-0D-09-E2-9F-A6 ++> can-unescape-symbols
 
-  "hello".up-cased.eq "HELLO" ++> can-upper-case-text
+  "Hey".missing-attr --> stops-on-taking-a-missing-attribute

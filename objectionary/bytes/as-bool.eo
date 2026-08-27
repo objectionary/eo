@@ -3,12 +3,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b] > as-bool
-  b.eq 01- > @
+[^] > as-bool
+  ^.eq 01- > @
 
   not. ++> can-convert-bytes-to-a-bool
     01-.as-bool.eq 00-.as-bool

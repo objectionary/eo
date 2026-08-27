@@ -1,6 +1,12 @@
 # Object `printf` allows you to format and output text depending
 # on the arguments passed to it and return it as `org.eolang.string`.
 #
+# A specifier reads as `%[N$][flags][width][.precision]conversion`, where
+# `N$` picks the `N`-th argument (1-based) instead of the next sequential
+# one, `-` justifies to the left, `0` pads a number with leading zeros,
+# `width` is the minimum count of characters and `.precision` truncates
+# the text (or, for `%f`, counts the fraction digits).
+#
 # When arguments are processed - they're dataized and converted to objects
 # depending on next flags:
 # - %s - converts object to `string`
@@ -8,227 +14,627 @@
 # - %f - converts object to `float`
 # - %x - converts object to `bytes`
 # - %b - converts object to boolean, `true` or `false`.
+#
+# The format is walked over its bytes, and not over its characters, because
+# `%` never occurs inside a UTF-8 multi-byte sequence, so a literal byte is
+# copied through untouched and the walk stays linear in allocation.
+#
+# The work is done by two objects calling each other, so that the format is
+# traversed exactly once: `walk` copies a literal byte and steps forward,
+# handing every `%` to `spec`, which reads one specifier and asks `walk` to
+# continue after it.
+#
+# `spec` reads that specifier from left to right and names every position it
+# stops at: `dollar` is the `$` of a positional argument, `flags` opens
+# the specifier itself, `digits` follows the `-` and `0` flags, `dot`
+# follows the width digits, and `end` holds the conversion letter. Those
+# positions, and everything derived from them, are memoized, because the
+# language caches through `!` alone, and they are listed alphabetically
+# rather than in reading order, because the linter sorts them by name.
+#
+# The `%s` conversion refuses an argument whose bytes do not decode as UTF-8.
+# `false` and `true` dataize to the single bytes `00-` and `01-`, which are
+# also the valid one-character encodings of U+0000 and U+0001, so an object
+# knows its own bytes here and not its type: a boolean routed through `%s`
+# is printed as that control character instead of being rejected, and `%b`
+# remains the conversion to reach for a boolean.
+#
+# The `%d` guard names the number it rejects through `as-scientific` and not
+# through `%f`, because every magnitude it rejects is past the range `as-fixed`
+# writes, and a reason rendered with `%f` destroyed itself instead of arriving.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.62.1
-+rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[] > printf /Q.string
-  ? > format /Q.string
-  ? > args /Q.tuple
+[^ args] > printf
+  string > @
+    [^ index auto acc] >> walk
+      if. > @
+        gte.
+          number cursor
+          number span
+        acc
+        if.
+          25-.eq char
+          spec
+            number cursor
+            auto
+            acc
+          ^.walk
+            as-number.
+              plus.
+                number cursor
+                1
+            auto
+            acc.concat char
+      slice. > char!
+        bytes raw
+        number cursor
+        1
+      index > cursor!
+    | 0 0 --
+  slice. > [^ i] >> byte
+    bytes raw
+    i
+    1
+  as-ascii. > [^ i] >> code
+    string
+      byte i
+  if. > [^ i] >> digits-end
+    i.gte
+      number span
+    i
+    if.
+      and.
+        48.lte
+          code i
+        57.gte
+          code i
+      ^.digits-end
+        as-number.
+          i.plus 1
+      i
+  if. > [^ from to acc] >> digits-value
+    from.gte to
+    acc
+    ^.digits-value
+      as-number.
+        from.plus 1
+      to
+      as-number.
+        plus.
+          acc.times 10
+          minus.
+            code from
+            48
+  T message > [message] >> failure
+  if. > [^ i] >> flags-end
+    i.gte
+      number span
+    i
+    if.
+      or.
+        2D-.eq
+          byte i
+        30-.eq
+          byte i
+      ^.flags-end
+        as-number.
+          i.plus 1
+      i
+  ^ > format
+  2.power 63 >> limit!
+  size. >> span!
+    bytes
+      format.as-bytes >> raw!
+  [^ index auto acc] >> spec
+    if. > @
+      gte.
+        number end
+        number span
+      T
+        "The format %s ends with an incomplete specifier, a conversion character is missing".printf
+          * ^.format
+      if.
+        25-.eq conv
+        if.
+          eq.
+            number end
+            as-number.
+              index.plus 1
+          walk
+            as-number.
+              plus.
+                number end
+                1
+            auto
+            acc.concat 25-
+          T
+            "The escaped %% conversion does not take flags, width or precision".printf
+              * ^.format
+        walk
+          as-number.
+            plus.
+              number end
+              1
+          positional.as-bool.if
+            auto
+            as-number.
+              auto.plus 1
+          seq *
+            value
+            acc.concat padded
+    ^.args.at > arg
+      number idx
+    byte > conv!
+      number end
+    if. > converted!
+      73-.eq conv
+      as-bytes. > [^ text] >> capped
+        ^.precise.as-bool.if
+          truncated.
+            string text
+            number ^.precision
+            failure
+          text
+      |
+        seq *
+          length.
+            string datum
+          capped datum
+      if.
+        64-.eq conv
+        as-decimal.
+          if.
+            or.
+              gte.
+                number numeric
+                number limit
+              lt.
+                number numeric
+                times.
+                  number limit
+                  -1
+            T
+              "The number %s doesn't fit into the long range of the '%%d' conversion".printf
+                *
+                  string (number numeric).as-scientific
+            number numeric
+        if.
+          66-.eq conv
+          as-fixed.
+            number numeric
+            precise.as-bool.if
+              number precision
+              6
+            failure
+          if.
+            78-.eq conv
+            capped (bytes datum).as-hex
+            if.
+              62-.eq conv
+              capped
+                arg.as-bool.if "true" "false"
+              T
+                "The conversion %x in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                  *
+                    bytes conv
+    arg.as-bytes > datum!
+    flags-end > digits!
+      number flags
+    digits-end > dollar!
+      as-number.
+        index.plus 1
+    digits-end > dot!
+      number digits
+    precise.as-bool.if > end!
+      digits-end
+        as-number.
+          plus.
+            number dot
+            1
+      number dot
+    as-bytes. > filled!
+      padded-zeros.
+        string value
+        number width
+        failure
+    positional.as-bool.if > flags!
+      as-number.
+        plus.
+          number dollar
+          1
+      as-number.
+        index.plus 1
+    positional.as-bool.if > idx!
+      as-number.
+        minus.
+          digits-value
+            as-number.
+              index.plus 1
+            number dollar
+            0
+          1
+      auto
+    number arg > numeric!
+    if. > padded!
+      if. > [^ i c] >> flagged
+        i.gte
+          number ^.digits
+        false
+        if.
+          c.eq
+            byte i
+          true
+          ^.flagged
+            as-number.
+              i.plus 1
+            c
+      | (number flags) 2D-
+      as-bytes.
+        padded-right.
+          string value
+          number width
+          " "
+          failure
+      zero.as-bool.if
+        filled
+        as-bytes.
+          padded-left.
+            string value
+            number width
+            " "
+            failure
+    and. > positional!
+      gt.
+        number dollar
+        index.plus 1
+      and.
+        lt.
+          number dollar
+          number span
+        24-.eq
+          byte
+            number dollar
+    and. > precise!
+      lt.
+        number dot
+        number span
+      2E-.eq
+        byte
+          number dot
+    precise.as-bool.if > precision!
+      digits-value
+        as-number.
+          plus.
+            number dot
+            1
+        number end
+        0
+      0
+    if. > value!
+      positional.as-bool.and
+        18.lt
+          minus.
+            number dollar
+            index.plus 1
+      T
+        "The positional argument index in the format %s is too large".printf
+          * ^.format
+      if.
+        positional.as-bool.and
+          lt.
+            number idx
+            0
+        T
+          "The positional argument index %d in the format must be 1 or greater".printf
+            *
+              plus.
+                number idx
+                1
+        if.
+          gte.
+            number idx
+            ^.args.length
+          T
+            "The argument index %d in the format is out of bounds, only %d given".printf
+              *
+                plus.
+                  number idx
+                  1
+                ^.args.length
+          if.
+            precise.as-bool.and
+              64-.eq conv
+            T
+              "A precision of %d can't be applied to the %%d conversion".printf
+                *
+                  number precision
+            if.
+              zero.as-bool.and
+                not.
+                  or.
+                    64-.eq conv
+                    66-.eq conv
+              T
+                "The zero flag can't be applied to the %x conversion, only to %%d and %%f".printf
+                  *
+                    bytes conv
+              converted
+    digits-value > width!
+      number digits
+      number dot
+      0
+    flagged > zero!
+      number flags
+      30-
+
+  eq. ++> can-answer-the-size-of-the-formatted-text
+    size.
+      "Hello, %s".printf
+        * "Jeff"
+    11
+
+  eq. ++> can-apply-a-precision-to-a-non-ascii-string
+    "Жир"
+    "%.3s".printf
+      * "Жирафы"
+
+  eq. ++> can-apply-a-precision-to-a-string
+    "Jef"
+    "%.3s".printf
+      * "Jeffrey"
 
   eq. ++> can-apply-a-precision-to-bytes
     "40-"
-    printf *1
-      "%.3x"
-      42.as-bytes
+    "%.3x".printf
+      * 42.as-bytes
+
+  eq. ++> can-apply-a-precision-wider-than-a-non-ascii-string
+    "Жирафы"
+    "%.10s".printf
+      * "Жирафы"
 
   eq. ++> can-apply-a-width-to-bytes
     "  40-45-00-00-00-00-00-00"
-    printf *1
-      "%25x"
-      42.as-bytes
+    "%25x".printf
+      * 42.as-bytes
+
+  eq. ++> can-format-a-boolean-as-a-control-character
+    "\u0001"
+    "%s".printf
+      * true
+
+  eq. ++> can-format-a-computed-string
+    "abcd"
+    "%s".printf
+      *
+        "ab".concat "cd"
+
+  eq. ++> can-format-a-decimal-above-two-to-the-53rd
+    "9007199254740992"
+    "%d".printf
+      * 9007199254740992
+
+  eq. ++> can-format-a-float-above-two-to-the-53rd
+    "9007199254740992.000000"
+    "%f".printf
+      * 9007199254740992
 
   eq. ++> can-format-a-float-with-six-fraction-digits
     "1.250000"
-    printf *1
-      "%f"
-      1.25
+    "%f".printf
+      * 1.25
+
+  eq. ++> can-format-a-large-negative-decimal
+    "-9007199254740992"
+    "%d".printf
+      * -9007199254740992
+
+  eq. ++> can-format-a-null-control-character-as-a-string
+    "\u0000"
+    "%s".printf
+      * "\u0000"
 
   eq. ++> can-format-a-numbered-substitution
     "Hello, Jeff! Bye, Jeff!"
-    printf *1
-      "Hello, %s! Bye, %1$s!"
-      "Jeff"
+    "Hello, %s! Bye, %1$s!".printf
+      * "Jeff"
 
   eq. ++> can-format-a-numbered-substitution-with-many-arguments
     "This is the first; This is the first as well; The second; and the 3"
-    printf *1
-      "This is the %s; This is the %1$s as well; The %s; and the %d"
-      "first"
-      "second"
-      3
+    "This is the %s; This is the %1$s as well; The %s; and the %d".printf
+      *
+        "first"
+        "second"
+        3
 
   eq. ++> can-format-a-precision-of-two-decimals
     "3.14"
-    printf *1
-      "%.2f"
-      3.1415
+    "%.2f".printf
+      * 3.1415
+
+  eq. ++> can-format-a-start-of-heading-control-character-as-a-string
+    "\u0001"
+    "%s".printf
+      * "\u0001"
 
   eq. ++> can-format-a-width-with-leading-spaces
     "   42"
-    printf *1
-      "%5d"
-      42
+    "%5d".printf
+      * 42
 
   eq. ++> can-format-a-zero-float-with-six-fraction-digits
     "0.000000"
-    printf *1
-      "%f"
-      0
+    "%f".printf
+      * 0
 
   eq. ++> can-format-left-justified-with-trailing-spaces
     "x         "
-    printf *1
-      "%-10s"
-      "x"
+    "%-10s".printf
+      * "x"
 
   eq. ++> can-format-objects-of-every-type
     "string Jeff, bytes 4A-65-66-66, float 42.300000, int 14, bool false"
-    printf *1
-      "string %s, bytes %x, float %f, int %d, bool %b"
-      "Jeff"
-      "Jeff".as-bytes
-      42.3
-      14
-      false
+    "string %s, bytes %x, float %f, int %d, bool %b".printf
+      *
+        "Jeff"
+        "Jeff".as-bytes
+        42.3
+        14
+        false
 
   eq. ++> can-format-ordered-numbered-substitutions
     "first second second is after first"
-    printf *1
-      "%s %s %2$s is after %1$s"
-      "first"
-      "second"
+    "%s %s %2$s is after %1$s".printf
+      * "first" "second"
 
   eq. ++> can-ignore-extra-arguments
     "Hey"
-    printf *1
-      "%s"
-      "Hey"
-      "Jeff"
+    "%s".printf
+      * "Hey" "Jeff"
 
   eq. ++> can-left-align-bytes
     "40-45-00-00-00-00-00-00  "
-    printf *1
-      "%-25x"
-      42.as-bytes
+    "%-25x".printf
+      * 42.as-bytes
 
   eq. ++> can-preserve-an-escaped-bytes-format
     "%x"
-    printf
-      "%%x"
+    "%%x".printf
       *
 
   eq. ++> can-print-a-complex-string
     "Привет 3.140000 Jeff X!"
-    printf *1
-      "Привет %f %s %s!"
-      3.14
-      "Jeff"
-      "X"
+    "Привет %f %s %s!".printf
+      *
+        3.14
+        "Jeff"
+        "X"
 
   eq. ++> can-print-a-percent-sign
     "%Jeff"
-    printf *1
-      "%%%s"
-      "Jeff"
+    "%%%s".printf
+      * "Jeff"
 
   eq. ++> can-print-a-simple-string
     "Hello, Jeffrey!"
-    printf *1
-      "Hello, %s!"
-      "Jeffrey"
+    "Hello, %s!".printf
+      * "Jeffrey"
 
   eq. ++> can-print-an-i64-as-a-number
     "42"
-    printf *1
-      "%d"
-      42.as-i64.as-number
+    "%d".printf
+      * 42.as-i64.as-number
+
+  not. ++> can-print-an-i64-not-as-a-number
+    eq.
+      "%d".printf
+        * 42.as-i64
+      "42"
 
   eq. ++> can-print-bytes
     "40-45-00-00-00-00-00-00"
-    printf *1
-      "%x"
-      42.as-bytes
+    "%x".printf
+      * 42.as-bytes
 
   eq. ++> can-round-a-float-carrying-into-the-integer-part
     "1.000000"
-    printf *1
-      "%f"
-      0.9999999
+    "%f".printf
+      * 0.9999999
 
   eq. ++> can-truncate-a-negative-float-toward-zero
     "-7"
-    printf *1
-      "%d"
-      -7.89
+    "%d".printf
+      * -7.89
 
   eq. ++> can-truncate-a-positive-float-toward-zero
     "42"
-    printf *1
-      "%d"
-      42.321
+    "%d".printf
+      * 42.321
 
   eq. ++> can-truncate-rather-than-round-a-float
     "9"
-    printf *1
-      "%d"
-      9.99
+    "%d".printf
+      * 9.99
 
-  not. ++> cannot-print-an-i64
-    eq.
-      printf *1
-        "%d"
-        42.as-i64
-      "42"
+  eq. ++> can-write-the-negative-long-boundary-as-a-decimal
+    "-9223372036854775808"
+    "%d".printf
+      * -9.223372036854776e18
 
-  printf *1 --> stops-on-a-comma-flag-with-s
+  printf. --> stops-on-a-comma-flag-with-s
     "%,s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-comma-flag-with-x
+  printf. --> stops-on-a-comma-flag-with-x
     "%,x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-hash-flag-with-s
+  printf. --> stops-on-a-flag-before-an-escaped-percent
+    "%-%s"
+    * "x"
+
+  printf. --> stops-on-a-hash-flag-with-s
     "%#s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-hash-flag-with-x
+  printf. --> stops-on-a-hash-flag-with-x
     "%#x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-non-utf8-byte-argument-as-a-string
+  printf. --> stops-on-a-non-utf8-byte-argument-as-a-string
     "%s"
-    3.14
+    * 3.14
 
-  printf *1 --> stops-on-a-paren-flag-with-s
+  printf. --> stops-on-a-number-as-a-string
+    "%s"
+    * 42
+
+  printf. --> stops-on-a-paren-flag-with-s
     "%(s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-a-precision-with-d
+  printf. --> stops-on-a-precision-with-d
     "%.2d"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-zero-flag-with-x
+  printf. --> stops-on-a-width-before-an-escaped-percent
+    "%5%s"
+    * "x"
+
+  printf. --> stops-on-a-zero-flag-with-x
     "%0x"
-    5
+    * 5
 
-  printf *1 --> stops-on-a-zero-positional-index
+  printf. --> stops-on-a-zero-positional-index
     "%0$s"
-    "first"
+    * "first"
 
-  printf *1 --> stops-on-an-oversized-positional-index
+  printf. --> stops-on-an-i64-as-a-string
+    "%s"
+    * 42.as-i64
+
+  printf. --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
-    "Jeff"
+    * "Jeff"
 
-  printf --> stops-on-an-unsupported-format
+  printf. --> stops-on-an-unsupported-format
     "%o"
     *
 
-  printf *1 --> stops-on-arguments-that-do-not-match
+  printf. --> stops-on-arguments-that-do-not-match
     "%s%s"
-    "Jeff"
+    * "Jeff"
 
-  printf *1 --> stops-on-formatting-a-huge-number-as-a-decimal
+  printf. --> stops-on-formatting-a-huge-number-as-a-decimal
     "%d"
-    1.0e30
+    * 1.0e30
 
-  printf *1 --> stops-on-formatting-nan-as-a-decimal
+  printf. --> stops-on-formatting-nan-as-a-decimal
     "%d"
-    nan
+    * nan

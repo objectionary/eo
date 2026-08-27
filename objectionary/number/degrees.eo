@@ -4,50 +4,48 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > degrees
-  div. > @
-    times.
-      number num.as-bytes
-      180
-    pi
+[^] > degrees
+  times. > @
+    div.
+      number ^.as-bytes
+      pi
+    180
+
+  lt. ++> can-convert-a-large-value-to-degrees-without-overflow
+    abs.
+      1.0e306.degrees.minus 5.729577951308232e307
+    1.0e294
 
   lt. ++> can-convert-minus-pi-to-degrees
-    abs
-      minus.
-        degrees pi.neg
-        -180
-    1.0E-4
+    abs.
+      pi.neg.degrees.minus -180
+    1.0e-4
 
   lt. ++> can-convert-pi-halves-to-degrees
-    abs
+    abs.
       minus.
-        degrees
+        degrees.
           pi.div 2
         90
-    1.0E-4
+    1.0e-4
 
   lt. ++> can-convert-pi-to-degrees
-    abs
-      minus.
-        degrees pi
-        180
-    1.0E-4
+    abs.
+      pi.degrees.minus 180
+    1.0e-4
 
   lt. ++> can-convert-two-pi-to-degrees
-    abs
+    abs.
       minus.
-        degrees
+        degrees.
           pi.times 2
         360
-    1.0E-4
+    1.0e-4
 
-  eq. ++> can-convert-zero-to-degrees
-    degrees 0
-    0
+  0.degrees.eq 0 ++> can-convert-zero-to-degrees
 
-  is-nan. ++> cannot-convert-nan-to-degrees
-    degrees nan
+  nan.degrees.is-nan ++> can-return-nan-when-converting-nan-to-degrees

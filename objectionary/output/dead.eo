@@ -1,19 +1,19 @@
-# Dead output is an output that writes to nowhere. Here `origin` is the
-# output this one is taken off, as in `o.dead`. It is ignored, because a
-# dead output writes to nowhere anyway.
+# Dead output is an output that writes to nowhere. It is a method of
+# `output`, as in `o.dead`, and reads nothing from the output it is taken
+# off, because it writes to nowhere anyway.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package output
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[origin] > dead
+[] > dead
   [buffer] > write
-    [] >> output-block
+    [^] >> output-block
       true > @
-      output-block > [buffer] > write
+      ^.^.output-block > [^ buffer] > write
     | > @
 
   malloc.of ++> can-be-taken-off-any-output

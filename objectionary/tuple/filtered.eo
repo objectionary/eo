@@ -7,17 +7,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > filtered
-  filteredi > @
-    list
-    func item > [item index] >>
+[^ func] > filtered
+  ^.filteredi > @
+    ^.func item > [^ item index] >>
 
   eq. ++> can-filter-a-list
-    filtered
+    filtered.
       *
         3
         1
@@ -31,7 +30,7 @@
       5
 
   eq. ++> can-filter-bools
-    filtered
+    filtered.
       *
         true
         false

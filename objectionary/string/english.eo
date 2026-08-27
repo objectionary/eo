@@ -1,0 +1,85 @@
+# English locale wrapping a `string` and exposing case conversion for it.
+# Being a decorator of its `s` string, an `english` object behaves like the
+# string itself (`.length`, `.eq`, `.slice` and so on pass through), while
+# adding `lower` and `upper` that map the ASCII letters `A`-`Z` and `a`-`z`
+# to their counterparts one-to-one. Every other byte, including accented
+# Latin, Cyrillic and Greek letters and all multi-byte UTF-8 sequences,
+# passes through unchanged. This is the language-neutral default, which is
+# equivalent to English since English has no special casing rules. Locales
+# that diverge from it, such as `string.turkish`, specialize this object.
+# Each conversion hoists its lower letter bound into a `mincode` constant, so
+# the bound is computed once rather than for every byte walked.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^] > english
+  s > @
+  [^] > lower
+    string > @
+      ^.s.as-bytes.array.reduced
+        --
+        [^ accum byte] >>
+          accum.concat > @
+            if.
+              and.
+                code.lte "Z".as-ascii!
+                code.gte mincode
+              slice.
+                as-bytes.
+                  as-i64.
+                    code.plus
+                      "a".as-ascii.minus (number mincode)
+                7
+                1
+              byte
+          as-ascii. > code
+            string byte
+    "A".as-ascii >> mincode!
+  ^ > s
+  [^] > upper
+    string > @
+      ^.s.as-bytes.array.reduced
+        --
+        [^ accum byte] >>
+          accum.concat > @
+            if.
+              and.
+                code.lte "z".as-ascii!
+                code.gte mincode
+              slice.
+                as-bytes.
+                  as-i64.
+                    code.minus ((number mincode).minus "A".as-ascii)
+                7
+                1
+              byte
+          as-ascii. > code
+            string byte
+    "a".as-ascii >> mincode!
+
+  5.eq "hello".english.length ++> can-behave-like-the-wrapped-english-string
+
+  "hello".eq "HeLlO".english.lower ++> can-convert-already-lower-cased-text
+
+  "HELLO".eq "HeLlO".english.upper ++> can-convert-already-upper-cased-text
+
+  "hello".eq "HELLO".english.lower ++> can-convert-text-to-lower-case
+
+  "HELLO".eq "hello".english.upper ++> can-convert-text-to-upper-case
+
+  "hello".eq "hello".english.lower ++> can-keep-already-lower-cased-text
+
+  "HELLO".eq "HELLO".english.upper ++> can-keep-already-upper-cased-text
+
+  eq. ++> can-keep-non-ascii-letters-when-lower-casing-in-english
+    "ÄÖÜ"
+    "ÄÖÜ".english.lower
+
+  eq. ++> can-keep-non-ascii-letters-when-upper-casing-in-english
+    "äöü"
+    "äöü".english.upper

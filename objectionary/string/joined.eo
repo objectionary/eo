@@ -4,43 +4,49 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text items] > joined
+[^ items] > joined
   string > @
     if. >>!
       items.length.eq 0
       --
-      [acc tup] >> with-delimiter
+      [^ acc tup] >> with-delimiter
         if. > @
           tup.length.eq 0
           acc
-          with-delimiter
+          ^.with-delimiter
             concat.
-              concat. (dataized tup.head) text!
+              concat. (dataized tup.head) ^.text!
               acc
             tup.tail
       | items.head items.tail
+  ^ > text
+
+  matches. ++> can-apply-regex-to-a-joined-string
+    compiled.
+      regex.
+        "".joined
+          * "/[a-z]+/"
+    "hello"
 
   eq. ++> can-join-many-strings
     "hello-world-dear-friend"
-    joined *1
-      "-"
-      "hello"
-      "world"
-      "dear"
-      "friend"
+    "-".joined
+      *
+        "hello"
+        "world"
+        "dear"
+        "friend"
 
   eq. ++> can-join-no-strings
     ""
-    joined
-      "-"
+    "-".joined
       *
 
   eq. ++> can-join-one-string
     "some"
-    joined *1
-      "-"
-      "some"
+    "-".joined
+      * "some"

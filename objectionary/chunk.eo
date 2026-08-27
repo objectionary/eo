@@ -21,41 +21,60 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [id] > chunk
   get > @
-  write > [source target length] > copy
-    target
-    read
-      source
-      length
+  [^ source target length] > copy
+    seq * > @
+      ^.read source length >> data!
+      if.
+        gt.
+          target.plus length
+          ^.size
+        write.
+          ^.resized
+            target.plus length
+          target
+          data
+        ^.write target data
   read > get
     0
     size
-  if. > [object] > put
+  if. > [^ object] > put
     and.
-      size.gt 0
-      object.size.gt size
+      ^.size.gt 0
+      object.size.gt ^.size
     T
       "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
-        * object.size size
-    seq *
-      write 0 object
-      get
+        * object.size ^.size
+    if.
+      ^.size.eq 0
+      seq *
+        write.
+          ^.resized object.size
+          0
+          object
+        ^.get
+      seq *
+        ^.write 0 object
+        ^.get
   [] > read /Q.bytes
+    ? > ^
     ? > offset /Q.number
     ? > length /Q.number
     ? > cant-read /{Q.string}
   [] > resized /Q.chunk
+    ? > ^
     ? > capacity /Q.number
   [] > size /Q.number
+    ? > ^
   [] > write /Q.bool
+    ? > ^
     ? > offset /Q.number
     ? > data
 

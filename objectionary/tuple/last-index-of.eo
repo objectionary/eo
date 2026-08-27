@@ -4,23 +4,23 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list wanted] > last-index-of
-  if. > [t] >> rec
+[^ wanted] > last-index-of
+  if. > [^ t] >> rec
     t.length.eq 0
     -1
     if.
-      t.head.eq wanted
-      t.tail.length
-      rec t.tail
-  | list > @
+      t.head.eq ^.wanted
+      t.length.minus 1
+      ^.rec t.tail
+  | ^ > @
 
   eq. ++> can-find-the-last-index-of-an-item
     1
-    last-index-of
+    last-index-of.
       *
         "qwerty"
         2
@@ -29,31 +29,29 @@
 
   eq. ++> can-find-the-last-index-of-a-repeated-item
     2
-    last-index-of
+    last-index-of.
       *
         24
         42
         24
       24
 
-  eq. ++> cannot-find-the-last-index-of-an-absent-item
+  eq. ++> can-find-no-last-index-of-an-absent-item
     -1
-    last-index-of
+    last-index-of.
       *
         1
         2
         3
       0
 
-  eq. ++> cannot-find-the-last-index-in-an-empty-list
+  eq. ++> can-find-no-last-index-in-an-empty-list
     -1
-    last-index-of
-      *
-      "abc"
+    tuple.empty.last-index-of "abc"
 
   eq. ++> can-find-the-last-index-of-a-unicode-item
     3
-    last-index-of
+    last-index-of.
       *
         "Hi"
         "Привет"
@@ -61,3 +59,14 @@
         "Привет"
         "こんにちわ"
       "Привет"
+
+  eq. ++> can-find-the-last-index-of-a-non-symmetric-match
+    4
+    last-index-of.
+      *
+        10
+        20
+        30
+        40
+        20
+      20

@@ -1,0 +1,125 @@
+# Returns `text` padded on the left with `fill` until it counts `width`
+# characters, so that `42` padded to five characters with a space
+# becomes `   42`. Characters are counted, and not bytes, so a multi-byte
+# character widens the text by one. A `text` of `width` characters
+# or longer is returned unchanged.
+# If `width` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), or `fill` is not a single character, the `cant-pad` fallback
+# is returned, or the terminator when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ width fill cant-pad] > padded-left
+  if. > @
+    or.
+      or.
+        0.gt width
+        width.is-integer.not
+      not.
+        1.eq fill.length
+    cant-pad
+      width.is-finite.if
+        "Can't pad text to %f characters with %s".printf
+          * width fill
+        "Can't pad text to %s characters with %s".printf
+          *
+            string width.as-scientific
+            fill
+    if.
+      width.gt
+        text.length >> len!
+      string
+        concat.
+          as-bytes.
+            fill.repeated (width.minus len).as-number cant-pad
+          text.as-bytes
+      text
+  ^ > text
+
+  eq. ++> can-count-characters-and-not-bytes-when-padding-left
+    "  Ж"
+    "Ж".padded-left
+      3
+      " "
+
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-left
+    "Can't pad text to -1.000000 characters with x"
+    "y".padded-left
+      -1
+      "x"
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-left
+    "Can't pad text to infinity characters with x"
+    "y".padded-left
+      pinf
+      "x"
+      I
+
+  eq. ++> can-pad-a-number-with-leading-spaces
+    "   42"
+    "42".padded-left
+      5
+      " "
+
+  eq. ++> can-pad-with-leading-zeros
+    "0042"
+    "42".padded-left
+      4
+      "0"
+
+  eq. ++> can-recover-from-a-multi-character-fill-when-padding-left
+    "recovered"
+    "y".padded-left
+      5
+      "ab"
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-negative-width-when-padding-left
+    "recovered"
+    "y".padded-left
+      -1
+      "x"
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-width-when-padding-left
+    "recovered"
+    "y".padded-left
+      2.5
+      "x"
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-width-when-padding-left
+    "recovered"
+    "y".padded-left
+      pinf
+      "x"
+      "recovered" > [message]
+
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-left
+    "hello"
+    "hello".padded-left
+      3
+      " "
+
+  eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-left
+    "hey"
+    "hey".padded-left
+      3
+      " "
+
+  eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-left
+    "x"
+    "x".padded-left
+      0
+      " "
+
+  padded-left. --> stops-on-a-negative-width-when-padding-left
+    "y"
+    -1
+    "x"

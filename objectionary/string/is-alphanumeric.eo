@@ -4,21 +4,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > is-alphanumeric
-  matches. > @
-    regex "/^[A-Za-z0-9]+$/"
-    text
+[^] > is-alphanumeric
+  "/^[A-Za-z0-9]+$/".regex.matches text > @
+  ^ > text
 
-  is-alphanumeric "eEo" ++> can-be-alphanumeric-when-simple-text
+  "eEo".is-alphanumeric ++> can-be-alphanumeric-when-simple-text
 
-  is-alphanumeric "ab3d" ++> can-be-alphanumeric-with-a-number
+  "ab3d".is-alphanumeric ++> can-be-alphanumeric-with-a-number
 
-  not. ++> cannot-be-alphanumeric-when-empty
-    is-alphanumeric ""
+  "".is-alphanumeric.not ++> can-tell-it-is-not-alphanumeric-when-empty
 
-  not. ++> cannot-be-alphanumeric-with-dashes
-    is-alphanumeric "-w-"
+  "-w-".is-alphanumeric.not ++> can-tell-it-is-not-alphanumeric-with-dashes

@@ -4,51 +4,49 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > u32
   as-bytes > @
-  i64 > [] > as-i64
-    00-00-00-00.concat as-bytes
+  i64 > [^] > as-i64
+    00-00-00-00.concat ^.as-bytes
   as-i64.as-number > as-number
-  [x cant-divide] > div
+  [^ x cant-divide] > div
     if. > @
       eq.
         x.as-u32 >> other
         00-00-00-00
       cant-divide
         "Can't divide %d by u32 zero".printf
-          * as-number
+          * ^.as-number
       u32
         slice.
           as-bytes.
-            as-i64.div other.as-i64
+            ^.as-i64.div other.as-i64
           4
           4
-  as-i64.gt x.as-u32.as-i64 > [x] > gt
-  as-i64.gte x.as-u32.as-i64 > [x] > gte
-  as-i64.lt x.as-u32.as-i64 > [x] > lt
-  as-i64.lte x.as-u32.as-i64 > [x] > lte
-  u32 > [x] > minus
+  ^.as-i64.gt x.as-u32.as-i64 > [^ x] > gt
+  ^.as-i64.gte x.as-u32.as-i64 > [^ x] > gte
+  ^.as-i64.lt x.as-u32.as-i64 > [^ x] > lt
+  ^.as-i64.lte x.as-u32.as-i64 > [^ x] > lte
+  u32 > [^ x] > minus
     slice.
       as-bytes.
-        as-i64.minus x.as-u32.as-i64
+        ^.as-i64.minus x.as-u32.as-i64
       4
       4
-  u32 > [x] > plus
+  u32 > [^ x] > plus
     slice.
       as-bytes.
-        as-i64.plus x.as-u32.as-i64
+        ^.as-i64.plus x.as-u32.as-i64
       4
       4
-  u32 > [x] > times
+  u32 > [^ x] > times
     slice.
       as-bytes.
-        as-i64.times x.as-u32.as-i64
+        ^.as-i64.times x.as-u32.as-i64
       4
       4
 
@@ -92,6 +90,12 @@
     00-00-00-06.as-u32.times 00-00-00-07.as-u32
     00-00-00-2A.as-u32
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    00-00-00-02.as-u32.div
+      00-00-00-00.as-u32
+      "recovered" > [message]
+
   eq. ++> can-subtract
     00-00-00-05.as-u32.minus 00-00-00-03.as-u32
     00-00-00-02.as-u32
@@ -99,6 +103,18 @@
   eq. ++> can-subtract-with-underflow
     00-00-00-00.as-u32.minus 00-00-00-01.as-u32
     FF-FF-FF-FF.as-u32
+
+  not. ++> can-tell-it-does-not-equal-a-different-u32
+    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-u32
+    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-u32
+    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
+
+  not. ++> can-tell-it-is-not-less-than-one-with-a-high-bit
+    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
 
   gt. ++> can-treat-a-high-bit-as-magnitude-when-greater
     FF-FF-FF-FF.as-u32
@@ -111,23 +127,5 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     00-01-00-00.as-u32.times 00-01-00-00.as-u32
     00-00-00-00.as-u32
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-u32
-    00-00-00-00.as-u32.gte 00-00-00-0A.as-u32
-
-  not. ++> cannot-be-less-than-an-equal-u32
-    00-00-00-0A.as-u32.lt 00-00-00-0A.as-u32
-
-  not. ++> cannot-be-less-than-one-with-a-high-bit
-    FF-FF-FF-FF.as-u32.lt 00-00-00-01.as-u32
-
-  not. ++> cannot-equal-a-different-u32
-    00-00-00-2A.as-u32.eq 00-00-00-2B.as-u32
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    00-00-00-02.as-u32.div
-      00-00-00-00.as-u32
-      "recovered" > [message]
 
   00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> stops-on-division-by-zero

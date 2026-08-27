@@ -4,13 +4,34 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
-bool > false
-  []
-    ? >> left
-    ? >> right
-    right > @
+[^] > false
+  bool > @
+    [^]
+      ? >> left
+      ? >> right
+      right > @
+
+  eq. ++> can-avoid-evaluating-the-left-argument
+    false.if
+      1.div 0
+      42
+    42
+
+  eq. ++> can-choose-the-right-argument
+    false.if
+      1
+      2
+    2
+
+  not. ++> can-differ-from-true
+    false.eq true
+
+  false.eq false ++> can-equal-itself
+
+  false.as-bytes.eq 00- ++> can-expose-the-byte-representation-of-false
+
+  false.not.eq true ++> can-negate-to-true

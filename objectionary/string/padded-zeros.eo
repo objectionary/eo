@@ -1,0 +1,107 @@
+# Returns `text` padded on the left with zeros until it counts `width`
+# characters, keeping a leading minus sign in front of them, so that `-42`
+# padded to five characters becomes `-0042` and not `00-42`. Characters are
+# counted, and not bytes. A `text` of `width` characters or longer is
+# returned unchanged.
+# If `width` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-pad` fallback is returned, or the terminator
+# when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ width cant-pad] > padded-zeros
+  if. > @
+    or.
+      0.gt width
+      width.is-integer.not
+    cant-pad
+      width.is-finite.if
+        "Can't pad text to %f characters with zeros".printf
+          * width
+        "Can't pad text to %s characters with zeros".printf
+          *
+            string width.as-scientific
+    if.
+      and.
+        0.lt
+          text.length >> len!
+        "-".eq
+          text.slice 0 1
+      string
+        2D-.concat
+          as-bytes.
+            padded-left.
+              text.slice 1 ((number len).minus 1).as-number
+              if.
+                1.gt width
+                0
+                as-number.
+                  width.minus 1
+              "0"
+              cant-pad
+      text.padded-left
+        width
+        "0"
+        cant-pad
+  ^ > text
+
+  eq. ++> can-count-characters-and-not-bytes-when-padding-with-zeros
+    "00Ж"
+    "Ж".padded-zeros 3
+
+  eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-with-zeros
+    "Can't pad text to -4.000000 characters with zeros"
+    "7".padded-zeros
+      -4
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-with-zeros
+    "Can't pad text to infinity characters with zeros"
+    "7".padded-zeros
+      pinf
+      I
+
+  eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros
+    "-0042"
+    "-42".padded-zeros 5
+
+  eq. ++> can-pad-a-positive-number-with-leading-zeros
+    "00042"
+    "42".padded-zeros 5
+
+  eq. ++> can-pad-an-empty-text
+    "000"
+    "".padded-zeros 3
+
+  eq. ++> can-recover-from-a-negative-width-when-padding-with-zeros
+    "recovered"
+    "7".padded-zeros
+      -4
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-width-when-padding-with-zeros
+    "recovered"
+    "7".padded-zeros
+      3.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-width-when-padding-with-zeros
+    "recovered"
+    "7".padded-zeros
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-return-a-longer-text-unchanged-when-padding-with-zeros
+    "12345"
+    "12345".padded-zeros 3
+
+  eq. ++> can-return-a-negative-text-of-the-exact-width-unchanged
+    "-42"
+    "-42".padded-zeros 3
+
+  "7".padded-zeros -4 --> stops-on-a-negative-width-when-padding-with-zeros

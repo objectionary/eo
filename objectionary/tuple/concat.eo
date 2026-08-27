@@ -3,14 +3,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list passed] > concat
-  reducedi > @
-    passed
-    list
+[^ passed] > concat
+  passed.reducedi > @
+    ^
     accum.with item > [accum item index]
 
   ++> can-concat-two-lists
@@ -22,18 +21,16 @@
           1
           2
           3
-    withouti > list3
-      concat *1
+    withouti. > list3
+      concat.
         * 0 1
-        2
-        3
+        * 2 3
       0
 
   eq. ++> can-concat-with-a-tuple
-    concat *1
+    concat.
       * 0 1
-      2
-      4
+      * 2 4
     *
       0
       1

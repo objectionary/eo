@@ -1,0 +1,142 @@
+# Writes the number `n` in scientific notation, as a mantissa with six fraction
+# digits, the letter `e`, and the power of ten that scales the mantissa back to
+# `n`, so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
+# `1.000000e-7`. A magnitude past the range of a signed 64-bit integer is
+# named this way, since `as-decimal` writes only what it spells out digit by
+# digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,
+# having no digits at all. The mantissa is always normalized to `[1, 10)`, so
+# a magnitude below one carries a negative power, as `5.000000e-1` for `0.5`.
+# A magnitude below the normal range of a `double` is brought up into that range
+# before the mantissa is taken, since the power of ten that would scale it in
+# one step is itself subnormal and carries too few bits to divide by.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^] > as-scientific
+  n.is-finite.not.if > @
+    n.is-nan.if
+      "nan".as-bytes
+      if.
+        n.lt 0
+        "-infinity".as-bytes
+        "infinity".as-bytes
+    if.
+      or.
+        mantissa.eq "10.000000".as-bytes
+        carried
+      concat.
+        normalized.concat "e".as-bytes
+        as-decimal.
+          plus.
+            number exponent
+            1
+      concat.
+        mantissa.concat "e".as-bytes
+        as-decimal.
+          number exponent
+  10.power 300 > boost!
+  mantissa.eq "-10.000000".as-bytes > carried!
+  minus. > exponent!
+    number raw
+    number shift
+  as-fixed. > mantissa
+    scaled.div
+      10.power
+        number raw
+    6
+  ^ > n
+  carried.as-bool.if > normalized!
+    "-1.000000".as-bytes
+    "1.000000".as-bytes
+  rec-exponent > raw!
+    scaled.abs
+    0
+  if. > [^ m count] >> rec-exponent
+    or.
+      m.eq 0
+      and.
+        m.gte 1
+        m.lt 10
+    count
+    if.
+      m.lt 1
+      ^.rec-exponent
+        m.times 10
+        as-number.
+          count.minus 1
+      ^.rec-exponent
+        m.div 10
+        as-number.
+          count.plus 1
+  tiny.as-bool.if > scaled
+    n.times boost
+    n
+  tiny.as-bool.if > shift!
+    300
+    0
+  and. > tiny!
+    n.abs.lt
+      1.div boost
+    not.
+      n.eq 0
+
+  eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
+    "1.000000e1"
+    string 9.9999996.as-scientific
+
+  eq. ++> can-carry-a-rounded-mantissa-past-the-long-range
+    "1.000000e20"
+    string 9.9999996e19.as-scientific
+
+  eq. ++> can-carry-a-rounded-negative-mantissa-into-the-next-power-of-ten
+    "-1.000000e1"
+    string -9.9999996.as-scientific
+
+  eq. ++> can-carry-a-rounded-negative-mantissa-past-the-long-range
+    "-1.000000e20"
+    string -9.9999996e19.as-scientific
+
+  eq. ++> can-name-a-magnitude-at-the-bottom-of-the-subnormal-range
+    "4.940656e-324"
+    string 4.9e-324.as-scientific
+
+  eq. ++> can-name-a-magnitude-past-the-long-range
+    "1.000000e19"
+    string 1.0e19.as-scientific
+
+  eq. ++> can-name-a-negative-magnitude
+    "-9.223372e18"
+    string -9.223372036854776e18.as-scientific
+
+  eq. ++> can-name-a-negative-small-magnitude-with-a-negative-power
+    "-1.000000e-7"
+    string -1.0e-7.as-scientific
+
+  eq. ++> can-name-a-small-magnitude-with-a-negative-power
+    "1.000000e-7"
+    string 1.0e-7.as-scientific
+
+  eq. ++> can-name-a-subnormal-magnitude
+    "9.999889e-321"
+    string 1.0e-320.as-scientific
+
+  eq. ++> can-name-a-subnormal-magnitude-with-few-significant-bits
+    "9.980126e-322"
+    string 1.0e-321.as-scientific
+
+  eq. ++> can-name-nan
+    "nan"
+    string nan.as-scientific
+
+  eq. ++> can-name-negative-infinity
+    "-infinity"
+    string ninf.as-scientific
+
+  eq. ++> can-name-positive-infinity
+    "infinity"
+    string pinf.as-scientific

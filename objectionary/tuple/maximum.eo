@@ -5,54 +5,66 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[sequence cant-max] > maximum
-  if. > @
-    is-empty sequence
+[^ cant-max] > maximum
+  sequence.is-empty.if > @
     cant-max
       "cannot get the maximum number from an empty sequence"
-    reduced
-      sequence
+    sequence.reduced
       ninf
       if. > [max item]
-        item.as-number.gt max
+        item.as-number.is-nan.or
+          item.as-number.gt max
         item
         max
+  ^ > sequence
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-lone-nan
+    maximum.
+      * nan
+
+  is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-nan-alongside-numbers
+    maximum.
+      *
+        5
+        nan
+        -3
+
+  eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
+    "recovered"
+    tuple.empty.maximum
+      "recovered" > [msg]
 
   eq. ++> can-take-a-maximum-of-one-item
-    maximum
+    maximum.
       * 42
     42
 
   eq. ++> can-take-a-maximum-that-is-first
-    maximum *
-      25
-      12
-      -2
+    maximum.
+      *
+        25
+        12
+        -2
     25
 
   eq. ++> can-take-a-maximum-that-is-in-the-middle
-    maximum *
-      12
-      25
-      -2
+    maximum.
+      *
+        12
+        25
+        -2
     25
 
   eq. ++> can-take-a-maximum-that-is-last
-    maximum *
-      12
-      -2
-      25
+    maximum.
+      *
+        12
+        -2
+        25
     25
 
-  eq. ++> rejects-an-empty-list
-    "recovered"
-    maximum
-      *
-      "recovered" > [msg]
-
-  maximum --> stops-on-an-empty-list
-    *
+  tuple.empty.maximum --> stops-on-an-empty-list-when-taking-the-maximum

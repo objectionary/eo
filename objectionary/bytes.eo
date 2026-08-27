@@ -1,8 +1,8 @@
 # Object `bytes` encapsulates a chain of bytes, providing the bitwise and
 # structural atoms every data object relies on. Objects like `number`, `string`,
 # and the integer types (`i16`, `i32`, `i64`) use `bytes` as their internal
-# representation, while conversions and derived operations live in the
-# `bytes` package (e.g. `bytes.as-number`, `bytes.xor`).
+# representation, while conversions and derived operations arrive from the
+# `bytes` package as attributes of this object (e.g. `01-02.as-number`).
 #
 # Usage examples:
 # ```
@@ -14,27 +14,34 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [@] > bytes
   [] > and /Q.bytes
+    ? > ^
     ? > b /Q.bytes
   [] > concat /Q.bytes
+    ? > ^
     ? > b
   [] > eq /Q.bool
+    ? > ^
     ? > b
   [] > not /Q.bytes
+    ? > ^
   [] > or /Q.bytes
+    ? > ^
     ? > b /Q.bytes
   [] > right /Q.bytes
+    ? > ^
     ? > x /Q.number
   [] > size /Q.number
+    ? > ^
   [] > slice /Q.bytes
+    ? > ^
     ? > start /Q.number
     ? > len /Q.number
     ? > cant-slice /{Q.string}
@@ -161,6 +168,20 @@
     -11.as-bytes.or 0.as-bytes
     C0-26-00-00-00-00-00-00
 
+  eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
+    "recovered"
+    20-1F-EE-B5-90.slice
+      2000000000
+      2000000000
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-out-of-bounds-slice
+    "recovered"
+    20-1F-EE-B5-90.slice
+      3
+      10
+      "recovered" > [message]
+
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1
     60-21-80-00-00-00-00-00
@@ -200,20 +221,6 @@
   eq. ++> can-turn-bytes-into-a-string
     "你好, друг!"
     "你好, друг!"
-
-  eq. ++> rejects-a-slice-whose-start-plus-length-overflows
-    "recovered"
-    20-1F-EE-B5-90.slice
-      2000000000
-      2000000000
-      "recovered" > [message]
-
-  eq. ++> rejects-an-out-of-bounds-slice
-    "recovered"
-    20-1F-EE-B5-90.slice
-      3
-      10
-      "recovered" > [message]
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90

@@ -1,28 +1,487 @@
 # Directory in the file system.
 # Apparently every directory is a file.
+#
+# @todo #6484:60min Walk a directory in constant stack space. The `stepped`
+#  below still costs one frame per entry, because every loop EO has grows the
+#  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
+#  so a directory of a few thousand entries still overflows.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [file] > directory
   file > @
-  true > is-directory
-  [] > tmpfile
+  [] > listed /Q.tuple
+    ? > ^
+  [dir time process random] > retried
+    [^ index] >> attempted
+      if. > @
+        descriptor.eq -1
+        if.
+          errno.eq
+            os.is-windows.if win32.eexist posix.eexist
+          ^.attempted
+            index.plus 1
+          T
+            "Can't create a unique file in %s, OS error %d".printf
+              * ^.dir errno
+        seq *
+          ^.closed descriptor
+          path
+      ^.opened path > descriptor!
+      code. > errno
+        os.is-windows.if
+          win32
+            "_errno"
+            *
+          posix
+            "errno"
+            *
+      ^.candidate index > path!
+    | 0 > @
+    [^ index] > candidate
+      path.separator.joined > @
+        * ^.dir name
+      "%d-%d-%d-%f".printf > name!
+        *
+          ^.time
+          ^.process
+          index
+          ^.random
+    code. > [descriptor] > closed
+      os.is-windows.if
+        win32 *1
+          "_close"
+          descriptor
+        posix *1
+          "close"
+          descriptor
+    code. > [name] > opened
+      os.is-windows.if
+        win32 *1
+          "_open"
+          name
+          plus.
+            win32.rdonly.plus win32.creat
+            win32.exclusive
+          win32.mode
+        posix *1
+          "open"
+          name
+          plus.
+            posix.rdonly.plus posix.creat
+            posix.exclusive
+          posix.private
+  [^] > tmpfile
     ^.exists.if > @
       Q.file touch.as-bytes
       T
         "Directory %s does not exist, can't create temporary file".printf
-          * file
-    [] > touch /Q.string
-  [] > walk /Q.tuple
-    ? > glob /Q.string
+          * ^.file
+    ^.^.retried > [^] > touch
+      ^.^.path
+      clock.as-number
+      code.
+        os.is-windows.if
+          win32
+            "_getpid"
+            *
+          posix
+            "getpid"
+            *
+      clock.as-number.random
+  [^ glob] > walk
+    [^ accum prefix dir] >> walked
+      [^ rest] >> stepped
+        if. > @
+          rest.length.eq 0
+          if.
+            ^.prefix.length.eq 0
+            ^.accum
+            picked ^.accum ^.prefix
+          if.
+            and.
+              entry.is-directory false
+              not.
+                entry.is-symlink false
+            ^.^.walked earlier sub child.as-dir
+            picked earlier sub
+        ^.dir.as-path.resolved name > child
+        ^.stepped rest.tail > earlier
+        child.as-file > entry
+        rest.head > name
+        if. > sub
+          ^.prefix.length.eq 0
+          name
+          path.separator.joined
+            * ^.prefix name
+      | dir.listed > @
+    | > @
+      *
+      ""
+      ^
+    if. > [^ accum rel] >> picked
+      matched rel
+      accum.with
+        Q.file (base.resolved rel).as-bytes
+      accum
+    ^.as-path >> base
+    if. > [char] >> escaped
+      ".+()|^$[]\\".contains char
+      "".joined
+        * "\\" char
+      char
+    [^ text] >> matched
+      as-bool. > @
+        exists.
+          next.
+            match.
+              compile.
+                regex.
+                  string
+                    as-bytes.
+                      "".joined >>
+                        *
+                          "/^"
+                          translated 0 "" false false
+                          "$/"
+                T > [^ message] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * ^.glob message
+              text
+    "".joined >> single
+      *
+        "[^"
+        escaped path.separator >> literal
+        "]"
+    if. > [char] >> classified
+      "\\[&".contains char
+      "".joined
+        * "\\" char
+      char
+    if. > [^ from] >> closes
+      from.gte ^.glob.length
+      false
+      if.
+        eq.
+          ^.glob.at
+            from
+            "" > [absent]
+          "]"
+        true
+        ^.closes
+          from.plus 1
+    [^ index acc braced classed] >> translated
+      if. > @
+        index.gte ^.glob.length
+        acc
+        ^.translated
+          index.plus advance
+          "".joined
+            * acc token
+          classed.if
+            braced
+            if.
+              char.eq "{"
+              true
+              if.
+                char.eq "}"
+                false
+                braced
+          within
+      slashed.if > advance
+        3
+        if.
+          double.or negated
+          2
+          1
+      if. > alternated
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
+      ^.glob.at index > char
+      classed.not.and > double
+        and.
+          char.eq "*"
+          eq.
+            ^.glob.at
+              index.plus 1
+              "" > [message]
+            "*"
+      opening.and > negated
+        eq.
+          ^.glob.at
+            index.plus 1
+            "" > [missing]
+          "!"
+      classed.not.and > opening
+        and.
+          char.eq "["
+          closes
+            index.plus 1
+      double.and > slashed
+        eq.
+          ^.glob.at
+            index.plus 2
+            "" > [space]
+          "/"
+      classed.if > token
+        if.
+          char.eq "]"
+          "]"
+          classified char
+        opening.if
+          negated.if "[^" "["
+          slashed.if
+            "".joined
+              * "(?:.*" literal ")?"
+            double.if
+              ".*"
+              if.
+                char.eq "*"
+                "".joined
+                  * single "*"
+                if.
+                  char.eq "?"
+                  single
+                  if.
+                    char.eq "/"
+                    literal
+                    alternated
+      opening.if > within
+        true
+        if.
+          classed.and
+            char.eq "]"
+          false
+          classed
+
+  ++> can-create-a-regular-tmpfile
+    seq * > @
+      regular
+      temp.deleted
+      regular
+    temp.is-directory.not > regular!
+    mktemp.tmpfile > temp
+
+  ++> can-create-a-tmpfile-only-its-owner-can-read
+    seq * > @
+      owned
+      temp.deleted
+      owned
+    called. > info
+      posix *1
+        "stat"
+        temp.path
+    os.is-windows.or > owned!
+      info.output.mode.eq 33152
+    mktemp.tmpfile > temp
+
+  ++> can-create-an-empty-tmpfile
+    if. > @
+      eq.
+        temp.size -1
+        0
+      seq *
+        temp.deleted
+        true
+      seq *
+        temp.deleted
+        false
+    mktemp.tmpfile > temp
+
+  ++> can-create-unique-tmpfile-paths
+    seq * > @
+      first.exists.and second.exists
+      first.deleted
+      second.deleted
+      valid
+    mktemp.tmpfile > first
+    mktemp.tmpfile > second
+    not. > valid!
+      first.path.eq second.path
+
+  ++> can-delete-a-created-tmpfile
+    seq * > @
+      existed
+      deleted
+      and.
+        existed.and
+          deleted.path.eq temp.path
+        deleted.exists.not
+    temp.deleted > deleted
+    temp.exists > existed
+    mktemp.tmpfile > temp
+
+  ++> can-delete-a-tmpfile-without-orphans
+    seq * > @
+      temp.deleted
+      temp.exists.not
+      next.exists.not
+      parent.deleted
+      true
+    path.separator.joined > candidate
+      *
+        parent.path
+        "%d-%d-%d-%f".printf
+          *
+            42
+            8
+            1
+            0.5
+    parent.retried > created
+      parent.path
+      42
+      8
+      0.5
+    Q.file candidate.as-bytes > next
+    mktemp.tmpfile.deleted.as-path.as-dir.made > parent
+    Q.file created.as-bytes > temp
+
+  ++> can-list-only-the-direct-children-of-a-directory
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "плюшка.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      eq.
+        ",".joined d.as-dir.listed
+        "sub,плюшка.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  is-directory. ++> can-recover-from-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+    true
+
+  ++> can-retry-tmpfile-creation-after-a-collision
+    seq * > @
+      collision.touched
+      valid
+      actual.deleted
+      collision.deleted
+      parent.deleted
+      valid
+    Q.file created.as-bytes > actual
+    Q.file occupied.as-bytes > collision
+    parent.retried > created
+      parent.path
+      42
+      7
+      0.5
+    path.separator.joined > expected
+      *
+        parent.path
+        "%d-%d-%d-%f".printf
+          *
+            42
+            7
+            1
+            0.5
+    path.separator.joined > occupied
+      *
+        parent.path
+        "%d-%d-%d-%f".printf
+          *
+            42
+            7
+            0
+            0.5
+    mktemp.tmpfile.deleted.as-path.as-dir.made > parent
+    created.as-bytes.eq expected.as-bytes > valid!
+
+  ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
+    not. > @
+      d.deleted.is-directory false
+    made. > d
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "gone"
+
+  is-directory. ++> can-tell-that-a-directory-is-a-directory
+    directory
+      Q.file "."
+    false
+
+  not. ++> can-tell-that-a-regular-file-is-not-a-directory
+    is-directory.
+      directory mktemp.tmpfile
+      true
+
+  ++> can-walk-a-directory-before-its-children
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "**b*"
+        ",".joined
+          *
+            d.resolved "sub"
+            d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-an-empty-directory
+    eq. > @
+      length.
+        d.as-dir.walk "*.txt"
+      0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
+    eq. > @
+      length.
+        d.as-dir.walk "*"
+      0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-past-a-symbolic-link-to-its-own-parent
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "щи.txt").as-file
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        eq.
+          length.
+            d.as-dir.walk "**"
+          2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
 
   ++> can-walk-recursively
     seq * > @
@@ -46,6 +505,212 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  ++> can-walk-recursively-across-nested-directories
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "**/*.txt"
+        ",".joined
+          *
+            d.resolved "foo/bar/test.txt"
+            d.resolved "x/y/z/a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-including-direct-children
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "root.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/nested.txt"
+      eq.
+        length.
+          d.as-dir.walk "**/*.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-recursively-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo/bar"
+      touched.
+        as-file.
+          d.resolved "foo/bar/test.txt"
+      made.
+        as-dir.
+          d.resolved "x/y/z"
+      touched.
+        as-file.
+          d.resolved "x/y/z/a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**"
+        7
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-comma-outside-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a,b.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "a,b.txt"
+        d.resolved "a,b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-double-star-immediately-before-a-suffix
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "**.txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-brace-group
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "привет.txt"
+      touched.
+        as-file.
+          d.resolved "мир.log"
+      touched.
+        as-file.
+          d.resolved "c.md"
+      eq.
+        length.
+          d.as-dir.walk "{привет.txt,мир.log}"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-character-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      touched.
+        as-file.
+          d.resolved "c.txt"
+      eq.
+        length.
+          d.as-dir.walk "[ab].txt"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-containing-a-regex-special-character
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a+b.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "a+b.txt"
+        d.resolved "a+b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-glob-question-mark
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "ab.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "?.txt"
+        d.resolved "a.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-literal-path-separator-in-the-glob
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/b.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "sub/b.txt"
+        d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-negated-glob-character-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "[!a].txt"
+        d.resolved "b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   ++> can-walk-with-a-plain-glob-matching-direct-children-only
     seq * > @
       touched.
@@ -58,19 +723,103 @@
         as-file.
           d.resolved "sub/b.txt"
       eq.
-        length.
+        ",".joined
           d.as-dir.walk "*.txt"
-        1
+        d.resolved "a.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-a-star-inside-a-glob-character-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "*.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "[*].txt"
+        d.resolved "*.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-an-escaped-character-inside-a-glob-class
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "&.txt"
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "[&].txt"
+        d.resolved "&.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-with-an-unmatched-glob-bracket
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "[.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        ",".joined
+          d.as-dir.walk "[.txt"
+        d.resolved "[.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-without-including-the-walked-directory
+    seq * > @
+      made.
+        as-dir.
+          d.resolved "foo"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "*"
+        2
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  --> stops-on-a-permanent-open-failure
+    parent.retried > @
+      parent.path
+      42
+      9
+      0.5
+    mktemp.tmpfile.deleted.as-path.as-dir > parent
+
+  tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
+    @.
+      mktemp.tmpfile.deleted.as-path.resolved "child"
+
+  is-directory. --> stops-on-checking-an-absent-directory
+    directory mktemp.tmpfile.deleted
+
+  walk. --> stops-on-walking-a-path-with-a-nul-character
+    directory
+      Q.file "\u0000"
+    "*"
 
   walk. --> stops-on-walking-an-absent-directory
     directory mktemp.tmpfile.deleted
     "**"
 
   --> stops-on-walking-with-a-malformed-glob
-    d.as-dir.walk "[" > @
+    d.as-dir.walk "{" > @
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

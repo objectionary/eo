@@ -3,30 +3,26 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list] > is-empty
-  0.eq list.length > @
+[^] > is-empty
+  0.eq ^.length > @
 
-  is-empty ++> can-be-empty-when-built-empty
-    *
+  tuple.empty.is-empty ++> can-be-empty-when-built-empty
 
-  ++> cannot-be-empty-with-one-anonymous-object
-    not. > @
-      is-empty xs
+  ++> can-tell-it-is-not-empty-with-one-anonymous-object
+    xs.is-empty.not > @
     * > xs
       [f]
 
-  not. ++> cannot-be-empty-with-one-item
-    is-empty *
-      1
-      2
+  not. ++> can-tell-it-is-not-empty-with-one-item
+    is-empty.
+      * 1 2
 
-  ++> cannot-be-empty-with-three-objects
-    not. > @
-      is-empty xs
+  ++> can-tell-it-is-not-empty-with-three-objects
+    xs.is-empty.not > @
     * > xs
       [x]
       [y]

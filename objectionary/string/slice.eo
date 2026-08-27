@@ -1,28 +1,49 @@
 # Takes a piece of the `text` as another `text`, counting characters and not
-# bytes. Here `start` must be a non-negative index to start slicing from, while
-# `len` must be a non-negative amount of characters to take. Both of them walk
-# the UTF-8 sequence character by character, so a multi-byte character counts
-# as one. An index outside the bounds of the `text` terminates the computation.
+# bytes. Here `start` must be a non-negative integer index to start slicing
+# from, while `len` must be a non-negative integer amount of characters to
+# take. A fractional, `nan` or infinite `start` or `len` terminates the
+# computation immediately. Both of them walk the UTF-8 sequence character by
+# character, so a multi-byte character counts as one. An index outside the
+# bounds of the `text` terminates the computation. Every multi-byte sequence is
+# validated against the UTF-8 rules of the Unicode standard (Table 3-7), the
+# same way `length` does: each following byte must be a `10xxxxxx` continuation
+# byte, and the second byte is range-checked so that overlong encodings
+# (`C0`/`C1` leads, `E0` with an `80`-`9F` second byte, `F0` with an `80`-`8F`
+# second byte), UTF-16 surrogates (`ED` with an `A0`-`BF` second byte) and code
+# points above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads)
+# are rejected. A malformed sequence terminates the computation, exactly like a
+# truncated character does.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
 
-[text start len] > slice
+[^ start len] > slice
   if. > @
-    nstart.lt 0
+    or.
+      nstart.lt 0
+      nstart.is-integer.not
     T
-      "Start index must be >= 0, but was %d".printf
-        * nstart
+      nstart.is-finite.if
+        "Start index must be a non-negative integer, but was %f".printf
+          * nstart
+        "Start index must be a non-negative integer, but was %s".printf
+          *
+            string nstart.as-scientific
     if.
-      nlen.lt 0
+      or.
+        nlen.lt 0
+        nlen.is-integer.not
       T
-        "Length to slice must be >= 0, but was %d".printf
-          * nlen
+        nlen.is-finite.if
+          "Length to slice must be a non-negative integer, but was %f".printf
+            * nlen
+          "Length to slice must be a non-negative integer, but was %s".printf
+            *
+              string nlen.as-scientific
       seq *
         recidx >> bstart!
           0
@@ -37,7 +58,7 @@
           string
             text.as-bytes.slice bstart blen
   minus. > blen
-    [index accum result cause] >> recidx
+    [^ index accum result cause] >> recidx
       if. > @
         accum.eq result
         index
@@ -46,36 +67,100 @@
           T cause
           if.
             eq.
-              byte.and p1
-              r1
-            increase
-              index
-              1
-              accum
+              byte.and ^.p1
+              ^.r1
+            ^.recidx
+              ^.increase index 1 true
+              accum.plus 1
               result
               cause
             if.
               eq.
-                byte.and p2
-                r2
-              increase
-                index
-                2
-                accum
+                byte.and ^.p2
+                ^.r2
+              ^.recidx
+                ^.increase index 2 twovalid
+                accum.plus 1
                 result
                 cause
               if.
                 eq.
-                  byte.and p3
-                  r3
-                increase index 3 accum result cause
+                  byte.and ^.p3
+                  ^.r3
+                ^.recidx
+                  ^.increase index 3 threevalid
+                  accum.plus 1
+                  result
+                  cause
                 if.
-                  eq. (byte.and p4) r4
-                  increase index 4 accum result cause
+                  eq. (byte.and ^.p4) ^.r4
+                  ^.recidx
+                    ^.increase index 4 fourvalid
+                    accum.plus 1
+                    result
+                    cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
-      text.as-bytes.slice index 1 > byte
+      ^.text.as-bytes.slice > b1
+        index.plus 1
+        1
+      eq. > b1808f
+        b1.and F0-
+        80-
+      eq. > b1809f
+        b1.and E0-
+        80-
+      or. > b190bf
+        eq.
+          b1.and F0-
+          90-
+        eq.
+          b1.and E0-
+          A0-
+      eq. > b1a0bf
+        b1.and E0-
+        A0-
+      eq. > b1cont
+        b1.and C0-
+        80-
+      ^.text.as-bytes.slice > b2
+        index.plus 2
+        1
+      eq. > b2cont
+        b2.and C0-
+        80-
+      ^.text.as-bytes.slice > b3
+        index.plus 3
+        1
+      eq. > b3cont
+        b3.and C0-
+        80-
+      ^.text.as-bytes.slice index 1 > byte
+      b2cont.and > fourvalid
+        b3cont.and second4
+      eq. > leadc0c1
+        byte.and FE-
+        C0-
+      byte.eq E0- > leade0
+      byte.eq ED- > leaded
+      byte.eq F0- > leadf0
+      byte.eq F1- > leadf1
+      leadf1.or > leadf1f3
+        leadf2.or leadf3
+      byte.eq F2- > leadf2
+      byte.eq F3- > leadf3
+      byte.eq F4- > leadf4
+      leade0.if > second3
+        b1a0bf
+        leaded.if b1809f b1cont
+      leadf0.if > second4
+        b190bf
+        leadf4.if
+          b1808f
+          leadf1f3.if b1cont false
+      b2cont.and second3 > threevalid
+      leadc0c1.not.and b1cont > twovalid
     |
       number bstart
       0
@@ -84,7 +169,7 @@
         *
           nstart.plus nlen
     bstart
-  if. > [index csize accum result cause] > increase
+  if. > [^ index csize valid] > increase
     gt.
       index.plus csize
       size
@@ -93,12 +178,14 @@
         *
           csize
           index
-          text.as-bytes
-    recidx
+          ^.text.as-bytes
+    valid.if
       index.plus csize
-      accum.plus 1
-      result
-      cause
+      T
+        "Malformed UTF-8 sequence (%x) at %d index".printf
+          *
+            ^.text.as-bytes.slice index csize
+            index
   number len! > nlen
   number start! > nstart
   80- > p1
@@ -110,6 +197,7 @@
   E0- > r3
   F0- > r4
   text.as-bytes.size >> size!
+  ^ > text
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
@@ -172,8 +260,7 @@
     ""
 
   eq. ++> can-slice-the-origin-string
-    slice
-      "Hello, world!"
+    "Hello, world!".slice
       7
       5
     "world"
@@ -190,17 +277,52 @@
       2
     "ри"
 
-  slice --> stops-on-a-start-below-zero
+  slice. --> rejects-a-non-continuation-after-a-three-byte-lead-when-slicing
+    string E1-80-41
+    0
+    1
+
+  slice. --> rejects-a-utf-16-surrogate-encoding
+    string ED-A0-80
+    0
+    1
+
+  slice. --> rejects-an-overlong-two-byte-encoding-when-slicing
+    string C0-80
+    0
+    1
+
+  slice. --> stops-on-a-fractional-length
+    "some"
+    0
+    1.5
+
+  slice. --> stops-on-a-fractional-start
+    "some"
+    0.5
+    1
+
+  slice. --> stops-on-a-start-below-zero
     "some string"
     -1
     1
 
-  slice --> stops-on-an-end-below-the-start
+  slice. --> stops-on-an-end-below-the-start
     "some string"
     2
     -1
 
-  slice --> stops-on-an-end-beyond-the-length
+  slice. --> stops-on-an-end-beyond-the-length
     "some string"
     7
     5
+
+  slice. --> stops-on-an-infinite-length
+    "some"
+    0
+    pinf
+
+  slice. --> stops-on-an-infinite-start
+    "some"
+    pinf
+    1

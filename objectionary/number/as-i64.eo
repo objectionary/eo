@@ -7,11 +7,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n cant-convert] > as-i64
+[^ cant-convert] > as-i64
   if. > @
     or.
       eq.
@@ -36,8 +36,9 @@
                   00-10-00-00-00-00-00-00
                 00-10-00-00-00-00-00-00
     cant-convert
-      "Can't convert number %f to i64 because it's out of i64 bounds".printf
-        * n
+      "Can't convert number %s to i64 because it's out of i64 bounds".printf
+        *
+          string n.as-scientific
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64
@@ -53,6 +54,7 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
+  ^ > n
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes
@@ -70,10 +72,16 @@
     -9.223372036854776e18.as-i64.as-bytes
     80-00-00-00-00-00-00-00
 
-  eq. ++> can-convert-the-origin-number
-    as-bytes.
-      as-i64 42
-    00-00-00-00-00-00-00-2A
+  42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
+
+  eq. ++> can-format-the-error-message-of-an-out-of-range-number
+    "Can't convert number 1.000000e30 to i64 because it's out of i64 bounds"
+    1.0e30.as-i64 I
+
+  eq. ++> can-recover-from-an-out-of-range-number
+    "recovered"
+    1.0e30.as-i64
+      "recovered" > [message]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes
@@ -82,11 +90,6 @@
   eq. ++> can-truncate-a-positive-toward-zero
     3.7.as-i64.as-bytes
     00-00-00-00-00-00-00-03
-
-  eq. ++> rejects-an-out-of-range-number
-    "recovered"
-    1.0e30.as-i64
-      "recovered" > [message]
 
   1.0e30.as-i64 --> stops-on-converting-a-huge-number
 

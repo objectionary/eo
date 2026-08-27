@@ -9,10 +9,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > mktemp
   directory > @
@@ -27,9 +26,9 @@
                 if.
                   userprofile.eq empty
                   "C:\\Windows"
-                  getenv "USERPROFILE" >> userprofile!
-                getenv "TEMP" >> temp!
-              getenv "TMP" >> tmp!
+                  getenv "USERPROFILE" empty >> userprofile!
+                getenv "TEMP" empty >> temp!
+              getenv "TMP" empty >> tmp!
             if.
               tmpdir.eq empty
               if.
@@ -39,16 +38,80 @@
                   if.
                     tempdir.eq empty
                     "/tmp"
-                    getenv "TEMPDIR" >> tempdir!
+                    getenv "TEMPDIR" empty >> tempdir!
                   temp
                 tmp
-              getenv "TMPDIR" >> tmpdir!
+              getenv "TMPDIR" empty >> tmpdir!
           -- > empty
 
   mktemp.tmpfile.exists ++> can-create-a-temp-file
+
+  ++> can-create-a-tmpfile-directly-inside-the-temp-directory
+    seq * > @
+      same
+      temp.deleted
+      same
+    temp.as-path.dirname.eq mktemp.path > same!
+    mktemp.tmpfile > temp
+
+  ++> can-create-tmpfiles-with-distinct-paths-across-calls
+    seq * > @
+      first.exists.and second.exists
+      first.deleted
+      second.deleted
+      different
+    not. > different!
+      first.path.eq second.path
+    mktemp.tmpfile > first
+    mktemp.tmpfile > second
+
+  ++> can-keep-the-temp-directory-after-deleting-a-tmpfile
+    seq * > @
+      temp.deleted
+      mktemp.exists
+    mktemp.tmpfile > temp
 
   mktemp.is-directory ++> can-point-at-a-global-temp-directory
 
   mktemp.exists ++> can-point-at-an-existing-global-temp-directory
 
+  ++> can-report-being-a-directory-consistently-across-repeated-calls
+    mktemp.is-directory.eq mktemp.is-directory > @
+
+  mktemp.exists.eq ++> can-report-existing-consistently-across-repeated-calls
+    mktemp.exists
+
+  eq. ++> can-resolve-a-child-path-under-the-temp-directory
+    mktemp.as-path.resolved "eo-mktemp-child"
+    path.joined
+      * mktemp.path "eo-mktemp-child"
+
+  ++> can-return-a-tmpfile-whose-path-differs-from-the-temp-directory-path
+    seq * > @
+      different
+      temp.deleted
+      different
+    not. > different!
+      temp.path.eq mktemp.path
+    mktemp.tmpfile > temp
+
+  ++> can-return-a-tmpfile-with-a-non-empty-basename
+    seq * > @
+      named
+      temp.deleted
+      named
+    temp.as-path.basename.length.gt 0 > named!
+    mktemp.tmpfile > temp
+
+  mktemp.as-path.eq ++> can-return-the-same-path-through-as-path-and-path
+    mktemp.path
+
   mktemp.path.eq mktemp.path ++> can-return-the-same-temp-directory
+
+  ++> can-tell-that-a-fresh-tmpfile-is-not-a-directory
+    seq * > @
+      regular
+      temp.deleted
+      regular
+    temp.is-directory.not > regular!
+    mktemp.tmpfile > temp

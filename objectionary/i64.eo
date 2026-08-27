@@ -1,32 +1,38 @@
 # Signed 64-bit integer.
 # Here `as-bytes` must be a `bytes` object.
+#
+# The out-of-bounds message of `as-i32` names the receiver with `%s` and
+# `as-scientific`, not with `%d`, because `%d` would take a `number` and the
+# `i64` to `number` conversion is lossy at the top of the 64-bit range: the
+# nearest double of `9223372036854775807` is `2^63`, which is one past the
+# `long` range that `printf`'s own `%d` guard accepts, so the message itself
+# used to terminate instead of being printed.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  [cant-convert] > as-i32
+  [^ cant-convert] > as-i32
     if. > @
       ^.eq
         as-i64.
           i32 >> left
-            as-bytes.slice 4 4
+            ^.as-bytes.slice 4 4
       left
       cant-convert
-        "Can't convert i64 number %d to i32 because it's out of i32 bounds".printf
-          * as-number
+        "Can't convert i64 number %s to i32 because it's out of i32 bounds".printf
+          *
+            string ^.as-number.as-scientific
     i32 > left
-      as-bytes.slice 4 4
-  [] > as-number
+      ^.as-bytes.slice 4 4
+  [^] > as-number
     if. > @
-      as-bytes.eq 00-00-00-00-00-00-00-00
+      ^.as-bytes.eq 00-00-00-00-00-00-00-00
       0
       number
         sign.or
@@ -57,9 +63,9 @@
       sign.eq 80-00-00-00-00-00-00-00
       as-bytes.
         plus.
-          i64 as-bytes.not
+          i64 ^.as-bytes.not
           i64 00-00-00-00-00-00-00-01
-      as-bytes
+      ^.as-bytes
     if. > mantissa
       highest.lte 52
       and.
@@ -78,11 +84,11 @@
       kept
     guard.and > roundup
       sticky.or odd
-    [m acc step bit] > scan
+    [^ m acc step bit] > scan
       if. > @
         step.lt 1
         acc
-        scan
+        ^.scan
           empty.if m shifted
           empty.if
             acc
@@ -96,60 +102,60 @@
       43-30-00-00-00-00-00-00
       32
       00-00-00-00-00-00-00-20
-    as-bytes.and 80-00-00-00-00-00-00-00 > sign!
+    ^.as-bytes.and 80-00-00-00-00-00-00-00 > sign!
     not. > sticky
       eq.
         magnitude.left
           117.minus highest
         00-00-00-00-00-00-00-00
-  [x] > gt
+  [^ x] > gt
     if. > @
       not.
         eq.
-          as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+          ^.as-bytes.and 80-00-00-00-00-00-00-00 >> sign
           x.as-bytes.and 80-00-00-00-00-00-00-00
       sign.eq 00-00-00-00-00-00-00-00
       and.
         eq.
           and.
             as-bytes.
-              minus x >> difference
+              ^.minus x >> difference
             80-00-00-00-00-00-00-00
           00-00-00-00-00-00-00-00
         not.
           difference.as-bytes.eq 00-00-00-00-00-00-00-00
-  [x] > gte
+  [^ x] > gte
     or. > @
-      gt
+      ^.gt
         x >> value!
       ^.eq value
-  gt. > [x] > lt
+  gt. > [^ x] > lt
     i64 x.as-bytes
     ^
-  [x] > lte
+  [^ x] > lte
     or. > @
-      lt
+      ^.lt
         x >> value!
       ^.eq value
-  plus (i64 x!).neg > [x] > minus
+  ^.plus (i64 x!).neg > [^ x] > minus
   times -1.as-i64 > neg
-  [x] > plus
-    if. > [a b] >> carried
+  [^ x] > plus
+    if. > [^ a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
       i64 a
-      carried
+      ^.carried
         a.xor b
         left.
           a.and b
           1
     | > @
-      as-bytes
+      ^.as-bytes
       x.as-bytes
-  [x] > times
-    if. > [acc a b] > looped
+  [^ x] > times
+    if. > [^ acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
       i64 acc
-      looped
+      ^.looped
         if.
           eq.
             b.and 00-00-00-00-00-00-00-01
@@ -163,7 +169,7 @@
         b.right 1
     | > @
       00-00-00-00-00-00-00-00
-      as-bytes
+      ^.as-bytes
       x.as-bytes
 
   eq. ++> can-add-mixed-signs
@@ -242,6 +248,18 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
 
+  eq. ++> can-format-the-error-message-of-the-maximum-i64-when-converting-to-i32
+    "Can't convert i64 number 9.223372e18 to i32 because it's out of i32 bounds"
+    as-i32.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      I
+
+  eq. ++> can-format-the-error-message-of-the-minimum-i64-when-converting-to-i32
+    "Can't convert i64 number -9.223372e18 to i32 because it's out of i32 bounds"
+    as-i32.
+      i64 80-00-00-00-00-00-00-00
+      I
+
   eq. ++> can-keep-the-low-bits-of-a-large-product
     2147483647.as-i64.times 2147483647.as-i64
     i64 3F-FF-FF-FF-00-00-00-01
@@ -257,6 +275,11 @@
   eq. ++> can-multiply-two-negatives
     -7.as-i64.times -6.as-i64
     42.as-i64
+
+  eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
+    "recovered"
+    3147483647.as-i64.as-i32
+      "recovered" > [message]
 
   eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
     as-number.
@@ -277,6 +300,37 @@
     1.as-i64.minus 1.as-i64
     0.as-i64
 
+  not. ++> can-tell-it-does-not-equal-a-different-i64
+    123.@.eq 42.@
+
+  not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
+    eq.
+      i64 234.as-bytes
+      234.as-i64.as-bytes
+
+  not. ++> can-tell-it-is-not-greater-than-a-larger-i64
+    0.as-i64.gt 100.as-i64
+
+  not. ++> can-tell-it-is-not-greater-than-an-equal-i64
+    0.as-i64.gt 0.as-i64
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-i64
+    0.as-i64.gte 10.as-i64
+
+  not. ++> can-tell-it-is-not-greater-when-min-is-under-max
+    gt.
+      i64 80-00-00-00-00-00-00-00
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+
+  not. ++> can-tell-it-is-not-less-than-a-smaller-i64
+    10.as-i64.lt -5.as-i64
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-i64
+    10.as-i64.lt 10.as-i64
+
+  not. ++> can-tell-it-is-not-less-than-or-equal-to-a-smaller-i64
+    0.as-i64.lte -10.as-i64
+
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixty-fourth
     times.
       i64 40-00-00-00-00-00-00-00
@@ -288,42 +342,6 @@
       i64 7F-FF-FF-FF-FF-FF-FF-FF
       1.as-i64
     i64 80-00-00-00-00-00-00-00
-
-  not. ++> cannot-be-greater-than-a-larger-i64
-    0.as-i64.gt 100.as-i64
-
-  not. ++> cannot-be-greater-than-an-equal-i64
-    0.as-i64.gt 0.as-i64
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i64
-    0.as-i64.gte 10.as-i64
-
-  not. ++> cannot-be-greater-when-min-is-under-max
-    gt.
-      i64 80-00-00-00-00-00-00-00
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-
-  not. ++> cannot-be-less-than-a-smaller-i64
-    10.as-i64.lt -5.as-i64
-
-  not. ++> cannot-be-less-than-an-equal-i64
-    10.as-i64.lt 10.as-i64
-
-  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i64
-    0.as-i64.lte -10.as-i64
-
-  not. ++> cannot-equal-a-different-i64
-    123.@.eq 42.@
-
-  not. ++> cannot-match-the-bytes-of-the-same-number
-    eq.
-      i64 234.as-bytes
-      234.as-i64.as-bytes
-
-  eq. ++> rejects-an-out-of-bounds-conversion-to-i32
-    "recovered"
-    3147483647.as-i64.as-i32
-      "recovered" > [message]
 
   2147483648.as-i64.as-i32 --> stops-on-converting-i32-max-plus-one-to-i32
 

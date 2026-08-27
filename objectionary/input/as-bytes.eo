@@ -1,34 +1,36 @@
-# Reads all bytes from the provided `input` and returns them as bytes.
+# Reads all bytes from an input and returns them as bytes. It is a method of
+# `input`, and `origin` is the input it is taken off.
 #
 # Example usage:
 # ```
-# as-bytes > b
-#   bytes.as-input 01-02-03-04-05
+# as-bytes. > b
+#   input 01-02-03-04-05.as-input
 # ```
 # After dataization, `b` equals `01-02-03-04-05`.
 
-+alias bytes.as-input
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package input
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[input] > as-bytes
+[^] > as-bytes
   malloc.of > @
     0
-    seq * > [m] >>
-      Q.input.copied input m.to-output
+    seq * > [^ m] >>
+      ^.origin.copied m.to-output
       m
+  ^ > origin
 
   ++> can-convert-bytes-to-an-input-and-back
     eq. > @
-      Q.input.as-bytes
-        bytes.as-input b
+      as-bytes.
+        input b.as-input
       b
     01-02-03-04-05-06-07-08 > b
 
   eq. ++> can-return-empty-bytes-from-a-dead-input
-    Q.input.as-bytes dead
+    as-bytes.
+      input input.dead
     --

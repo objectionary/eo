@@ -5,11 +5,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b cant-convert] > as-number
+[^ cant-convert] > as-number
   if. > @
     b.size.eq 8
     if.
@@ -26,13 +26,15 @@
     cant-convert
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
         * b
+  ^ > b
 
-  is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
-    FF-F8-00-00-00-00-00-00.as-number
-
-  eq. ++> rejects-bytes-of-wrong-size
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
     "recovered"
     01-01-01-01.as-number
       "recovered" > [message]
 
-  01-01-01-01.as-number --> stops-on-bytes-of-wrong-size
+  is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
+    FF-F8-00-00-00-00-00-00.as-number
+
+  as-number. --> stops-on-bytes-of-wrong-size-when-converting-to-a-number
+    01-01-01-01

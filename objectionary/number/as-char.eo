@@ -1,0 +1,58 @@
+# Writes the ASCII `code` (0-255) as its single byte, the inverse of `as-ascii`.
+# The receiver must be an integer within the range [0, 255]; any other value
+# (negative, above 255, or fractional) terminates the computation instead of
+# being silently truncated to its least-significant byte.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^] > as-char
+  if. > @
+    or.
+      or.
+        0.gt ^
+        ^.gt 255
+      ^.is-integer.not
+    T
+      "The receiver of as-char must be an integer within the range [0, 255]"
+    ^.as-i64.as-bytes.slice
+      7
+      1
+
+  eq. ++> can-round-trip-through-as-ascii
+    "!"
+    string "!".as-ascii.as-char
+
+  eq. ++> can-write-the-byte-of-a-lowercase-letter
+    "z"
+    string 122.as-char
+
+  eq. ++> can-write-the-byte-of-a-space
+    " "
+    string 32.as-char
+
+  eq. ++> can-write-the-byte-of-an-uppercase-letter
+    "A"
+    string 65.as-char
+
+  eq. ++> can-write-the-byte-of-the-last-printable-character
+    "~"
+    string 126.as-char
+
+  eq. ++> can-write-the-byte-of-the-last-uppercase-letter
+    "Z"
+    string 90.as-char
+
+  eq. ++> can-write-the-byte-of-the-zero-digit
+    "0"
+    string 48.as-char
+
+  256.as-char --> stops-on-a-code-past-the-byte-range
+
+  3.5.as-char --> stops-on-a-fractional-code
+
+  -1.as-char --> stops-on-a-negative-code

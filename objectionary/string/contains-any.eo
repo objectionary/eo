@@ -1,47 +1,45 @@
 # Checks if `text` contains any element from `substrings`.
 
-+alias tuple.mapped
-+alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substrings] > contains-any
-  tuple.reduced > @
-    tuple.mapped
-      substrings
-      contains text! x > [x] >>
+[^ substrings] > contains-any
+  reduced. > @
+    substrings.mapped
+      ^.text.contains x > [^ x] >>
     false
     x.or a > [a x]
+  ^ > text
 
-  contains-any *1 ++> can-contain-any-substring
+  contains-any. ++> can-contain-any-substring
     "Good morning"
-    "oo"
-    "goo"
+    *
+      "oo"
+      "goo"
 
-  contains-any *1 ++> can-contain-any-substring-written-vertically
+  contains-any. ++> can-contain-any-substring-written-vertically
     "foo bar buzz"
-    "bar"
-    " "
-    "o"
+    *
+      "bar"
+      " "
+      "o"
 
-  not. ++> cannot-contain-any-of-no-substrings
-    contains-any
-      "text"
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings
+    "text".contains-any
       *
 
-  not. ++> cannot-contain-any-of-no-substrings-when-empty
-    contains-any
-      ""
+  not. ++> can-tell-it-does-not-contain-any-of-no-substrings-when-empty
+    "".contains-any
       *
 
-  not. ++> cannot-contain-any-substring
-    contains-any *1
-      "xyzw"
-      "yx"
-      "zyx"
-      "wx"
-      "abc"
+  not. ++> can-tell-it-does-not-contain-any-substring
+    "xyzw".contains-any
+      *
+        "yx"
+        "zyx"
+        "wx"
+        "abc"

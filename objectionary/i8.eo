@@ -4,60 +4,58 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > i8
   as-bytes > @
-  [] > as-i16
+  [^] > as-i16
     i16 > @
       concat.
         if. >>
           eq.
-            as-bytes.and 80-
+            ^.as-bytes.and 80-
             00-
           00-
           FF-
-        as-bytes
+        ^.as-bytes
   as-i16.as-number > as-number
-  [x cant-divide] > div
+  [^ x cant-divide] > div
     if. > @
       eq.
         x.as-i8 >> other
         00-
       cant-divide
         "Can't divide %d by i8 zero".printf
-          * as-number
+          * ^.as-number
       i8
         slice.
           as-bytes.
-            as-i16.div other.as-i16
+            ^.as-i16.div other.as-i16
           1
           1
-  as-i16.gt x.as-i8.as-i16 > [x] > gt
-  as-i16.gte x.as-i8.as-i16 > [x] > gte
-  as-i16.lt x.as-i8.as-i16 > [x] > lt
-  as-i16.lte x.as-i8.as-i16 > [x] > lte
-  i8 > [x] > minus
+  ^.as-i16.gt x.as-i8.as-i16 > [^ x] > gt
+  ^.as-i16.gte x.as-i8.as-i16 > [^ x] > gte
+  ^.as-i16.lt x.as-i8.as-i16 > [^ x] > lt
+  ^.as-i16.lte x.as-i8.as-i16 > [^ x] > lte
+  i8 > [^ x] > minus
     slice.
       as-bytes.
-        as-i16.minus x.as-i8.as-i16
+        ^.as-i16.minus x.as-i8.as-i16
       1
       1
   times FF-.as-i8 > neg
-  i8 > [x] > plus
+  i8 > [^ x] > plus
     slice.
       as-bytes.
-        as-i16.plus x.as-i8.as-i16
+        ^.as-i16.plus x.as-i8.as-i16
       1
       1
-  i8 > [x] > times
+  i8 > [^ x] > times
     slice.
       as-bytes.
-        as-i16.times x.as-i8.as-i16
+        ^.as-i16.times x.as-i8.as-i16
       1
       1
 
@@ -109,6 +107,12 @@
 
   C8-.as-i8.as-number.eq -56 ++> can-read-a-high-bit-as-negative
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    02-.as-i8.div
+      00-.as-i8
+      "recovered" > [message]
+
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8
     00-.as-i8
@@ -117,6 +121,12 @@
     80-.as-i8.minus 01-.as-i8
     7F-.as-i8
 
+  not. ++> can-tell-it-does-not-equal-a-different-i8
+    2A-.as-i8.eq 2B-.as-i8
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-i8
+    0A-.as-i8.lt 0A-.as-i8
+
   eq. ++> can-widen-a-negative-to-i16-with-sign-extension
     C8-.as-i8.as-i16.as-bytes
     FF-C8
@@ -124,17 +134,5 @@
   eq. ++> can-widen-a-positive-to-i16-with-a-zero-prefix
     2A-.as-i8.as-i16.as-bytes
     00-2A
-
-  not. ++> cannot-be-less-than-an-equal-i8
-    0A-.as-i8.lt 0A-.as-i8
-
-  not. ++> cannot-equal-a-different-i8
-    2A-.as-i8.eq 2B-.as-i8
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    02-.as-i8.div
-      00-.as-i8
-      "recovered" > [message]
 
   02-.as-i8.div 00-.as-i8 --> stops-on-division-by-zero

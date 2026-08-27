@@ -6,11 +6,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package i64
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n x cant-divide] > div
+[^ x cant-divide] > div
   if. > @
     x.as-bytes.eq 00-00-00-00-00-00-00-00
     cant-divide
@@ -29,7 +29,7 @@
           i64 00-00-00-00-00-00-00-01
       i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] >> bit
-  [index remainder quot] >> looped
+  [^ index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -43,7 +43,7 @@
               shifted-sign.xor divisor-sign >> signs-differ!
               next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
           80-00-00-00-00-00-00-00
-        looped
+        ^.looped
           index.minus 1
           as-bytes. >> next-rem!
             plus.
@@ -51,16 +51,17 @@
               i64 subtrahend
           quot.or >>!
             bit index
-        looped
+        ^.looped
           index.minus 1
           or. >> shifted!
             remainder.left 1
             and.
               right.
-                magnitude n.as-bytes
+                magnitude ^.n.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot
+  ^ > n
   as-bytes. >> subtrahend
     plus.
       i64
@@ -105,6 +106,12 @@
     13.as-i64.div -5.as-i64
     -2.as-i64
 
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    2.as-i64.div
+      0.as-i64
+      "recovered" > [message]
+
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64
     -2.as-i64
@@ -114,11 +121,5 @@
       i64 80-00-00-00-00-00-00-00
       -1.as-i64
     i64 80-00-00-00-00-00-00-00
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    2.as-i64.div
-      0.as-i64
-      "recovered" > [message]
 
   2.as-i64.div 0.as-i64 --> stops-on-division-by-zero

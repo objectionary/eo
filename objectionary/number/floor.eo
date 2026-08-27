@@ -4,23 +4,27 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n] > floor
+[^] > floor
   if. > @
-    n.is-finite.not.or
-      or.
-        n.gte 4503599627370496
-        n.lte -4503599627370496
+    n.as-bytes.eq 80-00-00-00-00-00-00-00
     n
     if.
-      gt.
-        n.as-i64.as-number >> trunc
-        n
-      trunc.minus 1
-      n.as-i64.as-number
+      n.is-finite.not.or
+        or.
+          n.gte 4503599627370496
+          n.lte -4503599627370496
+      n
+      if.
+        gt.
+          n.as-i64.as-number >> trunc
+          n
+        trunc.minus 1
+        n.as-i64.as-number
+  ^ > n
 
   -1.0e20.floor.eq -1.0e20 ++> can-floor-a-large-negative-integer
 
@@ -37,6 +41,10 @@
   42.floor.eq 42 ++> can-floor-an-integer
 
   ninf.floor.eq ninf ++> can-floor-negative-infinity
+
+  eq. ++> can-floor-negative-zero-preserving-sign
+    0.neg.floor.as-bytes
+    80-00-00-00-00-00-00-00
 
   pinf.floor.eq pinf ++> can-floor-positive-infinity
 

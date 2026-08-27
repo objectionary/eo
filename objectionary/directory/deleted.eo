@@ -1,24 +1,60 @@
-# Recursively deletes the directory `d` and all of its contents.
+# Recursively deletes a directory and all of its contents. It is a method of
+# `directory`, and `d` is the directory it is taken off. The walk that feeds
+# `entries` reports everything underneath `d` and never `d` itself, so the
+# recursion below empties the directory but leaves it standing. The root is
+# removed by the step after it, once the walk is done and the directory is
+# empty, through `file.deleted`, which reaches for `rmdir` over `unlink`
+# when the path it is given is a directory.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[d] > deleted
-  d.exists.if > @
-    seq *
-      if. > [tup] >> r
-        tup.length.eq 0
-        true
-        seq *
-          tup.head.deleted
-          r tup.tail
-      | (d.walk "**").at.^
-      d
+[^] > deleted
+  seq * > @
+    if. > [^ tup] >> r
+      tup.length.eq 0
+      true
+      seq *
+        tup.head.deleted
+        ^.r tup.tail
+    | entries
+    d.as-path.as-file.deleted
     d
+  ^ > d
+  recovered > [^] > entries
+    ^.d.walk "**"
+    ^.d.exists.if
+      ^.d.walk "**"
+      *
+
+  ++> can-delete-a-directory-containing-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target.as-path
+            dir.as-path.resolved "broken-link"
+        target.deleted
+        dir.deleted.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > target
+
+  ++> can-delete-a-directory-containing-a-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target.as-path
+            dir.as-path.resolved "link"
+        dir.deleted.exists.not.and target.exists
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > target
 
   ++> can-delete-a-directory-with-a-file-and-a-directory
     and. > @
@@ -34,6 +70,24 @@
     dir.tmpfile > f
     as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
 
+  ++> can-delete-a-directory-with-a-nested-file
+    and. > @
+      nested.exists.and dir.deleted.exists.not
+      nested.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
+    inner.tmpfile > nested
+
+  ++> can-delete-a-directory-with-a-unicode-named-entry
+    f.exists.and > @
+      seq *
+        dir.deleted
+        f.exists.not
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    touched. > f
+      as-file.
+        dir.as-path.resolved "приветствие.txt"
+
   ++> can-delete-a-directory-with-files-recursively
     and. > @
       and.
@@ -46,6 +100,27 @@
     dir.tmpfile > first
     dir.tmpfile > second
 
+  ++> can-delete-a-directory-with-nested-subdirectories
+    f.exists.and dir.deleted.exists.not > @
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
+    leaf.tmpfile > f
+    as-dir. (directory mid.tmpfile.deleted).made.as-path > leaf
+    as-dir. (directory dir.tmpfile.deleted).made.as-path > mid
+
+  ++> can-delete-an-already-absent-directory
+    d.deleted.deleted.exists.not > @
+    mktemp.tmpfile.deleted.as-path.as-dir > d
+
   not. ++> can-delete-an-empty-directory
     exists.
       deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made
+
+  ++> can-preserve-a-sibling-file-when-deleting-a-directory
+    dir.deleted.exists.not.and sibling.exists > @
+    as-dir. (directory parent.tmpfile.deleted).made.as-path > dir
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > parent
+    parent.tmpfile > sibling
+
+  ++> can-return-itself-after-deleting-a-directory
+    dir.deleted.path.eq dir.path > @
+    as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir

@@ -1,39 +1,112 @@
-# Creates the directory `d`, making missing parent directories as needed.
+# Creates a directory, making missing parent directories as needed. It is a
+# method of `directory`, and `d` is the directory it is taken off. When the
+# path already exists, it must already be a directory: if a regular file (or
+# any non-directory entry) occupies the path, the computation terminates
+# instead of returning that entry decorated as a directory.
+#
+# The path may be made by somebody else between the question and the answer,
+# so a `mkdir` coming back with `EEXIST` over a directory is taken for the
+# directory it names rather than for a failure. `EOdirectoryEOmadeRaceTest`
+# holds the interleaving that reaches that branch.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[d] > made
+[^] > made
   d.exists.if > @
-    d
+    d.is-directory.if
+      d
+      T
+        "Cant make the directory '%s': a file already occupies that path".printf
+          * d.path
     seq *
       made.
         directory
           file d.as-path.dirname
       if.
-        created.code.eq 0
+        or.
+          created.code.eq 0
+          and.
+            errno.eq eexist
+            d.is-directory
         d
         T
           "Cant make the directory '%s': %s".printf
-            *
-              d.path
-              output.
-                called. >> created
-                  os.is-windows.if
-                    win32 *1
-                      "_mkdir"
-                      d.path
-                    posix *1
-                      "mkdir"
-                      d.path
-                      posix.permissions
+            * d.path created.output
+  called. > created
+    os.is-windows.if
+      win32 *1
+        "_mkdir"
+        d.path
+      posix *1
+        "mkdir"
+        d.path
+        posix.permissions
+  ^ > d
+  os.is-windows.if > eexist
+    win32.eexist
+    posix.eexist
+  code. > errno
+    os.is-windows.if
+      win32
+        "_errno"
+        *
+      posix
+        "errno"
+        *
+
+  ++> can-make-a-directory-and-return-the-same-path
+    dir.made.path.eq dir.path > @
+    as-dir. > dir
+      mktemp.tmpfile.deleted.as-path.resolved "foo-same"
+
+  ++> can-make-a-directory-with-a-unicode-name
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "плюшка-目录"
 
   ++> can-make-a-new-directory
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-new"
+
+  ++> can-make-an-already-existing-directory
+    dir.made.exists.and dir.made.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-existing"
+
+  ++> can-make-deeply-nested-directories
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-1/foo-2/foo-3/foo-4"
+
+  ++> can-make-nested-directories-under-an-existing-parent
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        parent.resolved "foo-inner/foo-deepest"
+    made. > parent
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-partial"
+
+  ++> can-make-nested-directories-with-missing-parents
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-parent/foo-child"
+
+  mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
+
+  --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
+    made. > @
+      as-dir.
+        occupied.resolved "foo-child"
+    mktemp.tmpfile.as-path > occupied

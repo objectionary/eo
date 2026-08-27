@@ -3,42 +3,40 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > i32
   as-bytes > @
-  [cant-convert] > as-i16
+  [^ cant-convert] > as-i16
     if. > @
       ^.eq left.as-i32
       left
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
-          * as-i64.as-number
+          * ^.as-i64.as-number
     i16 > left
-      as-bytes.slice 2 2
-  [] > as-i64
+      ^.as-bytes.slice 2 2
+  [^] > as-i64
     i64 > @
       concat.
         if. >>
           eq.
-            as-bytes.and 80-00-00-00
+            ^.as-bytes.and 80-00-00-00
             00-00-00-00
           00-00-00-00
           FF-FF-FF-FF
-        as-bytes
+        ^.as-bytes
   as-i64.as-number > as-number
-  [x cant-divide] > div
+  [^ x cant-divide] > div
     if. > @
       eq.
         x.as-i32 >> other
         00-00-00-00
       cant-divide
         "Can't divide %d by i32 zero".printf
-          * as-i64.as-number
+          * ^.as-i64.as-number
       if.
         or.
           eq.
@@ -48,7 +46,7 @@
         i32
           slice.
             as-bytes. >> b
-              as-i64.div other.as-i64
+              ^.as-i64.div other.as-i64
             4
             4
         plus.
@@ -56,13 +54,13 @@
             b.slice 0 4
           i32
             b.slice 4 4
-  as-i64.gt x.as-i32.as-i64 > [x] > gt
-  as-i64.gte x.as-i32.as-i64 > [x] > gte
-  as-i64.lt x.as-i32.as-i64 > [x] > lt
-  as-i64.lte x.as-i32.as-i64 > [x] > lte
-  plus x.as-i32.neg > [x] > minus
+  ^.as-i64.gt x.as-i32.as-i64 > [^ x] > gt
+  ^.as-i64.gte x.as-i32.as-i64 > [^ x] > gte
+  ^.as-i64.lt x.as-i32.as-i64 > [^ x] > lt
+  ^.as-i64.lte x.as-i32.as-i64 > [^ x] > lte
+  ^.plus x.as-i32.neg > [^ x] > minus
   times -1.as-i64.as-i32 > neg
-  [x] > plus
+  [^ x] > plus
     if. > @
       or.
         eq.
@@ -72,7 +70,7 @@
       i32
         slice.
           as-bytes. >> b
-            as-i64.plus x.as-i32.as-i64
+            ^.as-i64.plus x.as-i32.as-i64
           4
           4
       plus.
@@ -80,10 +78,10 @@
           b.slice 0 4
         i32
           b.slice 4 4
-  i32 > [x] > times
+  i32 > [^ x] > times
     slice.
       as-bytes.
-        as-i64.times x.as-i32.as-i64
+        ^.as-i64.times x.as-i32.as-i64
       4
       4
 
@@ -155,6 +153,17 @@
     2147483647.as-i64.as-i32.times 2.as-i64.as-i32
     -2.as-i64.as-i32
 
+  eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
+    "recovered"
+    247483647.as-i64.as-i32.as-i16
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-division-by-zero
+    "recovered"
+    2.as-i64.as-i32.div
+      0.as-i64.as-i32
+      "recovered" > [message]
+
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.minus 1.as-i64.as-i32
     0.as-i64.as-i32
@@ -162,6 +171,27 @@
   eq. ++> can-subtract-with-overflow
     -2147483648.as-i64.as-i32.minus 1.as-i64.as-i32
     2147483647.as-i64.as-i32
+
+  not. ++> can-tell-it-does-not-equal-a-different-i32
+    123.as-i64.as-i32.eq 42.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-a-larger-i32
+    0.as-i64.as-i32.gt 100.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-an-equal-i32
+    0.as-i64.as-i32.gt 0.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-greater-than-or-equal-to-a-larger-i32
+    0.as-i64.as-i32.gte 10.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-a-smaller-i32
+    10.as-i64.as-i32.lt -5.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-an-equal-i32
+    10.as-i64.as-i32.lt 10.as-i64.as-i32
+
+  not. ++> can-tell-it-is-not-less-than-or-equal-to-a-smaller-i32
+    0.as-i64.as-i32.lte -10.as-i64.as-i32
 
   eq. ++> can-widen-a-negative-to-i64-with-sign-extension
     -200.as-i64.as-i32.as-i64.as-bytes
@@ -178,38 +208,6 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     65536.as-i64.as-i32.times 65536.as-i64.as-i32
     0.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-a-larger-i32
-    0.as-i64.as-i32.gt 100.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-an-equal-i32
-    0.as-i64.as-i32.gt 0.as-i64.as-i32
-
-  not. ++> cannot-be-greater-than-or-equal-to-a-larger-i32
-    0.as-i64.as-i32.gte 10.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-a-smaller-i32
-    10.as-i64.as-i32.lt -5.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-an-equal-i32
-    10.as-i64.as-i32.lt 10.as-i64.as-i32
-
-  not. ++> cannot-be-less-than-or-equal-to-a-smaller-i32
-    0.as-i64.as-i32.lte -10.as-i64.as-i32
-
-  not. ++> cannot-equal-a-different-i32
-    123.as-i64.as-i32.eq 42.as-i64.as-i32
-
-  eq. ++> rejects-an-out-of-bounds-conversion-to-i16
-    "recovered"
-    247483647.as-i64.as-i32.as-i16
-      "recovered" > [message]
-
-  eq. ++> rejects-division-by-zero
-    "recovered"
-    2.as-i64.as-i32.div
-      0.as-i64.as-i32
-      "recovered" > [message]
 
   32768.as-i64.as-i32.as-i16 --> stops-on-converting-i16-max-plus-one-to-i16
 

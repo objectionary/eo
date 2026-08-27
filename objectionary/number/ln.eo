@@ -1,17 +1,19 @@
 # Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
-# is folded into [1/e, e] by peeling whole factors of `e` and counting them,
-# then the remainder is summed with the area-hyperbolic-tangent series. The
-# limiting cases follow the usual conventions: zero is negative infinity, a
-# negative number and negative infinity are nan, and positive infinity stays.
+# is folded into [1/e, e] by peeling powers of `e` that double at each step
+# (e, e^2, e^4, ..., e^512), so the depth is bounded regardless of how large
+# the argument is, then the remainder is summed with the area-hyperbolic-
+# tangent series. The limiting cases follow the usual conventions: zero is
+# negative infinity, a negative number and negative infinity are nan, and
+# positive infinity stays.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > ln
+[^] > ln
   n.is-nan.if > @
     nan
     if.
@@ -26,23 +28,55 @@
   [p] > lnp
     if. > @
       p.gte e
-      plus.
-        lnp
-          p.div e
-        1
+      climb 9 p
       if.
         p.lt
           1.div e
-        minus.
-          lnp
-            p.times e
-          1
+        descend 9 p
         series p
+    if. > [^ level p] > climb
+      level.lt 0
+      ^.series p
+      if.
+        p.gte
+          ^.epow level
+        plus.
+          ^.climb
+            level.minus 1
+            p.div
+              ^.epow level
+          ^.step level
+        ^.climb
+          level.minus 1
+          p
+    if. > [^ level p] > descend
+      level.lt 0
+      ^.series p
+      if.
+        p.lt
+          1.div
+            ^.epow level
+        minus.
+          ^.descend
+            level.minus 1
+            p.times
+              ^.epow level
+          ^.step level
+        ^.descend
+          level.minus 1
+          p
+    [^ level] > epow
+      if. > @
+        level.eq 0
+        e
+        prev.times prev
+      ^.epow > prev
+        level.minus 1
     [m] > series
       2.times > @
         t.times
           horner 0
-      if. > [k] > horner
+      if. > [^ k] > horner
         k.gt 40
         0
         plus.
@@ -51,56 +85,55 @@
               k.times 2
               1
           times.
-            t.times t
-            horner
+            ^.t.times ^.t
+            ^.horner
               k.plus 1
       div. > t
         m.minus 1
         m.plus 1
-  number num.as-bytes > n
+    [^ level] > step
+      if. > @
+        level.eq 0
+        1
+        prev.plus prev
+      ^.step > prev
+        level.minus 1
+  number ^.as-bytes > n
 
-  lt. ++> can-stay-monotonic
-    ln 2
-    ln 3
+  -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
+
+  -42.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-integer
+
+  nan.ln.is-nan ++> can-return-nan-for-a-logarithm-of-nan
+
+  ninf.ln.is-nan ++> can-return-nan-for-a-logarithm-of-negative-infinity
+
+  2.ln.lt 3.ln ++> can-stay-monotonic
 
   lt. ++> can-take-a-logarithm-of-a-fraction
-    abs
-      minus.
-        ln 0.5
-        -0.6931471805599453
-    1.0E-11
+    abs.
+      0.5.ln.minus -0.6931471805599453
+    1.0e-11
 
-  eq. ++> can-take-a-logarithm-of-e
-    ln e
-    1
+  lt. ++> can-take-a-logarithm-of-a-very-large-number-without-overflowing-the-stack
+    abs.
+      1.0e300.ln.minus 690.7755278982137
+    1.0e-9
 
-  eq. ++> can-take-a-logarithm-of-one
-    ln 1
-    0
+  lt. ++> can-take-a-logarithm-of-a-very-small-fraction-without-overflowing-the-stack
+    abs.
+      1.0e-300.ln.minus -690.7755278982137
+    1.0e-9
 
-  eq. ++> can-take-a-logarithm-of-positive-infinity
-    ln pinf
-    pinf
+  e.ln.eq 1 ++> can-take-a-logarithm-of-e
+
+  1.ln.eq 0 ++> can-take-a-logarithm-of-one
+
+  pinf.ln.eq pinf ++> can-take-a-logarithm-of-positive-infinity
 
   lt. ++> can-take-a-logarithm-of-twenty
-    abs
-      minus.
-        ln 20
-        2.995732273553991
-    1.0E-11
+    abs.
+      20.ln.minus 2.995732273553991
+    1.0e-11
 
-  eq. ++> can-take-a-logarithm-of-zero
-    ln 0
-    ninf
-
-  is-nan. ++> cannot-take-a-logarithm-of-a-negative-float
-    ln -2.2
-
-  is-nan. ++> cannot-take-a-logarithm-of-a-negative-integer
-    ln -42
-
-  is-nan. ++> cannot-take-a-logarithm-of-nan
-    ln nan
-
-  is-nan. ++> cannot-take-a-logarithm-of-negative-infinity
-    ln ninf
+  0.ln.eq ninf ++> can-take-a-logarithm-of-zero

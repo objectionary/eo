@@ -3,16 +3,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list element] > contains
+[^ element] > contains
   not. > @
     -1.eq
-      index-of list element
+      ^.index-of element
 
-  contains ++> can-contain-a-number
+  contains. ++> can-contain-a-number
     *
       "qwerty"
       "asdfgh"
@@ -20,7 +20,7 @@
       "qwerty"
     3
 
-  contains ++> can-contain-a-string
+  contains. ++> can-contain-a-string
     *
       "qwerty"
       "asdfgh"
@@ -28,8 +28,8 @@
       "qwerty"
     "qwerty"
 
-  not. ++> cannot-contain-an-absent-item
-    contains
+  not. ++> can-tell-it-does-not-contain-an-absent-item
+    contains.
       *
         "Привет"
         "asdfgh"

@@ -1,6 +1,6 @@
 # Returns the original `text` as `number`.
 # If the text is not numeric, the `cant-parse` fallback is returned,
-# or the bottom object when unbound.
+# or the terminator when unbound.
 # The whole `text` must be the number: `scanf` matches its `%f` pattern
 # unanchored (via `find`), so on its own it would accept any text that
 # merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.
@@ -10,67 +10,67 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text cant-parse] > as-number
+[^ cant-parse] > as-number
   if. > @
     not.
-      matches.
-        compiled.
-          regex "/^[+-]?\\d+(?:\\.\\d+)?$/"
-        text
+      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches text
     cant-parse
       "Can't convert text %s to number".printf
         * text
-    head.
-      ^.
-        at.
-          scanf "%f" text
+    head. ("%f".scanf text).at.^
+  ^ > text
 
-  eq. ++> can-convert-float-text
-    3.14
-    as-number "3.14"
+  1000.eq "1e3".as-number ++> can-convert-exponent-text
 
-  eq. ++> can-convert-negative-text
-    -42
-    as-number "-42"
+  3.14.eq "3.14".as-number ++> can-convert-float-text
 
-  eq. ++> can-convert-text
-    5
-    as-number "5"
+  -0.0025.eq "-2.5E-3".as-number ++> can-convert-negative-exponent-text
+
+  -42.eq "-42".as-number ++> can-convert-negative-text
+
+  1.0e-320.eq "1e-320".as-number ++> can-convert-subnormal-exponent-text
+
+  5.eq "5".as-number ++> can-convert-text
 
   42.5.eq "42.5".as-number ++> can-convert-text-through-an-implicit-dispatch
 
-  eq. ++> rejects-currency-prefixed-text
+  eq. ++> can-recover-from-a-bare-exponent-marker
     42
-    as-number
-      "$100"
+    "1e".as-number
       42 > [message]
 
-  eq. ++> rejects-non-numeric-text
+  eq. ++> can-recover-from-an-exponent-without-a-mantissa
     42
-    as-number
-      "Hello"
+    "e3".as-number
       42 > [message]
 
-  eq. ++> rejects-space-separated-numbers
+  eq. ++> can-recover-from-currency-prefixed-text
     42
-    as-number
-      "1 2 3"
+    "$100".as-number
       42 > [message]
 
-  eq. ++> rejects-text-with-an-embedded-number
+  eq. ++> can-recover-from-non-numeric-text
     42
-    as-number
-      "abc5"
+    "Hello".as-number
       42 > [message]
 
-  eq. ++> rejects-text-with-multiple-dots
+  eq. ++> can-recover-from-space-separated-numbers
     42
-    as-number
-      "12.34.56"
+    "1 2 3".as-number
       42 > [message]
 
-  as-number "Hello" --> stops-on-converting-non-numeric-text
+  eq. ++> can-recover-from-text-with-an-embedded-number
+    42
+    "abc5".as-number
+      42 > [message]
+
+  eq. ++> can-recover-from-text-with-multiple-dots
+    42
+    "12.34.56".as-number
+      42 > [message]
+
+  "Hello".as-number --> stops-on-converting-non-numeric-text

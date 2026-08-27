@@ -1,80 +1,90 @@
 # Returns `text` repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-repeat` fallback is returned,
-# or the bottom object when unbound.
+# or the terminator when unbound.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text times cant-repeat] > repeated
+[^ times cant-repeat] > repeated
   if. > @
     or.
       0.gt times
       times.is-integer.not
     cant-repeat
-      "Can't repeat text %f times".printf
-        * times
+      times.is-finite.if
+        "Can't repeat text %f times".printf
+          * times
+        "Can't repeat text %s times".printf
+          *
+            string times.as-scientific
     string
-      if. >> result!
-        0.eq
-          times >> amount!
-        --
-        if. > [accum index] >> rec-repeated
-          amount.eq index
-          accum
-          rec-repeated
-            accum.concat b
-            as-number.
-              index.plus 1
-        |
-          text >> b!
-          1
+      [^ n] >> rec-repeated
+        if. > @
+          0.eq n
+          --
+          if.
+            0.eq
+              n.mod 2
+            twice
+            concat.
+              half.concat >> twice
+                ^.rec-repeated (n.div 2).floor >> half!
+              ^.text.as-bytes
+      | times
+  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
-    repeated
-      "x"
+    "x".repeated
       -1
-      message > [message]
+      I
 
-  eq. ++> can-repeat-a-text-five-times
-    "heyheyheyheyhey"
-    repeated
-      "hey"
-      5
+  eq. ++> can-format-the-error-message-of-an-infinite-count
+    "Can't repeat text infinity times"
+    "x".repeated
+      pinf
+      I
 
-  eq. ++> can-repeat-a-text-zero-times
-    ""
-    repeated
-      "some"
-      0
-
-  eq. ++> rejects-a-negative-count
+  eq. ++> can-recover-from-a-negative-count
     "recovered"
-    repeated
-      "x"
+    "x".repeated
       -1
       "recovered" > [message]
 
-  eq. ++> rejects-a-non-integer-count
+  eq. ++> can-recover-from-a-non-integer-count
     "recovered"
-    repeated
-      "x"
+    "x".repeated
       2.5
       "recovered" > [message]
 
-  eq. ++> rejects-an-infinite-count
+  eq. ++> can-recover-from-an-infinite-count
     "recovered"
-    repeated
-      "x"
+    "x".repeated
       pinf
       "recovered" > [message]
 
-  repeated --> stops-on-a-negative-count
+  eq. ++> can-repeat-a-text-five-times
+    "heyheyheyheyhey"
+    "hey".repeated 5
+
+  eq. ++> can-repeat-a-text-six-times
+    "zxzxzxzxzxzx"
+    "zx".repeated 6
+
+  eq. ++> can-repeat-a-text-twenty-thousand-times
+    20000
+    size.
+      as-bytes.
+        "x".repeated 20000
+
+  eq. ++> can-repeat-a-text-zero-times
     ""
-    -1
+    "some".repeated 0
+
+  "".repeated -1 --> stops-on-a-negative-count

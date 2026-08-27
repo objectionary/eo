@@ -6,56 +6,57 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > arc-cosine
+[^] > arc-cosine
   minus. > @
     pi.div 2
-    arc-sine num
+    ^.arc-sine
 
-  eq. ++> can-take-an-arc-cosine-of-minus-one
-    arc-cosine -1
-    pi
+  2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-above-one
+
+  -2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-below-minus-one
+
+  nan.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-nan
+
+  ninf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-negative-infinity
+
+  pinf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-positive-infinity
+
+  -1.arc-cosine.eq pi ++> can-take-an-arc-cosine-of-minus-one
+
+  lt. ++> can-take-an-arc-cosine-of-minus-zero-point-nine-nine-nine
+    abs.
+      minus.
+        -0.999.arc-cosine.times 1000
+        3096.8675
+    1
 
   lt. ++> can-take-an-arc-cosine-of-minus-zero-point-six
-    abs
+    abs.
       minus.
-        times.
-          arc-cosine -0.6
-          1000
+        -0.6.arc-cosine.times 1000
         2214.297
     1
 
-  eq. ++> can-take-an-arc-cosine-of-one
-    arc-cosine 1
-    0
+  1.arc-cosine.eq 0 ++> can-take-an-arc-cosine-of-one
 
   eq. ++> can-take-an-arc-cosine-of-zero
-    arc-cosine 0
+    0.arc-cosine
     pi.div 2
 
-  lt. ++> can-take-an-arc-cosine-of-zero-point-six
-    abs
+  lt. ++> can-take-an-arc-cosine-of-zero-point-nine-nine-nine
+    abs.
       minus.
-        times.
-          arc-cosine 0.6
-          1000
-        927.295
+        0.999.arc-cosine.times 1000
+        44.7251
     1
 
-  is-nan. ++> cannot-take-an-arc-cosine-above-one
-    arc-cosine 2
-
-  is-nan. ++> cannot-take-an-arc-cosine-below-minus-one
-    arc-cosine -2
-
-  is-nan. ++> cannot-take-an-arc-cosine-of-nan
-    arc-cosine nan
-
-  is-nan. ++> cannot-take-an-arc-cosine-of-negative-infinity
-    arc-cosine ninf
-
-  is-nan. ++> cannot-take-an-arc-cosine-of-positive-infinity
-    arc-cosine pinf
+  lt. ++> can-take-an-arc-cosine-of-zero-point-six
+    abs.
+      minus.
+        0.6.arc-cosine.times 1000
+        927.295
+    1

@@ -17,7 +17,7 @@
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
 # retrieved from scope dataization. On failure at any of the described steps, the fallback of the
-# corresponding operation is returned (or the bottom object when it is left unbound).
+# corresponding operation is returned (or the terminator when it is left unbound).
 #
 # To listen to the incoming connections as server you should do:
 #
@@ -40,45 +40,46 @@
 # and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
-# returned (or the bottom object when it is left unbound).
+# returned (or the terminator when it is left unbound).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unit-test-missing
-+unlint redundant-object
-+unlint mandatory-package
 
 [address port] > socket
   os.is-windows.if > @
-    [sys] >> impl
+    [^ sys] >> impl
       code. > addr
         sys.raw *1
           "inet_addr"
-          address
-      addr.as-i32 > addrint
-      [descriptor] > closed-socket
+          ^.address
+      as-i32. > addrint
+        if.
+          addr.gt 2147483647
+          addr.minus 4294967296
+          addr
+      [^ descriptor] > closed-socket
         if. > @
           closed.eq -1
           T
             "Couldn't close the socket #%d because %s".printf
-              * descriptor sys.message
+              * descriptor ^.sys.message
           true
         code. > closed
-          sys.raw *1
-            sys.close
+          ^.sys.raw *1
+            ^.sys.close
             descriptor
-      [scope cant-connect] > connect
-        safe-socket > @
-          [] >>
+      [^ scope cant-connect] > connect
+        ^.safe-socket > @
+          [^] >>
             if. > @
               connected.eq -1
-              cant-connect
+              ^.cant-connect
                 "Couldn't connect to %s:%d on socket #%d because %s".printf
                   * sock.address sock.port sock.sd sock.sys.message
-              scope
+              ^.scope
                 sock.scoped-socket sock.sd
             code. > connected
               sock.sys.raw *1
@@ -88,38 +89,37 @@
                 sock.sockaddr.size
             ^.^.^ > sock
           cant-connect
-      [scope cant-listen] > listen
-        safe-socket > @
-          [] >>
+      [^ scope cant-listen] > listen
+        ^.safe-socket > @
+          [^] >>
             if. > @
               bound.eq -1
-              cant-listen
+              ^.cant-listen
                 "Couldn't bind the socket #%d to %s:%d because %s".printf
                   * sock.sd sock.address sock.port sock.sys.message
               if.
                 listened.eq -1
-                cant-listen
+                ^.cant-listen
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
                     * sock.address sock.port sock.sd sock.sys.message
-                scope
-                  [] >>
-                    sock.scoped-socket sock.sd > @
-                    [scope cant-accept] > accept
+                ^.scope
+                  [^] >>
+                    ^.sock.scoped-socket ^.sock.sd > @
+                    [^ scope cant-accept] > accept
                       if. > @
                         client.eq -1
                         cant-accept
                           "Failed to accept a connection on the socket #%d because %s".printf
-                            * sock.sd sock.sys.message
-                        seq *
-                          scope (sock.scoped-socket client) >> handled!
-                          sock.closed-socket client
-                          handled
+                            * ^.^.sock.sd ^.^.sock.sys.message
+                        ^.^.sock.guarded
+                          scope (^.^.sock.scoped-socket client)
+                          ^.^.sock.closed-socket client
                       code. > client
-                        sock.sys.raw *1
+                        ^.^.sock.sys.raw *1
                           "accept"
-                          sock.sd
-                          sock.sockaddr
-                          sock.sockaddr.size
+                          ^.^.sock.sd
+                          ^.^.sock.sockaddr
+                          ^.^.sock.sockaddr.size
             code. > bound
               sock.sys.raw *1
                 "bind"
@@ -133,57 +133,58 @@
                 2048
             ^.^.^ > sock
           cant-listen
-      [scope cant] > safe-socket
+      [^ scope cant] > safe-socket
         if. > @
           not.
-            sys.startup.eq 0
+            ^.sys.startup.eq 0
           cant
             "Couldn't start up the sockets subsystem because %s".printf
-              * sys.message
-          seq *
-            if. >> result!
-              sd.eq -1
-              cant
-                "Couldn't create a socket because %s".printf
-                  * sys.message
-              seq *
-                if. >> used!
-                  addr.eq sys.none
-                  cant
-                    "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-                      * address sys.message
-                  scope
-                closed-socket sd
-                used
-            sys.cleanup
-            result
-      [descriptor] > scoped-socket
+              * ^.sys.message
+          ^.^.guarded opened ^.sys.cleanup
+        if. > converted
+          and.
+            ^.addr.eq ^.sys.unresolved
+            not.
+              ^.^.address.eq "255.255.255.255"
+          cant
+            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
+              * ^.^.address ^.sys.message
+          scope
+        if. > opened
+          ^.sd.eq -1
+          cant
+            "Couldn't create a socket because %s".printf
+              * ^.sys.message
+          ^.^.guarded
+            converted
+            ^.closed-socket ^.sd
+      [^ descriptor] > scoped-socket
         ^.^.as-input recv > as-input
         ^.^.as-output send > as-output
-        [size cant-receive] > recv
+        [^ size cant-receive] > recv
           if. > @
             received.code.eq -1
             cant-receive
               "Failed to receive data from the socket #%d because %s".printf
-                * descriptor sys.message
+                * ^.descriptor ^.^.sys.message
             received.output
           called. > received
-            sys.raw *1
+            ^.^.sys.raw *1
               "recv"
-              descriptor
+              ^.descriptor
               size
               0
-        [buffer cant-send] > send
+        [^ buffer cant-send] > send
           if. > @
             sent.eq -1
             cant-send
               "Failed to send a message through the socket #%d because %s".printf
-                * descriptor sys.message
+                * ^.descriptor ^.^.sys.message
             sent
           code. > sent
-            sys.raw *1
+            ^.^.sys.raw *1
               "send"
-              descriptor
+              ^.descriptor
               buffer >> buff!
               buff.size
               0
@@ -195,7 +196,7 @@
           sys.tcp
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
-        htons port
+        ^.htons ^.checked-port
         addrint
     |
       []
@@ -237,28 +238,54 @@
         posix > raw
         0 > startup
   [recv] > as-input
-    [size] > read
+    [^ size] > read
       @. > @
         read.
           input-block --
           size
-      [buffer] > input-block
+      [^ buffer] > input-block
         buffer > @
-        [size] > read
+        [^ size] > read
           seq * > @
             chunk
-            input-block chunk
+            ^.^.input-block chunk
           as-bytes. > chunk
-            recv size
+            ^.^.^.recv size
   [send] > as-output
-    [buffer] > write
+    [^ buffer] > write
       @. > @
         output-block.write buffer
-      [] > output-block
+      [^] > output-block
         true > @
-        seq * > [buffer] > write
-          send buffer
-          output-block
+        [^ buffer] > write
+          seq > @
+            * sent remainder
+          if. > remainder
+            sent.lt buffer.size
+            ^.^.output-block.write
+              buffer.slice
+                sent
+                buffer.size.minus sent
+            ^.^.output-block
+          ^.^.^.send buffer > sent
+  ^.port.is-integer.not.if > [^] > checked-port
+    T
+      "Port must be an integer in 0 to 65535, but was %f".printf
+        * ^.port
+    if.
+      or.
+        ^.port.lt 0
+        ^.port.gt 65535
+      T
+        "Port %d is out of range; it must be 0 to 65535".printf
+          * ^.port
+      ^.port
+  [scope cleanup] > guarded
+    seq * > @
+      recovered value true
+      cleanup
+      value
+    scope > value!
   [port] > htons
     as-i16. > @
       or.
@@ -268,4 +295,83 @@
         and.
           b.right 8
           00-FF
-    port.as-i16.as-bytes > b
+    port.as-i32.as-bytes.slice > b
+      2
+      2
+
+  eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
+    40-9C
+    socket.htons 40000
+
+  eq. ++> can-dataize-a-guarded-scope-once
+    malloc.for
+      0
+      seq * > [m]
+        socket.guarded
+          m.put
+            m.as-number.plus 1
+          true
+        m.as-number
+    1
+
+  eq. ++> can-guard-a-scope-and-behave-as-it
+    socket.guarded
+      42
+      true
+    42
+
+  ++> can-resend-the-remaining-bytes-after-a-short-send
+    eq. > @
+      malloc.of
+        2
+        [c]
+          seq * > @
+            write.
+              socket.as-output
+                partial-send c
+              01-02
+            c.get
+          seq * > [acc buffer] > partial-send
+            acc.write
+              2.minus buffer.size
+              buffer.slice 0 1
+            1
+      01-02
+
+  eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
+    malloc.for
+      0
+      seq * > [m]
+        socket.guarded
+          42
+          m.put
+            m.as-number.plus 1
+        m.as-number
+    1
+
+  eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
+    malloc.for
+      0
+      seq * > [m]
+        recovered
+          socket.guarded
+            2.as-i64.div 0.as-i64
+            m.put
+              m.as-number.plus 1
+          true
+        m.as-number
+    1
+
+  checked-port. --> rejects-a-fractional-port
+    socket
+      "127.0.0.1"
+      1.5
+
+  checked-port. --> rejects-a-port-above-the-valid-range
+    socket
+      "127.0.0.1"
+      70000
+
+  socket.guarded --> stops-on-a-terminated-guarded-scope
+    2.as-i64.div 0.as-i64
+    true

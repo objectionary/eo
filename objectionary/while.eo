@@ -2,7 +2,7 @@
 # Here's how you can use it:
 # ```
 # while > last
-#   i.lt 5 > [i]
+#   i.lt 5 > [^ i]
 #   [i]
 #     "Iteration %d\n".printf > @
 #       * i
@@ -12,38 +12,38 @@
 # ```
 # seq > last
 #   *
+#     dataized "Iteration 0\n"
 #     dataized "Iteration 1\n"
 #     dataized "Iteration 2\n"
 #     dataized "Iteration 3\n"
 #     dataized "Iteration 4\n"
 # ```
 #
-# Only the first three strings are dataized for side effects while the last one
+# Only the first four strings are dataized for side effects while the last one
 # is returned as the result value assigned to the `last` object.
 # The `while` loop example produces identical behavior.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [condition body] > while
   if. > @
     as-bool.
       condition 0
-    [index] >> loop
+    [^ index] >> loop
       if. > @
         as-bool.
-          condition
+          ^.condition
             index.plus 1
         seq *
           current
-          loop
+          ^.loop
             index.plus 1
         current
-      body index > current
+      ^.body index > current
     | 0
     false
 
@@ -54,7 +54,7 @@
         [m]
           while > @
             i.eq 0 > [i]
-            m.put i > [i] >>
+            ^.m.put i > [^ i] >>
 
   ++> can-iterate-a-tuple-with-an-external-iterator
     data.eq array.length > @
@@ -65,18 +65,18 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             while > @
-              max.gt iter > [i] >>
-              seq * > [i] >>
-                acc.put
-                  acc.as-number.plus
-                    array.at iter
-                iter.put
-                  iter.as-number.plus 1
+              ^.^.^.max.gt ^.iter > [^ i] >>
+              seq * > [^ i] >>
+                ^.^.acc.put
+                  ^.^.acc.as-number.plus
+                    ^.^.^.array.at ^.iter
+                ^.iter.put
+                  ^.iter.as-number.plus 1
     array.length.plus -1 > max
 
   ++> can-iterate-a-tuple-with-an-internal-iterator
@@ -88,22 +88,22 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             if. > @
-              max.eq 0
-              acc.put
-                acc.as-number.plus
-                  array.at 0
+              ^.^.max.eq 0
+              ^.acc.put
+                ^.acc.as-number.plus
+                  ^.^.array.at 0
               while
-                max.gt iter > [i] >>
-                seq * > [i] >>
-                  acc.put
-                    acc.as-number.plus (array.at i)
-                  iter.put
-                    iter.as-number.plus 1
+                ^.^.^.max.gt ^.iter > [^ i] >>
+                seq * > [^ i] >>
+                  ^.^.acc.put
+                    ^.^.acc.as-number.plus (^.^.^.array.at i)
+                  ^.iter.put
+                    ^.iter.as-number.plus 1
     array.length.plus -1 > max
 
   ++> can-iterate-a-tuple-without-a-body-many-times
@@ -114,22 +114,22 @@
       1
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             seq * > @
               while
-                if. > [i] >>
-                  max.gt iter
+                if. > [^ i] >>
+                  ^.^.^.max.gt ^.iter
                   seq *
-                    acc.put
-                      acc.as-number.plus (array.at iter.as-number)
-                    iter.put (iter.as-number.plus 1)
+                    ^.^.acc.put
+                      ^.^.acc.as-number.plus (^.^.^.array.at ^.iter.as-number)
+                    ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
                 true > [i]
-              acc
+              ^.acc
     array.length > max
 
   ++> can-iterate-a-tuple-without-a-body-once
@@ -137,22 +137,22 @@
     * 1 > array
     malloc.for > data
       0
-      [acc] >>
+      [^ acc] >>
         malloc.for > @
           0
-          [iter] >>
+          [^ iter] >>
             seq * > @
               while
-                if. > [i] >>
-                  max.gt iter
+                if. > [^ i] >>
+                  ^.^.^.max.gt ^.iter
                   seq *
-                    acc.put
-                      acc.as-number.plus (array.at iter.as-number)
-                    iter.put (iter.as-number.plus 1)
+                    ^.^.acc.put
+                      ^.^.acc.as-number.plus (^.^.^.array.at ^.iter.as-number)
+                    ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
                 true > [i]
-              acc
+              ^.acc
     array.length > max
 
   ++> can-loop-on-a-bool-expression-kept-in-malloc
@@ -161,8 +161,8 @@
         true
         [m]
           while > @
-            m > [i] >>
-            m.put false > [i] >>
+            ^.m > [^ i] >>
+            ^.m.put false > [^ i] >>
       false
 
   ++> can-loop-over-a-simple-iteration
@@ -172,7 +172,7 @@
         [m]
           while > @
             i.lt 10 > [i]
-            m.put i > [i] >>
+            ^.m.put i > [^ i] >>
       9
 
   not. ++> can-loop-when-the-condition-is-false-first
@@ -186,9 +186,9 @@
         0
         [m]
           while > @
-            2.gt m > [i] >>
-            m.put > [i] >>
-              m.as-number.plus 1
+            2.gt ^.m > [^ i] >>
+            ^.m.put > [^ i] >>
+              ^.m.as-number.plus 1
       3
 
   not. ++> can-return-the-last-dataized-object-with-a-false-condition

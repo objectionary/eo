@@ -3,26 +3,27 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [as-bytes] > number
   as-bytes > @
   as-i32.as-i16 > as-i16
-  as-i32. > as-i32
-    number.as-i64 $
+  $.as-i64.as-i32 > as-i32
   [] > div /Q.number
+    ? > ^
     ? > x /Q.number
   [] > gt /Q.bool
+    ? > ^
     ? > x /Q.number
   [] > plus /Q.number
+    ? > ^
     ? > x /Q.number
   [] > times /Q.number
+    ? > ^
     ? > x /Q.number
 
   eq. ++> can-add-a-negative-float-to-negative-infinity
@@ -76,11 +77,6 @@
     pinf.plus pinf
     pinf
 
-  lt. ++> can-approximate-a-square-root
-    abs.
-      9.sqrt.minus 3
-    1.0E-9
-
   pinf.gt 42.5 ++> can-be-greater-than-a-float-when-positive-infinity
 
   eq. ++> can-be-greater-than-a-smaller-integer
@@ -99,10 +95,10 @@
       if. > @
         n.lt 3
         small n
-        if. > [n minus1 minus2] >> rec
+        if. > [^ n minus1 minus2] >> rec
           n.eq 3
           minus1.plus minus2
-          rec
+          ^.rec
             n.minus 1
             minus1.plus minus2
             minus1
@@ -116,13 +112,13 @@
     eq. > @
       fibo 4
       3
-    if. > [n] > fibo
+    if. > [^ n] > fibo
       n.lt 3
       1
       plus.
-        fibo
+        ^.fibo
           n.minus 1
-        fibo
+        ^.fibo
           n.minus 2
 
   42.as-bytes.eq 42 ++> can-compare-its-bytes-to-an-integer
@@ -356,61 +352,45 @@
     pinf.times pinf
     pinf
 
-  eq. ++> can-raise-to-a-power
-    2.power 4
-    16
-
-  eq. ++> can-raise-to-a-power-through-the-package
-    number.power
-      2
-      5
-    32
-
-  -17.9.abs.eq 17.9 ++> can-take-the-absolute-value-of-a-negative
-
-  eq. ++> can-take-the-modulo-of-two-numbers
-    7.mod 3
-    1
-
-  eq. ++> cannot-be-greater-than-a-float-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-a-float-when-negative-infinity
     ninf.gt 42.5
     false
 
-  eq. ++> cannot-be-greater-than-a-larger-integer
+  eq. ++> can-tell-it-is-not-greater-than-a-larger-integer
     not.
       0.gt 100
     true
 
-  eq. ++> cannot-be-greater-than-a-number-when-nan
+  eq. ++> can-tell-it-is-not-greater-than-a-number-when-nan
     nan.gt 42
     false
 
-  eq. ++> cannot-be-greater-than-an-equal-integer
+  eq. ++> can-tell-it-is-not-greater-than-an-equal-integer
     not.
       0.gt 0
     true
 
-  eq. ++> cannot-be-greater-than-an-integer-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-an-integer-when-negative-infinity
     ninf.gt 42
     false
 
-  not. ++> cannot-be-greater-than-itself-when-negative-infinity
+  not. ++> can-tell-it-is-not-greater-than-itself-when-negative-infinity
     ninf.gt ninf
 
-  not. ++> cannot-be-greater-than-itself-when-positive-infinity
+  not. ++> can-tell-it-is-not-greater-than-itself-when-positive-infinity
     pinf.gt pinf
 
-  eq. ++> cannot-be-greater-than-nan-when-nan
+  eq. ++> can-tell-it-is-not-greater-than-nan-when-nan
     nan.gt nan
     false
 
-  eq. ++> cannot-be-greater-than-nan-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-nan-when-negative-infinity
     ninf.gt nan
     false
 
-  not. ++> cannot-be-greater-than-nan-when-positive-infinity
+  not. ++> can-tell-it-is-not-greater-than-nan-when-positive-infinity
     pinf.gt nan
 
-  eq. ++> cannot-be-greater-than-positive-infinity-when-negative-infinity
+  eq. ++> can-tell-it-is-not-greater-than-positive-infinity-when-negative-infinity
     ninf.gt pinf
     false

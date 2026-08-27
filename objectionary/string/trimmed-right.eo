@@ -7,11 +7,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed-right
+[^] > trimmed-right
   if. > @
     0.eq
       b.size >> len!
@@ -20,13 +20,13 @@
       slice.
         text >> b!
         0
-        [index] >> first-non-ws-index
+        [^ index] >> first-non-ws-index
           if. > @
             -1.eq index
             0
             if.
               is-ws (b.slice index 1)!
-              first-non-ws-index (index.plus -1).as-number
+              ^.first-non-ws-index (index.plus -1).as-number
               index.plus 1
         | ((number len).plus -1)
   or. > [c] >> is-ws
@@ -40,43 +40,30 @@
           or.
             c.eq 0C-
             c.eq 0D-
+  ^ > text
 
   eq. ++> can-trim-a-text-of-trailing-spaces-only
-    trimmed-right
-      "     "
+    "     ".trimmed-right
     ""
 
-  eq. ++> can-trim-a-trailing-carriage-return
-    trimmed-right "value\r"
-    "value"
+  "value\r".trimmed-right.eq "value" ++> can-trim-a-trailing-carriage-return
 
-  eq. ++> can-trim-a-trailing-form-feed
-    trimmed-right "value\f"
-    "value"
+  "value\f".trimmed-right.eq "value" ++> can-trim-a-trailing-form-feed
 
-  eq. ++> can-trim-a-trailing-line-feed
-    trimmed-right "value\n"
-    "value"
+  "value\n".trimmed-right.eq "value" ++> can-trim-a-trailing-line-feed
 
-  eq. ++> can-trim-a-trailing-tab
-    trimmed-right "value\t"
-    "value"
+  "value\t".trimmed-right.eq "value" ++> can-trim-a-trailing-tab
 
-  eq. ++> can-trim-an-empty-text
-    trimmed-right ""
-    ""
+  "".trimmed-right.eq "" ++> can-trim-an-empty-text-from-the-right
 
   eq. ++> can-trim-many-trailing-spaces
-    trimmed-right
-      "some     "
+    "some     ".trimmed-right
     "some"
 
   eq. ++> can-trim-mixed-trailing-whitespace
-    trimmed-right
-      "value \t\n\f\r"
+    "value \t\n\f\r".trimmed-right
     "value"
 
-  eq. ++> can-trim-one-trailing-space
-    trimmed-right
-      "s "
+  eq. ++> can-trim-one-trailing-space-from-the-right
+    "s ".trimmed-right
     "s"

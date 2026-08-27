@@ -4,47 +4,51 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list start end] > slice
+[^ start end] > slice
   if. > @
-    gte.
-      number
-        if. >> s!
-          start.gte 0
+    start.is-integer.and end.is-integer
+    if.
+      gte.
+        number
+          if. >> s!
+            start.gte 0
+            if.
+              start.gte list.length
+              list.length
+              start
+            if.
+              list.length.neg.lte start
+              start.plus list.length
+              0
+        if. >> e!
+          end.gte 0
           if.
-            start.gte list.length
+            end.gte list.length
             list.length
-            start
+            end
           if.
-            list.length.neg.lte start
-            start.plus list.length
+            list.length.neg.lte end
+            end.plus list.length
             0
-      if. >> e!
-        end.gte 0
-        if.
-          end.gte list.length
-          list.length
-          end
-        if.
-          list.length.neg.lte end
-          end.plus list.length
-          0
-    *
-    reducedi
-      list
       *
-      if. > [accum item index] >>
-        and.
-          index.gte s
-          index.lt e
-        accum.with item
-        accum
+      list.reducedi
+        *
+        if. > [^ accum item index] >>
+          and.
+            index.gte s
+            index.lt e
+          accum.with item
+          accum
+    T
+      "Given slice start and end must both be integers"
+  ^ > list
 
   eq. ++> can-slice-a-list
-    slice
+    slice.
       *
         1
         2
@@ -60,7 +64,7 @@
       5
 
   eq. ++> can-slice-with-a-negative-end
-    slice
+    slice.
       *
         "a"
         2
@@ -78,7 +82,7 @@
       82.42
 
   eq. ++> can-slice-with-a-negative-start
-    slice
+    slice.
       *
         8
         76
@@ -95,7 +99,7 @@
       8
 
   eq. ++> can-slice-with-a-negative-start-and-end
-    slice
+    slice.
       *
         8
         23
@@ -110,7 +114,7 @@
       0
 
   eq. ++> can-slice-with-a-negative-start-not-below-the-end
-    slice
+    slice.
       *
         "f"
         1
@@ -123,7 +127,7 @@
     *
 
   eq. ++> can-slice-with-a-start-below-the-negative-length
-    slice
+    slice.
       *
         9
         99
@@ -137,7 +141,7 @@
       999
 
   eq. ++> can-slice-with-a-start-not-below-a-negative-end
-    slice
+    slice.
       *
         8
         -2
@@ -150,7 +154,7 @@
     *
 
   eq. ++> can-slice-with-a-start-not-below-the-end-when-both-negative
-    slice
+    slice.
       *
         3
         92
@@ -164,7 +168,7 @@
     *
 
   eq. ++> can-slice-with-a-start-not-below-the-end-when-both-positive
-    slice
+    slice.
       *
         3
         "-5"
@@ -175,7 +179,7 @@
     *
 
   eq. ++> can-slice-with-an-end-below-the-negative-length
-    slice
+    slice.
       *
         "A"
         "b"
@@ -187,7 +191,7 @@
     *
 
   eq. ++> can-slice-with-an-end-beyond-the-length
-    slice
+    slice.
       *
         "foo"
         "bar"
@@ -197,3 +201,19 @@
     *
       "bar"
       "buzz"
+
+  slice. --> stops-on-a-fractional-end
+    *
+      1
+      2
+      3
+    0
+    2.5
+
+  slice. --> stops-on-a-fractional-start
+    *
+      1
+      2
+      3
+    0.5
+    2

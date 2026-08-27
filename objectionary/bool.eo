@@ -7,24 +7,21 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint decorated-formation
-+unlint mandatory-package
 
 [if] > bool
   if > @
     01-
     00-
-  if > [x] > and
+  ^.if > [^ x] > and
     01-.eq x
     false
   if > not
     false
     true
-  if > [x] > or
+  ^.if > [^ x] > or
     true
     01-.eq x
 
@@ -50,6 +47,18 @@
       [args] > f
         2 > @
         1 > a
+
+  eq. ++> can-choose-the-left-branch-of-true
+    "yes"
+    true.if
+      "yes"
+      "no"
+
+  eq. ++> can-choose-the-right-branch-of-false
+    "no"
+    false.if
+      "yes"
+      "no"
 
   and. ++> can-compare-a-bool-to-a-string
     true.eq "\u0001"
@@ -82,9 +91,11 @@
 
   true.as-bool ++> can-convert-true-to-a-bool
 
+  true.or false ++> can-disjoin-true-with-false
+
   ++> can-extract-an-attribute-from-a-decoratee
     a.foo.eq 43 > @
-    return > [] > a
+    ^.return > [^] > a
       42.plus 1
     [foo] > return
 
@@ -101,6 +112,12 @@
       123
       42
     123
+
+  false.as-bytes.size.eq 1 ++> can-keep-the-size-of-false-at-one-byte
+
+  true.as-bytes.size.eq 1 ++> can-keep-the-size-of-true-at-one-byte
+
+  false.not ++> can-negate-false
 
   true.not.eq false ++> can-negate-true
 
@@ -193,7 +210,7 @@
                                                                                 blah38 (x.plus 1) > @
                                                                                 [x] > blah38
                                                                                   blah39 (x.plus 1) > @
-                                                                                  x > [x] > blah39
+                                                                                  I > blah39
 
   ++> can-take-a-parent-object
     eq. > @
@@ -201,15 +218,15 @@
       42
     [x] > a
       take > @
-      x > [] > take
+      ^.x > [^] > take
 
-  ++> can-take-a-parent-through-an-attribute
-    [] > @
-      [] > @
-        x.eq 42 > [] > @
-    42 > x
+  not. ++> can-tell-false-does-not-disjoin-with-itself
+    false.or false
+
+  not. ++> can-tell-true-is-not-false
+    true.eq false
 
   --> stops-on-applying-to-a-closed-object
     closed true > @
-    x > [x] > a
+    I > a
     a false > closed

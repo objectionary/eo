@@ -12,39 +12,63 @@
 # ```
 #
 # or just dataize `stdin` object.
+#
+# `all-lines` forces the current line's text through `seq` before the next
+# `line-or-eof` probe is even constructed. Both the accumulated text and
+# that probe read from the same console stream: constructing the probe reads
+# its own lookahead byte, and without this ordering that read races ahead of
+# the current line's own multi-byte read, since neither was otherwise forced
+# until the whole recursion bottomed out at the final `string`.
+#
+# That next probe is named through the root `stdin` and not through the
+# receiver, because an attribute answers with the very same object every
+# time it is taken: a probe taken twice from one `stdin` is one probe,
+# holding the one lookahead byte it has already read and the one line it has
+# already assembled. Through the receiver the recursion would see that same
+# line and that same `eof` at every level and never end, while the root
+# names a `stdin` of its own, whose probe reads the next byte of the stream
+# where the previous probe left off.
+#
+# Reading from the console cannot be exercised by a `++>` test, since
+# `console.read` reaches the process's real file descriptor 0 through
+# `posix`/`win32` and neither can be substituted in EO. The
+# `reads-*` snippets of `eo-integration-tests` feed real standard input to a
+# forked JVM and check what comes back.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
-+unlint unit-test-missing
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
++unlint unit-test-missing
 
 [] > stdin
   all-lines > @
-  [] > all-lines
-    [line buffer first] >> rec-read
-      if. > @
-        line.length.eq 0
+  [^] > all-lines
+    [^ scan buffer is-first] >> rec-read
+      scan.eof.if > @
         string buffer
-        rec-read
-          next-line
-          first.if
-            buffer.concat line
-            concat.
-              buffer.concat eol!
-              line
-          false
+        seq *
+          scan.line
+          ^.rec-read
+            stdin.line-or-eof
+            is-first.if
+              buffer.concat scan.line
+              concat.
+                buffer.concat eol!
+                scan.line
+            false
     | > @
-      next-line
-      --
-      true
-  [] > next-line
-    if. > @
-      first.as-bytes.size.eq 0
+      ^.line-or-eof
       ""
-      [input buffer] >> rec-read
+      true
+  [] > line-or-eof
+    first.as-bytes.size.eq 0 > eof
+    @. > first
+      console.read 1
+    eof.if > line
+      ""
+      [^ input buffer] >> rec-read
         if. > @
           or.
             char.eq --
@@ -54,12 +78,11 @@
                 next.as-bytes.eq "\n"
               char.eq "\n"
           string buffer
-          rec-read
+          ^.rec-read
             next
             buffer.concat char
         input.as-bytes > char
         @. > next
           input.read 1
       | first --
-    @. > first
-      console.read 1
+  ^.line-or-eof.line > [^] > next-line

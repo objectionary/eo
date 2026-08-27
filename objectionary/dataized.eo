@@ -31,14 +31,14 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > dataized /Q.bytes
+  ? > ^
   ? > target
 
   ++> can-avoid-recalculation
@@ -52,8 +52,8 @@
             cached.as-bytes
             cached.as-bool
             m
-          m.put > [] > func
-            m.as-number.plus 1
+          ^.m.put > [^] > func
+            ^.m.as-number.plus 1
       1
 
   ++> can-behave-as-a-const-when-dataized-as-bytes
@@ -71,3 +71,45 @@
         true
         m.put
           m.as-number.plus 1
+
+  ++> can-dataize-a-nested-attribute
+    eq. > @
+      as-number.
+        dataized foo
+      5
+    [] > foo
+      inner.five > @
+      [] > inner
+        5 > five
+
+  ++> can-dataize-a-number-to-the-same-bytes-as-as-bytes
+    eq. > @
+      42 >>!
+      42.as-bytes
+
+  eq. ++> can-dataize-a-plain-number
+    as-number.
+      dataized 42
+    42
+
+  ++> can-dataize-a-string
+    eq. > @
+      "hello" >>!
+      "hello".as-bytes
+
+  ++> can-dataize-a-target-that-is-already-bytes
+    eq. > @
+      42.as-bytes >>!
+      42.as-bytes
+
+  not. ++> can-dataize-false-as-bool
+    as-bool.
+      dataized false
+
+  ++> can-dataize-the-same-target-consistently
+    eq. > @
+      7 >>!
+      7 >>!
+
+  as-bool. ++> can-dataize-true-as-bool
+    dataized true

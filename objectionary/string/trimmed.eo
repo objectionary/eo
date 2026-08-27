@@ -8,56 +8,45 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed
+[^] > trimmed
   if. > @
     0.eq text.as-bytes.size
     text
-    trimmed-left
-      trimmed-right text
+    text.trimmed-right.trimmed-left
+  ^ > text
 
-  eq. ++> can-preserve-inner-content
-    trimmed "no-whitespace"
-    "no-whitespace"
+  "no-whitespace".trimmed.eq "no-whitespace" ++> can-preserve-inner-content
 
   eq. ++> can-preserve-inner-whitespace
-    trimmed
-      "\t hello world \n"
+    "\t hello world \n".trimmed
     "hello world"
 
   eq. ++> can-trim-a-text-of-spaces-only
-    trimmed
-      "        "
+    "        ".trimmed
     ""
 
-  eq. ++> can-trim-an-empty-text
-    trimmed ""
-    ""
+  "".trimmed.eq "" ++> can-trim-an-empty-text
 
   eq. ++> can-trim-many-surrounding-spaces
-    trimmed
-      "    some     "
+    "    some     ".trimmed
     "some"
 
   eq. ++> can-trim-mixed-whitespace-on-both-sides
-    trimmed
-      " \t\n\f\rvalue \t\n\f\r"
+    " \t\n\f\rvalue \t\n\f\r".trimmed
     "value"
 
   eq. ++> can-trim-one-leading-space
-    trimmed
-      " some"
+    " some".trimmed
     "some"
 
   eq. ++> can-trim-one-space-on-both-sides
-    trimmed
-      " some "
+    " some ".trimmed
     "some"
 
   eq. ++> can-trim-one-trailing-space
-    trimmed
-      "some "
+    "some ".trimmed
     "some"

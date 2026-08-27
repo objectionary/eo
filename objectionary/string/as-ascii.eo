@@ -1,52 +1,58 @@
 # Reads the single character `char` as its ASCII numeric value (0-255).
 # The byte of `char` is left-padded with a zero byte into a 16-bit word,
-# read as an integer and then expressed as a number.
+# read as an integer and then expressed as a number. If `char` is not
+# exactly one byte wide (an empty string, or a multi-byte UTF-8
+# character), the `cant-read` fallback is returned, or the terminator
+# when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[char] > as-ascii
-  as-number. > @
-    as-i16.
-      00-.concat char.as-bytes
+[^ cant-read] > as-ascii
+  if. > @
+    char.as-bytes.size.eq 1
+    as-number.
+      as-i16.
+        00-.concat char.as-bytes
+    cant-read
+      "Can't read %x as an ASCII code, it is not a single byte".printf
+        * char.as-bytes
+  ^ > char
 
-  eq. ++> can-read-the-code-of-a-lowercase-letter
-    97
-    as-ascii "a"
+  97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 
-  eq. ++> can-read-the-code-of-a-punctuation-mark
-    33
-    as-ascii "!"
+  33.eq "!".as-ascii ++> can-read-the-code-of-a-punctuation-mark
 
   eq. ++> can-read-the-code-of-a-space
     32
-    as-ascii
-      " "
+    " ".as-ascii
 
-  eq. ++> can-read-the-code-of-an-uppercase-letter
-    65
-    as-ascii "A"
+  65.eq "A".as-ascii ++> can-read-the-code-of-an-uppercase-letter
 
-  eq. ++> can-read-the-code-of-the-last-lowercase-letter
-    122
-    as-ascii "z"
+  122.eq "z".as-ascii ++> can-read-the-code-of-the-last-lowercase-letter
 
-  eq. ++> can-read-the-code-of-the-last-printable-character
-    126
-    as-ascii "~"
+  126.eq "~".as-ascii ++> can-read-the-code-of-the-last-printable-character
 
-  eq. ++> can-read-the-code-of-the-last-uppercase-letter
-    90
-    as-ascii "Z"
+  90.eq "Z".as-ascii ++> can-read-the-code-of-the-last-uppercase-letter
 
-  eq. ++> can-read-the-code-of-the-nine-digit
-    57
-    as-ascii "9"
+  57.eq "9".as-ascii ++> can-read-the-code-of-the-nine-digit
 
-  eq. ++> can-read-the-code-of-the-zero-digit
-    48
-    as-ascii "0"
+  48.eq "0".as-ascii ++> can-read-the-code-of-the-zero-digit
+
+  eq. ++> can-recover-from-a-multi-byte-character
+    "recovered"
+    "Ж".as-ascii
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-empty-string
+    "recovered"
+    "".as-ascii
+      "recovered" > [message]
+
+  "Ж".as-ascii --> stops-on-a-multi-byte-character
+
+  "".as-ascii --> stops-on-an-empty-string

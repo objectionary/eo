@@ -1,50 +1,51 @@
-# Tee input is an input that reads from provided `input`,
-# writes to provided `output` and behaves as provided `input`.
+# Tee input is an input that reads from the input it is taken off, writes to
+# provided `output` and behaves as that same input. It is a method of
+# `input`, and `origin` is the input it is taken off.
 # To copy bytes input to memory you can do:
 # ```
 # malloc.of > copied
 #   5
 #   [m]
 #     read. > @
-#       tee
-#         bytes.as-input 01-02-03-04-05
+#       tee.
+#         input 01-02-03-04-05.as-input
 #         m.to-output
 #       5
 # ```
 # After dataization `copied` is equal to `01-02-03-04-05` which are read
 # from memory.
 
-+alias bytes.as-input
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package input
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[input output] > tee
-  [size] > read
+[^ output] > tee
+  ^ > origin
+  [^ size] > read
     read. > @
       input-block
-        input
-        output
+        ^.origin
+        ^.output
         --
       size
-    [input output buffer] > input-block
+    [^ input output buffer] > input-block
       buffer > @
-      [size] > read
+      [^ size] > read
         seq * > @
           written
-          input-block chunk written chunk.as-bytes
-        ^. (input.read size).read > chunk
-        ^. (output.write chunk).write > written
+          ^.^.input-block chunk written chunk.as-bytes
+        ^. (^.input.read size).read > chunk
+        ^. (^.output.write chunk).write > written
 
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
       5
       read. > [mem]
-        Q.input.tee
-          bytes.as-input 01-02-03-04-05
+        tee.
+          input 01-02-03-04-05.as-input
           mem.to-output
         5
     01-02-03-04-05
@@ -56,8 +57,8 @@
         read.
           read.
             read.
-              Q.input.tee
-                bytes.as-input 01-02-03-04-05
+              tee.
+                input 01-02-03-04-05.as-input
                 m.to-output
               2
             2
@@ -72,12 +73,12 @@
         [m1]
           malloc.of > @
             5
-            seq * > [m2] >>
+            seq * > [^ m2] >>
               read.
-                Q.input.tee
-                  Q.input.tee (bytes.as-input 01-02-03-04-05) m2.to-output
-                  m1.to-output
+                tee.
+                  input ((input 01-02-03-04-05.as-input).tee m2.to-output)
+                  ^.m1.to-output
                 5
-              m1.write 5 2A-
-              m1
+              ^.m1.write 5 2A-
+              ^.m1
       01-02-03-04-05-2A

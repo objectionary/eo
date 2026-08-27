@@ -14,15 +14,15 @@
 #       "this value will be skipped"
 # ```
 #
-# This object returns the value of the first true statement.
+# This object returns the value of the first true statement,
+# or invokes `fallback` with a descriptive message when `cases`
+# is empty or when every case condition is false.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [cases fallback] > switch
   if. > @
@@ -33,40 +33,39 @@
       true.eq
         match.
           @. >> found
-            [tup] >> rec-case
+            [^ tup] >> rec-case
               if. > @
                 and.
                   tup.length.gt 1
                   previous.match
                 previous
-                [] >>
-                  tup.head.head > head
-                  tup.head.tail.head > match!
+                [^] >>
+                  ^.tup.head.head > head
+                  ^.tup.head.tail.head > match!
               @. > previous
-                rec-case tup.tail
+                ^.rec-case tup.tail
             | cases
       found.head
-      true
+      fallback
+        "No switch case matched"
 
-  switch * ++> can-return-true-when-all-cases-are-false
-    *
-      false
-      "false1"
-    *
-      false
-      "false2"
+  eq. ++> can-recover-from-an-empty-switch
+    "recovered"
+    switch
+      *
+      "recovered" > [message]
 
   ++> can-switch-on-a-complex-case
     eq. > @
       switch *
         *
-          c1 > [] >>
+          ^.c1 > [^] >>
           22
         *
-          c2 > [] >>
+          ^.c2 > [^] >>
           0
         *
-          c3 > [] >>
+          ^.c3 > [^] >>
           "true case"
       "true case"
     false > c1
@@ -78,6 +77,14 @@
       * false "1"
       * true "2"
     "2"
+
+  eq. ++> can-switch-on-all-false-cases-with-fallback
+    "fallback"
+    switch
+      *
+        * false "false1"
+        * false "false2"
+      "fallback" > [message]
 
   ++> can-switch-on-strings
     eq. > @
@@ -101,11 +108,13 @@
       * true "TRUE2"
     "TRUE1"
 
-  eq. ++> rejects-an-empty-switch
-    "recovered"
-    switch
-      *
-      "recovered" > [message]
+  switch * --> stops-on-all-false-cases-without-fallback
+    *
+      false
+      "false1"
+    *
+      false
+      "false2"
 
   switch --> stops-on-an-empty-switch
     *

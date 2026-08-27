@@ -58,10 +58,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > console
   os.is-windows.if > @
@@ -69,62 +68,115 @@
       [size] > read
         @. > @
           read.
-            [buffer] >> input-block
+            [^ buffer] >> input-block
               buffer > @
-              [size] > read
+              [^ size] > read
                 seq * > @
-                  output. >> chunk!
-                    win32 *1
-                      "_read"
-                      win32.stdin
-                      size
-                  input-block chunk
+                  if. >> chunk!
+                    received.code.eq -1
+                    T
+                      "Failed to read from standard input"
+                    received.output
+                  received
+                  ^.^.input-block chunk
+                called. > received
+                  win32 *1
+                    "_read"
+                    win32.stdin
+                    size
             | --
             size
       [buffer] > write
         @. > @
           write.
-            [] >> output-block
+            [^] >> output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [^ buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard output"
+                    ^.^.output-block
+                  code
+                  remainder
+                code. > code
                   win32 *1
                     "_write"
                     win32.stdout
                     buffer
                     buffer.size
-                output-block
+                if. > remainder
+                  code.lt buffer.size
+                  ^.^.output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  ^.^.output-block
             buffer
     [] >>
       [size] > read
         @. > @
           read.
-            [buffer] >> input-block
+            [^ buffer] >> input-block
               buffer > @
-              [size] > read
+              [^ size] > read
                 seq * > @
-                  output. >> chunk!
-                    posix *1
-                      "read"
-                      posix.stdin
-                      size
-                  input-block chunk
+                  if. >> chunk!
+                    received.code.eq -1
+                    T
+                      "Failed to read from standard input"
+                    received.output
+                  received
+                  ^.^.input-block chunk
+                called. > received
+                  posix *1
+                    "read"
+                    posix.stdin
+                    size
             | --
             size
       [buffer] > write
         @. > @
           write.
-            [] >> output-block
+            [^] >> output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [^ buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard output"
+                    ^.^.output-block
+                  code
+                  remainder
+                code. > code
                   posix *1
                     "write"
                     posix.stdout
                     buffer
                     buffer.size
-                output-block
+                if. > remainder
+                  code.lt buffer.size
+                  ^.^.output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  ^.^.output-block
             buffer
+
+  ++> can-chain-writes-across-output-blocks
+    seq * > @
+      o1
+      o1.write
+        "part two.\n"
+    console.write > o1
+      "part one, "
+
+  console.write ++> can-write-a-non-ascii-string-to-the-console
+    "héllo, wörld! 日本語\n"
+
+  console.write "" ++> can-write-an-empty-string-to-the-console
+
+  console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
 
   console.write ++> can-write-to-the-console
     "Hello, console-test!\n"
+
+  console --> cannot-dataize-console-directly

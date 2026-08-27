@@ -6,39 +6,39 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list start func] > reducedi
-  if. > @
-    is-empty list
+[^ start func] > reducedi
+  list.is-empty.if > @
     start
-    if. > [tup] >> rec-reducedi
+    if. > [^ tup] >> rec-reducedi
       tup.length.eq 1
-      func
-        start
+      ^.func
+        ^.start
         tup.head
         0
-      func
-        rec-reducedi tup.tail
+      ^.func
+        ^.rec-reducedi tup.tail
         tup.head
         tup.tail.length
     | list
+  ^ > list
 
-  ++> can-reduce-a-list-with-indexes
-    6.eq > @
-      reducedi
-        * 1 1
-        0
-        x.plus > [a x i] >>
-          a.plus
-            at.
-              * 2 2
-              i
+  eq. ++> can-reduce-a-list-with-indexes
+    6
+    reducedi.
+      * 1 1
+      0
+      x.plus > [a x i]
+        a.plus
+          at.
+            * 2 2
+            i
 
   eq. ++> can-reduce-a-long-integer-list-with-indexes
-    reducedi
+    reducedi.
       *
         0
         0
@@ -90,7 +90,7 @@
     1
 
   not. ++> can-reduce-bools-with-indexes
-    reducedi
+    reducedi.
       *
         true
         true
@@ -100,14 +100,14 @@
 
   ++> can-reduce-with-nested-functions
     eq. > @
-      reducedi
+      reducedi.
         * 10 500
         0
         [acc x i]
           check x > @
-          if. > [el] > check
-            x.lt 100
-            acc.plus x
-            acc.minus x
+          if. > [^ el] > check
+            ^.x.lt 100
+            ^.acc.plus ^.x
+            ^.acc.minus ^.x
       10.plus
         0.minus 500

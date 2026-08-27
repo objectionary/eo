@@ -14,10 +14,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [text] > stderr
   seq * > @
@@ -27,32 +26,100 @@
           [buffer] > write
             @. > @
               output-block.write buffer
-            [] > output-block
+            [^] > output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [^ buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard error"
+                    ^.^.output-block
+                  code
+                  remainder
+                code. > code
                   win32 *1
                     "_write"
                     win32.stderr
                     buffer
                     buffer.size
-                output-block
+                if. > remainder
+                  code.lt buffer.size
+                  ^.^.output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  ^.^.output-block
         [] >>
           [buffer] > write
             @. > @
               output-block.write buffer
-            [] > output-block
+            [^] > output-block
               true > @
-              seq * > [buffer] > write
-                code.
+              [^ buffer] > write
+                seq * > @
+                  if. >>!
+                    code.eq -1
+                    T
+                      "Failed to write to standard error"
+                    ^.^.output-block
+                  code
+                  remainder
+                code. > code
                   posix *1
                     "write"
                     posix.stderr
                     buffer
                     buffer.size
-                output-block
+                if. > remainder
+                  code.lt buffer.size
+                  ^.^.output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  ^.^.output-block
       text
     true
 
+  stderr ++> can-print-a-multiline-string
+    "Line one\nLine two\nLine three\n"
+
+  stderr "x" ++> can-print-a-single-character
+
+  stderr ++> can-print-a-string-that-is-only-whitespace
+    "   \t  "
+
+  stderr ++> can-print-a-string-with-a-carriage-return
+    "Windows-style line\r\n"
+
+  stderr ++> can-print-a-string-with-emoji
+    "Build failed ⚠️\n"
+
+  stderr "col1\tcol2\t\"quoted\"\n" ++> can-print-a-string-with-tabs-and-quotes
+
+  stderr ++> can-print-a-string-with-unicode-characters
+    "Привет, мир! 你好，世界！\n"
+
+  stderr ++> can-print-a-string-without-a-trailing-newline
+    "no newline at the end"
+
+  stderr ++> can-print-a-very-long-string
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\n"
+
+  stderr "" ++> can-print-an-empty-string
+
+  eq. ++> can-print-the-same-string-consistently-across-repeated-calls
+    stderr
+      "Repeatable message\n"
+    stderr
+      "Repeatable message\n"
+
   stderr ++> can-print-to-stderr
     "Hello, stderr-test!\n"
+
+  seq * ++> can-print-to-stderr-multiple-times-in-a-row
+    stderr
+      "First line\n"
+    stderr
+      "Second line\n"
+
+  eq. ++> can-return-true-after-printing-to-stderr
+    stderr
+      "Checking the return value\n"
+    true

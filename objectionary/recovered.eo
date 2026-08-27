@@ -5,14 +5,14 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > recovered /A
+  ? > ^
   ? > value /A?
   ? > alternative /A
 
@@ -21,6 +21,20 @@
       2.as-i64.div 0.as-i64
       7
     7
+
+  eq. ++> can-fall-back-when-a-step-of-a-sequence-terminates
+    recovered
+      seq *
+        2.as-i64.div 0.as-i64
+        true
+      7
+    7
+
+  ++> can-fall-back-when-forcing-a-cached-value-terminates
+    eq. > @
+      recovered cached 7
+      7
+    2.as-i64.div 0.as-i64 > cached!
 
   eq. ++> can-keep-the-value-when-not-terminated
     recovered

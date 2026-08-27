@@ -3,11 +3,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text substring] > ends-with
+[^ substring] > ends-with
   and. > @
     lte.
       number
@@ -21,12 +21,12 @@
           size
         size
       substring >> part!
+  ^ > text
 
-  ends-with ++> can-end-with-a-substring
+  ends-with. ++> can-end-with-a-substring
     "Hello world!"
     "world!"
 
-  not. ++> cannot-end-with-an-absent-substring
-    ends-with
-      "Hello world!"
+  not. ++> can-tell-it-does-not-end-with-an-absent-substring
+    "Hello world!".ends-with
       "Hello"

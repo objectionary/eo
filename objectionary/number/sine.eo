@@ -1,27 +1,33 @@
 # Sine of `num` radians as `org.eolang.number`.
-# The argument is reduced into the [-pi, pi] range and the Taylor series
-# is summed through Horner's scheme, so the result stays accurate for
-# angles of any magnitude, while non-finite arguments collapse to nan.
+# The argument is reduced into the [-pi, pi] range with a Cody-Waite style
+# two-part reduction constant, and the Taylor series is summed through
+# Horner's scheme. The high part of that constant has 26 trailing zero
+# mantissa bits, so `k times tau_hi` stays exact only while `k` is under
+# `2^26`, which puts the reduction's few-ULP accuracy at |num| up to about
+# 4e8; past that point the product itself rounds and the error lands
+# straight in the reduced angle. Non-finite arguments collapse to nan.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > sine
+[^] > sine
   times. > @
     minus. >> reduced
-      number num.as-bytes >> arg
-      times.
-        floor.
-          plus.
-            arg.div
-              pi.times 2 >> tau
-            0.5
-        tau
-    if. > [depth] >> factor
+      arg.minus
+        times.
+          floor. >> k
+            plus.
+              div.
+                number ^.as-bytes >> arg
+                pi.times 2
+              0.5
+          6.283185303211212
+      k.times 3.968374318722162e-9
+    if. > [^ depth] >> factor
       depth.gt 15
       1
       1.minus
@@ -33,25 +39,30 @@
               plus.
                 depth.times 2
                 1
-          factor
+          ^.factor
             depth.plus 1
     | 1
 
-  lt. ++> can-behave-as-an-odd-function
-    abs
+  lt. ++> can-be-accurate-near-the-documented-four-hundred-million-boundary
+    abs.
+      400000000.sine.minus 0.9965407850188008
+    1.0e-9
+
+  lt. ++> can-behave-as-an-odd-function-when-taking-sine
+    abs.
       times.
         plus.
-          sine
+          sine.
             pi.div 3
-          sine (pi.div 3).neg
+          sine. (pi.div 3).neg
         1000
     1
 
-  lt. ++> can-reduce-a-large-angle
-    abs
+  lt. ++> can-reduce-a-large-angle-when-taking-sine
+    abs.
       minus.
         times.
-          sine
+          sine.
             plus.
               pi.times 10
               pi.div 6
@@ -59,56 +70,63 @@
         500
     1
 
-  lt. ++> can-take-a-sine-of-minus-pi-halves
-    abs
+  lt. ++> can-reduce-a-very-large-angle-with-cody-waite-precision
+    abs.
       minus.
-        times.
-          sine (pi.div 2).neg
-          1000
+        1000000000000000.sine.times 1000
+        858
+    1
+
+  nan.sine.is-nan ++> can-return-nan-for-a-sine-of-nan
+
+  ninf.sine.is-nan ++> can-return-nan-for-a-sine-of-negative-infinity
+
+  pinf.sine.is-nan ++> can-return-nan-for-a-sine-of-positive-infinity
+
+  lt. ++> can-take-a-sine-of-minus-pi-halves
+    abs.
+      minus.
+        times. (pi.div 2).neg.sine 1000
         -1000
     1
 
   lt. ++> can-take-a-sine-of-pi
-    abs
-      times.
-        sine pi
-        1000
+    abs.
+      pi.sine.times 1000
     1
 
   lt. ++> can-take-a-sine-of-pi-halves
-    abs
+    abs.
       minus.
         times.
-          sine
+          sine.
             pi.div 2
           1000
         1000
     1
 
   lt. ++> can-take-a-sine-of-pi-sixths
-    abs
+    abs.
       minus.
         times.
-          sine
+          sine.
             pi.div 6
           1000
         500
     1
 
   lt. ++> can-take-a-sine-of-seventeen-radians
-    abs
+    abs.
       minus.
-        times.
-          sine 17
-          1000
+        17.sine.times 1000
         -961
     1
 
   lt. ++> can-take-a-sine-of-three-pi-halves
-    abs
+    abs.
       minus.
         times.
-          sine
+          sine.
             div.
               pi.times 3
               2
@@ -117,22 +135,11 @@
     1
 
   lt. ++> can-take-a-sine-of-two-pi
-    abs
+    abs.
       times.
-        sine
+        sine.
           pi.times 2
         1000
     1
 
-  eq. ++> can-take-a-sine-of-zero
-    sine 0
-    0
-
-  is-nan. ++> cannot-take-a-sine-of-nan
-    sine nan
-
-  is-nan. ++> cannot-take-a-sine-of-negative-infinity
-    sine ninf
-
-  is-nan. ++> cannot-take-a-sine-of-positive-infinity
-    sine pinf
+  0.sine.eq 0 ++> can-take-a-sine-of-zero

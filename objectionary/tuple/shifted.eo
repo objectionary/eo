@@ -1,20 +1,64 @@
-# Drop the first `shift` elements of `list`.
+# Drop the first `shift` elements of `list` (a negative `shift` drops nothing).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list shift] > shifted
-  slice > @
-    list
-    shift
-    list.length
+[^ shift] > shifted
+  shift.is-integer.if > @
+    list.slice
+      if.
+        shift.lt 0
+        0
+        shift
+      list.length
+    T
+      "Given shift must be an integer"
+  ^ > list
+
+  eq. ++> can-ignore-a-negative-shift
+    shifted.
+      *
+        "привет"
+        -42
+        0
+        "ξ"
+      -1
+    *
+      "привет"
+      -42
+      0
+      "ξ"
+
+  eq. ++> can-ignore-a-shift-below-the-negative-length
+    shifted.
+      *
+        82.42
+        ""
+        "日本"
+      -9
+    *
+      82.42
+      ""
+      "日本"
+
+  eq. ++> can-ignore-a-zero-shift
+    shifted.
+      *
+        "a"
+        -0.5
+        "Ω"
+      0
+    *
+      "a"
+      -0.5
+      "Ω"
 
   eq. ++> can-shift-by-less-than-the-length
-    shifted
+    shifted.
       *
         8
         2
@@ -28,7 +72,7 @@
       5
 
   eq. ++> can-shift-by-more-than-the-length
-    shifted
+    shifted.
       *
         8
         2
@@ -37,3 +81,15 @@
         5
       6
     *
+
+  shifted. --> stops-on-a-negative-fractional-shift
+    *
+      "a"
+      "b"
+    -0.5
+
+  shifted. --> stops-on-a-positive-fractional-shift
+    *
+      "a"
+      "b"
+    0.5

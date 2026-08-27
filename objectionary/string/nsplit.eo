@@ -1,82 +1,138 @@
 # Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
-# If `limit` is not a finite integer of at least 1 (fractional, nan, infinite,
-# zero or negative), the `cant-split` fallback is returned, or the bottom object when unbound.
+# If `delimiter` is empty, or `limit` is not a finite integer of at least 1
+# (fractional, nan, infinite, zero or negative), the `cant-split` fallback is
+# returned, or the terminator when unbound, the same way `split` behaves.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text delimiter limit cant-split] > nsplit
+[^ delimiter limit cant-split] > nsplit
   if. > @
     or.
-      1.gt limit
-      limit.is-integer.not
+      eq.
+        delimiter.size >> size!
+        0
+      or.
+        1.gt limit
+        limit.is-integer.not
     cant-split
-      "Invalid limit %d for nsplit, must be at least 1".printf
-        * limit
-    if.
-      text.size.eq 0
-      *
       if.
-        1.eq limit
-        * text
-        [accum start current count] >> rec-nsplit
-          if. > @
-            text.size.eq current
-            appended
+        size.eq 0
+        "The delimiter must not be empty"
+        limit.is-finite.if
+          "Invalid limit %f for nsplit, must be at least 1".printf
+            * limit
+          "Invalid limit %s for nsplit, must be at least 1".printf
+            *
+              string limit.as-scientific
+    if.
+      1.eq limit
+      * text
+      [^ accum start current count] >> rec-nsplit
+        if. > @
+          ^.text.size.eq current
+          appended
+          if.
+            or.
+              size.eq 0
+              gt.
+                current.plus size
+                ^.text.size
+            ^.rec-nsplit
+              accum
+              start
+              as-number.
+                current.plus 1
+              count
             if.
-              or.
-                size.eq 0
-                gt.
+              and.
+                ^.delimiter.eq
+                  bts.slice current size
+                lt.
+                  number count
+                  minus. (number ^.limit) 1
+              ^.rec-nsplit
+                appended
+                as-number.
                   current.plus size
-                  text.size
-              rec-nsplit
+                as-number.
+                  current.plus size
+                as-number.
+                  count.plus 1
+              ^.rec-nsplit
                 accum
                 start
                 as-number.
                   current.plus 1
                 count
-              if.
-                and.
-                  delimiter.eq
-                    bts.slice current size
-                  lt.
-                    number count
-                    minus. (number limit) 1
-                rec-nsplit
-                  appended
-                  as-number.
-                    current.plus size
-                  as-number.
-                    current.plus size
-                  as-number.
-                    count.plus 1
-                rec-nsplit
-                  accum
-                  start
-                  as-number.
-                    current.plus 1
-                  count
-          accum.with > appended
-            string
-              bts.slice
-                start
-                current.minus start
-        |
-          *
-          0
-          0
-          0
+        accum.with > appended
+          string
+            bts.slice
+              start
+              current.minus start
+      |
+        *
+        0
+        0
+        0
   text.as-bytes >> bts!
-  delimiter.size >> size!
+  ^ > text
+
+  eq. ++> can-format-the-error-message-of-a-fractional-limit
+    "Invalid limit 1.500000 for nsplit, must be at least 1"
+    "a-b-c".nsplit
+      "-"
+      1.5
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-limit-when-splitting
+    "Invalid limit infinity for nsplit, must be at least 1"
+    "a-b-c".nsplit
+      "-"
+      pinf
+      I
+
+  eq. ++> can-nsplit-an-empty-text-into-one-empty-string
+    "".nsplit
+      "-"
+      3
+    * ""
+
+  eq. ++> can-recover-from-a-fractional-limit
+    "recovered"
+    "a-b-c".nsplit
+      "-"
+      1.5
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
+    "recovered"
+    "abc".nsplit
+      ""
+      3
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-limit-when-splitting
+    "recovered"
+    "a-b-c".nsplit
+      "-"
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-invalid-limit
+    "fallback"
+    "text".nsplit
+      "-"
+      0
+      "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
-    nsplit
-      "-a-b-c"
+    "-a-b-c".nsplit
       "-"
       3
     *
@@ -85,8 +141,7 @@
       "b-c"
 
   eq. ++> can-split-multi-byte-characters
-    nsplit
-      "аХбХв"
+    "аХбХв".nsplit
       "Х"
       3
     *
@@ -95,8 +150,7 @@
       "в"
 
   eq. ++> can-split-on-a-multi-character-delimiter
-    nsplit
-      "a::b::c::d"
+    "a::b::c::d".nsplit
       "::"
       2
     *
@@ -104,8 +158,7 @@
       "b::c::d"
 
   eq. ++> can-split-on-dashes-with-a-limit-of-two
-    nsplit
-      "a-b-c-d"
+    "a-b-c-d".nsplit
       "-"
       2
     *
@@ -113,8 +166,7 @@
       "b-c-d"
 
   eq. ++> can-split-with-a-high-limit
-    nsplit
-      "a-b-c"
+    "a-b-c".nsplit
       "-"
       10
     *
@@ -123,51 +175,25 @@
       "c"
 
   eq. ++> can-split-with-a-limit-of-one
-    nsplit
-      "a-b-c"
+    "a-b-c".nsplit
       "-"
       1
     * "a-b-c"
 
   eq. ++> can-split-with-a-limit-of-two
-    nsplit
-      "Cookie: a=1; b=2"
+    "Cookie: a=1; b=2".nsplit
       " "
       2
     *
       "Cookie:"
       "a=1; b=2"
 
-  eq. ++> rejects-a-fractional-limit
-    "recovered"
-    nsplit
-      "a-b-c"
-      "-"
-      1.5
-      "recovered" > [message]
-
-  eq. ++> rejects-an-infinite-limit
-    "recovered"
-    nsplit
-      "a-b-c"
-      "-"
-      pinf
-      "recovered" > [message]
-
-  eq. ++> rejects-an-invalid-limit
-    "fallback"
-    nsplit
-      "text"
-      "-"
-      0
-      "fallback" > [message]
-
-  nsplit --> stops-on-a-limit-of-zero
+  nsplit. --> stops-on-a-limit-of-zero
     "text"
     "-"
     0
 
-  nsplit --> stops-on-a-negative-limit
+  nsplit. --> stops-on-a-negative-limit-when-splitting
     "text"
     "-"
     -1

@@ -4,48 +4,44 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > radians
-  div. > @
-    times.
-      number num.as-bytes
-      pi
-    180
+[^] > radians
+  times. > @
+    div.
+      number ^.as-bytes
+      180
+    pi
 
   lt. ++> can-convert-a-full-turn-to-radians
-    abs
-      minus.
-        radians 360
+    abs.
+      360.radians.minus
         pi.times 2
-    1.0E-4
+    1.0e-4
 
   lt. ++> can-convert-a-half-turn-to-radians
-    abs
-      minus.
-        radians 180
-        pi
-    1.0E-4
+    abs.
+      180.radians.minus pi
+    1.0e-4
+
+  lt. ++> can-convert-a-large-value-to-radians-without-overflow
+    abs.
+      1.0e308.radians.minus 1.7453292519943295e306
+    1.0e293
 
   lt. ++> can-convert-a-negative-half-turn-to-radians
-    abs
-      minus.
-        radians -180
-        pi.neg
-    1.0E-4
+    abs.
+      -180.radians.minus pi.neg
+    1.0e-4
 
   lt. ++> can-convert-a-quarter-turn-to-radians
-    abs
-      minus.
-        radians 90
+    abs.
+      90.radians.minus
         pi.div 2
-    1.0E-4
+    1.0e-4
 
-  eq. ++> can-convert-zero-to-radians
-    radians 0
-    0
+  0.radians.eq 0 ++> can-convert-zero-to-radians
 
-  is-nan. ++> cannot-convert-nan-to-radians
-    radians nan
+  nan.radians.is-nan ++> can-return-nan-when-converting-nan-to-radians

@@ -1,43 +1,35 @@
 # Represents the current operating system.
 
-+alias string.regex
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-+unlint redundant-object
 
 [] > os
   name > @
   as-bool. > is-linux
     exists.
       next.
-        match.
-          string.regex "/linux/i"
-          name
+        "/linux/i".regex.match name
   as-bool. > is-macos
     exists.
       next.
-        match.
-          string.regex "/mac/i"
-          name
+        "/mac/i".regex.match name
   as-bool. > is-windows
     exists.
       next.
-        match.
-          string.regex "/windows/i"
-          name
+        "/windows/i".regex.match name
   [] > name /Q.string
+    ? > ^
 
   or. ++> can-check-the-os-family
     os.is-windows.or os.is-macos
     os.is-linux
 
-  not. ++> cannot-belong-to-two-os-families-at-once
+  not. ++> can-tell-it-does-not-belong-to-two-os-families-at-once
     or.
       or.
         os.is-linux.and os.is-macos

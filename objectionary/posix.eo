@@ -5,31 +5,35 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.62.1
++rt jvm org.eolang:eo-runtime:0.63.0
 +rt node eo2js-runtime:0.0.0
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
-+unlint redundant-object
 
 [name args] > posix
   [] > @ /Q.posix.return
+    ? > ^
   os.is-macos.if > append
     8
     1024
   os.is-macos.if > creat
     512
     64
+  17 > eexist
+  os.is-macos.if > exclusive
+    2048
+    128
   2 > inet
   420 > mode
   -1 > none
   511 > permissions
+  384 > private
   0 > rdonly
   2 > rdwr
-  [code output] > return
+  [^ code output] > return
     output > @
-    return > called
+    ^.return > called
       code
       output
   [family port address] > sockaddr-in
@@ -49,6 +53,7 @@
   os.is-macos.if > trunc
     1024
     512
+  4294967295 > unresolved
   1 > wronly
 
   ++> can-close-a-tcp-socket
@@ -69,6 +74,13 @@
         posix.stream
         posix.tcp
 
+  ++> can-compute-the-size-of-a-sockaddr-in
+    addr.size.eq 16 > @
+    posix.sockaddr-in > addr
+      00-00
+      00-00
+      00-00-00-00
+
   os.is-windows.or ++> can-invoke-getpid
     gt.
       code.
@@ -76,6 +88,36 @@
           "getpid"
           *
       0
+
+  ++> can-open-a-file-with-the-append-flag
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            fd
+        fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly.plus posix.append
+        0
+
+  ++> can-open-a-file-with-the-trunc-flag
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "close"
+            fd
+        fd.gt -1
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly.plus posix.trunc
+        0
 
   ++> can-open-a-tcp-socket
     os.is-windows.or > @
@@ -107,6 +149,31 @@
         0
         0
 
+  os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
+    seq *
+      code.
+        posix *1
+          "open"
+          "/dev/null"
+          plus.
+            posix.rdonly.plus posix.creat
+            posix.exclusive
+          posix.private
+      eq.
+        code.
+          posix
+            "errno"
+            *
+        posix.eexist
+
+  os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "10.0.0.200"
+      3355443210
+
   os.is-windows.or ++> can-return-an-inet-address-for-localhost
     eq.
       code.
@@ -114,3 +181,61 @@
           "inet_addr"
           "127.0.0.1"
       16777343
+
+  os.is-windows.or ++> can-return-the-limited-broadcast-address
+    eq.
+      code.
+        posix *1
+          "inet_addr"
+          "255.255.255.255"
+      posix.unresolved
+
+  ++> can-stat-the-size-of-dev-null
+    os.is-windows.or > @
+      info.size.eq 0
+    output. > info
+      posix *1
+        "stat"
+        "/dev/null"
+
+  ++> can-store-seconds-in-a-timeval
+    tv.seconds.eq 5 > @
+    posix.timeval > tv
+      5
+      100
+
+  --> stops-on-write-size-being-negative
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "write"
+            fd
+            "ab"
+            -1
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly
+        0
+
+  --> stops-on-write-size-exceeding-buffer-length
+    os.is-windows.if > @
+      1.div 0
+      seq *
+        code.
+          posix *1
+            "write"
+            fd
+            "ab"
+            4096
+        true
+    code. > fd
+      posix *1
+        "open"
+        "/dev/null"
+        posix.wronly
+        0

@@ -1,32 +1,30 @@
 # Represents a file in the filesystem for reading and writing.
 
-+alias string.contains
-+alias string.joined
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-object
-+unlint mandatory-package
 
 [path] > file
   path > @
   @. > as-path
     Q.path path
-  eq. > [] > exists
-    code.
-      os.is-windows.if
-        win32 *1
-          "_access"
-          path
-          0
-        posix *1
-          "access"
-          path
-          0
-    0
-  [cant-check] > is-directory
+  or. > [^] > exists
+    eq.
+      code.
+        os.is-windows.if
+          win32 *1
+            "_access"
+            ^.path
+            0
+          posix *1
+            "access"
+            ^.path
+            0
+      0
+    ^.is-symlink false
+  [^ cant-check] > is-directory
     if. > @
       info.code.eq 0
       eq.
@@ -38,16 +36,40 @@
       os.is-windows.if
         win32 *1
           "_stat64"
-          path
+          ^.path
         posix *1
           "stat"
-          path
-  [mode scope cant-open] > open
+          ^.path
+  [^ cant-check] > is-symlink
+    os.is-windows.if > @
+      if.
+        attributes.eq win32.invalid
+        cant-check
+        not.
+          eq.
+            attributes.as-i64.as-bytes.and win32.reparse
+            00-00-00-00-00-00-00-00
+      if.
+        info.code.eq 0
+        eq.
+          floor.
+            info.output.mode.div 4096
+          10
+        cant-check
+    code. > attributes
+      win32 *1
+        "GetFileAttributesW"
+        ^.path
+    called. > info
+      posix *1
+        "lstat"
+        ^.path
+  [^ mode scope cant-open] > open
     known.not.if > @
       T
         "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        existing.and exists.not
+        existing.and ^.exists.not
         cant-open
           "File must exist for given access mod: '%s'".printf
             *
@@ -68,7 +90,7 @@
     or. > known
       existing.or truncate
       appending
-    [] > open-file
+    [^] > open-file
       os.is-windows.if > @
         open-through
           []
@@ -84,26 +106,38 @@
             posix "open" > open
             posix "read" > read
             posix "write" > write
-      [syscall] > open-through
+      [^ syscall] > open-through
         if. > @
           descriptor.eq -1
-          cant-open
+          ^.^.cant-open
             "Couldn't open file '%s': %s".printf
-              * path opened.output
-          seq *
-            scope
-              stream descriptor
-            code.
-              syscall.close
-                * descriptor
-            true
-        appending.if syscall.append 0 > append
-        existing.not.if syscall.creat 0 > creat
+              * ^.^.^.path opened.output
+          if.
+            recovered
+              seq *
+                ^.^.scope
+                  stream descriptor
+                true
+              false
+            seq *
+              code.
+                syscall.close
+                  * descriptor
+              true
+            seq *
+              code.
+                syscall.close
+                  * descriptor
+              ^.^.cant-open
+                "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
+                  * ^.^.^.path
+        ^.^.appending.if syscall.append 0 > append
+        ^.^.existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
         if. > direction
-          readable.and writable
+          ^.^.readable.and ^.^.writable
           syscall.rdwr
-          writable.if syscall.wronly syscall.rdonly
+          ^.^.writable.if syscall.wronly syscall.rdonly
         plus. > flags
           plus.
             direction.plus creat
@@ -111,38 +145,56 @@
           append
         called. > opened
           syscall.open
-            * path flags syscall.mode
-        [descriptor] > stream
-          [size] > read
+            * ^.^.^.path flags syscall.mode
+        [^ descriptor] > stream
+          [^ size] > read
             read. > @
               input-block --
               size
-            [buffer] > input-block
+            [^ buffer] > input-block
               buffer > @
-              [size] > read
-                readable.not.if > @
+              [^ size] > read
+                ^.^.^.^.^.^.readable.not.if > @
                   T
                     "Can't read from file with provided access mode '%s'".printf
                       * access
                   seq *
-                    output. >> chunk!
-                      syscall.read
-                        * descriptor size
-                    input-block chunk
-          [buffer] > write
+                    if. >> chunk!
+                      received.code.eq -1
+                      T
+                        "Failed to read from file"
+                      received.output
+                    received
+                    ^.^.input-block chunk
+                called. > received
+                  ^.^.^.^.syscall.read
+                    * ^.^.^.descriptor size
+          [^ buffer] > write
             output-block.write buffer > @
-            [] > output-block
+            [^] > output-block
               true > @
-              writable.not.if > [buffer] > write
-                T
-                  "Can't write to file with provided access mode '%s'".printf
-                    * access
-                seq *
-                  code.
-                    syscall.write
-                      * descriptor buffer buffer.size
-                  output-block
-        truncate.if syscall.trunc 0 > trunc
+              [^ buffer] > write
+                ^.^.^.^.^.^.writable.not.if > @
+                  T
+                    "Can't write to file with provided access mode '%s'".printf
+                      * access
+                  seq *
+                    if. >>!
+                      code.eq -1
+                      T
+                        "Failed to write to file"
+                      ^.^.output-block
+                    code
+                    remainder
+                code. > code
+                  ^.^.^.^.syscall.write
+                    * ^.^.^.descriptor buffer buffer.size
+                if. > remainder
+                  code.lt buffer.size
+                  ^.^.output-block.write
+                    buffer.slice code (buffer.size.minus code)
+                  ^.^.output-block
+        ^.^.truncate.if syscall.trunc 0 > trunc
     and. > readable
       not.
         as-bool.
@@ -169,6 +221,71 @@
         f.write "!" > [f]
     13
 
+  ++> can-close-a-descriptor-when-the-scope-fails
+    eq. > @
+      drain 300
+      true
+      drain
+      tmp
+    if. > [^ n] > drain
+      n.lte 0
+      true
+      seq *
+        recovered
+          ^.tmp.open
+            "r"
+            T "boom" > [f]
+          true
+        ^.drain
+          n.minus 1
+    mktemp.tmpfile > tmp
+
+  ++> can-create-the-target-of-a-dangling-symlink-on-writing
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.open
+          "w"
+          f.write "created" > [f]
+        target.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "dangling-link" > link
+    d.resolved "absent-target" > target
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "r"
+        true > [f]
+    12
+
+  eq. ++> can-keep-the-size-of-a-file-opened-for-reading-or-appending
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [f]
+        "a+"
+        true > [f]
+    12
+
   ++> can-read-from-a-file
     eq. > @
       malloc.of
@@ -180,7 +297,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put > [f] >>
+              ^.m.put > [^ f] >>
                 f.read 12
             m
       "Hello, world"
@@ -196,7 +313,7 @@
                 "w"
                 f.write "Hello, world" > [f]
               "r"
-              m.put > [f] >>
+              ^.m.put > [^ f] >>
                 read.
                   f.read 7
                   5
@@ -212,26 +329,63 @@
       "Shrek is love".eq
         malloc.of
           13
-          [m] >>
+          [^ m] >>
             seq * > @
               open.
-                file source
+                file ^.source
                 "r"
-                m.put > [f] >>
+                ^.m.put > [^ f] >>
                   f.read 13
               m
     temp.path > source
     mktemp.tmpfile > temp
 
+  ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
+    mktemp.tmpfile.deleted.is-symlink true > @
+
+  mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
+    true
+
+  eq. ++> can-recover-from-opening-a-missing-file
+    "recovered"
+    mktemp.tmpfile.deleted.open
+      "r"
+      I
+      "recovered" > [reason]
+
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
-      string.contains
-        resolved
-        string.joined *1
-          Q.path.separator
-          "foo"
-          "bar"
+      resolved.contains
+        Q.path.separator.joined
+          * "foo" "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
+
+  ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            d.resolved "ссылка"
+        not.
+          d.as-file.is-symlink true
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
+  not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
+    mktemp.tmpfile.is-symlink true
+
+  ++> can-tell-that-a-symbolic-link-is-one
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d
+            link
+        link.as-file.is-symlink false
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "ссылка" > link
 
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
@@ -310,56 +464,17 @@
       eq.
         malloc.of
           14
-          [m] >>
+          [^ m] >>
             seq * > @
               open.
-                file source
+                file ^.source
                 "r"
-                m.put > [f] >>
+                ^.m.put > [^ f] >>
                   f.read 14
               m
         "Shrek is love!"
     temp.path > source
     mktemp.tmpfile > temp
-
-  eq. ++> cannot-truncate-a-file-opened-for-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "r"
-        true > [f]
-    12
-
-  eq. ++> cannot-truncate-a-file-opened-for-reading-or-appending
-    size.
-      open.
-        mktemp.tmpfile.open
-          "w"
-          f.write "Hello, world" > [f]
-        "a+"
-        true > [f]
-    12
-
-  mktemp.tmpfile.deleted.is-directory true ++> rejects-checking-an-absent-file
-
-  eq. ++> rejects-opening-a-missing-file
-    "recovered"
-    mktemp.tmpfile.deleted.open
-      "r"
-      f > [f]
-      "recovered" > [reason]
 
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
 
@@ -379,11 +494,11 @@
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-from-a-missing-file
     "r"
-    f > [f]
+    I
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-or-writing-a-missing-file
     "r+"
-    f > [f]
+    I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
     @.

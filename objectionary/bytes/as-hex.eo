@@ -3,33 +3,36 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
-+version 0.62.1
++package bytes
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b] > as-hex
+[^] > as-hex
+  ^ > b
   if. > [h] >> hex-digit
     h.lt 10
-    as-char
+    as-char.
       h.plus 48
-    as-char
+    as-char.
       h.plus 55
-  [index acc] >> rec-hex
+  [^ index acc] >> rec-hex
     if. > @
-      index.eq b.size
+      index.eq ^.b.size
       acc
-      rec-hex
+      ^.rec-hex
         as-number.
           index.plus 1
-        if.
-          index.eq 0
-          pair
-          concat.
-            acc.concat "-".as-bytes
-            pair
-    as-ascii > bval
-      b.slice index 1
+        next
+    as-ascii. > bval
+      string
+        ^.b.slice index 1
+    if. > next!
+      index.eq 0
+      pair
+      concat.
+        acc.concat "-".as-bytes
+        pair
     concat. > pair
       hex-digit
         floor.
@@ -46,25 +49,25 @@
 
   eq. ++> can-write-a-single-byte
     "41"
-    string
-      as-hex "A".as-bytes
+    string "A".as-bytes.as-hex
 
   eq. ++> can-join-bytes-with-hyphens
     "4A-65-66-66"
-    string
-      as-hex "Jeff".as-bytes
+    string "Jeff".as-bytes.as-hex
 
   eq. ++> can-write-letter-nibbles
     "00-00-00-00-00-00-00-FF"
-    string
-      as-hex 255.as-i64.as-bytes
+    string 255.as-i64.as-bytes.as-hex
 
   eq. ++> can-write-the-bytes-of-a-number
     "40-45-00-00-00-00-00-00"
-    string
-      as-hex 42.as-bytes
+    string 42.as-bytes.as-hex
 
   eq. ++> can-write-empty-bytes
     ""
+    string --.as-hex
+
+  eq. ++> can-write-a-64-byte-input-promptly
+    "00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00"
     string
-      as-hex --
+      00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00.as-hex

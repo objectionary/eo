@@ -1,13 +1,12 @@
 # Wall-clock time source backed by the operating system.
-# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime32_s` on Windows.
+# Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime64_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint mandatory-package
 
 [] > clock
   as-i64. > @
@@ -17,7 +16,7 @@
         millitm.
           output. >> timeb
             win32
-              "_ftime32_s"
+              "_ftime64_s"
               *
       plus.
         times.
@@ -30,4 +29,75 @@
         as-number.
           timeval.micros.as-i64.div 1000.as-i64
 
+  clock.as-bytes.size.eq 8 ++> can-be-eight-bytes-long
+
+  ++> can-be-greater-than-or-equal-to-itself
+    a.gte a > @
+    clock > a
+
+  ++> can-be-less-than-or-equal-to-itself
+    a.lte a > @
+    clock > a
+
+  ++> can-differ-from-a-value-offset-by-one
+    not. > @
+      a.eq
+        a.plus 1.as-i64
+    clock > a
+
+  ++> can-double-in-value-when-multiplied-by-two
+    gt. > @
+      a.times 2.as-i64
+      a
+    clock > a
+
+  ++> can-equal-itself-when-read-once
+    a.eq a > @
+    clock > a
+
+  clock.gt 4294967295.as-i64 ++> can-exceed-a-32-bit-integer-range
+
+  clock.gt 1000000000000.as-i64 ++> can-exceed-the-year-2001-epoch
+
+  ++> can-grow-when-a-positive-offset-is-added
+    gt. > @
+      a.plus 1000.as-i64
+      a
+    clock > a
+
   clock.gt 0 ++> can-read-positive-millis
+
+  gte. ++> can-remain-ahead-when-offset-by-a-large-margin
+    clock.plus 100000.as-i64
+    clock
+
+  ++> can-return-to-itself-after-adding-and-subtracting-the-same-offset
+    eq. > @
+      minus.
+        a.plus 500.as-i64
+        500.as-i64
+      a
+    clock > a
+
+  ++> can-round-trip-through-bytes-and-back
+    a.as-bytes.as-i64.eq a > @
+    clock > a
+
+  ++> can-shrink-when-a-positive-offset-is-subtracted
+    lt. > @
+      a.minus 1000.as-i64
+      a
+    clock > a
+
+  clock.lt 4102444800000.as-i64 ++> can-stay-below-the-year-2100-epoch
+
+  ++> can-stay-close-on-successive-reads
+    and. > @
+      gte.
+        a.plus 60000.as-i64
+        b
+      gte.
+        b.plus 60000.as-i64
+        a
+    clock > a
+    clock > b

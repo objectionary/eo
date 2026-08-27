@@ -3,49 +3,41 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[num] > exp
-  power > @
-    e
-    num
+[^] > exp
+  e.power ^ > @
 
   lt. ++> can-exponentiate-five
-    abs
+    abs.
       minus.
-        power e 5
-        exp 5
-    1.0E-7
+        e.power 5
+        5.exp
+    1.0e-7
 
   lt. ++> can-exponentiate-minus-one
-    abs
+    abs.
       minus.
         1.div e
-        exp -1
-    1.0E-8
+        -1.exp
+    1.0e-8
 
   lt. ++> can-exponentiate-minus-ten
-    abs
+    abs.
       minus.
-        power e -10
-        exp -10
-    1.0E-12
+        e.power -10
+        -10.exp
+    1.0e-12
 
-  eq. ++> can-exponentiate-negative-infinity
-    exp ninf
-    0
+  ninf.exp.eq 0 ++> can-exponentiate-negative-infinity
 
   lt. ++> can-exponentiate-one
-    abs
-      e.minus
-        exp 1
-    1.0E-8
+    abs.
+      e.minus 1.exp
+    1.0e-8
 
-  eq. ++> can-exponentiate-positive-infinity
-    exp pinf
-    pinf
+  pinf.exp.eq pinf ++> can-exponentiate-positive-infinity
 
-  is-nan. ++> cannot-exponentiate-nan
-    exp nan
+  nan.exp.is-nan ++> can-return-nan-when-exponentiating-nan

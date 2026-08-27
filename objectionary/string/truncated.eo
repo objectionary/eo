@@ -1,0 +1,85 @@
+# Returns the first `limit` characters of `text`, so that `Jeffrey` truncated
+# to three characters becomes `Jef`. Characters are counted, and not bytes,
+# so a multi-byte character counts as one. A `text` of `limit` characters
+# or shorter is returned unchanged, which is how this differs from `slice`,
+# where a `limit` beyond the end of the `text` terminates the computation.
+# If `limit` is not a finite non-negative integer (negative, fractional, nan
+# or infinite), the `cant-truncate` fallback is returned, or the terminator
+# when unbound.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.63.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ limit cant-truncate] > truncated
+  if. > @
+    or.
+      0.gt limit
+      limit.is-integer.not
+    cant-truncate
+      limit.is-finite.if
+        "Can't truncate text to %f characters".printf
+          * limit
+        "Can't truncate text to %s characters".printf
+          *
+            string limit.as-scientific
+    if.
+      limit.lt text.length
+      text.slice 0 limit
+      text
+  ^ > text
+
+  eq. ++> can-count-characters-and-not-bytes-when-truncating
+    "Жу"
+    "Жук".truncated 2
+
+  eq. ++> can-format-the-error-message-of-a-negative-limit
+    "Can't truncate text to -3.000000 characters"
+    "Jeff".truncated
+      -3
+      I
+
+  eq. ++> can-format-the-error-message-of-an-infinite-limit
+    "Can't truncate text to infinity characters"
+    "Jeff".truncated
+      pinf
+      I
+
+  eq. ++> can-recover-from-a-negative-limit
+    "recovered"
+    "Jeff".truncated
+      -3
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-a-non-integer-limit
+    "recovered"
+    "Jeff".truncated
+      1.75
+      "recovered" > [message]
+
+  eq. ++> can-recover-from-an-infinite-limit-when-truncating
+    "recovered"
+    "Jeff".truncated
+      pinf
+      "recovered" > [message]
+
+  eq. ++> can-return-a-shorter-text-unchanged
+    "hi"
+    "hi".truncated 9
+
+  eq. ++> can-return-a-text-of-the-exact-limit-unchanged
+    "hey"
+    "hey".truncated 3
+
+  eq. ++> can-truncate-to-an-empty-text
+    ""
+    "Jeffrey".truncated 0
+
+  eq. ++> can-truncate-to-fewer-characters
+    "Jef"
+    "Jeffrey".truncated 3
+
+  "Jeff".truncated -3 --> stops-on-a-negative-limit-when-truncating

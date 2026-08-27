@@ -3,13 +3,13 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.62.1
++version 0.63.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[n x] > lt
+[^ x] > lt
   0.gt > @
-    n.minus
+    ^.minus
       number x!
 
   ninf.lt 42.5 ++> can-be-less-than-a-float-when-negative-infinity
@@ -22,48 +22,48 @@
     ninf.lt pinf
     true
 
-  eq. ++> cannot-be-less-than-a-float-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-a-float-when-positive-infinity
     pinf.lt 42.5
     false
 
-  eq. ++> cannot-be-less-than-a-number-when-nan
+  eq. ++> can-tell-it-is-not-less-than-a-number-when-nan
     nan.lt 42
     false
 
-  eq. ++> cannot-be-less-than-a-smaller-integer
+  eq. ++> can-tell-it-is-not-less-than-a-smaller-integer
     not.
       10.lt -5
     true
 
-  eq. ++> cannot-be-less-than-an-equal-integer
+  eq. ++> can-tell-it-is-not-less-than-an-equal-integer
     not.
       10.lt 10
     true
 
-  eq. ++> cannot-be-less-than-an-integer-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-an-integer-when-positive-infinity
     pinf.lt 42
     false
 
-  eq. ++> cannot-be-less-than-itself-when-negative-infinity
+  eq. ++> can-tell-it-is-not-less-than-itself-when-negative-infinity
     ninf.lt ninf
     false
 
-  eq. ++> cannot-be-less-than-itself-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-itself-when-positive-infinity
     pinf.lt pinf
     false
 
-  eq. ++> cannot-be-less-than-nan-when-nan
+  eq. ++> can-tell-it-is-not-less-than-nan-when-nan
     nan.lt nan
     false
 
-  eq. ++> cannot-be-less-than-nan-when-negative-infinity
+  eq. ++> can-tell-it-is-not-less-than-nan-when-negative-infinity
     ninf.lt nan
     false
 
-  eq. ++> cannot-be-less-than-nan-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-nan-when-positive-infinity
     pinf.lt nan
     false
 
-  eq. ++> cannot-be-less-than-negative-infinity-when-positive-infinity
+  eq. ++> can-tell-it-is-not-less-than-negative-infinity-when-positive-infinity
     pinf.lt ninf
     false
