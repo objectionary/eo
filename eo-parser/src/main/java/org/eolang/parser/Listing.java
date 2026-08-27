@@ -23,6 +23,13 @@ import org.xembly.Directives;
  * becomes a sibling of {@code <listing>} even without an absolute
  * {@code xpath()} reset of its own.</p>
  *
+ * <p>When nothing survives the scrub — the source is empty or made
+ * entirely of forbidden characters — no element is appended at all.
+ * {@code XMIR.xsd} types {@code listing} as {@code non-empty}, so an
+ * empty {@code <listing/>} is not a valid instance of it; the schema
+ * allows the element to be omitted instead
+ * ({@code minOccurs="0"}).</p>
+ *
  * @since 0.1
  */
 final class Listing implements Iterable<Directive> {
@@ -42,12 +49,11 @@ final class Listing implements Iterable<Directive> {
 
     @Override
     public Iterator<Directive> iterator() {
-        return new Directives()
-            .xpath("/object")
-            .strict(1)
-            .add("listing")
-            .set(new Scrubbed(this.source))
-            .up()
-            .iterator();
+        final String text = new Scrubbed(this.source).toString();
+        final Directives dirs = new Directives();
+        if (!text.isEmpty()) {
+            dirs.xpath("/object").strict(1).add("listing").set(text).up();
+        }
+        return dirs.iterator();
     }
 }

@@ -684,6 +684,14 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesEmptySourceIntoSchemaValidXmir() {
+        Assertions.assertDoesNotThrow(
+            () -> new StrictXmir(new EoSyntax("").parsed()).toString(),
+            "XMIR of an empty source must match XMIR.xsd, which has no room for an empty <listing>"
+        );
+    }
+
+    @Test
     void parsesMetaUnderObjectRoot() throws Exception {
         MatcherAssert.assertThat(
             "metas emitted by the walker must appear under /object/metas in the final XMIR",
