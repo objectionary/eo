@@ -189,7 +189,7 @@ final class PhPackageTest {
     private static Stream<Arguments> attributes() {
         return Stream.of(
             Arguments.of("bytes$eq", EObytes$EOeq.class),
-            Arguments.of("nop", EOnop.class)
+            Arguments.of("dataized", EOdataized.class)
         );
     }
 }

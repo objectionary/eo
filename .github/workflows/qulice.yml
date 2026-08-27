@@ -25,4 +25,4 @@ jobs:
           path: ~/.m2/repository
           key: ubuntu-qulice-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-qulice-jdk-26-maven-
-      - run: mvn -ntp -Pqulice --errors --batch-mode -Deo.skip clean compile qulice:check
+      - run: mvn -ntp -Pqulice --errors --batch-mode -Deo.skip clean process-classes qulice:check
