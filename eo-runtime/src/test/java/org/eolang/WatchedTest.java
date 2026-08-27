@@ -29,6 +29,31 @@ final class WatchedTest {
     }
 
     @Test
+    void stopsBodyBeforeGuardReturns() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        Assertions.assertThrows(
+            TestAbortedException.class,
+            () -> new Watched(1024L * 1024L).through(
+                () -> {
+                    final byte[][] junk = new byte[1][];
+                    while (!Thread.currentThread().isInterrupted()) {
+                        junk[0] = new byte[256 * 1024];
+                        WatchedTest.rest(5L);
+                    }
+                    stopped.set(true);
+                    return null;
+                }
+            ),
+            "A body that ate too much must be terminated, but it wasnt"
+        );
+        MatcherAssert.assertThat(
+            "A body must already be stopped by the time the guard returns, but it wasnt",
+            stopped.get(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void stopsBodyWhenTheWatcherIsInterrupted() {
         MatcherAssert.assertThat(
             "A body must be stopped when the thread watching it is interrupted, but it wasnt",

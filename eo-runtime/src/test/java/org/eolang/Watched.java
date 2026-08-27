@@ -18,10 +18,11 @@ import org.opentest4j.TestAbortedException;
  * that the threads it starts land in the same group and are counted with
  * it. While it runs, the group is asked every few milliseconds how much it
  * has allocated. The moment the answer is over the limit, the group is
- * interrupted and the body is abandoned where it stands: dataization gives
+ * interrupted and given a bounded grace to actually stop: dataization gives
  * up on the very next attribute lookup of an interrupted thread (see
  * {@link ExInterrupted}), so the objects it was building become garbage and
- * the heap comes back to the tests that still need it.</p>
+ * the heap comes back to the tests that still need it, once the wait is
+ * over.</p>
  *
  * <p>A body that ends between two readings is judged all the same, on the
  * reading it took of itself on the way out. A body that failed, though,
@@ -52,6 +53,11 @@ final class Watched {
      * How many milliseconds pass between two readings of the appetite.
      */
     private static final long TICK = 50L;
+
+    /**
+     * How many milliseconds the group is given to stop after an interrupt.
+     */
+    private static final long GRACE = 500L;
 
     /**
      * What is said about a test that ate more than it was given.
@@ -99,7 +105,7 @@ final class Watched {
         }
     }
 
-    // @checkstyle IllegalThrowsCheck (37 lines)
+    // @checkstyle IllegalThrowsCheck (39 lines)
     private void guarded(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
         final ThreadGroup group = new ThreadGroup(
             String.format("maxmem-%d", Watched.COUNT.incrementAndGet())
@@ -127,6 +133,7 @@ final class Watched {
         }
         if (over) {
             group.interrupt();
+            Watched.settle(done);
             throw this.aborted(consumed.bytes());
         }
         final Throwable error = failure.get();
@@ -135,6 +142,14 @@ final class Watched {
         }
         if (consumed.bytes() > this.limit) {
             throw this.aborted(consumed.bytes());
+        }
+    }
+
+    private static void settle(final CountDownLatch done) {
+        try {
+            done.await(Watched.GRACE, TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 
