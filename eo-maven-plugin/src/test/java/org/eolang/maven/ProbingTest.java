@@ -43,8 +43,8 @@ final class ProbingTest {
     @Test
     void completesPartiallyProbedPackage(@TempDir final Path temp) throws IOException {
         final TjsForeign tojos = new TjsForeign();
-        tojos.add("test").withXmir(ProbingTest.caller(temp));
-        new Probing(tojos, ProbingTest.tuples(), true).exec();
+        tojos.add("test").withXmir(this.caller(temp));
+        new Probing(tojos, this.tuples(), true).exec();
         MatcherAssert.assertThat(
             "Probe should have registered the siblings that were never probed directly",
             tojos.contains("tuple.eachi") && tojos.contains("tuple.withouti"),
@@ -57,9 +57,9 @@ final class ProbingTest {
         @TempDir final Path temp
     ) throws IOException {
         final TjsForeign tojos = new TjsForeign();
-        tojos.add("test").withXmir(ProbingTest.caller(temp));
+        tojos.add("test").withXmir(this.caller(temp));
         tojos.add("tuple.each").withSource(temp.resolve("tuple").resolve("each.eo"));
-        new Probing(tojos, ProbingTest.tuples(), true).exec();
+        new Probing(tojos, this.tuples(), true).exec();
         MatcherAssert.assertThat(
             "Probe should not register the siblings of a package that is on disk already",
             tojos.contains("tuple.eachi") || tojos.contains("tuple.withouti"),
@@ -125,7 +125,7 @@ final class ProbingTest {
         );
     }
 
-    private static Path caller(final Path temp) throws IOException {
+    private Path caller(final Path temp) throws IOException {
         final Path xmir = temp.resolve("test.xmir");
         Files.write(
             xmir,
@@ -142,7 +142,7 @@ final class ProbingTest {
         return xmir;
     }
 
-    private static Objectionary tuples() {
+    private Objectionary tuples() {
         return new OyIndexed(
             new Objectionary.Fake(),
             new ObjectsIndex(
