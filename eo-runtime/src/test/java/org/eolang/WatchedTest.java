@@ -94,7 +94,7 @@ final class WatchedTest {
                     final byte[][] junk = new byte[1][];
                     while (!Thread.currentThread().isInterrupted()) {
                         junk[0] = new byte[256 * 1024];
-                        WatchedTest.rest();
+                        WatchedTest.rest(1L);
                     }
                     stopped.set(true);
                     return null;
@@ -110,7 +110,7 @@ final class WatchedTest {
         final Thread watcher = Thread.currentThread();
         final Thread bell = new Thread(
             () -> {
-                WatchedTest.nap();
+                WatchedTest.rest(100L);
                 watcher.interrupt();
             }
         );
@@ -121,7 +121,7 @@ final class WatchedTest {
             () -> new Watched(64L * 1024L * 1024L).through(
                 () -> {
                     while (!Thread.currentThread().isInterrupted()) {
-                        WatchedTest.rest();
+                        WatchedTest.rest(1L);
                     }
                     stopped.set(true);
                     return null;
@@ -146,17 +146,9 @@ final class WatchedTest {
         return ran.get();
     }
 
-    private static void nap() {
+    private static void rest(final long millis) {
         try {
-            Thread.sleep(100L);
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-    }
-
-    private static void rest() {
-        try {
-            Thread.sleep(1L);
+            Thread.sleep(millis);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
@@ -165,7 +157,7 @@ final class WatchedTest {
     private static boolean awaited(final AtomicBoolean flag) {
         final long deadline = System.currentTimeMillis() + 500L;
         while (!flag.get() && System.currentTimeMillis() < deadline) {
-            WatchedTest.rest();
+            WatchedTest.rest(1L);
         }
         return flag.get();
     }
