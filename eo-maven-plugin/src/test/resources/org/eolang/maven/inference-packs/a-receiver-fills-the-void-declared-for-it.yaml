@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Since a formation says outright what it is dispatched on, what it is
+# dispatched on can be written down. `oak.grow elm` puts the `elm` in `x` and
+# the `oak` in the receiver, and the second of those is a fact nobody could
+# state while the receiver was left implicit.
+eo:
+  app.eo: |
+    [] > app
+      oak.grow elm > @
+  oak.eo: |
+    [] > oak
+      [^ x] > grow
+        x > @
+  elm.eo: |
+    [] > elm
+provides:
+  - "//type[@id='Φ.oak.grow']/attr[@name='ρ'][@void='true']/witnessed/ref[@loc='Φ.oak']"
+  - "//type[@id='Φ.oak.grow']/attr[@name='x'][@void='true']/witnessed/ref[@loc='Φ.elm']"

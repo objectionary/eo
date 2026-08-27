@@ -145,6 +145,33 @@ final class MjResolveTest {
     }
 
     @Test
+    void reportsRtJvmLocationWithAnEmptyComponentClearly(@Mktmp final Path temp)
+        throws IOException {
+        final Path xmir = temp.resolve("dep.xmir");
+        Files.writeString(
+            xmir,
+            String.join(
+                "",
+                "<object><metas><meta><head>rt</head>",
+                "<tail>jvm org.eolang:eo-runtime:</tail>",
+                "<part>jvm</part><part>org.eolang:eo-runtime:</part>",
+                "</meta></metas></object>"
+            )
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("dep").withXmir(xmir).withVersion("1.0.0");
+        MatcherAssert.assertThat(
+            "The error must name the malformed '+rt jvm' location",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new DpsDefault(tojos, false, false, false).iterator(),
+                "A '+rt jvm' location with an empty mandatory component, such as a missing version, must fail with a clear error, not register a dependency with a blank coordinate"
+            ).getMessage(),
+            Matchers.containsString("org.eolang:eo-runtime:")
+        );
+    }
+
+    @Test
     void resolvesDefaultJnaDependency(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "Default JNA dependency must be resolved",

@@ -9,6 +9,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -131,6 +132,14 @@ final class DpsDefault implements Dependencies {
                     Logger.format(
                         "Malformed '+rt jvm' location '%s' at %[file]s: expected 3 or 4 colon-separated parts (group:artifact:version or group:artifact:classifier:version), got %d",
                         location, file, parts.length
+                    )
+                );
+            }
+            if (Arrays.stream(parts).anyMatch(String::isEmpty)) {
+                throw new IllegalStateException(
+                    Logger.format(
+                        "Malformed '+rt jvm' location '%s' at %[file]s: every colon-separated part (group:artifact:version or group:artifact:classifier:version) must be non-empty",
+                        location, file
                     )
                 );
             }

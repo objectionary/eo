@@ -31,7 +31,7 @@
     reducedi.
       * 1 1
       0
-      x.plus > [^ a x i]
+      x.plus > [a x i]
         a.plus
           at.
             * 2 2
@@ -86,7 +86,7 @@
         0
         1
       0
-      x.plus a > [^ a x i]
+      x.plus a > [a x i]
     1
 
   not. ++> can-reduce-bools-with-indexes
@@ -96,14 +96,14 @@
         true
         false
       true
-      x.and a > [^ a x i]
+      x.and a > [a x i]
 
   ++> can-reduce-with-nested-functions
     eq. > @
       reducedi.
         * 10 500
         0
-        [^ acc x i]
+        [acc x i]
           check x > @
           if. > [^ el] > check
             ^.x.lt 100

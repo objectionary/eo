@@ -111,7 +111,7 @@
           minus.
             code from
             48
-  T message > [^ message] >> failure
+  T message > [message] >> failure
   if. > [^ i] >> flags-end
     i.gte
       number span

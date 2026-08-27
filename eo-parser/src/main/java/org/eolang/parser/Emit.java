@@ -17,7 +17,7 @@ import org.xembly.Directives;
  * <p>Wraps a growing list of {@link Directive} that downstream
  * {@code Xembler} converts into XMIR. Each emission method appends to the
  * sink in source order; the caller controls when to take a
- * {@link #savepoint()} and how to {@link #rollback(int)} on a per-line
+ * {@link #savepoint()} and how to {@link #rollback(Savepoint)} on a per-line
  * recovery (R-7.2).</p>
  *
  * <p>The class exposes two families of methods:</p>
@@ -116,28 +116,54 @@ final class Emit {
     }
 
     /**
-     * Take a savepoint of the current sink size.
-     *
-     * <p>R-7.2 — the parser takes one of these at the start of each line.
-     * On a parse error inside that line, the caller invokes
-     * {@link #rollback(int)} with this token to drop the line's
-     * half-built directives.</p>
-     *
-     * @return Savepoint token (current sink size)
+     * Take a savepoint of the emitter's cursor: sink size, {@link #depth},
+     * and any atom signature owed to an open {@code <o>} — R-7.2. All
+     * three must roll back together via {@link #rollback(Savepoint)}, or
+     * an error recovered mid-formation leaves {@link #depth} drifted from
+     * the tree it describes (#7539).
+     * @return Savepoint token
      */
-    int savepoint() {
-        return this.sink.size();
+    Savepoint savepoint() {
+        return new Savepoint(
+            this.sink.size(), this.depth, this.signature,
+            this.sigline, this.sigpos, this.sigdepth
+        );
     }
 
     /**
-     * Roll the sink back to the given savepoint, discarding any
-     * directives appended after it.
+     * Roll the sink and cursor back to the given savepoint, discarding
+     * any directives appended after it and restoring {@link #depth} and
+     * the owed atom signature to what they were at that point.
      * @param token Savepoint token from {@link #savepoint()}
      */
-    void rollback(final int token) {
-        while (this.sink.size() > token) {
+    void rollback(final Savepoint token) {
+        while (this.sink.size() > token.sink()) {
             this.sink.remove(this.sink.size() - 1);
         }
+        token.restore(this);
+    }
+
+    /**
+     * Put {@link #depth} back to what it was at a savepoint.
+     * @param cursor Depth to restore
+     */
+    void depth(final int cursor) {
+        this.depth = cursor;
+    }
+
+    /**
+     * Put the owed atom signature back to what it was at a savepoint.
+     * @param owed Signature owed to the open object, empty when nothing is owed
+     * @param line Source line of the owed marker
+     * @param pos Source column of the owed marker
+     * @param level Depth of the object owing the marker
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    void signature(final String owed, final int line, final int pos, final int level) {
+        this.signature = owed;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = level;
     }
 
     /**

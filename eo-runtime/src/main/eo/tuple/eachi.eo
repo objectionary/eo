@@ -22,7 +22,7 @@
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           eachi. > @
             * 1 2 3
             ^.m.put > [^ item index] >>
