@@ -25,6 +25,11 @@ import org.xembly.Directives;
  * characters at all and would make the document not well-formed;
  * Xembly says nothing about them.</p>
  *
+ * <p>The directives leave the cursor on {@code /object}, not inside the
+ * {@code <listing>} they add, so that whatever the caller appends next
+ * becomes a sibling of {@code <listing>} even without an absolute
+ * {@code xpath()} reset of its own.</p>
+ *
  * @since 0.1
  */
 final class Listing implements Iterable<Directive> {
@@ -58,6 +63,7 @@ final class Listing implements Iterable<Directive> {
             .strict(1)
             .add("listing")
             .set(Listing.FORBIDDEN.matcher(this.source).replaceAll(""))
+            .up()
             .iterator();
     }
 }

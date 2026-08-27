@@ -5,6 +5,7 @@
 package org.eolang.parser;
 
 import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -109,6 +110,20 @@ final class ListingTest {
             ),
             ListingTest.listing(source),
             Matchers.equalTo(source)
+        );
+    }
+
+    @Test
+    void leavesCursorOnObjectForTheNextSibling() {
+        MatcherAssert.assertThat(
+            "what the caller appends after <listing> must be its sibling under /object",
+            new Xembler(
+                new Directives()
+                    .add("object").up()
+                    .append(new Listing("[] > foo"))
+                    .add("metas")
+            ).xmlQuietly(),
+            XhtmlMatchers.hasXPath("/object/metas")
         );
     }
 
