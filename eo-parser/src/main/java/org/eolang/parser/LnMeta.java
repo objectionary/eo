@@ -20,6 +20,13 @@ import java.util.Locale;
  * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
  * emission time.</p>
  *
+ * <p>Two directives name what they act on and are meaningless without
+ * it: {@code +package} takes exactly one argument, and {@code +alias}
+ * at least one — the shorthand {@code +alias Φ.foo} or the full
+ * {@code +alias foo Φ.bar}. A bare one of either is rejected here, so
+ * that {@code expand-aliases} is never handed an alias with nothing to
+ * expand.</p>
+ *
  * <p>{@code Q} names the global root and nothing else, so a
  * {@code +alias} that would give the token another meaning
  * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
@@ -118,7 +125,13 @@ final class LnMeta implements Line {
                 "'+package' directive requires exactly one argument"
             );
         }
-        if ("alias".equals(head) && !parts.isEmpty() && LnMeta.ROOT.equals(parts.get(0))) {
+        if ("alias".equals(head) && parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' directive requires at least one argument"
+            );
+        }
+        if ("alias".equals(head) && LnMeta.ROOT.equals(parts.get(0))) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+alias' cannot rename the root token Q"
