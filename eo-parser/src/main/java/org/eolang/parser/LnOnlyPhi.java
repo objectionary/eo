@@ -124,6 +124,12 @@ final class LnOnlyPhi implements Line {
                 "only-phi formation requires a non-empty body before `> [` or `++>`"
             );
         }
+        if (suffix.atom()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "an only-phi formation cannot be an atom"
+            );
+        }
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
