@@ -7,6 +7,7 @@ package org.eolang.inference;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,6 +32,25 @@ final class PairsTest {
                 ).others()
             ).asXml(),
             XhtmlMatchers.hasXPath("/links/type[@id='a']/terminator")
+        );
+    }
+
+    @Test
+    void gathersTheVoidsFilledAlongTheWholeChain() {
+        MatcherAssert.assertThat(
+            "a copy of a copy keeps what the earlier one filled, but it forgot it",
+            new Pairs(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<links><type id='half'><ref loc='pair'>",
+                        "<bind void='pair.x'><ref loc='u'/></bind></ref></type>",
+                        "<type id='full'><ref loc='half'>",
+                        "<bind void='pair.y'><ref loc='v'/></bind></ref></type></links>"
+                    )
+                )
+            ).filled().get("full"),
+            Matchers.containsInAnyOrder("pair.y", "pair.x")
         );
     }
 }
