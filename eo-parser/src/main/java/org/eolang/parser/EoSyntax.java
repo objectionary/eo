@@ -94,6 +94,7 @@ public final class EoSyntax implements Syntax {
      * Ctor.
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
+     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
         this.input = ipt;
