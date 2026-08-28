@@ -49,44 +49,50 @@
 
   ++> can-overwrite-an-existing-destination-on-moving
     os.is-windows.or > @
-      and.
-        exists.
-          source.moved target.path
+      seq *
+        source.open
+          "w"
+          f.write "first" > [f]
+        target.open
+          "w"
+          f.write "second" > [f]
+        source.moved dest
         "first".eq
           malloc.of
             5
-            [^ m]
+            [^ m] >>
               seq * > @
-                Q.target.open
+                open.
+                  file ^.dest
                   "r"
                   ^.m.put > [^ f] >>
                     f.read 5
                 m
-    mktemp.tmpfile.open > source
-      "w"
-      f.write "first" > [^ f]
-    mktemp.tmpfile.open > target
-      "w"
-      f.write "second" > [^ f]
+    target.path > dest
+    mktemp.tmpfile > source
+    mktemp.tmpfile > target
 
   ++> can-preserve-content-after-moving
-    "Hello, world".eq > @
-      malloc.of
-        12
-        [^ m]
-          seq * > @
-            open.
-              Q.temp.moved
-                "%s.dest".printf
-                  * Q.temp.path
-              "r"
-              ^.m.put > [^ f] >>
-                f.read 12
-            m
-    mktemp.tmpfile.open > temp
-      "w"
-      f.write > [^ f]
-        "Hello, world"
+    seq * > @
+      temp.open
+        "w"
+        f.write > [f]
+          "Hello, world"
+      temp.moved dest
+      "Hello, world".eq
+        malloc.of
+          12
+          [^ m] >>
+            seq * > @
+              open.
+                file ^.dest
+                "r"
+                ^.m.put > [^ f] >>
+                  f.read 12
+              m
+    "%s.dest".printf > dest
+      * temp.path
+    mktemp.tmpfile > temp
 
   mktemp.tmpfile.deleted.moved --> stops-on-moving-an-absent-file
     "irrelevant-target"
