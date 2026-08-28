@@ -70,7 +70,7 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             Path::resolve,
             Path::resolve
             );
-        final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
+        final String origin = String.format("Test%s.java", jparts[jparts.length - 1]);
         final Path resolved = base.resolve(origin);
         final Path resulted;
         final String content;
@@ -82,7 +82,7 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             )
         ) {
             final String atomized = String.format(
-                "%sEOAtomTest.java", jparts[jparts.length - 1]
+                "TestAtom%s.java", jparts[jparts.length - 1]
             );
             resulted = base.resolve(atomized);
             content = clazz.element("tests").text().get().replace(
@@ -108,8 +108,8 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             Path::resolve
         );
         final String name = parts[parts.length - 1];
-        for (final String suffix : new String[]{"Test.java", "EOAtomTest.java"}) {
-            final Path test = base.resolve(String.format("%s%s", name, suffix));
+        for (final String mark : new String[]{"Test", "TestAtom"}) {
+            final Path test = base.resolve(String.format("%s%s.java", mark, name));
             if (!test.equals(retained)) {
                 Files.deleteIfExists(test);
             }
