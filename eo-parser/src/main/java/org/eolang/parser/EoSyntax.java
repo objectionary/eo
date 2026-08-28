@@ -94,11 +94,19 @@ public final class EoSyntax implements Syntax {
      * Ctor.
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
+        this(Objects.requireNonNull(transform, "EoSyntax has no transform"), ipt);
+    }
+
+    /**
+     * Ctor.
+     * @param transform Transform XMIR after parsing function
+     * @param ipt The EO program to parse
+     */
+    private EoSyntax(final UnaryOperator<XML> transform, final Input ipt) {
         this.input = ipt;
-        this.transform = Objects.requireNonNull(transform, "EoSyntax has no transform");
+        this.transform = transform;
     }
 
     @Override
