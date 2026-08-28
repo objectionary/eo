@@ -113,10 +113,10 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
-        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*")) {
+        if (!head.matches("[a-z][a-z0-9]*")) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "meta name must be a NAME starting with a lowercase letter"
+                "meta name must be lowercase letters and digits, starting with a letter"
             );
         }
         if ("package".equals(head) && parts.isEmpty()) {
