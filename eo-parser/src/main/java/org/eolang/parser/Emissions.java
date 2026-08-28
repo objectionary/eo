@@ -410,7 +410,9 @@ final class Emissions {
             final Span sub = new Span(
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
-            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+            final Tokens tokens = new Tokens(sub.body(), sub);
+            Emissions.expression(emit, name, tokens, line);
+            tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
     }
 

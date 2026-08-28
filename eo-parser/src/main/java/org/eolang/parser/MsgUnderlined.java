@@ -72,7 +72,7 @@ final class MsgUnderlined {
             result = String.format(
                 "%s%s",
                 MsgUnderlined.repeat(" ", this.from),
-                MsgUnderlined.repeat("^", Math.min(this.length, this.origin.length()))
+                MsgUnderlined.repeat("^", Math.min(this.length, this.origin.length() - this.from))
             );
         }
         return result;

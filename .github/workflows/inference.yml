@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: inference
+run-name: "inference report publication"
+'on':
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+concurrency:
+  group: inference-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  inference:
+    if: github.repository_owner == 'objectionary'
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 26
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-26-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      # One pass over the whole reactor, with the flag on, so the goal writes
+      # the pages while eo-runtime is being built rather than inferring the
+      # same program twice.
+      - run: mvn install -ntp --errors --batch-mode -DskipTests -Dinvoker.skip '-Deo.inferenceReport'
+      # The pages are of eo-runtime, the only program here big enough to have
+      # red spots worth hunting. `clean` is true so that the page of an .eo
+      # file somebody deleted goes away with it, and it touches nothing
+      # outside `inference` because `target-folder` scopes it.
+      - uses: JamesIves/github-pages-deploy-action@v4.9.0
+        with:
+          branch: gh-pages
+          folder: eo-runtime/target/site/inference
+          target-folder: inference
+          clean: true

@@ -22,6 +22,15 @@
   after this transformation are not visible in the current scope.
   Maybe they are global or just a mistake.
 
+  Both errors this stage reports are marked "lossy": the reference
+  that caused them survives into the tree, but with the meaning the
+  author wrote stripped off it - the '@hop' marker is gone and
+  "add-default-package.xsl" homes the still dot-less name into the
+  root package, so printing the tree back gives "Q.x" where the
+  source said the parent's "x". A stage that reads the printed form
+  as canonical - "eo:format", above all - therefore has to refuse
+  the file instead of writing that text over it (#7862).
+
   We must skip objects that refer to
   "bytes", "string" or "number" if such objects are inside the
   "Q.bytes", "Q.string" or "Q.bytes".
@@ -257,6 +266,7 @@
             <xsl:attribute name="check" select="'build-fqns'"/>
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
+            <xsl:attribute name="lossy" select="''"/>
             <xsl:text>The φ object is used, but absent in self or parents scope</xsl:text>
           </error>
         </xsl:for-each>
@@ -265,6 +275,7 @@
             <xsl:attribute name="check" select="'build-fqns'"/>
             <xsl:attribute name="line" select="if (@line) then @line else 0"/>
             <xsl:attribute name="severity" select="'error'"/>
+            <xsl:attribute name="lossy" select="''"/>
             <xsl:text>The "</xsl:text>
             <xsl:value-of select="@base"/>
             <xsl:text>" object is declared in an enclosing scope, write it as "</xsl:text>

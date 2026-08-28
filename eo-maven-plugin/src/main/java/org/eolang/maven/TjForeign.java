@@ -156,6 +156,17 @@ final class TjForeign {
     }
 
     /**
+     * Checks if the tojo has no source of its own, meaning that it is one of
+     * the objects {@link Pulling} is going to fetch from the remote
+     * objectionary.
+     * @return True if there is neither {@code .eo} nor {@code .xmir} on disk
+     */
+    boolean sourceless() {
+        return !this.delegate.exists(TjsForeign.Attribute.EO.getKey())
+            && !this.delegate.exists(TjsForeign.Attribute.XMIR.getKey());
+    }
+
+    /**
      * Checks if tojo was discovered as a dependency of another object,
      * rather than registered directly as a user source.
      * @return True if discovered, false otherwise

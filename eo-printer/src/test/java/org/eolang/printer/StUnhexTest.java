@@ -314,6 +314,30 @@ final class StUnhexTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsBytesAppliedToALiteral(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must fold the literal only, leaving the application it sits in",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<p><o base='Φ.bytes' name='app'>",
+                        "<o base='Φ.bytes'><o>00-00-00-00</o></o>",
+                        "</o></p>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "//o[@base='Φ.bytes' and @name='app' and o[@base='Φ.bytes' and text()='00-00-00-00']]"
+            )
+        );
+    }
+
     private static Stream<Arguments> shifts() {
         return Stream.of(
             Arguments.of(StUnhex.XNAV, "xnav")

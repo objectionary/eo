@@ -15,8 +15,8 @@ asserts:
   - /object[not(errors)]
   - //tests[contains(text(), '@Test')]
   - //tests[contains(text(), 'void tests_iterates_with_eachi()')]
-  - //tests[contains(text(), 'tests_iterates_with_eachiφρα1();')]
-  - //tests[contains(text(), 'EOΦlisttests_iterates_with_eachiφρα1')]
+  - //tests[contains(text(), 'tests_iterates_with_eachi$φ$ρ$α1();')]
+  - //tests[contains(text(), 'EOΦ$list$tests_iterates_with_eachi$φ$ρ$α1')]
 input: |
   [] > list
     [x] > bar
