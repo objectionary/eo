@@ -52,6 +52,12 @@
     -1
     "Hello".index-of "Somebody"
 
+  eq. ++> can-find-no-index-of-an-absent-substring-in-a-long-text
+    -1
+    index-of.
+      "x".repeated 500
+      "y"
+
   eq. ++> can-find-no-index-of-an-absent-substring-in-utf-text
     -1
     "привет, друг!".index-of

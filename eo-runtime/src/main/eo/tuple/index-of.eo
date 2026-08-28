@@ -10,18 +10,19 @@
 
 [^ wanted] > index-of
   number > @
-    [^ tup] >> recidx
+    [^ tup found] >> recidx
       if. > @
         tup.length.eq 0
-        -1
+        found
+        seq *
+          found
+          ^.recidx tup.tail next
+      as-number. > next
         if.
-          next.eq -1
-          if.
-            tup.head.eq ^.wanted
-            tup.length.minus 1
-            -1
-          ^.recidx tup.tail >> next!
-    | ^
+          tup.head.eq ^.wanted
+          tup.length.minus 1
+          found
+    | ^ -1
 
   eq. ++> can-find-no-index-of-an-absent-item
     -1
