@@ -2,10 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: []
-asserts:
-  - /object[not(errors)]
-  - //o[@name='ρ' and @base='∅']
+line: 1
+message: |-
+  unexpected content in the body of an only-phi formation
 input: |
-  [] > foo
-    q.f (a > [^ x]) > z
+  foo? > [x] > app

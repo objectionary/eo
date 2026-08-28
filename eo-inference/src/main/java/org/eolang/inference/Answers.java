@@ -90,17 +90,18 @@ final class Answers {
     /**
      * What this object turns out to be.
      * @param locator The locator of the object
-     * @param filled How many voids this object has filled itself
+     * @param filled The locators of the voids this object has filled, its own
+     *  and the ones filled earlier in its chain of copies
      * @return The answer, saying what it settled on and how deep that is
      */
-    Answer of(final String locator, final int filled) {
+    Answer of(final String locator, final Collection<String> filled) {
         final String end = this.ends.getOrDefault(locator, locator);
         final String root = this.root(end);
         final Answer found;
         if (this.ground.contains(end)) {
             found = new Answer(end, 4);
         } else if (this.table.containsKey(end)) {
-            found = new Answer(end, this.depth(end, this.voids(end) - filled));
+            found = new Answer(end, this.depth(end, this.free(end, filled)));
         } else if (root.isEmpty()) {
             found = new Answer(end, 0);
         } else {
@@ -121,10 +122,11 @@ final class Answers {
         return found;
     }
 
-    private int voids(final String type) {
+    private int free(final String type, final Collection<String> filled) {
         int found = 0;
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))) {
+            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))
+                && !filled.contains(row.getOrDefault("type", ""))) {
                 found = found + 1;
             }
         }

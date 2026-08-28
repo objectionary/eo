@@ -52,9 +52,13 @@ public final class Demanded implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
+        final Map<String, String> names = new Ends(
+            new Pairs(new XMLDocument(tables.resolve("links.xml"))).all()
+        ).names();
         final Map<String, Map<String, String>> asked = new Asked(
             new XMLDocument(tables.resolve("needs.xml")),
-            new Ends(new Pairs(new XMLDocument(tables.resolve("links.xml"))).all()).names()
+            names,
+            new Provided(given, names, given.xpath("//attr[@void='true']/@type"))
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Demands demands = new Demands(asked, hollow.xpath("@type").get(0));

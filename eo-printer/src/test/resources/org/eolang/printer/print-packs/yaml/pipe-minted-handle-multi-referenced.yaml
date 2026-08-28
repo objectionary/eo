@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A `>> name` handle whose value applies a formation declared later in the
+# same scope, read twice through method dispatch (#7863). "inline-cactoos"
+# relocates the single-use formation above the handle and re-emits the handle
+# as a pipe, so the pipe here is minted by the relocation and not stamped by
+# the parser, as in "pipe-named-handle-multi-referenced". Both readers must
+# still read `found`, the handle's own name, and not the cactus name the
+# relocation leaves them on.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [cases fallback] > switch
+    if. > @
+      true.eq found.match
+      found.head
+      fallback "no case"
+    rec-case cases.reversed >> found
+    [^ rest] >> rec-case
+      if. > @
+        rest.is-empty
+        false
+        rec-case rest.tail
+printed: |
+  [cases fallback] > switch
+    if. > @
+      true.eq found.match
+      found.head
+      fallback
+        "no case"
+    rest.is-empty.if > [^ rest] >> rec-case
+      false
+      ^.rec-case rest.tail
+    | cases.reversed >> found
