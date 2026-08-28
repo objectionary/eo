@@ -3,6 +3,11 @@
 # interpreted without a sign. Addition, subtraction and multiplication
 # share the bit pattern of their signed `i64` counterparts, while
 # comparisons and division are made unsigned.
+# `as-number` rounds exactly once. Above `2^63` the eight bytes are
+# shifted right by one bit, the bit that falls off is put back as the
+# lowest bit of the shifted value, and the result is doubled. That
+# lowest bit keeps the shifted value odd whenever something was
+# discarded, so it can never sit on a tie and be rounded the wrong way.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,15 +17,19 @@
 
 [as-bytes] > u64
   as-bytes > @
-  plus. > [^] > as-number
+  if. > [^] > as-number
+    eq.
+      ^.as-bytes.and 80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    times.
+      as-number.
+        i64
+          or.
+            ^.as-bytes.right 1
+            ^.as-bytes.and 00-00-00-00-00-00-00-01
+      2
     as-number.
       i64 ^.as-bytes
-    if.
-      eq.
-        ^.as-bytes.and 80-00-00-00-00-00-00-00
-        80-00-00-00-00-00-00-00
-      1.8446744073709552e19
-      0
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
   gt. > [^ x] > gt
     i64 ^.flip
@@ -81,9 +90,29 @@
     00-00-00-00-00-00-00-2A.as-u64.as-number
     42
 
+  eq. ++> can-convert-a-value-just-above-two-to-the-63rd
+    80-00-00-00-00-00-04-01.as-u64.as-number
+    9.223372036854778e18
+
+  eq. ++> can-convert-a-value-just-below-two-to-the-63rd
+    7F-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    9.223372036854776e18
+
+  eq. ++> can-convert-a-value-with-two-high-bits-to-a-number
+    C0-00-00-00-00-00-04-01.as-u64.as-number
+    1.3835058055282166e19
+
+  eq. ++> can-convert-the-maximum-to-a-number
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
+    1.8446744073709552e19
+
   gt. ++> can-convert-to-an-unsigned-number
     FF-FF-FF-FF-FF-FF-FF-FF.as-u64.as-number
     0
+
+  eq. ++> can-convert-two-to-the-63rd-to-a-number
+    80-00-00-00-00-00-00-00.as-u64.as-number
+    9.223372036854776e18
 
   eq. ++> can-equal-the-same-u64
     00-00-00-00-00-00-00-2A.as-u64

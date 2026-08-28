@@ -64,7 +64,7 @@ final class Landed {
     Map<String, String> all() {
         final Collection<String> made = new HashSet<>(this.given.xpath("/provides/type/@id"));
         final Collection<String> plain = new HashSet<>(
-            this.links.xpath("/links/type[data or bottom]/@id")
+            this.links.xpath("/links/type[data or terminator]/@id")
         );
         final Map<String, String> hops = new Pairs(this.links).all();
         final Walked walked = new Walked(hops, this.comes());

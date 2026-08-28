@@ -8,6 +8,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -57,14 +58,16 @@ final class Answered {
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
         final Answers answers = new Answers(
             new Ungrouped(given, Collections.emptyMap()).rows(),
-            new HashSet<>(given.xpath("//attr[@void='true']/@type")),
+            new Seen(given).all(),
             new HashSet<>(pairs.certain()),
             new Ends(pairs.all()).names()
         );
-        final Map<String, Integer> filled = pairs.binds();
+        final Map<String, Collection<String>> filled = pairs.filled();
         final Map<String, Answer> found = new LinkedHashMap<>(0);
         for (final String locator : new Xmirs(this.world).locators()) {
-            found.put(locator, answers.of(locator, filled.getOrDefault(locator, 0)));
+            found.put(
+                locator, answers.of(locator, filled.getOrDefault(locator, Collections.emptyList()))
+            );
         }
         return found;
     }

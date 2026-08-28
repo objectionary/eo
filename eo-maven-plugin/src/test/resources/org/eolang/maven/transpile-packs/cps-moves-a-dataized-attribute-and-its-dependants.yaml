@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='rec']/o[@base='∅' and @name='k🌵']
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec' and @again='true']/o[@as='α0' and @base='ξ.i.minus']
+  - //o[starts-with(@name,'c🌵')]/o[@base='.as-bytes' and @name='half']/o[@base='Φ.dataized']/o[@as='α0' and @base='ξ.r🌵']
+  - //o[starts-with(@name,'c🌵')]/o[@base='ξ.half.plus' and @name='twice']/o[@as='α0' and @base='ξ.half']
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='ξ.ρ.k🌵']/o[@as='α0' and @base='ξ.twice.plus']/o[@as='α0' and @base='ξ.ρ.i']
+  - /object[not(//o[@name='rec']/o[@name=('half', 'twice')])]
+  - /object[count(//o[starts-with(@name,'c🌵')])=1]
+input: |
+  [] > main
+    [i] > rec
+      if. > @
+        i.eq 0
+        0
+        twice.plus i
+      half.plus half > twice
+      ^.rec (i.minus 1) > half!
+    rec 5 > @

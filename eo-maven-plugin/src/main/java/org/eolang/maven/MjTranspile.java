@@ -125,7 +125,11 @@ public final class MjTranspile extends MjSafe {
      * {@code byte[]}. A class that leaves one out fails to compile in
      * generated sources.</p>
      */
-    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    @Parameter(
+        alias = "phiDefaultClass",
+        property = "eo.phiDefaultClass",
+        defaultValue = "PhDefault"
+    )
     private String superclass;
 
     /**
@@ -137,6 +141,7 @@ public final class MjTranspile extends MjSafe {
      * nothing is marked.
      */
     @Parameter(
+        alias = "inferenceDir",
         property = "eo.inferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-inference"

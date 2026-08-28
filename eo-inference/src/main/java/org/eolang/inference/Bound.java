@@ -36,13 +36,6 @@ import java.util.Map;
  * and not by an argument written to the right of the name.</p>
  *
  * @since 0.69.0
- * @todo #7491:45min Substitute a receiver filling into an answer, the way
- *  {@link Filled} already substitutes an argument. {@link Dispatched} asks
- *  this class about arguments alone, through the ctor that leaves the
- *  receivers empty, because it is handed the arguments of the program and no
- *  XMIR to read a receiver off. Once it has them, the {@code plus} of
- *  {@code ^} inside a formation could be answered with the type of whoever
- *  dispatched on it rather than left rooted at the void.
  */
 final class Bound {
 
@@ -65,20 +58,6 @@ final class Bound {
      * What the types certainly have.
      */
     private final Provided owned;
-
-    /**
-     * Ctor, for the callers that ask only about arguments.
-     * @param arguments The arguments of every application, from {@link Given}
-     * @param links The pairs, each name against the one it is a copy of
-     * @param provided What the types certainly have
-     */
-    Bound(
-        final Map<String, List<String>> arguments,
-        final Map<String, String> links,
-        final Provided provided
-    ) {
-        this(arguments, Collections.emptyMap(), links, provided);
-    }
 
     /**
      * Ctor.

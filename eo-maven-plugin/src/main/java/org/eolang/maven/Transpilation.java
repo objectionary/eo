@@ -45,6 +45,7 @@ final class Transpilation {
      * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
+        "/org/eolang/maven/transpile/recursion-to-cps.xsl",
         "/org/eolang/parser/parse/set-locators.xsl",
         "/org/eolang/maven/transpile/set-original-names.xsl",
         "/org/eolang/maven/transpile/classes.xsl",
@@ -53,6 +54,7 @@ final class Transpilation {
         "/org/eolang/maven/transpile/package.xsl",
         "/org/eolang/maven/transpile/attrs.xsl",
         "/org/eolang/maven/transpile/data.xsl",
+        "/org/eolang/maven/transpile/recursion-to-loop.xsl",
         "/org/eolang/maven/transpile/purify.xsl",
         "/org/eolang/maven/transpile/to-java.xsl",
     };
@@ -72,6 +74,7 @@ final class Transpilation {
     static final String[] IMPORTS = {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
+        "/org/eolang/maven/transpile/_recursion.xsl",
     };
 
     /**
@@ -202,6 +205,19 @@ final class Transpilation {
             new Unchecked<>(this.fingerprint).value(),
             this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
         );
+    }
+
+    /**
+     * Whether the XMIR of every step is written down.
+     *
+     * <p>A build that asks for them wants to read them, and a cached
+     * transpilation writes none: the dumps are made by the train and the
+     * cache hands back its stored answer without running it (#7724).</p>
+     *
+     * @return True if the steps are tracked
+     */
+    boolean steps() {
+        return this.tracking.steps();
     }
 
     /**

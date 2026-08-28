@@ -35,6 +35,12 @@ import java.util.Map;
  * already worked out on the way to the rung. Whoever counts the program and
  * whoever shows it to somebody read the same one.</p>
  *
+ * <p>A name rooted at a void goes back with what {@link Seen} found in that
+ * void besides. Nothing in the walk reads it and no rung moves because of it:
+ * a void filled with a {@code number} at every call site is still a void, and
+ * saying otherwise would turn the habits of today's callers into a promise
+ * nobody made.</p>
+ *
  * @since 0.69.0
  */
 final class Answers {
@@ -45,9 +51,9 @@ final class Answers {
     private final Map<String, Collection<Map<String, String>>> table;
 
     /**
-     * The locator of every void.
+     * Every void, with what the program was seen putting into it.
      */
-    private final Collection<String> hollows;
+    private final Map<String, Collection<Type>> hollows;
 
     /**
      * The objects the table answers by itself.
@@ -63,14 +69,15 @@ final class Answers {
      * Ctor.
      * @param rows The rows of the provides table, by the locator of their
      *  owner, from {@link Ungrouped}
-     * @param voids The locator of every void
+     * @param voids Every void, with what the program was seen putting into
+     *  it, from {@link Seen}
      * @param answered The objects the table answers by itself, from
      *  {@link Pairs}
      * @param names Every chain of copies, walked to its end
      */
     Answers(
         final Map<String, Collection<Map<String, String>>> rows,
-        final Collection<String> voids,
+        final Map<String, Collection<Type>> voids,
         final Collection<String> answered,
         final Map<String, String> names
     ) {
@@ -83,22 +90,24 @@ final class Answers {
     /**
      * What this object turns out to be.
      * @param locator The locator of the object
-     * @param filled How many voids this object has filled itself
+     * @param filled The locators of the voids this object has filled, its own
+     *  and the ones filled earlier in its chain of copies
      * @return The answer, saying what it settled on and how deep that is
      */
-    Answer of(final String locator, final int filled) {
+    Answer of(final String locator, final Collection<String> filled) {
         final String end = this.ends.getOrDefault(locator, locator);
-        final int rung;
+        final String root = this.root(end);
+        final Answer found;
         if (this.ground.contains(end)) {
-            rung = 4;
+            found = new Answer(end, 4);
         } else if (this.table.containsKey(end)) {
-            rung = this.depth(end, this.voids(end) - filled);
-        } else if (this.rooted(end)) {
-            rung = 1;
+            found = new Answer(end, this.depth(end, this.free(end, filled)));
+        } else if (root.isEmpty()) {
+            found = new Answer(end, 0);
         } else {
-            rung = 0;
+            found = new Answer(end, 1, this.hollows.get(root));
         }
-        return new Answer(end, rung);
+        return found;
     }
 
     private int depth(final String type, final int free) {
@@ -113,10 +122,11 @@ final class Answers {
         return found;
     }
 
-    private int voids(final String type) {
+    private int free(final String type, final Collection<String> filled) {
         int found = 0;
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))) {
+            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))
+                && !filled.contains(row.getOrDefault("type", ""))) {
                 found = found + 1;
             }
         }
@@ -133,12 +143,12 @@ final class Answers {
         return found;
     }
 
-    private boolean rooted(final String locator) {
-        boolean found = false;
+    private String root(final String locator) {
+        String found = "";
         String walked = locator;
         while (!walked.isEmpty()) {
-            if (this.hollows.contains(walked)) {
-                found = true;
+            if (this.hollows.containsKey(walked)) {
+                found = walked;
                 break;
             }
             if (!walked.contains(".")) {

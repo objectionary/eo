@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,25 +49,12 @@ final class Filled {
 
     /**
      * Ctor.
-     * @param arguments The arguments of every application, from {@link Given}
      * @param links The pairs, each name against the one it is a copy of
      * @param provided The provides table, by the name a type goes by
+     * @param bound What every application and every dispatch fills, from
+     *  {@link Bound}
      */
     Filled(
-        final Map<String, List<String>> arguments,
-        final Map<String, String> links,
-        final Provided provided
-    ) {
-        this(links, provided, new Bound(arguments, links, provided).all());
-    }
-
-    /**
-     * Ctor.
-     * @param links The pairs, each name against the one it is a copy of
-     * @param provided The provides table, by the name a type goes by
-     * @param bound What every application fills, from {@link Bound}
-     */
-    private Filled(
         final Map<String, String> links,
         final Provided provided,
         final Map<String, Map<String, String>> bound
@@ -113,14 +99,35 @@ final class Filled {
         final Map<String, String> found = new HashMap<>(0);
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
+        while (seen.add(walked)) {
+            this.gathered(found, walked);
+            if (!this.pairs.containsKey(walked)) {
+                break;
+            }
+            walked = this.pairs.get(walked);
+        }
+        final Map<String, String> through = new HashMap<>(found.size());
+        for (final Map.Entry<String, String> fill : found.entrySet()) {
+            final Collection<String> passed = new HashSet<>(0);
+            String reached = fill.getValue();
+            while (found.containsKey(reached) && passed.add(reached)) {
+                reached = found.get(reached);
+            }
+            through.put(fill.getKey(), reached);
+        }
+        return through;
+    }
+
+    private void gathered(final Map<String, String> found, final String type) {
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = type;
+        while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
                 : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
                 found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
             }
-            walked = this.pairs.get(walked);
+            walked = this.owned.body(walked);
         }
-        return found;
     }
 
     private String asked(final String start, final String names, final String back) {

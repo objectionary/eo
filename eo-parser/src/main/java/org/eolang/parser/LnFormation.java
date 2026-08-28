@@ -80,7 +80,7 @@ final class LnFormation implements Line {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
         Blanks.enterAfterMeta(this.span, globals, emit);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.transition(stack, suffix);
         Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();
@@ -169,7 +169,7 @@ final class LnFormation implements Line {
         if (close < 0) {
             throw new ParseError(
                 span.line(), span.indent(),
-                "formation brackets must not contain leading or trailing space"
+                "formation is missing its closing bracket"
             );
         }
         return close;

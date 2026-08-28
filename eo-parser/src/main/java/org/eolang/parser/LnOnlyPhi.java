@@ -52,9 +52,10 @@ import java.util.List;
  *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
- * ROOT horizontal args. R-3.10.6 LHS restrictions are honoured by
- * scanner exclusion (formations and reversed-with-hargs LHS are not
- * accepted as inputs because their classifiers fire first). *
+ * ROOT horizontal args. Of the R-3.10.6 LHS restrictions, a formation
+ * LHS is honoured by scanner exclusion — its classifier fires first —
+ * while a reversed dispatch carrying horizontal args reaches this line
+ * shape and is rejected here. *
  *
  * <p>The head of a line ends at the first space that sits at paren depth 0
  * and outside any string literal, which is what {@code topLevelSpace} finds,
@@ -94,6 +95,13 @@ final class LnOnlyPhi implements Line {
                     "only-phi parameter list missing closing `]`"
                 );
             }
+            final int chained = Eo.topLevelGreaterBracketIndex(body.substring(close + 1));
+            if (chained >= 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + close + 1 + chained,
+                    "chained inline-phi suffixes are not allowed"
+                );
+            }
             lhs = body.substring(0, phi).stripTrailing();
             params = LnOnlyPhi.parseParams(
                 body.substring(bracket + 1, close), this.span, bracket + 1
@@ -123,11 +131,17 @@ final class LnOnlyPhi implements Line {
                 "only-phi formation requires a non-empty body before `> [` or `++>`"
             );
         }
+        if (suffix.atom()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "an only-phi formation cannot be an atom"
+            );
+        }
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
         Blanks.enterAfterMeta(this.span, globals, emit);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Tokens tokens = this.slot(
             stack, suffix,
             new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line())
@@ -152,7 +166,7 @@ final class LnOnlyPhi implements Line {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
         final Level level = this.transition(
-            stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
+            stack, suffix, stars >= 0 || this.bare(tokens)
         );
         tokens.seek(0);
         if (stars >= 0) {
@@ -188,18 +202,32 @@ final class LnOnlyPhi implements Line {
 
     private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
         Emissions.expression(emit, "φ", tokens, this.span.line());
+        if (!tokens.atEnd()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + tokens.cursor(),
+                "unexpected content in the body of an only-phi formation"
+            );
+        }
         if (!open) {
             emit.close();
         }
     }
 
-    private static boolean bare(final Tokens tokens) {
-        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+    private boolean bare(final Tokens tokens) {
+        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+        if (reversed) {
             tokens.consumeDispatch();
         } else {
             tokens.readChain();
         }
-        return tokens.readArgs().isEmpty();
+        final boolean empty = tokens.readArgs().isEmpty();
+        if (reversed && !empty) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+            );
+        }
+        return empty;
     }
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {

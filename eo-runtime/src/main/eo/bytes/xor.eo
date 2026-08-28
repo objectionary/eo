@@ -1,4 +1,4 @@
-# Bitwise exclusive OR of the byte chain `bts` with another chain `b`,
+# Bitwise exclusive OR of the byte chain with another chain `x`,
 # derived from the `and`, `or`, and `not` atoms.
 
 +architect yegor256@gmail.com
@@ -10,9 +10,8 @@
 
 [^ x] > xor
   or. > @
-    b.and x.not
-    b.not.and x
-  ^ > b
+    ^.and x.not
+    ^.not.and x
 
   eq. ++> can-xor-negative-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00

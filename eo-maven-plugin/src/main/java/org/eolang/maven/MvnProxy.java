@@ -4,22 +4,16 @@
  */
 package org.eolang.maven;
 
+import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * One active proxy of Maven settings, carrying the excluded hosts that a
  * plain {@link Proxy} drops.
  * @since 0.73.4
- * @todo #7257:40min Honour the proxy credentials too. A proxy with a
- *  {@code username} and {@code password} in {@code settings.xml} still gets
- *  407 on every request, because nothing answers its authentication
- *  challenge. Add a {@code java.net.Authenticator} built from these two
- *  fields and hand it to the {@code HttpClient} in {@code OyRemote}. The
- *  {@code protocol} field is a separate matter: {@code java.net.http} only
- *  speaks to HTTP proxies, so a {@code socks5} one has to either fail loudly
- *  or go through the {@code socksProxyHost} system properties.
  */
 final class MvnProxy {
 
@@ -45,6 +39,27 @@ final class MvnProxy {
             Proxy.Type.HTTP,
             new InetSocketAddress(this.origin.getHost(), this.origin.getPort())
         );
+    }
+
+    /**
+     * What answers this proxy's authentication challenge.
+     *
+     * <p>A proxy that wants a user name and a password gets a 407 on every
+     * request while nothing answers it, and the two fields sit unread in
+     * {@code settings.xml}. A proxy that wants neither is left alone, since
+     * an authenticator with nothing to say only makes the client ask.</p>
+     *
+     * @return The credentials, empty when the settings carry none
+     */
+    Optional<Authenticator> credentials() {
+        final String name = this.origin.getUsername();
+        final Optional<Authenticator> found;
+        if (name == null || name.isEmpty()) {
+            found = Optional.empty();
+        } else {
+            found = Optional.of(new MvnCredentials(name, this.origin.getPassword()));
+        }
+        return found;
     }
 
     /**

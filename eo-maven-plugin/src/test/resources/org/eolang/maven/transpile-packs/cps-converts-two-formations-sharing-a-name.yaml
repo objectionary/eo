@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[count(//o[@base='∅' and @name='k🌵']) = 2]
+  - //o[@name='first']/o[@name='rec']/o[@base='∅' and @name='k🌵']
+  - //o[@name='second']/o[@name='rec']/o[@base='∅' and @name='k🌵']
+  - //o[@name='first']/o[@name='φ' and @base='ξ.rec']/o[@as='α1']/o[@name='r🌵']
+  - //o[@name='second']/o[@name='φ' and @base='ξ.rec']/o[@as='α1']/o[@name='r🌵']
+input: |
+  [] > main
+    [] > first
+      [i] > rec
+        if. > @
+          i.eq 0
+          0
+          (^.rec (i.minus 1)).plus 1
+      rec 5 > @
+    [] > second
+      [i] > rec
+        if. > @
+          i.eq 0
+          0
+          (^.rec (i.minus 1)).times 2
+      rec 7 > @
+    first.plus second > @

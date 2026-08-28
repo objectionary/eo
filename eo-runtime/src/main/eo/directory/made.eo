@@ -1,5 +1,5 @@
 # Creates a directory, making missing parent directories as needed. It is a
-# method of `directory`, and `d` is the directory it is taken off. When the
+# method of `directory`, taken off the directory it creates. When the
 # path already exists, it must already be a directory: if a regular file (or
 # any non-directory entry) occupies the path, the computation terminates
 # instead of returning that entry decorated as a directory.
@@ -17,36 +17,35 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > made
-  d.exists.if > @
-    d.is-directory.if
-      d
+  ^.exists.if > @
+    ^.is-directory.if
+      ^
       T
         "Cant make the directory '%s': a file already occupies that path".printf
-          * d.path
+          * ^.path
     seq *
       made.
         directory
-          file d.as-path.dirname
+          file ^.as-path.dirname
       if.
         or.
           created.code.eq 0
           and.
             errno.eq eexist
-            d.is-directory
-        d
+            ^.is-directory
+        ^
         T
           "Cant make the directory '%s': %s".printf
-            * d.path created.output
+            * ^.path created.output
   called. > created
     os.is-windows.if
       win32 *1
         "_mkdir"
-        d.path
+        ^.path
       posix *1
         "mkdir"
-        d.path
+        ^.path
         posix.permissions
-  ^ > d
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist
@@ -59,10 +58,54 @@
         "errno"
         *
 
+  ++> can-make-a-directory-and-return-the-same-path
+    dir.made.path.eq dir.path > @
+    as-dir. > dir
+      mktemp.tmpfile.deleted.as-path.resolved "foo-same"
+
+  ++> can-make-a-directory-with-a-unicode-name
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "плюшка-目录"
+
   ++> can-make-a-new-directory
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-new"
 
+  ++> can-make-an-already-existing-directory
+    dir.made.exists.and dir.made.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-existing"
+
+  ++> can-make-deeply-nested-directories
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-1/foo-2/foo-3/foo-4"
+
+  ++> can-make-nested-directories-under-an-existing-parent
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        parent.resolved "foo-inner/foo-deepest"
+    made. > parent
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-partial"
+
+  ++> can-make-nested-directories-with-missing-parents
+    dir.exists.and dir.is-directory > @
+    made. > dir
+      as-dir.
+        mktemp.tmpfile.deleted.as-path.resolved "foo-parent/foo-child"
+
   mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
+
+  --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
+    made. > @
+      as-dir.
+        occupied.resolved "foo-child"
+    mktemp.tmpfile.as-path > occupied

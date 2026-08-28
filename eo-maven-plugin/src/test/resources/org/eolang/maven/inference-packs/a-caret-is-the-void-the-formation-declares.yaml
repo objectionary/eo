@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `^` names the receiver a formation declares and not the object it happens to
+# be written inside. `inner` says `[^]`, so `^.held` asks `held` of that void
+# and the answer waits for whoever dispatches on `inner`. Walking outward
+# through the text would name `outer` here, which is only one of the things a
+# caller could hand over, and since #6657 the text no longer decides.
+eo:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [^] > inner
+        ^.held > @
+xmir:
+  outer.eo:
+    - "//o[@base='.held']/o[@base='ξ.ρ']"
+needs:
+  - "/needs/type[@id='Φ.outer.inner.φ.ρ']/attr[@name='held']"
+links:
+  - "/links/type[@id='Φ.outer.inner.φ.ρ']/ref[@loc='Φ.outer.inner.ρ']"
