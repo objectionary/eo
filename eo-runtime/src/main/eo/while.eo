@@ -42,8 +42,7 @@
           ^.loop next
         current
       ^.body index > current
-      as-number. > next
-        index.plus 1
+      index.plus 1 > next
     | 0
     false
 

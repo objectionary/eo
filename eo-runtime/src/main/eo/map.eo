@@ -50,18 +50,14 @@
           if. > @
             tup.length.eq 0
             ^.not-found
-            prev.exists.if
-              prev
-              if.
-                and.
-                  tup.head.hash.eq hash
-                  tup.head.kbts.eq kbts
-                [^] >>
-                  true > exists
-                  ^.^.tup.head.value > [^ cant-get] > get
-                ^.not-found
-          @. > prev
-            ^.rec-key-search tup.tail
+            if.
+              and.
+                tup.head.hash.eq hash
+                tup.head.kbts.eq kbts
+              [^] >>
+                true > exists
+                ^.^.tup.head.value > [^ cant-get] > get
+              ^.rec-key-search tup.tail
         | ^.entries
       hash. >> hash!
         key.as-bytes >> kbts!
