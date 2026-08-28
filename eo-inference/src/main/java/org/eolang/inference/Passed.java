@@ -18,9 +18,8 @@ import org.xembly.Directives;
  * names outright, and what comes back is written the same way, as a
  * {@code bind} in the row of the application.</p>
  *
- * <p>Every formation the void is seen to hold is asked in turn. Two callers
- * may put formations of different shapes into one void, and neither of them
- * is more the answer than the other, so an argument lands in both.</p>
+ * <p>Every formation the void is seen to hold is asked in turn, since neither
+ * of two callers is more the answer than the other.</p>
  *
  * @since 0.70.0
  */

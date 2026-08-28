@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import org.xembly.Xembler;
@@ -22,28 +24,22 @@ import org.xembly.Xembler;
  *
  * <p>An application whose base is a void fills nothing on its own: the void
  * is not a formation and declares no places for an argument to land in. So
- * {@code cant-read "foo"}, written inside a formation that takes
- * {@code cant-read}, was passed over and the {@code "foo"} went nowhere:</p>
- *
- * <pre> [^ cant-read] &gt; as-ascii
- *   cant-read "foo" &gt; @</pre>
+ * {@code cant-read "foo"}, written inside the {@code [^ cant-read] > as-ascii}
+ * that takes it, was passed over and the {@code "foo"} went nowhere.</p>
  *
  * <p>A caller says what the void holds, though, and once it does the argument
- * has somewhere to go. An {@code as-ascii} whose argument is the formation
- * {@code "bar" > [message]} puts a formation of one void into
- * {@code cant-read}, so the {@code "foo"} of the application
- * above lands in the {@code message} of that formation, and the tables say
- * nothing about {@code message} until they say that.</p>
+ * has somewhere to go. An {@code as-ascii} given the formation
+ * {@code "bar" > [message]} puts one void into {@code cant-read}, so the
+ * {@code "foo"} above lands in that {@code message}, and nothing else in the
+ * program ever says a word about it.</p>
  *
  * <p>The fact is written where {@link Bound} writes the same kind of fact, as
- * a {@code bind} in the row of the application, so everything downstream reads
- * it without knowing it came from here — {@link Witnessed} above all, which is
- * where the evidence about a void ends up.</p>
+ * a {@code bind} in the row of the application, so everything downstream —
+ * {@link Witnessed} above all — reads it without knowing it came from here.</p>
  *
  * <p>It is evidence and not a contract, as everything gathered from callers
- * is. A void filled with a formation of one void by every caller a program has
- * today is still a void, and the caller written tomorrow may put a formation
- * of three there.</p>
+ * is: the caller written tomorrow may put a formation of another shape
+ * there.</p>
  *
  * @since 0.70.0
  */
@@ -72,7 +68,12 @@ public final class Relayed implements Clue {
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Provided owned = new Provided(given, new Ends(pairs).names(), voids);
         final Collection<String> hollows = new HashSet<>(voids);
-        final Map<String, Collection<String>> fillers = new Fillers(links).all();
+        final Map<String, Collection<String>> fillers = new LinkedHashMap<>(0);
+        for (final XML bind : links.nodes("/links/type/ref/bind[ref]")) {
+            fillers.computeIfAbsent(
+                bind.xpath("@void").get(0), key -> new LinkedHashSet<>(0)
+            ).add(bind.xpath("ref/@loc").get(0));
+        }
         for (final Map.Entry<String, List<String>> application
             : new Given(new Xmirs(xmirs).applications()).arguments().entrySet()) {
             final String hollow = pairs.getOrDefault(application.getKey(), "");
