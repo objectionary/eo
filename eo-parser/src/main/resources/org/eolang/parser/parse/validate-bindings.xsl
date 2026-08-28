@@ -12,7 +12,7 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/object">
     <xsl:variable name="errors" as="element()*">
-      <xsl:for-each select="descendant::o[@as]">
+      <xsl:for-each select=".//o[@as]">
         <xsl:variable name="as" select="@as"/>
         <xsl:if test="preceding-sibling::o[@as=$as]">
           <error>
