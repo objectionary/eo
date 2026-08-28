@@ -67,11 +67,11 @@ final class Suffix {
     private static final Pattern VARIABLE = Pattern.compile("[A-F]");
 
     /**
-     * A concrete forma — a {@code NAME ('.' NAME)*} path of §2.3 tokens,
-     * optionally rooted at {@code Q} (R-9.3).
+     * One {@code NAME} token per §2.3 — a lowercase letter, then anything
+     * but a token boundary.
      */
-    private static final Pattern FORMA = Pattern.compile(
-        "(?:Q\\.)?[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.[a-z][^ \\t,.|':;!?\\[\\]{}()]*)*"
+    private static final Pattern NAME = Pattern.compile(
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*"
     );
 
     /**
@@ -406,11 +406,22 @@ final class Suffix {
     }
 
     private static void checkPath(final String raw, final Span span, final int pos) {
-        if (!Suffix.FORMA.matcher(raw).matches()) {
-            throw new ParseError(
-                span.line(), pos,
-                "type must be a dotted path of NAME tokens"
-            );
+        int from = 0;
+        if (raw.startsWith("Q.")) {
+            from = 2;
+        }
+        while (from < raw.length()) {
+            int end = raw.indexOf('.', from);
+            if (end < 0) {
+                end = raw.length();
+            }
+            if (!Suffix.NAME.matcher(raw.substring(from, end)).matches()) {
+                throw new ParseError(
+                    span.line(), pos,
+                    "type must be a dotted path of NAME tokens"
+                );
+            }
+            from = end + 1;
         }
     }
 
