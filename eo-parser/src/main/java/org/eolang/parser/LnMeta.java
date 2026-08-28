@@ -138,7 +138,7 @@ final class LnMeta implements Line {
                     "'+alias' cannot rename the root token Q"
                 );
             }
-            if (!parts.get(parts.size() - 1).matches("[^.]+(\\.[^.]+)*")) {
+            if (new Dotted(parts.get(parts.size() - 1)).broken()) {
                 throw new ParseError(
                     this.span.line(), this.span.indent(),
                     "'+alias' target must not have an empty segment"
