@@ -95,6 +95,13 @@ final class LnOnlyPhi implements Line {
                     "only-phi parameter list missing closing `]`"
                 );
             }
+            final int chained = Eo.topLevelGreaterBracketIndex(body.substring(close + 1));
+            if (chained >= 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + close + 1 + chained,
+                    "chained inline-phi suffixes are not allowed"
+                );
+            }
             lhs = body.substring(0, phi).stripTrailing();
             params = LnOnlyPhi.parseParams(
                 body.substring(bracket + 1, close), this.span, bracket + 1
