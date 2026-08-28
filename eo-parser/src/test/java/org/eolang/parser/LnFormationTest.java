@@ -226,6 +226,45 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsMissingClosingBracket() {
+        MatcherAssert.assertThat(
+            "a formation head with no closing `]` must report its own message, not the R-3.4.4 space error",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[a b > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
+        );
+    }
+
+    @Test
+    void rejectsMissingClosingBracketAtNonZeroIndent() {
+        MatcherAssert.assertThat(
+            "an unclosed formation nested under a parent must be flagged at its own line",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("  [a b > x", 3))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).line(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void rejectsMissingClosingBracketWithNoSuffix() {
+        MatcherAssert.assertThat(
+            "a bare unclosed `[a` with no name suffix must report the same missing-bracket message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[a", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
+        );
+    }
+
+    @Test
     void rejectsDoubleSpaceBetweenParameters() {
         Assertions.assertThrows(
             ParseError.class,

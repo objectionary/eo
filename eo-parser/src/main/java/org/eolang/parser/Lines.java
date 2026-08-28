@@ -5,12 +5,15 @@
 package org.eolang.parser;
 
 import java.util.List;
-import java.util.Optional;
-import org.cactoos.Text;
-import org.cactoos.text.UncheckedText;
 
 /**
- * The source in lines.
+ * The source in lines, which points at the place where a parse error
+ * was found by quoting the offending line under the message.
+ *
+ * <p>The lines are the {@link Span} objects {@link Source} already
+ * produced for the same text, in source order and numbered from 1, so
+ * the span of line N sits at index N-1 and carries that line's text.</p>
+ *
  * @since 0.50
  */
 final class Lines {
@@ -18,41 +21,35 @@ final class Lines {
     /**
      * The source.
      */
-    private final List<Text> source;
+    private final List<Span> source;
 
     /**
      * Ctor.
      * @param lines The source in lines
      */
-    Lines(final List<Text> lines) {
+    Lines(final List<Span> lines) {
         this.source = lines;
     }
 
     /**
-     * Get the line by number.
-     *
-     * <p>Lines are numbered from 1. A number outside that range is a
-     * mistake by the caller, not an empty line, so an
-     * {@link IndexOutOfBoundsException} naming the number and the size of
-     * the source is thrown, instead of folding it into {@code ""} — which
-     * a caller could not tell apart from a real, empty line at a valid
-     * number.</p>
-     *
-     * @param number The line number, from 1 to the number of lines
-     * @return The line
+     * The message with the offending line and a caret beneath it.
+     * @param number The line number, 1-indexed
+     * @param pos The position in the line, 0-indexed
+     * @param message The message
+     * @return The message, quoted when the line is known
      */
-    String line(final int number) {
+    String underlined(final int number, final int pos, final String message) {
+        final String located = new MsgLocated(number, pos, message).formatted();
+        final String result;
         if (number < 1 || number > this.source.size()) {
-            throw new IndexOutOfBoundsException(
-                String.format(
-                    "Line #%d doesn't exist, the source has %d line(s), numbered from 1",
-                    number, this.source.size()
-                )
+            result = located;
+        } else {
+            result = String.format(
+                "%s%n%s",
+                located,
+                new MsgUnderlined(this.source.get(number - 1).text(), pos, 1).formatted()
             );
         }
-        return Optional.ofNullable(this.source.get(number - 1))
-            .map(UncheckedText::new)
-            .map(UncheckedText::asString)
-            .orElse("");
+        return result;
     }
 }

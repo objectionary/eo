@@ -11,12 +11,11 @@
 
 [^ cant-convert] > as-i32
   if. > @
-    b.size.eq 4
-    i32 b
+    ^.size.eq 4
+    i32 ^
     cant-convert
       "Can't convert non 4 length bytes to i32, bytes are %x".printf
-        * b
-  ^ > b
+        * ^
 
   00-00-00-33.as-i32.as-bytes.eq 00-00-00-33 ++> can-convert-bytes-to-i32-and-back
 

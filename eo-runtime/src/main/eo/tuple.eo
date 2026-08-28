@@ -43,9 +43,10 @@
       if. > [^ first second] >> receq
         first.length.eq 0
         true
-        and.
+        if.
           first.head.eq second.head
           ^.receq first.tail second.tail
+          false
       | ^ other
   tuple > [^ x] > with
     ^

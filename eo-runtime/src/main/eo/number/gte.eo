@@ -1,4 +1,4 @@
-# TRUE when `n` is greater than or equal to `x`.
+# TRUE when the number is greater than or equal to `x`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,10 +9,9 @@
 
 [^ x] > gte
   or. > @
-    n.gt
+    ^.gt
       x >> value!
-    n.eq value
-  ^ > n
+    ^.eq value
 
   eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity
     pinf.gte 42.5

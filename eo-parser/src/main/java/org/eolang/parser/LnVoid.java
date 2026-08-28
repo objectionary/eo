@@ -94,7 +94,7 @@ final class LnVoid implements Line {
     private void receiver(
         final Stack stack, final Globals globals, final Emit emit, final int slash
     ) {
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.checkTyped(
             new Transition(stack, this.span).apply(
                 Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
@@ -120,7 +120,7 @@ final class LnVoid implements Line {
                 "a void attribute must be written as `? > name` or `? >> name`"
             );
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.checkTyped(
             new Transition(stack, this.span).apply(
                 Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)

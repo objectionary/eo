@@ -5,11 +5,11 @@
 package org.eolang.parser;
 
 import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,34 +35,9 @@ final class ListingTest {
     }
 
     @Test
-    void dropsCharactersForbiddenInXml() {
-        MatcherAssert.assertThat(
-            "characters that XML text nodes can't hold must be dropped",
-            ListingTest.listing(
-                String.format(
-                    "[] > x%c%c%c%c",
-                    (char) 0x01,
-                    (char) 0x07,
-                    (char) 0x1F,
-                    (char) 0x7F
-                )
-            ),
-            Matchers.equalTo("[] > x")
-        );
-    }
-
-    @Test
-    void doesNotThrowExceptionOnEmptySource() {
-        Assertions.assertDoesNotThrow(
-            () -> ListingTest.listing(""),
-            "an empty source must not break the <listing> element"
-        );
-    }
-
-    @Test
     void buildsListingForEmptySource() {
         MatcherAssert.assertThat(
-            "An empty source must produce an empty listing",
+            "an empty source leaves a listing that is not empty",
             ListingTest.listing(""),
             Matchers.emptyString()
         );
@@ -88,13 +63,38 @@ final class ListingTest {
         }
     )
     void removesForbiddenCharacters(final int codepoint) {
-        final String source = new String(Character.toChars(codepoint));
         MatcherAssert.assertThat(
             String.format(
-                "Character '%s' (%s code) must be removed from EO listing", source, codepoint
+                "the character with code %s is not removed, or its neighbours went with it",
+                codepoint
             ),
-            ListingTest.listing(source),
+            ListingTest.listing(
+                String.format("a%sb", new String(Character.toChars(codepoint)))
+            ),
+            Matchers.equalTo("ab")
+        );
+    }
+
+    @Test
+    void emptiesSourceOfForbiddenCharactersOnly() {
+        MatcherAssert.assertThat(
+            "a source holding nothing but forbidden characters leaves a listing that is not empty",
+            ListingTest.listing(
+                String.format("%c%c%c%c", (char) 0x00, (char) 0x0B, (char) 0x9F, (char) 0xFFFF)
+            ),
             Matchers.emptyString()
+        );
+    }
+
+    @Test
+    void keepsSupplementaryCharacters() {
+        final String source = String.format(
+            "[] > x%s", new String(Character.toChars(0x1F600))
+        );
+        MatcherAssert.assertThat(
+            "a character outside the Basic Multilingual Plane is not kept in the listing",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
         );
     }
 
@@ -109,6 +109,20 @@ final class ListingTest {
             ),
             ListingTest.listing(source),
             Matchers.equalTo(source)
+        );
+    }
+
+    @Test
+    void leavesCursorOnObjectForTheNextSibling() {
+        MatcherAssert.assertThat(
+            "what the caller appends after <listing> must be its sibling under /object",
+            new Xembler(
+                new Directives()
+                    .add("object").up()
+                    .append(new Listing("[] > foo"))
+                    .add("metas")
+            ).xmlQuietly(),
+            XhtmlMatchers.hasXPath("/object/metas")
         );
     }
 
@@ -143,6 +157,13 @@ final class ListingTest {
                     new Directives().add("object").up().append(new Listing(source))
                 ).xmlQuietly()
             ).inner()
-        ).element("object").element("listing").text().orElse("");
+        ).element("object").element("listing").text().orElseThrow(
+            () -> new IllegalStateException(
+                String.format(
+                    "no <listing> element for the source \"%s\" of %d characters",
+                    source, source.length()
+                )
+            )
+        );
     }
 }

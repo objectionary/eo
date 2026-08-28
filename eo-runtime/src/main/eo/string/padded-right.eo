@@ -1,7 +1,7 @@
-# Returns `text` padded on the right with `fill` until it counts `width`
+# Returns the string padded on the right with `fill` until it counts `width`
 # characters, so that `x` padded to five characters with a space
 # becomes `x    `. Characters are counted, and not bytes, so a multi-byte
-# character widens the text by one. A `text` of `width` characters
+# character widens the text by one. A string of `width` characters
 # or longer is returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), or `fill` is not a single character, the `cant-pad` fallback
@@ -32,13 +32,12 @@
             fill
     if.
       width.gt
-        text.length >> len!
+        ^.length >> len!
       string
-        text.as-bytes.concat
+        ^.as-bytes.concat
           as-bytes.
             fill.repeated (width.minus len).as-number cant-pad
-      text
-  ^ > text
+      ^
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-right
     "Ж  "

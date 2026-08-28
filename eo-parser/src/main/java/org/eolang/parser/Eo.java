@@ -69,13 +69,13 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final Emit emit = new Emit(this.source);
+        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        new Source(this.source).forEach(spans::add);
+        final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
             (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
-        new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
         int idx = 0;
         while (idx < spans.size()) {
@@ -292,7 +292,7 @@ final class Eo implements Iterable<Directive> {
             if (span.trailing()) {
                 emit.error(span.line(), 0, "trailing whitespace at end of line");
             }
-            if (!Eo.isBlank(raw) && Eo.leadingSpaces(raw) < globals.textBlockOpenIndent()) {
+            if (!span.blank() && span.indent() < globals.textBlockOpenIndent()) {
                 emit.error(
                     span.line(), 0,
                     "text block body line indented less than opener"
@@ -300,25 +300,6 @@ final class Eo implements Iterable<Directive> {
             }
             globals.appendTextLine(raw);
         }
-    }
-
-    private static int leadingSpaces(final String raw) {
-        int count = 0;
-        while (count < raw.length() && raw.charAt(count) == ' ') {
-            count = count + 1;
-        }
-        return count;
-    }
-
-    private static boolean isBlank(final String raw) {
-        boolean blank = true;
-        for (int idx = 0; idx < raw.length(); idx = idx + 1) {
-            if (!Character.isWhitespace(raw.charAt(idx))) {
-                blank = false;
-                break;
-            }
-        }
-        return blank;
     }
 
     private static boolean dispatch(

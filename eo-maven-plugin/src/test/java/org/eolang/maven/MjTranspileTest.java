@@ -142,7 +142,7 @@ final class MjTranspileTest {
                 .resolve(Transpiling.PRE)
                 .resolve("examples")
                 .resolve("x")
-                .resolve("08-purify.xml")
+                .resolve("09-purify.xml")
             ),
             XhtmlMatchers.hasXPath("//abstract[@name='inner' and @pure='true']")
         );
