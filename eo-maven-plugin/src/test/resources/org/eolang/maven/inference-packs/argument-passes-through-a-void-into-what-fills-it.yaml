@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An application whose base is a void fills nothing by itself, since a void
+# declares no places. A caller that puts a formation into that void gives the
+# argument somewhere to go: the `oak` of `cant-read oak` lands in the `message`
+# of the formation `app` passes in, and that is the only thing anybody ever
+# says about `message`.
+eo:
+  as-ascii.eo: |
+    [^ cant-read] > as-ascii
+      cant-read oak > @
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      as-ascii > @
+        "bar" > [message]
+links:
+  - "//bind[@void='Φ.app.φ.α0.message']/ref[@loc='Φ.as-ascii.φ.α0']"
+provides:
+  - "//type[@id='Φ.app.φ.α0']/attr[@name='message']/witnessed/ref[@loc='Φ.oak']"
