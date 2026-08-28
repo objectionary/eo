@@ -279,6 +279,9 @@ final class Eo implements Iterable<Directive> {
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
+            if (span.trailing()) {
+                emit.error(span.line(), 0, "trailing whitespace at end of line");
+            }
             stack.popDeeperThan(span.indent());
             final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
             try {
