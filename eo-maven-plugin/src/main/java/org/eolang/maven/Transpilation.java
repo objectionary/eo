@@ -45,6 +45,7 @@ final class Transpilation {
      * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
+        "/org/eolang/maven/transpile/recursion-to-cps.xsl",
         "/org/eolang/parser/parse/set-locators.xsl",
         "/org/eolang/maven/transpile/set-original-names.xsl",
         "/org/eolang/maven/transpile/classes.xsl",
@@ -73,6 +74,7 @@ final class Transpilation {
     static final String[] IMPORTS = {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
+        "/org/eolang/maven/transpile/_recursion.xsl",
     };
 
     /**
