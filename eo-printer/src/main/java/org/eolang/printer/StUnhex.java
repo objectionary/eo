@@ -23,9 +23,16 @@ final class StUnhex extends StEnvelope {
 
     /**
      * Xpath for finding bytes.
+     *
+     * <p>The {@code not(o)} is what tells a literal from an application of
+     * {@code bytes} to one. {@link StXnav} evaluates this through
+     * {@link com.github.lombrozo.xnav.Xnav}, where {@code text()} in a
+     * predicate reads every descendant's text, not the direct children's,
+     * so the wrapper of a literal reads as though it carried the hex
+     * itself. A literal's first child holds that text and nothing else.</p>
      */
     private static final String BYTES =
-        "//o[@base='Φ.bytes' and o[1][string-length(normalize-space(text()))>0]]";
+        "//o[@base='Φ.bytes' and o[1][not(o) and string-length(normalize-space(text()))>0]]";
 
     /**
      * Unexing via {@link com.github.lombrozo.xnav.Xnav}.
