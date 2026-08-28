@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -47,6 +48,33 @@ final class SpanTest {
             "a line ending in a tab must report trailing whitespace",
             new Span("[] > foo\t", 1).trailing(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresFormFeedAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a form feed is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo\f", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void ignoresVerticalTabAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a vertical tab is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void ignoresNonBreakingSpaceAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a non-breaking space is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo ", 1).trailing(),
+            Matchers.is(false)
         );
     }
 
@@ -114,11 +142,29 @@ final class SpanTest {
     }
 
     @Test
-    void exposesNullCharAsHeadOfBlank() {
-        MatcherAssert.assertThat(
-            "head of a blank line cannot point at any character",
-            new Span("     ", 1).head(),
-            Matchers.equalTo('\0')
+    void rejectsHeadOfBlank() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("     ", 1).head(),
+            "head of a blank line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfEmptyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("", 1).head(),
+            "head of an empty line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfTabOnlyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("\t", 4).head(),
+            "head of a tab-only line has no first non-whitespace character to return"
         );
     }
 
@@ -155,6 +201,24 @@ final class SpanTest {
             "a tab inside the leading-whitespace region must be reported",
             new Span(" \t  x", 1).tab(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsTabAfterNonSpaceNonTabWhitespace() {
+        MatcherAssert.assertThat(
+            "a tab past a form-feed that indent() already counted must still be reported",
+            new Span("\f\tfoo", 1).tab(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresNonTabWhitespaceWithNoTabPresent() {
+        MatcherAssert.assertThat(
+            "leading whitespace with no tab at all must not be reported as tabbed",
+            new Span("\ffoo", 1).tab(),
+            Matchers.is(false)
         );
     }
 

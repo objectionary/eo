@@ -1,4 +1,5 @@
-# Drop the first `shift` elements of `list` (a negative `shift` drops nothing).
+# Drop the first `shift` elements of the tuple (a negative `shift` drops
+# nothing).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,15 +10,14 @@
 
 [^ shift] > shifted
   shift.is-integer.if > @
-    list.slice
+    ^.slice
       if.
         shift.lt 0
         0
         shift
-      list.length
+      ^.length
     T
       "Given shift must be an integer"
-  ^ > list
 
   eq. ++> can-ignore-a-negative-shift
     shifted.

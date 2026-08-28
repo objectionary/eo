@@ -18,15 +18,26 @@ import org.opentest4j.TestAbortedException;
  * that the threads it starts land in the same group and are counted with
  * it. While it runs, the group is asked every few milliseconds how much it
  * has allocated. The moment the answer is over the limit, the group is
- * interrupted and the body is abandoned where it stands: dataization gives
+ * interrupted and given a bounded grace to actually stop: dataization gives
  * up on the very next attribute lookup of an interrupted thread (see
  * {@link ExInterrupted}), so the objects it was building become garbage and
- * the heap comes back to the tests that still need it.</p>
+ * the heap comes back to the tests that still need it, once the wait is
+ * over.</p>
  *
  * <p>A body that ends between two readings is judged all the same, on the
  * reading it took of itself on the way out. A body that failed, though,
  * fails the test with its own problem, whatever it ate: a broken test is
  * worth more than a tidy skip.</p>
+ *
+ * <p>The watching thread is the one JUnit runs the test on, so it is also
+ * the one JUnit interrupts when the test outlives {@code eo.deadline}: the
+ * timeout of a test is scheduled against the thread that enters the
+ * interceptor, not against the thread the body ends up on. That interrupt
+ * therefore has to be carried over to the group by hand. Without it the
+ * deadline stops watching and nothing else, the body is left running on a
+ * thread nobody waits for any more, and a suite where many tests outlive
+ * their second ends up with as many runaway threads, all of them
+ * allocating, until the heap is gone.</p>
  *
  * <p>The test itself is reported as skipped rather than as failed, for the
  * same reason {@link Deadline} reports a slow one as skipped: a budget that
@@ -42,6 +53,11 @@ final class Watched {
      * How many milliseconds pass between two readings of the appetite.
      */
     private static final long TICK = 50L;
+
+    /**
+     * How many milliseconds the group is given to stop after an interrupt.
+     */
+    private static final long GRACE = 500L;
 
     /**
      * What is said about a test that ate more than it was given.
@@ -89,7 +105,7 @@ final class Watched {
         }
     }
 
-    // @checkstyle IllegalThrowsCheck (30 lines)
+    // @checkstyle IllegalThrowsCheck (39 lines)
     private void guarded(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
         final ThreadGroup group = new ThreadGroup(
             String.format("maxmem-%d", Watched.COUNT.incrementAndGet())
@@ -104,14 +120,20 @@ final class Watched {
         thread.setDaemon(true);
         thread.start();
         boolean over = false;
-        while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
-            if (consumed.bytes() > this.limit) {
-                over = true;
-                break;
+        try {
+            while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
+                if (consumed.bytes() > this.limit) {
+                    over = true;
+                    break;
+                }
             }
+        } catch (final InterruptedException ex) {
+            group.interrupt();
+            throw ex;
         }
         if (over) {
             group.interrupt();
+            Watched.settle(done);
             throw this.aborted(consumed.bytes());
         }
         final Throwable error = failure.get();
@@ -120,6 +142,14 @@ final class Watched {
         }
         if (consumed.bytes() > this.limit) {
             throw this.aborted(consumed.bytes());
+        }
+    }
+
+    private static void settle(final CountDownLatch done) {
+        try {
+            done.await(Watched.GRACE, TimeUnit.MILLISECONDS);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 

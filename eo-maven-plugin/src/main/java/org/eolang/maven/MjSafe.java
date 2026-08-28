@@ -156,6 +156,7 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "xslMeasuresFile",
         property = "eo.xslMeasuresFile",
         required = true,
         defaultValue = "${project.build.directory}/eo/xsl-measures.csv"

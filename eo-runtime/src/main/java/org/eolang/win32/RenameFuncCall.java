@@ -5,8 +5,8 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -31,10 +31,12 @@ public final class RenameFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String from = new Cstring("the 'from' argument of rename", params[0]).it();
+        final String target = new Cstring("the 'to' argument of rename", params[1]).it();
         final Phi result = this.win.take("return").copy();
         final int code = Msvcrt.INSTANCE._wrename(
-            new WString(new Dataized(params[0]).asString()),
-            new WString(new Dataized(params[1]).asString())
+            new WString(from),
+            new WString(target)
         );
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());

@@ -1,4 +1,4 @@
-# Returns a `tuple` of `strings`: `text` separated by `delimiter`.
+# Returns a `tuple` of `strings`: the string separated by `delimiter`.
 # If `delimiter` is empty, the `cant-split` fallback is returned, or the
 # terminator when unbound.
 
@@ -17,7 +17,7 @@
     if.
       eq.
         size. >> len!
-          text >> bts!
+          ^ >> bts!
         0
       * ""
       [^ accum start current] >> rec-split
@@ -56,7 +56,6 @@
         0
   size. >> size!
     delimiter >> delim!
-  ^ > text
 
   eq. ++> can-recover-from-an-empty-delimiter
     "recovered"

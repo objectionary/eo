@@ -31,7 +31,7 @@ final class AnswersTest {
         MatcherAssert.assertThat(
             "a copy of an oak must answer that it is an oak, but it named something else",
             new Answers(
-                rows, Collections.emptyList(), Collections.emptyList(), chain
+                rows, Collections.emptyMap(), Collections.emptyList(), chain
             ).of("Φ.grove.α0", 0).where(),
             Matchers.equalTo("Φ.oak")
         );
@@ -51,7 +51,7 @@ final class AnswersTest {
         MatcherAssert.assertThat(
             "an inc whose void nobody filled cannot be known whole, but it was",
             new Answers(
-                rows, Collections.emptyList(), Collections.emptyList(),
+                rows, Collections.emptyMap(), Collections.emptyList(),
                 Collections.emptyMap()
             ).of("Φ.inc", 0).rung(),
             Matchers.equalTo(2)
@@ -63,7 +63,7 @@ final class AnswersTest {
         MatcherAssert.assertThat(
             "an object no table mentions must answer with itself, but it named something else",
             new Answers(
-                Collections.emptyMap(), Collections.emptyList(),
+                Collections.emptyMap(), Collections.emptyMap(),
                 Collections.emptyList(), Collections.emptyMap()
             ).of("Φ.nowhere", 0).where(),
             Matchers.equalTo("Φ.nowhere")

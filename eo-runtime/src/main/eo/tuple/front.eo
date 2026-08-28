@@ -1,4 +1,4 @@
-# Elements of `list` before `index` (supports negative indices).
+# Elements of the tuple before `index` (supports negative indices).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,20 +15,19 @@
       if.
         0.gt
           index >> idx!
-        list.back (number idx).neg
+        ^.back (number idx).neg
         if.
           gte.
             number idx
-            list.length
-          list
+            ^.length
+          ^
           if. > [^ tup] >> rechead
             tup.length.eq idx
             tup
             ^.rechead tup.tail
-          | list
+          | ^
     T
       "Given index must be an integer"
-  ^ > list
 
   eq. ++> can-take-a-front-slice
     front.

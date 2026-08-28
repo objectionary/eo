@@ -5,6 +5,7 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
+import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
@@ -32,12 +33,13 @@ public final class AccessFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String path = new Cstring("the 'path' argument of access", params[0]).it();
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
                 Msvcrt.INSTANCE._waccess(
-                    new WString(new Dataized(params[0]).asString()),
+                    new WString(path),
                     new Dataized(params[1]).asNumber().intValue()
                 )
             )
