@@ -477,24 +477,18 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        final Suffix suffix = new Suffix(
+        final boolean suffixed = new Suffix(
             inner.substring(close + 1),
             new Span(" ".repeat(column).concat(inner), line),
             column + close + 1
-        );
-        final String label;
-        if (suffix.present()) {
-            label = suffix.attribute(line, column);
-        } else {
-            label = name;
+        ).present();
+        if (suffixed) {
+            throw new ParseError(
+                line, column + close + 1,
+                "inline-phi inside parentheses must be anonymous"
+            );
         }
-        emit.baselessObject(label, line, column);
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             Emissions.validParam(param, line, pcol);
