@@ -14,6 +14,8 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import fixtures.LargeProgram;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -57,6 +59,17 @@ final class EoSyntaxTest {
             "class still carries an execution mode restriction",
             EoSyntaxTest.class.isAnnotationPresent(Execution.class),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void carriesNoSharedStaticState() {
+        MatcherAssert.assertThat(
+            "EoSyntax declares a shared static field instead of building state per instance",
+            Arrays.stream(EoSyntax.class.getDeclaredFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .count(),
+            Matchers.equalTo(0L)
         );
     }
 
