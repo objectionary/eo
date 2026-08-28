@@ -69,8 +69,12 @@
   declares a segment of the reference's base. Cactus names are auto-generated
   and effectively unique, so this bucket holds one node and the climb becomes a
   parentage check on it rather than a scan of every ancestor's attributes.
+  A handle floated into a pipe is indexed here too, even though it is not a
+  merge candidate itself: "inline-cactoos" mints a pipe for a handle whose
+  value applies a formation it relocates (#7863), and the readers of such a
+  handle are left on the cactus name, which only these lookups put back.
   -->
-  <xsl:key name="moniker-name" match="o[eo:moniker-binding(.)]" use="@name"/>
+  <xsl:key name="moniker-name" match="o[eo:moniker-binding(.) or (exists(@pipe) and exists(@local))]" use="@name"/>
   <!--
   The single attribute name a hostable `ξ.<name>` reference resolves to, or
   the empty string for anything that is not hostable. Two shapes host a
@@ -320,7 +324,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[eo:const-handle(.)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   Whether the bare name of `$binding` would read as something else at `$ref`:
@@ -382,7 +386,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   Replace the first hosting reference with the merged binding, always keeping
