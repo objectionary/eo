@@ -38,7 +38,7 @@ public final class EoSyntax implements Syntax {
     /**
      * Transform XMIR after parsing.
      */
-    final UnaryOperator<XML> transform;
+    private final UnaryOperator<XML> transform;
 
     /**
      * Ctor.

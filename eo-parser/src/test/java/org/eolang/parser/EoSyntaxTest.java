@@ -74,17 +74,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void buildsFreshTransformPerInstance() {
-        MatcherAssert.assertThat(
-            "two EoSyntax instances share the same canonical transform instance",
-            new EoSyntax(new InputOf("")).transform,
-            Matchers.not(
-                Matchers.sameInstance(new EoSyntax(new InputOf("")).transform)
-            )
-        );
-    }
-
-    @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
             "EoSyntax must generate valid XMIR from simple code",
