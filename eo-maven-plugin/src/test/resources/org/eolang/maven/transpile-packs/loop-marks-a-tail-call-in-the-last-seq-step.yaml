@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/anonymous-to-nested.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/recursion-to-loop.xsl
+asserts:
+  - /object[not(errors)]
+  - //abstract[@name='rec' and @loop='true']
+  - //o[@base='Φ.seq']/o[@as='α0' and @base='Φ.tuple']/o[@as='α1' and @base='ξ.ρ.rec' and @again='true']
+  - /object[count(//o[@again])=1]
+input: |
+  [] > main
+    [i] > rec
+      if. > @
+        i.eq 0
+        0
+        seq *
+          i
+          ^.rec (i.minus 1)

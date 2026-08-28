@@ -36,14 +36,14 @@
     [^ index] >> loop
       if. > @
         as-bool.
-          ^.condition
-            index.plus 1
+          ^.condition next
         seq *
           current
-          ^.loop
-            index.plus 1
+          ^.loop next
         current
       ^.body index > current
+      as-number. > next
+        index.plus 1
     | 0
     false
 
@@ -195,3 +195,12 @@
     while
       1.gt 2 > [i]
       true > [i]
+
+  ++> can-run-hundreds-of-cycles
+    499.eq > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 500 > [i]
+            ^.m.put i > [^ i] >>
