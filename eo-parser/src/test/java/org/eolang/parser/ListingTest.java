@@ -37,7 +37,7 @@ final class ListingTest {
     @Test
     void keepsSourceVerbatimWithCrlf() {
         final String source = String.join(
-            "\r\n",
+            String.valueOf((char) 13).concat(String.valueOf((char) 10)),
             "[] > app",
             "  \"a < b & c > d\" > x",
             ""
@@ -142,22 +142,23 @@ final class ListingTest {
     }
 
     private static Stream<Arguments> sources() {
+        final String eol = String.valueOf((char) 10);
         return Stream.of(
             "[] > foo",
             String.join(
-                "\n",
+                eol,
                 "[] > app",
                 "  \"a < b & c > d\" > x",
                 ""
             ),
             String.join(
-                "\n",
+                eol,
                 "# Comment with 'quotes' and \"double quotes\".",
                 "[] > bar",
                 ""
             ),
             String.join(
-                "\n",
+                eol,
                 "[] > x",
                 "  Q.io.stdout \"守规矩\" > @",
                 ""
