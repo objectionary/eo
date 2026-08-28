@@ -21,6 +21,17 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class PhPackageTest {
 
     @Test
+    void buildsAMemberOnceUnderManyThreads() {
+        final Phi pkg = new PhPackage("org.eolang");
+        new Together<>(thread -> pkg.take("probe")).asList();
+        MatcherAssert.assertThat(
+            "a first take from many threads must build the member once, but every thread built its own",
+            org.eolang.EO_org.EO_eolang.EOprobe.BUILT.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
     void printsGlobalScopeAsTerm() {
         MatcherAssert.assertThat(
             "Global package must render its name as φ-term, but it didnt",
