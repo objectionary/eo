@@ -488,7 +488,7 @@ final class MjTranspileTest {
                 String.join(
                     System.lineSeparator(),
                     "+architect yegor256@gmail.com",
-                    "+custom-meta",
+                    "+custommeta",
                     "+package foo.x",
                     "",
                     "[] > main"
