@@ -39,4 +39,30 @@ final class MvnProxyTest {
             Matchers.is(false)
         );
     }
+
+    @Test
+    void answersTheChallengeWithTheCredentialsOfTheSettings() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(3128);
+        origin.setUsername("jeff");
+        origin.setPassword("secret");
+        MatcherAssert.assertThat(
+            "a proxy that wants a name and a password must have something to answer with",
+            new MvnProxy(origin).credentials().isPresent(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void saysNothingWhenTheSettingsCarryNoCredentials() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(3128);
+        MatcherAssert.assertThat(
+            "a proxy that wants nothing must be left alone, but it was given an authenticator",
+            new MvnProxy(origin).credentials().isPresent(),
+            Matchers.is(false)
+        );
+    }
 }
