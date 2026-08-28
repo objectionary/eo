@@ -201,10 +201,20 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Convert location to class name -->
+  <!--
+  Convert location to class name.
+
+  Every glyph the locator can hold maps to a distinct one here, so that two
+  locators cannot name one class - the way "_" maps to "__" and "-" to "_"
+  since #7634. The dot separating the segments used to map to nothing at all,
+  which made "x.a.bc" and "x.ab.c" one name and declared the same nested class
+  twice in one file (#7761); it maps to "$" now, which Java accepts inside an
+  identifier. A "$" the locator itself carries is escaped ahead of the join,
+  so it cannot be read back as a separator.
+  -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize($loc, '\.'), ''), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize(replace($loc, '\$', '\$u0024'), '\.'), '$'), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
