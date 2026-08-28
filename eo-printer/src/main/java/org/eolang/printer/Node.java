@@ -514,7 +514,11 @@ final class Node {
 
     private boolean forced() {
         return "|".equals(this.base) && this.tail.isEmpty()
-            || this.reversed && this.tail.startsWith(":")
+            || this.namedReversed()
             || this.children.stream().anyMatch(Node::constant);
+    }
+
+    private boolean namedReversed() {
+        return this.reversed && this.tail.startsWith(":");
     }
 }
