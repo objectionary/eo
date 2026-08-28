@@ -97,6 +97,9 @@ final class LnTextBlock implements Line {
                 suffix.attribute(this.span.line(), this.span.indent()),
                 "Φ.string", this.span.line(), this.span.indent()
             );
+            if (!suffix.handle().isEmpty()) {
+                emit.local(suffix.handle());
+            }
             if (suffix.constant()) {
                 emit.constant();
             }
@@ -117,6 +120,9 @@ final class LnTextBlock implements Line {
                 ".".concat(last.name()), this.span.line(), last.dot()
             );
             emit.method(last.fragile());
+            if (!suffix.handle().isEmpty()) {
+                emit.local(suffix.handle());
+            }
             if (suffix.constant()) {
                 emit.constant();
             }
