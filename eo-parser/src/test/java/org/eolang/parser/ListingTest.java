@@ -4,8 +4,8 @@
  */
 package org.eolang.parser;
 
-import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -50,11 +50,21 @@ final class ListingTest {
     }
 
     @Test
-    void buildsListingForEmptySource() {
+    void omitsListingForEmptySource() {
         MatcherAssert.assertThat(
-            "an empty source leaves a listing that is not empty",
-            ListingTest.listing(""),
-            Matchers.emptyString()
+            "an empty source must produce no <listing>, since the schema forbids an empty one",
+            ListingTest.xmir("").nodes("/object/listing"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void omitsListingForFullyForbiddenSource() {
+        MatcherAssert.assertThat(
+            "a source made only of forbidden characters must leave no <listing> behind",
+            ListingTest.xmir(String.format("%c%c", (char) 0x01, (char) 0x7F))
+                .nodes("/object/listing"),
+            Matchers.empty()
         );
     }
 
@@ -167,19 +177,14 @@ final class ListingTest {
     }
 
     private static String listing(final String source) {
-        return new Xnav(
-            new XMLDocument(
-                new Xembler(
-                    new Directives().add("object").up().append(new Listing(source))
-                ).xmlQuietly()
-            ).inner()
-        ).element("object").element("listing").text().orElseThrow(
-            () -> new IllegalStateException(
-                String.format(
-                    "no <listing> element for the source \"%s\" of %d characters",
-                    source, source.length()
-                )
-            )
+        return String.join("", ListingTest.xmir(source).xpath("/object/listing/text()"));
+    }
+
+    private static XML xmir(final String source) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives().add("object").up().append(new Listing(source))
+            ).xmlQuietly()
         );
     }
 }

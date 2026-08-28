@@ -226,7 +226,7 @@ final class Emit {
                 .strict(1)
                 .add("comment")
                 .attr("line", target)
-                .set(body.toString())
+                .set(new Scrubbed(body.toString()))
                 .up().up()
                 .pop()
         );
@@ -278,7 +278,7 @@ final class Emit {
             dirs.attr("lossy", "");
         }
         this.append(
-            dirs.set(this.lines.underlined(line, pos, message))
+            dirs.set(new Scrubbed(this.lines.underlined(line, pos, message)))
                 .up().up()
                 .pop()
         );
