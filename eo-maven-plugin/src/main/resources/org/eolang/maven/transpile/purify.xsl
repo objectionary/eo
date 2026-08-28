@@ -73,11 +73,15 @@
   <xsl:variable name="eo:dir" as="xs:string" select="if ($inference = '' or ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
   <xsl:variable name="eo:provides" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'provides.xml'))) then doc(concat($eo:dir, 'provides.xml')) else ()"/>
   <!--
+  Where the table of links is expected to be.
+  -->
+  <xsl:variable name="eo:links-file" as="xs:string" select="concat($eo:dir, 'links.xml')"/>
+  <!--
   The table that says what every part of an application is, by the locator of
   that part. Absent for the same reasons "provides.xml" may be absent, and
   then no application is labeled.
   -->
-  <xsl:variable name="eo:links" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'links.xml'))) then doc(concat($eo:dir, 'links.xml')) else ()"/>
+  <xsl:variable name="eo:links" as="document-node()?" select="if ($eo:dir != '' and doc-available($eo:links-file)) then doc($eo:links-file) else ()"/>
   <!--
   The objects whose bytes a caller may pass in: a number, a string and a bytes
   are the kinds of data a formation can be given and still be worth caching by
