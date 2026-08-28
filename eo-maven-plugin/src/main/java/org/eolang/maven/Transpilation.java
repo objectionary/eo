@@ -206,6 +206,19 @@ final class Transpilation {
     }
 
     /**
+     * Whether the XMIR of every step is written down.
+     *
+     * <p>A build that asks for them wants to read them, and a cached
+     * transpilation writes none: the dumps are made by the train and the
+     * cache hands back its stored answer without running it (#7724).</p>
+     *
+     * @return True if the steps are tracked
+     */
+    boolean steps() {
+        return this.tracking.steps();
+    }
+
+    /**
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
