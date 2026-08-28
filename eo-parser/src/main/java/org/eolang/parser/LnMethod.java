@@ -92,9 +92,7 @@ final class LnMethod implements Line {
             this.span.line(), method.pos() - 1
         );
         emit.method(fragile);
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
