@@ -165,6 +165,36 @@ final class MjFormatTest {
     }
 
     @Test
+    void failsWhenNameOnlyLivesInAnEnclosingScope(@Mktmp final Path temp) {
+        final IllegalStateException exception = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .withProgram(MjFormatTest.enclosing())
+                .execute(MjFormat.class),
+            "a name reachable only through the parent must not be silently formatted"
+        );
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        MatcherAssert.assertThat(
+            "the failure must explain that the source does not fully parse",
+            writer.toString(),
+            Matchers.containsString("does not fully parse")
+        );
+    }
+
+    @Test
+    void doesNotOverwriteEnclosingScopeReferenceWhenAutoFixIsOn(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new FakeMaven(temp)
+                .with("autofix", true)
+                .withProgram(MjFormatTest.enclosing())
+                .execute(MjFormat.class),
+            "a name the printer would home into the root package must not be rewritten"
+        );
+    }
+
+    @Test
     void doesNotOverwriteDroppedBindingRecoveryWhenAutoFixIsOn(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -214,6 +244,18 @@ final class MjFormatTest {
             "    true",
             "    1",
             "    2",
+            ""
+        );
+    }
+
+    private static String enclosing() {
+        return String.join(
+            System.lineSeparator(),
+            "+package foo.x",
+            "",
+            "[fallback] > outer",
+            "  [rest] > inner",
+            "    fallback > @",
             ""
         );
     }

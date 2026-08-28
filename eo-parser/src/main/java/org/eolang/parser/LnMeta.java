@@ -25,11 +25,22 @@ import java.util.Locale;
  * at least one — the shorthand {@code +alias Φ.foo} or the full
  * {@code +alias foo Φ.bar}. A bare one of either is rejected here, so
  * that {@code expand-aliases} is never handed an alias with nothing to
- * expand. *
+ * expand.</p>
+ *
+ * <p>{@code Q} names the global root and nothing else, so a
+ * {@code +alias} that would give the token another meaning
+ * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
+ * rejected here — {@code expand-aliases} reads that first part as the
+ * alias name and would otherwise let one file rewrite the root. *
  *
  * @since 0.1
  */
 final class LnMeta implements Line {
+
+    /**
+     * The global root, what a {@code Q} part is promoted to (R-9.3).
+     */
+    private static final String ROOT = "Φ";
 
     /**
      * The meta line's span.
@@ -120,6 +131,12 @@ final class LnMeta implements Line {
                 "'+alias' directive requires at least one argument"
             );
         }
+        if ("alias".equals(head) && LnMeta.ROOT.equals(parts.get(0))) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' cannot rename the root token Q"
+            );
+        }
     }
 
     private static List<String> split(
@@ -156,9 +173,9 @@ final class LnMeta implements Line {
     private static String promoteQ(final String part) {
         final String promoted;
         if ("Q".equals(part)) {
-            promoted = "Φ";
+            promoted = LnMeta.ROOT;
         } else if (part.startsWith("Q.")) {
-            promoted = "Φ".concat(part.substring(1));
+            promoted = LnMeta.ROOT.concat(part.substring(1));
         } else {
             promoted = part;
         }

@@ -191,21 +191,19 @@
           text
         "/^0+/".regex
         ""
-    [^ group acc] >> convert
-      ^.matched.exists.not.if > @
-        *
-        if.
-          group.gt ^.specifiers.length
-          acc
-          next
-      ^.convert > next
-        group.plus 1
-        acc.with
-          ^.converted
-            ^.specifiers.at
-              group.minus 1
-              T
-            ^.matched.group group
+    ^.matched.exists.not.if > [^ group acc] >> convert
+      *
+      if.
+        group.gt ^.specifiers.length
+        acc
+        ^.convert
+          group.plus 1
+          acc.with
+            ^.converted
+              ^.specifiers.at
+                group.minus 1
+                T
+              ^.matched.group group
     | > @
       1
       *
@@ -217,12 +215,10 @@
         ^.as-integer text
         ^.as-float text
     [text] > fold-digits
-      [^ index acc] >> rec
-        if. > @
-          index.eq ^.text.length
-          acc
-          next
-        ^.rec > next
+      if. > [^ index acc] >> rec
+        index.eq ^.text.length
+        acc
+        ^.rec
           index.plus 1
           plus.
             acc.times 10
