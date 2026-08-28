@@ -61,4 +61,30 @@ final class LinesTest {
             Matchers.equalTo(String.format("[2:0] error: 'рано'%nвторой%n^"))
         );
     }
+
+    @Test
+    void keepsLinesWhenCallerListIsCleared() {
+        final List<Span> source = new ArrayList<>(1);
+        source.add(new Span("осталась", 1));
+        final Lines lines = new Lines(source);
+        source.clear();
+        MatcherAssert.assertThat(
+            "a line is not quoted after the caller's list was emptied",
+            lines.underlined(1, 0, "пусто"),
+            Matchers.equalTo(String.format("[1:0] error: 'пусто'%nосталась%n^"))
+        );
+    }
+
+    @Test
+    void ignoresLineReplacedAfterConstruction() {
+        final List<Span> source = new ArrayList<>(1);
+        source.add(new Span("старая", 1));
+        final Lines lines = new Lines(source);
+        source.set(0, new Span("новая", 1));
+        MatcherAssert.assertThat(
+            "the line replaced in the caller's list after construction is not the old one",
+            lines.underlined(1, 0, "замена"),
+            Matchers.equalTo(String.format("[1:0] error: 'замена'%nстарая%n^"))
+        );
+    }
 }
