@@ -125,17 +125,25 @@ final class LnMeta implements Line {
                 "'+package' directive requires exactly one argument"
             );
         }
-        if ("alias".equals(head) && parts.isEmpty()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "'+alias' directive requires at least one argument"
-            );
-        }
-        if ("alias".equals(head) && LnMeta.ROOT.equals(parts.get(0))) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "'+alias' cannot rename the root token Q"
-            );
+        if ("alias".equals(head)) {
+            if (parts.isEmpty()) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' directive requires at least one argument"
+                );
+            }
+            if (LnMeta.ROOT.equals(parts.get(0))) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' cannot rename the root token Q"
+                );
+            }
+            if (!parts.get(parts.size() - 1).matches("[^.]+(\\.[^.]+)*")) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' target must not have an empty segment"
+                );
+            }
         }
     }
 
