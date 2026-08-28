@@ -52,9 +52,10 @@ import java.util.List;
  *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
- * ROOT horizontal args. R-3.10.6 LHS restrictions are honoured by
- * scanner exclusion (formations and reversed-with-hargs LHS are not
- * accepted as inputs because their classifiers fire first). *
+ * ROOT horizontal args. Of the R-3.10.6 LHS restrictions, a formation
+ * LHS is honoured by scanner exclusion — its classifier fires first —
+ * while a reversed dispatch carrying horizontal args reaches this line
+ * shape and is rejected here. *
  *
  * <p>The head of a line ends at the first space that sits at paren depth 0
  * and outside any string literal, which is what {@code topLevelSpace} finds,
@@ -152,7 +153,7 @@ final class LnOnlyPhi implements Line {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
         final Level level = this.transition(
-            stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
+            stack, suffix, stars >= 0 || this.bare(tokens)
         );
         tokens.seek(0);
         if (stars >= 0) {
@@ -193,13 +194,21 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private static boolean bare(final Tokens tokens) {
-        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+    private boolean bare(final Tokens tokens) {
+        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+        if (reversed) {
             tokens.consumeDispatch();
         } else {
             tokens.readChain();
         }
-        return tokens.readArgs().isEmpty();
+        final boolean empty = tokens.readArgs().isEmpty();
+        if (reversed && !empty) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+            );
+        }
+        return empty;
     }
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
