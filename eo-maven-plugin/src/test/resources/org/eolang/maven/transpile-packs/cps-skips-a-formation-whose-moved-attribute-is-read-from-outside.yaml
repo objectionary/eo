@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[not(//o[@name='k🌵'])]
+input: |
+  [] > main
+    [i] > rec
+      if. > @
+        i.eq 0
+        1
+        prev.times prev
+      ^.rec (i.minus 1) > prev
+    (rec 5).prev > @

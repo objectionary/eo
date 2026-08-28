@@ -110,7 +110,7 @@ final class MjTranspileTest {
                 .execute(MjTranspile.class)
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+                String.format("target/%s/examples/x/01-set-locators.xml", Transpiling.PRE)
             )
         );
     }
@@ -142,7 +142,7 @@ final class MjTranspileTest {
                 .resolve(Transpiling.PRE)
                 .resolve("examples")
                 .resolve("x")
-                .resolve("09-purify.xml")
+                .resolve("10-purify.xml")
             ),
             XhtmlMatchers.hasXPath("//abstract[@name='inner' and @pure='true']")
         );
