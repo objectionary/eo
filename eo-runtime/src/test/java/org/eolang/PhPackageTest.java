@@ -75,6 +75,19 @@ final class PhPackageTest {
     }
 
     @Test
+    void refusesOrdinaryAttribute() {
+        MatcherAssert.assertThat(
+            "Exception message must name the attribute a package cannot hold",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhPackage("test-put").put("injected", Phi.Φ),
+                "A package must refuse an attribute its take() could never hand back"
+            ).getMessage(),
+            Matchers.containsString("injected")
+        );
+    }
+
+    @Test
     void setsRhoToObject() {
         final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
