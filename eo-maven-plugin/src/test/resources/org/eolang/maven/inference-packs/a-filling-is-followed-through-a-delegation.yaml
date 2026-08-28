@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name is looked for behind a delegation, so what fills a void has to be
+# looked for there too. `two u` fills `y`, the body of `two` puts that `y` into
+# the `x` of `one`, and `one` hands its answers to `x`. So the `next` of what
+# `two u` came back with is the `next` of `u`, not a name rooted at the void of
+# a formation two hops away.
+eo:
+  one.eo: |
+    [x] > one
+      x > @
+  two.eo: |
+    [y] > two
+      one y > @
+  u.eo: |
+    [] > u
+      [] > next
+  app.eo: |
+    [] > app
+      two u > held
+      held.next > @
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.u.next']"
