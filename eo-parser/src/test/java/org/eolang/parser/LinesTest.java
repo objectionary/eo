@@ -20,7 +20,7 @@ final class LinesTest {
 
     @Test
     void ignoresListMutationAfterConstruction() {
-        final List<Text> source = new ArrayList<>();
+        final List<Text> source = new ArrayList<>(1);
         source.add(new TextOf("first"));
         final Lines lines = new Lines(source);
         source.add(new TextOf("second"));
@@ -33,7 +33,7 @@ final class LinesTest {
 
     @Test
     void ignoresRemovalFromCallerListAfterConstruction() {
-        final List<Text> source = new ArrayList<>();
+        final List<Text> source = new ArrayList<>(2);
         source.add(new TextOf("first"));
         source.add(new TextOf("second"));
         final Lines lines = new Lines(source);

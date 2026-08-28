@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.cactoos.Text;
@@ -25,7 +26,7 @@ final class Lines {
      * @param lines The source in lines
      */
     Lines(final List<Text> lines) {
-        this.source = List.copyOf(lines);
+        this.source = new ArrayList<>(lines);
     }
 
     /**
