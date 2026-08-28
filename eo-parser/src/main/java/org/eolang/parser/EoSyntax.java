@@ -113,7 +113,7 @@ public final class EoSyntax implements Syntax {
                         .xpath("/object")
                         .strict(1)
                         .append(new Eo(text).directives())
-                        .attr("ms", (System.nanoTime() - start) / (1000L * 1000L))
+                        .attr("ms", new Millis(System.nanoTime() - start).asString())
                         .up()
                 ).domQuietly()
             )
