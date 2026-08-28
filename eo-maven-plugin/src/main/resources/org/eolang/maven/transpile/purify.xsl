@@ -196,7 +196,7 @@
   -->
   <xsl:function name="eo:chosen" as="xs:boolean">
     <xsl:param name="union" as="element()"/>
-    <xsl:sequence select="exists($union/*) and (every $m in $union/* satisfies (exists($m/self::data) or (exists($m/self::ref) and ($m/@loc = $eo:data or eo:data-target($m/@loc)))))"/>
+    <xsl:sequence select="exists($union/*) and (every $m in $union/* satisfies (name($m) = 'data' or (name($m) = 'ref' and ($m/@loc = $eo:data or eo:data-target($m/@loc)))))"/>
   </xsl:function>
   <!--
   Whether the object this locator names is data, judged by what the tables
@@ -207,7 +207,7 @@
   -->
   <xsl:function name="eo:data-target" as="xs:boolean">
     <xsl:param name="loc" as="xs:string"/>
-    <xsl:sequence select="exists($eo:provides) and ((some $t in key('eo:row', $loc, $eo:provides) satisfies $t/@returns = $eo:data) or (some $v in $eo:provides//attr[@void = 'true'][@type = $loc] satisfies (exists($v/witnessed) and empty($v/witnessed/descendant::*[not(self::union or (self::ref and @loc = $eo:data))]))))"/>
+    <xsl:sequence select="exists($eo:provides) and ((some $t in key('eo:row', $loc, $eo:provides) satisfies $t/@returns = $eo:data) or (some $v in $eo:provides//attr[@void = 'true'][@type = $loc] satisfies (exists($v/witnessed) and (every $e in $v/witnessed//* satisfies (name($e) = 'union' or (name($e) = 'ref' and $e/@loc = $eo:data))))))"/>
   </xsl:function>
   <!--
   An application whose parts are all data is labeled too, so that the answer
