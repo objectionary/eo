@@ -97,12 +97,7 @@ final class LnTextBlock implements Line {
                 suffix.attribute(this.span.line(), this.span.indent()),
                 "Φ.string", this.span.line(), this.span.indent()
             );
-            if (!suffix.handle().isEmpty()) {
-                emit.local(suffix.handle());
-            }
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
@@ -120,12 +115,7 @@ final class LnTextBlock implements Line {
                 ".".concat(last.name()), this.span.line(), last.dot()
             );
             emit.method(last.fragile());
-            if (!suffix.handle().isEmpty()) {
-                emit.local(suffix.handle());
-            }
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
         }
     }
 }
