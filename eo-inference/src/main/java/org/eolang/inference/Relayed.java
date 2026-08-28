@@ -13,11 +13,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
@@ -32,8 +29,9 @@ import org.xembly.Xembler;
  *   cant-read "foo" &gt; @</pre>
  *
  * <p>A caller says what the void holds, though, and once it does the argument
- * has somewhere to go. {@code as-ascii ("bar" &gt; [message])} puts a formation
- * of one void into {@code cant-read}, so the {@code "foo"} of the application
+ * has somewhere to go. An {@code as-ascii} whose argument is the formation
+ * {@code "bar" > [message]} puts a formation of one void into
+ * {@code cant-read}, so the {@code "foo"} of the application
  * above lands in the {@code message} of that formation, and the tables say
  * nothing about {@code message} until they say that.</p>
  *
@@ -74,79 +72,23 @@ public final class Relayed implements Clue {
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Provided owned = new Provided(given, new Ends(pairs).names(), voids);
         final Collection<String> hollows = new HashSet<>(voids);
-        final Map<String, Collection<String>> fillers = this.fillers(links);
+        final Map<String, Collection<String>> fillers = new Fillers(links).all();
         for (final Map.Entry<String, List<String>> application
             : new Given(new Xmirs(xmirs).applications()).arguments().entrySet()) {
             final String hollow = pairs.getOrDefault(application.getKey(), "");
-            if (hollows.contains(hollow)) {
-                this.relay(
-                    links, owned, application.getKey(),
-                    fillers.getOrDefault(hollow, Collections.emptyList()),
-                    application.getValue()
-                );
+            final Collection<XML> rows = links.nodes(
+                String.format("/links/type[@id='%s']/ref", application.getKey())
+            );
+            if (hollows.contains(hollow) && !rows.isEmpty()) {
+                new Xembler(
+                    new Passed(
+                        owned,
+                        fillers.getOrDefault(hollow, Collections.emptyList()),
+                        application.getValue()
+                    ).directives()
+                ).applyQuietly(rows.iterator().next().inner());
             }
         }
         Files.write(table, links.toString().getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * What every void is seen to be filled with, by the locator of the void.
-     * @param links The links table
-     * @return The locators of what goes in, by the locator of the void
-     */
-    private Map<String, Collection<String>> fillers(final XML links) {
-        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
-        for (final XML bind : links.nodes("/links/type/ref/bind[ref]")) {
-            found.computeIfAbsent(
-                bind.xpath("@void").get(0), key -> new LinkedHashSet<>(0)
-            ).add(bind.xpath("ref/@loc").get(0));
-        }
-        return found;
-    }
-
-    /**
-     * Write down what the arguments of one application fill in the formations
-     * a void is seen to hold.
-     * @param links The links table, written into
-     * @param owned What the types certainly have
-     * @param application The locator of the application
-     * @param fillers The locators of what the void is seen to hold
-     * @param args The locators of the arguments, in the order they are written
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
-    private void relay(
-        final XML links, final Provided owned, final String application,
-        final Collection<String> fillers, final List<String> args
-    ) {
-        for (final String filler : fillers) {
-            final Directives dirs = new Directives();
-            for (int place = 0; place < args.size(); place += 1) {
-                final String slot = owned.vacant(filler, Collections.emptyList(), place);
-                if (!slot.isEmpty() && !args.get(place).isEmpty()) {
-                    dirs.add("bind")
-                        .attr("void", slot)
-                        .add("ref")
-                        .attr("loc", args.get(place))
-                        .up()
-                        .up();
-                }
-            }
-            this.written(links, application, dirs);
-        }
-    }
-
-    /**
-     * Put the directives into the row of the application.
-     * @param links The links table, written into
-     * @param application The locator of the application
-     * @param dirs What to write, possibly nothing
-     */
-    private void written(final XML links, final String application, final Directives dirs) {
-        final Collection<XML> rows = links.nodes(
-            String.format("/links/type[@id='%s']/ref", application)
-        );
-        if (!rows.isEmpty()) {
-            new Xembler(dirs).applyQuietly(rows.iterator().next().inner());
-        }
     }
 }
