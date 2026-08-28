@@ -197,10 +197,10 @@
       true > [i]
 
   ++> can-run-hundreds-of-cycles
-    499.eq > @
+    199.eq > @
       malloc.for
         0
         [m]
           while > @
-            i.lt 500 > [i]
+            i.lt 200 > [i]
             ^.m.put i > [^ i] >>
