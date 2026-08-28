@@ -119,11 +119,19 @@ final class LnMeta implements Line {
                 "meta name must be lowercase letters and digits, starting with a letter"
             );
         }
-        if ("package".equals(head) && parts.size() != 1) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "'+package' directive requires exactly one argument"
-            );
+        if ("package".equals(head)) {
+            if (parts.size() != 1) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+package' directive requires exactly one argument"
+                );
+            }
+            if (new Dotted(parts.get(0)).broken()) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+package' path must not have an empty segment"
+                );
+            }
         }
         if ("alias".equals(head)) {
             if (parts.isEmpty()) {
