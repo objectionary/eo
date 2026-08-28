@@ -189,6 +189,12 @@ final class LnOnlyPhi implements Line {
 
     private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
         Emissions.expression(emit, "φ", tokens, this.span.line());
+        if (!tokens.atEnd()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + tokens.cursor(),
+                "unexpected content in the body of an only-phi formation"
+            );
+        }
         if (!open) {
             emit.close();
         }
