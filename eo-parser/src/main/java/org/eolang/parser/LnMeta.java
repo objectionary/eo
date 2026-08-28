@@ -113,29 +113,37 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
-        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*")) {
+        if (!head.matches("[a-z][a-z0-9]*")) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "meta name must be a NAME starting with a lowercase letter"
+                "meta name must be lowercase letters and digits, starting with a letter"
             );
         }
-        if ("package".equals(head) && parts.isEmpty()) {
+        if ("package".equals(head) && parts.size() != 1) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+package' directive requires exactly one argument"
             );
         }
-        if ("alias".equals(head) && parts.isEmpty()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "'+alias' directive requires at least one argument"
-            );
-        }
-        if ("alias".equals(head) && LnMeta.ROOT.equals(parts.get(0))) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "'+alias' cannot rename the root token Q"
-            );
+        if ("alias".equals(head)) {
+            if (parts.isEmpty()) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' directive requires at least one argument"
+                );
+            }
+            if (LnMeta.ROOT.equals(parts.get(0))) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' cannot rename the root token Q"
+                );
+            }
+            if (new Dotted(parts.get(parts.size() - 1)).broken()) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' target must not have an empty segment"
+                );
+            }
         }
     }
 

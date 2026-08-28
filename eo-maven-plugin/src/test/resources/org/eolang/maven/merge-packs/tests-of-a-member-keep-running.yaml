@@ -29,7 +29,7 @@ xmir:
     - "/object/o[@name='number']/o[@name='lt'][not(o[@name='+can-tell-two-is-above-one'])]"
 tests:
   number.eo:
-    - 'class EOnumberTest'
+    - 'class TestEOnumber'
     - 'void can_be_what_a_number_is()'
     - 'void can_tell_two_is_above_one()'
     - 'void _stops_on_one_below_two()'

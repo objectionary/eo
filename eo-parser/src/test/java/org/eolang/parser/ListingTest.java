@@ -35,6 +35,21 @@ final class ListingTest {
     }
 
     @Test
+    void keepsSourceVerbatimWithCrlf() {
+        final String source = String.join(
+            String.valueOf((char) 13).concat(String.valueOf((char) 10)),
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "the text of <listing> must preserve CRLF verbatim, regardless of platform",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
+    @Test
     void omitsListingForEmptySource() {
         MatcherAssert.assertThat(
             "an empty source must produce no <listing>, since the schema forbids an empty one",
@@ -137,22 +152,23 @@ final class ListingTest {
     }
 
     private static Stream<Arguments> sources() {
+        final String eol = String.valueOf((char) 10);
         return Stream.of(
             "[] > foo",
             String.join(
-                System.lineSeparator(),
+                eol,
                 "[] > app",
                 "  \"a < b & c > d\" > x",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                eol,
                 "# Comment with 'quotes' and \"double quotes\".",
                 "[] > bar",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                eol,
                 "[] > x",
                 "  Q.io.stdout \"守规矩\" > @",
                 ""

@@ -9,6 +9,7 @@ import java.net.Proxy;
 import org.apache.maven.settings.Settings;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -46,6 +47,21 @@ final class ProxiesTest {
             "Settings without proxies must give no proxies at all",
             new Proxies(new Settings()).value(),
             Matchers.emptyArray()
+        );
+    }
+
+    @Test
+    void refusesAProxyThatSpeaksSomethingElse() {
+        final Settings settings = ProxiesTest.settings("socks.eolang.org", 1080, true);
+        settings.getProxies().get(0).setProtocol("socks5");
+        MatcherAssert.assertThat(
+            "the protocol must be named, since only an HTTP proxy can be used here",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Proxies(settings).value(),
+                "a proxy nothing can talk to must not be taken for one that works"
+            ).getMessage(),
+            Matchers.containsString("socks5")
         );
     }
 

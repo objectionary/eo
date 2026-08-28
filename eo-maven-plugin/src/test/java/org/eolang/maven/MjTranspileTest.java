@@ -8,6 +8,8 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
@@ -101,6 +103,31 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfASourceTheCacheAlreadyHolds(@Mktmp final Path temp) throws IOException {
+        final Path cache = temp.resolve("cache");
+        final String src = MjTranspileTest.pair();
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .with("trackSteps", true)
+            .execute(MjParse.class)
+            .execute(MjTranspile.class);
+        MatcherAssert.assertThat(
+            "a second build with the same flag and source must write the steps again, but the cache took them away",
+            new FakeMaven(temp.resolve("second"))
+                .withProgram(src)
+                .with("cache", cache.toFile())
+                .with("trackSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/01-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
     void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
@@ -110,7 +137,7 @@ final class MjTranspileTest {
                 .execute(MjTranspile.class)
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+                String.format("target/%s/examples/x/01-set-locators.xml", Transpiling.PRE)
             )
         );
     }
@@ -142,7 +169,7 @@ final class MjTranspileTest {
                 .resolve(Transpiling.PRE)
                 .resolve("examples")
                 .resolve("x")
-                .resolve("09-purify.xml")
+                .resolve("10-purify.xml")
             ),
             XhtmlMatchers.hasXPath("//abstract[@name='inner' and @pure='true']")
         );
@@ -204,6 +231,46 @@ final class MjTranspileTest {
                 .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
+    void wrapsApplicationOfDataInPhSticky(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > app", "  2.plus 3 > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @",
+                    "  [x] > plus", "    x > @", ""
+                )
+            ).parsed().toString()
+        );
+        final Path tables = temp.resolve("tables");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        MatcherAssert.assertThat(
+            "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
+            new Xsline(
+                new TrDefault<Shift>()
+                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
+                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
+                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
+            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
+            Matchers.containsString("new PhSticky(new PhApplication(")
         );
     }
 
@@ -446,7 +513,7 @@ final class MjTranspileTest {
                 String.join(
                     System.lineSeparator(),
                     "+architect yegor256@gmail.com",
-                    "+custom-meta",
+                    "+custommeta",
                     "+package foo.x",
                     "",
                     "[] > main"
