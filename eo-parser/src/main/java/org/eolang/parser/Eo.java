@@ -265,6 +265,7 @@ final class Eo implements Iterable<Directive> {
             emit.error(span.line(), 0, "trailing whitespace at end of line");
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
+            globals.seal(emit, span);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
