@@ -90,7 +90,7 @@ final class EoSyntaxTest {
 
     @Test
     void measuresSubMillisecondParsingTime() throws Exception {
-        final EoSyntax syntax = new EoSyntax("# Ünïcödé.\n[] > tiny\n");
+        final EoSyntax syntax = new EoSyntax(String.format("# Ünïcödé.%n[] > tiny%n"));
         syntax.parsed();
         MatcherAssert.assertThat(
             "ms attribute of a sub-millisecond parse is not rounded up to one",
