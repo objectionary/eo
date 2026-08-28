@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:1] error: 'meta name must be a NAME starting with a lowercase letter'
+  [3:1] error: 'meta name must be lowercase letters and digits, starting with a letter'
   +Package foo
    ^
 input: |

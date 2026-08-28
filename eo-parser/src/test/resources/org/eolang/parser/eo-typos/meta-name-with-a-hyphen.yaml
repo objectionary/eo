@@ -4,11 +4,10 @@
 # yamllint disable rule:line-length
 line: 1
 message: |-
-  [1:1] error: 'meta name must be lowercase letters and digits, starting with a letter'
-  +foo🌵
-   ^
+  meta name must be lowercase letters and digits, starting with a letter
 input: |
-  +foo🌵
+  +my-meta hello
 
+  # Sample.
   [] > main
-    5 > x
+    QQ.io.stdout "hello" > @
