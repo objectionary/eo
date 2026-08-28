@@ -386,6 +386,8 @@ foo ([x] body)               ← rejected: horizontal formation as argument
 foo [x] 5                    ← rejected: `[x]` in the horizontal arg list of foo
 ```
 
+R-3.6.6. **A paren group is consumed whole.** The expression between `(` and `)` must account for every character inside it; a group is an expression, not a recovery boundary. Anything the inner expression leaves behind — an optional marker, a name suffix, a test attribute, any token that has no place at that position — is rejected (`unexpected content inside a parenthesised expression`) rather than dropped, so `foo (bar baz?)`, `foo (bar baz >)` and `foo (bar baz +> test)` fail the same way `bar baz?` does without the parens.
+
 Outer kinds produced:
 - Head only, no args, no chained `.method` → **`head`**. A `*` token alone in head position is also `head` kind, emitted with `@base='Φ.tuple'` and `@star=''` (see §9.4.2 "Star tuple as head"). Openness and wrappability are the same as any other `head`.
 - Head with chained `.method.method…` but 0 horizontal args → **`hmethod`**. The head of the chain may itself be a paren group, a literal, `*`, or an identifier; the chain wraps it.
