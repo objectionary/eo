@@ -225,17 +225,17 @@ final class MjMergeTest {
     private static Path generated(final FakeMaven maven, final String name, final String kind)
         throws IOException {
         final Path base;
-        final String suffix;
+        final String mark;
         if ("tests".equals(kind)) {
             base = maven.generatedPath().getParent().resolve("generated-test-sources");
-            suffix = "Test";
+            mark = "Test";
         } else {
             base = maven.generatedPath();
-            suffix = "";
+            mark = "";
         }
         return base.resolve("org").resolve("eolang").resolve(
             String.format(
-                "EO%s%s.java", name.replace(".eo", "").replace("/", "$EO"), suffix
+                "%sEO%s.java", mark, name.replace(".eo", "").replace("/", "$EO")
             )
         );
     }
