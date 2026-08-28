@@ -14,7 +14,6 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import fixtures.LargeProgram;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Set;
@@ -75,15 +74,13 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void buildsFreshTransformPerInstance() throws Exception {
-        final Field field = EoSyntax.class.getDeclaredField("transform");
-        field.setAccessible(true);
-        final EoSyntax first = new EoSyntax(new InputOf(""));
-        final EoSyntax second = new EoSyntax(new InputOf(""));
+    void buildsFreshTransformPerInstance() {
         MatcherAssert.assertThat(
             "two EoSyntax instances share the same canonical transform instance",
-            field.get(first),
-            Matchers.not(Matchers.sameInstance(field.get(second)))
+            new EoSyntax(new InputOf("")).transform,
+            Matchers.not(
+                Matchers.sameInstance(new EoSyntax(new InputOf("")).transform)
+            )
         );
     }
 

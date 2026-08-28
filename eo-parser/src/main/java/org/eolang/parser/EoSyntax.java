@@ -38,7 +38,7 @@ public final class EoSyntax implements Syntax {
     /**
      * Transform XMIR after parsing.
      */
-    private final UnaryOperator<XML> transform;
+    final UnaryOperator<XML> transform;
 
     /**
      * Ctor.
@@ -66,6 +66,7 @@ public final class EoSyntax implements Syntax {
      * {@code Φ} package. Use a {@link Canonical} built with a list of
      * objects to make the pipeline resolve same-package references
      * automatically (see {@code add-default-package.xsl}).</p>
+     *
      * @param ipt The EO program to parse
      */
     public EoSyntax(final Input ipt) {
