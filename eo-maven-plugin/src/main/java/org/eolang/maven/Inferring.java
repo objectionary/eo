@@ -119,11 +119,16 @@ final class Inferring implements Step {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
+            final long start = System.currentTimeMillis();
             new Witnessed(new Demanded(new Resolved(new Clues())))
                 .follow(this.prepared, this.tables);
             Logger.info(
-                this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
-                ready, this.tables
+                this, "Inferred the types of %d XMIR(s) in %[ms]s",
+                ready, System.currentTimeMillis() - start
+            );
+            Logger.info(
+                this, "Inference tables are in %[file]s (%s)",
+                this.tables, new Tabled(this.tables).asString()
             );
             this.measured();
             if (!this.pages.toString().isEmpty()) {

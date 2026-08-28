@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: []
-asserts:
-  - /object[not(errors)]
-  - //o[@name='ρ' and @base='∅']
+line: 2
+message: |-
+  Argument is bound to "α0", which is already taken by another argument
 input: |
-  [] > foo
-    q.f (a > [^ x]) > z
+  [] > main
+    foo 1:0 2:0 > @

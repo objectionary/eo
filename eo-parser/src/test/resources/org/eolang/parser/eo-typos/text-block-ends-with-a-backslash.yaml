@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: []
-asserts:
-  - /object[not(errors)]
-  - //o[@name='ρ' and @base='∅']
+line: 4
+message: |-
+  backslash at the end of the text has nothing to escape
 input: |
-  [] > foo
-    q.f (a > [^ x]) > z
+  [] > example
+    """
+    x\
+    """ > @

@@ -6,7 +6,10 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -86,14 +89,38 @@ final class Pairs {
     }
 
     /**
-     * How many voids every object of the table has filled.
-     * @return The counts, by the locator of the object, without the ones that
-     *  filled none
+     * Every void an object of the table has filled.
+     *
+     * <p>The binds of one row are not the whole of it. A copy of a copy keeps
+     * what the earlier copy put in: {@code pair u > half} fills one void and
+     * {@code half v > full} the other, and {@code full} holds both, though its
+     * own row names only the second. So the chain is walked and the binds
+     * found along it are gathered together.</p>
+     *
+     * @return The locators of the voids filled, by the locator of the object
+     *  that filled them, without the objects that filled none
      */
-    Map<String, Integer> binds() {
-        final Map<String, Integer> found = new LinkedHashMap<>(0);
+    Map<String, Collection<String>> filled() {
+        final Map<String, Collection<String>> own = new LinkedHashMap<>(0);
         for (final XML link : this.table.nodes("/links/type[ref/bind]")) {
-            found.put(link.xpath("@id").get(0), link.nodes("ref/bind").size());
+            own.put(link.xpath("@id").get(0), link.xpath("ref/bind/@void"));
+        }
+        final Map<String, String> hops = this.all();
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final String object : hops.keySet()) {
+            final Collection<String> voids = new LinkedHashSet<>(0);
+            final Collection<String> seen = new HashSet<>(0);
+            String walked = object;
+            while (seen.add(walked)) {
+                voids.addAll(own.getOrDefault(walked, Collections.emptyList()));
+                if (!hops.containsKey(walked)) {
+                    break;
+                }
+                walked = hops.get(walked);
+            }
+            if (!voids.isEmpty()) {
+                found.put(object, voids);
+            }
         }
         return found;
     }
