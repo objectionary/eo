@@ -131,7 +131,9 @@ final class XmirTest {
             new EnumMap<>(PenaltyKey.class)
         ).toEO();
         MatcherAssert.assertThat(
-            String.format("Printed EO should parse back, but was:%n%s", printed),
+            String.format(
+                "Printed EO should parse back, but was:%n%s", printed
+            ),
             new EoSyntax(new InputOf(printed)).parsed(),
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
