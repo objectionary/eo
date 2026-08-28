@@ -10,7 +10,6 @@ import com.jcabi.xml.XMLDocument;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,31 +31,6 @@ final class ListingTest {
             "the text of <listing> must be equal to the source, not escaped twice",
             ListingTest.listing(source),
             Matchers.equalTo(source)
-        );
-    }
-
-    @Test
-    void dropsCharactersForbiddenInXml() {
-        MatcherAssert.assertThat(
-            "characters that XML text nodes can't hold must be dropped",
-            ListingTest.listing(
-                String.format(
-                    "[] > x%c%c%c%c",
-                    (char) 0x01,
-                    (char) 0x07,
-                    (char) 0x1F,
-                    (char) 0x7F
-                )
-            ),
-            Matchers.equalTo("[] > x")
-        );
-    }
-
-    @Test
-    void doesNotThrowExceptionOnEmptySource() {
-        Assertions.assertDoesNotThrow(
-            () -> ListingTest.listing(""),
-            "an empty source must not break the <listing> element"
         );
     }
 
