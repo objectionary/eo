@@ -103,6 +103,31 @@ final class MjTranspileTest {
     }
 
     @Test
+    void tracksStepsOfASourceTheCacheAlreadyHolds(@Mktmp final Path temp) throws IOException {
+        final Path cache = temp.resolve("cache");
+        final String src = MjTranspileTest.pair();
+        new FakeMaven(temp.resolve("first"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .with("trackSteps", true)
+            .execute(MjParse.class)
+            .execute(MjTranspile.class);
+        MatcherAssert.assertThat(
+            "a second build with the same flag and source must write the steps again, but the cache took them away",
+            new FakeMaven(temp.resolve("second"))
+                .withProgram(src)
+                .with("cache", cache.toFile())
+                .with("trackSteps", true)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.hasKey(
+                String.format("target/%s/examples/x/00-set-locators.xml", Transpiling.PRE)
+            )
+        );
+    }
+
+    @Test
     void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
