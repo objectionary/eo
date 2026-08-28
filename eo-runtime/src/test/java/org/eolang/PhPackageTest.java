@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.util.stream.Stream;
+import org.eolang.EO_org.EO_eolang.EOprobe;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +27,7 @@ final class PhPackageTest {
         new Together<>(thread -> pkg.take("probe")).asList();
         MatcherAssert.assertThat(
             "a first take from many threads must build the member once, but every thread built its own",
-            org.eolang.EO_org.EO_eolang.EOprobe.BUILT.get(),
+            EOprobe.BUILT.get(),
             Matchers.equalTo(1)
         );
     }
