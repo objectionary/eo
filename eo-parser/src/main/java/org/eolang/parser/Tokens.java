@@ -546,6 +546,24 @@ final class Tokens {
     }
 
     /**
+     * Reject whatever the cursor has left ahead of it. A construct that
+     * owns the whole body it was handed — a parenthesised expression, for
+     * one — says so once its reader is done, and the content the reader
+     * could not place is reported rather than dropped.
+     * @param message What to say about the leftovers
+     */
+    void checkEnd(final String message) {
+        final String rest = this.tail().stripLeading();
+        if (!rest.isEmpty()) {
+            throw new ParseError(
+                this.span.line(),
+                this.span.indent() + this.body.length() - rest.length(),
+                message
+            );
+        }
+    }
+
+    /**
      * The full source body the token stream operates on.
      * @return Body string
      */

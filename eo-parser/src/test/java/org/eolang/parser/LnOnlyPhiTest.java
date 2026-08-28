@@ -219,14 +219,17 @@ final class LnOnlyPhiTest {
     }
 
     @Test
-    void marksReversedDispatchLhsCompletedWithHargs() {
-        final Stack stack = new Stack();
-        new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
-            .into(stack, new Globals(), new Emit());
+    void rejectsReversedDispatchLhsWithHargs() {
         MatcherAssert.assertThat(
-            "a reversed-dispatch φ carrying horizontal args cannot accept a body — must be HCOMPLETED",
-            stack.top().openness(),
-            Matchers.equalTo(Openness.HCOMPLETED)
+            "a reversed-dispatch φ carrying horizontal args is not a legal inline-phi body (R-3.10.6)",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.containsString(
+                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+            )
         );
     }
 

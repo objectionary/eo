@@ -23,7 +23,8 @@
         if. > @
           end.eq index
           includes
-          includes.or
+          includes.if
+            true
             ^.rec-contains (index.plus 1).as-number
         eq. > includes
           txt.slice index size
@@ -36,6 +37,11 @@
   contains. ++> can-contain-a-substring
     "Hello, world!"
     "o, wo"
+
+  not. ++> can-tell-a-long-text-does-not-contain-an-absent-substring
+    contains.
+      "x".repeated 500
+      "y"
 
   not. ++> can-tell-it-does-not-contain-an-absent-substring
     "Hello, world!".contains

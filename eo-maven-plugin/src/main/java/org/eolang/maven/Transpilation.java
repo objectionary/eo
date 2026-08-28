@@ -53,6 +53,7 @@ final class Transpilation {
         "/org/eolang/maven/transpile/package.xsl",
         "/org/eolang/maven/transpile/attrs.xsl",
         "/org/eolang/maven/transpile/data.xsl",
+        "/org/eolang/maven/transpile/recursion-to-loop.xsl",
         "/org/eolang/maven/transpile/purify.xsl",
         "/org/eolang/maven/transpile/to-java.xsl",
     };

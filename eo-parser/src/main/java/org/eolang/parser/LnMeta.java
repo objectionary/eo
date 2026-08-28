@@ -18,11 +18,22 @@ import java.util.Locale;
  *
  * <p>A leading {@code Q} in any part is promoted to {@code Φ} in the
  * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
- * emission time. *
+ * emission time.</p>
+ *
+ * <p>{@code Q} names the global root and nothing else, so a
+ * {@code +alias} that would give the token another meaning
+ * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
+ * rejected here — {@code expand-aliases} reads that first part as the
+ * alias name and would otherwise let one file rewrite the root. *
  *
  * @since 0.1
  */
 final class LnMeta implements Line {
+
+    /**
+     * The global root, what a {@code Q} part is promoted to (R-9.3).
+     */
+    private static final String ROOT = "Φ";
 
     /**
      * The meta line's span.
@@ -107,6 +118,12 @@ final class LnMeta implements Line {
                 "'+package' directive requires exactly one argument"
             );
         }
+        if ("alias".equals(head) && !parts.isEmpty() && LnMeta.ROOT.equals(parts.get(0))) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' cannot rename the root token Q"
+            );
+        }
     }
 
     private static List<String> split(
@@ -143,9 +160,9 @@ final class LnMeta implements Line {
     private static String promoteQ(final String part) {
         final String promoted;
         if ("Q".equals(part)) {
-            promoted = "Φ";
+            promoted = LnMeta.ROOT;
         } else if (part.startsWith("Q.")) {
-            promoted = "Φ".concat(part.substring(1));
+            promoted = LnMeta.ROOT.concat(part.substring(1));
         } else {
             promoted = part;
         }

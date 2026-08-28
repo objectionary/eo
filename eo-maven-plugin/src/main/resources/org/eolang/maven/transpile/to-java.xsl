@@ -572,7 +572,9 @@
   the results of its own dataization (see #5165). A pure top-level class
   and a pure anonymous formation are wrapped the same way, see the "class"
   template's "implements Pure" and the "Anonymous abstract object" template
-  below.
+  below. A formation that recursion-to-loop.xsl marked with @loop is
+  returned wrapped in PhLoop, so that at run time its tail self-calls run
+  as a loop (see #5783).
   -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
@@ -615,6 +617,9 @@
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>return </xsl:text>
+    <xsl:if test="@loop='true'">
+      <xsl:text>new PhLoop(</xsl:text>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="@pure='true'">
         <xsl:text>new PhSticky(</xsl:text>
@@ -625,6 +630,9 @@
         <xsl:value-of select="$ctx"/>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="@loop='true'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>}</xsl:text>
@@ -727,6 +735,10 @@
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="again">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -763,10 +775,30 @@
       <xsl:with-param name="skip" select="1"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="again">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+  </xsl:template>
+  <!--
+  A self-call in a tail position of a looped formation, marked by
+  "recursion-to-loop.xsl": wrapped into PhAgain, so that forcing it hands
+  the next copy to the PhLoop around the formation instead of nesting.
+  -->
+  <xsl:template match="*" mode="again">
+    <xsl:param name="indent"/>
+    <xsl:param name="name"/>
+    <xsl:if test="@again='true'">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhAgain(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- Location of object -->
   <xsl:template match="*" mode="located">
