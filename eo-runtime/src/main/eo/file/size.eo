@@ -71,7 +71,8 @@
             target
             link
         link.as-file.size.eq target.as-file.size
-    target.resolved "link-to-file" > link
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "link-to-file" > link
     mktemp.tmpfile.touched.as-path > target
 
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
