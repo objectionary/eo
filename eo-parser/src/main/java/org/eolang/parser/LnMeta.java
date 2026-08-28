@@ -18,7 +18,14 @@ import java.util.Locale;
  *
  * <p>A leading {@code Q} in any part is promoted to {@code Φ} in the
  * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
- * emission time. *
+ * emission time.</p>
+ *
+ * <p>Two directives name what they act on and are meaningless without
+ * it: {@code +package} takes exactly one argument, and {@code +alias}
+ * at least one — the shorthand {@code +alias Φ.foo} or the full
+ * {@code +alias foo Φ.bar}. A bare one of either is rejected here, so
+ * that {@code expand-aliases} is never handed an alias with nothing to
+ * expand. *
  *
  * @since 0.1
  */
@@ -105,6 +112,12 @@ final class LnMeta implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+package' directive requires exactly one argument"
+            );
+        }
+        if ("alias".equals(head) && parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' directive requires at least one argument"
             );
         }
     }
