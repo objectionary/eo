@@ -57,7 +57,7 @@ final class Answered {
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
         final Answers answers = new Answers(
             new Ungrouped(given, Collections.emptyMap()).rows(),
-            new HashSet<>(given.xpath("//attr[@void='true']/@type")),
+            new Seen(given).all(),
             new HashSet<>(pairs.certain()),
             new Ends(pairs.all()).names()
         );

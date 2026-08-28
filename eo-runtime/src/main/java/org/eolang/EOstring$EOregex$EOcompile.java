@@ -41,7 +41,7 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
 
     @Override
     public Phi lambda() {
-        final String expression = new Dataized(this.take(Phi.RHO).take("expression")).asString();
+        final String expression = new Dataized(this.take(Phi.RHO).take(Phi.RHO)).asString();
         final int last = expression.lastIndexOf('/');
         final Phi result;
         if (expression.startsWith("/")) {

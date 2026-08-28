@@ -17,6 +17,15 @@ import org.cactoos.list.ListOf;
  * Goes through all {@code probe} and {@code also} metas in XMIR files,
  * tries to locate the objects pointed by {@code probe} in Objectionary,
  * and if found, registers them in the catalog.
+ *
+ * <p>When a probed object has no source of its own, the package it belongs
+ * to is completed from the remote index, since a package that arrives from
+ * the registry has to arrive as a whole. A package that the project's own
+ * sources provide is not completed: a sibling that the index still lists,
+ * but no local source names, is a leftover of an older release and not a
+ * missing member of the local package, so {@link Pulling} must not fetch
+ * it.</p>
+ *
  * @since 0.61.0
  */
 final class Probing implements Step {
@@ -101,25 +110,35 @@ final class Probing implements Step {
         return new Threaded<>(
             unprobed,
             tojo -> {
-                final Path src = tojo.xmir();
-                final Collection<String> objects = new ListOf<>(new Probes(src));
-                if (!objects.isEmpty()) {
-                    Logger.debug(this, "Probing object(s): %s", objects);
-                }
-                int count = 0;
-                for (final String object : objects) {
-                    if (!this.objectionary.contains(object)) {
-                        continue;
-                    }
-                    ++count;
-                    this.tojos.add(object).withDiscoveredAt(src);
-                    probed.put(object, true);
-                    this.complete(object, src, completed);
-                }
+                final int count = this.register(tojo.xmir(), probed, completed);
                 tojo.withProbed(count);
                 return count;
             }
         ).total();
+    }
+
+    private int register(
+        final Path src,
+        final Map<String, Boolean> probed,
+        final Set<String> completed
+    ) throws IOException {
+        final Collection<String> objects = new ListOf<>(new Probes(src));
+        if (!objects.isEmpty()) {
+            Logger.debug(this, "Probing object(s): %s", objects);
+        }
+        int count = 0;
+        for (final String object : objects) {
+            if (!this.objectionary.contains(object)) {
+                continue;
+            }
+            ++count;
+            final TjForeign added = this.tojos.add(object).withDiscoveredAt(src);
+            probed.put(object, true);
+            if (added.sourceless()) {
+                this.complete(object, src, completed);
+            }
+        }
+        return count;
     }
 
     private void complete(

@@ -1,6 +1,6 @@
 # Touches a file, creating it if it does not exist yet, and returning the same
-# file, unchanged, if it already does. It is a method of `file`, and `f` is the
-# file it is taken off. `f.exists` counts any symbolic link, dangling or not,
+# file, unchanged, if it already does. It is a method of `file`, taken off the
+# file it touches. `file.exists` counts any symbolic link, dangling or not,
 # as existing, so this checks reachability directly instead: an ordinary
 # absent path or a dangling symlink both get created. On POSIX, opening a
 # symlink is done without the exclusive flag, since POSIX defines
@@ -12,7 +12,7 @@
 # @todo #7077:60min Add a synchronization-based regression test that creates
 #  the target file between the exists() probe and the exclusive open below,
 #  so the race this fixes is actually exercised. A single-threaded EO `++>`
-#  test can't trigger it: `f.exists.if` always sees a consistent snapshot in
+#  test can't trigger it: `^.exists.if` always sees a consistent snapshot in
 #  one thread. It needs a JUnit test against the generated `EOtouched` class
 #  (see PhDefaultRaceTest.java for the com.yegor256.Together idiom this repo
 #  already uses for exactly this kind of interleaving), with one thread
@@ -29,7 +29,7 @@
 
 [^] > touched
   reachable.if > @
-    f
+    ^
     if.
       or.
         descriptor.gte 0
@@ -47,19 +47,19 @@
                 "close"
                 descriptor
           0
-        f
+        ^
       T
         "Cant touch the file '%s': %s".printf
-          * f.path opened.output
+          * ^.path opened.output
   code. > accessible
     os.is-windows.if
       win32 *1
         "_access"
-        f.path
+        ^.path
         0
       posix *1
         "access"
-        f.path
+        ^.path
         0
   opened.code > descriptor
   os.is-windows.if > eexist
@@ -76,20 +76,19 @@
   linked.not.if > exclusive
     posix.exclusive
     0
-  ^ > f
-  f.is-symlink false > linked
+  ^.is-symlink false > linked
   called. > opened
     os.is-windows.if
       win32 *1
         "_open"
-        f.path
+        ^.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
       posix *1
         "open"
-        f.path
+        ^.path
         plus.
           posix.creat.plus exclusive
           posix.wronly

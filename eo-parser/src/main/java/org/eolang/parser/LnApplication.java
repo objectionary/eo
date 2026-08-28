@@ -73,7 +73,7 @@ final class LnApplication implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         this.checkGroupHead(head, chain, args, outer);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Kind kind = LnApplication.classify(head, chain, args);
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {

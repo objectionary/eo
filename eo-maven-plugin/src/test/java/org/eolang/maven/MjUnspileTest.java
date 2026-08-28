@@ -72,7 +72,7 @@ final class MjUnspileTest {
             "inner", maven.classesPath().resolve("org/EOnumber$1$2$3.class")
         ).value();
         new Saved(
-            "clss", maven.classesPath().resolve("org/EOnumber$EOΦorgeolanginner.class")
+            "clss", maven.classesPath().resolve("org/EOnumber$EOΦ$org$eolang$inner.class")
         ).value();
         MatcherAssert.assertThat(
             "UnspileMojo must delete inner auto generated classes",
@@ -81,7 +81,7 @@ final class MjUnspileTest {
                 Matchers.not(Matchers.hasKey("target/classes/org/EOnumber.class")),
                 Matchers.not(Matchers.hasKey("target/classes/org/EOnumber$1$2$3.class")),
                 Matchers.not(
-                    Matchers.hasKey("target/classes/org/EOnumber$EOΦorgeolanginner.class")
+                    Matchers.hasKey("target/classes/org/EOnumber$EOΦ$org$eolang$inner.class")
                 )
             )
         );

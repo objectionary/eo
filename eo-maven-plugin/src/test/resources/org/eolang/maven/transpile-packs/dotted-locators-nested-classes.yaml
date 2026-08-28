@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7761: `eo:loc-to-class` deleted every dot of the locator, so `x.a.bc` and
+# `x.ab.c` named one class and the two anonymous formations were declared twice
+# under the same name in one file.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/anonymous-to-nested.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/class/java[contains(text(), 'private static class EOΦ$x$a$bc$φ$α0 extends PhDefault')]
+  - /object/class/java[contains(text(), 'private static class EOΦ$x$ab$c$φ$α0 extends PhDefault')]
+  - /object/class/java[contains(text(), 'new EOΦ$x$a$bc$φ$α0();')]
+  - /object/class/java[contains(text(), 'new EOΦ$x$ab$c$φ$α0();')]
+input: |
+  [] > x
+    [] > a
+      [] > bc
+        foo > @
+          []
+            42 > @
+    [] > ab
+      [] > c
+        foo > @
+          []
+            43 > @

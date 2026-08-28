@@ -22,6 +22,12 @@ import org.xembly.Directives;
  * where it can be tested, and leaves the page nothing harder to do than
  * putting a class on a span.</p>
  *
+ * <p>A mark carries what the tables said about every object under it, so that
+ * a reader hovering over a word is told the same thing the tables hold: the
+ * name it goes by, what it settled on, and, where it settled on nothing better
+ * than somebody else's void, what the program was seen putting into that
+ * void.</p>
+ *
  * <p>A chain of dispatches is the awkward case. {@code first.as-bytes.size}
  * is three objects and the XMIR gives all three the same column, because each
  * one is written where the chain ends rather than where it begins. So a chain
@@ -182,10 +188,21 @@ final class Pieces {
                 .attr("label", object.label())
                 .attr("band", Pieces.band(object.answer()))
                 .attr("where", object.answer().where())
-                .attr("loc", object.loc())
-                .up();
+                .attr("loc", object.loc());
+            Pieces.witnessed(dirs, object.answer().seen());
+            dirs.up();
         }
         return dirs.add("text").set(text).up().up();
+    }
+
+    private static void witnessed(final Directives dirs, final Collection<Type> seen) {
+        if (!seen.isEmpty()) {
+            dirs.add("seen");
+            for (final Type witness : seen) {
+                dirs.append(witness.directives());
+            }
+            dirs.up();
+        }
     }
 
     private static String band(final Answer answer) {
