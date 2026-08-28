@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A termination is an answer like any other, so a void filled with one by a
+# caller and with an object by another is witnessed as the choice between the
+# two. The table spells a termination `terminator`, and that is the word to
+# look for when asking whether a filling can be placed.
+eo:
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      inc T > dead
+      inc oak > alive
+provides:
+  - "//type[@id='Φ.inc']/attr[@name='x']/witnessed/union/terminator"
+  - "//type[@id='Φ.inc']/attr[@name='x']/witnessed/union/ref[@loc='Φ.oak']"

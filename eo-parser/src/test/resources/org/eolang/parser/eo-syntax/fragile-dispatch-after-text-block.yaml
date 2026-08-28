@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# yamllint disable rule:line-length
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='ρ' and @base='∅']
+  - //o[@base='.length' and @fragile]
 input: |
-  [] > foo
-    q.f (a > [^ x]) > z
+  [] > example
+    """
+    hello
+    """?.length > @

@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: []
-asserts:
-  - /object[not(errors)]
-  - //o[@name='ρ' and @base='∅']
+line: 1
+message: |-
+  Void "φ" is declared more than once in the same formation
 input: |
-  [] > foo
-    q.f (a > [^ x]) > z
+  [@ @] > pair
+    42 > x
