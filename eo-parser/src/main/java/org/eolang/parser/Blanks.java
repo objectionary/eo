@@ -35,8 +35,8 @@ final class Blanks {
      * Report a blank line in front of a plain child or between two
      * plain siblings — illegal per R-6.5.4. Master children
      * (formations, atoms, only-phi formations, {@code +>} tests)
-     * are exempt and call this method only when they want to *not*
-     * exempt themselves.
+     * are exempt and call this method only when they want to
+     * not exempt themselves.
      * @param span The offending line's span (used for error position)
      * @param globals The global parser state
      * @param emit The directives sink

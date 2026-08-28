@@ -480,7 +480,7 @@ final class Level {
      *
      * <p>For vmethod chains (head + same-indent {@code .method}
      * continuations), the binding may live on the last link rather
-     * than on the head. This method tracks the *currently in-progress*
+     * than on the head. This method tracks the currently in-progress
      * arg separately and only commits it to the group mode when the
      * next sibling arg starts or the parent closes. A late binding
      * picked up via {@link #upgradeArgBinding()} is reflected at

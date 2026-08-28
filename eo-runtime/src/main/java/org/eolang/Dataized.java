@@ -15,7 +15,7 @@ import java.util.Arrays;
  * mechanism is explained in details in our canonical paper. Simply put,
  * it makes an attempt to either type-cast the provided object into data
  * or find "Δ" attribute inside it. If neither of that works, there is a
- * runtime exception.
+ * runtime exception.</p>
  *
  * @see <a href="https://arxiv.org/abs/2111.13384">Canonical explanation of the Dataization concept</a>
  * @since 0.1
