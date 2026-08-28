@@ -93,6 +93,15 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing function
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
+        this(Objects.requireNonNull(transform, "EoSyntax has no transform"), ipt);
+    }
+
+    /**
+     * Ctor.
+     * @param transform Transform XMIR after parsing function
+     * @param ipt The EO program to parse
+     */
+    private EoSyntax(final UnaryOperator<XML> transform, final Input ipt) {
         this.input = ipt;
         this.transform = transform;
     }
@@ -101,7 +110,7 @@ public final class EoSyntax implements Syntax {
     public XML parsed() throws IOException {
         final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
+        return this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()

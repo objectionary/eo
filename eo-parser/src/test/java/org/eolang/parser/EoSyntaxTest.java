@@ -146,6 +146,23 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void rejectsANullTransformAtConstructionTime() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null),
+            "EoSyntax must reject a null transform at construction, before parsed() is ever called"
+        );
+    }
+
+    @Test
+    void acceptsANonNullTransformAtConstructionTime() {
+        Assertions.assertDoesNotThrow(
+            () -> new EoSyntax(new InputOf(""), UnaryOperator.identity()),
+            "EoSyntax must accept a non-null transform at construction, but it didn't"
+        );
+    }
+
+    @Test
     void rejectsANullTrain() {
         Assertions.assertThrows(
             NullPointerException.class,
