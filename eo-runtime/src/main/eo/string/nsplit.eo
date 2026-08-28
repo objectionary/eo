@@ -1,4 +1,5 @@
-# Returns a `tuple` of `strings`: `text` is split by `delimiter` with a maximum of `limit` parts.
+# Returns a `tuple` of `strings`: the string is split by `delimiter` with a
+# maximum of `limit` parts.
 # The last element contains the remainder of the string after splitting.
 # If `delimiter` is empty, or `limit` is not a finite integer of at least 1
 # (fractional, nan, infinite, zero or negative), the `cant-split` fallback is
@@ -32,17 +33,17 @@
               string limit.as-scientific
     if.
       1.eq limit
-      * text
+      * ^
       [^ accum start current count] >> rec-nsplit
         if. > @
-          ^.text.size.eq current
+          ^.^.size.eq current
           appended
           if.
             or.
               size.eq 0
               gt.
                 current.plus size
-                ^.text.size
+                ^.^.size
             ^.rec-nsplit
               accum
               start
@@ -80,8 +81,7 @@
         0
         0
         0
-  text.as-bytes >> bts!
-  ^ > text
+  ^.as-bytes >> bts!
 
   eq. ++> can-format-the-error-message-of-a-fractional-limit
     "Invalid limit 1.500000 for nsplit, must be at least 1"
@@ -108,28 +108,28 @@
     "a-b-c".nsplit
       "-"
       1.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
     "recovered"
     "abc".nsplit
       ""
       3
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
     "recovered"
     "a-b-c".nsplit
       "-"
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-invalid-limit
     "fallback"
     "text".nsplit
       "-"
       0
-      "fallback" > [^ message]
+      "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit

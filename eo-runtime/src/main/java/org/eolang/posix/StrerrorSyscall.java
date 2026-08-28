@@ -33,7 +33,7 @@ public final class StrerrorSyscall implements Syscall {
     public Phi make(final Phi... params) {
         final int errno = new Int("the 'errno' argument of strerror", params[0]).it();
         final Phi result = this.posix.take("return").copy();
-        result.put(0, new Data.ToPhi(CStdLib.INSTANCE.strerror(errno)));
+        result.put(0, new Data.ToPhi(new Strerror(errno).it()));
         result.put(1, new PhDefault());
         return result;
     }

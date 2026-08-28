@@ -16,22 +16,21 @@
 [^] > naturals
   if. > @
     and.
-      r.start.is-integer.and r.end.is-integer
+      ^.start.is-integer.and ^.end.is-integer
       and.
-        r.start.abs.lt safe
-        r.end.abs.lt safe
+        ^.start.abs.lt safe
+        ^.end.abs.lt safe
     range
       [^] >>
-        build ^.r.start > @
+        build ^.^.start > @
         [^ num] > build
           num > @
           ^.build > next
             1.plus @
-      r.end
+      ^.end
     T
       "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
-        * r.start r.end
-  ^ > r
+        * ^.start ^.end
   2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives
@@ -44,6 +43,11 @@
       -2
       -1
 
+  eq. ++> can-build-a-range-with-a-single-element
+    naturals.
+      range 5 6
+    * 5
+
   is-empty. ++> can-build-an-empty-range-from-ten-to-ten
     naturals.
       range 10 10
@@ -51,6 +55,20 @@
   is-empty. ++> can-build-an-empty-range-when-descending
     naturals.
       range 10 1
+
+  is-empty. ++> can-build-an-empty-range-when-descending-in-negatives
+    naturals.
+      range -1 -5
+
+  eq. ++> can-build-naturals-crossing-zero
+    naturals.
+      range -2 3
+    *
+      -2
+      -1
+      0
+      1
+      2
 
   eq. ++> can-build-naturals-from-one-to-ten
     naturals.
@@ -81,7 +99,27 @@
       9007199254740992
       9007199254740994
 
+  naturals. --> rejects-a-nan-upper-bound
+    range
+      0
+      nan
+
   naturals. --> rejects-a-negative-lower-bound-at-the-precision-boundary
     range
       -9007199254740992
       0
+
+  naturals. --> rejects-a-negative-upper-bound-at-the-precision-boundary
+    range
+      0
+      -9007199254740992
+
+  naturals. --> rejects-a-non-finite-lower-bound
+    range
+      pinf
+      0
+
+  naturals. --> rejects-an-upper-bound-at-the-precision-boundary
+    range
+      0
+      9007199254740992

@@ -4,8 +4,8 @@
  */
 package org.eolang.win32;
 
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -30,8 +30,9 @@ public final class GetenvFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String name = new Cstring("the 'name' argument of getenv", params[0]).it();
         final Phi result = this.win.take("return").copy();
-        final String env = Msvcrt.INSTANCE.getenv(new Dataized(params[0]).asString());
+        final String env = Msvcrt.INSTANCE.getenv(name);
         final boolean present = env != null;
         result.put(0, new Data.ToPhi(present));
         if (present) {

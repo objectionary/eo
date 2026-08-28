@@ -10,7 +10,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -74,6 +77,14 @@ public final class PhSticky implements Phi {
     private final List<Map.Entry<String, Phi>> inputs;
 
     /**
+     * What a caller holds while it computes an answer, by key, shared with
+     * every copy, so that two callers asking for the same answer wait for
+     * one computation instead of running two. An entry lives no longer than
+     * the computation it guards.
+     */
+    private final Map<String, Lock> guards;
+
+    /**
      * Ctor.
      * @param obj The object to decorate
      */
@@ -90,7 +101,8 @@ public final class PhSticky implements Phi {
         this(
             obj,
             Collections.synchronizedMap(new Lru(capacity)),
-            new CopyOnWriteArrayList<>()
+            new CopyOnWriteArrayList<>(),
+            new ConcurrentHashMap<>(0)
         );
     }
 
@@ -99,15 +111,18 @@ public final class PhSticky implements Phi {
      * @param obj The object to decorate
      * @param map The answers remembered so far
      * @param puts The puts received so far
+     * @param busy What a caller holds while it computes an answer
      */
     private PhSticky(
         final Phi obj,
         final Map<String, byte[]> map,
-        final List<Map.Entry<String, Phi>> puts
+        final List<Map.Entry<String, Phi>> puts,
+        final Map<String, Lock> busy
     ) {
         this.origin = obj;
         this.cache = map;
         this.inputs = puts;
+        this.guards = busy;
     }
 
     @Override
@@ -125,7 +140,8 @@ public final class PhSticky implements Phi {
         return new PhSticky(
             this.origin.copy(),
             this.cache,
-            new CopyOnWriteArrayList<>(this.inputs)
+            new CopyOnWriteArrayList<>(this.inputs),
+            this.guards
         );
     }
 
@@ -166,13 +182,7 @@ public final class PhSticky implements Phi {
         final byte[] result;
         final Optional<String> key = this.key();
         if (key.isPresent()) {
-            final byte[] found = this.cache.get(key.get());
-            if (found == null) {
-                result = this.origin.delta();
-                this.cache.put(key.get(), result.clone());
-            } else {
-                result = found.clone();
-            }
+            result = this.remembered(key.get());
         } else {
             result = this.origin.delta();
         }
@@ -191,6 +201,25 @@ public final class PhSticky implements Phi {
     @Override
     public String φTerm() {
         return this.origin.φTerm();
+    }
+
+    private byte[] remembered(final String key) {
+        final byte[] result;
+        final Lock guard = this.guards.computeIfAbsent(key, ignored -> new ReentrantLock());
+        guard.lock();
+        try {
+            final byte[] found = this.cache.get(key);
+            if (found == null) {
+                result = this.origin.delta();
+                this.cache.put(key, result.clone());
+            } else {
+                result = found;
+            }
+        } finally {
+            this.guards.remove(key, guard);
+            guard.unlock();
+        }
+        return result.clone();
     }
 
     private Optional<String> key() {

@@ -4,9 +4,13 @@
  */
 package org.eolang;
 
+import com.yegor256.Together;
+import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -140,6 +144,55 @@ final class AtWithRhoTest {
             "a declared receiver must hand out the host itself, but it didnt",
             host.take("kid").take(Phi.RHO),
             Matchers.is(host)
+        );
+    }
+
+    @RepeatedTest(20)
+    void handsOutItsOwnCopyToEveryConcurrentCaller() {
+        final int callers = 16;
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            new PhDefault()
+        );
+        MatcherAssert.assertThat(
+            "every concurrent call must take a copy of its own, but some of them shared one",
+            new HashSet<>(
+                new Together<>(callers, thread -> attr.get())
+                    .withTimeout(1L, TimeUnit.MINUTES)
+                    .asList()
+            ),
+            Matchers.hasSize(callers)
+        );
+    }
+
+    @RepeatedTest(20)
+    void bindsOneReceiverOntoEveryConcurrentCopy() {
+        final Phi rho = new PhDefault();
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            rho
+        );
+        MatcherAssert.assertThat(
+            "every concurrent copy must carry the very same receiver, but some carried another",
+            new HashSet<>(
+                new Together<>(16, thread -> attr.get().take(Phi.RHO))
+                    .withTimeout(1L, TimeUnit.MINUTES)
+                    .asList()
+            ),
+            Matchers.contains(rho)
+        );
+    }
+
+    @Test
+    void handsOutItsOwnCopyOnEveryCall() {
+        final Attribute attr = new AtWithRho(
+            new AtOnce(new AtComposite(new PhDefault(), phi -> this.formation())),
+            new PhDefault()
+        );
+        MatcherAssert.assertThat(
+            "the second call took the copy the first one took, but each call must take its own",
+            attr.get(),
+            Matchers.not(Matchers.sameInstance(attr.get()))
         );
     }
 

@@ -1,4 +1,4 @@
-# Returns `text` where all regex target changed to replacement.
+# Returns the string where all regex target changed to replacement.
 # Here `target` must be a `org.eolang.string.regex` object.
 # The `replacement` here is a `string` that would be pasted instead of
 # matched text in original one.
@@ -12,7 +12,7 @@
 
 [^ target replacement] > replaced
   matched.exists.not.if > @
-    string text! >> reinit
+    string ^! >> reinit
     block.exists.if > [^ block accum start] >> rec-replaced
       ^.rec-replaced
         block.next
@@ -34,7 +34,6 @@
       start.
         next. >> matched
           target.match reinit
-  ^ > text
 
   eq. ++> can-replace-a-nullable-pattern-like-java
     "abc".replaced

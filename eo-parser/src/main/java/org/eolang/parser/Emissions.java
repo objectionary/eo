@@ -314,21 +314,13 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         emit.object(name, "Φ.string", line, value.pos());
-        final byte[] unescaped;
-        try {
-            unescaped = Escapes.bytes(
-                value.raw().substring(1, value.raw().length() - 1)
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
-            );
-            error.initCause(ex);
-            throw error;
-        }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
-            new Hex(unescaped).asString()
+            new Hex(
+                new Unescaped(
+                    value.raw().substring(1, value.raw().length() - 1), line, value.pos()
+                ).bytes()
+            ).asString()
         );
     }
 
@@ -418,7 +410,9 @@ final class Emissions {
             final Span sub = new Span(
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
-            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+            final Tokens tokens = new Tokens(sub.body(), sub);
+            Emissions.expression(emit, name, tokens, line);
+            tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
     }
 
@@ -485,24 +479,18 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        final Suffix suffix = new Suffix(
+        final boolean suffixed = new Suffix(
             inner.substring(close + 1),
             new Span(" ".repeat(column).concat(inner), line),
             column + close + 1
-        );
-        final String label;
-        if (suffix.present()) {
-            label = suffix.attribute(line, column);
-        } else {
-            label = name;
+        ).present();
+        if (suffixed) {
+            throw new ParseError(
+                line, column + close + 1,
+                "inline-phi inside parentheses must be anonymous"
+            );
         }
-        emit.baselessObject(label, line, column);
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             Emissions.validParam(param, line, pcol);

@@ -1,5 +1,5 @@
-# Makes an output from a `chunk` of memory. It is a method of `chunk`, and
-# `allocated` is the chunk it is taken off:
+# Makes an output from a `chunk` of memory. It is a method of `chunk`,
+# taken off the chunk it writes into:
 #
 # ```
 # malloc.of > result
@@ -20,7 +20,6 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > to-output
-  ^ > allocated
   [^ buffer] > write
     write. > @
       [^ offset] >> output-block
@@ -29,13 +28,13 @@
           if.
             gt.
               ^.offset.plus buffer.size
-              ^.^.^.allocated.size
+              ^.^.^.^.size
             write.
-              ^.^.^.allocated.resized
+              ^.^.^.^.resized
                 ^.offset.plus buffer.size
               ^.offset
               buffer
-            ^.^.^.allocated.write ^.offset buffer
+            ^.^.^.^.write ^.offset buffer
           ^.^.output-block
             ^.offset.plus buffer.size
       | 0
@@ -44,7 +43,7 @@
   eq. ++> can-make-an-output-from-malloc-and-write-to-it
     malloc.of
       10
-      seq * > [^ mem]
+      seq * > [mem]
         write.
           write.
             mem.to-output.write 01-02-03
@@ -56,7 +55,7 @@
   eq. ++> can-make-an-output-via-a-chunk-extension
     malloc.of
       3
-      seq * > [^ mem]
+      seq * > [mem]
         mem.to-output.write 01-02-03
         mem
     01-02-03
@@ -64,7 +63,7 @@
   eq. ++> can-write-data-larger-than-the-block
     malloc.of
       2
-      seq * > [^ mem]
+      seq * > [mem]
         mem.to-output.write 01-02-03
         mem
     01-02-03

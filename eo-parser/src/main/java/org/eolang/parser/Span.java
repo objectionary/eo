@@ -54,7 +54,17 @@ final class Span {
      * @param line Line number (1-indexed)
      */
     Span(final String body, final int line) {
-        this(body, line, Span.leading(body), Span.tabbed(body));
+        this(body, line, Span.leading(body));
+    }
+
+    /**
+     * Ctor.
+     * @param body Line text
+     * @param line Line number
+     * @param leading Count of leading whitespace chars
+     */
+    private Span(final String body, final int line, final int leading) {
+        this(body, line, leading, Span.tabbed(body, leading));
     }
 
     /**
@@ -126,8 +136,14 @@ final class Span {
      * @return Trailing-whitespace flag
      */
     boolean trailing() {
-        return !this.blank()
-            && Character.isWhitespace(this.text.charAt(this.text.length() - 1));
+        final boolean result;
+        if (this.blank()) {
+            result = false;
+        } else {
+            final char last = this.text.charAt(this.text.length() - 1);
+            result = last == ' ' || last == '\t';
+        }
+        return result;
     }
 
     /**
@@ -139,17 +155,19 @@ final class Span {
     }
 
     /**
-     * The first non-whitespace character, or {@code '\0'} for a blank line.
+     * The first non-whitespace character.
      * @return First non-whitespace character
      */
     char head() {
-        final char first;
         if (this.blank()) {
-            first = '\0';
-        } else {
-            first = this.text.charAt(this.indent);
+            throw new IllegalStateException(
+                String.format(
+                    "line %d is blank, has no first non-whitespace character",
+                    this.number
+                )
+            );
         }
-        return first;
+        return this.text.charAt(this.indent);
     }
 
     private static int leading(final String body) {
@@ -160,15 +178,11 @@ final class Span {
         return count;
     }
 
-    private static boolean tabbed(final String body) {
+    private static boolean tabbed(final String body, final int leading) {
         boolean found = false;
-        for (int idx = 0; idx < body.length(); idx = idx + 1) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '\t') {
+        for (int idx = 0; idx < leading; idx = idx + 1) {
+            if (body.charAt(idx) == '\t') {
                 found = true;
-                break;
-            }
-            if (glyph != ' ') {
                 break;
             }
         }

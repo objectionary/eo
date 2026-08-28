@@ -226,6 +226,45 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsMissingClosingBracket() {
+        MatcherAssert.assertThat(
+            "a formation head with no closing `]` must report its own message, not the R-3.4.4 space error",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[a b > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
+        );
+    }
+
+    @Test
+    void rejectsMissingClosingBracketAtNonZeroIndent() {
+        MatcherAssert.assertThat(
+            "an unclosed formation nested under a parent must be flagged at its own line",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("  [a b > x", 3))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).line(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void rejectsMissingClosingBracketWithNoSuffix() {
+        MatcherAssert.assertThat(
+            "a bare unclosed `[a` with no name suffix must report the same missing-bracket message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[a", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
+        );
+    }
+
+    @Test
     void rejectsDoubleSpaceBetweenParameters() {
         Assertions.assertThrows(
             ParseError.class,
@@ -258,6 +297,29 @@ final class LnFormationTest {
             "a `^` parameter must emit as <o name='ρ' base='∅'/> wherever it stands",
             LnFormationTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[2][@name='ρ' and @base='∅']")
+        );
+    }
+
+    @Test
+    void rejectsBindingOnFormationChildUnderFormationParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("  []:tag > x", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation child under a formation parent cannot carry a binding per R-3.12.3"
+        );
+    }
+
+    @Test
+    void acceptsBindingOnFormationChildUnderArgumentPositionParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.VAPPLICATION, Openness.OPEN);
+        Assertions.assertDoesNotThrow(
+            () -> new LnFormation(new Span("  []:tag > x", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a formation child in argument position may still carry a binding"
         );
     }
 

@@ -1,4 +1,4 @@
-# Returns `text` repeated `times` times.
+# Returns the string repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-repeat` fallback is returned,
 # or the terminator when unbound.
@@ -35,9 +35,8 @@
             concat.
               half.concat >> twice
                 ^.rec-repeated (n.div 2).floor >> half!
-              ^.text.as-bytes
+              ^.^.as-bytes
       | times
-  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
@@ -55,19 +54,19 @@
     "recovered"
     "x".repeated
       -1
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-count
     "recovered"
     "x".repeated
       2.5
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-count
     "recovered"
     "x".repeated
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"

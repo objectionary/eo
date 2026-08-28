@@ -128,6 +128,37 @@ final class JavaFilesTest {
         );
     }
 
+    @Test
+    void removesTheClassOfAnObjectThatBecameAnAtom(@Mktmp final Path temp) throws IOException {
+        final Path generated = temp.resolve("generated");
+        final Path plain = temp.resolve("plain.xmir");
+        new Saved(
+            "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
+            plain
+        ).value();
+        final JavaFiles first = new JavaFiles(generated, temp.resolve("cache"), false);
+        first.total(true, plain, "", false);
+        first.removeStale();
+        final Path atom = temp.resolve("atom.xmir");
+        new Saved(
+            String.join(
+                "",
+                "<object><o><o name='λ'/></o>",
+                "<class java-name='EOmain'><java>class EOmain {}</java></class>",
+                "</object>"
+            ),
+            atom
+        ).value();
+        final JavaFiles second = new JavaFiles(generated, temp.resolve("cache"), false);
+        second.total(true, atom, "", false);
+        second.removeStale();
+        MatcherAssert.assertThat(
+            "the class of an object that became an atom must go, but it survived the run",
+            Files.exists(generated.resolve("EOmain.java")),
+            Matchers.equalTo(false)
+        );
+    }
+
     private static int generateAtom(final Path temp) throws IOException {
         final Path xmir = temp.resolve("main.xmir");
         new Saved(

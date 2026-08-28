@@ -23,7 +23,7 @@
         4
         2
         5
-      v.gt 2 > [^ v]
+      v.gt 2 > [v]
     *
       3
       4
@@ -35,5 +35,5 @@
         true
         false
         true
-      v.not > [^ v]
+      v.not > [v]
     * false

@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7752: `StUnhex` folded an application of `bytes` to a bytes literal as if it
+# were the literal itself, so one `Φ.bytes` level went missing on the way out
+# and the printed form re-parsed into a different program.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  bytes > app
+    00-00-00-00

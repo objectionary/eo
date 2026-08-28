@@ -177,7 +177,7 @@ final class Transpiling implements Step {
         final Function<XML, XML> transform = this.train.forSource(name);
         final Path cdir = this.cache.resolve(Transpiling.CACHE);
         final Path tail = base.relativize(dest);
-        if (this.enabled) {
+        if (this.enabled && !this.train.steps()) {
             this.guard.apply(
                 source, dest, tail,
                 new Cache(

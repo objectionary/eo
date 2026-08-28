@@ -90,6 +90,7 @@ final class LnCompactTuple implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
+        globals.seal(emit, this.span);
         final Level level = this.transition(stack, suffix);
         level.compact(count);
         globals.clearBlanks();

@@ -7,7 +7,6 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -17,7 +16,7 @@ import org.xembly.Directives;
  * <p>Wraps a growing list of {@link Directive} that downstream
  * {@code Xembler} converts into XMIR. Each emission method appends to the
  * sink in source order; the caller controls when to take a
- * {@link #savepoint()} and how to {@link #rollback(int)} on a per-line
+ * {@link #savepoint()} and how to {@link #rollback(Savepoint)} on a per-line
  * recovery (R-7.2).</p>
  *
  * <p>The class exposes two families of methods:</p>
@@ -42,12 +41,6 @@ import org.xembly.Directives;
 final class Emit {
 
     /**
-     * Pre-compiled line-break splitter for the source text passed to
-     * the {@link #Emit(String)} constructor.
-     */
-    private static final Pattern EOL = Pattern.compile("\\R");
-
-    /**
      * Flat list of directives, appended in source order.
      */
     private final List<Directive> sink;
@@ -57,7 +50,7 @@ final class Emit {
      * lookup). Empty when no source is wired through — in that case
      * {@link #error} falls back to the bare {@code [L:P] message} form.
      */
-    private final List<String> lines;
+    private final Lines lines;
 
     /**
      * The atom signature owed to an open {@code <o>} as its {@code λ}
@@ -97,47 +90,66 @@ final class Emit {
     }
 
     /**
-     * Ctor.
-     * @param source Raw EO source text (for caret-underlined error
-     *  messages — pass empty string to disable)
-     */
-    Emit(final String source) {
-        this(List.of(Emit.EOL.split(source, -1)));
-    }
-
-    /**
      * Primary ctor.
-     * @param src Pre-split source lines
+     * @param source The source lines {@link Source} split off the text
+     *  being parsed (for caret-underlined error messages — pass an
+     *  empty list to disable)
      */
-    private Emit(final List<String> src) {
+    Emit(final List<Span> source) {
         this.signature = "";
         this.sink = new ArrayList<>(0);
-        this.lines = src;
+        this.lines = new Lines(source);
     }
 
     /**
-     * Take a savepoint of the current sink size.
-     *
-     * <p>R-7.2 — the parser takes one of these at the start of each line.
-     * On a parse error inside that line, the caller invokes
-     * {@link #rollback(int)} with this token to drop the line's
-     * half-built directives.</p>
-     *
-     * @return Savepoint token (current sink size)
+     * Take a savepoint of the emitter's cursor: sink size, {@link #depth},
+     * and any atom signature owed to an open {@code <o>} — R-7.2. All
+     * three must roll back together via {@link #rollback(Savepoint)}, or
+     * an error recovered mid-formation leaves {@link #depth} drifted from
+     * the tree it describes (#7539).
+     * @return Savepoint token
      */
-    int savepoint() {
-        return this.sink.size();
+    Savepoint savepoint() {
+        return new Savepoint(
+            this.sink.size(), this.depth, this.signature,
+            this.sigline, this.sigpos, this.sigdepth
+        );
     }
 
     /**
-     * Roll the sink back to the given savepoint, discarding any
-     * directives appended after it.
+     * Roll the sink and cursor back to the given savepoint, discarding
+     * any directives appended after it and restoring {@link #depth} and
+     * the owed atom signature to what they were at that point.
      * @param token Savepoint token from {@link #savepoint()}
      */
-    void rollback(final int token) {
-        while (this.sink.size() > token) {
+    void rollback(final Savepoint token) {
+        while (this.sink.size() > token.sink()) {
             this.sink.remove(this.sink.size() - 1);
         }
+        token.restore(this);
+    }
+
+    /**
+     * Put {@link #depth} back to what it was at a savepoint.
+     * @param cursor Depth to restore
+     */
+    void depth(final int cursor) {
+        this.depth = cursor;
+    }
+
+    /**
+     * Put the owed atom signature back to what it was at a savepoint.
+     * @param owed Signature owed to the open object, empty when nothing is owed
+     * @param line Source line of the owed marker
+     * @param pos Source column of the owed marker
+     * @param level Depth of the object owing the marker
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    void signature(final String owed, final int line, final int pos, final int level) {
+        this.signature = owed;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = level;
     }
 
     /**
@@ -214,7 +226,7 @@ final class Emit {
                 .strict(1)
                 .add("comment")
                 .attr("line", target)
-                .set(body.toString())
+                .set(new Scrubbed(body.toString()))
                 .up().up()
                 .pop()
         );
@@ -266,7 +278,7 @@ final class Emit {
             dirs.attr("lossy", "");
         }
         this.append(
-            dirs.set(this.formatted(line, pos, message))
+            dirs.set(new Scrubbed(this.lines.underlined(line, pos, message)))
                 .up().up()
                 .pop()
         );
@@ -535,20 +547,5 @@ final class Emit {
         while (iterator.hasNext()) {
             this.sink.add(iterator.next());
         }
-    }
-
-    private String formatted(final int line, final int pos, final String message) {
-        final String located = new MsgLocated(line, pos, message).formatted();
-        final String result;
-        if (line >= 1 && line <= this.lines.size()) {
-            result = String.format(
-                "%s%n%s",
-                located,
-                new MsgUnderlined(this.lines.get(line - 1), pos, 1).formatted()
-            );
-        } else {
-            result = located;
-        }
-        return result;
     }
 }

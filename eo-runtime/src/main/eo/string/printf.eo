@@ -111,7 +111,6 @@
           minus.
             code from
             48
-  T message > [^ message] >> failure
   if. > [^ i] >> flags-end
     i.gte
       number span
@@ -126,11 +125,10 @@
         as-number.
           i.plus 1
       i
-  ^ > format
   2.power 63 >> limit!
   size. >> span!
     bytes
-      format.as-bytes >> raw!
+      ^.as-bytes >> raw!
   [^ index auto acc] >> spec
     if. > @
       gte.
@@ -138,7 +136,7 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * ^.format
+          * ^.^
       if.
         25-.eq conv
         if.
@@ -155,7 +153,7 @@
             acc.concat 25-
           T
             "The escaped %% conversion does not take flags, width or precision".printf
-              * ^.format
+              * ^.^
         walk
           as-number.
             plus.
@@ -179,7 +177,7 @@
           truncated.
             string text
             number ^.precision
-            failure
+            I
           text
       |
         seq *
@@ -211,7 +209,7 @@
             precise.as-bool.if
               number precision
               6
-            failure
+            I
           if.
             78-.eq conv
             capped (bytes datum).as-hex
@@ -242,7 +240,7 @@
       padded-zeros.
         string value
         number width
-        failure
+        I
     positional.as-bool.if > flags!
       as-number.
         plus.
@@ -280,7 +278,7 @@
           string value
           number width
           " "
-          failure
+          I
       zero.as-bool.if
         filled
         as-bytes.
@@ -288,7 +286,7 @@
             string value
             number width
             " "
-            failure
+            I
     and. > positional!
       gt.
         number dollar
@@ -324,7 +322,7 @@
             index.plus 1
       T
         "The positional argument index in the format %s is too large".printf
-          * ^.format
+          * ^.^
       if.
         positional.as-bool.and
           lt.

@@ -5,8 +5,11 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * EO source text as an iterable of {@link Span}.
@@ -26,41 +29,42 @@ import java.util.List;
 final class Source implements Iterable<Span> {
 
     /**
-     * Raw source text (already decoded; UTF-8 is the caller's contract).
+     * All spans of the source, in source order: split once, on the first
+     * iteration, and reused by every iteration after it.
      */
-    private final String text;
+    private final Unchecked<List<Span>> lines;
 
     /**
      * Ctor.
      * @param raw The full source text
      */
     Source(final String raw) {
-        this.text = raw;
+        this.lines = new Unchecked<>(new Sticky<>(() -> Source.spans(raw)));
     }
 
     @Override
     public Iterator<Span> iterator() {
-        return this.spans().iterator();
+        return this.lines.value().iterator();
     }
 
-    private List<Span> spans() {
-        final List<Span> out = new ArrayList<>(this.text.length() / 32 + 1);
-        final int len = this.text.length();
+    private static List<Span> spans(final String text) {
+        final List<Span> out = new ArrayList<>(text.length() / 32 + 1);
+        final int len = text.length();
         int start = 0;
         int number = 1;
         int pos = 0;
         while (pos < len) {
-            final char glyph = this.text.charAt(pos);
+            final char glyph = text.charAt(pos);
             if (glyph == '\n') {
-                out.add(new Span(this.text.substring(start, pos), number));
+                out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
                 pos = pos + 1;
                 start = pos;
             } else if (glyph == '\r') {
-                out.add(new Span(this.text.substring(start, pos), number));
+                out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
                 pos = pos + 1;
-                if (pos < len && this.text.charAt(pos) == '\n') {
+                if (pos < len && text.charAt(pos) == '\n') {
                     pos = pos + 1;
                 }
                 start = pos;
@@ -69,8 +73,8 @@ final class Source implements Iterable<Span> {
             }
         }
         if (start < len) {
-            out.add(new Span(this.text.substring(start, len), number));
+            out.add(new Span(text.substring(start, len), number));
         }
-        return out;
+        return Collections.unmodifiableList(out);
     }
 }

@@ -1,4 +1,4 @@
-# Checks if `text` contains all elements from `substrings`.
+# Checks if the string contains all elements from `substrings`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -10,10 +10,9 @@
 [^ substrings] > contains-all
   reduced. > @
     substrings.mapped
-      ^.text.contains x > [^ x] >>
+      ^.^.contains x > [^ x] >>
     true
-    x.and a > [^ a x]
-  ^ > text
+    x.and a > [a x]
 
   contains-all. ++> can-contain-all-of-no-substrings
     "xyz"

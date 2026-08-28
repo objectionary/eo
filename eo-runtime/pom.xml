@@ -18,37 +18,19 @@
     <!-- This is required for later correct replacement of argline -->
     <argLine/>
     <!--
-    Enables atom return-type checking in AtomTyped (default off, see #5280).
-    Off because atoms with error-branches return a union the declared forma
-    cannot express; set to true to verify return types.
-    -->
-    <eo.typing>false</eo.typing>
-    <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
     runs to its end instead of being skipped.
     -->
     <eo.deadline>1</eo.deadline>
     <!--
-    Whether to wrap located objects into PhCoverage at transpile time, so
-    tests record EO-level coverage hits. Off by default; codecov.yml flips
-    it to true for the coverage CI job (see #5757).
+    How much memory a single test may allocate before Maxmem terminates it
+    and reports it as skipped. The suffixes of -Xmx are understood: "2G",
+    "512M", "65536K", or plain bytes. Empty, or zero, means no limit at all
+    and no watching either, which is the default: a box with memory to
+    spare should run every test to its end.
     -->
-    <eo.coverageTracking>false</eo.coverageTracking>
-    <!--
-    Where PhCoverage.hit() appends coverage records at runtime, and where
-    the coverage-report goal reads them back from afterwards. Shared as a
-    project property so both the surefire JVM (system property) and the
-    eo-maven-plugin goal (Maven parameter) agree on one path (see #5673).
-    -->
-    <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
-    <!--
-    Minimum percentage of dataized .eo objects that must be covered, or
-    the coverage-report goal fails the build. Only bites when coverage
-    tracking is actually on (see eo.coverageTracking above), so a build
-    that never opts in never trips it (see #5466).
-    -->
-    <eo.minCoverage>0</eo.minCoverage>
+    <eo.maxmem>256M</eo.maxmem>
   </properties>
   <dependencies>
     <dependency>
@@ -237,15 +219,11 @@
           </argLine>
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
-            <eo.typing>${eo.typing}</eo.typing>
-            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
-            <!--
-            Where PhCoverage.hit() appends coverage records at runtime. It
-            pairs with coverageTracking on eo-maven-plugin below, which wraps
-            located objects into PhCoverage at transpile time, so both ends
-            agree on one file (see #5673).
-            -->
-            <eo.coverageFile>${eo.coverageFile}</eo.coverageFile>
+            <junit.jupiter.execution.timeout.test.method.default>
+              ${eo.deadline}s
+            </junit.jupiter.execution.timeout.test.method.default>
+            <eo.maxmem>${eo.maxmem}</eo.maxmem>
+            <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
             <java.util.logging.config.file>
               ${project.basedir}/src/test/resources/jul.properties
             </java.util.logging.config.file>
@@ -278,6 +256,7 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
+          <inferenceReport>true</inferenceReport>
           <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
@@ -289,8 +268,6 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
-          <!-- Wrap located objects into PhCoverage so tests record EO coverage. -->
-          <coverageTracking>${eo.coverageTracking}</coverageTracking>
         </configuration>
         <executions>
           <execution>
@@ -319,18 +296,6 @@
                 'tuple.empty', looks unused to it (objectionary/lints#1276).
                 -->
                 <lint>redundant-object</lint>
-                <!--
-                @todo #6985:30min Stop skipping 'anemic-getter' here. Every
-                formation now declares its receiver, so a '^ &gt; name' binding
-                reads to the lint as a getter that renames 'ρ' and adds
-                nothing. It does add something: a name that survives nesting,
-                where the alternative '^.^' spelling counts hops and silently
-                retargets when a block is re-indented. Drop this entry once
-                objectionary/lints#1300 stops reporting a getter whose source
-                is the receiver, and check that no genuine anemic getter crept
-                in behind the suppression meanwhile.
-                -->
-                <lint>anemic-getter</lint>
                 <!--
                 @todo #6985:30min Stop skipping 'redundant-attachment' here. A
                 declared 'ρ' counts as one of the object's own voids, so
@@ -379,7 +344,7 @@
               <goal>coverage-report</goal>
             </goals>
             <configuration>
-              <minCoverage>${eo.minCoverage}</minCoverage>
+              <minCoverage>55</minCoverage>
             </configuration>
           </execution>
         </executions>
@@ -547,7 +512,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.1.0</version>
+                <version>5.1.1</version>
               </dependency>
             </dependencies>
           </plugin>

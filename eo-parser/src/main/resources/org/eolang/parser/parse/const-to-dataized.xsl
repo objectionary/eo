@@ -60,7 +60,7 @@
       <xsl:attribute name="base" select="'.as-bytes'"/>
       <xsl:attribute name="name" select="$cname"/>
       <xsl:attribute name="line" select="@line"/>
-      <xsl:attribute name="pos" select="@pos + 8"/>
+      <xsl:attribute name="pos" select="@pos"/>
       <xsl:if test="@as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
