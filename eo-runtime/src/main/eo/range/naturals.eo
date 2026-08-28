@@ -16,22 +16,21 @@
 [^] > naturals
   if. > @
     and.
-      r.start.is-integer.and r.end.is-integer
+      ^.start.is-integer.and ^.end.is-integer
       and.
-        r.start.abs.lt safe
-        r.end.abs.lt safe
+        ^.start.abs.lt safe
+        ^.end.abs.lt safe
     range
       [^] >>
-        build ^.r.start > @
+        build ^.^.start > @
         [^ num] > build
           num > @
           ^.build > next
             1.plus @
-      r.end
+      ^.end
     T
       "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
-        * r.start r.end
-  ^ > r
+        * ^.start ^.end
   2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives

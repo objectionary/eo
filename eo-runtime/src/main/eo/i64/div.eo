@@ -1,4 +1,4 @@
-# Integer division of the `i64` number `n` by the `i64` number `x`, truncated
+# Integer division of an `i64` number by the `i64` number `x`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `x` is
 # zero, the caller-supplied `cant-divide` fallback is returned.
@@ -18,7 +18,7 @@
     if.
       eq.
         and.
-          n.as-bytes.xor x.as-bytes
+          ^.as-bytes.xor x.as-bytes
           80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       as-bytes.
@@ -57,11 +57,10 @@
             remainder.left 1
             and.
               right.
-                magnitude ^.n.as-bytes
+                magnitude ^.^.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot
-  ^ > n
   as-bytes. >> subtrahend
     plus.
       i64

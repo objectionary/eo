@@ -219,7 +219,9 @@
           </argLine>
           <systemPropertyVariables>
             <eo.version>${project.version}</eo.version>
-            <junit.jupiter.execution.timeout.test.method.default>${eo.deadline}s</junit.jupiter.execution.timeout.test.method.default>
+            <junit.jupiter.execution.timeout.test.method.default>
+              ${eo.deadline}s
+            </junit.jupiter.execution.timeout.test.method.default>
             <eo.maxmem>${eo.maxmem}</eo.maxmem>
             <eo.coverageFile>${project.build.directory}/coverage.txt</eo.coverageFile>
             <java.util.logging.config.file>
@@ -294,18 +296,6 @@
                 'tuple.empty', looks unused to it (objectionary/lints#1276).
                 -->
                 <lint>redundant-object</lint>
-                <!--
-                @todo #6985:30min Stop skipping 'anemic-getter' here. Every
-                formation now declares its receiver, so a '^ &gt; name' binding
-                reads to the lint as a getter that renames 'ρ' and adds
-                nothing. It does add something: a name that survives nesting,
-                where the alternative '^.^' spelling counts hops and silently
-                retargets when a block is re-indented. Drop this entry once
-                objectionary/lints#1300 stops reporting a getter whose source
-                is the receiver, and check that no genuine anemic getter crept
-                in behind the suppression meanwhile.
-                -->
-                <lint>anemic-getter</lint>
                 <!--
                 @todo #6985:30min Stop skipping 'redundant-attachment' here. A
                 declared 'ρ' counts as one of the object's own voids, so

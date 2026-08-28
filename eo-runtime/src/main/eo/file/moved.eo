@@ -1,5 +1,5 @@
 # Moves a file to `target` on the filesystem, returning the file at its new
-# location. It is a method of `file`, and `f` is the file it is taken off.
+# location. It is a method of `file`, taken off the file it moves.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,19 +15,18 @@
     T
       "Cant move the file '%s' to '%s': %s".printf
         *
-          f.path
+          ^.path
           target
           renamed.output
-  ^ > f
   called. > renamed
     os.is-windows.if
       win32 *1
         "rename"
-        f.path
+        ^.path
         target
       posix *1
         "rename"
-        f.path
+        ^.path
         target
 
   ++> can-move-a-file

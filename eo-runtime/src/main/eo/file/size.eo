@@ -1,5 +1,5 @@
 # Size of a file in bytes, or `cant-measure` if the file does not exist. It is
-# a method of `file`, and `f` is the file it is taken off.
+# a method of `file`, taken off the file it measures.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,15 +13,14 @@
     info.code.eq 0
     info.output.size
     cant-measure
-  ^ > f
   called. > info
     os.is-windows.if
       win32 *1
         "_stat64"
-        f.path
+        ^.path
       posix *1
         "stat"
-        f.path
+        ^.path
 
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0

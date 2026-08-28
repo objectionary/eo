@@ -298,6 +298,8 @@ type      ::=  type-var | NAME ('.' NAME)* | 'Q' ('.' NAME)+
 - **Own type — `? > name /type`.** `type` is a `type-var` (§3.10.10) or a concrete forma, with an optional trailing `?` marking a **maybe-⊥** value. Emits a `@type` attribute on the void's `<o>`. A `type-var` is emitted verbatim; a concrete forma has its leading `Q.` promoted to `Φ.` at parse (R-9.3) and is later homed by `add-default-package`, with any trailing `?` preserved. Examples: `? > value /A?` emits `<o name='value' base='∅' type='A?'/>`; `? > s /Q.string?` emits `type='Φ.string?'`.
 - **Callback argument types — `? > name /{type …}`.** The void is itself a formation the atom fills; the brace list gives the types of *its* void parameters — equivalently, the arguments the atom supplies to that branch. Each member is a `type-var` or a concrete forma, single-space separated, at least one required; the optional marker `?` is **not** allowed inside the list (`? is not allowed inside a /{…} argument list`). Emits an `@args` attribute, members promoted or verbatim per the split. Example: `? > not-found /{string io.file-error}` emits `<o name='not-found' base='∅' args='Φ.string io.file-error'/>`; `? > cant /{Q.string B}` emits `args='Φ.string B'`. (The type-checker treats the callback's result as the atom's own return type; the parser records only `@args`.)
 
+Every segment of a concrete forma is a `NAME` token (§2.3), in both annotation forms and in a return signature alike, so a scope token (`/$`, `/@`, `/^`) and any other segment that does not open with a lowercase ASCII letter (`/1foo`, `/-foo`, `/_foo`) is rejected (`type must be a dotted path of NAME tokens`) rather than homed into the default package.
+
 Every `type-var` in an atom — the return signature, a `@type`, or an `@args` member — denotes the same variable when spelled with the same letter, universally quantified over that atom (§3.10.10). So `B` in `cant /{Q.string B}` is the `B` of `? > y /B`.
 R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede all non-void attributes of the formation body. A void that follows a non-void child — or sits between non-void children — is an error (`a void attribute must be declared above all other attributes`). For example,
 
@@ -385,6 +387,8 @@ Illegal — formation as a horizontal arg:
 foo ([x] body)               ← rejected: horizontal formation as argument
 foo [x] 5                    ← rejected: `[x]` in the horizontal arg list of foo
 ```
+
+R-3.6.6. **A paren group is consumed whole.** The expression between `(` and `)` must account for every character inside it; a group is an expression, not a recovery boundary. Anything the inner expression leaves behind — an optional marker, a name suffix, a test attribute, any token that has no place at that position — is rejected (`unexpected content inside a parenthesised expression`) rather than dropped, so `foo (bar baz?)`, `foo (bar baz >)` and `foo (bar baz +> test)` fail the same way `bar baz?` does without the parens.
 
 Outer kinds produced:
 - Head only, no args, no chained `.method` → **`head`**. A `*` token alone in head position is also `head` kind, emitted with `@base='Φ.tuple'` and `@star=''` (see §9.4.2 "Star tuple as head"). Openness and wrappability are the same as any other `head`.

@@ -1,8 +1,7 @@
-# Reads formatted input from a string.
-# This object has two free attributes:
-# 1. `format` - is a formatter string (e.g. "Hello, %s!")
-# 2. `read` - is a string where data exists (e.g. "Hello, John!")
-# returns a `org.eolang.tuple` of formatted values (e.g. * "John").
+# Reads formatted input from a string. It is a method of the formatter
+# string (e.g. "Hello, %s!"), with one free attribute `read`, the string
+# where the data exists (e.g. "Hello, John!"). It returns a
+# `org.eolang.tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
@@ -32,7 +31,6 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^ read] > scanf
-  ^ > format
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -193,21 +191,19 @@
           text
         "/^0+/".regex
         ""
-    [^ group acc] >> convert
-      ^.matched.exists.not.if > @
-        *
-        if.
-          group.gt ^.specifiers.length
-          acc
-          next
-      ^.convert > next
-        group.plus 1
-        acc.with
-          ^.converted
-            ^.specifiers.at
-              group.minus 1
-              T
-            ^.matched.group group
+    ^.matched.exists.not.if > [^ group acc] >> convert
+      *
+      if.
+        group.gt ^.specifiers.length
+        acc
+        ^.convert
+          group.plus 1
+          acc.with
+            ^.converted
+              ^.specifiers.at
+                group.minus 1
+                T
+              ^.matched.group group
     | > @
       1
       *
@@ -219,12 +215,10 @@
         ^.as-integer text
         ^.as-float text
     [text] > fold-digits
-      [^ index acc] >> rec
-        if. > @
-          index.eq ^.text.length
-          acc
-          next
-        ^.rec > next
+      if. > [^ index acc] >> rec
+        index.eq ^.text.length
+        acc
+        ^.rec
           index.plus 1
           plus.
             acc.times 10
@@ -270,7 +264,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.format.length
+      position.gte ^.^.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -324,7 +318,7 @@
                 escaped ch
             found
             false
-    ^.format.slice > ch
+    ^.^.slice > ch
       position
       1
   | >> tokens

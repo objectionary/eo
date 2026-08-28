@@ -102,9 +102,13 @@ answer is somebody else's void, red where there is nothing. Hovering over a
 mark says what the tables hold about it, and an amber one names what the
 program was seen putting into the void besides.
 
-Off by default, since the tables are what the compiler needs and the pages are
-for a person. The goal runs in whichever module uses the plugin, so this is
-the shortest way to the pages of eo-runtime:
+The pages of eo-runtime are published at
+[www.eolang.org/inference](https://www.eolang.org/inference/), rebuilt on every
+tag, so looking at them needs nothing installed.
+
+Building them is off by default, since the tables are what the compiler needs
+and the pages are for a person. The goal runs in whichever module uses the
+plugin, so this is the shortest way to the pages of a working copy:
 
 ```bash
 mvn -pl eo-runtime process-sources -Deo.inferenceReport

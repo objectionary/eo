@@ -11,12 +11,11 @@
 
 [^ cant-convert] > as-u16
   if. > @
-    b.size.eq 2
-    u16 b
+    ^.size.eq 2
+    u16 ^
     cant-convert
       "Can't convert non 2 length bytes to u16, bytes are %x".printf
-        * b
-  ^ > b
+        * ^
 
   00-33.as-u16.as-bytes.eq 00-33 ++> can-convert-bytes-to-u16-and-back
 

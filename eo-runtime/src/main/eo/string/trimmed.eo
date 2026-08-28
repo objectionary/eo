@@ -1,4 +1,4 @@
-# Returns `text` trimmed from both sides.
+# Returns the string trimmed from both sides.
 # Removes all leading and trailing ASCII whitespace bytes: `20-`
 # (space), `09-` (horizontal tab), `0A-` (line feed), `0B-` (vertical
 # tab), `0C-` (form feed), and `0D-` (carriage return). Delegates to
@@ -14,10 +14,9 @@
 
 [^] > trimmed
   if. > @
-    0.eq text.as-bytes.size
-    text
-    text.trimmed-right.trimmed-left
-  ^ > text
+    0.eq ^.as-bytes.size
+    ^
+    ^.trimmed-right.trimmed-left
 
   "no-whitespace".trimmed.eq "no-whitespace" ++> can-preserve-inner-content
 

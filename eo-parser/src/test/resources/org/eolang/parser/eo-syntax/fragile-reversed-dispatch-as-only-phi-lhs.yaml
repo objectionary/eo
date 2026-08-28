@@ -4,8 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object[not(errors)]
-  - //o[@base='.if' and @fragile]
+  - /object/errors/error[contains(text(),'only-phi formation body cannot be a reversed dispatch with horizontal arguments')]
 input: |
   [] > main
     if?. 1 2 > [x] > y
