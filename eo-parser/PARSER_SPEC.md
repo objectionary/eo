@@ -1257,7 +1257,7 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | Inline binding `:label` | `@as='label'` on the argument `<o>` |
 | Inline binding `:N` | `@as='αN'` |
 | `.method` line | `@method` attribute (empty); `@base` is prefixed with `.`; `@pos` records the dot column (R-9.1.3) |
-| `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the operator's first character (the `?`). |
+| `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the dot column, not the `?` (R-9.1.3, #5359). |
 | Unbound positional arg | `@as` is **not** emitted at parse time. It is added by a later post-parse pass |
 
 R-9.4.1. `@method` and `@as='αN'` are intermediate attributes; they may be transformed or removed by downstream XSL passes (`wrap-method-calls.xsl` and equivalents). The parser emits them; what happens after is out of scope.
