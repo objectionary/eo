@@ -64,6 +64,15 @@ final class PhSafeTest {
     }
 
     @Test
+    void passesTheLoopSignalThrough() {
+        Assertions.assertThrows(
+            ExAgain.class,
+            () -> new PhSafe(new PhAgain(new Data.ToPhi(1L))).delta(),
+            "the signal of a tail call must pass through untouched, but it was wrapped"
+        );
+    }
+
+    @Test
     void catchesRuntimeException() {
         MatcherAssert.assertThat(
             "wraps a runtime exception into ExFailure with location and cause",

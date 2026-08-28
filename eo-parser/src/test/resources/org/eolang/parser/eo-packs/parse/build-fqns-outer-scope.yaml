@@ -6,6 +6,7 @@ sheets:
   - /org/eolang/parser/parse/build-fqns.xsl
 asserts:
   - /object/errors/error[@check='build-fqns' and @line='3']
+  - /object/errors/error[@check='build-fqns' and @lossy]
   - /object[not(//o[@hop])]
 input: |-
   [x] > holder

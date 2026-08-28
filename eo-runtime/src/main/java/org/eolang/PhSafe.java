@@ -28,7 +28,10 @@ import java.util.function.Supplier;
  * {@link Error} such as {@link StackOverflowError} or
  * {@link OutOfMemoryError} means the JVM itself can no longer be trusted to
  * carry on — and wrapping either into an {@link ExFailure} would let the
- * nearest {@link EOrecovered} intercept it.</p>
+ * nearest {@link EOrecovered} intercept it. An {@link ExAgain} passes
+ * through for the opposite reason: it is not a failure at all, but the
+ * signal by which a {@link PhAgain} hands the next iteration to the
+ * {@link PhLoop} around its formation.</p>
  *
  * <p>Elsewhere we let Cactoos catch for us, with {@code ScalarWithFallback}.
  * Here we catch by hand, because {@code eo-runtime} ships with no
@@ -204,7 +207,7 @@ public final class PhSafe implements Phi, Atom {
     private <T> T through(final Supplier<T> action, final String suffix) {
         try {
             return action.get();
-        } catch (final ExInterrupted | Error ex) {
+        } catch (final ExInterrupted | ExAgain | Error ex) {
             throw ex;
         } catch (final Throwable ex) {
             throw new ExFailure(
