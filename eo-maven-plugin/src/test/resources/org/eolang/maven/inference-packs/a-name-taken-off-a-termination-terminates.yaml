@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object that never comes back with a value has no attribute to hand over,
+# so asking it for one lands where the object itself does. The table has no row
+# for a termination, and answering such a dispatch with `unknown` would say we
+# know nothing about it, which is a different fact. A chain says it twice: the
+# `bar` of the `foo` of a termination terminates as well.
+eo:
+  app.eo: |
+    [] > app
+      T > dead
+      dead.foo.bar > @
+links:
+  - "/links/type[@id='Φ.app.φ']/terminator"
+  - "/links/type[@id='Φ.app.φ.ρ']/terminator"

@@ -74,7 +74,8 @@ public final class Resolved implements Clue {
         final Collection<XML> dispatches = world.dispatches();
         final Map<String, List<String>> args = new Given(world.applications()).arguments();
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
-        final Pairs written = new Pairs(new XMLDocument(links));
+        final XML table = new XMLDocument(links);
+        final Pairs written = new Pairs(table);
         final Map<String, String> pairs = new Settled(
             new Dispatched(given, dispatches, args, world.receivers(), voids)
         ).from(
@@ -92,8 +93,16 @@ public final class Resolved implements Clue {
             ).all()
         ).all();
         rows.putAll(written.others());
+        final Collection<String> dead = new Dead(
+            table, dispatches, new Ends(pairs).names()
+        ).all();
         for (final XML dispatch : dispatches) {
-            rows.putIfAbsent(dispatch.xpath("@loc").get(0), new Unknown());
+            final String made = dispatch.xpath("@loc").get(0);
+            if (dead.contains(made)) {
+                rows.put(made, new Terminator());
+            } else {
+                rows.putIfAbsent(made, new Unknown());
+            }
         }
         Files.write(
             links,
