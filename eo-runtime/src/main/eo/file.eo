@@ -354,7 +354,8 @@
       "recovered" > [reason]
 
   eq. ++> can-represent-a-file-as-a-path
-    file "abc".as-path
+    as-path.
+      file "abc"
     "abc"
 
   ++> can-resolve-a-path-and-touch-it
@@ -380,11 +381,11 @@
         code.
           posix *1
             "symlink"
-            target
+            d.resolved "absent"
             link
         link.as-file.exists
-    target.resolved "dangling-symlink" > link
-    mktemp.tmpfile.deleted.as-path > target
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "dangling-symlink" > link
 
   ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one
     os.is-windows.or > @
