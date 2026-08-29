@@ -48,6 +48,11 @@ final class Dispatched {
     private final Map<String, List<String>> args;
 
     /**
+     * The arguments of every application bound by name, from {@link Given}.
+     */
+    private final Map<String, Map<String, String>> named;
+
+    /**
      * What every dispatch takes its attribute from, from {@link Xmirs}.
      */
     private final Map<String, String> receivers;
@@ -62,6 +67,7 @@ final class Dispatched {
      * @param provides The provides table
      * @param dispatches Every dispatch of the program
      * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void this pass may look into, empty
      *  when it may look into none
@@ -70,12 +76,14 @@ final class Dispatched {
         final XML provides,
         final Collection<XML> dispatches,
         final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
         final Collection<String> voids
     ) {
         this.given = provides;
         this.all = dispatches;
         this.args = arguments;
+        this.named = bindings;
         this.receivers = taken;
         this.hollows = voids;
     }
@@ -90,7 +98,9 @@ final class Dispatched {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
         final Filled filled = new Filled(
-            pairs, owned, new Bound(this.args, this.receivers, pairs, owned).all()
+            pairs,
+            owned,
+            new Bound(this.args, this.named, this.receivers, pairs, owned).all()
         );
         final Map<String, String> found = new HashMap<>(0);
         for (final XML dispatch : this.all) {

@@ -180,6 +180,24 @@ final class Provided {
         return this.bound(type, "φ");
     }
 
+    /**
+     * The void this type keeps under the given name.
+     * @param type The name the type goes by
+     * @param name The name of the void
+     * @return The locator of the void, or an empty string when this type keeps
+     *  no void of that name
+     */
+    String named(final String type, final String name) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void")) && name.equals(row.getOrDefault("name", ""))) {
+                found = row.getOrDefault("type", "");
+                break;
+            }
+        }
+        return found;
+    }
+
     private boolean hollow(final String type) {
         boolean found = false;
         String walked = type;

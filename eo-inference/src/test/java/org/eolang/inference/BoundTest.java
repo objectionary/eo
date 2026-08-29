@@ -38,7 +38,7 @@ final class BoundTest {
         MatcherAssert.assertThat(
             "the second application of a chain must fill the void the first one left empty",
             new Bound(
-                args, Collections.emptyMap(), pairs,
+                args, Collections.emptyMap(), Collections.emptyMap(), pairs,
                 new Provided(
                     rows, Collections.emptyMap(),
                     Collections.emptyList(), Collections.emptyMap()
@@ -50,6 +50,32 @@ final class BoundTest {
                     "Φ.app.full", Map.of("Φ.app.pair.y", "Φ.app.two")
                 )
             )
+        );
+    }
+
+    @Test
+    void namesBothVoidsOfAnApplicationBoundEntirelyByName() {
+        MatcherAssert.assertThat(
+            "both voids named inline must show up, keyed by the void they were bound to",
+            new Bound(
+                Map.of("only", List.of()),
+                Map.of("only", Map.of("y", "only.y", "x", "only.x")),
+                Collections.emptyMap(),
+                Map.of("only", "pair"),
+                new Provided(
+                    Map.of(
+                        "pair",
+                        List.of(
+                            Map.of("void", "true", "name", "x", "type", "pair.x"),
+                            Map.of("void", "true", "name", "y", "type", "pair.y")
+                        )
+                    ),
+                    Collections.emptyMap(),
+                    Collections.emptyList(),
+                    Collections.emptyMap()
+                )
+            ).all().get("only"),
+            Matchers.equalTo(Map.of("pair.y", "only.y", "pair.x", "only.x"))
         );
     }
 }
