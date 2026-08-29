@@ -248,4 +248,40 @@ final class SpanTest {
             Matchers.equalTo(42)
         );
     }
+
+    @Test
+    void detectsFormFeedInLeadingWhitespace() {
+        MatcherAssert.assertThat(
+            "a form feed standing where an indent belongs must be reported as stray whitespace",
+            new Span("\f\fzaphod > x", 1).stray(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsEmSpaceInLeadingWhitespace() {
+        MatcherAssert.assertThat(
+            "an em space standing where an indent belongs must be reported as stray whitespace",
+            new Span("  \u2003marvin", 13).stray(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresPlainSpacesAsStrayWhitespace() {
+        MatcherAssert.assertThat(
+            "an indent of plain spaces cannot carry stray whitespace",
+            new Span("    trillian > y", 7).stray(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void ignoresTabAsStrayWhitespace() {
+        MatcherAssert.assertThat(
+            "a tab has its own rule and must not be reported as stray whitespace",
+            new Span("\tarthur", 4).stray(),
+            Matchers.is(false)
+        );
+    }
 }

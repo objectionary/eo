@@ -135,7 +135,7 @@ R-2.1.2. Line endings are `\n` or `\r\n`. The parser normalises both to `\n` int
 R-2.2.1. The indent unit is **two spaces**. Odd leading-space counts are an error: `unexpected odd indent`.
 R-2.2.2. Between two consecutive non-blank lines, indent may **increase by at most one level** (i.e., +2 spaces).
 R-2.2.3. Indent may decrease by any amount.
-R-2.2.4. Tabs in leading whitespace are rejected.
+R-2.2.4. Tabs in leading whitespace are rejected. Any other whitespace that is not a space, like a form feed or an em space, is rejected there too: `non-space whitespace in leading indentation`.
 R-2.2.5. A non-blank line whose last character is a space or a tab is rejected: `trailing whitespace at end of line`. This applies to every line, including a text-block body line (§3.11), which bypasses the ordinary line dispatch but is checked the same way. A whitespace-only (blank) line is exempt.
 
 Example:

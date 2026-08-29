@@ -14,8 +14,8 @@ package org.eolang.parser;
  * {@link Source} that produced this span has already normalised line
  * endings (R-2.1.2).</p>
  *
- * <p>The indent count is computed once, at construction time, and does not
- * mutate. A blank line (entire line is whitespace) yields a span with
+ * <p>The leading whitespace is taken once, at construction time, and does
+ * not mutate. A blank line (entire line is whitespace) yields a span with
  * {@code indent == text.length()}.</p>
  *
  * <p>Per spec R-2.2.1: an odd indent is a {@code unexpected odd indent}
@@ -38,15 +38,10 @@ final class Span {
     private final int number;
 
     /**
-     * Count of leading whitespace characters before the first
-     * non-whitespace one.
+     * Leading whitespace, everything before the first non-whitespace
+     * character.
      */
-    private final int indent;
-
-    /**
-     * Whether any leading whitespace character is a tab.
-     */
-    private final boolean tab;
+    private final String lead;
 
     /**
      * Ctor.
@@ -58,34 +53,22 @@ final class Span {
     }
 
     /**
-     * Ctor.
-     * @param body Line text
-     * @param line Line number
-     * @param leading Count of leading whitespace chars
-     */
-    private Span(final String body, final int line, final int leading) {
-        this(body, line, leading, Span.tabbed(body, leading));
-    }
-
-    /**
      * Primary ctor.
      * @param body Line text
      * @param line Line number
-     * @param leading Count of leading whitespace chars
-     * @param tabbed True if any leading char is a tab
+     * @param leading Leading whitespace of the line
      */
-    private Span(final String body, final int line, final int leading, final boolean tabbed) {
+    private Span(final String body, final int line, final String leading) {
         this.text = body;
         this.number = line;
-        this.indent = leading;
-        this.tab = tabbed;
+        this.lead = leading;
     }
 
     @Override
     public String toString() {
         return String.format(
             "Span(line=%d, indent=%d, text='%s')",
-            this.number, this.indent, this.text
+            this.number, this.indent(), this.text
         );
     }
 
@@ -110,7 +93,7 @@ final class Span {
      * @return Indent
      */
     int indent() {
-        return this.indent;
+        return this.lead.length();
     }
 
     /**
@@ -118,7 +101,26 @@ final class Span {
      * @return Tab flag
      */
     boolean tab() {
-        return this.tab;
+        return this.lead.indexOf('\t') >= 0;
+    }
+
+    /**
+     * True if leading whitespace contains whitespace that is neither a
+     * space nor a tab, like a form feed or an em space. Only ASCII spaces
+     * build an indent (R-2.2.1) and tabs have a rule of their own
+     * (R-2.2.4), so anything else in that position is stray.
+     * @return Stray-whitespace flag
+     */
+    boolean stray() {
+        boolean found = false;
+        for (int idx = 0; idx < this.lead.length(); idx = idx + 1) {
+            final char glyph = this.lead.charAt(idx);
+            if (glyph != ' ' && glyph != '\t') {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 
     /**
@@ -126,7 +128,7 @@ final class Span {
      * @return Blank flag
      */
     boolean blank() {
-        return this.indent == this.text.length();
+        return this.indent() == this.text.length();
     }
 
     /**
@@ -151,7 +153,7 @@ final class Span {
      * @return Tail text (empty for blank lines)
      */
     String body() {
-        return this.text.substring(this.indent);
+        return this.text.substring(this.indent());
     }
 
     /**
@@ -167,25 +169,14 @@ final class Span {
                 )
             );
         }
-        return this.text.charAt(this.indent);
+        return this.text.charAt(this.indent());
     }
 
-    private static int leading(final String body) {
+    private static String leading(final String body) {
         int count = 0;
         while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
             count = count + 1;
         }
-        return count;
-    }
-
-    private static boolean tabbed(final String body, final int leading) {
-        boolean found = false;
-        for (int idx = 0; idx < leading; idx = idx + 1) {
-            if (body.charAt(idx) == '\t') {
-                found = true;
-                break;
-            }
-        }
-        return found;
+        return body.substring(0, count);
     }
 }

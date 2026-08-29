@@ -104,6 +104,17 @@ final class EoTest {
     }
 
     @Test
+    void reportsStrayWhitespaceInIndent() {
+        MatcherAssert.assertThat(
+            "a form feed used as an indent must be reported instead of nesting the line",
+            EoTest.render("[] > app", "\f\ffoo > x"),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'non-space whitespace in leading indentation')]"
+            )
+        );
+    }
+
+    @Test
     void reportsTabInLeadingWhitespace() {
         MatcherAssert.assertThat(
             "a tab inside leading whitespace must be reported with the canonical message",
