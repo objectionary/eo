@@ -261,6 +261,12 @@ final class Tokens {
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
+        if (sign && Tokens.letterAt(this.body, idx)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
+        }
         if (idx == from) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
@@ -629,6 +635,12 @@ final class Tokens {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
     }
 
+    private static boolean letterAt(final String body, final int idx) {
+        return idx < body.length()
+            && (body.charAt(idx) >= 'a' && body.charAt(idx) <= 'z'
+                || body.charAt(idx) >= 'A' && body.charAt(idx) <= 'Z');
+    }
+
     private static boolean byteDigit(final char glyph) {
         return Tokens.digit(glyph) || glyph >= 'A' && glyph <= 'F';
     }
@@ -798,6 +810,11 @@ final class Tokens {
             value = this.reserved(Value.Kind.IDENTITY, "I");
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
+        } else if (this.oddHexRun()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "invalid bytes literal"
+            );
         } else {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
@@ -835,6 +852,22 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         return this.body.substring(start, this.cursor);
+    }
+
+    /**
+     * Whether the cursor stands on a run of hex digits that a dash
+     * closes but that pairs do not divide — {@code ABC-}, the odd hex
+     * run of R-3.13.1.
+     * @return True if the run is a malformed BYTES literal
+     */
+    private boolean oddHexRun() {
+        int idx = this.cursor;
+        while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
+            idx = idx + 1;
+        }
+        return idx > this.cursor
+            && idx < this.body.length()
+            && this.body.charAt(idx) == '-';
     }
 
     private boolean bytePair(final int idx) {

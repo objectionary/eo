@@ -4,7 +4,7 @@
 sheets: []
 asserts:
   - /object/errors[count(error)=1]
-  - /object/errors/error[contains(text(),'line shape not yet implemented')]
+  - /object/errors/error[contains(text(),'line head does not start any known object shape')]
 input: |
   [] > main
     Z9 > x

@@ -393,8 +393,10 @@ final class Eo implements Iterable<Directive> {
         final String reason;
         if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
+        } else if (Eo.bytesAttempt(span)) {
+            reason = "invalid bytes literal";
         } else {
-            reason = "line shape not yet implemented in spec parser";
+            reason = "line head does not start any known object shape";
         }
         return (stack, globals, emit) -> {
             throw new ParseError(span.line(), span.indent(), reason);
@@ -468,6 +470,36 @@ final class Eo implements Iterable<Directive> {
     private static boolean literalHead(final Span span) {
         final char head = span.head();
         return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
+    }
+
+    /**
+     * Whether the line's head token reads as a BYTES literal that no
+     * head shape accepts — alphanumerics and dashes with at least one
+     * dash, the way {@code Z9-} does (R-3.13.1). Such a line is a
+     * malformed literal, not an unknown shape.
+     * @param span The line's span
+     * @return True if the head token is a malformed BYTES literal
+     */
+    private static boolean bytesAttempt(final Span span) {
+        final String body = span.body();
+        int end = body.indexOf(' ');
+        if (end < 0) {
+            end = body.length();
+        }
+        final String head = body.substring(0, end);
+        boolean dashed = false;
+        boolean shaped = end > 1;
+        for (int idx = 0; idx < head.length() && shaped; idx = idx + 1) {
+            final char glyph = head.charAt(idx);
+            if (glyph == '-') {
+                dashed = true;
+            } else {
+                shaped = glyph >= '0' && glyph <= '9'
+                    || glyph >= 'a' && glyph <= 'z'
+                    || glyph >= 'A' && glyph <= 'Z';
+            }
+        }
+        return shaped && dashed;
     }
 
     private static boolean bytesHead(final char head) {
