@@ -66,6 +66,15 @@
   -->
   <xsl:key name="eo:row" match="type" use="@id"/>
   <!--
+  The void rows of the table, by the type of each one. "eo:data-target" asks
+  what the callers of a program were seen putting into a void named from the
+  outside, and without this index that question walks every element of the
+  table again, for every part of every application of the program. The two
+  walks multiply, and the stylesheet took tens of seconds on the XMIR of
+  eo-runtime because of it.
+  -->
+  <xsl:key name="eo:void" match="attr[@void = 'true']" use="@type"/>
+  <!--
   The directory with the tables of "eo:inference", as a URI. Empty when
   nothing was worked out, and then nothing is labeled.
   -->
@@ -93,6 +102,17 @@
   an object of the root, so the rule about the root has to let them through.
   -->
   <xsl:variable name="eo:literals" as="xs:string+" select="for $n in ('number', 'string', 'bytes', 'true', 'false') return concat($eo:program, '.', $n)"/>
+  <!--
+  The prefix of a copy of an object of the root, the base of a body reading
+  the object it is attached to, and the prefix of a base taking something out
+  of that object. All three are spelled out here rather than where they are
+  asked about, because the questions below put them to every object of a
+  program and a "concat" written inside a predicate is a value the engine is
+  free to work out again for every node that predicate sees.
+  -->
+  <xsl:variable name="eo:root" as="xs:string" select="concat($eo:program, '.')"/>
+  <xsl:variable name="eo:receiver" as="xs:string" select="concat($eo:xi, '.', $eo:rho)"/>
+  <xsl:variable name="eo:from-receiver" as="xs:string" select="concat($eo:receiver, '.')"/>
   <!--
   Whether this object is a formation the label may go on. The questions are
   asked one at a time, cheapest first, and the one that walks the whole body
@@ -124,7 +144,7 @@
   <!-- Whether nothing in the body of this formation copies an object of the root. -->
   <xsl:function name="eo:closed" as="xs:boolean">
     <xsl:param name="f" as="element()"/>
-    <xsl:sequence select="empty($f/descendant-or-self::*[@base = $eo:program or (starts-with(@base, concat($eo:program, '.')) and not(@base = $eo:literals))])"/>
+    <xsl:sequence select="empty($f/descendant-or-self::*[@base = $eo:program or (starts-with(@base, $eo:root) and not(@base = $eo:literals))])"/>
   </xsl:function>
   <!--
   Whether this element is a formation, the same shape the template below
@@ -143,16 +163,20 @@
   before it is put and the label goes on with the receiver never looked at
   (#7613). The cheap half is asked first: a formation that declares "ρ" has
   been judged on it already.
-  Only the reads of this very formation count, which is why the nearest
-  formation around each read has to be this one. A nested formation declaring
-  its own receiver and reading that says nothing about the formation around
-  it - its "ρ" is another attribute of another object - and counting those
-  would withhold the label from most of the formations of a program.
+  Only the reads of this very formation count, which is why no formation may
+  stand between a read and this one. A nested formation declaring its own
+  receiver and reading that says nothing about the formation around it - its
+  "ρ" is another attribute of another object - and counting those would
+  withhold the label from most of the formations of a program. The formations
+  in between are the ancestors of a read that this formation precedes, and
+  asking for them that way leaves the ones above this formation alone: a
+  program nests hundreds of objects deep, and the question is put to every
+  read of every formation the table lets through.
   -->
   <xsl:function name="eo:borrowed" as="xs:boolean">
     <xsl:param name="f" as="element()"/>
     <xsl:param name="row" as="element()"/>
-    <xsl:sequence select="empty($row/attr[@void = 'true'][@name = $eo:rho]) and exists($f/descendant::*[(@base = concat($eo:xi, '.', $eo:rho) or starts-with(@base, concat($eo:xi, '.', $eo:rho, '.'))) and (ancestor::*[eo:formation(.)][1] is $f)])"/>
+    <xsl:sequence select="empty($row/attr[@void = 'true'][@name = $eo:rho]) and exists($f/descendant::*[@base = $eo:receiver or starts-with(@base, $eo:from-receiver)][empty(ancestor::*[$f &lt;&lt; .][eo:formation(.)])])"/>
   </xsl:function>
   <!--
   Whether every void of this row is witnessed as a number or a string, the
@@ -174,7 +198,8 @@
   -->
   <xsl:function name="eo:applied" as="xs:boolean">
     <xsl:param name="a" as="element()"/>
-    <xsl:sequence select="exists($eo:links) and exists($a/o[@loc]) and (every $p in $a/o[@loc] satisfies eo:copies-data(key('eo:row', $p/@loc, $eo:links)))"/>
+    <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
+    <xsl:sequence select="exists($eo:links) and exists($parts) and (every $p in $parts satisfies eo:copies-data(key('eo:row', $p/@loc, $eo:links)))"/>
   </xsl:function>
   <!--
   Whether this row of "links.xml" says its object is data. A row holds one
@@ -207,7 +232,7 @@
   -->
   <xsl:function name="eo:data-target" as="xs:boolean">
     <xsl:param name="loc" as="xs:string"/>
-    <xsl:sequence select="exists($eo:provides) and ((some $t in key('eo:row', $loc, $eo:provides) satisfies $t/@returns = $eo:data) or (some $v in $eo:provides//attr[@void = 'true'][@type = $loc] satisfies (exists($v/witnessed) and (every $e in $v/witnessed//* satisfies (name($e) = 'union' or (name($e) = 'ref' and $e/@loc = $eo:data))))))"/>
+    <xsl:sequence select="exists($eo:provides) and ((some $t in key('eo:row', $loc, $eo:provides) satisfies $t/@returns = $eo:data) or (some $v in key('eo:void', $loc, $eo:provides) satisfies (exists($v/witnessed) and (every $e in $v/witnessed//* satisfies (name($e) = 'union' or (name($e) = 'ref' and $e/@loc = $eo:data))))))"/>
   </xsl:function>
   <!--
   An application whose parts are all data is labeled too, so that the answer
