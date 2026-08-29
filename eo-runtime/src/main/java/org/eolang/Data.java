@@ -33,7 +33,7 @@ public interface Data {
      * Phi str = Phi.Φ.take("string").copy();
      * Phi applied = new PhApplication(str, 0, attached);
      * return applied;
-     * }
+     * }</p>
      *
      * <p>It never needs a receiver: data becomes one of the root objects — a
      * number, a string, a bytes, a tuple — and every one of them takes its

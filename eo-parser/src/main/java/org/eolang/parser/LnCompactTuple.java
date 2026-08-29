@@ -37,7 +37,7 @@ import java.util.List;
  * <p>This iteration accepts identifier and root heads (with optional
  * chains). Reversed-dispatch heads ({@code joined. *1 > sixth}) are
  * dispatched via the reversed-classifier path and are not yet
- * supported. *
+ * supported.</p>
  *
  * @since 0.1
  */

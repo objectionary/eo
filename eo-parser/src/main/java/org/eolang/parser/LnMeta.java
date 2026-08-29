@@ -31,7 +31,7 @@ import java.util.Locale;
  * {@code +alias} that would give the token another meaning
  * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
  * rejected here — {@code expand-aliases} reads that first part as the
- * alias name and would otherwise let one file rewrite the root. *
+ * alias name and would otherwise let one file rewrite the root.</p>
  *
  * @since 0.1
  */

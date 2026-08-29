@@ -22,7 +22,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * <p>Spans are produced in source order, numbered from 1. An empty input
  * yields no spans. An input that is a single empty line yields one blank
- * {@link Span}. *
+ * {@link Span}.</p>
  *
  * @since 0.1
  */
