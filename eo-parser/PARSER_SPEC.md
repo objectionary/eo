@@ -1343,6 +1343,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
+| Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Trailing space or tab at end of a non-blank line | `trailing whitespace at end of line` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |

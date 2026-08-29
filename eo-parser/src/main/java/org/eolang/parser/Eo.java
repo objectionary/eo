@@ -263,6 +263,9 @@ final class Eo implements Iterable<Directive> {
         } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
             failed = true;
+        } else if (span.alien() && !span.blank()) {
+            emit.error(span.line(), 0, "invalid character in leading whitespace");
+            failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
             failed = true;
