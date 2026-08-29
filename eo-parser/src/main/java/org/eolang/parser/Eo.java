@@ -472,34 +472,31 @@ final class Eo implements Iterable<Directive> {
         return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
     }
 
-    /**
-     * Whether the line's head token reads as a BYTES literal that no
-     * head shape accepts — alphanumerics and dashes with at least one
-     * dash, the way {@code Z9-} does (R-3.13.1). Such a line is a
-     * malformed literal, not an unknown shape.
-     * @param span The line's span
-     * @return True if the head token is a malformed BYTES literal
-     */
     private static boolean bytesAttempt(final Span span) {
         final String body = span.body();
         int end = body.indexOf(' ');
         if (end < 0) {
             end = body.length();
         }
-        final String head = body.substring(0, end);
+        return end > 1 && Eo.dashedAlphanumerics(body.substring(0, end));
+    }
+
+    private static boolean dashedAlphanumerics(final String head) {
         boolean dashed = false;
-        boolean shaped = end > 1;
+        boolean shaped = true;
         for (int idx = 0; idx < head.length() && shaped; idx = idx + 1) {
             final char glyph = head.charAt(idx);
             if (glyph == '-') {
                 dashed = true;
             } else {
-                shaped = glyph >= '0' && glyph <= '9'
-                    || glyph >= 'a' && glyph <= 'z'
-                    || glyph >= 'A' && glyph <= 'Z';
+                shaped = Eo.alphanumeric(glyph);
             }
         }
         return shaped && dashed;
+    }
+
+    private static boolean alphanumeric(final char glyph) {
+        return glyph < 128 && Character.isLetterOrDigit(glyph);
     }
 
     private static boolean bytesHead(final char head) {

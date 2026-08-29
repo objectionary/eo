@@ -637,8 +637,8 @@ final class Tokens {
 
     private static boolean letterAt(final String body, final int idx) {
         return idx < body.length()
-            && (body.charAt(idx) >= 'a' && body.charAt(idx) <= 'z'
-                || body.charAt(idx) >= 'A' && body.charAt(idx) <= 'Z');
+            && body.charAt(idx) < 128
+            && Character.isLetter(body.charAt(idx));
     }
 
     private static boolean byteDigit(final char glyph) {
@@ -801,6 +801,12 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
+        if (this.oddHexRun()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "invalid bytes literal"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");
@@ -810,11 +816,6 @@ final class Tokens {
             value = this.reserved(Value.Kind.IDENTITY, "I");
         } else if (first >= 'a' && first <= 'z') {
             value = this.readName();
-        } else if (this.oddHexRun()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + this.cursor,
-                "invalid bytes literal"
-            );
         } else {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
@@ -854,12 +855,6 @@ final class Tokens {
         return this.body.substring(start, this.cursor);
     }
 
-    /**
-     * Whether the cursor stands on a run of hex digits that a dash
-     * closes but that pairs do not divide — {@code ABC-}, the odd hex
-     * run of R-3.13.1.
-     * @return True if the run is a malformed BYTES literal
-     */
     private boolean oddHexRun() {
         int idx = this.cursor;
         while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
