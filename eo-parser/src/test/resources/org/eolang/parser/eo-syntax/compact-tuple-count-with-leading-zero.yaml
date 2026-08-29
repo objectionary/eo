@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #7918: the `*N` count was read straight into an integer, so a zero-padded
+# count slipped through, while the very same spelling is invalid as a plain
+# INT literal under R-9.8.1.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'integer literal must not have leading zeros')]
+input: |
+  [] > root
+    foo *01 > tuple
+      1

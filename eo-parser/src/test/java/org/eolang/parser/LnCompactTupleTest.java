@@ -79,18 +79,6 @@ final class LnCompactTupleTest {
     }
 
     @Test
-    void recordsNFromLeadingZeroDigits() {
-        final Stack stack = new Stack();
-        new LnCompactTuple(new Span("sprintf *007 > x", 1))
-            .into(stack, new Globals(), new Emit());
-        MatcherAssert.assertThat(
-            "leading zero digits must not change the accumulated count",
-            stack.top().count(),
-            Matchers.equalTo(7)
-        );
-    }
-
-    @Test
     void rejectsCountAboveIntegerMax() {
         Assertions.assertThrows(
             ParseError.class,
@@ -165,6 +153,23 @@ final class LnCompactTupleTest {
             "a `+>` test attribute on a compact-tuple line preceded by one blank line must not emit any error",
             LnCompactTupleTest.render(emit),
             Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
+    void rejectsCountWithLeadingZero() {
+        final LnCompactTuple line = new LnCompactTuple(new Span("sprintf *01 > x", 1));
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        final Emit emit = new Emit();
+        MatcherAssert.assertThat(
+            "a `*N` count with a leading zero must be rejected the same way as an INT literal",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> line.into(stack, globals, emit),
+                "a zero-padded compact tuple count must not parse"
+            ).getMessage(),
+            Matchers.containsString("integer literal must not have leading zeros")
         );
     }
 

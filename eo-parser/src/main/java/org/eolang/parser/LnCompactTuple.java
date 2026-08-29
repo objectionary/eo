@@ -105,11 +105,21 @@ final class LnCompactTuple implements Line {
 
     private static int readCount(final Tokens tokens, final Span span) {
         long count = 0;
+        int digits = 0;
+        boolean zero = false;
         final int start = tokens.cursor();
         while (!tokens.atEnd()) {
             final char glyph = tokens.current();
             if (glyph < '0' || glyph > '9') {
                 break;
+            }
+            zero = zero || digits == 0 && glyph == '0';
+            digits = digits + 1;
+            if (zero && digits > 1) {
+                throw new ParseError(
+                    span.line(), span.indent() + start,
+                    "integer literal must not have leading zeros"
+                );
             }
             count = count * 10 + glyph - '0';
             if (count > Integer.MAX_VALUE) {
