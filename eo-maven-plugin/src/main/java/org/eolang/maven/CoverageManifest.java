@@ -70,6 +70,11 @@ final class CoverageManifest {
      * The locations a transpile of this XMIR would instrument, each as
      * {@code loc:line:pos}, the same string {@code PhCoverage} records a
      * hit under.
+     * <p>An element with no {@code @loc} is not a location at all: a
+     * parser {@code <error>} carries a line and a position and nothing
+     * else, and every other element of a parsed XMIR that carries both
+     * carries a locator too.</p>
+     *
      * @param xmir The XMIR a source was parsed and optimized into
      * @return The locations, in document order
      */
@@ -77,7 +82,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base=codepoints-to-string(8709)) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
+            "//*[@line and @pos and @loc and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base=codepoints-to-string(8709)) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
         )) {
             found.add(
                 String.format(

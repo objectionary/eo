@@ -48,6 +48,19 @@ final class CoverageManifestTest {
     }
 
     @Test
+    void findsNoLocationsInASourceThatDoesNotParse() throws Exception {
+        MatcherAssert.assertThat(
+            "a parser error carries a line and a position and no locator, so it cannot be a location",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(System.lineSeparator(), "[] > x", "  TRUE > t", "")
+                ).parsed()
+            ),
+            Matchers.iterableWithSize(0)
+        );
+    }
+
+    @Test
     void excludesLocationOfAFilesRootObject() throws Exception {
         MatcherAssert.assertThat(
             "a file's root object is constructed once from Java and never dispatched through PhCoverage, but its own location was still found",
