@@ -144,6 +144,13 @@ final class Level {
     private boolean argbound;
 
     /**
+     * True when the chain link this entry currently ends with carries an
+     * inline binding, read by {@link LnMethod} to refuse a continuation
+     * that would leave it on a link the chain no longer ends with.
+     */
+    private boolean tied;
+
+    /**
      * Source span recorded with the in-progress arg, used for error
      * positioning when {@link #commitArg()} rejects the arg
      * against the group mode.
@@ -533,6 +540,25 @@ final class Level {
     }
 
     /**
+     * Whether the link this chain currently ends with carries an inline
+     * binding.
+     * @return Tied flag
+     */
+    boolean tied() {
+        return this.tied;
+    }
+
+    /**
+     * Record that the link this chain now ends with carries an inline
+     * binding, so a further {@code .method} continuation can tell that it
+     * would leave that binding on a link that is no longer the last one
+     * (R-6.6.4).
+     */
+    void tie() {
+        this.tied = true;
+    }
+
+    /**
      * A detached twin of this entry, carrying the same mutable state at
      * the moment of copying. Lets {@link Stack} take a savepoint that
      * later mutation of this entry cannot reach (R-7.3).
@@ -560,5 +586,6 @@ final class Level {
         this.argpending = other.argpending;
         this.argbound = other.argbound;
         this.argspan = other.argspan;
+        this.tied = other.tied;
     }
 }

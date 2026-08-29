@@ -30,6 +30,9 @@ import java.util.List;
  * completed predecessor.</li>
  * <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
  * <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
+ * <li>R-6.6.4 — a {@code .method} continuation after a link that
+ * carries an inline binding, which the continuation would leave on a
+ * link the chain no longer ends with.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -110,6 +113,9 @@ final class LnMethod implements Line {
         }
         top.become(kind);
         top.close(openness);
+        if (outer != null) {
+            top.tie();
+        }
         if (suffix.present()) {
             top.name(suffix.label());
         }
@@ -134,6 +140,12 @@ final class LnMethod implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
+            );
+        }
+        if (stack.top().tied()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "inline binding allowed only on the last method in a chain"
             );
         }
     }
