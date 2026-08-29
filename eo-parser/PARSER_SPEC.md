@@ -661,14 +661,18 @@ R-3.14.8. **Predecessor placement — body vs argument block.** Where the predec
 Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
 
 ```
-[x] > foo                             ← named formation
-  x.plus x > @
-| 5 > foo5                            ← foo5 = foo applied to 5 (i.e. (5).plus 5)
+[] > app
+  [x] > foo                           ← named formation
+    x.plus x > @
+  | 5 > foo5                          ← foo5 = foo applied to 5 (i.e. (5).plus 5)
 
-[a b] >>                              ← auto-named (anonymous) formation
-  a.plus b > @
-| 2 3 > pair                          ← one application, two args, referring to the auto-name
+  [a b] >>                            ← auto-named (anonymous) formation
+    a.plus b > @
+  | 2 3 > pair                        ← one application, two args, referring to the auto-name
 ```
+
+A pipe belongs inside a body or an argument block, never at file level: the
+predecessor and the pipe are two objects (R-3.14.8), and a file holds one.
 
 Illegal:
 
