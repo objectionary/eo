@@ -184,7 +184,7 @@
   -->
   <xsl:function name="eo:given" as="xs:boolean">
     <xsl:param name="v" as="element()?"/>
-    <xsl:sequence select="exists($v) and exists($v/witnessed) and empty($v/witnessed/descendant::*[not(self::union or (self::ref and @loc = $eo:data))])"/>
+    <xsl:sequence select="exists($v) and exists($v/witnessed) and empty($v/witnessed//*[not(name() = 'union' or (name() = 'ref' and @loc = $eo:data))])"/>
   </xsl:function>
   <!--
   Whether this application is decided by the bytes of its own parts. Every
