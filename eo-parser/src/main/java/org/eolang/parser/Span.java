@@ -21,7 +21,7 @@ package org.eolang.parser;
  * <p>Per spec R-2.2.1: an odd indent is a {@code unexpected odd indent}
  * error condition; {@code Span} itself does not raise it — the consumer
  * (line classifier) reads the indent and decides. The {@link #tab()} query
- * surfaces the R-2.2.4 violation; again, the consumer decides. *
+ * surfaces the R-2.2.4 violation; again, the consumer decides.</p>
  *
  * @since 0.1
  */

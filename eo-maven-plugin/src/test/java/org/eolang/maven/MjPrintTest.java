@@ -141,7 +141,7 @@ final class MjPrintTest {
         Assumptions.assumeTrue(xtory.map().get("skip") == null);
         MatcherAssert.assertThat(
             "PrintMojo should print EO in straight notation, but it didn't",
-            MjPrintTest.printed(xtory, this.dir, false).asString(),
+            MjPrintTest.printed(xtory, this.dir).asString(),
             Matchers.equalTo(this.expected(xtory))
         );
     }
@@ -162,7 +162,7 @@ final class MjPrintTest {
         return expected;
     }
 
-    private static Text printed(final Xtory xtory, final Path temp, final boolean reversed)
+    private static Text printed(final Xtory xtory, final Path temp)
         throws Exception {
         new Saved(
             new EoSyntax(
@@ -172,8 +172,7 @@ final class MjPrintTest {
         ).value();
         final FakeMaven maven = new FakeMaven(temp)
             .with("sources", temp.resolve("xmir").toFile())
-            .with("output", temp.resolve("eo").toFile())
-            .with("printReversed", reversed);
+            .with("output", temp.resolve("eo").toFile());
         final Object pins = xtory.map().get("penalties");
         if (pins != null) {
             for (final Map.Entry<?, ?> pin : ((Map<?, ?>) pins).entrySet()) {

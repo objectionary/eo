@@ -6,7 +6,7 @@ package org.eolang.win32;
 
 import com.sun.jna.Pointer;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -33,15 +33,24 @@ public final class SocketFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int domain = new Int(
+            "the 'domain' argument of socket", params[0]
+        ).it();
+        final int kind = new Int(
+            "the 'type' argument of socket", params[1]
+        ).it();
+        final int protocol = new Int(
+            "the 'protocol' argument of socket", params[2]
+        ).it();
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
                 Pointer.nativeValue(
                     Winsock.INSTANCE.socket(
-                        new Dataized(params[0]).asNumber().intValue(),
-                        new Dataized(params[1]).asNumber().intValue(),
-                        new Dataized(params[2]).asNumber().intValue()
+                        domain,
+                        kind,
+                        protocol
                     )
                 )
             )

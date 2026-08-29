@@ -17,10 +17,9 @@ package org.eolang.parser;
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
  * copy-on-write would allocate a new object on every line transition,
- * pushing the parser's per-line cost from O(1) to O(D). Mutation is not
- * confined to {@link Stack}: {@link LnMethod}, {@link LnCompactTuple},
- * {@link LnOnlyPhi}, {@link Bindings} and {@link Eo} all hold a reference
- * to a live entry and call its mutators directly.
+ * pushing the parser's per-line cost from O(1) to O(D). Mutation is
+ * confined to the {@link Stack} that owns this entry; no other class
+ * keeps a reference.</p>
  *
  * @since 0.1
  */
@@ -481,7 +480,7 @@ final class Level {
      *
      * <p>For vmethod chains (head + same-indent {@code .method}
      * continuations), the binding may live on the last link rather
-     * than on the head. This method tracks the *currently in-progress*
+     * than on the head. This method tracks the currently in-progress
      * arg separately and only commits it to the group mode when the
      * next sibling arg starts or the parent closes. A late binding
      * picked up via {@link #upgradeArgBinding()} is reflected at

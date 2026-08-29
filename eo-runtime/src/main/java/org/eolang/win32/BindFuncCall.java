@@ -7,6 +7,7 @@ package org.eolang.win32;
 import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.SockaddrIn;
@@ -34,6 +35,9 @@ public final class BindFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int length = new Int(
+            "the 'length' argument of bind", params[2]
+        ).it();
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
@@ -46,7 +50,7 @@ public final class BindFuncCall implements Syscall {
                         new Dataized(params[1].take("address")).take(Integer.class),
                         new Dataized(params[1].take("padding")).take()
                     ),
-                    new Dataized(params[2]).asNumber().intValue()
+                    length
                 )
             )
         );

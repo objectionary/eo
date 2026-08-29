@@ -17,7 +17,7 @@ package org.eolang.parser;
  * R-6.5.6 / R-8.4, more than one trailing blank at EOF is an error.
  * R-6.5.3 caps the run of consecutive blanks at one; the moment a
  * second blank lands we report it here — its position is unambiguous
- * regardless of what the next non-blank line turns out to be. *
+ * regardless of what the next non-blank line turns out to be.</p>
  *
  * @since 0.1
  */
