@@ -127,7 +127,7 @@ final class JavaPlacedTest {
     }
 
     @Test
-    void removesJavaCompanionsWhenTestsAreNotTranspiled(@Mktmp final Path temp) throws Exception {
+    void removesCompanionsWhenNoneAreTranspiled(@Mktmp final Path temp) throws Exception {
         final Path target = temp.resolve("target");
         final Path generated = target.resolve("generated-sources");
         final Path utest = target.resolve("FooTest.java");
