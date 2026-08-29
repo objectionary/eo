@@ -146,10 +146,17 @@ final class LnMeta implements Line {
                     "'+alias' cannot rename the root token Q"
                 );
             }
-            if (new Dotted(parts.get(parts.size() - 1)).broken()) {
+            final Dotted target = new Dotted(parts.get(parts.size() - 1));
+            if (target.broken()) {
                 throw new ParseError(
                     this.span.line(), this.span.indent(),
                     "'+alias' target must not have an empty segment"
+                );
+            }
+            if (target.scoped()) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent(),
+                    "'+alias' target must be an object name, not a scope token"
                 );
             }
         }
