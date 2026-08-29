@@ -41,6 +41,11 @@ final class Eo implements Iterable<Directive> {
     private static final String ROOT_TOKENS = "*(QTI@^$";
 
     /**
+     * What a line with a space at its end is told, wherever it is written.
+     */
+    private static final String TRAILING = "trailing whitespace at end of line";
+
+    /**
      * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
      */
     private static final int SPANS_CAPACITY = 10;
@@ -262,7 +267,7 @@ final class Eo implements Iterable<Directive> {
             emit.error(span.line(), 0, "unexpected odd indent");
             failed = true;
         } else if (span.trailing()) {
-            emit.error(span.line(), 0, "trailing whitespace at end of line");
+            emit.error(span.line(), 0, Eo.TRAILING);
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
@@ -279,6 +284,9 @@ final class Eo implements Iterable<Directive> {
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
+            if (span.trailing()) {
+                emit.error(span.line(), 0, Eo.TRAILING);
+            }
             stack.popDeeperThan(span.indent());
             final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
             try {
@@ -291,7 +299,7 @@ final class Eo implements Iterable<Directive> {
         } else {
             final String raw = span.text();
             if (span.trailing()) {
-                emit.error(span.line(), 0, "trailing whitespace at end of line");
+                emit.error(span.line(), 0, Eo.TRAILING);
             }
             if (!span.blank() && span.indent() < globals.textBlockOpenIndent()) {
                 emit.error(
