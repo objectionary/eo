@@ -69,12 +69,10 @@ final class CoverageManifest {
     /**
      * The locations a transpile of this XMIR would instrument, each as
      * {@code loc:line:pos}, the same string {@code PhCoverage} records a
-     * hit under.
-     * <p>An element with no {@code @loc} is not a location at all: a
-     * parser {@code <error>} carries a line and a position and nothing
-     * else, and every other element of a parsed XMIR that carries both
-     * carries a locator too.</p>
-     *
+     * hit under. An element with no {@code @loc} is not a location at
+     * all: a parser error element carries a line and a position and
+     * nothing else, and every other element of a parsed XMIR that
+     * carries both carries a locator too.
      * @param xmir The XMIR a source was parsed and optimized into
      * @return The locations, in document order
      */
