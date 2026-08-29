@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.Expect;
+import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -35,6 +36,9 @@ public final class RecvFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int flags = new Int(
+            "the 'flags' argument of recv", params[2]
+        ).it();
         final Phi result = this.win.take("return").copy();
         final int size = new Natural(
             new Expect<>("the 'size' argument of recv", () -> params[1])
@@ -44,7 +48,7 @@ public final class RecvFuncCall implements Syscall {
             new Pointer(new Dataized(params[0]).asNumber().longValue()),
             buf,
             size,
-            new Dataized(params[2]).asNumber().intValue()
+            flags
         );
         result.put(0, new Data.ToPhi(received));
         result.put(1, new Data.ToPhi(Arrays.copyOf(buf, Math.max(received, 0))));
