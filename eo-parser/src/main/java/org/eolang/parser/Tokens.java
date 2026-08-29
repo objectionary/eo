@@ -209,6 +209,13 @@ final class Tokens {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        final int control = new Scrubbed(raw).found();
+        if (control >= 0) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start + control,
+                "control character is not allowed in an identifier"
+            );
+        }
         this.cursor = idx;
         return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }

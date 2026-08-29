@@ -310,7 +310,7 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
-        Suffix.checkCactus(raw, span, pos);
+        Suffix.checkGlyphs(raw, span, pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z'
             && !Suffix.VARIABLE.matcher(raw).matches() && !raw.startsWith("Q.")) {
@@ -399,7 +399,7 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        Suffix.checkCactus(name, span, home + start);
+        Suffix.checkGlyphs(name, span, home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
@@ -425,11 +425,18 @@ final class Suffix {
         }
     }
 
-    private static void checkCactus(final String name, final Span span, final int pos) {
+    private static void checkGlyphs(final String name, final Span span, final int pos) {
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
                 span.line(), pos,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        final int control = new Scrubbed(name).found();
+        if (control >= 0) {
+            throw new ParseError(
+                span.line(), pos + control,
+                "control character is not allowed in an identifier"
             );
         }
     }
@@ -477,7 +484,7 @@ final class Suffix {
                 )
             );
         }
-        Suffix.checkCactus(handle, span, home + begin);
+        Suffix.checkGlyphs(handle, span, home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -507,7 +514,7 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        Suffix.checkCactus(name, span, home + begin);
+        Suffix.checkGlyphs(name, span, home + begin);
         Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
