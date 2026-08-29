@@ -129,19 +129,13 @@ final class Level {
     private int bindings;
 
     /**
-     * Whether a child arg is currently being tracked but has not yet
-     * been committed into {@link #bindings} — see
-     * {@link #observeBinding(boolean, Span)} / {@link #commitArg()}.
+     * The in-progress child arg, in the same spelling as
+     * {@link #bindings} — 0 none tracked yet, 1 unbound, 2 bound. Held
+     * apart from {@link #bindings} until {@link #commitArg()} joins it,
+     * since {@link #upgradeArgBinding()} may still turn it to bound when
+     * a {@code .method} continuation picks up an outer binding.
      */
-    private boolean argpending;
-
-    /**
-     * Whether the in-progress arg carries a binding (so far). May be
-     * flipped to {@code true} mid-chain by
-     * {@link #upgradeArgBinding()} when a {@code .method} continuation
-     * picks up an outer binding.
-     */
-    private boolean argbound;
+    private int arg;
 
     /**
      * True when the chain link this entry currently ends with carries an
@@ -467,8 +461,7 @@ final class Level {
         this.children = 0;
         this.count = 0;
         this.bindings = 0;
-        this.argpending = false;
-        this.argbound = false;
+        this.arg = 0;
     }
 
     /**
@@ -498,8 +491,11 @@ final class Level {
      */
     void observeBinding(final boolean bound, final Span span) {
         this.commitArg();
-        this.argpending = true;
-        this.argbound = bound;
+        if (bound) {
+            this.arg = 2;
+        } else {
+            this.arg = 1;
+        }
         this.argspan = span;
     }
 
@@ -510,7 +506,7 @@ final class Level {
      * link per the chain-binding rule).
      */
     void upgradeArgBinding() {
-        this.argbound = true;
+        this.arg = 2;
     }
 
     /**
@@ -519,23 +515,17 @@ final class Level {
      * before starting a new arg and at parent close time.
      */
     void commitArg() {
-        if (this.argpending) {
-            final int code;
-            if (this.argbound) {
-                code = 2;
-            } else {
-                code = 1;
-            }
+        if (this.arg != 0) {
+            final int code = this.arg;
+            this.arg = 0;
             if (this.bindings == 0) {
                 this.bindings = code;
             } else if (this.bindings != code) {
-                this.argpending = false;
                 throw new ParseError(
                     this.argspan.line(), this.argspan.indent(),
                     "argument bindings must be all-or-nothing"
                 );
             }
-            this.argpending = false;
         }
     }
 
@@ -583,8 +573,7 @@ final class Level {
         this.tupled = other.tupled;
         this.star = other.star;
         this.bindings = other.bindings;
-        this.argpending = other.argpending;
-        this.argbound = other.argbound;
+        this.arg = other.arg;
         this.argspan = other.argspan;
         this.tied = other.tied;
     }
