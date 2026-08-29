@@ -182,6 +182,10 @@
       10
       "recovered" > [message]
 
+  eq. ++> can-shift-left-the-integer-minimum
+    -1.as-bytes.left -2147483648
+    00-00-00-00-00-00-00-00
+
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1
     60-21-80-00-00-00-00-00
