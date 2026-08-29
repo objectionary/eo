@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/comments/comment[@line='1' and starts-with(text(), 'First.')]
+  - /object/comments/comment[@line='2' and starts-with(text(), 'First.')]
 input: |
   # First.
   # Second.
