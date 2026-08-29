@@ -45,6 +45,17 @@
       <xsl:attribute name="base" select="'ξ'"/>
     </o>
   </xsl:variable>
+  <!--
+  Every named attribute, indexed by its name together with the object that
+  owns it. The scope walk below asks "does this object declare this name" at
+  every enclosing object of every reference, and answered it by scanning that
+  object's children - twice, the question being put twice in one
+  "xsl:choose". Each answer is a hash lookup now, the way
+  "resolve-local-names.xsl" indexes the same question (#6502, #7938). The
+  "+package" below is likewise read once, not per reference.
+  -->
+  <xsl:key name="attributes" match="o[@name]" use="concat(@name, '#', generate-id(..))"/>
+  <xsl:variable name="eo:package" select="string((/object/metas/meta[head='package'])[1]/part[1])"/>
   <!-- Build recursive objects chain from package if exists -->
   <xsl:template match="o" mode="recursive-package">
     <xsl:param name="pkg"/>
@@ -83,7 +94,7 @@
     <xsl:param name="parent"/>
     <xsl:param name="find"/>
     <xsl:choose>
-      <xsl:when test="$parent/o[@name=$find]">
+      <xsl:when test="exists(key('attributes', concat($find, '#', generate-id($parent))))">
         <xsl:variable name="start">
           <o>
             <xsl:attribute name="base" select="'Φ'"/>
@@ -92,7 +103,7 @@
         <xsl:apply-templates select="." mode="to-method">
           <xsl:with-param name="of">
             <xsl:apply-templates select="$start" mode="recursive-package">
-              <xsl:with-param name="pkg" select="(/object/metas/meta[head='package'])[1]/part[1]/text()"/>
+              <xsl:with-param name="pkg" select="$eo:package"/>
             </xsl:apply-templates>
           </xsl:with-param>
         </xsl:apply-templates>
@@ -154,6 +165,8 @@
     <xsl:param name="self"/>
     <xsl:param name="find"/>
     <xsl:variable name="parent" select="parent::*"/>
+    <!-- Whether this enclosing object declares the name being resolved. -->
+    <xsl:variable name="declares" as="xs:boolean" select="exists(key('attributes', concat($find, '#', generate-id($parent))))"/>
     <xsl:choose>
       <!-- last frontier -->
       <xsl:when test="$parent[name()='object']">
@@ -165,7 +178,7 @@
       <xsl:when test="eo:abstract($parent)">
         <xsl:choose>
           <!-- Found reference in the current scope -->
-          <xsl:when test="$parent/o[@name=$find] and $rhos=0">
+          <xsl:when test="$declares and $rhos=0">
             <xsl:apply-templates select="$self" mode="with-rho">
               <xsl:with-param name="rhos" select="$rhos"/>
               <xsl:with-param name="current">
@@ -177,7 +190,7 @@
             </xsl:apply-templates>
           </xsl:when>
           <!-- Found reference in some abstract object above -->
-          <xsl:when test="$parent/o[@name=$find]">
+          <xsl:when test="$declares">
             <o>
               <xsl:apply-templates select="$self/@*"/>
               <xsl:attribute name="hop" select="$rhos"/>

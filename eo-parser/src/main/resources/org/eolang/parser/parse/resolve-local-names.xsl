@@ -55,6 +55,14 @@
   -->
   <xsl:key name="handles" match="o[@local]" use="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))"/>
   <!--
+  Every name the file declares as a handle. Only a reference reading one of
+  them can be captured, so the search below answers every other reference -
+  the great majority, and all of them in the half of the sources declaring
+  no handle - without climbing the ancestors and probing the indexes at each
+  (#7938).
+  -->
+  <xsl:variable name="eo:handle-names" as="xs:string*" select="distinct-values(//o[@local]/@local)"/>
+  <!--
   Every named object, indexed by its name together with its parent, so the
   "does this formation have an attribute of this name" test is a hash lookup
   as well, rather than a scan of the formation's children.
@@ -89,8 +97,18 @@
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="if (exists($ref/@method)) then substring-after($ref/@base, '.') else string($ref/@base)"/>
-    <xsl:variable name="scope" as="element()?" select="if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][exists(key('attributes', concat($name, '#', generate-id(.)))) or exists(key('handles', concat($name, '#', generate-id(.))))][1]"/>
+    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][eo:declares(., $name)][1]"/>
     <xsl:sequence select="for $found in $scope return key('handles', concat($name, '#', generate-id($found)), $found)[1]"/>
+  </xsl:function>
+  <!--
+  Whether this formation declares the name, publicly or as a handle. Both
+  indexes are filed under one "name in this scope" pair, built once here.
+  -->
+  <xsl:function name="eo:declares" as="xs:boolean">
+    <xsl:param name="scope" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="pair" as="xs:string" select="concat($name, '#', generate-id($scope))"/>
+    <xsl:sequence select="exists(key('attributes', $pair, root($scope))) or exists(key('handles', $pair, root($scope)))"/>
   </xsl:function>
   <!--
   The formation that the explicit receiver of a dispatch names: "ξ" (written
