@@ -66,15 +66,6 @@
   -->
   <xsl:key name="eo:row" match="type" use="@id"/>
   <!--
-  The void rows of the table, by the type of each one. "eo:data-target" asks
-  what the callers of a program were seen putting into a void named from the
-  outside, and without this index that question walks every element of the
-  table again, for every part of every application of the program. The two
-  walks multiply, and the stylesheet took tens of seconds on the XMIR of
-  eo-runtime because of it.
-  -->
-  <xsl:key name="eo:void" match="attr[@void = 'true']" use="@type"/>
-  <!--
   The directory with the tables of "eo:inference", as a URI. Empty when
   nothing was worked out, and then nothing is labeled.
   -->
@@ -201,42 +192,29 @@
     <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
     <xsl:sequence select="exists($eo:links) and exists($parts) and (every $p in $parts satisfies eo:copies-data(key('eo:row', $p/@loc, $eo:links)))"/>
   </xsl:function>
-  <!--
-  Whether this row of "links.xml" says its object is data. A row holds one
-  answer, and three of the kinds it may hold are data: a copy of a data
-  object outright, a copy of something the tables say is data anyway
-  ("eo:data-target"), and a choice all of whose members are one of those.
-  A row with no answer, or one holding anything else, leaves the application
-  unlabeled.
-  -->
+  <!-- Whether this row of "links.xml" says its object is a copy of data. -->
   <xsl:function name="eo:copies-data" as="xs:boolean">
     <xsl:param name="row" as="element()?"/>
-    <xsl:sequence select="exists($row) and count($row/*) = 1 and (exists($row/ref[@loc = $eo:data]) or (exists($row/ref) and eo:data-target($row/ref/@loc)) or (exists($row/union) and eo:chosen($row/union)))"/>
-  </xsl:function>
-  <!--
-  Whether every member of this choice is data. A member is written the same
-  way the answer of a row is, so the same two questions are put to it: the
-  bytes of a literal, which the table writes as "data", and a copy of
-  something known to be data.
-  -->
-  <xsl:function name="eo:chosen" as="xs:boolean">
-    <xsl:param name="union" as="element()"/>
-    <xsl:sequence select="exists($union/*) and (every $m in $union/* satisfies (name($m) = 'data' or (name($m) = 'ref' and ($m/@loc = $eo:data or eo:data-target($m/@loc)))))"/>
-  </xsl:function>
-  <!--
-  Whether the object this locator names is data, judged by what the tables
-  say about it rather than by its own row of "links.xml": a formation that
-  comes back with a data object, and a void the program is only ever seen
-  filling with data. The second question is the one "eo:filled" puts to the
-  voids of a formation, asked here of one void named from the outside.
-  -->
-  <xsl:function name="eo:data-target" as="xs:boolean">
-    <xsl:param name="loc" as="xs:string"/>
-    <xsl:sequence select="exists($eo:provides) and ((some $t in key('eo:row', $loc, $eo:provides) satisfies $t/@returns = $eo:data) or (some $v in key('eo:void', $loc, $eo:provides) satisfies (exists($v/witnessed) and (every $e in $v/witnessed//* satisfies (name($e) = 'union' or (name($e) = 'ref' and $e/@loc = $eo:data))))))"/>
+    <xsl:sequence select="exists($row) and count($row/*) = 1 and exists($row/ref[@loc = $eo:data])"/>
   </xsl:function>
   <!--
   An application whose parts are all data is labeled too, so that the answer
   it works out is remembered instead of being worked out on every read.
+  @todo #7895:90min Label an application whose parts are data by the other
+  kinds of evidence "links.xml" holds. Today only a part that is a copy of
+  data - a literal, or a local that holds one - counts, and the three other
+  cases the table already carries are ignored: a "var" of a void whose row
+  in "provides.xml" is witnessed as data (the same question "eo:filled"
+  asks), a "ref" to a formation whose row says "returns" a data object, and
+  a "union" all of whose members are one of those. This was tried once and
+  taken back out, because the question above is asked of the parts only and
+  the receiver of an application written as "ξ.name" is not one of them:
+  "chunk.get" is "read 0 size", whose parts are a literal and a "size" the
+  table says returns a number, so the label went on an atom that reads a
+  block of memory and "PhSticky" then answered every later read with the
+  bytes of the first one. The evidence widens the set of applications that
+  stop being recomputed, so it is worth having, but only once "eo:applied"
+  asks what the receiver of such an application is.
   -->
   <xsl:template match="*[@loc][@base][not(@base = $eo:literals)][o[@loc]]">
     <xsl:copy>
