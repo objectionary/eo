@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ final class Lines {
      * @param lines The source in lines
      */
     Lines(final List<Span> lines) {
-        this.source = lines;
+        this.source = new ArrayList<>(lines);
     }
 
     /**
