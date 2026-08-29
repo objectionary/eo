@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * One active proxy of Maven settings, carrying the excluded hosts that a
@@ -67,13 +68,22 @@ final class MvnProxy {
      * {@code nonProxyHosts} pattern, the same {@code |}-separated,
      * {@code *}-wildcard glob syntax the JDK's own {@code http.nonProxyHosts}
      * property uses.
+     *
+     * <p>A host name means the same thing however it is capitalised (RFC
+     * 4343), and the JDK reads the property that way too, so a pattern is
+     * matched without regard to case: an excluded host stays excluded when
+     * the repository URL spells it with a capital letter.</p>
+     *
      * @param host The host a request is bound for
      * @return True when the host must be reached directly
      */
     boolean excludes(final String host) {
         final String hosts = this.origin.getNonProxyHosts();
         return hosts != null && Arrays.stream(hosts.split("\\|")).anyMatch(
-            pattern -> host.matches(pattern.trim().replace(".", "\\.").replace("*", ".*"))
+            pattern -> Pattern.compile(
+                pattern.trim().replace(".", "\\.").replace("*", ".*"),
+                Pattern.CASE_INSENSITIVE
+            ).matcher(host).matches()
         );
     }
 }
