@@ -19,6 +19,14 @@ import org.junit.jupiter.api.Test;
 /**
  * Test case for {@link PhDefault}.
  * @since 0.1
+ * @todo #7974:60min Lift the seven remaining fixtures out of this file. Rnd,
+ *  Int, Foo, WithVoidPhi, Counter, Kid and EndlessRecursion are nested classes
+ *  here and take about 210 of its lines, leaving it a few tests short of the
+ *  1000-line cap that {@link PhRecursive} and {@link PhRecursiveNew} were
+ *  moved out to get away from. Give each a test-source class of its own, and
+ *  let EndlessRecursion take its depth through a constructor rather than a
+ *  static, so that no two tests read the same count. A few at a time, to keep
+ *  every pull request under the 200-line limit.
  */
 final class PhDefaultTest {
 
@@ -389,20 +397,18 @@ final class PhDefaultTest {
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.COUNT.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
+            new Dataized(PhRecursive.made(new AtomicInteger(3))).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.COUNT.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
-            new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
+            new Dataized(new PhRecursiveNew(new AtomicInteger(3))).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
@@ -902,88 +908,6 @@ final class PhDefaultTest {
                                     result = new Data.ToPhi(0L);
                                 } else {
                                     result = new PhDefaultTest.EndlessRecursion().copy();
-                                }
-                                return result;
-                            }
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Recursive Phi.
-     * @since 0.1.0
-     */
-    static final class RecursivePhi extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Make one, with its φ in place.
-         *
-         * <p>The φ is attached here, and not in a constructor, because it is
-         * an expression over the object itself, which does not exist yet
-         * while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Phi made() {
-            final PhDefaultTest.RecursivePhi made = new PhDefaultTest.RecursivePhi();
-            made.add(
-                "φ",
-                new AtComposite(
-                    made,
-                    rho -> {
-                        final Phi result;
-                        if (PhDefaultTest.RecursivePhi.COUNT.decrementAndGet() <= 0) {
-                            result = new Data.ToPhi(0L);
-                        } else {
-                            result = new Data.ToPhi(new Dataized(rho).asNumber());
-                        }
-                        return result;
-                    }
-                )
-            );
-            return made;
-        }
-    }
-
-    /**
-     * RecursivePhiViaNew.
-     * @since 0.1.0
-     */
-    static final class RecursivePhiViaNew extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Ctor.
-         */
-        RecursivePhiViaNew() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            rho -> {
-                                final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.COUNT.decrementAndGet() <= 0) {
-                                    result = new Data.ToPhi(0L);
-                                } else {
-                                    result = new Data.ToPhi(
-                                        new Dataized(
-                                            new PhDefaultTest.RecursivePhiViaNew()
-                                        ).asNumber()
-                                    );
                                 }
                                 return result;
                             }
