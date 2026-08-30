@@ -50,11 +50,11 @@ final class SourceTest {
     }
 
     @Test
-    void splitsOnBareCarriageReturn() {
+    void keepsBareCarriageReturnInsideTheLine() {
         MatcherAssert.assertThat(
-            "a bare CR must terminate a line by itself",
+            "R-2.1.2 knows two line endings, and a lone CR is neither of them",
             SourceTest.texts(new Source("alpha".concat(SourceTest.creturn()).concat("beta"))),
-            Matchers.contains("alpha", "beta")
+            Matchers.contains("alpha".concat(SourceTest.creturn()).concat("beta"))
         );
     }
 

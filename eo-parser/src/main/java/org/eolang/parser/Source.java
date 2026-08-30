@@ -60,13 +60,10 @@ final class Source implements Iterable<Span> {
                 number = number + 1;
                 pos = pos + 1;
                 start = pos;
-            } else if (glyph == '\r') {
+            } else if (glyph == '\r' && pos + 1 < len && text.charAt(pos + 1) == '\n') {
                 out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
-                pos = pos + 1;
-                if (pos < len && text.charAt(pos) == '\n') {
-                    pos = pos + 1;
-                }
+                pos = pos + 2;
                 start = pos;
             } else {
                 pos = pos + 1;
