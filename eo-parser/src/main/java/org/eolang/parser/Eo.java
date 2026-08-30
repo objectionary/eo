@@ -198,6 +198,11 @@ final class Eo implements Iterable<Directive> {
                 broken = true;
                 break;
             }
+            if (!next.blank() && next.indent() % 2 == 1) {
+                emit.error(next.line(), 0, "unexpected odd indent");
+                broken = true;
+                break;
+            }
             if (!Eo.isBytesOnly(trimmed)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
