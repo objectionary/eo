@@ -48,7 +48,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ address port] > socket
+[address port] > socket
   os.is-windows.if > @
     [^ sys] >> impl
       code. > addr
@@ -78,16 +78,15 @@
               connected.eq -1
               ^.cant-connect
                 "Couldn't connect to %s:%d on socket #%d because %s".printf
-                  * sock.address sock.port sock.sd sock.sys.message
+                  * ^.^.^.address ^.^.^.port ^.^.^.sd ^.^.^.sys.message
               ^.scope
-                sock.scoped-socket sock.sd
+                ^.^.^.scoped-socket ^.^.^.sd
             code. > connected
-              sock.sys.raw *1
+              ^.^.^.sys.raw *1
                 "connect"
-                sock.sd
-                sock.sockaddr
-                sock.sockaddr.size
-            ^.^.^ > sock
+                ^.^.^.sd
+                ^.^.^.sockaddr
+                ^.^.^.sockaddr.size
           cant-connect
       [^ scope cant-listen] > listen
         ^.safe-socket > @
@@ -96,42 +95,41 @@
               bound.eq -1
               ^.cant-listen
                 "Couldn't bind the socket #%d to %s:%d because %s".printf
-                  * sock.sd sock.address sock.port sock.sys.message
+                  * ^.^.^.sd ^.^.^.address ^.^.^.port ^.^.^.sys.message
               if.
                 listened.eq -1
                 ^.cant-listen
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
-                    * sock.address sock.port sock.sd sock.sys.message
+                    * ^.^.^.address ^.^.^.port ^.^.^.sd ^.^.^.sys.message
                 ^.scope
                   [^] >>
-                    ^.sock.scoped-socket ^.sock.sd > @
+                    ^.^.^.^.scoped-socket ^.^.^.^.sd > @
                     [^ scope cant-accept] > accept
                       if. > @
                         client.eq -1
                         cant-accept
                           "Failed to accept a connection on the socket #%d because %s".printf
-                            * ^.^.sock.sd ^.^.sock.sys.message
-                        ^.^.sock.guarded
-                          scope (^.^.sock.scoped-socket client)
-                          ^.^.sock.closed-socket client
+                            * ^.^.^.^.^.sd ^.^.^.^.^.sys.message
+                        ^.^.^.^.^.guarded
+                          scope (^.^.^.^.^.scoped-socket client)
+                          ^.^.^.^.^.closed-socket client
                       code. > client
-                        ^.^.sock.sys.raw *1
+                        ^.^.^.^.^.sys.raw *1
                           "accept"
-                          ^.^.sock.sd
-                          ^.^.sock.sockaddr
-                          ^.^.sock.sockaddr.size
+                          ^.^.^.^.^.sd
+                          ^.^.^.^.^.sockaddr
+                          ^.^.^.^.^.sockaddr.size
             code. > bound
-              sock.sys.raw *1
+              ^.^.^.sys.raw *1
                 "bind"
-                sock.sd
-                sock.sockaddr
-                sock.sockaddr.size
+                ^.^.^.sd
+                ^.^.^.sockaddr
+                ^.^.^.sockaddr.size
             code. > listened
-              sock.sys.raw *1
+              ^.^.^.sys.raw *1
                 "listen"
-                sock.sd
+                ^.^.^.sd
                 2048
-            ^.^.^ > sock
           cant-listen
       [^ scope cant] > safe-socket
         if. > @
@@ -199,7 +197,7 @@
         ^.htons ^.checked-port
         addrint
     |
-      [^]
+      []
         raw > @
         if. > cleanup
           eq.
@@ -224,7 +222,7 @@
             "WSAStartup"
             win32.version
     impl
-      [^]
+      []
         raw > @
         true > cleanup
         "close" > close
@@ -237,7 +235,7 @@
                 *
         posix > raw
         0 > startup
-  [^ recv] > as-input
+  [recv] > as-input
     [^ size] > read
       @. > @
         read.
@@ -251,7 +249,7 @@
             ^.^.input-block chunk
           as-bytes. > chunk
             ^.^.^.recv size
-  [^ send] > as-output
+  [send] > as-output
     [^ buffer] > write
       @. > @
         output-block.write buffer
@@ -280,13 +278,13 @@
         "Port %d is out of range; it must be 0 to 65535".printf
           * ^.port
       ^.port
-  [^ scope cleanup] > guarded
+  [scope cleanup] > guarded
     seq * > @
       recovered value true
       cleanup
       value
     scope > value!
-  [^ port] > htons
+  [port] > htons
     as-i16. > @
       or.
         left.
@@ -306,7 +304,7 @@
   eq. ++> can-dataize-a-guarded-scope-once
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         socket.guarded
           m.put
             m.as-number.plus 1
@@ -324,14 +322,14 @@
     eq. > @
       malloc.of
         2
-        [^ c]
+        [c]
           seq * > @
             write.
               socket.as-output
                 partial-send c
               01-02
             c.get
-          seq * > [^ acc buffer] > partial-send
+          seq * > [acc buffer] > partial-send
             acc.write
               2.minus buffer.size
               buffer.slice 0 1
@@ -341,7 +339,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         socket.guarded
           42
           m.put
@@ -352,7 +350,7 @@
   eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
     malloc.for
       0
-      seq * > [^ m]
+      seq * > [m]
         recovered
           socket.guarded
             2.as-i64.div 0.as-i64

@@ -268,13 +268,32 @@
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
-              <xsl:variable name="folded" as="node()*">
-                <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
-                <xsl:apply-templates select="$value/node()"/>
+              <!--
+              The folded value is rebased as a whole `o` and then unwrapped
+              into the node being built, rather than as the loose sequence of
+              its attributes and children. The `dropped` mode rewrites an
+              `@base` only as it walks the `o` carrying it, so a bare sequence
+              hands it the value's own `@base` as a stray attribute node that
+              the catch-all copies verbatim: `x.plus 1 &gt;&gt; h` folded into a
+              nested formation kept reading `ξ.x`, which is that formation's own
+              `x` and not the one the handle was written against (#7097). The
+              wrapper also carries whether the value is a formation, so its
+              children are counted one level deeper, the way any nested
+              formation is (see `eo:dropped-base`).
+              -->
+              <xsl:variable name="folded" as="element()">
+                <o>
+                  <xsl:apply-templates select="$value/@*[$keep-name or (name() != 'name' and name() != 'local')]"/>
+                  <xsl:apply-templates select="$value/node()"/>
+                </o>
               </xsl:variable>
-              <xsl:apply-templates select="$folded" mode="dropped">
-                <xsl:with-param name="drop" select="eo:host-drop($target, .)" tunnel="yes"/>
-              </xsl:apply-templates>
+              <xsl:variable name="rebased" as="element()">
+                <xsl:apply-templates select="$folded" mode="dropped">
+                  <xsl:with-param name="drop" select="eo:host-drop($target, .)" tunnel="yes"/>
+                </xsl:apply-templates>
+              </xsl:variable>
+              <xsl:copy-of select="$rebased/@*"/>
+              <xsl:copy-of select="$rebased/node()"/>
               <!--
               The reference is the base of an application (`b 42 &gt; x` over a
               based `a.plus &gt;&gt; b` handle), so it carries its own argument
@@ -622,8 +641,18 @@
   <!--
   Rewrites the bases of a folded value, counting how deep inside it each
   node sits so that a name reaching no further than the value itself is
-  left where it is. Only the based-handle fold uses it so far; see the
-  puzzle on `Xmir` for the branches still to come.
+  left where it is. The based-handle fold is the only site that needs it,
+  and #7097 asked why. Nothing else in the print train moves a value across
+  a formation boundary: the four branches above it either leave the handle
+  standing and copy the reference in place (#5983, #6021, #5834), or
+  relocate the handle onto a reference the guards have already restricted to
+  the handle's own scope, since the nested ones are taken by the branch
+  above (#6021). "merge-monikers" is the same story from the other side —
+  each of its three merges keys its host reference by the reference's
+  nearest formation ancestor and looks the binding up under that same
+  formation, so a host always shares the binding's scope and the drop is
+  zero. Only a handle reached from a nested scope travels, and only the fold
+  below carries it there.
   -->
   <xsl:template match="o" mode="dropped">
     <xsl:param name="drop" as="xs:integer" tunnel="yes"/>

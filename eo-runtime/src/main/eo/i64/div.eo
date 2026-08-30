@@ -1,4 +1,4 @@
-# Integer division of the `i64` number `n` by the `i64` number `x`, truncated
+# Integer division of an `i64` number by the `i64` number `x`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `x` is
 # zero, the caller-supplied `cant-divide` fallback is returned.
@@ -18,7 +18,7 @@
     if.
       eq.
         and.
-          n.as-bytes.xor x.as-bytes
+          ^.as-bytes.xor x.as-bytes
           80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       as-bytes.
@@ -28,7 +28,7 @@
               looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
           i64 00-00-00-00-00-00-00-01
       i64 quotient
-  00-00-00-00-00-00-00-01.left i > [^ i] >> bit
+  00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^ index remainder quot] >> looped
     if. > @
       index.lt 0
@@ -57,16 +57,15 @@
             remainder.left 1
             and.
               right.
-                magnitude ^.n.as-bytes
+                magnitude ^.^.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot
-  ^ > n
   as-bytes. >> subtrahend
     plus.
       i64
         not.
-          if. > [^ b] >> magnitude
+          if. > [b] >> magnitude
             eq.
               b.and 80-00-00-00-00-00-00-00
               80-00-00-00-00-00-00-00
@@ -110,7 +109,7 @@
     "recovered"
     2.as-i64.div
       0.as-i64
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64

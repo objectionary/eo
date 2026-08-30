@@ -64,20 +64,12 @@ final class LnTextBlock implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final byte[] joined;
-        try {
-            joined = Escapes.bytes(
-                String.join(String.valueOf('\n'), globals.tbody())
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                this.span.line(), this.span.indent(),
-                "invalid unicode or octal escape in text block"
-            );
-            error.initCause(ex);
-            throw error;
-        }
+        final byte[] joined = new Unescaped(
+            String.join(String.valueOf('\n'), globals.tbody()),
+            this.span.line(), this.span.indent()
+        ).bytes();
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (outer != null) {
             emit.slot(Emissions.bindingTag(outer));
@@ -105,9 +97,7 @@ final class LnTextBlock implements Line {
                 suffix.attribute(this.span.line(), this.span.indent()),
                 "Φ.string", this.span.line(), this.span.indent()
             );
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
@@ -125,9 +115,7 @@ final class LnTextBlock implements Line {
                 ".".concat(last.name()), this.span.line(), last.dot()
             );
             emit.method(last.fragile());
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
         }
     }
 }

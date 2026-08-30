@@ -10,7 +10,7 @@
 [^ passed] > concat
   passed.reducedi > @
     ^
-    accum.with item > [^ accum item index]
+    accum.with item > [accum item index]
 
   ++> can-concat-two-lists
     and. > @

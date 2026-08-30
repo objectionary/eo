@@ -43,6 +43,11 @@ final class Eo implements Iterable<Directive> {
     private static final String ROOT_TOKENS = "*(QTI@^$";
 
     /**
+     * What a line with a space at its end is told, wherever it is written.
+     */
+    private static final String TRAILING = "trailing whitespace at end of line";
+
+    /**
      * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
      */
     private static final int SPANS_CAPACITY = 10;
@@ -71,13 +76,13 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final Emit emit = new Emit(this.source);
+        final List<Span> spans = new ArrayList<>(Eo.SPANS_CAPACITY);
+        new Source(this.source).forEach(spans::add);
+        final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
             (level, naming) -> Eo.checkOnClose(level, emit, naming),
             parent -> Eo.beforeChild(parent, emit)
         );
-        final List<Span> spans = new ArrayList<>(Eo.SPANS_CAPACITY);
-        new Source(this.source).forEach(spans::add);
         final Recovery recovery = new Recovery(spans);
         int idx = 0;
         while (idx < spans.size()) {
@@ -264,9 +269,10 @@ final class Eo implements Iterable<Directive> {
             emit.error(span.line(), 0, "unexpected odd indent");
             failed = true;
         } else if (span.trailing()) {
-            emit.error(span.line(), 0, "trailing whitespace at end of line");
+            emit.error(span.line(), 0, Eo.TRAILING);
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
+            globals.seal(emit, span);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
@@ -276,28 +282,28 @@ final class Eo implements Iterable<Directive> {
         return failed;
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     private static void continueTextBlock(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (Eo.closesTextBlock(span, globals)) {
+            if (span.trailing()) {
+                emit.error(span.line(), 0, Eo.TRAILING);
+            }
             stack.popDeeperThan(span.indent());
-            final int token = emit.savepoint();
-            final List<Level> frame = stack.snapshot();
+            final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
             try {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
-                emit.rollback(token);
-                stack.restore(frame);
+                point.apply();
                 emit.error(err.line(), err.pos(), err.getMessage());
                 globals.closeTextBlock();
             }
         } else {
             final String raw = span.text();
             if (span.trailing()) {
-                emit.error(span.line(), 0, "trailing whitespace at end of line");
+                emit.error(span.line(), 0, Eo.TRAILING);
             }
-            if (!Eo.isBlank(raw) && Eo.leadingSpaces(raw) < globals.textBlockOpenIndent()) {
+            if (!span.blank() && span.indent() < globals.textBlockOpenIndent()) {
                 emit.error(
                     span.line(), 0,
                     "text block body line indented less than opener"
@@ -307,40 +313,19 @@ final class Eo implements Iterable<Directive> {
         }
     }
 
-    private static int leadingSpaces(final String raw) {
-        int count = 0;
-        while (count < raw.length() && raw.charAt(count) == ' ') {
-            count = count + 1;
-        }
-        return count;
-    }
-
-    private static boolean isBlank(final String raw) {
-        boolean blank = true;
-        for (int idx = 0; idx < raw.length(); idx = idx + 1) {
-            if (!Character.isWhitespace(raw.charAt(idx))) {
-                blank = false;
-                break;
-            }
-        }
-        return blank;
-    }
-
     private static boolean dispatch(
         final Span span, final Stack stack, final Globals globals, final Emit emit
     ) {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
         }
-        final int token = emit.savepoint();
-        final List<Level> frame = stack.snapshot();
+        final Rollback point = new Rollback(stack, emit, emit.savepoint(), stack.snapshot());
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
             Eo.classify(span).into(stack, globals, emit);
         } catch (final ParseError err) {
-            emit.rollback(token);
-            stack.restore(frame);
+            point.apply();
             globals.restore(saved);
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
@@ -367,7 +352,7 @@ final class Eo implements Iterable<Directive> {
         return !span.blank()
             && span.indent() == globals.textBlockOpenIndent()
             && body.startsWith("\"\"\"")
-            && " .:".indexOf(body.concat(" ").charAt(3)) >= 0;
+            && " .:?".indexOf(body.concat(" ").charAt(3)) >= 0;
     }
 
     private static Line classify(final Span span) {
@@ -499,7 +484,12 @@ final class Eo implements Iterable<Directive> {
     private static boolean signedDigit(final Span span) {
         final String body = span.body();
         return body.length() >= 2
+            && Eo.signHead(span.head())
             && body.charAt(1) >= '0' && body.charAt(1) <= '9';
+    }
+
+    private static boolean signHead(final char head) {
+        return head == '+' || head == '-';
     }
 
     private static Line questioned(final Span span) {

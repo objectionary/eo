@@ -1,8 +1,9 @@
-# Returns the first `limit` characters of `text`, so that `Jeffrey` truncated
-# to three characters becomes `Jef`. Characters are counted, and not bytes,
-# so a multi-byte character counts as one. A `text` of `limit` characters
-# or shorter is returned unchanged, which is how this differs from `slice`,
-# where a `limit` beyond the end of the `text` terminates the computation.
+# Returns the first `limit` characters of the string, so that `Jeffrey`
+# truncated to three characters becomes `Jef`. Characters are counted, and
+# not bytes, so a multi-byte character counts as one. A string of `limit`
+# characters or shorter is returned unchanged, which is how this differs
+# from `slice`, where a `limit` beyond the end of the string terminates the
+# computation.
 # If `limit` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-truncate` fallback is returned, or the terminator
 # when unbound.
@@ -27,10 +28,9 @@
           *
             string limit.as-scientific
     if.
-      limit.lt text.length
-      text.slice 0 limit
-      text
-  ^ > text
+      limit.lt ^.length
+      ^.slice 0 limit
+      ^
 
   eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"
@@ -52,19 +52,19 @@
     "recovered"
     "Jeff".truncated
       -3
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-a-non-integer-limit
     "recovered"
     "Jeff".truncated
       1.75
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-recover-from-an-infinite-limit-when-truncating
     "recovered"
     "Jeff".truncated
       pinf
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   eq. ++> can-return-a-shorter-text-unchanged
     "hi"

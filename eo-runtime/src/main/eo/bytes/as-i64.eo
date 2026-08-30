@@ -11,12 +11,11 @@
 
 [^ cant-convert] > as-i64
   if. > @
-    b.size.eq 8
-    i64 b
+    ^.size.eq 8
+    i64 ^
     cant-convert
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
-        * b
-  ^ > b
+        * ^
 
   00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> can-convert-bytes-to-i64
 
@@ -27,7 +26,7 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
     "recovered"
     01-01-01-01.as-i64
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
     00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes

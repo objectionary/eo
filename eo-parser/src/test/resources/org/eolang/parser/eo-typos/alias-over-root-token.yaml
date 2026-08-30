@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: "'+alias' cannot rename the root token Q"
+input: |
+  +alias Q Q.foo
+
+  [] > main
+    Q > @

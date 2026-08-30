@@ -12,8 +12,7 @@ import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 
 /**
- * EO program of many nested objects, long enough for its parsing
- * to last more than a single millisecond.
+ * EO program of as many nested objects as the caller asks for.
  * @since 0.61.0
  */
 public final class LargeProgram implements Input {

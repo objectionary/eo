@@ -8,4 +8,4 @@ asserts:
   - //o[@name='ρ' and @base='∅']
 input: |
   [] > foo
-    q.f (a > [^ x] > y) > z
+    q.f (a > [^ x]) > z

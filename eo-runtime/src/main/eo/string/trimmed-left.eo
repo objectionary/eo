@@ -1,4 +1,4 @@
-# Returns `text` trimmed from left side.
+# Returns the string trimmed from left side.
 # Removes all leading ASCII whitespace bytes: `20-` (space), `09-`
 # (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
 # (form feed), and `0D-` (carriage return). Matches the strip-set
@@ -15,10 +15,10 @@
   if. > @
     0.eq
       b.size >> len!
-    text
+    ^
     string
       slice.
-        text >> b!
+        ^ >> b!
         first-non-ws-index 0 >> idx!
         minus.
           number len
@@ -31,7 +31,7 @@
         is-ws (b.slice index 1)!
         ^.first-non-ws-index (index.plus 1).as-number
         index
-  or. > [^ c] >> is-ws
+  or. > [c] >> is-ws
     c.eq 20-
     or.
       c.eq 09-
@@ -42,7 +42,6 @@
           or.
             c.eq 0C-
             c.eq 0D-
-  ^ > text
 
   "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 

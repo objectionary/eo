@@ -36,7 +36,7 @@ import java.util.List;
  * <p>This iteration handles identifier and star heads with optional
  * dotted chains and identifier / INT horizontal args. Paren groups,
  * string / float / hex / bytes literals, and inline bindings attach in
- * subsequent iterations. *
+ * subsequent iterations.</p>
  *
  * @since 0.1
  */
@@ -73,7 +73,7 @@ final class LnApplication implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         this.checkGroupHead(head, chain, args, outer);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Kind kind = LnApplication.classify(head, chain, args);
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {

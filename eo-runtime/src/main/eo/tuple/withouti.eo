@@ -36,7 +36,7 @@
         "text"
         "f"
       * "text" "f"
-    a.withouti 0 > [^ a] > foo
+    a.withouti 0 > [a] > foo
 
   eq. ++> can-drop-an-item-by-index-in-a-nested-list
     withouti.

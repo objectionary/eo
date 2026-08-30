@@ -18,7 +18,7 @@ import org.xembly.Xembler;
  * <p>First iteration: bare-identifier heads with optional name
  * suffixes. Chains, horizontal args, paren groups, star tuples, and
  * data literals are tested as their support lands in subsequent
- * iterations. *
+ * iterations.</p>
  *
  * @since 0.1
  */

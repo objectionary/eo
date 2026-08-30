@@ -31,17 +31,6 @@ import org.xembly.Xembler;
 public final class EoSyntax implements Syntax {
 
     /**
-     * Canonical XSL pipeline applied to the raw parser output.
-     *
-     * <p>This one is not aware of any objects, so bare references are
-     * always homed into the root {@code Φ} package. Use a
-     * {@link Canonical} built with a list of objects to make the
-     * pipeline resolve same-package references automatically (see
-     * {@code add-default-package.xsl}).</p>
-     */
-    static final UnaryOperator<XML> CANONICAL = new Canonical();
-
-    /**
      * Text to parse.
      */
     private final Input input;
@@ -70,10 +59,18 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
+     * <p>Applies the canonical XSL pipeline to the raw parser output,
+     * built fresh for this instance. This pipeline is not aware of any
+     * objects, so bare references are always homed into the root
+     * {@code Φ} package. Use a {@link Canonical} built with a list of
+     * objects to make the pipeline resolve same-package references
+     * automatically (see {@code add-default-package.xsl}).</p>
+     *
      * @param ipt The EO program to parse
      */
     public EoSyntax(final Input ipt) {
-        this(ipt, EoSyntax.CANONICAL);
+        this(ipt, new Canonical());
     }
 
     /**
@@ -96,6 +93,15 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing function
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
+        this(Objects.requireNonNull(transform, "EoSyntax has no transform"), ipt);
+    }
+
+    /**
+     * Ctor.
+     * @param transform Transform XMIR after parsing function
+     * @param ipt The EO program to parse
+     */
+    private EoSyntax(final UnaryOperator<XML> transform, final Input ipt) {
         this.input = ipt;
         this.transform = transform;
     }
@@ -104,7 +110,7 @@ public final class EoSyntax implements Syntax {
     public XML parsed() throws IOException {
         final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
-        return Objects.requireNonNull(this.transform, "EoSyntax has no transform").apply(
+        return this.transform.apply(
             new XMLDocument(
                 new Xembler(
                     new Directives()
@@ -113,7 +119,7 @@ public final class EoSyntax implements Syntax {
                         .xpath("/object")
                         .strict(1)
                         .append(new Eo(text).directives())
-                        .attr("ms", (System.nanoTime() - start) / (1000L * 1000L))
+                        .attr("ms", new Millis(System.nanoTime() - start).asString())
                         .up()
                 ).domQuietly()
             )

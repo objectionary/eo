@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='x' and @base='Φ.number']
+  - //o[@name='y' and @base='Φ.number']
+  - //o[@name='z' and @base='Φ.number']
+input: |
+  [] > main
+    +5 > x
+    -5 > y
+    7 > z

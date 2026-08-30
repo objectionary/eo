@@ -38,7 +38,7 @@ import java.util.List;
  * <p>This iteration accepts identifier and root heads (with optional
  * chains). Reversed-dispatch heads ({@code joined. *1 > sixth}) are
  * dispatched via the reversed-classifier path and are not yet
- * supported. *
+ * supported.</p>
  *
  * @since 0.1
  */
@@ -91,6 +91,7 @@ final class LnCompactTuple implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
+        globals.seal(emit, this.span);
         final Level level = this.transition(stack, suffix);
         level.compact(count);
         globals.clearBlanks();

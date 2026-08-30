@@ -3,19 +3,20 @@
 ---
 # The object a formation is attached to is an input like any other: a
 # formation says so by declaring "^", and the table then says what callers
-# put there. When that is a number, a body reading it reads data and the
-# formation is marked.
+# put there. A receiver is handed over by dispatching and never by an
+# argument, since "ρ" is not among the attributes an argument can reach, so
+# it is "42.halved" that says what "^" holds. When that is a number, a body
+# reading it reads data and the formation is marked.
 eo:
   app.eo: |
     [] > app
-      halved 42 > @
-  halved.eo: |
-    [^] > halved
-      ^.div 2 > @
+      42.halved > @
   number.eo: |
     [as-bytes] > number
       as-bytes > @
       [x] > div
         x > @
+      [^] > halved
+        ^.div 2 > @
 pure:
   - "//o[@name='halved' and @pure='true']"

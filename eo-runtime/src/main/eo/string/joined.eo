@@ -1,4 +1,4 @@
-# Joins `items`, which is a `tuple` of strings, using current `text`
+# Joins `items`, which is a `tuple` of strings, using the string itself
 # as a delimiter.
 
 +architect yegor256@gmail.com
@@ -19,11 +19,10 @@
           acc
           ^.with-delimiter
             concat.
-              concat. (dataized tup.head) ^.text!
+              concat. (dataized tup.head) ^.^!
               acc
             tup.tail
       | items.head items.tail
-  ^ > text
 
   matches. ++> can-apply-regex-to-a-joined-string
     compiled.

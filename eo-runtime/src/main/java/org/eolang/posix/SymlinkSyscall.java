@@ -4,8 +4,8 @@
  */
 package org.eolang.posix;
 
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -34,11 +34,10 @@ public final class SymlinkSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String target = new Cstring("the 'target' argument of symlink", params[0]).it();
+        final String path = new Cstring("the 'path' argument of symlink", params[1]).it();
         final Phi result = this.posix.take("return").copy();
-        final int code = CStdLib.INSTANCE.symlink(
-            new Dataized(params[0]).asString(),
-            new Dataized(params[1]).asString()
-        );
+        final int code = CStdLib.INSTANCE.symlink(target, path);
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

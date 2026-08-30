@@ -5,9 +5,11 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,22 +111,88 @@ final class Provided {
     }
 
     /**
-     * The void this type keeps in the given place.
+     * The void this type keeps in the given place among the ones still empty.
+     *
+     * <p>The {@code ρ} a formation declares is not one of them. It is filled
+     * by whoever dispatches into the type and is out of reach of an argument
+     * counted from the left, the way {@code PhDefault.SORTABLE} keeps it out
+     * of the order a positional argument walks. The {@code receiver} method
+     * answers for it instead.</p>
+     *
      * @param type The name the type goes by
-     * @param place The place of the void among the voids of this type
+     * @param taken The locator of every void that is no longer empty
+     * @param place The place of the void among the ones still empty
      * @return The locator of the void, or an empty string when this type keeps
-     *  fewer voids than that
+     *  fewer empty voids than that
      */
-    String slot(final String type, final int place) {
-        String found = "";
-        int seen = 0;
+    String vacant(final String type, final Collection<String> taken, final int place) {
+        final List<String> free = new ArrayList<>(0);
         for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void"))) {
-                if (seen == place) {
-                    found = row.getOrDefault("type", "");
-                    break;
-                }
-                seen += 1;
+            final String hollow = row.getOrDefault("type", "");
+            if ("true".equals(row.get("void"))
+                && !"ρ".equals(row.get("name"))
+                && !taken.contains(hollow)) {
+                free.add(hollow);
+            }
+        }
+        String found = "";
+        if (place < free.size()) {
+            found = free.get(place);
+        }
+        return found;
+    }
+
+    /**
+     * The void this type declares for the object a dispatch takes it from.
+     *
+     * <p>Since #6657 the receiver is a void like any other, named {@code ρ}
+     * and written down where the formation wants it, so it is filled by
+     * whoever dispatches into the type and never by an argument counted from
+     * the left. That is why the {@code vacant} method steps over it.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the void, or an empty string when this type
+     *  declares none
+     */
+    String receiver(final String type) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void")) && "ρ".equals(row.get("name"))) {
+                found = row.getOrDefault("type", "");
+                break;
+            }
+        }
+        return found;
+    }
+
+    /**
+     * What this type hands its answers to.
+     *
+     * <p>Only what the type binds itself, and an empty string when it binds
+     * nothing: unlike {@link #attribute(String, String)}, this invents no
+     * member for a void, since whoever walks a delegation has to arrive
+     * somewhere rather than go on naming names.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the {@code φ} this type binds, or an empty string
+     */
+    String body(final String type) {
+        return this.bound(type, "φ");
+    }
+
+    /**
+     * The void this type keeps under the given name.
+     * @param type The name the type goes by
+     * @param name The name of the void
+     * @return The locator of the void, or an empty string when this type keeps
+     *  no void of that name
+     */
+    String named(final String type, final String name) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void")) && name.equals(row.getOrDefault("name", ""))) {
+                found = row.getOrDefault("type", "");
+                break;
             }
         }
         return found;

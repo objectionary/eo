@@ -4,9 +4,6 @@
 # yamllint disable rule:line-length
 name: qulice
 'on':
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
@@ -19,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 26
@@ -28,4 +25,4 @@ jobs:
           path: ~/.m2/repository
           key: ubuntu-qulice-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-qulice-jdk-26-maven-
-      - run: mvn clean verify -PskipTests -Pqulice --errors --batch-mode
+      - run: mvn -ntp -Pqulice --errors --batch-mode -Deo.skip clean process-classes qulice:check

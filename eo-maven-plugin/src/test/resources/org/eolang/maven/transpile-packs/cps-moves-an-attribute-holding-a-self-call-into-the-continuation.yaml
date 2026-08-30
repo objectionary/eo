@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='rec']/o[@base='∅' and @name='k🌵']
+  - /object[not(//o[@name='rec']/o[@name='prev'])]
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec' and @again='true']/o[@as='α0' and @base='ξ.i.minus']
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1']/o[@base='ξ.r🌵' and @name='prev']
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1']/o[@name='φ' and @base='ξ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='ξ.prev.times']/o[@as='α0' and @base='ξ.prev']
+  - /object[count(//o[starts-with(@name,'c🌵')])=1]
+input: |
+  [] > main
+    [i] > rec
+      if. > @
+        i.eq 0
+        1
+        prev.times prev
+      ^.rec (i.minus 1) > prev
+    rec 5 > @

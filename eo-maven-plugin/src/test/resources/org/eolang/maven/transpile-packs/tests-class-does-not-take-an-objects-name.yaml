@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The JUnit class of an object must not be named the way an object of the same
+# package could be. The tests of `x` used to give `EOxTest`, and so does an
+# object called `xTest`, so the two declared one class in one package and the
+# test source quietly shadowed the object (#7762). Every class name the
+# transpiler makes for an object starts with `EO`, so the mark goes in front.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //class[@java-name='org.eolang.EOx']
+  - //tests[contains(text(), 'public final class TestEOx')]
+  - //tests[not(contains(text(), 'class EOxTest'))]
+input: |
+  [] > x
+    42 > @
+
+    [] +> checks-something
+      eq. > @
+        1
+        1

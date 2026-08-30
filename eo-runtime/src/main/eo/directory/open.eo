@@ -16,4 +16,4 @@
 
   mktemp.open --> stops-on-opening-a-directory
     "w"
-    true > [^ x]
+    true > [x]

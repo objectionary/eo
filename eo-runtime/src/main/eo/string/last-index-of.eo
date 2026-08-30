@@ -1,4 +1,4 @@
-# Returns last index of `substring` in `text`.
+# Returns last index of `substring` in the string.
 # If no element was found, it returns -1.
 
 +architect yegor256@gmail.com
@@ -21,7 +21,7 @@
           not.
             eq.
               substring >> part!
-              text >> txt!
+              ^ >> txt!
       found.eq -1
     -1
     length.
@@ -42,7 +42,6 @@
     eq. > includes
       txt.slice idx size
       part
-  ^ > text
 
   eq. ++> can-find-no-last-index-of-an-absent-substring
     -1

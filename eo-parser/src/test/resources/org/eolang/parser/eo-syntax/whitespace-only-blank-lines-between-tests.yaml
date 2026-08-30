@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[count(o[not(starts-with(@name, 'a🌵'))])=4]
+  - /object/o[@name='foo']/o[@name='λ']
+input: "[] > foo /bytes\n  \n  eq. +> test-1\n    foo\n    \"fox\"\n\t\n  [] +> test-2\n    foo > @\n\n  [] +> test-3\n    foo > i"

@@ -39,4 +39,43 @@ final class MvnProxyTest {
             Matchers.is(false)
         );
     }
+
+    @Test
+    void excludesAHostSpelledInCapitals() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(8080);
+        origin.setNonProxyHosts("*.internal.example.com");
+        MatcherAssert.assertThat(
+            "A host name is case-insensitive, so a capitalised one matching a nonProxyHosts pattern cannot be sent through the proxy",
+            new MvnProxy(origin).excludes("BUILD.Internal.EXAMPLE.com"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void answersTheChallengeWithTheCredentialsOfTheSettings() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(3128);
+        origin.setUsername("jeff");
+        origin.setPassword("secret");
+        MatcherAssert.assertThat(
+            "a proxy that wants a name and a password must have something to answer with",
+            new MvnProxy(origin).credentials().isPresent(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void saysNothingWhenTheSettingsCarryNoCredentials() {
+        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(3128);
+        MatcherAssert.assertThat(
+            "a proxy that wants nothing must be left alone, but it was given an authenticator",
+            new MvnProxy(origin).credentials().isPresent(),
+            Matchers.is(false)
+        );
+    }
 }

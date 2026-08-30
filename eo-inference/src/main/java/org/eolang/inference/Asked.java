@@ -42,13 +42,20 @@ final class Asked {
     private final Map<String, String> names;
 
     /**
+     * What the types certainly have.
+     */
+    private final Provided owned;
+
+    /**
      * Ctor.
      * @param needs The needs table, as {@link Needs} wrote it
      * @param aliases The name every type goes by, from {@link Ends}
+     * @param provided What the types certainly have
      */
-    Asked(final XML needs, final Map<String, String> aliases) {
+    Asked(final XML needs, final Map<String, String> aliases, final Provided provided) {
         this.wanted = needs;
         this.names = aliases;
+        this.owned = provided;
     }
 
     /**
@@ -61,7 +68,10 @@ final class Asked {
         for (final XML attr : this.wanted.nodes("/needs/type/attr")) {
             final String name = attr.xpath("@name").get(0);
             final String step = ".".concat(name);
-            final String answer = this.names.getOrDefault(attr.xpath("@type").get(0), "");
+            final String bearer = attr.xpath("../@id").get(0);
+            final String answer = this.owned.attribute(
+                this.names.getOrDefault(bearer, bearer), name
+            );
             if (answer.endsWith(step)) {
                 found.computeIfAbsent(
                     answer.substring(0, answer.length() - step.length()),

@@ -4,8 +4,8 @@
  */
 package org.eolang.posix;
 
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -30,8 +30,9 @@ public final class UnlinkSyscall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final String path = new Cstring("the 'path' argument of unlink", params[0]).it();
         final Phi result = this.posix.take("return").copy();
-        final int code = CStdLib.INSTANCE.unlink(new Dataized(params[0]).asString());
+        final int code = CStdLib.INSTANCE.unlink(path);
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

@@ -49,10 +49,15 @@ final class Escapes {
         int idx = 0;
         while (idx < inner.length()) {
             final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
+            if (glyph != '\\') {
                 text.append(glyph);
                 idx = idx + 1;
                 continue;
+            }
+            if (idx + 1 >= inner.length()) {
+                throw new NumberFormatException(
+                    "backslash at the end of the text has nothing to escape"
+                );
             }
             final char next = inner.charAt(idx + 1);
             if (next == 'u') {

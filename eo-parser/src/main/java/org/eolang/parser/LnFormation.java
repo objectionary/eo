@@ -26,7 +26,7 @@ import java.util.List;
  * indent (Step C/D) or replaces the current top (Step B), with
  * {@link Kind#BARE_FORMATION} and {@link Openness#OPEN}. The atom flag
  * is set if the suffix carries {@code /sig}; the named flag is set when
- * the suffix is present. *
+ * the suffix is present.</p>
  *
  * @since 0.1
  */
@@ -80,8 +80,9 @@ final class LnFormation implements Line {
             Blanks.checkTest(this.span, stack, globals, emit);
         }
         Blanks.enterAfterMeta(this.span, globals, emit);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();
         globals.markEmitted();
         this.emit(emit, suffix, params, binding);
@@ -168,7 +169,7 @@ final class LnFormation implements Line {
         if (close < 0) {
             throw new ParseError(
                 span.line(), span.indent(),
-                "formation brackets must not contain leading or trailing space"
+                "formation is missing its closing bracket"
             );
         }
         return close;

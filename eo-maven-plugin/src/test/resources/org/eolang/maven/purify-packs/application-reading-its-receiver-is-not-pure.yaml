@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The receiver of an application written as "ξ.name" is not one of its parts,
+# so what the parts are says nothing about it. Here "get" reads a block of
+# memory through the atom "read", and both its parts are decided by data: a
+# literal and a "size" the tables say comes back with a number. The label
+# would let "PhSticky" answer every later read of the block with the bytes of
+# the first one, so it stays off until the receiver is asked about too.
+eo:
+  app.eo: |
+    [] > app
+      chunk.get > @
+  chunk.eo: |
+    [] > chunk
+      read 0 size > get
+      [] > read /Q.bytes
+        ? > ^
+        ? > offset /Q.number
+        ? > length /Q.number
+      [] > size /Q.number
+        ? > ^
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+pure:
+  - "//o[@name='get' and @base='ξ.read' and not(@pure)]"

@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.util.stream.Stream;
+import org.eolang.EO_org.EO_eolang.EOprobe;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,17 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.24
  */
 final class PhPackageTest {
+
+    @Test
+    void buildsAMemberOnceUnderManyThreads() {
+        final Phi pkg = new PhPackage("org.eolang");
+        new Together<>(thread -> pkg.take("probe")).asList();
+        MatcherAssert.assertThat(
+            "a first take from many threads must build the member once, but every thread built its own",
+            EOprobe.BUILT.get(),
+            Matchers.equalTo(1)
+        );
+    }
 
     @Test
     void printsGlobalScopeAsTerm() {
@@ -75,6 +87,19 @@ final class PhPackageTest {
     }
 
     @Test
+    void refusesOrdinaryAttribute() {
+        MatcherAssert.assertThat(
+            "Exception message must name the attribute a package cannot hold",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhPackage("test-put").put("injected", Phi.Φ),
+                "A package must refuse an attribute its take() could never hand back"
+            ).getMessage(),
+            Matchers.containsString("injected")
+        );
+    }
+
+    @Test
     void setsRhoToObject() {
         final Phi pckg = Phi.Φ;
         MatcherAssert.assertThat(
@@ -82,7 +107,7 @@ final class PhPackageTest {
                 "The %s attribute must be set to package object on dispatch",
                 Phi.RHO
             ),
-            pckg.take("nop").take(Phi.RHO),
+            pckg.take("bytes$eq").take(Phi.RHO),
             Matchers.equalTo(pckg)
         );
     }
@@ -94,7 +119,7 @@ final class PhPackageTest {
                 "A package member must not still await %s once dispatch has bound it",
                 Phi.RHO
             ),
-            Phi.Φ.take("nop").needsRho(),
+            Phi.Φ.take("bytes$eq").needsRho(),
             Matchers.is(false)
         );
     }
@@ -189,7 +214,7 @@ final class PhPackageTest {
     private static Stream<Arguments> attributes() {
         return Stream.of(
             Arguments.of("bytes$eq", EObytes$EOeq.class),
-            Arguments.of("nop", EOnop.class)
+            Arguments.of("dataized", EOdataized.class)
         );
     }
 }

@@ -15,7 +15,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ pairs] > map
+[pairs] > map
   ctor > @
     if.
       pairs.length.eq 0
@@ -41,7 +41,7 @@
           @. > prev
             ^.rec-rebuild tup.tail
         | pairs
-  [^ entries] > ctor
+  [entries] > ctor
     [^ key] > found
       if. > @
         ^.size.eq 0
@@ -50,18 +50,14 @@
           if. > @
             tup.length.eq 0
             ^.not-found
-            prev.exists.if
-              prev
-              if.
-                and.
-                  tup.head.hash.eq hash
-                  tup.head.kbts.eq kbts
-                [^] >>
-                  true > exists
-                  ^.^.tup.head.value > [^ cant-get] > get
-                ^.not-found
-          @. > prev
-            ^.rec-key-search tup.tail
+            if.
+              and.
+                tup.head.hash.eq hash
+                tup.head.kbts.eq kbts
+              [^] >>
+                true > exists
+                ^.^.tup.head.value > [^ cant-get] > get
+              ^.rec-key-search tup.tail
         | ^.entries
       hash. >> hash!
         key.as-bytes >> kbts!
@@ -73,10 +69,10 @@
     exists. > [^ key] > has
       ^.found key
     entries.mapped > keys
-      entry.key > [^ entry]
+      entry.key > [entry]
     entries.length > size
     entries.mapped > values
-      entry.value > [^ entry]
+      entry.value > [entry]
     [^ key value] > with
       map.ctor > @
         with.
@@ -101,7 +97,7 @@
               kbts.eq entry.kbts
       hash. >> hash!
         key.as-bytes >> kbts!
-  [^ key value] > entry
+  [key value] > entry
 
   ++> can-add-a-key-colliding-with-an-existing-one
     and. > @
@@ -180,7 +176,7 @@
     2.eq > @
       get.
         mp.found 1
-        "unreachable" > [^ message]
+        "unreachable" > [message]
     map * > mp
       map.entry 1 1
       map.entry 1 2
@@ -197,7 +193,7 @@
     1.eq > @
       malloc.for
         0
-        [^ m]
+        [m]
           seq * > @
             exists.
               mp.found 1
@@ -217,13 +213,13 @@
         map *
           map.entry "Aa" 1
         "BB"
-      "recovered" > [^ message]
+      "recovered" > [message]
 
   ++> can-recover-from-getting-a-missing-key
     "recovered".eq > @
       get.
         mp.found "absent"
-        "recovered" > [^ message]
+        "recovered" > [message]
     map * > mp
       map.entry "one" 1
 

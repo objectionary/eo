@@ -11,6 +11,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package object, coming from {@link Phi}.
+ *
+ * <p>A package is a namespace, so its attributes are the objects the
+ * package holds and nothing else: the only attribute a caller may bind
+ * into one is {@link Phi#RHO}, the receiver a dispatch sets. Everything
+ * else a package answers it loads by name, caching it under the fully
+ * qualified name {@link #take(String)} looks it up by, which is not the
+ * name the caller writes — so an object bound under a plain attribute
+ * name could never be handed back, and {@link #put(String, Phi)} says so
+ * rather than storing it out of reach.</p>
+ *
  * @since 0.22
  */
 final class PhPackage implements Phi {
@@ -84,8 +94,7 @@ final class PhPackage implements Phi {
             }
             taken = next;
         } else {
-            this.put(fqn, this.bound(fqn));
-            taken = this.take(name);
+            taken = this.objects.computeIfAbsent(fqn, this::bound).copy();
         }
         return taken;
     }
@@ -99,6 +108,12 @@ final class PhPackage implements Phi {
 
     @Override
     public void put(final String name, final Phi object) {
+        if (!name.equals(Phi.RHO)) {
+            throw new ExFailure(
+                "Can't #put(\"%s\", %s) to package object \"%s\", only %s is accepted",
+                name, object, this.pkg, Phi.RHO
+            );
+        }
         this.objects.put(name, object);
     }
 

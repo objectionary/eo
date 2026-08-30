@@ -7,8 +7,8 @@ package org.eolang.posix;
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -49,7 +49,7 @@ public final class StatSyscall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
-        final String path = new Dataized(params[0]).asString();
+        final String path = new Cstring("the 'path' argument of stat", params[0]).it();
         final FileStat info;
         final int code;
         if (Platform.isMac()) {

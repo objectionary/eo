@@ -75,7 +75,7 @@ final class LnPipe implements Line {
                 "a pipe application cannot declare a test attribute"
             );
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Openness openness;
         if (args.isEmpty()) {
             openness = Openness.OPEN;
@@ -83,7 +83,7 @@ final class LnPipe implements Line {
             openness = Openness.VCOMPLETED;
         }
         new Transition(stack, this.span).apply(
-            Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), suffix.test())
+            Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), false)
         );
         globals.clearBlanks();
         globals.markEmitted();

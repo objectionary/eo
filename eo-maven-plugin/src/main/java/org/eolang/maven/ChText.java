@@ -21,13 +21,21 @@ import org.cactoos.text.TextOf;
  * Commit Hash from text.
  *
  * <p>This class reads a text file that contains lines with Git SHAs and their corresponding tags,
- * for example:
+ * for example:</p>
+ *
  * <pre>{@code
  * 9c9352890b5d30e1b89c9147e7c95a90c9b8709f, 0.28.5
  * 17f89293e5ae6115e9a0234b754b22918c11c602, 0.28.6
  * 5f82cc1edffad67bf4ba816610191403eb18af5d, 0.28.7
  * be83d9adda4b7c9e670e625fe951c80f3ead4177, 0.28.9
- * }</pre></p>
+ * }</pre>
+ *
+ * <p>Lines may be terminated by {@code \n} or by {@code \r\n}. The
+ * carriage return has to be consumed by the split, because each line is
+ * then matched with a regular expression that must consume the whole line
+ * and {@code .} does not match a {@code \r}. A table written on Windows —
+ * such as the built-in fallback of {@link CommitHashesText}, joined with
+ * {@link System#lineSeparator()} — would otherwise match no tag at all.</p>
  *
  * @since 0.28.11
  */
@@ -95,7 +103,7 @@ final class ChText implements CommitHash {
                                     t -> t.asString().matches(
                                         String.format("^.+\\s\\Q%s\\E$", this.tag)
                                     ),
-                                    new Split(new TextOf(this.source), "\\n")
+                                    new Split(new TextOf(this.source), "\\r?\\n")
                                 ),
                                 () -> {
                                     throw new HashNotFoundException(

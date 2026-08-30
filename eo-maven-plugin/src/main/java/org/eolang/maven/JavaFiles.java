@@ -62,6 +62,15 @@ final class JavaFiles {
     private final Collection<Path> fresh;
 
     /**
+     * Where a class of the current run would have gone, written or not.
+     *
+     * <p>A class this run decided to skip, such as the implementation of an
+     * atom, names a directory all the same, and a file an earlier run left
+     * there is stale exactly as one beside a file we did write (#7763).</p>
+     */
+    private final Collection<Path> touched;
+
+    /**
      * Ctor.
      * @param dir Generated sources directory
      * @param cached Cache directory for this transpile version
@@ -72,6 +81,7 @@ final class JavaFiles {
         this.cache = cached;
         this.enabled = caching;
         this.fresh = new ConcurrentLinkedQueue<>();
+        this.touched = new ConcurrentLinkedQueue<>();
     }
 
     /**
@@ -98,10 +108,9 @@ final class JavaFiles {
             final boolean atom = object.path("o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
+                final Path tgt = new Place(jname).make(this.generated, JavaFiles.JAVA);
+                this.touched.add(tgt);
                 if (!atom || jname.endsWith("Test")) {
-                    final Path tgt = new Place(jname).make(
-                        this.generated, JavaFiles.JAVA
-                    );
                     this.fresh.add(tgt);
                     final Footprint java = new FpJavaGenerated(
                         clazz, new FileGenerationReport(saved, tgt, target)
@@ -148,7 +157,7 @@ final class JavaFiles {
         if (Files.exists(this.generated)) {
             final Set<Path> expected = new HashSet<>(this.fresh);
             final Set<Path> dirs = new HashSet<>();
-            for (final Path file : expected) {
+            for (final Path file : this.touched) {
                 for (Path dir = file.getParent(); dir != null && dir.startsWith(this.generated);
                     dir = dir.getParent()) {
                     dirs.add(dir);

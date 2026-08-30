@@ -29,21 +29,20 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ condition body] > while
+[condition body] > while
   if. > @
     as-bool.
       condition 0
     [^ index] >> loop
       if. > @
         as-bool.
-          ^.condition
-            index.plus 1
+          ^.condition next
         seq *
           current
-          ^.loop
-            index.plus 1
+          ^.loop next
         current
       ^.body index > current
+      index.plus 1 > next
     | 0
     false
 
@@ -51,9 +50,9 @@
     0.eq > @
       malloc.for
         42
-        [^ m]
+        [m]
           while > @
-            i.eq 0 > [^ i]
+            i.eq 0 > [i]
             ^.m.put i > [^ i] >>
 
   ++> can-iterate-a-tuple-with-an-external-iterator
@@ -128,7 +127,7 @@
                     ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
-                true > [^ i]
+                true > [i]
               ^.acc
     array.length > max
 
@@ -151,7 +150,7 @@
                     ^.iter.put (^.iter.as-number.plus 1)
                     true
                   false
-                true > [^ i]
+                true > [i]
               ^.acc
     array.length > max
 
@@ -159,7 +158,7 @@
     eq. > @
       malloc.for
         true
-        [^ m]
+        [m]
           while > @
             ^.m > [^ i] >>
             ^.m.put false > [^ i] >>
@@ -169,22 +168,22 @@
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           while > @
-            i.lt 10 > [^ i]
+            i.lt 10 > [i]
             ^.m.put i > [^ i] >>
       9
 
   not. ++> can-loop-when-the-condition-is-false-first
     while
-      false > [^ i]
-      true > [^ i]
+      false > [i]
+      true > [i]
 
   ++> can-return-the-last-dataized-object
     eq. > @
       malloc.for
         0
-        [^ m]
+        [m]
           while > @
             2.gt ^.m > [^ i] >>
             ^.m.put > [^ i] >>
@@ -193,5 +192,14 @@
 
   not. ++> can-return-the-last-dataized-object-with-a-false-condition
     while
-      1.gt 2 > [^ i]
-      true > [^ i]
+      1.gt 2 > [i]
+      true > [i]
+
+  ++> can-run-hundreds-of-cycles
+    199.eq > @
+      malloc.for
+        0
+        [m]
+          while > @
+            i.lt 200 > [i]
+            ^.m.put i > [^ i] >>
