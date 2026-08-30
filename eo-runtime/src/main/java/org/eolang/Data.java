@@ -71,7 +71,7 @@ public interface Data {
 
         @Override
         public boolean equals(final Object obj) {
-            return this.object.equals(obj);
+            return this == obj || this.object.equals(obj);
         }
 
         @Override
