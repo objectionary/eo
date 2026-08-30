@@ -1400,6 +1400,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Two type annotations on one void | `a void attribute may carry at most one type annotation` |
 | Unexpected odd character after a name suffix | `unexpected content after name suffix` |
 | Excessive trailing blank lines | `more than one trailing blank line` |
+| Line head matching no shape of §3 | `line head does not start any known object shape` |
 
 R-9.9.2. The position prefix `[L:P]` (with L = line, P = pos) is prepended to every error message before insertion into the `<error>` element body. Conventions: 1-indexed line, 0-indexed pos.
 

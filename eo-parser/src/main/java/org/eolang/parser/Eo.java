@@ -393,8 +393,10 @@ final class Eo implements Iterable<Directive> {
         final String reason;
         if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
+        } else if (Eo.bytesAttempt(span)) {
+            reason = "invalid bytes literal";
         } else {
-            reason = "line shape not yet implemented in spec parser";
+            reason = "line head does not start any known object shape";
         }
         return (stack, globals, emit) -> {
             throw new ParseError(span.line(), span.indent(), reason);
@@ -468,6 +470,33 @@ final class Eo implements Iterable<Directive> {
     private static boolean literalHead(final Span span) {
         final char head = span.head();
         return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
+    }
+
+    private static boolean bytesAttempt(final Span span) {
+        final String body = span.body();
+        int end = body.indexOf(' ');
+        if (end < 0) {
+            end = body.length();
+        }
+        return end > 1 && Eo.dashedAlphanumerics(body.substring(0, end));
+    }
+
+    private static boolean dashedAlphanumerics(final String head) {
+        boolean dashed = false;
+        boolean shaped = true;
+        for (int idx = 0; idx < head.length() && shaped; idx = idx + 1) {
+            final char glyph = head.charAt(idx);
+            if (glyph == '-') {
+                dashed = true;
+            } else {
+                shaped = Eo.alphanumeric(glyph);
+            }
+        }
+        return shaped && dashed;
+    }
+
+    private static boolean alphanumeric(final char glyph) {
+        return glyph < 128 && Character.isLetterOrDigit(glyph);
     }
 
     private static boolean bytesHead(final char head) {
