@@ -564,7 +564,8 @@ R-3.11.5. An unclosed block is reported at end-of-stream as a recoverable error.
 ```
 """
 hello
-world""" > text-value                 ← multi-line string named text-value
+world
+""" > text-value                      ← multi-line string named text-value
 ```
 
 ### 3.12 Inline binding — `:label` or `:N`
