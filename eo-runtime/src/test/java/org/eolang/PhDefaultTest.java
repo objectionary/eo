@@ -5,7 +5,6 @@
 package org.eolang;
 
 import com.yegor256.Together;
-import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
@@ -68,7 +67,7 @@ final class PhDefaultTest {
 
     @Test
     void comparesTwoObjects() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             "Object should be equal to itself",
             phi, Matchers.equalTo(phi)
@@ -77,7 +76,7 @@ final class PhDefaultTest {
 
     @Test
     void comparesSelfToCopy() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             "Object should not be equal to its copy",
             phi, Matchers.not(Matchers.equalTo(phi.copy()))
@@ -86,7 +85,7 @@ final class PhDefaultTest {
 
     @Test
     void comparesTwoCopies() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             "Two copies of object should be equal to each other",
             phi.copy(), Matchers.not(Matchers.equalTo(phi.copy()))
@@ -97,14 +96,14 @@ final class PhDefaultTest {
     void doesNotHaveRhoWhenFormed() {
         MatcherAssert.assertThat(
             String.format("Object should not have %s attribute when it's just formed", Phi.RHO),
-            PhDefaultTest.Int.made().take(Phi.RHO),
+            PhInt.made().take(Phi.RHO),
             Matchers.instanceOf(PhTerminator.class)
         );
     }
 
     @Test
     void setsRhoAfterDispatch() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             String.format("Kid should have %s attribute after dispatch", Phi.RHO),
             phi.take(this.plus()).take(Phi.RHO),
@@ -116,7 +115,7 @@ final class PhDefaultTest {
     void doesNotHaveRhoAfterCopying() {
         MatcherAssert.assertThat(
             String.format("Object should not give %s attribute after copying", Phi.RHO),
-            PhDefaultTest.Int.made().copy().take(Phi.RHO),
+            PhInt.made().copy().take(Phi.RHO),
             Matchers.instanceOf(PhTerminator.class)
         );
     }
@@ -132,9 +131,9 @@ final class PhDefaultTest {
 
     @Test
     void bindsHostToRhoDeclaredAsVoid() {
-        final Phi host = PhDefaultTest.Int.made();
+        final Phi host = PhInt.made();
         host.put(Phi.RHO, Phi.Φ);
-        host.put(this.getVoid(), PhDefaultTest.Int.formation());
+        host.put(this.getVoid(), PhInt.formation());
         MatcherAssert.assertThat(
             String.format("Dispatch must bind the host to %s declared as void", Phi.RHO),
             host.take(this.getVoid()).take(Phi.RHO),
@@ -144,7 +143,7 @@ final class PhDefaultTest {
 
     @Test
     void copiesKid() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             "Child attributes should be copied after copying main object",
             phi.take(this.plus()),
@@ -156,7 +155,7 @@ final class PhDefaultTest {
 
     @Test
     void takesDifferentAbstractKidsEveryDispatch() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             "Child attributes should be copied on every dispatch",
             phi.take(this.plus()),
@@ -168,7 +167,7 @@ final class PhDefaultTest {
 
     @Test
     void hasKidWithSetRhoAfterCopying() {
-        final Phi phi = PhDefaultTest.Int.made().copy();
+        final Phi phi = PhInt.made().copy();
         final Phi plus = phi.take(this.plus());
         plus.take(Phi.RHO);
         MatcherAssert.assertThat(
@@ -183,7 +182,7 @@ final class PhDefaultTest {
 
     @Test
     void hasDifferentKidsAfterDoubleCopying() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         final Phi first = phi.copy();
         MatcherAssert.assertThat(
             "Child objects after double copying should be different",
@@ -196,7 +195,7 @@ final class PhDefaultTest {
 
     @Test
     void changesKidRhoAfterSelfCopyingKidShouldReferToOriginal() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         MatcherAssert.assertThat(
             String.format(
                 "%s attribute of original object kid should refer to original object", Phi.RHO
@@ -208,7 +207,7 @@ final class PhDefaultTest {
 
     @Test
     void changesKidRhoAfterSelfCopyingKidShouldReferToCopied() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         final Phi copy = phi.copy();
         phi.take(this.plus()).take(Phi.RHO);
         MatcherAssert.assertThat(
@@ -223,7 +222,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotChangeRhoAfterDirectKidCopying() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         final Phi first = phi.take(this.plus());
         MatcherAssert.assertThat(
             String.format(
@@ -239,7 +238,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCopyRhoWhileDispatch() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         final Phi plus = phi.take(this.plus());
         MatcherAssert.assertThat(
             String.format("%s attributes should not be copied while dispatch", Phi.RHO),
@@ -253,7 +252,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
-                new PhSafe(PhDefaultTest.Int.made()).copy().take(this.getVoid())
+                new PhSafe(PhInt.made()).copy().take(this.getVoid())
             ).take(),
             "Copying must preserve the unset void, which reads as a terminator and fails when dataized"
         );
@@ -261,7 +260,7 @@ final class PhDefaultTest {
 
     @Test
     void copiesSetVoidAttributeOnCopy() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         phi.put(this.getVoid(), new Data.ToPhi(10L));
         MatcherAssert.assertThat(
             "Copied set void attribute should be different from original one",
@@ -274,7 +273,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotCopySetVoidAttributeWithRho() {
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         phi.put(this.getVoid(), new Data.ToPhi(10L));
         MatcherAssert.assertThat(
             "Void attribute should not be copied with rho, but it did",
@@ -299,7 +298,7 @@ final class PhDefaultTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Dataized(
-                new PhSafe(PhDefaultTest.Int.made().copy()).take(Phi.PHI)
+                new PhSafe(PhInt.made().copy()).take(Phi.PHI)
             ).take(),
             "Phi depending on an unset void (now a terminator) must fail when dataized, but it did not"
         );
@@ -307,7 +306,7 @@ final class PhDefaultTest {
 
     @Test
     void hasAccessToDependentOnContextAttributeDoesNotThrow() {
-        final Phi phi = new PhSafe(PhDefaultTest.Int.made().copy());
+        final Phi phi = new PhSafe(PhInt.made().copy());
         phi.put(this.getVoid(), new Data.ToPhi(10L));
         Assertions.assertDoesNotThrow(
             () -> phi.take(Phi.PHI),
@@ -318,7 +317,7 @@ final class PhDefaultTest {
     @Test
     void hasContextedChildWithSetRhoWhenFormed() {
         Assertions.assertDoesNotThrow(
-            () -> PhDefaultTest.Int.made()
+            () -> PhInt.made()
                 .take("context-hasContextedChildWithSetRhoWhenFormed")
                 .take(Phi.RHO),
             String.format(
@@ -332,7 +331,7 @@ final class PhDefaultTest {
     void makesObjectIdentity() {
         MatcherAssert.assertThat(
             "Object should have a hashCode greater then 0, but it didn't",
-            PhDefaultTest.Int.made().hashCode(),
+            PhInt.made().hashCode(),
             Matchers.greaterThan(0)
         );
     }
@@ -345,7 +344,7 @@ final class PhDefaultTest {
             new SetOf<>(
                 new Together<>(
                     threads,
-                    t -> PhDefaultTest.Int.made()
+                    t -> PhInt.made()
                 )
             ),
             Matchers.iterableWithSize(threads)
@@ -355,7 +354,7 @@ final class PhDefaultTest {
     @Test
     void copiesWithSetData() {
         final String data = "Hello";
-        final Phi phi = PhDefaultTest.Int.made();
+        final Phi phi = PhInt.made();
         phi.put(0, new Data.ToPhi(data));
         MatcherAssert.assertThat(
             "Copied Phi should contain the same data, but it didn't",
@@ -367,7 +366,7 @@ final class PhDefaultTest {
     @Test
     void setsVoidAttributeOnlyOnce() {
         final Phi num = new Data.ToPhi(42L);
-        final Phi phi = new PhDefaultTest.Foo();
+        final Phi phi = new PhParent();
         phi.put(0, num);
         Assertions.assertThrows(
             ExReadOnly.class,
@@ -378,37 +377,34 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        PhDefaultTest.EndlessRecursion.COUNT.set(2);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
+            new Dataized(new PhEndless(new AtomicInteger(2))).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.COUNT.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
+            new Dataized(PhRecursive.made(new AtomicInteger(3))).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.COUNT.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
-            new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
+            new Dataized(new PhRecursiveNew(new AtomicInteger(3))).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void doesNotReadMultipleTimes() {
-        final Phi phi = PhDefaultTest.Counter.made();
+        final Phi phi = PhCounter.made();
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -513,7 +509,7 @@ final class PhDefaultTest {
 
     @Test
     void injectsPhi() {
-        final Phi phi = new PhDefaultTest.WithVoidPhi();
+        final Phi phi = new PhVoidPhi();
         phi.put(0, new Data.ToPhi(5));
         MatcherAssert.assertThat(
             "Object must be injected to phi attribute and dataized",
@@ -528,7 +524,7 @@ final class PhDefaultTest {
             new PhDispatch(
                 new PhApplication(
                     new PhDispatch(
-                        new PhDefaultTest.Rnd(), this.plus()
+                        new PhRnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -694,302 +690,6 @@ final class PhDefaultTest {
             nesting.remove();
         } catch (final ReflectiveOperationException ex) {
             throw new IllegalStateException(ex);
-        }
-    }
-
-    /**
-     * Rnd.
-     * @since 0.1.0
-     */
-    private static final class Rnd extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Rnd() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            self -> new Data.ToPhi(new SecureRandom().nextDouble())
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Int.
-     * @since 0.36.0
-     */
-    private static final class Int extends PhDefault {
-
-        /**
-         * Make one, with all its attributes in place.
-         *
-         * <p>The attributes are attached here, and not in a constructor,
-         * because two of them are expressions over the object itself, which
-         * does not exist yet while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Phi made() {
-            final PhDefaultTest.Int made = new PhDefaultTest.Int();
-            made.add(Phi.RHO, new AtRho());
-            made.add("void", new AtVoid("void"));
-            made.add("plus", new AtComposite(made, rho -> PhDefaultTest.Int.formation()));
-            made.add(
-                Phi.PHI,
-                new AtOnce(
-                    new AtComposite(
-                        made,
-                        rho -> rho.take("void")
-                    )
-                )
-            );
-            made.add(
-                "context-hasContextedChildWithSetRhoWhenFormed",
-                new AtOnce(
-                    new AtComposite(
-                        made,
-                        rho -> {
-                            final Phi plus = new Data.ToPhi(5L).take(
-                                "plus"
-                            ).copy();
-                            plus.put(0, new Data.ToPhi(6L));
-                            return plus;
-                        }
-                    )
-                )
-            );
-            return made;
-        }
-
-        static Phi formation() {
-            return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
-        }
-    }
-
-    /**
-     * Foo.
-     * @since 0.1.0
-     */
-    static final class Foo extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Foo() {
-            super(
-                new Attrs(
-                    new Attr("x", new AtVoid("x")),
-                    new Attr(
-                        "kid",
-                        new AtComposite(new PhDefault(), rho -> new PhDefaultTest.Kid())
-                    ),
-                    new Attr(
-                        "φ",
-                        new AtComposite(new PhDefault(), rho -> new Data.ToPhi(5L))
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Dummy.
-     * @since 0.1.0
-     */
-    static final class WithVoidPhi extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        WithVoidPhi() {
-            super(new Attrs(new Attr(Phi.PHI, new AtVoid(Phi.PHI))));
-        }
-    }
-
-    /**
-     * Counter.
-     * @since 0.1.0
-     */
-    static final class Counter extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private long count;
-
-        /**
-         * Make one, with all its attributes in place.
-         *
-         * <p>The attributes are attached here, and not in a constructor,
-         * because both of them are expressions over the object itself, which
-         * does not exist yet while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Counter made() {
-            final PhDefaultTest.Counter made = new PhDefaultTest.Counter();
-            made.add(
-                Phi.PHI,
-                new AtOnce(
-                    new AtComposite(
-                        made,
-                        rho -> {
-                            ++made.count;
-                            return new Data.ToPhi(new byte[]{(byte) 0x01});
-                        }
-                    )
-                )
-            );
-            made.add("count", new AtComposite(made, rho -> new Data.ToPhi(made.count)));
-            return made;
-        }
-    }
-
-    /**
-     * Kid.
-     * @since 0.1.0
-     */
-    static final class Kid extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Kid() {
-            super(
-                new Attrs(
-                    new Attr("z", new AtVoid("z")),
-                    new Attr(
-                        Phi.PHI,
-                        new AtComposite(new PhDefault(), rho -> new Data.ToPhi(true))
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Endless Recursion.
-     * @since 0.1.0
-     */
-    static final class EndlessRecursion extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Ctor.
-         */
-        EndlessRecursion() {
-            super(
-                new Attrs(
-                    new Attr(
-                        Phi.PHI,
-                        new AtComposite(
-                            new PhDefault(),
-                            self -> {
-                                final Phi result;
-                                if (PhDefaultTest.EndlessRecursion.COUNT.decrementAndGet() <= 0) {
-                                    result = new Data.ToPhi(0L);
-                                } else {
-                                    result = new PhDefaultTest.EndlessRecursion().copy();
-                                }
-                                return result;
-                            }
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Recursive Phi.
-     * @since 0.1.0
-     */
-    static final class RecursivePhi extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Make one, with its φ in place.
-         *
-         * <p>The φ is attached here, and not in a constructor, because it is
-         * an expression over the object itself, which does not exist yet
-         * while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Phi made() {
-            final PhDefaultTest.RecursivePhi made = new PhDefaultTest.RecursivePhi();
-            made.add(
-                "φ",
-                new AtComposite(
-                    made,
-                    rho -> {
-                        final Phi result;
-                        if (PhDefaultTest.RecursivePhi.COUNT.decrementAndGet() <= 0) {
-                            result = new Data.ToPhi(0L);
-                        } else {
-                            result = new Data.ToPhi(new Dataized(rho).asNumber());
-                        }
-                        return result;
-                    }
-                )
-            );
-            return made;
-        }
-    }
-
-    /**
-     * RecursivePhiViaNew.
-     * @since 0.1.0
-     */
-    static final class RecursivePhiViaNew extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Ctor.
-         */
-        RecursivePhiViaNew() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            rho -> {
-                                final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.COUNT.decrementAndGet() <= 0) {
-                                    result = new Data.ToPhi(0L);
-                                } else {
-                                    result = new Data.ToPhi(
-                                        new Dataized(
-                                            new PhDefaultTest.RecursivePhiViaNew()
-                                        ).asNumber()
-                                    );
-                                }
-                                return result;
-                            }
-                        )
-                    )
-                )
-            );
         }
     }
 }
