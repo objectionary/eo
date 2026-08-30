@@ -183,7 +183,9 @@ final class Transpiling implements Step {
             this.guard.apply(
                 source, dest, tail,
                 new Cache(
-                    new CachePath(cdir, this.version(), hsh.get()),
+                    new CachePath(
+                        cdir, this.train.version(xmir.xpath("/object/o/@loc")), hsh.get()
+                    ),
                     src -> {
                         rewrite.compareAndSet(false, true);
                         final String res = transform.apply(xmir).toString();
