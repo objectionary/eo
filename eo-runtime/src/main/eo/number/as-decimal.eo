@@ -4,6 +4,11 @@
 # The digits are peeled off an `i64`, where division by ten is exact, so every
 # magnitude below `2^63` is written exactly, and not only the magnitudes below
 # `2^53` that a double divides without losing a digit.
+#
+# The sign of an exact negative zero is kept, as `as-fixed` and `as-scientific`
+# keep it, so `-0.0` becomes `-0` and not `0`. A negative number whose fraction
+# is truncated away loses its sign, since `-0.5` is written as the `0` it
+# truncates to.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,10 +31,12 @@
         if.
           ^.abs.lt 9007199254740992
           if.
-            and.
-              ^.lt 0
-              not.
-                truncated.eq 0
+            or.
+              ^.as-bytes.eq 80-00-00-00-00-00-00-00
+              and.
+                ^.lt 0
+                not.
+                  truncated.eq 0
             "-".as-bytes.concat
               [^ m] >> quick
                 if. > @
@@ -76,6 +83,10 @@
   eq. ++> can-drop-the-sign-of-a-negative-truncating-to-zero
     "0"
     string -0.5.as-decimal
+
+  eq. ++> can-keep-the-sign-of-an-exact-negative-zero
+    "-0"
+    string 0.neg.as-decimal
 
   eq. ++> can-truncate-a-negative-fraction
     "-7"
