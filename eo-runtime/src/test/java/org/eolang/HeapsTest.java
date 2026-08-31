@@ -209,6 +209,23 @@ final class HeapsTest {
     }
 
     @Test
+    void keepsEveryByteWrittenOneAtATime() {
+        MatcherAssert.assertThat(
+            "a block filled one byte at a time must hold every one of them",
+            Heaps.INSTANCE.malloc(
+                4,
+                idx -> {
+                    for (int offset = 0; offset < 4; offset += 1) {
+                        Heaps.INSTANCE.write(idx, offset, new byte[] {(byte) (offset + 1)});
+                    }
+                    return Heaps.INSTANCE.read(idx, 0, 4);
+                }
+            ),
+            Matchers.equalTo(new byte[] {1, 2, 3, 4})
+        );
+    }
+
+    @Test
     void readsByOffsetAndLength() {
         MatcherAssert.assertThat(
             "Heaps should successfully read correct slice when reading with offset and length, but it didn't",
