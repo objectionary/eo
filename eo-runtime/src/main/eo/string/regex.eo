@@ -180,6 +180,14 @@
     "/(.+)/d".regex.compiled
     "A\\r\\nB\\rC\\nD"
 
+  eq. ++> can-name-the-construct-and-the-offset-of-an-invalid-pattern
+    "/a**/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
+
+  eq. ++> can-name-the-offset-inside-a-pattern-that-carries-flags
+    "/a**/i".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
+
   eq. ++> can-recover-from-a-pattern-with-a-missing-slash
     "no-slash"
     "(.)+".regex.compile
@@ -221,6 +229,10 @@
 
   not. ++> can-stop-at-a-terminal-zero-width-match
     exists. ("/$/".regex.match "x").next.next
+
+  eq. ++> can-tell-an-unclosed-group-from-a-dangling-repetition
+    "/(/".regex.compile I
+    "regex syntax is invalid: Unclosed group at offset 1 of the pattern"
 
   not. ++> can-tell-it-does-not-match-a-text-against-a-wrong-pattern
     "/[a-z]+/".regex.compiled.matches "123"
