@@ -46,7 +46,7 @@ final class PhOnceTest {
     void doesNotNeedRhoWithoutEvaluatingWrappedObject() {
         MatcherAssert.assertThat(
             "PhOnce must never ask for a receiver, and must not evaluate itself to say so",
-            new PhOnce(
+            new PhOnceTest.Fake(
                 () -> {
                     throw new IllegalStateException("must not be evaluated");
                 }
