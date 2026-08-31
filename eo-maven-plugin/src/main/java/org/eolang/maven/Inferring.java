@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
 import org.eolang.inference.Relayed;
-import org.eolang.inference.Report;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
@@ -45,12 +43,6 @@ import org.eolang.parser.TrFull;
  * dictionary to be read: a row saying that {@code Φ.app.t.next} has nothing
  * means something to a human as it stands. It also makes the tables of many
  * files one table, since no two files can name the same locator.</p>
- *
- * <p>The pages a reader looks at go nowhere near those three directories.
- * They are written under {@code target/site}, beside the coverage report and
- * every other generated page a person opens, because {@code target/eo} is the
- * compiler's scratch space — a numbered pipeline of intermediate XMIR nobody
- * opens on purpose — and a thing meant to be opened does not belong in it.</p>
  *
  * <p>Two things happen to a file before any rule looks at it. First, every
  * composite base is split into one object per dispatch step: the parser rolls
@@ -83,12 +75,6 @@ final class Inferring implements Step {
     private final Path tables;
 
     /**
-     * The directory for the pages a reader looks at, empty when nobody asked
-     * for them.
-     */
-    private final Path pages;
-
-    /**
      * Ctor.
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
@@ -96,23 +82,9 @@ final class Inferring implements Step {
      * @param rows The directory for the tables
      */
     Inferring(final Path parsed, final Path pre, final Path rows) {
-        this(parsed, pre, rows, Paths.get(""));
-    }
-
-    /**
-     * Ctor.
-     * @param parsed The directory with XMIR files, as the parser leaves them
-     *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
-     * @param pre The directory for the prepared XMIR files
-     * @param rows The directory for the tables
-     * @param site The directory for the pages a reader looks at, empty when
-     *  nobody asked for them
-     */
-    Inferring(final Path parsed, final Path pre, final Path rows, final Path site) {
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
-        this.pages = site;
     }
 
     @Override
@@ -132,12 +104,6 @@ final class Inferring implements Step {
                 this.tables, new Tabled(this.tables).asString()
             );
             this.measured();
-            if (!this.pages.toString().isEmpty()) {
-                Logger.info(
-                    this, "Wrote %d page(s) to look at, they are in %[file]s",
-                    new Report(this.prepared, this.tables).written(this.pages), this.pages
-                );
-            }
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to infer from it",
