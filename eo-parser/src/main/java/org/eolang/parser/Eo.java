@@ -82,6 +82,10 @@ final class Eo implements Iterable<Directive> {
             parent -> Eo.beforeChild(parent, emit)
         );
         final Recovery recovery = new Recovery(spans);
+        int tail = spans.size();
+        while (tail > 0 && spans.get(tail - 1).blank()) {
+            tail = tail - 1;
+        }
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
@@ -94,14 +98,14 @@ final class Eo implements Iterable<Directive> {
             } else if (!globals.inTextBlock() && !span.trailing()
                 && Eo.isBytesContinuation(span.body())) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
-            } else if (Eo.process(span, stack, globals, emit)) {
+            } else if (Eo.process(span, idx >= tail, stack, globals, emit)) {
                 idx = recovery.after(idx);
             } else {
                 idx = idx + 1;
             }
         }
         stack.close();
-        Eo.finish(globals, emit);
+        Eo.finish(globals, emit, spans);
         return emit.directives();
     }
 
@@ -221,7 +225,7 @@ final class Eo implements Iterable<Directive> {
             resumption = recovery.skip(idx, head.indent());
         } else if (Eo.process(
             new Span(" ".repeat(head.indent()).concat(body.toString()), head.line()),
-            stack, globals, emit
+            false, stack, globals, emit
         )) {
             resumption = recovery.skip(idx, head.indent());
         } else {
@@ -260,7 +264,8 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean process(
-        final Span span, final Stack stack, final Globals globals, final Emit emit
+        final Span span, final boolean tail, final Stack stack, final Globals globals,
+        final Emit emit
     ) {
         boolean failed = false;
         if (globals.inTextBlock()) {
@@ -283,7 +288,7 @@ final class Eo implements Iterable<Directive> {
             globals.markEmitted();
             globals.clearBlanks();
         } else {
-            failed = Eo.dispatch(span, stack, globals, emit);
+            failed = Eo.dispatch(span, tail, stack, globals, emit);
         }
         return failed;
     }
@@ -320,7 +325,8 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean dispatch(
-        final Span span, final Stack stack, final Globals globals, final Emit emit
+        final Span span, final boolean tail, final Stack stack, final Globals globals,
+        final Emit emit
     ) {
         if (!span.blank() && span.head() != '#') {
             stack.popDeeperThan(span.indent());
@@ -329,7 +335,7 @@ final class Eo implements Iterable<Directive> {
         final Globals saved = globals.savepoint();
         boolean failed = false;
         try {
-            Eo.classify(span).into(stack, globals, emit);
+            Eo.classify(span, tail).into(stack, globals, emit);
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
@@ -361,10 +367,10 @@ final class Eo implements Iterable<Directive> {
             && " .:?".indexOf(body.concat(" ").charAt(3)) >= 0;
     }
 
-    private static Line classify(final Span span) {
+    private static Line classify(final Span span, final boolean tail) {
         final Line line;
         if (span.blank()) {
-            line = new LnBlank(span);
+            line = new LnBlank(span, tail);
         } else if (span.head() == '#') {
             line = new LnComment(span);
         } else if (Eo.metaHead(span)) {
@@ -447,7 +453,9 @@ final class Eo implements Iterable<Directive> {
         return line;
     }
 
-    private static void finish(final Globals globals, final Emit emit) {
+    private static void finish(
+        final Globals globals, final Emit emit, final java.util.List<Span> spans
+    ) {
         if (globals.inTextBlock()) {
             emit.error(
                 globals.textBlockOpenLine(), 0,
@@ -462,8 +470,12 @@ final class Eo implements Iterable<Directive> {
             emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
-        if (globals.trailingBlanks() > 1) {
-            emit.error(0, 0, "more than one trailing blank line");
+        final int blanks = globals.trailingBlanks();
+        if (blanks > 1) {
+            emit.error(
+                spans.get(spans.size() - blanks + 1).line(), 0,
+                "more than one trailing blank line"
+            );
         }
     }
 
