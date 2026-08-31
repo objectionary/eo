@@ -24,19 +24,6 @@
       cant-divide
         "the smallest i64 divided by minus one is past the largest i64"
       quotiented
-  if. > quotiented
-    eq.
-      and.
-        ^.as-bytes.xor x.as-bytes
-        80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    as-bytes.
-      plus.
-        i64
-          not.
-            looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
-        i64 00-00-00-00-00-00-00-01
-    i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^ index remainder quot] >> looped
     if. > @
@@ -70,6 +57,19 @@
                 index
               00-00-00-00-00-00-00-01
           quot
+  if. > quotiented
+    eq.
+      and.
+        ^.as-bytes.xor x.as-bytes
+        80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    as-bytes.
+      plus.
+        i64
+          not.
+            looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
+        i64 00-00-00-00-00-00-00-01
+    i64 quotient
   as-bytes. >> subtrahend
     plus.
       i64
