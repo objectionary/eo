@@ -36,4 +36,23 @@ final class AccessFuncCallTest {
             )
         );
     }
+
+    @Test
+    void refusesFractionalMode() {
+        MatcherAssert.assertThat(
+            "the 'mode' argument of access must be refused by name when it is not an integer, but it wasnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new AccessFuncCall(Phi.Φ.take("win32").copy()).make(
+                    new Data.ToPhi("one"),
+                    new Data.ToPhi(3.9)
+                ),
+                "a fractional 'mode' argument of access was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("'mode' argument of access"),
+                Matchers.containsString("integer")
+            )
+        );
+    }
 }

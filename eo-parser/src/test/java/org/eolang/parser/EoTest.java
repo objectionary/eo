@@ -208,10 +208,10 @@ final class EoTest {
     @Test
     void reportsExcessiveTrailingBlanks() {
         MatcherAssert.assertThat(
-            "more than one trailing blank line at EOF must be reported per R-6.5.6",
+            "more than one trailing blank line at EOF must be reported per R-6.5.6, at the line of the second one",
             EoTest.render("+foo", "", ""),
             XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'more than one trailing blank line')]"
+                "/object/errors/error[@line='3' and contains(text(),'more than one trailing blank line')]"
             )
         );
     }

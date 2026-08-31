@@ -31,7 +31,7 @@ import java.util.Locale;
  * {@code +alias} that would give the token another meaning
  * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
  * rejected here — {@code expand-aliases} reads that first part as the
- * alias name and would otherwise let one file rewrite the root. *
+ * alias name and would otherwise let one file rewrite the root.</p>
  *
  * @since 0.1
  */
@@ -119,31 +119,54 @@ final class LnMeta implements Line {
                 "meta name must be lowercase letters and digits, starting with a letter"
             );
         }
-        if ("package".equals(head) && parts.size() != 1) {
+        if ("package".equals(head)) {
+            this.checkPackage(parts);
+        }
+        if ("alias".equals(head)) {
+            this.checkAlias(parts);
+        }
+    }
+
+    private void checkPackage(final List<String> parts) {
+        if (parts.size() != 1) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+package' directive requires exactly one argument"
             );
         }
-        if ("alias".equals(head)) {
-            if (parts.isEmpty()) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent(),
-                    "'+alias' directive requires at least one argument"
-                );
-            }
-            if (LnMeta.ROOT.equals(parts.get(0))) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent(),
-                    "'+alias' cannot rename the root token Q"
-                );
-            }
-            if (new Dotted(parts.get(parts.size() - 1)).broken()) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent(),
-                    "'+alias' target must not have an empty segment"
-                );
-            }
+        if (new Dotted(parts.get(0)).broken()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' path must not have an empty segment"
+            );
+        }
+    }
+
+    private void checkAlias(final List<String> parts) {
+        if (parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' directive requires at least one argument"
+            );
+        }
+        if (LnMeta.ROOT.equals(parts.get(0))) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' cannot rename the root token Q"
+            );
+        }
+        final Dotted target = new Dotted(parts.get(parts.size() - 1));
+        if (target.broken()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' target must not have an empty segment"
+            );
+        }
+        if (target.scoped()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' target must be an object name, not a scope token"
+            );
         }
     }
 

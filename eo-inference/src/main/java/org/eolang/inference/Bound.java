@@ -45,6 +45,11 @@ final class Bound {
     private final Map<String, List<String>> args;
 
     /**
+     * The arguments of every application bound by name, from {@link Given}.
+     */
+    private final Map<String, Map<String, String>> named;
+
+    /**
      * What every dispatch takes its attribute from, from {@link Xmirs}.
      */
     private final Map<String, String> receivers;
@@ -62,17 +67,20 @@ final class Bound {
     /**
      * Ctor.
      * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
      * @param taken What every dispatch takes its attribute from
      * @param links The pairs, each name against the one it is a copy of
      * @param provided What the types certainly have
      */
     Bound(
         final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
         final Map<String, String> links,
         final Provided provided
     ) {
         this.args = arguments;
+        this.named = bindings;
         this.receivers = taken;
         this.pairs = links;
         this.owned = provided;
@@ -109,6 +117,13 @@ final class Bound {
             final String hollow = this.owned.vacant(this.base(application), before, place);
             if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                 found.put(hollow, given.get(place));
+            }
+        }
+        for (final Map.Entry<String, String> bind
+            : this.named.getOrDefault(application, Collections.emptyMap()).entrySet()) {
+            final String hollow = this.owned.named(this.base(application), bind.getKey());
+            if (!hollow.isEmpty()) {
+                found.put(hollow, bind.getValue());
             }
         }
         return found;

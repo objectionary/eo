@@ -55,7 +55,7 @@ import java.util.List;
  * ROOT horizontal args. Of the R-3.10.6 LHS restrictions, a formation
  * LHS is honoured by scanner exclusion — its classifier fires first —
  * while a reversed dispatch carrying horizontal args reaches this line
- * shape and is rejected here. *
+ * shape and is rejected here.</p>
  *
  * <p>The head of a line ends at the first space that sits at paren depth 0
  * and outside any string literal, which is what {@code topLevelSpace} finds,

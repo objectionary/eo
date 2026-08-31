@@ -54,7 +54,7 @@ final class LnTextBlock implements Line {
         final Tokens tokens = new Tokens(body, this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -97,9 +97,7 @@ final class LnTextBlock implements Line {
                 suffix.attribute(this.span.line(), this.span.indent()),
                 "Φ.string", this.span.line(), this.span.indent()
             );
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
@@ -117,9 +115,7 @@ final class LnTextBlock implements Line {
                 ".".concat(last.name()), this.span.line(), last.dot()
             );
             emit.method(last.fragile());
-            if (suffix.constant()) {
-                emit.constant();
-            }
+            new Marked(emit, suffix).apply();
         }
     }
 }

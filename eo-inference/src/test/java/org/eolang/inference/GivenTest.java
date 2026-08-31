@@ -6,6 +6,7 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XMLDocument;
 import java.util.List;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,27 @@ final class GivenTest {
                 )
             ).arguments().get("Φ.app.pair"),
             Matchers.equalTo(List.of("Φ.app.pair.α0", "Φ.app.pair.α1"))
+        );
+    }
+
+    @Test
+    void keepsAnArgumentBoundByNameApartFromThePositionalOnes() {
+        MatcherAssert.assertThat(
+            "an argument bound by name must be kept, not thrown away by the α filter",
+            new Given(
+                List.of(
+                    new XMLDocument(
+                        String.join(
+                            "",
+                            "<o loc='Φ.app.only'>",
+                            "<o as='y' loc='Φ.app.only.y'/>",
+                            "<o as='x' loc='Φ.app.only.x'/>",
+                            "</o>"
+                        )
+                    ).nodes("/o").get(0)
+                )
+            ).named().get("Φ.app.only"),
+            Matchers.equalTo(Map.of("y", "Φ.app.only.y", "x", "Φ.app.only.x"))
         );
     }
 }

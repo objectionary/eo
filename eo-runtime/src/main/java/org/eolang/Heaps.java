@@ -208,10 +208,7 @@ final class Heaps {
                     length
                 );
             }
-            final byte[] result = new byte[length];
-            System.arraycopy(source, 0, result, 0, length);
-            System.arraycopy(data, 0, result, offset, data.length);
-            this.blocks.put(identifier, result);
+            System.arraycopy(data, 0, source, offset, data.length);
         } finally {
             this.lock.unlock();
         }

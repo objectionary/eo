@@ -17,13 +17,11 @@ import com.yegor256.xsline.Xsline;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import org.cactoos.Scalar;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
 import org.eolang.parser.TrFull;
 
 /**
@@ -132,11 +130,11 @@ final class Transpilation {
     private final Path inference;
 
     /**
-     * The fingerprint of those tables, worked out once and kept, since
-     * {@link #version()} is asked for every source file of the build and
-     * the tables of {@code eo-runtime} are tens of megabytes.
+     * The rows of those tables, indexed once and kept, since a version is
+     * asked for every source file of the build and the tables of
+     * {@code eo-runtime} are tens of megabytes.
      */
-    private final Scalar<String> fingerprint;
+    private final Rows rows;
 
     /**
      * Ctor.
@@ -164,7 +162,7 @@ final class Transpilation {
         this.measures = measures;
         this.target = dir;
         this.inference = tables;
-        this.fingerprint = new Sticky<>(() -> new Fingerprint(tables).get());
+        this.rows = new Rows(tables);
     }
 
     /**
@@ -185,26 +183,38 @@ final class Transpilation {
      * {@code to-java.xsl} emits (see #6031 and #5955), and
      * {@code trackSteps} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
-     * The content of the inference tables is folded in for the same reason:
-     * {@code purify.xsl} reads them and stamps {@code @pure}, which
-     * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so the same
-     * source with different tables, or with none, is different Java (see
-     * #7627). The content and not the path, since a path differs from one
-     * machine to another and a shared cache would never be hit again.
-     * @return The version segment for {@link CachePath}
+     * The tables belong to {@link #version(Collection)} instead.
+     * @return The version segment shared by every source
      */
     String version() {
         return String.format(
-            "%s-%s-%s-%b-%b-%b-%s",
+            "%s-%s-%b-%b-%b-%s",
             this.version,
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            new Unchecked<>(this.fingerprint).value(),
             this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
         );
+    }
+
+    /**
+     * Cache-key version segment for a file holding these objects.
+     *
+     * <p>{@code purify.xsl} reads the tables and stamps {@code @pure}, which
+     * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so a source
+     * with different rows is different Java (#7627, #7945).</p>
+     *
+     * @param locators The locators of the objects the file holds
+     * @return The version segment for {@link CachePath}
+     * @todo #7945:40min Key the Java files by the rows as well.
+     *  `Transpiling` still pools them in one directory made from
+     *  {@link #version()}, which knows nothing about the tables. Hand
+     *  `JavaFiles.total` the directory of the tojo, made here.
+     */
+    String version(final Collection<String> locators) {
+        return String.format("%s-%s", this.version(), this.rows.digest(locators));
     }
 
     /**

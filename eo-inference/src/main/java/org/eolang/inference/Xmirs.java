@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,11 +35,22 @@ final class Xmirs {
     private final Path dir;
 
     /**
+     * The documents, read on the first question and kept for the rest.
+     *
+     * <p>A clue asks several questions of the same corpus and there are
+     * ten of them, so reading and parsing every file again for each one
+     * costs ten passes where one is enough. The list holds either nothing,
+     * before the first question, or the single collection of documents.</p>
+     */
+    private final List<Collection<XML>> read;
+
+    /**
      * Ctor.
      * @param prepared The directory with the prepared XMIR files
      */
     Xmirs(final Path prepared) {
         this.dir = prepared;
+        this.read = new ArrayList<>(1);
     }
 
     /**
@@ -218,11 +230,14 @@ final class Xmirs {
     }
 
     private Collection<XML> documents() throws IOException {
-        final Collection<XML> read = new ArrayList<>(0);
-        for (final Path source : this.sources()) {
-            read.add(new XMLDocument(source));
+        if (this.read.isEmpty()) {
+            final Collection<XML> found = new ArrayList<>(0);
+            for (final Path source : this.sources()) {
+                found.add(new XMLDocument(source));
+            }
+            this.read.add(found);
         }
-        return read;
+        return this.read.get(0);
     }
 
     private Collection<Path> sources() throws IOException {

@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.util.stream.Stream;
+import org.eolang.EO_org.EO_eolang.EOprobe;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,17 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @since 0.24
  */
 final class PhPackageTest {
+
+    @Test
+    void buildsAMemberOnceUnderManyThreads() {
+        final Phi pkg = new PhPackage("org.eolang");
+        new Together<>(thread -> pkg.take("probe")).asList();
+        MatcherAssert.assertThat(
+            "a first take from many threads must build the member once, but every thread built its own",
+            EOprobe.BUILT.get(),
+            Matchers.equalTo(1)
+        );
+    }
 
     @Test
     void printsGlobalScopeAsTerm() {

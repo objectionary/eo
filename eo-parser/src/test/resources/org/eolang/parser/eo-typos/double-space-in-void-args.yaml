@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "types in a `/{…}` list must be separated by exactly one space"
+message: "types in a /{…} list must be separated by exactly one space"
 input: |
   [] > fopen /file
     ? > missing /{string  int}
