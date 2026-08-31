@@ -74,20 +74,21 @@ public final class Relayed implements Clue {
                 bind.xpath("@void").get(0), key -> new LinkedHashSet<>(0)
             ).add(bind.xpath("ref/@loc").get(0));
         }
+        final Map<String, XML> rows = new LinkedHashMap<>(0);
+        for (final XML type : links.nodes("/links/type[ref]")) {
+            rows.putIfAbsent(type.xpath("@id").get(0), type.nodes("ref").get(0));
+        }
         for (final Map.Entry<String, List<String>> application
             : new Given(new Xmirs(xmirs).applications()).arguments().entrySet()) {
             final String hollow = pairs.getOrDefault(application.getKey(), "");
-            final Collection<XML> rows = links.nodes(
-                String.format("/links/type[@id='%s']/ref", application.getKey())
-            );
-            if (hollows.contains(hollow) && !rows.isEmpty()) {
+            if (hollows.contains(hollow) && rows.containsKey(application.getKey())) {
                 new Xembler(
                     new Passed(
                         owned,
                         fillers.getOrDefault(hollow, Collections.emptyList()),
                         application.getValue()
                     ).directives()
-                ).applyQuietly(rows.iterator().next().inner());
+                ).applyQuietly(rows.get(application.getKey()).inner());
             }
         }
         Files.write(table, links.toString().getBytes(StandardCharsets.UTF_8));
