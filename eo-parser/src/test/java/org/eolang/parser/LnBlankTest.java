@@ -57,4 +57,30 @@ final class LnBlankTest {
             Matchers.emptyIterable()
         );
     }
+
+    @Test
+    void skipsTheConsecutiveBlanksRuleAtEndOfFile() {
+        final Globals globals = new Globals();
+        globals.blank();
+        final Emit emit = new Emit();
+        new LnBlank(new Span("", 2), true).into(new Stack(), globals, emit);
+        MatcherAssert.assertThat(
+            "a blank of the run that closes the file has no R-6.5.3 error of its own",
+            emit.directives(),
+            Matchers.emptyIterable()
+        );
+    }
+
+    @Test
+    void reportsTheSecondBlankInTheMiddleOfTheFile() {
+        final Globals globals = new Globals();
+        globals.blank();
+        final Emit emit = new Emit();
+        new LnBlank(new Span("", 2), false).into(new Stack(), globals, emit);
+        MatcherAssert.assertThat(
+            "two blanks between two non-blank lines are still an R-6.5.3 error",
+            emit.directives(),
+            Matchers.not(Matchers.emptyIterable())
+        );
+    }
 }

@@ -217,30 +217,6 @@ final class EoTest {
     }
 
     @Test
-    void skipsConsecutiveBlanksRuleAtEndOfFile() {
-        MatcherAssert.assertThat(
-            "the run of blanks that closes the file must be reported once, by R-6.5.6 alone",
-            EoTest.render("+foo", "", "", ""),
-            Matchers.not(
-                XhtmlMatchers.hasXPath(
-                    "/object/errors/error[contains(text(),'consecutive blank lines forbidden')]"
-                )
-            )
-        );
-    }
-
-    @Test
-    void reportsConsecutiveBlanksInTheMiddleOfTheFile() {
-        MatcherAssert.assertThat(
-            "two blanks between two objects are still an R-6.5.3 error",
-            EoTest.render("[] > foo", "", "", "[] > bar"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[@line='3' and contains(text(),'consecutive blank lines forbidden')]"
-            )
-        );
-    }
-
-    @Test
     void parsesTopLevelFormation() {
         MatcherAssert.assertThat(
             "a single `[] > foo` line must emit one named <o> under the program root",
