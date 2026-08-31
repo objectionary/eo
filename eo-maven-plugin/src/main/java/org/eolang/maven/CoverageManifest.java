@@ -42,6 +42,12 @@ import java.util.LinkedHashSet;
  * a void, the empty-set glyph — no body to dataize, so no {@code located} mode call and no
  * hit ever lands on its declaration line either (#7377).</p>
  *
+ * <p>An anonymous formation is left out too. {@code anonymous-to-nested.xsl}
+ * turns one into a nested class, and {@code to-java.xsl} never runs a
+ * nested class through {@code located} mode, so no hit can ever land on
+ * the line the {@code []} sits on. Its body still gets its own locations
+ * — only the formation's own declaration line is left out (#7941).</p>
+ *
  * <p>An atom attribute is left out along with everything it declares,
  * even though {@code to-java.xsl} does wrap it and its voids and the
  * runtime does record hits for them (#7055). Such an attribute has no
@@ -80,7 +86,7 @@ final class CoverageManifest {
         final XML passed = new Xsline(this.train).pass(xmir);
         final Collection<String> found = new LinkedHashSet<>();
         for (final XML located : passed.nodes(
-            "//*[@line and @pos and @loc and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base=codepoints-to-string(8709)) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]])]"
+            "//*[@line and @pos and @loc and not(contains(@loc,'+')) and not(contains(@loc,'.-')) and not(@atom) and not(@skip-java) and not(self::class) and not(@base=codepoints-to-string(8709)) and not(ancestor::void) and not(ancestor-or-self::*[o[@atom]]) and (@base or @name)]"
         )) {
             found.add(
                 String.format(

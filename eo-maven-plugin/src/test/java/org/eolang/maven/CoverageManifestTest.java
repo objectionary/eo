@@ -61,6 +61,30 @@ final class CoverageManifestTest {
     }
 
     @Test
+    void excludesLocationOfAnAnonymousFormation() throws Exception {
+        MatcherAssert.assertThat(
+            "an anonymous formation becomes a nested class the transpiler never instruments, so its line must not be counted",
+            new CoverageManifest().locations(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package examples",
+                        "",
+                        "[] > x",
+                        "  bool > @",
+                        "    []",
+                        "      ? >> left",
+                        "      ? >> right",
+                        "      right > @",
+                        ""
+                    )
+                ).parsed()
+            ),
+            Matchers.not(Matchers.hasItem(Matchers.containsString(":5:")))
+        );
+    }
+
+    @Test
     void excludesLocationOfAFilesRootObject() throws Exception {
         MatcherAssert.assertThat(
             "a file's root object is constructed once from Java and never dispatched through PhCoverage, but its own location was still found",
