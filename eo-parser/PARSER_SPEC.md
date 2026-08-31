@@ -1384,6 +1384,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
+| Binding label (§3.12) that is neither a NAME-initial label nor a plain slot number | `binding label "<label>" must be a name or a slot number` (label substituted) |
 | Comment not on top of the file | `comment is allowed only on top of the file, before metas` |
 | Blank line inside the top comment block | `blank line inside the top comment block is not allowed` |
 | No blank line after the top comment block | `a blank line must separate the top comment block from the rest of the file` |
