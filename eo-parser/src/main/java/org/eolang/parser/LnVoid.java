@@ -42,12 +42,10 @@ import java.util.regex.Pattern;
  * rejected outside an atom.</p>
  *
  * <p>The name may also be {@code ^}, which declares the formation's
- * receiver and emits a void named {@code ρ} (R-3.4.11). A receiver has
- * to be the first attribute its formation declares — every caller fills
- * it first — so {@code ? > ^} is rejected under a head that already
- * carries bracket voids, and under a formation that has taken any other
- * attribute already. It carries a type annotation like any other void,
- * which is to say inside an atom only.</p>
+ * receiver and emits a void named {@code ρ} (R-3.4.11). Its position
+ * among the formation's voids is free — it may follow bracket voids or
+ * other {@code ?} lines. It carries a type annotation like any other
+ * void, which is to say inside an atom only.</p>
  *
  * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
  * optionally followed by one type annotation — are the only shapes the
