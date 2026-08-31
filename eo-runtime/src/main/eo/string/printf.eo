@@ -225,9 +225,9 @@
               capped
                 arg.as-bool.if "true" "false"
               T
-                "The conversion %x in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                "The conversion %s in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
                   *
-                    bytes conv
+                    string conv
     arg.as-bytes > datum!
     flags-end > digits!
       number flags
@@ -366,9 +366,9 @@
                     64-.eq conv
                     66-.eq conv
               T
-                "The zero flag can't be applied to the %x conversion, only to %%d and %%f".printf
+                "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
                   *
-                    bytes conv
+                    string conv
               converted
     digits-value > width!
       number digits
