@@ -30,7 +30,11 @@ final class JavaPlacedTest {
         final Path target = temp.resolve("target").resolve("Foo.java");
         final String expected = "public final class Main {}";
         final Path generated = temp.resolve("generated-sources");
-        final Xnav java = new Xnav(new Xembler(new Directives().add("java").set(expected)).xml());
+        final Xnav java = new Xnav(
+            new Xembler(
+                new Directives().add("class").attr("java-name", "Foo").add("java").set(expected)
+            ).xml()
+        ).element("class");
         new JavaPlaced(
             new FpJavaGenerated(
                 java,
@@ -69,7 +73,7 @@ final class JavaPlacedTest {
         MatcherAssert.assertThat(
             "Generated tests does not match with expected",
             new TextOf(
-                target.resolve("generated-test-sources").resolve("FooTest.java")
+                target.resolve("generated-test-sources").resolve("TestFoo.java")
             ).asString(),
             Matchers.equalTo(expected)
         );
@@ -99,7 +103,7 @@ final class JavaPlacedTest {
         MatcherAssert.assertThat(
             "A generated class marked only with @ParameterizedTest was silently skipped",
             new TextOf(
-                target.resolve("generated-test-sources").resolve("FooTest.java")
+                target.resolve("generated-test-sources").resolve("TestFoo.java")
             ).asString(),
             Matchers.equalTo(expected)
         );
@@ -114,11 +118,29 @@ final class JavaPlacedTest {
             new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
         );
         placed.exec(this.clazz("@Test"), true);
-        final Path test = target.resolve("generated-test-sources").resolve("FooTest.java");
+        final Path test = target.resolve("generated-test-sources").resolve("TestFoo.java");
         final boolean created = Files.exists(test);
         placed.exec(this.clazz(""), true);
         MatcherAssert.assertThat(
             "Obsolete Java test was not removed", created && Files.notExists(test)
+        );
+    }
+
+    @Test
+    void removesCompanionsWhenNoneAreTranspiled(@Mktmp final Path temp) throws Exception {
+        final Path target = temp.resolve("target");
+        final Path generated = target.resolve("generated-sources");
+        final Path utest = target.resolve("FooTest.java");
+        final JavaPlaced placed = new JavaPlaced(
+            new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
+        );
+        placed.exec(this.clazz("@Test"), true);
+        final Path test = target.resolve("generated-test-sources").resolve("TestFoo.java");
+        final boolean created = Files.exists(test);
+        placed.exec(this.clazz("@Test"), false);
+        MatcherAssert.assertThat(
+            "A test of a previous build survived a transpile that asked for no tests",
+            created && Files.notExists(test)
         );
     }
 
@@ -131,9 +153,9 @@ final class JavaPlacedTest {
             new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
         );
         Files.createDirectories(temp.resolve("src/test/java"));
-        new Saved("", temp.resolve("src/test/java/FooTest.java")).value();
+        new Saved("", temp.resolve("src/test/java/TestFoo.java")).value();
         placed.exec(this.clazz("@Test"), true);
-        final Path atom = target.resolve("generated-test-sources").resolve("FooEOAtomTest.java");
+        final Path atom = target.resolve("generated-test-sources").resolve("TestAtomFoo.java");
         final boolean created = Files.exists(atom);
         placed.exec(this.clazz(""), true);
         MatcherAssert.assertThat(

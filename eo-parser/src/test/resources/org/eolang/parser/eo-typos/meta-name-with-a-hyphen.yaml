@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  meta name must be lowercase letters and digits, starting with a letter
+input: |
+  +my-meta hello
+
+  # Sample.
+  [] > main
+    QQ.io.stdout "hello" > @

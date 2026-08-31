@@ -127,10 +127,10 @@ final class EoTest {
     void recoversFromBadLineAndContinues() {
         MatcherAssert.assertThat(
             "after an error the walker must continue and parse subsequent valid lines",
-            EoTest.render("+ok-one", "  +bad-indent", "+ok-two"),
+            EoTest.render("+first", "  +badindent", "+second"),
             XhtmlMatchers.hasXPaths(
-                "/object/metas/meta[head='ok-one']",
-                "/object/metas/meta[head='ok-two']"
+                "/object/metas/meta[head='first']",
+                "/object/metas/meta[head='second']"
             )
         );
     }
@@ -208,10 +208,10 @@ final class EoTest {
     @Test
     void reportsExcessiveTrailingBlanks() {
         MatcherAssert.assertThat(
-            "more than one trailing blank line at EOF must be reported per R-6.5.6",
+            "more than one trailing blank line at EOF must be reported per R-6.5.6, at the line of the second one",
             EoTest.render("+foo", "", ""),
             XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'more than one trailing blank line')]"
+                "/object/errors/error[@line='3' and contains(text(),'more than one trailing blank line')]"
             )
         );
     }

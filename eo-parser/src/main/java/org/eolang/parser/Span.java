@@ -21,7 +21,7 @@ package org.eolang.parser;
  * <p>Per spec R-2.2.1: an odd indent is a {@code unexpected odd indent}
  * error condition; {@code Span} itself does not raise it — the consumer
  * (line classifier) reads the indent and decides. The {@link #tab()} query
- * surfaces the R-2.2.4 violation; again, the consumer decides. *
+ * surfaces the R-2.2.4 violation; again, the consumer decides.</p>
  *
  * @since 0.1
  */
@@ -122,6 +122,26 @@ final class Span {
     }
 
     /**
+     * True if the leading whitespace holds a character that is neither a
+     * space nor a tab. An indent is made of spaces (R-2.2.1), and a
+     * character nobody can see in an editor must not decide how deep a
+     * line sits: a pair of form feeds reads as indent 1 to a counter that
+     * takes every whitespace character (#7924).
+     * @return Alien-whitespace flag
+     */
+    boolean alien() {
+        boolean found = false;
+        for (int idx = 0; idx < this.indent; idx = idx + 1) {
+            final char glyph = this.text.charAt(idx);
+            if (glyph != ' ' && glyph != '\t') {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+    /**
      * True if the line is entirely whitespace.
      * @return Blank flag
      */
@@ -155,17 +175,19 @@ final class Span {
     }
 
     /**
-     * The first non-whitespace character, or {@code '\0'} for a blank line.
+     * The first non-whitespace character.
      * @return First non-whitespace character
      */
     char head() {
-        final char first;
         if (this.blank()) {
-            first = '\0';
-        } else {
-            first = this.text.charAt(this.indent);
+            throw new IllegalStateException(
+                String.format(
+                    "line %d is blank, has no first non-whitespace character",
+                    this.number
+                )
+            );
         }
-        return first;
+        return this.text.charAt(this.indent);
     }
 
     private static int leading(final String body) {

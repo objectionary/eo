@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * Attributes of one object, kept in a pair of lists.
@@ -23,7 +24,7 @@ import java.util.Set;
  *
  * @since 0.63
  */
-final class Bindings extends AbstractMap<String, Attribute> {
+final class Bindings extends AbstractMap<String, Attribute> implements Walkable {
 
     /**
      * Names of the attributes, in the order they arrived.
@@ -87,5 +88,12 @@ final class Bindings extends AbstractMap<String, Attribute> {
             all.put(this.names.get(idx), this.values.get(idx));
         }
         return all.entrySet();
+    }
+
+    @Override
+    public void each(final BiConsumer<String, Attribute> action) {
+        for (int idx = 0; idx < this.names.size(); ++idx) {
+            action.accept(this.names.get(idx), this.values.get(idx));
+        }
     }
 }

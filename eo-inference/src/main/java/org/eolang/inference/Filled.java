@@ -99,14 +99,35 @@ final class Filled {
         final Map<String, String> found = new HashMap<>(0);
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
+        while (seen.add(walked)) {
+            this.gathered(found, walked);
+            if (!this.pairs.containsKey(walked)) {
+                break;
+            }
+            walked = this.pairs.get(walked);
+        }
+        final Map<String, String> through = new HashMap<>(found.size());
+        for (final Map.Entry<String, String> fill : found.entrySet()) {
+            final Collection<String> passed = new HashSet<>(0);
+            String reached = fill.getValue();
+            while (found.containsKey(reached) && passed.add(reached)) {
+                reached = found.get(reached);
+            }
+            through.put(fill.getKey(), reached);
+        }
+        return through;
+    }
+
+    private void gathered(final Map<String, String> found, final String type) {
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = type;
+        while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
                 : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
                 found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
             }
-            walked = this.pairs.get(walked);
+            walked = this.owned.body(walked);
         }
-        return found;
     }
 
     private String asked(final String start, final String names, final String back) {

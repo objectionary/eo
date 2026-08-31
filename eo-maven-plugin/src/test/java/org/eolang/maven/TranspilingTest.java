@@ -36,9 +36,6 @@ final class TranspilingTest {
             Collections.emptyList(),
             Paths.get("target"),
             Paths.get("target/generated"),
-            Paths.get("target/cache"),
-            true,
-            "1.0-SNAPSHOT",
             false,
             Collections.singleton(Paths.get("src/main/java")),
             new Transpilation(
@@ -50,7 +47,8 @@ final class TranspilingTest {
                 Paths.get("target"),
                 Paths.get("target/eo/6-inference")
             ),
-            new ConcurrentCache()
+            new GlobalCache.GcFresh(),
+            new JavaFiles(Paths.get("target/generated"), Paths.get("target/cache"), false)
         );
     }
 }

@@ -14,6 +14,8 @@ import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
 import fixtures.LargeProgram;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -61,6 +63,17 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void carriesNoSharedStaticState() {
+        MatcherAssert.assertThat(
+            "EoSyntax declares a shared static field instead of building state per instance",
+            Arrays.stream(EoSyntax.class.getDeclaredFields())
+                .filter(field -> Modifier.isStatic(field.getModifiers()))
+                .count(),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
             "EoSyntax must generate valid XMIR from simple code",
@@ -82,8 +95,21 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
             Long.parseLong(
-                new EoSyntax(new LargeProgram(30)).parsed().xpath("/object/@ms").get(0)
+                new EoSyntax(
+                    new LargeProgram(30), UnaryOperator.<XML>identity()
+                ).parsed().xpath("/object/@ms").get(0)
             ),
+            Matchers.greaterThan(0L)
+        );
+    }
+
+    @Test
+    void measuresSubMillisecondParsingTime() throws Exception {
+        final EoSyntax syntax = new EoSyntax(String.format("# Ünïcödé.%n[] > tiny%n"));
+        syntax.parsed();
+        MatcherAssert.assertThat(
+            "ms attribute of a sub-millisecond parse is not rounded up to one",
+            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
             Matchers.greaterThan(0L)
         );
     }
@@ -103,7 +129,9 @@ final class EoSyntaxTest {
 
     @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
-        final EoSyntax syntax = new EoSyntax(new LargeProgram(30));
+        final EoSyntax syntax = new EoSyntax(
+            new LargeProgram(30), UnaryOperator.<XML>identity()
+        );
         syntax.parsed();
         MatcherAssert.assertThat(
             "second parse of the same syntax does not measure its own elapsed time",
@@ -118,6 +146,23 @@ final class EoSyntaxTest {
             NullPointerException.class,
             () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
             "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
+    void rejectsANullTransformAtConstructionTime() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null),
+            "EoSyntax must reject a null transform at construction, before parsed() is ever called"
+        );
+    }
+
+    @Test
+    void acceptsANonNullTransformAtConstructionTime() {
+        Assertions.assertDoesNotThrow(
+            () -> new EoSyntax(new InputOf(""), UnaryOperator.identity()),
+            "EoSyntax must accept a non-null transform at construction, but it didn't"
         );
     }
 
@@ -160,16 +205,48 @@ final class EoSyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = "[] > x-н, 1".concat(System.lineSeparator());
+        final String src = "[] > x-н, 1".concat(String.valueOf((char) 10));
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void printsErrorsWhenSyntaxIsBroken() throws Exception {
+        MatcherAssert.assertThat(
+            "EO syntax is broken, thus errors should be printed",
             XhtmlMatchers.xhtml(
-                new EoSyntax(new InputOf(src)).parsed().toString()
+                new EoSyntax(
+                    new InputOf("[] > x-н, 1".concat(System.lineSeparator()))
+                ).parsed().toString()
             ),
-            XhtmlMatchers.hasXPaths(
-                "/object/errors/error",
-                String.format("/object[listing='%s']", src)
-            )
+            XhtmlMatchers.hasXPaths("/object/errors/error")
+        );
+    }
+
+    @Test
+    void reportsErrorOnLineWithCharacterForbiddenInXml() throws Exception {
+        MatcherAssert.assertThat(
+            "a broken line quoting a forbidden character must still produce an <error>",
+            new EoSyntax(
+                new InputOf(String.format("[] > x-%cn, 1%n", 0x07))
+            ).parsed(),
+            XhtmlMatchers.hasXPaths("/object/errors/error")
+        );
+    }
+
+    @Test
+    void keepsCommentWithCharacterForbiddenInXml() throws Exception {
+        MatcherAssert.assertThat(
+            "a comment carrying a forbidden character must still reach <comments>",
+            new EoSyntax(
+                new InputOf(String.format("# note %c here%n%n[] > x%n", 0x07))
+            ).parsed(),
+            XhtmlMatchers.hasXPaths("/object/comments/comment[.='note  here']")
         );
     }
 
@@ -214,7 +291,7 @@ final class EoSyntaxTest {
     @Test
     void keepsListingVerbatimWithXmlSpecialCharacters() throws Exception {
         final String src = String.join(
-            System.lineSeparator(),
+            String.valueOf((char) 10),
             "# Sample.",
             "[] > app",
             "  \"a < b & c > d\" > x",
@@ -222,6 +299,24 @@ final class EoSyntaxTest {
         );
         MatcherAssert.assertThat(
             "listing must hold the source verbatim, not XML-escaped",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void keepsListingVerbatimWithCrlf() throws Exception {
+        final String src = String.join(
+            String.valueOf((char) 13).concat(String.valueOf((char) 10)),
+            "# Sample.",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "listing must hold CRLF verbatim, regardless of platform",
             new Xnav(
                 new EoSyntax(new InputOf(src)).parsed().inner()
             ).element("object").element("listing").text().get(),
@@ -658,6 +753,14 @@ final class EoSyntaxTest {
                 "/object/listing",
                 "/object/o[@name='foo']"
             )
+        );
+    }
+
+    @Test
+    void parsesEmptySourceIntoSchemaValidXmir() {
+        Assertions.assertDoesNotThrow(
+            () -> new StrictXmir(new EoSyntax("").parsed()).toString(),
+            "XMIR of an empty source must match XMIR.xsd, which has no room for an empty <listing>"
         );
     }
 

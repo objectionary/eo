@@ -81,7 +81,7 @@ public final class PhApplication extends PhOnce {
         final String head = phi.φTerm();
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
-        final boolean literal = binds.length == 1 && data.find();
+        final boolean literal = binds.length == 1 && binds[0].first() && data.find();
         final String string;
         if (literal && "Φ.string".equals(head)) {
             string = PhApplication.string(PhApplication.bytes(data.group(1)));

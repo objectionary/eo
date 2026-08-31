@@ -32,12 +32,18 @@ public final class Bind {
     private final Supplier<String> term;
 
     /**
+     * Whether this binding fills the first slot of what it is applied to.
+     */
+    private final boolean zero;
+
+    /**
      * Ctor.
      * @param pos The position
      * @param obj The object to bind
      */
     public Bind(final int pos, final Phi obj) {
         this(
+            pos == 0,
             target -> target.put(pos, obj),
             () -> String.format("%d->%s", pos, obj.φTerm())
         );
@@ -50,6 +56,7 @@ public final class Bind {
      */
     public Bind(final String name, final Phi obj) {
         this(
+            false,
             target -> target.put(name, obj),
             () -> String.format("%s->%s", name, obj.φTerm())
         );
@@ -57,12 +64,30 @@ public final class Bind {
 
     /**
      * Ctor.
+     * @param first Whether the binding fills the first slot
      * @param command Attaches the bound object to a target
      * @param term Renders the φ-term fragment
      */
-    private Bind(final Consumer<Phi> command, final Supplier<String> term) {
+    private Bind(
+        final boolean first, final Consumer<Phi> command, final Supplier<String> term
+    ) {
+        this.zero = first;
         this.command = command;
         this.term = term;
+    }
+
+    /**
+     * Whether this binding fills the first slot.
+     *
+     * <p>A literal is an object applied to its bytes in that slot and
+     * nothing else, so whoever renders one has to tell that application
+     * from a named binding of the same object, which is no literal and
+     * cannot even be dataized (#7692).</p>
+     *
+     * @return True if the binding is positional and fills slot zero
+     */
+    boolean first() {
+        return this.zero;
     }
 
     /**

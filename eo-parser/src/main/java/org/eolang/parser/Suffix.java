@@ -5,6 +5,7 @@
 package org.eolang.parser;
 
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * A parsed name suffix — §3.10 of the spec.
@@ -58,6 +59,20 @@ final class Suffix {
      * {@code @} for a test attribute.
      */
     private static final Set<String> SCOPES = Set.of("@", "^", "$");
+
+    /**
+     * A generic type variable — one uppercase letter of {@code A}–{@code F}
+     * (R-3.10.10).
+     */
+    private static final Pattern VARIABLE = Pattern.compile("[A-F]");
+
+    /**
+     * One {@code NAME} token per §2.3 — a lowercase letter, then anything
+     * but a token boundary.
+     */
+    private static final Pattern NAME = Pattern.compile(
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*"
+    );
 
     /**
      * Suffix form.
@@ -283,8 +298,11 @@ final class Suffix {
      * verbatim for {@code add-default-package} to home.</p>
      *
      * <p>A concrete forma is a {@code NAME ('.' NAME)*} path, so a
-     * leading dot, a trailing dot, or an empty segment is rejected
-     * here, for the signature and the annotation alike.</p>
+     * leading dot, a trailing dot, an empty segment, or a segment that
+     * is not a {@code NAME} token (§2.3) is rejected here, for the
+     * signature and the annotation alike. A scope token ({@code @},
+     * {@code ^}, {@code $}) and anything else that does not open with a
+     * lowercase letter therefore names no type.</p>
      *
      * @param raw Raw token, without a trailing {@code ?}
      * @param span Source span
@@ -292,9 +310,10 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
-        Suffix.checkCactus(raw, span, pos);
+        Suffix.checkGlyphs(raw, span, pos);
         final char first = raw.charAt(0);
-        if (first >= 'A' && first <= 'Z' && !raw.matches("[A-F]") && !raw.startsWith("Q.")) {
+        if (first >= 'A' && first <= 'Z'
+            && !Suffix.VARIABLE.matcher(raw).matches() && !raw.startsWith("Q.")) {
             throw new ParseError(
                 span.line(), pos,
                 "type variable must be one of A-F"
@@ -305,6 +324,9 @@ final class Suffix {
                 span.line(), pos,
                 "type must be a dotted name with no leading, trailing, or empty segment"
             );
+        }
+        if (!Suffix.VARIABLE.matcher(raw).matches()) {
+            Suffix.checkPath(raw, span, pos);
         }
         final String promoted;
         if (raw.startsWith("Q.")) {
@@ -377,17 +399,44 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        Suffix.checkCactus(name, span, home + start);
+        Suffix.checkGlyphs(name, span, home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
     }
 
-    private static void checkCactus(final String name, final Span span, final int pos) {
+    private static void checkPath(final String raw, final Span span, final int pos) {
+        int from = 0;
+        if (raw.startsWith("Q.")) {
+            from = 2;
+        }
+        while (from < raw.length()) {
+            int end = raw.indexOf('.', from);
+            if (end < 0) {
+                end = raw.length();
+            }
+            if (!Suffix.NAME.matcher(raw.substring(from, end)).matches()) {
+                throw new ParseError(
+                    span.line(), pos,
+                    "type must be a dotted path of NAME tokens"
+                );
+            }
+            from = end + 1;
+        }
+    }
+
+    private static void checkGlyphs(final String name, final Span span, final int pos) {
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
                 span.line(), pos,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        final int control = new Scrubbed(name).found();
+        if (control >= 0) {
+            throw new ParseError(
+                span.line(), pos + control,
+                "control character is not allowed in an identifier"
             );
         }
     }
@@ -435,7 +484,7 @@ final class Suffix {
                 )
             );
         }
-        Suffix.checkCactus(handle, span, home + begin);
+        Suffix.checkGlyphs(handle, span, home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -465,7 +514,7 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        Suffix.checkCactus(name, span, home + begin);
+        Suffix.checkGlyphs(name, span, home + begin);
         Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {

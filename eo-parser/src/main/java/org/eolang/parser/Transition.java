@@ -59,8 +59,7 @@ final class Transition {
         }
         if (level.patom() && !admission.permitted()) {
             throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "atom may contain only test attributes"
+                this.span.line(), this.span.indent(), admission.violation()
             );
         }
         admission.name(level);

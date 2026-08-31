@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What fills a void does not change what is asked of it. The program asks a
+# `size` of whatever fills `pages`, and it goes on asking it after somebody
+# applies `book` and hands in a `leaf` that has one. The demand is worked out
+# from the formation the receiver is a copy of, not from where the dispatch
+# settled once the argument was put in.
+eo:
+  book.eo: |
+    [pages] > book
+      pages > @
+  leaf.eo: |
+    [] > leaf
+      [] > size
+  app.eo: |
+    [] > app
+      book leaf > mine
+      mine.size > @
+provides:
+  - "/provides/type[@id='Φ.book']/attr[@void='true']/demand[@name='size']"

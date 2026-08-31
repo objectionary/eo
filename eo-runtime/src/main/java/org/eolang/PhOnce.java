@@ -71,7 +71,7 @@ public abstract class PhOnce implements Phi {
 
     @Override
     public final boolean equals(final Object obj) {
-        return this.object.get().equals(obj);
+        return this == obj || this.object.get().equals(obj);
     }
 
     @Override
@@ -85,8 +85,8 @@ public abstract class PhOnce implements Phi {
     }
 
     @Override
-    public final boolean hasRho() {
-        return this.object.get().hasRho();
+    public final boolean needsRho() {
+        return this.object.get().needsRho();
     }
 
     @Override

@@ -17,10 +17,9 @@ package org.eolang.parser;
  * <p>Per the parser-pragmatism rule, this class deliberately holds more
  * than four fields and is mutable in-place: an immutable {@code Level} +
  * copy-on-write would allocate a new object on every line transition,
- * pushing the parser's per-line cost from O(1) to O(D). Mutation is not
- * confined to {@link Stack}: {@link LnMethod}, {@link LnCompactTuple},
- * {@link LnOnlyPhi}, {@link Bindings} and {@link Eo} all hold a reference
- * to a live entry and call its mutators directly.
+ * pushing the parser's per-line cost from O(1) to O(D). Mutation is
+ * confined to the {@link Stack} that owns this entry; no other class
+ * keeps a reference.</p>
  *
  * @since 0.1
  */
@@ -130,19 +129,20 @@ final class Level {
     private int bindings;
 
     /**
-     * Whether a child arg is currently being tracked but has not yet
-     * been committed into {@link #bindings} — see
-     * {@link #observeBinding(boolean, Span)} / {@link #commitArg()}.
+     * The in-progress child arg, in the same spelling as
+     * {@link #bindings} — 0 none tracked yet, 1 unbound, 2 bound. Held
+     * apart from {@link #bindings} until {@link #commitArg()} joins it,
+     * since {@link #upgradeArgBinding()} may still turn it to bound when
+     * a {@code .method} continuation picks up an outer binding.
      */
-    private boolean argpending;
+    private int arg;
 
     /**
-     * Whether the in-progress arg carries a binding (so far). May be
-     * flipped to {@code true} mid-chain by
-     * {@link #upgradeArgBinding()} when a {@code .method} continuation
-     * picks up an outer binding.
+     * True when the chain link this entry currently ends with carries an
+     * inline binding, read by {@link LnMethod} to refuse a continuation
+     * that would leave it on a link the chain no longer ends with.
      */
-    private boolean argbound;
+    private boolean tied;
 
     /**
      * Source span recorded with the in-progress arg, used for error
@@ -461,8 +461,7 @@ final class Level {
         this.children = 0;
         this.count = 0;
         this.bindings = 0;
-        this.argpending = false;
-        this.argbound = false;
+        this.arg = 0;
     }
 
     /**
@@ -481,7 +480,7 @@ final class Level {
      *
      * <p>For vmethod chains (head + same-indent {@code .method}
      * continuations), the binding may live on the last link rather
-     * than on the head. This method tracks the *currently in-progress*
+     * than on the head. This method tracks the currently in-progress
      * arg separately and only commits it to the group mode when the
      * next sibling arg starts or the parent closes. A late binding
      * picked up via {@link #upgradeArgBinding()} is reflected at
@@ -492,8 +491,11 @@ final class Level {
      */
     void observeBinding(final boolean bound, final Span span) {
         this.commitArg();
-        this.argpending = true;
-        this.argbound = bound;
+        if (bound) {
+            this.arg = 2;
+        } else {
+            this.arg = 1;
+        }
         this.argspan = span;
     }
 
@@ -504,7 +506,7 @@ final class Level {
      * link per the chain-binding rule).
      */
     void upgradeArgBinding() {
-        this.argbound = true;
+        this.arg = 2;
     }
 
     /**
@@ -513,24 +515,37 @@ final class Level {
      * before starting a new arg and at parent close time.
      */
     void commitArg() {
-        if (this.argpending) {
-            final int code;
-            if (this.argbound) {
-                code = 2;
-            } else {
-                code = 1;
-            }
+        if (this.arg != 0) {
+            final int code = this.arg;
+            this.arg = 0;
             if (this.bindings == 0) {
                 this.bindings = code;
             } else if (this.bindings != code) {
-                this.argpending = false;
                 throw new ParseError(
                     this.argspan.line(), this.argspan.indent(),
                     "argument bindings must be all-or-nothing"
                 );
             }
-            this.argpending = false;
         }
+    }
+
+    /**
+     * Whether the link this chain currently ends with carries an inline
+     * binding.
+     * @return Tied flag
+     */
+    boolean tied() {
+        return this.tied;
+    }
+
+    /**
+     * Record that the link this chain now ends with carries an inline
+     * binding, so a further {@code .method} continuation can tell that it
+     * would leave that binding on a link that is no longer the last one
+     * (R-6.6.4).
+     */
+    void tie() {
+        this.tied = true;
     }
 
     /**
@@ -558,8 +573,8 @@ final class Level {
         this.tupled = other.tupled;
         this.star = other.star;
         this.bindings = other.bindings;
-        this.argpending = other.argpending;
-        this.argbound = other.argbound;
+        this.arg = other.arg;
         this.argspan = other.argspan;
+        this.tied = other.tied;
     }
 }

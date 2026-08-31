@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 4
+message: |-
+  [4:9] error: 'inline binding allowed only on the last method in a chain'
+    bar.baz:1.qux 5 > z
+           ^
+input: |
+  # D.
+
+  [] > foo
+    bar.baz:1.qux 5 > z

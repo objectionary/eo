@@ -1,4 +1,4 @@
-# Checks that `text` ends with `substring`.
+# Checks that the string ends with `substring`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,13 +15,12 @@
       txt.size >> length!
     eq.
       slice.
-        text >> txt!
+        ^ >> txt!
         minus.
           number length
           size
         size
       substring >> part!
-  ^ > text
 
   ends-with. ++> can-end-with-a-substring
     "Hello world!"

@@ -410,7 +410,9 @@ final class Emissions {
             final Span sub = new Span(
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
-            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+            final Tokens tokens = new Tokens(sub.body(), sub);
+            Emissions.expression(emit, name, tokens, line);
+            tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
     }
 
@@ -477,24 +479,18 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        final Suffix suffix = new Suffix(
+        final boolean suffixed = new Suffix(
             inner.substring(close + 1),
             new Span(" ".repeat(column).concat(inner), line),
             column + close + 1
-        );
-        final String label;
-        if (suffix.present()) {
-            label = suffix.attribute(line, column);
-        } else {
-            label = name;
+        ).present();
+        if (suffixed) {
+            throw new ParseError(
+                line, column + close + 1,
+                "inline-phi inside parentheses must be anonymous"
+            );
         }
-        emit.baselessObject(label, line, column);
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             Emissions.validParam(param, line, pcol);
@@ -510,7 +506,9 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
+        final Tokens tokens = new Tokens(sub.body(), sub);
+        Emissions.expression(emit, "φ", tokens, line);
+        tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }
 

@@ -209,6 +209,13 @@ final class Tokens {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        final int control = new Scrubbed(raw).found();
+        if (control >= 0) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start + control,
+                "control character is not allowed in an identifier"
+            );
+        }
         this.cursor = idx;
         return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
@@ -260,6 +267,12 @@ final class Tokens {
         final int from = idx;
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
+        }
+        if (sign && Tokens.letterAt(this.body, idx)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
         }
         if (idx == from) {
             throw new ParseError(
@@ -546,6 +559,24 @@ final class Tokens {
     }
 
     /**
+     * Reject whatever the cursor has left ahead of it. A construct that
+     * owns the whole body it was handed — a parenthesised expression, for
+     * one — says so once its reader is done, and the content the reader
+     * could not place is reported rather than dropped.
+     * @param message What to say about the leftovers
+     */
+    void checkEnd(final String message) {
+        final String rest = this.tail().stripLeading();
+        if (!rest.isEmpty()) {
+            throw new ParseError(
+                this.span.line(),
+                this.span.indent() + this.body.length() - rest.length(),
+                message
+            );
+        }
+    }
+
+    /**
      * The full source body the token stream operates on.
      * @return Body string
      */
@@ -609,6 +640,12 @@ final class Tokens {
 
     private static boolean hexDigit(final char glyph) {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
+    }
+
+    private static boolean letterAt(final String body, final int idx) {
+        return idx < body.length()
+            && body.charAt(idx) < 128
+            && Character.isLetter(body.charAt(idx));
     }
 
     private static boolean byteDigit(final char glyph) {
@@ -771,6 +808,12 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
+        if (this.oddHexRun()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "invalid bytes literal"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");
@@ -817,6 +860,16 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         return this.body.substring(start, this.cursor);
+    }
+
+    private boolean oddHexRun() {
+        int idx = this.cursor;
+        while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
+            idx = idx + 1;
+        }
+        return idx > this.cursor
+            && idx < this.body.length()
+            && this.body.charAt(idx) == '-';
     }
 
     private boolean bytePair(final int idx) {

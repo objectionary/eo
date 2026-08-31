@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "[2:17] error: 'types in a `/{…}` list must be separated by exactly one space'"
+message: "[2:17] error: 'types in a /{…} list must be separated by exactly one space'"
 input: |
   [] > atom /A
     ? > x /{string  number}

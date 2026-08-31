@@ -125,7 +125,11 @@ public final class MjTranspile extends MjSafe {
      * {@code byte[]}. A class that leaves one out fails to compile in
      * generated sources.</p>
      */
-    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    @Parameter(
+        alias = "phiDefaultClass",
+        property = "eo.phiDefaultClass",
+        defaultValue = "PhDefault"
+    )
     private String superclass;
 
     /**
@@ -137,47 +141,41 @@ public final class MjTranspile extends MjSafe {
      * nothing is marked.
      */
     @Parameter(
+        alias = "inferenceDir",
         property = "eo.inferenceDir",
         required = true,
         defaultValue = "${project.build.directory}/eo/6-inference"
     )
     private File tables;
 
-    /**
-     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
-     */
-    private final ConcurrentCache guard;
-
-    /**
-     * Ctor.
-     */
-    public MjTranspile() {
-        this.guard = new ConcurrentCache();
-    }
-
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
+            final Transpilation train = new Transpilation(
+                this.plugin.getVersion(),
+                new Tracking(this.trackSteps, this.located),
+                this.coverage,
+                this.base(),
+                this.xslMeasures.toPath(),
+                this.targetDir.toPath(),
+                this.tables.toPath()
+            );
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
                     this.targetDir.toPath(),
                     this.generatedDir.toPath(),
-                    this.cache.toPath(),
-                    this.cacheEnabled,
-                    this.plugin.getVersion(),
                     this.tests,
                     this.roots(),
-                    new Transpilation(
-                        this.plugin.getVersion(),
-                        new Tracking(this.trackSteps, this.located),
-                        this.coverage,
-                        this.base(),
-                        this.xslMeasures.toPath(),
-                        this.targetDir.toPath(),
-                        this.tables.toPath()
-                    ),
-                    this.guard
+                    train,
+                    this.stored(),
+                    new JavaFiles(
+                        this.generatedDir.toPath(),
+                        this.cache.toPath()
+                            .resolve(Transpiling.CACHE)
+                            .resolve(train.version()),
+                        this.cacheEnabled
+                    )
                 )
             ).exec();
         }
@@ -219,5 +217,21 @@ public final class MjTranspile extends MjSafe {
             );
         }
         return this.superclass;
+    }
+
+    // The cache is skipped when the XMIR of every step is asked for: those
+    // dumps are made by the train, and a cache hit hands back a stored
+    // answer without running it (#7724). The version segment is not folded
+    // in here, because it differs from one source to the next: the rows of
+    // the inference tables an object is named in go into it (#7945), so
+    // `Transpiling` folds it in per file.
+    private GlobalCache stored() {
+        final GlobalCache store;
+        if (this.trackSteps) {
+            store = new GlobalCache.GcFresh();
+        } else {
+            store = this.caching(Transpiling.CACHE);
+        }
+        return store;
     }
 }

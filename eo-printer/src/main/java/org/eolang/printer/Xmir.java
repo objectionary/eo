@@ -33,17 +33,6 @@ import org.xml.sax.SAXParseException;
  *
  * @see <a href="https://xml.jcabi.com">xml.jcabi.com</a>
  * @since 0.35.0
- * @todo #7095:60min Re-base every value the print train relocates. A binding
- *  folded onto a reference deeper than itself is read again in a scope that
- *  is not the one it was written in, so its names have to climb the
- *  difference. Only the based-handle fold in {@code inline-cactoos.xsl} does
- *  that today; the four other branches of the template it lives in, and the
- *  three merges in {@code merge-monikers.xsl}, relocate values the same way
- *  and need the same pass. Each wants a pack of its own before it is wired,
- *  since the shapes differ: an applied reference keeps its own children, a
- *  pipe keeps the formation in place. The {@code dropped} mode and its two
- *  functions should move somewhere both sheets can import rather than being
- *  copied into the second one.
  */
 public final class Xmir implements XML {
 

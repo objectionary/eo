@@ -28,10 +28,14 @@ final class Bindings {
     /**
      * The parent kinds whose deeper children are application arguments,
      * so the all-or-nothing rule of R-6.6.2 governs the group they form.
+     * An inline-phi formation is one of them: the block under a bare
+     * {@code φ} is the argument group of the expression the line binds to
+     * {@code φ}, and an application is no less one for being written with
+     * an inline-phi suffix instead of a head (#7919).
      */
     private static final Set<Kind> TRACKED = EnumSet.of(
         Kind.HEAD, Kind.HMETHOD, Kind.VAPPLICATION, Kind.IDENTITY_OBJECT,
-        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD
+        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD, Kind.ONLY_PHI
     );
 
     /**

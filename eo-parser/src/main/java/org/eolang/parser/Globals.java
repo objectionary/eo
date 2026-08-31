@@ -148,6 +148,32 @@ final class Globals {
     }
 
     /**
+     * Flush the pending top comment block, if any, and close the header
+     * zone — idempotent once {@link #sealed()} is true. A non-empty
+     * block with no blank line before the sealing line (§6.5) is
+     * dropped via {@link #dropComments()} and reported as an error.
+     * @param emit XMIR emitter
+     * @param span Source span of the meta or object closing the header
+     */
+    void seal(final Emit emit, final Span span) {
+        if (this.closed) {
+            return;
+        }
+        if (!this.comments.isEmpty() && this.blanks == 0) {
+            this.dropComments();
+            throw new ParseError(
+                span.line(), span.indent(),
+                "a blank line must separate the top comment block from the rest of the file"
+            );
+        }
+        if (!this.comments.isEmpty()) {
+            emit.comment(this.comments, this.comments.get(this.comments.size() - 1).line());
+            this.clearComments();
+        }
+        this.closed = true;
+    }
+
+    /**
      * Whether the parser is still consuming the meta header (R-6.5.5).
      * @return Flag
      */
@@ -307,9 +333,9 @@ final class Globals {
      *
      * <p>The flags and buffers kept here outlive the line that touched
      * them, so a line that seals the header zone in
-     * {@link Comments#seal(Globals, Emit, Span)} and then throws would
-     * leave the file without its top comment block and with every later
-     * comment rejected. {@link Eo} takes one of these next to
+     * {@link #seal(Emit, Span)} and then throws would leave the file
+     * without its top comment block and with every later comment
+     * rejected. {@link Eo} takes one of these next to
      * {@link Emit#savepoint()} and hands it back to
      * {@link #restore(Globals)} next to {@link Emit#rollback(Savepoint)}.</p>
      *

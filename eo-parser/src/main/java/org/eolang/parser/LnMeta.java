@@ -18,11 +18,29 @@ import java.util.Locale;
  *
  * <p>A leading {@code Q} in any part is promoted to {@code Φ} in the
  * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
- * emission time. *
+ * emission time.</p>
+ *
+ * <p>Two directives name what they act on and are meaningless without
+ * it: {@code +package} takes exactly one argument, and {@code +alias}
+ * at least one — the shorthand {@code +alias Φ.foo} or the full
+ * {@code +alias foo Φ.bar}. A bare one of either is rejected here, so
+ * that {@code expand-aliases} is never handed an alias with nothing to
+ * expand.</p>
+ *
+ * <p>{@code Q} names the global root and nothing else, so a
+ * {@code +alias} that would give the token another meaning
+ * ({@code +alias Q Q.foo}, or the shorthand {@code +alias Q}) is
+ * rejected here — {@code expand-aliases} reads that first part as the
+ * alias name and would otherwise let one file rewrite the root.</p>
  *
  * @since 0.1
  */
 final class LnMeta implements Line {
+
+    /**
+     * The global root, what a {@code Q} part is promoted to (R-9.3).
+     */
+    private static final String ROOT = "Φ";
 
     /**
      * The meta line's span.
@@ -82,7 +100,7 @@ final class LnMeta implements Line {
             );
         }
         this.checkHead(head, parts);
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         globals.markMeta();
         globals.clearBlanks();
         emit.meta(this.span.line(), head, parts);
@@ -95,16 +113,59 @@ final class LnMeta implements Line {
                 "meta directive requires a name"
             );
         }
-        if (!head.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*")) {
+        if (!head.matches("[a-z][a-z0-9]*")) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "meta name must be a NAME starting with a lowercase letter"
+                "meta name must be lowercase letters and digits, starting with a letter"
             );
         }
-        if ("package".equals(head) && parts.isEmpty()) {
+        if ("package".equals(head)) {
+            this.checkPackage(parts);
+        }
+        if ("alias".equals(head)) {
+            this.checkAlias(parts);
+        }
+    }
+
+    private void checkPackage(final List<String> parts) {
+        if (parts.size() != 1) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+package' directive requires exactly one argument"
+            );
+        }
+        if (new Dotted(parts.get(0)).broken()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' path must not have an empty segment"
+            );
+        }
+    }
+
+    private void checkAlias(final List<String> parts) {
+        if (parts.isEmpty()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' directive requires at least one argument"
+            );
+        }
+        if (LnMeta.ROOT.equals(parts.get(0))) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' cannot rename the root token Q"
+            );
+        }
+        final Dotted target = new Dotted(parts.get(parts.size() - 1));
+        if (target.broken()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' target must not have an empty segment"
+            );
+        }
+        if (target.scoped()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' target must be an object name, not a scope token"
             );
         }
     }
@@ -143,9 +204,9 @@ final class LnMeta implements Line {
     private static String promoteQ(final String part) {
         final String promoted;
         if ("Q".equals(part)) {
-            promoted = "Φ";
+            promoted = LnMeta.ROOT;
         } else if (part.startsWith("Q.")) {
-            promoted = "Φ".concat(part.substring(1));
+            promoted = LnMeta.ROOT.concat(part.substring(1));
         } else {
             promoted = part;
         }

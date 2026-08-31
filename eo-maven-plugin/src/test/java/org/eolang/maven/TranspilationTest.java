@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -37,13 +38,14 @@ final class TranspilationTest {
     @Test
     void tellsInferenceTablesApartInTheCacheKey(@Mktmp final Path temp) throws IOException {
         final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.writeString(tables.resolve("provides.xml"), "<provides/>");
+        Files.writeString(tables.resolve("provides.xml"), "<provides><type id='Q.f'/></provides>");
         MatcherAssert.assertThat(
-            "a build that read the tables must not take the result of one that had none",
-            this.transpilation(tables).version(),
+            "a build that read the rows of this object must not take one that had none",
+            this.transpilation(tables).version(Collections.singletonList("Q.f")),
             Matchers.not(
                 Matchers.equalTo(
-                    this.transpilation(temp.resolve("absent")).version()
+                    this.transpilation(temp.resolve("absent"))
+                        .version(Collections.singletonList("Q.f"))
                 )
             )
         );
