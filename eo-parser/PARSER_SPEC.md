@@ -1381,7 +1381,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |
 | Bare reversed dispatch receiver starts with `.` | `reversed dispatch receiver must not begin with dot` |
 | Compact tuple `*N` with N > children | `compact tuple requires at least N children, got K` (N and K substituted) |
-| Compact tuple `*0` on reversed dispatch | `reversed-dispatch compact tuple requires N ≥ 1` |
 | Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
