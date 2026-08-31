@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Integration tests for transpile behavior.
  * @since 0.62
- * @todo #7182:30min Re-enable the two tests of this class after the next release.
+ * @todo #7182:30min Re-enable the two transpile tests after the next release.
  *  The sandbox pulls the released .eo sources of the runtime from the remote
  *  objectionary, and those predate the rule that every object carries a
  *  comment on top, so the build they take part in ends with [ERROR] lines
