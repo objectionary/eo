@@ -41,6 +41,20 @@ final class Eo implements Iterable<Directive> {
     private static final String ROOT_TOKENS = "*(QT@^$%";
 
     /**
+     * BYTES-only body.
+     */
+    private static final String BYTES_BODY = "[0-9A-F]{2}(-[0-9A-F]{2})*-?";
+
+    /**
+     * BYTES body followed by a suffix.
+     */
+    private static final String BYTES_WITH_SUFFIX = String.join(
+        "",
+        "[0-9A-F]{2}(-[0-9A-F]{2})*",
+        "\\s.*"
+    );
+
+    /**
      * Raw EO source text.
      */
     private final String source;
@@ -243,7 +257,8 @@ final class Eo implements Iterable<Directive> {
         final StringBuilder body, final int start
     ) {
         int idx = start;
-        while (idx < spans.size() && Eo.partOfBytes(spans.get(idx), head, body)) {
+        while (idx < spans.size()
+            && Eo.partOfBytes(spans.get(idx), head, body)) {
             final String line = spans.get(idx).body();
             body.append(line);
             idx = idx + 1;
@@ -265,9 +280,9 @@ final class Eo implements Iterable<Directive> {
         final Span span, final Span head, final StringBuilder body
     ) {
         return span.indent() >= head.indent()
-            && (span.body().matches("[0-9A-F]{2}(-[0-9A-F]{2})*-?")
+            && (span.body().matches(Eo.BYTES_BODY)
                 || body.toString().endsWith("-")
-                && span.body().matches("[0-9A-F]{2}(-[0-9A-F]{2})*\\s.*"));
+                && span.body().matches(Eo.BYTES_WITH_SUFFIX));
     }
 
     /**
@@ -277,7 +292,7 @@ final class Eo implements Iterable<Directive> {
      */
     private static boolean isBytesContinuation(final String body) {
         return body.length() >= 6 && body.endsWith("-")
-            && body.matches("[0-9A-F]{2}(-[0-9A-F]{2})*-?");
+            && body.matches(Eo.BYTES_BODY);
     }
 
     /**

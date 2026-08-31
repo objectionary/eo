@@ -30,6 +30,15 @@ final class Emissions {
     private static final int MAX_OCTAL_BYTE = 0xFF;
 
     /**
+     * Octal byte range error format.
+     */
+    private static final String OCTAL_BYTE_RANGE = String.join(
+        "",
+        "octal escape \\%s is out of range: value %d ",
+        "exceeds the 1-byte limit of 0o377 (255)"
+    );
+
+    /**
      * Kinds of head value that a {@code .method} chain may follow.
      */
     private static final Set<Value.Kind> CHAINABLE = Set.of(
@@ -552,7 +561,9 @@ final class Emissions {
      * @return Decoded bytes
      */
     private static byte[] unescapeRawBytes(final String inner) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(inner.length());
+        final ByteArrayOutputStream out = new ByteArrayOutputStream(
+            inner.length()
+        );
         final StringBuilder text = new StringBuilder(inner.length());
         int idx = 0;
         while (idx < inner.length()) {
@@ -600,7 +611,7 @@ final class Emissions {
         if (value > Emissions.MAX_OCTAL_BYTE) {
             throw new NumberFormatException(
                 String.format(
-                    "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
+                    Emissions.OCTAL_BYTE_RANGE,
                     body.substring(start, cursor), value
                 )
             );
@@ -646,7 +657,7 @@ final class Emissions {
         if (value > Emissions.MAX_OCTAL_BYTE) {
             throw new NumberFormatException(
                 String.format(
-                    "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
+                    Emissions.OCTAL_BYTE_RANGE,
                     body.substring(start, cursor), value
                 )
             );
