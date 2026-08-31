@@ -6,6 +6,18 @@
 # ```
 # (`Q.string.regex "/(word)/i").compiled.matches "WORD"
 # ```
+#
+# There are two entry points and one letter between their names.
+# `matches` answers whether the whole text matches: the block it finds has
+# to start at zero and end at the length of the text, so a pattern that
+# covers only part of it answers `false`.
+# `match` searches instead: it hands back the first block found anywhere in
+# the text, and `next` moves to the one after it.
+# ```
+# (`Q.string.regex "/[a-z]+/").compiled.matches "1abc"  # false
+# (`Q.string.regex "/[a-z]+/").compiled.match "1abc"    # the block "abc"
+# ```
+#
 # Supported flags:
 # /d - Enables Unix lines mode.
 # /i - Enables case-insensitive matching.
