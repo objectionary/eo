@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An application bound to a void by name, whose receiver needs a vertical
+# layout of its own. The head of a vertical reversed dispatch ends with the
+# dot, so a binding glued onto it reads `print.:hey` and the grammar rejects
+# it. The suffix shape puts the receiver in front of the dot and the binding
+# lands after a name, where it parses.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    f > out
+      ((t r 8.54 "yes").print 88 31):hey
+
+printed: |
+  [] > main
+    f > out
+      (t r 8.54 "yes").print:hey
+        88
+        31

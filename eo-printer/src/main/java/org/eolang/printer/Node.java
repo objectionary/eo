@@ -135,6 +135,14 @@ final class Node {
      * indentation and repeated base characters outweigh that one bracket
      * (#5650).</p>
      *
+     * <p>When the dispatch carries an inline binding ({@code :hey}), the
+     * suffix shape is taken whatever the penalties say. The vertical head of
+     * a reversed dispatch ends with the dot, and a binding glued onto it
+     * ({@code print.:hey}) is text the grammar does not accept, so the
+     * printer would write a file the next build cannot read (#7709). The
+     * suffix shape puts the receiver in front of the dot and leaves the
+     * binding after a name, where it parses.</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -144,7 +152,7 @@ final class Node {
         final Optional<Node> suffix = this.suffixed();
         if (suffix.isPresent()) {
             final String alt = suffix.get().shaped(style, indent);
-            if (style.points(alt) <= style.points(best)) {
+            if (this.labelled() || style.points(alt) <= style.points(best)) {
                 best = alt;
             }
         }
@@ -386,7 +394,8 @@ final class Node {
             String best = this.vertical(style, indent);
             final Optional<String> flat = this.horizontal(style, indent);
             if (flat.isPresent()
-                && (this.forced() || style.points(flat.get()) <= style.points(best))) {
+                && (this.forced() || this.labelled()
+                || style.points(flat.get()) <= style.points(best))) {
                 best = flat.get();
             }
             if (star.isPresent() && style.points(star.get()) < style.points(best)) {
@@ -510,6 +519,10 @@ final class Node {
 
     private boolean constant() {
         return "!".equals(this.tail);
+    }
+
+    private boolean labelled() {
+        return this.reversed && this.tail.startsWith(":");
     }
 
     private boolean forced() {
