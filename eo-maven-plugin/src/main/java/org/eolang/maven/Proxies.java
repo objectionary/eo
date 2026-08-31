@@ -4,11 +4,19 @@
  */
 package org.eolang.maven;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
 import org.apache.maven.settings.Settings;
 import org.cactoos.Scalar;
 
 /**
  * Active proxies of Maven settings, translated to the ones of Java.
+ *
+ * <p>Only an HTTP proxy is translated. {@code java.net.http} speaks to no
+ * other kind, so a {@code socks5} one would be taken from the settings and
+ * then quietly stepped around, which is worse than saying it cannot be
+ * used.</p>
+ *
  * @since 0.62.0
  */
 final class Proxies implements Scalar<MvnProxy[]> {
@@ -28,10 +36,23 @@ final class Proxies implements Scalar<MvnProxy[]> {
 
     @Override
     public MvnProxy[] value() {
-        return this.settings.getProxies()
-            .stream()
-            .filter(org.apache.maven.settings.Proxy::isActive)
-            .map(MvnProxy::new)
-            .toArray(MvnProxy[]::new);
+        final Collection<org.apache.maven.settings.Proxy> active =
+            this.settings.getProxies()
+                .stream()
+                .filter(org.apache.maven.settings.Proxy::isActive)
+                .collect(Collectors.toList());
+        for (final org.apache.maven.settings.Proxy proxy : active) {
+            final String protocol = proxy.getProtocol();
+            if (protocol != null && !protocol.isEmpty()
+                && !"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The proxy %s:%d speaks %s, and only an HTTP proxy can be used here",
+                        proxy.getHost(), proxy.getPort(), protocol
+                    )
+                );
+            }
+        }
+        return active.stream().map(MvnProxy::new).toArray(MvnProxy[]::new);
     }
 }

@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'inline binding allowed only on the last method in a chain')]
+input: |
+  [] > app
+    source
+    .first:slot
+    .second > result

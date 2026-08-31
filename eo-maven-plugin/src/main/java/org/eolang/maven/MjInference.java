@@ -6,8 +6,6 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -42,9 +40,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
  * tables in {@link #tables}, a document each. Not one of them fails the
- * build. The pages a reader opens are not part of that scratch space and go
- * to {@link #pages}, under {@code target/site}, where the coverage report
- * already is.</p>
+ * build. The pages a reader opens are drawn by {@link MjInferenceReport},
+ * a goal of its own, from those same two directories.</p>
  *
  * @since 0.67.0
  */
@@ -78,35 +75,6 @@ public final class MjInference extends MjSafe {
     private File tables;
 
     /**
-     * Whether to write a page per source file, for a reader to look at.
-     *
-     * <p>Off by default. The tables are what the compiler needs and the pages
-     * are for a person, so they are written when somebody asks and not on
-     * every build. A property rather than a profile, though coverage next
-     * door is reached for with {@code -Pjacoco}: a profile is what you need
-     * to add an execution to a build, and there is nothing to add here — the
-     * goal already runs and one flag decides whether it writes.</p>
-     */
-    @Parameter(
-        alias = "inferenceReport",
-        property = "eo.inferenceReport",
-        required = true,
-        defaultValue = "false"
-    )
-    private boolean report;
-
-    /**
-     * The directory where the pages are written.
-     */
-    @Parameter(
-        alias = "inferenceReportDir",
-        property = "eo.inferenceReportDir",
-        required = true,
-        defaultValue = "${project.build.directory}/site/inference"
-    )
-    private File pages;
-
-    /**
      * Ctor.
      */
     public MjInference() {
@@ -119,19 +87,8 @@ public final class MjInference extends MjSafe {
             new Inferring(
                 this.targetDir.toPath().resolve(Parsing.DIR),
                 this.prepared.toPath(),
-                this.tables.toPath(),
-                this.wanted()
+                this.tables.toPath()
             )
         ).exec();
-    }
-
-    private Path wanted() {
-        final Path found;
-        if (this.report) {
-            found = this.pages.toPath();
-        } else {
-            found = Paths.get("");
-        }
-        return found;
     }
 }

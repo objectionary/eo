@@ -506,7 +506,9 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
+        final Tokens tokens = new Tokens(sub.body(), sub);
+        Emissions.expression(emit, "φ", tokens, line);
+        tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }
 

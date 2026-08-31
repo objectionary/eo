@@ -94,8 +94,7 @@ final class PhPackage implements Phi {
             }
             taken = next;
         } else {
-            this.objects.put(fqn, this.bound(fqn));
-            taken = this.take(name);
+            taken = this.objects.computeIfAbsent(fqn, this::bound).copy();
         }
         return taken;
     }

@@ -95,7 +95,9 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
             Long.parseLong(
-                new EoSyntax(new LargeProgram(30)).parsed().xpath("/object/@ms").get(0)
+                new EoSyntax(
+                    new LargeProgram(30), UnaryOperator.<XML>identity()
+                ).parsed().xpath("/object/@ms").get(0)
             ),
             Matchers.greaterThan(0L)
         );
@@ -127,7 +129,9 @@ final class EoSyntaxTest {
 
     @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
-        final EoSyntax syntax = new EoSyntax(new LargeProgram(30));
+        final EoSyntax syntax = new EoSyntax(
+            new LargeProgram(30), UnaryOperator.<XML>identity()
+        );
         syntax.parsed();
         MatcherAssert.assertThat(
             "second parse of the same syntax does not measure its own elapsed time",
@@ -142,6 +146,23 @@ final class EoSyntaxTest {
             NullPointerException.class,
             () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null).parsed(),
             "EoSyntax must reject a null transform, but it didn't"
+        );
+    }
+
+    @Test
+    void rejectsANullTransformAtConstructionTime() {
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new EoSyntax(new InputOf(""), (UnaryOperator<XML>) null),
+            "EoSyntax must reject a null transform at construction, before parsed() is ever called"
+        );
+    }
+
+    @Test
+    void acceptsANonNullTransformAtConstructionTime() {
+        Assertions.assertDoesNotThrow(
+            () -> new EoSyntax(new InputOf(""), UnaryOperator.identity()),
+            "EoSyntax must accept a non-null transform at construction, but it didn't"
         );
     }
 
@@ -184,7 +205,7 @@ final class EoSyntaxTest {
 
     @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
-        final String src = "[] > x-н, 1".concat(System.lineSeparator());
+        final String src = "[] > x-н, 1".concat(String.valueOf((char) 10));
         MatcherAssert.assertThat(
             "EO syntax is broken, but listing should be printed",
             new Xnav(
@@ -270,7 +291,7 @@ final class EoSyntaxTest {
     @Test
     void keepsListingVerbatimWithXmlSpecialCharacters() throws Exception {
         final String src = String.join(
-            System.lineSeparator(),
+            String.valueOf((char) 10),
             "# Sample.",
             "[] > app",
             "  \"a < b & c > d\" > x",
@@ -278,6 +299,24 @@ final class EoSyntaxTest {
         );
         MatcherAssert.assertThat(
             "listing must hold the source verbatim, not XML-escaped",
+            new Xnav(
+                new EoSyntax(new InputOf(src)).parsed().inner()
+            ).element("object").element("listing").text().get(),
+            Matchers.equalTo(src)
+        );
+    }
+
+    @Test
+    void keepsListingVerbatimWithCrlf() throws Exception {
+        final String src = String.join(
+            String.valueOf((char) 13).concat(String.valueOf((char) 10)),
+            "# Sample.",
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
+        MatcherAssert.assertThat(
+            "listing must hold CRLF verbatim, regardless of platform",
             new Xnav(
                 new EoSyntax(new InputOf(src)).parsed().inner()
             ).element("object").element("listing").text().get(),

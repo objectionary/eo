@@ -43,7 +43,6 @@ public class XslBench {
      */
     private static final Xsline LINE = new Xsline(
         new TrClasspath<>(
-            "/org/eolang/parser/parse/validate-before-stars.xsl",
             "/org/eolang/parser/parse/resolve-before-stars.xsl",
             "/org/eolang/parser/parse/wrap-method-calls.xsl",
             "/org/eolang/parser/parse/const-to-dataized.xsl",

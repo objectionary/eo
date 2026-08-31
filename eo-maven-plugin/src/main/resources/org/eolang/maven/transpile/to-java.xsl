@@ -144,6 +144,20 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!--
+  Get the name of the JUnit class generated for the tests of an object. The
+  mark goes in front of the class and not after it, because every name
+  "eo:class-name" makes starts with "EO", so a name starting with "Test" is
+  one it can never make. A suffix could be made: an object called "xTest"
+  gives the same "EOxTest" the tests of an object called "x" used to give, and
+  the two files then declare one class in one package (#7762).
+  -->
+  <xsl:function name="eo:test-class-name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="full" select="eo:class-name($n)"/>
+    <xsl:variable name="last" select="tokenize($full, '\.')[last()]"/>
+    <xsl:value-of select="concat(substring($full, 1, string-length($full) - string-length($last)), 'Test', $last)"/>
+  </xsl:function>
   <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
@@ -848,6 +862,11 @@
     </xsl:if>
   </xsl:template>
   <!-- Application -->
+  <!--
+  Application of an object to its arguments. One that purify.xsl marked with
+  @pure is wrapped in PhSticky, so that the bytes it works out are remembered
+  instead of being worked out on every read of it.
+  -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
@@ -868,7 +887,11 @@
     <xsl:if test="$inners">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text> = new PhApplication(</xsl:text>
+      <xsl:text> = </xsl:text>
+      <xsl:if test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+      </xsl:if>
+      <xsl:text>new PhApplication(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:for-each select="$inners">
         <xsl:text>, new Bind(</xsl:text>
@@ -885,7 +908,11 @@
         <xsl:value-of select="position()"/>
         <xsl:text>)</xsl:text>
       </xsl:for-each>
-      <xsl:text>);</xsl:text>
+      <xsl:text>)</xsl:text>
+      <xsl:if test="@pure='true'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>;</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
@@ -929,7 +956,7 @@
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="concat(eo:class-name(@name), 'Test')"/>
+    <xsl:value-of select="eo:test-class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:text> extends PhOnce {</xsl:text>
@@ -947,7 +974,7 @@
   </xsl:template>
   <!-- Testing ctors. -->
   <xsl:template match="class" mode="testing-ctors">
-    <xsl:variable name="class" select="concat(eo:class-name(@name), 'Test')"/>
+    <xsl:variable name="class" select="eo:test-class-name(@name)"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>

@@ -52,6 +52,26 @@ final class PhLoggedTest {
     }
 
     @Test
+    void equalsToItself() {
+        final Phi logged = new PhLogged(new PhDefault());
+        MatcherAssert.assertThat(
+            "PhLogged asks its origin about equality, and must still answer for itself first",
+            logged,
+            Matchers.equalTo(logged)
+        );
+    }
+
+    @Test
+    void leavesOriginUnequalToIt() {
+        final Phi phi = new PhDefault();
+        MatcherAssert.assertThat(
+            "Borrowing the origin's hash code cannot make the origin equal to PhLogged, which is another object",
+            phi,
+            Matchers.not(Matchers.equalTo(new PhLogged(phi)))
+        );
+    }
+
+    @Test
     void getsOriginLocator() {
         final Phi phi = Phi.Φ;
         MatcherAssert.assertThat(

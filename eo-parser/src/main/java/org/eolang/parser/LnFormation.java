@@ -26,7 +26,7 @@ import java.util.List;
  * indent (Step C/D) or replaces the current top (Step B), with
  * {@link Kind#BARE_FORMATION} and {@link Openness#OPEN}. The atom flag
  * is set if the suffix carries {@code /sig}; the named flag is set when
- * the suffix is present. *
+ * the suffix is present.</p>
  *
  * @since 0.1
  */
@@ -125,7 +125,7 @@ final class LnFormation implements Line {
     private void transition(final Stack stack, final Suffix suffix) {
         final Level level = new Transition(stack, this.span).apply(
             Kind.BARE_FORMATION, Openness.OPEN,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.atom())
         );
         if (suffix.atom()) {
             level.mark();

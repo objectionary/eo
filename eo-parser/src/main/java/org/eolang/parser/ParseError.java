@@ -17,7 +17,7 @@ package org.eolang.parser;
  * <p>Unchecked by design — every rule violation surfaces this way and
  * the walker is the single catch site. Forcing a checked declaration on
  * every {@code Line.into} would clutter every implementation for no
- * caller benefit. *
+ * caller benefit.</p>
  *
  * @since 0.1
  */

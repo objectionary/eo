@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A part of an application is decided by bytes when what it comes from is.
+# Here "m" is "n" and "n" is a literal, so the table answers the question
+# about "m" one reference further along, and the application is remembered
+# the same way one written over the literal itself would be.
+eo:
+  app.eo: |
+    [] > app
+      2 > n
+      n > m
+      3.power m > x
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > power
+        x > @
+pure:
+  - "//o[@name='x' and @pure='true']"

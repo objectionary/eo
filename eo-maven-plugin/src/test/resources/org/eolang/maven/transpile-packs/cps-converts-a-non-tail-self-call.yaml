@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='rec']/o[@base='∅' and @name='k🌵' and preceding-sibling::o[@name='i']]
+  - //o[@name='rec']/o[@name='φ' and @base='.if']/o[@as='α0' and @base='ξ.k🌵' and @again='true']/o[@as='α0' and @base='Φ.number']
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec' and @again='true']/o[@as='α0' and ends-with(@base, '.minus')]
+  - //o[@name='rec']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.rec']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1' and o[@base='∅' and @name='ρ'] and o[@base='∅' and @name='r🌵']]
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and not(@as) and @base='ξ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='.plus' and not(@name)]/o[not(@as) and @base='ξ.r🌵']
+  - //o[@name='main']/o[@name='φ' and @base='ξ.rec']/o[@as='α1' and o[@base='∅' and @name='r🌵'] and o[@name='φ' and @base='ξ.r🌵']]
+  - /object[count(//o[@base='∅' and @name='k🌵'])=1]
+  - /object[count(//o[starts-with(@name,'c🌵')])=1]
+input: |
+  [] > main
+    [i] > rec
+      if. > @
+        i.eq 0
+        0
+        (^.rec (i.minus 1)).plus 1
+    rec 5 > @

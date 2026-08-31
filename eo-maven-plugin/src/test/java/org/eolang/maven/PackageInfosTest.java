@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,15 +34,18 @@ final class PackageInfosTest {
         Files.createDirectories(subdir.resolve("subsubdir"));
         MatcherAssert.assertThat(
             "We should create exactly two package-info.java files for two subdirectories",
-            new PackageInfos(tmp, Collections.emptyList()).create(),
+            new PackageInfos(
+                tmp, Collections.emptyList(), Arrays.asList(subdir, subdir.resolve("subsubdir"))
+            ).create(),
             Matchers.equalTo(2)
         );
     }
 
     @Test
     void namesTheRootPackageWithAnEmptyValue(@Mktmp final Path tmp) throws IOException {
-        Files.createDirectories(tmp.resolve("org").resolve("eolang"));
-        new PackageInfos(tmp, Collections.emptyList()).create();
+        final Path eolang = tmp.resolve("org").resolve("eolang");
+        Files.createDirectories(eolang);
+        new PackageInfos(tmp, Collections.emptyList(), Collections.singleton(eolang)).create();
         MatcherAssert.assertThat(
             "The root EO package is not the empty name the annotation must carry",
             Files.readString(tmp.resolve("org").resolve("eolang").resolve("package-info.java")),
@@ -59,7 +63,11 @@ final class PackageInfosTest {
             handwritten.resolve("EO_привет").resolve("package-info.java"),
             "package EO_привет;".getBytes(StandardCharsets.UTF_8)
         );
-        new PackageInfos(generated, Collections.singleton(handwritten)).create();
+        new PackageInfos(
+            generated,
+            Collections.singleton(handwritten),
+            Collections.singleton(generated.resolve("EO_привет"))
+        ).create();
         MatcherAssert.assertThat(
             "package-info.java is generated for a package that already has a hand-written one",
             Files.exists(generated.resolve("EO_привет").resolve("package-info.java")),
@@ -73,7 +81,9 @@ final class PackageInfosTest {
         final Path subsubdir = subdir.resolve("subsubdir");
         Files.createDirectory(subdir);
         Files.createDirectories(subsubdir);
-        new PackageInfos(tmp, Collections.emptyList()).create();
+        new PackageInfos(
+            tmp, Collections.emptyList(), Arrays.asList(subdir, subsubdir)
+        ).create();
         MatcherAssert.assertThat(
             "package-info.java should be created in the both subdirectories",
             Files.exists(subdir.resolve("package-info.java"))
@@ -83,17 +93,31 @@ final class PackageInfosTest {
     }
 
     @Test
+    void skipsADirectoryThisRunWroteNothingInto(@Mktmp final Path tmp) throws IOException {
+        final Path foreign = tmp.resolve("annotations").resolve("com").resolve("acme");
+        Files.createDirectories(foreign);
+        new PackageInfos(tmp, Collections.emptyList(), Collections.emptyList()).create();
+        MatcherAssert.assertThat(
+            "a directory another generator owns must not get a package annotation of ours",
+            Files.exists(foreign.resolve("package-info.java")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void ignoresTheRootDirectoryItself(@Mktmp final Path tmp) throws IOException {
         MatcherAssert.assertThat(
             "No package-info.java files should be created in the root directory",
-            new PackageInfos(tmp, Collections.emptyList()).create(),
+            new PackageInfos(
+                tmp, Collections.emptyList(), Collections.singleton(tmp)
+            ).create(),
             Matchers.equalTo(0)
         );
     }
 
     @Test
     void ignoresTheRootDirectoryAndDoesNotCreateFiles(@Mktmp final Path tmp) throws IOException {
-        new PackageInfos(tmp, Collections.emptyList()).create();
+        new PackageInfos(tmp, Collections.emptyList(), Collections.singleton(tmp)).create();
         MatcherAssert.assertThat(
             "package-info.java should not be created in the root directory",
             Files.exists(tmp.resolve("package-info.java")),
@@ -103,8 +127,9 @@ final class PackageInfosTest {
 
     @Test
     void keepsEoInsideAnObjectsOwnName(@Mktmp final Path tmp) throws IOException {
-        Files.createDirectories(tmp.resolve("org").resolve("eolang").resolve("EO_xEOy"));
-        new PackageInfos(tmp, Collections.emptyList()).create();
+        final Path own = tmp.resolve("org").resolve("eolang").resolve("EO_xEOy");
+        Files.createDirectories(own);
+        new PackageInfos(tmp, Collections.emptyList(), Collections.singleton(own)).create();
         MatcherAssert.assertThat(
             "only the leading EO_ transpiler prefix should be stripped, not the EO inside xEOy",
             Files.readString(
@@ -130,7 +155,7 @@ final class PackageInfosTest {
     ) throws IOException {
         final Path subdir = tmp.resolve(dir);
         Files.createDirectory(subdir);
-        new PackageInfos(tmp, Collections.emptyList()).create();
+        new PackageInfos(tmp, Collections.emptyList(), Collections.singleton(subdir)).create();
         MatcherAssert.assertThat(
             "package-info.java should contain correct package name",
             Files.readString(subdir.resolve("package-info.java")),

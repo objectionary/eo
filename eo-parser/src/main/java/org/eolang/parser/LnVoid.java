@@ -226,7 +226,7 @@ final class LnVoid implements Line {
             if (end == idx) {
                 throw new ParseError(
                     span.line(), span.indent() + 1 + offset + idx,
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
             final String member = inside.substring(idx, end);
@@ -244,7 +244,7 @@ final class LnVoid implements Line {
             if (idx == inside.length()) {
                 throw new ParseError(
                     span.line(), span.indent() + 1 + offset + idx,
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
         }

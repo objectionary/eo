@@ -18,7 +18,7 @@ import org.xembly.Xembler;
  * <p>Verifies that any {@code Line} impl is invoked through the same
  * single-method shape and that the supplied {@code Stack}, {@code
  * Globals}, and {@code Emit} are all reachable from inside {@code
- * into}. *
+ * into}.</p>
  *
  * @since 0.1
  */
