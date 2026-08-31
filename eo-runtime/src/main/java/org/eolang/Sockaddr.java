@@ -7,7 +7,6 @@ package org.eolang;
 
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
-import java.util.Arrays;
 
 /**
  * A {@code sockaddr_in} laid out the way the running platform lays it out.
@@ -17,45 +16,20 @@ import java.util.Arrays;
  * {@code connect} or {@code accept} wants whichever the kernel reads.</p>
  *
  * @since 0.74.0
- * @todo #7748:35min Take the reading of an address out of the syscalls.
- *  `BindSyscall`, `ConnectSyscall` and `AcceptSyscall` each dataize the same
- *  four attributes of the same EO `sockaddr` object to build this one. That
- *  belongs in one place, most likely a ctor here that takes the `Phi`.
  */
 public final class Sockaddr {
 
     /**
-     * Address family (e.g., AF_INET).
+     * The EO object holding the address.
      */
-    private final short family;
-
-    /**
-     * Port number in network byte order.
-     */
-    private final short port;
-
-    /**
-     * IP address in network byte order.
-     */
-    private final int addr;
-
-    /**
-     * Padding to match C structure.
-     */
-    private final byte[] zero;
+    private final Phi origin;
 
     /**
      * Ctor.
-     * @param family Family
-     * @param port Port
-     * @param addr Address
-     * @param zero Zero 8 bytes
+     * @param phi The EO object holding the address
      */
-    public Sockaddr(final short family, final short port, final int addr, final byte[] zero) {
-        this.family = family;
-        this.port = port;
-        this.addr = addr;
-        this.zero = Arrays.copyOf(zero, zero.length);
+    public Sockaddr(final Phi phi) {
+        this.origin = phi;
     }
 
     /**
@@ -63,11 +37,15 @@ public final class Sockaddr {
      * @return The structure, in the layout of the platform
      */
     public Structure it() {
+        final short family = new Dataized(this.origin.take("family")).take(Short.class);
+        final short port = new Dataized(this.origin.take("port")).take(Short.class);
+        final int addr = new Dataized(this.origin.take("address")).take(Integer.class);
+        final byte[] zero = new Dataized(this.origin.take("padding")).take();
         final Structure found;
         if (Platform.isMac()) {
-            found = new MacSockaddrIn(this.family, this.port, this.addr, this.zero);
+            found = new MacSockaddrIn(family, port, addr, zero);
         } else {
-            found = new SockaddrIn(this.family, this.port, this.addr, this.zero);
+            found = new SockaddrIn(family, port, addr, zero);
         }
         return found;
     }
