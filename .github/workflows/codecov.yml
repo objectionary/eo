@@ -12,11 +12,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    timeout-minutes: 15
+    timeout-minutes: 25
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21
@@ -26,10 +26,80 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install -Pjacoco -Deo.coverageTracking=true
+      - run: mvn install '-Deo.coverageTracking=true'
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml
+          files: ./eo-parser/target/site/jacoco/jacoco.xml,./eo-runtime/target/site/jacoco/jacoco.xml,./eo-maven-plugin/target/site/jacoco/jacoco.xml,./eo-runtime/target/coverage.info
           fail_ci_if_error: true
         if: github.ref == 'refs/heads/master'
+  telegram:
+    needs: codecov
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ Code coverage of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs: codecov
+    runs-on: ubuntu-24.04
+    if: ${{ success() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          for _ in 1 2 3 4 5 6; do
+            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/codecov.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
+              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
+                then [ .workflow_runs[]
+                  | select(.id < ${{ github.run_id }})
+                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
+                else "stale" end')
+            [ "${state}" = 'stale' ] || break
+            sleep 10
+          done
+          echo "The previous run of this workflow: ${state}"
+          if [ "${state}" = 'failure' ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "🍓 Code coverage of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s. The report is [here](https://app.codecov.io/gh/objectionary/eo)."
+          disable_web_page_preview: true
+          format: markdown

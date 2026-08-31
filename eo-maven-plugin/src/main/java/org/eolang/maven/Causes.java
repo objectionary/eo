@@ -58,11 +58,6 @@ final class Causes implements Iterable<String> {
         return new LinkedHashSet<>(causes).iterator();
     }
 
-    /**
-     * Every message in the chain, from the outermost problem down.
-     * @param problem The problem to explain
-     * @return Messages, in the order they wrap each other
-     */
     private static List<String> all(final Throwable problem) {
         final List<String> causes = new ArrayList<>(0);
         causes.add(problem.getMessage());

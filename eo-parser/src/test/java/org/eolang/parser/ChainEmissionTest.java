@@ -25,7 +25,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 6, 9),
+            new Value(Value.Kind.IDENTIFIER, "bar", 0),
             Collections.emptyList(),
             new Suffix("> foo", new Span("bar > foo", 1), 4)
         ).run();
@@ -36,7 +36,7 @@ final class ChainEmissionTest {
             ChainEmissionTest.render(emit),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@name='foo']/o[@base='bar' and @name='foo']",
-                "/object/o[@name='foo' and not(o/o)]"
+                "/object/o[@name='foo' and not(o[@method])]"
             )
         );
     }
@@ -48,11 +48,10 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("foo.bar > wrap", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0, 3),
-            Collections.singletonList(new MethodChain("bar", 3, 7, false)),
+            new Value(Value.Kind.IDENTIFIER, "foo", 0),
+            Collections.singletonList(new MethodChain("bar", 3, false)),
             new Suffix("> wrap", new Span("foo.bar > wrap", 1), 8)
         ).run();
-        emit.close();
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -72,7 +71,7 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("bar > foo!", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "bar", 0),
             Collections.emptyList(),
             new Suffix("> foo!", new Span("bar > foo!", 1), 4)
         ).run();
@@ -94,10 +93,10 @@ final class ChainEmissionTest {
         new ChainEmission(
             emit,
             new Span("foo.bar.baz > q", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0, 3),
+            new Value(Value.Kind.IDENTIFIER, "foo", 0),
             Arrays.asList(
-                new MethodChain("bar", 3, 7, false),
-                new MethodChain("baz", 7, 11, false)
+                new MethodChain("bar", 3, false),
+                new MethodChain("baz", 7, false)
             ),
             new Suffix("> q", new Span("foo.bar.baz > q", 1), 12)
         ).run();
@@ -114,11 +113,6 @@ final class ChainEmissionTest {
         );
     }
 
-    /**
-     * Render an {@link Emit} into XMIR for assertion.
-     * @param emit Emitter to render
-     * @return The rendered XMIR text
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

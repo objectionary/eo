@@ -9,6 +9,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -113,11 +114,6 @@ final class DpsDefault implements Dependencies {
         return deps.iterator();
     }
 
-    /**
-     * Find the artifact required by this EO XML.
-     * @param file EO file
-     * @return List of artifact needed
-     */
     private static Optional<Dep> artifact(final Path file) {
         final Collection<String> coords = DpsDefault.jvms(file);
         if (coords.size() > 1) {
@@ -139,6 +135,14 @@ final class DpsDefault implements Dependencies {
                     )
                 );
             }
+            if (Arrays.stream(parts).anyMatch(String::isEmpty)) {
+                throw new IllegalStateException(
+                    Logger.format(
+                        "Malformed '+rt jvm' location '%s' at %[file]s: every colon-separated part (group:artifact:version or group:artifact:classifier:version) must be non-empty",
+                        location, file
+                    )
+                );
+            }
             final Dep dependency = new Dep().withGroupId(parts[0]).withArtifactId(parts[1]);
             if (parts.length == 3) {
                 dependency.withClassifier("").withVersion(parts[2]);
@@ -150,12 +154,6 @@ final class DpsDefault implements Dependencies {
         return dep;
     }
 
-    /**
-     * Split text into columns by a delimiter character.
-     * @param text Text to split
-     * @param delimiter Delimiter character
-     * @return Columns, in order
-     */
     private static String[] columns(final String text, final char delimiter) {
         final List<String> parts = new ArrayList<>(4);
         int start = 0;
@@ -169,12 +167,6 @@ final class DpsDefault implements Dependencies {
         return parts.toArray(new String[0]);
     }
 
-    /**
-     * Return collection of +rt metas.
-     * The equivalent xpath is "/object/metas/meta[head='rt' and part[1]='jvm']/part[2]/text()"
-     * @param file XML file
-     * @return Collection of runtime metas
-     */
     private static Collection<String> jvms(final Path file) {
         return new Xnav(file)
             .element("object")
@@ -183,11 +175,6 @@ final class DpsDefault implements Dependencies {
             .orElse(List.of());
     }
 
-    /**
-     * Extract JVM runtime meta names from a {@code metas} element.
-     * @param metas The {@code metas} element
-     * @return JVM runtime meta names
-     */
     private static Collection<String> jvmMetas(final Xnav metas) {
         return metas.elements(
             Filter.all(

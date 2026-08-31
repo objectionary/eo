@@ -4,7 +4,9 @@
  */
 package org.eolang.parser;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Cross-argument inline-binding validation — §6.6 of the spec.
@@ -16,12 +18,25 @@ import java.util.List;
  *
  * <p>This class collects the small rule set as static helpers shared
  * by every line shape that reads an argument group — {@link
- * LnApplication}, {@link LnMethod}, {@link LnReversed}, and the
- * compact-tuple flavours.</p>
+ * LnApplication}, {@link LnMethod}, {@link LnReversed}, and {@link
+ * LnPipe}.</p>
  *
  * @since 0.1
  */
 final class Bindings {
+
+    /**
+     * The parent kinds whose deeper children are application arguments,
+     * so the all-or-nothing rule of R-6.6.2 governs the group they form.
+     * An inline-phi formation is one of them: the block under a bare
+     * {@code φ} is the argument group of the expression the line binds to
+     * {@code φ}, and an application is no less one for being written with
+     * an inline-phi suffix instead of a head (#7919).
+     */
+    private static final Set<Kind> TRACKED = EnumSet.of(
+        Kind.HEAD, Kind.HMETHOD, Kind.VAPPLICATION, Kind.IDENTITY_OBJECT,
+        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD, Kind.ONLY_PHI
+    );
 
     /**
      * No instances.
@@ -44,9 +59,9 @@ final class Bindings {
      */
     static void checkAllOrNothing(final List<Value> args, final Span span) {
         if (args.size() >= 2) {
-            final boolean head = args.get(0).binding() != null;
+            final boolean head = args.get(0).bound();
             for (int idx = 1; idx < args.size(); idx = idx + 1) {
-                final boolean bound = args.get(idx).binding() != null;
+                final boolean bound = args.get(idx).bound();
                 if (bound != head) {
                     throw new ParseError(
                         span.line(), args.get(idx).pos(),
@@ -65,7 +80,7 @@ final class Bindings {
      * @param span Source span
      */
     static void checkReceiver(final Value receiver, final Span span) {
-        if (receiver.binding() != null) {
+        if (receiver.bound()) {
             throw new ParseError(
                 span.line(), receiver.pos(),
                 "reversed-dispatch receiver cannot carry a binding"
@@ -80,11 +95,11 @@ final class Bindings {
      * reversed dispatch, a binding on a later link names the whole
      * reversed expression, which is the same as binding the receiver.
      * @param below The chain head's parent (what the upgrade would
-     *  touch), or {@code null} when there is none
+     *  touch), or the stack's bottom sentinel when there is none
      * @param span Source span of the continuation line
      */
     static void checkReceiverUpgrade(final Level below, final Span span) {
-        if (below != null && below.kind() == Kind.BARE_REVERSED) {
+        if (below.kind() == Kind.BARE_REVERSED && below.children() <= 1) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"
@@ -96,9 +111,9 @@ final class Bindings {
      * Observe a freshly-pushed child line's outer binding against its
      * parent context — cross-line R-6.6.2 / R-6.6.3 / R-3.12.3.
      *
-     * <p>For arg-bearing parents ({@code HEAD}, {@code HMETHOD},
-     * {@code VAPPLICATION}) the binding presence updates the parent's
-     * binding mode and rejects mismatches. For {@code BARE_REVERSED}
+     * <p>For arg-bearing parents — every kind of {@link #TRACKED},
+     * {@code VMETHOD} among them — the binding presence updates the
+     * parent's binding mode and rejects mismatches. For {@code BARE_REVERSED}
      * parents the first child is the receiver (no binding allowed);
      * subsequent children participate in the all-or-nothing group. For
      * formation / top-level parents, any binding is rejected per
@@ -110,7 +125,7 @@ final class Bindings {
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
         final Level parent = stack.below();
-        if (parent == null || parent.kind() == Kind.BARE_FORMATION) {
+        if (parent.kind() == Kind.TOP_LEVEL || parent.kind() == Kind.BARE_FORMATION) {
             Bindings.rejectBinding(outer, span);
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
@@ -119,22 +134,10 @@ final class Bindings {
         }
     }
 
-    /**
-     * Whether a parent kind is an arg-bearing context where the
-     * all-or-nothing binding rule applies to deeper children.
-     * @param kind Parent kind
-     * @return True if the parent tracks binding consistency
-     */
     private static boolean tracksBindings(final Kind kind) {
-        return kind == Kind.HEAD || kind == Kind.HMETHOD || kind == Kind.VAPPLICATION;
+        return Bindings.TRACKED.contains(kind);
     }
 
-    /**
-     * Reject a binding on a child in a context that disallows it —
-     * formation body or top-level (R-3.12.3).
-     * @param outer Outer binding (may be {@code null})
-     * @param span Source span of the child
-     */
     private static void rejectBinding(final String outer, final Span span) {
         if (outer != null) {
             throw new ParseError(
@@ -144,15 +147,6 @@ final class Bindings {
         }
     }
 
-    /**
-     * Handle a child under a {@link Kind#BARE_REVERSED} parent. The
-     * first child is the receiver and must not carry a binding
-     * (R-6.6.3); subsequent children participate in the
-     * all-or-nothing group (R-6.6.2).
-     * @param parent The bare-reversed parent
-     * @param outer Outer binding (may be {@code null})
-     * @param span Source span of the child
-     */
     private static void observeReversedChild(
         final Level parent, final String outer, final Span span
     ) {

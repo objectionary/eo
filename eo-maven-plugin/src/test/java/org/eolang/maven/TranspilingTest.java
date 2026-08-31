@@ -31,24 +31,24 @@ final class TranspilingTest {
         );
     }
 
-    /**
-     * A minimal {@link Transpiling} instance for testing its private helpers.
-     * @return A new instance
-     */
     private static Transpiling transpiling() {
         return new Transpiling(
             Collections.emptyList(),
             Paths.get("target"),
             Paths.get("target/generated"),
-            Paths.get("target/cache"),
-            true,
-            "1.0-SNAPSHOT",
             false,
-            Paths.get("target/xsl-measures.csv"),
-            new Tracking(false, false),
-            false,
-            "PhDefault",
-            Collections.singleton(Paths.get("src/main/java"))
+            Collections.singleton(Paths.get("src/main/java")),
+            new Transpilation(
+                "1.0-SNAPSHOT",
+                new Tracking(false, false),
+                false,
+                "PhDefault",
+                Paths.get("target/xsl-measures.csv"),
+                Paths.get("target"),
+                Paths.get("target/eo/6-inference")
+            ),
+            new GlobalCache.GcFresh(),
+            new JavaFiles(Paths.get("target/generated"), Paths.get("target/cache"), false)
         );
     }
 }

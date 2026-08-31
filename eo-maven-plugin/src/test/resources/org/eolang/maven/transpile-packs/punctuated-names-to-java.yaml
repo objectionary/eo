@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //java[contains(text(), 'public final class EOa$u002Ab extends PhDefault')]
+  - //java[contains(text(), '.add("a\"b", new AtOnce')]
+  - //java[contains(text(), '.add("a\\b", new AtOnce')]
+  - //java[contains(text(), '"Φ.a*b.a\"b", "a*b.a\"b"')]
+input: |
+  [] > a*b
+    1 > a"b
+    2 > a\b

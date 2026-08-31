@@ -23,6 +23,48 @@ import org.junit.jupiter.api.Test;
 final class ScopeTest {
 
     @Test
+    void namesTheReceiverTheFormationDeclares() {
+        MatcherAssert.assertThat(
+            "a caret must name the void declared for it, but it didnt",
+            new Scope(
+                Arrays.asList(
+                    "Φ.outer", "Φ.outer.held", "Φ.outer.inner",
+                    "Φ.outer.inner.ρ", "Φ.outer.inner.φ", "Φ.outer.inner.φ.ρ"
+                ),
+                Arrays.asList("Φ.outer", "Φ.outer.held", "Φ.outer.inner")
+            ).target("Φ.outer.inner.φ.ρ", "ξ.ρ"),
+            Matchers.equalTo("Φ.outer.inner.ρ")
+        );
+    }
+
+    @Test
+    void keepsQuietWhereNoReceiverIsDeclared() {
+        MatcherAssert.assertThat(
+            "a formation declaring no receiver has none to name, but one was named",
+            new Scope(
+                Arrays.asList("Φ.app", "Φ.app.φ", "Φ.app.φ.ρ"),
+                Collections.singletonList("Φ.app")
+            ).target("Φ.app.φ.ρ", "ξ.ρ"),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
+    void refusesTheReceiverOfTheFormationAbove() {
+        MatcherAssert.assertThat(
+            "only the nearest formation declares the receiver, but a further one answered",
+            new Scope(
+                Arrays.asList(
+                    "Φ.outer", "Φ.outer.ρ", "Φ.outer.inner",
+                    "Φ.outer.inner.φ", "Φ.outer.inner.φ.ρ"
+                ),
+                Arrays.asList("Φ.outer", "Φ.outer.inner")
+            ).target("Φ.outer.inner.φ.ρ", "ξ.ρ"),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
     void findsNameBoundFurtherOut() {
         MatcherAssert.assertThat(
             "a name bound by a formation above must be found by looking out, but it wasnt",

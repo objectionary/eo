@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/o[count(o[not(@name='xi🌵')])=7]
+  - /object/o[count(o[not(starts-with(@name, 'a🌵'))])=7]
 input: |
   [] > main
     3.1415 > x1

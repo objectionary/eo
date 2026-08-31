@@ -20,7 +20,7 @@ package org.eolang;
  *
  * @since 0.60
  */
-@SuppressWarnings("PMD.ImplicitFunctionalInterface")
+@FunctionalInterface
 public interface Term {
 
     /**

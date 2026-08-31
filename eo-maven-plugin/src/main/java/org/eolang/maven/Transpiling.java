@@ -9,7 +9,6 @@ import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -33,6 +32,16 @@ import org.eolang.parser.OnDetailed;
  * The intermediate optimized XMIRs are stored in the {@link #PRE} directory.</p>
  *
  * @since 0.1
+ * @todo #6125:60min Take the writing of the Java files out of here too.
+ *  {@link JavaFiles} still keeps a cache directory and an enabled flag of
+ *  its own, so this class has to be handed one ready-made, and the key of
+ *  that directory repeats the plugin version {@link GlobalCache} already
+ *  folds in. Give {@link JavaFiles} the same {@link GlobalCache} instead,
+ *  then it goes back to being made here, and {@link #version()}, which is
+ *  read by nothing but the test, goes with it. The three that are left,
+ *  the generated directory, the tests flag and the roots, describe one
+ *  thing, where the output lands, and belong together in an object of
+ *  their own, along with the tail of {@link #exec()} that logs it.
  */
 final class Transpiling implements Step {
 
@@ -49,7 +58,7 @@ final class Transpiling implements Step {
     /**
      * Cache directory for transpiled sources.
      */
-    private static final String CACHE = "transpiled";
+    static final String CACHE = "transpiled";
 
     /**
      * XMIR sources to transpile.
@@ -58,38 +67,18 @@ final class Transpiling implements Step {
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path targetDir;
+    private final Path target;
 
     /**
      * Generated sources directory.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final Path generatedDir;
-
-    /**
-     * Base cache directory.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final Path cacheDir;
-
-    /**
-     * Whether caching is enabled.
-     * @checkstyle MemberNameCheck (5 lines)
-     */
-    private final boolean cacheEnabled;
+    private final Path generated;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    private final boolean transpileTests;
-
-    /**
-     * The plugin version, for the log.
-     */
-    private final String version;
+    private final boolean tests;
 
     /**
      * Directories with the Java sources a human wrote.
@@ -102,63 +91,60 @@ final class Transpiling implements Step {
     private final Transpilation train;
 
     /**
-     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     * The cache this build shares with every other build on this machine.
      */
-    private final ConcurrentCache guard;
+    private final GlobalCache cache;
+
+    /**
+     * The Java files this run writes, and the stale ones it removes.
+     */
+    private final JavaFiles files;
 
     /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
      * @param generated Generated sources directory
-     * @param cache Base cache directory
-     * @param enabled Whether caching is enabled
-     * @param ver Plugin version string
      * @param tests Whether to transpile tests
-     * @param measures Path to the file where XSL measurements are stored
-     * @param diagnostics Which diagnostic artifacts to emit while transpiling
-     * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
-     * @param base The class that a generated class extends instead of {@code PhDefault}
      * @param java Directories with the Java sources a human wrote
-     * @checkstyle ParameterNumberCheck (22 lines)
+     * @param train The XSL train that does the transpiling
+     * @param store The cache shared with every build on this machine
+     * @param written The Java files this run writes
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
         final Path generated,
-        final Path cache,
-        final boolean enabled,
-        final String ver,
         final boolean tests,
-        final Path measures,
-        final Tracking diagnostics,
-        final boolean cvrg,
-        final String base,
-        final Collection<Path> java
+        final Collection<Path> java,
+        final Transpilation train,
+        final GlobalCache store,
+        final JavaFiles written
     ) {
         this.sources = srcs;
-        this.targetDir = target;
-        this.generatedDir = generated;
-        this.cacheDir = cache;
-        this.cacheEnabled = enabled;
-        this.transpileTests = tests;
-        this.version = ver;
+        this.target = target;
+        this.generated = generated;
+        this.tests = tests;
         this.roots = java;
-        this.train = new Transpilation(ver, diagnostics, cvrg, base, measures, target);
-        this.guard = new ConcurrentCache();
+        this.train = train;
+        this.cache = store;
+        this.files = written;
     }
 
     @Override
     public void exec() throws IOException {
+        final int transpiled = new Threaded<>(
+            this.sources,
+            this::transpiled
+        ).total();
+        this.files.removeStale();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(),
-            new Threaded<>(
-                this.sources,
-                this::transpiled
-            ).total() + new PackageInfos(this.generatedDir, this.roots).create(),
-            this.generatedDir
+            transpiled + new PackageInfos(
+                this.generated, this.roots, this.files.directories()
+            ).create(),
+            this.generated
         );
     }
 
@@ -170,72 +156,25 @@ final class Transpiling implements Step {
         return this.train.version();
     }
 
-    /**
-     * Transpile a single tojo.
-     * @param tojo Tojo that should be transpiled
-     * @return Number of generated Java files
-     * @throws IOException If any issues with I/O
-     */
     private int transpiled(final TjForeign tojo) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.targetDir.resolve(Transpiling.DIR);
+        final Path base = this.target.resolve(Transpiling.DIR);
         final String name = new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get();
-        final Path target = new Place(name).make(base, MjAssemble.XMIR);
+        final Path dest = new Place(name).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        final Path cdir = this.cacheDir.resolve(Transpiling.CACHE);
-        final Path tail = base.relativize(target);
-        if (this.cacheEnabled) {
-            this.guard.apply(
-                source, target, tail,
-                new Cache(
-                    new CachePath(cdir, this.version(), hsh.get()),
-                    src -> {
-                        rewrite.compareAndSet(false, true);
-                        final String res = transform.apply(xmir).toString();
-                        Logger.debug(
-                            this,
-                            "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
-                            source,
-                            Transpiling.info(source),
-                            target,
-                            Transpiling.info(target),
-                            this.version,
-                            hsh.get(),
-                            tail,
-                            this.cacheEnabled,
-                            cdir
-                        );
-                        return res;
-                    }
-                )
-            );
-        } else {
-            rewrite.compareAndSet(false, true);
-            new Saved(transform.apply(xmir).toString(), target).value();
-        }
-        return new JavaFiles(
-            this.generatedDir, cdir.resolve(this.version()), this.cacheEnabled
-        ).total(
-            rewrite.get(), target, hsh.get(), this.transpileTests && !tojo.discovered()
+        this.cache.with(this.train.version(xmir.xpath("/object/o/@loc"))).footprint(
+            base.relativize(dest),
+            hsh,
+            src -> {
+                rewrite.compareAndSet(false, true);
+                return transform.apply(xmir).toString();
+            }
+        ).apply(source, dest);
+        return this.files.total(
+            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
         );
-    }
-
-    /**
-     * File info for logging.
-     * @param info Path to file
-     * @return Info string
-     * @throws IOException If fails
-     */
-    private static String info(final Path info) throws IOException {
-        final String res;
-        if (Files.exists(info)) {
-            res = Files.getLastModifiedTime(info).toString();
-        } else {
-            res = "Not exists yet";
-        }
-        return res;
     }
 }

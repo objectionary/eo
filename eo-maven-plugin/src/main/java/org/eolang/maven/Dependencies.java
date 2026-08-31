@@ -102,10 +102,6 @@ interface Dependencies extends Iterable<Dep> {
             );
         }
 
-        /**
-         * Create a random dependency.
-         * @return Dependency
-         */
         private static Dep randDep() {
             final Random rand = new SecureRandom();
             return Dependencies.Fake.dep(
@@ -116,15 +112,6 @@ interface Dependencies extends Iterable<Dep> {
             );
         }
 
-        /**
-         * Create a dependency.
-         * @param group Group ID
-         * @param artifact Artifact ID
-         * @param version Version
-         * @param scope Scope
-         * @return Dependency
-         * @checkstyle ParameterNumberCheck (5 lines)
-         */
         private static Dep dep(
             final String group,
             final String artifact,

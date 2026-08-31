@@ -4,14 +4,16 @@
  */
 package org.eolang.parser;
 
+import java.util.regex.Pattern;
+
 /**
  * A vertical void-attribute line — R-3.4.7 / R-3.4.8 of the spec.
  *
  * <p>Form: {@code ? > name} with an optional atom-only type annotation.
  * The {@code ?} declares a void attribute on the enclosing formation,
  * equivalent to listing {@code name} among the bracket parameters; it
- * emits the same empty-set-based void child named {@code name} (§9.4),
- * which {@code move-voids-up} hoists among the head voids.</p>
+ * emits the same empty-set-based void child named {@code name}
+ * (§9.4).</p>
  *
  * <p>The {@code >>} auto-name form is also accepted: {@code ? >> name}
  * declares a void whose external {@code @name} is an auto-generated
@@ -27,7 +29,7 @@ package org.eolang.parser;
  * <ul>
  * <li>{@code /type} — the void's own type: a concrete forma or a
  * generic type variable ({@code A}–{@code F}), with an optional
- * trailing {@code ?} marking a maybe-bottom value. Emits
+ * trailing {@code ?} marking a maybe-terminator value. Emits
  * {@code @type}.</li>
  * <li>{@code /{type …}} — the void is a callback formation;
  * the brace list gives the types of its void parameters (the arguments
@@ -39,17 +41,29 @@ package org.eolang.parser;
  * a generic type variable stays verbatim. Both annotation forms are
  * rejected outside an atom.</p>
  *
- * <p>{@code ? > name} and {@code ? >> name} — each optionally followed
- * by one type annotation — are the only shapes the {@code ?} marker may
- * take, never an argument, a method receiver, or anywhere else a value
- * is expected. The marker is therefore <em>not</em> a {@link Value}
+ * <p>The name may also be {@code ^}, which declares the formation's
+ * receiver and emits a void named {@code ρ} (R-3.4.11). A receiver has
+ * to be the first attribute its formation declares — every caller fills
+ * it first — so {@code ? > ^} is rejected under a head that already
+ * carries bracket voids, and under a formation that has taken any other
+ * attribute already. It carries a type annotation like any other void,
+ * which is to say inside an atom only.</p>
+ *
+ * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
+ * optionally followed by one type annotation — are the only shapes the
+ * {@code ?} marker may take, never an argument, a method receiver, or
+ * anywhere else a value is expected. The marker is therefore <em>not</em> a {@link Value}
  * kind; this line is its sole producer. Cross-line behaviour: a closed
- * leaf ({@link Openness#VERTICAL_COMPLETED}), so a void has no
- * children.</p>
+ * leaf ({@link Openness#VCOMPLETED}), so a void has no children.</p>
  *
  * @since 0.1
  */
 final class LnVoid implements Line {
+
+    /**
+     * The shape of a head that declares the formation's receiver.
+     */
+    private static final Pattern RECEIVER = Pattern.compile(" > \\^ *");
 
     /**
      * The line's source span.
@@ -69,6 +83,33 @@ final class LnVoid implements Line {
         Blanks.checkPlain(this.span, globals, emit);
         final String tail = this.span.body().substring(1);
         final int slash = tail.indexOf('/');
+        if (LnVoid.RECEIVER.matcher(LnVoid.head(tail, slash)).matches()) {
+            this.receiver(stack, globals, emit, slash);
+        } else {
+            this.attribute(stack, globals, emit, tail, slash);
+        }
+        this.annotate(emit, tail, slash);
+    }
+
+    private void receiver(
+        final Stack stack, final Globals globals, final Emit emit, final int slash
+    ) {
+        globals.seal(emit, this.span);
+        this.checkTyped(
+            new Transition(stack, this.span).apply(
+                Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
+            ),
+            slash
+        );
+        globals.clearBlanks();
+        globals.markEmitted();
+        emit.object("ρ", "∅", this.span.line(), this.span.indent());
+    }
+
+    private void attribute(
+        final Stack stack, final Globals globals, final Emit emit,
+        final String tail, final int slash
+    ) {
         final Suffix suffix = new Suffix(
             LnVoid.head(tail, slash), this.span, this.span.indent() + 1
         );
@@ -79,16 +120,13 @@ final class LnVoid implements Line {
                 "a void attribute must be written as `? > name` or `? >> name`"
             );
         }
-        Comments.seal(globals, emit, this.span);
-        final Level level = new Transition(stack, this.span).apply(
-            Kind.VOID, Openness.VERTICAL_COMPLETED, suffix.named()
+        globals.seal(emit, this.span);
+        this.checkTyped(
+            new Transition(stack, this.span).apply(
+                Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
+            ),
+            slash
         );
-        if (slash >= 0 && !level.patom()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a void type annotation is allowed only inside an atom"
-            );
-        }
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -98,15 +136,17 @@ final class LnVoid implements Line {
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }
-        this.annotate(emit, tail, slash);
     }
 
-    /**
-     * The {@code ? > name} head, before any {@code /} type annotation.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the first {@code /} in {@code tail}, or -1
-     * @return The head substring
-     */
+    private void checkTyped(final Level level, final int slash) {
+        if (slash >= 0 && !level.patom()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void type annotation is allowed only inside an atom"
+            );
+        }
+    }
+
     private static String head(final String tail, final int slash) {
         final String head;
         if (slash < 0) {
@@ -117,14 +157,6 @@ final class LnVoid implements Line {
         return head;
     }
 
-    /**
-     * Emit the void's type annotation (R-3.4.8), if any. Atom-only-ness
-     * is validated by the caller; a bare {@code /type} emits
-     * {@code @type}, a brace {@code /{…}} emits {@code @args}.
-     * @param emit The directives sink
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the first {@code /} in {@code tail}, or -1
-     */
     private void annotate(final Emit emit, final String tail, final int slash) {
         if (slash >= 0) {
             if (slash + 1 < tail.length() && tail.charAt(slash + 1) == '{') {
@@ -135,16 +167,6 @@ final class LnVoid implements Line {
         }
     }
 
-    /**
-     * Parse the bare {@code /type} annotation (R-3.4.8): one type atom
-     * (a generic variable or a concrete forma) with an optional trailing
-     * {@code ?}. The forma is promoted from {@code Q.} to {@code Φ.}; the
-     * variable stays verbatim.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
-     * @return The promoted {@code @type} value, with {@code ?} preserved
-     */
     private static String type(final String tail, final int slash, final Span span) {
         int idx = slash + 1;
         final int begin = idx;
@@ -174,14 +196,6 @@ final class LnVoid implements Line {
         return result;
     }
 
-    /**
-     * Parse the brace {@code /{type …}} argument list (R-3.4.8):
-     * one or more type atoms, single-space separated, no {@code ?}.
-     * @param tail The line body after the {@code ?}
-     * @param slash Index of the {@code /} marker in {@code tail}
-     * @param span The source span (for errors)
-     * @return The space-separated promoted {@code @args} value
-     */
     private static String args(final String tail, final int slash, final Span span) {
         final int open = slash + 1;
         final int close = tail.indexOf('}', open + 1);
@@ -192,22 +206,13 @@ final class LnVoid implements Line {
             );
         }
         LnVoid.endsClean(tail, close + 1, span);
-        return LnVoid.members(tail.substring(open + 1, close), span);
+        return LnVoid.members(tail.substring(open + 1, close), open + 1, span);
     }
 
-    /**
-     * Split a brace argument list on single spaces, promoting each type
-     * atom (variable verbatim, forma {@code Q.} promoted to {@code Φ.})
-     * and rejecting empty entries, double spaces, a trailing space with
-     * no member after it, and the {@code ?} optional marker.
-     * @param inside The text inside the braces
-     * @param span The source span (for errors)
-     * @return The space-separated promoted arguments
-     */
-    private static String members(final String inside, final Span span) {
+    private static String members(final String inside, final int offset, final Span span) {
         if (inside.isEmpty()) {
             throw new ParseError(
-                span.line(), span.indent(),
+                span.line(), span.indent() + 1 + offset,
                 "a `/{…}` argument list must name at least one type"
             );
         }
@@ -220,40 +225,32 @@ final class LnVoid implements Line {
             }
             if (end == idx) {
                 throw new ParseError(
-                    span.line(), span.indent(),
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    span.line(), span.indent() + 1 + offset + idx,
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
             final String member = inside.substring(idx, end);
             if (member.indexOf('?') >= 0) {
                 throw new ParseError(
-                    span.line(), span.indent(),
+                    span.line(), span.indent() + 1 + offset + idx,
                     "? is not allowed inside a /{…} argument list"
                 );
             }
             if (out.length() > 0) {
                 out.append(' ');
             }
-            out.append(Suffix.typeAtom(member, span, span.indent()));
+            out.append(Suffix.typeAtom(member, span, span.indent() + 1 + offset + idx));
             idx = end + 1;
             if (idx == inside.length()) {
                 throw new ParseError(
-                    span.line(), span.indent(),
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    span.line(), span.indent() + 1 + offset + idx,
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
         }
         return out.toString();
     }
 
-    /**
-     * Verify the rest of {@code tail} from {@code from} onward is only
-     * whitespace; a further {@code /} is a second annotation, anything
-     * else is trailing garbage.
-     * @param tail The line body after the {@code ?}
-     * @param from Index after the consumed annotation
-     * @param span The source span (for errors)
-     */
     private static void endsClean(final String tail, final int from, final Span span) {
         int idx = from;
         while (idx < tail.length() && tail.charAt(idx) == ' ') {

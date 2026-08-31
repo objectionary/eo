@@ -24,9 +24,9 @@ final class LnOnlyPhiTest {
         new LnOnlyPhi(new Span("right > [x] > left", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "an only-phi line must push ONLY_PHI_FORMATION",
+            "an only-phi line must push ONLY_PHI",
             stack.top().kind(),
-            Matchers.equalTo(Kind.ONLY_PHI_FORMATION)
+            Matchers.equalTo(Kind.ONLY_PHI)
         );
     }
 
@@ -48,9 +48,9 @@ final class LnOnlyPhiTest {
         new LnOnlyPhi(new Span("right arg > [x] > left", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "an only-phi whose φ carries horizontal args cannot accept a body — must be HORIZONTAL_COMPLETED",
+            "an only-phi whose φ carries horizontal args cannot accept a body — must be HCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
@@ -219,14 +219,17 @@ final class LnOnlyPhiTest {
     }
 
     @Test
-    void marksReversedDispatchLhsCompletedWithHargs() {
-        final Stack stack = new Stack();
-        new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
-            .into(stack, new Globals(), new Emit());
+    void rejectsReversedDispatchLhsWithHargs() {
         MatcherAssert.assertThat(
-            "a reversed-dispatch φ carrying horizontal args cannot accept a body — must be HORIZONTAL_COMPLETED",
-            stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            "a reversed-dispatch φ carrying horizontal args is not a legal inline-phi body (R-3.10.6)",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnOnlyPhi(new Span("if. cond then else > [t] > pair", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.containsString(
+                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+            )
         );
     }
 
@@ -275,11 +278,6 @@ final class LnOnlyPhiTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nothing describes what `nowhere` is, so nothing can say what taking `foo`
+# from it gives. That is worth writing down: an absent row would say the same
+# thing as a row nobody ever tried to write.
+eo:
+  jarref.eo: |
+    [] > jarref
+      nowhere.foo > @
+links:
+  - "/links/type[@id='Φ.jarref.φ']/unknown"

@@ -39,19 +39,24 @@ public final class MjLint extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Linting(
-            this.scopedTojos(),
-            this.compileTojos(),
-            this.targetDir.toPath(),
-            this.cache.toPath(),
-            this.cacheEnabled,
-            this.plugin.getVersion(),
-            this.skipSourceLints,
-            this.skipProgramLints,
-            this.skipExperimentalLints,
-            this.failOnWarning,
-            this.lintAsPackage,
-            this.skipLinting
-        ).exec();
+        try (
+            TjsForeign tojos = this.tojos();
+            TjsForeign compile = this.compileTojos()
+        ) {
+            new Linting(
+                tojos,
+                compile,
+                this.targetDir.toPath(),
+                this.cache.toPath(),
+                this.cacheEnabled,
+                this.plugin.getVersion(),
+                this.skipSourceLints,
+                this.skipProgramLints,
+                this.skipExperimental,
+                this.failOnWarning,
+                this.lintAsPackage,
+                this.skipLinting
+            ).exec();
+        }
     }
 }

@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.List;
+
 /**
  * A triple-quoted text-block closer line — §3.11 of the spec.
  *
@@ -14,12 +16,14 @@ package org.eolang.parser;
  * line and any body lines are handled directly by {@link Eo#process}
  * (their pre-classification special path).</p>
  *
- * <p>On execution this line consumes the accumulated body, pushes a
- * {@link Kind#TEXT_BLOCK} level at the opener's indent, and emits the
- * resulting string literal as a {@code <o base='Φ.string'>} wrapper
- * with a UTF-8 hex {@code <o base='Φ.bytes'>} child carrying the joined
- * body. Method chains and arguments after the closing {@code """} are
- * deferred to a later iteration. *
+ * <p>On execution this line consumes the accumulated body and emits
+ * the resulting string literal as a {@code <o base='Φ.string'>}
+ * wrapper with a UTF-8 hex {@code <o base='Φ.bytes'>} child carrying
+ * the joined body. Per R-3.11.4 a {@code .method} chain after the
+ * closing {@code """} is allowed; when present it emits the way
+ * {@link ChainEmission} emits it for every other head — flat sibling
+ * {@code <o base='.<name>'>} links, with the line's outer binding and
+ * name suffix attaching to the last link.</p>
  *
  * @since 0.1
  */
@@ -49,55 +53,69 @@ final class LnTextBlock implements Line {
         }
         final Tokens tokens = new Tokens(body, this.span);
         tokens.seek(3);
-        tokens.readChain();
+        final List<MethodChain> chain = tokens.readChain();
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final byte[] joined;
-        try {
-            joined = Emissions.unescapeBytes(
-                String.join(String.valueOf('\n'), globals.tbody())
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                this.span.line(), this.span.indent(),
-                "invalid unicode or octal escape in text block"
-            );
-            error.initCause(ex);
-            throw error;
-        }
-        this.transition(stack, suffix);
-        emit.object(
-            suffix.attribute(this.span.line(), this.span.indent()),
-            "Φ.string",
+        final byte[] joined = new Unescaped(
+            String.join(String.valueOf('\n'), globals.tbody()),
             this.span.line(), this.span.indent()
-        );
-        if (suffix.constant()) {
-            emit.constant();
+        ).bytes();
+        this.transition(stack, suffix);
+        Bindings.observeChild(stack, outer, this.span);
+        this.emit(emit, suffix, chain, joined);
+        if (outer != null) {
+            emit.slot(Emissions.bindingTag(outer));
         }
-        Emissions.bytesCarrier(
-            emit, this.span.line(), this.span.indent(),
-            new Hex(joined).asString()
-        );
         globals.closeTextBlock();
         globals.clearBlanks();
         globals.markEmitted();
     }
 
-    /**
-     * Push or replace the stack level at the closer's indent.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     */
     private void transition(final Stack stack, final Suffix suffix) {
         new Transition(stack, this.span).apply(
-            Kind.TEXT_BLOCK, Openness.VERTICAL_COMPLETED, suffix.named()
+            Kind.TEXT_BLOCK,
+            Openness.VCOMPLETED,
+            new Admission(suffix.named(), suffix.test())
         );
+    }
+
+    private void emit(
+        final Emit emit, final Suffix suffix, final List<MethodChain> chain,
+        final byte[] joined
+    ) {
+        final String hex = new Hex(joined).asString();
+        if (chain.isEmpty()) {
+            emit.object(
+                suffix.attribute(this.span.line(), this.span.indent()),
+                "Φ.string", this.span.line(), this.span.indent()
+            );
+            new Marked(emit, suffix).apply();
+            Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
+        } else {
+            emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
+            Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
+            emit.close();
+            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
+                final MethodChain link = chain.get(idx);
+                emit.unnamedObject(".".concat(link.name()), this.span.line(), link.dot());
+                emit.method(link.fragile());
+                emit.close();
+            }
+            final MethodChain last = chain.get(chain.size() - 1);
+            emit.object(
+                suffix.attribute(this.span.line(), this.span.indent()),
+                ".".concat(last.name()), this.span.line(), last.dot()
+            );
+            emit.method(last.fragile());
+            new Marked(emit, suffix).apply();
+        }
     }
 }

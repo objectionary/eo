@@ -196,11 +196,35 @@ final class LnTextBlockTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
+    @Test
+    void rejectsBindingOnTextBlockChildUnderFormationParent() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 2);
+        globals.appendTextLine("hi");
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnTextBlock(new Span("  \"\"\":tag", 3))
+                .into(stack, globals, new Emit()),
+            "a text-block child under a formation parent cannot carry a binding per R-3.12.3"
+        );
+    }
+
+    @Test
+    void acceptsBindingOnTextBlockChildUnderArgumentPositionParent() {
+        final Globals globals = new Globals();
+        globals.openTextBlock(1, 2);
+        globals.appendTextLine("hi");
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.VAPPLICATION, Openness.OPEN);
+        Assertions.assertDoesNotThrow(
+            () -> new LnTextBlock(new Span("  \"\"\":tag", 3))
+                .into(stack, globals, new Emit()),
+            "a text-block child in argument position may still carry a binding"
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

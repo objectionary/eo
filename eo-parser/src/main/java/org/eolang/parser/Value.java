@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * One parsed value in an EO expression — identifier, INT, STAR, etc.
@@ -16,14 +17,19 @@ import java.util.List;
  * Φ.bytes} wrapper, STAR to {@code Φ.tuple} with {@code @star=''}, and
  * so on as more shapes land.</p>
  *
- * <p>Used both as the line's head and as horizontal argument slots; the
- * {@link Head} role is just a {@link Value} promoted to head position
- * for readability. *
+ * <p>Used both as the line's head and as horizontal argument slots.</p>
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.DataClass")
 final class Value {
+
+    /**
+     * Kinds of value that may carry a {@code .method} chain behind them.
+     */
+    private static final Set<Kind> CHAINABLE = Set.of(
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM,
+        Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
+    );
 
     /**
      * Empty chain shared by all bare values.
@@ -44,11 +50,6 @@ final class Value {
      * Column where the value starts (0-indexed).
      */
     private final int pos;
-
-    /**
-     * Index in the line body immediately past this value.
-     */
-    private final int end;
 
     /**
      * Inline binding label (R-3.12) — {@code null} when no
@@ -79,10 +80,9 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      */
-    Value(final Kind tag, final String text, final int column, final int after) {
-        this(tag, text, column, after, null, Value.NO_CHAIN, false);
+    Value(final Kind tag, final String text, final int column) {
+        this(tag, text, column, null, Value.NO_CHAIN, false);
     }
 
     /**
@@ -90,13 +90,12 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      * @param tie Optional inline-binding label or N
      */
     Value(
-        final Kind tag, final String text, final int column, final int after, final String tie
+        final Kind tag, final String text, final int column, final String tie
     ) {
-        this(tag, text, column, after, tie, Value.NO_CHAIN, false);
+        this(tag, text, column, tie, Value.NO_CHAIN, false);
     }
 
     /**
@@ -104,19 +103,17 @@ final class Value {
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
-     * @param after Index past the value
      * @param tie Optional inline-binding label or N
      * @param links Method-dispatch chain on this value (empty for a bare value)
      * @param cnst Whether a trailing {@code !} const marker is present
      */
     Value(
-        final Kind tag, final String text, final int column, final int after,
+        final Kind tag, final String text, final int column,
         final String tie, final List<MethodChain> links, final boolean cnst
     ) {
         this.kind = tag;
         this.raw = text;
         this.pos = column;
-        this.end = after;
         this.binding = tie;
         this.chain = links;
         this.constant = cnst;
@@ -147,20 +144,27 @@ final class Value {
     }
 
     /**
-     * Index past this value in the body.
-     * @return End index
+     * Whether an inline binding (R-3.12) follows the value.
+     * @return True when a {@code :label} or {@code :N} is present
      */
-    int end() {
-        return this.end;
+    boolean bound() {
+        return this.binding != null;
     }
 
     /**
      * Inline binding label (e.g., {@code y}) or numeric slot (e.g.,
-     * {@code 0}), or {@code null} when no binding follows the value.
-     * @return Binding tag
+     * {@code 0}), or the empty string when no binding follows the
+     * value — check {@link #bound()} first.
+     * @return Binding tag, empty when absent
      */
     String binding() {
-        return this.binding;
+        final String tag;
+        if (this.binding == null) {
+            tag = "";
+        } else {
+            tag = this.binding;
+        }
+        return tag;
     }
 
     /**
@@ -180,6 +184,140 @@ final class Value {
      */
     boolean constant() {
         return this.constant;
+    }
+
+    /**
+     * Whether this value may carry a {@code .method} chain behind it.
+     * @return True if a chain may follow
+     */
+    boolean chainable() {
+        return Value.CHAINABLE.contains(this.kind);
+    }
+
+    /**
+     * A numeric literal — {@code INT} or {@code FLOAT} (§9.0.3)?
+     * @return True for {@link Kind#INTEGER} or {@link Kind#FLOAT}
+     */
+    boolean number() {
+        return this.kind == Kind.INTEGER || this.kind == Kind.FLOAT;
+    }
+
+    /**
+     * A {@code HEX} numeric literal — {@code 0xFF} form (§9.0.3)?
+     * @return True for {@link Kind#HEX}
+     */
+    boolean hex() {
+        return this.kind == Kind.HEX;
+    }
+
+    /**
+     * A {@code BYTES} literal (§3.13.1)?
+     * @return True for {@link Kind#BYTES}
+     */
+    boolean bytes() {
+        return this.kind == Kind.BYTES;
+    }
+
+    /**
+     * A {@code STRING} literal (§9.0.3)?
+     * @return True for {@link Kind#STRING}
+     */
+    boolean string() {
+        return this.kind == Kind.STRING;
+    }
+
+    /**
+     * The {@code STAR} tuple marker (§9.0.3)?
+     * @return True for {@link Kind#STAR}
+     */
+    boolean star() {
+        return this.kind == Kind.STAR;
+    }
+
+    /**
+     * The {@code T} terminator term (§9.3)?
+     * @return True for {@link Kind#TERM}
+     */
+    boolean term() {
+        return this.kind == Kind.TERM;
+    }
+
+    /**
+     * The {@code I} identity object (§3.16)?
+     * @return True for {@link Kind#IDENTITY}
+     */
+    boolean identity() {
+        return this.kind == Kind.IDENTITY;
+    }
+
+    /**
+     * A paren group — {@code (expr)} (§3.6)?
+     * @return True for {@link Kind#GROUP}
+     */
+    boolean group() {
+        return this.kind == Kind.GROUP;
+    }
+
+    /**
+     * May this value open a reversed dispatch as the line's head — a
+     * bare identifier or a root glyph, the only kinds R-9.0.3 allows in
+     * that position?
+     * @return True for {@link Kind#IDENTIFIER} or {@link Kind#ROOT}
+     */
+    boolean reversible() {
+        return this.kind == Kind.IDENTIFIER || this.kind == Kind.ROOT;
+    }
+
+    /**
+     * The XMIR symbol a {@link Kind#ROOT} glyph maps to per §9.3 —
+     * {@code Q} to {@code Φ}, {@code @} to {@code φ}, {@code ^} to
+     * {@code ρ}, {@code $} to {@code ξ}. Call only when {@link #kind()}
+     * is {@link Kind#ROOT}.
+     * @return The mapped symbol
+     */
+    String rootSymbol() {
+        final String mapped;
+        if ("Q".equals(this.raw)) {
+            mapped = "Φ";
+        } else if ("@".equals(this.raw)) {
+            mapped = "φ";
+        } else if ("^".equals(this.raw)) {
+            mapped = "ρ";
+        } else {
+            mapped = "ξ";
+        }
+        return mapped;
+    }
+
+    /**
+     * Does this head open a formation body?
+     * @return True for identity, or a group wrapping inline {@code > [...]}
+     */
+    boolean opensFormationBody() {
+        return this.identity()
+            || this.group() && this.wrapsInlinePhi();
+    }
+
+    private boolean wrapsInlinePhi() {
+        final String inner = this.raw.substring(1, this.raw.length() - 1);
+        boolean found = false;
+        int depth = 0;
+        int idx = 0;
+        while (idx < inner.length() - 2 && !found) {
+            final char glyph = inner.charAt(idx);
+            if (glyph == '"') {
+                idx = Tokens.closingQuote(inner, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && glyph == '>'
+                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
+                found = true;
+            }
+            idx = idx + 1;
+        }
+        return found;
     }
 
     /**
@@ -225,11 +363,20 @@ final class Value {
         ROOT,
 
         /**
-         * {@code T} — the bottom term of 𝜑-calculus (§9.3). A
-         * self-contained leaf carrying no arguments;
-         * {@link Emissions} maps it to a bottom-based object.
+         * {@code T} — the terminator term of 𝜑-calculus (§9.3). A value:
+         * it may carry arguments, which are the cause of the terminator,
+         * as in {@code T "why it failed"};
+         * {@link Emissions} maps it to a terminator object.
          */
         TERM,
+
+        /**
+         * {@code I} — the identity object (§3.16), the one-glyph
+         * spelling of {@code x > [x]}. {@link Emissions} expands it
+         * into an anonymous formation binding a single void and
+         * decorating it.
+         */
+        IDENTITY,
 
         /**
          * Paren group — {@code (expr)}. The {@code raw()} string holds
@@ -252,14 +399,6 @@ final class Value {
          * §3.13.1. Single-line form only in this iteration; multi-line
          * continuation lands in a later round.
          */
-        BYTES,
-
-        /**
-         * {@code SELF} — the {@code %} self-reference (§3.15). Sugar for
-         * the auto-name of the enclosing anonymous ({@code >>}) formation;
-         * emitted as a base-less {@code <o self=''>} marker that the
-         * {@code resolve-self} reshape replaces with that name.
-         */
-        SELF
+        BYTES
     }
 }

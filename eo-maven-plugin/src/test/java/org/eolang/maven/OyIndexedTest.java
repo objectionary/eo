@@ -81,7 +81,7 @@ final class OyIndexedTest {
             new OyIndexed(
                 new Objectionary.Fake(
                     name -> new InputOf("[] > qwerty"),
-                    name -> true,
+                    name -> false,
                     name -> true
                 ),
                 new ObjectsIndex(
@@ -91,6 +91,26 @@ final class OyIndexedTest {
                 )
             ).isDirectory("org.eolang.qwerty"),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void keepsDisambiguatingObjectFromPackageInDelegateFallback() throws IOException {
+        MatcherAssert.assertThat(
+            "OyIndexed with a broken index must not call a name a directory when the delegate also has it as a program",
+            new OyIndexed(
+                new Objectionary.Fake(
+                    name -> new InputOf("[] > tuple"),
+                    name -> true,
+                    name -> true
+                ),
+                new ObjectsIndex(
+                    () -> {
+                        throw new IllegalStateException("Fake exception");
+                    }
+                )
+            ).isDirectory("org.eolang.tuple"),
+            Matchers.is(false)
         );
     }
 
@@ -126,9 +146,6 @@ final class OyIndexedTest {
         );
     }
 
-    /**
-     * Returns the stdout path.
-     */
     private String stdout() {
         return "stdout";
     }

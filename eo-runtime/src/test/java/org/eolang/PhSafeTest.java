@@ -20,7 +20,7 @@ final class PhSafeTest {
         MatcherAssert.assertThat(
             "PhSafe must delegate φ-term to its origin, but it didnt",
             new PhSafe(new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
         );
     }
 
@@ -31,6 +31,44 @@ final class PhSafeTest {
             "saves location",
             located.copy().locator(),
             Matchers.equalTo(located.locator())
+        );
+    }
+
+    @Test
+    void keepsProtectingANormalizedObject() {
+        MatcherAssert.assertThat(
+            "a failure of a normalized object must still name its location, but it didnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public Phi normalized() {
+                            return new PhDefault() {
+                                @Override
+                                public byte[] delta() {
+                                    throw new IllegalArgumentException("boom");
+                                }
+                            };
+                        }
+                    },
+                    "example.eo", 3, 5
+                ).normalized().delta(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("at example.eo:3:5"),
+                Matchers.containsString("boom")
+            )
+        );
+    }
+
+    @Test
+    void passesTheLoopSignalThrough() {
+        Assertions.assertThrows(
+            ExAgain.class,
+            () -> new PhSafe(new PhAgain(new Data.ToPhi(1L))).delta(),
+            "the signal of a tail call must pass through untouched, but it was wrapped"
         );
     }
 
@@ -96,7 +134,7 @@ final class PhSafeTest {
             Assertions.assertThrows(
                 ExFailure.class,
                 () -> new PhSafe(
-                    new PhSafe(PhTerminator.withCause("oops"), "inner.eo", 1, 2),
+                    new PhSafe(new PhTerminator(new Data.ToPhi("oops")), "inner.eo", 1, 2),
                     "outer.eo", 3, 4
                 ).delta(),
                 "was expected to fail with ExFailure"
@@ -106,6 +144,120 @@ final class PhSafeTest {
                 Matchers.containsString("at inner.eo:1:2"),
                 Matchers.containsString("oops")
             )
+        );
+    }
+
+    @Test
+    void catchesNonAtomOriginOnLambda() {
+        MatcherAssert.assertThat(
+            "wraps a non-atom origin's cast failure into ExFailure instead of letting it escape",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhSafe(new PhDefault()).lambda(),
+                "was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString(".λ")
+        );
+    }
+
+    @Test
+    void letsInterruptedThrough() {
+        MatcherAssert.assertThat(
+            "an interrupt must keep its own message, but it was wrapped",
+            Assertions.assertThrows(
+                ExInterrupted.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new ExInterrupted("the thread must stop");
+                        }
+                    },
+                    "file.eo", 42, 7
+                ).delta(),
+                "was expected to fail with ExInterrupted"
+            ).getMessage(),
+            Matchers.equalTo("the thread must stop")
+        );
+    }
+
+    @Test
+    void letsErrorThrough() {
+        MatcherAssert.assertThat(
+            "a JVM Error must keep its own type, but it was wrapped",
+            Assertions.assertThrows(
+                StackOverflowError.class,
+                () -> new PhSafe(
+                    new PhDefault() {
+                        @Override
+                        public byte[] delta() {
+                            throw new StackOverflowError("the stack is exhausted");
+                        }
+                    },
+                    "file.eo", 42, 7
+                ).delta(),
+                "was expected to fail with StackOverflowError"
+            ).getMessage(),
+            Matchers.equalTo("the stack is exhausted")
+        );
+    }
+
+    @Test
+    void letsErrorThroughFromAtom() {
+        MatcherAssert.assertThat(
+            "a JVM Error from an atom must keep its own type, but it was wrapped",
+            Assertions.assertThrows(
+                StackOverflowError.class,
+                () -> new PhSafe(new PhSafeTest.Broken(), "file.eo", 3, 5).lambda(),
+                "was expected to fail with StackOverflowError"
+            ).getMessage(),
+            Matchers.equalTo("the stack is exhausted")
+        );
+    }
+
+    @Test
+    void doesNotLetRecoveredInterceptError() {
+        final EOrecovered recovered = new EOrecovered();
+        recovered.put(
+            "value",
+            new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi normalized() {
+                        throw new OutOfMemoryError("the heap is exhausted");
+                    }
+                },
+                "file.eo", 42, 7
+            )
+        );
+        recovered.put("alternative", new Data.ToPhi(42L));
+        Assertions.assertThrows(
+            OutOfMemoryError.class,
+            recovered::lambda,
+            "recovered must not intercept a JVM Error, but it did"
+        );
+    }
+
+    @Test
+    void doesNotLetRecoveredInterceptInterrupted() {
+        final EOrecovered recovered = new EOrecovered();
+        recovered.put(
+            "value",
+            new PhSafe(
+                new PhDefault() {
+                    @Override
+                    public Phi normalized() {
+                        throw new ExInterrupted("the thread must stop");
+                    }
+                },
+                "file.eo", 42, 7
+            )
+        );
+        recovered.put("alternative", new Data.ToPhi(42L));
+        Assertions.assertThrows(
+            ExInterrupted.class,
+            recovered::lambda,
+            "recovered must not intercept an interrupt, but it did"
         );
     }
 
@@ -131,5 +283,17 @@ final class PhSafeTest {
                 Matchers.containsString("intentional error")
             )
         );
+    }
+
+    /**
+     * An atom that fails with a JVM error.
+     * @since 0.60.0
+     */
+    private static final class Broken extends PhDefault implements Atom {
+
+        @Override
+        public Phi lambda() {
+            throw new StackOverflowError("the stack is exhausted");
+        }
     }
 }

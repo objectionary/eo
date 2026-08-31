@@ -62,11 +62,8 @@ final class Unplacing implements Step {
         }
     }
 
-    /**
-     * Unplace what's necessary.
-     */
     private void unplace() {
-        final Walk binaries = new Walk(this.classes);
+        final Walk binaries = new WkDefault(this.classes);
         if (binaries.isEmpty()) {
             Logger.warn(this, "No classes found in %[file]s", this.classes);
         } else {
@@ -84,7 +81,7 @@ final class Unplacing implements Step {
             } else if (total == available.size()) {
                 Logger.info(
                     this, "All %d binari(es) deleted, which were found in %[file]s",
-                    binaries.size(), this.classes
+                    available.size(), this.classes
                 );
             } else {
                 Logger.info(
@@ -95,13 +92,6 @@ final class Unplacing implements Step {
         }
     }
 
-    /**
-     * Unplace a single tojo.
-     * @param tojo Placed tojo
-     * @param available All available classes
-     * @return Amount of unplaced binaries
-     * @throws IOException If fails to unplace
-     */
     private int unplace(
         final TjPlaced tojo,
         final Collection<Path> available
@@ -151,13 +141,6 @@ final class Unplacing implements Step {
         return total;
     }
 
-    /**
-     * Mark tojo as unplaced and delete the binary file.
-     * @param tojo Placed tojo
-     * @param path Path to binary
-     * @return Amount of unplaced binaries (always 1)
-     * @throws IOException If fails to delete binary
-     */
     private static int unplaced(final TjPlaced tojo, final Path path) throws IOException {
         if (Files.deleteIfExists(path)) {
             Logger.debug(Unplacing.class, "Deleted binary %s", path);

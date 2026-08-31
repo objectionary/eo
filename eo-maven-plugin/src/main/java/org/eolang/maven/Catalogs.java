@@ -58,10 +58,16 @@ final class Catalogs {
     private final Map<Path, Tojos> all;
 
     /**
+     * The format each cached path was first built with.
+     */
+    private final Map<Path, String> formats;
+
+    /**
      * Ctor.
      */
     private Catalogs() {
         this.all = new ConcurrentHashMap<>(0);
+        this.formats = new ConcurrentHashMap<>(0);
     }
 
     /**
@@ -70,9 +76,7 @@ final class Catalogs {
      * @return The Tojos
      */
     Tojos make(final Path file) {
-        return this.all.computeIfAbsent(
-            file.toAbsolutePath(), f -> Catalogs.build(f, "csv")
-        );
+        return this.make(file, "csv");
     }
 
     /**
@@ -82,17 +86,19 @@ final class Catalogs {
      * @return The Tojos
      */
     Tojos make(final Path file, final String fmt) {
-        return this.all.computeIfAbsent(
-            file.toAbsolutePath(), f -> Catalogs.build(f, fmt)
-        );
+        final Path abs = file.toAbsolutePath();
+        final String before = this.formats.putIfAbsent(abs, fmt);
+        if (before != null && !before.equals(fmt)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The file '%s' was already cached with format '%s', can't reuse it with format '%s'",
+                    abs, before, fmt
+                )
+            );
+        }
+        return this.all.computeIfAbsent(abs, f -> Catalogs.build(f, fmt));
     }
 
-    /**
-     * Make it.
-     * @param path Path of the file
-     * @param format Format, like "csv" or "json"
-     * @return The tojos
-     */
     private static Tojos build(final Path path, final String format) {
         final String fmt = format.trim().toLowerCase(Locale.ENGLISH);
         Mono mono;

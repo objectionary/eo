@@ -1,9 +1,0 @@
-# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-# SPDX-License-Identifier: MIT
----
-line: 2
-message: |-
-  [2:2] error: 'unterminated bytes continuation'
-input: |
-  [] > app
-    00-11-22-33- > x

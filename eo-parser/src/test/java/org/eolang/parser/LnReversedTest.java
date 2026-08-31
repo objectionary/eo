@@ -47,9 +47,9 @@ final class LnReversedTest {
         new LnReversed(new Span("if. cond then else > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a `name. arg1 arg2…` must push REVERSED_WITH_HARGS",
+            "a `name. arg1 arg2…` must push REVERSED_HARGS",
             stack.top().kind(),
-            Matchers.equalTo(Kind.REVERSED_WITH_HARGS)
+            Matchers.equalTo(Kind.REVERSED_HARGS)
         );
     }
 
@@ -59,9 +59,9 @@ final class LnReversedTest {
         new LnReversed(new Span("if. cond then > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "REVERSED_WITH_HARGS must be HORIZONTAL_COMPLETED — no deeper continuation allowed",
+            "REVERSED_HARGS must be HCOMPLETED — no deeper continuation allowed",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
@@ -125,6 +125,46 @@ final class LnReversedTest {
     }
 
     @Test
+    void reportsRootHeadColumnWithLineIndent() {
+        final Span span = new Span("    @. > x", 3);
+        MatcherAssert.assertThat(
+            "a root head's pos() must count the line's indent, not just the stripped-body offset",
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void reportsRhoHeadColumnWithLineIndent() {
+        final Span span = new Span("  ^. > x", 3);
+        MatcherAssert.assertThat(
+            "a `^.` root head's pos() must also count the line's indent",
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void reportsXiHeadColumnWithLineIndent() {
+        final Span span = new Span("   $. > x", 3);
+        MatcherAssert.assertThat(
+            "a `$.` root head's pos() must also count the line's indent",
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void agreesWithNamedHeadOnIndentedColumn() {
+        final Span span = new Span("  foo. > x", 3);
+        MatcherAssert.assertThat(
+            "a root head and a named head on the same indent must report the same column convention",
+            LnReversed.readHead(new Tokens(span.body(), span), span.indent()).pos(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void rejectsAttributeWithoutPrecedingBlankLine() {
         final Emit emit = new Emit();
         new LnReversed(new Span("if. cond then +> t", 2))
@@ -154,11 +194,6 @@ final class LnReversedTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

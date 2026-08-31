@@ -17,6 +17,15 @@ import org.cactoos.list.ListOf;
  * Goes through all {@code probe} and {@code also} metas in XMIR files,
  * tries to locate the objects pointed by {@code probe} in Objectionary,
  * and if found, registers them in the catalog.
+ *
+ * <p>When a probed object has no source of its own, the package it belongs
+ * to is completed from the remote index, since a package that arrives from
+ * the registry has to arrive as a whole. A package that the project's own
+ * sources provide is not completed: a sibling that the index still lists,
+ * but no local source names, is a leftover of an older release and not a
+ * missing member of the local package, so {@link Pulling} must not fetch
+ * it.</p>
+ *
  * @since 0.61.0
  */
 final class Probing implements Step {
@@ -94,12 +103,6 @@ final class Probing implements Step {
         }
     }
 
-    /**
-     * Probe given tojos and return amount of probed objects.
-     * @param unprobed Tojos to probe
-     * @param probed Map accumulating discovered probes
-     * @return Amount of probed objects
-     */
     private int probed(
         final Collection<TjForeign> unprobed,
         final Map<String, Boolean> probed) {
@@ -107,49 +110,55 @@ final class Probing implements Step {
         return new Threaded<>(
             unprobed,
             tojo -> {
-                final Path src = tojo.xmir();
-                final Collection<String> objects = new ListOf<>(new Probes(src));
-                if (!objects.isEmpty()) {
-                    Logger.debug(this, "Probing object(s): %s", objects);
-                }
-                int count = 0;
-                for (final String object : objects) {
-                    if (!this.objectionary.contains(object)) {
-                        continue;
-                    }
-                    ++count;
-                    this.tojos.add(object).withDiscoveredAt(src);
-                    probed.put(object, true);
-                    this.complete(object, src, completed);
-                }
+                final int count = this.register(tojo.xmir(), probed, completed);
                 tojo.withProbed(count);
                 return count;
             }
         ).total();
     }
 
-    /**
-     * Register the remaining objects of the probed object's package, so the
-     * whole directory is pulled before it is parsed and bare sibling
-     * references resolve correctly (see
-     * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
-     * @param object The fully qualified name of the probed object
-     * @param src The XMIR file where the object was discovered
-     * @param completed Packages already completed, guards against re-listing
-     * @throws IOException If the package can't be listed
-     */
+    private int register(
+        final Path src,
+        final Map<String, Boolean> probed,
+        final Set<String> completed
+    ) throws IOException {
+        final Collection<String> objects = new ListOf<>(new Probes(src));
+        if (!objects.isEmpty()) {
+            Logger.debug(this, "Probing object(s): %s", objects);
+        }
+        int count = 0;
+        for (final String object : objects) {
+            if (!this.objectionary.contains(object)) {
+                continue;
+            }
+            ++count;
+            final TjForeign added = this.tojos.add(object).withDiscoveredAt(src);
+            probed.put(object, true);
+            if (added.sourceless()) {
+                this.complete(object, src, completed);
+            }
+        }
+        return count;
+    }
+
     private void complete(
         final String object,
         final Path src,
         final Set<String> completed
     ) throws IOException {
         final int split = object.lastIndexOf('.');
-        if (split > 0) {
-            final String pkg = object.substring(0, split);
-            if (completed.add(pkg)) {
-                for (final String sibling : this.objectionary.children(pkg)) {
-                    this.tojos.add(sibling).withDiscoveredAt(src);
+        final String pkg = object.substring(0, Math.max(split, 0));
+        if (split > 0 && completed.add(pkg)) {
+            final String root = "org.eolang.";
+            final boolean rooted = object.startsWith(root);
+            for (final String sibling : this.objectionary.children(pkg)) {
+                final String qualified;
+                if (rooted && !sibling.startsWith(root)) {
+                    qualified = root.concat(sibling);
+                } else {
+                    qualified = sibling;
                 }
+                this.tojos.add(qualified).withDiscoveredAt(src);
             }
         }
     }

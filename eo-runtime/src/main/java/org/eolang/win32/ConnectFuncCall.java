@@ -4,8 +4,10 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.SockaddrIn;
@@ -33,19 +35,22 @@ public final class ConnectFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int length = new Int(
+            "the 'length' argument of connect", params[2]
+        ).it();
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.connect(
-                    new Dataized(params[0]).asNumber().intValue(),
+                    new Pointer(new Dataized(params[0]).asNumber().longValue()),
                     new SockaddrIn(
                         new Dataized(params[1].take("family")).take(Short.class),
                         new Dataized(params[1].take("port")).take(Short.class),
                         new Dataized(params[1].take("address")).take(Integer.class),
                         new Dataized(params[1].take("padding")).take()
                     ),
-                    new Dataized(params[2]).asNumber().intValue()
+                    length
                 )
             )
         );

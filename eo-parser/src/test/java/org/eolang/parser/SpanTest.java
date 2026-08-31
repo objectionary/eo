@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,6 +30,60 @@ final class SpanTest {
             "a line that starts in column 0 must have indent 0",
             new Span("name", 7).indent(),
             Matchers.equalTo(0)
+        );
+    }
+
+    @Test
+    void detectsTrailingSpace() {
+        MatcherAssert.assertThat(
+            "a line ending in a space must report trailing whitespace",
+            new Span("[] > foo ", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsTrailingTab() {
+        MatcherAssert.assertThat(
+            "a line ending in a tab must report trailing whitespace",
+            new Span("[] > foo\t", 1).trailing(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresFormFeedAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a form feed is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo\f", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void ignoresVerticalTabAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a vertical tab is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void ignoresNonBreakingSpaceAsTrailingWhitespace() {
+        MatcherAssert.assertThat(
+            "a line ending in a non-breaking space is not trailing whitespace under R-2.2.5",
+            new Span("[] > foo ", 1).trailing(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void rejectsTrailingWhitespaceOnBlankLine() {
+        MatcherAssert.assertThat(
+            "a blank line must not report trailing whitespace",
+            new Span("    ", 1).trailing(),
+            Matchers.is(false)
         );
     }
 
@@ -87,11 +142,56 @@ final class SpanTest {
     }
 
     @Test
-    void exposesNullCharAsHeadOfBlank() {
+    void rejectsHeadOfBlank() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("     ", 1).head(),
+            "head of a blank line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfEmptyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("", 1).head(),
+            "head of an empty line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void rejectsHeadOfTabOnlyLine() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Span("\t", 4).head(),
+            "head of a tab-only line has no first non-whitespace character to return"
+        );
+    }
+
+    @Test
+    void detectsTabOnlyLineAsBlank() {
         MatcherAssert.assertThat(
-            "head of a blank line cannot point at any character",
-            new Span("     ", 1).head(),
-            Matchers.equalTo('\0')
+            "a line made of a single tab is entirely whitespace and must report blank",
+            new Span("\t", 4).blank(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void countsTabsInIndent() {
+        MatcherAssert.assertThat(
+            "every leading whitespace character counts towards the indent, tabs included",
+            new Span("\t\t", 4).indent(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void exposesEmptyBodyForTabOnlyLine() {
+        MatcherAssert.assertThat(
+            "body of a tab-only line cannot contain anything",
+            new Span(" \t ", 1).body(),
+            Matchers.equalTo("")
         );
     }
 
@@ -101,6 +201,24 @@ final class SpanTest {
             "a tab inside the leading-whitespace region must be reported",
             new Span(" \t  x", 1).tab(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void detectsTabAfterNonSpaceNonTabWhitespace() {
+        MatcherAssert.assertThat(
+            "a tab past a form-feed that indent() already counted must still be reported",
+            new Span("\f\tfoo", 1).tab(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresNonTabWhitespaceWithNoTabPresent() {
+        MatcherAssert.assertThat(
+            "leading whitespace with no tab at all must not be reported as tabbed",
+            new Span("\ffoo", 1).tab(),
+            Matchers.is(false)
         );
     }
 

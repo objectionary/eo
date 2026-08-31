@@ -9,10 +9,8 @@ List<String> expected = [
   'eo/5-transpile/malloc.xmir',
   'generated-sources/org/eolang/EOseq.java',
   'generated-sources/org/eolang/EOsocket.java',
-  'generated-test-sources/org/eolang/EObytesTest.java',
+  'generated-test-sources/org/eolang/TestEObytes.java',
   'classes/org/eolang/package-info.class',
-  'classes/org/eolang/EO_number/package-info.class',
-  'classes/org/eolang/EO_string/package-info.class',
 ]
 
 for (path in expected) {

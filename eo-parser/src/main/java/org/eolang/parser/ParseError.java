@@ -10,14 +10,14 @@ package org.eolang.parser;
  *
  * <p>Carries the {@code line} and {@code pos} (R-9.1.1 / R-9.1.2) of the
  * failure plus the canonical message text from §9.9. The walker catches
- * this, calls {@link Emit#rollback(int)} with the line's savepoint
+ * this, calls {@link Emit#rollback(Savepoint)} with the line's savepoint
  * (R-7.2), and emits the error via {@link Emit#error(int, int, String)}.
  * Subsequent lines continue against the post-recovery state.</p>
  *
  * <p>Unchecked by design — every rule violation surfaces this way and
  * the walker is the single catch site. Forcing a checked declaration on
  * every {@code Line.into} would clutter every implementation for no
- * caller benefit. *
+ * caller benefit.</p>
  *
  * @since 0.1
  */

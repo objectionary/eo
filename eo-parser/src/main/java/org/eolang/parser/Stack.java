@@ -12,27 +12,21 @@ import java.util.List;
  *
  * <p>The stack carries one {@link Level} per occupied indent level. Indents
  * grow strictly bottom-to-top in steps of exactly two (R-5.1.1, R-5.1.2);
- * this class enforces the step at {@link #push(int, int, Kind, Openness)}.
- * The bottom entry's {@code parent} is always {@link Kind#TOP_LEVEL};
- * higher entries carry the kind of the entry directly below them as their
- * parent.</p>
+ * the caller enforces the step (R-5.1.3) before calling
+ * {@link #push(int, int, Kind, Openness)}. The bottom entry's
+ * {@code parent} is always {@link Kind#TOP_LEVEL}; higher entries carry the
+ * kind of the entry directly below them as their parent.</p>
  *
  * <p>This class manages structural transitions only. Close-time semantic
  * checks (R-5.3.1 through R-5.3.5) are dispatched to a caller-supplied
  * {@link Closer} when a level is popped or replaced, so the same checks
  * fire whether closing happens mid-parse (a shallower or sibling line
  * arrived) or at end-of-stream (R-5.4 / §8). The stack itself is
- * structural; semantics live with the caller. *
+ * structural; semantics live with the caller.</p>
  *
  * @since 0.1
  */
 final class Stack {
-
-    /**
-     * Indent step between adjacent stack entries — fixed at 2 spaces by
-     * R-2.2.1.
-     */
-    private static final int STEP = 2;
 
     /**
      * The levels, bottom-to-top.
@@ -54,11 +48,20 @@ final class Stack {
     private final Opener opener;
 
     /**
+     * Bottom sentinel — the entry {@link #below()} answers when the
+     * stack holds fewer than two entries. Its kind is
+     * {@link Kind#TOP_LEVEL}, so a caller reading the parent of the
+     * bottom entry finds an object saying "top level" rather than an
+     * absence to test for.
+     */
+    private final Level bottom;
+
+    /**
      * Ctor with no-op hooks — useful in tests that exercise structural
      * transitions without semantic checks.
      */
     Stack() {
-        this(level -> { }, level -> { });
+        this((level, naming) -> { }, level -> { });
     }
 
     /**
@@ -78,6 +81,7 @@ final class Stack {
         this.levels = new ArrayList<>(8);
         this.closer = closer;
         this.opener = opener;
+        this.bottom = new Level(0, 0, Kind.TOP_LEVEL, Openness.OPEN, Kind.TOP_LEVEL, false);
     }
 
     /**
@@ -114,10 +118,20 @@ final class Stack {
      * one back, so the count is unchanged even though the top entry
      * itself is a different object. Snapshotting the entries themselves
      * survives that case.
+     *
+     * <p>The entries are copied, not shared: a {@link Level} is mutable
+     * and a line that throws has usually already mutated the entry
+     * below it, so a shallow copy would put the damage straight back on
+     * the stack.</p>
+     *
      * @return Snapshot of the levels, bottom-to-top
      */
     List<Level> snapshot() {
-        return new ArrayList<>(this.levels);
+        final List<Level> copy = new ArrayList<>(this.levels.size());
+        for (final Level level : this.levels) {
+            copy.add(level.twin());
+        }
+        return copy;
     }
 
     /**
@@ -135,18 +149,36 @@ final class Stack {
     }
 
     /**
-     * The entry directly below the top, or null if there is none. Used by
-     * the FSM to read a new entry's parent during the push step (R-5.2.8).
-     * @return Entry below top, or null
+     * The entry directly below the top, or the bottom sentinel when the
+     * stack holds fewer than two entries. Used by the FSM to read a new
+     * entry's parent during the push step (R-5.2.8).
+     * @return Entry below top, never null
      */
     Level below() {
         final Level under;
         if (this.levels.size() < 2) {
-            under = null;
+            under = this.bottom;
         } else {
             under = this.levels.get(this.levels.size() - 2);
         }
         return under;
+    }
+
+    /**
+     * The outermost entry — the indent-0 top-level object of the file —
+     * or the bottom sentinel when nothing has been pushed yet. Read by
+     * R-6.3.3, which admits a {@code +>} test attribute only under a
+     * top-level object that is a formation.
+     * @return Outermost entry, never null
+     */
+    Level root() {
+        final Level outer;
+        if (this.levels.isEmpty()) {
+            outer = this.bottom;
+        } else {
+            outer = this.levels.get(0);
+        }
+        return outer;
     }
 
     /**
@@ -184,14 +216,6 @@ final class Stack {
             owner = "";
         } else {
             final Level under = this.top();
-            if (indent != under.indent() + Stack.STEP) {
-                throw new IllegalStateException(
-                    String.format(
-                        "push at indent %d violates step rule from indent %d",
-                        indent, under.indent()
-                    )
-                );
-            }
             parent = under.kind();
             patom = under.atom();
             argues = under.argumentative();
@@ -221,8 +245,7 @@ final class Stack {
      * on each as it is removed. After the pop sweep, if the new top has
      * indent {@code target} - 2 (a step occurred), its openness is
      * downgraded from {@link Openness#OPEN OPEN} to
-     * {@link Openness#VERTICAL_COMPLETED VERTICAL_COMPLETED} per
-     * R-5.2.2.
+     * {@link Openness#VCOMPLETED VCOMPLETED} per R-5.2.2.
      * @param target Target indent
      */
     void popDeeperThan(final int target) {
@@ -230,10 +253,10 @@ final class Stack {
         while (!this.levels.isEmpty() && this.top().indent() > target) {
             final Level last = this.levels.remove(this.levels.size() - 1);
             stepped = true;
-            this.closer.onClose(last);
+            this.closer.onClose(last, true);
         }
         if (stepped && !this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
-            this.top().close(Openness.VERTICAL_COMPLETED);
+            this.top().close(Openness.VCOMPLETED);
         }
     }
 
@@ -251,7 +274,7 @@ final class Stack {
             throw new IllegalStateException("cannot replace top of empty stack");
         }
         final Level old = this.levels.remove(this.levels.size() - 1);
-        this.closer.onClose(old);
+        this.closer.onClose(old, true);
         final int indent = old.indent();
         final Kind parent;
         final boolean patom;
@@ -280,13 +303,29 @@ final class Stack {
     }
 
     /**
+     * Run the closer on the top entry without popping it, so the entry
+     * can be re-purposed at the same indent (R-5.2.5): a same-indent
+     * {@code .method} continuation closes what stands above it and
+     * takes its place. Everything the closer does on a pop happens
+     * here too — the argument-binding check, the bare-reversed
+     * receiver check, the compact-tuple wrapper and count — and the
+     * entry is left with none of that state, since it is a plain
+     * dispatch from now on.
+     */
+    void seal() {
+        final Level level = this.top();
+        this.closer.onClose(level, false);
+        level.sealed();
+    }
+
+    /**
      * Pop every remaining entry and run the closer on each — used by EOF
      * (§8).
      */
     void close() {
         while (!this.levels.isEmpty()) {
             final Level last = this.levels.remove(this.levels.size() - 1);
-            this.closer.onClose(last);
+            this.closer.onClose(last, true);
         }
     }
 
@@ -307,10 +346,11 @@ final class Stack {
     interface Closer {
 
         /**
-         * Run close-time checks on a popped or replaced level.
+         * Run close-time checks on a popped, replaced or sealed level.
          * @param level The level being closed
+         * @param naming Whether the naming requirement applies to it
          */
-        void onClose(Level level);
+        void onClose(Level level, boolean naming);
     }
 
     /**

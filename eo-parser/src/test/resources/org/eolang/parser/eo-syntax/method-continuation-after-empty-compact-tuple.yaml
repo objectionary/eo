@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6871: a compact tuple with nothing under it lost its argument entirely when
+# a same-indent `.method` continuation closed it - `seq` was left applied to
+# nothing at all.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[@base='.m' and @name='x']/o[@base='Φ.seq']/o[@as='α0' and @base='Φ.tuple.empty']
+input: |
+  [] > foo
+    seq *
+    .m > x

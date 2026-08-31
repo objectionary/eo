@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 2
 message: |-
-  [2:2] error: 'Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body'
+  [2:2] error: 'atom may contain only test attributes'
     [] > inner
     ^
 input: |

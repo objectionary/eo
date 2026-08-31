@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A literal is not one object but three: a number, made of bytes, made of the
+# bytes themselves. The last of them is a datum, and a datum is a copy of
+# nothing at all, since the bytes are the ground everything else stands on.
+eo:
+  app.eo: |
+    [] > app
+      42 > answer
+links:
+  - "/links/type[@id='Φ.app.answer.α0.α0']/data"
+  - "/links/type[@id='Φ.app.answer.α0.α0'][not(ref)]"

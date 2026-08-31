@@ -5,8 +5,11 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Unchecked;
 
 /**
  * EO source text as an iterable of {@link Span}.
@@ -14,72 +17,62 @@ import java.util.List;
  * <p>The source is UTF-8 by contract (R-2.1.1) — caller-supplied as a
  * decoded {@link String}, so encoding handling lives in the layer above.
  * Line endings {@code \n} and {@code \r\n} are normalised to {@code \n}
- * (R-2.1.2); a bare {@code \r} also terminates a line. The final line need
- * not carry a terminator.</p>
+ * (R-2.1.2), and those two are the only ones: a {@code \r} that no
+ * {@code \n} follows stays inside the line, where {@link Eo} rejects it.
+ * The final line need not carry a terminator.</p>
  *
  * <p>Spans are produced in source order, numbered from 1. An empty input
  * yields no spans. An input that is a single empty line yields one blank
- * {@link Span}. *
+ * {@link Span}.</p>
  *
  * @since 0.1
  */
 final class Source implements Iterable<Span> {
 
     /**
-     * Raw source text (already decoded; UTF-8 is the caller's contract).
+     * All spans of the source, in source order: split once, on the first
+     * iteration, and reused by every iteration after it.
      */
-    private final String text;
+    private final Unchecked<List<Span>> lines;
 
     /**
      * Ctor.
      * @param raw The full source text
      */
     Source(final String raw) {
-        this.text = raw;
+        this.lines = new Unchecked<>(new Sticky<>(() -> Source.spans(raw)));
     }
 
     @Override
     public Iterator<Span> iterator() {
-        return this.spans().iterator();
+        return this.lines.value().iterator();
     }
 
-    /**
-     * Materialise all spans.
-     *
-     * <p>The walk is linear in input length. Splitting eagerly costs O(N)
-     * once, vs. O(N) over the consumer's loop; the simpler shape is worth
-     * the small allocation.</p>
-     *
-     * @return All source lines as spans in source order
-     */
-    private List<Span> spans() {
-        final List<Span> out = new ArrayList<>(this.text.length() / 32 + 1);
-        final int len = this.text.length();
+    private static List<Span> spans(final String text) {
+        final List<Span> out = new ArrayList<>(text.length() / 32 + 1);
+        final int len = text.length();
         int start = 0;
         int number = 1;
         int pos = 0;
         while (pos < len) {
-            final char glyph = this.text.charAt(pos);
+            final char glyph = text.charAt(pos);
             if (glyph == '\n') {
-                out.add(new Span(this.text.substring(start, pos), number));
+                out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
                 pos = pos + 1;
                 start = pos;
-            } else if (glyph == '\r') {
-                out.add(new Span(this.text.substring(start, pos), number));
+            } else if (glyph == '\r' && pos + 1 < len && text.charAt(pos + 1) == '\n') {
+                out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
-                pos = pos + 1;
-                if (pos < len && this.text.charAt(pos) == '\n') {
-                    pos = pos + 1;
-                }
+                pos = pos + 2;
                 start = pos;
             } else {
                 pos = pos + 1;
             }
         }
         if (start < len) {
-            out.add(new Span(this.text.substring(start, len), number));
+            out.add(new Span(text.substring(start, len), number));
         }
-        return out;
+        return Collections.unmodifiableList(out);
     }
 }

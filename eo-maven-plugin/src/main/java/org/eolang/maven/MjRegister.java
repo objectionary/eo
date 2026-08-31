@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -32,7 +33,6 @@ import org.cactoos.set.SetOf;
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     threadSafe = true
 )
-@SuppressWarnings("PMD.ImmutableField")
 public final class MjRegister extends MjSafe {
 
     /**
@@ -46,78 +46,85 @@ public final class MjRegister extends MjSafe {
      * pretty global (or even a root one).
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
-     * @checkstyle MemberNameCheck (15 lines)
      */
-    @Parameter
-    private Set<String> includeSources;
+    @Parameter(alias = "includeSources", defaultValue = "**.eo")
+    private Set<String> included;
 
     /**
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
-     * @checkstyle MemberNameCheck (7 lines)
+     * @implNote {@code defaultValue} attribute is omitted, because an empty
+     *  one is not rendered into the descriptor of the plugin by
+     *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.
      */
-    @Parameter
-    private Set<String> excludeSources;
+    @Parameter(alias = "excludeSources")
+    private Set<String> excluded;
 
     /**
      * Whether it should fail on file names not matching required pattern.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "strictFileNames",
         property = "eo.strictFileNames",
         required = true,
         defaultValue = "true"
     )
-    private boolean strictFileNames;
+    private boolean strict;
 
     /**
      * Ctor.
      */
     public MjRegister() {
-        this.includeSources = new SetOf<>("**.eo");
-        this.excludeSources = new SetOf<>();
-        this.strictFileNames = true;
+        // nothing
     }
 
     @Override
-    public void exec() {
+    public void exec() throws IOException {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(
                 String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
             );
         }
-        this.removeOldFiles();
-        final int before = this.scopedTojos().size();
-        if (before > 0) {
-            Logger.info(this, "There are %d EO sources registered already", before);
+        try (TjsForeign tojos = this.tojos()) {
+            this.removeOldFiles();
+            final int before = tojos.size();
+            if (before > 0) {
+                Logger.info(this, "There are %d EO sources registered already", before);
+            }
+            final Unplace unplace = new Unplace(this.sourcesDir);
+            Logger.info(
+                this,
+                "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
+                new Threaded<>(
+                    new WkDefault(this.sourcesDir.toPath())
+                        .includes(this.included)
+                        .excludes(this.excludes()),
+                    file -> this.register(file, unplace, tojos)
+                ).total(),
+                this.sourcesDir,
+                this.foreign,
+                this.included,
+                this.excludes()
+            );
         }
-        final Unplace unplace = new Unplace(this.sourcesDir);
-        Logger.info(
-            this,
-            "Registered %d EO sources from %[file]s to %[file]s, included %s, excluded %s",
-            new Threaded<>(
-                new Walk(this.sourcesDir.toPath())
-                    .includes(this.includeSources)
-                    .excludes(this.excludeSources),
-                file -> this.register(file, unplace)
-            ).total(),
-            this.sourcesDir,
-            this.foreign,
-            this.includeSources,
-            this.excludeSources
-        );
     }
 
-    /**
-     * Register a single EO source file.
-     * @param file Source file
-     * @param unplace Unplace builder for naming
-     * @return Always 1, to count the registered files
-     */
-    private int register(final Path file, final Unplace unplace) {
+    private Set<String> excludes() {
+        final Set<String> globs;
+        if (this.excluded == null) {
+            globs = new SetOf<>();
+        } else {
+            globs = this.excluded;
+        }
+        return globs;
+    }
+
+    private int register(
+        final Path file, final Unplace unplace, final TjsForeign tojos
+    ) {
         if (
-            this.strictFileNames
+            this.strict
                 && !MjRegister.PATTERN.matcher(file.getFileName().toString()).matches()
         ) {
             throw new IllegalArgumentException(
@@ -129,10 +136,10 @@ public final class MjRegister extends MjSafe {
             );
         }
         final String name = unplace.make(file);
-        if (this.scopedTojos().contains(name)) {
+        if (tojos.contains(name)) {
             Logger.debug(this, "EO source %s already registered", name);
         } else {
-            this.scopedTojos()
+            tojos
                 .add(name)
                 .withSource(file.toAbsolutePath())
                 .withHash(new ChSource(file));

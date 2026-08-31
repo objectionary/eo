@@ -15,6 +15,7 @@
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
+    <!-- Don't upgrade to 2.x: there is no maven-resolver-supplier there and Maven 3.9 ships resolver 1.x -->
     <maven.resolver.version>1.9.27</maven.resolver.version>
   </properties>
   <dependencies>
@@ -36,13 +37,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.groovy</groupId>
-          <artifactId>groovy-all</artifactId>
-        </exclusion>
-      </exclusions>
+      <version>0.4.8</version>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -83,6 +78,7 @@
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
       <version>1.9.25.1</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -226,7 +222,7 @@
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.19.1</version>
+      <version>0.20.0</version>
     </dependency>
     <dependency>
       <groupId>javax.json</groupId>
@@ -259,7 +255,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.1.1</version>
+      <version>4.2.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -344,6 +340,8 @@
               junit.jupiter.execution.parallel.enabled = true
               junit.jupiter.execution.parallel.mode.default = concurrent
               junit.jupiter.execution.parallel.mode.classes.default = concurrent
+              junit.jupiter.execution.parallel.config.strategy = dynamic
+              junit.jupiter.execution.parallel.config.dynamic.factor = 1
             </configurationParameters>
           </properties>
         </configuration>
@@ -456,7 +454,6 @@
           <execution>
             <goals>
               <goal>helpmojo</goal>
-              <goal>descriptor</goal>
             </goals>
           </execution>
         </executions>
@@ -480,7 +477,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.0.8</version>
+            <version>5.1.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -574,18 +571,6 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <configuration>
-              <excludes combine.children="append">
-                <exclude>checkstyle:/src/it.*</exclude>
-                <exclude>checkstyle:/src/test/resources/.*</exclude>
-                <exclude>pmd:/src/it.*</exclude>
-                <exclude>pmd:/src/test/resources/.*</exclude>
-                <exclude>duplicatefinder:.*</exclude>
-                <exclude>xml:/src/test/resources/META-INF/maven/plugin.xml</exclude>
-                <exclude>dependencies:org.hamcrest:hamcrest-core:jar:1.3:compile</exclude>
-                <exclude>dependencies:org.aspectj:aspectjrt</exclude>
-              </excludes>
-            </configuration>
           </plugin>
         </plugins>
       </build>

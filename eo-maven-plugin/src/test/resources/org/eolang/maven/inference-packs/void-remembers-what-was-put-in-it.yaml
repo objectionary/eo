@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void holds whatever a caller puts in it, and the callers are known: this
+# one puts an `oak` in. That is not a promise about the next caller, only what
+# this program is seen to do, and the void's row is where it is seen from.
+eo:
+  app.eo: |
+    [] > app
+      inc oak > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/ref[@loc='Φ.oak']"

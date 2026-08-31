@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Package info classes.
@@ -22,9 +21,12 @@ import java.util.stream.Stream;
 final class PackageInfos {
 
     /**
-     * Pattern for replacing EO (object) or EO_ (package) prefixes in package.
+     * Pattern for stripping the leading EO (object) or EO_ (package) prefix
+     * off each dot-separated segment of a package, anchored to the start of
+     * the string or right after a dot so an EO occurring inside a segment's
+     * own name survives.
      */
-    private static final Pattern PACKAGE = Pattern.compile("EO_?");
+    private static final Pattern PACKAGE = Pattern.compile("(^|\\.)EO_?");
 
     /**
      * Pattern for replacing first default org.eolang package, with the dot
@@ -54,66 +56,59 @@ final class PackageInfos {
     private final Collection<Path> sources;
 
     /**
+     * The directories a transpile of this run wrote a class into.
+     */
+    private final Collection<Path> dirs;
+
+    /**
      * Constructor.
      * @param root In which directory create files
      * @param sources Where the hand-written Java sources are
+     * @param dirs Where this run's own transpiled classes landed
      */
-    PackageInfos(final Path root, final Collection<Path> sources) {
+    PackageInfos(final Path root, final Collection<Path> sources, final Collection<Path> dirs) {
         this.root = root;
         this.sources = sources;
+        this.dirs = dirs;
     }
 
     /**
-     * Create {@code package-info.java} files in all the directories under the {@link #root}.
+     * Create {@code package-info.java} files in the directories this run
+     * wrote a transpiled class into.
+     *
+     * <p>Never in every directory under the {@link #root}:
+     * {@code generated-sources} is the standard Maven convention
+     * directory, and other generators write their own output there, which
+     * a package annotation of ours has no business claiming. This is the
+     * same rule {@link JavaFiles#removeStale()} follows on the way
+     * out.</p>
+     *
      * @return Amount of created files
      * @throws IOException If fails to create a file
      */
     int create() throws IOException {
-        final int size;
-        if (Files.exists(this.root)) {
-            final List<Path> dirs;
-            try (Stream<Path> walk = Files.walk(this.root)) {
-                dirs = walk.filter(
-                    file -> Files.isDirectory(file)
-                        && !file.equals(this.root)
-                        && !file.equals(this.root.resolve("org"))
-                        && !this.taken(file)
-                    )
-                    .collect(Collectors.toList());
-            }
-            for (final Path dir : dirs) {
-                Logger.debug(
-                    this,
-                    "Created %s",
-                    new Saved(
-                        PackageInfos.content(
-                            this.root.relativize(dir)
-                                .toString()
-                                .replace(File.separator, ".")
-                        ), dir.resolve("package-info.java")
-                    ).value()
-                );
-            }
-            size = dirs.size();
-        } else {
-            Logger.info(
+        final List<Path> made = this.dirs.stream()
+            .filter(dir -> !dir.equals(this.root))
+            .filter(dir -> !dir.equals(this.root.resolve("org")))
+            .filter(dir -> !this.taken(dir))
+            .sorted()
+            .collect(Collectors.toList());
+        for (final Path dir : made) {
+            Logger.debug(
                 this,
-                "No generated sources found, skipping package-info.java creation"
+                "Created %s",
+                new Saved(
+                    PackageInfos.content(
+                        this.root.relativize(dir)
+                            .toString()
+                            .replace(File.separator, ".")
+                    ), dir.resolve("package-info.java")
+                ).value()
             );
-            size = 0;
         }
-        return size;
+        return made.size();
     }
 
-    /**
-     * Does the package of this directory already have a hand-written
-     * {@code package-info.java} in one of the {@link #sources}? Javac dies with
-     * an internal error when one package has two {@code package-info.java} and
-     * one of them carries an annotation, so the generated file gives way to the
-     * one a human wrote.
-     * @param dir The directory under the {@link #root}
-     * @return TRUE if the package already has its own package-info.java
-     */
     private boolean taken(final Path dir) {
         final Path pkg = this.root.relativize(dir);
         return this.sources.stream().anyMatch(
@@ -131,7 +126,7 @@ final class PackageInfos {
             String.format(
                 "@org.eolang.XmirPackage(\"%s\")",
                 PackageInfos.BASE.matcher(
-                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("")
+                    PackageInfos.PACKAGE.matcher(pkg).replaceAll("$1")
                 ).replaceFirst("")
             ),
             String.format("package %s;", PackageInfos.escaped(pkg))

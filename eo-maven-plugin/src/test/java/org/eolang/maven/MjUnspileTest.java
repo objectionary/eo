@@ -38,7 +38,6 @@ final class MjUnspileTest {
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void keepsSpecifiedClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
             .with("keepBinaries", Set.of("EOorg/package-info.class"));
@@ -46,43 +45,44 @@ final class MjUnspileTest {
         new Saved(
             "gen2", maven.generatedPath().resolve("EOorg/EOeolang/package-info.java")
         ).value();
-        final Path org = new Saved(
+        new Saved(
             "clz", maven.classesPath().resolve("EOorg/package-info.class")
         ).value();
-        final Path eolang = new Saved(
+        new Saved(
             "pkg", maven.classesPath().resolve("EOorg/EOeolang/package-info.class")
         ).value();
         MatcherAssert.assertThat(
             "UnspileMojo must keep files matching to keepBinaries globs",
             maven.execute(MjUnspile.class).result(),
             Matchers.allOf(
-                Matchers.hasValue(org),
-                Matchers.not(Matchers.hasValue(eolang))
+                Matchers.hasKey("target/classes/EOorg/package-info.class"),
+                Matchers.not(Matchers.hasKey("target/classes/EOorg/EOeolang/package-info.class"))
             )
         );
     }
 
     @Test
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void deletesInnerGeneratedClasses(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("outer", maven.generatedPath().resolve("org/EOnumber.java")).value();
-        final Path clazz = new Saved(
+        new Saved(
             "clz", maven.classesPath().resolve("org/EOnumber.class")
         ).value();
-        final Path inner = new Saved(
+        new Saved(
             "inner", maven.classesPath().resolve("org/EOnumber$1$2$3.class")
         ).value();
-        final Path located = new Saved(
-            "clss", maven.classesPath().resolve("org/EOnumber$EOΦorgeolanginner.class")
+        new Saved(
+            "clss", maven.classesPath().resolve("org/EOnumber$EOΦ$org$eolang$inner.class")
         ).value();
         MatcherAssert.assertThat(
             "UnspileMojo must delete inner auto generated classes",
             maven.execute(MjUnspile.class).result(),
             Matchers.allOf(
-                Matchers.not(Matchers.hasValue(clazz)),
-                Matchers.not(Matchers.hasValue(inner)),
-                Matchers.not(Matchers.hasValue(located))
+                Matchers.not(Matchers.hasKey("target/classes/org/EOnumber.class")),
+                Matchers.not(Matchers.hasKey("target/classes/org/EOnumber$1$2$3.class")),
+                Matchers.not(
+                    Matchers.hasKey("target/classes/org/EOnumber$EOΦ$org$eolang$inner.class")
+                )
             )
         );
     }

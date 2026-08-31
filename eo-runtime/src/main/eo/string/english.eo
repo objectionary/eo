@@ -1,5 +1,5 @@
 # English locale wrapping a `string` and exposing case conversion for it.
-# Being a decorator of its `s` string, an `english` object behaves like the
+# Being a decorator of its string, an `english` object behaves like the
 # string itself (`.length`, `.eq`, `.slice` and so on pass through), while
 # adding `lower` and `upper` that map the ASCII letters `A`-`Z` and `a`-`z`
 # to their counterparts one-to-one. Every other byte, including accented
@@ -10,7 +10,6 @@
 # Each conversion hoists its lower letter bound into a `mincode` constant, so
 # the bound is computed once rather than for every byte walked.
 
-+alias tuple.reduced
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
@@ -18,96 +17,68 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[s] > english
-  s > @
-  [] > lower
+[^] > english
+  ^ > @
+  [^] > lower
     string > @
-      reduced
-        s.as-bytes.array
+      ^.^.as-bytes.array.reduced
         --
-        [accum byte] >>
+        [^ accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte (as-ascii "Z")!
+                code.lte "Z".as-ascii!
                 code.gte mincode
               slice.
                 as-bytes.
                   as-i64.
                     code.plus
-                      minus.
-                        as-ascii "a"
-                        number mincode
+                      "a".as-ascii.minus (number mincode)
                 7
                 1
               byte
-          as-ascii byte > code
-    as-ascii "A" >> mincode!
-  [] > upper
+          as-ascii. > code
+            string byte
+    "A".as-ascii >> mincode!
+  [^] > upper
     string > @
-      reduced
-        s.as-bytes.array
+      ^.^.as-bytes.array.reduced
         --
-        [accum byte] >>
+        [^ accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte (as-ascii "z")!
+                code.lte "z".as-ascii!
                 code.gte mincode
               slice.
                 as-bytes.
                   as-i64.
-                    code.minus
-                      minus.
-                        number mincode
-                        as-ascii "A"
+                    code.minus ((number mincode).minus "A".as-ascii)
                 7
                 1
               byte
-          as-ascii byte > code
-    as-ascii "a" >> mincode!
+          as-ascii. > code
+            string byte
+    "a".as-ascii >> mincode!
 
-  eq. ++> can-behave-like-the-wrapped-string
-    5
-    length.
-      english "hello"
+  5.eq "hello".english.length ++> can-behave-like-the-wrapped-english-string
 
-  eq. ++> can-convert-already-lower-cased-text
-    "hello"
-    lower.
-      english "HeLlO"
+  "hello".eq "HeLlO".english.lower ++> can-convert-already-lower-cased-text
 
-  eq. ++> can-convert-already-upper-cased-text
-    "HELLO"
-    upper.
-      english "HeLlO"
+  "HELLO".eq "HeLlO".english.upper ++> can-convert-already-upper-cased-text
 
-  eq. ++> can-convert-text-to-lower-case
-    "hello"
-    lower.
-      english "HELLO"
+  "hello".eq "HELLO".english.lower ++> can-convert-text-to-lower-case
 
-  eq. ++> can-convert-text-to-upper-case
-    "HELLO"
-    upper.
-      english "hello"
+  "HELLO".eq "hello".english.upper ++> can-convert-text-to-upper-case
 
-  eq. ++> can-keep-already-lower-cased-text
-    "hello"
-    lower.
-      english "hello"
+  "hello".eq "hello".english.lower ++> can-keep-already-lower-cased-text
 
-  eq. ++> can-keep-already-upper-cased-text
-    "HELLO"
-    upper.
-      english "HELLO"
+  "HELLO".eq "HELLO".english.upper ++> can-keep-already-upper-cased-text
 
-  eq. ++> can-keep-non-ascii-letters-when-lower-casing
+  eq. ++> can-keep-non-ascii-letters-when-lower-casing-in-english
     "ÄÖÜ"
-    lower.
-      english "ÄÖÜ"
+    "ÄÖÜ".english.lower
 
-  eq. ++> can-keep-non-ascii-letters-when-upper-casing
+  eq. ++> can-keep-non-ascii-letters-when-upper-casing-in-english
     "äöü"
-    upper.
-      english "äöü"
+    "äöü".english.upper

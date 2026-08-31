@@ -19,14 +19,14 @@ public final class EOchunk$EOsize extends PhDefault implements Atom {
      * Ctor.
      */
     public EOchunk$EOsize() {
-        // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             Heaps.INSTANCE.size(
-                new Expect.Natural(Expect.at(this.take(Phi.RHO), "id")).it()
+                new Natural(Expect.at(this.take(Phi.RHO), "id")).it()
             )
         );
     }

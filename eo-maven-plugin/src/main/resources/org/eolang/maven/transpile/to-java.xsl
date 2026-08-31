@@ -31,21 +31,89 @@
       <xsl:value-of select="$TAB"/>
     </xsl:for-each>
   </xsl:function>
+  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <xsl:function name="eo:escape-char" as="xs:string">
+    <xsl:param name="c" as="xs:string"/>
+    <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+  </xsl:function>
+  <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
+  <xsl:function name="eo:identifier" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="escaped">
+      <xsl:analyze-string select="$n" regex="[^\p{{L}}\d_$]">
+        <xsl:matching-substring>
+          <xsl:value-of select="eo:escape-char(.)"/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:value-of select="."/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:variable>
+    <xsl:value-of select="$escaped"/>
+  </xsl:function>
+  <!-- Turn a name into the body of a Java string literal, escaping the backslash and the quote -->
+  <xsl:function name="eo:literal" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
+  </xsl:function>
   <!-- Get clean escaped object name -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
   </xsl:function>
-  <!-- Get object name with suffix -->
-  <xsl:function name="eo:suffix" as="xs:string">
-    <xsl:param name="s1"/>
-    <xsl:param name="s2"/>
-    <xsl:value-of select="concat(concat($s1, '_'), $s2)"/>
+  <!--
+  A deterministic digit fingerprint of a name, computed purely from the name's own
+  characters rather than from any surrounding XML node. Two over-long names sharing
+  their first 240-odd characters still disambiguate, and the same name always
+  fingerprints the same way regardless of which call site of "eo:class-name" asks,
+  so a declaration and a reference to the same over-long name never diverge (#7254).
+  Two polynomial hashes with different bases and different prime moduli, since a
+  single weighted sum of the code points cancels out for names that differ in two
+  positions only (#7633).
+  -->
+  <xsl:function name="eo:fingerprint" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="codes" select="string-to-codepoints($n)"/>
+    <xsl:value-of select="concat('_', string(eo:polynomial($codes, 131, 1000000007, 0)), '_', string(eo:polynomial($codes, 137, 998244353, 0)))"/>
+  </xsl:function>
+  <!--
+  A polynomial hash of the code points, folded left to right, so that the same
+  characters in another order hash differently.
+  -->
+  <xsl:function name="eo:polynomial" as="xs:integer">
+    <xsl:param name="codes" as="xs:integer*"/>
+    <xsl:param name="base" as="xs:integer"/>
+    <xsl:param name="modulo" as="xs:integer"/>
+    <xsl:param name="acc" as="xs:integer"/>
+    <xsl:choose>
+      <xsl:when test="empty($codes)">
+        <xsl:sequence select="$acc"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:polynomial(subsequence($codes, 2), $base, $modulo, ($acc * $base + $codes[1]) mod $modulo)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  A cut prefix with any trailing dot dropped, so the digit-starting fingerprint
+  appended after it lands inside an existing identifier segment instead of
+  starting an illegal one of its own (#7254).
+  -->
+  <xsl:function name="eo:unbroken" as="xs:string">
+    <xsl:param name="s" as="xs:string"/>
+    <xsl:choose>
+      <xsl:when test="ends-with($s, '.')">
+        <xsl:value-of select="eo:unbroken(substring($s, 1, string-length($s) - 1))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- Get class name for the object -->
   <xsl:function name="eo:class-name" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:param name="alt" as="xs:string"/>
     <xsl:variable name="parts" select="tokenize($n, '\.')"/>
     <xsl:variable name="package">
       <xsl:for-each select="$parts">
@@ -68,17 +136,32 @@
     <xsl:variable name="pre" select="concat($package, eo:clean($class))"/>
     <xsl:choose>
       <xsl:when test="string-length($pre)&gt;250">
-        <xsl:value-of select="concat(substring($pre, 1, 25), $alt)"/>
+        <xsl:variable name="fingerprint" select="eo:fingerprint($n)"/>
+        <xsl:value-of select="concat(eo:unbroken(substring($pre, 1, 250 - string-length($fingerprint))), $fingerprint)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$pre"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!--
+  Get the name of the JUnit class generated for the tests of an object. The
+  mark goes in front of the class and not after it, because every name
+  "eo:class-name" makes starts with "EO", so a name starting with "Test" is
+  one it can never make. A suffix could be made: an object called "xTest"
+  gives the same "EOxTest" the tests of an object called "x" used to give, and
+  the two files then declare one class in one package (#7762).
+  -->
+  <xsl:function name="eo:test-class-name" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:variable name="full" select="eo:class-name($n)"/>
+    <xsl:variable name="last" select="tokenize($full, '\.')[last()]"/>
+    <xsl:value-of select="concat(substring($full, 1, string-length($full) - string-length($last)), 'Test', $last)"/>
+  </xsl:function>
   <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO'))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">
@@ -120,7 +203,7 @@
           <xsl:otherwise>
             <xsl:variable name="quoted">
               <xsl:text>"</xsl:text>
-              <xsl:value-of select="$name"/>
+              <xsl:value-of select="eo:literal($name)"/>
               <xsl:text>"</xsl:text>
             </xsl:variable>
             <xsl:value-of select="$quoted"/>
@@ -132,10 +215,20 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Convert location to class name -->
+  <!--
+  Convert location to class name.
+
+  Every glyph the locator can hold maps to a distinct one here, so that two
+  locators cannot name one class - the way "_" maps to "__" and "-" to "_"
+  since #7634. The dot separating the segments used to map to nothing at all,
+  which made "x.a.bc" and "x.ab.c" one name and declared the same nested class
+  twice in one file (#7761); it maps to "$" now, which Java accepts inside an
+  identifier. A "$" the locator itself carries is escaped ahead of the join,
+  so it cannot be read back as a separator.
+  -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', replace(translate(string-join(tokenize($loc, '\.'), ''), '-', '_'), $eo:cactoos, $eo:alpha))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize(replace($loc, '\$', '\$u0024'), '\.'), '$'), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
   <!-- Get RHO variable depends on context -->
   <xsl:function name="eo:rho">
@@ -219,18 +312,42 @@
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Class. Entry point -->
+  <!--
+  Class. Entry point.
+
+  The Java of a class is assembled from thousands of small "xsl:text" and
+  "xsl:value-of" pieces by the templates below, and it must reach "<java>" as
+  one text node. Each piece is handed to the result tree as it is produced,
+  and that tree is a DOM, where merging a piece into the text node already
+  there copies everything accumulated so far - so writing the pieces straight
+  into "<java>" was quadratic in the size of the generated Java. The biggest
+  class of "eo-runtime" ends up at ~485k characters, and paying for all of it
+  again on every piece made this one pass four fifths of the whole transpile
+  train (#6674).
+
+  Collecting the pieces in a variable first costs nothing, because a temporary
+  tree is Saxon's own, where appending text grows a buffer instead of copying
+  one, and the single "xsl:value-of" then hands the DOM the finished string in
+  one piece. Both bodies are pure text, so a variable holds exactly what the
+  element would have held.
+  -->
   <xsl:template match="class">
     <xsl:copy>
       <xsl:apply-templates select="@*"/>
       <tests>
-        <xsl:call-template name="commonclass"/>
-        <xsl:apply-templates select="." mode="testing"/>
+        <xsl:variable name="code">
+          <xsl:call-template name="commonclass"/>
+          <xsl:apply-templates select="." mode="testing"/>
+        </xsl:variable>
+        <xsl:value-of select="$code"/>
       </tests>
       <xsl:if test="not(@skip-java)">
         <java>
-          <xsl:call-template name="commonclass"/>
-          <xsl:apply-templates select="." mode="body"/>
+          <xsl:variable name="code">
+            <xsl:call-template name="commonclass"/>
+            <xsl:apply-templates select="." mode="body"/>
+          </xsl:variable>
+          <xsl:value-of select="$code"/>
         </java>
       </xsl:if>
     </xsl:copy>
@@ -242,12 +359,12 @@
     </xsl:attribute>
     <xsl:attribute name="java-name">
       <xsl:text>org.eolang.</xsl:text>
-      <xsl:variable name="pkg" select="/object/metas/meta[head='package']/part[1]"/>
+      <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
       <xsl:if test="$pkg">
         <xsl:value-of select="eo:package-name($pkg)"/>
         <xsl:text>.</xsl:text>
       </xsl:if>
-      <xsl:value-of select="eo:class-name(., eo:suffix(../@line, ../@pos))"/>
+      <xsl:value-of select="eo:class-name(.)"/>
     </xsl:attribute>
   </xsl:template>
   <!-- Class body -->
@@ -255,28 +372,37 @@
     <xsl:apply-templates select="xmir"/>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>@XmirObject(name = "</xsl:text>
-    <xsl:value-of select="@name"/>
+    <xsl:value-of select="eo:literal(@name)"/>
     <xsl:text>", oname = "</xsl:text>
     <xsl:choose>
       <xsl:when test="@original-name">
-        <xsl:value-of select="@original-name"/>
+        <xsl:value-of select="eo:literal(@original-name)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="@name"/>
+        <xsl:value-of select="eo:literal(@name)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:value-of select="eo:class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
-        <xsl:text> extends PhOnce {</xsl:text>
+        <xsl:text> extends PhOnce</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat(' extends ', $phiDefaultClass, ' {')"/>
+        <xsl:value-of select="concat(' extends ', $phiDefaultClass)"/>
       </xsl:otherwise>
     </xsl:choose>
+    <!--
+    A top-level formation purify.xsl marked @pure implements this marker, so
+    that PhPackage, which loads it through reflection and never sees @pure
+    itself, can still wrap the instance in PhSticky.
+    -->
+    <xsl:if test="@pure='true'">
+      <xsl:text> implements Pure</xsl:text>
+    </xsl:if>
+    <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="nested"/>
@@ -323,7 +449,7 @@
   </xsl:template>
   <!-- Class constructor -->
   <xsl:template match="class" mode="ctors">
-    <xsl:variable name="class" select="eo:class-name(@name, eo:suffix(@line, @pos))"/>
+    <xsl:variable name="class" select="eo:class-name(@name)"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
@@ -384,7 +510,7 @@
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>.add("</xsl:text>
-      <xsl:value-of select="$name"/>
+      <xsl:value-of select="eo:literal($name)"/>
       <xsl:text>", </xsl:text>
       <xsl:apply-templates select="void|bound|atom|abstract">
         <xsl:with-param name="indent" select="$indent"/>
@@ -398,9 +524,17 @@
   <!-- Void attribute -->
   <xsl:template match="void">
     <xsl:param name="name"/>
-    <xsl:text>new AtVoid("</xsl:text>
-    <xsl:value-of select="$name"/>
-    <xsl:text>")</xsl:text>
+    <xsl:choose>
+      <!-- A receiver is held by reference, so it survives a copy untouched -->
+      <xsl:when test="$name=$eo:rho">
+        <xsl:text>new AtRho()</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>new AtVoid("</xsl:text>
+        <xsl:value-of select="eo:literal($name)"/>
+        <xsl:text>")</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <!--
   Atom as attribute.
@@ -420,7 +554,7 @@
     <xsl:variable name="class">
       <xsl:value-of select="$parent"/>
       <xsl:value-of select="'$'"/>
-      <xsl:value-of select="eo:class-name($name, eo:suffix($argument/@line, $argument/@pos))"/>
+      <xsl:value-of select="eo:class-name($name)"/>
     </xsl:variable>
     <xsl:variable name="variable">
       <xsl:if test="$context!='this'">
@@ -456,7 +590,16 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Abstract object as attribute -->
+  <!--
+  Abstract object as attribute. A formation that purify.xsl marked with
+  @pure is returned wrapped in PhSticky, so that at run time it remembers
+  the results of its own dataization (see #5165). A pure top-level class
+  and a pure anonymous formation are wrapped the same way, see the "class"
+  template's "implements Pure" and the "Anonymous abstract object" template
+  below. A formation that recursion-to-loop.xsl marked with @loop is
+  returned wrapped in PhLoop, so that at run time its tail self-calls run
+  as a loop (see #5783).
+  -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
     <xsl:param name="name"/>
@@ -479,7 +622,7 @@
     <xsl:value-of select="concat(' = new ', $phiDefaultClass, '(')"/>
     <xsl:if test="@loc and not(contains(@loc, '🌵'))">
       <xsl:text>"</xsl:text>
-      <xsl:value-of select="@loc"/>
+      <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
     </xsl:if>
     <xsl:text>);</xsl:text>
@@ -488,7 +631,7 @@
       <xsl:with-param name="parent">
         <xsl:value-of select="$parent"/>
         <xsl:text>$</xsl:text>
-        <xsl:value-of select="eo:class-name($name, eo:suffix(@line, @pos))"/>
+        <xsl:value-of select="eo:class-name($name)"/>
       </xsl:with-param>
       <xsl:with-param name="context" select="$ctx"/>
     </xsl:apply-templates>
@@ -498,7 +641,22 @@
     </xsl:apply-templates>
     <xsl:value-of select="eo:eol($indent + 2)"/>
     <xsl:text>return </xsl:text>
-    <xsl:value-of select="$ctx"/>
+    <xsl:if test="@loop='true'">
+      <xsl:text>new PhLoop(</xsl:text>
+    </xsl:if>
+    <xsl:choose>
+      <xsl:when test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+        <xsl:value-of select="$ctx"/>
+        <xsl:text>)</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$ctx"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="@loop='true'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol($indent + 1)"/>
     <xsl:text>}</xsl:text>
@@ -534,24 +692,42 @@
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>}))</xsl:text>
   </xsl:template>
-  <!-- Anonymous abstract object -->
+  <!--
+  Anonymous abstract object. A formation that purify.xsl marked with @pure
+  is returned wrapped in PhSticky, the same way a named nested formation
+  already is in the "abstract" template above.
+  -->
   <xsl:template match="o[not(@base) and not(@name)]" mode="object">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
     <xsl:value-of select="eo:eol($indent)"/>
-    <xsl:text>PhDefault </xsl:text>
+    <xsl:choose>
+      <xsl:when test="o and @pure='true'">
+        <xsl:text>Phi </xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>PhDefault </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:value-of select="$name"/>
     <xsl:text> = </xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>new PhSticky(</xsl:text>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
         <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+        <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat('new ', $phiDefaultClass)"/>
+        <xsl:value-of select="concat('new ', $phiDefaultClass, '()')"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>();</xsl:text>
+    <xsl:if test="o and @pure='true'">
+      <xsl:text>)</xsl:text>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
   </xsl:template>
   <!-- Attribute body: regular object, not method -->
   <xsl:template match="o[@base and @base!='' and not(starts-with(@base, '.'))]" mode="object">
@@ -582,6 +758,10 @@
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="rho" select="$rho"/>
+    </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="again">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
@@ -619,10 +799,30 @@
       <xsl:with-param name="skip" select="1"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="again">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="located">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+  </xsl:template>
+  <!--
+  A self-call in a tail position of a looped formation, marked by
+  "recursion-to-loop.xsl": wrapped into PhAgain, so that forcing it hands
+  the next copy to the PhLoop around the formation instead of nesting.
+  -->
+  <xsl:template match="*" mode="again">
+    <xsl:param name="indent"/>
+    <xsl:param name="name"/>
+    <xsl:if test="@again='true'">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhAgain(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- Location of object -->
   <xsl:template match="*" mode="located">
@@ -634,34 +834,39 @@
       <xsl:text> = new PhSafe(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="$object-name"/>
+      <xsl:value-of select="eo:literal($object-name)"/>
       <xsl:text>", </xsl:text>
       <xsl:value-of select="@line"/>
       <xsl:text>, </xsl:text>
       <xsl:value-of select="@pos"/>
       <xsl:text>, </xsl:text>
       <xsl:text>"</xsl:text>
-      <xsl:value-of select="@loc"/>
+      <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="eo:escape-plus(@original-name)"/>
+      <xsl:value-of select="eo:literal(eo:escape-plus(@original-name))"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
-    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+'))">
+    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+')) and not(contains(@loc, '.-'))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="@loc"/>
-      <xsl:text>", </xsl:text>
+      <xsl:value-of select="eo:literal(@loc)"/>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>
-      <xsl:text>, </xsl:text>
+      <xsl:text>:</xsl:text>
       <xsl:value-of select="@pos"/>
-      <xsl:text>);</xsl:text>
+      <xsl:text>");</xsl:text>
     </xsl:if>
   </xsl:template>
   <!-- Application -->
+  <!--
+  Application of an object to its arguments. One that purify.xsl marked with
+  @pure is wrapped in PhSticky, so that the bytes it works out are remembered
+  instead of being worked out on every read of it.
+  -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
@@ -682,7 +887,11 @@
     <xsl:if test="$inners">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
-      <xsl:text> = new PhApplication(</xsl:text>
+      <xsl:text> = </xsl:text>
+      <xsl:if test="@pure='true'">
+        <xsl:text>new PhSticky(</xsl:text>
+      </xsl:if>
+      <xsl:text>new PhApplication(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:for-each select="$inners">
         <xsl:text>, new Bind(</xsl:text>
@@ -699,7 +908,11 @@
         <xsl:value-of select="position()"/>
         <xsl:text>)</xsl:text>
       </xsl:for-each>
-      <xsl:text>);</xsl:text>
+      <xsl:text>)</xsl:text>
+      <xsl:if test="@pure='true'">
+        <xsl:text>)</xsl:text>
+      </xsl:if>
+      <xsl:text>;</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
@@ -730,20 +943,20 @@
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>@XmirObject(name = "</xsl:text>
-    <xsl:value-of select="@name"/>
+    <xsl:value-of select="eo:literal(@name)"/>
     <xsl:text>", oname = "</xsl:text>
     <xsl:choose>
       <xsl:when test="@original-name">
-        <xsl:value-of select="@original-name"/>
+        <xsl:value-of select="eo:literal(@original-name)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="@name"/>
+        <xsl:value-of select="eo:literal(@name)"/>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text>")</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>public final class </xsl:text>
-    <xsl:value-of select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:value-of select="eo:test-class-name(@name)"/>
     <xsl:choose>
       <xsl:when test="@base">
         <xsl:text> extends PhOnce {</xsl:text>
@@ -761,7 +974,7 @@
   </xsl:template>
   <!-- Testing ctors. -->
   <xsl:template match="class" mode="testing-ctors">
-    <xsl:variable name="class" select="concat(eo:class-name(@name, eo:suffix(@line, @pos)), 'Test')"/>
+    <xsl:variable name="class" select="eo:test-class-name(@name)"/>
     <xsl:text>/**</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * Ctor.</xsl:text>
@@ -822,7 +1035,7 @@
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>.add("</xsl:text>
-      <xsl:value-of select="eo:escape-plus($name)"/>
+      <xsl:value-of select="eo:literal(eo:escape-plus($name))"/>
       <xsl:text>", </xsl:text>
       <xsl:apply-templates select="void|bound|atom|abstract">
         <xsl:with-param name="indent" select="$indent"/>
@@ -844,7 +1057,7 @@
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="replace(eo:escape-plus(@name), '-', '_')"/>
+        <xsl:value-of select="eo:identifier(replace(eo:escape-plus(@name), '-', '_'))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
@@ -885,7 +1098,7 @@
     <xsl:text>package org.eolang</xsl:text>
     <xsl:if test="/object/metas/meta[head='package']">
       <xsl:text>.</xsl:text>
-      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package']/tail)"/>
+      <xsl:value-of select="eo:package-name(/object/metas/meta[head='package'][1]/tail)"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

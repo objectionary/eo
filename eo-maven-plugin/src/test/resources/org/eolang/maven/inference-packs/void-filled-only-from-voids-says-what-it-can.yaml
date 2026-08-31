@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The only caller `inc` has passes on a void of its own, so nothing that has
+# ever been put in is an object of the program. That is thinner than knowing a
+# forma and thicker than knowing nothing, and it is written down: whoever
+# reads the tables learns that the two voids are filled together.
+eo:
+  one.eo: |
+    [y] > one
+      inc y > @
+  inc.eo: |
+    [x] > inc
+      x > @
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/var[@id='Φ.one.y']"

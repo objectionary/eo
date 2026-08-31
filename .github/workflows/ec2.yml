@@ -1,0 +1,159 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: ec2
+'on':
+  push:
+    branches:
+      - master
+concurrency:
+  group: ec2-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  wait:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    steps:
+      - run: sleep 3600
+  start-instance:
+    needs: wait
+    runs-on: ubuntu-24.04
+    outputs:
+      label: ${{ steps.start.outputs.label }}
+      ec2-instance-id: ${{ steps.start.outputs.ec2-instance-id }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - id: start
+        uses: machulav/ec2-github-runner@v2
+        with:
+          mode: start
+          aws-resource-tags: '[{"Key":"Name","Value":"eo-runtime"}]'
+          github-token: ${{ secrets.AWS_PAT }}
+          ec2-image-id: ${{ secrets.AWS_AMI }}
+          ec2-instance-type: c8i.8xlarge
+          subnet-id: ${{ secrets.AWS_SUBNET }}
+          security-group-id: ${{ secrets.AWS_SGROUP }}
+  runtime:
+    needs: start-instance
+    runs-on: ${{ needs.start-instance.outputs.label }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 23
+      - run: |
+          set -x
+          curl --silent --show-error --location --output "${RUNNER_TEMP}/maven.tgz" \
+            "https://archive.apache.org/dist/maven/maven-3/${MAVEN}/binaries/apache-maven-${MAVEN}-bin.tar.gz"
+          tar xzf "${RUNNER_TEMP}/maven.tgz" --directory "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/apache-maven-${MAVEN}/bin" >> "${GITHUB_PATH}"
+        env:
+          MAVEN: 3.9.16
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ubuntu-jdk-23-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ubuntu-jdk-23-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=4G' '-Dheap-size=48G' -Psite -Pjacoco clean install site
+  terminate-instance:
+    needs:
+      - start-instance
+      - runtime
+    runs-on: ubuntu-24.04
+    if: ${{ always() && needs.start-instance.outputs.ec2-instance-id != '' }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - uses: machulav/ec2-github-runner@v2
+        with:
+          mode: stop
+          github-token: ${{ secrets.AWS_PAT }}
+          label: ${{ needs.start-instance.outputs.label }}
+          ec2-instance-id: ${{ needs.start-instance.outputs.ec2-instance-id }}
+  telegram:
+    needs:
+      - start-instance
+      - runtime
+    runs-on: ubuntu-24.04
+    if: ${{ failure() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) | select(.name != "wait") ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "⚠️ EC2-based build of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
+          disable_web_page_preview: true
+          format: markdown
+  recovered:
+    needs:
+      - start-instance
+      - runtime
+    runs-on: ubuntu-24.04
+    if: ${{ success() }}
+    permissions:
+      actions: read
+    steps:
+      - id: elapsed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+            --jq '[ .jobs[] | select(.completed_at) | select(.name != "wait") ]
+              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
+              | [ ., 0 ] | max')
+          echo "This run took ${seconds} seconds"
+          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
+      - id: previous
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          for _ in 1 2 3 4 5 6; do
+            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/ec2.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
+              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
+                then [ .workflow_runs[]
+                  | select(.id < ${{ github.run_id }})
+                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
+                else "stale" end')
+            [ "${state}" = 'stale' ] || break
+            sleep 10
+          done
+          echo "The previous run of this workflow: ${state}"
+          if [ "${state}" = 'failure' ]; then
+            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
+          fi
+      - if: ${{ steps.previous.outputs.broken == 'yes' }}
+        uses: appleboy/telegram-action@master
+        with:
+          to: -1004371404002
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: "🍓 EC2-based build of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
+          disable_web_page_preview: true
+          format: markdown

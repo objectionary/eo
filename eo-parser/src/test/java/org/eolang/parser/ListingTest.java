@@ -4,12 +4,12 @@
  */
 package org.eolang.parser;
 
-import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -35,36 +35,36 @@ final class ListingTest {
     }
 
     @Test
-    void dropsCharactersForbiddenInXml() {
+    void keepsSourceVerbatimWithCrlf() {
+        final String source = String.join(
+            String.valueOf((char) 13).concat(String.valueOf((char) 10)),
+            "[] > app",
+            "  \"a < b & c > d\" > x",
+            ""
+        );
         MatcherAssert.assertThat(
-            "characters that XML text nodes can't hold must be dropped",
-            ListingTest.listing(
-                String.format(
-                    "[] > x%c%c%c%c",
-                    (char) 0x01,
-                    (char) 0x07,
-                    (char) 0x1F,
-                    (char) 0x7F
-                )
-            ),
-            Matchers.equalTo("[] > x")
+            "the text of <listing> must preserve CRLF verbatim, regardless of platform",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
         );
     }
 
     @Test
-    void doesNotThrowExceptionOnEmptySource() {
-        Assertions.assertDoesNotThrow(
-            () -> ListingTest.listing(""),
-            "an empty source must not break the <listing> element"
+    void omitsListingForEmptySource() {
+        MatcherAssert.assertThat(
+            "an empty source must produce no <listing>, since the schema forbids an empty one",
+            ListingTest.xmir("").nodes("/object/listing"),
+            Matchers.empty()
         );
     }
 
     @Test
-    void buildsListingForEmptySource() {
+    void omitsListingForFullyForbiddenSource() {
         MatcherAssert.assertThat(
-            "An empty source must produce an empty listing",
-            ListingTest.listing(""),
-            Matchers.emptyString()
+            "a source made only of forbidden characters must leave no <listing> behind",
+            ListingTest.xmir(String.format("%c%c", (char) 0x01, (char) 0x7F))
+                .nodes("/object/listing"),
+            Matchers.empty()
         );
     }
 
@@ -88,37 +88,87 @@ final class ListingTest {
         }
     )
     void removesForbiddenCharacters(final int codepoint) {
-        final String source = new String(Character.toChars(codepoint));
         MatcherAssert.assertThat(
             String.format(
-                "Character '%s' (%s code) must be removed from EO listing", source, codepoint
+                "the character with code %s is not removed, or its neighbours went with it",
+                codepoint
             ),
-            ListingTest.listing(source),
+            ListingTest.listing(
+                String.format("a%sb", new String(Character.toChars(codepoint)))
+            ),
+            Matchers.equalTo("ab")
+        );
+    }
+
+    @Test
+    void emptiesSourceOfForbiddenCharactersOnly() {
+        MatcherAssert.assertThat(
+            "a source holding nothing but forbidden characters leaves a listing that is not empty",
+            ListingTest.listing(
+                String.format("%c%c%c%c", (char) 0x00, (char) 0x0B, (char) 0x9F, (char) 0xFFFF)
+            ),
             Matchers.emptyString()
         );
     }
 
-    /**
-     * Sources to embed into {@code <listing>}.
-     * @return Stream of sources
-     */
+    @Test
+    void keepsSupplementaryCharacters() {
+        final String source = String.format(
+            "[] > x%s", new String(Character.toChars(0x1F600))
+        );
+        MatcherAssert.assertThat(
+            "a character outside the Basic Multilingual Plane is not kept in the listing",
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0x09, 0x0A, 0x0D, 0x20, 0x85, 0xA0, 0xFFFD})
+    void keepsCharactersOutsideRestrictedRanges(final int codepoint) {
+        final String source = String.format("x%cy", codepoint);
+        MatcherAssert.assertThat(
+            String.format(
+                "Character with code %s falls between the restricted ranges and is not dropped",
+                codepoint
+            ),
+            ListingTest.listing(source),
+            Matchers.equalTo(source)
+        );
+    }
+
+    @Test
+    void leavesCursorOnObjectForTheNextSibling() {
+        MatcherAssert.assertThat(
+            "what the caller appends after <listing> must be its sibling under /object",
+            new Xembler(
+                new Directives()
+                    .add("object").up()
+                    .append(new Listing("[] > foo"))
+                    .add("metas")
+            ).xmlQuietly(),
+            XhtmlMatchers.hasXPath("/object/metas")
+        );
+    }
+
     private static Stream<Arguments> sources() {
+        final String eol = String.valueOf((char) 10);
         return Stream.of(
             "[] > foo",
             String.join(
-                System.lineSeparator(),
+                eol,
                 "[] > app",
                 "  \"a < b & c > d\" > x",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                eol,
                 "# Comment with 'quotes' and \"double quotes\".",
                 "[] > bar",
                 ""
             ),
             String.join(
-                System.lineSeparator(),
+                eol,
                 "[] > x",
                 "  Q.io.stdout \"守规矩\" > @",
                 ""
@@ -126,18 +176,15 @@ final class ListingTest {
         ).map(Arguments::of);
     }
 
-    /**
-     * Read the text of {@code /object/listing} built for the given source.
-     * @param source The EO source text
-     * @return The text of the {@code listing} element
-     */
     private static String listing(final String source) {
-        return new Xnav(
-            new XMLDocument(
-                new Xembler(
-                    new Directives().add("object").up().append(new Listing(source))
-                ).xmlQuietly()
-            ).inner()
-        ).element("object").element("listing").text().orElse("");
+        return String.join("", ListingTest.xmir(source).xpath("/object/listing/text()"));
+    }
+
+    private static XML xmir(final String source) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives().add("object").up().append(new Listing(source))
+            ).xmlQuietly()
+        );
     }
 }

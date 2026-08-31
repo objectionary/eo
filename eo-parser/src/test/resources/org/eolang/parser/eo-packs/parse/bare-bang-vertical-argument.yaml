@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6562: the horizontal `a b! > x` form was already accepted (#5821), but the
+# same `!` written on a vertical argument line with no name suffix
+# (`b` alone, indented under `a > x`) was rejected as "trailing garbage after
+# expression" — Suffix.parse had no branch for a bare `!` with nothing after
+# it. A bare `!` must parse the same way `> name!`'s marker does, feeding the
+# same const-to-dataized rewrite.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@base='.as-bytes' and o[@base='Φ.dataized' and o[@base='b']]]
+  - //o[@name='x']/o
+input: |
+  [] > main
+    a > x
+      b!

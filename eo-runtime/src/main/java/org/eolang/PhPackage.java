@@ -11,6 +11,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A package object, coming from {@link Phi}.
+ *
+ * <p>A package is a namespace, so its attributes are the objects the
+ * package holds and nothing else: the only attribute a caller may bind
+ * into one is {@link Phi#RHO}, the receiver a dispatch sets. Everything
+ * else a package answers it loads by name, caching it under the fully
+ * qualified name {@link #take(String)} looks it up by, which is not the
+ * name the caller writes — so an object bound under a plain attribute
+ * name could never be handed back, and {@link #put(String, Phi)} says so
+ * rather than storing it out of reach.</p>
+ *
  * @since 0.22
  */
 final class PhPackage implements Phi {
@@ -55,8 +65,8 @@ final class PhPackage implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.objects.containsKey(Phi.RHO);
+    public boolean needsRho() {
+        return false;
     }
 
     @Override
@@ -75,19 +85,16 @@ final class PhPackage implements Phi {
                 );
             }
         } else if (this.objects.containsKey(fqn)) {
-            taken = PhPackage.dispatched(this.objects.get(fqn));
+            taken = this.objects.get(fqn).copy();
         } else if (name.contains(".")) {
-            final String[] parts = name.split("\\.");
+            final String[] parts = name.split("\\.", -1);
             Phi next = this.take(parts[0]);
             for (int idx = 1; idx < parts.length; ++idx) {
                 next = next.take(parts[idx]);
             }
             taken = next;
         } else {
-            final Phi loaded = this.loadPhi(fqn);
-            loaded.put(Phi.RHO, this);
-            this.put(fqn, loaded);
-            taken = this.take(name);
+            taken = this.objects.computeIfAbsent(fqn, this::bound).copy();
         }
         return taken;
     }
@@ -101,6 +108,12 @@ final class PhPackage implements Phi {
 
     @Override
     public void put(final String name, final Phi object) {
+        if (!name.equals(Phi.RHO)) {
+            throw new ExFailure(
+                "Can't #put(\"%s\", %s) to package object \"%s\", only %s is accepted",
+                name, object, this.pkg, Phi.RHO
+            );
+        }
         this.objects.put(name, object);
     }
 
@@ -119,64 +132,51 @@ final class PhPackage implements Phi {
         return this.pkg;
     }
 
-    /**
-     * Dispatch a cached object: a nested package stays as is, a plain value is
-     * copied so its owner can bind it.
-     * @param cached The cached object
-     * @return The object to hand out
-     */
-    private static Phi dispatched(final Phi cached) {
-        final Phi result;
-        if (cached instanceof PhNest) {
-            result = cached;
-        } else {
-            result = cached.copy();
+    private Phi bound(final String fqn) {
+        final Phi loaded = this.loadPhi(fqn);
+        if (loaded.needsRho()) {
+            loaded.put(Phi.RHO, this);
         }
-        return result;
+        return loaded;
     }
 
-    /**
-     * Load phi object by package name from ClassLoader.
-     * @param fqn FQN of the EO object
-     * @return Phi
-     */
-    @SuppressWarnings("PMD.PreserveStackTrace")
     private Phi loadPhi(final String fqn) {
         final String target = new JavaPath(fqn).toString();
         final String pinfo = String.format("%s.package-info", new JavaPath(fqn).pkg());
         Phi loaded;
         try {
-            Class.forName(pinfo);
-            try {
-                Class.forName(target);
-                loaded = new PhNest(fqn);
-            } catch (final ClassNotFoundException absent) {
-                loaded = new PhPackage(fqn);
+            loaded = Class.forName(target)
+                .asSubclass(Phi.class)
+                .getConstructor()
+                .newInstance();
+            if (loaded instanceof Pure) {
+                loaded = new PhSticky(loaded);
             }
-        } catch (final ClassNotFoundException pckg) {
+        } catch (final ClassNotFoundException phi) {
             try {
-                loaded = (Phi) Class.forName(target)
-                    .getConstructor()
-                    .newInstance();
-            } catch (final ClassNotFoundException phi) {
-                throw new ExFailure(
+                Class.forName(pinfo);
+                loaded = new PhPackage(fqn);
+            } catch (final ClassNotFoundException pckg) {
+                final ExFailure failure = new ExFailure(
                     String.format(
                         "Couldn't find object '%s' because there's no class '%s' or package-info class: '%s', at least one of them must exist",
                         fqn, target, pinfo
                     ),
-                    phi
+                    pckg
                 );
-            } catch (final NoSuchMethodException | InvocationTargetException
-                | InstantiationException | IllegalAccessException ex
-            ) {
-                throw new ExFailure(
-                    String.format(
-                        "Couldn't build Java object \"%s\" in EO package \"%s\"",
-                        target, this.pkg
-                    ),
-                    ex
-                );
+                failure.addSuppressed(phi);
+                throw failure;
             }
+        } catch (final NoSuchMethodException | InvocationTargetException
+            | InstantiationException | IllegalAccessException ex
+        ) {
+            throw new ExFailure(
+                String.format(
+                    "Couldn't build Java object \"%s\" in EO package \"%s\"",
+                    target, this.pkg
+                ),
+                ex
+            );
         }
         return loaded;
     }

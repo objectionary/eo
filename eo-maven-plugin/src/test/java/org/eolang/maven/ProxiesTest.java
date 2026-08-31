@@ -9,6 +9,7 @@ import java.net.Proxy;
 import org.apache.maven.settings.Settings;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,8 +22,8 @@ final class ProxiesTest {
     void translatesActiveProxy() {
         MatcherAssert.assertThat(
             "Active proxy of settings must keep its address",
-            new Proxies(ProxiesTest.settings("prox.eolang.org", 8431, true)).value(),
-            Matchers.arrayContaining(
+            ProxiesTest.only(ProxiesTest.settings("prox.eolang.org", 8431, true)).address(),
+            Matchers.equalTo(
                 new Proxy(
                     Proxy.Type.HTTP,
                     InetSocketAddress.createUnresolved("prox.eolang.org", 8431)
@@ -49,13 +50,25 @@ final class ProxiesTest {
         );
     }
 
-    /**
-     * Maven settings with a single proxy in them.
-     * @param host Host of the proxy
-     * @param port Port of the proxy
-     * @param active Is the proxy active?
-     * @return Settings with the proxy
-     */
+    @Test
+    void refusesAProxyThatSpeaksSomethingElse() {
+        final Settings settings = ProxiesTest.settings("socks.eolang.org", 1080, true);
+        settings.getProxies().get(0).setProtocol("socks5");
+        MatcherAssert.assertThat(
+            "the protocol must be named, since only an HTTP proxy can be used here",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Proxies(settings).value(),
+                "a proxy nothing can talk to must not be taken for one that works"
+            ).getMessage(),
+            Matchers.containsString("socks5")
+        );
+    }
+
+    private static MvnProxy only(final Settings settings) {
+        return new Proxies(settings).value()[0];
+    }
+
     private static Settings settings(final String host, final int port, final boolean active) {
         final org.apache.maven.settings.Proxy proxy = new org.apache.maven.settings.Proxy();
         proxy.setHost(host);

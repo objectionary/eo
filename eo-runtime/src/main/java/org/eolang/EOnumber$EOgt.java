@@ -19,14 +19,14 @@ public final class EOnumber$EOgt extends PhDefault implements Atom {
      * Ctor.
      */
     public EOnumber$EOgt() {
-        super(new Attrs(new Attr("x", new AtVoid("x"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x"))));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Expect.Number(Expect.at(this, Phi.RHO)).it()
-                > new Expect.Number(Expect.at(this, "x")).it()
+            new Numeric(Expect.at(this, Phi.RHO)).it()
+                > new Numeric(Expect.at(this, "x")).it()
         );
     }
 }

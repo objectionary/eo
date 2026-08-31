@@ -18,9 +18,9 @@ import java.util.List;
  * <li>{@link Kind#VMETHOD} when this {@code .method} has 0 horizontal
  * args — the chain stays open for further {@code .method} continuations
  * or deeper-indent vapplication children.</li>
- * <li>{@link Kind#VMETHOD_WITH_HARGS} when this {@code .method}
+ * <li>{@link Kind#VMETHOD_HARGS} when this {@code .method}
  * carries one or more horizontal args — the chain becomes
- * {@link Openness#HORIZONTAL_COMPLETED}.</li>
+ * {@link Openness#HCOMPLETED}.</li>
  * </ul>
  *
  * <p>Rejection paths owned here:</p>
@@ -28,8 +28,13 @@ import java.util.List;
  * <ul>
  * <li>R-5.2.3(b) — same-indent {@code .method} after a horizontally
  * completed predecessor.</li>
+ * <li>R-3.8.3 — {@code .method} as the receiver of a bare reversed
+ * dispatch, which may not begin with a dot.</li>
  * <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
  * <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
+ * <li>R-6.6.4 — a {@code .method} continuation after a link that
+ * carries an inline binding, which the continuation would leave on a
+ * link the chain no longer ends with.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -69,33 +74,30 @@ final class LnMethod implements Line {
         final Value method = tokens.readMethodName();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         if (outer != null) {
-            Bindings.checkReceiverUpgrade(stack.below(), this.span);
-            if (stack.below() != null) {
-                stack.below().upgradeArgBinding();
-            }
+            final Level under = stack.below();
+            Bindings.checkReceiverUpgrade(under, this.span);
+            under.upgradeArgBinding();
         }
-        emit.close();
+        stack.seal();
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),
             ".".concat(method.raw()),
             this.span.line(), method.pos() - 1
         );
         emit.method(fragile);
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
@@ -108,11 +110,14 @@ final class LnMethod implements Line {
             kind = Kind.VMETHOD;
             openness = Openness.OPEN;
         } else {
-            kind = Kind.VMETHOD_WITH_HARGS;
-            openness = Openness.HORIZONTAL_COMPLETED;
+            kind = Kind.VMETHOD_HARGS;
+            openness = Openness.HCOMPLETED;
         }
         top.become(kind);
         top.close(openness);
+        if (outer != null) {
+            top.tie();
+        }
         if (suffix.present()) {
             top.name(suffix.label());
         }
@@ -120,40 +125,41 @@ final class LnMethod implements Line {
         globals.markEmitted();
     }
 
-    /**
-     * Validate the line has a predecessor to attach to and that the
-     * predecessor's chain is not already horizontally completed —
-     * R-5.2.5 / R-5.2.10 / R-5.2.3(b).
-     * @param stack Indent stack
-     */
     private void precheck(final Stack stack) {
+        if (!stack.empty() && stack.top().kind() == Kind.BARE_REVERSED
+            && !stack.top().taken()
+            && stack.top().indent() < this.span.indent()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "reversed dispatch receiver must not begin with dot"
+            );
+        }
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation has no expression to attach to"
             );
         }
-        if (stack.top().openness() == Openness.HORIZONTAL_COMPLETED) {
+        if (stack.top().openness() == Openness.HCOMPLETED) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI_FORMATION) {
+        if (stack.top().kind() == Kind.ONLY_PHI) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
             );
         }
+        if (stack.top().tied()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "inline binding allowed only on the last method in a chain"
+            );
+        }
     }
 
-    /**
-     * Build a token stream and verify the line opens a dispatch — a
-     * plain {@code .} or the fragile {@code ?.} (R-3.5). The cursor
-     * stays on the operator's first character; callers seek past it
-     * after recording the column.
-     * @return Tokens positioned on the leading dispatch operator
-     */
     private Tokens dottedTokens() {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         if (tokens.atEnd() || !tokens.dispatchAhead()) {

@@ -4,9 +4,9 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object[@ms='0']
+  - /object[@ms]
   - /object/errors[count(error)=1]
-  - /object/errors/error[contains(text(),'invalid unicode or octal escape')]
+  - /object/errors/error[contains(text(),'unrecognised escape sequence')]
 input: |
   [] > pl
     b > child

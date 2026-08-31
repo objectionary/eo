@@ -61,10 +61,6 @@ public final class VerboseBytesAsString implements Supplier<String> {
         return result;
     }
 
-    /**
-     * Convert data to printable hex string.
-     * @return String
-     */
     private String toHex() {
         final char[] chars = new char[this.data.length * 2];
         for (int idx = 0; idx < this.data.length; ++idx) {
@@ -75,10 +71,6 @@ public final class VerboseBytesAsString implements Supplier<String> {
         return new String(chars).replaceAll("(.{8})(?=.)", "$1-");
     }
 
-    /**
-     * Escape Java string.
-     * @return Escaped one
-     */
     private String escaped() {
         final char[] chars = new String(this.data, StandardCharsets.UTF_8).toCharArray();
         final StringBuilder out = new StringBuilder(chars.length);

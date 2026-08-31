@@ -93,9 +93,9 @@ final class ExpectTest {
                     i -> {
                         throw new ExFailure("Some error in operation");
                     }
-                    )
-                    .otherwise("must be converted to something")
-                    .it(),
+                )
+                .otherwise("must be converted to something")
+                .it(),
                 "fails on 'that' because of some internal error"
             ).getMessage(),
             Matchers.equalTo("attr must be converted to something")
@@ -116,9 +116,9 @@ final class ExpectTest {
                             throw new ExFailure("Can't parse to integer", ex);
                         }
                     }
-                    )
-                    .otherwise("must be an integer")
-                    .it(),
+                )
+                .otherwise("must be an integer")
+                .it(),
                 "fails on 'that' because can not parse"
             ).getMessage(),
             Matchers.equalTo("attr must be an integer")
@@ -146,13 +146,13 @@ final class ExpectTest {
     @Test
     void failsInTransformingToNumberForNotNumber() {
         MatcherAssert.assertThat(
-            "inner class Number working throws error if attr is not a number",
+            "inner class Numeric working throws error if attr is not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Number(
+                () -> new Numeric(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -171,10 +171,10 @@ final class ExpectTest {
             "inner class Integer throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -193,10 +193,10 @@ final class ExpectTest {
             "inner class Integer throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
                         ),
@@ -215,10 +215,10 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not a number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(true)
                         ),
@@ -237,10 +237,10 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for not an integer number",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(42.23)
                         ),
@@ -259,10 +259,10 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for a negative integer",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(-42)
                         ),
@@ -281,10 +281,10 @@ final class ExpectTest {
             "inner class Integer throws error for a number outside int range, instead of saturating",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Int(
+                () -> new Int(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(1.0e15)
                         ),
@@ -303,10 +303,10 @@ final class ExpectTest {
             "inner class NonNegativeInteger throws error for a number outside int range, instead of saturating",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new Expect.Natural(
+                () -> new Natural(
                     Expect.at(
                         new PhApplication(
-                            new PhDefault(),
+                            this.formation(),
                             Phi.RHO,
                             new Data.ToPhi(1.0e15)
                         ),
@@ -375,5 +375,9 @@ final class ExpectTest {
             ).getMessage(),
             Matchers.equalTo("the 'ρ' attribute must be a number")
         );
+    }
+
+    private Phi formation() {
+        return new PhDefault(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 }

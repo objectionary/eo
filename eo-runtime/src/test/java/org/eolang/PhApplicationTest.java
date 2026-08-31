@@ -26,7 +26,29 @@ final class PhApplicationTest {
                 new Bind(0, new PhDefault(new byte[] {(byte) 0x01})),
                 new Bind(1, new PhDefault(new byte[] {(byte) 0x02}))
             ).φTerm(),
-            Matchers.equalTo("[](0->[D> 01],1->[D> 02])")
+            Matchers.equalTo("[](0->[D> 01-],1->[D> 02-])")
+        );
+    }
+
+    @Test
+    void keepsANamedBindingOfANumberStructural() {
+        MatcherAssert.assertThat(
+            "a named binding is no literal and must render as the application it is, but it read as a number",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                "wrong",
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(
+                        new byte[] {
+                            (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
+                            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                        }
+                    )
+                )
+            ).φTerm(),
+            Matchers.startsWith("Φ.number(wrong->")
         );
     }
 
@@ -116,11 +138,58 @@ final class PhApplicationTest {
     }
 
     @Test
+    void escapesStringLiteralCharacters() {
+        MatcherAssert.assertThat(
+            "String φ-term must escape EO string literal characters",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(
+                        new byte[] {'a', '"', '\\', '\b', '\f', '\n', '\r', '\t'}
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("\"a\\\"\\\\\\b\\f\\n\\r\\t\"")
+        );
+    }
+
+    @Test
+    void escapesControlCharactersOutsideTheSevenHandwritten() {
+        MatcherAssert.assertThat(
+            "String φ-term must escape control characters like ESC and DEL, but it didn't",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(new byte[] {0x1B, 0x7F})
+                )
+            ).φTerm(),
+            Matchers.equalTo("\"\\u001b\\u007f\"")
+        );
+    }
+
+    @Test
+    void rendersInvalidUtfAsBytes() {
+        MatcherAssert.assertThat(
+            "Invalid UTF-8 must not be rendered as a misleading string literal",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(new byte[] {(byte) 0xC3, (byte) 0x28})
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.string(0->Φ.bytes(0->[D> C3-28]))")
+        );
+    }
+
+    @Test
     void rendersPositionalBindingAsTerm() {
         MatcherAssert.assertThat(
             "PhApplication must render positional binding in φ-term, but it didnt",
             new PhApplication(new PhDefault(), 0, new PhDefault(new byte[] {(byte) 0x2A})).φTerm(),
-            Matchers.equalTo("[](0->[D> 2A])")
+            Matchers.equalTo("[](0->[D> 2A-])")
         );
     }
 
@@ -131,7 +200,7 @@ final class PhApplicationTest {
             new PhApplication(
                 new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})
             ).φTerm(),
-            Matchers.equalTo("[](x->[D> 2A])")
+            Matchers.equalTo("[](x->[D> 2A-])")
         );
     }
 

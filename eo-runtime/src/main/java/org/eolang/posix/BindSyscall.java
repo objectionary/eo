@@ -5,10 +5,10 @@
 package org.eolang.posix;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.SockaddrIn;
+import org.eolang.Sockaddr;
 import org.eolang.Syscall;
 
 /**
@@ -37,14 +37,9 @@ public final class BindSyscall implements Syscall {
             0,
             new Data.ToPhi(
                 CStdLib.INSTANCE.bind(
-                    new Dataized(params[0]).asNumber().intValue(),
-                    new SockaddrIn(
-                        new Dataized(params[1].take("family")).take(Short.class),
-                        new Dataized(params[1].take("port")).take(Short.class),
-                        new Dataized(params[1].take("address")).take(Integer.class),
-                        new Dataized(params[1].take("padding")).take()
-                    ),
-                    new Dataized(params[2]).asNumber().intValue()
+                    new Int("the 'descriptor' argument of bind", params[0]).it(),
+                    new Sockaddr(params[1]).it(),
+                    new Int("the 'length' argument of bind", params[2]).it()
                 )
             )
         );

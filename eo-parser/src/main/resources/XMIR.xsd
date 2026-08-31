@@ -64,7 +64,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="α[0-9]+|φ|[a-z+-]\S*|λ"/>
+      <xs:pattern value="α[0-9]+|φ|ρ|[a-z+-]\S*|λ"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">
@@ -77,7 +77,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="⊥|∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*"/>
+      <xs:pattern value="∅|\.(ρ|φ|ξ|[a-z][^\s.]*|α[0-9]*)|([Φξ⊥])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="signature">
@@ -90,7 +90,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="[A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*"/>
+      <xs:pattern value="[A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*|[a-z][^\s.]*(\.[a-z][^\s.]*)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="type-anno">
@@ -116,7 +116,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*"/>
+      <xs:pattern value="Φ(\.(ρ|φ|λ|α[0-9]+|[a-z+-][^\s.]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">
@@ -196,6 +196,18 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="fragile" type="empty">
+      <xs:annotation>
+        <xs:appinfo>The marker of a fragile dispatch "?." (R-3.5.3a)</xs:appinfo>
+        <xs:documentation>
+          Set on the dispatch node that a "?." link parses into, in a method
+          chain as well as in a reversed dispatch, and says that the receiver
+          may be ⊥ and the dispatch is to answer ⊥ rather than terminate.
+          A regular "." dispatch straight after such a link is reported by
+          the "fragile-dispatch" check.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="loc" type="locator"/>
     <xs:attribute name="atom" type="signature">
       <xs:annotation>
@@ -224,6 +236,20 @@
           Used on a void callback attribute of an atom (the "/{…}" argument list, R-3.4.8).
           Holds the space-separated types (concrete FQNs or generic variables A-F) of the
           arguments the atom supplies to that branch.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="pure" type="xs:boolean">
+      <xs:annotation>
+        <xs:appinfo>The marker of a formation that is safe to cache (#5165)</xs:appinfo>
+        <xs:documentation>
+          Set by "purify.xsl" on a formation whose voids the program only ever
+          fills with data, whose body copies nothing from the root of the
+          program besides the literals, and which is not an atom. It says
+          "pure when the inputs are data" and nothing stronger: at run time
+          the object still asks the actual arguments, and the context where
+          the body reads it, what they are before it keeps the result of
+          dataizing itself.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -285,6 +311,19 @@
               <xs:enumeration value="warning"/>
             </xs:restriction>
           </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="lossy" type="empty">
+          <xs:annotation>
+            <xs:appinfo>The error came from a recovery that dropped source content</xs:appinfo>
+            <xs:documentation>
+              Present when the parser recovered from this error by discarding
+              the whole construct it was building (e.g. a binding line), as
+              opposed to a purely cosmetic or informational error that leaves
+              every construct intact. A consumer deciding whether it is safe
+              to trust the recovered tree should treat this attribute, not
+              severity alone, as the sign that part of the source was lost.
+            </xs:documentation>
+          </xs:annotation>
         </xs:attribute>
       </xs:extension>
     </xs:simpleContent>

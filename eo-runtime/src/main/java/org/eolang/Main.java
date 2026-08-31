@@ -9,16 +9,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Bridge between Java CLI and EO.
@@ -58,6 +59,16 @@ public final class Main {
     private static final Logger EOLOG = Logger.getLogger("org.eolang");
 
     /**
+     * Handler for EO runtime logs.
+     */
+    private static final Handler HANDLER = Main.handler();
+
+    /**
+     * Lock guarding the EO runtime logger configuration.
+     */
+    private static final ReentrantLock LOCK = new ReentrantLock();
+
+    /**
      * Not for instantiation.
      */
     private Main() {
@@ -70,18 +81,21 @@ public final class Main {
      */
     public static void main(final String... args) throws Exception {
         Main.setup();
-        final List<String> opts = Arrays.stream(args)
-            .filter(Main::isOption)
-            .collect(Collectors.toList());
+        final List<String> opts = new ArrayList<>(0);
+        final List<String> arguments = new ArrayList<>(0);
+        for (final String arg : args) {
+            if (arguments.isEmpty() && Main.isOption(arg)) {
+                opts.add(arg);
+            } else {
+                arguments.add(arg);
+            }
+        }
         for (final String opt : opts) {
             if (Main.parse(opt)) {
                 return;
             }
         }
         Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
-        final List<String> arguments = Arrays.stream(args)
-            .filter(Main::isArgument)
-            .collect(Collectors.toList());
         if (arguments.isEmpty()) {
             throw new ExFailure(
                 "The name of an object is expected as a command line argument"
@@ -95,29 +109,10 @@ public final class Main {
         }
     }
 
-    /**
-     * Is it an argument?
-     * @param arg The arg
-     * @return TRUE if it's an argument
-     */
-    private static boolean isArgument(final String arg) {
-        return !Main.isOption(arg);
-    }
-
-    /**
-     * Is it an option?
-     * @param arg The arg
-     * @return TRUE if it's an option
-     */
     private static boolean isOption(final String arg) {
         return arg.startsWith("--");
     }
 
-    /**
-     * Report exception.
-     * @param opts The options
-     * @param thr  The cause
-     */
     @SuppressWarnings("PMD.AvoidPrintStackTrace")
     private static void report(final List<String> opts, final Throwable thr) {
         if (opts.contains(Main.VERBOSE)) {
@@ -126,10 +121,6 @@ public final class Main {
         Main.print(thr);
     }
 
-    /**
-     * Print exception line.
-     * @param thr The cause
-     */
     private static void print(final Throwable thr) {
         Main.LOGGER.log(Level.SEVERE, thr.getMessage());
         final Throwable cause = thr.getCause();
@@ -138,10 +129,21 @@ public final class Main {
         }
     }
 
-    /**
-     * Setup logs.
-     */
     private static void setup() {
+        Main.LOCK.lock();
+        try {
+            if (Arrays.stream(Main.EOLOG.getHandlers()).noneMatch(
+                handler -> Objects.equals(handler, Main.HANDLER)
+            )) {
+                Main.EOLOG.addHandler(Main.HANDLER);
+            }
+        } finally {
+            Main.LOCK.unlock();
+        }
+        Main.EOLOG.setUseParentHandlers(false);
+    }
+
+    private static Handler handler() {
         final Handler handler = new ConsoleHandler();
         handler.setFormatter(
             new Formatter() {
@@ -151,16 +153,9 @@ public final class Main {
                 }
             }
         );
-        Main.EOLOG.addHandler(handler);
-        Main.EOLOG.setUseParentHandlers(false);
+        return handler;
     }
 
-    /**
-     * Process one option.
-     * @param opt The option
-     * @return True if it's time to exit
-     * @throws IOException If fails
-     */
     private static boolean parse(final String opt) throws IOException {
         if (Main.VERBOSE.equals(opt)) {
             Main.EOLOG.setLevel(Level.FINE);
@@ -191,10 +186,6 @@ public final class Main {
         return exit;
     }
 
-    /**
-     * Run this opts.
-     * @param opts The opts left
-     */
     private static void run(final List<String> opts) {
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
@@ -223,11 +214,6 @@ public final class Main {
         );
     }
 
-    /**
-     * Read the version from resources and return it.
-     * @return Version string
-     * @throws IOException If fails
-     */
     private static String ver() throws IOException {
         try (
             BufferedReader input =

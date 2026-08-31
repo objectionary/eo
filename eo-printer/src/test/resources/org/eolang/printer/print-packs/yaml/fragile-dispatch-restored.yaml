@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6560: the parser marks a fragile `?.` dispatch with `@fragile=""` on the
+# XMIR node, but the printer had no branch for that attribute and silently
+# dropped it, turning every fragile dispatch into a plain one on the next
+# `eo:format -Deo.autoFix`. The fix marks the last dot of the printed head
+# with `?.` whenever `@fragile` is set.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    foo?.first > x

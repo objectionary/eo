@@ -15,22 +15,21 @@ package org.eolang.parser;
  * {@link Openness} states; the kind name itself never regresses.</p>
  *
  * <p>The three kinds in the horizontally-completed set
- * ({@link #HAPPLICATION}, {@link #REVERSED_WITH_HARGS},
- * {@link #VMETHOD_WITH_HARGS}) never receive deeper children and cannot
- * be wrapped by a same-indent {@code .method}.
- * {@link #horizontallyCompleted()} is the single source of truth for
- * that set; R-5.2.3 and R-6.1.1 read it. An {@link #ONLY_PHI_FORMATION}
- * with a bare (zero-hargs) φ is instead {@link Openness#OPEN}: its φ
- * accepts deeper-indent vertical arguments (§4.5).</p>
+ * ({@link #HAPPLICATION}, {@link #REVERSED_HARGS}, {@link #VMETHOD_HARGS})
+ * never receive deeper children and cannot be wrapped by a same-indent
+ * {@code .method}. {@link Openness} is the single source of truth for
+ * that set: each kind starts out on the stack with the {@link Openness}
+ * its constructor picks. An {@link #ONLY_PHI} with a bare (zero-hargs)
+ * φ is instead {@link Openness#OPEN}: its φ accepts deeper-indent
+ * vertical arguments (§4.5).</p>
  *
  * <p>The {@link #TOP_LEVEL} sentinel is not a real expression kind — it is
  * the {@code parent_kind} for entries pushed at indent 0 (R-5.2.11), used
  * by close-time checks to recognise top-level naming requirements
- * (R-5.3.1). *
+ * (R-5.3.1).</p>
  *
  * @since 0.1
  */
-@SuppressWarnings("PMD.LongVariable")
 enum Kind {
 
     /**
@@ -68,7 +67,7 @@ enum Kind {
      * Reversed dispatch with horizontal args: {@code name. arg1 arg2}.
      * Horizontally completed.
      */
-    REVERSED_WITH_HARGS,
+    REVERSED_HARGS,
 
     /**
      * Compact tuple {@code head *N}.
@@ -80,7 +79,7 @@ enum Kind {
      * completed when the φ (its {@code expr}) carries horizontal args;
      * otherwise open, so its φ accepts deeper-indent vertical arguments.
      */
-    ONLY_PHI_FORMATION,
+    ONLY_PHI,
 
     /**
      * Multi-line vertical application: head + deeper-indent argument block.
@@ -97,7 +96,7 @@ enum Kind {
      * Vertical method chain whose last link carries horizontal args.
      * Horizontally completed.
      */
-    VMETHOD_WITH_HARGS,
+    VMETHOD_HARGS,
 
     /**
      * Pipe application {@code | args} — applies arguments to the
@@ -114,22 +113,17 @@ enum Kind {
      * Vertical void attribute {@code ? > name} (R-3.4.7). A closed leaf
      * that must precede every non-void child of its formation.
      */
-    VOID;
+    VOID,
 
     /**
-     * Whether this kind is in the horizontally-completed set.
-     *
-     * <p>Members of this set cannot be extended by deeper-indent children
-     * nor wrapped by a same-indent {@code .method}. Single source of truth
-     * for R-5.2.3 and R-6.1.1.</p>
-     *
-     * @return True iff this kind is horizontally completed
+     * The identity object {@code I} standing alone as a line head
+     * (§3.16) — a formation that binds nothing but its own void, so a
+     * pipe may apply arguments to it (R-3.14.2). It is not a
+     * {@link #formation()}: its deeper-indent children are arguments
+     * applied to the identity, not bindings, exactly as under
+     * {@link #HEAD}.
      */
-    boolean horizontallyCompleted() {
-        return this == HAPPLICATION
-            || this == REVERSED_WITH_HARGS
-            || this == VMETHOD_WITH_HARGS;
-    }
+    IDENTITY_OBJECT;
 
     /**
      * Whether this kind opens a formation — a fresh naming scope whose
@@ -144,16 +138,16 @@ enum Kind {
      * @return True iff this kind is a formation
      */
     boolean formation() {
-        return this == BARE_FORMATION || this == ONLY_PHI_FORMATION;
+        return this == BARE_FORMATION || this == ONLY_PHI;
     }
 
     /**
      * Whether a pipe application (§3.14) may attach to a predecessor of
-     * this kind — a formation or another pipe. Read by {@link LnPipe} to
-     * enforce R-3.14.2 / R-5.2.4a.
+     * this kind — a formation, an identity object, or another pipe.
+     * Read by {@link LnPipe} to enforce R-3.14.2 / R-5.2.4a.
      * @return True iff this kind may be a pipe's predecessor
      */
     boolean pipeable() {
-        return this.formation() || this == PIPE_APPLICATION;
+        return this.formation() || this == PIPE_APPLICATION || this == IDENTITY_OBJECT;
     }
 }

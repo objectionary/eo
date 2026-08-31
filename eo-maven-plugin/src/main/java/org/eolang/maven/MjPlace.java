@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * copy to the {@code target/classes} directory.
  *
  * <p>Input directory is {@link MjResolve#DIR}.
- * Output directory is {@link MjPlace#targetDir}/classes.</p>
+ * Output directory is {@code targetDir}/classes.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.11
@@ -34,13 +34,15 @@ public final class MjPlace extends MjSafe {
 
     @Override
     public void exec() throws IOException {
-        new Placing(
-            this.placedTojos,
-            this.targetDir.toPath().resolve(MjResolve.DIR),
-            this.classesDir.toPath(),
-            this.placeBinaries,
-            this.skipBinaries,
-            this.rewriteBinaries
-        ).exec();
+        try (TjsPlaced placed = this.placed()) {
+            new Placing(
+                placed,
+                this.targetDir.toPath().resolve(MjResolve.DIR),
+                this.classesDir.toPath(),
+                this.placeBinaries,
+                this.skipBinaries,
+                this.rewriteBinaries
+            ).exec();
+        }
     }
 }

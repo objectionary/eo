@@ -11,23 +11,31 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[list func] > eachi
-  reducedi > @
-    list
+[^ func] > eachi
+  if. > [^ rest index] >> rec
+    rest.length.eq 0
     true
-    seq * > [acc item index] >>
-      acc
-      func item index
+    if.
+      rest.length.eq 1
+      ^.func rest.head index
+      seq *
+        ^.func rest.head index
+        ^.rec
+          rest.tail
+          index.plus 1
+  | > @
+    ^.reversed
+    0
 
   ++> can-iterate-over-a-list-with-indexes
     eq. > @
       malloc.for
         0
         [m]
-          eachi > @
+          eachi. > @
             * 1 2 3
-            m.put > [item index] >>
+            ^.m.put > [^ item index] >>
               plus.
-                m.as-number.plus item
+                ^.m.as-number.plus item
                 index
       9

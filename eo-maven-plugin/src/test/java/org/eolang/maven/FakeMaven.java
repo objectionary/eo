@@ -12,27 +12,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.concurrent.NotThreadSafe;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.scalar.Synced;
+import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
@@ -119,6 +114,15 @@ final class FakeMaven {
      * @return The same maven instance
      */
     FakeMaven with(final String param, final Object value) {
+        final Set<String> known = new MojoFields().all();
+        if (!known.isEmpty() && !known.contains(param)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "No mojo of the plugin declares a parameter named '%s', so setting it would change nothing",
+                    param
+                )
+            );
+        }
         this.params.put(param, value);
         return this;
     }
@@ -126,7 +130,7 @@ final class FakeMaven {
     /**
      * Executes mojos in the workspace.
      * You can use utility classes to run predefined maven pipelines:
-     * - {@link org.eolang.maven.FakeMaven.Parse} to parse eo code
+     * - {@link org.eolang.maven.PpParse} to parse eo code
      * - see other inner classes below.
      * @param mojo Several mojos to execute
      * @return Workspace after executing Mojo
@@ -172,8 +176,8 @@ final class FakeMaven {
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("ignoreVersionConflicts", false);
-            this.params.putIfAbsent("central", new FakeMaven.DummyCentral());
+            this.params.putIfAbsent("ignoreConflicts", false);
+            this.params.putIfAbsent("central", new DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent(
                 "placed",
@@ -193,6 +197,9 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "tables", this.targetPath().resolve("6-inference").toFile()
             );
+            this.params.putIfAbsent(
+                "pages", this.targetPath().getParent().resolve("site/inference").toFile()
+            );
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
@@ -203,6 +210,10 @@ final class FakeMaven {
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classesDir", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
+            this.params.putIfAbsent("attach", true);
+            this.params.putIfAbsent("tests", true);
+            this.params.putIfAbsent("strict", true);
+            this.params.putIfAbsent("included", new SetOf<>("**.eo"));
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -417,11 +428,6 @@ final class FakeMaven {
         return suffix;
     }
 
-    /**
-     * Ensures the map of allowed params for the Mojo.
-     * @param mojo Mojo
-     * @return Map of params that applicable to the Mojo
-     */
     private Map<String, ?> allowedParams(final Class<? extends AbstractMojo> mojo) {
         final Map<String, Object> res = new HashMap<>();
         final Set<String> allowed = FakeMaven.mojoFields(mojo, new HashSet<>());
@@ -433,27 +439,14 @@ final class FakeMaven {
         return res;
     }
 
-    /**
-     * Returns the current scope that was set.
-     * @return The current scope
-     */
     private String scope() {
         return String.valueOf(this.params.getOrDefault("scope", "compile"));
     }
 
-    /**
-     * The id of the program in tojos file.
-     * @param id Number of the program
-     * @return String id
-     */
     private static String tojoId(final int id) {
         return String.format("foo.x.main%s", FakeMaven.suffix(id));
     }
 
-    /**
-     * Plugin descriptor with test version.
-     * @return Plugin descriptor
-     */
     private static PluginDescriptor pluginDescriptor() {
         final PluginDescriptor descriptor = new PluginDescriptor();
         descriptor.setGroupId("org.eolang");
@@ -462,12 +455,6 @@ final class FakeMaven {
         return descriptor;
     }
 
-    /**
-     * Looks for all declared fields for mojo and its parents.
-     * @param mojo Mojo or mojo parent
-     * @param fields Already collected fields
-     * @return All mojo and mojo parent fields
-     */
     private static Set<String> mojoFields(final Class<?> mojo, final Set<String> fields) {
         final Set<String> res;
         if (mojo == null) {
@@ -477,180 +464,5 @@ final class FakeMaven {
             res = mojoFields(mojo.getSuperclass(), fields);
         }
         return res;
-    }
-
-    /**
-     * Parse full pipeline.
-     * @since 0.28.12
-     */
-    static final class Parse implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Collections.<Class<? extends AbstractMojo>>singletonList(
-                MjParse.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Check errors and warnings.
-     * @since 0.31.0
-     */
-    static final class Lint implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjLint.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Transpile full pipeline.
-     * @since 0.29.0
-     */
-    static final class Transpile implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjLint.class,
-                MjTranspile.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Resolve all eo dependencies.
-     * @since 0.29.0
-     */
-    static final class Resolve implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjResolve.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Plan all eo dependencies full pipeline.
-     * @since 0.29.0
-     */
-    static final class Place implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjResolve.class,
-                MjPlace.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Single register phase.
-     * @since 0.1.0
-     */
-    static final class Register implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Collections.<Class<? extends AbstractMojo>>singletonList(
-                MjRegister.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Probe full pipeline.
-     * @since 0.29
-     */
-    static final class Probe implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjProbe.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Pull a full pipeline.
-     * @since 0.31
-     */
-    static final class Pull implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Arrays.<Class<? extends AbstractMojo>>asList(
-                MjParse.class,
-                MjProbe.class,
-                MjPull.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * Printing pipeline.
-     * @since 0.33.0
-     */
-    static final class Print implements Iterable<Class<? extends AbstractMojo>> {
-
-        @Override
-        public Iterator<Class<? extends AbstractMojo>> iterator() {
-            return Collections.<Class<? extends AbstractMojo>>singletonList(
-                MjPrint.class
-            ).iterator();
-        }
-    }
-
-    /**
-     * The class for emulating of Maven Central repository.
-     * DummyCentral creates an empty dependency jar file under the path.
-     * @since 0.28.11
-     */
-    private static final class DummyCentral implements BiConsumer<Dependency, Path> {
-
-        @Override
-        public void accept(final Dependency dependency, final Path path) {
-            try {
-                Files.createDirectories(path);
-                Files.createFile(path.resolve(DummyCentral.className(dependency)));
-            } catch (final IOException ex) {
-                throw new IllegalStateException(
-                    String.format("Can't save '%s' to '%s'", dependency, path),
-                    ex
-                );
-            }
-        }
-
-        /**
-         * Dependency class name.
-         * @param dependency Dependency
-         * @return Class file name
-         */
-        private static String className(final Dependency dependency) {
-            final List<String> parts = new ArrayList<>(3);
-            if (dependency.getArtifactId() != null && !dependency.getArtifactId().isEmpty()) {
-                parts.add(dependency.getArtifactId());
-            }
-            if (dependency.getVersion() != null && !dependency.getVersion().isEmpty()) {
-                parts.add(dependency.getVersion());
-            }
-            if (dependency.getClassifier() != null && !dependency.getClassifier().isEmpty()) {
-                parts.add(dependency.getClassifier());
-            }
-            return String.format("%s.class", String.join("-", parts));
-        }
     }
 }

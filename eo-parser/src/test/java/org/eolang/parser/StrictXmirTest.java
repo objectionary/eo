@@ -13,6 +13,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -84,16 +87,17 @@ final class StrictXmirTest {
     @Test
     @ExtendWith(MktmpResolver.class)
     @ExtendWith(WeAreOnline.class)
-    void refersToAbsoluteFileName(@Mktmp final Path tmp) {
+    void refersToAbsoluteFileName(@Mktmp final Path tmp) throws Exception {
         MatcherAssert.assertThat(
             "XSD location must be absolute",
             Paths.get(
-                new Xnav(
-                    new StrictXmir(
-                        StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
-                    ).inner()
-                ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
-                    .substring("file:///".length())
+                new URI(
+                    new Xnav(
+                        new StrictXmir(
+                            StrictXmirTest.xmir("https://www.eolang.org/XMIR.xsd"), tmp
+                        ).inner()
+                    ).element("object").attribute("xsi:noNamespaceSchemaLocation").text().get()
+                )
             ).isAbsolute(),
             Matchers.is(true)
         );
@@ -114,6 +118,31 @@ final class StrictXmirTest {
             )::inner,
             "validation should pass as normal"
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'Φ.chunk.read.λ', true",
+        "'Φ.set.+can-append-a-new-item.φ.ρ.ρ.α0', true",
+        "'Φ.foo.bar', true",
+        "'Φ', true",
+        "'Φ.a.WRONG', false",
+        "'Φ.a.λEXTRA', false"
+    })
+    void validatesLocatorAttribute(final String loc, final boolean valid) {
+        final XML xml = new StrictXmir(StrictXmirTest.xmirWithLocator(loc));
+        if (valid) {
+            Assertions.assertDoesNotThrow(
+                xml::inner,
+                String.format("locator '%s' should have been accepted, but wasn't", loc)
+            );
+        } else {
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                xml::inner,
+                String.format("locator '%s' should have been rejected, but wasn't", loc)
+            );
+        }
     }
 
     @Test
@@ -211,18 +240,10 @@ final class StrictXmirTest {
         );
     }
 
-    /**
-     * The EO version, as the manifest records it.
-     * @return Version
-     */
     private static String version() {
         return Manifests.read("EO-Version");
     }
 
-    /**
-     * Make a simple XMIR.
-     * @param schema The schema
-     */
     private static XML xmir(final String schema) {
         return new XMLDocument(
             new Xembler(
@@ -234,6 +255,24 @@ final class StrictXmirTest {
                         schema
                     )
                     .add("o")
+                    .up()
+            ).xmlQuietly()
+        );
+    }
+
+    private static XML xmirWithLocator(final String loc) {
+        return new XMLDocument(
+            new Xembler(
+                new Directives()
+                    .append(new DrProgram())
+                    .xpath("/object")
+                    .attr("author", "noname").attr(
+                        "noNamespaceSchemaLocation xsi http://www.w3.org/2001/XMLSchema-instance",
+                        String.format(
+                            "https://www.eolang.org/xsd/XMIR-%s.xsd", StrictXmirTest.version()
+                        )
+                    )
+                    .add("o").attr("loc", loc)
                     .up()
             ).xmlQuietly()
         );

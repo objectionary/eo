@@ -10,10 +10,13 @@ name: actionlint
   pull_request:
     branches:
       - master
+concurrency:
+  group: actionlint-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   actionlint:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: reviewdog/action-actionlint@v1.73.1
+      - uses: reviewdog/action-actionlint@v1.73.2

@@ -37,7 +37,7 @@ import java.util.List;
  * <p>This iteration accepts identifier and root heads (with optional
  * chains). Reversed-dispatch heads ({@code joined. *1 > sixth}) are
  * dispatched via the reversed-classifier path and are not yet
- * supported. *
+ * supported.</p>
  *
  * @since 0.1
  */
@@ -61,10 +61,10 @@ final class LnCompactTuple implements Line {
         final Tokens tokens = new Tokens(this.span.body(), this.span);
         final Value head = tokens.readValue();
         final List<MethodChain> chain;
-        if (head.kind() == Value.Kind.STAR) {
-            chain = new java.util.ArrayList<>(0);
-        } else {
+        if (head.chainable()) {
             chain = tokens.readChain();
+        } else {
+            chain = new java.util.ArrayList<>(0);
         }
         if (tokens.atEnd() || tokens.current() != ' ') {
             throw new ParseError(
@@ -86,10 +86,11 @@ final class LnCompactTuple implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
+        globals.seal(emit, this.span);
         final Level level = this.transition(stack, suffix);
         level.compact(count);
         globals.clearBlanks();
@@ -97,27 +98,13 @@ final class LnCompactTuple implements Line {
         new ChainEmission(emit, this.span, head, chain, suffix).run();
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     * @return The pushed/replaced level
-     */
     private Level transition(final Stack stack, final Suffix suffix) {
         return new Transition(stack, this.span)
-            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, suffix.named());
+            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, new Admission(suffix.named(), suffix.test()));
     }
 
-    /**
-     * Read the {@code N} count after {@code *}. Defaults to 0 when
-     * absent.
-     * @param tokens Token reader (cursor just past the {@code *})
-     * @param span Source span, for a ParseError on overflow
-     * @return The N value
-     */
     private static int readCount(final Tokens tokens, final Span span) {
         long count = 0;
-        boolean any = false;
         final int start = tokens.cursor();
         while (!tokens.atEnd()) {
             final char glyph = tokens.current();
@@ -132,10 +119,12 @@ final class LnCompactTuple implements Line {
                 );
             }
             tokens.seek(tokens.cursor() + 1);
-            any = true;
         }
-        if (!any) {
-            count = 0;
+        if (tokens.cursor() - start > 1 && tokens.body().charAt(start) == '0') {
+            throw new ParseError(
+                span.line(), span.indent() + start,
+                "integer literal must not have leading zeros"
+            );
         }
         return (int) count;
     }

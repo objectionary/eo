@@ -19,7 +19,7 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOconcat() {
-        super(new Attrs(new Attr("b", new AtVoid("b"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b", new AtVoid("b"))));
     }
 
     @Override
@@ -28,10 +28,8 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
         final byte[] provided = new Dataized(this.take("b")).take();
         if ((long) current.length + provided.length > Integer.MAX_VALUE) {
             throw new ExFailure(
-                String.format(
-                    "Can't concatenate bytes of size %d with bytes of size %d: too big",
-                    current.length, provided.length
-                )
+                "Can't concatenate bytes of size %d with bytes of size %d: too big",
+                current.length, provided.length
             );
         }
         final byte[] dest = new byte[current.length + provided.length];

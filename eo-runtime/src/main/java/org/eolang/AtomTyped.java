@@ -17,7 +17,7 @@ package org.eolang;
  * <p>The check is <em>opt-in</em>, controlled by the {@code eo.typing} system
  * property (default {@code false}). It is off by default because an atom with
  * an error-branch returns a union — the declared forma <em>or</em> a caller
- * fallback or bottom — that a single declared forma cannot express, so the
+ * fallback or a terminator — that a single declared forma cannot express, so the
  * check would reject valid fallbacks. Enable it (e.g. {@code -Deo.typing=true})
  * to verify atom return types where no error-branches are used.</p>
  *
@@ -67,15 +67,6 @@ public final class AtomTyped implements Atom {
         return computed;
     }
 
-    /**
-     * Whether the declared type is a generic type variable — a single
-     * letter {@code A}–{@code F} (§3.10.10). A generic return depends on
-     * the atom's arguments, so a plain forma-equality check cannot verify
-     * it; such an atom is left unchecked, exactly like one that declares
-     * no type.
-     * @param declared The declared type
-     * @return True when the declared type is a generic type variable
-     */
     private static boolean generic(final String declared) {
         return declared.matches("[A-F]");
     }

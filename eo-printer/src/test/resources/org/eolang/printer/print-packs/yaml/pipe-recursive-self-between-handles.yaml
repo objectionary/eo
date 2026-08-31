@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Two self-referential (recursive) file-local handles ("[] &gt;&gt; bar" and
+# "[] &gt;&gt; zoo", R-3.10.12) stand in one body, with an applied reference to
+# the first one sitting between them. That reference belongs to the
+# reference-below shape (#5837), so it must fold to the compact pipe
+# continuation "| &gt; x" right under its own handle; the second handle, which
+# it does not resolve to, must not disturb it. Both the tag-in-place template
+# and the relocate-from-above template (#5848) of "restore-local-names" used to
+# match such a reference, since the latter only checked that SOME recursive
+# handle followed, and Saxon picked the relocating one, dropping the pipe.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    [] >> bar
+      bbb bar > z
+    bar > x
+    [] >> zoo
+      kkk zoo > w
+    zoo > y
+printed: |
+  [] > foo
+    [] >> bar
+      bbb ^.bar > z
+    | > x
+    [] >> zoo
+      kkk ^.zoo > w
+    | > y

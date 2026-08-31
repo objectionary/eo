@@ -25,10 +25,15 @@ final class EOmallocEOofTest {
                 dummy
             )
         ).take();
+        MatcherAssert.assertThat(
+            "the dummy must capture the identifier of the allocated block",
+            dummy.id,
+            Matchers.greaterThanOrEqualTo(0.0d)
+        );
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempt to free already freed memory, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should throw an exception on attempt to reach already freed memory, but it didn't"
         );
     }
 
@@ -45,10 +50,15 @@ final class EOmallocEOofTest {
             ).take(),
             "Should throw an exception on attempting to use ErrorDummy, but it didn't"
         );
+        MatcherAssert.assertThat(
+            "the dummy must capture the identifier of the allocated block before failing",
+            dummy.id,
+            Matchers.greaterThanOrEqualTo(0.0d)
+        );
         Assertions.assertThrows(
             ExAbstract.class,
-            () -> Heaps.INSTANCE.free((int) dummy.id),
-            "Heaps should throw an exception on attempting to free already freed memory after failure, but it didn't"
+            () -> Heaps.INSTANCE.size((int) dummy.id),
+            "Heaps should throw an exception on attempting to reach already freed memory after failure, but it didn't"
         );
     }
 
@@ -90,12 +100,6 @@ final class EOmallocEOofTest {
         );
     }
 
-    /**
-     * Allocated data.
-     * @param obj Init object
-     * @param dummy Dummy as scope
-     * @return Malloc object
-     */
     private static Phi allocated(final Phi obj, final Phi dummy) {
         final Phi malloc = Phi.Φ.take("malloc").take("for").copy();
         malloc.put(0, obj);
@@ -116,10 +120,11 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (20 lines)
+         * @checkstyle ConstructorsCodeFreeCheck (21 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
+            this.id = -1.0d;
             this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
@@ -149,10 +154,11 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
-         * @checkstyle ConstructorsCodeFreeCheck (25 lines)
+         * @checkstyle ConstructorsCodeFreeCheck (26 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
+            this.id = -1.0d;
             this.add("m", new AtVoid("m"));
             this.add(
                 Phi.PHI,
@@ -160,7 +166,7 @@ final class EOmallocEOofTest {
                     this,
                     rho -> {
                         this.id = new Dataized(
-                            this.take("m").take("id")
+                            rho.take("m").take("id")
                         ).asNumber();
                         return new PhApplication(
                             Phi.Φ.take("error").copy(),

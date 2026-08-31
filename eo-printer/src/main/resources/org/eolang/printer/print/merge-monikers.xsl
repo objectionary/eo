@@ -26,13 +26,9 @@
   hostable reference exists, the binding is left in place.
 
   A binding with several hostable references still becomes a moniker,
-  landing on the first one in document order (#5739). This deliberately
-  gives up the print/parse fixpoint that a single-reference-only merge
-  (#5707) guaranteed: canonical attribute ordering (#5706) can reorder the
-  sibling bindings a reference sits inside, so "the first reference" may
-  shift between passes and the printed moniker may move with it. Since only
-  the compiler's obfuscated names are merged (#5738), this shift stays
-  hidden inside auto-generated plumbing and never moves an author's name.
+  landing on the first one to print (#5739, #7218), which need not be the
+  first in document order, since canonical attribute ordering (#5706)
+  reorders the sibling bindings a reference sits inside.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -44,6 +40,8 @@
   string for every reference the sheet looks at.
   -->
   <xsl:variable name="eo:xi-dot" select="concat($eo:xi, '.')"/>
+  <!-- The cactus-name prefix, hoisted for the same reason as "eo:xi-dot". -->
+  <xsl:variable name="eo:cactus-name" select="concat('a', $eo:cactoos)"/>
   <!--
   Every reference that resolves to an attribute name (`eo:resolved-ref`),
   indexed by the formation that owns it and the name it resolves to. The
@@ -73,8 +71,12 @@
   declares a segment of the reference's base. Cactus names are auto-generated
   and effectively unique, so this bucket holds one node and the climb becomes a
   parentage check on it rather than a scan of every ancestor's attributes.
+  A handle floated into a pipe is indexed here too, even though it is not a
+  merge candidate itself: "inline-cactoos" mints a pipe for a handle whose
+  value applies a formation it relocates (#7863), and the readers of such a
+  handle are left on the cactus name, which only these lookups put back.
   -->
-  <xsl:key name="moniker-name" match="o[eo:moniker-binding(.)]" use="@name"/>
+  <xsl:key name="moniker-name" match="o[eo:moniker-binding(.) or (exists(@pipe) and exists(@local))]" use="@name"/>
   <!--
   The single attribute name a hostable `ξ.<name>` reference resolves to, or
   the empty string for anything that is not hostable. Two shapes host a
@@ -89,7 +91,7 @@
   <xsl:function name="eo:resolved-ref" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="tail" select="substring-after($ref/@base, $eo:xi-dot)"/>
-    <xsl:sequence select="if (exists($ref/@base) and not(exists($ref/@name)) and starts-with($ref/@base, $eo:xi-dot) and not(contains($tail, '.')) and not($ref/o)) then $tail else if (eo:dispatch-seg($ref) != '') then substring-before($tail, '.') else ''"/>
+    <xsl:sequence select="if (not(starts-with($ref/@base, $eo:xi-dot))) then '' else if (not(exists($ref/@name)) and not(contains($tail, '.')) and not($ref/o)) then $tail else if (eo:dispatch-seg($ref) != '') then substring-before($tail, '.') else ''"/>
   </xsl:function>
   <!--
   The trailing dispatch chain of a hostable dispatch reference
@@ -100,11 +102,15 @@
   per segment nested inside each other, since `<name>.seg1.seg2` and
   `seg2. (seg1. <name>)` denote the same graph. Unlike a bare reference, a
   dispatch may carry arguments and may be a named node (#5794).
+
+  The "ξ." test comes first, ahead of the tests it used to sit behind: this
+  function and "eo:resolved-ref" above run for every object in the file, and
+  most bases are not rooted at "ξ." at all (#7938).
   -->
   <xsl:function name="eo:dispatch-seg" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="tail" select="substring-after($ref/@base, $eo:xi-dot)"/>
-    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, $eo:xi-dot) and contains($tail, '.') and substring-before($tail, '.') != '') then substring-after($tail, '.') else ''"/>
+    <xsl:sequence select="if (not(starts-with($ref/@base, $eo:xi-dot))) then '' else if (contains($tail, '.') and substring-before($tail, '.') != '') then substring-after($tail, '.') else ''"/>
   </xsl:function>
   <!--
   Whether `$attr` is a restored recursive `&gt;&gt; name` handle: an abstract
@@ -138,7 +144,20 @@
   -->
   <xsl:function name="eo:moniker-binding" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
-    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, concat('a', $eo:cactoos)) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+    <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, $eo:cactus-name) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
+  </xsl:function>
+  <!--
+  The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
+  an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
+  or test binding in its own bucket. Hosting by this key, not by document
+  order, makes a reprint settle instead of moving the binding again.
+  -->
+  <xsl:function name="eo:host-key" as="xs:string">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="owner" as="element()"/>
+    <xsl:variable name="binding" select="$ref/ancestor-or-self::o[parent::*[. is $owner]][1]"/>
+    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (eo:test-attr($binding)) then 4 else 3"/>
+    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else string(($binding/@local, $binding/@name)[1]))"/>
   </xsl:function>
   <!--
   The references that can host the binding `$attr`, shortest spelling first: a
@@ -163,7 +182,12 @@
   <xsl:function name="eo:moniker-refs" as="element()*">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="owner" select="$attr/.."/>
-    <xsl:variable name="refs" select="key('moniker-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
+    <xsl:variable name="unordered" select="key('moniker-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
+    <xsl:variable name="refs" as="element()*">
+      <xsl:perform-sort select="$unordered">
+        <xsl:sort select="eo:host-key(., $owner)"/>
+      </xsl:perform-sort>
+    </xsl:variable>
     <xsl:variable name="dispatch" as="element()*">
       <xsl:perform-sort select="$refs[eo:dispatch-seg(.) != '']">
         <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
@@ -192,9 +216,21 @@
   -->
   <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
-    <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref($ref)), root($ref))[1]"/>
-    <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:variable name="name" select="eo:resolved-ref($ref)"/>
+    <xsl:choose>
+      <!--
+      Nothing but a "ξ.&lt;name&gt;" reference can host a binding, and most
+      objects are not one. Answering that first keeps the ancestor climb, the
+      "generate-id" and the key probe off the path every object walks: this
+      runs from a match pattern (#7938).
+      -->
+      <xsl:when test="$name = ''"/>
+      <xsl:otherwise>
+        <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+        <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', $name), root($ref))[1]"/>
+        <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!--
   Whether the formation `$attr` prints as a multi-line block rather than the
@@ -267,10 +303,16 @@
   </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="name" select="substring-after($ref/@base, $eo:xi-dot)"/>
-    <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', $name), root($ref))[eo:applied-hosted(.)][1]"/>
-    <xsl:sequence select="if (exists($ref/@base) and starts-with($ref/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.')) and exists($ref/o) and exists($binding) and (eo:applied-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:choose>
+      <!-- Shape tests first, for the reason on "eo:hosted-binding" above. -->
+      <xsl:when test="not($name != '' and not(contains($name, '.')) and exists($ref/o) and starts-with($ref/@base, $eo:xi-dot))"/>
+      <xsl:otherwise>
+        <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+        <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', $name), root($ref))[eo:applied-hosted(.)][1]"/>
+        <xsl:sequence select="if (exists($binding) and (eo:applied-refs($binding)[1] is $ref)) then $binding else ()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!--
   Whether `$attr` is a const file-local handle (`a &gt;&gt; b!`, R-3.10.12):
@@ -306,7 +348,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[eo:const-handle(.)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   Whether the bare name of `$binding` would read as something else at `$ref`:
@@ -368,8 +410,23 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and not(eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
+  <!--
+  The binding, out of those candidates, that a reference actually keeps: not
+  the binding itself, not a reference inside it, and not the one reference the
+  moniker fold hosts the binding onto (a binding floated into a pipe has no
+  hosting reference to spare, so every reader of it keeps the name).
+  -->
+  <!--
+  The handle a non-hosting reference reads, whichever kind it is - the two
+  readings above over one shared candidate list. They used to be a template
+  each, of equal priority and each computing that list for itself, so every
+  "@base" in the document paid for the lookup twice; a reference both would
+  have fired on still takes the non-const reading, which is the one Saxon
+  picked when the two templates collided, the later of two equal-priority
+  rules winning (#7938).
+  -->
   <!--
   Replace the first hosting reference with the merged binding, always keeping
   the reference's positional `@as`. A bare reference becomes the binding
@@ -532,22 +589,19 @@
     </o>
   </xsl:template>
   <!--
-  Rewrite a non-hosting reference to a const file-local handle from the
-  obfuscated cactus name back to the readable "@local" handle, so it reads as
-  `b` instead of a synthetic "vL_P" placeholder (#5828). The hosting reference
-  is rebuilt from the binding above and never reaches this template.
+  Rewrite a non-hosting reference to a kept handle from the obfuscated cactus
+  name back to the readable "@local" handle, so it reads as `name` (or
+  `name.seg`) instead of a synthetic "vL_P" placeholder. Both kinds of handle
+  are put back here: a const one (`a &gt;&gt; b!`, #5828) and a plain one — an
+  abstract formation (`[] &gt;&gt; name`, #5876) or a based one
+  (`a.b &gt;&gt; name`, #5944). The single hosting reference is rebuilt from
+  the binding above and never reaches this template (`eo:kept` excludes it).
   -->
   <xsl:template match="o[exists(eo:kept-const-ref(.))]/@base" priority="2">
     <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-const-ref(..))"/>
   </xsl:template>
   <!--
-  Rewrite a non-hosting reference to a kept handle — an abstract formation
-  (`[] &gt;&gt; name`, #5876) or a based one (`a.b &gt;&gt; name`, #5944) — from
-  the obfuscated cactus name back to the
-  readable "@local" handle, so it reads as `name` (or `name.seg`) instead of a
-  synthetic "vL_P" placeholder, the non-const mirror of the const rewrite above.
-  The single hosting reference is rebuilt from the binding and never reaches
-  this template (`eo:kept-local-ref` excludes it).
+  The non-const mirror of the rewrite above.
   -->
   <xsl:template match="o[exists(eo:kept-local-ref(.))]/@base" priority="2">
     <xsl:attribute name="base" select="eo:handle-base(.., eo:kept-local-ref(..))"/>

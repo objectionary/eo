@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Nobody hands a `half` to `inc`, they hand what a `half` comes back with, and
+# the text of the atom says what that is. So both callers put a `number` in,
+# however differently they arrive at one, and the void is filled one way twice
+# rather than two ways once.
+eo:
+  app.eo: |
+    [] > app
+      inc (half oak) > first
+      inc (twice oak) > second
+  inc.eo: |
+    [x] > inc
+      x > @
+  half.eo: |
+    [] > half /Q.number
+      ? > y
+  twice.eo: |
+    [] > twice /Q.number
+      ? > y
+  number.eo: |
+    [] > number
+  oak.eo: |
+    [] > oak
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed[not(union)]/ref[@loc='Φ.number']"

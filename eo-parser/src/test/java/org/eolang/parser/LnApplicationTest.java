@@ -18,7 +18,7 @@ import org.xembly.Xembler;
  * <p>First iteration: bare-identifier heads with optional name
  * suffixes. Chains, horizontal args, paren groups, star tuples, and
  * data literals are tested as their support lands in subsequent
- * iterations. *
+ * iterations.</p>
  *
  * @since 0.1
  */
@@ -251,9 +251,9 @@ final class LnApplicationTest {
         new LnApplication(new Span("foo a b > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a happlication cannot receive deeper-indent children so it pushes HORIZONTAL_COMPLETED",
+            "a happlication cannot receive deeper-indent children so it pushes HCOMPLETED",
             stack.top().openness(),
-            Matchers.equalTo(Openness.HORIZONTAL_COMPLETED)
+            Matchers.equalTo(Openness.HCOMPLETED)
         );
     }
 
@@ -676,6 +676,24 @@ final class LnApplicationTest {
     }
 
     @Test
+    void acceptsFullBinaryExpansionOfFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine(
+                "0.1000000000000000055511151231257827021181583404541015625 > x"
+            ),
+            "the full decimal expansion of the double 0.1 holds exactly what the bits hold and must not be called over-precise"
+        );
+    }
+
+    @Test
+    void acceptsSmallestSubnormalFloatHead() {
+        Assertions.assertDoesNotThrow(
+            () -> LnApplicationTest.parseLine("4.9E-324 > x"),
+            "Double.MIN_VALUE in its shortest spelling must be accepted, subnormal though it is"
+        );
+    }
+
+    @Test
     void acceptsTrailingZeroFloatHead() {
         Assertions.assertDoesNotThrow(
             () -> LnApplicationTest.parseLine("1.50 > x"),
@@ -805,20 +823,11 @@ final class LnApplicationTest {
         );
     }
 
-    /**
-     * Parse one application line into a fresh stack and emit.
-     * @param body Line body
-     */
     private static void parseLine(final String body) {
         new LnApplication(new Span(body, 1))
             .into(new Stack(), new Globals(), new Emit());
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

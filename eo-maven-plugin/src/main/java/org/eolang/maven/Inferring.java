@@ -14,9 +14,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.inference.Clues;
+import org.eolang.inference.Demanded;
+import org.eolang.inference.Depth;
+import org.eolang.inference.Ladder;
+import org.eolang.inference.Relayed;
+import org.eolang.inference.Resolved;
+import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
 
 /**
@@ -85,11 +92,18 @@ final class Inferring implements Step {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
             final int ready = this.ready();
-            new Clues().follow(this.prepared, this.tables);
+            final long start = System.currentTimeMillis();
+            new Witnessed(new Relayed(new Demanded(new Resolved(new Clues()))))
+                .follow(this.prepared, this.tables);
             Logger.info(
-                this, "Inferred the types of %d XMIR(s), tables are in %[file]s",
-                ready, this.tables
+                this, "Inferred the types of %d XMIR(s) in %[ms]s",
+                ready, System.currentTimeMillis() - start
             );
+            Logger.info(
+                this, "Inference tables are in %[file]s (%s)",
+                this.tables, new Tabled(this.tables).asString()
+            );
+            this.measured();
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to infer from it",
@@ -98,11 +112,18 @@ final class Inferring implements Step {
         }
     }
 
-    /**
-     * Every XMIR file of the program, prepared for the rules and saved.
-     * @return How many files were prepared
-     * @throws IOException If a file cannot be read or written
-     */
+    private void measured() throws IOException {
+        final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
+        Logger.info(
+            this,
+            "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
+            ladder.total(), ladder.named(), ladder.rooted(), ladder.blank(), ladder.percent()
+        );
+        for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
+            Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
+        }
+    }
+
     private int ready() throws IOException {
         final Xsline train = new Xsline(
             new TrFull(
@@ -125,12 +146,6 @@ final class Inferring implements Step {
         return done;
     }
 
-    /**
-     * Every XMIR file of the program, in the same order every time, so that
-     * the tables come out the same every time too.
-     * @return The files
-     * @throws IOException If the directory cannot be walked
-     */
     private Collection<Path> sources() throws IOException {
         try (Stream<Path> found = Files.walk(this.input)) {
             return found

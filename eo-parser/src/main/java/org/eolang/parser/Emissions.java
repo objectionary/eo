@@ -4,11 +4,10 @@
  */
 package org.eolang.parser;
 
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
+import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Shared {@link Value}-to-XMIR rendering helpers.
@@ -20,36 +19,50 @@ import java.util.Set;
  * literals and chains in exactly the same way (§9.0.3 / §9.4 /
  * §9.4.2).</p>
  *
+ * <p>A reversed dispatch emitted here keeps the head text as the
+ * {@code .}-prefixed base, except a root glyph ({@code ^}, {@code @},
+ * {@code $}), which maps to {@code ρ}/{@code φ}/{@code ξ} the way
+ * {@link LnReversed#readHead} does.</p>
+ *
  * @since 0.1
  */
 final class Emissions {
 
     /**
-     * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
+     * What the parser says when the identity object is applied to
+     * arguments (R-3.16.1). Shared by every position an application may
+     * be written in — a line head ({@link LnApplication}), a paren
+     * group, an inline φ, and the φ of an only-phi line — so the writer
+     * gets the same instruction wherever the glyph carries arguments.
      */
-    private static final int MAX_OCTAL_BYTE = 0xFF;
-
-    /**
-     * Octal byte range error format.
-     */
-    private static final String OCTAL_BYTE_RANGE = String.join(
-        "",
-        "octal escape \\%s is out of range: value %d ",
-        "exceeds the 1-byte limit of 0o377 (255)"
+    static final String NO_IDENTITY_ARGS = String.join(
+        " ",
+        "the identity object takes no horizontal arguments;",
+        "put the argument on a deeper-indent line"
     );
 
     /**
-     * Kinds of head value that a {@code .method} chain may follow.
+     * Bits an IEEE-754 double keeps below the leading one of its
+     * significand.
      */
-    private static final Set<Value.Kind> CHAINABLE = Set.of(
-        Value.Kind.IDENTIFIER,
-        Value.Kind.ROOT,
-        Value.Kind.SELF,
-        Value.Kind.GROUP,
-        Value.Kind.INTEGER,
-        Value.Kind.FLOAT,
-        Value.Kind.STRING,
-        Value.Kind.BYTES
+    private static final int SIGNIFICAND_BITS = 52;
+
+    /**
+     * The void the identity object {@code I} binds and decorates.
+     */
+    private static final String IDENTITY = "x";
+
+    /**
+     * A valid void parameter name, other than the {@code @} and {@code ^}
+     * special forms — §4.5. Shared by every producer of a void parameter
+     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
+     * {@link #inlinePhi}), so a bracket list is validated the same way
+     * regardless of which line shape it appears on. The cactus emoji is
+     * excluded along with the ordinary NAME terminators, since §2.3 keeps
+     * that glyph for auto-names.
+     */
+    private static final Pattern PARAM_NAME = Pattern.compile(
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
     );
 
     /**
@@ -73,11 +86,19 @@ final class Emissions {
     static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
+        final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
-            tokens.seek(tokens.cursor() + 1);
+            final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
-            emit.object(name, ".".concat(head.raw()), line, head.pos());
+            Bindings.checkAllOrNothing(rargs, span);
+            if (!rargs.isEmpty()) {
+                Bindings.checkReceiver(rargs.get(0), span);
+            }
+            emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
+            if (fragile) {
+                emit.fragile();
+            }
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
@@ -85,21 +106,11 @@ final class Emissions {
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
-        if (chain.isEmpty()) {
-            Emissions.openValue(emit, name, head, line);
-        } else {
-            Emissions.openValue(emit, null, head, line);
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(name, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
+        Bindings.checkAllOrNothing(args, span);
+        if (head.identity() && !args.isEmpty()) {
+            throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
         }
+        ChainEmission.link(emit, line, head, chain, name);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
@@ -138,16 +149,16 @@ final class Emissions {
     static void openValue(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.INTEGER || value.kind() == Value.Kind.FLOAT) {
+        if (value.number()) {
             Emissions.number(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.HEX) {
+        } else if (value.hex()) {
             Emissions.hex(emit, name, value, line);
-        } else if (value.kind() == Value.Kind.BYTES) {
+        } else if (value.bytes()) {
             emit.object(name, "Φ.bytes", line, value.pos());
-            emit.object(null, null, line, value.pos());
+            emit.bareObject(line, value.pos());
             emit.set(value.raw());
             emit.close();
-        } else if (value.kind() == Value.Kind.STRING) {
+        } else if (value.string()) {
             Emissions.string(emit, name, value, line);
         } else {
             Emissions.openBase(emit, name, value, line);
@@ -166,7 +177,7 @@ final class Emissions {
         final List<MethodChain> tail = value.chain();
         if (tail.isEmpty()) {
             Emissions.openValue(emit, null, value, line);
-            if (value.binding() != null) {
+            if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
             if (value.constant()) {
@@ -174,18 +185,8 @@ final class Emissions {
             }
             emit.close();
         } else {
-            Emissions.openValue(emit, null, value, line);
-            emit.close();
-            for (int idx = 0; idx < tail.size() - 1; idx = idx + 1) {
-                final MethodChain link = tail.get(idx);
-                emit.object(null, ".".concat(link.name()), line, link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = tail.get(tail.size() - 1);
-            emit.object(null, ".".concat(last.name()), line, last.dot());
-            emit.method(last.fragile());
-            if (value.binding() != null) {
+            ChainEmission.link(emit, line, value, tail, null);
+            if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }
             if (value.constant()) {
@@ -206,19 +207,12 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
+        } else if ("^".equals(raw)) {
+            tag = "ρ";
         } else {
             tag = raw;
         }
         return tag;
-    }
-
-    /**
-     * Whether a head value can carry a {@code .method} chain.
-     * @param head The head value
-     * @return True if chain may follow
-     */
-    static boolean chainable(final Value head) {
-        return Emissions.CHAINABLE.contains(head.kind());
     }
 
     /**
@@ -235,99 +229,56 @@ final class Emissions {
     static void bytesCarrier(
         final Emit emit, final int line, final int pos, final String hex
     ) {
-        emit.object(null, "Φ.bytes", line, pos);
-        emit.object(null, null, line, pos);
+        emit.unnamedObject("Φ.bytes", line, pos);
+        emit.bareObject(line, pos);
         emit.set(hex);
         emit.close();
         emit.close();
     }
 
     /**
-     * Decode escape sequences from a raw string body (without
-     * surrounding quotes). Supports {@code \n}, {@code \t}, {@code \r},
-     * {@code \b}, {@code \f}, {@code \"}, {@code \'}, {@code \\},
-     * {@code \\uXXXX} unicode, and {@code \NNN} octal escapes.
-     * @param inner Source body (no quotes)
-     * @return Decoded text
+     * Reject a void parameter name the grammar does not accept — §4.5.
+     * @param raw The parameter text, as written
+     * @param line Source line (for error reporting)
+     * @param pos Source column of the parameter's first character
      */
-    static String unescapeBody(final String inner) {
-        final StringBuilder out = new StringBuilder(inner.length());
-        int idx = 0;
-        while (idx < inner.length()) {
-            final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
-                out.append(glyph);
-                idx = idx + 1;
-                continue;
-            }
-            final char next = inner.charAt(idx + 1);
-            if (next == 'u') {
-                idx = Emissions.appendUnicode(out, inner, idx + 1);
-            } else if (next >= '0' && next <= '7') {
-                idx = Emissions.appendOctal(out, inner, idx + 1);
-            } else {
-                out.append(Emissions.singleCharEscape(glyph, next));
-                idx = idx + 2;
-            }
+    static void validParam(final String raw, final int line, final int pos) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+            throw new ParseError(
+                line, pos,
+                "parameter names in voids must be NAME or @"
+            );
         }
-        Emissions.rejectLoneSurrogates(out);
-        return out.toString();
     }
 
-    /**
-     * Decode a string body to its raw byte representation.
-     * @param inner Source body without surrounding quotes
-     * @return Decoded bytes
-     */
-    static byte[] unescapeBytes(final String inner) {
-        return Emissions.unescapeRawBytes(inner);
-    }
-
-    /**
-     * Open the {@code <o>} for a value that carries no data of its own —
-     * a star, a root or self token, a term, a group, or a plain base
-     * reference — where the kind alone picks the {@code base}.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value The value
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
-        if (value.kind() == Value.Kind.STAR) {
+        if (value.star()) {
             emit.object(name, "Φ.tuple", line, value.pos());
             emit.star();
         } else if (value.kind() == Value.Kind.ROOT) {
-            emit.object(name, Emissions.rootBase(value.raw()), line, value.pos());
-        } else if (value.kind() == Value.Kind.SELF) {
-            emit.object(name, null, line, value.pos());
-            emit.self();
-        } else if (value.kind() == Value.Kind.TERM) {
+            emit.object(name, value.rootSymbol(), line, value.pos());
+        } else if (value.term()) {
             emit.object(name, "⊥", line, value.pos());
-        } else if (value.kind() == Value.Kind.GROUP) {
+        } else if (value.identity()) {
+            Emissions.identity(emit, name, value, line);
+        } else if (value.group()) {
             Emissions.group(emit, name, value, line);
         } else {
             emit.object(name, value.raw(), line, value.pos());
         }
     }
 
-    /**
-     * Emit a {@code HEX} literal as {@code Φ.number}, rejecting values that
-     * fit a signed 64-bit {@code long} but no longer round-trip exactly
-     * through an IEEE-754 double (the sibling {@code number()} check, for
-     * the base where a plain range check on {@code long} does not catch it).
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value Hex value
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (6 lines)
-     */
-    @SuppressWarnings({
-        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
-        "java:S2111"
-    })
+    private static void identity(
+        final Emit emit, final String name, final Value value, final int line
+    ) {
+        emit.baselessObject(name, line, value.pos());
+        emit.voidParam(Emissions.IDENTITY, line, value.pos());
+        emit.object("φ", Emissions.IDENTITY, line, value.pos());
+        emit.close();
+    }
+
     private static void hex(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -343,7 +294,7 @@ final class Emissions {
             throw error;
         }
         final double parsed = raw;
-        if (new BigDecimal(raw).compareTo(new BigDecimal(parsed)) != 0) {
+        if (!Emissions.exact(new BigDecimal(raw), parsed)) {
             throw new ParseError(
                 line, value.pos(),
                 String.format(
@@ -359,80 +310,20 @@ final class Emissions {
         );
     }
 
-    /**
-     * Emit a STRING literal — the object plus a bytes carrier holding the
-     * UTF-8 bytes of the unescaped text. A malformed escape inside the
-     * literal is reported at the literal's own position.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value String value
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private static void string(
         final Emit emit, final String name, final Value value, final int line
     ) {
         emit.object(name, "Φ.string", line, value.pos());
-        final byte[] unescaped;
-        try {
-            unescaped = Emissions.unescapeBytes(
-                value.raw().substring(1, value.raw().length() - 1)
-            );
-        } catch (final NumberFormatException ex) {
-            final ParseError error = new ParseError(
-                line, value.pos(), "invalid unicode or octal escape in string literal"
-            );
-            error.initCause(ex);
-            throw error;
-        }
         Emissions.bytesCarrier(
             emit, line, value.pos(),
-            new Hex(unescaped).asString()
+            new Hex(
+                new Unescaped(
+                    value.raw().substring(1, value.raw().length() - 1), line, value.pos()
+                ).bytes()
+            ).asString()
         );
     }
 
-    /**
-     * Reject a decoded body containing a UTF-16 surrogate with no matching
-     * partner — a lone {@code \uD800}-{@code \uDFFF} escape has no UTF-8
-     * encoding and would otherwise be silently mangled later. A high
-     * surrogate immediately followed by a low surrogate is a valid pair
-     * (for example a supplementary character spelled as two {@code \\u}
-     * escapes) and is left untouched.
-     * @param text Decoded body to check
-     */
-    private static void rejectLoneSurrogates(final CharSequence text) {
-        int cursor = 0;
-        while (cursor < text.length()) {
-            final char glyph = text.charAt(cursor);
-            if (Character.isHighSurrogate(glyph)
-                && cursor + 1 < text.length()
-                && Character.isLowSurrogate(text.charAt(cursor + 1))) {
-                cursor = cursor + 2;
-                continue;
-            }
-            if (Character.isSurrogate(glyph)) {
-                throw new NumberFormatException(
-                    String.format(
-                        "unicode escape \\u%04X is a lone surrogate, not a valid standalone codepoint",
-                        (int) glyph
-                    )
-                );
-            }
-            cursor = cursor + 1;
-        }
-    }
-
-    /**
-     * Emit an {@code INTEGER} or {@code FLOAT} as {@code Φ.number},
-     * rejecting literals whose exact decimal value differs from the
-     * IEEE-754 double they parse to (dead trailing digits). Alternate
-     * spellings of the same value ({@code +42}, {@code 1.50}) are kept.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value Integer or float value
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private static void number(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -467,34 +358,35 @@ final class Emissions {
         );
     }
 
-    /**
-     * Whether {@code raw} claims a decimal value the parsed double does
-     * not hold. Accepts any spelling of the exact binary value
-     * ({@code +42}, {@code 1.50}, full digit forms of exact powers of
-     * two) and any spelling of {@link Double#toString(double)}'s
-     * shortest form ({@code 0.1}); rejects only dead extra digits.
-     * @param raw Source literal text
-     * @param parsed Result of {@code Double.parseDouble(raw)}
-     * @return True when the literal is over-precise
-     */
-    @SuppressWarnings({
-        "PMD.AvoidDecimalLiteralsInBigDecimalConstructor",
-        "java:S2111"
-    })
     private static boolean overPrecise(final String raw, final double parsed) {
         final BigDecimal written = new BigDecimal(raw);
-        return written.compareTo(new BigDecimal(parsed)) != 0
+        return !Emissions.exact(written, parsed)
             && written.compareTo(BigDecimal.valueOf(parsed)) != 0;
     }
 
-    /**
-     * Suggested replacement spelling for a whole-valued double.
-     * Mirrors the integer branch of the printer's {@code StUnhex.number},
-     * except the large-magnitude arm keeps {@code Double.toString}'s
-     * uppercase {@code E} so the suggestion itself re-parses as FLOAT.
-     * @param num Parsed numeric value
-     * @return Shortest integer-oriented spelling for {@code num}
-     */
+    private static boolean exact(final BigDecimal decimal, final double value) {
+        return decimal.compareTo(Emissions.exactly(value)) == 0;
+    }
+
+    private static BigDecimal exactly(final double value) {
+        final int exponent = Math.max(
+            Math.getExponent(value), Double.MIN_EXPONENT
+        ) - Emissions.SIGNIFICAND_BITS;
+        final BigInteger mantissa = BigInteger.valueOf(
+            (long) Math.scalb(value, -exponent)
+        );
+        final BigDecimal exact;
+        if (exponent < 0) {
+            exact = new BigDecimal(
+                mantissa.multiply(BigInteger.valueOf(5L).pow(-exponent)),
+                -exponent
+            );
+        } else {
+            exact = new BigDecimal(mantissa.shiftLeft(exponent));
+        }
+        return exact;
+    }
+
     private static String canonicalInteger(final double num) {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
@@ -507,15 +399,6 @@ final class Emissions {
         return str;
     }
 
-    /**
-     * Emit a parenthesised group value, either as an inline-phi formation or
-     * as a nested expression.
-     * @param emit Emitter
-     * @param name Name attribute (or {@code null})
-     * @param value The group value
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private static void group(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -527,224 +410,22 @@ final class Emissions {
             final Span sub = new Span(
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
-            Emissions.expression(emit, name, new Tokens(sub.body(), sub), line);
+            final Tokens tokens = new Tokens(sub.body(), sub);
+            Emissions.expression(emit, name, tokens, line);
+            tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
     }
 
-    /**
-     * Map a source root character to its XMIR symbol per §9.3.
-     * @param raw Source character (one of {@code Q}, {@code @},
-     *  {@code ^}, {@code $})
-     * @return XMIR symbol
-     */
-    private static String rootBase(final String raw) {
-        final String mapped;
-        if ("Q".equals(raw)) {
-            mapped = "Φ";
-        } else if ("@".equals(raw)) {
-            mapped = "φ";
-        } else if ("^".equals(raw)) {
-            mapped = "ρ";
-        } else if ("$".equals(raw)) {
-            mapped = "ξ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
-    }
-
-    /**
-     * Decode a string body to its byte representation. Text and Unicode
-     * escapes are UTF-8 encoded, while octal escapes contribute their raw
-     * one-byte values.
-     * @param inner Source body without surrounding quotes
-     * @return Decoded bytes
-     */
-    private static byte[] unescapeRawBytes(final String inner) {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(
-            inner.length()
-        );
-        final StringBuilder text = new StringBuilder(inner.length());
-        int idx = 0;
-        while (idx < inner.length()) {
-            final char glyph = inner.charAt(idx);
-            if (glyph != '\\' || idx + 1 >= inner.length()) {
-                text.append(glyph);
-                idx = idx + 1;
-                continue;
-            }
-            final char next = inner.charAt(idx + 1);
-            if (next == 'u') {
-                idx = Emissions.appendUnicode(text, inner, idx + 1);
-            } else if (next >= '0' && next <= '7') {
-                idx = Emissions.rawOctal(out, text, inner, idx + 1);
-            } else {
-                text.append(Emissions.singleCharEscape(glyph, next));
-                idx = idx + 2;
-            }
-        }
-        Emissions.appendText(out, text);
-        return out.toByteArray();
-    }
-
-    /**
-     * Append one octal escape as a raw byte.
-     * @param out Output bytes
-     * @param text Text waiting for encoding
-     * @param body Whole string body
-     * @param start First octal digit
-     * @return Index past the octal escape
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
-    private static int rawOctal(
-        final ByteArrayOutputStream out, final StringBuilder text,
-        final String body, final int start
-    ) {
-        Emissions.appendText(out, text);
-        int cursor = start;
-        int value = 0;
-        while (cursor < body.length() && cursor < start + 3
-            && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
-            value = value * 8 + body.charAt(cursor) - '0';
-            cursor = cursor + 1;
-        }
-        if (value > Emissions.MAX_OCTAL_BYTE) {
-            throw new NumberFormatException(
-                String.format(
-                    Emissions.OCTAL_BYTE_RANGE,
-                    body.substring(start, cursor), value
-                )
-            );
-        }
-        out.write(value);
-        return cursor;
-    }
-
-    /**
-     * Append valid UTF-16 text as UTF-8 bytes and clear the text buffer.
-     * @param out Output bytes
-     * @param text Text waiting for encoding
-     */
-    private static void appendText(
-        final ByteArrayOutputStream out, final StringBuilder text
-    ) {
-        Emissions.rejectLoneSurrogates(text);
-        final byte[] bytes = text.toString().getBytes(StandardCharsets.UTF_8);
-        out.write(bytes, 0, bytes.length);
-        text.setLength(0);
-    }
-
-    /**
-     * Decode an octal escape {@code \NNN} (1 to 3 octal digits)
-     * starting at the first digit position and append the resulting
-     * codepoint to {@code out}.
-     * @param out Output buffer
-     * @param body String body
-     * @param start Index of the first octal digit
-     * @return Index past the consumed digits
-     */
-    private static int appendOctal(
-        final StringBuilder out, final String body, final int start
-    ) {
-        int cursor = start;
-        int value = 0;
-        while (cursor < body.length()
-            && cursor < start + 3
-            && body.charAt(cursor) >= '0' && body.charAt(cursor) <= '7') {
-            value = value * 8 + body.charAt(cursor) - '0';
-            cursor = cursor + 1;
-        }
-        if (value > Emissions.MAX_OCTAL_BYTE) {
-            throw new NumberFormatException(
-                String.format(
-                    Emissions.OCTAL_BYTE_RANGE,
-                    body.substring(start, cursor), value
-                )
-            );
-        }
-        out.append((char) value);
-        return cursor;
-    }
-
-    /**
-     * Decode the body of a {@code \\uXXXX} escape (or its legacy
-     * {@code \\uu...uXXXX} form per R-9.7.3) starting at the
-     * {@code 'u'} position and append the resulting codepoint to
-     * {@code out}.
-     * @param out Output buffer
-     * @param body String body
-     * @param start Index of the first {@code 'u'}
-     * @return Index past the consumed escape
-     */
-    private static int appendUnicode(
-        final StringBuilder out, final String body, final int start
-    ) {
-        int cursor = start;
-        while (cursor < body.length() && body.charAt(cursor) == 'u') {
-            cursor = cursor + 1;
-        }
-        boolean valid = cursor + 4 <= body.length();
-        for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
-            valid = Character.digit(body.charAt(idx), 16) >= 0;
-        }
-        if (!valid) {
-            throw new NumberFormatException(
-                String.format(
-                    "unicode escape \\%s is not exactly four hexadecimal digits",
-                    body.substring(start, Math.min(body.length(), cursor + 4))
-                )
-            );
-        }
-        out.append(
-            (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
-        );
-        return cursor + 4;
-    }
-
-    /**
-     * Resolve a single-character escape sequence (e.g. {@code \n},
-     * {@code \t}). An unrecognised sequence is a lexical error (R-9.7.3).
-     * @param head Backslash character (always {@code '\\'})
-     * @param next The character after the backslash
-     * @return The decoded character(s)
-     */
-    private static String singleCharEscape(final char head, final char next) {
-        final String decoded;
-        if (next == 'n') {
-            decoded = String.valueOf((char) 10);
-        } else if (next == 't') {
-            decoded = String.valueOf((char) 9);
-        } else if (next == 'r') {
-            decoded = String.valueOf((char) 13);
-        } else if (next == 'b') {
-            decoded = String.valueOf((char) 8);
-        } else if (next == 'f') {
-            decoded = String.valueOf((char) 12);
-        } else if (next == '"' || next == '\'' || next == '\\') {
-            decoded = String.valueOf(next);
-        } else {
-            throw new NumberFormatException(
-                String.format("unrecognised escape sequence '%c%c'", head, next)
-            );
-        }
-        return decoded;
-    }
-
-    /**
-     * Whether the cursor is at a reversed-dispatch separator — a
-     * {@code .} immediately followed by a space or end-of-body. Used
-     * to recognise inner reversed-dispatch expressions inside paren
-     * groups (e.g. {@code (mod. y 4)}), where the {@code name.} form
-     * opens a new dispatch chain.
-     * @param tokens Token reader (positioned after the head)
-     * @param head Just-read head value
-     * @return True when the cursor is at a reversed-dispatch dot
-     */
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.kind() == Value.Kind.IDENTIFIER
-            && !tokens.atEnd() && tokens.current() == '.') {
-            final int probe = tokens.cursor() + 1;
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
             reversed = probe >= tokens.body().length()
                 || tokens.body().charAt(probe) == ' ';
         } else {
@@ -753,13 +434,16 @@ final class Emissions {
         return reversed;
     }
 
-    /**
-     * Find the position of a top-level {@code > [} inline-phi marker
-     * in {@code body} (depth-zero, not inside strings). Returns the
-     * index of the {@code >} char, or {@code -1} if none.
-     * @param body The inner body of a paren group
-     * @return Index of {@code >} char, or {@code -1}
-     */
+    private static String reversedHead(final Value head) {
+        final String mapped;
+        if (head.kind() == Value.Kind.ROOT) {
+            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+        } else {
+            mapped = head.raw();
+        }
+        return mapped;
+    }
+
     private static int topLevelInlinePhi(final String body) {
         int depth = 0;
         int found = -1;
@@ -781,18 +465,6 @@ final class Emissions {
         return found;
     }
 
-    /**
-     * Emit an inline-phi formation (§3.10) detected inside a paren
-     * group. The formation is anonymous (no {@code > name} suffix);
-     * its {@code φ} slot holds the body expression.
-     * @param emit Emitter
-     * @param name Name to attach to the formation's {@code <o>}
-     * @param inner The full inner body of the paren group
-     * @param phi Index of the {@code >} that begins {@code > [}
-     * @param column Absolute source column of the first body char
-     * @param line Source line
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private static void inlinePhi(
         final Emit emit, final String name, final String inner,
         final int phi, final int column, final int line
@@ -807,12 +479,26 @@ final class Emissions {
         }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
-        emit.object(name, null, line, column);
+        final boolean suffixed = new Suffix(
+            inner.substring(close + 1),
+            new Span(" ".repeat(column).concat(inner), line),
+            column + close + 1
+        ).present();
+        if (suffixed) {
+            throw new ParseError(
+                line, column + close + 1,
+                "inline-phi inside parentheses must be anonymous"
+            );
+        }
+        emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
+            Emissions.validParam(param, line, pcol);
             final String mapped;
             if ("@".equals(param)) {
                 mapped = "φ";
+            } else if ("^".equals(param)) {
+                mapped = "ρ";
             } else {
                 mapped = param;
             }
@@ -820,16 +506,12 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        Emissions.expression(emit, "φ", new Tokens(sub.body(), sub), line);
+        final Tokens tokens = new Tokens(sub.body(), sub);
+        Emissions.expression(emit, "φ", tokens, line);
+        tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }
 
-    /**
-     * Split a parameter-list body into individual names by single
-     * spaces.
-     * @param text Param text (without surrounding brackets)
-     * @return Names in source order
-     */
     private static List<String> splitParams(final String text) {
         final List<String> out = new java.util.ArrayList<>(0);
         int idx = 0;

@@ -19,7 +19,38 @@ final class PhOnceTest {
         MatcherAssert.assertThat(
             "PhOnce without explicit term must delegate φ-term to the wrapped object, but it didnt",
             new PhOnce(() -> new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
-            Matchers.equalTo("[D> 01]")
+            Matchers.equalTo("[D> 01-]")
+        );
+    }
+
+    @Test
+    void keepsOnceWrapperAfterNormalized() {
+        MatcherAssert.assertThat(
+            "normalized() must remain wrapped in PhOnce, so the once-caching guarantee survives, but it didn't",
+            new PhOnce(() -> new PhDefault()).normalized(),
+            Matchers.instanceOf(PhOnce.class)
+        );
+    }
+
+    @Test
+    void letsANormalizedTerminatorPropagateBare() {
+        MatcherAssert.assertThat(
+            "normalized() must not re-wrap a terminator, so callers can still detect it with instanceof",
+            new PhOnce(PhTerminator::new).normalized(),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void doesNotNeedRhoWithoutEvaluatingWrappedObject() {
+        MatcherAssert.assertThat(
+            "PhOnce must never ask for a receiver, and must not evaluate itself to say so",
+            new PhOnce(
+                () -> {
+                    throw new IllegalStateException("must not be evaluated");
+                }
+            ).needsRho(),
+            Matchers.is(false)
         );
     }
 

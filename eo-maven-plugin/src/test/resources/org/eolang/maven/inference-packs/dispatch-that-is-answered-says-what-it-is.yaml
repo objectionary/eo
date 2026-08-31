@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An answer, once there is one, is not thrown away for an admission that there
+# is none: a dispatch that resolves keeps the reference it resolved to.
+eo:
+  app.eo: |
+    [] > app
+      t.next > @
+  t.eo: |
+    [] > t
+      [] > next
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.t.next']"
+  - "/links/type[@id='Φ.app.φ'][not(unknown)]"

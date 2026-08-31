@@ -1,4 +1,4 @@
-# Returns `text` trimmed from left side.
+# Returns the string trimmed from left side.
 # Removes all leading ASCII whitespace bytes: `20-` (space), `09-`
 # (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
 # (form feed), and `0D-` (carriage return). Matches the strip-set
@@ -11,25 +11,25 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > trimmed-left
+[^] > trimmed-left
   if. > @
     0.eq
       b.size >> len!
-    text
+    ^
     string
       slice.
-        text >> b!
+        ^ >> b!
         first-non-ws-index 0 >> idx!
         minus.
           number len
           idx
-  [index] >> first-non-ws-index
+  [^ index] >> first-non-ws-index
     if. > @
       len.eq index
       index
       if.
         is-ws (b.slice index 1)!
-        first-non-ws-index (index.plus 1).as-number
+        ^.first-non-ws-index (index.plus 1).as-number
         index
   or. > [c] >> is-ws
     c.eq 20-
@@ -43,42 +43,28 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> can-trim-a-leading-carriage-return
-    trimmed-left "\rvalue"
-    "value"
+  "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 
-  eq. ++> can-trim-a-leading-form-feed
-    trimmed-left "\fvalue"
-    "value"
+  "\fvalue".trimmed-left.eq "value" ++> can-trim-a-leading-form-feed
 
-  eq. ++> can-trim-a-leading-line-feed
-    trimmed-left "\nvalue"
-    "value"
+  "\nvalue".trimmed-left.eq "value" ++> can-trim-a-leading-line-feed
 
-  eq. ++> can-trim-a-leading-tab
-    trimmed-left "\tvalue"
-    "value"
+  "\tvalue".trimmed-left.eq "value" ++> can-trim-a-leading-tab
 
   eq. ++> can-trim-a-text-of-leading-spaces-only
-    trimmed-left
-      "     "
+    "     ".trimmed-left
     ""
 
-  eq. ++> can-trim-an-empty-text
-    trimmed-left ""
-    ""
+  "".trimmed-left.eq "" ++> can-trim-an-empty-text-from-the-left
 
   eq. ++> can-trim-many-leading-spaces
-    trimmed-left
-      "     some"
+    "     some".trimmed-left
     "some"
 
   eq. ++> can-trim-mixed-leading-whitespace
-    trimmed-left
-      " \t\n\f\rvalue"
+    " \t\n\f\rvalue".trimmed-left
     "value"
 
-  eq. ++> can-trim-one-leading-space
-    trimmed-left
-      " s"
+  eq. ++> can-trim-one-leading-space-from-the-left
+    " s".trimmed-left
     "s"

@@ -8,21 +8,23 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
+import com.sun.jna.WString;
 
 /**
  * The Microsoft C runtime (msvcrt), exposing the POSIX-compatible file functions.
  *
- * <p>The methods are named after the real msvcrt exports, so most carry a
- * leading underscore ({@code _open}, {@code _read}, {@code _stat64}); the ISO C
- * {@code rename} is the one without. They return small integer file descriptors,
- * exactly like libc on posix, which is why the win32 file objects can thread
- * them through EO the same way the posix ones do. Binding the real names keeps
- * the EO side honest and the backend free of any name mapping.</p>
+ * <p>The methods are named after the real msvcrt exports, so most carry a leading
+ * underscore ({@code _wopen}, {@code _read}, {@code _wstat64}); the ISO C
+ * {@code getenv} and {@code strerror} are the ones without. They return small
+ * integer file descriptors, exactly like libc on posix, which is why the win32
+ * file objects can thread them through EO the same way the posix ones do. Every
+ * function taking a path binds the wide twin and takes a {@link WString}, so a
+ * name leaving the active code page still reaches the CRT as it was written,
+ * while EO goes on asking for the narrow name it shares with posix.</p>
  *
  * @since 0.74.0
- * @checkstyle MethodNameCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface Msvcrt extends Library {
 
     /**
@@ -59,7 +61,7 @@ public interface Msvcrt extends Library {
     /**
      * Opens a file and returns a file descriptor.
      *
-     * <p>The native {@code _open} is variadic, so {@code mode} is a trailing
+     * <p>The native {@code _wopen} is variadic, so {@code mode} is a trailing
      * varargs, making JNA use the variadic calling convention.</p>
      *
      * @param path Path to the file
@@ -67,7 +69,7 @@ public interface Msvcrt extends Library {
      * @param mode Permission bits used when the flags request file creation
      * @return File descriptor, or -1 on error
      */
-    int _open(String path, int flags, Object... mode);
+    int _wopen(WString path, int flags, Object... mode);
 
     /**
      * Reads bytes from a file descriptor into the buffer.
@@ -100,7 +102,7 @@ public interface Msvcrt extends Library {
      * @param mode Accessibility check to perform (0 tests for existence)
      * @return Zero when the check succeeds, -1 on error
      */
-    int _access(String path, int mode);
+    int _waccess(WString path, int mode);
 
     /**
      * Gets a file's status by path, filling a {@code struct _stat64} whose
@@ -109,21 +111,21 @@ public interface Msvcrt extends Library {
      * @param statbuf Structure to fill with the file's metadata
      * @return Zero on success, -1 on error
      */
-    int _stat64(String path, Structure statbuf);
+    int _wstat64(WString path, Structure statbuf);
 
     /**
      * Deletes a file.
      * @param path Path to the file
      * @return Zero on success, -1 on error
      */
-    int _unlink(String path);
+    int _wunlink(WString path);
 
     /**
      * Removes an empty directory.
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
-    int _rmdir(String path);
+    int _wrmdir(WString path);
 
     /**
      * Creates a directory, taking no permission bits, so the mode passed at the
@@ -131,7 +133,7 @@ public interface Msvcrt extends Library {
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
-    int _mkdir(String path);
+    int _wmkdir(WString path);
 
     /**
      * Creates a new file, or truncates an existing one, and opens it.
@@ -139,15 +141,15 @@ public interface Msvcrt extends Library {
      * @param mode Permission bits for a newly created file
      * @return File descriptor on success, -1 on error
      */
-    int _creat(String path, int mode);
+    int _wcreat(WString path, int mode);
 
     /**
-     * Renames a file, the ISO C export without a leading underscore.
+     * Renames a file, the wide twin of the ISO C {@code rename} export.
      * @param from Current path of the file
      * @param target New path of the file
      * @return Zero on success, -1 on error
      */
-    int rename(String from, String target);
+    int _wrename(WString from, WString target);
 
     /**
      * Returns the process identifier of the calling process, the CRT
@@ -166,14 +168,16 @@ public interface Msvcrt extends Library {
 
     /**
      * Gets the current time as seconds and milliseconds since the Unix epoch,
-     * filling a {@code struct __timeb32}. It replaces Kernel32's wall-clock
+     * filling a {@code struct __timeb64}. It replaces Kernel32's wall-clock
      * {@code GetSystemTime}, lining the win32 clock up with the posix
      * {@code gettimeofday}: like {@code gettimeofday} it hands back the raw
      * status code, unlike the older {@code _ftime} that returns {@code void}.
+     * The 64-bit variant is used because the 32-bit {@code _ftime32_s} can
+     * only represent dates through 18 January 2038.
      * @param timeb Structure to fill with the current time
      * @return Zero on success, an errno value on failure
      */
-    int _ftime32_s(Structure timeb);
+    int _ftime64_s(Structure timeb);
 
     /**
      * Duplicates a file descriptor.

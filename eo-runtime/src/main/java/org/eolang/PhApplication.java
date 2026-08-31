@@ -5,7 +5,6 @@
 
 package org.eolang;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +19,11 @@ public final class PhApplication extends PhOnce {
      * Matcher of raw bytes inside a φ-term, like {@code [D> 40-45-00]}.
      */
     private static final Pattern DATA = Pattern.compile("\\[D> ([0-9A-F-]*)]");
+
+    /**
+     * The dash that terminates a single-byte hex string.
+     */
+    private static final Pattern TRAILING = Pattern.compile("-$");
 
     /**
      * Ctor.
@@ -68,36 +72,34 @@ public final class PhApplication extends PhOnce {
         super(sup, term);
     }
 
-    /**
-     * The φ-term of an application, rendering a literal number or string
-     * construction as its value, otherwise listing the bindings.
-     * @param phi The receiver
-     * @param binds The bindings
-     * @return The φ-term
-     */
     private static String applied(final Phi phi, final Bind... binds) {
         final String head = phi.φTerm();
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
-        final boolean literal = binds.length == 1 && data.find();
-        final String result;
+        final boolean literal = binds.length == 1 && binds[0].first() && data.find();
+        final String string;
         if (literal && "Φ.string".equals(head)) {
-            result = String.format(
-                "\"%s\"", new String(PhApplication.bytes(data.group(1)), StandardCharsets.UTF_8)
-            );
+            string = PhApplication.string(PhApplication.bytes(data.group(1)));
+        } else {
+            string = null;
+        }
+        final String result;
+        if (string != null) {
+            result = string;
         } else if (literal && "Φ.number".equals(head)) {
-            result = PhDefault.numeral(new BytesOf(PhApplication.bytes(data.group(1))).asNumber());
+            result = new Numeral(
+                new BytesOf(PhApplication.bytes(data.group(1))).asNumber()
+            ).get();
         } else {
             result = String.format("%s(%s)", head, body);
         }
         return result;
     }
 
-    /**
-     * Join the φ-term fragments of the bindings, comma-separated.
-     * @param binds The bindings
-     * @return The joined fragments
-     */
+    private static String string(final byte[] bytes) {
+        return new Quoted(bytes).get().orElse(null);
+    }
+
     private static String body(final Bind... binds) {
         final StringBuilder out = new StringBuilder();
         for (int idx = 0; idx < binds.length; ++idx) {
@@ -109,17 +111,15 @@ public final class PhApplication extends PhOnce {
         return out.toString();
     }
 
-    /**
-     * Parse a dash-separated hex string into bytes.
-     * @param hex The hex, like "40-45-00"
-     * @return The byte array
-     */
     private static byte[] bytes(final String hex) {
         final byte[] bytes;
-        if (hex.isEmpty()) {
+        if (hex.isEmpty() || "--".equals(hex)) {
             bytes = new byte[0];
         } else {
-            final String[] parts = hex.split("-");
+            final String[] parts = PhApplication.TRAILING
+                .matcher(hex)
+                .replaceAll("")
+                .split("-", -1);
             bytes = new byte[parts.length];
             for (int idx = 0; idx < parts.length; ++idx) {
                 bytes[idx] = (byte) Integer.parseInt(parts[idx], 16);

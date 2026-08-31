@@ -9,8 +9,8 @@ package org.eolang.parser;
  *
  * <p>A {@code Span} is a value object carrying a single source line's text
  * (without trailing line terminator), its 1-indexed line number, and the
- * count of leading-space characters that precede the first non-space
- * character. The text never contains {@code \n} or {@code \r}; the
+ * count of leading-whitespace characters that precede the first
+ * non-whitespace character. The text never contains {@code \n} or {@code \r}; the
  * {@link Source} that produced this span has already normalised line
  * endings (R-2.1.2).</p>
  *
@@ -21,7 +21,7 @@ package org.eolang.parser;
  * <p>Per spec R-2.2.1: an odd indent is a {@code unexpected odd indent}
  * error condition; {@code Span} itself does not raise it — the consumer
  * (line classifier) reads the indent and decides. The {@link #tab()} query
- * surfaces the R-2.2.4 violation; again, the consumer decides. *
+ * surfaces the R-2.2.4 violation; again, the consumer decides.</p>
  *
  * @since 0.1
  */
@@ -38,7 +38,8 @@ final class Span {
     private final int number;
 
     /**
-     * Count of leading space characters before the first non-space.
+     * Count of leading whitespace characters before the first
+     * non-whitespace one.
      */
     private final int indent;
 
@@ -53,14 +54,24 @@ final class Span {
      * @param line Line number (1-indexed)
      */
     Span(final String body, final int line) {
-        this(body, line, Span.leading(body), Span.tabbed(body));
+        this(body, line, Span.leading(body));
+    }
+
+    /**
+     * Ctor.
+     * @param body Line text
+     * @param line Line number
+     * @param leading Count of leading whitespace chars
+     */
+    private Span(final String body, final int line, final int leading) {
+        this(body, line, leading, Span.tabbed(body, leading));
     }
 
     /**
      * Primary ctor.
      * @param body Line text
      * @param line Line number
-     * @param leading Count of leading space chars
+     * @param leading Count of leading whitespace chars
      * @param tabbed True if any leading char is a tab
      */
     private Span(final String body, final int line, final int leading, final boolean tabbed) {
@@ -95,7 +106,7 @@ final class Span {
     }
 
     /**
-     * Leading-space count.
+     * Leading-whitespace count.
      * @return Indent
      */
     int indent() {
@@ -111,11 +122,48 @@ final class Span {
     }
 
     /**
+     * True if the leading whitespace holds a character that is neither a
+     * space nor a tab. An indent is made of spaces (R-2.2.1), and a
+     * character nobody can see in an editor must not decide how deep a
+     * line sits: a pair of form feeds reads as indent 1 to a counter that
+     * takes every whitespace character (#7924).
+     * @return Alien-whitespace flag
+     */
+    boolean alien() {
+        boolean found = false;
+        for (int idx = 0; idx < this.indent; idx = idx + 1) {
+            final char glyph = this.text.charAt(idx);
+            if (glyph != ' ' && glyph != '\t') {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+    /**
      * True if the line is entirely whitespace.
      * @return Blank flag
      */
     boolean blank() {
         return this.indent == this.text.length();
+    }
+
+    /**
+     * True if the line is not blank and its last character is a space or a
+     * tab. Whitespace nobody can see in an editor must not decide what a
+     * program means (R-2.2.5).
+     * @return Trailing-whitespace flag
+     */
+    boolean trailing() {
+        final boolean result;
+        if (this.blank()) {
+            result = false;
+        } else {
+            final char last = this.text.charAt(this.text.length() - 1);
+            result = last == ' ' || last == '\t';
+        }
+        return result;
     }
 
     /**
@@ -127,46 +175,34 @@ final class Span {
     }
 
     /**
-     * The first non-space character, or {@code '\0'} for a blank line.
-     * @return First non-space character
+     * The first non-whitespace character.
+     * @return First non-whitespace character
      */
     char head() {
-        final char first;
         if (this.blank()) {
-            first = '\0';
-        } else {
-            first = this.text.charAt(this.indent);
+            throw new IllegalStateException(
+                String.format(
+                    "line %d is blank, has no first non-whitespace character",
+                    this.number
+                )
+            );
         }
-        return first;
+        return this.text.charAt(this.indent);
     }
 
-    /**
-     * Compute leading-space count.
-     * @param body Line text
-     * @return Number of leading {@code ' '} characters
-     */
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && body.charAt(count) == ' ') {
+        while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
             count = count + 1;
         }
         return count;
     }
 
-    /**
-     * Detect a tab in the leading whitespace region.
-     * @param body Line text
-     * @return True if a tab character appears before the first non-whitespace
-     */
-    private static boolean tabbed(final String body) {
+    private static boolean tabbed(final String body, final int leading) {
         boolean found = false;
-        for (int idx = 0; idx < body.length(); idx = idx + 1) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '\t') {
+        for (int idx = 0; idx < leading; idx = idx + 1) {
+            if (body.charAt(idx) == '\t') {
                 found = true;
-                break;
-            }
-            if (glyph != ' ') {
                 break;
             }
         }

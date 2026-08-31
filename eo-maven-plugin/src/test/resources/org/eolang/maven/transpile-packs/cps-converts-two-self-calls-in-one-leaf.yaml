@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/maven/transpile/recursion-to-cps.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[count(//o[starts-with(@name,'c🌵')])=2]
+  - //o[@name='fibo']/o[@name='φ']/o[@as='α1' and @base='ξ.ρ.fibo' and @again='true']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1']/o[@name='φ' and @base='ξ.ρ.ρ.fibo' and @again='true']/o[@as='α0' and @base='ξ.ρ.n.minus']
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='ξ.ρ.ρ.fibo']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1']/o[@name='φ' and @base='ξ.ρ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='.plus' and o[not(@as) and @base='ξ.ρ.r🌵'] and o[@as='α0' and @base='ξ.r🌵']]
+  - //o[@name='fibo']/o[@name='c🌵1']/o[@name='c🌵1']/o[@name='φ' and @base='ξ.ρ.ρ.k🌵']
+input: |
+  [] > main
+    [n] > fibo
+      if. > @
+        n.lt 2
+        n
+        (^.fibo (n.minus 1)).plus (^.fibo (n.minus 2))
+    fibo 10 > @

@@ -60,11 +60,15 @@
       <xsl:attribute name="base" select="'.as-bytes'"/>
       <xsl:attribute name="name" select="$cname"/>
       <xsl:attribute name="line" select="@line"/>
-      <xsl:attribute name="pos" select="@pos + 8"/>
+      <xsl:attribute name="pos" select="@pos"/>
+      <xsl:if test="@as">
+        <xsl:attribute name="as" select="@as"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
+        <xsl:attribute name="line" select="@line"/>
         <o>
-          <xsl:for-each select="@*[name()!='const' and name()!='name']">
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>

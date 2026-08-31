@@ -69,6 +69,14 @@ final class Globals {
     private int trailing;
 
     /**
+     * True once the top comment block has been thrown away by
+     * {@link #dropComments()}. A block dropped on an error is gone for
+     * good, so {@link #restore(Globals)} leaves it dropped instead of
+     * bringing it back on the next line.
+     */
+    private boolean discarded;
+
+    /**
      * True while inside an open triple-quoted text block.
      */
     private boolean intext;
@@ -98,10 +106,13 @@ final class Globals {
         this.tbody = new ArrayList<>(0);
         this.emitted = false;
         this.closed = false;
+        this.meta = false;
+        this.discarded = false;
         this.blanks = 0;
         this.trailing = 0;
         this.intext = false;
         this.tline = 0;
+        this.tindent = 0;
     }
 
     /**
@@ -133,6 +144,32 @@ final class Globals {
      * object lands, after any top comment block has been flushed.
      */
     void seal() {
+        this.closed = true;
+    }
+
+    /**
+     * Flush the pending top comment block, if any, and close the header
+     * zone — idempotent once {@link #sealed()} is true. A non-empty
+     * block with no blank line before the sealing line (§6.5) is
+     * dropped via {@link #dropComments()} and reported as an error.
+     * @param emit XMIR emitter
+     * @param span Source span of the meta or object closing the header
+     */
+    void seal(final Emit emit, final Span span) {
+        if (this.closed) {
+            return;
+        }
+        if (!this.comments.isEmpty() && this.blanks == 0) {
+            this.dropComments();
+            throw new ParseError(
+                span.line(), span.indent(),
+                "a blank line must separate the top comment block from the rest of the file"
+            );
+        }
+        if (!this.comments.isEmpty()) {
+            emit.comment(this.comments, this.comments.get(this.comments.size() - 1).line());
+            this.clearComments();
+        }
         this.closed = true;
     }
 
@@ -246,7 +283,10 @@ final class Globals {
      */
     void appendTextLine(final String raw) {
         final String stripped;
-        if (raw.length() >= this.tindent
+        if (raw.length() < this.tindent
+            && raw.chars().allMatch(c -> c == ' ')) {
+            stripped = "";
+        } else if (raw.length() >= this.tindent
             && raw.substring(0, Math.min(this.tindent, raw.length()))
                 .chars().allMatch(c -> c == ' ')) {
             stripped = raw.substring(Math.min(this.tindent, raw.length()));
@@ -289,10 +329,62 @@ final class Globals {
     }
 
     /**
+     * Take a savepoint of the whole program-wide state - R-7.2.
+     *
+     * <p>The flags and buffers kept here outlive the line that touched
+     * them, so a line that seals the header zone in
+     * {@link #seal(Emit, Span)} and then throws would leave the file
+     * without its top comment block and with every later comment
+     * rejected. {@link Eo} takes one of these next to
+     * {@link Emit#savepoint()} and hands it back to
+     * {@link #restore(Globals)} next to {@link Emit#rollback(Savepoint)}.</p>
+     *
+     * @return Detached copy of the current state
+     */
+    Globals savepoint() {
+        final Globals saved = new Globals();
+        saved.restore(this);
+        return saved;
+    }
+
+    /**
+     * Restore the state from a savepoint, discarding every mutation
+     * made since it was taken.
+     * @param saved A savepoint taken earlier via {@link #savepoint()}
+     */
+    void restore(final Globals saved) {
+        this.emitted = saved.emitted;
+        this.meta = saved.meta;
+        this.blanks = saved.blanks;
+        this.trailing = saved.trailing;
+        this.intext = saved.intext;
+        this.tline = saved.tline;
+        this.tindent = saved.tindent;
+        this.tbody.clear();
+        this.tbody.addAll(saved.tbody);
+        if (!this.discarded) {
+            this.closed = saved.closed;
+            this.comments.clear();
+            this.comments.addAll(saved.comments);
+        }
+    }
+
+    /**
      * Drop all pending comments — called once they have been attached or
      * reported as dangling.
      */
     void clearComments() {
         this.comments.clear();
+    }
+
+    /**
+     * Throw the top comment block away and close the header zone, for
+     * good - the block is malformed and no later line may pick it up
+     * or report it a second time, not even after a rollback.
+     */
+    void dropComments() {
+        this.comments.clear();
+        this.closed = true;
+        this.discarded = true;
     }
 }

@@ -222,22 +222,13 @@ final class CacheTest {
             temp.resolve("out.txt"),
             source.getFileName()
         );
-        final MessageDigest instance = MessageDigest.getInstance("SHA-256");
-        instance.update(
-            String.format("file1.txt\0%s", CacheTest.hash(first))
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        instance.update(
-            String.format("file2.txt\0%s", CacheTest.hash(second))
-                .getBytes(StandardCharsets.UTF_8)
-        );
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
             Files.readString(
                 cache.resolve("folder.sha256"),
                 StandardCharsets.UTF_8
             ),
-            Matchers.equalTo(Base64.getEncoder().encodeToString(instance.digest()))
+            Matchers.equalTo(new Sha(source).toString())
         );
     }
 
@@ -316,14 +307,6 @@ final class CacheTest {
         );
     }
 
-    /**
-     * Build a cache with a valid "v1" entry, then move the source to "v2"
-     * and replace the cache payload path with a directory, so that a
-     * following write to it fails.
-     * @param temp Temporary directory
-     * @return The corrupted cache state
-     * @throws IOException If the fixture cannot be built
-     */
     private static CacheTest.Corrupted corrupted(final Path temp) throws IOException {
         final Path base = temp.resolve("cache-order");
         Files.createDirectories(base);
@@ -339,11 +322,6 @@ final class CacheTest {
         return new CacheTest.Corrupted(base, source, target, tail);
     }
 
-    /**
-     * Attempt to write "v2" into the corrupted cache and swallow the
-     * expected failure, leaving the cache exactly as it was.
-     * @param state The corrupted cache state
-     */
     private static void attemptDoomedWrite(final CacheTest.Corrupted state) {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -358,11 +336,6 @@ final class CacheTest {
         );
     }
 
-    /**
-     * Marker file name for the given cached tail.
-     * @param tail Tail path in cache
-     * @return Marker file name, relative to the same directory as the tail
-     */
     private static String marker(final Path tail) {
         return String.format("%s.sha256", tail);
     }

@@ -5,6 +5,7 @@
 package org.eolang.win32;
 
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
@@ -13,11 +14,9 @@ import org.eolang.SockaddrIn;
 /**
  * Interface definitions for <code>WS2_32.dll</code>.
  * @since 0.40
- * @checkstyle MethodNameCheck (1000 lines)
- * @checkstyle ParameterNumberCheck (1000 lines)
  * @checkstyle AbbreviationAsWordInNameCheck (1000 lines)
  */
-@SuppressWarnings({"PMD.MethodNamingConventions", "PMD.TooManyMethods"})
+@SuppressWarnings("PMD.MethodNamingConventions")
 public interface Winsock extends StdCallLibrary {
 
     /**
@@ -33,8 +32,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Winsock version.
      */
-    @SuppressWarnings("PMD.LongVariable")
-    short WINSOCK_VERSION_2_2 = (short) 0x0202;
+    short VERSION_2_2 = (short) 0x0202;
 
     /**
      * The Internet Protocol version 4 (IPv4) address family.
@@ -57,7 +55,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Invalid socket descriptor.
      */
-    int INVALID_SOCKET = -1;
+    long INVALID_SOCKET = -1L;
 
     /**
      * Status returned on errors with socket.
@@ -70,7 +68,7 @@ public interface Winsock extends StdCallLibrary {
      * @param data Data with info about socket structure
      * @return Zero on success, error code on error
      */
-    int WSAStartup(short version, WSAStartupFuncCall.WSAData data);
+    int WSAStartup(short version, WSAData data);
 
     /**
      * Stops usage of Winsock 2 by DLL.
@@ -80,19 +78,25 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Creates a socket.
+     *
+     * <p>The return type is {@link Pointer} rather than a fixed-width
+     * primitive because a {@code SOCKET} is a Windows {@code UINT_PTR}:
+     * 4 bytes on Win32, 8 on Win64 (#7577). JNA marshals {@link Pointer}
+     * at the platform's actual pointer width, matching that either way.</p>
+     *
      * @param domain Socket domain
      * @param type Socket type
      * @param protocol Socket protocol
      * @return Socket descriptor
      */
-    int socket(int domain, int type, int protocol);
+    Pointer socket(int domain, int type, int protocol);
 
     /**
      * Closes a socket.
      * @param socket Socket descriptor
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int closesocket(int socket);
+    int closesocket(Pointer socket);
 
     /**
      * Connects to the server at the specified IP address and port.
@@ -101,7 +105,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int connect(int sockfd, SockaddrIn addr, int addrlen);
+    int connect(Pointer sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -111,7 +115,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(int sockfd, SockaddrIn addr, int addrlen);
+    int bind(Pointer sockfd, SockaddrIn addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.
@@ -120,7 +124,7 @@ public interface Winsock extends StdCallLibrary {
      *  waiting to be accepted
      * @return Zero on success, -1 on error
      */
-    int listen(int sockfd, int backlog);
+    int listen(Pointer sockfd, int backlog);
 
     /**
      * Accept connection on socket.
@@ -130,7 +134,7 @@ public interface Winsock extends StdCallLibrary {
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
      *  is returned. On error, -1 is returned
      */
-    int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
+    Pointer accept(Pointer sockfd, SockaddrIn addr, IntByReference addrlen);
 
     /**
      * Send a message to a socket.
@@ -139,9 +143,8 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of sent data
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    int send(int sockfd, byte[] buf, int len, int flags);
+    int send(Pointer sockfd, byte[] buf, int len, int flags);
 
     /**
      * Receive a message from a socket.
@@ -150,20 +153,48 @@ public interface Winsock extends StdCallLibrary {
      * @param len Size of received data
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    int recv(int sockfd, byte[] buf, int len, int flags);
+    int recv(Pointer sockfd, byte[] buf, int len, int flags);
 
     /**
-     * Retrieve the last error from winsock.
-     * @return The code of the last winsock error
+     * Convert an IPv4 address from text into a 32-bit number in network byte
+     * order.
+     *
+     * <p>Four forms are accepted — {@code a.b.c.d}, {@code a.b.c}, {@code a.b}
+     * and {@code a} — and every part is read the way C reads a number: decimal,
+     * octal behind a leading zero, or hexadecimal behind a leading {@code 0x}.
+     * A part that is not the last one stands for one byte, and the last one
+     * fills all the bytes still left, so {@code 127.1} is {@code 127.0.0.1}.</p>
+     *
+     * <p>The address arrives as NUL-terminated bytes and not as a
+     * {@link String} because this library is loaded with
+     * {@link W32APIOptions#DEFAULT_OPTIONS}, whose type mapper hands a
+     * {@link String} over as {@code wchar_t*}. That is right for the wide
+     * entry points of WS2_32 and wrong for this one, which takes a narrow
+     * {@code const char*}: {@code 127.0.0.1} would reach it as UTF-16 and be
+     * read as {@code 1}, the byte after the first one being NUL. An array
+     * bypasses the mapper and is passed as the bytes it holds.</p>
+     *
+     * @param address The address to convert, NUL-terminated
+     * @return The address in network byte order, or {@code INADDR_NONE} when
+     *  the text is not one of those forms
      */
-    int WSAGetLastError();
+    int inet_addr(byte[] address);
 
     /**
-     * Set the last winsock error, so a following {@code WSAGetLastError} reads it
-     * back. It is the winsock counterpart of Kernel32's {@code SetLastError} and
-     * writes the same per-thread last-error slot.
+     * Set the last winsock error. It is the winsock counterpart of Kernel32's
+     * {@code SetLastError} and writes the same per-thread last-error slot.
+     *
+     * <p>There is no {@code WSAGetLastError} here on purpose. The slot it reads
+     * is overwritten by the JNI and JNA machinery that stands between a mapped
+     * call and the Java code around it, so a mapped {@code WSAGetLastError}
+     * answers with whatever that machinery left behind, usually zero, instead
+     * of the code the previous call set. The code is read back from
+     * {@link com.sun.jna.Native#getLastError()}, which hands over the copy JNA
+     * takes of the slot the instant every mapped call returns — this one
+     * included. JNA short-circuits Kernel32's {@code GetLastError} to that same
+     * copy for the same reason.</p>
+     *
      * @param error The error code to set
      */
     void WSASetLastError(int error);

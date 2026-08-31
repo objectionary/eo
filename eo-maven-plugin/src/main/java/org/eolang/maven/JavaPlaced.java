@@ -53,14 +53,11 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         }
         if (tests && JavaPlaced.testsPresent(clazz)) {
             this.placeJavaTests(clazz);
+        } else {
+            this.removeJavaTests(clazz);
         }
     }
 
-    /**
-     * Place Java tests.
-     * @param clazz Transpiled Class
-     * @throws IOException If I/O fails
-     */
     private void placeJavaTests(final Xnav clazz) throws IOException {
         final String[] jparts = clazz.attribute("java-name").text().get().split("\\.");
         final Path tests = this.generated.getParent().resolve(
@@ -71,7 +68,7 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             Path::resolve,
             Path::resolve
             );
-        final String origin = String.format("%sTest.java", jparts[jparts.length - 1]);
+        final String origin = String.format("Test%s.java", jparts[jparts.length - 1]);
         final Path resolved = base.resolve(origin);
         final Path resulted;
         final String content;
@@ -83,7 +80,7 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             )
         ) {
             final String atomized = String.format(
-                "%sEOAtomTest.java", jparts[jparts.length - 1]
+                "TestAtom%s.java", jparts[jparts.length - 1]
             );
             resulted = base.resolve(atomized);
             content = clazz.element("tests").text().get().replace(
@@ -94,13 +91,29 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
             content = clazz.element("tests").text().get();
         }
         new Saved(content, resulted).value();
+        this.removeJavaTests(clazz, resulted);
     }
 
-    /**
-     * Tests present?
-     * @param clazz Transpiled clazz
-     * @return True or False
-     */
+    private void removeJavaTests(final Xnav clazz) throws IOException {
+        this.removeJavaTests(clazz, null);
+    }
+
+    private void removeJavaTests(final Xnav clazz, final Path retained) throws IOException {
+        final String[] parts = clazz.attribute("java-name").text().get().split("\\.");
+        final Path base = Arrays.stream(parts, 0, parts.length - 1).reduce(
+            this.generated.getParent().resolve("generated-test-sources"),
+            Path::resolve,
+            Path::resolve
+        );
+        final String name = parts[parts.length - 1];
+        for (final String mark : new String[]{"Test", "TestAtom"}) {
+            final Path test = base.resolve(String.format("%s%s.java", mark, name));
+            if (!test.equals(retained)) {
+                Files.deleteIfExists(test);
+            }
+        }
+    }
+
     private static boolean testsPresent(final Xnav clazz) {
         return clazz.element("tests").text().map(
             s -> Stream.of(

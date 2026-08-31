@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The table used to read what every object sits in off its locator, on the
+# grounds that the receiver is written nowhere and everything has one. Since
+# #6657 neither half holds. A formation says outright what it is dispatched
+# on, and one that says nothing has nothing: the runtime terminates on the `ρ`
+# of an object that declares no receiver, so a row naming one would be a lie
+# about the program.
+eo:
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+provides:
+  - "//type[@id='Φ.inc']/attr[@name='ρ'][@void='true'][@type='Φ.inc.ρ']"
+  - "//type[@id='Φ.oak'][not(attr[@name='ρ'])]"

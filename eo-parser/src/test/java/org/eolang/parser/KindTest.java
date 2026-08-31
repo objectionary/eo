@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -19,16 +18,12 @@ final class KindTest {
     @ParameterizedTest
     @EnumSource(
         value = Kind.class,
-        names = {
-            "HAPPLICATION",
-            "REVERSED_WITH_HARGS",
-            "VMETHOD_WITH_HARGS"
-        }
+        names = {"BARE_FORMATION", "ONLY_PHI", "PIPE_APPLICATION", "IDENTITY_OBJECT"}
     )
-    void marksHorizontallyCompletedKinds(final Kind kind) {
+    void acceptsPipeAfterFormationLikeKinds(final Kind kind) {
         MatcherAssert.assertThat(
-            "Appendix A's horizontally-completed set must report true",
-            kind.horizontallyCompleted(),
+            "a pipe must attach to every formation-like kind, the identity object included",
+            kind.pipeable(),
             Matchers.is(true)
         );
     }
@@ -36,26 +31,41 @@ final class KindTest {
     @ParameterizedTest
     @EnumSource(
         value = Kind.class,
-        names = {
-            "TOP_LEVEL", "HEAD", "HMETHOD", "BARE_FORMATION", "BARE_REVERSED",
-            "COMPACT_TUPLE", "ONLY_PHI_FORMATION", "VAPPLICATION", "VMETHOD",
-            "TEXT_BLOCK"
-        }
+        names = {"BARE_FORMATION", "ONLY_PHI", "PIPE_APPLICATION", "IDENTITY_OBJECT"},
+        mode = EnumSource.Mode.EXCLUDE
     )
-    void leavesOtherKindsOutOfHorizontallyCompletedSet(final Kind kind) {
+    void rejectsPipeAfterOtherKinds(final Kind kind) {
         MatcherAssert.assertThat(
-            "kinds outside Appendix A's horizontally-completed set must report false",
-            kind.horizontallyCompleted(),
+            "a pipe cannot attach to a kind that is neither formation-like nor a pipe",
+            kind.pipeable(),
             Matchers.is(false)
         );
     }
 
-    @Test
-    void exposesTopLevelSentinel() {
+    @ParameterizedTest
+    @EnumSource(
+        value = Kind.class,
+        names = {"BARE_FORMATION", "ONLY_PHI"}
+    )
+    void marksFormationKinds(final Kind kind) {
         MatcherAssert.assertThat(
-            "TOP_LEVEL must exist as the parent-kind sentinel for indent-0 entries",
-            Kind.valueOf("TOP_LEVEL"),
-            Matchers.notNullValue()
+            "a formation kind must open a fresh naming scope",
+            kind.formation(),
+            Matchers.is(true)
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+        value = Kind.class,
+        names = {"BARE_FORMATION", "ONLY_PHI"},
+        mode = EnumSource.Mode.EXCLUDE
+    )
+    void leavesOtherKindsOutOfFormations(final Kind kind) {
+        MatcherAssert.assertThat(
+            "a kind that opens no naming scope must not report itself as a formation",
+            kind.formation(),
+            Matchers.is(false)
         );
     }
 }

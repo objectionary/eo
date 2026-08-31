@@ -1,4 +1,4 @@
-# Returns the `text` in lower case, using the default English casing rules.
+# Returns the string in lower case, using the default English casing rules.
 # This is a thin string method: `"HELLO".lower` is the same as
 # `(string.english "HELLO").lower`. Only the ASCII letters `A`-`Z` are
 # folded; every other byte, including accented Latin, Cyrillic and Greek
@@ -13,16 +13,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text] > lower
-  lower. > @
-    english text
+[^] > lower
+  ^.english.lower > @
 
-  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters
+  "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters-when-lower-casing
 
   eq. ++> can-lower-case-text
     "good evening"
     "Good evening".lower
 
-  eq. ++> can-lower-case-text-through-the-package
-    "hello"
-    lower "HELLO"
+  "hello".eq "HELLO".lower ++> can-lower-case-text-through-the-package

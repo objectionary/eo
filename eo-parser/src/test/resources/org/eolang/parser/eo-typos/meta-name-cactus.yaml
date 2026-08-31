@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  [1:1] error: 'meta name must be lowercase letters and digits, starting with a letter'
+  +foo🌵
+   ^
+input: |
+  +foo🌵
+
+  [] > main
+    5 > x

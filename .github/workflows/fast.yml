@@ -1,0 +1,103 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: fast
+'on':
+  pull_request:
+    branches:
+      - master
+concurrency:
+  group: fast-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  fast:
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # The depth is two, not zero: the step below reads only the merge
+      # commit and its first parent. A full clone drags in `gh-pages`, which
+      # is about three gigabytes of generated site snapshots.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      # A test written inside an .eo file runs nowhere but the `codecov` job,
+      # on master, where `eo.deadline` is one second and `org.eolang.Deadline`
+      # reports anything slower as skipped. A broken .eo file therefore lands
+      # green and surfaces days later on a run that happened to be fast enough
+      # to reach it. The last step below runs the tests of every .eo file the
+      # branch touches, with a deadline long enough that nothing gets skipped.
+      - id: eo
+        run: |
+          # The base must be the first parent of the merge commit we are
+          # standing on, not `pull_request.base.sha`: the latter is the base
+          # branch tip from the moment the branch was last synced, while the
+          # merge ref is recomputed against the current tip. Comparing the two
+          # makes every commit that landed on master meanwhile look like a
+          # change made by this branch.
+          head=$(git rev-parse HEAD)
+          base=$(git rev-parse "${head}^1")
+          # The tests of `foo.eo` are transpiled into `TestEOfoo`, and so are
+          # the tests of `foo/bar.eo`, because a package member is tested
+          # through the package that owns it. A file holding no `++>` and no
+          # `-->` test gets no class at all, and naming a class that does not
+          # exist fails the run, so such a file is dropped right here.
+          classes=$(
+            git diff --name-only "${base}" "${head}" -- eo-runtime/src/main/eo \
+              | grep -E '\.eo$' \
+              | while read -r file; do
+                  rel=${file#eo-runtime/src/main/eo/}
+                  case "${rel}" in
+                    */*) echo "${rel%%/*}" ;;
+                    *) echo "${rel%.eo}" ;;
+                  esac
+                done \
+              | sort -u \
+              | while read -r name; do
+                  if grep -qrE -- ' (\+\+>|-->) ' \
+                    "eo-runtime/src/main/eo/${name}.eo" \
+                    "eo-runtime/src/main/eo/${name}" 2>/dev/null; then
+                    echo "TestEO${name}"
+                  fi
+                done \
+              | paste -sd, -
+          ) || true
+          # The `|| true` is what lets the guard below run at all. A step
+          # script runs under `-e -o pipefail`, so a branch that touches no
+          # `.eo` file leaves `grep` with nothing to match, `grep` exits 1,
+          # the pipeline inherits it and the assignment dies before anything
+          # reads `classes`. On the left of `||` the status is nobody's
+          # business and `classes` simply comes out empty.
+          if [ -z "${classes}" ]; then
+            echo 'This branch touches no .eo file that owns tests, nothing to run'
+          else
+            echo "Test classes to run: ${classes}"
+          fi
+          echo "classes=${classes}" >> "${GITHUB_OUTPUT}"
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 26
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-26-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
+      # The build above transpiled no tests at all, so `eo-runtime` is rebuilt
+      # here from a clean target with them. An hour per test leaves `Deadline`
+      # nothing to swallow, so a test that fails is reported as a failure and
+      # not as a skip.
+      - if: steps.eo.outputs.classes != ''
+        env:
+          CLASSES: ${{ steps.eo.outputs.classes }}
+        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"

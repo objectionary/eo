@@ -201,11 +201,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
         }
     }
 
-    /**
-     * Returns the given system if non-null, otherwise creates a fresh one.
-     * @param sys Repository system, or {@code null}
-     * @return Non-null repository system
-     */
     private static RepositorySystem nonNull(final RepositorySystem sys) {
         final RepositorySystem result;
         if (sys == null) {
@@ -216,12 +211,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
         return result;
     }
 
-    /**
-     * Builds a standalone session for the given system and local repository.
-     * @param sys Repository system
-     * @param local Local repository path
-     * @return Configured session
-     */
     private static DefaultRepositorySystemSession standaloneSession(
         final RepositorySystem sys, final Path local
     ) {

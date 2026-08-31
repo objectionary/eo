@@ -33,6 +33,21 @@ final class CommentsTest {
     }
 
     @Test
+    void reportsLastLineOfMultiLineBlock() {
+        final Globals globals = new Globals();
+        globals.addComment(new Span("# first", 1));
+        globals.addComment(new Span("# second", 2));
+        globals.blank();
+        final Emit emit = new Emit();
+        Comments.seal(globals, emit, new Span("+package foo", 4));
+        MatcherAssert.assertThat(
+            "a multi-line top comment block must report the line of its last span, not its first",
+            CommentsTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/comments/comment[@line='2']")
+        );
+    }
+
+    @Test
     void clearsBufferAfterFlush() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# x", 1));
@@ -92,11 +107,6 @@ final class CommentsTest {
         );
     }
 
-    /**
-     * Render the emit's directives under a fresh {@code <object/>}.
-     * @param emit The emit
-     * @return XMIR document
-     */
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

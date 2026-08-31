@@ -1,4 +1,4 @@
-# Returns concatenation of `text` with all `other` strings.
+# Returns concatenation of the string with all `other` strings.
 # Here `others` must be a `tuple` of `strings`.
 
 +architect yegor256@gmail.com
@@ -8,26 +8,24 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[text others] > chained
+[^ others] > chained
   if. > @
     0.eq others.length
-    text
+    ^
     string
-      tuple.reduced
-        others
-        text.as-bytes
+      others.reduced
+        ^.as-bytes
         accum.concat str.as-bytes > [accum str]
 
   eq. ++> can-chain-with-other-strings
     "Hello, world!"
-    chained *1
-      "Hello"
-      ", "
-      "world"
-      "!"
+    "Hello".chained
+      *
+        ", "
+        "world"
+        "!"
 
   eq. ++> can-return-the-same-text-without-other-strings
     "Some"
-    chained
-      "Some"
+    "Some".chained
       *

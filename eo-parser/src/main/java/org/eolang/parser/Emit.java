@@ -7,7 +7,6 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 import org.xembly.Directive;
 import org.xembly.Directives;
 
@@ -17,7 +16,7 @@ import org.xembly.Directives;
  * <p>Wraps a growing list of {@link Directive} that downstream
  * {@code Xembler} converts into XMIR. Each emission method appends to the
  * sink in source order; the caller controls when to take a
- * {@link #savepoint()} and how to {@link #rollback(int)} on a per-line
+ * {@link #savepoint()} and how to {@link #rollback(Savepoint)} on a per-line
  * recovery (R-7.2).</p>
  *
  * <p>The class exposes two families of methods:</p>
@@ -28,7 +27,8 @@ import org.xembly.Directives;
  * {@code /object} (metas, comments, errors). These wrap their
  * navigation in {@code push}/{@code pop} so the caller's cursor
  * position survives the call. Safe to invoke at any depth.</li>
- * <li><strong>Object tree</strong> ({@link #object}, {@link #close},
+ * <li><strong>Object tree</strong> ({@link #object}, {@link #unnamedObject},
+ * {@link #baselessObject}, {@link #bareObject}, {@link #close},
  * {@link #voidParam}, {@link #atomMarker}) — emit relative to the
  * current cursor, descending into the new {@code <o>} on
  * {@link #object} and ascending on {@link #close}. The caller must
@@ -41,12 +41,6 @@ import org.xembly.Directives;
 final class Emit {
 
     /**
-     * Pre-compiled line-break splitter for the source text passed to
-     * the {@link #Emit(String)} constructor.
-     */
-    private static final Pattern EOL = Pattern.compile("\\R");
-
-    /**
      * Flat list of directives, appended in source order.
      */
     private final List<Directive> sink;
@@ -56,7 +50,37 @@ final class Emit {
      * lookup). Empty when no source is wired through — in that case
      * {@link #error} falls back to the bare {@code [L:P] message} form.
      */
-    private final List<String> lines;
+    private final Rows lines;
+
+    /**
+     * The atom signature owed to an open {@code <o>} as its {@code λ}
+     * child, empty when nothing is owed. An atom carries its signature
+     * on the head line but declares its voids below it, and every void
+     * belongs ahead of the marker (§9.4), so the marker waits here
+     * until the object it belongs to takes a child that is not a void,
+     * or closes with none.
+     */
+    private String signature;
+
+    /**
+     * Source line of the owed marker.
+     */
+    private int sigline;
+
+    /**
+     * Source column of the owed marker.
+     */
+    private int sigpos;
+
+    /**
+     * Depth at which the object that owes the marker sits.
+     */
+    private int sigdepth;
+
+    /**
+     * How many {@code <o>} elements stand open at the cursor.
+     */
+    private int depth;
 
     /**
      * Ctor.
@@ -66,46 +90,66 @@ final class Emit {
     }
 
     /**
-     * Ctor.
-     * @param source Raw EO source text (for caret-underlined error
-     *  messages — pass empty string to disable)
-     */
-    Emit(final String source) {
-        this(List.of(Emit.EOL.split(source, -1)));
-    }
-
-    /**
      * Primary ctor.
-     * @param src Pre-split source lines
+     * @param source The source lines {@link Source} split off the text
+     *  being parsed (for caret-underlined error messages — pass an
+     *  empty list to disable)
      */
-    private Emit(final List<String> src) {
+    Emit(final List<Span> source) {
+        this.signature = "";
         this.sink = new ArrayList<>(0);
-        this.lines = src;
+        this.lines = new Rows(source);
     }
 
     /**
-     * Take a savepoint of the current sink size.
-     *
-     * <p>R-7.2 — the parser takes one of these at the start of each line.
-     * On a parse error inside that line, the caller invokes
-     * {@link #rollback(int)} with this token to drop the line's
-     * half-built directives.</p>
-     *
-     * @return Savepoint token (current sink size)
+     * Take a savepoint of the emitter's cursor: sink size, {@link #depth},
+     * and any atom signature owed to an open {@code <o>} — R-7.2. All
+     * three must roll back together via {@link #rollback(Savepoint)}, or
+     * an error recovered mid-formation leaves {@link #depth} drifted from
+     * the tree it describes (#7539).
+     * @return Savepoint token
      */
-    int savepoint() {
-        return this.sink.size();
+    Savepoint savepoint() {
+        return new Savepoint(
+            this.sink.size(), this.depth, this.signature,
+            this.sigline, this.sigpos, this.sigdepth
+        );
     }
 
     /**
-     * Roll the sink back to the given savepoint, discarding any
-     * directives appended after it.
+     * Roll the sink and cursor back to the given savepoint, discarding
+     * any directives appended after it and restoring {@link #depth} and
+     * the owed atom signature to what they were at that point.
      * @param token Savepoint token from {@link #savepoint()}
      */
-    void rollback(final int token) {
-        while (this.sink.size() > token) {
+    void rollback(final Savepoint token) {
+        while (this.sink.size() > token.sink()) {
             this.sink.remove(this.sink.size() - 1);
         }
+        token.restore(this);
+    }
+
+    /**
+     * Put {@link #depth} back to what it was at a savepoint.
+     * @param cursor Depth to restore
+     */
+    void depth(final int cursor) {
+        this.depth = cursor;
+    }
+
+    /**
+     * Put the owed atom signature back to what it was at a savepoint.
+     * @param owed Signature owed to the open object, empty when nothing is owed
+     * @param line Source line of the owed marker
+     * @param pos Source column of the owed marker
+     * @param level Depth of the object owing the marker
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    void signature(final String owed, final int line, final int pos, final int level) {
+        this.signature = owed;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = level;
     }
 
     /**
@@ -146,12 +190,12 @@ final class Emit {
      *
      * <p>The body is the comment text with the leading {@code #} stripped
      * from each line. If the comment block spans multiple lines, they
-     * are joined by {@code \n}. The reported line number is the line of
-     * the <em>last</em> comment line in the block. Wraps absolute
-     * navigation in {@code push}/{@code pop}.</p>
+     * are joined by {@code \n}. The reported line number is the caller's
+     * choice of target line. Wraps absolute navigation in
+     * {@code push}/{@code pop}.</p>
      *
      * @param spans Comment line spans, in source order
-     * @param target Line of the last comment span in the block
+     * @param target Line to report for the flushed comment
      */
     void comment(final List<Span> spans, final int target) {
         if (spans.isEmpty()) {
@@ -182,16 +226,25 @@ final class Emit {
                 .strict(1)
                 .add("comment")
                 .attr("line", target)
-                .set(body.toString())
+                .set(new Scrubbed(body.toString()))
                 .up().up()
                 .pop()
         );
     }
 
     /**
-     * Append an error directive to {@code /object/errors} — §9.6.
-     *
-     * <p>Records the {@code line}, {@code pos} (0-indexed column per
+     * Append a non-lossy error directive to {@code /object/errors} — see
+     * {@link #error(int, int, String, boolean)}.
+     * @param line Line where the error occurred
+     * @param pos Column where the error occurred (0-indexed)
+     * @param message Canonical message text (no position prefix)
+     */
+    void error(final int line, final int pos, final String message) {
+        this.error(line, pos, message, false);
+    }
+
+    /**
+     * Emit a parser {@code <error>} at the current line/position (R-9.9.1 /
      * R-9.1.2), and the canonical message text from §9.9 prefixed with
      * {@code [L:P]} per R-9.9.2. Wraps absolute navigation in
      * {@code push}/{@code pop}. The {@code check} attribute is always set
@@ -199,46 +252,49 @@ final class Emit {
      * one raised by a named lint rule (#6215): downstream code (see
      * {@code Linting.toDefect} in eo-maven-plugin) fails fast if
      * {@code check} is ever missing, so it must be set here rather than
-     * defaulted downstream.</p>
-     *
+     * defaulted downstream.
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
      * @param message Canonical message text (no position prefix)
+     * @param lossy Whether recovering from this error dropped the whole
+     *  construct it was building, rather than merely flagging a cosmetic
+     *  or informational issue with a construct that still made it into
+     *  the tree intact (#6649)
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    void error(final int line, final int pos, final String message) {
+    void error(final int line, final int pos, final String message, final boolean lossy) {
+        final Directives dirs = new Directives()
+            .push()
+            .xpath("/object")
+            .strict(1)
+            .addIf("errors")
+            .strict(1)
+            .add("error")
+            .attr("line", line)
+            .attr("pos", pos)
+            .attr("check", "parser")
+            .attr("severity", "error");
+        if (lossy) {
+            dirs.attr("lossy", "");
+        }
         this.append(
-            new Directives()
-                .push()
-                .xpath("/object")
-                .strict(1)
-                .addIf("errors")
-                .strict(1)
-                .add("error")
-                .attr("line", line)
-                .attr("pos", pos)
-                .attr("check", "parser")
-                .attr("severity", "error")
-                .set(this.formatted(line, pos, message))
+            dirs.set(new Scrubbed(this.lines.underlined(line, pos, message)))
                 .up().up()
                 .pop()
         );
     }
 
     /**
-     * Open an {@code <o>} element at the current cursor — §9.0.2 /
-     * §9.4.2.
+     * Open an {@code <o base="...">} element at the current cursor —
+     * §9.0.2 / §9.4.2.
      *
      * <p>The cursor descends into the new element so subsequent
      * {@link #voidParam}, {@link #atomMarker}, and child {@link #object}
      * calls add as children. Must be balanced by {@link #close()} when
      * the element's body ends.</p>
      *
-     * <p>{@code name} and {@code base} may be {@code null} (omitted on
-     * the emitted element). {@code line} and {@code pos} are written as
-     * {@code @line} / {@code @pos} per R-9.1.</p>
-     *
      * @param name Value for {@code @name}, or {@code null} to omit
-     * @param base Value for {@code @base}, or {@code null} to omit
+     * @param base Value for {@code @base}
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
      * @checkstyle ParameterNumberCheck (10 lines)
@@ -246,15 +302,40 @@ final class Emit {
     void object(
         final String name, final String base, final int line, final int pos
     ) {
-        final Directives dirs = new Directives().add("o");
-        if (name != null) {
-            dirs.attr("name", name);
-        }
-        if (base != null) {
-            dirs.attr("base", base);
-        }
-        dirs.attr("line", line).attr("pos", pos);
-        this.append(dirs);
+        this.open(name, base, line, pos);
+    }
+
+    /**
+     * Open an unnamed {@code <o base="...">} element, i.e. one with
+     * no {@code @name} — §9.0.2 / §9.4.2.
+     * @param base Value for {@code @base}
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void unnamedObject(final String base, final int line, final int pos) {
+        this.open(null, base, line, pos);
+    }
+
+    /**
+     * Open a named, base-less {@code <o>} element — one whose
+     * {@code @base} is absent because the {@code wrap-applications}
+     * reshape fills it in later — §9.0.2 / §9.4.2.
+     * @param name Value for {@code @name}, or {@code null} to omit
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void baselessObject(final String name, final int line, final int pos) {
+        this.open(name, null, line, pos);
+    }
+
+    /**
+     * Open an unnamed, base-less {@code <o>} element — neither
+     * {@code @name} nor {@code @base} is written — §9.0.2 / §9.4.2.
+     * @param line Source line for {@code @line}
+     * @param pos Source column for {@code @pos}
+     */
+    void bareObject(final int line, final int pos) {
+        this.open(null, null, line, pos);
     }
 
     /**
@@ -316,16 +397,6 @@ final class Emit {
     }
 
     /**
-     * Add the {@code @self=""} attribute to the most recently opened
-     * {@code <o>} — marks a base-less {@code %} self-reference node
-     * (§3.15 / §9.4) whose {@code @base} the {@code resolve-self} reshape
-     * fills in with the enclosing anonymous formation's auto-name.
-     */
-    void self() {
-        this.append(new Directives().attr("self", ""));
-    }
-
-    /**
      * Add the {@code @local="name"} attribute to the most recently
      * opened {@code <o>} — the file-local handle of an anonymous
      * ({@code >> name}) formation (§3.10 / §9.2). The
@@ -354,7 +425,7 @@ final class Emit {
      * Add the {@code @type="type"} attribute to the most recently opened
      * {@code <o>} — the declared type of an atom's vertical void
      * attribute (R-3.4.8): a concrete forma or a generic type variable,
-     * with an optional trailing {@code ?} marking a maybe-bottom value.
+     * with an optional trailing {@code ?} marking a maybe-terminator value.
      * @param type The declared type
      */
     void type(final String type) {
@@ -386,6 +457,8 @@ final class Emit {
      * one level. Must balance a prior {@link #object} call.
      */
     void close() {
+        this.lambda();
+        this.depth = this.depth - 1;
         this.append(new Directives().up());
     }
 
@@ -418,15 +491,10 @@ final class Emit {
      * @param pos Source column of the {@code /sig} marker
      */
     void atomMarker(final String sig, final int line, final int pos) {
-        this.append(
-            new Directives()
-                .add("o")
-                .attr("name", "λ")
-                .attr("atom", sig)
-                .attr("line", line)
-                .attr("pos", pos)
-                .up()
-        );
+        this.signature = sig;
+        this.sigline = line;
+        this.sigpos = pos;
+        this.sigdepth = this.depth;
     }
 
     /**
@@ -441,38 +509,43 @@ final class Emit {
         return this.sink;
     }
 
-    /**
-     * Append a directives iterable to the sink.
-     * @param dirs Directives to append
-     */
+    private void open(
+        final String name, final String base, final int line, final int pos
+    ) {
+        final Directives dirs = new Directives().add("o");
+        if (name != null) {
+            dirs.attr("name", name);
+        }
+        if (base != null) {
+            dirs.attr("base", base);
+        }
+        dirs.attr("line", line).attr("pos", pos);
+        if (!"∅".equals(base)) {
+            this.lambda();
+        }
+        this.append(dirs);
+        this.depth = this.depth + 1;
+    }
+
+    private void lambda() {
+        if (!this.signature.isEmpty() && this.depth == this.sigdepth) {
+            this.append(
+                new Directives()
+                    .add("o")
+                    .attr("name", "λ")
+                    .attr("atom", this.signature)
+                    .attr("line", this.sigline)
+                    .attr("pos", this.sigpos)
+                    .up()
+            );
+            this.signature = "";
+        }
+    }
+
     private void append(final Iterable<Directive> dirs) {
         final Iterator<Directive> iterator = dirs.iterator();
         while (iterator.hasNext()) {
             this.sink.add(iterator.next());
         }
-    }
-
-    /**
-     * Render the error text in the canonical
-     * {@code [L:P] error: 'message'} form, followed by the offending
-     * source line and a caret pointer when source is available.
-     * @param line Line number (1-indexed)
-     * @param pos Column (0-indexed)
-     * @param message The bare message
-     * @return Formatted error text
-     */
-    private String formatted(final int line, final int pos, final String message) {
-        final String located = new MsgLocated(line, pos, message).formatted();
-        final String result;
-        if (line >= 1 && line <= this.lines.size()) {
-            result = String.format(
-                "%s%n%s",
-                located,
-                new MsgUnderlined(this.lines.get(line - 1), pos, 1).formatted()
-            );
-        } else {
-            result = located;
-        }
-        return result;
     }
 }

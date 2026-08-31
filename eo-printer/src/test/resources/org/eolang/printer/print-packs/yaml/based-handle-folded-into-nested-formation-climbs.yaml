@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based file-local handle ("num.plus 1 >> next", R-3.10.12) whose only
+# reference is a bare one written inside a nested "[] > later" formation. The
+# fold lands the handle's value one formation deeper than the scope it was
+# written in, so every name in it that reaches out of the value has to climb
+# that difference (#7095). Its children already did, but its own "@base" did
+# not: the value was handed to the rebasing pass as the loose sequence of its
+# attributes and children, and an "@base" arriving as a stray attribute node
+# rather than on the "o" carrying it was copied through untouched. So "ξ.num"
+# printed as "$.num" inside "later", which reparses as that formation's own
+# "num" — an attribute it does not declare — instead of the "num" of "foo"
+# the handle was written against (#7097).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [num] > foo
+    num.plus 1 >> next
+    [] > later
+      next > @
+
+printed: |
+  [num] > foo
+    ^.num.plus 1 > [] > later

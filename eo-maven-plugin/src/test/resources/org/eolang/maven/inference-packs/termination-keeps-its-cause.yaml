@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What a termination was caused by is an object like any other and keeps the
+# row it would have had anyway, since nothing of it is carried in the row of
+# the termination itself.
+eo:
+  app.eo: |
+    [] > app
+      T > dead
+        why
+  why.eo: |
+    [] > why
+links:
+  - "/links/type[@id='Φ.app.dead']/terminator"
+  - "/links/type[@id='Φ.app.dead.α0']/ref[@loc='Φ.why']"

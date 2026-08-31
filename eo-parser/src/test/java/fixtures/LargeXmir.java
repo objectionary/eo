@@ -70,10 +70,6 @@ public final class LargeXmir {
         }
     }
 
-    /**
-     * Build xml.
-     * @return XML
-     */
     private XML unsafe() throws IOException {
         final AtomicReference<XML> ref = new AtomicReference<>();
         new Farea(Files.createTempDirectory("tmp")).together(f -> this.assemble(f, ref));
@@ -84,12 +80,6 @@ public final class LargeXmir {
         return xml;
     }
 
-    /**
-     * Run the assembly inside the temp project.
-     * @param farea The temporary project
-     * @param ref Reference to capture the XMIR
-     * @throws IOException If fails
-     */
     private void assemble(final Farea farea, final AtomicReference<XML> ref) throws IOException {
         farea.clean();
         farea.files()

@@ -19,29 +19,126 @@
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:variable name="eol" select="'&#10;'"/>
   <xsl:output method="xml" encoding="UTF-8"/>
-  <!-- Translate a dotted path to EO surface form: ρ -> ^, φ -> @. -->
+  <!--
+  What the "BASED" head template below used to re-derive for every single
+  reference it renders, hoisted because none of it changes during one
+  transformation (#7938). Saxon folds neither prefix nor the cactus pattern
+  into a constant, "$eo:program" and "$eo:cactoos" being globals rather than
+  literals, so "eo:printable" even recompiled its regex per call; and the
+  "+package" meta, the program's own top-level name and the "+alias" short
+  names were each read from the document root per reference.
+  -->
+  <xsl:variable name="eo:root-prefix" select="concat($eo:program, '.')"/>
+  <xsl:variable name="eo:xi-prefix" select="concat($eo:xi, '.')"/>
+  <xsl:variable name="eo:cactus-name" select="concat('a', $eo:cactoos)"/>
+  <xsl:variable name="eo:cactus-pattern" select="concat('a', $eo:cactoos, '(\d+)-(\d+)')"/>
+  <xsl:variable name="eo:package" select="string((/object/metas/meta[head='package'])[1]/part[1])"/>
+  <xsl:variable name="eo:self-prefix" select="concat($eo:program, '.', $eo:package, '.')"/>
+  <xsl:variable name="eo:top-name" as="xs:string*" select="/object/o[1]/@name/string()"/>
+  <xsl:variable name="eo:aliases" as="xs:string*" select="/object/metas/meta[head = 'alias']/part[1]/string()"/>
+  <!--
+  The two scope questions that same template asks per reference, indexed: the
+  handles of one name, reached through a "//o[@local=$name]" scan of the whole
+  document, and whether an enclosing object declares a name, answered by
+  scanning every ancestor's children. Both are the shape
+  "resolve-local-names.xsl" keyed away in #6502, and both made this sheet
+  quadratic in the file's size.
+  -->
+  <xsl:key name="locals" match="o[@local]" use="@local"/>
+  <xsl:key name="named" match="o[@name]" use="concat(@name, '#', generate-id(..))"/>
+  <!-- Translate a dotted path to EO surface form: ρ -> ^, φ -> @, ξ -> $. -->
   <xsl:function name="eo:translate-path" as="xs:string">
     <xsl:param name="path" as="xs:string"/>
-    <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else $seg), '.')"/>
+    <xsl:sequence select="string-join(for $seg in tokenize($path, '\.') return (if ($seg = $eo:rho) then '^' else if ($seg = $eo:phi) then '@' else if ($seg = $eo:xi) then '$' else if ($seg = $eo:bottom) then 'T' else $seg), '.')"/>
   </xsl:function>
   <!--
   Render a base as an EO head: drop implicit ξ./Φ. roots, render a
   leading dot as reversed dispatch, map ξ/ρ/φ/Φ and every segment.
+
+  The parameter takes the "@base" attribute node as it stands and atomises it
+  here, rather than declaring "xs:string" and leaving that to the function
+  conversion rules (#6669): Saxon may bind a parameter to a closure over the
+  argument expression instead of over its converted value, and the node then
+  reaches the "$base = $eo:xi" comparison below, which was compiled as a
+  "ValueComparison" on the strength of a statically atomic parameter and casts
+  straight to an atomic value. That is how the same shape killed
+  "inline-cactoos" in #6669. "eo:root-name" is hardened the same way, being the
+  other function this sheet asks about a raw "@base".
   -->
   <xsl:function name="eo:surface" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
-    <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, concat($eo:program, '.'))) then eo:translate-path(substring-after($base, concat($eo:program, '.'))) else if (starts-with($base, concat($eo:xi, '.'))) then eo:translate-path(substring-after($base, concat($eo:xi, '.'))) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
+    <xsl:param name="raw" as="item()?"/>
+    <xsl:variable name="base" as="xs:string" select="string($raw)"/>
+    <xsl:sequence select="if (starts-with($base, '.')) then concat(eo:translate-path(substring($base, 2)), '.') else if (starts-with($base, $eo:root-prefix)) then eo:translate-path(substring-after($base, $eo:root-prefix)) else if (starts-with($base, $eo:xi-prefix)) then eo:translate-path(substring-after($base, $eo:xi-prefix)) else if ($base = $eo:xi) then '$' else if ($base = $eo:program) then 'Q' else eo:translate-path($base)"/>
   </xsl:function>
-  <!-- First name segment of a program-rooted base (Φ.foo.bar -> foo). -->
+  <!--
+  A surface head with its last dot turned into "?." when the dispatch it
+  ends in is fragile (R-3.5 / §9.4): "foo.first" becomes "foo?.first" and
+  the reversed "first." becomes "first?.". A surface with no dot at all
+  (nothing to mark) passes through unchanged.
+  -->
+  <xsl:function name="eo:fragile-marked" as="xs:string">
+    <xsl:param name="surface" as="xs:string"/>
+    <xsl:param name="fragile" as="xs:boolean"/>
+    <xsl:variable name="last" select="tokenize($surface, '\.')[last()]"/>
+    <xsl:sequence select="if ($fragile and contains($surface, '.')) then concat(substring($surface, 1, string-length($surface) - string-length($last) - 1), '?.', $last) else $surface"/>
+  </xsl:function>
+  <!--
+  The name of the sibling a nameless method-dispatch continuation
+  (§3.5) dispatches on, or "" when "$o" is not that shape: its parent
+  is not a formation (an application's own receiver and positional
+  arguments are nameless too, but they are not this construct), it has
+  a name of its own, or its base is not rooted at a self-reference
+  ("ξ.<name>...").
+  Such a continuation carries no receiver child - the base is already
+  qualified with the receiver's name by an earlier shift - and is
+  legal without a name only because the parser reconstructs that
+  receiver from source position, not from an explicit head (#7452).
+  The base may name more than one hop past the receiver, since one such
+  line per hop collapses into a single object: "?.y" and "?.q" below a
+  "42 > z" are one "ξ.z.y.q" (#7478). Only the receiver is answered
+  here; "eo:continuation-hops" spells the hops that follow it.
+  -->
+  <xsl:function name="eo:continuation-receiver" as="xs:string">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="segments" select="tokenize(string($o/@base), '\.')"/>
+    <xsl:sequence select="if (eo:abstract($o/..) and not($o/@name) and count($segments) &gt; 2 and $segments[1] = $eo:xi) then $segments[2] else ''"/>
+  </xsl:function>
+  <!--
+  The hops a nameless method-dispatch continuation makes past the
+  sibling it dispatches on: the segments of its base after the "ξ" and
+  the receiver's own name. Every hop was a line of its own in the
+  source and has to become one again, since the grammar takes only one
+  hop per line ("unexpected content after name suffix" otherwise).
+  -->
+  <xsl:function name="eo:continuation-hops" as="xs:string*">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="tokenize(string($o/@base), '\.')[position() &gt; 2]"/>
+  </xsl:function>
+  <!--
+  First name segment of a program-rooted base (Φ.foo.bar -> foo). The raw
+  "@base" node is atomised here for the reason spelled out on "eo:surface"
+  above (#6669).
+  -->
   <xsl:function name="eo:root-name" as="xs:string">
-    <xsl:param name="base" as="xs:string"/>
-    <xsl:variable name="rest" select="substring-after($base, concat($eo:program, '.'))"/>
+    <xsl:param name="raw" as="item()?"/>
+    <xsl:variable name="base" as="xs:string" select="string($raw)"/>
+    <xsl:variable name="rest" select="substring-after($base, $eo:root-prefix)"/>
     <xsl:sequence select="if (contains($rest, '.')) then substring-before($rest, '.') else $rest"/>
   </xsl:function>
-  <!-- Rewrite surviving cactus names (a🌵L-P) to a valid id (vL_P). -->
+  <!-- Whether some object this reference is nested inside declares "$name". -->
+  <xsl:function name="eo:declared" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="some $scope in $o/ancestor::o satisfies exists(key('named', concat($name, '#', generate-id($scope)), root($o)))"/>
+  </xsl:function>
+  <!--
+  Rewrite surviving cactus names (a🌵L-P) to a valid id (vL_P). Called
+  twice per emitted line, and almost no head or tail holds a cactus name, so
+  "contains" decides the common case without invoking the regex engine.
+  -->
   <xsl:function name="eo:printable" as="xs:string">
     <xsl:param name="text" as="xs:string"/>
-    <xsl:sequence select="replace($text, concat('a', $eo:cactoos, '(\d+)-(\d+)'), 'v$1_$2')"/>
+    <xsl:sequence select="if (contains($text, $eo:cactus-name)) then replace($text, $eo:cactus-pattern, 'v$1_$2') else $text"/>
   </xsl:function>
   <!--
   Render a stored signature (an atom's "/sig" or a void forma) as its EO
@@ -52,9 +149,8 @@
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
-    <xsl:variable name="root" select="concat($eo:program, '.')"/>
-    <xsl:variable name="rest" select="substring-after($sig, $root)"/>
-    <xsl:sequence select="if (starts-with($sig, $root)) then concat('Q.', $rest) else $sig"/>
+    <xsl:variable name="rest" select="substring-after($sig, $eo:root-prefix)"/>
+    <xsl:sequence select="if (starts-with($sig, $eo:root-prefix)) then concat('Q.', $rest) else $sig"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">
@@ -94,6 +190,25 @@
         <xsl:sequence select="''"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!--
+  Whether an object is an identity object (#6834) — an anonymous
+  formation that binds one void and decorates that very void, the shape
+  "x &gt; [x]" the "I" glyph spells. Nothing but the φ ever reads that
+  void, so its spelling carries no meaning and every spelling of it
+  prints as the same one glyph. A φ that is applied to something, that
+  is const, or that reaches any other name keeps the ordinary formation
+  layout, since "I" cannot spell it.
+
+  The two tests that look over-tight are load-bearing. Exactly two
+  children: a third one is an argument applied to the formation, and the
+  glyph leaves nowhere to put it, so such an object must keep the long
+  layout. And the φ base rooted at "ξ": an unrooted name denotes some
+  other object entirely, not the void beside it.
+  -->
+  <xsl:function name="eo:identity" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -206,13 +321,66 @@
       below the named formation it applies to (R-3.14.7) — reordering
       would strand it. In both cases the sort key collapses to a
       constant, and since xsl:sort is stable the original order stands.
+      A nameless method-dispatch continuation (§3.5) has no @name to
+      sort by either, but it is not source-order-stable like the two
+      cases above (an earlier shift may have floated it ahead of the
+      sibling it dispatches on), so it cannot simply collapse to a
+      constant key: it sorts on that sibling's own name instead, one
+      character past it (eo:continuation-receiver, #7452), which places
+      it immediately below the sibling it depends on regardless of
+      where the shift left it.
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
       <xsl:apply-templates select="o[not(eo:void(.)) or eo:vertical-void(.)]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
-        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else if (eo:continuation-receiver(.) != '') then concat(eo:continuation-receiver(.), '~') else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
+  </xsl:template>
+  <!-- METHOD-DISPATCH CONTINUATION OVER SEVERAL HOPS (§3.5) -->
+  <!--
+  A line per hop, since the grammar reads one hop per continuation line
+  and the parser folds the run of them back into the single object this
+  node is: "?.y" and "?.q" below a "42 > z" are one "ξ.z.y.q", and
+  printing that as one line spells an object the grammar refuses inside
+  a formation, having no name to give it (#7478).
+  The fragile marker goes on the last hop. The base carries a single
+  "@fragile" for the whole run, and a dispatch that follows a fragile
+  one must repeat the "?." itself, so a run whose last hop is marked
+  reads back as this very object, while one marked earlier would not
+  parse at all.
+  -->
+  <xsl:template match="o[eo:continuation-receiver(.) != '' and count(eo:continuation-hops(.)) &gt; 1]" mode="tree" priority="3">
+    <xsl:variable name="fragile" select="exists(@fragile)"/>
+    <xsl:for-each select="eo:continuation-hops(.)">
+      <line abstract="no" test="no" reversed="no" data="no" tail="">
+        <xsl:attribute name="base" select="concat(if (position() = last() and $fragile) then '?' else '', '.', eo:printable(.))"/>
+      </line>
+    </xsl:for-each>
+  </xsl:template>
+  <!-- IDENTITY OBJECT -->
+  <!--
+  An identity object is a leaf on the line tree: its void and its φ are
+  both spelled by the "I" glyph itself, so neither becomes a body line
+  and the node lays out exactly like a bare "T" — inlined as an
+  argument wherever the penalty allows it.
+  -->
+  <xsl:template match="o[eo:identity(.)]" mode="tree" priority="2">
+    <xsl:variable name="suffix">
+      <xsl:apply-templates select="." mode="tail"/>
+    </xsl:variable>
+    <line abstract="no" data="no" reversed="no">
+      <xsl:attribute name="base">
+        <xsl:apply-templates select="." mode="head"/>
+      </xsl:attribute>
+      <xsl:attribute name="tail" select="eo:printable(string($suffix))"/>
+      <xsl:attribute name="test">
+        <xsl:value-of select="if (eo:test-attr(.)) then 'yes' else 'no'"/>
+      </xsl:attribute>
+    </line>
+  </xsl:template>
+  <xsl:template match="o[eo:identity(.)]" mode="head" priority="2">
+    <xsl:text>I</xsl:text>
   </xsl:template>
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
@@ -220,11 +388,12 @@
   (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
   handle survives "restore-local-names" in @local and keeps the void
   anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ void reverts to its "@" surface spelling.
+  "eo:void-type"; and a φ or ρ void reverts to its "@" or "^" surface
+  spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
     <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
-    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else string(@name)"/>
+    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name)"/>
     <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->
@@ -239,8 +408,18 @@
   predecessor has floated away (#5526) the guard fails and the node
   prints as an ordinary application, which round-trips just as safely.
   -->
-  <xsl:template match="o[@pipe and (@base = concat($eo:xi, '.', preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
+  <xsl:template match="o[@pipe and (@base = concat($eo:xi-prefix, preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
     <xsl:text>|</xsl:text>
+  </xsl:template>
+  <!-- METHOD-DISPATCH CONTINUATION (§3.5) -->
+  <!--
+  Writing the receiver back into the head of a nameless continuation
+  (see "eo:continuation-receiver" above) turns it into an ordinary
+  application, which reparsing then rejects as unnamed (#7452); print
+  only the trailing continuation, the same way the source wrote it.
+  -->
+  <xsl:template match="o[eo:continuation-receiver(.) != '']" mode="head" priority="2">
+    <xsl:value-of select="concat(if (@fragile) then '?' else '', '.', eo:printable(tokenize(@base, '\.')[last()]))"/>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
@@ -251,20 +430,19 @@
     the first segment past that run and "hop-rest" is that segment plus
     any trailing segments.
     -->
-    <xsl:variable name="rho-prefix" select="concat($eo:xi, '.', $eo:rho, '.')"/>
     <xsl:variable name="segments" select="tokenize(@base, '\.')"/>
     <xsl:variable name="rho-count" select="if ($segments[1] = $eo:xi) then eo:rho-run(subsequence($segments, 2)) else 0"/>
     <xsl:variable name="hop-name" select="if (count($segments) &gt; $rho-count + 1) then $segments[$rho-count + 2] else ''"/>
     <xsl:variable name="hop-rest" select="string-join(subsequence($segments, $rho-count + 2), '.')"/>
     <!--
-    The current program's "+package" and the "Φ.<package>." prefix a
-    self-reference to a same-file object carries after being homed
-    into the package (add-default-package / build-fqns).
+    What the "Φ.<package>." prefix a self-reference to a same-file object
+    carries (see "eo:self-prefix", built from the "+package" meta at the head
+    of this sheet) leaves behind, once stripped.
     -->
-    <xsl:variable name="package" select="string(/object/metas/meta[head='package']/part[1])"/>
-    <xsl:variable name="self-prefix" select="concat($eo:program, '.', $package, '.')"/>
-    <xsl:variable name="self-rest" select="substring-after(@base, $self-prefix)"/>
+    <xsl:variable name="self-rest" select="substring-after(@base, $eo:self-prefix)"/>
     <xsl:variable name="self-first" select="if (contains($self-rest, '.')) then substring-before($self-rest, '.') else $self-rest"/>
+    <!-- The first name segment of a program-rooted base, asked about twice below. -->
+    <xsl:variable name="root-name" as="xs:string" select="eo:root-name(@base)"/>
     <!--
     Whether some formation this reference is actually nested inside (not
     just the innermost one - a zero-hop reference here can legitimately
@@ -277,80 +455,74 @@
     unrelated formation elsewhere in the file (not an ancestor of this
     reference at all) must not suppress the "$." marker here.
     -->
-    <xsl:variable name="local-handle" select="//o[@local=$hop-name][ancestor::o[not(@base)][1] intersect current()/ancestor::o[not(@base)]][1]"/>
-    <xsl:choose>
-      <!-- NOT OPTIMIZED TUPLE -->
-      <xsl:when test="@star">
-        <xsl:text>*</xsl:text>
-      </xsl:when>
-      <xsl:when test="@base=$eo:bottom">
-        <xsl:text>T</xsl:text>
-      </xsl:when>
-      <xsl:when test="starts-with(@base, concat($eo:program, '.')) and (exists(ancestor::o/o[@name = eo:root-name(current()/@base)]) or /object/metas/meta[head = 'alias']/part[1] = eo:root-name(current()/@base))">
-        <!--
-        The plain top-level name would be shadowed by an in-scope
-        attribute, or reinterpreted through a "+alias" declaring that
-        same short name for a different object (#6211), so keep the
-        explicit Q. root to disambiguate.
-        -->
-        <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, concat($eo:program, '.'))))"/>
-      </xsl:when>
-      <xsl:when test="$package != '' and starts-with(@base, $self-prefix) and $self-first = /object/o[1]/@name and empty(ancestor::o/o[@name = $self-first])">
-        <!--
-        The base names this program's own top-level object through its
-        fully-qualified "Φ.<package>.<name>…" form. The source wrote it
-        bare and every other same-package reference prints bare, so drop
-        the redundant "Φ.<package>." prefix and render the bare name. If
-        an in-scope attribute shadows that name, this branch is skipped:
-        either the package segment is shadowed too (kept "Q."-rooted by
-        the branch above) or the qualified "<package>.<name>" survives
-        through the otherwise branch, both of which resolve correctly.
-        -->
-        <xsl:value-of select="eo:translate-path($self-rest)"/>
-      </xsl:when>
-      <xsl:when test="starts-with(@base, $rho-prefix) and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and (every $i in 1 to $rho-count satisfies empty(ancestor::o[not(@base)][$i]/o[@name=$hop-name])) and (exists(ancestor::o[not(@base)][$rho-count + 1]/o[@name=$hop-name]) or ancestor::o[not(@base)][$rho-count]/@local = $hop-name)">
-        <!--
-        The run of leading "^." parent hops is redundant: the name is
-        absent from each of the N nearer enclosing formations but
-        present in the (N+1)-th, so plain scope resolution re-derives
-        exactly the very same ρ-chain of length N. Drop the whole run.
-        The second alternative catches a recursive self-reference to a
-        file-local handle hosted as a moniker (#5848): the formation reached
-        after the run carries that very handle name in its "@local", so the
-        hops resolve back to the formation itself and the bare handle name
-        re-derives the same ρ-chain. Without it a recursive `&gt;&gt; name`
-        handle folded into a reversed-dispatch receiver would print its
-        self-reference as `^.name` instead of the readable `name`.
-        -->
-        <xsl:value-of select="eo:translate-path($hop-rest)"/>
-      </xsl:when>
-      <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
-        <!--
-        An explicit "$.name" (zero ρ hops) whose immediate enclosing
-        formation has no "name" of its own, and which is not a
-        ">> name" handle owned by a formation this reference actually
-        nests inside either ("local-handle" mirrors resolve-local-names.xsl's
-        lexically-scoped "eo:captor", #5875 — a same-named handle declared
-        by some unrelated formation elsewhere in the file, one this
-        reference is not nested inside, must not count), denotes a
-        genuinely different reference than a bare "name" would (which
-        would instead resolve via an implicit ρ hop into an outer scope,
-        per the branch above) — #6237. Render it with its "$." marker so
-        reparsing keeps the same meaning. When the immediate formation
-        DOES own "name", or "name" is such an in-scope file-local handle,
-        bare and "$.name" resolve identically, so the otherwise branch
-        below safely prints it bare, matching a plain same-scope
-        reference. A node that itself carries "@local" is a moniker's own
-        bound value, already relocated in place of its reference site by
-        merge-monikers.xsl, so its ancestor context here no longer
-        reflects its original scope — skip it too, matching bare.
-        -->
-        <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="eo:surface(@base)"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:variable name="local-handle" select="key('locals', $hop-name)[ancestor::o[not(@base)][1] intersect current()/ancestor::o[not(@base)]][1]"/>
+    <!--
+    The surface the arms below build, before its fragile marker is put
+    back. A dispatch stays fragile whatever shortening its base happens
+    to qualify for, so the marker goes back on the last dot of whatever
+    surface the choose produced (#6912); dotless heads ("*", "T", "$",
+    "Q") have no dispatch to mark and pass through untouched.
+    -->
+    <xsl:variable name="surface" as="xs:string">
+      <xsl:choose>
+        <!-- NOT OPTIMIZED TUPLE -->
+        <xsl:when test="@star">
+          <xsl:text>*</xsl:text>
+        </xsl:when>
+        <xsl:when test="@base=$eo:bottom">
+          <xsl:text>T</xsl:text>
+        </xsl:when>
+        <xsl:when test="starts-with(@base, $eo:root-prefix) and (eo:declared(., $root-name) or $eo:aliases = $root-name)">
+          <!--
+          The plain top-level name would be shadowed by an in-scope
+          attribute, or reinterpreted through a "+alias" declaring that
+          same short name for a different object (#6211), so keep the
+          explicit Q. root to disambiguate.
+          -->
+          <xsl:value-of select="concat('Q.', eo:translate-path(substring-after(@base, $eo:root-prefix)))"/>
+        </xsl:when>
+        <xsl:when test="$eo:package != '' and starts-with(@base, $eo:self-prefix) and $self-first = $eo:top-name and not(eo:declared(., $self-first))">
+          <!--
+          The base names this program's own top-level object through its
+          fully-qualified "Φ.<package>.<name>…" form. The source wrote it
+          bare and every other same-package reference prints bare, so drop
+          the redundant "Φ.<package>." prefix and render the bare name. If
+          an in-scope attribute shadows that name, this branch is skipped:
+          either the package segment is shadowed too (kept "Q."-rooted by
+          the branch above) or the qualified "<package>.<name>" survives
+          through the otherwise branch, both of which resolve correctly.
+          -->
+          <xsl:value-of select="eo:translate-path($self-rest)"/>
+        </xsl:when>
+        <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
+          <!--
+          An explicit "$.name" (zero ρ hops) whose immediate enclosing
+          formation has no "name" of its own, and which is not a
+          ">> name" handle owned by a formation this reference actually
+          nests inside either ("local-handle" mirrors resolve-local-names.xsl's
+          lexically-scoped "eo:captor", #5875 — a same-named handle declared
+          by some unrelated formation elsewhere in the file, one this
+          reference is not nested inside, must not count), denotes a
+          genuinely different reference than a bare "name" would (which
+          would instead resolve via an implicit ρ hop into an outer scope,
+          per the branch above) — #6237. Render it with its "$." marker so
+          reparsing keeps the same meaning. When the immediate formation
+          DOES own "name", or "name" is such an in-scope file-local handle,
+          bare and "$.name" resolve identically, so the otherwise branch
+          below safely prints it bare, matching a plain same-scope
+          reference. A node that itself carries "@local" is a moniker's own
+          bound value, already relocated in place of its reference site by
+          merge-monikers.xsl, so its ancestor context here no longer
+          reflects its original scope — skip it too, matching bare.
+          -->
+          <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="eo:surface(@base)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:value-of select="eo:fragile-marked($surface, exists(@fragile))"/>
   </xsl:template>
   <!-- ABSTRACT OR ATOM -->
   <xsl:template match="o[eo:abstract(.) and not(eo:has-data(.))]" mode="head">
@@ -382,14 +554,25 @@
   </xsl:template>
   <!-- TAIL: SUFFIX, NAME, CONST, ATOM -->
   <xsl:template match="o" mode="tail">
-    <xsl:if test="@as">
+    <!--
+    "@as" labels the void this object fills when it stands as an
+    argument (R-3.12). The same node keeps that stale "@as" when it is
+    also bound to a real, written-out name and printed as its own body
+    line, "then.baz > z" (#7453): a label only means something at the
+    call site, so it is dropped whenever "@name" shows this node is
+    defined there instead - unless "@name" is only the auto-generated
+    cactus placeholder of an anonymous inline handle ("[f]:1 &gt;&gt;"),
+    which is itself the argument the label belongs to, not a separate
+    definition.
+    -->
+    <xsl:if test="@as and (not(@name) or starts-with(@name, $eo:cactus-name))">
       <xsl:text>:</xsl:text>
       <xsl:choose>
         <xsl:when test="starts-with(@as, $eo:alpha)">
           <xsl:value-of select="substring-after(@as, $eo:alpha)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="@as"/>
+          <xsl:value-of select="eo:translate-path(@as)"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -405,11 +588,15 @@
           <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
           <xsl:choose>
             <!--
-            No void params: collapse the empty `[]` head into the
-            single doubled-marker head-of-line shorthand (the head
-            template emits nothing in this case).
+            An abstract formation with no void params: collapse its
+            empty `[]` head into the single doubled-marker head-of-line
+            shorthand (the head template emits nothing in this case).
+            A non-abstract object (a plain reference or application,
+            "true +&gt; works") has a rendered head of its own, so the
+            doubled marker would glue onto it instead (#7451); that
+            case falls through to the single-marker branch below.
             -->
-            <xsl:when test="empty(o[eo:void(.)])">
+            <xsl:when test="eo:abstract(.) and empty(o[eo:void(.)])">
               <xsl:value-of select="$marker"/>
               <xsl:value-of select="$marker"/>
               <xsl:text>&gt; </xsl:text>
@@ -433,7 +620,7 @@
           <xsl:text> &gt;&gt; </xsl:text>
           <xsl:value-of select="@local"/>
         </xsl:when>
-        <xsl:when test="starts-with(@name, concat('a', $eo:cactoos))">
+        <xsl:when test="starts-with(@name, $eo:cactus-name)">
           <xsl:text> &gt;&gt;</xsl:text>
         </xsl:when>
         <xsl:otherwise>

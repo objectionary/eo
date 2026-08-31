@@ -6,11 +6,19 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
  * An object wrapping another one.
+ *
+ * <p>It never needs a receiver. A receiver is bound onto a formation, never
+ * onto the result of an expression: the dispatch that produced this object
+ * has already given it the receiver it deserves. Saying so without forcing
+ * the wrapped object keeps a lazy expression lazy while it is dispatched
+ * over.</p>
+ *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (200 lines)
  */
@@ -27,14 +35,14 @@ public class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
-     * Lock for thread-safe initialization.
-     */
-    private final ReentrantLock lock;
-
-    /**
      * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
      */
     private final Supplier<String> term;
+
+    /**
+     * Lock guarding the first load of the reference.
+     */
+    private final Lock lock;
 
     /**
      * Ctor.
@@ -51,26 +59,14 @@ public class PhOnce implements Phi {
      */
     public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
-        this.lock = new ReentrantLock();
         this.term = term;
-        this.object = () -> {
-            if (this.ref.get() == null) {
-                this.lock.lock();
-                try {
-                    if (this.ref.get() == null) {
-                        this.ref.set(obj.get());
-                    }
-                } finally {
-                    this.lock.unlock();
-                }
-            }
-            return this.ref.get();
-        };
+        this.lock = new ReentrantLock();
+        this.object = () -> this.loaded(obj);
     }
 
     @Override
     public boolean equals(final Object obj) {
-        return this.object.get().equals(obj);
+        return this == obj || this.object.get().equals(obj);
     }
 
     @Override
@@ -87,8 +83,8 @@ public class PhOnce implements Phi {
     }
 
     @Override
-    public boolean hasRho() {
-        return this.object.get().hasRho();
+    public boolean needsRho() {
+        return false;
     }
 
     @Override
@@ -123,7 +119,14 @@ public class PhOnce implements Phi {
 
     @Override
     public Phi normalized() {
-        return this.object.get().normalized();
+        final Phi result = this.object.get().normalized();
+        final Phi normalized;
+        if (result instanceof PhTerminator) {
+            normalized = result;
+        } else {
+            normalized = new PhOnce(() -> result, this.term);
+        }
+        return normalized;
     }
 
     @Override
@@ -135,5 +138,19 @@ public class PhOnce implements Phi {
             result = this.term.get();
         }
         return result;
+    }
+
+    private Phi loaded(final Supplier<Phi> obj) {
+        if (this.ref.get() == null) {
+            this.lock.lock();
+            try {
+                if (this.ref.get() == null) {
+                    this.ref.set(obj.get());
+                }
+            } finally {
+                this.lock.unlock();
+            }
+        }
+        return this.ref.get();
     }
 }

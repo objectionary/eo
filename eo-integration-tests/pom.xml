@@ -38,7 +38,7 @@
     <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
-      <version>0.19.1</version>
+      <version>0.20.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.6.1</version>
+      <version>1.6.3</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -261,11 +261,6 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <configuration>
-              <excludes combine.children="append">
-                <exclude>dependencies:org.eolang:eo-maven-plugin</exclude>
-              </excludes>
-            </configuration>
           </plugin>
           <plugin>
             <groupId>org.codehaus.gmaven</groupId>

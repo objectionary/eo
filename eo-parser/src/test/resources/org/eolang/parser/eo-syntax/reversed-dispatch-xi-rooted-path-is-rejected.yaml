@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# #7481: R-3.8.1 admits a bare `$` head but excludes `$`-rooted dotted
+# paths, same as it excludes `Q`-rooted ones; only the bare form is a
+# reversed-dispatch head.
+sheets: []
+asserts:
+  - /object/errors/error[@severity='error']
+input: |
+  [] > main
+    $.x. 1 > z

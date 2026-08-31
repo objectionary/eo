@@ -9,14 +9,14 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[b cant-convert] > as-i8
+[^ cant-convert] > as-i8
   if. > @
-    b.size.eq 1
-    i8 b
+    ^.size.eq 1
+    i8 ^
     cant-convert
       "Can't convert non 1 length bytes to i8, bytes are %x".printf
-        * b
+        * ^
 
   2A-.as-i8.as-bytes.eq 2A- ++> can-convert-bytes-to-i8-and-back
 
-  01-01.as-i8 --> stops-on-bytes-of-wrong-size
+  01-01.as-i8 --> stops-on-bytes-of-wrong-size-when-converting-to-i8

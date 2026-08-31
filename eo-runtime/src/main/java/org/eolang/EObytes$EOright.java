@@ -19,7 +19,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOright() {
-        super(new Attrs(new Attr("x", new AtVoid("x"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x"))));
     }
 
     @Override
@@ -27,7 +27,7 @@ public final class EObytes$EOright extends PhDefault implements Atom {
         return new Data.ToPhi(
             new Dataized(this.take(Phi.RHO))
                 .asBytes()
-                .shift(new Expect.Int(Expect.at(this, "x")).it())
+                .shift(new Int(Expect.at(this, "x")).it())
                 .take()
         );
     }

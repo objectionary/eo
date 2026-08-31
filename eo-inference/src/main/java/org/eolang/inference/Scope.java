@@ -18,11 +18,20 @@ import java.util.Collection;
  *
  * <p>A ξ-name is looked for outwards: the nearest formation around the
  * reference that binds it wins, and if none does, the next one out is tried,
- * up to the top. Nothing else is consulted — an attribute reachable only
- * through {@code φ} or through a package member is not found here, and the
- * name simply stays unresolved. The checker is allowed to know less; it is
- * not allowed to guess, because a wrong link would make every later answer
- * wrong with it.</p>
+ * up to the top. The one exception is {@code ξ.ρ}, written {@code ^}, which
+ * names the receiver the formation around it declares rather than anything
+ * bound by name. It used to be found by walking two formations out, as the
+ * object one step out from the one being formed, and that answer died with
+ * #6657: a receiver is now declared or absent, and what it holds is decided
+ * by whoever dispatches, so the void itself is the whole of the answer the
+ * text can give. A formation that declares none leaves the caret unresolved,
+ * since the runtime terminates on the {@code ρ} of such an object and there
+ * is nothing to point at. Beyond that, nothing else is consulted — an
+ * attribute reachable only through {@code φ} or through a package member is
+ * not found here, and the name simply stays
+ * unresolved. The checker is allowed to know less; it is not allowed to
+ * guess, because a wrong link would make every later answer wrong with
+ * it.</p>
  *
  * @since 0.68.0
  */
@@ -58,17 +67,27 @@ final class Scope {
         final String found;
         if (base.startsWith("Φ.")) {
             found = this.rooted(base);
+        } else if ("ξ.ρ".equals(base)) {
+            found = this.declared(reference);
         } else {
             found = this.outwards(reference, base.substring(base.indexOf('.') + 1));
         }
         return found;
     }
 
-    /**
-     * The root object of the given name, if the program has one.
-     * @param base The base, which is the locator of a root object itself
-     * @return The locator, or an empty string
-     */
+    private String declared(final String reference) {
+        final String hollow = String.join(
+            ".", new Nesting(this.formations).around(reference), "ρ"
+        );
+        final String found;
+        if (this.locators.contains(hollow)) {
+            found = hollow;
+        } else {
+            found = "";
+        }
+        return found;
+    }
+
     private String rooted(final String base) {
         final String found;
         if (this.locators.contains(base)) {
@@ -79,12 +98,6 @@ final class Scope {
         return found;
     }
 
-    /**
-     * The nearest formation around the reference that binds the name.
-     * @param reference The locator of the reference itself
-     * @param name The name it asks for
-     * @return The locator of the attribute, or an empty string
-     */
     private String outwards(final String reference, final String name) {
         String around = reference;
         String found = "";

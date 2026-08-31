@@ -16,7 +16,7 @@ import java.util.List;
  * predecessor is formed, then the pipe supplies its arguments.</p>
  *
  * <p>The predecessor (stack top at the pipe's indent) must be a formation
- * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI_FORMATION}) or
+ * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}) or
  * another {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
  * to it by name, so an unnamed formation is not a valid target (R-3.14.2).
  * A pipe after a {@code .method} dispatch is rejected (R-3.14.4): the
@@ -25,8 +25,8 @@ import java.util.List;
  *
  * <p>Two forms by whether horizontal args are present (R-3.14.3): the
  * <em>horizontal</em> form {@code | a b} carries its args on the line and
- * closes for children ({@link Openness#VERTICAL_COMPLETED}); the
- * <em>vertical</em> form {@code |} with a deeper-indent body opens for a
+ * closes for children ({@link Openness#VCOMPLETED}); the <em>vertical</em>
+ * form {@code |} with a deeper-indent body opens for a
  * vertical-argument block exactly as a {@code vapplication} head, so it
  * stays {@link Openness#OPEN}. Either way a following {@code .method} or
  * pipe may extend it.</p>
@@ -75,21 +75,21 @@ final class LnPipe implements Line {
                 "a pipe application cannot declare a test attribute"
             );
         }
-        Comments.seal(globals, emit, this.span);
+        globals.seal(emit, this.span);
         final Openness openness;
         if (args.isEmpty()) {
             openness = Openness.OPEN;
         } else {
-            openness = Openness.VERTICAL_COMPLETED;
+            openness = Openness.VCOMPLETED;
         }
         new Transition(stack, this.span).apply(
-            Kind.PIPE_APPLICATION, openness, suffix.named()
+            Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), false)
         );
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object(
+        emit.baselessObject(
             suffix.attribute(this.span.line(), this.span.indent()),
-            null, this.span.line(), this.span.indent()
+            this.span.line(), this.span.indent()
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
@@ -103,14 +103,6 @@ final class LnPipe implements Line {
         }
     }
 
-    /**
-     * Validate the pipe has a legal predecessor — a same-indent
-     * formation or pipe that carries a name (R-3.14.2 / R-5.2.4a /
-     * R-5.2.5a / R-5.2.11a). An empty stack, a shallower top (descending
-     * pipe), an unnamed formation, or a non-pipeable kind (a plain value,
-     * an application, or a {@code .method} dispatch) all fail.
-     * @param stack Indent stack
-     */
     private void precheck(final Stack stack) {
         if (stack.empty()
             || stack.top().indent() != this.span.indent()
@@ -123,16 +115,6 @@ final class LnPipe implements Line {
         }
     }
 
-    /**
-     * Build a token stream positioned just past the leading {@code |}
-     * marker. Two shapes are legal (R-3.14.3): the horizontal form
-     * {@code | a b}, whose {@code |} is followed by a space before the
-     * argument list or suffix, and the bare vertical form {@code |}
-     * (nothing after the pipe), which opens for a deeper-indent
-     * argument block just like a {@code vapplication} head. Only a
-     * character glued directly onto the pipe ({@code |x}) is rejected.
-     * @return Tokens positioned after the {@code |}
-     */
     private Tokens piped() {
         final String body = this.span.body();
         if (!"|".equals(body) && !body.startsWith("| ")) {

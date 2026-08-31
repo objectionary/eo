@@ -20,7 +20,7 @@ public final class EOposix$EOφ extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOφ() {
-        // nothing
+        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
     }
 
     @Override

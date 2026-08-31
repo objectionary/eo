@@ -4,8 +4,10 @@
  */
 package org.eolang.win32;
 
+import com.sun.jna.WString;
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
 
@@ -30,10 +32,14 @@ public final class CreatFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int mode = new Int(
+            "the 'mode' argument of creat", params[1]
+        ).it();
+        final String path = new Cstring("the 'path' argument of creat", params[0]).it();
         final Phi result = this.win.take("return").copy();
-        final int code = Msvcrt.INSTANCE._creat(
-            new Dataized(params[0]).asString(),
-            new Dataized(params[1]).asNumber().intValue()
+        final int code = Msvcrt.INSTANCE._wcreat(
+            new WString(path),
+            mode
         );
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());

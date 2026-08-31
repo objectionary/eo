@@ -36,7 +36,7 @@ final class EOposixEOφTest {
             Matchers.equalTo(
                 Integer.parseInt(
                     ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@")[0]
+                        .getName().split("@", -1)[0]
                 )
             )
         );
@@ -89,10 +89,6 @@ final class EOposixEOφTest {
         );
     }
 
-    /**
-     * Reads from an invalid descriptor.
-     * @return Failed read result
-     */
     private Phi failedRead() {
         return new PhApplication(
             new PhApplication(

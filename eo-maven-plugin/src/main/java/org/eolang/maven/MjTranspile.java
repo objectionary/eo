@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,19 +50,23 @@ public final class MjTranspile extends MjSafe {
 
     /**
      * Add to source root.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.addSourcesRoot")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean addSourcesRoot;
+    @Parameter(
+        alias = "addSourcesRoot",
+        property = "eo.addSourcesRoot",
+        defaultValue = "true"
+    )
+    private boolean attach;
 
     /**
      * Whether to transpile tests.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.transpileTests")
-    @SuppressWarnings("PMD.ImmutableField")
-    private boolean transpileTests;
+    @Parameter(
+        alias = "transpileTests",
+        property = "eo.transpileTests",
+        defaultValue = "true"
+    )
+    private boolean tests;
 
     /**
      * Whether to wrap every dispatched object with a location-carrying
@@ -69,10 +74,9 @@ public final class MjTranspile extends MjSafe {
      * Off by default, so a production build stays lean; turn it on (as
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.trackLocations")
-    private boolean trackLocations;
+    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    private boolean located;
 
     /**
      * Whether to wrap every located object in the generated Java into
@@ -83,28 +87,17 @@ public final class MjTranspile extends MjSafe {
      * compiled program; when that property is absent, every hit is a
      * silent no-op. In {@code eo-runtime} the {@code coverage-file}
      * profile turns this on and forwards that property to surefire in
-     * one step (see its {@code pom.xml}).
-     * @todo #5466:60min Turn raw coverage hits into an LCOV report.
-     *  Right now the runtime only produces a raw, append-only
-     *  {@code loc:line:pos} file: the {@code PhCoverage} decorator
-     *  writes every touched location into it, but nothing consumes that
-     *  file yet. Add a reporter step that merges those raw hits against
-     *  the full set of instrumented locations, which the transpiler
-     *  already knows because it emits every wrapper, and produces an
-     *  LCOV ({@code .info}) tracefile plus the covered percentage. LCOV
-     *  is chosen because Codecov and Coveralls consume it directly.
-     * @todo #5466:30min Enforce a minimum EO object coverage in eo-runtime.
-     *  Once the LCOV report from the puzzle above exists, set
-     *  {@code coverageTracking} on the {@code transpile} execution in
-     *  {@code eo-runtime/pom.xml} and fail the build when the covered
-     *  percentage of dataized {@code .eo} objects drops below a
-     *  threshold (for example 80 percent), mirroring how the existing
-     *  {@code jacoco} profile binds a {@code check} goal with per-metric
-     *  thresholds.
-     * @checkstyle MemberNameCheck (7 lines)
+     * one step (see its {@code pom.xml}). The {@code coverage-report}
+     * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
+     * LCOV tracefile, bound to the {@code verify} phase since the hits
+     * only exist after tests actually run. {@code eo-runtime} pairs it
+     * with {@code minCoverage} on that same goal, failing the build when
+     * the covered percentage of dataized {@code .eo} objects drops below
+     * a threshold, mirroring how the {@code jacoco} profile binds a
+     * {@code check} goal with its own per-metric thresholds.
      */
-    @Parameter(property = "eo.coverageTracking")
-    private boolean coverageTracking;
+    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
@@ -132,36 +125,61 @@ public final class MjTranspile extends MjSafe {
      * {@code byte[]}. A class that leaves one out fails to compile in
      * generated sources.</p>
      */
-    @Parameter(property = "eo.phiDefaultClass", defaultValue = "PhDefault")
+    @Parameter(
+        alias = "phiDefaultClass",
+        property = "eo.phiDefaultClass",
+        defaultValue = "PhDefault"
+    )
     private String superclass;
 
     /**
-     * Ctor.
+     * The directory with the tables that {@link MjInference} writes, read by
+     * {@code purify.xsl} to find out which formations are safe to cache. The
+     * default is the one {@link MjInference} saves them to, so a build that
+     * runs the goals in their usual order needs to say nothing here. A build
+     * that skips {@code eo:inference} leaves the directory absent, and then
+     * nothing is marked.
      */
-    public MjTranspile() {
-        this.addSourcesRoot = true;
-        this.transpileTests = true;
-    }
+    @Parameter(
+        alias = "inferenceDir",
+        property = "eo.inferenceDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/6-inference"
+    )
+    private File tables;
 
     @Override
     public void exec() throws IOException {
-        new Timed(
-            new Transpiling(
-                this.scopedTojos().withXmir(),
-                this.targetDir.toPath(),
-                this.generatedDir.toPath(),
-                this.cache.toPath(),
-                this.cacheEnabled,
+        try (TjsForeign tojos = this.tojos()) {
+            final Transpilation train = new Transpilation(
                 this.plugin.getVersion(),
-                this.transpileTests,
-                this.xslMeasures.toPath(),
-                new Tracking(this.trackTransformationSteps, this.trackLocations),
-                this.coverageTracking,
+                new Tracking(this.trackSteps, this.located),
+                this.coverage,
                 this.base(),
-                this.roots()
-            )
-        ).exec();
-        if (this.addSourcesRoot) {
+                this.xslMeasures.toPath(),
+                this.targetDir.toPath(),
+                this.tables.toPath()
+            );
+            new Timed(
+                new Transpiling(
+                    tojos.standalone(),
+                    this.targetDir.toPath(),
+                    this.generatedDir.toPath(),
+                    this.tests,
+                    this.roots(),
+                    train,
+                    this.stored(),
+                    new JavaFiles(
+                        this.generatedDir.toPath(),
+                        this.cache.toPath()
+                            .resolve(Transpiling.CACHE)
+                            .resolve(train.version()),
+                        this.cacheEnabled
+                    )
+                )
+            ).exec();
+        }
+        if (this.attach) {
             this.project.addCompileSourceRoot(
                 this.generatedDir.toPath().toAbsolutePath().toString()
             );
@@ -180,13 +198,6 @@ public final class MjTranspile extends MjSafe {
         }
     }
 
-    /**
-     * The compile source roots a human wrote, which are all of them but the
-     * ones inside the build directory, since a root a previous goal generated
-     * holds a {@code package-info.java} of its own and would fool the
-     * transpiler into skipping the file it has to write.
-     * @return The directories with hand-written Java
-     */
     private Collection<Path> roots() {
         final Path build = this.targetDir.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
@@ -195,16 +206,6 @@ public final class MjTranspile extends MjSafe {
             .collect(Collectors.toList());
     }
 
-    /**
-     * The name of the class that the generated classes extend, refused right
-     * here when it is not a Java class name. Returning the name instead of
-     * checking it apart means a caller cannot end up with a name that was
-     * never looked at, since {@code to-java.xsl} copies whatever it is given
-     * into the {@code extends} clause and an unusable name would surface as
-     * a compilation error in generated sources, far from the option that
-     * caused it.
-     * @return The name of the class to extend
-     */
     private String base() {
         if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
             throw new IllegalArgumentException(
@@ -216,5 +217,21 @@ public final class MjTranspile extends MjSafe {
             );
         }
         return this.superclass;
+    }
+
+    // The cache is skipped when the XMIR of every step is asked for: those
+    // dumps are made by the train, and a cache hit hands back a stored
+    // answer without running it (#7724). The version segment is not folded
+    // in here, because it differs from one source to the next: the rows of
+    // the inference tables an object is named in go into it (#7945), so
+    // `Transpiling` folds it in per file.
+    private GlobalCache stored() {
+        final GlobalCache store;
+        if (this.trackSteps) {
+            store = new GlobalCache.GcFresh();
+        } else {
+            store = this.caching(Transpiling.CACHE);
+        }
+        return store;
     }
 }

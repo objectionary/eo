@@ -26,21 +26,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Integration test that runs simple EO program from packaged jar.
  * @since 0.54
- * @todo #4750:30min Re-enable JarIT after next release.
- *  The suite is temporarily disabled because its sandbox transpiles
- *  eo-runtime objects pulled from the remote objectionary, where
- *  number.floor is still defined as a Java atom. That transpilation
- *  emits a reference to EOnumber$EOfloor, which has been removed from
- *  the runtime in this branch, so javac fails. Once a release is cut
- *  and the remote catches up with the EO-level floor, drop this
- *  annotation.
+ * @todo #5047:30min Re-enable runsProgramWithTwoObjects after next release.
+ *  The released string.printf carries a stale "+rt jvm org.eolang:eo-runtime"
+ *  meta, so the sandbox skips transpiling it and no EOprintf lands on the
+ *  classpath, while eo-runtime ships Java atoms only. Master already dropped
+ *  that meta, so drop this annotation once the remote objectionary catches up.
+ * @todo #6658:30min Re-enable the three disabled tests after next release.
+ *  The sandbox pulls the released .eo sources of the runtime while linking
+ *  against the runtime built here, and the released string.regex is still a
+ *  package member, so it transpiles to an EO_string package whose atoms name
+ *  classes this build no longer carries. Drop these annotations once the
+ *  remote objectionary serves a runtime whose string package is merged.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
-@Disabled
 final class JarIT {
 
     @Test
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
@@ -49,7 +52,7 @@ final class JarIT {
             f -> classpath[0] = JarIT.compile(
                 f,
                 "[] > simple",
-                "  Q.io.stdout > @",
+                "  Q.stdout > @",
                 "    \"Hello, world!\""
             )
         );
@@ -65,6 +68,7 @@ final class JarIT {
     }
 
     @Test
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
@@ -72,11 +76,14 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                "+package examples",
-                "",
-                "[args] > packaged",
-                "  Q.io.stdout > @",
-                "    \"Hello, world from a program with a package!\""
+                JarIT.ElegantObject.made(
+                    "examples/packaged",
+                    "+package examples",
+                    "",
+                    "[args] > packaged",
+                    "  Q.stdout > @",
+                    "    \"Hello, world from a program with a package!\""
+                )
             )
         );
         MatcherAssert.assertThat(
@@ -91,6 +98,7 @@ final class JarIT {
     }
 
     @Test
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
@@ -98,8 +106,8 @@ final class JarIT {
         new Farea(temp).together(
             f -> classpath[0] = JarIT.compile(
                 f,
-                JarIT.ElegantObject.made("app", JarIT.appProgram()),
-                JarIT.ElegantObject.made("fibonacci", JarIT.fibonacciProgram())
+                JarIT.ElegantObject.made("examples/app", JarIT.appProgram()),
+                JarIT.ElegantObject.made("examples/fibonacci", JarIT.fibonacciProgram())
             )
         );
         MatcherAssert.assertThat(
@@ -114,6 +122,7 @@ final class JarIT {
     }
 
     @Test
+    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
@@ -134,9 +143,9 @@ final class JarIT {
                 "org.eolang.Main", "simple"
             ).withHome(temp.resolve("target")).withCheck(false).execUnsafe().stderr(),
             Matchers.allOf(
-                Matchers.containsString("Couldn't find object '\\u03a6.unknown'"),
+                Matchers.containsString("Couldn't find object 'Φ.unknown'"),
                 Matchers.containsString(
-                    "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EOunknown.package-info'"
+                    "because there's no class 'org.eolang.EOunknown' or package-info class: 'org.eolang.EO_unknown.package-info'"
                 )
             )
         );
@@ -145,28 +154,24 @@ final class JarIT {
     private static String[] appProgram() {
         return new String[]{
             "+package examples",
-            "+alias examples.fibonacci",
-            "+alias io.stdout",
-            "+alias string.sprintf",
-            "+alias string.sscanf",
             "+architect yegor256@gmail.com",
             "",
             "[args] > app",
             "  number > n",
             "    at. > nn!",
-            "      Q.string.sscanf",
+            "      Q.string.scanf",
             "        \"%d\"",
             "        args.at 0",
             "      0",
             "  at. > e!",
-            "    Q.string.sscanf",
+            "    Q.string.scanf",
             "      \"%d\"",
             "      args.at 1",
             "    0",
-            "  fibonacci n > f!",
+            "  Q.examples.fibonacci n > f!",
             "  and. > @",
-            "    stdout",
-            "      sprintf",
+            "    Q.stdout",
+            "      Q.string.printf",
             "        \"%dth Fibonacci number is %d\\n\"",
             "        * n f",
             "    e.eq f",
@@ -192,24 +197,10 @@ final class JarIT {
         };
     }
 
-    /**
-     * Compile EO program to XMIR and package it into a JAR.
-     * @param farea Farea to use for compilation
-     * @param program The EO program to compile
-     * @return Classpath for the compiled program, with eo-runtime jar
-     * @throws IOException If fails to compile
-     */
     private static String compile(final Farea farea, final String... program) throws IOException {
-        return JarIT.compile(farea, JarIT.ElegantObject.made(program));
+        return JarIT.compile(farea, JarIT.ElegantObject.made("simple", program));
     }
 
-    /**
-     * Compile EO program to XMIR and package it into a JAR.
-     * @param farea Farea to use for compilation
-     * @param objects The EO programs to compile
-     * @return Classpath for the compiled program, with eo-runtime jar
-     * @throws IOException If fails to compile
-     */
     private static String compile(
         final Farea farea, final ElegantObject... objects
     ) throws IOException {
@@ -285,15 +276,6 @@ final class JarIT {
         private ElegantObject(final String file, final String content) {
             this.file = file;
             this.content = content;
-        }
-
-        /**
-         * Factory.
-         * @param content File content lines
-         * @return New ElegantObject
-         */
-        static JarIT.ElegantObject made(final String... content) {
-            return JarIT.ElegantObject.made("simple", content);
         }
 
         /**

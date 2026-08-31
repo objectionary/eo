@@ -4,6 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="xs eo" id="resolve-local-names" version="2.0">
+  <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <!--
   The "&gt;&gt; foo" file-local handle (§3.10 / §9.2): the parser emits the
   anonymous object with its cactus @name plus a "@local='foo'" marker. A
@@ -54,6 +55,14 @@
   -->
   <xsl:key name="handles" match="o[@local]" use="concat(@local, '#', generate-id(ancestor::o[not(@base)][1]))"/>
   <!--
+  Every name the file declares as a handle. Only a reference reading one of
+  them can be captured, so the search below answers every other reference -
+  the great majority, and all of them in the half of the sources declaring
+  no handle - without climbing the ancestors and probing the indexes at each
+  (#7938).
+  -->
+  <xsl:variable name="eo:handle-names" as="xs:string*" select="distinct-values(//o[@local]/@local)"/>
+  <!--
   Every named object, indexed by its name together with its parent, so the
   "does this formation have an attribute of this name" test is a hash lookup
   as well, rather than a scan of the formation's children.
@@ -88,8 +97,18 @@
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="if (exists($ref/@method)) then substring-after($ref/@base, '.') else string($ref/@base)"/>
-    <xsl:variable name="scope" as="element()?" select="if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][exists(key('attributes', concat($name, '#', generate-id(.)))) or exists(key('handles', concat($name, '#', generate-id(.))))][1]"/>
+    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][eo:declares(., $name)][1]"/>
     <xsl:sequence select="for $found in $scope return key('handles', concat($name, '#', generate-id($found)), $found)[1]"/>
+  </xsl:function>
+  <!--
+  Whether this formation declares the name, publicly or as a handle. Both
+  indexes are filed under one "name in this scope" pair, built once here.
+  -->
+  <xsl:function name="eo:declares" as="xs:boolean">
+    <xsl:param name="scope" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="pair" as="xs:string" select="concat($name, '#', generate-id($scope))"/>
+    <xsl:sequence select="exists(key('attributes', $pair, root($scope))) or exists(key('handles', $pair, root($scope)))"/>
   </xsl:function>
   <!--
   The formation that the explicit receiver of a dispatch names: "ξ" (written
@@ -119,26 +138,87 @@
     <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <!--
+  How many formations separate a bare, ancestor-search-captured reference
+  from the formation that owns the handle capturing it - the same "rhos"
+  count "build-fqns.xsl" computes for every other name, so the receiver
+  built below matches what that stage would have built itself, and it never
+  needs to walk scopes for a cactus name again (#7134).
+  -->
+  <xsl:function name="eo:hops" as="xs:integer">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="owner" as="element()"/>
+    <xsl:sequence select="count($ref/ancestor::o[not(@base)]) - count($owner/ancestor-or-self::o[not(@base)])"/>
+  </xsl:function>
+  <!--
+  The receiver a captured bare reference dispatches through: "ξ" itself
+  when the handle lives in the reference's own formation, or that many
+  ".ρ" hops out otherwise - the exact shape "build-fqns.xsl"'s "with-rho"
+  builds from a "rhos" count, built here instead since this pass is the one
+  that knows the count.
+  -->
+  <xsl:function name="eo:receiver" as="element()">
+    <xsl:param name="hops" as="xs:integer"/>
+    <xsl:choose>
+      <xsl:when test="$hops le 0">
+        <o>
+          <xsl:attribute name="base" select="'ξ'"/>
+        </o>
+      </xsl:when>
+      <xsl:otherwise>
+        <o>
+          <xsl:attribute name="base" select="'.ρ'"/>
+          <xsl:sequence select="eo:receiver($hops - 1)"/>
+        </o>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
   Matches every reference and rewrites the ones a handle captures. The
   captor is looked up once, into a variable, instead of once in the match
   pattern and again in the body: the search is the expensive part of this
   pass, and a pattern that calls it cannot share its answer with the
   template it selects, so every captured reference paid for it twice.
+
+  A reference captured through an explicit receiver ("^.foo" via
+  "eo:scope") keeps that receiver as the author wrote it, so only its
+  trailing name is rewritten; so does one captured in its own declaring
+  formation (zero hops), which "build-fqns.xsl" already resolves correctly
+  on its own, the same way it does for a bare public-attribute name found
+  in the current scope. Only a bare reference captured one or more
+  formations further out carries no receiver at all, so one is built here
+  from the hop count, with the handle's path arriving already resolved
+  instead of left for "build-fqns.xsl" to re-derive through its cactus
+  exception.
   -->
   <xsl:template match="o[@base]">
     <xsl:variable name="captor" as="element()?" select="eo:captor(.)"/>
-    <xsl:copy>
-      <xsl:choose>
-        <xsl:when test="exists($captor)">
+    <xsl:variable name="name" as="xs:string" select="string(@base)"/>
+    <xsl:variable name="anonymous" as="element()?" select="if (exists($captor) or exists(@method) or not(contains($name, $eo:cactoos))) then () else ancestor::o[@name=$name][1]"/>
+    <xsl:variable name="holder" as="element()?" select="($captor, $anonymous)[1]"/>
+    <xsl:variable name="hops" as="xs:integer?" select="if (exists($holder) and empty(@method)) then eo:hops(., $holder/ancestor::o[not(@base)][1]) else ()"/>
+    <xsl:choose>
+      <xsl:when test="exists($hops) and $hops gt 0">
+        <xsl:copy>
+          <xsl:attribute name="base" select="concat('.', $holder/@name)"/>
+          <xsl:apply-templates select="@* except @base"/>
+          <xsl:sequence select="eo:receiver($hops)"/>
+          <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+      </xsl:when>
+      <xsl:when test="exists($captor)">
+        <xsl:copy>
           <xsl:attribute name="base" select="concat(if (exists(@method)) then '.' else '', $captor/@name)"/>
           <xsl:apply-templates select="@* except @base"/>
-        </xsl:when>
-        <xsl:otherwise>
+          <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:copy>
           <xsl:apply-templates select="@*"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:apply-templates select="node()"/>
-    </xsl:copy>
+          <xsl:apply-templates select="node()"/>
+        </xsl:copy>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="/object">
     <xsl:copy>

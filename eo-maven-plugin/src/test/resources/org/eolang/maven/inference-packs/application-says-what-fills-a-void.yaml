@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An application is the one place where a void stops being a question: this one
+# says that the `x` of that `inc` holds a `t`, and the row of the application
+# says so too, naming the void and what went into it.
+eo:
+  app.eo: |
+    [] > app
+      inc t > held
+  inc.eo: |
+    [x] > inc
+      x > @
+  t.eo: |
+    [] > t
+links:
+  - "/links/type[@id='Φ.app.held']/ref[@loc='Φ.inc']/bind"
+  - "//type[@id='Φ.app.held']//bind[@void='Φ.inc.x']"
+  - "//bind[@void='Φ.inc.x']/ref[@loc='Φ.app.held.α0']"

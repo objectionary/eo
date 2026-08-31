@@ -12,8 +12,9 @@ import java.util.List;
  *
  * <p>Form: {@code [params] [> name [/sig]]}. Each parameter becomes a
  * void child (R-3.4.1). The standalone {@code @} parameter maps to
- * {@code φ} in XMIR (R-3.4.2 / R-9.3). {@code ^} (RHO) is rejected as a
- * parameter name (R-3.4.3). No leading/trailing space inside the
+ * {@code φ} in XMIR (R-3.4.2 / R-9.3). The standalone {@code ^} maps to
+ * {@code ρ} and declares the formation's receiver, which only the first
+ * parameter may be (R-3.4.3 / R-3.4.11). No leading/trailing space inside the
  * brackets (R-3.4.4); exactly one space between parameter names
  * (R-3.4.5). The line may carry an optional name suffix per §3.10,
  * including the atom-signature form {@code > name /sig}. The shorthand
@@ -25,7 +26,7 @@ import java.util.List;
  * indent (Step C/D) or replaces the current top (Step B), with
  * {@link Kind#BARE_FORMATION} and {@link Openness#OPEN}. The atom flag
  * is set if the suffix carries {@code /sig}; the named flag is set when
- * the suffix is present. *
+ * the suffix is present.</p>
  *
  * @since 0.1
  */
@@ -46,7 +47,6 @@ final class LnFormation implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        Blanks.enterAfterMeta(this.span, globals, emit);
         final String body = this.span.body();
         final List<String> params;
         final String binding;
@@ -61,7 +61,9 @@ final class LnFormation implements Line {
             final int close = LnFormation.findClosing(body, this.span);
             params = LnFormation.params(body, close, this.span);
             final String raw = body.substring(close + 1);
-            binding = LnFormation.outerBinding(raw);
+            binding = LnFormation.outerBinding(
+                raw, this.span, this.span.indent() + close + 2
+            );
             final String tail;
             if (binding == null) {
                 tail = raw;
@@ -75,24 +77,18 @@ final class LnFormation implements Line {
         }
         this.checkAtomVoids(suffix, params);
         if (suffix.test()) {
-            Blanks.checkTest(this.span, globals, emit);
+            Blanks.checkTest(this.span, stack, globals, emit);
         }
-        Comments.seal(globals, emit, this.span);
+        Blanks.enterAfterMeta(this.span, globals, emit);
+        globals.seal(emit, this.span);
         this.transition(stack, suffix);
+        Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();
         globals.markEmitted();
         this.emit(emit, suffix, params, binding);
     }
 
-    /**
-     * Extract a leading {@code :label} inline binding from the tail
-     * that follows the closing {@code ]}. Returns the bare label (no
-     * leading colon) or {@code null} when the tail does not start
-     * with {@code :}.
-     * @param raw The post-{@code ]} substring
-     * @return Binding label, or {@code null}
-     */
-    private static String outerBinding(final String raw) {
+    private static String outerBinding(final String raw, final Span span, final int pos) {
         final String label;
         if (raw.startsWith(":")) {
             int idx = 1;
@@ -100,19 +96,13 @@ final class LnFormation implements Line {
                 idx = idx + 1;
             }
             label = raw.substring(1, idx);
+            Tokens.checkBinding(label, span, pos);
         } else {
             label = null;
         }
         return label;
     }
 
-    /**
-     * Source-column width of a {@code :label} binding (label length
-     * plus the leading colon), or {@code 0} when no binding is
-     * present.
-     * @param binding The binding label, or {@code null}
-     * @return Width in characters
-     */
     private static int bindingWidth(final String binding) {
         final int width;
         if (binding == null) {
@@ -123,97 +113,31 @@ final class LnFormation implements Line {
         return width;
     }
 
-    /**
-     * Reject bracket parameters on an atom head (R-3.4.10). An atom
-     * declares its voids vertically, because only a vertical void can
-     * carry the type annotation the native contract needs (R-3.4.8), and
-     * a head that may hold untyped voids too would put them ahead of the
-     * typed ones no matter where the source wrote them.
-     * @param suffix The parsed suffix
-     * @param params Parameter names in source order
-     */
     private void checkAtomVoids(final Suffix suffix, final List<String> params) {
         if (suffix.atom() && !params.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + 1,
-                "an atom must declare its void attributes vertically, as `? > name` lines"
+                "an atom must declare its void attributes vertically, as ? > name lines"
             );
         }
     }
 
-    /**
-     * Push or replace the stack level per Step B/C/D of §5.2.
-     * @param stack The stack
-     * @param suffix The parsed suffix (sets named/atom flags)
-     */
     private void transition(final Stack stack, final Suffix suffix) {
-        final Level level;
-        if (stack.empty() || stack.top().indent() < this.span.indent()) {
-            this.checkChildAllowed(stack, suffix);
-            level = stack.push(
-                this.span.indent(), this.span.line(),
-                Kind.BARE_FORMATION, Openness.OPEN
-            );
-        } else {
-            level = stack.replace(
-                this.span.line(), Kind.BARE_FORMATION, Openness.OPEN
-            );
-        }
-        if (suffix.present()) {
-            level.name(suffix.label());
-        }
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.BARE_FORMATION, Openness.OPEN,
+            new Admission(suffix.named(), suffix.test(), suffix.atom())
+        );
         if (suffix.atom()) {
             level.mark();
         }
     }
 
-    /**
-     * Validate that a deeper-indent formation is legal under its
-     * pending parent — indent step is exactly one, parent is open, and
-     * (per R-3.10.13) the parent is not an atom unless this child is
-     * itself a test attribute.
-     * @param stack The stack
-     * @param suffix The parsed suffix
-     */
-    private void checkChildAllowed(final Stack stack, final Suffix suffix) {
-        if (!stack.empty()
-            && this.span.indent() != stack.top().indent() + 2) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "indent increased by more than one level"
-            );
-        }
-        if (!stack.empty()
-            && stack.top().openness() != Openness.OPEN) {
-            throw new ParseError(
-                this.span.line(), 0,
-                "unexpected deeper-indent line — previous expression is closed for children"
-            );
-        }
-        if (!stack.empty() && stack.top().atom() && !suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "Atom cannot contain inner objects; only `+>` test attributes are allowed in an atom body"
-            );
-        }
-    }
-
-    /**
-     * Emit the formation's {@code <o>}, void params, and (if atom) the
-     * {@code λ} marker. The cursor remains inside the new {@code <o>}
-     * so deeper-indent children attach as siblings of the voids.
-     * @param emit The directives sink
-     * @param suffix The parsed suffix
-     * @param params Parameter names in source order
-     * @param binding Outer inline-binding label, or {@code null}
-     * @checkstyle ParameterNumberCheck (3 lines)
-     */
     private void emit(
         final Emit emit, final Suffix suffix, final List<String> params, final String binding
     ) {
-        emit.object(
+        emit.baselessObject(
             suffix.attribute(this.span.line(), this.span.indent()),
-            null, this.span.line(), this.span.indent()
+            this.span.line(), this.span.indent()
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
@@ -234,12 +158,6 @@ final class LnFormation implements Line {
         }
     }
 
-    /**
-     * Locate the matching {@code ]} for the leading {@code [}.
-     * @param body The line body
-     * @param span The source span (for error)
-     * @return Index of the closing bracket
-     */
     private static int findClosing(final String body, final Span span) {
         if (body.isEmpty() || body.charAt(0) != '[') {
             throw new ParseError(
@@ -251,19 +169,12 @@ final class LnFormation implements Line {
         if (close < 0) {
             throw new ParseError(
                 span.line(), span.indent(),
-                "formation brackets must not contain leading or trailing space"
+                "formation is missing its closing bracket"
             );
         }
         return close;
     }
 
-    /**
-     * Parse the parameter list between the brackets per R-3.4.x.
-     * @param body The line body
-     * @param close Index of {@code ]}
-     * @param span The source span (for error)
-     * @return Parameter names in source order
-     */
     private static List<String> params(
         final String body, final int close, final Span span
     ) {
@@ -283,7 +194,9 @@ final class LnFormation implements Line {
                 end = end + 1;
             }
             final String raw = inside.substring(idx, end);
-            out.add(LnFormation.mapParam(raw, span, span.indent() + 1 + idx));
+            out.add(
+                LnFormation.mapParam(raw, span, span.indent() + 1 + idx)
+            );
             if (end < inside.length()) {
                 if (end + 1 < inside.length() && inside.charAt(end + 1) == ' ') {
                     throw new ParseError(
@@ -299,26 +212,15 @@ final class LnFormation implements Line {
         return out;
     }
 
-    /**
-     * Translate a raw parameter token to its emitted name. {@code @}
-     * maps to {@code φ} per R-3.4.2 / R-9.3; {@code ^} is rejected per
-     * R-3.4.3.
-     * @param raw Raw token
-     * @param span Source span
-     * @param pos Source column of the token
-     * @return Emitted name
-     */
     private static String mapParam(final String raw, final Span span, final int pos) {
+        Emissions.validParam(raw, span.line(), pos);
         final String mapped;
         if ("@".equals(raw)) {
             mapped = "φ";
-        } else if (raw.matches("[a-z][^ \\t,.|':;!?\\[\\]{}()]*(?:\\.\\.\\.)?")) {
-            mapped = raw;
+        } else if ("^".equals(raw)) {
+            mapped = "ρ";
         } else {
-            throw new ParseError(
-                span.line(), pos,
-                "parameter names in voids must be NAME or @"
-            );
+            mapped = raw;
         }
         return mapped;
     }

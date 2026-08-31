@@ -5,9 +5,11 @@
 package org.eolang.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -48,11 +50,11 @@ final class SourceTest {
     }
 
     @Test
-    void splitsOnBareCarriageReturn() {
+    void keepsBareCarriageReturnInsideTheLine() {
         MatcherAssert.assertThat(
-            "a bare CR must terminate a line by itself",
+            "R-2.1.2 knows two line endings, and a lone CR is neither of them",
             SourceTest.texts(new Source("alpha".concat(SourceTest.creturn()).concat("beta"))),
-            Matchers.contains("alpha", "beta")
+            Matchers.contains("alpha".concat(SourceTest.creturn()).concat("beta"))
         );
     }
 
@@ -128,47 +130,60 @@ final class SourceTest {
         );
     }
 
-    /**
-     * Join the rows with the given separator (no trailing separator).
-     * @param sep Separator
-     * @param rows Rows to join
-     * @return Joined text
-     */
+    @Test
+    void reusesTheSameSpansOnEveryIteration() {
+        final Source source = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta", "gamma")
+        );
+        MatcherAssert.assertThat(
+            "a second iteration must hand back the very same span objects, not fresh ones",
+            SourceTest.collect(source),
+            Matchers.contains(SourceTest.collect(source).toArray(new Span[0]))
+        );
+    }
+
+    @Test
+    void iteratesTwiceOverTheSameInstance() {
+        final Source source = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta")
+        );
+        SourceTest.texts(source);
+        MatcherAssert.assertThat(
+            "iterating an already-iterated source must still yield all of its lines",
+            SourceTest.texts(source),
+            Matchers.contains("alpha", "beta")
+        );
+    }
+
+    @Test
+    void forbidsRemovalThroughTheIterator() {
+        final Iterator<Span> iter = new Source(
+            SourceTest.join(SourceTest.newline(), "alpha", "beta")
+        ).iterator();
+        iter.next();
+        Assertions.assertThrows(
+            UnsupportedOperationException.class,
+            iter::remove,
+            "the iterator must not let a caller drop a span from the source"
+        );
+    }
+
     private static String join(final String sep, final String... rows) {
         return String.join(sep, rows);
     }
 
-    /**
-     * LF character as a one-char string — used so source inputs avoid
-     * the {@code \n} string literal that triggers Qulice's
-     * line-separator rule.
-     * @return LF
-     */
     private static String newline() {
         return String.valueOf((char) 10);
     }
 
-    /**
-     * CR character.
-     * @return CR
-     */
     private static String creturn() {
         return String.valueOf((char) 13);
     }
 
-    /**
-     * CRLF pair.
-     * @return CRLF
-     */
     private static String crnl() {
         return SourceTest.creturn().concat(SourceTest.newline());
     }
 
-    /**
-     * Collect all spans from a source.
-     * @param source The source
-     * @return Materialised list of spans
-     */
     private static List<Span> collect(final Source source) {
         final List<Span> out = new ArrayList<>(0);
         for (final Span span : source) {
@@ -177,11 +192,6 @@ final class SourceTest {
         return out;
     }
 
-    /**
-     * Collect the text of each span.
-     * @param source The source
-     * @return Materialised list of span texts
-     */
     private static List<String> texts(final Source source) {
         final List<String> out = new ArrayList<>(0);
         for (final Span span : source) {

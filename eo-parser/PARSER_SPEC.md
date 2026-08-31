@@ -136,6 +136,7 @@ R-2.2.1. The indent unit is **two spaces**. Odd leading-space counts are an erro
 R-2.2.2. Between two consecutive non-blank lines, indent may **increase by at most one level** (i.e., +2 spaces).
 R-2.2.3. Indent may decrease by any amount.
 R-2.2.4. Tabs in leading whitespace are rejected.
+R-2.2.5. A non-blank line whose last character is a space or a tab is rejected: `trailing whitespace at end of line`. This applies to every line, including a text-block body line (§3.11), which bypasses the ordinary line dispatch but is checked the same way. A whitespace-only (blank) line is exempt.
 
 Example:
 
@@ -168,8 +169,8 @@ The parser recognises the following lexical tokens:
 | `RHO` | `^` |
 | `ROOT` | `Q` |
 | `XI` | `$` |
-| `TERM` | `T` — the bottom term (§9.3), similar to `⊥` in 𝜑-calculus. A self-contained single-character token; carries no arguments and no chain. |
-| `SELF` | `%` — self-reference (§3.15). Sugar for the auto-name of the enclosing anonymous (`>>`-named) formation; substituted at compile time. A value: it may carry arguments (`% 5`) and a `.method` chain, like any other head. |
+| `TERM` | `T` — the terminator term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the terminator, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
+| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value: it may carry vertical arguments and a `.method` chain, like any other head, but no horizontal ones (R-3.16.1). |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
@@ -214,7 +215,7 @@ Each non-blank, non-comment line is classified into exactly one shape, determine
 | literal (`"…"`, `42`, `--`, `AB-CD`, `0xFF`, signed number) | — | application starting with literal (§3.6) |
 | `*` | — | star tuple as application head (§3.6) |
 | `(` | — | application starting with group (§3.6) |
-| `%` | — | self-reference as application head (§3.15) |
+| `I` | — | identity object as application head (§3.16) |
 
 The classifier emits a **line-shape record**:
 
@@ -280,11 +281,12 @@ R-3.3.7. Exactly one blank line must separate the comment block from the first m
 
 R-3.4.1. Each parameter becomes a void child of the formation.
 R-3.4.2. The standalone `@` parameter maps to `φ`. **Lexer note:** the §2.3 `NAME` token excludes `@`, so the `@` inside `[…]` is lexed as the `PHI` token, not as `NAME`. The void parameter list therefore accepts the token sequence `(NAME | PHI) (SPACE (NAME | PHI))*`, not just `NAME`.
-R-3.4.3. `^` (`RHO` token) is rejected as a parameter name; only `NAME` and `PHI` are admitted (see lexer note in R-3.4.2).
+R-3.4.3. The standalone `^` (`RHO` token) parameter maps to `ρ` and declares the formation's **receiver** (R-3.4.11). It may stand in any position, so the void parameter list accepts `(NAME | PHI | RHO) (SPACE (NAME | PHI | RHO))*`.
 R-3.4.4. No leading/trailing space inside `[ ]`.
+R-3.4.12. The formation head's `[` must be closed by a matching `]` on the same line; a missing `]` is its own error, distinct from R-3.4.4's leading/trailing-space check, which never runs without a `]` to bound the search.
 R-3.4.5. No double space between parameter names.
 R-3.4.6. The formation line may end with one of the optional name suffixes (§3.10).
-R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), and `move-voids-up` hoists it among the head voids in source order, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. `? > name` and `? >> name`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`a void attribute must be written as ? > name or ? >> name`); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises a void to the bracket form, since the two are indistinguishable in XMIR — except where the bracket form cannot carry what the void holds: an auto-name handle (R-3.10.12), a type annotation (R-3.4.8), or membership in an atom (R-3.4.10), each of which prints vertically.
+R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), in source order behind the head voids, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The parser emits the voids of a formation ahead of everything else it holds — in particular ahead of an atom's `λ` marker (R-9.4), which is read off the head line but written out only once the last void has landed. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. The name may also be `^`, which declares the receiver and emits a void named `ρ` (R-3.4.11), in whatever position it is written. `? > name`, `? >> name` and `? > ^`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`a void attribute must be written as ? > name or ? >> name`); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises a void to the bracket form, since the two are indistinguishable in XMIR — except where the bracket form cannot carry what the void holds: an auto-name handle (R-3.10.12), a type annotation (R-3.4.8), or membership in an atom (R-3.4.10), each of which prints vertically.
 R-3.4.8. **Type annotations on voids (atom-only).** Inside an **atom** (a formation whose head carries `/sig`), a void — always a vertical one, per R-3.4.10 — may carry **exactly one** type annotation. Both forms below are optional; an unannotated void is left untyped (its type is inferred), and an annotated void may be followed by an unannotated one. Outside an atom either form is an error (`a void type annotation is allowed only inside an atom`), and the two forms are mutually exclusive on one void (`a void attribute may carry at most one type annotation`).
 
 ```
@@ -296,6 +298,8 @@ type      ::=  type-var | NAME ('.' NAME)* | 'Q' ('.' NAME)+
 - **Own type — `? > name /type`.** `type` is a `type-var` (§3.10.10) or a concrete forma, with an optional trailing `?` marking a **maybe-⊥** value. Emits a `@type` attribute on the void's `<o>`. A `type-var` is emitted verbatim; a concrete forma has its leading `Q.` promoted to `Φ.` at parse (R-9.3) and is later homed by `add-default-package`, with any trailing `?` preserved. Examples: `? > value /A?` emits `<o name='value' base='∅' type='A?'/>`; `? > s /Q.string?` emits `type='Φ.string?'`.
 - **Callback argument types — `? > name /{type …}`.** The void is itself a formation the atom fills; the brace list gives the types of *its* void parameters — equivalently, the arguments the atom supplies to that branch. Each member is a `type-var` or a concrete forma, single-space separated, at least one required; the optional marker `?` is **not** allowed inside the list (`? is not allowed inside a /{…} argument list`). Emits an `@args` attribute, members promoted or verbatim per the split. Example: `? > not-found /{string io.file-error}` emits `<o name='not-found' base='∅' args='Φ.string io.file-error'/>`; `? > cant /{Q.string B}` emits `args='Φ.string B'`. (The type-checker treats the callback's result as the atom's own return type; the parser records only `@args`.)
 
+Every segment of a concrete forma is a `NAME` token (§2.3), in both annotation forms and in a return signature alike, so a scope token (`/$`, `/@`, `/^`) and any other segment that does not open with a lowercase ASCII letter (`/1foo`, `/-foo`, `/_foo`) is rejected (`type must be a dotted path of NAME tokens`) rather than homed into the default package.
+
 Every `type-var` in an atom — the return signature, a `@type`, or an `@args` member — denotes the same variable when spelled with the same letter, universally quantified over that atom (§3.10.10). So `B` in `cant /{Q.string B}` is the `B` of `? > y /B`.
 R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede all non-void attributes of the formation body. A void that follows a non-void child — or sits between non-void children — is an error (`a void attribute must be declared above all other attributes`). For example,
 
@@ -306,7 +310,9 @@ R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede
 ```
 
 is rejected, whereas `? > x` above `6 > six` is accepted. (Bracket-head voids are always above the body, so the rule constrains only the relative order of body lines.)
-R-3.4.10. **Atom voids are vertical-only.** An **atom** must declare every void as a `? > name` body line; a non-empty bracket head on a `/sig` line is an error (`an atom must declare its void attributes vertically, as ? > name lines`). Only a vertical void can carry the type annotation a native contract needs (R-3.4.8), and a head that also held untyped voids would put them ahead of the typed ones wherever the source wrote them, since `move-voids-up` hoists body voids behind the head ones. With the head empty, source order *is* void order, so an annotated void may be followed by an unannotated one without the two swapping places. A non-atom formation is untouched: it keeps both forms and may mix them freely.
+R-3.4.11. **The receiver is a void named `^`.** A formation may declare the object it is dispatched off as an ordinary void named `^`, written either as a bracket parameter (`[^ x] > lt`) or as a body line (`? > ^`); both emit `<o name='ρ' base='∅'/>` (§9.4). Its position among the voids is free — `[x ^] > foo` and a `? > ^` written after another void are both legal — because a dispatch looks the receiver up by *name*, not by position. Being a void, it obeys R-3.4.9 like every other one: it may not stand below a bound attribute (`a void attribute must be declared above all other attributes`). Writing it first is good practice and a lint may one day say so, but the parser does not require it. Inside an atom the receiver takes a type annotation like any other void (R-3.4.8, `? > ^ /Q.bytes`), and outside one it takes none.
+
+R-3.4.10. **Atom voids are vertical-only.** An **atom** must declare every void as a `? > name` body line; a non-empty bracket head on a `/sig` line is an error (`an atom must declare its void attributes vertically, as ? > name lines`). Only a vertical void can carry the type annotation a native contract needs (R-3.4.8), and a head that also held untyped voids would put them ahead of the typed ones wherever the source wrote them, since head voids come out before body ones. With the head empty, source order *is* void order, so an annotated void may be followed by an unannotated one without the two swapping places. A non-atom formation is untouched: it keeps both forms and may mix them freely.
 
 ```
 [] > slice /Q.bytes                   ← atom: head empty, voids below
@@ -382,6 +388,8 @@ foo ([x] body)               ← rejected: horizontal formation as argument
 foo [x] 5                    ← rejected: `[x]` in the horizontal arg list of foo
 ```
 
+R-3.6.6. **A paren group is consumed whole.** The expression between `(` and `)` must account for every character inside it; a group is an expression, not a recovery boundary. Anything the inner expression leaves behind — an optional marker, a name suffix, a test attribute, any token that has no place at that position — is rejected (`unexpected content inside a parenthesised expression`) rather than dropped, so `foo (bar baz?)`, `foo (bar baz >)` and `foo (bar baz +> test)` fail the same way `bar baz?` does without the parens.
+
 Outer kinds produced:
 - Head only, no args, no chained `.method` → **`head`**. A `*` token alone in head position is also `head` kind, emitted with `@base='Φ.tuple'` and `@star=''` (see §9.4.2 "Star tuple as head"). Openness and wrappability are the same as any other `head`.
 - Head with chained `.method.method…` but 0 horizontal args → **`hmethod`**. The head of the chain may itself be a paren group, a literal, `*`, or an identifier; the chain wraps it.
@@ -404,7 +412,7 @@ This section number is reserved; the method-dispatch line continuation rules pre
 
 The trailing-dot prefix-notation form.
 
-R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), or `RHO` (`^`) token** — no dotted paths and no `ROOT`/`XI`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
+R-3.8.1. The identifier ends with a trailing `.` followed by space or end-of-line. **The identifier preceding the trailing dot must be a single `NAME`, `PHI` (`@`), `RHO` (`^`), or `XI` (`$`) token** — no dotted paths and no `ROOT`/literal-rooted prefixes. Chained heads (`Q.x.foo.`) are not valid as the lead of a reversed dispatch — a trailing dot after `Q.x.foo` does not produce a reversed-dispatch line and is reported as a lexical/parse error.
 R-3.8.2. **Horizontal form** — `name. arg1 arg2 …`:
   - `arg1` is the **receiver** (the dispatch target of `.name`).
   - `arg2…` are method arguments of `.name`.
@@ -419,12 +427,9 @@ R-3.8.3. **Vertical form** — `name.` with no horizontal args:
 
 R-3.8.4. The horizontal and vertical forms are **mutually exclusive** — no mixing on the same dispatch.
 
-R-3.8.5. **Compact tuple suffix** `*N` may follow the dot only in the vertical form (§3.9). For reversed dispatch with `*N`, `N ≥ 1` is required (the receiver occupies the first direct slot).
-
 Outer kinds produced:
-- Vertical form, no compact tuple → **`bare-reversed`**.
+- Vertical form → **`bare-reversed`**.
 - Horizontal form (with hargs) → **`reversed-with-hargs`**.
-- Vertical form with compact tuple → **`compact-tuple`** (with sub-flavor *reversed*).
 
 ```
 if. > @                               ← vertical bare-reversed, name @
@@ -436,11 +441,6 @@ if. cond then else                    ← horizontal form, receiver=cond, args=t
 
 if. false 1:a 2:b > second            ← horizontal form, receiver=false (no binding per R-6.6.3),
                                       ← method args 1:a and 2:b (both bound)
-
-joined. *1 > sixth                    ← compact-tuple-reversed, N=1
-  text ""                             ← receiver (occupies the 1 direct slot)
-  x                                   ← tuple element
-  y                                   ← tuple element
 ```
 
 
@@ -458,17 +458,15 @@ name. > @                             ← bare reversed waiting for receiver
 
 R-3.9.1. Syntactic form: a *head expression* followed by `*` and an optional integer `N` (default `0`). The head expression on a compact-tuple line is one of:
   - a `head` (bare identifier, `*`, or literal — though `*` as head is unusual on a compact-tuple line; see §9.4.2);
-  - an `hmethod` with 0 horizontal args (e.g., `foo.bar *`);
-  - a `bare-reversed` (e.g., `name. *N`, with the additional constraint of R-3.9.4).
+  - an `hmethod` with 0 horizontal args (e.g., `foo.bar *`).
 
-  These are the same forms the grammar's `compactTuple : (hmethod | applicable | reversed) SPACE STAR INT?` admits. Heads carrying horizontal args (`happlication`, `reversed-with-hargs`) cannot also carry `*N` — the compact-tuple marker comes after the head and before any args.
+  These are the same forms the grammar's `compactTuple : (hmethod | applicable) SPACE STAR INT?` admits. Heads carrying horizontal args (`happlication`, `reversed-with-hargs`) cannot also carry `*N` — the compact-tuple marker comes after the head and before any args. A reversed-dispatch head (`bare-reversed`) is not a valid compact-tuple head; `name. *N` is not legal syntax.
 R-3.9.2. The head's vertical children are partitioned:
   - The first `N` children become direct positional arguments of the head.
   - The remaining children are collected into a single `Φ.tuple @star` argument appended at the end.
 R-3.9.3. If the number of children is less than `N`, the line is reported as an error.
-R-3.9.4. **Reversed-dispatch heads need `N ≥ 1`.** If the head is a reversed dispatch, the receiver must occupy at least one direct slot. Stated once in R-3.8.5; reproduced here only as a cross-reference. Specifically: `name. *` (no `N`, defaults to 0) and `name. *0` are rejected at the classifier — the receiver would have no place to live.
 
-R-3.9.5. **For non-reversed heads, `N = 0` is legal.** A 3-line block
+R-3.9.4. **`N = 0` is legal.** A 3-line block
 
 ```
 seq * > @
@@ -476,7 +474,7 @@ seq * > @
   false
 ```
 
-is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form. The N=0 restriction in R-3.9.4 applies *only* when the head is `bare-reversed` — for `head` and `hmethod`-with-0-hargs heads, N=0 is the default and supported shape.
+is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form.
 
 Outer kind: **`compact-tuple`** (open for vertical children; closed for `.method` continuation until the block ends).
 
@@ -537,7 +535,7 @@ R-3.10.6. The LHS of inline-phi must be non-empty: at least one expression with 
 
   Only the four kinds enumerated above (head, hmethod, happlication, paren group) are permitted as inline-phi LHS.
 R-3.10.7. **Exactly one `> [params]` suffix per line.** Chained inline-phi suffixes (`expr > [a] > [b] > name`) are rejected, even though the underlying grammar can express them. The construct is unused in practice and adds parsing complexity for no gain.
-R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (truthy test attribute), `> [params] -> name` (throwing test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All shapes are accepted by the parser; the test-attribute forms additionally inherit the depth constraint of R-6.3.3. **Compact test shorthand `++>` / `-->`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` (truthy) or `-->` (throwing) head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`, and `lhs --> name` is sugar for `lhs > [] -> name`. The `++>` / `-->` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` / `-->` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` / `> [] -> name` form.
+R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (truthy test attribute), `> [params] -> name` (throwing test attribute), or bare `> [params]` (anonymous — the formation gets no name of its own, so it is legal only where an anonymous object is: an argument, or a paren group per R-3.10.10a; directly inside a formation body it is rejected, `inline-phi formation must carry a name on the right`). All shapes are accepted by the parser; the test-attribute forms additionally inherit the depth constraint of R-6.3.3. An atom signature is **not** among them: an atom declares its voids vertically (R-3.4.10) and holds nothing but tests (R-6.3.1), while an only-phi line declares a void in brackets and binds `φ` to an expression, so `/sig` on one of these lines is rejected (`an only-phi formation cannot be an atom`). **Compact test shorthand `++>` / `-->`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` (truthy) or `-->` (throwing) head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`, and `lhs --> name` is sugar for `lhs > [] -> name`. The `++>` / `-->` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` / `-->` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` / `> [] -> name` form.
 R-3.10.9. Anything after the name is reported as "unexpected content" without aborting the line.
 R-3.10.10a. **Anonymous inline-phi as a paren-grouped value.** Inline-phi formations are normally line-level suffixes (R-3.10.1), but the bare form `body > [params]` (no `> name` / `>>` / `+> name` on the right) is **also legal inside a paren group** as a value-level expression: `(body > [params])`. The group then evaluates to an anonymous formation with the given params and `body` bound to its `φ` slot; the enclosing context (a horizontal arg, the LHS of a binding, etc.) supplies any naming. Only the bare (anonymous) form is permitted in this position — `(body > [params] > name)`, `(body > [params] >>)`, and `(body > [params] +> name)` are rejected: naming and test attributes must attach at line level. The construct is rare; the canonical use is passing a one-parameter formation as a horizontal arg without dedicating a separate line, e.g. `malloc.of 8 (m.put 10 > [m])`.
 
@@ -553,7 +551,7 @@ type-var  ::=  'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 R-3.10.10. `sig` declares the atom's return type. A `NAME`/dotted form names a **concrete** forma (`/number`, `/bytes`, `/Q.org.eolang.number`); a `type-var` declares a **generic** return — a universally-quantified type variable scoped to the atom. Same letter ⇒ same type throughout that atom; distinct atoms are independent. The variable set is capped at `A`–`F` (six) for now; any other letter, or a multi-character uppercase-initial token, used where a variable is expected is rejected (`type variable must be one of A-F`). A return signature carries **no** `?`: the optional marker is legal only on a void attribute (§3.4.8), so `/A?` on a return is rejected (`optional marker ? is allowed only on a void attribute`). A bare `/Q` (root alone, no dot-name) is rejected, as are the other malformed sigs (bare `/`, trailing dot `/Q.`, sigs starting with `.`).
 R-3.10.11. The leading `Q` in a dotted concrete `sig` is promoted to `Φ` in XMIR (the source→XMIR mapping table in §9.3 is the single source of truth for all Q→Φ / @→φ / ^→ρ promotions). A `type-var` is emitted **verbatim** — never `Φ`-promoted, never alias-expanded, never homed by `add-default-package` (§9.3).
 
-R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application, vertical void R-3.4.7); `!` const stays allowed (`>>! name`) except on a vertical void, `/sig` stays forbidden (R-3.10.2). A handle declared twice in one file is a compile-time error (`duplicate local name 'name'`); a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
+R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application, method continuation R-3.5, text block R-3.11.4, vertical void R-3.4.7); `!` const stays allowed (`>>! name`) except on a vertical void, `/sig` stays forbidden (R-3.10.2). A handle declared twice in one file is a compile-time error (`duplicate local name 'name'`); a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
 
 ### 3.11 Triple-quoted text block — `"""`
 
@@ -566,13 +564,15 @@ R-3.11.5. An unclosed block is reported at end-of-stream as a recoverable error.
 ```
 """
 hello
-world""" > text-value                 ← multi-line string named text-value
+world
+""" > text-value                      ← multi-line string named text-value
 ```
 
 ### 3.12 Inline binding — `:label` or `:N`
 
 R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to.
 R-3.12.2. `:N` (digit) maps to `α0`, `α1`, … positional slot names.
+R-3.12.2a. `:^` maps to `ρ`, binding the argument to the receiver the callee declares (R-3.4.11), so `lt x:0 y:^` fills `lt`'s `ρ` with `y`.
 R-3.12.3. Binding is forbidden inside formation context — plain children carry their name via the name suffix, not the binding (§6.2).
 R-3.12.4. Binding rules in same-indent groups (§6.6) apply.
 
@@ -625,7 +625,7 @@ A line whose first non-space character is `|` is a *pipe-application line*. It a
 
 R-3.14.1. The `|` is followed by a single space, then either a horizontal argument list (§3.6) or nothing, then an optional name suffix (§3.10). Its tail is parsed exactly as an application's argument list plus suffix — the pipe supplies the arguments; the *head* is the implicit predecessor.
 
-R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation` or `inline-phi-formation`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
+R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation`, `inline-phi-formation` or `identity-object`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
 
 R-3.14.3. **Two forms**, distinguished by whether horizontal args are present on the line:
   - **Horizontal form** — `| arg1 arg2 … [> name]` (≥1 arg): the args are the application arguments. The line takes no deeper-indent children (`vertical-completed`), but may still be wrapped by a same-indent `.method` (§3.5) or extended by a following pipe (chained application, R-3.14.5).
@@ -662,14 +662,18 @@ R-3.14.8. **Predecessor placement — body vs argument block.** Where the predec
 Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
 
 ```
-[x] > foo                             ← named formation
-  x.plus x > @
-| 5 > foo5                            ← foo5 = foo applied to 5 (i.e. (5).plus 5)
+[] > app
+  [x] > foo                           ← named formation
+    x.plus x > @
+  | 5 > foo5                          ← foo5 = foo applied to 5 (i.e. (5).plus 5)
 
-[a b] >>                              ← auto-named (anonymous) formation
-  a.plus b > @
-| 2 3 > pair                          ← one application, two args, referring to the auto-name
+  [a b] >>                            ← auto-named (anonymous) formation
+    a.plus b > @
+  | 2 3 > pair                        ← one application, two args, referring to the auto-name
 ```
+
+A pipe belongs inside a body or an argument block, never at file level: the
+predecessor and the pipe are two objects (R-3.14.8), and a file holds one.
 
 Illegal:
 
@@ -685,34 +689,28 @@ Illegal:
 | 5 > n                               ← rejected: no object above
 ```
 
-### 3.15 Self-reference — `%`
+### 3.16 Identity object — `I`
 
-A `%` token is *syntactic sugar for the auto-generated name of the anonymous formation that surrounds it* — the closest ancestor introduced by the `>>` suffix (§3.10). It is not a new reference mechanism: at compile time `%` is simply replaced by that name, exactly as if the (otherwise untypeable) auto-name had been written by hand. Its purpose is recursion without exposing a name — an anonymous helper (`fibo`, say) can call itself with `%` while staying inlined, invisible to the enclosing scope.
-
-R-3.15.1. `%` is a value: it is recognised wherever a value is expected — as a line head (`% (n.minus 1)`), as a horizontal argument, and inside a paren group — and takes horizontal arguments (§3.6) and a `.method` chain (§3.5) with the ordinary application shape.
-
-R-3.15.2. **Scope.** `%` stands for the **nearest enclosing anonymous formation** — the closest ancestor whose auto-generated name carries the cactus prefix (§9.2). A named formation (`> name`) is not a target; reference such an object by its name. A `%` with no enclosing anonymous formation is a compile-time error.
-
-R-3.15.3. **Emission / XMIR.** The parser emits a base-less `<o self=''>` marker; the `resolve-self` reshape (§9) substitutes the name — it sets `@base` to the enclosing anonymous formation's `@name` and drops `@self` — so every downstream pass sees a plain reference by the auto-name. A `%` outside any anonymous formation is rejected there with a `resolve-self` check error (a post-parse check, like the compact-tuple index check, not a §9.9 parser error).
+An `I` token is *the one-character spelling of the identity object* `x > [x]` — the formation that binds a single void and decorates it, so that dataizing it dataizes whatever was applied to it. It is the object counterpart of the [identity function](https://mathworld.wolfram.com/IdentityFunction.html), and it reads best where a callback is asked for but nothing is to be done with the value:
 
 ```
-io.stdout > @                         ← prints the 5th Fibonacci number
-  tt.sprintf *1
-    "The 5th Fibonacci number is %d\n"
-    [n] >>                            ← anonymous (auto-named) formation a🌵…
-      if. > @
-        n.lt 2
-        n
-        plus.
-          % (n.minus 1)               ← % = the anonymous formation's auto-name
-          % (n.minus 2)               ← % = the anonymous formation's auto-name
-    | 5                               ← applies the formation to 5 (§3.14)
-
-[] > app
-  % 6 > @                             ← rejected: no enclosing anonymous formation
+"hello".at 1.5 I                      ← the error branch hands the message back
 ```
 
-Outer kind: that of the underlying application (§3.6), since `%` is just a head value.
+R-3.16.1. `I` is a value: it is recognised wherever a value is expected — as a line head, as a horizontal argument, as a vertical one, and inside a paren group — and takes a `.method` chain with the ordinary application shape (§3.6). It takes **no horizontal arguments**, in any position: an argument is given on a deeper-indent line.
+
+```
+I 5 > r                               ← rejected: the identity takes no horizontal arguments
+foo (I 5) > r                         ← rejected: the same application, inside a group
+I > r                                 ← the vertical form of the same
+  5
+```
+
+R-3.16.2. **The void.** The void `I` binds is always named `x`, since nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `x`, so scope resolution binds to it.
+
+R-3.16.3. **Emission / XMIR.** The parser emits a base-less `<o>` with two children in this order — the void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — which is exactly what the spelled-out `x > [x]` emits.
+
+R-3.16.4. **Outer kind.** A bare `I` line is an `identity-object` (Appendix A): a pipe may apply arguments to it (R-3.14.2), because `I` names a formation, while its own deeper-indent children stay arguments, not bindings, as under any other head. An `I` carrying a chain takes the outer kind of the underlying application (§3.6).
 
 ---
 
@@ -875,7 +873,7 @@ R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
 
-R-5.2.4a. **PipeApplication same-indent line.** A `PipeApplication` line (§3.14) is a Non-MethodDispatch line and so replaces the top per R-5.2.4, but first the top must satisfy R-3.14.2: its kind must be `bare-formation`, `inline-phi-formation`, or `pipe-application`, and it must be named. Otherwise error `a pipe must follow a named formation or another pipe` (§9.9). In particular a top whose kind is `vmethod` / `vmethod-with-hargs` (a `.method` was taken off the predecessor) fails this check — R-3.14.4.
+R-5.2.4a. **PipeApplication same-indent line.** A `PipeApplication` line (§3.14) is a Non-MethodDispatch line and so replaces the top per R-5.2.4, but first the top must satisfy R-3.14.2: its kind must be `bare-formation`, `inline-phi-formation`, `identity-object`, or `pipe-application`, and it must be named. Otherwise error `a pipe must follow a named formation or another pipe` (§9.9). In particular a top whose kind is `vmethod` / `vmethod-with-hargs` (a `.method` was taken off the predecessor) fails this check — R-3.14.4.
 
 **Step C — Deeper line.** If the top entry now has indent < `N`:
 
@@ -904,9 +902,10 @@ R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the pop
 R-5.3.4a. **R-5.3.4 and R-5.3.5 are disjoint.** Both rules check the popped entry's suffix and parent, but on disjoint conditions: R-5.3.4 fires *only when* the popped entry is **not** a `+>` test (so it can't have `+>` to feed R-5.3.5); R-5.3.5 fires *only when* the popped entry **is** a `+>` test (so the atom-body check passes vacuously). A single popped entry cannot trigger both rules. Multiple errors per source line are possible only when the line introduces *multiple* level records that each independently fail (e.g., a nested atom *and* a deeply-placed test in the same file), but in that case each error attaches to its own entry's `start_line`.
 R-5.3.5. **Test depth.** If the popped entry's name suffix is `+>`, the popped entry's *immediate parent* must itself be a top-level formation (sitting at indent 0). Concretely:
   - the popped entry's `parent_kind` must **not** be `top-level` (otherwise the popped entry is itself at indent 0, which is illegal), AND
-  - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal).
+  - the popped entry's parent's own `parent_kind` must be `top-level` (otherwise the parent is itself nested, also illegal), AND
+  - the parent's own kind must be a formation — `bare-formation` or `inline-phi-formation` (otherwise indent 2 is an argument position of a top-level application, not an attribute position, so the test would be taken as an argument).
 
-  Either failure yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first failure case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4.
+  Any of the three failures yields error `test attribute legal only as direct child of top-level object` (R-6.3.3 / §9.9). The first case covers a stray `+>` at indent 0; the second covers `+>` at indent ≥ 4; the third covers `+>` at indent 2 under a top-level object that is an application (`bool > true`, `number > nan`, `string > eol`) rather than a formation.
 R-5.3.6. **Inline-phi argument rules.** An `inline-phi-formation` whose φ carries horizontal args is closed for deeper children (caught at child-push time via R-6.1.1). When its φ is bare, deeper children attach as φ's vertical arguments; because the formation binds only φ, such an argument may not be named — at close time an argument entry that carries a name suffix yields error `argument of an only-phi formation cannot carry a name suffix` (§9.9). The ban propagates down through nested applications and resets at a formation boundary (§4.5).
 
 ### 5.4 End-of-file (FSM action)
@@ -1004,7 +1003,7 @@ Illegal:
 
 R-6.3.1. A formation declared with `/sig` suffix on its name is an **atom**. Besides the `? > name` void declarations every atom carries in its body (R-3.4.10), an atom may contain only test attributes (truthy `+>` or throwing `->`); regular bound or master children are rejected.
 R-6.3.2. A non-atom formation may contain any mix of plain children, master children, and test attributes.
-R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) — i.e., as a direct child of the top-level object. Test attributes at any other depth are rejected.
+R-6.3.3. A test attribute (`+>` truthy or `->` throwing) is legal **only** at indent level 1 (indent 2 spaces) **of a top-level object that is a formation** — i.e., as a direct child of that formation. Test attributes at any other depth are rejected, and so is one at indent 2 of a top-level *application*, where indent 2 is an argument position rather than an attribute position: an object declared as an application (`bool > true`, `number > nan`, `string > eol`, and likewise `false.eo`, `pi.eo`, `pinf.eo`, `ninf.eo`, `e.eo`) can carry no tests at all, which is why `unit-test-missing` excuses it via `not(/object/o/@base)`.
 R-6.3.4. Atoms may appear at any nesting depth, with two restrictions:
   - **(a)** A nested atom (one not at indent 0) cannot hold tests (R-6.3.3 — `+>` legal only at indent 2 of top-level) and cannot hold regular children (R-6.3.1 — atoms accept only test children). Therefore a nested atom's body holds nothing but its `? > name` void declarations (R-3.4.10), which every atom declares vertically.
   - **(b)** A nested atom is legal only when the containing formation is **not itself an atom**. Atoms inside atoms are rejected: an atom's body may contain only `+>` test attributes (R-6.3.1), and a master child (formation/atom) of an atom is therefore inadmissible regardless of body shape.
@@ -1226,27 +1225,29 @@ Example: for `[] > foo` with body `42 > @`, `foo` emits `@loc="Φ.foo"`, its `@`
 R-9.2.1. For an object whose name suffix is `>>`, the emitted `@name` is computed as:
 
 ```
-auto_name(line, pos)  =  "a" + U+1F335 + line + "-" + pos
+auto_name(line, indent)  =  "a" + U+1F335 + line + "-" + indent
 ```
 
-where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `pos` to prevent identity collisions (e.g., distinguishing `(line=1, pos=25)` from `(line=12, pos=5)`).
+where U+1F335 is the cactus emoji 🌵. The cactus is the prefix marker; the hyphen `-` separates `line` from `indent` to prevent identity collisions (e.g., distinguishing `(line=1, indent=25)` from `(line=12, indent=5)`).
 
 R-9.2.2. The cactus 🌵 is reserved — it is excluded from the `NAME` token (§2.3), so auto-names cannot collide with user-defined names. (The hyphen `-` is permitted inside `NAME` tokens; it does not need exclusion because the cactus prefix already disambiguates auto-names from user names.)
 
-Example: a `>>` suffix at `line=12, pos=5` emits `@name="a🌵12-5"`.
+Example: a `>>` suffix on a line indented 5 columns at `line=12` emits `@name="a🌵12-5"`.
 
-R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications` / `resolve-self`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. A reference may also name the scope of the handle instead of leaving it to that search: `$.name` binds to the handle of the innermost formation, `^.name` (one more `^` per level) to a formation further out, and `bar.name` to the enclosing formation called `bar`, which is how a helper reaches its own handle through the object that declares it. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
+R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object with its cactus `@name` **and** a `@local="name"` marker; references stay as plain `<o base='name'>`. The first-pass `resolve-local-names` reshape (right after `wrap-applications`, before `build-fqns`) collects the per-file `@local → @name` table and rewrites every `@base` equal to a handle into the matching cactus `@name`; a handle declared twice is reported there as a `resolve-local-names` check error. A reference may also name the scope of the handle instead of leaving it to that search: `$.name` binds to the handle of the innermost formation, `^.name` (one more `^` per level) to a formation further out, and `bar.name` to the enclosing formation called `bar`, which is how a helper reaches its own handle through the object that declares it. The `@local` marker is **kept** on the declaring object so that the readable handle can be recovered from the otherwise-synthetic cactus name — in particular by the printer, which prints `? >> name` voids back under their handle rather than a `vL_P` placeholder (#5563). Downstream compilation passes reference the reserved cactus name and ignore the marker.
+
+R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follows resolves a bare `<o base='name'>` against the formation it sits in: a name that formation owns becomes `ξ.name`, a name the file's own package owns becomes `Φ.<package>.name`, and a name nothing in scope owns is left for `add-default-package` to home into `Φ`. A name owned by an *enclosing* formation is none of those — it is reported (`The "name" object is declared in an enclosing scope, write it as "^.name"`), because the `^.` hops that reach it are the author's to write. The one name this does not apply to is a cactus one, which no author writes: it is what a `>>` handle resolves to (R-9.2.3), and the handle is spelled bare wherever the file reads it, so the hops that reach it are still inserted here.
 
 ### 9.3 Source-token to XMIR-character mapping
 
 | Source token | XMIR character | Used as |
 | --- | --- | --- |
 | `@` (PHI) | `φ` | `@name='φ'` for the @-attribute |
-| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference |
+| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11); `@as='ρ'` for a `:^` binding (R-3.12.2a) |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
-| `%` (SELF) | — | base-less `<o self=''>` marker; `resolve-self` (§9) later sets `@base` to the enclosing anonymous formation's auto-name (§3.15) |
-| `T` (TERM) | `⊥` | `@base='⊥'` for the bottom term |
+| `T` (TERM) | `⊥` | `@base='⊥'` for the terminator term |
+| `I` (IDENTITY) | — | base-less `<o>` with a single void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — the identity object (§3.16) |
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
 
@@ -1258,14 +1259,14 @@ R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object
 | Const-marker `> name!` | `@const` attribute (empty value: `@const=""`) |
 | Truthy test attribute `[] +> name` | `@name='+<name>'` (the `+` prefix marks it as a truthy test; transpiles to `Assertions.assertTrue`) |
 | Throwing test attribute `[] -> name` | `@name='-<name>'` (the `-` prefix marks it as a throwing test; transpiles to `Assertions.assertThrows`) |
-| Atom signature `> name /sig` | A wrapper `<o>` carries the user-given `@name='<name>'`. Children, in order: (1) the atom's voids, in source order — always vertical ones, per R-3.4.10, hoisted here by `move-voids-up`; (2) the marker `<o name='λ' atom='<sig>'/>` immediately after the voids; (3) any test attributes (`+>`) that follow. `<sig>` is a `Φ`-promoted concrete forma **or** a bare generic type variable A–F (verbatim). Example: `[] > foo /bar` with body lines `? > a` and `? > b` emits `<o name='foo'><o name='a' base='∅'/><o name='b' base='∅'/><o name='λ' atom='bar'/>...</o>` |
+| Atom signature `> name /sig` | A wrapper `<o>` carries the user-given `@name='<name>'`. Children, in order: (1) the atom's voids, in source order — always vertical ones, per R-3.4.10; (2) the marker `<o name='λ' atom='<sig>'/>` immediately after the voids; (3) any test attributes (`+>`) that follow. `<sig>` is a `Φ`-promoted concrete forma **or** a bare generic type variable A–F (verbatim). Example: `[] > foo /bar` with body lines `? > a` and `? > b` emits `<o name='foo'><o name='a' base='∅'/><o name='b' base='∅'/><o name='λ' atom='bar'/>...</o>` |
 | Void own-type `? > name /type` | `@type='<type>'` on the void's `<o>`: a `Φ`-promoted concrete forma or a verbatim variable A–F, with any trailing `?` preserved (R-3.4.8) |
 | Void callback types `? > name /{type …}` | `@args='<type> …'` on the void's `<o>`: space-separated members, each promoted forma or verbatim variable; no `?` (R-3.4.8) |
 | Compact tuple `*N` | A synthetic wrapper `<o base='Φ.tuple' star=''>` is emitted as the *last* child of the head, containing the tupled portion of the children. The first `N` children stay as direct positional args; the remaining children go inside this wrapper. The `@star` attribute lives on the wrapper, never on the head. See R-3.9.2 for the partition. |
 | Inline binding `:label` | `@as='label'` on the argument `<o>` |
 | Inline binding `:N` | `@as='αN'` |
 | `.method` line | `@method` attribute (empty); `@base` is prefixed with `.`; `@pos` records the dot column (R-9.1.3) |
-| `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the operator's first character (the `?`). |
+| `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the dot column, not the `?` (R-9.1.3, #5359). |
 | Unbound positional arg | `@as` is **not** emitted at parse time. It is added by a later post-parse pass |
 
 R-9.4.1. `@method` and `@as='αN'` are intermediate attributes; they may be transformed or removed by downstream XSL passes (`wrap-method-calls.xsl` and equivalents). The parser emits them; what happens after is out of scope.
@@ -1295,7 +1296,7 @@ R-9.4.2. The "source order" of vertical children is the order their head lines a
 
 R-9.5.1. The top comment block emits one `<comment>` element inside `/object/comments`, documenting the program. At most one block exists per program.
 R-9.5.2. The comment's body is the concatenation of the comment lines with the leading `#` removed from each. Per the `COMMENTARY` token rule (§2.3), a comment line ends on a non-whitespace character — trailing whitespace is already excluded at the token level. The body text is preserved verbatim after the `#`; leading whitespace immediately after the `#` is implementation-defined (typical: strip exactly one space if present).
-R-9.5.3. The `<comment>` carries a `line` attribute pointing at the first meta or object that flushed it (the construct it precedes).
+R-9.5.3. The `<comment>` carries a `line` attribute pointing at the comment block's own last line, matching the line reported when the same block is flushed at end of file with no meta or object following it.
 
 ### 9.6 Errors
 
@@ -1347,6 +1348,9 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
+| Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
+| Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
+| Trailing space or tab at end of a non-blank line | `trailing whitespace at end of line` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
@@ -1357,6 +1361,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Wrong number of blank lines after meta header (expected exactly one) | `meta header must be followed by exactly one blank line` |
 | Blank line(s) before the meta header (file must start with metas, no leading blanks) | `meta header must appear at the top of the file` |
 | Leading or trailing space inside `[ ]` (R-3.4.4) | `formation brackets must not contain leading or trailing space` |
+| Formation head `[` with no closing `]` (R-3.4.12) | `formation is missing its closing bracket` |
 | Double space between parameter names in voids (R-3.4.5) | `parameter names in voids must be separated by exactly one space` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
@@ -1367,8 +1372,9 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
 | Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
-| Multi-byte BYTES literal ending in a continuation dash with no following chunk (R-3.13.1) | `unterminated bytes continuation` |
+| Multi-byte BYTES literal ending in a continuation dash with no following chunk (R-3.13.1) | `bytes literal ends with a dangling continuation dash` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
+| Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |
 | Root identifier glued to a letter or a digit (e.g. the legacy `QQ.io.stdout`) | `<token> is not a valid object name, root <root> must be followed by a dot` (token and root substituted) |
 | Atom containing non-test child | `atom may contain only test attributes` |
@@ -1376,7 +1382,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |
 | Bare reversed dispatch receiver starts with `.` | `reversed dispatch receiver must not begin with dot` |
 | Compact tuple `*N` with N > children | `compact tuple requires at least N children, got K` (N and K substituted) |
-| Compact tuple `*0` on reversed dispatch | `reversed-dispatch compact tuple requires N ≥ 1` |
 | Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
@@ -1397,6 +1402,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Two type annotations on one void | `a void attribute may carry at most one type annotation` |
 | Unexpected odd character after a name suffix | `unexpected content after name suffix` |
 | Excessive trailing blank lines | `more than one trailing blank line` |
+| Line head matching no shape of §3 | `line head does not start any known object shape` |
 
 R-9.9.2. The position prefix `[L:P]` (with L = line, P = pos) is prepended to every error message before insertion into the `<error>` element body. Conventions: 1-indexed line, 0-indexed pos.
 
@@ -1422,6 +1428,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `vmethod` | multi-line | yes while in progress (only if last `.method` has 0 hargs) | yes (more `.method`s extend the chain; same-indent `.method` after block closes wraps it) | chain of `.method` continuations |
 | `vmethod-with-hargs` | multi-line | **no** | **no** | a `.method` continuation line that itself carries ≥1 horizontal args — closes the chain immediately |
 | `pipe-application` | 1 line (+ body if 0 hargs) | yes if 0 hargs (vertical form's args) | yes (after) | `\| [args] [> name]`; applies args to the same-indent named formation/pipe above (§3.14) |
+| `identity-object` | 1 line | yes (its vertical args) | yes (after) | a bare `I` (§3.16); a formation a pipe may apply args to, whose own children are arguments |
 | `text-block` | multi-line | n/a | yes (after closing `"""`) | `"""…"""` |
 
 **Horizontally-completed kinds (the single source of truth)** — these never receive deeper children and cannot be wrapped by same-indent `.method`:
@@ -1449,6 +1456,7 @@ Reproduced from §3.1 for convenience:
 | identifier | otherwise | application or just-an-identifier (§3.6) |
 | literal | — | application (§3.6) |
 | `*` | — | star tuple (§3.6) |
+| `I` | — | identity object (§3.16) |
 | `(` | — | group application (§3.6) |
 
 ## Appendix C — Worked examples

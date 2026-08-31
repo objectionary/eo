@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An identity object written the long way collapses to the `I` glyph
+# (#6834), whatever its void is called: nothing but the φ ever reads that
+# void, so its spelling carries no meaning. Being a leaf, the glyph inlines
+# as an argument wherever the penalty vote lets an argument inline.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    bar (error > [error]) > x
+    "hello".at 1.5 (m > [m]) > y
+
+printed: |
+  [] > app
+    bar I > x
+    "hello".at > y
+      1.5
+      I

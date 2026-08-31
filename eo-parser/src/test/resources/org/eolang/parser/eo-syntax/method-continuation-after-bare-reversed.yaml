@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6871: a reversed dispatch with nothing under it was not reported when a
+# same-indent `.method` continuation closed it, and the missing receiver was
+# emitted as an object with no base at all.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'reversed dispatch missing receiver')]
+input: |
+  [] > foo
+    size.
+    .m > x

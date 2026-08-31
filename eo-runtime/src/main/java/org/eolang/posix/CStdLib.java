@@ -12,13 +12,11 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import java.util.Collections;
-import org.eolang.SockaddrIn;
 
 /**
  * C standard library with unix syscalls.
  * @since 0.40
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public interface CStdLib extends Library {
 
     /**
@@ -73,7 +71,6 @@ public interface CStdLib extends Library {
      * @param descriptor Old file descriptor
      * @param other New file descriptor
      * @return Duplicated file descriptor
-     * @checkstyle MethodNameCheck (5 lines)
      */
     int dup2(int descriptor, int other);
 
@@ -140,6 +137,14 @@ public interface CStdLib extends Library {
     int stat(String path, Structure statbuf);
 
     /**
+     * Get file status by path, without following a symbolic link.
+     * @param path Path to the file
+     * @param statbuf Structure to fill with the file's metadata
+     * @return Zero on success, -1 on error
+     */
+    int lstat(String path, Structure statbuf);
+
+    /**
      * Delete a name from the filesystem.
      * @param path Path to the file
      * @return Zero on success, -1 on error
@@ -178,6 +183,14 @@ public interface CStdLib extends Library {
     int rename(String from, String target);
 
     /**
+     * Create a symbolic link pointing at a file or a directory.
+     * @param target Path the link leads to
+     * @param path Path of the link itself
+     * @return Zero on success, -1 on error
+     */
+    int symlink(String target, String path);
+
+    /**
      * Get environment variable.
      * @param name Name of the variable
      * @return Name of the environment variable
@@ -190,7 +203,7 @@ public interface CStdLib extends Library {
      * @param timezone Timezone
      * @return Zero on success, -1 on error
      */
-    int gettimeofday(GettimeofdaySyscall.Timeval timeval, Pointer timezone);
+    int gettimeofday(Timeval timeval, Pointer timezone);
 
     /**
      * Create an endpoint for communication.
@@ -208,7 +221,7 @@ public interface CStdLib extends Library {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int connect(int sockfd, SockaddrIn addr, int addrlen);
+    int connect(int sockfd, Structure addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -218,7 +231,7 @@ public interface CStdLib extends Library {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(int sockfd, SockaddrIn addr, int addrlen);
+    int bind(int sockfd, Structure addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.
@@ -237,7 +250,7 @@ public interface CStdLib extends Library {
      * @return On success, file descriptor for the accepted socket
      *  (a nonnegative integer) is returned. On error, -1 is returned
      */
-    int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
+    int accept(int sockfd, Structure addr, IntByReference addrlen);
 
     /**
      * Receive a message from a socket.
@@ -246,7 +259,6 @@ public interface CStdLib extends Library {
      * @param len Size of received data
      * @param flags Flags
      * @return The number of received bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int recv(int sockfd, byte[] buf, int len, int flags);
 
@@ -257,7 +269,6 @@ public interface CStdLib extends Library {
      * @param len Size of sent data
      * @param flags Flags
      * @return The number of sent bytes on success, -1 on error
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     int send(int sockfd, byte[] buf, int len, int flags);
 
@@ -265,7 +276,6 @@ public interface CStdLib extends Library {
      * Convert IP string to binary form.
      * @param address IP address
      * @return IP address in binary form
-     * @checkstyle MethodNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.MethodNamingConventions")
     int inet_addr(String address);
@@ -277,17 +287,6 @@ public interface CStdLib extends Library {
      */
     String strerror(int errno);
 
-    /**
-     * Load the C standard library.
-     *
-     * <p>On Intel macOS, {@code dlsym("stat")} resolves to the legacy
-     * 32-bit-inode version whose struct layout differs from the 64-bit-inode
-     * one used by {@link StatSyscall.Mac}. We remap {@code stat} to
-     * {@code stat$INODE64} to get the right layout. On arm64 macOS and
-     * Linux the plain {@code stat} symbol already uses that layout.</p>
-     *
-     * @return Loaded CStdLib instance
-     */
     private static CStdLib load() {
         final CStdLib result;
         if (Platform.isMac() && !Platform.isARM()) {
@@ -297,11 +296,12 @@ public interface CStdLib extends Library {
                 Collections.singletonMap(
                     Library.OPTION_FUNCTION_MAPPER,
                     (FunctionMapper) (lib, method) -> {
+                        final String name = method.getName();
                         final String mapped;
-                        if ("stat".equals(method.getName())) {
-                            mapped = "stat$INODE64";
+                        if ("stat".equals(name) || "lstat".equals(name)) {
+                            mapped = String.format("%s$INODE64", name);
                         } else {
-                            mapped = method.getName();
+                            mapped = name;
                         }
                         return mapped;
                     }

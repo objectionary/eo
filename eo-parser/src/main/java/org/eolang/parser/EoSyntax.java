@@ -10,6 +10,7 @@ import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
@@ -28,17 +29,6 @@ import org.xembly.Xembler;
  * @since 0.1
  */
 public final class EoSyntax implements Syntax {
-
-    /**
-     * Canonical XSL pipeline applied to the raw parser output.
-     *
-     * <p>This one is not aware of any objects, so bare references are
-     * always homed into the root {@code Φ} package. Use a
-     * {@link Canonical} built with a list of objects to make the
-     * pipeline resolve same-package references automatically (see
-     * {@code add-default-package.xsl}).</p>
-     */
-    static final UnaryOperator<XML> CANONICAL = new Canonical();
 
     /**
      * Text to parse.
@@ -69,10 +59,18 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
+     * <p>Applies the canonical XSL pipeline to the raw parser output,
+     * built fresh for this instance. This pipeline is not aware of any
+     * objects, so bare references are always homed into the root
+     * {@code Φ} package. Use a {@link Canonical} built with a list of
+     * objects to make the pipeline resolve same-package references
+     * automatically (see {@code add-default-package.xsl}).</p>
+     *
      * @param ipt The EO program to parse
      */
     public EoSyntax(final Input ipt) {
-        this(ipt, EoSyntax.CANONICAL);
+        this(ipt, new Canonical());
     }
 
     /**
@@ -81,7 +79,12 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing train
      */
     EoSyntax(final Input ipt, final Train<Shift> transform) {
-        this(ipt, new Xsline(transform)::pass);
+        this(
+            ipt,
+            new Xsline(
+                Objects.requireNonNull(transform, "EoSyntax train can't be null")
+            )::pass
+        );
     }
 
     /**
@@ -90,12 +93,22 @@ public final class EoSyntax implements Syntax {
      * @param transform Transform XMIR after parsing function
      */
     public EoSyntax(final Input ipt, final UnaryOperator<XML> transform) {
+        this(Objects.requireNonNull(transform, "EoSyntax has no transform"), ipt);
+    }
+
+    /**
+     * Ctor.
+     * @param transform Transform XMIR after parsing function
+     * @param ipt The EO program to parse
+     */
+    private EoSyntax(final UnaryOperator<XML> transform, final Input ipt) {
         this.input = ipt;
         this.transform = transform;
     }
 
     @Override
     public XML parsed() throws IOException {
+        final long start = System.nanoTime();
         final String text = new UncheckedText(new TextOf(this.input)).asString();
         return this.transform.apply(
             new XMLDocument(
@@ -106,7 +119,7 @@ public final class EoSyntax implements Syntax {
                         .xpath("/object")
                         .strict(1)
                         .append(new Eo(text).directives())
-                        .attr("ms", 0L)
+                        .attr("ms", new Millis(System.nanoTime() - start).asString())
                         .up()
                 ).domQuietly()
             )
