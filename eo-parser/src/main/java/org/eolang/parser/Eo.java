@@ -85,7 +85,13 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
-            if (!globals.inTextBlock() && !span.trailing()
+            final int carriage = span.text().indexOf('\r');
+            if (carriage >= 0) {
+                emit.error(
+                    span.line(), carriage, "standalone carriage return is not a line ending"
+                );
+                idx = recovery.after(idx);
+            } else if (!globals.inTextBlock() && !span.trailing()
                 && Eo.isBytesContinuation(span.body())) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
