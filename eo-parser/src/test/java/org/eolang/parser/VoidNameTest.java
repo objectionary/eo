@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link VoidName}.
- *
  * @since 0.74.0
  */
 final class VoidNameTest {

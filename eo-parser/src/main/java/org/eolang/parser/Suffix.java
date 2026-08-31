@@ -337,14 +337,6 @@ final class Suffix {
         return promoted;
     }
 
-    /**
-     * The name a {@code > name} suffix is emitted under. Only the
-     * {@code @} half of §9.3 reaches here — a label is either {@code @}
-     * or a lowercase-initial {@code NAME} — so this is not a void and
-     * does not go through {@link VoidName}, which promotes {@code ^} too.
-     * @param raw The label, as the source wrote it
-     * @return The emitted name
-     */
     private static String phi(final String raw) {
         final String mapped;
         if ("@".equals(raw)) {
