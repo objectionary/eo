@@ -47,8 +47,7 @@ final class TranspilingTest {
                 Paths.get("target"),
                 Paths.get("target/eo/6-inference")
             ),
-            new GlobalCache.GcFresh(),
-            new JavaFiles(Paths.get("target/generated"), Paths.get("target/cache"), false)
+            new GlobalCache.GcFresh()
         );
     }
 }
