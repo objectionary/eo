@@ -109,6 +109,36 @@ final class EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest {
     }
 
     @Test
+    void readsGroupExistsAsFalseForNonParticipatingOptionalGroup() {
+        MatcherAssert.assertThat(
+            "group-exists must be false for an optional group that did not participate",
+            new Dataized(
+                new PhApplication(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
+                        .optionalGroupMatch().take("group-exists").copy(),
+                    new Bind("index", new Data.ToPhi(2))
+                )
+            ).asBool(),
+            Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    void readsGroupExistsAsTrueForParticipatingGroup() {
+        MatcherAssert.assertThat(
+            "group-exists must be true for a group that did participate",
+            new Dataized(
+                new PhApplication(
+                    EOstringEOregexEOpatternEOmatchEOmatchedfromindexTest
+                        .optionalGroupMatch().take("group-exists").copy(),
+                    new Bind("index", new Data.ToPhi(1))
+                )
+            ).asBool(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void rejectsStartIndexAfterTextEnd() {
         MatcherAssert.assertThat(
             String.format(

@@ -31,10 +31,11 @@
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     [^ txt] > match
-      [^ position start from to groups] > matched
+      [^ position start from to groups existing] > matched
         groups.length > count
         start.gte 0 > exists
         ^.groups.at index > [^ index] > group
+        ^.existing.at index > [^ index] > group-exists
         exists.if > next
           if.
             and.
@@ -60,11 +61,15 @@
       [] > missing
         T > count
           "Matched block does not exist, can't get count"
+        T > existing
+          "Matched block does not exist, can't get groups"
         start.gte 0 > exists
         T > from
           "Matched block does not exist, can't get 'from' position"
         T > [index] > group
           "Matched block does not exist, can't get group"
+        T > [index] > group-exists
+          "Matched block does not exist, can't get group-exists"
         T > groups
           "Matched block does not exist, can't get groups"
         T > next
@@ -113,6 +118,17 @@
     next. > first
       "/./".regex.compiled.match "😀x"
     first.next > second
+
+  ++> can-expose-group-exists-for-a-non-participating-group
+    not. > @
+      first.group-exists 1
+    next. > first
+      "/(x)?y/".regex.compiled.match "y"
+
+  ++> can-expose-group-exists-for-a-participating-group
+    first.group-exists 1 > @
+    next. > first
+      "/(x*)y/".regex.compiled.match "y"
 
   ++> can-expose-groups-on-each-matched-block
     and. > @
@@ -254,6 +270,11 @@
   "(.)+".regex.compiled --> stops-on-a-missing-first-slash
 
   "/[a-z/".regex.compile --> stops-on-compiling-an-invalid-pattern
+
+  group-exists. --> stops-on-taking-a-group-exists-of-an-unmatched-block
+    next.
+      "/[a-z]+/".regex.match "123"
+    1
 
   group. --> stops-on-taking-a-group-of-a-terminal-zero-width-match
     next.
