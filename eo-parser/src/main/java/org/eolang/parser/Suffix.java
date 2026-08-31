@@ -80,8 +80,9 @@ final class Suffix {
     private final Form form;
 
     /**
-     * Bound name for {@code NAME} / {@code TEST} forms; the file-local
-     * handle for a {@code >> name} {@code AUTO} suffix; empty otherwise.
+     * Bound name for {@code NAME} / {@code TEST} / {@code THROWS} forms;
+     * the file-local handle for a {@code >> name} {@code AUTO} suffix;
+     * empty otherwise.
      */
     private final String label;
 
@@ -139,7 +140,7 @@ final class Suffix {
 
     /**
      * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}.
+     * {@code TEST}, {@code THROWS}.
      * @return Form
      */
     Form form() {
