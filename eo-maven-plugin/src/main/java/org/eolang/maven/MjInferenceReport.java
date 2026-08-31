@@ -64,6 +64,13 @@ public final class MjInferenceReport extends MjSafe {
     )
     private File tables;
 
+    /**
+     * Ctor.
+     */
+    public MjInferenceReport() {
+        // nothing
+    }
+
     @Override
     void exec() throws IOException {
         new Timed(
