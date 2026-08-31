@@ -86,7 +86,7 @@ public abstract class PhOnce implements Phi {
 
     @Override
     public final boolean needsRho() {
-        return this.object.get().needsRho();
+        return false;
     }
 
     @Override
