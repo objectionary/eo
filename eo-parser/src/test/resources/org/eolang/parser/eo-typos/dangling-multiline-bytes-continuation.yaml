@@ -6,7 +6,4 @@ message: |-
   [2:13] error: 'bytes literal ends with a dangling continuation dash'
     CA-FE-BE-BE-
                ^
-input: |
-  [] > app
-    CA-FE-
-    BE-BE-
+input: "[] > app\n  CA-FE-\n  BE-BE-"
