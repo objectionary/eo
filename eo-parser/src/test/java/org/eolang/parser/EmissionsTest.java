@@ -29,4 +29,13 @@ final class EmissionsTest {
             "a void parameter name ending with ... was accepted"
         );
     }
+
+    @Test
+    void rejectsNameWithPartialTrailingDots() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> Emissions.validParam("args..", 1, 4),
+            "a void parameter name ending with .. was accepted"
+        );
+    }
 }
