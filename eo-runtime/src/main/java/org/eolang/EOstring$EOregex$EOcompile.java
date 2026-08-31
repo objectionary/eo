@@ -13,6 +13,15 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Regex.compile object.
+ *
+ * <p>A pattern that does not compile is reported with the construct the
+ * engine choked on and the offset it sits at, so that six different
+ * mistakes no longer read the same (#7986). The flag group is compiled in
+ * front of the pattern, so its length is taken off the index the engine
+ * reports, leaving an offset into the pattern the caller wrote; an error
+ * inside the flag group itself lands before that start and is reported
+ * without an offset.</p>
+ *
  * @since 0.39.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -67,9 +76,6 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
         if (!expression.endsWith("/")) {
             builder.append("(?").append(expression.substring(last + 1)).append(')');
         }
-        // The flag group is compiled in front of the pattern, so its length is
-        // taken off the index the engine reports, leaving an offset into the
-        // pattern the caller wrote (#7986).
         final int flags = builder.length();
         builder.append(expression, 1, last);
         Phi result;
