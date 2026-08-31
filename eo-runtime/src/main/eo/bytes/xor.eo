@@ -8,10 +8,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > xor
-  or. > @
-    ^.and x.not
-    ^.not.and x
+[^ x cant-xor] > xor
+  if. > @
+    ^.size.eq x.size
+    or.
+      ^.and x.not
+      ^.not.and x
+    cant-xor
+      "bytes.xor requires operands of the same length, got %d and %d".printf
+        * ^.size x.size
+
+  eq. ++> can-explain-why-xor-stops-on-different-lengths
+    "bytes.xor requires operands of the same length, got 2 and 3"
+    20-1F.xor
+      CA-FE-BE
+      I
 
   eq. ++> can-xor-negative-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
