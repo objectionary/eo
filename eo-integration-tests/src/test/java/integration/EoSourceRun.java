@@ -5,6 +5,7 @@
 package integration;
 
 import com.yegor256.farea.Farea;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.cactoos.Proc;
@@ -152,14 +154,14 @@ final class EoSourceRun implements Proc<Object> {
 
     private String forked(final Object args) throws IOException {
         final List<String> line = new ArrayList<>(
-            java.util.Arrays.asList(
+            Arrays.asList(
                 ProcessHandle.current().info().command().orElse("java"),
                 "-Xss64M",
                 "-cp",
                 String.format(
                     "%s%s%s",
                     this.home.resolve("target/classes"),
-                    java.io.File.pathSeparator,
+                    File.pathSeparator,
                     new String(
                         Files.readAllBytes(this.home.resolve(EoSourceRun.CLASSPATH)),
                         StandardCharsets.UTF_8

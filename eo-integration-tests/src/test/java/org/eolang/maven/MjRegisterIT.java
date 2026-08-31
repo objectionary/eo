@@ -18,6 +18,7 @@ import com.yegor256.tojos.TjSynchronized;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -186,7 +187,7 @@ final class MjRegisterIT {
         );
     }
 
-    private static java.util.List<Boolean> existences(
+    private static List<Boolean> existences(
         final TjSmart foreign, final String... ids
     ) {
         return Stream.of(ids)

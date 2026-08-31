@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -511,7 +512,7 @@ final class Emissions {
     }
 
     private static List<String> splitParams(final String text) {
-        final List<String> out = new java.util.ArrayList<>(0);
+        final List<String> out = new ArrayList<>(0);
         int idx = 0;
         while (idx < text.length()) {
             int end = idx;

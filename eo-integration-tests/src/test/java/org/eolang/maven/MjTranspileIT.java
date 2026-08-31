@@ -10,6 +10,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -110,7 +111,7 @@ final class MjTranspileIT {
 
     private static void transpile(
         final Farea farea, final String path, final String source
-    ) throws java.io.IOException {
+    ) throws IOException {
         farea.clean();
         farea.files().file(path).write(source.getBytes(StandardCharsets.UTF_8));
         new AppendedPlugin(farea).value()

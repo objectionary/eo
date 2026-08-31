@@ -7,6 +7,7 @@ package org.eolang.parser;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.IntPredicate;
 import org.xembly.Directive;
 
 /**
@@ -161,7 +162,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int topLevelMarker(
-        final String body, final java.util.function.IntPredicate marker
+        final String body, final IntPredicate marker
     ) {
         int depth = 0;
         int found = -1;

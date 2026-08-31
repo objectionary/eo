@@ -5,6 +5,7 @@
 package org.eolang;
 
 import com.yegor256.Together;
+import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
@@ -687,7 +688,7 @@ final class PhDefaultTest {
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static void cleansUpNesting() {
         try {
-            final java.lang.reflect.Field field =
+            final Field field =
                 Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
             field.setAccessible(true);
             final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);
