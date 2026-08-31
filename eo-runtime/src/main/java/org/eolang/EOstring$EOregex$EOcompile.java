@@ -67,6 +67,7 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
         if (!expression.endsWith("/")) {
             builder.append("(?").append(expression.substring(last + 1)).append(')');
         }
+        final int flags = builder.length();
         builder.append(expression, 1, last);
         Phi result;
         try {
@@ -77,9 +78,38 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
             result = this.take(Phi.RHO).take("pattern");
             result.put(0, new Data.ToPhi(baos.toByteArray()));
         } catch (final PatternSyntaxException ex) {
-            result = this.fallback("regex syntax is invalid");
+            result = this.fallback(this.explained(ex, flags));
         } catch (final IOException ex) {
             throw new ExFailure("cannot serialize the compiled regex pattern", ex);
+        }
+        return result;
+    }
+
+    /**
+     * The message a failed compilation is reported with.
+     *
+     * <p>The engine walks the pattern with an index and names the construct
+     * it choked on, so both go into the message: one message per mistake
+     * instead of one for all of them (#7986). The index is counted from the
+     * start of what was compiled, which is the flag group first when the
+     * pattern carries flags, so the group is taken off to leave an offset
+     * into the pattern the caller wrote. An error inside the flag group
+     * itself lands before that start and is reported without an offset.</p>
+     *
+     * @param ex The failure the engine raised
+     * @param flags Length of the flag group put in front of the pattern
+     * @return The message
+     */
+    private String explained(final PatternSyntaxException ex, final int flags) {
+        final int offset = ex.getIndex() - flags;
+        final String result;
+        if (ex.getIndex() < 0 || offset < 0) {
+            result = String.format("regex syntax is invalid: %s", ex.getDescription());
+        } else {
+            result = String.format(
+                "regex syntax is invalid: %s at offset %d of the pattern",
+                ex.getDescription(), offset
+            );
         }
         return result;
     }
