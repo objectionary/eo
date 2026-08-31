@@ -58,12 +58,10 @@ final class LnFormation implements Line {
                 body.substring(1), this.span, this.span.indent() + 1
             );
         } else {
-            final int close = LnFormation.findClosing(body, this.span);
-            params = LnFormation.params(body, close, this.span);
+            final int close = this.findClosing(body);
+            params = this.params(body, close);
             final String raw = body.substring(close + 1);
-            binding = LnFormation.outerBinding(
-                raw, this.span, this.span.indent() + close + 2
-            );
+            binding = this.outerBinding(raw, this.span.indent() + close + 2);
             final String tail;
             if (binding == null) {
                 tail = raw;
@@ -88,7 +86,7 @@ final class LnFormation implements Line {
         this.emit(emit, suffix, params, binding);
     }
 
-    private static String outerBinding(final String raw, final Span span, final int pos) {
+    private String outerBinding(final String raw, final int pos) {
         final String label;
         if (raw.startsWith(":")) {
             int idx = 1;
@@ -96,7 +94,7 @@ final class LnFormation implements Line {
                 idx = idx + 1;
             }
             label = raw.substring(1, idx);
-            Tokens.checkBinding(label, span, pos);
+            Tokens.checkBinding(label, this.span, pos);
         } else {
             label = null;
         }
@@ -158,32 +156,30 @@ final class LnFormation implements Line {
         }
     }
 
-    private static int findClosing(final String body, final Span span) {
+    private int findClosing(final String body) {
         if (body.isEmpty() || body.charAt(0) != '[') {
             throw new ParseError(
-                span.line(), span.indent(),
+                this.span.line(), this.span.indent(),
                 "formation must start with `[`"
             );
         }
         final int close = body.indexOf(']');
         if (close < 0) {
             throw new ParseError(
-                span.line(), span.indent(),
+                this.span.line(), this.span.indent(),
                 "formation is missing its closing bracket"
             );
         }
         return close;
     }
 
-    private static List<String> params(
-        final String body, final int close, final Span span
-    ) {
+    private List<String> params(final String body, final int close) {
         final String inside = body.substring(1, close);
         final List<String> out = new ArrayList<>(2);
         if (!inside.isEmpty()
             && (inside.charAt(0) == ' ' || inside.charAt(inside.length() - 1) == ' ')) {
             throw new ParseError(
-                span.line(), span.indent() + 1,
+                this.span.line(), this.span.indent() + 1,
                 "formation brackets must not contain leading or trailing space"
             );
         }
@@ -194,13 +190,11 @@ final class LnFormation implements Line {
                 end = end + 1;
             }
             final String raw = inside.substring(idx, end);
-            out.add(
-                LnFormation.mapParam(raw, span, span.indent() + 1 + idx)
-            );
+            out.add(this.mapParam(raw, this.span.indent() + 1 + idx));
             if (end < inside.length()) {
                 if (end + 1 < inside.length() && inside.charAt(end + 1) == ' ') {
                     throw new ParseError(
-                        span.line(), span.indent() + 1 + end,
+                        this.span.line(), this.span.indent() + 1 + end,
                         "parameter names in voids must be separated by exactly one space"
                     );
                 }
@@ -212,8 +206,8 @@ final class LnFormation implements Line {
         return out;
     }
 
-    private static String mapParam(final String raw, final Span span, final int pos) {
-        Emissions.validParam(raw, span.line(), pos);
+    private String mapParam(final String raw, final int pos) {
+        Emissions.validParam(raw, this.span.line(), pos);
         final String mapped;
         if ("@".equals(raw)) {
             mapped = "φ";
