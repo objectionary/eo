@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: |-
-  [1:6] error: 'unexpected content after name suffix'
-  [] >  foo
-        ^
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='foo']
 input: |
   [] >  foo

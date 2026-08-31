@@ -88,7 +88,7 @@ final class SuffixTest {
     }
 
     @Test
-    void parsesTestNameWithMultipleSpacesAfterMarker() {
+    void parsesPlusGreaterNameWithMultipleSpacesAfterMarker() {
         MatcherAssert.assertThat(
             "`+>  bar` with two spaces after the marker must parse the same as one space (#8024)",
             new Suffix(" +>  bar", new Span("[] +>  bar", 1), 2).label(),
