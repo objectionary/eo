@@ -535,7 +535,7 @@ R-3.10.6. The LHS of inline-phi must be non-empty: at least one expression with 
 
   Only the four kinds enumerated above (head, hmethod, happlication, paren group) are permitted as inline-phi LHS.
 R-3.10.7. **Exactly one `> [params]` suffix per line.** Chained inline-phi suffixes (`expr > [a] > [b] > name`) are rejected, even though the underlying grammar can express them. The construct is unused in practice and adds parsing complexity for no gain.
-R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (truthy test attribute), `> [params] -> name` (throwing test attribute), or bare `> [params]` (auto-named, equivalent to `> [params] >>`). All shapes are accepted by the parser; the test-attribute forms additionally inherit the depth constraint of R-6.3.3. An atom signature is **not** among them: an atom declares its voids vertically (R-3.4.10) and holds nothing but tests (R-6.3.1), while an only-phi line declares a void in brackets and binds `φ` to an expression, so `/sig` on one of these lines is rejected (`an only-phi formation cannot be an atom`). **Compact test shorthand `++>` / `-->`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` (truthy) or `-->` (throwing) head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`, and `lhs --> name` is sugar for `lhs > [] -> name`. The `++>` / `-->` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` / `-->` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` / `> [] -> name` form.
+R-3.10.8. **Inline-phi suffix variants.** The right-hand suffix on an inline-phi line may take any of these forms (optionally with `!` const on the name): `> [params] > name` (explicit name), `> [params] >>` (auto-generated name), `> [params] +> name` (truthy test attribute), `> [params] -> name` (throwing test attribute), or bare `> [params]` (anonymous — the formation gets no name of its own, so it is legal only where an anonymous object is: an argument, or a paren group per R-3.10.10a; directly inside a formation body it is rejected, `inline-phi formation must carry a name on the right`). All shapes are accepted by the parser; the test-attribute forms additionally inherit the depth constraint of R-6.3.3. An atom signature is **not** among them: an atom declares its voids vertically (R-3.4.10) and holds nothing but tests (R-6.3.1), while an only-phi line declares a void in brackets and binds `φ` to an expression, so `/sig` on one of these lines is rejected (`an only-phi formation cannot be an atom`). **Compact test shorthand `++>` / `-->`.** A parameterless test attribute whose only binding is the `φ` decoratee also has a collapsed spelling that merges the empty `[]` param list with the `++>` (truthy) or `-->` (throwing) head shorthand (R-6.3.6): `lhs ++> name` is sugar for `lhs > [] +> name`, and `lhs --> name` is sugar for `lhs > [] -> name`. The `++>` / `-->` marker is recognised in this inline-phi suffix position only when preceded by a space (a leading `++>` / `-->` at the head of a line is the bare-formation shorthand of R-6.3.6, not an inline-phi suffix). XMIR emission is identical to the expanded `> [] +> name` / `> [] -> name` form.
 R-3.10.9. Anything after the name is reported as "unexpected content" without aborting the line.
 R-3.10.10a. **Anonymous inline-phi as a paren-grouped value.** Inline-phi formations are normally line-level suffixes (R-3.10.1), but the bare form `body > [params]` (no `> name` / `>>` / `+> name` on the right) is **also legal inside a paren group** as a value-level expression: `(body > [params])`. The group then evaluates to an anonymous formation with the given params and `body` bound to its `φ` slot; the enclosing context (a horizontal arg, the LHS of a binding, etc.) supplies any naming. Only the bare (anonymous) form is permitted in this position — `(body > [params] > name)`, `(body > [params] >>)`, and `(body > [params] +> name)` are rejected: naming and test attributes must attach at line level. The construct is rare; the canonical use is passing a one-parameter formation as a horizontal arg without dedicating a separate line, e.g. `malloc.of 8 (m.put 10 > [m])`.
 
@@ -564,7 +564,8 @@ R-3.11.5. An unclosed block is reported at end-of-stream as a recoverable error.
 ```
 """
 hello
-world""" > text-value                 ← multi-line string named text-value
+world
+""" > text-value                      ← multi-line string named text-value
 ```
 
 ### 3.12 Inline binding — `:label` or `:N`
@@ -661,14 +662,18 @@ R-3.14.8. **Predecessor placement — body vs argument block.** Where the predec
 Outer kind: **`pipe-application`** (openness `open` for the vertical form's body, `vertical-completed` for the horizontal form).
 
 ```
-[x] > foo                             ← named formation
-  x.plus x > @
-| 5 > foo5                            ← foo5 = foo applied to 5 (i.e. (5).plus 5)
+[] > app
+  [x] > foo                           ← named formation
+    x.plus x > @
+  | 5 > foo5                          ← foo5 = foo applied to 5 (i.e. (5).plus 5)
 
-[a b] >>                              ← auto-named (anonymous) formation
-  a.plus b > @
-| 2 3 > pair                          ← one application, two args, referring to the auto-name
+  [a b] >>                            ← auto-named (anonymous) formation
+    a.plus b > @
+  | 2 3 > pair                        ← one application, two args, referring to the auto-name
 ```
+
+A pipe belongs inside a body or an argument block, never at file level: the
+predecessor and the pipe are two objects (R-3.14.8), and a file holds one.
 
 Illegal:
 
@@ -1343,6 +1348,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
+| Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
+| Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
 | Trailing space or tab at end of a non-blank line | `trailing whitespace at end of line` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |
@@ -1395,6 +1402,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Two type annotations on one void | `a void attribute may carry at most one type annotation` |
 | Unexpected odd character after a name suffix | `unexpected content after name suffix` |
 | Excessive trailing blank lines | `more than one trailing blank line` |
+| Line head matching no shape of §3 | `line head does not start any known object shape` |
 
 R-9.9.2. The position prefix `[L:P]` (with L = line, P = pos) is prepended to every error message before insertion into the `<error>` element body. Conventions: 1-indexed line, 0-indexed pos.
 

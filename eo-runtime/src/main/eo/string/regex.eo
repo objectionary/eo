@@ -150,6 +150,12 @@
 
   "/[0-9]/\\d+/".regex.compiled.matches "2/75" ++> can-match-an-entire-pattern
 
+  exists. ++> can-match-with-serialized-bytes-of-the-right-type
+    next.
+      match.
+        regex.pattern "/h.llo/".regex.compiled.serialized
+        "hello"
+
   matches. ++> can-match-with-the-case-insensitive-option
     "/(string)/i".regex.compiled
     "StRiNg"
@@ -225,10 +231,11 @@
   not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
     "/[a-z]+/".regex.compiled.matches "1abc"
 
-  next. --> rejects-serialized-bytes-of-the-wrong-type
-    match.
-      ^.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
-      "hello"
+  exists. --> rejects-serialized-bytes-of-the-wrong-type
+    next.
+      match.
+        regex.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+        "hello"
 
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 

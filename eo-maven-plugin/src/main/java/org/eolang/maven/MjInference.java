@@ -86,6 +86,16 @@ public final class MjInference extends MjSafe {
      * door is reached for with {@code -Pjacoco}: a profile is what you need
      * to add an execution to a build, and there is nothing to add here — the
      * goal already runs and one flag decides whether it writes.</p>
+     *
+     * @todo #7809:30min Draw the pages in one place only.
+     *  {@link MjInferenceReport} is a goal of its own now and eo-runtime asks
+     *  for it, so this flag, the {@link #pages} parameter and {@code wanted()}
+     *  below have nothing left to do, and neither has the {@code site}
+     *  argument of {@link Inferring} or the branch that reads it in
+     *  {@code Inferring.exec}. They stay for the moment so that a build
+     *  pinned to {@code -Deo.inferenceReport} keeps drawing. Take them out,
+     *  together with the paragraph about the flag in {@code eo-inference}'s
+     *  README and {@code InferringTest.writesThePagesWhereItIsTold}.
      */
     @Parameter(
         alias = "inferenceReport",

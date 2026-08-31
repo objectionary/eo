@@ -125,7 +125,7 @@ final class LnFormation implements Line {
     private void transition(final Stack stack, final Suffix suffix) {
         final Level level = new Transition(stack, this.span).apply(
             Kind.BARE_FORMATION, Openness.OPEN,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.atom())
         );
         if (suffix.atom()) {
             level.mark();

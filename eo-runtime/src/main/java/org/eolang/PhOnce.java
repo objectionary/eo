@@ -66,7 +66,7 @@ public class PhOnce implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.object.get().equals(obj);
+        return this == obj || this.object.get().equals(obj);
     }
 
     @Override

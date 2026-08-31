@@ -156,13 +156,7 @@ final class JavaFiles {
     void removeStale() throws IOException {
         if (Files.exists(this.generated)) {
             final Set<Path> expected = new HashSet<>(this.fresh);
-            final Set<Path> dirs = new HashSet<>();
-            for (final Path file : this.touched) {
-                for (Path dir = file.getParent(); dir != null && dir.startsWith(this.generated);
-                    dir = dir.getParent()) {
-                    dirs.add(dir);
-                }
-            }
+            final Collection<Path> dirs = this.directories();
             try (Stream<Path> walk = Files.walk(this.generated)) {
                 for (final Path file : walk.filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(JavaFiles.JAVA)).collect(
@@ -177,6 +171,27 @@ final class JavaFiles {
                 }
             }
         }
+    }
+
+    /**
+     * The directories this run's own output landed in, every parent up
+     * to and including the generated sources root.
+     *
+     * <p>A class this run decided to skip names a directory all the
+     * same, so the set covers what a transpile owns, and nothing another
+     * generator wrote into the same convention directory.</p>
+     *
+     * @return The directories
+     */
+    Collection<Path> directories() {
+        final Set<Path> dirs = new HashSet<>();
+        for (final Path file : this.touched) {
+            for (Path dir = file.getParent(); dir != null && dir.startsWith(this.generated);
+                dir = dir.getParent()) {
+                dirs.add(dir);
+            }
+        }
+        return dirs;
     }
 
     private Supplier<Path> cached(final String hsh, final String jname) {

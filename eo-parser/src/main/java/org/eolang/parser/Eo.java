@@ -85,7 +85,13 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < spans.size()) {
             final Span span = spans.get(idx);
-            if (!globals.inTextBlock() && !span.trailing()
+            final int carriage = span.text().indexOf('\r');
+            if (carriage >= 0) {
+                emit.error(
+                    span.line(), carriage, "standalone carriage return is not a line ending"
+                );
+                idx = recovery.after(idx);
+            } else if (!globals.inTextBlock() && !span.trailing()
                 && Eo.isBytesContinuation(span.body())) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, stack, globals, emit)) {
@@ -187,17 +193,16 @@ final class Eo implements Iterable<Directive> {
         final Span head = spans.get(start);
         final StringBuilder body = new StringBuilder(head.body().stripTrailing());
         int idx = start + 1;
+        int above = head.indent();
         boolean broken = false;
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
-            if (!next.blank() && next.indent() < head.indent()) {
-                emit.error(
-                    next.line(), 0, "multi-line bytes continuation must not de-indent"
-                );
+            if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
             }
+            above = next.indent();
             if (!Eo.isBytesOnly(trimmed)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
@@ -262,6 +267,9 @@ final class Eo implements Iterable<Directive> {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
             emit.error(span.line(), 0, "tab character in leading whitespace");
+            failed = true;
+        } else if (span.alien() && !span.blank()) {
+            emit.error(span.line(), 0, "invalid character in leading whitespace");
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
@@ -393,8 +401,10 @@ final class Eo implements Iterable<Directive> {
         final String reason;
         if (span.body().codePoints().findFirst().orElse(0) == 0x1F335) {
             reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
+        } else if (Eo.bytesAttempt(span)) {
+            reason = "invalid bytes literal";
         } else {
-            reason = "line shape not yet implemented in spec parser";
+            reason = "line head does not start any known object shape";
         }
         return (stack, globals, emit) -> {
             throw new ParseError(span.line(), span.indent(), reason);
@@ -468,6 +478,33 @@ final class Eo implements Iterable<Directive> {
     private static boolean literalHead(final Span span) {
         final char head = span.head();
         return head == '"' || Eo.bytesHead(head) || Eo.numberHead(span);
+    }
+
+    private static boolean bytesAttempt(final Span span) {
+        final String body = span.body();
+        int end = body.indexOf(' ');
+        if (end < 0) {
+            end = body.length();
+        }
+        return end > 1 && Eo.dashedAlphanumerics(body.substring(0, end));
+    }
+
+    private static boolean dashedAlphanumerics(final String head) {
+        boolean dashed = false;
+        boolean shaped = true;
+        for (int idx = 0; idx < head.length() && shaped; idx = idx + 1) {
+            final char glyph = head.charAt(idx);
+            if (glyph == '-') {
+                dashed = true;
+            } else {
+                shaped = Eo.alphanumeric(glyph);
+            }
+        }
+        return shaped && dashed;
+    }
+
+    private static boolean alphanumeric(final char glyph) {
+        return glyph < 128 && Character.isLetterOrDigit(glyph);
     }
 
     private static boolean bytesHead(final char head) {
@@ -627,10 +664,13 @@ final class Eo implements Iterable<Directive> {
         if (naming && !level.named()
             && (level.parent() == Kind.TOP_LEVEL
                 || level.parent() == Kind.BARE_FORMATION)) {
-            emit.error(
-                level.start(), level.indent(),
-                "object inside formation must have a name"
-            );
+            final String message;
+            if (level.kind() == Kind.ONLY_PHI) {
+                message = "inline-phi formation must carry a name on the right";
+            } else {
+                message = "object inside formation must have a name";
+            }
+            emit.error(level.start(), level.indent(), message);
         }
         if (naming && level.argument() && level.named()) {
             emit.error(

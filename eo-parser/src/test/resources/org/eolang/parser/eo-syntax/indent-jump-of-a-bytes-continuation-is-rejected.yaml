@@ -4,9 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/comments/comment[@line='1' and starts-with(text(), 'First.')]
+  - /object/errors/error[contains(text(),'indent increased by more than one level')]
 input: |
-  # First.
-  # Second.
-
-  [] > hello
+  foo > main
+    CA-FE-
+        BE-BE
