@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The same based file-local handle as "restore-based-handle-local-name.yaml"
+# (#5944), but reached from three dispatches instead of two. The twin
+# "eo:multi-referenced" in "restore-local-names.xsl" answers this with
+# "exists(eo:references($target, $name)[2])" (#6638) rather than counting the
+# whole sequence, so it must stay true past the boundary of exactly two
+# references: the handle keeps its "@local" marker here exactly as it does
+# for two references, and none of the three dispatches is rewritten.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+asserts:
+  # The three-times-referenced based handle keeps its "@local" marker, and its
+  # cactus "@name" is left obfuscated (not promoted to the handle).
+  - /object/o[@name='foo']/o[@local='b' and contains(@name, '🌵') and @base='ξ.a.as-i32']
+  # All three dispatch references stay cactus-based: rewriting them is left to
+  # "merge-monikers", which knows which one hosts the binding.
+  - /object/o[@name='foo']/o[contains(@base, '🌵') and ends-with(@base, '.plus') and @name='x' and o]
+  - /object/o[@name='foo']/o[contains(@base, '🌵') and ends-with(@base, '.neg') and @name='y']
+  - /object/o[@name='foo']/o[contains(@base, '🌵') and ends-with(@base, '.minus') and @name='z' and o]
+input: |
+  [a] > foo
+    b.plus 1 > x
+    b.neg > y
+    b.minus 2 > z
+    a.as-i32 >> b

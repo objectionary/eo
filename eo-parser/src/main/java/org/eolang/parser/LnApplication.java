@@ -36,7 +36,7 @@ import java.util.List;
  * <p>This iteration handles identifier and star heads with optional
  * dotted chains and identifier / INT horizontal args. Paren groups,
  * string / float / hex / bytes literals, and inline bindings attach in
- * subsequent iterations. *
+ * subsequent iterations.</p>
  *
  * @since 0.1
  */
@@ -62,7 +62,7 @@ final class LnApplication implements Line {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -97,14 +97,27 @@ final class LnApplication implements Line {
      * attach to the line's whole expression when it occupies an
      * argument position (a deeper-indent child of a vapplication or
      * vertical reversed dispatch).
+     *
+     * <p>A chain that goes on after the binding is rejected here per
+     * R-6.6.4 — the binding would sit on a method the chain does not end
+     * with.</p>
+     *
      * @param tokens Token reader
+     * @param span Source span of the line
      * @return The binding label, or {@code null}
      */
-    static String readOuterBinding(final Tokens tokens) {
+    static String readOuterBinding(final Tokens tokens, final Span span) {
         final String label;
         if (!tokens.atEnd() && tokens.current() == ':') {
-            tokens.seek(tokens.cursor() + 1);
+            final int start = tokens.cursor();
+            tokens.seek(start + 1);
             label = tokens.readBinding();
+            if (!tokens.atEnd() && tokens.current() == '.') {
+                throw new ParseError(
+                    span.line(), span.indent() + start,
+                    "inline binding allowed only on the last method in a chain"
+                );
+            }
         } else {
             label = null;
         }

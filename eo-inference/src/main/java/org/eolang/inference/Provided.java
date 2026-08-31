@@ -165,6 +165,39 @@ final class Provided {
         return found;
     }
 
+    /**
+     * What this type hands its answers to.
+     *
+     * <p>Only what the type binds itself, and an empty string when it binds
+     * nothing: unlike {@link #attribute(String, String)}, this invents no
+     * member for a void, since whoever walks a delegation has to arrive
+     * somewhere rather than go on naming names.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the {@code φ} this type binds, or an empty string
+     */
+    String body(final String type) {
+        return this.bound(type, "φ");
+    }
+
+    /**
+     * The void this type keeps under the given name.
+     * @param type The name the type goes by
+     * @param name The name of the void
+     * @return The locator of the void, or an empty string when this type keeps
+     *  no void of that name
+     */
+    String named(final String type, final String name) {
+        String found = "";
+        for (final Map<String, String> row : this.own(type)) {
+            if ("true".equals(row.get("void")) && name.equals(row.getOrDefault("name", ""))) {
+                found = row.getOrDefault("type", "");
+                break;
+            }
+        }
+        return found;
+    }
+
     private boolean hollow(final String type) {
         boolean found = false;
         String walked = type;

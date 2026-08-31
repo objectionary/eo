@@ -13,7 +13,7 @@ asserts:
   - /object[not(errors)]
   - //java[contains(text(), 'EOfoo')]
   - //java[not(contains(text(), 'void formats_name() throws java.lang.Exception {'))]
-  - //tests[contains(text(), 'EOfooTest')]
+  - //tests[contains(text(), 'TestEOfoo')]
   - //tests[contains(text(), '  @Test')]
   - //tests[contains(text(), '  void formats_name() throws java.lang.Exception {')]
   - //tests[contains(text(), '    new Dataized(')]

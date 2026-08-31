@@ -7,7 +7,7 @@ package org.eolang.win32;
 import com.sun.jna.WString;
 import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -33,6 +33,9 @@ public final class AccessFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int mode = new Int(
+            "the 'mode' argument of access", params[1]
+        ).it();
         final String path = new Cstring("the 'path' argument of access", params[0]).it();
         final Phi result = this.win.take("return").copy();
         result.put(
@@ -40,7 +43,7 @@ public final class AccessFuncCall implements Syscall {
             new Data.ToPhi(
                 Msvcrt.INSTANCE._waccess(
                     new WString(path),
-                    new Dataized(params[1]).asNumber().intValue()
+                    mode
                 )
             )
         );

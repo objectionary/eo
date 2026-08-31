@@ -29,32 +29,8 @@
   anyway. A self-call outside of a tail position stays what it is: the inner
   copy runs a loop of its own.
   -->
+  <xsl:import href="/org/eolang/maven/transpile/_recursion.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
-  <!--
-  Is the object in a tail position of the expression rooted at $root?
-  -->
-  <xsl:function name="eo:tail" as="xs:boolean">
-    <xsl:param name="o" as="element()"/>
-    <xsl:param name="root" as="element()"/>
-    <xsl:variable name="parent" as="element()?" select="$o/parent::o"/>
-    <xsl:choose>
-      <xsl:when test="$o is $root">
-        <xsl:sequence select="true()"/>
-      </xsl:when>
-      <xsl:when test="empty($parent)">
-        <xsl:sequence select="false()"/>
-      </xsl:when>
-      <xsl:when test="($parent/@base = '.if' or ends-with($parent/@base, '.if')) and $o/@as = ('α0', 'α1')">
-        <xsl:sequence select="eo:tail($parent, $root)"/>
-      </xsl:when>
-      <xsl:when test="$parent/@base = 'Φ.tuple' and $parent/@as = 'α0' and $parent/parent::o/@base = 'Φ.seq' and $o/@as = 'α1'">
-        <xsl:sequence select="eo:tail($parent/parent::o, $root)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:sequence select="false()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
   <xsl:template match="abstract[@name and attr[@name='φ']/bound/o and not(attr[@name='λ']) and not(.//o[contains(@base, 'φ')])]">
     <xsl:variable name="root" select="attr[@name='φ']/bound/o"/>
     <xsl:variable name="self" select="concat('ξ.ρ.', @name)"/>

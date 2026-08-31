@@ -34,7 +34,7 @@ public final class PhAgain implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this.next.equals(obj);
+        return this == obj || this.next.equals(obj);
     }
 
     @Override

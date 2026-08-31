@@ -9,7 +9,7 @@ package org.eolang.parser;
  *
  * <p>Captures the method name and the source column of the leading
  * dot. Per R-9.1.3, the dot column is the {@code @pos} value emitted
- * for the link's {@code <o>} (not the column of the method name). *
+ * for the link's {@code <o>} (not the column of the method name).</p>
  *
  * @since 0.1
  */

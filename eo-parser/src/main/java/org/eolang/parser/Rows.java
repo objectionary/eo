@@ -4,19 +4,20 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The source in lines, which points at the place where a parse error
- * was found by quoting the offending line under the message.
+ * Raw source text addressed by row number, which points at the place where
+ * a parse error was found by quoting the offending line under the message.
  *
- * <p>The lines are the {@link Span} objects {@link Source} already
+ * <p>The rows are the {@link Span} objects {@link Source} already
  * produced for the same text, in source order and numbered from 1, so
- * the span of line N sits at index N-1 and carries that line's text.</p>
+ * the span of row N sits at index N-1 and carries that row's text.</p>
  *
  * @since 0.50
  */
-final class Lines {
+final class Rows {
 
     /**
      * The source.
@@ -27,8 +28,8 @@ final class Lines {
      * Ctor.
      * @param lines The source in lines
      */
-    Lines(final List<Span> lines) {
-        this.source = lines;
+    Rows(final List<Span> lines) {
+        this.source = new ArrayList<>(lines);
     }
 
     /**

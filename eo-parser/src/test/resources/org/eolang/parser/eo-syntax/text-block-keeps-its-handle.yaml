@@ -4,9 +4,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='app' and @loc='Φ.foo.app']
+  - //o[@base='Φ.string' and @local='saved']
 input: |
-  +package foo bar
-
   [] > app
-    42 > x
+    """
+    x
+    """ >> saved

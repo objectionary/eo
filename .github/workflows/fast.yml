@@ -43,7 +43,7 @@ jobs:
           # change made by this branch.
           head=$(git rev-parse HEAD)
           base=$(git rev-parse "${head}^1")
-          # The tests of `foo.eo` are transpiled into `EOfooTest`, and so are
+          # The tests of `foo.eo` are transpiled into `TestEOfoo`, and so are
           # the tests of `foo/bar.eo`, because a package member is tested
           # through the package that owns it. A file holding no `++>` and no
           # `-->` test gets no class at all, and naming a class that does not
@@ -63,7 +63,7 @@ jobs:
                   if grep -qrE -- ' (\+\+>|-->) ' \
                     "eo-runtime/src/main/eo/${name}.eo" \
                     "eo-runtime/src/main/eo/${name}" 2>/dev/null; then
-                    echo "EO${name}Test"
+                    echo "TestEO${name}"
                   fi
                 done \
               | paste -sd, -

@@ -31,6 +31,28 @@ final class PhApplicationTest {
     }
 
     @Test
+    void keepsANamedBindingOfANumberStructural() {
+        MatcherAssert.assertThat(
+            "a named binding is no literal and must render as the application it is, but it read as a number",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                "wrong",
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(
+                        new byte[] {
+                            (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
+                            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                        }
+                    )
+                )
+            ).φTerm(),
+            Matchers.startsWith("Φ.number(wrong->")
+        );
+    }
+
+    @Test
     void appliesSeveralBindingsToObject() {
         MatcherAssert.assertThat(
             "PhApplication must bind every pair to the object, but it didnt",

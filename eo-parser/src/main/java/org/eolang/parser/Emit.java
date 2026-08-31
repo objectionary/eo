@@ -50,7 +50,7 @@ final class Emit {
      * lookup). Empty when no source is wired through — in that case
      * {@link #error} falls back to the bare {@code [L:P] message} form.
      */
-    private final Lines lines;
+    private final Rows lines;
 
     /**
      * The atom signature owed to an open {@code <o>} as its {@code λ}
@@ -98,7 +98,7 @@ final class Emit {
     Emit(final List<Span> source) {
         this.signature = "";
         this.sink = new ArrayList<>(0);
-        this.lines = new Lines(source);
+        this.lines = new Rows(source);
     }
 
     /**

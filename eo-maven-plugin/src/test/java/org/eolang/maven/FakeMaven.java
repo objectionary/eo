@@ -114,6 +114,15 @@ final class FakeMaven {
      * @return The same maven instance
      */
     FakeMaven with(final String param, final Object value) {
+        final Set<String> known = new MojoFields().all();
+        if (!known.isEmpty() && !known.contains(param)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "No mojo of the plugin declares a parameter named '%s', so setting it would change nothing",
+                    param
+                )
+            );
+        }
         this.params.put(param, value);
         return this;
     }
@@ -187,6 +196,9 @@ final class FakeMaven {
             );
             this.params.putIfAbsent(
                 "tables", this.targetPath().resolve("6-inference").toFile()
+            );
+            this.params.putIfAbsent(
+                "pages", this.targetPath().getParent().resolve("site/inference").toFile()
             );
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());

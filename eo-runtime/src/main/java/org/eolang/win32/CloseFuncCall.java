@@ -5,7 +5,7 @@
 package org.eolang.win32;
 
 import org.eolang.Data;
-import org.eolang.Dataized;
+import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -31,11 +31,14 @@ public final class CloseFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
+        final int descriptor = new Int(
+            "the 'descriptor' argument of close", params[0]
+        ).it();
         final Phi result = this.win.take("return").copy();
         result.put(
             0,
             new Data.ToPhi(
-                Msvcrt.INSTANCE._close(new Dataized(params[0]).asNumber().intValue())
+                Msvcrt.INSTANCE._close(descriptor)
             )
         );
         result.put(1, new PhDefault());

@@ -209,7 +209,7 @@
         -->
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -533,7 +533,7 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.31.2</version>
+            <version>0.32.0</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>duplicatefinder:.*</exclude>

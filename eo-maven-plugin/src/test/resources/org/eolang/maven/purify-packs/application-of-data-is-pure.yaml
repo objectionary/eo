@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An application whose receiver and every argument are data answers the same
+# bytes every time, so it is worth remembering instead of working it out on
+# every read.
+eo:
+  app.eo: |
+    [] > app
+      2.power 63 > x
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > power
+        x > @
+pure:
+  - "//o[@name='x' and @pure='true']"
