@@ -439,12 +439,19 @@
       "%s!".scanf "hello!"
 
   eq. ++> can-scan-two-fields-separated-by-extra-spaces
-    "%s %s".scanf "a  b"
-    * "a" "b"
+    "%s %s".scanf
+      "a  b"
+    *
+      "a"
+      "b"
 
   eq. ++> can-scan-three-fields-separated-by-extra-spaces
-    "%s %s %s".scanf "a  b c"
-    * "a" "b" "c"
+    "%s %s %s".scanf
+      "a  b c"
+    *
+      "a"
+      "b"
+      "c"
 
   eq. ++> can-scan-while-ignoring-trailing-text
     42
