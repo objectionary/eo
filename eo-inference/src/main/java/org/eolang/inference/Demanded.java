@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import org.xembly.Xembler;
 
@@ -52,20 +55,49 @@ public final class Demanded implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final Map<String, String> names = new Ends(
-            new Pairs(new XMLDocument(tables.resolve("links.xml"))).all()
-        ).names();
+        final XML links = new XMLDocument(tables.resolve("links.xml"));
+        final Map<String, String> names = new Ends(new Pairs(links).all()).names();
+        final Collection<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Map<String, String> into = this.into(links, names, voids);
         final Map<String, Map<String, String>> asked = new Asked(
             new XMLDocument(tables.resolve("needs.xml")),
             names,
-            new Provided(given, names, given.xpath("//attr[@void='true']/@type"))
+            new Provided(given, names, voids)
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
-            final Demands demands = new Demands(asked, hollow.xpath("@type").get(0));
+            final Demands demands = new Demands(
+                asked, this.roots(hollow.xpath("@type").get(0), into)
+            );
             if (demands.any()) {
                 new Xembler(demands.directives()).applyQuietly(hollow.inner());
             }
         }
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    private Map<String, String> into(
+        final XML links, final Map<String, String> names, final Collection<String> voids
+    ) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (final XML bind : links.nodes("/links/type/ref/bind[ref]")) {
+            final String loc = bind.xpath("ref/@loc").get(0);
+            final String filler = names.getOrDefault(loc, loc);
+            if (voids.contains(filler)) {
+                found.put(filler, bind.xpath("@void").get(0));
+            }
+        }
+        return found;
+    }
+
+    private Collection<String> roots(final String hollow, final Map<String, String> into) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        String walked = hollow;
+        while (found.add(walked)) {
+            if (!into.containsKey(walked)) {
+                break;
+            }
+            walked = into.get(walked);
+        }
+        return found;
     }
 }

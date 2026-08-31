@@ -47,6 +47,34 @@ final class DemandedTest {
     }
 
     @Test
+    void carriesADemandThroughAVoidHandedIntoAnother(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("shelf.xmir"),
+            String.join(
+                "",
+                "<object><o loc='Φ.book' name='book'>",
+                "<o base='∅' loc='Φ.book.pages' name='pages'/>",
+                "<o base='.size' loc='Φ.book.φ' name='φ'>",
+                "<o base='ξ.pages' loc='Φ.book.φ.ρ'/></o></o>",
+                "<o loc='Φ.shelf' name='shelf'><o base='∅' loc='Φ.shelf.stuff' name='stuff'/>",
+                "<o base='Φ.book' loc='Φ.shelf.φ' name='φ'>",
+                "<o as='α0' base='ξ.stuff' loc='Φ.shelf.φ.α0'/></o></o></object>"
+            )
+        );
+        new Demanded(new Resolved(new Clues())).follow(
+            temp.resolve("xmirs"), temp.resolve("tables")
+        );
+        MatcherAssert.assertThat(
+            "a void handed into another void must inherit its demands, but it didnt",
+            new XMLDocument(temp.resolve("tables").resolve("provides.xml")).nodes(
+                "/provides/type[@id='Φ.shelf']/attr[@name='stuff']/demand"
+                    .concat("[@of='Φ.book.pages' and @name='size']")
+            ),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
     void leavesAVoidNobodyAsksOfAlone(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("pipe.xmir"),

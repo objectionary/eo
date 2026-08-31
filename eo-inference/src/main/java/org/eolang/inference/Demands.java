@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import java.util.Collection;
 import java.util.Map;
 import org.xembly.Directives;
 
@@ -24,6 +25,9 @@ import org.xembly.Directives;
  * is a name rooted at the void, so all of them are gathered here, each demand
  * saying which one it is made of.</p>
  *
+ * <p>A void handed whole into another void is one more root to gather demands
+ * from, alongside the void itself.</p>
+ *
  * <p>They are written side by side rather than one inside the other, which
  * would have read better, because the chain is not always there to nest them
  * along: {@code while} hands its answers through several objects to the
@@ -43,18 +47,20 @@ final class Demands {
     private final Map<String, Map<String, String>> asked;
 
     /**
-     * The void these demands are made of.
+     * The voids these demands are made of: the void itself and every one it is
+     * ultimately handed into.
      */
-    private final String hollow;
+    private final Collection<String> roots;
 
     /**
      * Ctor.
      * @param all What is asked of every object, from {@link Asked}
-     * @param object The void these demands are made of
+     * @param objects The void these demands are made of, and every void it is
+     *  handed into
      */
-    Demands(final Map<String, Map<String, String>> all, final String object) {
+    Demands(final Map<String, Map<String, String>> all, final Collection<String> objects) {
         this.asked = all;
-        this.hollow = object;
+        this.roots = objects;
     }
 
     /**
@@ -93,6 +99,13 @@ final class Demands {
     }
 
     private boolean below(final String object) {
-        return object.equals(this.hollow) || object.startsWith(this.hollow.concat("."));
+        boolean found = false;
+        for (final String root : this.roots) {
+            if (object.equals(root) || object.startsWith(root.concat("."))) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }
