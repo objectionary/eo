@@ -74,7 +74,7 @@ final class LnReversed implements Line {
                 args.subList(1, args.size()), this.span
             );
         }
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
