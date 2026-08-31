@@ -31,11 +31,11 @@
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     [^ txt] > match
-      [^ position start from to groups groups-exist] > matched
+      [^ position start from to groups existing] > matched
         groups.length > count
         start.gte 0 > exists
         ^.groups.at index > [^ index] > group
-        ^.groups-exist.at index > [^ index] > group-exists
+        ^.existing.at index > [^ index] > group-exists
         exists.if > next
           if.
             and.
@@ -70,7 +70,7 @@
           "Matched block does not exist, can't get group-exists"
         T > groups
           "Matched block does not exist, can't get groups"
-        T > groups-exist
+        T > existing
           "Matched block does not exist, can't get groups"
         T > next
           "Matched block does not exist, can't get next"

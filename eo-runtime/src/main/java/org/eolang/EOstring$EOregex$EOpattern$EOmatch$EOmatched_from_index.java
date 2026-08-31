@@ -114,7 +114,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
             exist = new Phi[]{new Data.ToPhi(true)};
         }
         result.put("groups", new Data.ToPhi(groups));
-        result.put("groups-exist", new Data.ToPhi(exist));
+        result.put("existing", new Data.ToPhi(exist));
     }
 
     private void blank(final Phi result) {
@@ -143,7 +143,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
             new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
         result.put(
-            "groups-exist",
+            "existing",
             new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
     }
