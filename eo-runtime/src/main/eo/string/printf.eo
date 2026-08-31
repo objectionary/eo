@@ -42,6 +42,14 @@
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
 # writes, and a reason rendered with `%f` destroyed itself instead of arriving.
+#
+# The `%f` conversion leaves the `cant-print` fallback of `as-fixed` unbound,
+# so a number it refuses, a non-finite one or a magnitude of 2^63 or larger,
+# terminates with the reason `as-fixed` gives, instead of that reason standing
+# in the text where the number was meant to be. Its tests recover from that
+# termination instead of declaring it with `-->`, because a returned text of
+# more than one byte fails to dataize as a boolean exactly as a termination
+# does, and a `-->` test would pass either way.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -209,7 +217,6 @@
             precise.as-bool.if
               number precision
               6
-            I
           if.
             78-.eq conv
             capped (bytes datum).as-hex
@@ -544,6 +551,20 @@
     "1.000000"
     "%f".printf
       * 0.9999999
+
+  eq. ++> can-stop-formatting-a-huge-number-as-a-fixed-point
+    "stopped"
+    recovered
+      "%f".printf
+        * 1.0e30
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-non-finite-number-as-a-fixed-point
+    "stopped"
+    recovered
+      "value=%f".printf
+        * nan
+      "stopped"
 
   eq. ++> can-truncate-a-negative-float-toward-zero
     "-7"
