@@ -597,7 +597,7 @@ final class Suffix {
 
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
-        if (idx < tail.length() && tail.charAt(idx) == ' ') {
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
             idx = idx + 1;
         }
         return idx;
