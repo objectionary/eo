@@ -61,6 +61,8 @@
       [] > missing
         T > count
           "Matched block does not exist, can't get count"
+        T > existing
+          "Matched block does not exist, can't get groups"
         start.gte 0 > exists
         T > from
           "Matched block does not exist, can't get 'from' position"
@@ -69,8 +71,6 @@
         T > [index] > group-exists
           "Matched block does not exist, can't get group-exists"
         T > groups
-          "Matched block does not exist, can't get groups"
-        T > existing
           "Matched block does not exist, can't get groups"
         T > next
           "Matched block does not exist, can't get next"
