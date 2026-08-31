@@ -187,22 +187,16 @@ final class Eo implements Iterable<Directive> {
         final Span head = spans.get(start);
         final StringBuilder body = new StringBuilder(head.body().stripTrailing());
         int idx = start + 1;
+        int above = head.indent();
         boolean broken = false;
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
-            if (!next.blank() && next.indent() < head.indent()) {
-                emit.error(
-                    next.line(), 0, "multi-line bytes continuation must not de-indent"
-                );
+            if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
             }
-            if (!next.blank() && next.indent() % 2 == 1) {
-                emit.error(next.line(), 0, "unexpected odd indent");
-                broken = true;
-                break;
-            }
+            above = next.indent();
             if (!Eo.isBytesOnly(trimmed)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
