@@ -6,6 +6,8 @@
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
+# A space in the format matches a run of one or more spaces in the input, so
+# extra spaces between fields never shift or drop the values that follow.
 #
 # The `%f` conversion never materializes the whole power of ten at once,
 # because `10.power 309` is already infinity: a single multiplication by it
@@ -311,13 +313,21 @@
             accumulated
             found
             true
-          ^.tokenize
-            position.plus 1
-            accumulated.chained
-              *
-                escaped ch
-            found
-            false
+          if.
+            ch.eq " "
+            ^.tokenize
+              position.plus 1
+              accumulated.chained
+                * "\\s+"
+              found
+              false
+            ^.tokenize
+              position.plus 1
+              accumulated.chained
+                *
+                  escaped ch
+              found
+              false
     ^.^.slice > ch
       position
       1
@@ -427,6 +437,21 @@
     "hello"
     head.
       "%s!".scanf "hello!"
+
+  eq. ++> can-scan-two-fields-separated-by-extra-spaces
+    "%s %s".scanf
+      "a  b"
+    *
+      "a"
+      "b"
+
+  eq. ++> can-scan-three-fields-separated-by-extra-spaces
+    "%s %s %s".scanf
+      "a  b c"
+    *
+      "a"
+      "b"
+      "c"
 
   eq. ++> can-scan-while-ignoring-trailing-text
     42
