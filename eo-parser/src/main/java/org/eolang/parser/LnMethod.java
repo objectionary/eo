@@ -28,6 +28,8 @@ import java.util.List;
  * <ul>
  * <li>R-5.2.3(b) — same-indent {@code .method} after a horizontally
  * completed predecessor.</li>
+ * <li>R-3.8.3 — {@code .method} as the receiver of a bare reversed
+ * dispatch, which may not begin with a dot.</li>
  * <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
  * <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
@@ -124,6 +126,14 @@ final class LnMethod implements Line {
     }
 
     private void precheck(final Stack stack) {
+        if (!stack.empty() && stack.top().kind() == Kind.BARE_REVERSED
+            && !stack.top().taken()
+            && stack.top().indent() < this.span.indent()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "reversed dispatch receiver must not begin with dot"
+            );
+        }
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
