@@ -125,14 +125,26 @@ public final class PhSticky implements Phi {
         this.guards = busy;
     }
 
+    /**
+     * Whether this is that very object.
+     *
+     * <p>An object is equal to itself and to nothing else, which is what
+     * {@code PhDefault} says too. Answering on behalf of the decorated
+     * object made the answer one-sided: the decorator said it equalled the
+     * object it wraps, while that object said it did not equal the
+     * decorator, and {@code Object.equals} requires the two to agree.</p>
+     *
+     * @param obj The object to compare with
+     * @return True if it is this very object
+     */
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
+        return this == obj;
     }
 
     @Override
     public int hashCode() {
-        return this.origin.hashCode();
+        return System.identityHashCode(this) + 1;
     }
 
     @Override
