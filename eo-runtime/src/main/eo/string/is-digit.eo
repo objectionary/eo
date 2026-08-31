@@ -1,5 +1,7 @@
 # Check that all signs in the string are decimal digits.
 # Works only for english digits.
+# An empty string is not a digit and is not accepted, since the pattern
+# asks for one sign at least.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
