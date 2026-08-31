@@ -19,6 +19,12 @@ import java.util.function.Supplier;
  * the wrapped object keeps a lazy expression lazy while it is dispatched
  * over.</p>
  *
+ * <p>An object of this class is equal to itself and to nothing else, the
+ * way {@code PhDefault} is. Answering on behalf of the wrapped object
+ * would make the answer one-sided: the decorator would say it equals the
+ * object it wraps, while that object says it does not equal the decorator,
+ * and {@code Object.equals} requires the two to agree.</p>
+ *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (200 lines)
  */
@@ -64,18 +70,6 @@ public class PhOnce implements Phi {
         this.object = () -> this.loaded(obj);
     }
 
-    /**
-     * Whether this is that very object.
-     *
-     * <p>An object is equal to itself and to nothing else, which is what
-     * {@code PhDefault} says too. Answering on behalf of the decorated
-     * object made the answer one-sided: the decorator said it equalled the
-     * object it wraps, while that object said it did not equal the
-     * decorator, and {@code Object.equals} requires the two to agree.</p>
-     *
-     * @param obj The object to compare with
-     * @return True if it is this very object
-     */
     @Override
     public boolean equals(final Object obj) {
         return this == obj;
