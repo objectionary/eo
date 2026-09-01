@@ -155,10 +155,10 @@ final class Diff {
     }
 
     private static void deleted(final StringBuilder out, final String line) {
-        out.append("\033[31m").append('-').append(line).append(Diff.RESET).append('\n');
+        out.append("\033[31m-").append(line).append(Diff.RESET).append('\n');
     }
 
     private static void added(final StringBuilder out, final String line) {
-        out.append("\033[32m").append('+').append(line).append(Diff.RESET).append('\n');
+        out.append("\033[32m+").append(line).append(Diff.RESET).append('\n');
     }
 }
