@@ -1,5 +1,5 @@
-# The width in bytes of the UTF-8 character that starts at the `index` byte of
-# the string, so that a walk over the string can step from one character to the
+# Width in bytes of the UTF-8 character that starts at the `index` byte of the
+# string, so that a walk over the string can step from one character to the
 # next. The sequence is read the way the Unicode standard writes it in Table
 # 3-7: the leading byte fixes the width and each following byte must be a
 # `10xxxxxx` continuation byte, while the second byte is additionally
