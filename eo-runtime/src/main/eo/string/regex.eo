@@ -58,9 +58,6 @@
 [^] > regex
   compile > @
 
-  # Compiles the pattern text (`^.^`, e.g. "/[a-z]+/i") into a `pattern`,
-  # or, on a missing slash or a syntax mistake, applies `cant-compile` to
-  # a message describing what went wrong.
   [^ cant-compile] > compile
     if. > @
       opens.not
@@ -184,8 +181,6 @@
     ^.settings pflags > cfg!
     ^.fully-matched root cfg txt total > @
 
-  # Turns `flags` into the five booleans the matcher needs: case
-  # insensitivity, Unicode-aware folding, dotall, multiline, unix lines.
   [^ flags] > settings
     * > @
       flags.contains "i"
@@ -194,13 +189,6 @@
       flags.contains "m"
       flags.contains "d"
 
-  # ------------------------------------------------------------------
-  # Parser: turns `body` (the text between the slashes) into a tree of
-  # tagged tuples, threading a capturing-group counter through every
-  # call so groups are numbered by the order their opening "(" appears.
-  # A step succeeds as `* "ok" index node counter` or fails as
-  # `* "error" description offset`.
-  # ------------------------------------------------------------------
   [^ body extended] > parsed
     body.length > blen!
     ^.alt 0 0 > result!
@@ -277,7 +265,7 @@
         * "alt" branches
 
     [^ i g] > cat
-      ^.cat-loop i g *
+      ^.cat-loop i g * > @
 
     [^ i g items] > cat-loop
       ^.skip i > j!
@@ -322,7 +310,7 @@
       ^.quant j > q!
       q.at 0 (1 > [m]) > mn!
       q.at 1 (1 > [m]) > mx!
-      q.at 2 (j > [m]) > after!
+      q.at 2 (^.j > [m]) > after!
       if. > @
         and.
           mn.eq 1
@@ -370,7 +358,7 @@
       ^.digits-run k > d2!
       d2.at 2 (false > [m]) > has2!
       d2.at 0 (0 > [m]) > n2!
-      d2.at 1 (k > [m]) > k2!
+      d2.at 1 (^.k > [m]) > k2!
       ^.body.at k2 ("" > [m]) > c!
       if. > @
         c.eq "}"
@@ -381,7 +369,7 @@
         * 1 1 fallback
 
     [^ k] > digits-run
-      ^.digits-run-k k 0 false
+      ^.digits-run-k k 0 false > @
 
     [^ k acc has] > digits-run-k
       ^.body.at k ("" > [m]) > c!
@@ -397,7 +385,7 @@
         * acc k has
 
     [^ c] > dangling-msg
-      "Dangling meta character '%s'".printf (* c)
+      "Dangling meta character '%s'".printf (* c) > @
 
     [^ i g] > unit
       ^.skip i > j!
@@ -652,13 +640,6 @@
         * "error" "Illegal hexadecimal escape sequence" k
         * "ok" "char" (string ((v1.times 16).plus v2).as-char) (k.plus 4)
 
-  # ------------------------------------------------------------------
-  # Matcher: `attempted` answers every way `node` can match starting
-  # exactly at `pos`, as a tuple of `* end groups` candidates, ordered
-  # most-preferred first. `ctx` bundles the fixed context of one search:
-  # `* text length case-insensitive unicode-case dotall multiline
-  # unix-lines`.
-  # ------------------------------------------------------------------
   [^ ctx node pos groups] > attempted
     node.at 0 ("" > [m]) > tag!
     ctx.at 0 ("" > [m]) > text!
@@ -722,7 +703,7 @@
         ^.attempted ctx (children.at idx (* > [m])) pos groups
 
   [^ ctx children idx cands] > flat-map-seq
-    ^.flat-map-seq-k ctx children idx cands 0
+    ^.flat-map-seq-k ctx children idx cands 0 > @
 
   [^ ctx children idx cands k] > flat-map-seq-k
     if. > @
@@ -765,7 +746,7 @@
   [^ cand start gnum] > one-stamp
     cand.at 0 (-1 > [m]) > end!
     cand.at 1 (* > [m]) > gs!
-    * end (^.replaced-at gs (gnum.minus 1) (* start end true))
+    * end (^.replaced-at gs (gnum.minus 1) (* start end true)) > @
 
   [^ tup idx val] > replaced-at
     concat. > @
@@ -776,10 +757,10 @@
         tup.length.minus (idx.plus 1)
 
   [^ c] > cand-end
-    c.at 0 (-1 > [m])
+    c.at 0 (-1 > [m]) > @
 
   [^ c] > cand-groups
-    c.at 1 (* > [m])
+    c.at 1 (* > [m]) > @
 
   [^ ctx child pos groups mn mx] > rep
     if. > @
@@ -791,7 +772,7 @@
         ^.rep-optional ctx child pos groups mx
 
   [^ ctx child pos groups mn mx] > rep-forced
-    ^.rep-forced-k ctx child pos groups mn mx (^.attempted ctx child pos groups) 0
+    ^.rep-forced-k ctx child pos groups mn mx (^.attempted ctx child pos groups) 0 > @
 
   [^ ctx child pos groups mn mx own k] > rep-forced-k
     if. > @
@@ -810,7 +791,7 @@
       ^.rep ctx child e g (mn.minus 1) (^.dec-or-neg mx)
 
   [^ ctx child pos groups mx] > rep-optional
-    ^.rep-optional-k ctx child pos groups mx (^.attempted ctx child pos groups) 0
+    ^.rep-optional-k ctx child pos groups mx (^.attempted ctx child pos groups) 0 > @
 
   [^ ctx child pos groups mx own k] > rep-optional-k
     if. > @
@@ -1019,16 +1000,14 @@
       "i"
       ch.lower
 
-  # Linear scan for the leftmost position at or after `start` (in
-  # characters) where `root` matches, exactly like `Matcher.find`.
   [^ root cfg text start total] > searched
     cfg.at 0 (false > [m]) > ci!
     cfg.at 1 (false > [m]) > uc!
     cfg.at 2 (false > [m]) > da!
     cfg.at 3 (false > [m]) > ml!
     cfg.at 4 (false > [m]) > ul!
-    * text (text.length) ci uc da ml ul > ctx!
-    ^.scan-from ctx root start (text.length) (^.empty-groups total) > @
+    * text text.length ci uc da ml ul > ctx!
+    ^.scan-from ctx root start text.length (^.empty-groups total) > @
 
   [^ ctx root p tlen groups0] > scan-from
     ^.attempted ctx root p groups0 > cands!
@@ -1041,7 +1020,7 @@
         ^.scan-from ctx root (p.plus 1) tlen groups0
 
   [^ p cand] > found
-    * "ok" p (^.cand-end cand) (^.cand-groups cand)
+    * "ok" p (^.cand-end cand) (^.cand-groups cand) > @
 
   [^ n] > empty-groups
     if. > @
@@ -1049,18 +1028,15 @@
       *
       (^.empty-groups (n.minus 1)).with (* -1 -1 false)
 
-  # Whether `root` can match all of `text`, backtracking through every
-  # possibility instead of only the greediest one, exactly like
-  # `Matcher.matches`.
   [^ root cfg text total] > fully-matched
     cfg.at 0 (false > [m]) > ci!
     cfg.at 1 (false > [m]) > uc!
     cfg.at 2 (false > [m]) > da!
     cfg.at 3 (false > [m]) > ml!
     cfg.at 4 (false > [m]) > ul!
-    * text (text.length) ci uc da ml ul > ctx!
+    * text text.length ci uc da ml ul > ctx!
     ^.attempted ctx root 0 (^.empty-groups total) > cands!
-    ^.any-full cands (text.length) 0 > @
+    ^.any-full cands text.length 0 > @
 
   [^ cands tlen k] > any-full
     if. > @
@@ -1071,11 +1047,8 @@
         true
         ^.any-full cands tlen (k.plus 1)
 
-  # Slices the matched text and the `total` capturing groups out of
-  # `txt`, as `* groups existing`, where index 0 of each is the whole
-  # match; a group that never participated slices to "" and `false`.
   [^ txt mfrom mto total mgroups] > grouped
-    ^.grouped-k
+    ^.grouped-k > @
       txt
       total
       mgroups
@@ -1096,7 +1069,7 @@
         gflags.with (^.group-participated (mgroups.at (k.minus 1) (* -1 -1 false > [m])))
 
   [^ entry] > group-participated
-    entry.at 2 (false > [m])
+    entry.at 2 (false > [m]) > @
 
   [^ txt entry] > group-text
     if. > @
