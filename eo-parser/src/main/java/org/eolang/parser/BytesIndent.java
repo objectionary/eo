@@ -61,6 +61,8 @@ final class BytesIndent {
         final String found;
         if (this.line.blank()) {
             found = "";
+        } else if (this.line.tab()) {
+            found = "tab character in leading whitespace";
         } else if (this.line.indent() < this.head) {
             found = "multi-line bytes continuation must not de-indent";
         } else if (this.line.indent() % 2 == 1) {
