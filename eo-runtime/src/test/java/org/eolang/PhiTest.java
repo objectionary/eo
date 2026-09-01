@@ -26,10 +26,9 @@ final class PhiTest {
         final String name, final Function<Phi, Phi> decorator
     ) {
         final Phi origin = new PhDefault();
-        final Phi wrapped = decorator.apply(origin);
         MatcherAssert.assertThat(
             String.format("the %s decorator must not equal its origin", name),
-            wrapped.equals(origin),
+            decorator.apply(origin).equals(origin),
             Matchers.equalTo(false)
         );
     }
