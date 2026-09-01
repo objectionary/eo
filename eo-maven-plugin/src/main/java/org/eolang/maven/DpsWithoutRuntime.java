@@ -36,18 +36,11 @@ final class DpsWithoutRuntime implements Dependencies {
         );
     }
 
-    /**
-     * Whether this dependency is the EO runtime.
-     *
-     * <p>An artifact id is not unique in Maven, so the group has to be read
-     * too: a dependency of somebody else named {@code eo-runtime} is not the
-     * runtime this class removes, and dropping it would change the classpath
-     * of a build that asked for nothing of the sort (#8147). This is the same
-     * pair {@code DpsWithRuntime} decides by.</p>
-     *
-     * @param dep The dependency
-     * @return True when it is the EO runtime
-     */
+    // An artifact id is not unique in Maven, so the group has to be read
+    // too: a dependency of somebody else named "eo-runtime" is not the
+    // runtime this class removes, and dropping it would change the classpath
+    // of a build that asked for nothing of the sort (#8147). This is the
+    // same pair DpsWithRuntime decides by.
     private static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
             && "eo-runtime".equals(dep.getArtifactId());
