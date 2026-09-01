@@ -480,24 +480,6 @@
               </execution>
             </executions>
             <configuration>
-              <excludes combine.children="append">
-                <!--
-                PMD 7.27.0 (bundled by qulice since 0.34.0) crashes with
-                "IllegalArgumentException: Not a Java binary name 'Phi.Φ'"
-                while resolving symbols in any file that references the
-                Phi.Φ field (the EO runtime's root universe object).
-                net.sourceforge.pmd.util.AssertionUtil#assertValidJavaBinaryName
-                rejects the non-ASCII Φ inside PMD's ASM-based ambiguous-
-                name disambiguation pass; Φ is a perfectly valid Java
-                identifier character, so this looks like a PMD bug in
-                that regex rather than anything wrong with this code.
-                Phi.Φ is referenced pervasively across eo-runtime (it is
-                the language's root global reference), so this is a
-                module-wide PMD exclude rather than a per-file one, kept
-                until the bug is fixed upstream or worked around.
-                -->
-                <exclude>pmd:.*</exclude>
-              </excludes>
               <errorprone>
                 <!--
                 PhDefault.equals() compares hash codes on purpose. Every
