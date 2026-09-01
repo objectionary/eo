@@ -4,7 +4,6 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,14 +28,14 @@ import java.util.Map;
 final class Dead {
 
     /**
-     * The links table.
+     * What the links table says.
      */
-    private final XML table;
+    private final Pairs table;
 
     /**
      * Every dispatch of the program.
      */
-    private final Collection<XML> all;
+    private final Collection<Site> all;
 
     /**
      * The name every object goes by, once its chain of copies is walked.
@@ -45,11 +44,11 @@ final class Dead {
 
     /**
      * Ctor.
-     * @param links The links table
+     * @param links What the links table says
      * @param dispatches Every dispatch of the program
      * @param ends The name every object goes by
      */
-    Dead(final XML links, final Collection<XML> dispatches, final Map<String, String> ends) {
+    Dead(final Pairs links, final Collection<Site> dispatches, final Map<String, String> ends) {
         this.table = links;
         this.all = dispatches;
         this.names = ends;
@@ -60,15 +59,18 @@ final class Dead {
      * @return The locators, the dispatches on a termination among them
      */
     Collection<String> all() {
-        final Collection<String> found = new HashSet<>(
-            this.table.xpath("/links/type[terminator]/@id")
-        );
+        final Collection<String> found = new HashSet<>(0);
+        for (final Map.Entry<String, String> row : this.table.forms().entrySet()) {
+            if ("terminator".equals(row.getValue())) {
+                found.add(row.getKey());
+            }
+        }
         boolean grown = true;
         while (grown) {
             grown = false;
-            for (final XML dispatch : this.all) {
-                final String made = dispatch.xpath("@loc").get(0);
-                final String bearer = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
+            for (final Site dispatch : this.all) {
+                final String made = dispatch.made();
+                final String bearer = dispatch.bearer();
                 if (!found.contains(made)
                     && found.contains(this.names.getOrDefault(bearer, bearer))) {
                     found.add(made);

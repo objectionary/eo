@@ -91,7 +91,7 @@ public final class Witnessed implements Clue {
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(
-                hollow.xpath("@type").get(0), Collections.emptyList()
+                new Noted(hollow).says("type"), Collections.emptyList()
             );
             if (!members.isEmpty()) {
                 new Xembler(

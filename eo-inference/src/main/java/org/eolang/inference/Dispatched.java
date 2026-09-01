@@ -40,7 +40,7 @@ final class Dispatched {
     /**
      * Every dispatch of the program.
      */
-    private final Collection<XML> all;
+    private final Collection<Site> all;
 
     /**
      * The arguments of every application, from {@link Given}.
@@ -74,7 +74,7 @@ final class Dispatched {
      */
     Dispatched(
         final XML provides,
-        final Collection<XML> dispatches,
+        final Collection<Site> dispatches,
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
@@ -103,15 +103,12 @@ final class Dispatched {
             new Bound(this.args, this.named, this.receivers, pairs, owned).all()
         );
         final Map<String, String> found = new HashMap<>(0);
-        for (final XML dispatch : this.all) {
-            final String made = dispatch.xpath("@loc").get(0);
+        for (final Site dispatch : this.all) {
+            final String made = dispatch.made();
             if (!pairs.containsKey(made)) {
-                final String bearer = dispatch.xpath("o[not(@as)][1]/@loc").get(0);
+                final String bearer = dispatch.bearer();
                 final String kept = filled.instead(
-                    owned.attribute(
-                        names.getOrDefault(bearer, bearer),
-                        dispatch.xpath("@base").get(0).substring(1)
-                    ),
+                    owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
                     bearer
                 );
                 if (!kept.isEmpty() && !kept.equals(made)) {
