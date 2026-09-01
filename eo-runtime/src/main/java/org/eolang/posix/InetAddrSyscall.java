@@ -55,7 +55,8 @@ public final class InetAddrSyscall implements Syscall {
         final String address = new Dataized(params[0]).asString();
         final int converted = CStdLib.INSTANCE.inet_addr(address);
         if (converted == -1 && !InetAddrSyscall.BROADCAST.equals(address)) {
-            Native.setLastError(22);
+            final int einval = 22;
+            Native.setLastError(einval);
         }
         result.put(0, new Data.ToPhi(Integer.toUnsignedLong(converted)));
         result.put(1, new PhDefault());

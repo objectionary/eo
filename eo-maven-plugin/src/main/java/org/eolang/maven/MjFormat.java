@@ -118,7 +118,8 @@ public final class MjFormat extends MjPenalties {
         String structure = source;
         XML tree = MjFormat.parsed(path, structure);
         Optional<String> settled = Optional.empty();
-        for (int pass = 0; pass < 8; ++pass) {
+        final int settle = 8;
+        for (int pass = 0; pass < settle; ++pass) {
             final String printed = new Xmir(tree).toEO();
             if (printed.equals(structure)) {
                 settled = Optional.of(printed);
