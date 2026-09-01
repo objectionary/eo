@@ -22,6 +22,59 @@
         "stat"
         ^.path
 
+  eq. ++> can-ignore-the-fallback-when-a-file-exists
+    0
+    mktemp.tmpfile.touched.size -1
+
+  ++> can-measure-a-directory-without-falling-back
+    not. > @
+      eq.
+        d.as-file.size -1
+        -1
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
+  eq. ++> can-measure-a-file-after-appending-more-data
+    12
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello" > [^ f]
+        "a"
+        f.write > [^ f]
+          ", world"
+
+  eq. ++> can-measure-a-file-after-truncating-it
+    0
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [^ f]
+        "w"
+        true > [^ f]
+
+  eq. ++> can-measure-a-file-with-content
+    12
+    size.
+      mktemp.tmpfile.open
+        "w"
+        f.write > [^ f]
+          "Hello, world"
+
+  ++> can-measure-a-symbolic-link-by-its-target-size
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.size.eq target.as-file.size
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "link-to-file" > link
+    mktemp.tmpfile.touched.as-path > target
+
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0
 
