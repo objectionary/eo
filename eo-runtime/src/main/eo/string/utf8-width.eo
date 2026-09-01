@@ -1,0 +1,157 @@
+# The width in bytes of the UTF-8 character that starts at the `index` byte of
+# the string, so that a walk over the string can step from one character to the
+# next. The sequence is read the way the Unicode standard writes it in Table
+# 3-7: the leading byte fixes the width and each following byte must be a
+# `10xxxxxx` continuation byte, while the second byte is additionally
+# range-checked so that overlong encodings (`C0`/`C1` leads, `E0` with an
+# `80`-`9F` second byte, `F0` with an `80`-`8F` second byte), UTF-16 surrogates
+# (`ED` with an `A0`-`BF` second byte) and code points above U+10FFFF (`F4` with
+# a `90`-`BF` second byte, and `F5`-`FF` leads) are rejected. A character that
+# the string is too short to hold, or one that breaks any of those rules,
+# terminates the computation.
+#
+# @todo #8060:30min Walk `length` and `slice` with this object. Both of them
+#  still carry a copy of the Table 3-7 walk, under their own names and with
+#  their own message for a byte no lead mask matches, which is the duplication
+#  this object exists to remove. Replace the walk in each of them with a step
+#  of `index.plus (^.^.utf8-width index)`, drop the locals that only the walk
+#  used, and remove this puzzle once neither of them reads a lead byte on its
+#  own. The two moves are separate pull requests, since one of them together
+#  with this object is already past the 200-line limit of the `pr-size` job.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package string
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ index] > utf8-width
+  if. > @
+    eq.
+      lead.and 80-
+      00-
+    1
+    if.
+      eq.
+        lead.and E0-
+        C0-
+      checked 2 twovalid
+      if.
+        eq.
+          lead.and F0-
+          E0-
+        checked 3 threevalid
+        if.
+          eq.
+            lead.and F8-
+            F0-
+          checked 4 fourvalid
+          T
+            "Unknown byte format (%x), can't recognize character".printf
+              * lead
+  if. > [^ width valid] >> checked
+    gt.
+      index.plus width
+      size
+    T
+      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+        *
+          width
+          index
+          ^.^.as-bytes
+    valid.if
+      width
+      T
+        "Malformed UTF-8 sequence (%x) at %d index".printf
+          *
+            ^.^.as-bytes.slice index width
+            index
+  ^.as-bytes.size >> size!
+  ^.as-bytes.slice index 1 > lead
+  ^.as-bytes.slice > b1
+    index.plus 1
+    1
+  ^.as-bytes.slice > b2
+    index.plus 2
+    1
+  ^.as-bytes.slice > b3
+    index.plus 3
+    1
+  eq. > b1808f
+    b1.and F0-
+    80-
+  eq. > b1809f
+    b1.and E0-
+    80-
+  or. > b190bf
+    eq.
+      b1.and F0-
+      90-
+    eq.
+      b1.and E0-
+      A0-
+  eq. > b1a0bf
+    b1.and E0-
+    A0-
+  eq. > b1cont
+    b1.and C0-
+    80-
+  eq. > b2cont
+    b2.and C0-
+    80-
+  eq. > b3cont
+    b3.and C0-
+    80-
+  eq. > leadc0c1
+    lead.and FE-
+    C0-
+  lead.eq E0- > leade0
+  lead.eq ED- > leaded
+  lead.eq F0- > leadf0
+  lead.eq F1- > leadf1
+  lead.eq F2- > leadf2
+  lead.eq F3- > leadf3
+  lead.eq F4- > leadf4
+  leadf1.or > leadf1f3
+    leadf2.or leadf3
+  leade0.if > second3
+    b1a0bf
+    leaded.if b1809f b1cont
+  leadf0.if > second4
+    b190bf
+    leadf4.if
+      b1808f
+      leadf1f3.if b1cont false
+  leadc0c1.not.and b1cont > twovalid
+  b2cont.and second3 > threevalid
+  b2cont.and > fourvalid
+    b3cont.and second4
+
+  eq. ++> can-measure-a-four-byte-character
+    "😀".utf8-width 0
+    4
+
+  eq. ++> can-measure-a-one-byte-character
+    "hello".utf8-width 1
+    1
+
+  eq. ++> can-measure-a-three-byte-character
+    "अ".utf8-width 0
+    3
+
+  eq. ++> can-measure-a-two-byte-character
+    "друг".utf8-width 0
+    2
+
+  utf8-width. --> rejects-a-non-continuation-after-a-two-byte-lead
+    string C2-41
+    0
+
+  utf8-width. --> rejects-an-overlong-two-byte-encoding
+    string C0-80
+    0
+
+  utf8-width. --> stops-on-an-incomplete-four-byte-character
+    string F0-9F-98
+    0
