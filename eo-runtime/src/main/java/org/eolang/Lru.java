@@ -43,9 +43,7 @@ final class Lru implements Map<String, byte[]> {
      */
     Lru(final int cap) {
         if (cap < 0) {
-            throw new IllegalArgumentException(
-                String.format("Capacity can't be negative, while %d was given", cap)
-            );
+            throw new IllegalArgumentException("Capacity can't be negative");
         }
         this.origin = new LinkedHashMap<>(16, 0.75f, true);
         this.capacity = cap;
