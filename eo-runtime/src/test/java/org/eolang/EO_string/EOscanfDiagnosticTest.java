@@ -28,15 +28,9 @@ final class EOscanfDiagnosticTest {
     @Test
     void reportsSinglePercentForOversizedInteger() {
         final Phi scanf = new PhApplication(
-            new PhApplication(
-                new PhApplication(
-                    Phi.Φ.take("string.scanf").copy(),
-                    "format", new Data.ToPhi("%d")
-                ),
-                "read", new Data.ToPhi("99999999999999999999")
-            ).take("at").copy(),
-            "i", new Data.ToPhi(0)
-        );
+            new Data.ToPhi("%d").take("scanf").copy(),
+            "read", new Data.ToPhi("99999999999999999999")
+        ).take("head");
         MatcherAssert.assertThat(
             "scanf must report the %d conversion with one percent sign",
             Assertions.assertThrows(
