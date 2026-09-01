@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
@@ -12,13 +13,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eolang.lowering.Constant;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Primitive;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Fold the constant fragments of every XMIR this build compiles.
@@ -91,13 +92,13 @@ final class Lowering implements Step {
 
     private int folded(final TjForeign tojo) throws IOException {
         final XMLDocument doc = new XMLDocument(tojo.xmir());
-        final Collection<Element> found = new ArrayList<>(0);
+        final Collection<Xnav> found = new ArrayList<>(0);
         Lowering.selected(
-            (Element) new Xnav(doc.inner()).element("object").element("o").node(),
+            new Xnav(doc.inner()).element("object").element("o"),
             found
         );
         int count = 0;
-        for (final Element node : found) {
+        for (final Xnav node : found) {
             if (this.spliced(node)) {
                 ++count;
             }
@@ -111,20 +112,20 @@ final class Lowering implements Step {
         return count;
     }
 
-    private boolean spliced(final Element node) {
+    private boolean spliced(final Xnav node) {
         boolean done = false;
         try {
-            final Constant constant = new Constant(this.phino, new XMLDocument(node));
+            final Node subject = node.node();
+            final Constant constant = new Constant(this.phino, new XMLDocument(subject));
             final Element literal = Lowering.carrier(
-                node.getOwnerDocument(), constant.forma(), constant.value()
+                subject.getOwnerDocument(), constant.forma(), constant.value()
             );
             for (final String name : new String[] {"as", "name", "line", "pos"}) {
-                final String value = node.getAttribute(name);
-                if (!value.isEmpty()) {
-                    literal.setAttribute(name, value);
-                }
+                node.attribute(name).text().ifPresent(
+                    value -> literal.setAttribute(name, value)
+                );
             }
-            node.getParentNode().replaceChild(literal, node);
+            subject.getParentNode().replaceChild(literal, subject);
             done = true;
         } catch (final IllegalStateException | IOException ex) {
             Logger.debug(this, "A fragment stays unfolded: %s", ex.getMessage());
@@ -177,34 +178,34 @@ final class Lowering implements Step {
         return made;
     }
 
-    private static void selected(final Element node, final Collection<Element> out) {
+    private static void selected(final Xnav node, final Collection<Xnav> out) {
         if (Lowering.foldable(node)) {
             out.add(node);
         } else {
-            for (final Element kid : Lowering.kids(node)) {
+            for (final Xnav kid : Lowering.kids(node)) {
                 Lowering.selected(kid, out);
             }
         }
     }
 
-    private static boolean foldable(final Element node) {
-        final String base = node.getAttribute("base");
+    private static boolean foldable(final Xnav node) {
+        final String base = Lowering.base(node);
         return base.length() > 1 && base.charAt(0) == '.'
             && new Primitive(base.substring(1)).known()
             && Lowering.decided(node);
     }
 
-    private static boolean decided(final Element node) {
+    private static boolean decided(final Xnav node) {
         boolean good = Lowering.literal(node);
         if (!good) {
-            final String base = node.getAttribute("base");
+            final String base = Lowering.base(node);
             if (base.length() > 1 && base.charAt(0) == '.'
                 && new Primitive(base.substring(1)).known()) {
-                final List<Element> kids = Lowering.kids(node);
+                final List<Xnav> kids = Lowering.kids(node);
                 good = !kids.isEmpty()
-                    && kids.get(0).getAttribute("as").isEmpty();
+                    && kids.get(0).attribute("as").text().isEmpty();
                 for (int idx = 1; good && idx < kids.size(); ++idx) {
-                    good = !kids.get(idx).getAttribute("as").isEmpty();
+                    good = kids.get(idx).attribute("as").text().isPresent();
                 }
                 for (int idx = 0; good && idx < kids.size(); ++idx) {
                     good = Lowering.decided(kids.get(idx));
@@ -214,15 +215,15 @@ final class Lowering implements Step {
         return good;
     }
 
-    private static boolean literal(final Element node) {
-        final String base = node.getAttribute("base");
-        final List<Element> kids = Lowering.kids(node);
+    private static boolean literal(final Xnav node) {
+        final String base = Lowering.base(node);
+        final List<Xnav> kids = Lowering.kids(node);
         final boolean good;
         if ("Φ.true".equals(base) || "Φ.false".equals(base)) {
             good = kids.isEmpty();
         } else if ("Φ.bytes".equals(base)) {
             good = kids.size() == 1
-                && kids.get(0).getAttribute("base").isEmpty()
+                && Lowering.base(kids.get(0)).isEmpty()
                 && Lowering.kids(kids.get(0)).isEmpty();
         } else if ("Φ.number".equals(base) || "Φ.string".equals(base)) {
             good = kids.size() == 1 && Lowering.literal(kids.get(0));
@@ -232,15 +233,11 @@ final class Lowering implements Step {
         return good;
     }
 
-    private static List<Element> kids(final Element node) {
-        final NodeList nodes = node.getChildNodes();
-        final List<Element> found = new ArrayList<>(nodes.getLength());
-        for (int idx = 0; idx < nodes.getLength(); ++idx) {
-            final Node kid = nodes.item(idx);
-            if (kid.getNodeType() == Node.ELEMENT_NODE) {
-                found.add((Element) kid);
-            }
-        }
-        return found;
+    private static String base(final Xnav node) {
+        return node.attribute("base").text().orElse("");
+    }
+
+    private static List<Xnav> kids(final Xnav node) {
+        return node.elements(Filter.withName("o")).collect(Collectors.toList());
     }
 }
