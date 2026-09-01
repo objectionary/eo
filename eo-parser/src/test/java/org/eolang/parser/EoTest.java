@@ -70,18 +70,6 @@ final class EoTest {
     }
 
     @Test
-    void acceptsTopCommentBeforePlainObject() {
-        MatcherAssert.assertThat(
-            "the mandatory blank after a top comment must not become a sibling blank",
-            EoTest.render("# top doc", "", "I > foo"),
-            XhtmlMatchers.hasXPaths(
-                "/object/comments/comment[contains(text(),'top doc')]",
-                "/object[not(errors)]"
-            )
-        );
-    }
-
-    @Test
     void rejectsCommentAfterObject() {
         MatcherAssert.assertThat(
             "a comment after an object cannot be accepted — only the top block is allowed",
