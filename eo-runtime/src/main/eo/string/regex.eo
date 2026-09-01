@@ -345,7 +345,6 @@
         separator.plus 1
         rawtext.length.minus
           separator.plus 1
-    string ^.serialized > rawtext
     if. > [^ n] > empty-groups
       n.lte 0
       *
@@ -1641,6 +1640,7 @@
           [m]
             * > @
         * "concat" items
+    string ^.serialized > rawtext
     if. > [^ ctx child pos groups mn mx] > rep
       mn.gt 0
       ^.rep-forced
