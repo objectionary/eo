@@ -76,7 +76,7 @@ final class PenaltyKeyTest {
         MatcherAssert.assertThat(
             "Characters past the overridden 40th column should be charged",
             new Penalty(
-                String.join("", java.util.Collections.nCopies(45, "x")), weights
+                String.join("", Collections.nCopies(45, "x")), weights
             ).points(),
             Matchers.equalTo(15)
         );

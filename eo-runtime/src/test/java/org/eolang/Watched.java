@@ -50,16 +50,6 @@ import org.opentest4j.TestAbortedException;
 final class Watched {
 
     /**
-     * How many milliseconds pass between two readings of the appetite.
-     */
-    private static final long TICK = 50L;
-
-    /**
-     * How many milliseconds the group is given to stop after an interrupt.
-     */
-    private static final long GRACE = 500L;
-
-    /**
      * What is said about a test that ate more than it was given.
      */
     private static final String MESSAGE = String.join(
@@ -121,7 +111,7 @@ final class Watched {
         thread.start();
         boolean over = false;
         try {
-            while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
+            while (!done.await(50L, TimeUnit.MILLISECONDS)) {
                 if (consumed.bytes() > this.limit) {
                     over = true;
                     break;
@@ -147,7 +137,7 @@ final class Watched {
 
     private static void settle(final CountDownLatch done) {
         try {
-            done.await(Watched.GRACE, TimeUnit.MILLISECONDS);
+            done.await(500L, TimeUnit.MILLISECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
