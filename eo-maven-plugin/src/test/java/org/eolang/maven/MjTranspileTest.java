@@ -32,6 +32,7 @@ import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
 import org.eolang.xax.XtoryMatcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,7 +54,7 @@ final class MjTranspileTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/transpile-packs/", glob = "**.yaml")
     void checksTranspilePacks(final String yaml) {
-        final org.eolang.xax.Xtory story = new XtSticky(
+        final Xtory story = new XtSticky(
             new XtYaml(
                 yaml,
                 eo -> new EoSyntax(
@@ -62,7 +63,7 @@ final class MjTranspileTest {
                 new TrDefault<>()
             )
         );
-        org.junit.jupiter.api.Assumptions.assumeTrue(story.map().get("skip") == null);
+        Assumptions.assumeTrue(story.map().get("skip") == null);
         MatcherAssert.assertThat(
             "passed without exceptions",
             story,

@@ -149,6 +149,13 @@ public final class MjTranspile extends MjSafe {
     )
     private File tables;
 
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {

@@ -28,18 +28,6 @@ import java.util.List;
 final class Tokens {
 
     /**
-     * Characters that terminate a {@code NAME} token per §2.3, the dot
-     * among them.
-     */
-    private static final String TERMINATORS = " \t,.|':;!?[]{}()";
-
-    /**
-     * Characters that break a parenthesised group into more than one
-     * token, so their absence makes the group a single token.
-     */
-    private static final String BREAKERS = " ()[]";
-
-    /**
      * The line body being scanned.
      */
     private final String body;
@@ -616,7 +604,7 @@ final class Tokens {
             final char glyph = inside.charAt(idx);
             if (glyph == '"') {
                 idx = Tokens.closingQuote(inside, idx);
-            } else if (Tokens.BREAKERS.indexOf(glyph) >= 0) {
+            } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
                 break;
             }
@@ -693,7 +681,7 @@ final class Tokens {
     }
 
     private static boolean terminates(final char glyph) {
-        return Tokens.TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static boolean cactus(final String text) {

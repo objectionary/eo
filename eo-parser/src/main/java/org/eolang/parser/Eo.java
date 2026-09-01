@@ -4,7 +4,10 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.IntPredicate;
 import org.xembly.Directive;
 
 /**
@@ -29,26 +32,9 @@ import org.xembly.Directive;
 final class Eo implements Iterable<Directive> {
 
     /**
-     * NAME-like terminator characters per §2.3 (excluding the dot,
-     * which callers check explicitly).
-     */
-    private static final String NAME_TERMINATORS = " \t,|':;!?[]{}()";
-
-    /**
-     * Head characters of §3.1 that open a root-headed line without
-     * opening a literal — group, star, root, and identity tokens.
-     */
-    private static final String ROOT_TOKENS = "*(QTI@^$";
-
-    /**
      * What a line with a space at its end is told, wherever it is written.
      */
     private static final String TRAILING = "trailing whitespace at end of line";
-
-    /**
-     * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
-     */
-    private static final int SPANS_CAPACITY = 10;
 
     /**
      * Raw EO source text.
@@ -74,7 +60,7 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        final List<Span> spans = new ArrayList<>(10);
         new Source(this.source).forEach(spans::add);
         final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
@@ -169,7 +155,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int topLevelMarker(
-        final String body, final java.util.function.IntPredicate marker
+        final String body, final IntPredicate marker
     ) {
         int depth = 0;
         int found = -1;
@@ -191,7 +177,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start, final Stack stack,
+        final List<Span> spans, final int start, final Stack stack,
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
@@ -454,7 +440,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static void finish(
-        final Globals globals, final Emit emit, final java.util.List<Span> spans
+        final Globals globals, final Emit emit, final List<Span> spans
     ) {
         if (globals.inTextBlock()) {
             emit.error(
@@ -466,7 +452,7 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!globals.pendingComments().isEmpty()) {
-            final java.util.List<Span> pending = globals.pendingComments();
+            final List<Span> pending = globals.pendingComments();
             emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
@@ -484,7 +470,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean tokenHead(final char head) {
-        return Eo.ROOT_TOKENS.indexOf(head) >= 0;
+        return "*(QTI@^$".indexOf(head) >= 0;
     }
 
     private static boolean literalHead(final Span span) {
@@ -646,7 +632,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean nameTerminator(final char glyph) {
-        return Eo.NAME_TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {

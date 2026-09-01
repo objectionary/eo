@@ -18,11 +18,6 @@ import java.util.List;
 public final class MacSockaddrIn extends Structure {
 
     /**
-     * Length of the whole structure, which is what {@code sin_len} holds.
-     */
-    private static final byte LENGTH = 16;
-
-    /**
      * Length of the structure.
      */
     public byte len;
@@ -72,7 +67,7 @@ public final class MacSockaddrIn extends Structure {
         final byte[] zero, final short family, final short port, final int addr
     ) {
         super();
-        this.len = MacSockaddrIn.LENGTH;
+        this.len = 16;
         this.family = (byte) family;
         this.port = port;
         this.addr = addr;

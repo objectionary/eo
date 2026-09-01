@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -40,12 +41,6 @@ final class Emissions {
         "the identity object takes no horizontal arguments;",
         "put the argument on a deeper-indent line"
     );
-
-    /**
-     * Bits an IEEE-754 double keeps below the leading one of its
-     * significand.
-     */
-    private static final int SIGNIFICAND_BITS = 52;
 
     /**
      * The void the identity object {@code I} binds and decorates.
@@ -371,7 +366,7 @@ final class Emissions {
     private static BigDecimal exactly(final double value) {
         final int exponent = Math.max(
             Math.getExponent(value), Double.MIN_EXPONENT
-        ) - Emissions.SIGNIFICAND_BITS;
+        ) - 52;
         final BigInteger mantissa = BigInteger.valueOf(
             (long) Math.scalb(value, -exponent)
         );
@@ -507,7 +502,7 @@ final class Emissions {
     private static List<String> splitParams(
         final String text, final int line, final int column
     ) {
-        final List<String> out = new java.util.ArrayList<>(0);
+        final List<String> out = new ArrayList<>(0);
         if (!text.isEmpty()
             && (text.charAt(0) == ' ' || text.charAt(text.length() - 1) == ' ')) {
             throw new ParseError(
