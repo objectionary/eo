@@ -58,10 +58,10 @@ public final class Demanded implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final XML links = new XMLDocument(tables.resolve("links.xml"));
-        final Map<String, String> names = new Ends(new Pairs(links).all()).names();
+        final Pairs links = new Pairs(new XMLDocument(tables.resolve("links.xml")));
+        final Map<String, String> names = new Ends(links.all()).names();
         final Collection<String> voids = given.xpath("//attr[@void='true']/@type");
-        final Map<String, Collection<String>> into = Demanded.into(links, names, voids);
+        final Map<String, Collection<String>> into = Demanded.into(links.puts(), names, voids);
         final Map<String, Map<String, String>> asked = new Asked(
             new XMLDocument(tables.resolve("needs.xml")),
             names,
@@ -69,7 +69,8 @@ public final class Demanded implements Clue {
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Demands demands = new Demands(
-                asked, Demanded.roots(hollow.xpath("@type").get(0), into)
+                asked,
+                Demanded.roots(new Noted(hollow).says("type"), into)
             );
             if (demands.any()) {
                 new Xembler(demands.directives()).applyQuietly(hollow.inner());
@@ -79,15 +80,18 @@ public final class Demanded implements Clue {
     }
 
     private static Map<String, Collection<String>> into(
-        final XML links, final Map<String, String> names, final Collection<String> voids
+        final Map<String, Collection<String>> puts,
+        final Map<String, String> names,
+        final Collection<String> voids
     ) {
         final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
-        for (final XML bind : links.nodes("/links/type/ref/bind[ref]")) {
-            final String loc = bind.xpath("ref/@loc").get(0);
-            final String filler = names.getOrDefault(loc, loc);
-            if (voids.contains(filler)) {
-                found.computeIfAbsent(filler, key -> new LinkedHashSet<>(0))
-                    .add(bind.xpath("@void").get(0));
+        for (final Map.Entry<String, Collection<String>> bound : puts.entrySet()) {
+            for (final String put : bound.getValue()) {
+                final String filler = names.getOrDefault(put, put);
+                if (voids.contains(filler)) {
+                    found.computeIfAbsent(filler, key -> new LinkedHashSet<>(0))
+                        .add(bound.getKey());
+                }
             }
         }
         return found;

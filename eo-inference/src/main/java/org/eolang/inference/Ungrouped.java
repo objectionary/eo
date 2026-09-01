@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,16 +59,16 @@ final class Ungrouped {
      */
     Map<String, Collection<Map<String, String>>> rows() {
         final Map<String, Collection<Map<String, String>>> found = new LinkedHashMap<>(0);
-        for (final XML type : this.table.nodes("/*/type")) {
+        for (final Xnav type : new Rows(this.table).all()) {
             final Map<String, String> cells = new Row(type).cells();
             final Collection<Map<String, String>> owned = found.computeIfAbsent(
                 this.names.getOrDefault(cells.get("id"), cells.get("id")),
                 key -> new ArrayList<>(1)
             );
             owned.add(cells);
-            for (final XML attr : type.nodes("attr")) {
-                owned.add(new Row(attr).cells());
-            }
+            type.elements(Filter.withName("attr")).forEach(
+                attr -> owned.add(new Row(attr).cells())
+            );
         }
         return found;
     }
