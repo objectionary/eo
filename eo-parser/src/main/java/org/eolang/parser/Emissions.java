@@ -62,7 +62,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
