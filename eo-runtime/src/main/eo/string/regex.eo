@@ -618,21 +618,28 @@
           T
             "Matched block does not exist, can't get text"
       [^ position start] > matched-from-index
-        hit.if > @
-          ^.matched
-            position
-            start
-            mfrom
-            mto
-            packed.at
-              0
-              [m]
-                * > @
-            packed.at
-              1
-              [m]
-                * > @
-          ^.missing
+        if. > @
+          or.
+            start.lt 0
+            start.gt ^.txt.length
+          T
+            "the 'start' attribute (%d) must be within [0, %d]".printf
+              * start ^.txt.length
+          hit.if
+            ^.matched
+              position
+              start
+              mfrom
+              mto
+              packed.at
+                0
+                [m]
+                  * > @
+              packed.at
+                1
+                [m]
+                  * > @
+            ^.missing
         ^.^.settings pflags > cfg
         ^.^.searched > found
           root
@@ -1150,7 +1157,9 @@
         if. > @
           or.
             v1.lt 0
-            v2.lt 0
+            or.
+              v2.lt 0
+              value.gt 127
           *
             "error"
             "Illegal hexadecimal escape sequence"
@@ -1158,7 +1167,7 @@
           *
             "ok"
             "char"
-            string ((v1.times 16).plus v2).as-char
+            string value.as-char
             k.plus 4
         h1.as-ascii > c1
           -1 > [m]
@@ -1172,6 +1181,9 @@
           "" > [m]
         ^.hex-digit c1 > v1
         ^.hex-digit c2 > v2
+        plus. > value
+          v1.times 16
+          v2
       [^ k items] > cls-items
         if. > @
           c.eq ""
@@ -1460,7 +1472,9 @@
         if. > @
           or.
             v1.lt 0
-            v2.lt 0
+            or.
+              v2.lt 0
+              value.gt 127
           *
             "error"
             "Illegal hexadecimal escape sequence"
@@ -1470,7 +1484,7 @@
             j.plus 4
             *
               "lit"
-              string ((v1.times 16).plus v2).as-char
+              string value.as-char
             g
         h1.as-ascii > c1
           -1 > [m]
@@ -1484,6 +1498,9 @@
           "" > [m]
         ^.hex-digit c1 > v1
         ^.hex-digit c2 > v2
+        plus. > value
+          v1.times 16
+          v2
       [^ i g] > piece
         if. > @
           eq.
