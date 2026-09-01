@@ -754,7 +754,7 @@
         false > [m]
       d2.at > k2!
         1
-        ^.k > [m]
+        0 > [m]
       d2.at > n2!
         0
         0 > [m]
@@ -854,7 +854,7 @@
           g
       q.at > after!
         2
-        ^.j > [m]
+        0 > [m]
       ^.skip i > j!
       q.at > mn!
         0
@@ -1556,12 +1556,11 @@
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     * > decoded!
-      decoded-text.slice 0 separator
-      decoded-text.slice
+      raw.slice 0 separator
+      raw.slice
         separator.plus 1
-        decoded-text.length.minus
+        raw.length.minus
           separator.plus 1
-    string ^.serialized > decoded-text!
     [^ txt] > match
       [^ position start from to groups existing] > matched
         groups.length > count
@@ -1667,7 +1666,8 @@
         T > text
           "Matched block does not exist, can't get text"
       matched-from-index 1 0 > next
-    decoded-text.index-of "\u0000" > separator!
+    string ^.serialized > raw!
+    raw.index-of "\u0000" > separator!
   if. > [^ ctx child pos groups mn mx] > rep
     mn.gt 0
     ^.rep-forced
