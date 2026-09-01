@@ -154,12 +154,6 @@ final class LnFormation implements Line {
     }
 
     private static int findClosing(final String body, final Span span) {
-        if (body.isEmpty() || body.charAt(0) != '[') {
-            throw new ParseError(
-                span.line(), span.indent(),
-                "formation must start with `[`"
-            );
-        }
         final int close = body.indexOf(']');
         if (close < 0) {
             throw new ParseError(
