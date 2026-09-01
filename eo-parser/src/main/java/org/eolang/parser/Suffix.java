@@ -614,14 +614,6 @@ final class Suffix {
             || glyph == '/';
     }
 
-    /**
-     * Does this character end a NAME, counting both {@link #terminates}
-     * and the additional NAME-only boundaries §2.3 forbids inside a NAME
-     * (signatures keep the loose {@link #terminates} so dotted FQNs are
-     * still consumed whole)?
-     * @param glyph Character to check
-     * @return True if it ends a NAME
-     */
     private static boolean endsName(final char glyph) {
         return Suffix.terminates(glyph)
             || ",.|':;?[]{}()".indexOf(glyph) >= 0;

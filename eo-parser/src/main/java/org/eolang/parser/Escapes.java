@@ -68,15 +68,6 @@ final class Escapes {
         return out.toByteArray();
     }
 
-    /**
-     * Read a {@code \NNN} raw octal byte escape, up to 3 digits, and
-     * write the decoded byte. The maximum value is 0xFF (0o377, one byte).
-     * @param out Destination byte stream
-     * @param text Pending plain text, flushed before the escape
-     * @param body Line body being scanned
-     * @param start Index of the first octal digit
-     * @return Index right after the last digit consumed
-     */
     private static int rawOctal(
         final ByteArrayOutputStream out, final StringBuilder text,
         final String body, final int start

@@ -469,12 +469,6 @@ final class Eo implements Iterable<Directive> {
         return Eo.tokenHead(span.head()) || Eo.literalHead(span);
     }
 
-    /**
-     * Is this a head character of §3.1 that opens a root-headed line
-     * without opening a literal — group, star, root, or identity token?
-     * @param head Head character of the line
-     * @return True if it opens a root-headed line
-     */
     private static boolean tokenHead(final char head) {
         return "*(QTI@^$".indexOf(head) >= 0;
     }
@@ -637,12 +631,6 @@ final class Eo implements Iterable<Directive> {
         return reversed;
     }
 
-    /**
-     * Is this a NAME-like terminator character per §2.3, excluding the
-     * dot, which callers check explicitly?
-     * @param glyph Character to check
-     * @return True if it terminates a NAME-like token
-     */
     private static boolean nameTerminator(final char glyph) {
         return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
     }

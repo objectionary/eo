@@ -363,13 +363,6 @@ final class Emissions {
         return decimal.compareTo(Emissions.exactly(value)) == 0;
     }
 
-    /**
-     * The exact decimal value of a double, mantissa and exponent taken apart.
-     * The 52 subtracted below is the number of bits an IEEE-754 double
-     * keeps under the leading one of its significand.
-     * @param value Double to convert
-     * @return Exact decimal value
-     */
     private static BigDecimal exactly(final double value) {
         final int exponent = Math.max(
             Math.getExponent(value), Double.MIN_EXPONENT
