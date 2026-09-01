@@ -1363,7 +1363,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Leading or trailing space inside `[ ]` (R-3.4.4) | `formation brackets must not contain leading or trailing space` |
 | Formation head `[` with no closing `]` (R-3.4.12) | `formation is missing its closing bracket` |
 | Double space between parameter names in voids (R-3.4.5) | `parameter names in voids must be separated by exactly one space` |
-| Bracket-parameter name that is neither NAME nor `@` (§4.5) | `parameter names in voids must be NAME or @` |
+| Bracket-parameter name that is neither NAME, `@` nor `^` (§4.5) | `parameter names in voids must be NAME, @ or ^` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
