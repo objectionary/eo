@@ -120,9 +120,7 @@ final class Transpiling implements Step {
 
     @Override
     public void exec() throws IOException {
-        final JavaFiles files = new JavaFiles(
-            this.generated, this.cache.with(this.train.version())
-        );
+        final JavaFiles files = new JavaFiles(this.generated);
         final int transpiled = new Threaded<>(
             this.sources,
             tojo -> this.transpiled(tojo, files)
@@ -147,7 +145,10 @@ final class Transpiling implements Step {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        this.cache.with(this.train.version(xmir.xpath("/object/o/@loc"))).footprint(
+        final GlobalCache store = this.cache.with(
+            this.train.version(xmir.xpath("/object/o/@loc"))
+        );
+        store.footprint(
             base.relativize(dest),
             hsh,
             src -> {
@@ -156,7 +157,8 @@ final class Transpiling implements Step {
             }
         ).apply(source, dest);
         return files.total(
-            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
+            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered(),
+            store
         );
     }
 }

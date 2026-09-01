@@ -41,15 +41,10 @@ final class JavaFiles {
     private final Path generated;
 
     /**
-     * The cache this build shares with every other build on this machine.
-     */
-    private final GlobalCache cache;
-
-    /**
      * Java files generated during the current transpilation.
      *
      * <p>The collection is shared by parallel {@link #total(boolean, Path,
-     * String, boolean)} calls. It is reconciled only after all XMIRs have
+     * String, boolean, GlobalCache)} calls. It is reconciled only after all XMIRs have
      * been processed.</p>
      */
     private final Collection<Path> fresh;
@@ -66,11 +61,9 @@ final class JavaFiles {
     /**
      * Ctor.
      * @param dir Generated sources directory
-     * @param store The cache shared with every build on this machine
      */
-    JavaFiles(final Path dir, final GlobalCache store) {
+    JavaFiles(final Path dir) {
         this.generated = dir;
-        this.cache = store;
         this.fresh = new ConcurrentLinkedQueue<>();
         this.touched = new ConcurrentLinkedQueue<>();
     }
@@ -81,15 +74,17 @@ final class JavaFiles {
      * @param target Full target path to XMIR after transpilation optimizations
      * @param hsh Tojo hash
      * @param tests Whether to generate test sources for this tojo
+     * @param cache The cache of this XMIR, keyed by the objects it holds
      * @return Amount of generated .java files
      * @throws IOException If fails to save files
-     * @checkstyle ParameterNumberCheck (5 lines)
+     * @checkstyle ParameterNumberCheck (6 lines)
      */
     int total(
         final boolean rewrite,
         final Path target,
         final String hsh,
-        final boolean tests
+        final boolean tests,
+        final GlobalCache cache
     ) throws IOException {
         final AtomicInteger saved = new AtomicInteger(0);
         if (Files.exists(target)) {
@@ -109,7 +104,7 @@ final class JavaFiles {
                     new JavaPlaced(
                         new FpIfReleased(
                             hsh,
-                            this.cache.kept(
+                            cache.kept(
                                 this.generated.relativize(tgt),
                                 () -> hsh,
                                 new RewritePolicy(rewrite, tgt),
