@@ -45,6 +45,13 @@ public class PrettyBench {
     );
 
     /**
+     * Ctor.
+     */
+    @SuppressWarnings("PMD.UncommentedEmptyConstructor")
+    public PrettyBench() {
+    }
+
+    /**
      * Print the chain to EO.
      */
     @Benchmark
