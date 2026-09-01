@@ -100,18 +100,18 @@
     outcome.at > oreason
       1
       "" > [m]
-    ^.pattern.parsed > outcome
+    built.parsed > outcome
       body
       flags.contains "x"
   [^ txt] > matches
-    ^.pattern.fully-matched > @
+    compiled.fully-matched > @
       root
       cfg
       txt
       total
-    ^.pattern.settings pflags > cfg
+    compiled.settings pflags > cfg
     ^.compile T > compiled
-    ^.pattern.parsed > outcome
+    compiled.parsed > outcome
       pbody
       pflags.contains "x"
     src.at > pbody
