@@ -143,14 +143,14 @@
     "друг".utf8-width 0
     2
 
-  utf8-width. --> rejects-a-non-continuation-after-a-two-byte-lead
+  utf8-width. --> rejects-a-non-continuation-after-a-two-byte-lead-when-measuring-width
     string C2-41
     0
 
-  utf8-width. --> rejects-an-overlong-two-byte-encoding
+  utf8-width. --> rejects-an-overlong-two-byte-encoding-when-measuring-width
     string C0-80
     0
 
-  utf8-width. --> stops-on-an-incomplete-four-byte-character
+  utf8-width. --> stops-on-an-incomplete-four-byte-character-when-measuring-width
     string F0-9F-98
     0
