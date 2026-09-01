@@ -1,3 +1,4 @@
+⟦
   number ↦ ⟦
     as-bytes ↦ ∅,
     φ ↦ ξ.as-bytes,
@@ -19,4 +20,5 @@
     slice ↦ ⟦ start ↦ ∅, len ↦ ∅, cant-slice ↦ ∅, λ ⤍ L_bytes_slice ⟧
   ⟧,
   true ↦ ⟦ Δ ⤍ 01- ⟧,
-  false ↦ ⟦ Δ ⤍ 00- ⟧,
+  false ↦ ⟦ Δ ⤍ 00- ⟧
+⟧

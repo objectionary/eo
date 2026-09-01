@@ -46,15 +46,6 @@ final class ExpressionTest {
     }
 
     @Test
-    void carriesMethodTables() {
-        MatcherAssert.assertThat(
-            "the tables of the primitives must surround the fragment, but they dont",
-            new Expression(new XMLDocument("<o base='Φ.true'/>")).text(),
-            Matchers.containsString("λ ⤍ L_number_plus")
-        );
-    }
-
-    @Test
     void refusesContextDependentReference() {
         Assertions.assertThrows(
             IllegalStateException.class,

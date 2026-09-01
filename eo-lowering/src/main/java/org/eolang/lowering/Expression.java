@@ -5,9 +5,6 @@
 package org.eolang.lowering;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,18 +14,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * One XMIR fragment as a self-contained φ-calculus expression.
+ * One XMIR fragment as a φ-calculus expression.
  *
- * <p>Dataizing a fragment needs the method tables of the primitive
- * λ-atoms it dispatches into, and phino resolves a {@code Φ.x} reference
- * against the root formation of the document it was given. So the
- * fragment is rendered as the {@code φ} of a root formation whose other
- * bindings are those tables, read from the {@code universe.phi} resource:
- * {@code Φ.number} in the fragment then finds the sibling that holds
- * {@code plus}, {@code times}, {@code div} and {@code gt}, and the
- * literal it carries lands in the {@code as-bytes} void the table
- * decorates. A dispatch into anything the tables do not hold leaves the
- * dataization stuck, which the caller reads as a refusal to fold.</p>
+ * <p>The fragment is rendered as a formation binding it to {@code φ}, a
+ * complete expression of its own. It is not evaluatable alone, though:
+ * the {@code Φ.number} and {@code Φ.bytes} references inside it resolve
+ * only when {@code phino merge} joins this expression with the
+ * {@link Universe}, whose root formation holds those method tables.</p>
  *
  * <p>The rendering is a serialization of the XMIR subtree and nothing
  * more: dispatches become dotted applications, literal carriers become
@@ -56,13 +48,12 @@ public final class Expression {
     }
 
     /**
-     * The document, in phi syntax.
-     * @return The text for {@link Phino#dataize(String)}
+     * The expression, in phi syntax.
+     * @return The text for {@link Phino#dataize(String...)}
      */
     public String text() {
         return String.format(
-            "⟦%n%s  φ ↦ %s%n⟧%n",
-            Expression.tables(),
+            "⟦%n  φ ↦ %s%n⟧%n",
             Expression.rendered(this.root())
         );
     }
@@ -76,16 +67,6 @@ public final class Expression {
             found = (Element) node;
         }
         return found;
-    }
-
-    private static String tables() {
-        try (InputStream stream = Expression.class.getResourceAsStream("universe.phi")) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Failed to read universe.phi from classpath", ex
-            );
-        }
     }
 
     private static String rendered(final Element node) {

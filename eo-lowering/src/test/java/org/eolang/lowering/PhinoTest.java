@@ -80,6 +80,17 @@ final class PhinoTest {
     }
 
     @Test
+    void mergesExpressionsBeforeDataizing(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a reference in one expression must resolve in another, but it didnt",
+            phino.dataize("⟦ x ↦ ⟦ Δ ⤍ AB- ⟧ ⟧", "⟦ φ ↦ ξ.x ⟧"),
+            Matchers.equalTo("AB-")
+        );
+    }
+
+    @Test
     void refusesUndataizableDocument(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());

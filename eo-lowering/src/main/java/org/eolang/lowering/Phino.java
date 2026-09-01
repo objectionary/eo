@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 /**
@@ -110,19 +112,39 @@ public final class Phino {
     }
 
     /**
-     * Dataize one φ-calculus document.
-     * @param document The document, in phi syntax
+     * Dataize the merge of the given φ-calculus expressions.
+     *
+     * <p>Each expression must be complete on its own; {@code phino merge}
+     * joins their root formations into one document, which is then
+     * dataized. This is how a fragment meets the universe that holds the
+     * method tables its references resolve against.</p>
+     *
+     * @param expressions The expressions, in phi syntax
      * @return The dataized bytes, as dash-joined hex pairs
      * @throws IOException If the executable cannot be run
      */
-    public String dataize(final String document) throws IOException {
-        final Path file = Files.createTempFile(this.workspace(), "universe", ".phi");
+    public String dataize(final String... expressions) throws IOException {
+        final Path place = this.workspace();
+        final Collection<Path> files = new ArrayList<>(expressions.length);
         try {
-            Files.write(file, document.getBytes(StandardCharsets.UTF_8));
+            final Collection<String> command = new ArrayList<>(expressions.length + 4);
+            command.add(this.binary);
+            command.add("merge");
+            for (final String expression : expressions) {
+                final Path file = Files.createTempFile(place, "expression", ".phi");
+                Files.write(file, expression.getBytes(StandardCharsets.UTF_8));
+                files.add(file);
+                command.add(file.toString());
+            }
+            final Path merged = Files.createTempFile(place, "merged", ".phi");
+            files.add(merged);
+            command.add("-t");
+            command.add(merged.toString());
+            this.executed(command.toArray(new String[0]));
             final String output = this.executed(
                 this.binary, "dataize",
                 "--max-steps", Integer.toString(this.steps),
-                file.toString()
+                merged.toString()
             );
             if (!Phino.HEX.matcher(output).matches()) {
                 throw new IllegalStateException(
@@ -134,7 +156,9 @@ public final class Phino {
             }
             return output;
         } finally {
-            Files.deleteIfExists(file);
+            for (final Path file : files) {
+                Files.deleteIfExists(file);
+            }
         }
     }
 
