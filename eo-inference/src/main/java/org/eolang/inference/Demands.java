@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import java.util.Collection;
 import java.util.Map;
 import org.xembly.Directives;
 
@@ -43,18 +44,20 @@ final class Demands {
     private final Map<String, Map<String, String>> asked;
 
     /**
-     * The void these demands are made of.
+     * The voids these demands are made of: this one, and every void it is
+     * handed into.
      */
-    private final String hollow;
+    private final Collection<String> roots;
 
     /**
      * Ctor.
      * @param all What is asked of every object, from {@link Asked}
-     * @param object The void these demands are made of
+     * @param objects The voids these demands are made of: the void itself,
+     *  and every void it is handed into
      */
-    Demands(final Map<String, Map<String, String>> all, final String object) {
+    Demands(final Map<String, Map<String, String>> all, final Collection<String> objects) {
         this.asked = all;
-        this.hollow = object;
+        this.roots = objects;
     }
 
     /**
@@ -93,6 +96,13 @@ final class Demands {
     }
 
     private boolean below(final String object) {
-        return object.equals(this.hollow) || object.startsWith(this.hollow.concat("."));
+        boolean found = false;
+        for (final String root : this.roots) {
+            if (object.equals(root) || object.startsWith(root.concat("."))) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }
