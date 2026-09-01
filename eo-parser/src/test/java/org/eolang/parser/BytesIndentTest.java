@@ -11,27 +11,22 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Test case for a multi-line bytes literal.
+ * Test case for {@link BytesIndent}.
  * @since 0.1
  */
-final class BytesContinuationTest {
+final class BytesIndentTest {
 
     @Test
     void rejectsTrailingWhitespace() {
         MatcherAssert.assertThat(
             "a bytes continuation must not strip trailing whitespace before it is validated",
-            BytesContinuationTest.render("foo > main", "  CA-FE-", "  BE-BE "),
+            BytesIndentTest.render("foo > main", "  CA-FE-", "  BE-BE "),
             XhtmlMatchers.hasXPath(
                 "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
             )
         );
     }
 
-    /**
-     * Parse rows and return their XMIR.
-     * @param rows EO source rows
-     * @return XMIR
-     */
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {
