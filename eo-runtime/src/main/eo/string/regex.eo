@@ -1600,8 +1600,8 @@
               [m]
                 * > @
           ^.missing
-        ^.^.^.settings pflags > cfg
-        ^.^.^.searched > found
+        regex.settings pflags > cfg
+        regex.searched > found
           root
           cfg
           ^.txt
@@ -1622,10 +1622,10 @@
         found.at > mto
           2
           -1 > [m]
-        ^.^.^.parsed > outcome
+        regex.parsed > outcome
           pbody
           pflags.contains "x"
-        ^.^.^.grouped > packed
+        regex.grouped > packed
           ^.txt
           mfrom
           mto
