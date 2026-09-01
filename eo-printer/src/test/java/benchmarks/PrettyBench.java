@@ -51,8 +51,8 @@ public class PrettyBench {
     /**
      * Ctor.
      */
-    @SuppressWarnings("PMD.UncommentedEmptyConstructor")
     public PrettyBench() {
+        // nothing
     }
 
     /**

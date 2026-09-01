@@ -16,6 +16,13 @@ import org.junit.jupiter.api.extension.ParameterResolver;
  */
 public final class RandomProgramResolver implements ParameterResolver {
 
+    /**
+     * Ctor.
+     */
+    public RandomProgramResolver() {
+        // nothing
+    }
+
     @Override
     public boolean supportsParameter(final ParameterContext context,
         final ExtensionContext ext) {

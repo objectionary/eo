@@ -25,11 +25,6 @@ import org.cactoos.text.TextOf;
 final class ObjectsIndex {
 
     /**
-     * Tags.
-     */
-    private static final String HOME = "https://home.objectionary.com/objectionary.lst";
-
-    /**
      * Cached objects index.
      */
     private final Scalar<? extends Set<String>> objects;
@@ -45,7 +40,9 @@ final class ObjectsIndex {
                     new Mapped<>(
                         Text::asString,
                         new Split(
-                            ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
+                            ObjectsIndex.asText(
+                                new URL("https://home.objectionary.com/objectionary.lst")
+                            ),
                             "\\n"
                         )
                     )
