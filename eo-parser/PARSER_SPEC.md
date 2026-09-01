@@ -1065,6 +1065,7 @@ R-6.5.3. Before a master object (formation, atom, inline-phi formation): zero or
 R-6.5.4. Between two plain siblings: blank lines forbidden.
 R-6.5.5. After the meta header: exactly one blank line separates metas from whatever follows.
 R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an error.
+R-6.5.7. Outside the trailing run exempted by R-6.5.6, no two blank lines may be consecutive: at most one blank line may separate any two non-blank lines, whatever those lines turn out to be. Reported at the second blank of the run, before the parser knows what follows it: error "consecutive blank lines forbidden — at most one blank may separate two non-blank lines".
 
 Examples:
 
@@ -1393,6 +1394,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Blank line inside the top comment block | `blank line inside the top comment block is not allowed` |
 | No blank line after the top comment block | `a blank line must separate the top comment block from the rest of the file` |
 | Blank line between non-master siblings | `blank line not allowed between non-master siblings` |
+| Two or more consecutive blank lines outside the trailing EOF run (R-6.5.7) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines` |
 | Unclosed text block | `unclosed text block opened at line N` (N substituted) |
 | Multi-line BYTES continuation indent shallower than opener | `multi-line bytes continuation must not de-indent` |
 | Multi-line BYTES interrupted by non-bytes content | `multi-line bytes interrupted by non-byte content` |
