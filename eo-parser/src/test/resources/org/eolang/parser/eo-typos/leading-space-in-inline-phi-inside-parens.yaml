@@ -4,8 +4,6 @@
 # yamllint disable rule:line-length
 line: 1
 message: |-
-  [1:6] error: 'unexpected content after name suffix'
-  [] >  foo
-        ^
+  formation brackets must not contain leading or trailing space
 input: |
-  [] >  foo
+  foo (bar > [ x]) > app

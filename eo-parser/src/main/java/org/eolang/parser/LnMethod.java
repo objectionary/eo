@@ -85,7 +85,7 @@ final class LnMethod implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         globals.seal(emit, this.span);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
             under.upgradeArgBinding();
@@ -101,7 +101,7 @@ final class LnMethod implements Line {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         final Kind kind;
@@ -115,7 +115,7 @@ final class LnMethod implements Line {
         }
         top.become(kind);
         top.close(openness);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             top.tie();
         }
         if (suffix.present()) {

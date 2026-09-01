@@ -536,7 +536,10 @@ final class Tokens {
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
-                "Invalid bound object declaration"
+                String.format(
+                    "binding label \"%s\" must be a name or a slot number",
+                    text
+                )
             );
         }
     }

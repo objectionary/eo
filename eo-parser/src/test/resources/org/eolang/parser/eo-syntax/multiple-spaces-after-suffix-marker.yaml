@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/errors/error[contains(text(),'parameter names in voids must be NAME, @ or ^')]
+  - /object[not(errors)]
+  - //o[@name='foo']
 input: |
-  [] > main
-    q.f (a > [X.Y 9z]) > z
+  [] >  foo

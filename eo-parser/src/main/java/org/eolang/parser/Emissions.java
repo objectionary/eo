@@ -62,7 +62,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -246,7 +246,7 @@ final class Emissions {
         if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME or @"
+                "parameter names in voids must be NAME, @ or ^"
             );
         }
     }
@@ -492,17 +492,9 @@ final class Emissions {
         }
         emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
-        for (final String param : Emissions.splitParams(params)) {
+        for (final String param : Emissions.splitParams(params, line, pcol)) {
             Emissions.validParam(param, line, pcol);
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, line, pcol);
+            emit.voidParam(new VoidName(param).asString(), line, pcol);
             pcol = pcol + param.length() + 1;
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
@@ -512,8 +504,17 @@ final class Emissions {
         emit.close();
     }
 
-    private static List<String> splitParams(final String text) {
+    private static List<String> splitParams(
+        final String text, final int line, final int column
+    ) {
         final List<String> out = new java.util.ArrayList<>(0);
+        if (!text.isEmpty()
+            && (text.charAt(0) == ' ' || text.charAt(text.length() - 1) == ' ')) {
+            throw new ParseError(
+                line, column,
+                "formation brackets must not contain leading or trailing space"
+            );
+        }
         int idx = 0;
         while (idx < text.length()) {
             int end = idx;
@@ -522,6 +523,12 @@ final class Emissions {
             }
             out.add(text.substring(idx, end));
             if (end < text.length()) {
+                if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {
+                    throw new ParseError(
+                        line, column + end,
+                        "parameter names in voids must be separated by exactly one space"
+                    );
+                }
                 idx = end + 1;
             } else {
                 idx = end;

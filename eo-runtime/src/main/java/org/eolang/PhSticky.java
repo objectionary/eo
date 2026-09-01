@@ -43,6 +43,12 @@ import java.util.stream.Collectors;
  * and the cache is bounded, letting the entry asked for longest ago go
  * first.</p>
  *
+ * <p>An object of this class is equal to itself and to nothing else, the
+ * way {@code PhDefault} is. Answering on behalf of the decorated object
+ * would make the answer one-sided: the decorator would say it equals the
+ * object it wraps, while that object says it does not equal the decorator,
+ * and {@code Object.equals} requires the two to agree.</p>
+ *
  * @since 0.75
  */
 public final class PhSticky implements Phi {
@@ -127,12 +133,12 @@ public final class PhSticky implements Phi {
 
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
+        return this == obj;
     }
 
     @Override
     public int hashCode() {
-        return this.origin.hashCode();
+        return System.identityHashCode(this) + 1;
     }
 
     @Override

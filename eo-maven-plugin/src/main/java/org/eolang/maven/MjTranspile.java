@@ -151,15 +151,6 @@ public final class MjTranspile extends MjSafe {
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            final Transpilation train = new Transpilation(
-                this.plugin.getVersion(),
-                new Tracking(this.trackSteps, this.located),
-                this.coverage,
-                this.base(),
-                this.xslMeasures.toPath(),
-                this.targetDir.toPath(),
-                this.tables.toPath()
-            );
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
@@ -167,15 +158,16 @@ public final class MjTranspile extends MjSafe {
                     this.generatedDir.toPath(),
                     this.tests,
                     this.roots(),
-                    train,
-                    this.stored(),
-                    new JavaFiles(
-                        this.generatedDir.toPath(),
-                        this.cache.toPath()
-                            .resolve(Transpiling.CACHE)
-                            .resolve(train.version()),
-                        this.cacheEnabled
-                    )
+                    new Transpilation(
+                        this.plugin.getVersion(),
+                        new Tracking(this.trackSteps, this.located),
+                        this.coverage,
+                        this.base(),
+                        this.xslMeasures.toPath(),
+                        this.targetDir.toPath(),
+                        this.tables.toPath()
+                    ),
+                    this.stored()
                 )
             ).exec();
         }
