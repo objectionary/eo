@@ -31,7 +31,11 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "PMD.ConstructorShouldDoInitialization"
+})
 public class PrettyBench {
 
     /**
