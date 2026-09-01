@@ -246,7 +246,7 @@ final class Emissions {
         if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME or @"
+                "parameter names in voids must be NAME, @ or ^"
             );
         }
     }
