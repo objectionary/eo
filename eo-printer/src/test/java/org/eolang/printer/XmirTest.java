@@ -119,6 +119,27 @@ final class XmirTest {
     }
 
     @Test
+    void printsNamedVerticalApplicationToParseableEo() throws IOException {
+        final String printed = this.asXmir(
+            String.join(
+                "\n",
+                "[] > main",
+                "  f > out",
+                "    ((t r 8.54 \"yes\").print 88 31):hey",
+                ""
+            ),
+            new EnumMap<>(PenaltyKey.class)
+        ).toEO();
+        MatcherAssert.assertThat(
+            String.format(
+                "Printed EO should parse back, but was:%n%s", printed
+            ),
+            new EoSyntax(new InputOf(printed)).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
     void doesNotWarnOnLocalWithoutName() {
         final List<String> warnings = new ArrayList<>(0);
         final Appender appender = new AppenderSkeleton() {
