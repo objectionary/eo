@@ -89,7 +89,7 @@ final class Level {
 
     /**
      * True once a non-void child has been added under this entry —
-     * after which a {@link Kind#VOID} child is rejected (R-3.4.7,
+     * after which a {@link Kind#VOID} child is rejected (R-3.4.9,
      * voids must precede every other attribute).
      */
     private boolean plain;
@@ -388,7 +388,7 @@ final class Level {
 
     /**
      * Observe a child of the given {@code kind} being added under this
-     * entry, enforcing the void-ordering rule (R-3.4.7): a
+     * entry, enforcing the void-ordering rule (R-3.4.9): a
      * {@link Kind#VOID} child is rejected once a non-void child has
      * appeared, and every non-void child records that fact.
      * @param shape Kind of the child being added

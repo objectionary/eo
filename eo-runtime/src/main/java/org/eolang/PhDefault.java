@@ -176,7 +176,9 @@ public class PhDefault implements Phi, Cloneable {
         try {
             final PhDefault copy = (PhDefault) this.clone();
             copy.lock = new ReentrantLock();
-            copy.attrs = new CopiedAttrs(this.loaded(), copy);
+            final CopiedAttrs fresh = new CopiedAttrs(this.loaded(), copy);
+            fresh.freeze();
+            copy.attrs = fresh;
             copy.order = new ArrayList<>(this.order);
             return copy;
         } catch (final CloneNotSupportedException ex) {

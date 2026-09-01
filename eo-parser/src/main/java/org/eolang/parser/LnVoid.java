@@ -43,9 +43,11 @@ import java.util.regex.Pattern;
  *
  * <p>The name may also be {@code ^}, which declares the formation's
  * receiver and emits a void named {@code ρ} (R-3.4.11). Its position
- * among the formation's voids is free — it may follow bracket voids or
- * other {@code ?} lines. It carries a type annotation like any other
- * void, which is to say inside an atom only.</p>
+ * among the voids is free — a dispatch looks it up by name, not by
+ * position — so it obeys the same R-3.4.9 ordering as every other void:
+ * it may not stand below an attribute the formation has already bound.
+ * It carries a type annotation like any other void, which is to say
+ * inside an atom only.</p>
  *
  * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
  * optionally followed by one type annotation — are the only shapes the

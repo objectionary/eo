@@ -42,7 +42,7 @@ final class JavaFilesTest {
                 seed
             ),
             new JavaFiles(
-                temp.resolve("generated"), temp.resolve("cache").resolve("1.0-SNAPSHOT"), false
+                temp.resolve("generated"), new GlobalCache.GcFresh()
             ).total(true, xmir, "", false),
             Matchers.equalTo(1)
         );
@@ -61,11 +61,11 @@ final class JavaFilesTest {
             "<object><class java-name='org.eolang.EOsecond'><java>class EOsecond {}</java></class></object>",
             second
         ).value();
-        final JavaFiles initial = new JavaFiles(generated, temp.resolve("cache"), false);
+        final JavaFiles initial = new JavaFiles(generated, new GlobalCache.GcFresh());
         initial.total(true, first, "", false);
         initial.total(true, second, "", false);
         initial.removeStale();
-        final JavaFiles current = new JavaFiles(generated, temp.resolve("cache"), false);
+        final JavaFiles current = new JavaFiles(generated, new GlobalCache.GcFresh());
         current.total(true, second, "", false);
         current.removeStale();
         MatcherAssert.assertThat(
@@ -89,7 +89,7 @@ final class JavaFilesTest {
             "<object><class java-name='org.eolang.EOfirst'><java>class EOfirst {}</java></class></object>",
             xmir
         ).value();
-        final JavaFiles files = new JavaFiles(generated, temp.resolve("cache"), false);
+        final JavaFiles files = new JavaFiles(generated, new GlobalCache.GcFresh());
         files.total(true, xmir, "", false);
         files.removeStale();
         MatcherAssert.assertThat(
@@ -136,7 +136,7 @@ final class JavaFilesTest {
             "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
             plain
         ).value();
-        final JavaFiles first = new JavaFiles(generated, temp.resolve("cache"), false);
+        final JavaFiles first = new JavaFiles(generated, new GlobalCache.GcFresh());
         first.total(true, plain, "", false);
         first.removeStale();
         final Path atom = temp.resolve("atom.xmir");
@@ -149,13 +149,35 @@ final class JavaFilesTest {
             ),
             atom
         ).value();
-        final JavaFiles second = new JavaFiles(generated, temp.resolve("cache"), false);
+        final JavaFiles second = new JavaFiles(generated, new GlobalCache.GcFresh());
         second.total(true, atom, "", false);
         second.removeStale();
         MatcherAssert.assertThat(
             "the class of an object that became an atom must go, but it survived the run",
             Files.exists(generated.resolve("EOmain.java")),
             Matchers.equalTo(false)
+        );
+    }
+
+    @Test
+    void takesTheJavaFileFromTheCacheTheGlobalCacheNames(@Mktmp final Path temp)
+        throws IOException {
+        final Path generated = temp.resolve("generated");
+        final Path dir = temp.resolve("cache");
+        new Saved(
+            "class EOcached {}",
+            dir.resolve("1.0-key").resolve("abcdef").resolve("EOmain.java")
+        ).value();
+        final Path xmir = temp.resolve("main.xmir");
+        new Saved(
+            "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
+            xmir
+        ).value();
+        new JavaFiles(generated, new GcShared(dir, "1.0-key")).total(false, xmir, "abcdef", false);
+        MatcherAssert.assertThat(
+            "the Java file must come from the directory the global cache names",
+            Files.readString(generated.resolve("EOmain.java")),
+            Matchers.equalTo("class EOcached {}")
         );
     }
 
@@ -172,7 +194,7 @@ final class JavaFilesTest {
             xmir
         ).value();
         return new JavaFiles(
-            temp.resolve("generated"), temp.resolve("cache").resolve("1.0-SNAPSHOT"), false
+            temp.resolve("generated"), new GlobalCache.GcFresh()
         ).total(true, xmir, "", false);
     }
 }
