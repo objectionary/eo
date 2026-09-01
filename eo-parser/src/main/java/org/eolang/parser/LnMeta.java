@@ -173,16 +173,7 @@ final class LnMeta implements Line {
     private static List<String> split(
         final String tail, final Span span, final int base
     ) {
-        if (tail.isEmpty() || Character.isWhitespace(tail.charAt(tail.length() - 1))) {
-            int start = tail.length() - 1;
-            while (start > 0 && Character.isWhitespace(tail.charAt(start - 1))) {
-                start = start - 1;
-            }
-            throw new ParseError(
-                span.line(), span.indent() + base + start,
-                "meta line must not end with trailing whitespace"
-            );
-        }
+        LnMeta.checkNoTrailingWhitespace(tail, span, base);
         final List<String> out = new ArrayList<>(2);
         int idx = 0;
         while (idx < tail.length()) {
@@ -209,6 +200,21 @@ final class LnMeta implements Line {
             }
         }
         return out;
+    }
+
+    private static void checkNoTrailingWhitespace(
+        final String tail, final Span span, final int base
+    ) {
+        if (tail.isEmpty() || Character.isWhitespace(tail.charAt(tail.length() - 1))) {
+            int start = tail.length() - 1;
+            while (start > 0 && Character.isWhitespace(tail.charAt(start - 1))) {
+                start = start - 1;
+            }
+            throw new ParseError(
+                span.line(), span.indent() + base + start,
+                "meta line must not end with trailing whitespace"
+            );
+        }
     }
 
     private static String promoteQ(final String part) {
