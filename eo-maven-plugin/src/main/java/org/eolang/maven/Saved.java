@@ -96,6 +96,26 @@ final class Saved implements Scalar<Path> {
         this.target = target;
     }
 
+    /**
+     * The prefix of the temporary file written beside the target.
+     *
+     * <p>It starts with the name of the target, so that a file left behind by
+     * a build that died mid-write says which target it was going to become.
+     * {@link Files#createTempFile(Path, String, String)} refuses a prefix
+     * shorter than three characters, and a name that short is a valid name
+     * everywhere, so the name is padded rather than the save refused
+     * (#8144).</p>
+     *
+     * @return The prefix
+     */
+    private String prefix() {
+        final StringBuilder name = new StringBuilder(this.target.getFileName().toString());
+        while (name.length() < 3) {
+            name.append('-');
+        }
+        return name.toString();
+    }
+
     @Override
     public Path value() throws IOException {
         final Path abs = Objects.requireNonNull(this.target, "target").toAbsolutePath();
@@ -108,11 +128,7 @@ final class Saved implements Scalar<Path> {
             if (dir.toFile().mkdirs()) {
                 Logger.debug(this, "Directory created: %[file]s", dir);
             }
-            final Path tmp = Files.createTempFile(
-                dir,
-                this.target.getFileName().toString(),
-                ".tmp"
-            );
+            final Path tmp = Files.createTempFile(dir, this.prefix(), ".tmp");
             try {
                 bytes = new IoChecked<>(
                     new LengthOf(
