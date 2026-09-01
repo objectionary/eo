@@ -54,6 +54,7 @@ public class XslBench {
     /**
      * Ctor.
      */
+    @SuppressWarnings("PMD.UncommentedEmptyConstructor")
     public XslBench() {
     }
 

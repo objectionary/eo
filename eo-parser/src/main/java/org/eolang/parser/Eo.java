@@ -60,7 +60,6 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        // Initial capacity is ArrayList's own default.
         final List<Span> spans = new ArrayList<>(10);
         new Source(this.source).forEach(spans::add);
         final Emit emit = new Emit(spans);
@@ -470,9 +469,13 @@ final class Eo implements Iterable<Directive> {
         return Eo.tokenHead(span.head()) || Eo.literalHead(span);
     }
 
+    /**
+     * Is this a head character of §3.1 that opens a root-headed line
+     * without opening a literal — group, star, root, or identity token?
+     * @param head Head character of the line
+     * @return True if it opens a root-headed line
+     */
     private static boolean tokenHead(final char head) {
-        // Head characters of §3.1 that open a root-headed line without
-        // opening a literal — group, star, root, and identity tokens.
         return "*(QTI@^$".indexOf(head) >= 0;
     }
 
@@ -634,9 +637,13 @@ final class Eo implements Iterable<Directive> {
         return reversed;
     }
 
+    /**
+     * Is this a NAME-like terminator character per §2.3, excluding the
+     * dot, which callers check explicitly?
+     * @param glyph Character to check
+     * @return True if it terminates a NAME-like token
+     */
     private static boolean nameTerminator(final char glyph) {
-        // NAME-like terminator characters per §2.3 (excluding the dot,
-        // which callers check explicitly).
         return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 

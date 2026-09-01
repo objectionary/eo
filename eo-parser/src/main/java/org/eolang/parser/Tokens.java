@@ -597,6 +597,13 @@ final class Tokens {
         return idx;
     }
 
+    /**
+     * Is the content of a parenthesised group a single token, i.e. does
+     * it contain none of the characters ({@code space ( ) [ ]}) that
+     * would break it into more than one token?
+     * @param inside Content of the parenthesised group
+     * @return True if the group is a single token
+     */
     private static boolean singleToken(final String inside) {
         boolean single = true;
         int idx = 0;
@@ -605,9 +612,6 @@ final class Tokens {
             if (glyph == '"') {
                 idx = Tokens.closingQuote(inside, idx);
             } else if (" ()[]".indexOf(glyph) >= 0) {
-                // Characters that break a parenthesised group into more
-                // than one token, so their absence makes the group a
-                // single token.
                 single = false;
                 break;
             }
@@ -683,8 +687,12 @@ final class Tokens {
         return glyph == '+' || glyph == '-';
     }
 
+    /**
+     * Does this character terminate a NAME token per §2.3, the dot among them?
+     * @param glyph Character to check
+     * @return True if it terminates a NAME token
+     */
     private static boolean terminates(final char glyph) {
-        // Characters that terminate a NAME token per §2.3, the dot among them.
         return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
