@@ -36,7 +36,20 @@
       eq.
         lead.and E0-
         C0-
-      checked 2 twovalid
+      [^ width valid] >> checked
+        if. > @
+          gt. (^.index.plus width) ^.^.as-bytes.size!
+          T
+            "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+              * width ^.index ^.^.as-bytes
+          valid.if
+            width
+            T
+              "Malformed UTF-8 sequence (%x) at %d index".printf
+                *
+                  ^.^.as-bytes.slice ^.index width
+                  ^.index
+      | 2 twovalid
       if.
         eq.
           lead.and F0-
@@ -50,33 +63,8 @@
           T
             "Unknown byte format (%x), can't recognize character".printf
               * lead
-  if. > [^ width valid] >> checked
-    gt.
-      ^.index.plus width
-      size
-    T
-      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-        *
-          width
-          ^.index
-          ^.^.as-bytes
-    valid.if
-      width
-      T
-        "Malformed UTF-8 sequence (%x) at %d index".printf
-          *
-            ^.^.as-bytes.slice ^.index width
-            ^.index
-  ^.as-bytes.size >> size!
-  ^.as-bytes.slice index 1 > lead
   ^.as-bytes.slice > b1
     index.plus 1
-    1
-  ^.as-bytes.slice > b2
-    index.plus 2
-    1
-  ^.as-bytes.slice > b3
-    index.plus 3
     1
   eq. > b1808f
     b1.and F0-
@@ -97,12 +85,23 @@
   eq. > b1cont
     b1.and C0-
     80-
+  ^.as-bytes.slice > b2
+    index.plus 2
+    1
   eq. > b2cont
     b2.and C0-
     80-
+  ^.as-bytes.slice > b3
+    index.plus 3
+    1
   eq. > b3cont
     b3.and C0-
     80-
+  b2cont.and > fourvalid
+    b3cont.and second4
+  ^.as-bytes.slice > lead
+    index
+    1
   eq. > leadc0c1
     lead.and FE-
     C0-
@@ -110,23 +109,23 @@
   lead.eq ED- > leaded
   lead.eq F0- > leadf0
   lead.eq F1- > leadf1
+  leadf1.or > leadf1f3
+    leadf2.or leadf3
   lead.eq F2- > leadf2
   lead.eq F3- > leadf3
   lead.eq F4- > leadf4
-  leadf1.or > leadf1f3
-    leadf2.or leadf3
   leade0.if > second3
     b1a0bf
-    leaded.if b1809f b1cont
+    leaded.if
+      b1809f
+      b1cont
   leadf0.if > second4
     b190bf
     leadf4.if
       b1808f
       leadf1f3.if b1cont false
-  leadc0c1.not.and b1cont > twovalid
   b2cont.and second3 > threevalid
-  b2cont.and > fourvalid
-    b3cont.and second4
+  leadc0c1.not.and b1cont > twovalid
 
   eq. ++> can-measure-a-four-byte-character
     "😀".utf8-width 0
