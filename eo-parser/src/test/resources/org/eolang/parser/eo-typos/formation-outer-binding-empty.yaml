@@ -5,7 +5,7 @@
 # #8029: a colon with no label after a vertical formation is not a binding
 # at all, so an empty label can never reach the emitter.
 line: 3
-message: "Invalid bound object declaration"
+message: "binding label \"\" must be a name or a slot number"
 input: |
   [] > main
     x > y
