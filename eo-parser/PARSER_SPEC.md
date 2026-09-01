@@ -1373,6 +1373,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
 | Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
+| Multi-byte BYTES literal ending in a continuation dash with no following chunk (R-3.13.1) | `bytes literal ends with a dangling continuation dash` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
 | Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |
