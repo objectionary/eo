@@ -147,7 +147,9 @@ final class Suffix {
     }
 
     /**
-     * Bound name. Empty for {@code AUTO} and {@code NONE}.
+     * Bound name. Empty for {@code NONE}; for {@code AUTO} it is the
+     * file-local handle of a {@code >> name} suffix, empty only for a
+     * bare {@code >>}.
      * @return Name
      */
     String label() {
