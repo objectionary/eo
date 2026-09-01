@@ -24,21 +24,31 @@ import java.util.Map;
 public final class Primitive {
 
     /**
+     * The forma of the four numeric primitives' results.
+     */
+    private static final String NUMBER = "number";
+
+    /**
+     * The forma of the six byte-shuffling primitives' results.
+     */
+    private static final String BYTES = "bytes";
+
+    /**
      * The forma of each primitive's result, by the primitive's name.
      */
     private static final Map<String, String> FORMAS = Map.ofEntries(
-        Map.entry("plus", "number"),
-        Map.entry("times", "number"),
-        Map.entry("div", "number"),
-        Map.entry("size", "number"),
+        Map.entry("plus", Primitive.NUMBER),
+        Map.entry("times", Primitive.NUMBER),
+        Map.entry("div", Primitive.NUMBER),
+        Map.entry("size", Primitive.NUMBER),
         Map.entry("gt", "bool"),
         Map.entry("eq", "bool"),
-        Map.entry("and", "bytes"),
-        Map.entry("or", "bytes"),
-        Map.entry("not", "bytes"),
-        Map.entry("concat", "bytes"),
-        Map.entry("right", "bytes"),
-        Map.entry("slice", "bytes")
+        Map.entry("and", Primitive.BYTES),
+        Map.entry("or", Primitive.BYTES),
+        Map.entry("not", Primitive.BYTES),
+        Map.entry("concat", Primitive.BYTES),
+        Map.entry("right", Primitive.BYTES),
+        Map.entry("slice", Primitive.BYTES)
     );
 
     /**

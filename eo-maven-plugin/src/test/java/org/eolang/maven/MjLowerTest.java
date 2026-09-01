@@ -33,7 +33,7 @@ final class MjLowerTest {
 
     @Test
     void foldsConstantExpression(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino();
+        MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "the sum of two literals must become one literal, but it didnt",
             new XMLDocument(
@@ -45,7 +45,7 @@ final class MjLowerTest {
 
     @Test
     void repointsTheObjectAtTheFoldedXmir(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino();
+        MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "the object must be transpiled from the folded XMIR and not from the parsed one",
             MjLowerTest.lowered(temp).foreignTojos().find("foo").xmir().toString(),
@@ -55,7 +55,7 @@ final class MjLowerTest {
 
     @Test
     void writesTheMarker(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino();
+        MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "a run that folded must say so in the marker file, but it didnt",
             Files.readString(MjLowerTest.marker(MjLowerTest.lowered(temp))),
@@ -65,7 +65,7 @@ final class MjLowerTest {
 
     @Test
     void leavesContextDependentExpressionAlone(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino();
+        MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "an expression reading a void cannot fold, so the object must keep its parsed XMIR",
             new FakeMaven(temp)
@@ -96,21 +96,22 @@ final class MjLowerTest {
     }
 
     @Test
-    void failsWithoutTheBinaryWhenDemanded(@Mktmp final Path temp) {
+    void failsWithoutTheBinaryWhenDemanded(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+            .with("binary", temp.resolve("no-such-phino").toString())
+            .with("demanded", true);
+        final PpLower pipeline = new PpLower();
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
-                .with("binary", temp.resolve("no-such-phino").toString())
-                .with("demanded", true)
-                .execute(new PpLower()),
+            () -> maven.execute(pipeline),
             "a missing binary under eo.loweringRequired cannot pass quietly, but it did"
         );
     }
 
     @Test
     void removesTheMarkerWhenDisabled(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino();
+        MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "a run disabled by eo.lowering must take the marker of an earlier run away, but it didnt",
             Files.exists(
@@ -124,8 +125,8 @@ final class MjLowerTest {
         );
     }
 
-    private static void assumePhino() {
-        Assumptions.assumeTrue(new Phino("phino", 7).suitable());
+    private static void assumePhino(final Path temp) {
+        Assumptions.assumeTrue(new Phino("phino", 7, temp).suitable());
     }
 
     private static Path marker(final FakeMaven maven) {

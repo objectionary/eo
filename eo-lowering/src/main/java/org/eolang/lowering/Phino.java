@@ -28,7 +28,9 @@ import java.util.regex.Pattern;
  * <p>The subprocess is driven directly, with both of its streams
  * redirected to files: hundreds of fragments are tried per build and most
  * refusals are expected, so nothing the binary prints may reach the build
- * log, where a line saying {@code ERROR} would alarm for no reason.</p>
+ * log, where a line saying {@code ERROR} would alarm for no reason. The
+ * scratch files live in a directory the caller names, such as the target
+ * directory of the build, never in the world-shared temporary one.</p>
  *
  * @since 0.76.0
  */
@@ -59,13 +61,20 @@ public final class Phino {
     private final int steps;
 
     /**
+     * The directory for the scratch files of the subprocess.
+     */
+    private final Path work;
+
+    /**
      * Ctor.
      * @param exe The name or path of the executable
      * @param budget The most rewriting steps one dataization may take
+     * @param dir The directory for the scratch files of the subprocess
      */
-    public Phino(final String exe, final int budget) {
+    public Phino(final String exe, final int budget, final Path dir) {
         this.binary = exe;
         this.steps = budget;
+        this.work = dir;
     }
 
     /**
@@ -114,7 +123,7 @@ public final class Phino {
      * @throws IOException If the executable cannot be run
      */
     public String dataize(final String document) throws IOException {
-        final Path file = Files.createTempFile("universe", ".phi");
+        final Path file = Files.createTempFile(this.workspace(), "universe", ".phi");
         try {
             Files.write(file, document.getBytes(StandardCharsets.UTF_8));
             final String output = this.executed(
@@ -137,8 +146,9 @@ public final class Phino {
     }
 
     private String executed(final String... command) throws IOException {
-        final Path out = Files.createTempFile("phino", ".out");
-        final Path err = Files.createTempFile("phino", ".err");
+        final Path place = this.workspace();
+        final Path out = Files.createTempFile(place, "phino", ".out");
+        final Path err = Files.createTempFile(place, "phino", ".err");
         try {
             final Process proc = new ProcessBuilder(command)
                 .redirectOutput(out.toFile())
@@ -180,5 +190,9 @@ public final class Phino {
             Files.deleteIfExists(out);
             Files.deleteIfExists(err);
         }
+    }
+
+    private Path workspace() throws IOException {
+        return Files.createDirectories(this.work);
     }
 }

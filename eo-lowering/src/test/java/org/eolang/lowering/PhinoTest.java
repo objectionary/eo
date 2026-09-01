@@ -33,10 +33,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class PhinoTest {
 
     @Test
-    void readsPin() {
+    void readsPin(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "the pinned version must come from the phino-version.txt resource, but it didnt",
-            new Phino("phino", 7).pin(),
+            new Phino("phino", 7, temp).pin(),
             Matchers.matchesPattern("\\d+\\.\\d+\\.\\d+")
         );
     }
@@ -45,7 +45,7 @@ final class PhinoTest {
     void distrustsAbsentBinary(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "an executable that is not there cannot be suitable, but it was",
-            new Phino(temp.resolve("no-such-phino").toString(), 7).suitable(),
+            new Phino(temp.resolve("no-such-phino").toString(), 7, temp).suitable(),
             Matchers.is(false)
         );
     }
@@ -63,14 +63,14 @@ final class PhinoTest {
         );
         MatcherAssert.assertThat(
             "an executable of another version cannot be suitable, but it was",
-            new Phino(fake.toString(), 7).suitable(),
+            new Phino(fake.toString(), 7, temp).suitable(),
             Matchers.is(false)
         );
     }
 
     @Test
-    void dataizesDatum() throws Exception {
-        final Phino phino = new Phino("phino", 100);
+    void dataizesDatum(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "the bytes of a Δ formation must come back verbatim, but they didnt",
@@ -80,8 +80,8 @@ final class PhinoTest {
     }
 
     @Test
-    void refusesUndataizableDocument() {
-        final Phino phino = new Phino("phino", 100);
+    void refusesUndataizableDocument(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
         Assertions.assertThrows(
             IllegalStateException.class,

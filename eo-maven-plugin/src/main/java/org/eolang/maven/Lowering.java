@@ -61,7 +61,7 @@ final class Lowering implements Step {
     /**
      * The directory to write the folded XMIR to.
      */
-    private final Path dir;
+    private final Path home;
 
     /**
      * The binary that dataizes.
@@ -76,7 +76,7 @@ final class Lowering implements Step {
      */
     Lowering(final Collection<TjForeign> srcs, final Path target, final Phino exe) {
         this.sources = srcs;
-        this.dir = target;
+        this.home = target;
         this.phino = exe;
     }
 
@@ -85,7 +85,7 @@ final class Lowering implements Step {
         Logger.info(
             this, "Folded %d constant fragment(s) in %d XMIR(s), into %[file]s",
             new Threaded<>(this.sources, this::folded).total(),
-            this.sources.size(), this.dir
+            this.sources.size(), this.home
         );
     }
 
@@ -104,7 +104,7 @@ final class Lowering implements Step {
         }
         if (count > 0) {
             final Path target = new Place(tojo.identifier())
-                .make(this.dir, MjAssemble.XMIR);
+                .make(this.home, MjAssemble.XMIR);
             new Saved(doc.toString(), target).value();
             tojo.withXmir(target);
         }

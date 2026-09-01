@@ -40,6 +40,10 @@ import org.eolang.lowering.Phino;
  * then never share a slot. When the goal skips or is disabled, the
  * marker is removed.</p>
  *
+ * <p>Every dataization runs under a step budget of ten thousand
+ * rewrites, enough for any fragment a human writes and little enough
+ * that a diverging one is refused in milliseconds.</p>
+ *
  * @since 0.76.0
  * @todo #8137:45min Install phino in <code>.rultor.yml</code> and pass
  *  <code>-Deo.loweringRequired=true</code> in its merge and release
@@ -53,13 +57,6 @@ import org.eolang.lowering.Phino;
     threadSafe = true
 )
 public final class MjLower extends MjSafe {
-
-    /**
-     * The most rewriting steps one dataization may take, enough for any
-     * fragment a human writes and little enough that a diverging one is
-     * refused in milliseconds.
-     */
-    private static final int STEPS = 10_000;
 
     /**
      * Whether constant fragments are folded at all.
@@ -100,7 +97,7 @@ public final class MjLower extends MjSafe {
         final Path home = this.targetDir.toPath().resolve(Lowering.DIR);
         final Path marker = home.resolve(Lowering.MARKER);
         if (this.lowering) {
-            final Phino phino = new Phino(this.binary, MjLower.STEPS);
+            final Phino phino = new Phino(this.binary, 10_000, home.resolve("phino"));
             if (phino.suitable()) {
                 try (TjsForeign tojos = this.tojos()) {
                     new Timed(

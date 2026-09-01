@@ -58,7 +58,7 @@ final class MiniDocTest {
     void refusesContextDependentReference() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new MiniDoc(new XMLDocument("<o base='ξ.x'/>")).text(),
+            new MiniDoc(new XMLDocument("<o base='ξ.x'/>"))::text,
             "a ξ reference means nothing outside its formation, so it cannot render, but it did"
         );
     }

@@ -5,21 +5,26 @@
 package org.eolang.lowering;
 
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Constant}.
  * @since 0.76.0
  */
+@ExtendWith(MktmpResolver.class)
 final class ConstantTest {
 
     @Test
-    void foldsDivisionOfNumbers() throws Exception {
-        final Phino phino = new Phino("phino", 1000);
+    void foldsDivisionOfNumbers(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "the quotient of 42.5 and 2.0 must fold to the bytes of 21.25, but it didnt",
@@ -44,11 +49,11 @@ final class ConstantTest {
     }
 
     @Test
-    void namesFormaOfComparison() {
+    void namesFormaOfComparison(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "a fragment led by gt must carry a bool, but this one doesnt",
             new Constant(
-                new Phino("phino", 7),
+                new Phino("phino", 7, temp),
                 new XMLDocument("<o base='.gt'><o base='Φ.true'/></o>")
             ).forma(),
             Matchers.equalTo("bool")
@@ -56,13 +61,13 @@ final class ConstantTest {
     }
 
     @Test
-    void refusesForeignMethod() {
+    void refusesForeignMethod(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Constant(
-                new Phino("phino", 7),
+            new Constant(
+                new Phino("phino", 7, temp),
                 new XMLDocument("<o base='.as-i64'><o base='Φ.true'/></o>")
-            ).forma(),
+            )::forma,
             "a method outside the twelve primitives cannot name a forma, but it did"
         );
     }
