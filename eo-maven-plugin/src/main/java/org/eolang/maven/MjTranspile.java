@@ -169,7 +169,7 @@ public final class MjTranspile extends MjSafe {
                         new Tracking(this.trackSteps, this.located),
                         this.coverage,
                         this.base(),
-                        this.xslMeasures.toPath(),
+                        this.measures.toPath(),
                         this.targetDir.toPath(),
                         this.tables.toPath()
                     ),
