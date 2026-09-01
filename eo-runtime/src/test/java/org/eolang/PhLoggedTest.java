@@ -25,29 +25,11 @@ final class PhLoggedTest {
     }
 
     @Test
-    void copiesOrigin() {
+    void doesNotEqualOrigin() {
         MatcherAssert.assertThat(
-            "Copy of PhLogged should return the original Phi, but it didn't",
-            new PhLogged(Phi.Φ).copy(),
-            Matchers.equalTo(Phi.Φ)
-        );
-    }
-
-    @Test
-    void returnsOriginHashCode() {
-        MatcherAssert.assertThat(
-            "HashCode of PhLogged should return the original hashCode, but it didn't",
-            new PhLogged(Phi.Φ).hashCode(),
-            Matchers.equalTo(Phi.Φ.hashCode())
-        );
-    }
-
-    @Test
-    void equalsToOrigin() {
-        MatcherAssert.assertThat(
-            "PhLogged should be equlas to the original Phi, but it didn't",
+            "a logged object must not compare equal to the Phi it wraps",
             new PhLogged(Phi.Φ),
-            Matchers.equalTo(Phi.Φ)
+            Matchers.not(Matchers.equalTo(Phi.Φ))
         );
     }
 

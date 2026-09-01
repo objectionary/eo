@@ -48,6 +48,20 @@ final class BlanksTest {
         );
     }
 
+    @Test
+    void keepsBlankAfterTopCommentBlock() {
+        final Globals globals = new Globals();
+        globals.addComment(new Span("# top doc", 1));
+        globals.blank();
+        final Emit emit = new Emit();
+        Blanks.checkPlain(new Span("I > foo", 3), globals, emit);
+        MatcherAssert.assertThat(
+            "the mandatory blank after a top comment must not become a sibling blank",
+            BlanksTest.render(emit),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

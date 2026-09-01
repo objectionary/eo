@@ -52,12 +52,26 @@ public final class MacSockaddrIn extends Structure {
     public MacSockaddrIn(
         final short family, final short port, final int addr, final byte[] zero
     ) {
+        this(new Padding(zero).bytes(), family, port, addr);
+    }
+
+    /**
+     * Primary ctor, receiving an already validated padding. The padding
+     * comes first so this signature differs from the public one above.
+     * @param zero Validated padding
+     * @param family Family
+     * @param port Port
+     * @param addr Address
+     */
+    private MacSockaddrIn(
+        final byte[] zero, final short family, final short port, final int addr
+    ) {
         super();
         this.len = 16;
         this.family = (byte) family;
         this.port = port;
         this.addr = addr;
-        this.zero = Arrays.copyOf(zero, zero.length);
+        this.zero = zero;
     }
 
     @Override

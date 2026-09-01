@@ -33,13 +33,10 @@ import org.eolang.parser.OnDetailed;
  *
  * @since 0.1
  * @todo #6125:30min Take the rest of the writing out of here too.
- *  The key {@link #version()} makes still repeats the plugin version
- *  {@link GlobalCache} folds into every step of its own, so drop it there
- *  and let the cache supply it; {@link #version()} is then read by nothing
- *  but the test and goes with it. The three that are left, the generated
- *  directory, the tests flag and the roots, describe one thing, where the
- *  output lands, and belong together in an object of their own, along with
- *  the tail of {@link #exec()} that logs it.
+ *  The three that are left, the generated directory, the tests flag and
+ *  the roots, describe one thing, where the output lands, and belong
+ *  together in an object of their own, along with the tail of
+ *  {@link #exec()} that logs it.
  */
 final class Transpiling implements Step {
 
@@ -123,9 +120,7 @@ final class Transpiling implements Step {
 
     @Override
     public void exec() throws IOException {
-        final JavaFiles files = new JavaFiles(
-            this.generated, this.cache.with(this.train.version())
-        );
+        final JavaFiles files = new JavaFiles(this.generated);
         final int transpiled = new Threaded<>(
             this.sources,
             tojo -> this.transpiled(tojo, files)
@@ -141,14 +136,6 @@ final class Transpiling implements Step {
         );
     }
 
-    /**
-     * The cache-key version segment of this transpiling.
-     * @return The version segment for {@link CachePath}
-     */
-    String version() {
-        return this.train.version();
-    }
-
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
@@ -158,7 +145,10 @@ final class Transpiling implements Step {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        this.cache.with(this.train.version(xmir.xpath("/object/o/@loc"))).footprint(
+        final GlobalCache store = this.cache.with(
+            this.train.version(xmir.xpath("/object/o/@loc"))
+        );
+        store.footprint(
             base.relativize(dest),
             hsh,
             src -> {
@@ -167,7 +157,8 @@ final class Transpiling implements Step {
             }
         ).apply(source, dest);
         return files.total(
-            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
+            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered(),
+            store
         );
     }
 }
