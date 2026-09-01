@@ -66,6 +66,7 @@ public final class Report {
      * @throws IOException If a table or a file cannot be read or written
      */
     public int written(final Path out) throws IOException {
+        Files.createDirectories(out);
         final Map<String, Answer> told = new Answered(this.world, this.tables).all();
         final XSLDocument page = new XSLDocument(
             Report.class.getResourceAsStream("/org/eolang/inference/report/page.xsl")

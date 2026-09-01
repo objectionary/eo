@@ -64,6 +64,23 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void writesAnIndexForAnEmptyProgram(@Mktmp final Path temp) throws IOException {
+        final Path xmirs = Files.createDirectories(temp.resolve("xmirs"));
+        final Path tables = temp.resolve("tables");
+        new Resolved(new Clues()).follow(xmirs, tables);
+        MatcherAssert.assertThat(
+            "an empty program must still produce its index",
+            new Report(xmirs, tables).written(temp.resolve("out")),
+            Matchers.equalTo(0)
+        );
+        MatcherAssert.assertThat(
+            "the index must be written even when there are no source pages",
+            Files.exists(temp.resolve("out").resolve("index.html")),
+            Matchers.equalTo(true)
+        );
+    }
+
     private static Path program(final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
