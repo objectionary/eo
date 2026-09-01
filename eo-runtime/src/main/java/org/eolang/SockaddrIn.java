@@ -89,5 +89,4 @@ public final class SockaddrIn extends Structure {
     public List<String> getFieldOrder() {
         return Arrays.asList("family", "port", "addr", "zero");
     }
-
 }
