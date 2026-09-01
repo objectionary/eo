@@ -8,6 +8,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Handle;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -45,7 +46,7 @@ public final class AcceptFuncCall implements Syscall {
             new Data.ToPhi(
                 Pointer.nativeValue(
                     Winsock.INSTANCE.accept(
-                        new Pointer(new Dataized(params[0]).asNumber().longValue()),
+                        new Pointer(new Handle("the socket of accept", params[0]).it()),
                         new SockaddrIn(
                             new Dataized(params[1].take("family")).take(Short.class),
                             new Dataized(params[1].take("port")).take(Short.class),

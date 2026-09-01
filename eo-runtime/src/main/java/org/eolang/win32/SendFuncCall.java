@@ -7,6 +7,7 @@ package org.eolang.win32;
 import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Handle;
 import org.eolang.ExFailure;
 import org.eolang.Expect;
 import org.eolang.Int;
@@ -55,7 +56,7 @@ public final class SendFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.send(
-                    new Pointer(new Dataized(params[0]).asNumber().longValue()),
+                    new Pointer(new Handle("the socket of send", params[0]).it()),
                     buf,
                     size,
                     flags

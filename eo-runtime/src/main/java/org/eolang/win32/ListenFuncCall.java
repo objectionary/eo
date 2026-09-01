@@ -7,6 +7,7 @@ package org.eolang.win32;
 import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Handle;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
@@ -42,7 +43,7 @@ public final class ListenFuncCall implements Syscall {
             0,
             new Data.ToPhi(
                 Winsock.INSTANCE.listen(
-                    new Pointer(new Dataized(params[0]).asNumber().longValue()),
+                    new Pointer(new Handle("the socket of listen", params[0]).it()),
                     backlog
                 )
             )
