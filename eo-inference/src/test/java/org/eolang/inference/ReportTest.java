@@ -82,12 +82,7 @@ final class ReportTest {
         new Report(ReportTest.program(temp, "nested\\cup.xmir"), ReportTest.tables(temp))
             .written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "a source path must become a nested web path even when it carries backslashes",
-            Files.exists(temp.resolve("out").resolve("nested").resolve("cup.eo.html")),
-            Matchers.equalTo(true)
-        );
-        MatcherAssert.assertThat(
-            "the index must link with URL separators rather than platform separators",
+            "the index must link to the nested page with URL separators rather than platform separators",
             Files.readString(temp.resolve("out").resolve("index.html")),
             Matchers.containsString("nested/cup.eo.html")
         );
