@@ -20,22 +20,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for transpile behavior.
  * @since 0.62
- * @todo #7182:30min Re-enable the two transpile tests after the next release.
- *  The sandbox pulls the released .eo sources of the runtime from the remote
- *  objectionary, and those predate the rule that every object carries a
- *  comment on top, so the build they take part in ends with [ERROR] lines
- *  and fails before the assertion is reached. Master already carries the
- *  comments, so drop this annotation once the remote objectionary serves
- *  sources that satisfy the rule.
  */
-@Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class TranspileIT {
