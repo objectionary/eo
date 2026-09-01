@@ -340,12 +340,12 @@
       -1
       mx.minus 1
     * > decoded
-      decoded-text.slice 0 separator
-      decoded-text.slice
+      rawtext.slice 0 separator
+      rawtext.slice
         separator.plus 1
-        decoded-text.length.minus
+        rawtext.length.minus
           separator.plus 1
-    string ^.serialized > decoded-text
+    string ^.serialized > rawtext
     if. > [^ n] > empty-groups
       n.lte 0
       *
@@ -862,7 +862,7 @@
           false > [m]
         d2.at > k2
           1
-          ^.k > [m]
+          0 > [m]
         d2.at > n2
           0
           0 > [m]
@@ -962,7 +962,7 @@
             g
         q.at > after
           2
-          ^.j > [m]
+          0 > [m]
         ^.skip i > j
         q.at > mn
           0
@@ -1838,7 +1838,7 @@
       cfg.at > ul
         4
         false > [m]
-    decoded-text.index-of "\u0000" > separator
+    rawtext.index-of "\u0000" > separator
     if. > [^ ctx children idx pos groups] > seq
       idx.gte children.length
       *
