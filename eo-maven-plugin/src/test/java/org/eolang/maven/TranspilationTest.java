@@ -52,10 +52,20 @@ final class TranspilationTest {
     }
 
     @Test
+    void foldsInImportedXslLibrariesIntoVersion() {
+        MatcherAssert.assertThat(
+            "the cache-key version must differ from a fingerprint of the top-level XSLS alone, proving the xsl:import-ed libraries are actually folded in",
+            this.transpilation(new Tracking(false, false)).version(),
+            Matchers.not(
+                Matchers.startsWith(new Fingerprint(Transpilation.XSLS).get())
+            )
+        );
+    }
+
+    @Test
     void buildsSourceFunctionForParentlessMeasuresPath() {
         Assertions.assertDoesNotThrow(
             () -> new Transpilation(
-                "1.0-SNAPSHOT",
                 new Tracking(false, false),
                 false,
                 "PhDefault",
@@ -69,7 +79,6 @@ final class TranspilationTest {
 
     private Transpilation transpilation(final Tracking tracking) {
         return new Transpilation(
-            "1.0-SNAPSHOT",
             tracking,
             false,
             "PhDefault",
@@ -81,7 +90,6 @@ final class TranspilationTest {
 
     private Transpilation transpilation(final Path tables) {
         return new Transpilation(
-            "1.0-SNAPSHOT",
             new Tracking(false, false),
             false,
             "PhDefault",
