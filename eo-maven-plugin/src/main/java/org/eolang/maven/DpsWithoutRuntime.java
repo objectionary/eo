@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.util.Iterator;
+import org.apache.maven.model.Dependency;
 import org.cactoos.iterator.Filtered;
 
 /**
@@ -30,8 +31,25 @@ final class DpsWithoutRuntime implements Dependencies {
     @Override
     public Iterator<Dep> iterator() {
         return new Filtered<>(
-            dep -> !"eo-runtime".equals(dep.get().getArtifactId()),
+            dep -> !DpsWithoutRuntime.isRuntime(dep.get()),
             this.delegate.iterator()
         );
+    }
+
+    /**
+     * Whether this dependency is the EO runtime.
+     *
+     * <p>An artifact id is not unique in Maven, so the group has to be read
+     * too: a dependency of somebody else named {@code eo-runtime} is not the
+     * runtime this class removes, and dropping it would change the classpath
+     * of a build that asked for nothing of the sort (#8147). This is the same
+     * pair {@code DpsWithRuntime} decides by.</p>
+     *
+     * @param dep The dependency
+     * @return True when it is the EO runtime
+     */
+    private static boolean isRuntime(final Dependency dep) {
+        return "org.eolang".equals(dep.getGroupId())
+            && "eo-runtime".equals(dep.getArtifactId());
     }
 }
