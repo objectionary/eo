@@ -52,6 +52,12 @@ public class XslBench {
     );
 
     /**
+     * Ctor.
+     */
+    public XslBench() {
+    }
+
+    /**
      * Run all sheets on a large XMIR document.
      */
     @Benchmark
