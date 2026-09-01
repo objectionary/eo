@@ -17,26 +17,17 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
  * @since 0.52
- * @todo #7182:30min Re-enable the assemble test after the next release.
- *  The sandbox pulls the released .eo sources of the runtime from the remote
- *  objectionary, and those predate the rule that every object carries a
- *  comment on top, so the build they take part in ends with [ERROR] lines
- *  and fails before the assertion is reached. Master already carries the
- *  comments, so drop this annotation once the remote objectionary serves
- *  sources that satisfy the rule.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjAssembleIT {
 
-    @Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/io/stdout.%s";

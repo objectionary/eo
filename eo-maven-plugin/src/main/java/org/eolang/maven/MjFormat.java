@@ -59,19 +59,6 @@ import org.eolang.printer.Xmir;
 public final class MjFormat extends MjPenalties {
 
     /**
-     * The most parse-and-print passes taken to settle the moniker layout
-     * before giving up.
-     *
-     * <p>Merging a moniker onto its first bare reference (#5739) is not a
-     * single-pass fixpoint: the canonical attribute ordering of #5706 can
-     * move which reference is "first", so one print may shift a moniker and
-     * a further print settle it. The structural form is therefore reached by
-     * iterating parse-and-print until it stops changing; this cap keeps a
-     * pathological non-converging source from looping forever.</p>
-     */
-    private static final int SETTLE = 8;
-
-    /**
      * Overwrite divergent sources with their canonical form instead of
      * failing the build.
      */
@@ -131,7 +118,8 @@ public final class MjFormat extends MjPenalties {
         String structure = source;
         XML tree = MjFormat.parsed(path, structure);
         Optional<String> settled = Optional.empty();
-        for (int pass = 0; pass < MjFormat.SETTLE; ++pass) {
+        final int settle = 8;
+        for (int pass = 0; pass < settle; ++pass) {
             final String printed = new Xmir(tree).toEO();
             if (printed.equals(structure)) {
                 settled = Optional.of(printed);

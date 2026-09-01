@@ -44,13 +44,6 @@ import java.util.regex.Pattern;
 final class Suffix {
 
     /**
-     * Additional NAME-only token boundaries beyond {@link #terminates}.
-     * §2.3 forbids these inside a NAME; signatures keep the loose
-     * {@link #terminates} so dotted FQNs are still consumed whole.
-     */
-    private static final String NAME_BOUNDARIES = ",.|':;?[]{}()";
-
-    /**
      * Scope tokens, which name a place rather than an object: the
      * {@code φ} decoratee, the {@code ρ} parent and {@code ξ} itself.
      * A {@code >>} handle is a name a later reference can be written
@@ -623,7 +616,7 @@ final class Suffix {
 
     private static boolean endsName(final char glyph) {
         return Suffix.terminates(glyph)
-            || Suffix.NAME_BOUNDARIES.indexOf(glyph) >= 0;
+            || ",.|':;?[]{}()".indexOf(glyph) >= 0;
     }
 
     /**

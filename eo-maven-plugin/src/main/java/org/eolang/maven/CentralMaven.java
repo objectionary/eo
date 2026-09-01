@@ -53,11 +53,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
     );
 
     /**
-     * Maven Central URL.
-     */
-    private static final String CENTRAL = "https://repo1.maven.org/maven2";
-
-    /**
      * Maven Resolver repository system.
      */
     private final RepositorySystem system;
@@ -118,7 +113,9 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
             sys,
             sess,
             Collections.singletonList(
-                new RemoteRepository.Builder("central", "default", CentralMaven.CENTRAL).build()
+                new RemoteRepository.Builder(
+                    "central", "default", "https://repo1.maven.org/maven2"
+                ).build()
             )
         );
     }

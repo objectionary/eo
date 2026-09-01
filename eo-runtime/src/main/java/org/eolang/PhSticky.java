@@ -54,11 +54,6 @@ import java.util.stream.Collectors;
 public final class PhSticky implements Phi {
 
     /**
-     * How many answers a decorated object keeps before evicting.
-     */
-    private static final int CAPACITY = 256;
-
-    /**
      * The formae whose objects are decided by their bytes alone.
      */
     private static final List<String> DATA = List.of(
@@ -95,7 +90,7 @@ public final class PhSticky implements Phi {
      * @param obj The object to decorate
      */
     public PhSticky(final Phi obj) {
-        this(obj, PhSticky.CAPACITY);
+        this(obj, 256);
     }
 
     /**
