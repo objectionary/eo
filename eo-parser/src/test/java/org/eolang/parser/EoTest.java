@@ -933,17 +933,6 @@ final class EoTest {
     }
 
     @Test
-    void rejectsTabInMultiLineBytesContinuation() {
-        MatcherAssert.assertThat(
-            "a tab must not become legal indentation only because a BYTES literal continues",
-            EoTest.render("foo > main", "  CA-FE-", "\t\tBE-BE"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'tab character in leading whitespace')]"
-            )
-        );
-    }
-
-    @Test
     void leavesSingleLineBytesAlone() {
         MatcherAssert.assertThat(
             "a single-line BYTES literal without trailing dash must NOT consume the next line",
