@@ -92,11 +92,6 @@ final class Transpilation {
         ThreadLocal.withInitial(HashMap::new);
 
     /**
-     * Plugin version.
-     */
-    private final String version;
-
-    /**
      * Which optional diagnostic artifacts to emit while transpiling.
      */
     private final Tracking tracking;
@@ -138,7 +133,6 @@ final class Transpilation {
 
     /**
      * Ctor.
-     * @param ver Plugin version string
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
@@ -147,7 +141,6 @@ final class Transpilation {
      * @param tables The directory with the tables of {@link MjInference}
      */
     Transpilation(
-        final String ver,
         final Tracking diagnostics,
         final boolean cvrg,
         final String base,
@@ -155,7 +148,6 @@ final class Transpilation {
         final Path dir,
         final Path tables
     ) {
-        this.version = ver;
         this.tracking = diagnostics;
         this.coverage = cvrg;
         this.superclass = base;
@@ -166,11 +158,11 @@ final class Transpilation {
     }
 
     /**
-     * Cache-key version segment: the plugin version combined with a
-     * fingerprint of the bundled transpile XSLs and the libraries they
-     * {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code trackSteps}/{@code coverageTracking} flags. Folding the XSL
-     * content in means
+     * Cache-key version segment: a fingerprint of the bundled transpile
+     * XSLs and the libraries they {@code xsl:import}, plus the {@code trackLocations}/
+     * {@code trackSteps}/{@code coverageTracking} flags. The plugin version
+     * is not part of it: {@link Caching} already folds that into the key of
+     * every cache it makes. Folding the XSL content in means
      * that a change in the transformation logic invalidates the global
      * transpile cache even when the plugin version is unchanged (a
      * constant {@code -SNAPSHOT} during development), see #5578; folding
@@ -188,8 +180,7 @@ final class Transpilation {
      */
     String version() {
         return String.format(
-            "%s-%s-%b-%b-%b-%s",
-            this.version,
+            "%s-%b-%b-%b-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
