@@ -212,6 +212,17 @@ final class LnMetaTest {
     }
 
     @Test
+    void rejectsMetaNameWithHyphen() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+co-op", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a meta name must match [a-z][a-z0-9]* per R-3.2.6, narrower than NAME, "
+            + "which the XMIR.xsd head element also enforces"
+        );
+    }
+
+    @Test
     void clearsPendingBlanksOnEmission() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# doc", 1));
