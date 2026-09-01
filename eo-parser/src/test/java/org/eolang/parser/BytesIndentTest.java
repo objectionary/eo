@@ -27,11 +27,6 @@ final class BytesIndentTest {
         );
     }
 
-    /**
-     * Parse rows and return their XMIR.
-     * @param rows EO source rows
-     * @return XMIR
-     */
     private static String render(final String... rows) {
         final StringBuilder source = new StringBuilder(rows.length * 16);
         for (final String row : rows) {
