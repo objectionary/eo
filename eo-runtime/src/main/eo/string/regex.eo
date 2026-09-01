@@ -192,31 +192,31 @@
                       tag.eq "start"
                       ^.at-start text pos ml ul groups
                       ^.at-end text pos tlen ml ul groups
-    ctx.at > ci!
+    ctx.at > ci
       2
       false > [m]
-    text.at > cur!
+    text.at > cur
       pos
       "" > [m]
-    ctx.at > da!
+    ctx.at > da
       4
       false > [m]
-    ctx.at > ml!
+    ctx.at > ml
       5
       false > [m]
-    node.at > tag!
+    node.at > tag
       0
       "" > [m]
-    ctx.at > text!
+    ctx.at > text
       0
       "" > [m]
-    ctx.at > tlen!
+    ctx.at > tlen
       1
       0 > [m]
-    ctx.at > uc!
+    ctx.at > uc
       3
       false > [m]
-    ctx.at > ul!
+    ctx.at > ul
       6
       false > [m]
   c.at > [^ c] > cand-end
@@ -274,20 +274,20 @@
         ok.if
           built
           cant-compile message
-    expr.slice > body!
+    expr.slice > body
       1
       closes.minus 1
-    ^.pattern joined.as-bytes > built!
-    expr.last-index-of "/" > closes!
-    ^.^ > expr!
-    if. > flags!
+    ^.pattern joined.as-bytes > built
+    expr.last-index-of "/" > closes
+    ^.^ > expr
+    if. > flags
       expr.ends-with "/"
       ""
       expr.slice
         closes.plus 1
         expr.length.minus
           closes.plus 1
-    flags.chained > joined!
+    flags.chained > joined
       * "\u0000" body
     if. > message
       ooffset.lt 0
@@ -295,19 +295,19 @@
         * oreason
       "regex syntax is invalid: %s at offset %d of the pattern".printf
         * oreason ooffset
-    eq. > ok!
+    eq. > ok
       outcome.at
         0
         "" > [m]
       "ok"
-    outcome.at > ooffset!
+    outcome.at > ooffset
       2
       -1 > [m]
-    expr.starts-with "/" > opens!
-    outcome.at > oreason!
+    expr.starts-with "/" > opens
+    outcome.at > oreason
       1
       "" > [m]
-    ^.parsed > outcome!
+    ^.parsed > outcome
       body
       flags.contains "x"
   if. > [^ mx] > dec-or-neg
@@ -346,7 +346,7 @@
                 pos.plus 1
                 "" > [m]
               "\n"
-    tlen.minus pos > remaining!
+    tlen.minus pos > remaining
   ^.flat-map-seq-k > [^ ctx children idx cands] > flat-map-seq
     ctx
     children
@@ -393,15 +393,15 @@
       cands
       text.length
       0
-    ^.attempted > cands!
+    ^.attempted > cands
       ctx
       root
       0
       ^.empty-groups total
-    cfg.at > ci!
+    cfg.at > ci
       0
       false > [m]
-    * > ctx!
+    * > ctx
       text
       text.length
       ci
@@ -409,16 +409,16 @@
       da
       ml
       ul
-    cfg.at > da!
+    cfg.at > da
       2
       false > [m]
-    cfg.at > ml!
+    cfg.at > ml
       3
       false > [m]
-    cfg.at > uc!
+    cfg.at > uc
       1
       false > [m]
-    cfg.at > ul!
+    cfg.at > ul
       4
       false > [m]
   entry.at > [^ entry] > group-participated
@@ -457,14 +457,14 @@
         pos
         gnum
         0
-    node.at > child!
+    node.at > child
       1
       [m]
         * > @
-    node.at > gnum!
+    node.at > gnum
       2
       -1 > [m]
-    ^.attempted > inner!
+    ^.attempted > inner
       ctx
       child
       pos
@@ -502,11 +502,11 @@
       and.
         c.gte l
         c.lte h
-    ch.as-ascii > c!
+    ch.as-ascii > c
       -1 > [m]
-    hi.as-ascii > h!
+    hi.as-ascii > h
       -1 > [m]
-    lo.as-ascii > l!
+    lo.as-ascii > l
       -1 > [m]
   if. > [^ ul ch] > is-terminator
     ch.eq "\n"
@@ -545,7 +545,7 @@
           item.at
             1
             "" > [m]
-    item.at > tag!
+    item.at > tag
       0
       "" > [m]
   if. > [^ cands start gnum k] > map-stamp
@@ -570,22 +570,22 @@
       cfg
       txt
       total
-    ^.settings pflags > cfg!
-    ^.compile T > compiled!
-    ^.parsed > outcome!
+    ^.settings pflags > cfg
+    ^.compile T > compiled
+    ^.parsed > outcome
       pbody
       pflags.contains "x"
-    src.at > pbody!
+    src.at > pbody
       1
       "" > [m]
-    src.at > pflags!
+    src.at > pflags
       0
       "" > [m]
-    outcome.at > root!
+    outcome.at > root
       1
       "" > [m]
-    compiled.decoded > src!
-    outcome.at > total!
+    compiled.decoded > src
+    outcome.at > total
       2
       0 > [m]
   [^ ch tag] > matches-pred
@@ -605,12 +605,12 @@
               tag.eq "word"
               word
               word.not
-    ch.as-ascii > c!
+    ch.as-ascii > c
       -1 > [m]
-    and. > digit!
+    and. > digit
       c.gte 48
       c.lte 57
-    or. > space!
+    or. > space
       c.eq 32
       or.
         c.eq 9
@@ -621,7 +621,7 @@
             or.
               c.eq 11
               c.eq 12
-    or. > word!
+    or. > word
       or.
         and.
           c.gte 48
@@ -669,7 +669,7 @@
           *
             pos.plus 1
             groups
-    ^.class-hit > hit!
+    ^.class-hit > hit
       ci
       uc
       cur
@@ -694,10 +694,10 @@
         start
         end
         true
-    cand.at > end!
+    cand.at > end
       0
       -1 > [m]
-    cand.at > gs!
+    cand.at > gs
       1
       [m]
         * > @
@@ -745,17 +745,17 @@
           1
           1
           fallback
-      ^.body.at > c!
+      ^.body.at > c
         k2
         "" > [m]
-      ^.digits-run k > d2!
-      d2.at > has2!
+      ^.digits-run k > d2
+      d2.at > has2
         2
         false > [m]
-      d2.at > k2!
+      d2.at > k2
         1
         0 > [m]
-      d2.at > n2!
+      d2.at > n2
         0
         0 > [m]
     [^ n1 k fallback] > after-first-digits
@@ -772,7 +772,7 @@
             k.plus 1
             fallback
           * 1 1 fallback
-      ^.body.at > c!
+      ^.body.at > c
         k
         "" > [m]
     [^ i g] > alt
@@ -794,7 +794,7 @@
             2
             [m]
               * > @
-      ^.cat i g > first!
+      ^.cat i g > first
     [^ j g branches] > alt-continue
       if. > @
         eq.
@@ -815,7 +815,7 @@
               2
               [m]
                 * > @
-      ^.cat j g > nxt!
+      ^.cat j g > nxt
     [^ i g branches] > alt-loop
       if. > @
         eq.
@@ -832,7 +832,7 @@
           j
           ^.wrap-branches branches
           g
-      ^.skip i > j!
+      ^.skip i > j
     [^ i node g] > apply-quant
       if. > @
         and.
@@ -852,18 +852,18 @@
             mn
             mx
           g
-      q.at > after!
+      q.at > after
         2
         0 > [m]
-      ^.skip i > j!
-      q.at > mn!
+      ^.skip i > j
+      q.at > mn
         0
         1 > [m]
-      q.at > mx!
+      q.at > mx
         1
         1 > [m]
-      ^.quant j > q!
-    body.length > blen!
+      ^.quant j > q
+    body.length > blen
     ^.cat-loop > [^ i g] > cat
       i
       g
@@ -888,7 +888,7 @@
               2
               [m]
                 * > @
-      ^.piece j g > pc!
+      ^.piece j g > pc
     [^ i g items] > cat-loop
       if. > @
         or.
@@ -905,10 +905,10 @@
           j
           g
           items
-      ^.body.at > c!
+      ^.body.at > c
         j
         "" > [m]
-      ^.skip i > j!
+      ^.skip i > j
     if. > [^ kind val idx items] > cls-after-atom
       kind.eq "char"
       ^.cls-maybe-range
@@ -934,7 +934,7 @@
             "char"
             c
             k.plus 1
-      ^.body.at > c!
+      ^.body.at > c
         k
         "" > [m]
     [^ k items] > cls-continue
@@ -956,7 +956,7 @@
             3
             0 > [m]
           items
-      ^.cls-atom k > a!
+      ^.cls-atom k > a
     [^ k] > cls-esc
       if. > @
         e.eq ""
@@ -1019,7 +1019,7 @@
                             e.eq "r"
                             * "ok" "char" "\r" (k.plus 2)
                             * "ok" "char" e (k.plus 2)
-      ^.body.at > e!
+      ^.body.at > e
         k.plus 1
         "" > [m]
     if. > [^ res neg g] > cls-finish
@@ -1060,18 +1060,18 @@
                 v1.times 16
                 v2
           k.plus 4
-      h1.as-ascii > c1!
+      h1.as-ascii > c1
         -1 > [m]
-      h2.as-ascii > c2!
+      h2.as-ascii > c2
         -1 > [m]
-      ^.body.at > h1!
+      ^.body.at > h1
         k.plus 2
         "" > [m]
-      ^.body.at > h2!
+      ^.body.at > h2
         k.plus 3
         "" > [m]
-      ^.hex-digit c1 > v1!
-      ^.hex-digit c2 > v2!
+      ^.hex-digit c1 > v1
+      ^.hex-digit c2 > v2
     [^ k items] > cls-items
       if. > @
         c.eq ""
@@ -1087,7 +1087,7 @@
             items
             -1
           ^.cls-continue k items
-      ^.body.at > c!
+      ^.body.at > c
         k
         "" > [m]
     [^ ch idx items] > cls-maybe-range
@@ -1107,10 +1107,10 @@
           idx
           items.with
             * "char" ch
-      ^.body.at > after!
+      ^.body.at > after
         idx.plus 1
         "" > [m]
-      ^.body.at > d!
+      ^.body.at > d
         idx
         "" > [m]
     [^ j g] > cls-node
@@ -1127,10 +1127,10 @@
             *
           neg
           g
-      ^.body.at > c1!
+      ^.body.at > c1
         j
         "" > [m]
-      c1.eq "^" > neg!
+      c1.eq "^" > neg
     [^ ch idx items] > cls-range
       if. > @
         eq.
@@ -1160,7 +1160,7 @@
             "error"
             "Illegal character range"
             idx
-      ^.cls-atom > b!
+      ^.cls-atom > b
         idx.plus 1
     [^ i] > comment-end
       if. > @
@@ -1170,7 +1170,7 @@
         i
         ^.comment-end
           i.plus 1
-      ^.body.at > c!
+      ^.body.at > c
         i
         "" > [m]
     printf. > [^ c] > dangling-msg
@@ -1195,10 +1195,10 @@
           acc
           k
           has
-      ^.body.at > c!
+      ^.body.at > c
         k
         "" > [m]
-      c.as-ascii > code!
+      c.as-ascii > code
         -1 > [m]
     [^ j g] > esc-node
       if. > @
@@ -1278,7 +1278,7 @@
                               j.plus 2
                               * "lit" e
                               g
-      ^.body.at > e!
+      ^.body.at > e
         j.plus 1
         "" > [m]
     [^ j g] > grp
@@ -1300,10 +1300,10 @@
             j
             g.plus 1
             g.plus 1
-      ^.body.at > c1!
+      ^.body.at > c1
         j
         "" > [m]
-      ^.body.at > c2!
+      ^.body.at > c2
         j.plus 1
         "" > [m]
     [^ j g gnum] > grp-body
@@ -1315,7 +1315,7 @@
           "error"
         inner
         ^.grp-close inner gnum
-      ^.alt j g > inner!
+      ^.alt j g > inner
     [^ inner gnum] > grp-close
       if. > @
         c.eq ")"
@@ -1336,10 +1336,10 @@
           "error"
           "Unclosed group"
           idx
-      ^.body.at > c!
+      ^.body.at > c
         idx
         "" > [m]
-      inner.at > idx!
+      inner.at > idx
         1
         0 > [m]
     if. > [^ code] > hex-digit
@@ -1378,18 +1378,18 @@
             "lit"
             string ((v1.times 16).plus v2).as-char
           g
-      h1.as-ascii > c1!
+      h1.as-ascii > c1
         -1 > [m]
-      h2.as-ascii > c2!
+      h2.as-ascii > c2
         -1 > [m]
-      ^.body.at > h1!
+      ^.body.at > h1
         j.plus 2
         "" > [m]
-      ^.body.at > h2!
+      ^.body.at > h2
         j.plus 3
         "" > [m]
-      ^.hex-digit c1 > v1!
-      ^.hex-digit c2 > v2!
+      ^.hex-digit c1 > v1
+      ^.hex-digit c2 > v2
     [^ i g] > piece
       if. > @
         eq.
@@ -1409,7 +1409,7 @@
           u.at
             3
             0 > [m]
-      ^.unit i g > u!
+      ^.unit i g > u
     [^ j] > quant
       if. > @
         c.eq "*"
@@ -1435,10 +1435,10 @@
                 j.plus 1
                 j
               * 1 1 j
-      ^.body.at > c!
+      ^.body.at > c
         j
         "" > [m]
-    ^.alt > result!
+    ^.alt > result
       0
       0
     [^ i] > skip
@@ -1465,7 +1465,7 @@
                   ^.skip
                     ^.comment-end (i.plus 1)
                   i
-      ^.body.at > c!
+      ^.body.at > c
         i
         "" > [m]
     [^ k fallback] > try-braces
@@ -1486,7 +1486,7 @@
             1
             0 > [m]
           fallback
-      ^.digits-run k > d1!
+      ^.digits-run k > d1
     [^ i g] > unit
       if. > @
         or.
@@ -1535,10 +1535,10 @@
                       j.plus 1
                       * "lit" c
                       g
-      ^.body.at > c!
+      ^.body.at > c
         j
         "" > [m]
-      ^.skip i > j!
+      ^.skip i > j
     if. > [^ branches] > wrap-branches
       branches.length.eq 1
       branches.at
@@ -1555,7 +1555,7 @@
       * "concat" items
   [^ serialized] > pattern
     ^.pattern serialized > compiled
-    * > decoded!
+    * > decoded
       raw.slice 0 separator
       raw.slice
         separator.plus 1
@@ -1601,48 +1601,48 @@
               [m]
                 * > @
           ^.missing
-        ^.^.^.settings pflags > cfg!
-        ^.^.^.searched > found!
+        ^.^.^.settings pflags > cfg
+        ^.^.^.searched > found
           root
           cfg
           ^.txt
           start
           total
-        eq. > hit!
+        eq. > hit
           found.at
             0
             "" > [m]
           "ok"
-        found.at > mfrom!
+        found.at > mfrom
           1
           -1 > [m]
-        found.at > mgroups!
+        found.at > mgroups
           3
           [m]
             * > @
-        found.at > mto!
+        found.at > mto
           2
           -1 > [m]
-        ^.^.^.parsed > outcome!
+        ^.^.^.parsed > outcome
           pbody
           pflags.contains "x"
-        ^.^.^.grouped > packed!
+        ^.^.^.grouped > packed
           ^.txt
           mfrom
           mto
           total
           mgroups
-        src.at > pbody!
+        src.at > pbody
           1
           "" > [m]
-        src.at > pflags!
+        src.at > pflags
           0
           "" > [m]
-        outcome.at > root!
+        outcome.at > root
           1
           "" > [m]
-        ^.^.decoded > src!
-        outcome.at > total!
+        ^.^.decoded > src
+        outcome.at > total
           2
           0 > [m]
       [] > missing
@@ -1666,8 +1666,8 @@
         T > text
           "Matched block does not exist, can't get text"
       matched-from-index 1 0 > next
-    string ^.serialized > raw!
-    raw.index-of "\u0000" > separator!
+    string ^.serialized > raw
+    raw.index-of "\u0000" > separator
   if. > [^ ctx child pos groups mn mx] > rep
     mn.gt 0
     ^.rep-forced
@@ -1735,10 +1735,10 @@
         g
         mn.minus 1
         ^.dec-or-neg mx
-    cand.at > e!
+    cand.at > e
       0
       -1 > [m]
-    cand.at > g!
+    cand.at > g
       1
       [m]
         * > @
@@ -1788,10 +1788,10 @@
         g
         0
         ^.dec-or-neg mx
-    cand.at > e!
+    cand.at > e
       0
       -1 > [m]
-    cand.at > g!
+    cand.at > g
       1
       [m]
         * > @
@@ -1830,7 +1830,7 @@
           p.plus 1
           tlen
           groups0
-    ^.attempted > cands!
+    ^.attempted > cands
       ctx
       root
       p
@@ -1842,10 +1842,10 @@
       start
       text.length
       ^.empty-groups total
-    cfg.at > ci!
+    cfg.at > ci
       0
       false > [m]
-    * > ctx!
+    * > ctx
       text
       text.length
       ci
@@ -1853,16 +1853,16 @@
       da
       ml
       ul
-    cfg.at > da!
+    cfg.at > da
       2
       false > [m]
-    cfg.at > ml!
+    cfg.at > ml
       3
       false > [m]
-    cfg.at > uc!
+    cfg.at > uc
       1
       false > [m]
-    cfg.at > ul!
+    cfg.at > ul
       4
       false > [m]
   if. > [^ ctx children idx pos groups] > seq
