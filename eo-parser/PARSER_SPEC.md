@@ -1363,6 +1363,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Leading or trailing space inside `[ ]` (R-3.4.4) | `formation brackets must not contain leading or trailing space` |
 | Formation head `[` with no closing `]` (R-3.4.12) | `formation is missing its closing bracket` |
 | Double space between parameter names in voids (R-3.4.5) | `parameter names in voids must be separated by exactly one space` |
+| Bracket-parameter name that is neither NAME nor `@` (§4.5) | `parameter names in voids must be NAME or @` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
@@ -1376,12 +1377,14 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |
 | Root identifier glued to a letter or a digit (e.g. the legacy `QQ.io.stdout`) | `<token> is not a valid object name, root <root> must be followed by a dot` (token and root substituted) |
+| Control character inside an identifier or a name suffix | `control character is not allowed in an identifier` |
 | Atom containing non-test child | `atom may contain only test attributes` |
 | `+>` outside indent 2 of top level | `test attribute legal only as direct child of top-level object` |
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |
 | Bare reversed dispatch receiver starts with `.` | `reversed dispatch receiver must not begin with dot` |
 | Compact tuple `*N` with N > children | `compact tuple requires at least N children, got K` (N and K substituted) |
 | Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
+| Binding on a plain child of a formation or top level (R-3.12.3) | `binding allowed only in argument position` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
 | Comment not on top of the file | `comment is allowed only on top of the file, before metas` |
