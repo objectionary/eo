@@ -40,9 +40,8 @@ final class DeletedTest {
         final Path kept = outside.resolve("keep.txt");
         Files.writeString(kept, "not ours to delete");
         final Path dir = Files.createDirectories(temp.resolve("target/eo"));
-        final Path link = dir.resolve("link");
         try {
-            Files.createSymbolicLink(link, outside);
+            Files.createSymbolicLink(dir.resolve("link"), outside);
         } catch (final UnsupportedOperationException | IOException ex) {
             Assumptions.abort("this file system does not make symbolic links");
         }
