@@ -4,16 +4,40 @@
  */
 package org.eolang;
 
+import java.util.function.Function;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link Phi}.
  * @since 0.22
  */
 final class PhiTest {
+
+    @ParameterizedTest
+    @MethodSource("decorators")
+    void keepsDecoratorDistinctFromItsOrigin(
+        final String name, final Function<Phi, Phi> decorator
+    ) {
+        final Phi origin = new PhDefault();
+        final Phi wrapped = decorator.apply(origin);
+        MatcherAssert.assertThat(
+            String.format("the %s decorator must not equal its origin", name),
+            wrapped.equals(origin),
+            Matchers.equalTo(false)
+        );
+        MatcherAssert.assertThat(
+            String.format("the origin must not equal its %s decorator", name),
+            origin.equals(wrapped),
+            Matchers.equalTo(false)
+        );
+    }
 
     @Test
     void takesPackage() {
@@ -149,6 +173,20 @@ final class PhiTest {
                 "obj.x"
             ).forma(),
             Matchers.equalTo("Φ.number")
+        );
+    }
+
+    private static Stream<Arguments> decorators() {
+        return Stream.of(
+            Arguments.of("again", (Function<Phi, Phi>) PhAgain::new),
+            Arguments.of(
+                "coverage", (Function<Phi, Phi>) phi -> new PhCoverage(phi, "Φ.x:1:1")
+            ),
+            Arguments.of("logged", (Function<Phi, Phi>) PhLogged::new),
+            Arguments.of("loop", (Function<Phi, Phi>) PhLoop::new),
+            Arguments.of("once", (Function<Phi, Phi>) phi -> new PhOnce(() -> phi)),
+            Arguments.of("safe", (Function<Phi, Phi>) PhSafe::new),
+            Arguments.of("sticky", (Function<Phi, Phi>) PhSticky::new)
         );
     }
 }
