@@ -66,7 +66,7 @@ public final class SockaddrIn extends Structure {
      * @param zero Zero 8 bytes
      */
     public SockaddrIn(final short family, final short port, final int addr, final byte[] zero) {
-        this(SockaddrIn.checked(zero), family, port, addr);
+        this(new Padding(zero).bytes(), family, port, addr);
     }
 
     /**
@@ -90,15 +90,4 @@ public final class SockaddrIn extends Structure {
         return Arrays.asList("family", "port", "addr", "zero");
     }
 
-    private static byte[] checked(final byte[] zero) {
-        if (zero.length != SockaddrIn.PADDING_SIZE) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "The sockaddr_in padding must contain exactly %d bytes, not %d",
-                    SockaddrIn.PADDING_SIZE, zero.length
-                )
-            );
-        }
-        return Arrays.copyOf(zero, zero.length);
-    }
 }
