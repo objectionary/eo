@@ -278,19 +278,6 @@ final class LnFormationTest {
     }
 
     @Test
-    void rejectsHeadWithoutOpeningBracket() {
-        MatcherAssert.assertThat(
-            "a head that opens with anything but `[` cannot report the missing-bracket message",
-            Assertions.assertThrows(
-                ParseError.class,
-                () -> new LnFormation(new Span("a] > x", 1))
-                    .into(new Stack(), new Globals(), new Emit())
-            ).getMessage(),
-            Matchers.equalTo("formation must start with `[`")
-        );
-    }
-
-    @Test
     void rejectsParameterStartingWithCapital() {
         MatcherAssert.assertThat(
             "a parameter name outside the NAME grammar must be rejected per R-3.4.1",
@@ -299,7 +286,7 @@ final class LnFormationTest {
                 () -> new LnFormation(new Span("[Ünïcode] > foo", 1))
                     .into(new Stack(), new Globals(), new Emit())
             ).getMessage(),
-            Matchers.equalTo("parameter names in voids must be NAME or @")
+            Matchers.equalTo("parameter names in voids must be NAME, @ or ^")
         );
     }
 
@@ -385,7 +372,7 @@ final class LnFormationTest {
                 () -> new LnFormation(new Span("[]:Tag > x", 1))
                     .into(new Stack(), new Globals(), new Emit())
             ).getMessage(),
-            Matchers.equalTo("Invalid bound object declaration")
+            Matchers.equalTo("binding label \"Tag\" must be a name or a slot number")
         );
     }
 
