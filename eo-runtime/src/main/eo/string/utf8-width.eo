@@ -52,21 +52,21 @@
               * lead
   if. > [^ width valid] >> checked
     gt.
-      index.plus width
+      ^.index.plus width
       size
     T
       "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
         *
           width
-          index
+          ^.index
           ^.^.as-bytes
     valid.if
       width
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.^.as-bytes.slice index width
-            index
+            ^.^.as-bytes.slice ^.index width
+            ^.index
   ^.as-bytes.size >> size!
   ^.as-bytes.slice index 1 > lead
   ^.as-bytes.slice > b1
