@@ -4,14 +4,12 @@
  */
 package org.eolang.lowering;
 
-import com.jcabi.xml.XML;
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.stream.Collectors;
 
 /**
  * One XMIR fragment as a φ-calculus expression.
@@ -37,13 +35,13 @@ public final class Expression {
     /**
      * The XMIR fragment to render, an {@code <o/>} element.
      */
-    private final XML fragment;
+    private final Xnav fragment;
 
     /**
      * Ctor.
      * @param xmir The XMIR fragment to render, an {@code <o/>} element
      */
-    public Expression(final XML xmir) {
+    public Expression(final Xnav xmir) {
         this.fragment = xmir;
     }
 
@@ -54,23 +52,12 @@ public final class Expression {
     public String text() {
         return String.format(
             "⟦%n  φ ↦ %s%n⟧%n",
-            Expression.rendered(this.root())
+            Expression.rendered(this.fragment)
         );
     }
 
-    private Element root() {
-        final Node node = this.fragment.inner();
-        final Element found;
-        if (node instanceof Document doc) {
-            found = doc.getDocumentElement();
-        } else {
-            found = (Element) node;
-        }
-        return found;
-    }
-
-    private static String rendered(final Element node) {
-        final String base = node.getAttribute("base");
+    private static String rendered(final Xnav node) {
+        final String base = node.attribute("base").text().orElse("");
         final String out;
         if (base.isEmpty()) {
             out = String.format("⟦ Δ ⤍ %s ⟧", Expression.datum(node));
@@ -89,8 +76,8 @@ public final class Expression {
         return out;
     }
 
-    private static String dispatched(final Element node, final String base) {
-        final List<Element> kids = Expression.kids(node);
+    private static String dispatched(final Xnav node, final String base) {
+        final List<Xnav> kids = Expression.kids(node);
         if (kids.isEmpty()) {
             throw new IllegalStateException(
                 String.format("The dispatch '%s' has no receiver", base)
@@ -104,7 +91,7 @@ public final class Expression {
         );
     }
 
-    private static String applied(final String base, final Collection<Element> kids) {
+    private static String applied(final String base, final Collection<Xnav> kids) {
         final String out;
         if (kids.isEmpty()) {
             out = base;
@@ -114,14 +101,14 @@ public final class Expression {
         return out;
     }
 
-    private static String arguments(final Collection<Element> kids) {
+    private static String arguments(final Collection<Xnav> kids) {
         final String out;
         if (kids.isEmpty()) {
             out = "";
         } else {
             final Collection<String> parts = new ArrayList<>(kids.size());
-            for (final Element kid : kids) {
-                final String name = kid.getAttribute("as");
+            for (final Xnav kid : kids) {
+                final String name = kid.attribute("as").text().orElse("");
                 if (name.isEmpty()) {
                     throw new IllegalStateException(
                         "An argument without a binding name cannot be rendered"
@@ -136,19 +123,11 @@ public final class Expression {
         return out;
     }
 
-    private static String datum(final Element node) {
-        return node.getTextContent().replaceAll("\\s+", "");
+    private static String datum(final Xnav node) {
+        return node.text().orElse("").replaceAll("\\s+", "");
     }
 
-    private static List<Element> kids(final Element node) {
-        final NodeList nodes = node.getChildNodes();
-        final List<Element> found = new ArrayList<>(nodes.getLength());
-        for (int idx = 0; idx < nodes.getLength(); ++idx) {
-            final Node kid = nodes.item(idx);
-            if (kid.getNodeType() == Node.ELEMENT_NODE) {
-                found.add((Element) kid);
-            }
-        }
-        return found;
+    private static List<Xnav> kids(final Xnav node) {
+        return node.elements(Filter.withName("o")).collect(Collectors.toList());
     }
 }

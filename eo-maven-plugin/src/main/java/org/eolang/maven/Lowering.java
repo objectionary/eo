@@ -17,9 +17,8 @@ import java.util.stream.Collectors;
 import org.eolang.lowering.Constant;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Primitive;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Fold the constant fragments of every XMIR this build compiles.
@@ -115,17 +114,10 @@ final class Lowering implements Step {
     private boolean spliced(final Xnav node) {
         boolean done = false;
         try {
-            final Node subject = node.node();
-            final Constant constant = new Constant(this.phino, new XMLDocument(subject));
-            final Element literal = Lowering.carrier(
-                subject.getOwnerDocument(), constant.forma(), constant.value()
-            );
-            for (final String name : new String[] {"as", "name", "line", "pos"}) {
-                node.attribute(name).text().ifPresent(
-                    value -> literal.setAttribute(name, value)
-                );
-            }
-            subject.getParentNode().replaceChild(literal, subject);
+            final Constant constant = new Constant(this.phino, node);
+            new Xembler(
+                Lowering.carrier(constant.forma(), constant.value())
+            ).applyQuietly(node.node());
             done = true;
         } catch (final IllegalStateException | IOException ex) {
             Logger.debug(this, "A fragment stays unfolded: %s", ex.getMessage());
@@ -133,49 +125,35 @@ final class Lowering implements Step {
         return done;
     }
 
-    private static Element carrier(
-        final Document doc, final String forma, final String value
-    ) {
-        final Element made;
+    private static Directives carrier(final String forma, final String value) {
+        final Directives dirs = new Directives();
         if ("number".equals(forma)) {
             if (value.length() != 23) {
                 throw new IllegalStateException(
                     String.format("A number must dataize to eight bytes, not to '%s'", value)
                 );
             }
-            made = doc.createElement("o");
-            made.setAttribute("base", "Φ.number");
-            made.appendChild(Lowering.bytes(doc, value, "α0"));
+            dirs.attr("base", "Φ.number")
+                .xpath("node()").remove()
+                .add("o").attr("as", "α0").attr("base", "Φ.bytes")
+                .add("o").attr("as", "α0").set(value);
         } else if ("bool".equals(forma)) {
-            made = doc.createElement("o");
             if ("01-".equals(value)) {
-                made.setAttribute("base", "Φ.true");
+                dirs.attr("base", "Φ.true");
             } else if ("00-".equals(value)) {
-                made.setAttribute("base", "Φ.false");
+                dirs.attr("base", "Φ.false");
             } else {
                 throw new IllegalStateException(
                     String.format("A bool must dataize to one byte, not to '%s'", value)
                 );
             }
+            dirs.xpath("node()").remove();
         } else {
-            made = Lowering.bytes(doc, value, "");
+            dirs.attr("base", "Φ.bytes")
+                .xpath("node()").remove()
+                .add("o").attr("as", "α0").set(value);
         }
-        return made;
-    }
-
-    private static Element bytes(
-        final Document doc, final String value, final String bound
-    ) {
-        final Element made = doc.createElement("o");
-        made.setAttribute("base", "Φ.bytes");
-        if (!bound.isEmpty()) {
-            made.setAttribute("as", bound);
-        }
-        final Element datum = doc.createElement("o");
-        datum.setAttribute("as", "α0");
-        datum.setTextContent(value);
-        made.appendChild(datum);
-        return made;
+        return dirs;
     }
 
     private static void selected(final Xnav node, final Collection<Xnav> out) {

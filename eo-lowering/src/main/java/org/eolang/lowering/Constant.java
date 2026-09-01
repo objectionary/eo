@@ -4,11 +4,8 @@
  */
 package org.eolang.lowering;
 
-import com.jcabi.xml.XML;
+import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * The value of one all-literal XMIR fragment, computed at build time.
@@ -37,14 +34,14 @@ public final class Constant {
     /**
      * The XMIR fragment to fold, an {@code <o/>} element.
      */
-    private final XML fragment;
+    private final Xnav fragment;
 
     /**
      * Ctor.
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to fold, an {@code <o/>} element
      */
-    public Constant(final Phino exe, final XML xmir) {
+    public Constant(final Phino exe, final Xnav xmir) {
         this.phino = exe;
         this.fragment = xmir;
     }
@@ -66,7 +63,7 @@ public final class Constant {
      * @return One of {@code number}, {@code bool}, {@code bytes}
      */
     public String forma() {
-        final String base = this.root().getAttribute("base");
+        final String base = this.fragment.attribute("base").text().orElse("");
         if (base.isEmpty() || base.charAt(0) != '.') {
             throw new IllegalStateException(
                 String.format(
@@ -76,16 +73,5 @@ public final class Constant {
             );
         }
         return new Primitive(base.substring(1)).forma();
-    }
-
-    private Element root() {
-        final Node node = this.fragment.inner();
-        final Element found;
-        if (node instanceof Document doc) {
-            found = doc.getDocumentElement();
-        } else {
-            found = (Element) node;
-        }
-        return found;
     }
 }

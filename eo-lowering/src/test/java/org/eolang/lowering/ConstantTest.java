@@ -4,7 +4,7 @@
  */
 package org.eolang.lowering;
 
-import com.jcabi.xml.XMLDocument;
+import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
@@ -30,7 +30,7 @@ final class ConstantTest {
             "the quotient of 42.5 and 2.0 must fold to the bytes of 21.25, but it didnt",
             new Constant(
                 phino,
-                new XMLDocument(
+                new Xnav(
                     String.join(
                         "",
                         "<o base='.div'>",
@@ -42,7 +42,7 @@ final class ConstantTest {
                         "</o>",
                         "</o>"
                     )
-                )
+                ).element("o")
             ).value(),
             Matchers.equalTo("40-35-00-00-00-00-00-00")
         );
@@ -54,7 +54,7 @@ final class ConstantTest {
             "a fragment led by gt must carry a bool, but this one doesnt",
             new Constant(
                 new Phino("phino", 7, temp),
-                new XMLDocument("<o base='.gt'><o base='Φ.true'/></o>")
+                new Xnav("<o base='.gt'><o base='Φ.true'/></o>").element("o")
             ).forma(),
             Matchers.equalTo("bool")
         );
@@ -66,7 +66,7 @@ final class ConstantTest {
             IllegalStateException.class,
             new Constant(
                 new Phino("phino", 7, temp),
-                new XMLDocument("<o base='.as-i64'><o base='Φ.true'/></o>")
+                new Xnav("<o base='.as-i64'><o base='Φ.true'/></o>").element("o")
             )::forma,
             "a method outside the twelve primitives cannot name a forma, but it did"
         );

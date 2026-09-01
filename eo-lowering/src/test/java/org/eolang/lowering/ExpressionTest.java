@@ -4,7 +4,7 @@
  */
 package org.eolang.lowering;
 
-import com.jcabi.xml.XMLDocument;
+import com.github.lombrozo.xnav.Xnav;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +21,7 @@ final class ExpressionTest {
         MatcherAssert.assertThat(
             "the fragment must become the φ of the root formation, but it didnt",
             new Expression(
-                new XMLDocument(
+                new Xnav(
                     String.join(
                         "",
                         "<o base='.plus'>",
@@ -33,7 +33,7 @@ final class ExpressionTest {
                         "</o>",
                         "</o>"
                     )
-                )
+                ).element("o")
             ).text(),
             Matchers.containsString(
                 String.join(
@@ -49,7 +49,7 @@ final class ExpressionTest {
     void refusesContextDependentReference() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new Expression(new XMLDocument("<o base='ξ.x'/>"))::text,
+            new Expression(new Xnav("<o base='ξ.x'/>").element("o"))::text,
             "a ξ reference means nothing outside its formation, so it cannot render, but it did"
         );
     }
