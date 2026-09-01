@@ -8,6 +8,7 @@ import com.sun.jna.Pointer;
 import java.util.Arrays;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.Handle;
 import org.eolang.Expect;
 import org.eolang.Int;
 import org.eolang.Natural;
@@ -50,7 +51,7 @@ public final class RecvFuncCall implements Syscall {
             "the 'size' argument of recv", size
         ).it();
         final int received = Winsock.INSTANCE.recv(
-            new Pointer(new Dataized(params[0]).asNumber().longValue()),
+            new Pointer(new Handle("the socket of recv", params[0]).it()),
             buf,
             size,
             flags
