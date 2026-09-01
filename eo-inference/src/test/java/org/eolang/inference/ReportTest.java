@@ -77,9 +77,30 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void usesWebSeparatorsForNestedSourceNames(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp, "nested\\cup.xmir"), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a source path must become a nested web path even when it carries backslashes",
+            Files.exists(temp.resolve("out").resolve("nested").resolve("cup.eo.html")),
+            Matchers.equalTo(true)
+        );
+        MatcherAssert.assertThat(
+            "the index must link with URL separators rather than platform separators",
+            Files.readString(temp.resolve("out").resolve("index.html")),
+            Matchers.containsString("nested/cup.eo.html")
+        );
+    }
+
     private static Path program(final Path temp) throws IOException {
+        return ReportTest.program(temp, "cup.xmir");
+    }
+
+    private static Path program(final Path temp, final String name) throws IOException {
+        final Path file = temp.resolve("xmirs").resolve(name);
         Files.writeString(
-            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            Files.createDirectories(file.getParent()).resolve(file.getFileName()),
             String.join(
                 "",
                 "<object><listing>",
