@@ -43,9 +43,10 @@ final class Blanks {
      */
     static void checkPlain(final Span span, final Globals globals, final Emit emit) {
         Blanks.enterAfterMeta(span, globals, emit);
-        if (globals.pendingBlanks() > 0 && (
-            globals.sealed() || globals.pendingComments().isEmpty()
-        )) {
+        if (
+            globals.pendingBlanks() > 0
+                && (globals.sealed() || globals.pendingComments().isEmpty())
+        ) {
             emit.error(
                 span.line(), span.indent(),
                 "blank line not allowed between non-master siblings"
