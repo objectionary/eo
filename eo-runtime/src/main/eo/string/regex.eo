@@ -274,18 +274,17 @@
         ok.if
           built
           cant-compile message
-    expr.slice > body
+    ^.^.slice > body
       1
       closes.minus 1
     ^.pattern joined.as-bytes > built
-    expr.last-index-of "/" > closes
-    ^.^ > expr
+    ^.^.last-index-of "/" > closes
     if. > flags
-      expr.ends-with "/"
+      ^.^.ends-with "/"
       ""
-      expr.slice
+      ^.^.slice
         closes.plus 1
-        expr.length.minus
+        ^.^.length.minus
           closes.plus 1
     flags.chained > joined
       * "\u0000" body
@@ -303,7 +302,7 @@
     outcome.at > ooffset
       2
       -1 > [m]
-    expr.starts-with "/" > opens
+    ^.^.starts-with "/" > opens
     outcome.at > oreason
       1
       "" > [m]
