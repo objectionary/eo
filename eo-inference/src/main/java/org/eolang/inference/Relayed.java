@@ -13,10 +13,9 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import org.w3c.dom.Node;
 import org.xembly.Xembler;
 
 /**
@@ -64,20 +63,13 @@ public final class Relayed implements Clue {
         final Path table = tables.resolve("links.xml");
         final XML links = new XMLDocument(table);
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
-        final Map<String, String> pairs = new Pairs(links).all();
+        final Pairs written = new Pairs(links);
+        final Map<String, String> pairs = written.all();
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Provided owned = new Provided(given, new Ends(pairs).names(), voids);
         final Collection<String> hollows = new HashSet<>(voids);
-        final Map<String, Collection<String>> fillers = new LinkedHashMap<>(0);
-        for (final XML bind : links.nodes("/links/type/ref/bind[ref]")) {
-            fillers.computeIfAbsent(
-                bind.xpath("@void").get(0), key -> new LinkedHashSet<>(0)
-            ).add(bind.xpath("ref/@loc").get(0));
-        }
-        final Map<String, XML> rows = new LinkedHashMap<>(0);
-        for (final XML type : links.nodes("/links/type[ref]")) {
-            rows.putIfAbsent(type.xpath("@id").get(0), type.nodes("ref").get(0));
-        }
+        final Map<String, Collection<String>> fillers = written.puts();
+        final Map<String, Node> rows = written.refs();
         for (final Map.Entry<String, List<String>> application
             : new Given(new Xmirs(xmirs).applications()).arguments().entrySet()) {
             final String hollow = pairs.getOrDefault(application.getKey(), "");
@@ -88,7 +80,7 @@ public final class Relayed implements Clue {
                         fillers.getOrDefault(hollow, Collections.emptyList()),
                         application.getValue()
                     ).directives()
-                ).applyQuietly(rows.get(application.getKey()).inner());
+                ).applyQuietly(rows.get(application.getKey()));
             }
         }
         Files.write(table, links.toString().getBytes(StandardCharsets.UTF_8));
