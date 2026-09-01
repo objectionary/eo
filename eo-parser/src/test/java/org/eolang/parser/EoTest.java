@@ -933,6 +933,17 @@ final class EoTest {
     }
 
     @Test
+    void rejectsTrailingWhitespaceInMultiLineBytesContinuation() {
+        MatcherAssert.assertThat(
+            "a bytes continuation must not strip trailing whitespace before it is validated",
+            EoTest.render("foo > main", "  CA-FE-", "  BE-BE "),
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
+            )
+        );
+    }
+
+    @Test
     void leavesSingleLineBytesAlone() {
         MatcherAssert.assertThat(
             "a single-line BYTES literal without trailing dash must NOT consume the next line",
