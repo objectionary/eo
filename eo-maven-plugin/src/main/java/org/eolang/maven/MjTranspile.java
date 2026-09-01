@@ -155,9 +155,7 @@ public final class MjTranspile extends MjSafe {
                 new Transpiling(
                     tojos.standalone(),
                     this.targetDir.toPath(),
-                    this.generatedDir.toPath(),
-                    this.tests,
-                    this.roots(),
+                    new Written(this.generatedDir.toPath(), this.tests, this.roots()),
                     new Transpilation(
                         new Tracking(this.trackSteps, this.located),
                         this.coverage,
