@@ -57,620 +57,110 @@
 
 [^] > regex
   compile > @
-
-  [^ cant-compile] > compile
-    if. > @
-      opens.not
-      cant-compile "regex is missing the opening slash"
-      if.
-        closes.eq 0
-        cant-compile "regex is missing the closing slash"
-        if.
-          ok
-          built
-          cant-compile message
-    ^.^ > expr!
-    expr.starts-with "/" > opens!
-    expr.last-index-of "/" > closes!
-    if. > flags!
-      expr.ends-with "/"
-      ""
-      expr.slice
-        closes.plus 1
-        expr.length.minus (closes.plus 1)
-    expr.slice 1 (closes.minus 1) > body!
-    ^.parsed body (flags.contains "x") > outcome!
-    (outcome.at 0 ("" > [m])).eq "ok" > ok!
-    outcome.at 1 ("" > [m]) > oreason!
-    outcome.at 2 (-1 > [m]) > ooffset!
-    if. > message
-      ooffset.lt 0
-      "regex syntax is invalid: %s".printf
-        * oreason
-      "regex syntax is invalid: %s at offset %d of the pattern".printf
-        * oreason ooffset
-    flags.chained (* (string 00-) body) > joined!
-    ^.pattern joined.as-bytes > built!
-
-  [^ serialized] > pattern
-    ^.pattern serialized > compiled
-    [^ txt] > match
-      [^ position start from to groups existing] > matched
-        groups.length > count
-        start.gte 0 > exists
-        ^.groups.at index > [^ index] > group
-        ^.existing.at index > [^ index] > group-exists
-        exists.if > next
-          if.
-            and.
-              from.eq to
-              to.eq ^.txt.length
-            ^.missing
-            ^.matched-from-index
-              position.plus 1
-              if.
-                from.eq to
-                to.plus 1
-                to
-          T
-            "Matched block does not exist, can't get next"
-        exists.if > text
-          group 0
-          T
-            "Matched block does not exist, can't get text"
-      [^ position start] > matched-from-index
-        ^.^.decoded > src!
-        src.at 0 ("" > [m]) > pflags!
-        src.at 1 ("" > [m]) > pbody!
-        ^.^.^.parsed pbody (pflags.contains "x") > outcome!
-        outcome.at 1 ("" > [m]) > root!
-        outcome.at 2 (0 > [m]) > total!
-        ^.^.^.settings pflags > cfg!
-        ^.^.^.searched root cfg ^.txt start total > found!
-        (found.at 0 ("" > [m])).eq "ok" > hit!
-        found.at 1 (-1 > [m]) > mfrom!
-        found.at 2 (-1 > [m]) > mto!
-        found.at 3 (* > [m]) > mgroups!
-        ^.^.^.grouped ^.txt mfrom mto total mgroups > packed!
-        hit.if > @
-          ^.matched
-            position
-            start
-            mfrom
-            mto
-            packed.at 0 (* > [m])
-            packed.at 1 (* > [m])
-          ^.missing
-      [] > missing
-        T > count
-          "Matched block does not exist, can't get count"
-        T > existing
-          "Matched block does not exist, can't get groups"
-        start.gte 0 > exists
-        T > from
-          "Matched block does not exist, can't get 'from' position"
-        T > [index] > group
-          "Matched block does not exist, can't get group"
-        T > [index] > group-exists
-          "Matched block does not exist, can't get group-exists"
-        T > groups
-          "Matched block does not exist, can't get groups"
-        T > next
-          "Matched block does not exist, can't get next"
-        0 > position
-        -1 > start
-        T > text
-          "Matched block does not exist, can't get text"
-      matched-from-index 1 0 > next
-    string ^.serialized > decoded-text!
-    decoded-text.index-of (string 00-) > separator!
-    * > decoded!
-      decoded-text.slice 0 separator
-      decoded-text.slice
-        separator.plus 1
-        decoded-text.length.minus (separator.plus 1)
-
-  [^ txt] > matches
-    ^.compile T > compiled!
-    compiled.decoded > src!
-    src.at 0 ("" > [m]) > pflags!
-    src.at 1 ("" > [m]) > pbody!
-    ^.parsed pbody (pflags.contains "x") > outcome!
-    outcome.at 1 ("" > [m]) > root!
-    outcome.at 2 (0 > [m]) > total!
-    ^.settings pflags > cfg!
-    ^.fully-matched root cfg txt total > @
-
-  [^ flags] > settings
-    * > @
-      flags.contains "i"
-      flags.contains "u"
-      flags.contains "s"
-      flags.contains "m"
-      flags.contains "d"
-
-  [^ body extended] > parsed
-    body.length > blen!
-    ^.alt 0 0 > result!
-    if. > @
-      (result.at 0 ("" > [m])).eq "error"
-      result
-      if.
-        (result.at 1 (0 > [m])).eq blen
-        * "ok" (result.at 2 (* > [m])) (result.at 3 (0 > [m]))
-        * "error" "Unmatched closing ')'" (result.at 1 (0 > [m]))
-
-    [^ i] > skip
-      ^.body.at i ("" > [m]) > c!
-      if. > @
-        ^.extended.not
-        i
-        if.
-          c.eq " "
-          ^.skip (i.plus 1)
-          if.
-            c.eq "\t"
-            ^.skip (i.plus 1)
-            if.
-              c.eq "\n"
-              ^.skip (i.plus 1)
-              if.
-                c.eq "\r"
-                ^.skip (i.plus 1)
-                if.
-                  c.eq "#"
-                  ^.skip (^.comment-end (i.plus 1))
-                  i
-
-    [^ i] > comment-end
-      ^.body.at i ("" > [m]) > c!
-      if. > @
-        or.
-          c.eq ""
-          c.eq "\n"
-        i
-        ^.comment-end (i.plus 1)
-
-    [^ i g] > alt
-      ^.cat i g > first!
-      if. > @
-        (first.at 0 ("" > [m])).eq "error"
-        first
-        ^.alt-loop
-          first.at 1 (0 > [m])
-          first.at 3 (0 > [m])
-          * (first.at 2 (* > [m]))
-
-    [^ i g branches] > alt-loop
-      ^.skip i > j!
-      if. > @
-        (^.body.at j ("" > [m])).eq "|"
-        ^.alt-continue (j.plus 1) g branches
-        * "ok" j (^.wrap-branches branches) g
-
-    [^ j g branches] > alt-continue
-      ^.cat j g > nxt!
-      if. > @
-        (nxt.at 0 ("" > [m])).eq "error"
-        nxt
-        ^.alt-loop
-          nxt.at 1 (0 > [m])
-          nxt.at 3 (0 > [m])
-          branches.with (nxt.at 2 (* > [m]))
-
-    [^ branches] > wrap-branches
-      if. > @
-        branches.length.eq 1
-        branches.at 0 (* > [m])
-        * "alt" branches
-
-    [^ i g] > cat
-      ^.cat-loop i g * > @
-
-    [^ i g items] > cat-loop
-      ^.skip i > j!
-      ^.body.at j ("" > [m]) > c!
-      if. > @
-        or.
-          c.eq ""
-          or.
-            c.eq "|"
-            c.eq ")"
-        * "ok" j (^.wrap-items items) g
-        ^.cat-continue j g items
-
-    [^ j g items] > cat-continue
-      ^.piece j g > pc!
-      if. > @
-        (pc.at 0 ("" > [m])).eq "error"
-        pc
-        ^.cat-loop
-          pc.at 1 (0 > [m])
-          pc.at 3 (0 > [m])
-          items.with (pc.at 2 (* > [m]))
-
-    [^ items] > wrap-items
-      if. > @
-        items.length.eq 1
-        items.at 0 (* > [m])
-        * "concat" items
-
-    [^ i g] > piece
-      ^.unit i g > u!
-      if. > @
-        (u.at 0 ("" > [m])).eq "error"
-        u
-        ^.apply-quant
-          u.at 1 (0 > [m])
-          u.at 2 (* > [m])
-          u.at 3 (0 > [m])
-
-    [^ i node g] > apply-quant
-      ^.skip i > j!
-      ^.quant j > q!
-      q.at 0 (1 > [m]) > mn!
-      q.at 1 (1 > [m]) > mx!
-      q.at 2 (^.j > [m]) > after!
-      if. > @
-        and.
-          mn.eq 1
-          mx.eq 1
-        * "ok" after node g
-        * "ok" after (* "repeat" node mn mx) g
-
-    [^ j] > quant
-      ^.body.at j ("" > [m]) > c!
-      if. > @
-        c.eq "*"
-        * 0 -1 (j.plus 1)
-        if.
-          c.eq "+"
-          * 1 -1 (j.plus 1)
-          if.
-            c.eq "?"
-            * 0 1 (j.plus 1)
-            if.
-              c.eq "{"
-              ^.try-braces (j.plus 1) j
-              * 1 1 j
-
-    [^ k fallback] > try-braces
-      ^.digits-run k > d1!
-      if. > @
-        (d1.at 2 (false > [m])).not
-        * 1 1 fallback
-        ^.after-first-digits
-          d1.at 0 (0 > [m])
-          d1.at 1 (0 > [m])
-          fallback
-
-    [^ n1 k fallback] > after-first-digits
-      ^.body.at k ("" > [m]) > c!
-      if. > @
-        c.eq "}"
-        * n1 n1 (k.plus 1)
-        if.
-          c.eq ","
-          ^.after-comma n1 (k.plus 1) fallback
-          * 1 1 fallback
-
-    [^ n1 k fallback] > after-comma
-      ^.digits-run k > d2!
-      d2.at 2 (false > [m]) > has2!
-      d2.at 0 (0 > [m]) > n2!
-      d2.at 1 (^.k > [m]) > k2!
-      ^.body.at k2 ("" > [m]) > c!
-      if. > @
-        c.eq "}"
-        if.
-          has2
-          * n1 n2 (k2.plus 1)
-          * n1 -1 (k2.plus 1)
-        * 1 1 fallback
-
-    [^ k] > digits-run
-      ^.digits-run-k k 0 false > @
-
-    [^ k acc has] > digits-run-k
-      ^.body.at k ("" > [m]) > c!
-      c.as-ascii (-1 > [m]) > code!
-      if. > @
-        and.
-          code.gte 48
-          code.lte 57
-        ^.digits-run-k
-          k.plus 1
-          (acc.times 10).plus (code.minus 48)
-          true
-        * acc k has
-
-    [^ c] > dangling-msg
-      "Dangling meta character '%s'".printf (* c) > @
-
-    [^ i g] > unit
-      ^.skip i > j!
-      ^.body.at j ("" > [m]) > c!
-      if. > @
-        or.
-          c.eq "*"
-          or.
-            c.eq "+"
-            c.eq "?"
-        * "error" (^.dangling-msg c) j
-        if.
-          c.eq "."
-          * "ok" (j.plus 1) (* "any") g
-          if.
-            c.eq "^"
-            * "ok" (j.plus 1) (* "start") g
-            if.
-              c.eq "$"
-              * "ok" (j.plus 1) (* "end") g
-              if.
-                c.eq "("
-                ^.grp (j.plus 1) g
-                if.
-                  c.eq "["
-                  ^.cls-node (j.plus 1) g
-                  if.
-                    c.eq "\\"
-                    ^.esc-node j g
-                    * "ok" (j.plus 1) (* "lit" c) g
-
-    [^ j g] > esc-node
-      ^.body.at (j.plus 1) ("" > [m]) > e!
-      if. > @
-        e.eq ""
-        * "error" "Trailing backslash" j
-        if.
-          e.eq "d"
-          * "ok" (j.plus 2) (* "pred" "digit") g
-          if.
-            e.eq "D"
-            * "ok" (j.plus 2) (* "pred" "ndigit") g
-            if.
-              e.eq "s"
-              * "ok" (j.plus 2) (* "pred" "space") g
-              if.
-                e.eq "S"
-                * "ok" (j.plus 2) (* "pred" "nspace") g
-                if.
-                  e.eq "w"
-                  * "ok" (j.plus 2) (* "pred" "word") g
-                  if.
-                    e.eq "W"
-                    * "ok" (j.plus 2) (* "pred" "nword") g
-                    if.
-                      e.eq "x"
-                      ^.hex-node j g
-                      if.
-                        e.eq "n"
-                        * "ok" (j.plus 2) (* "lit" "\n") g
-                        if.
-                          e.eq "t"
-                          * "ok" (j.plus 2) (* "lit" "\t") g
-                          if.
-                            e.eq "r"
-                            * "ok" (j.plus 2) (* "lit" "\r") g
-                            * "ok" (j.plus 2) (* "lit" e) g
-
-    [^ j g] > hex-node
-      ^.body.at (j.plus 2) ("" > [m]) > h1!
-      ^.body.at (j.plus 3) ("" > [m]) > h2!
-      h1.as-ascii (-1 > [m]) > c1!
-      h2.as-ascii (-1 > [m]) > c2!
-      ^.hex-digit c1 > v1!
-      ^.hex-digit c2 > v2!
-      if. > @
-        or.
-          v1.lt 0
-          v2.lt 0
-        * "error" "Illegal hexadecimal escape sequence" j
-        * "ok" (j.plus 4) (* "lit" (string ((v1.times 16).plus v2).as-char)) g
-
-    [^ code] > hex-digit
-      if. > @
-        and.
-          code.gte 48
-          code.lte 57
-        code.minus 48
-        if.
-          and.
-            code.gte 65
-            code.lte 70
-          (code.minus 65).plus 10
-          if.
-            and.
-              code.gte 97
-              code.lte 102
-            (code.minus 97).plus 10
-            -1
-
-    [^ j g] > grp
-      ^.body.at j ("" > [m]) > c1!
-      ^.body.at (j.plus 1) ("" > [m]) > c2!
-      if. > @
-        and.
-          c1.eq "?"
-          c2.eq ":"
-        ^.grp-body (j.plus 2) g -1
-        if.
-          c1.eq "?"
-          * "error" "Unknown inline modifier" j
-          ^.grp-body j (g.plus 1) (g.plus 1)
-
-    [^ j g gnum] > grp-body
-      ^.alt j g > inner!
-      if. > @
-        (inner.at 0 ("" > [m])).eq "error"
-        inner
-        ^.grp-close inner gnum
-
-    [^ inner gnum] > grp-close
-      inner.at 1 (0 > [m]) > idx!
-      ^.body.at idx ("" > [m]) > c!
-      if. > @
-        c.eq ")"
-        * "ok" (idx.plus 1) (* "group" (inner.at 2 (* > [m])) gnum) (inner.at 3 (0 > [m]))
-        * "error" "Unclosed group" idx
-
-    [^ j g] > cls-node
-      ^.body.at j ("" > [m]) > c1!
-      c1.eq "^" > neg!
-      if. > @
-        neg
-        ^.cls-finish (^.cls-items (j.plus 1) *) neg g
-        ^.cls-finish (^.cls-items j *) neg g
-
-    [^ res neg g] > cls-finish
-      if. > @
-        (res.at 0 ("" > [m])).eq "error"
-        res
-        * "ok" (res.at 1 (0 > [m])) (* "class" (res.at 2 (* > [m])) neg) g
-
-    [^ k items] > cls-items
-      ^.body.at k ("" > [m]) > c!
-      if. > @
-        c.eq ""
-        * "error" "Unclosed character class" k
-        if.
-          c.eq "]"
-          * "ok" (k.plus 1) items -1
-          ^.cls-continue k items
-
-    [^ k items] > cls-continue
-      ^.cls-atom k > a!
-      if. > @
-        (a.at 0 ("" > [m])).eq "error"
-        a
-        ^.cls-after-atom
-          a.at 1 ("" > [m])
-          a.at 2 ("" > [m])
-          a.at 3 (0 > [m])
-          items
-
-    [^ kind val idx items] > cls-after-atom
-      if. > @
-        kind.eq "char"
-        ^.cls-maybe-range val idx items
-        ^.cls-items idx (items.with (* "pred" val))
-
-    [^ ch idx items] > cls-maybe-range
-      ^.body.at idx ("" > [m]) > d!
-      ^.body.at (idx.plus 1) ("" > [m]) > after!
-      if. > @
-        and.
-          d.eq "-"
-          and.
-            (after.eq "").not
-            (after.eq "]").not
-        ^.cls-range ch idx items
-        ^.cls-items idx (items.with (* "char" ch))
-
-    [^ ch idx items] > cls-range
-      ^.cls-atom (idx.plus 1) > b!
-      if. > @
-        (b.at 0 ("" > [m])).eq "error"
-        b
-        if.
-          (b.at 1 ("" > [m])).eq "char"
-          ^.cls-items
-            b.at 3 (0 > [m])
-            items.with (* "range" ch (b.at 2 ("" > [m])))
-          * "error" "Illegal character range" idx
-
-    [^ k] > cls-atom
-      ^.body.at k ("" > [m]) > c!
-      if. > @
-        c.eq ""
-        * "error" "Unclosed character class" k
-        if.
-          c.eq "\\"
-          ^.cls-esc k
-          * "ok" "char" c (k.plus 1)
-
-    [^ k] > cls-esc
-      ^.body.at (k.plus 1) ("" > [m]) > e!
-      if. > @
-        e.eq ""
-        * "error" "Trailing backslash" k
-        if.
-          e.eq "d"
-          * "ok" "pred" "digit" (k.plus 2)
-          if.
-            e.eq "D"
-            * "ok" "pred" "ndigit" (k.plus 2)
-            if.
-              e.eq "s"
-              * "ok" "pred" "space" (k.plus 2)
-              if.
-                e.eq "S"
-                * "ok" "pred" "nspace" (k.plus 2)
-                if.
-                  e.eq "w"
-                  * "ok" "pred" "word" (k.plus 2)
-                  if.
-                    e.eq "W"
-                    * "ok" "pred" "nword" (k.plus 2)
-                    if.
-                      e.eq "x"
-                      ^.cls-hex k
-                      if.
-                        e.eq "n"
-                        * "ok" "char" "\n" (k.plus 2)
-                        if.
-                          e.eq "t"
-                          * "ok" "char" "\t" (k.plus 2)
-                          if.
-                            e.eq "r"
-                            * "ok" "char" "\r" (k.plus 2)
-                            * "ok" "char" e (k.plus 2)
-
-    [^ k] > cls-hex
-      ^.body.at (k.plus 2) ("" > [m]) > h1!
-      ^.body.at (k.plus 3) ("" > [m]) > h2!
-      h1.as-ascii (-1 > [m]) > c1!
-      h2.as-ascii (-1 > [m]) > c2!
-      ^.hex-digit c1 > v1!
-      ^.hex-digit c2 > v2!
-      if. > @
-        or.
-          v1.lt 0
-          v2.lt 0
-        * "error" "Illegal hexadecimal escape sequence" k
-        * "ok" "char" (string ((v1.times 16).plus v2).as-char) (k.plus 4)
-
+  if. > [^ cands tlen k] > any-full
+    k.gte cands.length
+    false
+    if.
+      eq.
+        ^.cand-end
+          cands.at
+            k
+            [m]
+              * > @
+        tlen
+      true
+      ^.any-full
+        cands
+        tlen
+        k.plus 1
+  if. > [^ text pos tlen ml ul groups] > at-end
+    or.
+      pos.eq tlen
+      or.
+        ml.and
+          ^.is-terminator
+            ul
+            text.at
+              pos
+              "" > [m]
+        ml.not.and
+          ^.end-before-final-terminator
+            text
+            pos
+            tlen
+            ul
+    *
+      * pos groups
+    *
+  if. > [^ text pos ml ul groups] > at-start
+    or.
+      pos.eq 0
+      ml.and
+        ^.is-terminator
+          ul
+          text.at
+            pos.minus 1
+            "" > [m]
+    *
+      * pos groups
+    *
   [^ ctx node pos groups] > attempted
-    node.at 0 ("" > [m]) > tag!
-    ctx.at 0 ("" > [m]) > text!
-    ctx.at 1 (0 > [m]) > tlen!
-    ctx.at 2 (false > [m]) > ci!
-    ctx.at 3 (false > [m]) > uc!
-    ctx.at 4 (false > [m]) > da!
-    ctx.at 5 (false > [m]) > ml!
-    ctx.at 6 (false > [m]) > ul!
-    text.at pos ("" > [m]) > cur!
     if. > @
       tag.eq "concat"
-      ^.seq ctx (node.at 1 (* > [m])) 0 pos groups
+      ^.seq
+        ctx
+        node.at
+          1
+          [m]
+            * > @
+        0
+        pos
+        groups
       if.
         tag.eq "alt"
-        ^.choice ctx (node.at 1 (* > [m])) 0 pos groups
+        ^.choice
+          ctx
+          node.at
+            1
+            [m]
+              * > @
+          0
+          pos
+          groups
         if.
           tag.eq "group"
-          ^.grouped-attempt ctx node pos groups
+          ^.grouped-attempt
+            ctx
+            node
+            pos
+            groups
           if.
             tag.eq "repeat"
             ^.rep
               ctx
-              node.at 1 (* > [m])
+              node.at
+                1
+                [m]
+                  * > @
               pos
               groups
-              node.at 2 (0 > [m])
-              node.at 3 (-1 > [m])
+              node.at
+                2
+                0 > [m]
+              node.at
+                3
+                -1 > [m]
             if.
               tag.eq "lit"
-              ^.one-char ci uc cur (node.at 1 ("" > [m])) pos groups
+              ^.one-char
+                ci
+                uc
+                cur
+                node.at
+                  1
+                  "" > [m]
+                pos
+                groups
               if.
                 tag.eq "any"
                 ^.one-any da ul cur pos groups
@@ -680,216 +170,443 @@
                     ci
                     uc
                     cur
-                    node.at 1 (* > [m])
-                    node.at 2 (false > [m])
+                    node.at
+                      1
+                      [m]
+                        * > @
+                    node.at
+                      2
+                      false > [m]
                     pos
                     groups
                   if.
                     tag.eq "pred"
-                    ^.one-pred cur (node.at 1 ("" > [m])) pos groups
+                    ^.one-pred
+                      cur
+                      node.at
+                        1
+                        "" > [m]
+                      pos
+                      groups
                     if.
                       tag.eq "start"
                       ^.at-start text pos ml ul groups
                       ^.at-end text pos tlen ml ul groups
-
-  [^ ctx children idx pos groups] > seq
+    ctx.at > ci!
+      2
+      false > [m]
+    text.at > cur!
+      pos
+      "" > [m]
+    ctx.at > da!
+      4
+      false > [m]
+    ctx.at > ml!
+      5
+      false > [m]
+    node.at > tag!
+      0
+      "" > [m]
+    ctx.at > text!
+      0
+      "" > [m]
+    ctx.at > tlen!
+      1
+      0 > [m]
+    ctx.at > uc!
+      3
+      false > [m]
+    ctx.at > ul!
+      6
+      false > [m]
+  c.at > [^ c] > cand-end
+    0
+    -1 > [m]
+  c.at > [^ c] > cand-groups
+    1
+    [m]
+      * > @
+  if. > [^ ctx branches idx pos groups] > choice
+    idx.gte branches.length
+    *
+    concat.
+      ^.attempted
+        ctx
+        branches.at
+          idx
+          [m]
+            * > @
+        pos
+        groups
+      ^.choice
+        ctx
+        branches
+        idx.plus 1
+        pos
+        groups
+  if. > [^ ci uc ch items k] > class-hit
+    k.gte items.length
+    false
+    if.
+      ^.item-hit
+        ci
+        uc
+        ch
+        items.at
+          k
+          [m]
+            * > @
+      true
+      ^.class-hit
+        ci
+        uc
+        ch
+        items
+        k.plus 1
+  [^ cant-compile] > compile
+    opens.not.if > @
+      cant-compile
+        "regex is missing the opening slash"
+      if.
+        closes.eq 0
+        cant-compile
+          "regex is missing the closing slash"
+        ok.if
+          built
+          cant-compile message
+    expr.slice > body!
+      1
+      closes.minus 1
+    ^.pattern joined.as-bytes > built!
+    expr.last-index-of "/" > closes!
+    ^.^ > expr!
+    if. > flags!
+      expr.ends-with "/"
+      ""
+      expr.slice
+        closes.plus 1
+        expr.length.minus
+          closes.plus 1
+    flags.chained > joined!
+      * "\u0000" body
+    if. > message
+      ooffset.lt 0
+      "regex syntax is invalid: %s".printf
+        * oreason
+      "regex syntax is invalid: %s at offset %d of the pattern".printf
+        * oreason ooffset
+    eq. > ok!
+      outcome.at
+        0
+        "" > [m]
+      "ok"
+    outcome.at > ooffset!
+      2
+      -1 > [m]
+    expr.starts-with "/" > opens!
+    outcome.at > oreason!
+      1
+      "" > [m]
+    ^.parsed > outcome!
+      body
+      flags.contains "x"
+  if. > [^ mx] > dec-or-neg
+    mx.lt 0
+    -1
+    mx.minus 1
+  if. > [^ n] > empty-groups
+    n.lte 0
+    *
+    with.
+      ^.empty-groups
+        n.minus 1
+      *
+        -1
+        -1
+        false
+  [^ text pos tlen ul] > end-before-final-terminator
     if. > @
-      idx.gte children.length
-      * (* pos groups)
-      ^.flat-map-seq
+      remaining.eq 1
+      ^.is-terminator
+        ul
+        text.at
+          pos
+          "" > [m]
+      and.
+        remaining.eq 2
+        ul.not.and
+          and.
+            eq.
+              text.at
+                pos
+                "" > [m]
+              "\r"
+            eq.
+              text.at
+                pos.plus 1
+                "" > [m]
+              "\n"
+    tlen.minus pos > remaining!
+  ^.flat-map-seq-k > [^ ctx children idx cands] > flat-map-seq
+    ctx
+    children
+    idx
+    cands
+    0
+  if. > [^ ctx children idx cands k] > flat-map-seq-k
+    k.gte cands.length
+    *
+    concat.
+      ^.seq
         ctx
         children
-        idx.plus 1
-        ^.attempted ctx (children.at idx (* > [m])) pos groups
-
-  [^ ctx children idx cands] > flat-map-seq
-    ^.flat-map-seq-k ctx children idx cands 0 > @
-
-  [^ ctx children idx cands k] > flat-map-seq-k
-    if. > @
-      k.gte cands.length
-      *
-      concat.
-        ^.seq
-          ctx
-          children
-          idx
-          ^.cand-end (cands.at k (* > [m]))
-          ^.cand-groups (cands.at k (* > [m]))
-        ^.flat-map-seq-k ctx children idx cands (k.plus 1)
-
-  [^ ctx branches idx pos groups] > choice
-    if. > @
-      idx.gte branches.length
-      *
-      concat.
-        ^.attempted ctx (branches.at idx (* > [m])) pos groups
-        ^.choice ctx branches (idx.plus 1) pos groups
-
+        idx
+        ^.cand-end
+          cands.at
+            k
+            [m]
+              * > @
+        ^.cand-groups
+          cands.at
+            k
+            [m]
+              * > @
+      ^.flat-map-seq-k
+        ctx
+        children
+        idx
+        cands
+        k.plus 1
+  if. > [^ ch] > folded
+    or.
+      ch.eq "İ"
+      ch.eq "ı"
+    "i"
+    ch.lower
+  * > [^ p cand] > found
+    "ok"
+    p
+    ^.cand-end cand
+    ^.cand-groups cand
+  [^ root cfg text total] > fully-matched
+    ^.any-full > @
+      cands
+      text.length
+      0
+    ^.attempted > cands!
+      ctx
+      root
+      0
+      ^.empty-groups total
+    cfg.at > ci!
+      0
+      false > [m]
+    * > ctx!
+      text
+      text.length
+      ci
+      uc
+      da
+      ml
+      ul
+    cfg.at > da!
+      2
+      false > [m]
+    cfg.at > ml!
+      3
+      false > [m]
+    cfg.at > uc!
+      1
+      false > [m]
+    cfg.at > ul!
+      4
+      false > [m]
+  entry.at > [^ entry] > group-participated
+    2
+    false > [m]
+  if. > [^ txt entry] > group-text
+    ^.group-participated entry
+    txt.slice
+      entry.at
+        0
+        -1 > [m]
+      minus.
+        entry.at
+          1
+          -1 > [m]
+        entry.at
+          0
+          -1 > [m]
+    ""
+  ^.grouped-k *5 > [^ txt mfrom mto total mgroups] > grouped
+    txt
+    total
+    mgroups
+    1
+    *
+      txt.slice
+        mfrom
+        mto.minus mfrom
+    true
   [^ ctx node pos groups] > grouped-attempt
-    node.at 1 (* > [m]) > child!
-    node.at 2 (-1 > [m]) > gnum!
-    ^.attempted ctx child pos groups > inner!
     if. > @
       gnum.lt 0
       inner
-      ^.map-stamp inner pos gnum 0
-
-  [^ cands start gnum k] > map-stamp
-    if. > @
-      k.gte cands.length
-      *
-      with.
-        ^.map-stamp cands start gnum (k.plus 1)
-        ^.one-stamp (cands.at k (* > [m])) start gnum
-
-  [^ cand start gnum] > one-stamp
-    cand.at 0 (-1 > [m]) > end!
-    cand.at 1 (* > [m]) > gs!
-    * end (^.replaced-at gs (gnum.minus 1) (* start end true)) > @
-
-  [^ tup idx val] > replaced-at
-    concat. > @
-      with.
-        tup.front idx
-        val
-      tup.back
-        tup.length.minus (idx.plus 1)
-
-  [^ c] > cand-end
-    c.at 0 (-1 > [m]) > @
-
-  [^ c] > cand-groups
-    c.at 1 (* > [m]) > @
-
-  [^ ctx child pos groups mn mx] > rep
-    if. > @
-      mn.gt 0
-      ^.rep-forced ctx child pos groups mn mx
-      if.
-        mx.eq 0
-        * (* pos groups)
-        ^.rep-optional ctx child pos groups mx
-
-  [^ ctx child pos groups mn mx] > rep-forced
-    ^.rep-forced-k ctx child pos groups mn mx (^.attempted ctx child pos groups) 0 > @
-
-  [^ ctx child pos groups mn mx own k] > rep-forced-k
-    if. > @
-      k.gte own.length
-      *
-      concat.
-        ^.rep-forced-one ctx child pos mn mx (own.at k (* > [m]))
-        ^.rep-forced-k ctx child pos groups mn mx own (k.plus 1)
-
-  [^ ctx child pos mn mx cand] > rep-forced-one
-    cand.at 0 (-1 > [m]) > e!
-    cand.at 1 (* > [m]) > g!
-    if. > @
-      e.eq pos
-      * (* e g)
-      ^.rep ctx child e g (mn.minus 1) (^.dec-or-neg mx)
-
-  [^ ctx child pos groups mx] > rep-optional
-    ^.rep-optional-k ctx child pos groups mx (^.attempted ctx child pos groups) 0 > @
-
-  [^ ctx child pos groups mx own k] > rep-optional-k
-    if. > @
-      k.gte own.length
-      * (* pos groups)
-      concat.
-        ^.rep-optional-one ctx child pos mx (own.at k (* > [m]))
-        ^.rep-optional-k ctx child pos groups mx own (k.plus 1)
-
-  [^ ctx child pos mx cand] > rep-optional-one
-    cand.at 0 (-1 > [m]) > e!
-    cand.at 1 (* > [m]) > g!
-    if. > @
-      e.eq pos
-      * (* e g)
-      ^.rep ctx child e g 0 (^.dec-or-neg mx)
-
-  [^ mx] > dec-or-neg
-    if. > @
-      mx.lt 0
-      -1
-      mx.minus 1
-
-  [^ ci uc cur expected pos groups] > one-char
-    if. > @
-      cur.eq ""
-      *
-      if.
-        ^.same ci uc cur expected
-        * (* (pos.plus 1) groups)
-        *
-
-  [^ da ul cur pos groups] > one-any
-    if. > @
-      or.
-        cur.eq ""
-        and.
-          da.not
-          ^.is-terminator ul cur
-      *
-      * (* (pos.plus 1) groups)
-
-  [^ ul ch] > is-terminator
-    if. > @
-      ch.eq "\n"
-      true
-      if.
-        ul
-        false
-        or.
-          ch.eq "\r"
-          or.
-            ch.eq (string C2-85)
-            or.
-              ch.eq (string E2-80-A8)
-              ch.eq (string E2-80-A9)
-
-  [^ ci uc cur items neg pos groups] > one-class
-    ^.class-hit ci uc cur items 0 > hit!
-    if. > @
-      cur.eq ""
-      *
-      if.
-        hit.eq neg
-        *
-        * (* (pos.plus 1) groups)
-
-  [^ ci uc ch items k] > class-hit
-    if. > @
-      k.gte items.length
-      false
-      if.
-        ^.item-hit ci uc ch (items.at k (* > [m]))
-        true
-        ^.class-hit ci uc ch items (k.plus 1)
-
-  [^ ci uc ch item] > item-hit
-    item.at 0 ("" > [m]) > tag!
-    if. > @
-      tag.eq "char"
-      ^.same ci uc ch (item.at 1 ("" > [m]))
-      if.
-        tag.eq "range"
-        ^.in-range ch (item.at 1 ("" > [m])) (item.at 2 ("" > [m]))
-        ^.matches-pred ch (item.at 1 ("" > [m]))
-
+      ^.map-stamp
+        inner
+        pos
+        gnum
+        0
+    node.at > child!
+      1
+      [m]
+        * > @
+    node.at > gnum!
+      2
+      -1 > [m]
+    ^.attempted > inner!
+      ctx
+      child
+      pos
+      groups
+  if. > [^ txt total mgroups k gtexts gflags] > grouped-k
+    k.gt total
+    *
+      gtexts
+      gflags
+    ^.grouped-k
+      txt
+      total
+      mgroups
+      k.plus 1
+      gtexts.with
+        ^.group-text
+          txt
+          mgroups.at
+            k.minus 1
+            * > [m]
+              -1
+              -1
+              false
+      gflags.with
+        ^.group-participated
+          mgroups.at
+            k.minus 1
+            * > [m]
+              -1
+              -1
+              false
   [^ ch lo hi] > in-range
-    ch.as-ascii (-1 > [m]) > c!
-    lo.as-ascii (-1 > [m]) > l!
-    hi.as-ascii (-1 > [m]) > h!
     and. > @
       c.gte 0
       and.
         c.gte l
         c.lte h
-
+    ch.as-ascii > c!
+      -1 > [m]
+    hi.as-ascii > h!
+      -1 > [m]
+    lo.as-ascii > l!
+      -1 > [m]
+  if. > [^ ul ch] > is-terminator
+    ch.eq "\n"
+    true
+    ul.if
+      false
+      or.
+        ch.eq "\r"
+        or.
+          ch.eq "\u0085"
+          or.
+            ch.eq " "
+            ch.eq " "
+  [^ ci uc ch item] > item-hit
+    if. > @
+      tag.eq "char"
+      ^.same
+        ci
+        uc
+        ch
+        item.at
+          1
+          "" > [m]
+      if.
+        tag.eq "range"
+        ^.in-range
+          ch
+          item.at
+            1
+            "" > [m]
+          item.at
+            2
+            "" > [m]
+        ^.matches-pred
+          ch
+          item.at
+            1
+            "" > [m]
+    item.at > tag!
+      0
+      "" > [m]
+  if. > [^ cands start gnum k] > map-stamp
+    k.gte cands.length
+    *
+    with.
+      ^.map-stamp
+        cands
+        start
+        gnum
+        k.plus 1
+      ^.one-stamp
+        cands.at
+          k
+          [m]
+            * > @
+        start
+        gnum
+  [^ txt] > matches
+    ^.fully-matched > @
+      root
+      cfg
+      txt
+      total
+    ^.settings pflags > cfg!
+    ^.compile T > compiled!
+    ^.parsed > outcome!
+      pbody
+      pflags.contains "x"
+    src.at > pbody!
+      1
+      "" > [m]
+    src.at > pflags!
+      0
+      "" > [m]
+    outcome.at > root!
+      1
+      "" > [m]
+    compiled.decoded > src!
+    outcome.at > total!
+      2
+      0 > [m]
   [^ ch tag] > matches-pred
-    ch.as-ascii (-1 > [m]) > c!
+    if. > @
+      tag.eq "digit"
+      digit
+      if.
+        tag.eq "ndigit"
+        digit.not
+        if.
+          tag.eq "space"
+          space
+          if.
+            tag.eq "nspace"
+            space.not
+            if.
+              tag.eq "word"
+              word
+              word.not
+    ch.as-ascii > c!
+      -1 > [m]
     and. > digit!
       c.gte 48
       c.lte 57
@@ -917,167 +634,1259 @@
             c.gte 97
             c.lte 122
       c.eq 95
-    if. > @
-      tag.eq "digit"
-      digit
-      if.
-        tag.eq "ndigit"
-        digit.not
-        if.
-          tag.eq "space"
-          space
-          if.
-            tag.eq "nspace"
-            space.not
-            if.
-              tag.eq "word"
-              word
-              word.not
-
-  [^ text pos ml ul groups] > at-start
-    if. > @
-      or.
-        pos.eq 0
-        and.
-          ml
-          ^.is-terminator ul (text.at (pos.minus 1) ("" > [m]))
-      * (* pos groups)
+  if. > [^ da ul cur pos groups] > one-any
+    or.
+      cur.eq ""
+      da.not.and
+        ^.is-terminator ul cur
+    *
+    *
       *
-
-  [^ text pos tlen ml ul groups] > at-end
-    if. > @
-      or.
-        pos.eq tlen
-        or.
-          and.
-            ml
-            ^.is-terminator ul (text.at pos ("" > [m]))
-          and.
-            ml.not
-            ^.end-before-final-terminator text pos tlen ul
-      * (* pos groups)
+        pos.plus 1
+        groups
+  if. > [^ ci uc cur expected pos groups] > one-char
+    cur.eq ""
+    *
+    if.
+      ^.same
+        ci
+        uc
+        cur
+        expected
       *
-
-  [^ text pos tlen ul] > end-before-final-terminator
-    tlen.minus pos > remaining!
-    if. > @
-      remaining.eq 1
-      ^.is-terminator ul (text.at pos ("" > [m]))
-      and.
-        remaining.eq 2
-        and.
-          ul.not
-          and.
-            (text.at pos ("" > [m])).eq "\r"
-            (text.at (pos.plus 1) ("" > [m])).eq "\n"
-
-  [^ cur tag pos groups] > one-pred
+        *
+          pos.plus 1
+          groups
+      *
+  [^ ci uc cur items neg pos groups] > one-class
     if. > @
       cur.eq ""
       *
       if.
-        ^.matches-pred cur tag
-        * (* (pos.plus 1) groups)
+        hit.eq neg
         *
-
-  [^ ci uc a b] > same
+        *
+          *
+            pos.plus 1
+            groups
+    ^.class-hit > hit!
+      ci
+      uc
+      cur
+      items
+      0
+  if. > [^ cur tag pos groups] > one-pred
+    cur.eq ""
+    *
+    if.
+      ^.matches-pred cur tag
+      *
+        *
+          pos.plus 1
+          groups
+      *
+  [^ cand start gnum] > one-stamp
+    * > @
+      end
+      ^.replaced-at *2
+        gs
+        gnum.minus 1
+        start
+        end
+        true
+    cand.at > end!
+      0
+      -1 > [m]
+    cand.at > gs!
+      1
+      [m]
+        * > @
+  [^ body extended] > parsed
     if. > @
-      a.eq b
-      true
+      eq.
+        result.at
+          0
+          "" > [m]
+        "error"
+      result
       if.
-        ci.not
-        false
+        eq.
+          result.at
+            1
+            0 > [m]
+          blen
+        *
+          "ok"
+          result.at
+            2
+            [m]
+              * > @
+          result.at
+            3
+            0 > [m]
+        *
+          "error"
+          "Unmatched closing ')'"
+          result.at
+            1
+            0 > [m]
+    [^ n1 k fallback] > after-comma
+      if. > @
+        c.eq "}"
+        has2.if *1
+          *
+            n1
+            n2
+            k2.plus 1
+          n1
+          -1
+          k2.plus 1
+        *
+          1
+          1
+          fallback
+      ^.body.at > c!
+        k2
+        "" > [m]
+      ^.digits-run k > d2!
+      d2.at > has2!
+        2
+        false > [m]
+      d2.at > k2!
+        1
+        ^.k > [m]
+      d2.at > n2!
+        0
+        0 > [m]
+    [^ n1 k fallback] > after-first-digits
+      if. > @
+        c.eq "}"
+        *
+          n1
+          n1
+          k.plus 1
         if.
-          uc
-          (^.folded a).eq (^.folded b)
-          a.lower.eq b.lower
-
-  [^ ch] > folded
+          c.eq ","
+          ^.after-comma
+            n1
+            k.plus 1
+            fallback
+          * 1 1 fallback
+      ^.body.at > c!
+        k
+        "" > [m]
+    [^ i g] > alt
+      if. > @
+        eq.
+          first.at
+            0
+            "" > [m]
+          "error"
+        first
+        ^.alt-loop *2
+          first.at
+            1
+            0 > [m]
+          first.at
+            3
+            0 > [m]
+          first.at
+            2
+            [m]
+              * > @
+      ^.cat i g > first!
+    [^ j g branches] > alt-continue
+      if. > @
+        eq.
+          nxt.at
+            0
+            "" > [m]
+          "error"
+        nxt
+        ^.alt-loop
+          nxt.at
+            1
+            0 > [m]
+          nxt.at
+            3
+            0 > [m]
+          branches.with
+            nxt.at
+              2
+              [m]
+                * > @
+      ^.cat j g > nxt!
+    [^ i g branches] > alt-loop
+      if. > @
+        eq.
+          ^.body.at
+            j
+            "" > [m]
+          "|"
+        ^.alt-continue
+          j.plus 1
+          g
+          branches
+        *
+          "ok"
+          j
+          ^.wrap-branches branches
+          g
+      ^.skip i > j!
+    [^ i node g] > apply-quant
+      if. > @
+        and.
+          mn.eq 1
+          mx.eq 1
+        *
+          "ok"
+          after
+          node
+          g
+        *
+          "ok"
+          after
+          *
+            "repeat"
+            node
+            mn
+            mx
+          g
+      q.at > after!
+        2
+        ^.j > [m]
+      ^.skip i > j!
+      q.at > mn!
+        0
+        1 > [m]
+      q.at > mx!
+        1
+        1 > [m]
+      ^.quant j > q!
+    body.length > blen!
+    ^.cat-loop > [^ i g] > cat
+      i
+      g
+      *
+    [^ j g items] > cat-continue
+      if. > @
+        eq.
+          pc.at
+            0
+            "" > [m]
+          "error"
+        pc
+        ^.cat-loop
+          pc.at
+            1
+            0 > [m]
+          pc.at
+            3
+            0 > [m]
+          items.with
+            pc.at
+              2
+              [m]
+                * > @
+      ^.piece j g > pc!
+    [^ i g items] > cat-loop
+      if. > @
+        or.
+          c.eq ""
+          or.
+            c.eq "|"
+            c.eq ")"
+        *
+          "ok"
+          j
+          ^.wrap-items items
+          g
+        ^.cat-continue
+          j
+          g
+          items
+      ^.body.at > c!
+        j
+        "" > [m]
+      ^.skip i > j!
+    if. > [^ kind val idx items] > cls-after-atom
+      kind.eq "char"
+      ^.cls-maybe-range
+        val
+        idx
+        items
+      ^.cls-items
+        idx
+        items.with
+          * "pred" val
+    [^ k] > cls-atom
+      if. > @
+        c.eq ""
+        *
+          "error"
+          "Unclosed character class"
+          k
+        if.
+          c.eq "\\"
+          ^.cls-esc k
+          *
+            "ok"
+            "char"
+            c
+            k.plus 1
+      ^.body.at > c!
+        k
+        "" > [m]
+    [^ k items] > cls-continue
+      if. > @
+        eq.
+          a.at
+            0
+            "" > [m]
+          "error"
+        a
+        ^.cls-after-atom
+          a.at
+            1
+            "" > [m]
+          a.at
+            2
+            "" > [m]
+          a.at
+            3
+            0 > [m]
+          items
+      ^.cls-atom k > a!
+    [^ k] > cls-esc
+      if. > @
+        e.eq ""
+        *
+          "error"
+          "Trailing backslash"
+          k
+        if.
+          e.eq "d"
+          *
+            "ok"
+            "pred"
+            "digit"
+            k.plus 2
+          if.
+            e.eq "D"
+            *
+              "ok"
+              "pred"
+              "ndigit"
+              k.plus 2
+            if.
+              e.eq "s"
+              *
+                "ok"
+                "pred"
+                "space"
+                k.plus 2
+              if.
+                e.eq "S"
+                *
+                  "ok"
+                  "pred"
+                  "nspace"
+                  k.plus 2
+                if.
+                  e.eq "w"
+                  *
+                    "ok"
+                    "pred"
+                    "word"
+                    k.plus 2
+                  if.
+                    e.eq "W"
+                    *
+                      "ok"
+                      "pred"
+                      "nword"
+                      k.plus 2
+                    if.
+                      e.eq "x"
+                      ^.cls-hex k
+                      if.
+                        e.eq "n"
+                        * "ok" "char" "\n" (k.plus 2)
+                        if.
+                          e.eq "t"
+                          * "ok" "char" "\t" (k.plus 2)
+                          if.
+                            e.eq "r"
+                            * "ok" "char" "\r" (k.plus 2)
+                            * "ok" "char" e (k.plus 2)
+      ^.body.at > e!
+        k.plus 1
+        "" > [m]
+    if. > [^ res neg g] > cls-finish
+      eq.
+        res.at
+          0
+          "" > [m]
+        "error"
+      res
+      *
+        "ok"
+        res.at
+          1
+          0 > [m]
+        *
+          "class"
+          res.at
+            2
+            [m]
+              * > @
+          neg
+        g
+    [^ k] > cls-hex
+      if. > @
+        or.
+          v1.lt 0
+          v2.lt 0
+        *
+          "error"
+          "Illegal hexadecimal escape sequence"
+          k
+        *
+          "ok"
+          "char"
+          string
+            as-char.
+              plus.
+                v1.times 16
+                v2
+          k.plus 4
+      h1.as-ascii > c1!
+        -1 > [m]
+      h2.as-ascii > c2!
+        -1 > [m]
+      ^.body.at > h1!
+        k.plus 2
+        "" > [m]
+      ^.body.at > h2!
+        k.plus 3
+        "" > [m]
+      ^.hex-digit c1 > v1!
+      ^.hex-digit c2 > v2!
+    [^ k items] > cls-items
+      if. > @
+        c.eq ""
+        *
+          "error"
+          "Unclosed character class"
+          k
+        if.
+          c.eq "]"
+          *
+            "ok"
+            k.plus 1
+            items
+            -1
+          ^.cls-continue k items
+      ^.body.at > c!
+        k
+        "" > [m]
+    [^ ch idx items] > cls-maybe-range
+      if. > @
+        and.
+          d.eq "-"
+          and.
+            not.
+              after.eq ""
+            not.
+              after.eq "]"
+        ^.cls-range
+          ch
+          idx
+          items
+        ^.cls-items
+          idx
+          items.with
+            * "char" ch
+      ^.body.at > after!
+        idx.plus 1
+        "" > [m]
+      ^.body.at > d!
+        idx
+        "" > [m]
+    [^ j g] > cls-node
+      neg.if > @
+        ^.cls-finish
+          ^.cls-items
+            j.plus 1
+            *
+          neg
+          g
+        ^.cls-finish
+          ^.cls-items
+            j
+            *
+          neg
+          g
+      ^.body.at > c1!
+        j
+        "" > [m]
+      c1.eq "^" > neg!
+    [^ ch idx items] > cls-range
+      if. > @
+        eq.
+          b.at
+            0
+            "" > [m]
+          "error"
+        b
+        if.
+          eq.
+            b.at
+              1
+              "" > [m]
+            "char"
+          ^.cls-items
+            b.at
+              3
+              0 > [m]
+            items.with
+              *
+                "range"
+                ch
+                b.at
+                  2
+                  "" > [m]
+          *
+            "error"
+            "Illegal character range"
+            idx
+      ^.cls-atom > b!
+        idx.plus 1
+    [^ i] > comment-end
+      if. > @
+        or.
+          c.eq ""
+          c.eq "\n"
+        i
+        ^.comment-end
+          i.plus 1
+      ^.body.at > c!
+        i
+        "" > [m]
+    printf. > [^ c] > dangling-msg
+      "Dangling meta character '%s'"
+      * c
+    ^.digits-run-k > [^ k] > digits-run
+      k
+      0
+      false
+    [^ k acc has] > digits-run-k
+      if. > @
+        and.
+          code.gte 48
+          code.lte 57
+        ^.digits-run-k
+          k.plus 1
+          plus.
+            acc.times 10
+            code.minus 48
+          true
+        *
+          acc
+          k
+          has
+      ^.body.at > c!
+        k
+        "" > [m]
+      c.as-ascii > code!
+        -1 > [m]
+    [^ j g] > esc-node
+      if. > @
+        e.eq ""
+        *
+          "error"
+          "Trailing backslash"
+          j
+        if.
+          e.eq "d"
+          *
+            "ok"
+            j.plus 2
+            * "pred" "digit"
+            g
+          if.
+            e.eq "D"
+            *
+              "ok"
+              j.plus 2
+              * "pred" "ndigit"
+              g
+            if.
+              e.eq "s"
+              *
+                "ok"
+                j.plus 2
+                * "pred" "space"
+                g
+              if.
+                e.eq "S"
+                *
+                  "ok"
+                  j.plus 2
+                  * "pred" "nspace"
+                  g
+                if.
+                  e.eq "w"
+                  *
+                    "ok"
+                    j.plus 2
+                    * "pred" "word"
+                    g
+                  if.
+                    e.eq "W"
+                    *
+                      "ok"
+                      j.plus 2
+                      * "pred" "nword"
+                      g
+                    if.
+                      e.eq "x"
+                      ^.hex-node j g
+                      if.
+                        e.eq "n"
+                        *
+                          "ok"
+                          j.plus 2
+                          * "lit" "\n"
+                          g
+                        if.
+                          e.eq "t"
+                          *
+                            "ok"
+                            j.plus 2
+                            * "lit" "\t"
+                            g
+                          if.
+                            e.eq "r"
+                            *
+                              "ok"
+                              j.plus 2
+                              * "lit" "\r"
+                              g
+                            *
+                              "ok"
+                              j.plus 2
+                              * "lit" e
+                              g
+      ^.body.at > e!
+        j.plus 1
+        "" > [m]
+    [^ j g] > grp
+      if. > @
+        and.
+          c1.eq "?"
+          c2.eq ":"
+        ^.grp-body
+          j.plus 2
+          g
+          -1
+        if.
+          c1.eq "?"
+          *
+            "error"
+            "Unknown inline modifier"
+            j
+          ^.grp-body
+            j
+            g.plus 1
+            g.plus 1
+      ^.body.at > c1!
+        j
+        "" > [m]
+      ^.body.at > c2!
+        j.plus 1
+        "" > [m]
+    [^ j g gnum] > grp-body
+      if. > @
+        eq.
+          inner.at
+            0
+            "" > [m]
+          "error"
+        inner
+        ^.grp-close inner gnum
+      ^.alt j g > inner!
+    [^ inner gnum] > grp-close
+      if. > @
+        c.eq ")"
+        *
+          "ok"
+          idx.plus 1
+          *
+            "group"
+            inner.at
+              2
+              [m]
+                * > @
+            gnum
+          inner.at
+            3
+            0 > [m]
+        *
+          "error"
+          "Unclosed group"
+          idx
+      ^.body.at > c!
+        idx
+        "" > [m]
+      inner.at > idx!
+        1
+        0 > [m]
+    if. > [^ code] > hex-digit
+      and.
+        code.gte 48
+        code.lte 57
+      code.minus 48
+      if.
+        and.
+          code.gte 65
+          code.lte 70
+        plus.
+          code.minus 65
+          10
+        if.
+          and.
+            code.gte 97
+            code.lte 102
+          plus.
+            code.minus 97
+            10
+          -1
+    [^ j g] > hex-node
+      if. > @
+        or.
+          v1.lt 0
+          v2.lt 0
+        *
+          "error"
+          "Illegal hexadecimal escape sequence"
+          j
+        *
+          "ok"
+          j.plus 4
+          *
+            "lit"
+            string ((v1.times 16).plus v2).as-char
+          g
+      h1.as-ascii > c1!
+        -1 > [m]
+      h2.as-ascii > c2!
+        -1 > [m]
+      ^.body.at > h1!
+        j.plus 2
+        "" > [m]
+      ^.body.at > h2!
+        j.plus 3
+        "" > [m]
+      ^.hex-digit c1 > v1!
+      ^.hex-digit c2 > v2!
+    [^ i g] > piece
+      if. > @
+        eq.
+          u.at
+            0
+            "" > [m]
+          "error"
+        u
+        ^.apply-quant
+          u.at
+            1
+            0 > [m]
+          u.at
+            2
+            [m]
+              * > @
+          u.at
+            3
+            0 > [m]
+      ^.unit i g > u!
+    [^ j] > quant
+      if. > @
+        c.eq "*"
+        *
+          0
+          -1
+          j.plus 1
+        if.
+          c.eq "+"
+          *
+            1
+            -1
+            j.plus 1
+          if.
+            c.eq "?"
+            *
+              0
+              1
+              j.plus 1
+            if.
+              c.eq "{"
+              ^.try-braces
+                j.plus 1
+                j
+              * 1 1 j
+      ^.body.at > c!
+        j
+        "" > [m]
+    ^.alt > result!
+      0
+      0
+    [^ i] > skip
+      ^.extended.not.if > @
+        i
+        if.
+          c.eq " "
+          ^.skip
+            i.plus 1
+          if.
+            c.eq "\t"
+            ^.skip
+              i.plus 1
+            if.
+              c.eq "\n"
+              ^.skip
+                i.plus 1
+              if.
+                c.eq "\r"
+                ^.skip
+                  i.plus 1
+                if.
+                  c.eq "#"
+                  ^.skip
+                    ^.comment-end (i.plus 1)
+                  i
+      ^.body.at > c!
+        i
+        "" > [m]
+    [^ k fallback] > try-braces
+      if. > @
+        not.
+          d1.at
+            2
+            false > [m]
+        *
+          1
+          1
+          fallback
+        ^.after-first-digits
+          d1.at
+            0
+            0 > [m]
+          d1.at
+            1
+            0 > [m]
+          fallback
+      ^.digits-run k > d1!
+    [^ i g] > unit
+      if. > @
+        or.
+          c.eq "*"
+          or.
+            c.eq "+"
+            c.eq "?"
+        *
+          "error"
+          ^.dangling-msg c
+          j
+        if.
+          c.eq "."
+          *
+            "ok"
+            j.plus 1
+            * "any"
+            g
+          if.
+            c.eq "^"
+            *
+              "ok"
+              j.plus 1
+              * "start"
+              g
+            if.
+              c.eq "$"
+              *
+                "ok"
+                j.plus 1
+                * "end"
+                g
+              if.
+                c.eq "("
+                ^.grp
+                  j.plus 1
+                  g
+                if.
+                  c.eq "["
+                  ^.cls-node (j.plus 1) g
+                  if.
+                    c.eq "\\"
+                    ^.esc-node j g
+                    *
+                      "ok"
+                      j.plus 1
+                      * "lit" c
+                      g
+      ^.body.at > c!
+        j
+        "" > [m]
+      ^.skip i > j!
+    if. > [^ branches] > wrap-branches
+      branches.length.eq 1
+      branches.at
+        0
+        [m]
+          * > @
+      * "alt" branches
+    if. > [^ items] > wrap-items
+      items.length.eq 1
+      items.at
+        0
+        [m]
+          * > @
+      * "concat" items
+  [^ serialized] > pattern
+    ^.pattern serialized > compiled
+    * > decoded!
+      decoded-text.slice 0 separator
+      decoded-text.slice
+        separator.plus 1
+        decoded-text.length.minus
+          separator.plus 1
+    string ^.serialized > decoded-text!
+    [^ txt] > match
+      [^ position start from to groups existing] > matched
+        groups.length > count
+        start.gte 0 > exists
+        ^.groups.at index > [^ index] > group
+        ^.existing.at index > [^ index] > group-exists
+        exists.if > next
+          if.
+            and.
+              from.eq to
+              to.eq ^.txt.length
+            ^.missing
+            ^.matched-from-index
+              position.plus 1
+              if.
+                from.eq to
+                to.plus 1
+                to
+          T
+            "Matched block does not exist, can't get next"
+        exists.if > text
+          group 0
+          T
+            "Matched block does not exist, can't get text"
+      [^ position start] > matched-from-index
+        hit.if > @
+          ^.matched
+            position
+            start
+            mfrom
+            mto
+            packed.at
+              0
+              [m]
+                * > @
+            packed.at
+              1
+              [m]
+                * > @
+          ^.missing
+        ^.^.^.settings pflags > cfg!
+        ^.^.^.searched > found!
+          root
+          cfg
+          ^.txt
+          start
+          total
+        eq. > hit!
+          found.at
+            0
+            "" > [m]
+          "ok"
+        found.at > mfrom!
+          1
+          -1 > [m]
+        found.at > mgroups!
+          3
+          [m]
+            * > @
+        found.at > mto!
+          2
+          -1 > [m]
+        ^.^.^.parsed > outcome!
+          pbody
+          pflags.contains "x"
+        ^.^.^.grouped > packed!
+          ^.txt
+          mfrom
+          mto
+          total
+          mgroups
+        src.at > pbody!
+          1
+          "" > [m]
+        src.at > pflags!
+          0
+          "" > [m]
+        outcome.at > root!
+          1
+          "" > [m]
+        ^.^.decoded > src!
+        outcome.at > total!
+          2
+          0 > [m]
+      [] > missing
+        T > count
+          "Matched block does not exist, can't get count"
+        T > existing
+          "Matched block does not exist, can't get groups"
+        start.gte 0 > exists
+        T > from
+          "Matched block does not exist, can't get 'from' position"
+        T > [index] > group
+          "Matched block does not exist, can't get group"
+        T > [index] > group-exists
+          "Matched block does not exist, can't get group-exists"
+        T > groups
+          "Matched block does not exist, can't get groups"
+        T > next
+          "Matched block does not exist, can't get next"
+        0 > position
+        -1 > start
+        T > text
+          "Matched block does not exist, can't get text"
+      matched-from-index 1 0 > next
+    decoded-text.index-of "\u0000" > separator!
+  if. > [^ ctx child pos groups mn mx] > rep
+    mn.gt 0
+    ^.rep-forced
+      ctx
+      child
+      pos
+      groups
+      mn
+      mx
+    if.
+      mx.eq 0
+      *
+        * pos groups
+      ^.rep-optional
+        ctx
+        child
+        pos
+        groups
+        mx
+  ^.rep-forced-k > [^ ctx child pos groups mn mx] > rep-forced
+    ctx
+    child
+    pos
+    groups
+    mn
+    mx
+    ^.attempted
+      ctx
+      child
+      pos
+      groups
+    0
+  if. > [^ ctx child pos groups mn mx own k] > rep-forced-k
+    k.gte own.length
+    *
+    concat.
+      ^.rep-forced-one
+        ctx
+        child
+        pos
+        mn
+        mx
+        own.at
+          k
+          [m]
+            * > @
+      ^.rep-forced-k
+        ctx
+        child
+        pos
+        groups
+        mn
+        mx
+        own
+        k.plus 1
+  [^ ctx child pos mn mx cand] > rep-forced-one
     if. > @
-      or.
-        ch.eq "İ"
-        ch.eq "ı"
-      "i"
-      ch.lower
-
-  [^ root cfg text start total] > searched
-    cfg.at 0 (false > [m]) > ci!
-    cfg.at 1 (false > [m]) > uc!
-    cfg.at 2 (false > [m]) > da!
-    cfg.at 3 (false > [m]) > ml!
-    cfg.at 4 (false > [m]) > ul!
-    * text text.length ci uc da ml ul > ctx!
-    ^.scan-from ctx root start text.length (^.empty-groups total) > @
-
+      e.eq pos
+      *
+        * e g
+      ^.rep
+        ctx
+        child
+        e
+        g
+        mn.minus 1
+        ^.dec-or-neg mx
+    cand.at > e!
+      0
+      -1 > [m]
+    cand.at > g!
+      1
+      [m]
+        * > @
+  ^.rep-optional-k > [^ ctx child pos groups mx] > rep-optional
+    ctx
+    child
+    pos
+    groups
+    mx
+    ^.attempted
+      ctx
+      child
+      pos
+      groups
+    0
+  if. > [^ ctx child pos groups mx own k] > rep-optional-k
+    k.gte own.length
+    *
+      * pos groups
+    concat.
+      ^.rep-optional-one
+        ctx
+        child
+        pos
+        mx
+        own.at
+          k
+          [m]
+            * > @
+      ^.rep-optional-k
+        ctx
+        child
+        pos
+        groups
+        mx
+        own
+        k.plus 1
+  [^ ctx child pos mx cand] > rep-optional-one
+    if. > @
+      e.eq pos
+      *
+        * e g
+      ^.rep
+        ctx
+        child
+        e
+        g
+        0
+        ^.dec-or-neg mx
+    cand.at > e!
+      0
+      -1 > [m]
+    cand.at > g!
+      1
+      [m]
+        * > @
+  concat. > [^ tup idx val] > replaced-at
+    with.
+      tup.front idx
+      val
+    tup.back
+      tup.length.minus
+        idx.plus 1
+  if. > [^ ci uc a b] > same
+    a.eq b
+    true
+    ci.not.if
+      false
+      uc.if
+        eq.
+          ^.folded a
+          ^.folded b
+        a.lower.eq b.lower
   [^ ctx root p tlen groups0] > scan-from
-    ^.attempted ctx root p groups0 > cands!
     if. > @
       p.gt tlen
       * "no"
       if.
         cands.length.gt 0
-        ^.found p (cands.at 0 (* > [m]))
-        ^.scan-from ctx root (p.plus 1) tlen groups0
-
-  [^ p cand] > found
-    * "ok" p (^.cand-end cand) (^.cand-groups cand) > @
-
-  [^ n] > empty-groups
-    if. > @
-      n.lte 0
-      *
-      (^.empty-groups (n.minus 1)).with (* -1 -1 false)
-
-  [^ root cfg text total] > fully-matched
-    cfg.at 0 (false > [m]) > ci!
-    cfg.at 1 (false > [m]) > uc!
-    cfg.at 2 (false > [m]) > da!
-    cfg.at 3 (false > [m]) > ml!
-    cfg.at 4 (false > [m]) > ul!
-    * text text.length ci uc da ml ul > ctx!
-    ^.attempted ctx root 0 (^.empty-groups total) > cands!
-    ^.any-full cands text.length 0 > @
-
-  [^ cands tlen k] > any-full
-    if. > @
-      k.gte cands.length
-      false
-      if.
-        (^.cand-end (cands.at k (* > [m]))).eq tlen
-        true
-        ^.any-full cands tlen (k.plus 1)
-
-  [^ txt mfrom mto total mgroups] > grouped
-    ^.grouped-k > @
-      txt
-      total
-      mgroups
+        ^.found
+          p
+          cands.at
+            0
+            [m]
+              * > @
+        ^.scan-from
+          ctx
+          root
+          p.plus 1
+          tlen
+          groups0
+    ^.attempted > cands!
+      ctx
+      root
+      p
+      groups0
+  [^ root cfg text start total] > searched
+    ^.scan-from > @
+      ctx
+      root
+      start
+      text.length
+      ^.empty-groups total
+    cfg.at > ci!
+      0
+      false > [m]
+    * > ctx!
+      text
+      text.length
+      ci
+      uc
+      da
+      ml
+      ul
+    cfg.at > da!
+      2
+      false > [m]
+    cfg.at > ml!
+      3
+      false > [m]
+    cfg.at > uc!
       1
-      * (txt.slice mfrom (mto.minus mfrom))
-      * true
-
-  [^ txt total mgroups k gtexts gflags] > grouped-k
-    if. > @
-      k.gt total
-      * gtexts gflags
-      ^.grouped-k
-        txt
-        total
-        mgroups
-        k.plus 1
-        gtexts.with (^.group-text txt (mgroups.at (k.minus 1) (* -1 -1 false > [m])))
-        gflags.with (^.group-participated (mgroups.at (k.minus 1) (* -1 -1 false > [m])))
-
-  [^ entry] > group-participated
-    entry.at 2 (false > [m]) > @
-
-  [^ txt entry] > group-text
-    if. > @
-      ^.group-participated entry
-      txt.slice
-        entry.at 0 (-1 > [m])
-        (entry.at 1 (-1 > [m])).minus (entry.at 0 (-1 > [m]))
-      ""
+      false > [m]
+    cfg.at > ul!
+      4
+      false > [m]
+  if. > [^ ctx children idx pos groups] > seq
+    idx.gte children.length
+    *
+      * pos groups
+    ^.flat-map-seq
+      ctx
+      children
+      idx.plus 1
+      ^.attempted
+        ctx
+        children.at
+          idx
+          [m]
+            * > @
+        pos
+        groups
+  * > [^ flags] > settings
+    flags.contains "i"
+    flags.contains "u"
+    flags.contains "s"
+    flags.contains "m"
+    flags.contains "d"
 
   eq. ++> can-advance-after-a-zero-width-match
     1
