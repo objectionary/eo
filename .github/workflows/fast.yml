@@ -92,7 +92,25 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
+      # The `lower` goal needs the exact phino version pinned in
+      # eo-lowering; the Linux leg installs it and demands lowering,
+      # while the Windows leg builds without it, keeping the skip
+      # path of the goal continuously covered.
+      - if: ${{ matrix.os == 'ubuntu-24.04' }}
+        uses: actions/cache@v6
+        with:
+          path: ~/.cabal
+          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
+      - if: ${{ matrix.os == 'ubuntu-24.04' }}
+        run: |
+          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
+          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+            cabal update
+            cabal install "phino-${ver}" --overwrite-policy=always
+          fi
+          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+          echo "LOWERING=-Deo.loweringRequired=true" >> "$GITHUB_ENV"
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' ${{ env.LOWERING }} clean install
       # The build above transpiled no tests at all, so `eo-runtime` is rebuilt
       # here from a clean target with them. An hour per test leaves `Deadline`
       # nothing to swallow, so a test that fails is reported as a failure and

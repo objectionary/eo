@@ -1,0 +1,22 @@
+  number ↦ ⟦
+    as-bytes ↦ ∅,
+    φ ↦ ξ.as-bytes,
+    div ↦ ⟦ x ↦ ∅, λ ⤍ L_number_div ⟧,
+    gt ↦ ⟦ x ↦ ∅, λ ⤍ L_number_gt ⟧,
+    plus ↦ ⟦ x ↦ ∅, λ ⤍ L_number_plus ⟧,
+    times ↦ ⟦ x ↦ ∅, λ ⤍ L_number_times ⟧
+  ⟧,
+  bytes ↦ ⟦
+    data ↦ ∅,
+    φ ↦ ξ.data,
+    and ↦ ⟦ b ↦ ∅, λ ⤍ L_bytes_and ⟧,
+    concat ↦ ⟦ b ↦ ∅, λ ⤍ L_bytes_concat ⟧,
+    eq ↦ ⟦ b ↦ ∅, λ ⤍ L_bytes_eq ⟧,
+    not ↦ ⟦ λ ⤍ L_bytes_not ⟧,
+    or ↦ ⟦ b ↦ ∅, λ ⤍ L_bytes_or ⟧,
+    right ↦ ⟦ x ↦ ∅, λ ⤍ L_bytes_right ⟧,
+    size ↦ ⟦ λ ⤍ L_bytes_size ⟧,
+    slice ↦ ⟦ start ↦ ∅, len ↦ ∅, cant-slice ↦ ∅, λ ⤍ L_bytes_slice ⟧
+  ⟧,
+  true ↦ ⟦ Δ ⤍ 01- ⟧,
+  false ↦ ⟦ Δ ⤍ 00- ⟧,
