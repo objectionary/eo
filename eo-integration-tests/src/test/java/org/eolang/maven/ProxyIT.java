@@ -39,6 +39,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
  * @since 0.60
+ * @todo #7182:30min Re-enable the proxy test after the next release.
+ *  The sandbox pulls the released .eo sources of the runtime from the remote
+ *  objectionary, and those predate the rule that every object carries a
+ *  comment on top, so the build they take part in ends with [ERROR] lines
+ *  and fails before the assertion is reached. Master already carries the
+ *  comments, so drop this annotation once the remote objectionary serves
+ *  sources that satisfy the rule.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})

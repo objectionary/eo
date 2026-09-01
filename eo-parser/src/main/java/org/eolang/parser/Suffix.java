@@ -80,8 +80,9 @@ final class Suffix {
     private final Form form;
 
     /**
-     * Bound name for {@code NAME} / {@code TEST} forms; the file-local
-     * handle for a {@code >> name} {@code AUTO} suffix; empty otherwise.
+     * Bound name for {@code NAME} / {@code TEST} / {@code THROWS} forms;
+     * the file-local handle for a {@code >> name} {@code AUTO} suffix;
+     * empty otherwise.
      */
     private final String label;
 
@@ -139,7 +140,7 @@ final class Suffix {
 
     /**
      * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}.
+     * {@code TEST}, {@code THROWS}.
      * @return Form
      */
     Form form() {
@@ -147,7 +148,9 @@ final class Suffix {
     }
 
     /**
-     * Bound name. Empty for {@code AUTO} and {@code NONE}.
+     * Bound name. Empty for {@code NONE}; for {@code AUTO} it is the
+     * file-local handle of a {@code >> name} suffix, empty only for a
+     * bare {@code >>}.
      * @return Name
      */
     String label() {
@@ -597,7 +600,7 @@ final class Suffix {
 
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
-        if (idx < tail.length() && tail.charAt(idx) == ' ') {
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
             idx = idx + 1;
         }
         return idx;

@@ -209,6 +209,55 @@ final class HeapsTest {
     }
 
     @Test
+    void keepsEveryByteWrittenOneAtATime() {
+        MatcherAssert.assertThat(
+            "a block filled one byte at a time must hold every one of them",
+            Heaps.INSTANCE.malloc(
+                4,
+                idx -> {
+                    for (int offset = 0; offset < 4; offset += 1) {
+                        Heaps.INSTANCE.write(idx, offset, new byte[] {(byte) (offset + 1)});
+                    }
+                    return Heaps.INSTANCE.read(idx, 0, 4);
+                }
+            ),
+            Matchers.equalTo(new byte[] {1, 2, 3, 4})
+        );
+    }
+
+    @Test
+    void blamesTheOffsetWhenItIsNegative() {
+        MatcherAssert.assertThat(
+            "a negative read offset must be named as the reason, not the allocated size",
+            Heaps.INSTANCE.malloc(
+                8,
+                idx -> Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, -1, 4),
+                    "a negative read offset must be refused"
+                ).getMessage()
+            ),
+            Matchers.containsString("negative offset '-1'")
+        );
+    }
+
+    @Test
+    void blamesTheLengthWhenItIsNegative() {
+        MatcherAssert.assertThat(
+            "a negative read length must be named as the reason, not the allocated size",
+            Heaps.INSTANCE.malloc(
+                8,
+                idx -> Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, 2, -3),
+                    "a negative read length must be refused"
+                ).getMessage()
+            ),
+            Matchers.containsString("negative number of bytes '-3'")
+        );
+    }
+
+    @Test
     void readsByOffsetAndLength() {
         MatcherAssert.assertThat(
             "Heaps should successfully read correct slice when reading with offset and length, but it didn't",

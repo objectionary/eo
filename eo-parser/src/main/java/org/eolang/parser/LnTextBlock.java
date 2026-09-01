@@ -71,7 +71,7 @@ final class LnTextBlock implements Line {
         this.transition(stack, suffix);
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         globals.closeTextBlock();

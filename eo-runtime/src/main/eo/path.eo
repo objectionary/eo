@@ -330,6 +330,17 @@
       is-absolute.
         path.win32 "temp\\var"
 
+  and. ++> can-detect-drive-relative-win32-paths-as-not-absolute
+    not.
+      is-absolute.
+        path.win32 "C:.\\foo"
+    and.
+      not.
+        is-absolute.
+          path.win32 "C:..\\foo"
+      is-absolute.
+        path.win32 "C:\\foo"
+
   path.separator.eq ++> can-determine-the-separator-from-the-os
     os.is-windows.if
       path.win32.separator

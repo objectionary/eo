@@ -32,16 +32,14 @@ import org.eolang.parser.OnDetailed;
  * The intermediate optimized XMIRs are stored in the {@link #PRE} directory.</p>
  *
  * @since 0.1
- * @todo #6125:60min Take the writing of the Java files out of here too.
- *  {@link JavaFiles} still keeps a cache directory and an enabled flag of
- *  its own, so this class has to be handed one ready-made, and the key of
- *  that directory repeats the plugin version {@link GlobalCache} already
- *  folds in. Give {@link JavaFiles} the same {@link GlobalCache} instead,
- *  then it goes back to being made here, and {@link #version()}, which is
- *  read by nothing but the test, goes with it. The three that are left,
- *  the generated directory, the tests flag and the roots, describe one
- *  thing, where the output lands, and belong together in an object of
- *  their own, along with the tail of {@link #exec()} that logs it.
+ * @todo #6125:30min Take the rest of the writing out of here too.
+ *  The key {@link #version()} makes still repeats the plugin version
+ *  {@link GlobalCache} folds into every step of its own, so drop it there
+ *  and let the cache supply it; {@link #version()} is then read by nothing
+ *  but the test and goes with it. The three that are left, the generated
+ *  directory, the tests flag and the roots, describe one thing, where the
+ *  output lands, and belong together in an object of their own, along with
+ *  the tail of {@link #exec()} that logs it.
  */
 final class Transpiling implements Step {
 
@@ -96,11 +94,6 @@ final class Transpiling implements Step {
     private final GlobalCache cache;
 
     /**
-     * The Java files this run writes, and the stale ones it removes.
-     */
-    private final JavaFiles files;
-
-    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
@@ -109,7 +102,6 @@ final class Transpiling implements Step {
      * @param java Directories with the Java sources a human wrote
      * @param train The XSL train that does the transpiling
      * @param store The cache shared with every build on this machine
-     * @param written The Java files this run writes
      */
     Transpiling(
         final Collection<TjForeign> srcs,
@@ -118,8 +110,7 @@ final class Transpiling implements Step {
         final boolean tests,
         final Collection<Path> java,
         final Transpilation train,
-        final GlobalCache store,
-        final JavaFiles written
+        final GlobalCache store
     ) {
         this.sources = srcs;
         this.target = target;
@@ -128,21 +119,23 @@ final class Transpiling implements Step {
         this.roots = java;
         this.train = train;
         this.cache = store;
-        this.files = written;
     }
 
     @Override
     public void exec() throws IOException {
+        final JavaFiles files = new JavaFiles(
+            this.generated, this.cache.with(this.train.version())
+        );
         final int transpiled = new Threaded<>(
             this.sources,
-            this::transpiled
+            tojo -> this.transpiled(tojo, files)
         ).total();
-        this.files.removeStale();
+        files.removeStale();
         Logger.info(
             this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
             this.sources.size(),
             transpiled + new PackageInfos(
-                this.generated, this.roots, this.files.directories()
+                this.generated, this.roots, files.directories()
             ).create(),
             this.generated
         );
@@ -156,7 +149,7 @@ final class Transpiling implements Step {
         return this.train.version();
     }
 
-    private int transpiled(final TjForeign tojo) throws IOException {
+    private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.target.resolve(Transpiling.DIR);
@@ -173,7 +166,7 @@ final class Transpiling implements Step {
                 return transform.apply(xmir).toString();
             }
         ).apply(source, dest);
-        return this.files.total(
+        return files.total(
             rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
         );
     }

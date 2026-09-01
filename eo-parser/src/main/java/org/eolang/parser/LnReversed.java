@@ -146,7 +146,7 @@ final class LnReversed implements Line {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
     }

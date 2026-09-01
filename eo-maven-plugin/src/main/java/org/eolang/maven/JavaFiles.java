@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,15 +41,9 @@ final class JavaFiles {
     private final Path generated;
 
     /**
-     * Cache directory for transpiled sources, with the cache-key version
-     * segment already resolved into it.
+     * The cache this build shares with every other build on this machine.
      */
-    private final Path cache;
-
-    /**
-     * Whether caching is enabled.
-     */
-    private final boolean enabled;
+    private final GlobalCache cache;
 
     /**
      * Java files generated during the current transpilation.
@@ -73,13 +66,11 @@ final class JavaFiles {
     /**
      * Ctor.
      * @param dir Generated sources directory
-     * @param cached Cache directory for this transpile version
-     * @param caching Whether caching is enabled
+     * @param store The cache shared with every build on this machine
      */
-    JavaFiles(final Path dir, final Path cached, final boolean caching) {
+    JavaFiles(final Path dir, final GlobalCache store) {
         this.generated = dir;
-        this.cache = cached;
-        this.enabled = caching;
+        this.cache = store;
         this.fresh = new ConcurrentLinkedQueue<>();
         this.touched = new ConcurrentLinkedQueue<>();
     }
@@ -118,11 +109,11 @@ final class JavaFiles {
                     new JavaPlaced(
                         new FpIfReleased(
                             hsh,
-                            new FpAppliedWithCache(
-                                java,
-                                this.cached(hsh, jname),
+                            this.cache.kept(
+                                this.generated.relativize(tgt),
+                                () -> hsh,
                                 new RewritePolicy(rewrite, tgt),
-                                this.enabled
+                                java
                             ),
                             java
                         ),
@@ -192,14 +183,5 @@ final class JavaFiles {
             }
         }
         return dirs;
-    }
-
-    private Supplier<Path> cached(final String hsh, final String jname) {
-        final Path tail = this.generated.relativize(
-            new Place(jname).make(
-                this.generated, JavaFiles.JAVA
-            )
-        );
-        return () -> this.cache.resolve(hsh).resolve(tail);
     }
 }
