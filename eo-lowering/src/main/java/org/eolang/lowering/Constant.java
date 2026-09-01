@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
  * computing it once here and splicing the result where the fragment
  * stood preserves the program exactly and spares the runtime the whole
  * object graph of the subexpression. The computing is one dataization of
- * the {@link MiniDoc} that holds the fragment; the forma of the value
+ * the {@link Expression} that holds the fragment; the forma of the value
  * comes from the name of the outermost dispatch, the way
  * {@link Primitive} explains. Anything phino refuses surfaces here as an
  * exception, which the caller treats as one fragment staying unfolded,
@@ -54,7 +54,7 @@ public final class Constant {
      * @throws IOException If the binary cannot be run
      */
     public String value() throws IOException {
-        return this.phino.dataize(new MiniDoc(this.fragment).text());
+        return this.phino.dataize(new Expression(this.fragment).text());
     }
 
     /**

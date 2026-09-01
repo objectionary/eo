@@ -17,7 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * A self-contained φ-calculus document holding one XMIR fragment.
+ * One XMIR fragment as a self-contained φ-calculus expression.
  *
  * <p>Dataizing a fragment needs the method tables of the primitive
  * λ-atoms it dispatches into, and phino resolves a {@code Φ.x} reference
@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
  *
  * @since 0.76.0
  */
-public final class MiniDoc {
+public final class Expression {
 
     /**
      * The XMIR fragment to render, an {@code <o/>} element.
@@ -51,7 +51,7 @@ public final class MiniDoc {
      * Ctor.
      * @param xmir The XMIR fragment to render, an {@code <o/>} element
      */
-    public MiniDoc(final XML xmir) {
+    public Expression(final XML xmir) {
         this.fragment = xmir;
     }
 
@@ -62,8 +62,8 @@ public final class MiniDoc {
     public String text() {
         return String.format(
             "⟦%n%s  φ ↦ %s%n⟧%n",
-            MiniDoc.tables(),
-            MiniDoc.rendered(this.root())
+            Expression.tables(),
+            Expression.rendered(this.root())
         );
     }
 
@@ -79,7 +79,7 @@ public final class MiniDoc {
     }
 
     private static String tables() {
-        try (InputStream stream = MiniDoc.class.getResourceAsStream("universe.phi")) {
+        try (InputStream stream = Expression.class.getResourceAsStream("universe.phi")) {
             return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (final IOException ex) {
             throw new IllegalStateException(
@@ -92,11 +92,11 @@ public final class MiniDoc {
         final String base = node.getAttribute("base");
         final String out;
         if (base.isEmpty()) {
-            out = String.format("⟦ Δ ⤍ %s ⟧", MiniDoc.datum(node));
+            out = String.format("⟦ Δ ⤍ %s ⟧", Expression.datum(node));
         } else if (base.charAt(0) == '.') {
-            out = MiniDoc.dispatched(node, base);
+            out = Expression.dispatched(node, base);
         } else if (base.startsWith("Φ.")) {
-            out = MiniDoc.applied(base, MiniDoc.kids(node));
+            out = Expression.applied(base, Expression.kids(node));
         } else {
             throw new IllegalStateException(
                 String.format(
@@ -109,7 +109,7 @@ public final class MiniDoc {
     }
 
     private static String dispatched(final Element node, final String base) {
-        final List<Element> kids = MiniDoc.kids(node);
+        final List<Element> kids = Expression.kids(node);
         if (kids.isEmpty()) {
             throw new IllegalStateException(
                 String.format("The dispatch '%s' has no receiver", base)
@@ -117,9 +117,9 @@ public final class MiniDoc {
         }
         return String.format(
             "%s%s%s",
-            MiniDoc.rendered(kids.get(0)),
+            Expression.rendered(kids.get(0)),
             base,
-            MiniDoc.arguments(kids.subList(1, kids.size()))
+            Expression.arguments(kids.subList(1, kids.size()))
         );
     }
 
@@ -128,7 +128,7 @@ public final class MiniDoc {
         if (kids.isEmpty()) {
             out = base;
         } else {
-            out = String.format("%s%s", base, MiniDoc.arguments(kids));
+            out = String.format("%s%s", base, Expression.arguments(kids));
         }
         return out;
     }
@@ -147,7 +147,7 @@ public final class MiniDoc {
                     );
                 }
                 parts.add(
-                    String.format("%s ↦ %s", name, MiniDoc.rendered(kid))
+                    String.format("%s ↦ %s", name, Expression.rendered(kid))
                 );
             }
             out = String.format("(%s)", String.join(", ", parts));

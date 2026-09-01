@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link MiniDoc}.
+ * Test case for {@link Expression}.
  * @since 0.76.0
  */
-final class MiniDocTest {
+final class ExpressionTest {
 
     @Test
     void rendersDispatchOnLiterals() {
         MatcherAssert.assertThat(
             "the fragment must become the φ of the root formation, but it didnt",
-            new MiniDoc(
+            new Expression(
                 new XMLDocument(
                     String.join(
                         "",
@@ -49,7 +49,7 @@ final class MiniDocTest {
     void carriesMethodTables() {
         MatcherAssert.assertThat(
             "the tables of the primitives must surround the fragment, but they dont",
-            new MiniDoc(new XMLDocument("<o base='Φ.true'/>")).text(),
+            new Expression(new XMLDocument("<o base='Φ.true'/>")).text(),
             Matchers.containsString("λ ⤍ L_number_plus")
         );
     }
@@ -58,7 +58,7 @@ final class MiniDocTest {
     void refusesContextDependentReference() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new MiniDoc(new XMLDocument("<o base='ξ.x'/>"))::text,
+            new Expression(new XMLDocument("<o base='ξ.x'/>"))::text,
             "a ξ reference means nothing outside its formation, so it cannot render, but it did"
         );
     }

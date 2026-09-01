@@ -13,7 +13,7 @@
  * module only prepares what phino reads and interprets what it prints.</p>
  *
  * <p>A fragment arrives as XMIR: an application whose every leaf is a
- * literal, such as {@code 1.plus 1}. {@link org.eolang.lowering.MiniDoc}
+ * literal, such as {@code 1.plus 1}. {@link org.eolang.lowering.Expression}
  * renders it as the {@code φ} of a small self-contained φ-calculus
  * document, whose other bindings are the method tables of the primitive
  * λ-atoms — {@code number.plus}, {@code bytes.slice} and the rest — under

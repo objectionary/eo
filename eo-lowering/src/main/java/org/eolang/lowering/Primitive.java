@@ -14,7 +14,7 @@ import java.util.Map;
  * across the two formas, so the name of the outermost dispatch of a
  * folded fragment decides the forma of the value alone: a dataization
  * that succeeded found its method in the tables of
- * {@link MiniDoc}, and only one forma holds a method of that name there.
+ * {@link Expression}, and only one forma holds a method of that name there.
  * A name outside the twelve is not necessarily impure — it is merely
  * something the tables cannot answer, so a fragment led by it is not
  * worth a dataization attempt.</p>
