@@ -217,8 +217,7 @@ final class LnMetaTest {
             ParseError.class,
             () -> new LnMeta(new Span("+co-op", 1))
                 .into(new Stack(), new Globals(), new Emit()),
-            "a meta name must match [a-z][a-z0-9]* per R-3.2.6, narrower than NAME, "
-            + "which the XMIR.xsd head element also enforces"
+            "a meta name with a hyphen must be rejected per R-3.2.6"
         );
     }
 
