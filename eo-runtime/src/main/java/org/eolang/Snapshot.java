@@ -51,6 +51,7 @@ final class Snapshot {
      * A fresh copy of the bytes.
      * @return The copy, or {@code null} when {@link #empty()}
      */
+    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull")
     byte[] bytes() {
         final byte[] copy;
         if (this.data == null) {

@@ -18,4 +18,11 @@ import org.eolang.XmirObject;
  */
 @XmirObject(oname = "dummy")
 public final class EOdummy extends PhDefault {
+
+    /**
+     * Ctor.
+     */
+    public EOdummy() {
+        // nothing
+    }
 }
