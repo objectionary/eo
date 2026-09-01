@@ -494,15 +494,7 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params)) {
             Emissions.validParam(param, line, pcol);
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, line, pcol);
+            emit.voidParam(new VoidName(param).asString(), line, pcol);
             pcol = pcol + param.length() + 1;
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
