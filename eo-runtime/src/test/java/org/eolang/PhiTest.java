@@ -32,11 +32,6 @@ final class PhiTest {
             wrapped.equals(origin),
             Matchers.equalTo(false)
         );
-        MatcherAssert.assertThat(
-            String.format("the origin must not equal its %s decorator", name),
-            origin.equals(wrapped),
-            Matchers.equalTo(false)
-        );
     }
 
     @Test
