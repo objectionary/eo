@@ -198,6 +198,36 @@ final class LnMethodTest {
         );
     }
 
+    @Test
+    void rejectsPlainContinuationUnderAtomParent() {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN).mark();
+        stack.push(2, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span("  .bar > x", 2))
+                .into(stack, new Globals(), new Emit()),
+            "a `.method` continuation re-purposing an atom's child must be rejected per R-6.3.1"
+        );
+    }
+
+    @Test
+    void acceptsTestContinuationUnderAtomParent() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN).mark();
+        stack.push(2, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        globals.blank();
+        new LnMethod(new Span("  .bar +> t", 2)).into(stack, globals, emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `.method` continuation carrying a test-attribute suffix must remain admitted under an atom",
+            LnMethodTest.render(emit),
+            Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())

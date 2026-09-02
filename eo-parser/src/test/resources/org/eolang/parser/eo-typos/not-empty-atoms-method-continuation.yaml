@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8184: a `.method` continuation re-purposes the top entry via
+# `stack.seal()` instead of `Transition.apply`, so the atom-body check
+# never ran on it — the continuation escaped R-6.3.1 / R-5.3.4.
+line: 4
+message: |-
+  [4:2] error: 'atom may contain only test attributes'
+    .bar > baz
+    ^
+input: |
+  [] > foo /number
+
+    [] +> t
+    .bar > baz

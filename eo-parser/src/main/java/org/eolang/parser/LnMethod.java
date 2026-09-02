@@ -35,6 +35,13 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-6.3.1 / R-5.3.4 — a {@code .method} continuation re-purposing
+ * the top entry when its parent is an atom, unless the continuation
+ * itself carries a test-attribute suffix. {@link Transition#apply}
+ * enforces the same rule for every other line shape via
+ * {@link Level#patom()}; this line never reaches {@link Transition}
+ * (it seals the top entry instead of pushing or replacing it), so the
+ * check is repeated here directly on {@link Level#patom()}.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -79,6 +86,12 @@ final class LnMethod implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
+        if (top.patom() && !suffix.test()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "atom may contain only test attributes"
+            );
+        }
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, globals, emit);
         } else {
