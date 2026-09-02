@@ -182,7 +182,7 @@ final class LnMethodTest {
     }
 
     @Test
-    void rejectsContinuationOnTestAttribute() {
+    void rejectsContinuationOnTruthyAttribute() {
         final Stack stack = new Stack();
         final Globals globals = new Globals();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
