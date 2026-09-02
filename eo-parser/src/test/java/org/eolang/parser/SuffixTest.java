@@ -52,6 +52,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`>  foo` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" >  foo", new Span("[] >  foo", 1), 2).label(),
+            Matchers.equalTo("foo")
+        );
+    }
+
+    @Test
     void parsesAutoName() {
         MatcherAssert.assertThat(
             "`>>` must yield Form.AUTO with no label",
@@ -79,6 +88,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesPlusGreaterNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`+>  bar` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" +>  bar", new Span("[] +>  bar", 1), 2).label(),
+            Matchers.equalTo("bar")
+        );
+    }
+
+    @Test
     void parsesMinusGreaterAttribute() {
         MatcherAssert.assertThat(
             "`-> name` must yield Form.THROWS with the parsed name",
@@ -93,6 +111,15 @@ final class SuffixTest {
             "a throwing test suffix's label() must be the identifier after `->`",
             new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).label(),
             Matchers.equalTo("on-add")
+        );
+    }
+
+    @Test
+    void parsesThrowsNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`->  bar` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" ->  bar", new Span("[] ->  bar", 1), 2).label(),
+            Matchers.equalTo("bar")
         );
     }
 
@@ -172,6 +199,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesAtomSignatureWithMultipleSpacesBeforeSlash() {
+        MatcherAssert.assertThat(
+            "`> name  /sig` with two spaces before the slash must parse the same as one space (#8024)",
+            new Suffix(" > foo  /number", new Span("[] > foo  /number", 1), 2).sig(),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
     void marksAtomFlagWhenSigPresent() {
         MatcherAssert.assertThat(
             "atom() must report true once a /sig has been read",
@@ -240,6 +276,15 @@ final class SuffixTest {
         MatcherAssert.assertThat(
             "`>> fibo` must yield Form.AUTO carrying the file-local handle",
             new Suffix(" >> fibo", new Span("[] >> fibo", 1), 2).handle(),
+            Matchers.equalTo("fibo")
+        );
+    }
+
+    @Test
+    void parsesAutoNameHandleWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`>>  fibo` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" >>  fibo", new Span("[] >>  fibo", 1), 2).handle(),
             Matchers.equalTo("fibo")
         );
     }

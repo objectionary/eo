@@ -28,18 +28,6 @@ import java.util.List;
 final class Tokens {
 
     /**
-     * Characters that terminate a {@code NAME} token per §2.3, the dot
-     * among them.
-     */
-    private static final String TERMINATORS = " \t,.|':;!?[]{}()";
-
-    /**
-     * Characters that break a parenthesised group into more than one
-     * token, so their absence makes the group a single token.
-     */
-    private static final String BREAKERS = " ()[]";
-
-    /**
      * The line body being scanned.
      */
     private final String body;
@@ -209,6 +197,13 @@ final class Tokens {
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
             );
         }
+        final int control = new Scrubbed(raw).found();
+        if (control >= 0) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start + control,
+                "control character is not allowed in an identifier"
+            );
+        }
         this.cursor = idx;
         return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
@@ -260,6 +255,12 @@ final class Tokens {
         final int from = idx;
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
+        }
+        if (sign && Tokens.letterAt(this.body, idx)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
         }
         if (idx == from) {
             throw new ParseError(
@@ -523,7 +524,10 @@ final class Tokens {
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
-                "Invalid bound object declaration"
+                String.format(
+                    "binding label \"%s\" must be a name or a slot number",
+                    text
+                )
             );
         }
     }
@@ -600,7 +604,7 @@ final class Tokens {
             final char glyph = inside.charAt(idx);
             if (glyph == '"') {
                 idx = Tokens.closingQuote(inside, idx);
-            } else if (Tokens.BREAKERS.indexOf(glyph) >= 0) {
+            } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
                 break;
             }
@@ -627,6 +631,12 @@ final class Tokens {
 
     private static boolean hexDigit(final char glyph) {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
+    }
+
+    private static boolean letterAt(final String body, final int idx) {
+        return idx < body.length()
+            && body.charAt(idx) < 128
+            && Character.isLetter(body.charAt(idx));
     }
 
     private static boolean byteDigit(final char glyph) {
@@ -671,7 +681,7 @@ final class Tokens {
     }
 
     private static boolean terminates(final char glyph) {
-        return Tokens.TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static boolean cactus(final String text) {
@@ -789,6 +799,12 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
+        if (this.oddHexRun()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + this.cursor,
+                "invalid bytes literal"
+            );
+        }
         final Value value;
         if (first == '*') {
             value = this.reserved(Value.Kind.STAR, "*");
@@ -835,6 +851,16 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         return this.body.substring(start, this.cursor);
+    }
+
+    private boolean oddHexRun() {
+        int idx = this.cursor;
+        while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
+            idx = idx + 1;
+        }
+        return idx > this.cursor
+            && idx < this.body.length()
+            && this.body.charAt(idx) == '-';
     }
 
     private boolean bytePair(final int idx) {

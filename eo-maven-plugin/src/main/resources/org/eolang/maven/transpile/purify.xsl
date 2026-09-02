@@ -175,12 +175,22 @@
   -->
   <xsl:function name="eo:filled" as="xs:boolean">
     <xsl:param name="row" as="element()"/>
-    <xsl:sequence select="every $v in $row/attr[@void = 'true'] satisfies (exists($v/witnessed) and empty($v/witnessed/descendant::*[not(self::union or (self::ref and @loc = $eo:data))]))"/>
+    <xsl:sequence select="every $v in $row/attr[@void = 'true'] satisfies eo:given($v)"/>
+  </xsl:function>
+  <!--
+  Whether this void of a row of "provides.xml" is witnessed as data, and
+  nothing else. A void nobody fills has no "witnessed" and does not
+  qualify; a "union" qualifies when every member of it does.
+  -->
+  <xsl:function name="eo:given" as="xs:boolean">
+    <xsl:param name="v" as="element()?"/>
+    <xsl:sequence select="exists($v) and exists($v/witnessed) and empty($v/witnessed//*[not(name() = 'union' or (name() = 'ref' and @loc = $eo:data))])"/>
   </xsl:function>
   <!--
   Whether this application is decided by the bytes of its own parts. Every
-  part it has, the receiver among them, must be a copy of data, which is what
-  a row of "links.xml" holding one "ref" to a data object says:
+  part it has, and the receiver an implicit dispatch leaves out of them,
+  must be decided by bytes, which is what a row of "links.xml" holding one
+  "ref" to a data object says:
   &lt;type id="Φ.app.x.ρ"&gt;
   &lt;ref loc="Φ.number"/&gt;
   &lt;/type&gt;
@@ -190,31 +200,73 @@
   <xsl:function name="eo:applied" as="xs:boolean">
     <xsl:param name="a" as="element()"/>
     <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
-    <xsl:sequence select="exists($eo:links) and exists($parts) and (every $p in $parts satisfies eo:copies-data(key('eo:row', $p/@loc, $eo:links)))"/>
-  </xsl:function>
-  <!-- Whether this row of "links.xml" says its object is a copy of data. -->
-  <xsl:function name="eo:copies-data" as="xs:boolean">
-    <xsl:param name="row" as="element()?"/>
-    <xsl:sequence select="exists($row) and count($row/*) = 1 and exists($row/ref[@loc = $eo:data])"/>
+    <xsl:sequence select="exists($eo:links) and exists($parts) and eo:receives($a) and (every $p in $parts satisfies eo:decided(key('eo:row', $p/@loc, $eo:links), ()))"/>
   </xsl:function>
   <!--
-  An application whose parts are all data is labeled too, so that the answer
-  it works out is remembered instead of being worked out on every read.
-  @todo #7895:90min Label an application whose parts are data by the other
-  kinds of evidence "links.xml" holds. Today only a part that is a copy of
-  data - a literal, or a local that holds one - counts, and the three other
-  cases the table already carries are ignored: a "var" of a void whose row
-  in "provides.xml" is witnessed as data (the same question "eo:filled"
-  asks), a "ref" to a formation whose row says "returns" a data object, and
-  a "union" all of whose members are one of those. This was tried once and
-  taken back out, because the question above is asked of the parts only and
-  the receiver of an application written as "ξ.name" is not one of them:
-  "chunk.get" is "read 0 size", whose parts are a literal and a "size" the
-  table says returns a number, so the label went on an atom that reads a
-  block of memory and "PhSticky" then answered every later read with the
-  bytes of the first one. The evidence widens the set of applications that
-  stop being recomputed, so it is worth having, but only once "eo:applied"
-  asks what the receiver of such an application is.
+  Whether this row of "links.xml" says its object is decided by bytes
+  alone. Every row holds one thing, and all four of the ones the table
+  carries are answered here: a "data" is a literal; a "ref" to one of the
+  data objects is a copy of one; a "ref" to anything else is followed,
+  since what that object comes back with is what this one comes back
+  with; and a "var" is a void, put to the same question "eo:filled" puts
+  to the voids of a formation, a "union" of data among the answers that
+  qualify. A "terminator" and an "unknown" answer nothing and the object
+  stays undecided.
+  The locators already walked through are carried along, so a ring of
+  references - "a" that comes from "b" that comes from "a" - is answered
+  instead of walked for ever.
+  -->
+  <xsl:function name="eo:decided" as="xs:boolean">
+    <xsl:param name="row" as="element()?"/>
+    <xsl:param name="seen" as="xs:string*"/>
+    <xsl:choose>
+      <xsl:when test="empty($row) or count($row/*) != 1">
+        <xsl:sequence select="false()"/>
+      </xsl:when>
+      <xsl:when test="exists($row/data) or exists($row/ref[@loc = $eo:data])">
+        <xsl:sequence select="true()"/>
+      </xsl:when>
+      <xsl:when test="exists($row/var)">
+        <xsl:sequence select="eo:given(eo:void($row/@id))"/>
+      </xsl:when>
+      <xsl:when test="exists($row/ref) and not($row/ref/@loc = $seen)">
+        <xsl:sequence select="eo:decided(key('eo:row', $row/ref/@loc, $eo:links), ($seen, $row/@id))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="false()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The void this locator names, as "provides.xml" holds it: a locator is the
+  name of an attribute under the locator of the formation declaring it, so
+  the row is the one of everything but the last part of it.
+  -->
+  <xsl:function name="eo:void" as="element()?">
+    <xsl:param name="loc" as="xs:string"/>
+    <xsl:variable name="parts" as="xs:string*" select="tokenize($loc, '\.')"/>
+    <xsl:variable name="owner" as="xs:string" select="string-join($parts[position() != last()], '.')"/>
+    <xsl:variable name="row" as="element()?" select="if (exists($eo:provides) and $owner != '') then key('eo:row', $owner, $eo:provides) else ()"/>
+    <xsl:sequence select="$row/attr[@void = 'true'][@name = $parts[last()]]"/>
+  </xsl:function>
+  <!--
+  Whether the object this application is attached to is decided by bytes
+  too. It is never one of the parts: an application written as "ξ.name"
+  leaves its receiver where the line above it put it, and the tables name
+  that receiver as the "ρ" of the application itself. An application that
+  copies an object of the program has no receiver of its own and the
+  question does not arise. Without a row the question has no answer and
+  the label stays off, which is what kept "chunk.get" - "read 0 size" over
+  a block of memory - from being remembered by its arguments alone.
+  -->
+  <xsl:function name="eo:receives" as="xs:boolean">
+    <xsl:param name="a" as="element()"/>
+    <xsl:sequence select="not(starts-with($a/@base, $eo:xi)) or eo:decided(key('eo:row', concat($a/@loc, '.', $eo:rho), $eo:links), ())"/>
+  </xsl:function>
+  <!--
+  An application whose parts and receiver are all decided by bytes is
+  labeled too, so that the answer it works out is remembered instead of
+  being worked out on every read.
   -->
   <xsl:template match="*[@loc][@base][not(@base = $eo:literals)][o[@loc]]">
     <xsl:copy>

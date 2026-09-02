@@ -43,7 +43,6 @@ public final class Canonical implements UnaryOperator<XML> {
     public static final List<String> XSLS = List.of(
         "/org/eolang/parser/parse/wrap-applications.xsl",
         "/org/eolang/parser/parse/resolve-local-names.xsl",
-        "/org/eolang/parser/parse/validate-before-stars.xsl",
         "/org/eolang/parser/parse/validate-bindings.xsl",
         "/org/eolang/parser/parse/resolve-before-stars.xsl",
         "/org/eolang/parser/parse/fragile-dispatch.xsl",

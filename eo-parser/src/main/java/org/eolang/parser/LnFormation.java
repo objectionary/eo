@@ -53,7 +53,7 @@ final class LnFormation implements Line {
         final Suffix suffix;
         if (body.startsWith("++>") || body.startsWith("-->")) {
             params = new ArrayList<>(0);
-            binding = null;
+            binding = "";
             suffix = new Suffix(
                 body.substring(1), this.span, this.span.indent() + 1
             );
@@ -64,15 +64,10 @@ final class LnFormation implements Line {
             binding = LnFormation.outerBinding(
                 raw, this.span, this.span.indent() + close + 2
             );
-            final String tail;
-            if (binding == null) {
-                tail = raw;
-            } else {
-                tail = raw.substring(1 + binding.length());
-            }
+            final int width = LnFormation.bindingWidth(binding);
             suffix = new Suffix(
-                tail, this.span,
-                this.span.indent() + close + 1 + LnFormation.bindingWidth(binding)
+                raw.substring(width), this.span,
+                this.span.indent() + close + 1 + width
             );
         }
         this.checkAtomVoids(suffix, params);
@@ -98,14 +93,14 @@ final class LnFormation implements Line {
             label = raw.substring(1, idx);
             Tokens.checkBinding(label, span, pos);
         } else {
-            label = null;
+            label = "";
         }
         return label;
     }
 
     private static int bindingWidth(final String binding) {
         final int width;
-        if (binding == null) {
+        if (binding.isEmpty()) {
             width = 0;
         } else {
             width = binding.length() + 1;
@@ -125,7 +120,7 @@ final class LnFormation implements Line {
     private void transition(final Stack stack, final Suffix suffix) {
         final Level level = new Transition(stack, this.span).apply(
             Kind.BARE_FORMATION, Openness.OPEN,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.atom())
         );
         if (suffix.atom()) {
             level.mark();
@@ -142,7 +137,7 @@ final class LnFormation implements Line {
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }
-        if (binding != null) {
+        if (!binding.isEmpty()) {
             emit.slot(Emissions.bindingTag(binding));
         }
         if (suffix.constant()) {
@@ -159,12 +154,6 @@ final class LnFormation implements Line {
     }
 
     private static int findClosing(final String body, final Span span) {
-        if (body.isEmpty() || body.charAt(0) != '[') {
-            throw new ParseError(
-                span.line(), span.indent(),
-                "formation must start with `[`"
-            );
-        }
         final int close = body.indexOf(']');
         if (close < 0) {
             throw new ParseError(
@@ -214,14 +203,6 @@ final class LnFormation implements Line {
 
     private static String mapParam(final String raw, final Span span, final int pos) {
         Emissions.validParam(raw, span.line(), pos);
-        final String mapped;
-        if ("@".equals(raw)) {
-            mapped = "φ";
-        } else if ("^".equals(raw)) {
-            mapped = "ρ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
+        return new VoidName(raw).asString();
     }
 }

@@ -10,11 +10,15 @@ import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import org.apache.maven.model.Dependency;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,6 +47,37 @@ final class MjCleanTest {
             !file.toFile().exists() && !small.toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void complainsWhenTheDirectoryStays(@Mktmp final Path temp) throws IOException {
+        final Path dir = Files.createDirectories(temp.resolve("target"));
+        final Path kept = Files.createDirectories(dir.resolve("kept"));
+        Files.writeString(kept.resolve("stale.eo"), "# nothing");
+        try {
+            Files.setPosixFilePermissions(kept, Set.of(PosixFilePermission.OWNER_READ));
+        } catch (final UnsupportedOperationException ex) {
+            Assumptions.abort("this file system has no POSIX permissions");
+        }
+        Assumptions.assumeFalse(
+            Files.isWritable(kept), "this user deletes whatever the permissions say"
+        );
+        try {
+            Assertions.assertThrows(
+                Exception.class,
+                () -> new FakeMaven(temp).with("targetDir", dir.toFile()).execute(MjClean.class),
+                "a directory that could not be deleted must not pass for a clean one"
+            );
+        } finally {
+            Files.setPosixFilePermissions(
+                kept,
+                Set.of(
+                    PosixFilePermission.OWNER_READ,
+                    PosixFilePermission.OWNER_WRITE,
+                    PosixFilePermission.OWNER_EXECUTE
+                )
+            );
+        }
     }
 
     @Test

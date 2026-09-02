@@ -100,17 +100,21 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         result.put("from", new Data.ToPhi(text.codePointCount(0, matcher.start())));
         result.put("to", new Data.ToPhi(text.codePointCount(0, matcher.end())));
         final Phi[] groups;
+        final Phi[] exist;
         if (matcher.groupCount() > 0) {
             groups = new Phi[matcher.groupCount() + 1];
+            exist = new Phi[matcher.groupCount() + 1];
             for (int idx = 0; idx < groups.length; ++idx) {
-                groups[idx] = new Data.ToPhi(
-                    Optional.ofNullable(matcher.group(idx)).orElse("")
-                );
+                final String captured = matcher.group(idx);
+                groups[idx] = new Data.ToPhi(Optional.ofNullable(captured).orElse(""));
+                exist[idx] = new Data.ToPhi(captured != null);
             }
         } else {
             groups = new Phi[]{new Data.ToPhi(matcher.group())};
+            exist = new Phi[]{new Data.ToPhi(true)};
         }
         result.put("groups", new Data.ToPhi(groups));
+        result.put("existing", new Data.ToPhi(exist));
     }
 
     private void blank(final Phi result) {
@@ -136,6 +140,10 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         );
         result.put(
             "groups",
+            new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
+        );
+        result.put(
+            "existing",
             new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
     }

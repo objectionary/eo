@@ -4,7 +4,7 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
+import com.github.lombrozo.xnav.Xnav;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.w3c.dom.NamedNodeMap;
@@ -24,13 +24,13 @@ final class Row {
     /**
      * The element of the document the row was written as.
      */
-    private final XML element;
+    private final Xnav element;
 
     /**
      * Ctor.
      * @param row The element of the document the row was written as
      */
-    Row(final XML row) {
+    Row(final Xnav row) {
         this.element = row;
     }
 
@@ -40,7 +40,7 @@ final class Row {
      */
     Map<String, String> cells() {
         final Map<String, String> found = new LinkedHashMap<>(0);
-        final NamedNodeMap named = this.element.inner().getAttributes();
+        final NamedNodeMap named = this.element.node().getAttributes();
         for (int cell = 0; cell < named.getLength(); cell = cell + 1) {
             found.put(named.item(cell).getNodeName(), named.item(cell).getNodeValue());
         }

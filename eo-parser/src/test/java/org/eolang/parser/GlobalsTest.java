@@ -231,6 +231,15 @@ final class GlobalsTest {
     }
 
     @Test
+    void reportsLastLineOfTheBlockFlushedByAnObject() {
+        MatcherAssert.assertThat(
+            "a block flushed by an object must report its own last line, as the end-of-file flush does",
+            GlobalsTest.render("# first", "# second", "# third", "", "[] > foo"),
+            XhtmlMatchers.hasXPath("/object/comments/comment[@line='3']")
+        );
+    }
+
+    @Test
     void keepsFlushedCommentsWhenTheSealingLineFails() {
         MatcherAssert.assertThat(
             "a top comment block flushed by a line that then fails must survive that line's rollback",

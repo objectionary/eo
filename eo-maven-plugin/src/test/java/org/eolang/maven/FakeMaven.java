@@ -197,6 +197,9 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "tables", this.targetPath().resolve("6-inference").toFile()
             );
+            this.params.putIfAbsent(
+                "pages", this.targetPath().getParent().resolve("site/inference").toFile()
+            );
             this.params.putIfAbsent("placedFormat", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
@@ -209,6 +212,8 @@ final class FakeMaven {
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);
+            this.params.putIfAbsent("lowering", true);
+            this.params.putIfAbsent("binary", "phino");
             this.params.putIfAbsent("strict", true);
             this.params.putIfAbsent("included", new SetOf<>("**.eo"));
         }

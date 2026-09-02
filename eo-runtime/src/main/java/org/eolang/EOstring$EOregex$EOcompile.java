@@ -13,6 +13,15 @@ import java.util.regex.PatternSyntaxException;
 
 /**
  * Regex.compile object.
+ *
+ * <p>A pattern that does not compile is reported with the construct the
+ * engine choked on and the offset it sits at, so that six different
+ * mistakes no longer read the same (#7986). The flag group is compiled in
+ * front of the pattern, so its length is taken off the index the engine
+ * reports, leaving an offset into the pattern the caller wrote; an error
+ * inside the flag group itself lands before that start and is reported
+ * without an offset.</p>
+ *
  * @since 0.39.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -67,6 +76,7 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
         if (!expression.endsWith("/")) {
             builder.append("(?").append(expression.substring(last + 1)).append(')');
         }
+        final int flags = builder.length();
         builder.append(expression, 1, last);
         Phi result;
         try {
@@ -77,7 +87,17 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
             result = this.take(Phi.RHO).take("pattern");
             result.put(0, new Data.ToPhi(baos.toByteArray()));
         } catch (final PatternSyntaxException ex) {
-            result = this.fallback("regex syntax is invalid");
+            final int offset = ex.getIndex() - flags;
+            final String reason;
+            if (ex.getIndex() < 0 || offset < 0) {
+                reason = String.format("regex syntax is invalid: %s", ex.getDescription());
+            } else {
+                reason = String.format(
+                    "regex syntax is invalid: %s at offset %d of the pattern",
+                    ex.getDescription(), offset
+                );
+            }
+            result = this.fallback(reason);
         } catch (final IOException ex) {
             throw new ExFailure("cannot serialize the compiled regex pattern", ex);
         }

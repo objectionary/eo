@@ -187,15 +187,7 @@ final class LnOnlyPhi implements Line {
     private void emitVoids(final Emit emit, final List<String> params, final int origin) {
         int column = this.span.indent() + origin;
         for (final String param : params) {
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, this.span.line(), column);
+            emit.voidParam(new VoidName(param).asString(), this.span.line(), column);
             column = column + param.length() + 1;
         }
     }

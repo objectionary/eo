@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -45,5 +46,27 @@ final class Scrubbed {
     @Override
     public String toString() {
         return Scrubbed.FORBIDDEN.matcher(this.origin).replaceAll("");
+    }
+
+    /**
+     * Where the first character an XML node cannot hold sits.
+     *
+     * <p>Text is scrubbed of them, but a name is not: it becomes an
+     * attribute of a generated object, and a name with a hole in it is
+     * not the name the source wrote. A reader of an identifier asks this
+     * instead, and reports the character at the column it sits in
+     * (#7927).</p>
+     *
+     * @return Index of the first such character, or -1 when there is none
+     */
+    int found() {
+        final Matcher matcher = Scrubbed.FORBIDDEN.matcher(this.origin);
+        final int index;
+        if (matcher.find()) {
+            index = matcher.start();
+        } else {
+            index = -1;
+        }
+        return index;
     }
 }

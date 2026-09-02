@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -29,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjAssembleIT {
 
-    @Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         final String stdout = "target/eo/%s/io/stdout.%s";

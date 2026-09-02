@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 2
+message: "[2:13] error: 'bytes literal ends with a dangling continuation dash'"
+input: "[] > app\n  CA-FE-\n  BE-BE-"

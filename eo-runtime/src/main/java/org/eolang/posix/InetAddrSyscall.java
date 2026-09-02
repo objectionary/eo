@@ -26,12 +26,6 @@ import org.eolang.Syscall;
 public final class InetAddrSyscall implements Syscall {
 
     /**
-     * {@code EINVAL}, the same value on every POSIX platform this library
-     * targets (Linux, macOS).
-     */
-    private static final int EINVAL = 22;
-
-    /**
      * The limited-broadcast address, whose conversion is {@code INADDR_NONE}
      * — the same value {@code inet_addr} returns for text it cannot parse,
      * which is why the two are told apart by the text rather than by the
@@ -61,7 +55,7 @@ public final class InetAddrSyscall implements Syscall {
         final String address = new Dataized(params[0]).asString();
         final int converted = CStdLib.INSTANCE.inet_addr(address);
         if (converted == -1 && !InetAddrSyscall.BROADCAST.equals(address)) {
-            Native.setLastError(InetAddrSyscall.EINVAL);
+            Native.setLastError(22);
         }
         result.put(0, new Data.ToPhi(Integer.toUnsignedLong(converted)));
         result.put(1, new PhDefault());

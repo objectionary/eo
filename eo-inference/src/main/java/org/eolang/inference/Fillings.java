@@ -7,7 +7,6 @@ package org.eolang.inference;
 import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -69,22 +68,21 @@ final class Fillings {
      *  nobody ever fills
      */
     Map<String, Collection<Type>> all() {
-        final Map<String, String> names = new Ends(new Pairs(this.table).all()).names();
-        final Map<String, String> landings = new Landed(this.table, this.given).all();
-        final Forms forms = new Forms(this.table);
+        final Pairs pairs = new Pairs(this.table);
+        final Map<String, String> names = new Ends(pairs.all()).names();
+        final Map<String, String> landings = new Landed(pairs, this.given).all();
+        final Forms forms = new Forms(pairs.forms());
         final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
         final Map<String, Map<String, Type>> loose = new LinkedHashMap<>(0);
-        for (final XML bind : this.table.nodes("/links/type/ref/bind")) {
-            final List<String> put = bind.xpath("ref/@loc");
-            if (!put.isEmpty()) {
-                final String hollow = bind.xpath("@void").get(0);
-                final String end = landings.get(put.get(0));
+        for (final Map.Entry<String, Collection<String>> bound : pairs.puts().entrySet()) {
+            for (final String put : bound.getValue()) {
+                final String end = landings.get(put);
                 if (end == null) {
-                    final String stopped = names.getOrDefault(put.get(0), put.get(0));
-                    loose.computeIfAbsent(hollow, key -> new LinkedHashMap<>(0))
+                    final String stopped = names.getOrDefault(put, put);
+                    loose.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
                         .putIfAbsent(forms.name(stopped), forms.type(stopped));
                 } else {
-                    placed.computeIfAbsent(hollow, key -> new LinkedHashMap<>(0))
+                    placed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
                         .putIfAbsent(forms.name(end), forms.type(end));
                 }
             }

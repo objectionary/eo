@@ -121,6 +121,12 @@ final class LnCompactTuple implements Line {
             }
             tokens.seek(tokens.cursor() + 1);
         }
+        if (tokens.cursor() - start > 1 && tokens.body().charAt(start) == '0') {
+            throw new ParseError(
+                span.line(), span.indent() + start,
+                "integer literal must not have leading zeros"
+            );
+        }
         return (int) count;
     }
 }

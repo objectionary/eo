@@ -25,13 +25,29 @@ final class Admission {
     private final boolean permitted;
 
     /**
+     * Whether the line declares an atom of its own.
+     */
+    private final boolean own;
+
+    /**
      * Ctor.
      * @param label The suffix's source name, or {@code null}
      * @param permitted Whether this line shape may sit under an atom parent
      */
     Admission(final String label, final boolean permitted) {
+        this(label, permitted, false);
+    }
+
+    /**
+     * Ctor.
+     * @param label The suffix's source name, or {@code null}
+     * @param permitted Whether this line shape may sit under an atom parent
+     * @param own Whether the line declares an atom of its own
+     */
+    Admission(final String label, final boolean permitted, final boolean own) {
         this.label = label;
         this.permitted = permitted;
+        this.own = own;
     }
 
     /**
@@ -50,5 +66,21 @@ final class Admission {
      */
     boolean permitted() {
         return this.permitted;
+    }
+
+    /**
+     * The message for a line this atom body cannot hold — R-6.3.4 (b)
+     * gives a nested atom its own text, since telling the author that
+     * the child is not a test says nothing about the nesting.
+     * @return Canonical message
+     */
+    String violation() {
+        final String message;
+        if (this.own) {
+            message = "atom may not contain a nested atom";
+        } else {
+            message = "atom may contain only test attributes";
+        }
+        return message;
     }
 }

@@ -4,7 +4,8 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
+import com.github.lombrozo.xnav.Xnav;
+import org.w3c.dom.Node;
 import org.xembly.Directives;
 
 /**
@@ -24,25 +25,24 @@ final class Kept implements Type {
     /**
      * The row, as the document keeps it.
      */
-    private final XML row;
+    private final Xnav row;
 
     /**
      * Ctor.
      * @param written The row, as the document keeps it, rooted at the row
      *  itself and not at a document of its own
      */
-    Kept(final XML written) {
+    Kept(final Xnav written) {
         this.row = written;
     }
 
     @Override
     public Directives directives() {
         final Directives dirs = new Directives();
-        for (final XML held : this.row.nodes("*")) {
-            dirs.add(held.inner().getNodeName())
-                .append(Directives.copyOf(held.inner()))
-                .up();
-        }
+        this.row.elements()
+            .map(Xnav::node)
+            .filter(held -> held.getNodeType() == Node.ELEMENT_NODE)
+            .forEach(held -> dirs.add(held.getNodeName()).append(Directives.copyOf(held)).up());
         return dirs;
     }
 }

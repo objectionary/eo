@@ -67,6 +67,19 @@ final class DataizedTest {
     }
 
     @Test
+    void refusesAByteThatIsNeitherTrueNorFalse() {
+        MatcherAssert.assertThat(
+            "a one byte datum that is not 00- or 01- must be refused, not read as false",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new PhDefault(new byte[] {(byte) 0xFF})).asBool(),
+                "dataizing FF- as boolean was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("only 00- and 01- are booleans")
+        );
+    }
+
+    @Test
     void reportsActualLengthWhenBoolIsEmpty() {
         MatcherAssert.assertThat(
             "the message must report the true (zero) length, not claim it's over one",

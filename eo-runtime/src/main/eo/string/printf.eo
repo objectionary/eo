@@ -39,9 +39,23 @@
 # is printed as that control character instead of being rejected, and `%b`
 # remains the conversion to reach for a boolean.
 #
+# The `%b` conversion refuses an argument whose bytes are neither `00-` nor
+# `01-`, so a text or a number reaching it terminates instead of being
+# printed as `false`. The coin lands the other way up as well: the
+# one-character texts of U+0000 and U+0001 are accepted as booleans, since
+# their bytes are the bytes of `false` and `true`.
+#
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
 # writes, and a reason rendered with `%f` destroyed itself instead of arriving.
+#
+# The `%f` conversion leaves the `cant-print` fallback of `as-fixed` unbound,
+# so a number it refuses, a non-finite one or a magnitude of 2^63 or larger,
+# terminates with the reason `as-fixed` gives, instead of that reason standing
+# in the text where the number was meant to be. Its tests recover from that
+# termination instead of declaring it with `-->`, because a returned text of
+# more than one byte fails to dataize as a boolean exactly as a termination
+# does, and a `-->` test would pass either way.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -209,18 +223,24 @@
             precise.as-bool.if
               number precision
               6
-            I
           if.
             78-.eq conv
             capped (bytes datum).as-hex
             if.
               62-.eq conv
-              capped
-                arg.as-bool.if "true" "false"
+              if.
+                or.
+                  01-.eq datum
+                  00-.eq datum
+                capped
+                  arg.as-bool.if "true" "false"
+                T
+                  "The argument %x is not a boolean, the %%b conversion takes true or false".printf
+                    * datum
               T
-                "The conversion %x in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                "The conversion %s in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
                   *
-                    bytes conv
+                    string conv
     arg.as-bytes > datum!
     flags-end > digits!
       number flags
@@ -359,9 +379,9 @@
                     64-.eq conv
                     66-.eq conv
               T
-                "The zero flag can't be applied to the %x conversion, only to %%d and %%f".printf
+                "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
                   *
-                    bytes conv
+                    string conv
               converted
     digits-value > width!
       number digits
@@ -544,6 +564,34 @@
     "1.000000"
     "%f".printf
       * 0.9999999
+
+  eq. ++> can-stop-formatting-a-huge-number-as-a-fixed-point
+    "stopped"
+    recovered
+      "%f".printf
+        * 1.0e30
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-non-finite-number-as-a-fixed-point
+    "stopped"
+    recovered
+      "value=%f".printf
+        * nan
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-number-as-a-boolean
+    "stopped"
+    recovered
+      "%b".printf
+        * 0
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-string-as-a-boolean
+    "stopped"
+    recovered
+      "%b".printf
+        * "x"
+      "stopped"
 
   eq. ++> can-truncate-a-negative-float-toward-zero
     "-7"

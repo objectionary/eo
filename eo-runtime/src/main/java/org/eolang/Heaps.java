@@ -155,6 +155,18 @@ final class Heaps {
     byte[] read(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
+            if (offset < 0) {
+                throw new ExFailure(
+                    "Block '%d': can't read at negative offset '%d'",
+                    identifier, offset
+                );
+            }
+            if (length < 0) {
+                throw new ExFailure(
+                    "Block '%d': can't read a negative number of bytes '%d'",
+                    identifier, length
+                );
+            }
             if (!this.fits(identifier, offset, length)) {
                 throw new ExFailure(
                     "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
@@ -208,10 +220,7 @@ final class Heaps {
                     length
                 );
             }
-            final byte[] result = new byte[length];
-            System.arraycopy(source, 0, result, 0, length);
-            System.arraycopy(data, 0, result, offset, data.length);
-            this.blocks.put(identifier, result);
+            System.arraycopy(data, 0, source, offset, data.length);
         } finally {
             this.lock.unlock();
         }

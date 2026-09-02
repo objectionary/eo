@@ -165,10 +165,20 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Mojo execution timeout in seconds.
+     *
+     * <p>Four hours, which no goal of this plugin has ever needed and a
+     * goal that never returns will always exceed, so {@link Deadline} does
+     * what its javadoc says it does without a build having to configure
+     * anything. The default used to be {@link Integer#MAX_VALUE}, about
+     * sixty eight years, which meant the deadline never fired and the
+     * thread and the {@link java.util.concurrent.FutureTask} behind it were
+     * started for nothing. A build whose goals legitimately take longer
+     * raises it through {@code eo.timeout}.</p>
+     *
      * @since 0.28.12
      */
     @Parameter(property = "eo.timeout")
-    protected Integer timeout = Integer.MAX_VALUE;
+    protected Integer timeout = 4 * 60 * 60;
 
     /**
      * Track optimization steps into intermediate XMIR files?

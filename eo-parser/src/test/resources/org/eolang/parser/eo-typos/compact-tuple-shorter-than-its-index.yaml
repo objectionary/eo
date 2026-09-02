@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 4
+message: |-
+  [4:2] error: 'compact tuple requires at least 3 children, got 2'
+    sprintf *3 > z
+    ^
+input: |
+  # D.
+
+  [] > foo
+    sprintf *3 > z
+      "Hello, %s"
+      "world"

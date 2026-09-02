@@ -28,10 +28,14 @@ final class Bindings {
     /**
      * The parent kinds whose deeper children are application arguments,
      * so the all-or-nothing rule of R-6.6.2 governs the group they form.
+     * An inline-phi formation is one of them: the block under a bare
+     * {@code φ} is the argument group of the expression the line binds to
+     * {@code φ}, and an application is no less one for being written with
+     * an inline-phi suffix instead of a head (#7919).
      */
     private static final Set<Kind> TRACKED = EnumSet.of(
         Kind.HEAD, Kind.HMETHOD, Kind.VAPPLICATION, Kind.IDENTITY_OBJECT,
-        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD
+        Kind.PIPE_APPLICATION, Kind.COMPACT_TUPLE, Kind.VMETHOD, Kind.ONLY_PHI
     );
 
     /**
@@ -116,7 +120,7 @@ final class Bindings {
      * R-3.12.3.</p>
      *
      * @param stack Indent stack (the new child is already on top)
-     * @param outer Outer binding label, or {@code null} when absent
+     * @param outer Outer binding label, empty when the line carries none
      * @param span Source span of the child line
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
@@ -126,7 +130,7 @@ final class Bindings {
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
         } else if (Bindings.tracksBindings(parent.kind())) {
-            parent.observeBinding(outer != null, span);
+            parent.observeBinding(!outer.isEmpty(), span);
         }
     }
 
@@ -135,7 +139,7 @@ final class Bindings {
     }
 
     private static void rejectBinding(final String outer, final Span span) {
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "binding allowed only in argument position"
@@ -147,8 +151,8 @@ final class Bindings {
         final Level parent, final String outer, final Span span
     ) {
         if (parent.children() > 1) {
-            parent.observeBinding(outer != null, span);
-        } else if (outer != null) {
+            parent.observeBinding(!outer.isEmpty(), span);
+        } else if (!outer.isEmpty()) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"

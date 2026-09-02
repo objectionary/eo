@@ -17,8 +17,9 @@ import org.cactoos.scalar.Unchecked;
  * <p>The source is UTF-8 by contract (R-2.1.1) — caller-supplied as a
  * decoded {@link String}, so encoding handling lives in the layer above.
  * Line endings {@code \n} and {@code \r\n} are normalised to {@code \n}
- * (R-2.1.2); a bare {@code \r} also terminates a line. The final line need
- * not carry a terminator.</p>
+ * (R-2.1.2), and those two are the only ones: a {@code \r} that no
+ * {@code \n} follows stays inside the line, where {@link Eo} rejects it.
+ * The final line need not carry a terminator.</p>
  *
  * <p>Spans are produced in source order, numbered from 1. An empty input
  * yields no spans. An input that is a single empty line yields one blank
@@ -60,13 +61,10 @@ final class Source implements Iterable<Span> {
                 number = number + 1;
                 pos = pos + 1;
                 start = pos;
-            } else if (glyph == '\r') {
+            } else if (glyph == '\r' && pos + 1 < len && text.charAt(pos + 1) == '\n') {
                 out.add(new Span(text.substring(start, pos), number));
                 number = number + 1;
-                pos = pos + 1;
-                if (pos < len && text.charAt(pos) == '\n') {
-                    pos = pos + 1;
-                }
+                pos = pos + 2;
                 start = pos;
             } else {
                 pos = pos + 1;

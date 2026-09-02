@@ -28,8 +28,13 @@ import java.util.List;
  * <ul>
  * <li>R-5.2.3(b) — same-indent {@code .method} after a horizontally
  * completed predecessor.</li>
+ * <li>R-3.8.3 — {@code .method} as the receiver of a bare reversed
+ * dispatch, which may not begin with a dot.</li>
  * <li>R-5.2.5 — {@code .method} as a deeper-indent line.</li>
  * <li>R-5.2.10 — {@code .method} at top level (empty stack).</li>
+ * <li>R-6.6.4 — a {@code .method} continuation after a link that
+ * carries an inline binding, which the continuation would leave on a
+ * link the chain no longer ends with.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -69,7 +74,7 @@ final class LnMethod implements Line {
         final Value method = tokens.readMethodName();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -80,7 +85,7 @@ final class LnMethod implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         globals.seal(emit, this.span);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
             under.upgradeArgBinding();
@@ -96,7 +101,7 @@ final class LnMethod implements Line {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         final Kind kind;
@@ -110,6 +115,9 @@ final class LnMethod implements Line {
         }
         top.become(kind);
         top.close(openness);
+        if (!outer.isEmpty()) {
+            top.tie();
+        }
         if (suffix.present()) {
             top.name(suffix.label());
         }
@@ -118,6 +126,14 @@ final class LnMethod implements Line {
     }
 
     private void precheck(final Stack stack) {
+        if (!stack.empty() && stack.top().kind() == Kind.BARE_REVERSED
+            && !stack.top().taken()
+            && stack.top().indent() < this.span.indent()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "reversed dispatch receiver must not begin with dot"
+            );
+        }
         if (stack.empty() || stack.top().indent() < this.span.indent()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
@@ -134,6 +150,12 @@ final class LnMethod implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
+            );
+        }
+        if (stack.top().tied()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "inline binding allowed only on the last method in a chain"
             );
         }
     }

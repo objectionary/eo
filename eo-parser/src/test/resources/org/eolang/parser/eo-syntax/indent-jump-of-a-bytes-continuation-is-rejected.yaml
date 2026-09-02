@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: |-
-  [1:6] error: 'unexpected content after name suffix'
-  [] >  foo
-        ^
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'indent increased by more than one level')]
 input: |
-  [] >  foo
+  foo > main
+    CA-FE-
+        BE-BE

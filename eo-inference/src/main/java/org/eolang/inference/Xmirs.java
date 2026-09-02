@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,11 +37,22 @@ final class Xmirs {
     private final Path dir;
 
     /**
+     * The documents, read on the first question and kept for the rest.
+     *
+     * <p>A clue asks several questions of the same corpus and there are
+     * ten of them, so reading and parsing every file again for each one
+     * costs ten passes where one is enough. The list holds either nothing,
+     * before the first question, or the single collection of documents.</p>
+     */
+    private final List<Collection<XML>> read;
+
+    /**
      * Ctor.
      * @param prepared The directory with the prepared XMIR files
      */
     Xmirs(final Path prepared) {
         this.dir = prepared;
+        this.read = new ArrayList<>(1);
     }
 
     /**
@@ -133,8 +147,12 @@ final class Xmirs {
      *  the code
      * @throws IOException If a file cannot be read
      */
-    Collection<XML> dispatches() throws IOException {
-        return this.matching("//o[starts-with(@base, '.')]");
+    Collection<Site> dispatches() throws IOException {
+        final Collection<Site> found = new ArrayList<>(0);
+        for (final XML dispatch : this.matching("//o[starts-with(@base, '.')]")) {
+            found.add(new Site(new Xnav(dispatch.inner())));
+        }
+        return found;
     }
 
     /**
@@ -198,15 +216,23 @@ final class Xmirs {
     Map<String, String> receivers() throws IOException {
         final Map<String, String> found = new HashMap<>(0);
         for (final XML xmir : this.documents()) {
-            for (final XML kid : xmir.nodes("//o[@loc]/o[@loc][not(@as)]")) {
-                final String owner = kid.xpath("../@loc").get(0);
-                final String loc = kid.xpath("@loc").get(0);
-                if (loc.equals(owner.concat(".ρ"))) {
-                    found.put(owner, loc);
-                }
+            for (final XML node : xmir.nodes("//o[@loc][o[@loc][not(@as)]]")) {
+                final Xnav owner = new Xnav(node.inner());
+                final String loc = new Noted(owner).says("loc");
+                Xmirs.bare(owner)
+                    .map(kid -> new Noted(kid).says("loc"))
+                    .filter(kid -> kid.equals(loc.concat(".ρ")))
+                    .findFirst()
+                    .ifPresent(kid -> found.put(loc, kid));
             }
         }
         return found;
+    }
+
+    private static Stream<Xnav> bare(final Xnav owner) {
+        return owner.elements(
+            Filter.all(Filter.withName("o"), Filter.not(Filter.hasAttribute("as")))
+        );
     }
 
     private Collection<XML> matching(final String xpath) throws IOException {
@@ -218,11 +244,14 @@ final class Xmirs {
     }
 
     private Collection<XML> documents() throws IOException {
-        final Collection<XML> read = new ArrayList<>(0);
-        for (final Path source : this.sources()) {
-            read.add(new XMLDocument(source));
+        if (this.read.isEmpty()) {
+            final Collection<XML> found = new ArrayList<>(0);
+            for (final Path source : this.sources()) {
+                found.add(new XMLDocument(source));
+            }
+            this.read.add(found);
         }
-        return read;
+        return this.read.get(0);
     }
 
     private Collection<Path> sources() throws IOException {

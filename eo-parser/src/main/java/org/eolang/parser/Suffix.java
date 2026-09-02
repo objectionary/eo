@@ -44,13 +44,6 @@ import java.util.regex.Pattern;
 final class Suffix {
 
     /**
-     * Additional NAME-only token boundaries beyond {@link #terminates}.
-     * §2.3 forbids these inside a NAME; signatures keep the loose
-     * {@link #terminates} so dotted FQNs are still consumed whole.
-     */
-    private static final String NAME_BOUNDARIES = ",.|':;?[]{}()";
-
-    /**
      * Scope tokens, which name a place rather than an object: the
      * {@code φ} decoratee, the {@code ρ} parent and {@code ξ} itself.
      * A {@code >>} handle is a name a later reference can be written
@@ -80,8 +73,9 @@ final class Suffix {
     private final Form form;
 
     /**
-     * Bound name for {@code NAME} / {@code TEST} forms; the file-local
-     * handle for a {@code >> name} {@code AUTO} suffix; empty otherwise.
+     * Bound name for {@code NAME} / {@code TEST} / {@code THROWS} forms;
+     * the file-local handle for a {@code >> name} {@code AUTO} suffix;
+     * empty otherwise.
      */
     private final String label;
 
@@ -139,7 +133,7 @@ final class Suffix {
 
     /**
      * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}.
+     * {@code TEST}, {@code THROWS}.
      * @return Form
      */
     Form form() {
@@ -147,7 +141,9 @@ final class Suffix {
     }
 
     /**
-     * Bound name. Empty for {@code AUTO} and {@code NONE}.
+     * Bound name. Empty for {@code NONE}; for {@code AUTO} it is the
+     * file-local handle of a {@code >> name} suffix, empty only for a
+     * bare {@code >>}.
      * @return Name
      */
     String label() {
@@ -310,7 +306,7 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
-        Suffix.checkCactus(raw, span, pos);
+        Suffix.checkGlyphs(raw, span, pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z'
             && !Suffix.VARIABLE.matcher(raw).matches() && !raw.startsWith("Q.")) {
@@ -399,7 +395,7 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        Suffix.checkCactus(name, span, home + start);
+        Suffix.checkGlyphs(name, span, home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
@@ -425,11 +421,18 @@ final class Suffix {
         }
     }
 
-    private static void checkCactus(final String name, final Span span, final int pos) {
+    private static void checkGlyphs(final String name, final Span span, final int pos) {
         if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
             throw new ParseError(
                 span.line(), pos,
                 "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        final int control = new Scrubbed(name).found();
+        if (control >= 0) {
+            throw new ParseError(
+                span.line(), pos + control,
+                "control character is not allowed in an identifier"
             );
         }
     }
@@ -477,7 +480,7 @@ final class Suffix {
                 )
             );
         }
-        Suffix.checkCactus(handle, span, home + begin);
+        Suffix.checkGlyphs(handle, span, home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -507,7 +510,7 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        Suffix.checkCactus(name, span, home + begin);
+        Suffix.checkGlyphs(name, span, home + begin);
         Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
@@ -590,7 +593,7 @@ final class Suffix {
 
     private static int skipSpace(final String tail, final int from) {
         int idx = from;
-        if (idx < tail.length() && tail.charAt(idx) == ' ') {
+        while (idx < tail.length() && tail.charAt(idx) == ' ') {
             idx = idx + 1;
         }
         return idx;
@@ -613,7 +616,7 @@ final class Suffix {
 
     private static boolean endsName(final char glyph) {
         return Suffix.terminates(glyph)
-            || Suffix.NAME_BOUNDARIES.indexOf(glyph) >= 0;
+            || ",.|':;?[]{}()".indexOf(glyph) >= 0;
     }
 
     /**

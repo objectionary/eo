@@ -42,12 +42,12 @@ import java.util.regex.Pattern;
  * rejected outside an atom.</p>
  *
  * <p>The name may also be {@code ^}, which declares the formation's
- * receiver and emits a void named {@code ρ} (R-3.4.11). A receiver has
- * to be the first attribute its formation declares — every caller fills
- * it first — so {@code ? > ^} is rejected under a head that already
- * carries bracket voids, and under a formation that has taken any other
- * attribute already. It carries a type annotation like any other void,
- * which is to say inside an atom only.</p>
+ * receiver and emits a void named {@code ρ} (R-3.4.11). Its position
+ * among the voids is free — a dispatch looks it up by name, not by
+ * position — so it obeys the same R-3.4.9 ordering as every other void:
+ * it may not stand below an attribute the formation has already bound.
+ * It carries a type annotation like any other void, which is to say
+ * inside an atom only.</p>
  *
  * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
  * optionally followed by one type annotation — are the only shapes the
@@ -226,7 +226,7 @@ final class LnVoid implements Line {
             if (end == idx) {
                 throw new ParseError(
                     span.line(), span.indent() + 1 + offset + idx,
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
             final String member = inside.substring(idx, end);
@@ -244,7 +244,7 @@ final class LnVoid implements Line {
             if (idx == inside.length()) {
                 throw new ParseError(
                     span.line(), span.indent() + 1 + offset + idx,
-                    "types in a `/{…}` list must be separated by exactly one space"
+                    "types in a /{…} list must be separated by exactly one space"
                 );
             }
         }

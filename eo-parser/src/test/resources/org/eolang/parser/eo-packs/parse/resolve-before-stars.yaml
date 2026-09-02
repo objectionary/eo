@@ -3,7 +3,6 @@
 ---
 # yamllint disable rule:line-length
 sheets:
-  - /org/eolang/parser/parse/validate-before-stars.xsl
   - /org/eolang/parser/parse/resolve-before-stars.xsl
 asserts:
   - /object/errors/error[@line='2' and @severity='error']

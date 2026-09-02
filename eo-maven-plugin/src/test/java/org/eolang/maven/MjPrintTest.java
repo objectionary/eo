@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.Text;
 import org.cactoos.io.InputOf;
 import org.cactoos.map.MapEntry;
@@ -19,6 +22,7 @@ import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
+import org.eolang.printer.PenaltyKey;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
@@ -41,6 +45,20 @@ final class MjPrintTest {
      */
     @Mktmp
     private Path dir;
+
+    @Test
+    void declaresAParameterForEveryPenaltyWeight() {
+        final Set<String> declared = new MojoFields().all();
+        Assumptions.assumeFalse(declared.isEmpty());
+        MatcherAssert.assertThat(
+            "a weight a printer pack can vary must be a parameter a build can vary too",
+            Stream.of(PenaltyKey.values())
+                .map(key -> MjPrintTest.param(key.name()))
+                .filter(name -> name.isEmpty() || !declared.contains(name))
+                .collect(Collectors.toList()),
+            Matchers.empty()
+        );
+    }
 
     @Test
     void printsSuccessfully(@Mktmp final Path temp) throws Exception {
@@ -191,8 +209,14 @@ final class MjPrintTest {
         return new MapOf<>(
             new MapEntry<>("INDENT", "indent"),
             new MapEntry<>("BRACKET", "bracket"),
+            new MapEntry<>("LEADING", "leading"),
+            new MapEntry<>("PHI", "phi"),
+            new MapEntry<>("IF", "conditional"),
             new MapEntry<>("EXCESS", "excess"),
-            new MapEntry<>("WIDTH", "width")
+            new MapEntry<>("SYMBOL", "symbol"),
+            new MapEntry<>("SPACE", "space"),
+            new MapEntry<>("WIDTH", "width"),
+            new MapEntry<>("STEP", "step")
         ).getOrDefault(key, "");
     }
 }

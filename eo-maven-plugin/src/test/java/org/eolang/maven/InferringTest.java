@@ -125,43 +125,6 @@ final class InferringTest {
     }
 
     @Test
-    void writesThePagesWhereItIsTold(@Mktmp final Path temp) throws IOException {
-        Files.writeString(
-            Files.createDirectories(temp.resolve("plot")).resolve("shrub.xmir"),
-            new EoSyntax(
-                String.join(System.lineSeparator(), "[] > shrub", "  [] > twig", "")
-            ).parsed().toString()
-        );
-        new Inferring(
-            temp.resolve("plot"), temp.resolve("pre"), temp.resolve("rows"),
-            temp.resolve("site").resolve("inference")
-        ).exec();
-        MatcherAssert.assertThat(
-            "the pages must land in the directory they were given, but they went elsewhere",
-            Files.exists(
-                temp.resolve("site").resolve("inference").resolve("index.html")
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void writesNoPagesWhenNobodyAsksForThem(@Mktmp final Path temp) throws IOException {
-        Files.writeString(
-            Files.createDirectories(temp.resolve("plot")).resolve("fern.xmir"),
-            new EoSyntax(
-                String.join(System.lineSeparator(), "[] > fern", "  [] > frond", "")
-            ).parsed().toString()
-        );
-        new Inferring(temp.resolve("plot"), temp.resolve("pre"), temp.resolve("rows")).exec();
-        MatcherAssert.assertThat(
-            "a build nobody asked a report of must write no pages, but it wrote some",
-            Files.exists(temp.resolve("rows").resolve("report")),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
     void keepsFoldersOfProgram(@Mktmp final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("tree").resolve("one")).resolve("leaf.xmir"),

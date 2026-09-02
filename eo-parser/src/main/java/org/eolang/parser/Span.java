@@ -122,6 +122,26 @@ final class Span {
     }
 
     /**
+     * True if the leading whitespace holds a character that is neither a
+     * space nor a tab. An indent is made of spaces (R-2.2.1), and a
+     * character nobody can see in an editor must not decide how deep a
+     * line sits: a pair of form feeds reads as indent 1 to a counter that
+     * takes every whitespace character (#7924).
+     * @return Alien-whitespace flag
+     */
+    boolean alien() {
+        boolean found = false;
+        for (int idx = 0; idx < this.indent; idx = idx + 1) {
+            final char glyph = this.text.charAt(idx);
+            if (glyph != ' ' && glyph != '\t') {
+                found = true;
+                break;
+            }
+        }
+        return found;
+    }
+
+    /**
      * True if the line is entirely whitespace.
      * @return Blank flag
      */

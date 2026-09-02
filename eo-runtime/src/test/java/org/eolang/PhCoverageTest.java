@@ -43,12 +43,12 @@ import org.junit.jupiter.api.parallel.Isolated;
 final class PhCoverageTest {
 
     @Test
-    void staysEqualToItsOrigin() {
+    void staysDistinctFromItsOrigin() {
         final Phi origin = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
-            "a coverage wrapper must compare equal to the object it wraps, but it didnt",
+            "a coverage wrapper must not compare equal to the object it wraps",
             new PhCoverage(origin, "Φ.n:1:1"),
-            Matchers.equalTo(origin)
+            Matchers.not(Matchers.equalTo(origin))
         );
     }
 

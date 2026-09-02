@@ -51,12 +51,10 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         if (clazz.element("java").text().isPresent()) {
             this.footprint.apply(Paths.get(""), this.target);
         }
-        if (tests) {
-            if (JavaPlaced.testsPresent(clazz)) {
-                this.placeJavaTests(clazz);
-            } else {
-                this.removeJavaTests(clazz);
-            }
+        if (tests && JavaPlaced.testsPresent(clazz)) {
+            this.placeJavaTests(clazz);
+        } else {
+            this.removeJavaTests(clazz);
         }
     }
 

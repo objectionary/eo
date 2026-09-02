@@ -12,8 +12,9 @@ package org.eolang;
  * name would be "Object", but it's already occupied by Java. That's why
  * we call it Phi.</p>
  *
- * <p>The hash code of a Phi is its identity hash, which is not unique:
- * two different objects can share one (see #7304).</p>
+ * <p>Two Phi are equal when they are the same object. The hash code of a
+ * Phi is its identity hash, which is not unique — two different objects
+ * can share one — so equality is never decided from it.</p>
  *
  * @since 0.1
  */

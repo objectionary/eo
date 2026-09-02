@@ -32,7 +32,6 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -64,7 +63,6 @@ final class ProxyIT {
         }
     }
 
-    @Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
     @Test
     void checksThatWeCanCompileTheProgramWithProxySet(@Mktmp final Path tmp) throws Exception {
         final int port = ProxyIT.free();

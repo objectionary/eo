@@ -12,7 +12,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import java.util.Collections;
-import org.eolang.SockaddrIn;
 
 /**
  * C standard library with unix syscalls.
@@ -222,7 +221,7 @@ public interface CStdLib extends Library {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int connect(int sockfd, SockaddrIn addr, int addrlen);
+    int connect(int sockfd, Structure addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -232,7 +231,7 @@ public interface CStdLib extends Library {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(int sockfd, SockaddrIn addr, int addrlen);
+    int bind(int sockfd, Structure addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.
@@ -251,7 +250,7 @@ public interface CStdLib extends Library {
      * @return On success, file descriptor for the accepted socket
      *  (a nonnegative integer) is returned. On error, -1 is returned
      */
-    int accept(int sockfd, SockaddrIn addr, IntByReference addrlen);
+    int accept(int sockfd, Structure addr, IntByReference addrlen);
 
     /**
      * Receive a message from a socket.

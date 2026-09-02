@@ -10,6 +10,16 @@ import java.util.Arrays;
 
 /**
  * Bytes.
+ *
+ * <p>Equality is value-based: two {@link Bytes} are equal when they hold
+ * the same byte sequence, no matter how each of them was built. Neither
+ * {@link BytesOf#equals(Object)} nor {@link BytesOf#hashCode()} may be
+ * delegated to the wrapped object, because {@link Bytes} is a public
+ * interface and an implementation of it is free to inherit the
+ * identity-based {@link Object#equals(Object)}. Delegating to such an
+ * object made equality asymmetric against {@link BytesRaw} and put
+ * unequal hash codes on equal byte sequences.</p>
+ *
  * @since 0.1.0
  */
 public final class BytesOf implements Bytes {
@@ -132,11 +142,19 @@ public final class BytesOf implements Bytes {
 
     @Override
     public boolean equals(final Object other) {
-        return this.bytes.equals(other);
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other instanceof Bytes seq) {
+            result = Arrays.equals(this.take(), seq.take());
+        } else {
+            result = false;
+        }
+        return result;
     }
 
     @Override
     public int hashCode() {
-        return this.bytes.hashCode();
+        return Arrays.hashCode(this.take());
     }
 }

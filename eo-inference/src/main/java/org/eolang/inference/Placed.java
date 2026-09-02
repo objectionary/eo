@@ -4,11 +4,13 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
+import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * The arguments of one application, ordered by the place each one names.
@@ -23,16 +25,16 @@ import java.util.Map;
 final class Placed {
 
     /**
-     * The application.
+     * The objects bound inside the application.
      */
-    private final XML application;
+    private final Collection<Xnav> bound;
 
     /**
      * Ctor.
-     * @param app The application
+     * @param objects The objects bound inside the application
      */
-    Placed(final XML app) {
-        this.application = app;
+    Placed(final Collection<Xnav> objects) {
+        this.bound = objects;
     }
 
     /**
@@ -42,10 +44,14 @@ final class Placed {
     List<String> args() {
         final Map<Integer, String> byplace = new HashMap<>(1);
         int highest = -1;
-        for (final XML arg : this.application.nodes("o[starts-with(@as, 'α')][@loc]")) {
-            final int place = Integer.parseInt(arg.xpath("@as").get(0).substring(1));
-            byplace.put(place, arg.xpath("@loc").get(0));
-            highest = Math.max(highest, place);
+        for (final Xnav arg : this.bound) {
+            final Optional<String> place = arg.attribute("as").text();
+            final Optional<String> loc = arg.attribute("loc").text();
+            if (place.isPresent() && loc.isPresent() && place.get().startsWith("α")) {
+                final int index = Integer.parseInt(place.get().substring(1));
+                byplace.put(index, loc.get());
+                highest = Math.max(highest, index);
+            }
         }
         final List<String> args = new ArrayList<>(highest + 1);
         for (int place = 0; place <= highest; place += 1) {

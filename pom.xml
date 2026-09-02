@@ -19,6 +19,7 @@
     <module>eo-parser</module>
     <module>eo-printer</module>
     <module>eo-inference</module>
+    <module>eo-lowering</module>
     <module>eo-maven-plugin</module>
     <module>eo-runtime</module>
     <module>eo-integration-tests</module>
@@ -209,7 +210,7 @@
         -->
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>2.6</version>
+        <version>2.7</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -533,7 +534,7 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.34.0</version>
+            <version>0.35.1</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>duplicatefinder:.*</exclude>

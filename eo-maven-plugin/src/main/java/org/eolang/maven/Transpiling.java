@@ -5,11 +5,9 @@
 package org.eolang.maven;
 
 import com.github.lombrozo.xnav.Xnav;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,7 +47,7 @@ final class Transpiling implements Step {
     /**
      * Cache directory for transpiled sources.
      */
-    private static final String CACHE = "transpiled";
+    static final String CACHE = "transpiled";
 
     /**
      * XMIR sources to transpile.
@@ -62,34 +60,9 @@ final class Transpiling implements Step {
     private final Path target;
 
     /**
-     * Generated sources directory.
+     * Where the output lands.
      */
-    private final Path generated;
-
-    /**
-     * Base cache directory.
-     */
-    private final Path cache;
-
-    /**
-     * Whether caching is enabled.
-     */
-    private final boolean enabled;
-
-    /**
-     * Whether to transpile tests.
-     */
-    private final boolean tests;
-
-    /**
-     * The plugin version, for the log.
-     */
-    private final String version;
-
-    /**
-     * Directories with the Java sources a human wrote.
-     */
-    private final Collection<Path> roots;
+    private final Written written;
 
     /**
      * The XSL train that does the transpiling.
@@ -97,73 +70,41 @@ final class Transpiling implements Step {
     private final Transpilation train;
 
     /**
-     * Cache guard, see {@link ConcurrentCache} for why it is one per instance.
+     * The cache this build shares with every other build on this machine.
      */
-    private final ConcurrentCache guard;
+    private final GlobalCache cache;
 
     /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
-     * @param generated Generated sources directory
-     * @param cache Base cache directory
-     * @param enabled Whether caching is enabled
-     * @param ver Plugin version string
-     * @param tests Whether to transpile tests
-     * @param java Directories with the Java sources a human wrote
+     * @param written Where the output lands
      * @param train The XSL train that does the transpiling
-     * @param guard Cache guard, one per instance
+     * @param store The cache shared with every build on this machine
      */
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
-        final Path generated,
-        final Path cache,
-        final boolean enabled,
-        final String ver,
-        final boolean tests,
-        final Collection<Path> java,
+        final Written written,
         final Transpilation train,
-        final ConcurrentCache guard
+        final GlobalCache store
     ) {
         this.sources = srcs;
         this.target = target;
-        this.generated = generated;
-        this.cache = cache;
-        this.enabled = enabled;
-        this.tests = tests;
-        this.version = ver;
-        this.roots = java;
+        this.written = written;
         this.train = train;
-        this.guard = guard;
+        this.cache = store;
     }
 
     @Override
     public void exec() throws IOException {
-        final JavaFiles files = new JavaFiles(
-            this.generated,
-            this.cache.resolve(Transpiling.CACHE).resolve(this.version()),
-            this.enabled
-        );
+        final JavaFiles files = this.written.files();
         final int transpiled = new Threaded<>(
             this.sources,
             tojo -> this.transpiled(tojo, files)
         ).total();
         files.removeStale();
-        Logger.info(
-            this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(),
-            transpiled + new PackageInfos(this.generated, this.roots).create(),
-            this.generated
-        );
-    }
-
-    /**
-     * The cache-key version segment of this transpiling.
-     * @return The version segment for {@link CachePath}
-     */
-    String version() {
-        return this.train.version();
+        this.written.log(transpiled, this.sources.size(), files);
     }
 
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
@@ -175,49 +116,20 @@ final class Transpiling implements Step {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        final Path cdir = this.cache.resolve(Transpiling.CACHE);
-        final Path tail = base.relativize(dest);
-        if (this.enabled && !this.train.steps()) {
-            this.guard.apply(
-                source, dest, tail,
-                new Cache(
-                    new CachePath(cdir, this.version(), hsh.get()),
-                    src -> {
-                        rewrite.compareAndSet(false, true);
-                        final String res = transform.apply(xmir).toString();
-                        Logger.debug(
-                            this,
-                            "Transpiled %[file]s (%s) to %[file]s (%s) (cache miss), version: %s, hash: %s, tail: %s, cache enabled: %b, cache dir: %[file]s",
-                            source,
-                            Transpiling.info(source),
-                            dest,
-                            Transpiling.info(dest),
-                            this.version,
-                            hsh.get(),
-                            tail,
-                            this.enabled,
-                            cdir
-                        );
-                        return res;
-                    }
-                )
-            );
-        } else {
-            rewrite.compareAndSet(false, true);
-            new Saved(transform.apply(xmir).toString(), dest).value();
-        }
-        return files.total(
-            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
+        final GlobalCache store = this.cache.with(
+            this.train.version(xmir.xpath("/object/o/@loc"))
         );
-    }
-
-    private static String info(final Path info) throws IOException {
-        final String res;
-        if (Files.exists(info)) {
-            res = Files.getLastModifiedTime(info).toString();
-        } else {
-            res = "Not exists yet";
-        }
-        return res;
+        store.footprint(
+            base.relativize(dest),
+            hsh,
+            src -> {
+                rewrite.compareAndSet(false, true);
+                return transform.apply(xmir).toString();
+            }
+        ).apply(source, dest);
+        return files.total(
+            rewrite.get(), dest, hsh.get(), this.written.tests(tojo),
+            store
+        );
     }
 }

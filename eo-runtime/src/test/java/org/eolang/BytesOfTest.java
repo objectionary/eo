@@ -4,6 +4,9 @@
  */
 package org.eolang;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -212,5 +215,132 @@ final class BytesOfTest {
             ),
             "'xor' of operands with different lengths should fail with ExFailure, but it didn't"
         );
+    }
+
+    @Test
+    void staysEqualToRawBytesOfTheSameContent() {
+        MatcherAssert.assertThat(
+            "a wrapper around a foreign Bytes must equal the raw bytes of the same content",
+            new BytesOf(new BytesOfTest.PlainBytes(new byte[] {(byte) 0x01})),
+            Matchers.equalTo(new BytesOf(new byte[] {(byte) 0x01}))
+        );
+    }
+
+    @Test
+    void keepsEqualitySymmetricWithForeignBytes() {
+        final Bytes wrapped = new BytesOf(new BytesOfTest.PlainBytes(new byte[] {(byte) 0x01}));
+        final Bytes raw = new BytesOf(new byte[] {(byte) 0x01});
+        MatcherAssert.assertThat(
+            "equality must hold in both directions, not only from the raw side",
+            wrapped.equals(raw),
+            Matchers.equalTo(raw.equals(wrapped))
+        );
+    }
+
+    @Test
+    void hashesForeignBytesByContent() {
+        MatcherAssert.assertThat(
+            "equal byte sequences must carry equal hash codes, however each was built",
+            new BytesOf(new BytesOfTest.PlainBytes(new byte[] {(byte) 0x01})).hashCode(),
+            Matchers.equalTo(new BytesOf(new byte[] {(byte) 0x01}).hashCode())
+        );
+    }
+
+    @Test
+    void collapsesEqualBytesInAHashSet() {
+        final Set<Bytes> set = new HashSet<>(0);
+        set.add(new BytesOf(new BytesOfTest.PlainBytes(new byte[] {(byte) 0x01})));
+        set.add(new BytesOf(new byte[] {(byte) 0x01}));
+        MatcherAssert.assertThat(
+            "two Bytes of the same content must occupy one slot of a HashSet",
+            set,
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void staysUnequalToBytesOfOtherContent() {
+        MatcherAssert.assertThat(
+            "bytes of different content must not be equal",
+            new BytesOf(new BytesOfTest.PlainBytes(new byte[] {(byte) 0x01})),
+            Matchers.not(Matchers.equalTo(new BytesOf(new byte[] {(byte) 0x02})))
+        );
+    }
+
+    @Test
+    void staysUnequalToAnObjectThatIsNotBytes() {
+        MatcherAssert.assertThat(
+            "an object that is not Bytes must not be equal to Bytes",
+            new BytesOf(new byte[] {(byte) 0x01}),
+            Matchers.not(Matchers.equalTo("not bytes"))
+        );
+    }
+
+    /**
+     * A legal {@link Bytes} that deliberately inherits the identity-based
+     * {@link Object#equals(Object)}, as any implementation of the public
+     * interface is free to do.
+     * @since 0.1.0
+     */
+    private static final class PlainBytes implements Bytes {
+
+        /**
+         * Data.
+         */
+        private final byte[] data;
+
+        PlainBytes(final byte[] bytes) {
+            this.data = Arrays.copyOf(bytes, bytes.length);
+        }
+
+        @Override
+        public Bytes not() {
+            return new BytesOf(this.data).not();
+        }
+
+        @Override
+        public Bytes and(final Bytes other) {
+            return new BytesOf(this.data).and(other);
+        }
+
+        @Override
+        public Bytes or(final Bytes other) {
+            return new BytesOf(this.data).or(other);
+        }
+
+        @Override
+        public Bytes xor(final Bytes other) {
+            return new BytesOf(this.data).xor(other);
+        }
+
+        @Override
+        public Bytes shift(final int bits) {
+            return new BytesOf(this.data).shift(bits);
+        }
+
+        @Override
+        public Bytes sshift(final int bits) {
+            return new BytesOf(this.data).sshift(bits);
+        }
+
+        @Override
+        public Double asNumber() {
+            return new BytesOf(this.data).asNumber();
+        }
+
+        @Override
+        public <T extends Number> T asNumber(final Class<T> type) {
+            return new BytesOf(this.data).asNumber(type);
+        }
+
+        @Override
+        public String asString() {
+            return new BytesOf(this.data).asString();
+        }
+
+        @Override
+        public byte[] take() {
+            return Arrays.copyOf(this.data, this.data.length);
+        }
     }
 }

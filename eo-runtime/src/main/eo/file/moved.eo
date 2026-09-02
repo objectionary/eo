@@ -29,6 +29,15 @@
         ^.path
         target
 
+  ++> can-move-a-directory
+    and. > @
+      exists.
+        d.as-file.moved
+          "%s.dest".printf
+            * d
+      d.as-file.exists.not
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
   ++> can-move-a-file
     and. > @
       exists.
@@ -37,3 +46,53 @@
             * temp.path
       temp.exists.not
     mktemp.tmpfile > temp
+
+  ++> can-overwrite-an-existing-destination-on-moving
+    os.is-windows.or > @
+      seq *
+        source.open
+          "w"
+          f.write "first" > [f]
+        target.open
+          "w"
+          f.write "second" > [f]
+        source.moved dest
+        "first".eq
+          malloc.of
+            5
+            [^ m] >>
+              seq * > @
+                open.
+                  file ^.dest
+                  "r"
+                  ^.m.put > [^ f] >>
+                    f.read 5
+                m
+    target.path > dest
+    mktemp.tmpfile > source
+    mktemp.tmpfile > target
+
+  ++> can-preserve-content-after-moving
+    seq * > @
+      temp.open
+        "w"
+        f.write > [f]
+          "Hello, world"
+      temp.moved dest
+      "Hello, world".eq
+        malloc.of
+          12
+          [^ m] >>
+            seq * > @
+              open.
+                file ^.dest
+                "r"
+                ^.m.put > [^ f] >>
+                  f.read 12
+              m
+    "%s.dest".printf > dest
+      * temp.path
+    mktemp.tmpfile > temp
+
+  mktemp.tmpfile.deleted.moved --> stops-on-moving-an-absent-file
+    "irrelevant-target"

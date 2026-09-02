@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8029: a colon with no label after a vertical formation is not a binding
+# at all, so an empty label can never reach the emitter.
+line: 3
+message: "binding label \"\" must be a name or a slot number"
+input: |
+  [] > main
+    x > y
+      []: > slot

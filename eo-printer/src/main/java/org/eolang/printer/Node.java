@@ -135,6 +135,14 @@ final class Node {
      * indentation and repeated base characters outweigh that one bracket
      * (#5650).</p>
      *
+     * <p>When the dispatch carries an inline binding ({@code :hey}), the
+     * suffix shape is taken whatever the penalties say. The vertical head of
+     * a reversed dispatch ends with the dot, and a binding glued onto it
+     * ({@code print.:hey}) is text the grammar does not accept, so the
+     * printer would write a file the next build cannot read (#7709). The
+     * suffix shape puts the receiver in front of the dot and leaves the
+     * binding after a name, where it parses.</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -144,7 +152,7 @@ final class Node {
         final Optional<Node> suffix = this.suffixed();
         if (suffix.isPresent()) {
             final String alt = suffix.get().shaped(style, indent);
-            if (style.points(alt) <= style.points(best)) {
+            if (this.labelled() || style.points(alt) <= style.points(best)) {
                 best = alt;
             }
         }
@@ -160,13 +168,41 @@ final class Node {
      * @return The rendered block with its leading newlines
      */
     String indented(final Style style, final int indent) {
-        final StringBuilder block = new StringBuilder();
-        if (this.test) {
-            block.append('\n');
-        }
-        return block.append('\n')
+        return this.opened()
             .append(this.lined().print(style, indent))
             .toString();
+    }
+
+    /**
+     * Print this node on the lines below the head of its parent, keeping
+     * its own children beneath it whatever the penalties say.
+     *
+     * <p>A method continuation ({@code .y}, §3.5) parses only under a
+     * vertical application: it attaches to the lines above it and the
+     * horizontal form has no place for it. So an application a
+     * continuation hangs on stays vertical however cheap its one-line
+     * spelling looks, or the printer writes a file the next build cannot
+     * read (#8058).</p>
+     *
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block with its leading newlines
+     */
+    String stacked(final Style style, final int indent) {
+        return this.opened()
+            .append(this.lined().vertical(style, indent))
+            .toString();
+    }
+
+    /**
+     * Whether this node is a nameless method-dispatch continuation
+     * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
+     * instead of carrying a receiver of its own.
+     * @return True when this node continues the sibling above it
+     */
+    boolean continuation() {
+        return this.children.isEmpty() && this.tail.isEmpty()
+            && (this.base.startsWith(".") || this.base.startsWith("?."));
     }
 
     /**
@@ -377,6 +413,14 @@ final class Node {
         return this.children.stream().allMatch(Node::nameless);
     }
 
+    private StringBuilder opened() {
+        final StringBuilder block = new StringBuilder();
+        if (this.test) {
+            block.append('\n');
+        }
+        return block.append('\n');
+    }
+
     private String shaped(final Style style, final int indent) {
         final Optional<String> star = new Starred(this).print(style, indent);
         final String result;
@@ -386,7 +430,8 @@ final class Node {
             String best = this.vertical(style, indent);
             final Optional<String> flat = this.horizontal(style, indent);
             if (flat.isPresent()
-                && (this.forced() || style.points(flat.get()) <= style.points(best))) {
+                && (this.forced() || this.labelled()
+                || style.points(flat.get()) <= style.points(best))) {
                 best = flat.get();
             }
             if (star.isPresent() && style.points(star.get()) < style.points(best)) {
@@ -510,6 +555,10 @@ final class Node {
 
     private boolean constant() {
         return "!".equals(this.tail);
+    }
+
+    private boolean labelled() {
+        return this.reversed && this.tail.startsWith(":");
     }
 
     private boolean forced() {

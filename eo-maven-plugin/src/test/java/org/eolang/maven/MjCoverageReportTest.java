@@ -103,6 +103,26 @@ final class MjCoverageReportTest {
     }
 
     @Test
+    void namesTheSourceThatDoesNotParse(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  TRUE > t")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        MatcherAssert.assertThat(
+            "a source that does not parse must be named by the failure it causes, but it wasnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.with("hits", hits.toFile())
+                    .with("lcov", temp.resolve("coverage.info").toFile())
+                    .execute(MjCoverageReport.class),
+                "coverage-report must fail on a source that does not parse, but it didnt"
+            ).getCause().getCause().getMessage(),
+            Matchers.containsString("doesn't parse")
+        );
+    }
+
+    @Test
     void reportsAFileThatHasNothingToInstrument(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(

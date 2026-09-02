@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 5
+message: |-
+  [5:4] error: 'reversed dispatch receiver must not begin with dot'
+      .other
+      ^
+input: |
+  # D.
+
+  [] > foo
+    name. > @
+      .other

@@ -4,9 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/comments/comment[@line='1' and starts-with(text(), 'First.')]
+  - /object/errors/error[contains(text(),'integer literal must not have leading zeros')]
 input: |
-  # First.
-  # Second.
-
-  [] > hello
+  [] > root
+    foo *01 > tuple
+      1

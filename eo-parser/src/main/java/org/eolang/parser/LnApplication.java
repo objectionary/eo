@@ -62,7 +62,7 @@ final class LnApplication implements Line {
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -86,7 +86,7 @@ final class LnApplication implements Line {
         globals.clearBlanks();
         globals.markEmitted();
         this.emit(emit, suffix, head, chain, args);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
     }
@@ -97,16 +97,34 @@ final class LnApplication implements Line {
      * attach to the line's whole expression when it occupies an
      * argument position (a deeper-indent child of a vapplication or
      * vertical reversed dispatch).
+     *
+     * <p>A chain that goes on after the binding is rejected here per
+     * R-6.6.4 — the binding would sit on a method the chain does not end
+     * with.</p>
+     *
+     * <p>A line that carries no binding gets the empty string, not
+     * {@code null}: §3.12 spells no empty label and
+     * {@link Tokens#readBinding()} rejects one, so the empty string
+     * names absence and nothing else (#8029).</p>
+     *
      * @param tokens Token reader
-     * @return The binding label, or {@code null}
+     * @param span Source span of the line
+     * @return The binding label, empty when the line carries none
      */
-    static String readOuterBinding(final Tokens tokens) {
+    static String readOuterBinding(final Tokens tokens, final Span span) {
         final String label;
         if (!tokens.atEnd() && tokens.current() == ':') {
-            tokens.seek(tokens.cursor() + 1);
+            final int start = tokens.cursor();
+            tokens.seek(start + 1);
             label = tokens.readBinding();
+            if (!tokens.atEnd() && tokens.current() == '.') {
+                throw new ParseError(
+                    span.line(), span.indent() + start,
+                    "inline binding allowed only on the last method in a chain"
+                );
+            }
         } else {
-            label = null;
+            label = "";
         }
         return label;
     }
@@ -142,7 +160,7 @@ final class LnApplication implements Line {
         final String outer
     ) {
         if (head.group()
-            && chain.isEmpty() && args.isEmpty() && outer == null) {
+            && chain.isEmpty() && args.isEmpty() && outer.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "redundant parentheses around a top-level expression — drop the outer `(` and `)`"

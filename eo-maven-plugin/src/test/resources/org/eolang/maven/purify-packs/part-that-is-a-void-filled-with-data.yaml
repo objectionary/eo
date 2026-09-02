@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A part that is a void is asked the question the voids of a formation are
+# asked: the callers a program happens to have fill "v" with a number and
+# nothing else, so the application over it is decided by bytes as well.
+eo:
+  app.eo: |
+    [] > app
+      f 42 > @
+      [v] > f
+        3.power v > y
+        y > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > power
+        x > @
+pure:
+  - "//o[@name='y' and @pure='true']"

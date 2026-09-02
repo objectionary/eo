@@ -127,6 +127,13 @@ public final class MjCoverageReport extends MjSafe {
                     source, key -> new LinkedHashMap<>(0)
                 );
                 final XML xmir = new EoSyntax(Files.readString(tojo.source())).parsed();
+                if (!xmir.nodes("/object/errors/error").isEmpty()) {
+                    throw new IOException(
+                        String.format(
+                            "Can't build a coverage report, %s doesn't parse", source
+                        )
+                    );
+                }
                 for (final String location : manifest.locations(xmir)) {
                     final int last = location.lastIndexOf(':');
                     final int line = Integer.parseInt(

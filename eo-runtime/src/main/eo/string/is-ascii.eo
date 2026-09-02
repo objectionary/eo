@@ -1,4 +1,6 @@
 # Check that all signs in the string are ASCII characters.
+# An empty string is not accepted, since the pattern asks for one sign at
+# least, which is what its three siblings answer for the empty text too.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

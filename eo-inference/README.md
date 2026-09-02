@@ -106,12 +106,13 @@ The pages of eo-runtime are published at
 [www.eolang.org/inference](https://www.eolang.org/inference/), rebuilt on every
 tag, so looking at them needs nothing installed.
 
-Building them is off by default, since the tables are what the compiler needs
-and the pages are for a person. The goal runs in whichever module uses the
-plugin, so this is the shortest way to the pages of a working copy:
+Drawing them is a goal of its own, `inference-report`, since the tables are
+what the compiler needs and the pages are for a person: a build that wants
+them asks for the goal, one that does not never runs it. The pom of eo-runtime
+asks for it, so this is the shortest way to the pages of a working copy:
 
 ```bash
-mvn -pl eo-runtime process-sources -Deo.inferenceReport
+mvn -pl eo-runtime process-sources
 open eo-runtime/target/site/inference/index.html
 ```
 
@@ -119,11 +120,6 @@ They land in the `target/site/inference/` of the module they describe, beside
 the coverage report and every other generated page a person opens. They are
 not written into `target/eo/`, which is the compiler's scratch space, however
 much the tables they are made from live there.
-
-A property and not a profile, though coverage next door is turned on with
-`-Pjacoco`. A profile is what you need to add an execution to a build, and
-there is nothing to add here: the goal already runs, and one flag decides
-whether it writes.
 
 ## How it works
 

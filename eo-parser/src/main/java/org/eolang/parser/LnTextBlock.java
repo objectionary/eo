@@ -54,7 +54,7 @@ final class LnTextBlock implements Line {
         final Tokens tokens = new Tokens(body, this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
-        final String outer = LnApplication.readOuterBinding(tokens);
+        final String outer = LnApplication.readOuterBinding(tokens, this.span);
         final Suffix suffix = new Suffix(
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
@@ -71,7 +71,7 @@ final class LnTextBlock implements Line {
         this.transition(stack, suffix);
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         globals.closeTextBlock();

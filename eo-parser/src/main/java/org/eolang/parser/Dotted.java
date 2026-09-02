@@ -4,6 +4,10 @@
  */
 package org.eolang.parser;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * A dotted path written in a meta directive.
  *
@@ -15,6 +19,16 @@ package org.eolang.parser;
  * @since 0.74.0
  */
 final class Dotted {
+
+    /**
+     * The tokens that name a scope or the root rather than an object:
+     * the {@code @} decoratee, the {@code ^} parent, the {@code $} self
+     * and the root, in both the spelling the source uses and the one
+     * {@code LnMeta} promotes it to.
+     */
+    private static final Set<String> SCOPES = new HashSet<>(
+        Arrays.asList("@", "^", "$", "Q", "Φ")
+    );
 
     /**
      * The path.
@@ -37,5 +51,29 @@ final class Dotted {
         return this.path.startsWith(".")
             || this.path.endsWith(".")
             || this.path.contains("..");
+    }
+
+    /**
+     * Whether a segment of the path names a scope instead of an object.
+     *
+     * <p>A forma path is made of names, optionally rooted at the global
+     * root. {@code expand-aliases.xsl} copies the path into a base with
+     * the root in front of it, so a scope token there comes out as
+     * {@code Φ.@}, which names nothing (#7926). The root itself is a
+     * scope token too, and stands only at the head of a longer path.</p>
+     *
+     * @return True if a segment of it is a scope token
+     */
+    boolean scoped() {
+        final String[] parts = this.path.split("\\.", -1);
+        boolean found = false;
+        for (int idx = 0; idx < parts.length && !found; idx = idx + 1) {
+            found = Dotted.SCOPES.contains(parts[idx]) && !Dotted.rooted(parts, idx);
+        }
+        return found;
+    }
+
+    private static boolean rooted(final String[] parts, final int idx) {
+        return idx == 0 && parts.length > 1 && "Φ".equals(parts[idx]);
     }
 }

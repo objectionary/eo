@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 4
+message: |-
+  [4:7] error: 'unexpected content after name suffix'
+    if. *0 > z
+         ^
+input: |
+  # D.
+
+  [] > foo
+    if. *0 > z
+      true
+      1
+      2

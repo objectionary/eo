@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A plain (non-const) `[] >> name` abstract formation referenced from three
+# sites, one more than the two-reference case of #5876. "eo:multi-referenced"
+# answers this with "exists(eo:references($target, $name)[2])" (#6638) rather
+# than counting the whole sequence, so it must stay true past the boundary of
+# exactly two references, not just at it: the formation and its file-local
+# handle are kept here exactly as they are for two references, and none of
+# the three call sites is folded.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-self.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The three-times-referenced formation is not dropped: it keeps its cactus
+  # name and its file-local handle.
+  - /object/o[@name='foo']/o[starts-with(@name, 'a🌵') and @local='helper' and not(@base)]
+  # None of the three references is inlined into a copy of the formation
+  # body: the bare reference, the `.neg` dispatch and the applied `.plus`
+  # dispatch all stay as cactus-named references.
+  - /object/o[@name='foo']/o[matches(@base, '^ξ\.a🌵[^.]+$') and @name='x']
+  - /object/o[@name='foo']/o[matches(@base, '^ξ\.a🌵[^.]+\.neg$') and @name='y']
+  - /object/o[@name='foo']/o[matches(@base, '^ξ\.a🌵[^.]+\.plus$') and @name='z']
+  # No copy of the formation body was minted at any of the three reference
+  # sites.
+  - /object[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=1]
+input: |
+  [a] > foo
+    helper > x
+    helper.neg > y
+    helper.plus 1 > z
+    q.plus 1 > [q] >> helper

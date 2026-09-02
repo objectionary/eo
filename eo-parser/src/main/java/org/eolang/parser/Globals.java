@@ -167,7 +167,7 @@ final class Globals {
             );
         }
         if (!this.comments.isEmpty()) {
-            emit.comment(this.comments, this.comments.get(0).line());
+            emit.comment(this.comments, this.comments.get(this.comments.size() - 1).line());
             this.clearComments();
         }
         this.closed = true;

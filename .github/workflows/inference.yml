@@ -31,10 +31,10 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      # One pass over the whole reactor, with the flag on, so the goal writes
-      # the pages while eo-runtime is being built rather than inferring the
-      # same program twice.
-      - run: mvn install -ntp --errors --batch-mode -DskipTests -Dinvoker.skip '-Deo.inferenceReport'
+      # One pass over the whole reactor, so the `inference-report` goal that
+      # eo-runtime's own pom asks for writes the pages while eo-runtime is
+      # being built, rather than inferring the same program twice.
+      - run: mvn install -ntp --errors --batch-mode -DskipTests -Dinvoker.skip
       # The pages are of eo-runtime, the only program here big enough to have
       # red spots worth hunting. `clean` is true so that the page of an .eo
       # file somebody deleted goes away with it, and it touches nothing

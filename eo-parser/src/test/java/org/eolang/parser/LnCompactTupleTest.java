@@ -79,14 +79,12 @@ final class LnCompactTupleTest {
     }
 
     @Test
-    void recordsNFromLeadingZeroDigits() {
-        final Stack stack = new Stack();
-        new LnCompactTuple(new Span("sprintf *007 > x", 1))
-            .into(stack, new Globals(), new Emit());
-        MatcherAssert.assertThat(
-            "leading zero digits must not change the accumulated count",
-            stack.top().count(),
-            Matchers.equalTo(7)
+    void rejectsCountWithLeadingZeros() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnCompactTuple(new Span("sprintf *007 > x", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a count spelled with leading zeros is no more an integer than 007 is"
         );
     }
 

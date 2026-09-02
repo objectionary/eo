@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 5
 message: |-
-  [5:6] error: 'line shape not yet implemented in spec parser'
+  [5:6] error: 'line head does not start any known object shape'
         'hello'
         ^
 input: |

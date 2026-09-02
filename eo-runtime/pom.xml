@@ -256,7 +256,6 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
-          <inferenceReport>true</inferenceReport>
           <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
@@ -277,7 +276,9 @@
               <goal>format</goal>
               <goal>compile</goal>
               <goal>inference</goal>
+              <goal>inference-report</goal>
               <goal>merge</goal>
+              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
