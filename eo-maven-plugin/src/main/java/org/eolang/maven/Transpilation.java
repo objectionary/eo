@@ -132,6 +132,13 @@ final class Transpilation {
     private final Rows rows;
 
     /**
+     * What {@link MjLower} left in its marker file, or the empty string
+     * when it skipped or was disabled, so that a build whose XMIR was
+     * folded never shares a cache slot with one whose XMIR was not.
+     */
+    private final String lowering;
+
+    /**
      * Ctor.
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
@@ -139,6 +146,7 @@ final class Transpilation {
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
      * @param tables The directory with the tables of {@link MjInference}
+     * @param lowered What {@link MjLower} left in its marker file, or the empty string
      */
     Transpilation(
         final Tracking diagnostics,
@@ -146,7 +154,8 @@ final class Transpilation {
         final String base,
         final Path measures,
         final Path dir,
-        final Path tables
+        final Path tables,
+        final String lowered
     ) {
         this.tracking = diagnostics;
         this.coverage = cvrg;
@@ -155,6 +164,7 @@ final class Transpilation {
         this.target = dir;
         this.inference = tables;
         this.rows = new Rows(tables);
+        this.lowering = lowered;
     }
 
     /**
@@ -175,18 +185,22 @@ final class Transpilation {
      * {@code to-java.xsl} emits (see #6031 and #5955), and
      * {@code trackSteps} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
+     * Folding the marker of {@link MjLower} in means a build whose XMIR
+     * was folded through phino and a build whose XMIR was not never share
+     * a slot, since the same git hash then means different Java.
      * The tables belong to {@link #version(Collection)} instead.
      * @return The version segment shared by every source
      */
     String version() {
         return String.format(
-            "%s-%b-%b-%b-%s",
+            "%s-%b-%b-%b-%s-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
+            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass,
+            this.lowering
         );
     }
 

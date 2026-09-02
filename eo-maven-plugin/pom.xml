@@ -26,6 +26,11 @@
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
+      <artifactId>eo-lowering</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>

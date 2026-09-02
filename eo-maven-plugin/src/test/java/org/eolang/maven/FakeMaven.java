@@ -212,6 +212,8 @@ final class FakeMaven {
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);
+            this.params.putIfAbsent("lowering", true);
+            this.params.putIfAbsent("binary", "phino");
             this.params.putIfAbsent("strict", true);
             this.params.putIfAbsent("included", new SetOf<>("**.eo"));
         }
