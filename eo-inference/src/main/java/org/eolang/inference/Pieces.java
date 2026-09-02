@@ -26,7 +26,9 @@ import org.xembly.Directives;
  * a reader hovering over a word is told the same thing the tables hold: the
  * name it goes by, what it settled on, and, where it settled on nothing better
  * than somebody else's void, what the program was seen putting into that
- * void.</p>
+ * void. An object whose answer is its own locator is a void itself and is
+ * marked as one, since telling a reader that {@code args} is whatever
+ * {@code args} turns out to be is telling them nothing.</p>
  *
  * <p>A chain of dispatches is the awkward case. {@code first.as-bytes.size}
  * is three objects and the XMIR gives all three the same column, because each
@@ -180,6 +182,10 @@ final class Pieces {
                 .attr("band", Pieces.band(object.answer()))
                 .attr("where", object.answer().where())
                 .attr("loc", object.loc());
+            if (object.loc().equals(object.answer().where())
+                && "rooted".equals(Pieces.band(object.answer()))) {
+                dirs.attr("void", "true");
+            }
             Pieces.witnessed(dirs, object.answer().seen());
             dirs.up();
         }

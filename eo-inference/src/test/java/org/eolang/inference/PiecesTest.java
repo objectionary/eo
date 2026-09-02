@@ -141,6 +141,25 @@ final class PiecesTest {
     }
 
     @Test
+    void tellsAVoidApartFromANameRootedInOne() {
+        MatcherAssert.assertThat(
+            "a void answered by its own locator must be said to be one, but it wasnt",
+            PiecesTest.drawn(
+                "[args] > printf",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.printf.args", 1, "args",
+                        new Answer(
+                            "Φ.printf.args", 1, Collections.singletonList(new Ref("Φ.tuple"))
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
+        );
+    }
+
+    @Test
     void saysWhatCallersWereSeenPassing() {
         MatcherAssert.assertThat(
             "an amber mark must say what turned up in the void, but it didnt",

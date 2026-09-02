@@ -66,36 +66,31 @@ SPDX-License-Identifier: MIT
       <b>
         <xsl:value-of select="@label"/>
       </b>
+      <xsl:text>: </xsl:text>
       <xsl:choose>
-        <xsl:when test="@band = 'named'">
-          <xsl:text> is a </xsl:text>
-          <code>
-            <xsl:value-of select="@where"/>
-          </code>
+        <xsl:when test="@void = 'true'">
+          <xsl:text>void</xsl:text>
         </xsl:when>
-        <xsl:when test="@band = 'rooted'">
-          <xsl:text> is whatever </xsl:text>
-          <code>
-            <xsl:value-of select="@where"/>
-          </code>
-          <xsl:text> turns out to be</xsl:text>
-          <xsl:apply-templates select="seen"/>
+        <xsl:when test="@band = 'blank'">
+          <xsl:text>unknown</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:text> — we know nothing about it</xsl:text>
+          <code>
+            <xsl:value-of select="@where"/>
+          </code>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:apply-templates select="seen"/>
     </span>
   </xsl:template>
   <xsl:template match="seen">
-    <xsl:text>, and callers were seen putting </xsl:text>
+    <xsl:text>, seen </xsl:text>
     <xsl:for-each select="*">
       <xsl:if test="position() &gt; 1">
         <xsl:text>, </xsl:text>
       </xsl:if>
       <xsl:apply-templates select="."/>
     </xsl:for-each>
-    <xsl:text> in it</xsl:text>
   </xsl:template>
   <xsl:template match="seen/ref">
     <code>
