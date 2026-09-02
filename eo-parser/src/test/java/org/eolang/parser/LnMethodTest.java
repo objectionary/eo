@@ -182,6 +182,21 @@ final class LnMethodTest {
     }
 
     @Test
+    void rejectsContinuationOnTestAttribute() {
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        globals.blank();
+        new LnFormation(new Span("  ++> t", 2)).into(stack, globals, new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span("  .bar > x", 3))
+                .into(stack, globals, new Emit()),
+            "a `.method` continuation on a test attribute must be rejected per R-6.3.3"
+        );
+    }
+
+    @Test
     void acceptsAttributeAfterBlankLine() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();

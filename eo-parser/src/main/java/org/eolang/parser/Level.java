@@ -68,6 +68,14 @@ final class Level {
     private String label;
 
     /**
+     * Whether this entry's naming line carried a {@code TEST} or
+     * {@code THROWS} suffix form — read by {@link LnMethod#precheck}
+     * so a {@code .method} continuation cannot take over a level whose
+     * naming line declared it a test attribute (R-6.3.3).
+     */
+    private boolean test;
+
+    /**
      * The source name of the only-phi formation this entry argues
      * (empty when anonymous), or {@code null} when it is not such an
      * argument. Set by {@link Stack} (see {@link #argues(String)});
@@ -367,9 +375,20 @@ final class Level {
      * ({@link #named()}).
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
+     * @param form Whether the suffix that set this name was a
+     *  {@code TEST} or {@code THROWS} form
      */
-    void name(final String text) {
+    void name(final String text, final boolean form) {
         this.label = text;
+        this.test = form;
+    }
+
+    /**
+     * Whether this entry's naming line declared it a test attribute.
+     * @return Test-suffix flag
+     */
+    boolean test() {
+        return this.test;
     }
 
     /**
@@ -576,5 +595,6 @@ final class Level {
         this.arg = other.arg;
         this.argspan = other.argspan;
         this.tied = other.tied;
+        this.test = other.test;
     }
 }

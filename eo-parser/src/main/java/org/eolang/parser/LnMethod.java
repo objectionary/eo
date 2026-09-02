@@ -35,6 +35,9 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-6.3.3 — a {@code .method} continuation on a predecessor whose
+ * naming line declared it a test attribute, which would otherwise
+ * overwrite that attribute's label with the chain's own.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -119,7 +122,7 @@ final class LnMethod implements Line {
             top.tie();
         }
         if (suffix.present()) {
-            top.name(suffix.label());
+            top.name(suffix.label(), suffix.test());
         }
         globals.clearBlanks();
         globals.markEmitted();
@@ -150,6 +153,12 @@ final class LnMethod implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
+            );
+        }
+        if (stack.top().test()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "method continuation not allowed on a test attribute"
             );
         }
         if (stack.top().tied()) {

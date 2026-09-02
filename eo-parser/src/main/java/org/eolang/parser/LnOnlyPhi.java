@@ -248,7 +248,7 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HCOMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test())
+            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 
