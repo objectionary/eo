@@ -97,6 +97,12 @@ SPDX-License-Identifier: MIT
       <xsl:value-of select="@loc"/>
     </code>
   </xsl:template>
+  <xsl:template match="seen/var">
+    <xsl:text>void </xsl:text>
+    <code>
+      <xsl:value-of select="@id"/>
+    </code>
+  </xsl:template>
   <xsl:template match="seen/data">
     <xsl:text>a datum</xsl:text>
   </xsl:template>

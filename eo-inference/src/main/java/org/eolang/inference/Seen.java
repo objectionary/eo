@@ -28,6 +28,11 @@ import java.util.stream.Collectors;
  * {@code union} of them, and to whoever asks what went in the difference
  * between the two is no difference at all.</p>
  *
+ * <p>A caller that passes on a void of its own is in the choice as a
+ * {@code var} and is read back as one, since a reader told that a void is
+ * filled with a {@code Φ.string} deserves to know that somebody also fills it
+ * with something nobody has looked into.</p>
+ *
  * <p>This is evidence and never a contract, exactly as {@link Witnessed}
  * says: nothing may work out the type of a void from what is read here.
  * It is read so that a reader who is told an object is whatever
@@ -77,6 +82,8 @@ final class Seen {
         for (final Xnav choice : told) {
             if ("ref".equals(Seen.kind(choice))) {
                 found.add(new Ref(new Noted(choice).says("loc")));
+            } else if ("var".equals(Seen.kind(choice))) {
+                found.add(new Var(new Noted(choice).says("id")));
             }
         }
         if (Seen.holds(told, "data")) {
@@ -91,15 +98,16 @@ final class Seen {
     private static Collection<Xnav> told(final Xnav hollow) {
         final Collection<Xnav> found = new ArrayList<>(0);
         for (final Xnav witnessed : Seen.choices(hollow, "witnessed")) {
-            for (final Xnav choice : Seen.choices(witnessed, "union", "ref", "data", "unknown")) {
-                if ("union".equals(Seen.kind(choice))) {
-                    found.addAll(Seen.choices(choice, "ref", "data", "unknown"));
-                } else {
-                    found.add(choice);
-                }
+            found.addAll(Seen.listed(witnessed));
+            for (final Xnav union : Seen.choices(witnessed, "union")) {
+                found.addAll(Seen.listed(union));
             }
         }
         return found;
+    }
+
+    private static List<Xnav> listed(final Xnav node) {
+        return Seen.choices(node, "ref", "var", "data", "unknown");
     }
 
     private static List<Xnav> choices(final Xnav node, final String... names) {
