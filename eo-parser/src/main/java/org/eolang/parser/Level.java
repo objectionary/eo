@@ -4,8 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.Optional;
-
 /**
  * One entry of the indent stack — §5.1 of the spec.
  *
@@ -64,14 +62,19 @@ final class Level {
     /**
      * The source name on the line that currently owns this entry
      * ({@code foo} for {@code > foo}, the handle for {@code >> foo},
-     * empty for a bare {@code >>}), or absent when that line carried
-     * no suffix. Doubles as the named flag ({@link #named()}) and
-     * names the offender in §4.5 errors. A same-indent {@code .method}
-     * continuation takes the entry over and drops what the previous
-     * link left here ({@link #sealed()}), since R-6.2.2 puts the
-     * chain's naming line on the last link.
+     * empty for a bare {@code >>}), meaningful only while
+     * {@link #suffixed} holds. Names the offender in §4.5 errors.
      */
-    private Optional<String> label;
+    private String label;
+
+    /**
+     * True once a naming line has put its suffix on this entry. Doubles
+     * as the named flag ({@link #named()}). A same-indent {@code .method}
+     * continuation takes the entry over and drops what the previous link
+     * left here ({@link #sealed()}), since R-6.2.2 puts the chain's
+     * naming line on the last link.
+     */
+    private boolean suffixed;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -177,7 +180,7 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.label = Optional.empty();
+        this.suffixed = false;
         this.atom = false;
         this.taken = false;
         this.count = 0;
@@ -239,7 +242,7 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.label.isPresent();
+        return this.suffixed;
     }
 
     /**
@@ -252,9 +255,9 @@ final class Level {
      */
     String governingFormation() {
         final String result;
-        if (this.kind == Kind.ONLY_PHI) {
-            result = this.label.orElse("");
-        } else if (this.formation == null) {
+        if (this.kind == Kind.ONLY_PHI && this.suffixed) {
+            result = this.label;
+        } else if (this.kind == Kind.ONLY_PHI || this.formation == null) {
             result = "";
         } else {
             result = this.formation;
@@ -274,10 +277,15 @@ final class Level {
         } else {
             owner = String.format("only-phi formation %s", this.formation);
         }
+        final String attribute;
+        if (this.suffixed && !this.label.isEmpty()) {
+            attribute = this.label;
+        } else {
+            attribute = "an auto-named attribute";
+        }
         return String.format(
             "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            this.label.filter(text -> !text.isEmpty()).orElse("an auto-named attribute"),
-            owner
+            attribute, owner
         );
     }
 
@@ -367,7 +375,8 @@ final class Level {
      *  {@code null}
      */
     void name(final String text) {
-        this.label = Optional.of(text);
+        this.label = text;
+        this.suffixed = true;
     }
 
     /**
@@ -462,7 +471,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
-        this.label = Optional.empty();
+        this.suffixed = false;
     }
 
     /**
@@ -565,6 +574,7 @@ final class Level {
 
     private void absorb(final Level other) {
         this.label = other.label;
+        this.suffixed = other.suffixed;
         this.formation = other.formation;
         this.atom = other.atom;
         this.taken = other.taken;
