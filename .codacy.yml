@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+
+---
+exclude_paths:
+  - "eo-runtime/src/main/java/org/eolang/EOstring$EOregex$EOcompile.java"
+  - "eo-runtime/src/main/java/org/eolang/EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.java"
