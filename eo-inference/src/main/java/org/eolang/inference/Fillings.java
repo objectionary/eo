@@ -33,10 +33,12 @@ import java.util.Map;
  * five members where it had more than a cap's worth, and the five are worth
  * reading.</p>
  *
- * <p>A filling whose walk runs into a void is nobody's answer here — what
- * fills that void is a fact about another caller. Such a filling is kept aside
- * and used only where it is all there is, since a void whose every caller
- * passes on a void of its own is better described by that than by silence.</p>
+ * <p>A filling whose walk runs into a void has no type of its own to give, and
+ * it is not thereby nothing: what fills that void reaches this one too, a hop
+ * further along. {@link Carried} walks the hop, so a void filled with an
+ * {@code oak} by one caller and handed on from a void filled with a number is
+ * seen to hold both, and a void whose every caller passes on a void of its own
+ * is described by that rather than by silence.</p>
  *
  * @since 0.69.0
  */
@@ -73,13 +75,13 @@ final class Fillings {
         final Map<String, String> landings = new Landed(pairs, this.given).all();
         final Forms forms = new Forms(pairs.forms());
         final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
-        final Map<String, Map<String, Type>> loose = new LinkedHashMap<>(0);
+        final Map<String, Map<String, Type>> handed = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<String>> bound : pairs.puts().entrySet()) {
             for (final String put : bound.getValue()) {
                 final String end = landings.get(put);
                 if (end == null) {
                     final String stopped = names.getOrDefault(put, put);
-                    loose.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
+                    handed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
                         .putIfAbsent(forms.name(stopped), forms.type(stopped));
                 } else {
                     placed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
@@ -87,10 +89,9 @@ final class Fillings {
                 }
             }
         }
-        final Map<String, Map<String, Type>> chosen = new LinkedHashMap<>(loose);
-        chosen.putAll(placed);
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : chosen.entrySet()) {
+        for (final Map.Entry<String, Map<String, Type>> hollow
+            : new Carried(placed, handed).all().entrySet()) {
             found.put(hollow.getKey(), hollow.getValue().values());
         }
         return found;
