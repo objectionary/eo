@@ -73,6 +73,7 @@ final class Transpilation {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
         "/org/eolang/maven/transpile/_recursion.xsl",
+        "/org/eolang/maven/transpile/_java-names.xsl",
     };
 
     /**
