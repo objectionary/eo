@@ -37,10 +37,11 @@ final class Transpilation {
 
     /**
      * The XSL steps of the transpile train, in order, ending with
-     * {@code purify.xsl} and {@code to-java.xsl}, the two that take
-     * parameters. Kept as a single list so both the train in
-     * {@link #compiled(boolean, boolean, String, Path)} and the cache-key
-     * fingerprint in {@link #version()} are derived from the same source.
+     * {@code purify.xsl}, {@code lowered.xsl} and {@code to-java.xsl},
+     * the three that take parameters. Kept as a single list so both the
+     * train in {@link #compiled(boolean, boolean, String, Path, Path)} and
+     * the cache-key fingerprint in {@link #version()} are derived from the
+     * same source.
      */
     static final String[] XSLS = {
         "/org/eolang/maven/transpile/recursion-to-cps.xsl",
@@ -54,6 +55,7 @@ final class Transpilation {
         "/org/eolang/maven/transpile/data.xsl",
         "/org/eolang/maven/transpile/recursion-to-loop.xsl",
         "/org/eolang/maven/transpile/purify.xsl",
+        "/org/eolang/maven/transpile/lowered.xsl",
         "/org/eolang/maven/transpile/to-java.xsl",
     };
 
@@ -65,9 +67,9 @@ final class Transpilation {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean, String, Path)}, where its
-     * last two elements are special-cased as {@code purify.xsl} and
-     * {@code to-java.xsl}.
+     * train in {@link #compiled(boolean, boolean, String, Path, Path)},
+     * where its last three elements are special-cased as
+     * {@code purify.xsl}, {@code lowered.xsl} and {@code to-java.xsl}.
      */
     static final String[] IMPORTS = {
         "/org/eolang/parser/_funcs.xsl",
@@ -288,23 +290,26 @@ final class Transpilation {
         final boolean instrument = this.coverage;
         final String base = this.superclass;
         final Path tables = this.inference;
+        final Path atoms = this.target.resolve(Lowering.DIR).resolve(Lowering.ATOMS);
         return Transpilation.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b|%s|%s", track, instrument, base, tables),
-            ignored -> Transpilation.compiled(track, instrument, base, tables)
+            String.format("%b|%b|%s|%s|%s", track, instrument, base, tables, atoms),
+            ignored -> Transpilation.compiled(track, instrument, base, tables, atoms)
         );
     }
 
     private static Train<Shift> compiled(
-        final boolean track, final boolean instrument, final String base, final Path tables
+        final boolean track, final boolean instrument, final String base,
+        final Path tables, final Path atoms
     ) {
         final int last = Transpilation.XSLS.length - 1;
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
-                    Arrays.copyOf(Transpilation.XSLS, last - 1)
+                    Arrays.copyOf(Transpilation.XSLS, last - 2)
                 ).back(),
                 new TrDefault<>(
-                    new StPure(Transpilation.XSLS[last - 1], tables),
+                    new StPure(Transpilation.XSLS[last - 2], tables),
+                    new StLowered(Transpilation.XSLS[last - 1], atoms),
                     new StClasspath(
                         Transpilation.XSLS[last],
                         String.format("disclaimer %s", new Disclaimer()),
