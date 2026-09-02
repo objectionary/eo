@@ -483,7 +483,7 @@ final class SuffixTest {
     }
 
     @Test
-    void clampsColumnWhenTestSuffixHasNoNameAtLineEnd() {
+    void clampsColumnWhenPlusGreaterSuffixHasNoNameAtLineEnd() {
         final ParseError error = Assertions.assertThrows(
             ParseError.class,
             () -> new Suffix("+>", new Span("[] +>", 1), 3),
