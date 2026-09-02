@@ -159,6 +159,45 @@ final class StLoweredTest {
         );
     }
 
+    @Test
+    void stopsWhenDigestIsMalformed(@Mktmp final Path temp) throws IOException {
+        final XML xmir = StLoweredTest.lowered(StLoweredTest.program(), "../../secrets");
+        final Path atoms = Files.createDirectories(temp.resolve("atoms"));
+        Assertions.assertThrows(
+            RuntimeException.class,
+            () -> StLoweredTest.transpiled(xmir, atoms),
+            "a lowered stamp that is not a hex digest must stop the build, but it didnt"
+        );
+    }
+
+    @Test
+    void namesNestedChainFromOutermostToInnermost(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the class name must chain the enclosing formations top-down, but it doesnt",
+            StLoweredTest.transpiled(
+                StLoweredTest.lowered(
+                    new EoSyntax(
+                        String.join(
+                            System.lineSeparator(),
+                            "[args] > app",
+                            "  [y] > outer",
+                            "    [z] > inner",
+                            "      [x] > bump",
+                            "        x > @",
+                            "      bump z > @",
+                            "    inner y > @",
+                            "  outer args > @",
+                            ""
+                        )
+                    ).parsed(),
+                    "aa00bb11cc22"
+                ),
+                StLoweredTest.sidecars(temp, "aa00bb11cc22", "        return this.take(\"x\");")
+            ).nodes("/object/class[@java-name='org.eolang.EOapp$EOouter$EOinner$EObump']"),
+            Matchers.not(Matchers.empty())
+        );
+    }
+
     private static String generated(final Path temp, final String digest) throws IOException {
         return StLoweredTest.transpiled(
             StLoweredTest.lowered(StLoweredTest.program(), digest),
@@ -173,8 +212,11 @@ final class StLoweredTest {
                 .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
                 .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
                 .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
-                .with(new StClasspath("/org/eolang/maven/transpile/purify.xsl"))
-                .with(new StLowered("/org/eolang/maven/transpile/lowered.xsl", atoms))
+                .with(new StClasspath("/org/eolang/maven/transpile/purify.xsl")).with(
+                    new StLowered(
+                        "/org/eolang/maven/transpile/lowered.xsl", "sample disclaimer", atoms
+                    )
+                )
                 .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
         ).pass(xmir);
     }

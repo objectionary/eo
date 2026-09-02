@@ -59,6 +59,20 @@
         <xsl:text> is lowered inside an anonymous one, which the lower goal must never do</xsl:text>
       </xsl:message>
     </xsl:if>
+    <!--
+    The digest is the only piece of the sidecar URI that comes from the
+    document, so anything but the twelve hex digits the schema promises
+    (a path, say) stops the build before it reaches the disk.
+    -->
+    <xsl:if test="not(matches(@lowered, '^[0-9a-f]{12}$'))">
+      <xsl:message terminate="yes">
+        <xsl:text>The formation at </xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text> is marked as lowered with '</xsl:text>
+        <xsl:value-of select="@lowered"/>
+        <xsl:text>', which is not a digest of twelve hex digits</xsl:text>
+      </xsl:message>
+    </xsl:if>
     <xsl:variable name="file" as="xs:string" select="concat($eo:atoms, @lowered, '.java')"/>
     <xsl:if test="$eo:atoms = '' or not(unparsed-text-available($file, 'UTF-8'))">
       <xsl:message terminate="yes">

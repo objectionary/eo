@@ -40,18 +40,20 @@ final class StLowered extends StEnvelope {
     /**
      * Ctor.
      * @param sheet The classpath path of the stylesheet to run
+     * @param disclaimer The disclaimer comment of a generated file, shared
+     *  with the other rendering sheets so one build carries one timestamp
      * @param atoms The directory with the sidecar bodies, which does not
      *  have to exist as long as nothing in the XMIR is marked as lowered
      */
-    StLowered(final String sheet, final Path atoms) {
-        super(new StXSL(StLowered.compiled(sheet, atoms)));
+    StLowered(final String sheet, final String disclaimer, final Path atoms) {
+        super(new StXSL(StLowered.compiled(sheet, disclaimer, atoms)));
     }
 
-    private static XSL compiled(final String sheet, final Path atoms) {
+    private static XSL compiled(final String sheet, final String disclaimer, final Path atoms) {
         try {
             return new XSLDocument(StLowered.class.getResource(sheet), sheet)
                 .with(StLowered.sources())
-                .with("disclaimer", new Disclaimer().toString())
+                .with("disclaimer", disclaimer)
                 .with("sidecars", atoms.toUri().toString());
         } catch (final IOException ex) {
             throw new IllegalStateException(

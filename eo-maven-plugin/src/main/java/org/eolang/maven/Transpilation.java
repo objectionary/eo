@@ -302,6 +302,7 @@ final class Transpilation {
         final Path tables, final Path atoms
     ) {
         final int last = Transpilation.XSLS.length - 1;
+        final String disclaimer = new Disclaimer().toString();
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
@@ -309,10 +310,10 @@ final class Transpilation {
                 ).back(),
                 new TrDefault<>(
                     new StPure(Transpilation.XSLS[last - 2], tables),
-                    new StLowered(Transpilation.XSLS[last - 1], atoms),
+                    new StLowered(Transpilation.XSLS[last - 1], disclaimer, atoms),
                     new StClasspath(
                         Transpilation.XSLS[last],
-                        String.format("disclaimer %s", new Disclaimer()),
+                        String.format("disclaimer %s", disclaimer),
                         String.format("trackLocations %b", track),
                         String.format("coverage %b", instrument),
                         String.format("phiDefaultClass %s", base)
