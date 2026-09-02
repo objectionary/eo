@@ -149,23 +149,26 @@ final class LnMethod implements Line {
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "method continuation not allowed after only-phi formation"
-            );
-        }
-        if (stack.top().kind() == Kind.VOID) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "method continuation not allowed after void attribute"
-            );
-        }
+        this.precheckKind(stack.top().kind());
         if (stack.top().tied()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "inline binding allowed only on the last method in a chain"
             );
+        }
+    }
+
+    private void precheckKind(final Kind kind) {
+        final String message;
+        if (kind == Kind.ONLY_PHI) {
+            message = "method continuation not allowed after only-phi formation";
+        } else if (kind == Kind.VOID) {
+            message = "method continuation not allowed after void attribute";
+        } else {
+            message = "";
+        }
+        if (!message.isEmpty()) {
+            throw new ParseError(this.span.line(), this.span.indent(), message);
         }
     }
 
