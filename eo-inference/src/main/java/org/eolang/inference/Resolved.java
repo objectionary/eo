@@ -71,35 +71,33 @@ public final class Resolved implements Clue {
         final Path links = tables.resolve("links.xml");
         final Xmirs world = new Xmirs(xmirs);
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
-        final Collection<XML> dispatches = world.dispatches();
+        final Collection<Site> dispatches = world.dispatches();
         final Given applied = new Given(world.applications());
         final Map<String, List<String>> args = applied.arguments();
         final Map<String, Map<String, String>> named = applied.named();
+        final Map<String, String> receivers = world.receivers();
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
-        final XML table = new XMLDocument(links);
-        final Pairs written = new Pairs(table);
+        final Pairs written = new Pairs(new XMLDocument(links));
         final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, named, world.receivers(), voids)
+            new Dispatched(given, dispatches, args, named, receivers, voids)
         ).from(
             new Settled(
                 new Dispatched(
-                    given, dispatches, args, named, world.receivers(), Collections.emptyList()
+                    given, dispatches, args, named, receivers, Collections.emptyList()
                 )
             ).from(written.all())
         );
+        final Map<String, String> names = new Ends(pairs).names();
         final Map<String, Type> rows = new Refs(
             pairs,
             new Bound(
-                args, named, world.receivers(), pairs,
-                new Provided(given, new Ends(pairs).names(), voids)
+                args, named, receivers, pairs, new Provided(given, names, voids)
             ).all()
         ).all();
         rows.putAll(written.others());
-        final Collection<String> dead = new Dead(
-            table, dispatches, new Ends(pairs).names()
-        ).all();
-        for (final XML dispatch : dispatches) {
-            final String made = dispatch.xpath("@loc").get(0);
+        final Collection<String> dead = new Dead(written, dispatches, names).all();
+        for (final Site dispatch : dispatches) {
+            final String made = dispatch.made();
             if (dead.contains(made)) {
                 rows.put(made, new Terminator());
             } else {
