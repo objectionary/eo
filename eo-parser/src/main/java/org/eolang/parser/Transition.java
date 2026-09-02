@@ -32,13 +32,21 @@ final class Transition {
     private final Span span;
 
     /**
+     * Directive sink, for the §4.5 argument-naming check run right after
+     * a naming suffix is applied.
+     */
+    private final Emit emit;
+
+    /**
      * Ctor.
      * @param stk The indent stack
      * @param src The line span being adopted
+     * @param sink Directive sink
      */
-    Transition(final Stack stk, final Span src) {
+    Transition(final Stack stk, final Span src, final Emit sink) {
         this.stack = stk;
         this.span = src;
+        this.emit = sink;
     }
 
     /**
@@ -63,6 +71,7 @@ final class Transition {
             );
         }
         admission.name(level);
+        Eo.checkArgumentNaming(level, this.emit, this.span);
         return level;
     }
 

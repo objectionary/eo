@@ -68,15 +68,6 @@ final class Level {
     private String label;
 
     /**
-     * Source line on which {@link #label} was set — the head line by
-     * default, or a later {@code .method} continuation's line when
-     * that continuation is the one that named this entry. Read by
-     * {@link #labelLine()} so a §4.5 error points at the line that
-     * actually carries the offending name.
-     */
-    private int labelLine;
-
-    /**
      * The source name of the only-phi formation this entry argues
      * (empty when anonymous), or {@code null} when it is not such an
      * argument. Set by {@link Stack} (see {@link #argues(String)});
@@ -176,7 +167,6 @@ final class Level {
     ) {
         this.indent = ind;
         this.start = line;
-        this.labelLine = line;
         this.kind = outer;
         this.openness = state;
         this.parent = parent;
@@ -203,14 +193,6 @@ final class Level {
      */
     int start() {
         return this.start;
-    }
-
-    /**
-     * Source line on which {@link #label} was set.
-     * @return Label line
-     */
-    int labelLine() {
-        return this.labelLine;
     }
 
     /**
@@ -382,27 +364,12 @@ final class Level {
 
     /**
      * Record the suffix's source name, which also marks the entry named
-     * ({@link #named()}). The label line defaults to this entry's
-     * {@link #start()}; use {@link #name(String, int)} when the name
-     * arrives on a later line.
+     * ({@link #named()}).
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
      */
     void name(final String text) {
-        this.name(text, this.start);
-    }
-
-    /**
-     * Record the suffix's source name and the line it arrived on
-     * — used by a {@code .method} continuation, whose naming line
-     * differs from this entry's {@link #start()}.
-     * @param text The name label (empty for a bare {@code >>}); never
-     *  {@code null}
-     * @param line Source line the name was read from
-     */
-    void name(final String text, final int line) {
         this.label = text;
-        this.labelLine = line;
     }
 
     /**
@@ -597,7 +564,6 @@ final class Level {
 
     private void absorb(final Level other) {
         this.label = other.label;
-        this.labelLine = other.labelLine;
         this.formation = other.formation;
         this.atom = other.atom;
         this.taken = other.taken;

@@ -92,15 +92,15 @@ final class LnCompactTuple implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         globals.seal(emit, this.span);
-        final Level level = this.transition(stack, suffix);
+        final Level level = this.transition(stack, suffix, emit);
         level.compact(count);
         globals.clearBlanks();
         globals.markEmitted();
         new ChainEmission(emit, this.span, head, chain, suffix).run();
     }
 
-    private Level transition(final Stack stack, final Suffix suffix) {
-        return new Transition(stack, this.span)
+    private Level transition(final Stack stack, final Suffix suffix, final Emit emit) {
+        return new Transition(stack, this.span, emit)
             .apply(Kind.COMPACT_TUPLE, Openness.OPEN, new Admission(suffix.named(), suffix.test()));
     }
 

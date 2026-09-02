@@ -96,7 +96,7 @@ final class LnVoid implements Line {
     ) {
         globals.seal(emit, this.span);
         this.checkTyped(
-            new Transition(stack, this.span).apply(
+            new Transition(stack, this.span, emit).apply(
                 Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
             ),
             slash
@@ -122,7 +122,7 @@ final class LnVoid implements Line {
         }
         globals.seal(emit, this.span);
         this.checkTyped(
-            new Transition(stack, this.span).apply(
+            new Transition(stack, this.span, emit).apply(
                 Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
             ),
             slash

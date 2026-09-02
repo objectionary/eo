@@ -119,7 +119,8 @@ final class LnMethod implements Line {
             top.tie();
         }
         if (suffix.present()) {
-            top.name(suffix.label(), this.span.line());
+            top.name(suffix.label());
+            Eo.checkArgumentNaming(top, emit, this.span);
         }
         globals.clearBlanks();
         globals.markEmitted();

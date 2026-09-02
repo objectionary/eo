@@ -670,11 +670,23 @@ final class Eo implements Iterable<Directive> {
             }
             emit.error(level.start(), level.indent(), message);
         }
-        if (naming && level.argument() && level.named()) {
-            emit.error(
-                level.labelLine(), level.indent(),
-                level.onlyPhiNamingError()
-            );
+    }
+
+    /**
+     * The §4.5 check for a level that has just been given a name: reject
+     * it when the level sits in argument position of an only-phi
+     * formation's φ. Run at the point of naming — {@link Transition} for
+     * a head-line suffix, {@link LnMethod} for a same-indent
+     * {@code .method} continuation's suffix — rather than deferred to
+     * close time, since only that call site knows the line the name
+     * actually appeared on.
+     * @param level The freshly named level
+     * @param emit Directive sink
+     * @param naming Span of the line that named it
+     */
+    static void checkArgumentNaming(final Level level, final Emit emit, final Span naming) {
+        if (level.argument() && level.named()) {
+            emit.error(naming.line(), naming.indent(), level.onlyPhiNamingError());
         }
     }
 
