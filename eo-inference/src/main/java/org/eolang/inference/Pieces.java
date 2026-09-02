@@ -30,12 +30,15 @@ import org.xembly.Directives;
  *
  * <p>A chain of dispatches is the awkward case. {@code first.as-bytes.size}
  * is three objects and the XMIR gives all three the same column, because each
- * one is written where the chain ends rather than where it begins. So a chain
+ * one is written where the chain ends rather than where it begins. So a group
  * is walked leftward instead: the outermost keeps the column it was given, and
- * every receiver behind it takes the word before. A group of objects that is
- * not such a chain stays where it was put and shares one mark, which is right
+ * every object that is the receiver ({@code ρ}) of the one before it takes the
+ * word before, back to the {@code ^} a chain is often taken off. Anything else
+ * stays where the one before it was put and shares its mark, which is right
  * for a literal and the bytes it carries — to a reader those are one thing
- * written once.</p>
+ * written once — and right for a step whose own receiver the source never
+ * wrote, such as the {@code dataized} that a trailing {@code !} slips into the
+ * middle of a chain, since a reader has no word to hang it on.</p>
  *
  * @since 0.70.0
  */
@@ -96,13 +99,7 @@ final class Pieces {
     private Map<Integer, Collection<Written>> laid() {
         final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
         for (final Map.Entry<Integer, Collection<Written>> group : this.grouped().entrySet()) {
-            final List<Written> chain = Pieces.chained(group.getValue());
-            if (chain.isEmpty()) {
-                found.computeIfAbsent(group.getKey(), key -> new ArrayList<>(1))
-                    .addAll(group.getValue());
-            } else {
-                this.walked(found, group.getKey(), chain);
-            }
+            this.walked(found, group.getKey(), Pieces.sorted(group.getValue()));
         }
         return found;
     }
@@ -120,26 +117,30 @@ final class Pieces {
     private void walked(
         final Map<Integer, Collection<Written>> found,
         final int column,
-        final Iterable<Written> chain
+        final List<Written> chain
     ) {
         int place = column;
-        for (final Written link : chain) {
-            if (place < 0) {
-                break;
+        for (int step = 0; step < chain.size(); step = step + 1) {
+            final Written link = chain.get(step);
+            if (step > 0 && link.loc().equals(chain.get(step - 1).loc().concat(".ρ"))) {
+                place = this.leftward(place);
             }
             found.computeIfAbsent(place, key -> new ArrayList<>(1)).add(link.moved(place));
-            place = this.leftward(place);
         }
     }
 
     private int leftward(final int column) {
-        int start = Math.min(column, this.line.length());
+        final int edge = Math.min(column, this.line.length());
+        int start = edge;
         while (start > 0 && Pieces.wordy(this.line.charAt(start - 1))) {
             start = start - 1;
         }
+        if (start == edge && start > 0 && this.line.charAt(start - 1) == '^') {
+            start = start - 1;
+        }
         final int found;
-        if (start == Math.min(column, this.line.length())) {
-            found = -1;
+        if (start == edge) {
+            found = column;
         } else {
             if (start > 0 && this.line.charAt(start - 1) == '.') {
                 start = start - 1;
@@ -149,23 +150,13 @@ final class Pieces {
         return found;
     }
 
-    private static List<Written> chained(final Collection<Written> group) {
-        final List<Written> sorted = new ArrayList<>(group);
-        sorted.sort(
+    private static List<Written> sorted(final Collection<Written> group) {
+        final List<Written> found = new ArrayList<>(group);
+        found.sort(
             (first, second) -> Integer.compare(
                 Pieces.hops(first.loc()), Pieces.hops(second.loc())
             )
         );
-        boolean linked = sorted.size() > 1;
-        for (int step = 0; linked && step < sorted.size() - 1; step = step + 1) {
-            linked = sorted.get(step + 1).loc().equals(sorted.get(step).loc().concat(".ρ"));
-        }
-        final List<Written> found;
-        if (linked) {
-            found = sorted;
-        } else {
-            found = Collections.emptyList();
-        }
         return found;
     }
 
