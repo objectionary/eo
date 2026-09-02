@@ -511,14 +511,13 @@ final class TokensTest {
     void clampsColumnWhenBindingLabelIsMissingAtLineEnd() {
         final Tokens tokens = new Tokens("foo a:", new Span("foo a:", 1));
         tokens.readName();
-        final ParseError error = Assertions.assertThrows(
-            ParseError.class,
-            tokens::readArgs,
-            "a `:` with nothing after it at line end must be rejected"
-        );
         MatcherAssert.assertThat(
             "the reported column must stay on the last character of the line, not past it",
-            error.pos(),
+            Assertions.assertThrows(
+                ParseError.class,
+                tokens::readArgs,
+                "a `:` with nothing after it at line end must be rejected"
+            ).pos(),
             Matchers.equalTo(5)
         );
     }
@@ -527,14 +526,13 @@ final class TokensTest {
     void clampsColumnWhenMethodNameIsMissingAtLineEnd() {
         final Tokens tokens = new Tokens("foo.", new Span("foo.", 1));
         tokens.readName();
-        final ParseError error = Assertions.assertThrows(
-            ParseError.class,
-            tokens::readChain,
-            "a trailing `.` with no method name after it must be rejected"
-        );
         MatcherAssert.assertThat(
             "the reported column must stay on the last character of the line, not past it",
-            error.pos(),
+            Assertions.assertThrows(
+                ParseError.class,
+                tokens::readChain,
+                "a trailing `.` with no method name after it must be rejected"
+            ).pos(),
             Matchers.equalTo(3)
         );
     }

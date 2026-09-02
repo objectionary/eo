@@ -597,15 +597,6 @@ final class Tokens {
         return idx;
     }
 
-    /**
-     * Clamp a reported column to the last character of its line — R-9.9.2
-     * makes {@code pos} a 0-indexed column, so a value equal to the line
-     * length names no column at all and drops the caret from the error
-     * report.
-     * @param pos Column, possibly one past the last character
-     * @param source Line the column is reported against
-     * @return Column, no greater than the line's last index
-     */
     private static int clamped(final int pos, final Span source) {
         return Math.min(pos, source.text().length() - 1);
     }
