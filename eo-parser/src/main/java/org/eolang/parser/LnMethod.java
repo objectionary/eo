@@ -119,7 +119,7 @@ final class LnMethod implements Line {
             top.tie();
         }
         if (suffix.present()) {
-            top.name(suffix.label());
+            top.name(suffix.label(), this.span.line());
         }
         globals.clearBlanks();
         globals.markEmitted();

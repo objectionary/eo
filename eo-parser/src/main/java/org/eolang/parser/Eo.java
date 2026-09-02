@@ -672,7 +672,7 @@ final class Eo implements Iterable<Directive> {
         }
         if (naming && level.argument() && level.named()) {
             emit.error(
-                level.start(), level.indent(),
+                level.labelLine(), level.indent(),
                 level.onlyPhiNamingError()
             );
         }
