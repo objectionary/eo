@@ -6,7 +6,6 @@ package org.eolang.win32;
 
 import com.sun.jna.Pointer;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.Handle;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
