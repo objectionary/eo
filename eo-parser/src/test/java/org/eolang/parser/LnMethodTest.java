@@ -212,7 +212,7 @@ final class LnMethodTest {
     }
 
     @Test
-    void acceptsTestContinuationUnderAtomParent() {
+    void acceptsAttributeContinuationUnderAtomParent() {
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         final Globals globals = new Globals();
