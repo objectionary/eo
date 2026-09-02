@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.Optional;
 
 /**
  * One entry of the indent stack — §5.1 of the spec.
@@ -64,14 +63,14 @@ final class Level {
     /**
      * The source name on the line that currently owns this entry
      * ({@code foo} for {@code > foo}, the handle for {@code >> foo},
-     * empty for a bare {@code >>}), or absent when that line carried
-     * no suffix. Doubles as the named flag ({@link #named()}) and
+     * empty for a bare {@code >>}), or {@code null} when that line
+     * carried no suffix. Doubles as the named flag ({@link #named()}) and
      * names the offender in §4.5 errors. A same-indent {@code .method}
      * continuation takes the entry over and drops what the previous
      * link left here ({@link #sealed()}), since R-6.2.2 puts the
      * chain's naming line on the last link.
      */
-    private Optional<String> label = Optional.empty();
+    private String label;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -238,7 +237,7 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.label.isPresent();
+        return this.label != null;
     }
 
     /**
@@ -250,13 +249,17 @@ final class Level {
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
-        final String result;
+        final String source;
         if (this.kind == Kind.ONLY_PHI) {
-            result = this.label.orElse("");
-        } else if (this.formation == null) {
+            source = this.label;
+        } else {
+            source = this.formation;
+        }
+        final String result;
+        if (source == null) {
             result = "";
         } else {
-            result = this.formation;
+            result = source;
         }
         return result;
     }
@@ -268,6 +271,12 @@ final class Level {
      */
     String onlyPhiNamingError() {
         final String owner;
+        final String offender;
+        if (this.label == null || this.label.isEmpty()) {
+            offender = "an auto-named attribute";
+        } else {
+            offender = this.label;
+        }
         if (this.formation == null || this.formation.isEmpty()) {
             owner = "an only-phi formation";
         } else {
@@ -275,7 +284,7 @@ final class Level {
         }
         return String.format(
             "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            this.label.filter(text -> !text.isEmpty()).orElse("an auto-named attribute"),
+            offender,
             owner
         );
     }
@@ -366,7 +375,7 @@ final class Level {
      *  {@code null}
      */
     void name(final String text) {
-        this.label = Optional.of(text);
+        this.label = text;
     }
 
     /**
@@ -461,7 +470,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
-        this.label = Optional.empty();
+        this.label = null;
     }
 
     /**
