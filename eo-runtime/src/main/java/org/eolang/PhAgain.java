@@ -33,16 +33,6 @@ public final class PhAgain implements Phi {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.next.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.next.hashCode();
-    }
-
-    @Override
     public Phi copy() {
         return new PhAgain(this.next.copy());
     }

@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -148,6 +149,13 @@ public final class MjTranspile extends MjSafe {
     )
     private File tables;
 
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
@@ -155,17 +163,15 @@ public final class MjTranspile extends MjSafe {
                 new Transpiling(
                     tojos.standalone(),
                     this.targetDir.toPath(),
-                    this.generatedDir.toPath(),
-                    this.tests,
-                    this.roots(),
+                    new Written(this.generatedDir.toPath(), this.tests, this.roots()),
                     new Transpilation(
-                        this.plugin.getVersion(),
                         new Tracking(this.trackSteps, this.located),
                         this.coverage,
                         this.base(),
                         this.xslMeasures.toPath(),
                         this.targetDir.toPath(),
-                        this.tables.toPath()
+                        this.tables.toPath(),
+                        this.lowered()
                     ),
                     this.stored()
                 )
@@ -196,6 +202,21 @@ public final class MjTranspile extends MjSafe {
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
             .collect(Collectors.toList());
+    }
+
+    // What MjLower left in its marker file, or the empty string when it
+    // skipped or was disabled: whether the XMIR of this build was folded
+    // through phino changes the generated Java, so it belongs in the
+    // cache key that Transpilation.version() makes.
+    private String lowered() throws IOException {
+        final Path marker = this.targetDir.toPath()
+            .resolve(Lowering.DIR)
+            .resolve(Lowering.MARKER);
+        String content = "";
+        if (Files.exists(marker)) {
+            content = Files.readString(marker).trim();
+        }
+        return content;
     }
 
     private String base() {
