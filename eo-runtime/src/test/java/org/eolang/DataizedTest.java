@@ -91,4 +91,39 @@ final class DataizedTest {
             Matchers.containsString("length 0")
         );
     }
+
+    @Test
+    void refusesBytesThatAreNotUtf8() {
+        MatcherAssert.assertThat(
+            "a malformed byte must be refused, not replaced by U+FFFD",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new PhDefault(new byte[] {(byte) 0xFF})).asString(),
+                "dataizing FF- as string was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("is not valid UTF-8 text")
+        );
+    }
+
+    @Test
+    void refusesATruncatedUtf8Sequence() {
+        MatcherAssert.assertThat(
+            "half of a multi-byte character must be refused, not replaced by U+FFFD",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new PhDefault(new byte[] {(byte) 0xD0})).asString(),
+                "dataizing D0- as string was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("is not valid UTF-8 text")
+        );
+    }
+
+    @Test
+    void readsValidUtf8() {
+        MatcherAssert.assertThat(
+            "a valid multi-byte character must be read as it is",
+            new Dataized(new Data.ToPhi("привет")).asString(),
+            Matchers.equalTo("привет")
+        );
+    }
 }
