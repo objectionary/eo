@@ -87,20 +87,20 @@ final class Catalogs {
      */
     Tojos make(final Path file, final String fmt) {
         final Path abs = file.toAbsolutePath();
-        final String before = this.formats.putIfAbsent(abs, fmt);
-        if (before != null && !before.equals(fmt)) {
+        final String format = fmt.trim().toLowerCase(Locale.ENGLISH);
+        final String before = this.formats.putIfAbsent(abs, format);
+        if (before != null && !before.equals(format)) {
             throw new IllegalStateException(
                 String.format(
                     "The file '%s' was already cached with format '%s', can't reuse it with format '%s'",
-                    abs, before, fmt
+                    abs, before, format
                 )
             );
         }
-        return this.all.computeIfAbsent(abs, f -> Catalogs.build(f, fmt));
+        return this.all.computeIfAbsent(abs, f -> Catalogs.build(f, format));
     }
 
-    private static Tojos build(final Path path, final String format) {
-        final String fmt = format.trim().toLowerCase(Locale.ENGLISH);
+    private static Tojos build(final Path path, final String fmt) {
         Mono mono;
         if ("json".equals(fmt)) {
             mono = new MnJson(path);
