@@ -32,11 +32,6 @@ import org.xembly.Directive;
 final class Eo implements Iterable<Directive> {
 
     /**
-     * What a line with a space at its end is told, wherever it is written.
-     */
-    private static final String TRAILING = "trailing whitespace at end of line";
-
-    /**
      * What a line indented with a tab is told, wherever it is written.
      */
     static final String TAB = "tab character in leading whitespace";
@@ -45,6 +40,11 @@ final class Eo implements Iterable<Directive> {
      * What a line indented with neither a space nor a tab is told.
      */
     static final String ALIEN = "invalid character in leading whitespace";
+
+    /**
+     * What a line with a space at its end is told, wherever it is written.
+     */
+    private static final String TRAILING = "trailing whitespace at end of line";
 
     /**
      * Raw EO source text.
