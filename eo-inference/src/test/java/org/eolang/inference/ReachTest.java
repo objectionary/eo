@@ -69,6 +69,15 @@ final class ReachTest {
     }
 
     @Test
+    void keepsADispatchOfTheCaretWithItsDot() {
+        MatcherAssert.assertThat(
+            "the dispatch .^ is two characters counting its dot, but it wasnt",
+            new Reach("* ^.^").from(3),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void measuresNothingPastTheEndOfTheLine() {
         MatcherAssert.assertThat(
             "a column beyond the line cannot reach anything, but it claimed to",

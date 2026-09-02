@@ -56,6 +56,13 @@ final class Lowering implements Step {
     static final String MARKER = "lowering.txt";
 
     /**
+     * The subdirectory of {@link #DIR} with the sidecar bodies of the
+     * lowered formations, one {@code <digest>.java} per distinct fragment,
+     * spliced into generated atom classes by {@code lowered.xsl}.
+     */
+    static final String ATOMS = "atoms";
+
+    /**
      * XMIR sources to fold.
      */
     private final Collection<TjForeign> sources;
