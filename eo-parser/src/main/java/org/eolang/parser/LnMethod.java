@@ -43,10 +43,11 @@ import java.util.List;
  * (cursor exits), then the new link opens — the link's element is the
  * one that remains on the cursor for either more chain continuations
  * or deeper-indent children. The line's optional name suffix attaches
- * to <em>this</em> link's {@code <o>} (the last-link rule means each
- * incoming {@code .method} carries the chain's current "tip" — if the
- * suffix is set, it stays unless a later {@code .method} replaces
- * it).</p>
+ * to <em>this</em> link's {@code <o>} only: per R-6.2.3 an
+ * intermediate name is independent of the chain's outermost name, so
+ * closing the predecessor's link (§5.2.5) also forgets any name it
+ * carried — only the last link's own suffix, if any, names the
+ * chain.</p>
  *
  * @since 0.1
  */

@@ -462,6 +462,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
+        this.label = null;
     }
 
     /**
