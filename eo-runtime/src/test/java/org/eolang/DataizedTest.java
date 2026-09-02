@@ -93,7 +93,7 @@ final class DataizedTest {
     }
 
     @Test
-    void refusesBytesThatAreNotUtf8() {
+    void refusesAMalformedByteSequence() {
         MatcherAssert.assertThat(
             "a malformed byte must be refused, not replaced by U+FFFD",
             Assertions.assertThrows(
@@ -106,7 +106,7 @@ final class DataizedTest {
     }
 
     @Test
-    void refusesATruncatedUtf8Sequence() {
+    void refusesHalfOfAMultiByteCharacter() {
         MatcherAssert.assertThat(
             "half of a multi-byte character must be refused, not replaced by U+FFFD",
             Assertions.assertThrows(
@@ -119,7 +119,7 @@ final class DataizedTest {
     }
 
     @Test
-    void readsValidUtf8() {
+    void readsAMultiByteCharacter() {
         MatcherAssert.assertThat(
             "a valid multi-byte character must be read as it is",
             new Dataized(new Data.ToPhi("привет")).asString(),
