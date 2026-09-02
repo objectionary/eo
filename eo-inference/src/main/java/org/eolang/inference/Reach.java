@@ -17,8 +17,10 @@ package org.eolang.inference;
  * the first character that cannot be part of one. A literal number carries its
  * digits, its hex letters, its sign and one decimal point. A string runs to
  * its closing quote, and a backslash inside it takes the next character with
- * it, so that {@code "a\"b"} is one string and not two. Anything else is one
- * character, which is the honest answer for a glyph nobody taught this
+ * it, so that {@code "a\"b"} is one string and not two. A dispatch takes its
+ * dot along with what follows it, be that a name or the {@code ^} of
+ * {@code .^}, since a dot alone marks nothing a reader can read. Anything else
+ * is one character, which is the honest answer for a glyph nobody taught this
  * about.</p>
  *
  * @since 0.70.0
@@ -63,7 +65,8 @@ final class Reach {
             found = this.numbered(column);
         } else if (Character.isLetterOrDigit(head) || head == '_') {
             found = this.named(column);
-        } else if (head == '.' && Character.isLetterOrDigit(this.after(column))) {
+        } else if (head == '.'
+            && (Character.isLetterOrDigit(this.after(column)) || this.after(column) == '^')) {
             found = 1 + this.from(column + 1);
         } else {
             found = 1;

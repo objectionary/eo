@@ -40,6 +40,60 @@ final class PiecesTest {
     }
 
     @Test
+    void marksTheCaretAChainIsDispatchedOn() {
+        MatcherAssert.assertThat(
+            "the caret a walk is taken off must get a word of its own, but it stayed bare",
+            PiecesTest.drawn(
+                "  ^.walk",
+                Arrays.asList(
+                    new Written("Φ.w.α1", 3, "", new Answer("Φ.number", 3)),
+                    new Written("Φ.w.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='^']/told[@where='Φ.string']",
+                "/line/bit[text='.walk']/told[@where='Φ.number']"
+            )
+        );
+    }
+
+    @Test
+    void marksADispatchTakenOffTheCaret() {
+        MatcherAssert.assertThat(
+            "the step .^ must carry its dot into the mark, but the dot was marked alone",
+            PiecesTest.drawn(
+                "* ^.^",
+                Arrays.asList(
+                    new Written("Φ.t.α1", 3, "", new Answer("Φ.number", 3)),
+                    new Written("Φ.t.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='.^']/told[@where='Φ.number']")
+        );
+    }
+
+    @Test
+    void walksPastAStepTheSourceNeverWrote() {
+        MatcherAssert.assertThat(
+            "the steps above an unwritten one must keep their own words, but they piled onto one",
+            PiecesTest.drawn(
+                "    precise.as-bool.if > end!",
+                Arrays.asList(
+                    new Written("Φ.p.end", 19, "end", new Answer("Φ.bytes.as-bytes", 3)),
+                    new Written("Φ.p.end.ρ.α0", 19, "", new Answer("Φ.bool.if", 1)),
+                    new Written("Φ.p.end.ρ.α0.ρ", 19, "", new Answer("Φ.bytes.as-bool", 3)),
+                    new Written("Φ.p.end.ρ.α0.ρ.ρ", 19, "", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='precise']/told[@where='Φ.string']",
+                "/line/bit[text='.as-bool']/told[@where='Φ.bytes.as-bool']",
+                "/line/bit[text='.if']/told[@label='end']"
+            )
+        );
+    }
+
+    @Test
     void keepsTextThatNoObjectClaims() {
         MatcherAssert.assertThat(
             "the brackets around a void are the author's text and must survive, but they didnt",
