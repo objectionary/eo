@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[contains(text(),'binding allowed only in argument position')]
+input: |
+  foo > main
+  .a:x > y

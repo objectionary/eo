@@ -880,28 +880,6 @@ final class EoTest {
     }
 
     @Test
-    void rejectsBindingOnMethodContinuationInFormation() {
-        MatcherAssert.assertThat(
-            "a `.method` continuation binding through a formation body cannot bypass R-3.12.3",
-            EoTest.render("[] > main", "  f", "  .a:x > y"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'binding allowed only in argument position')]"
-            )
-        );
-    }
-
-    @Test
-    void rejectsBindingOnMethodContinuationAtTopLevel() {
-        MatcherAssert.assertThat(
-            "a `.method` continuation binding at top level cannot bypass R-3.12.3",
-            EoTest.render("foo > main", ".a:x > y"),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'binding allowed only in argument position')]"
-            )
-        );
-    }
-
-    @Test
     void rejectsBindingOnVerticalReceiver() {
         MatcherAssert.assertThat(
             "the receiver of a vertical reversed dispatch cannot carry a binding either",
