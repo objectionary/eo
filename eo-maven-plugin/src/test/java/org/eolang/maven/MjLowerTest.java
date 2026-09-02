@@ -143,6 +143,22 @@ final class MjLowerTest {
         );
     }
 
+    @Test
+    void removesTheMarkerWhenSkipping(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a run without phino must take the marker of an earlier fold away, but it didnt",
+            Files.exists(
+                MjLowerTest.marker(
+                    MjLowerTest.lowered(temp)
+                        .with("binary", temp.resolve("no-such-phino").toString())
+                        .execute(MjLower.class)
+                )
+            ),
+            Matchers.is(false)
+        );
+    }
+
     private static void assumePhino(final Path temp) {
         Assumptions.assumeTrue(new Phino("phino", 7, temp).suitable());
     }
