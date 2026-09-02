@@ -61,6 +61,18 @@ final class CatalogsTest {
     }
 
     @Test
+    void reusesTheCatalogWhateverTheSpellingOfTheFormat(@Mktmp final Path tmp) {
+        final Path file = tmp.resolve("foreign");
+        Assertions.assertDoesNotThrow(
+            () -> {
+                Catalogs.INSTANCE.make(file, " CSV ");
+                Catalogs.INSTANCE.make(file, "csv");
+            },
+            "The same format spelled differently must reuse the same catalog"
+        );
+    }
+
+    @Test
     void rejectsADisagreeingFormatForAnAlreadyCachedPath(@Mktmp final Path tmp) {
         final Path file = tmp.resolve("foreign");
         Catalogs.INSTANCE.make(file, "csv");

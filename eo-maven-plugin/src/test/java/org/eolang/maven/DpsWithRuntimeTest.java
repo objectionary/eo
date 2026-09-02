@@ -98,4 +98,22 @@ final class DpsWithRuntimeTest {
             )
         );
     }
+
+    @Test
+    void addsTheRuntimeBesideAClassifierOfIt() {
+        MatcherAssert.assertThat(
+            "a classifier of the runtime must not stand in for the runtime itself, but it did",
+            new DpsWithRuntime(
+                new ListOf<>(
+                    new Dep()
+                        .withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withVersion("0.30.0")
+                        .withClassifier("tests")
+                ),
+                Dependencies.Fake.runtimeDep()
+            ),
+            Matchers.iterableWithSize(2)
+        );
+    }
 }
