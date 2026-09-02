@@ -28,8 +28,11 @@ import java.util.stream.Stream;
  *
  * <p>A directory of files is hashed the same way, its files taken in the
  * order of their names, which is how the tables of {@link MjInference}
- * join the same key (see #7627). A directory that is not there hashes to
- * the digest of nothing, which is what a build without those tables
+ * join the same key (see #7627). Every file is framed by its relative path
+ * and the amount of bytes it holds, both closed by a NUL, so that a tree
+ * differing in file names or in file boundaries never lands on the same
+ * digest as another one (see #8140). A directory that is not there hashes
+ * to the digest of nothing, which is what a build without those tables
  * deserves and still tells it apart from a build with them.</p>
  *
  * @since 0.63
@@ -92,10 +95,13 @@ final class Fingerprint implements Supplier<String> {
                     try (Stream<Path> found = Files.walk(base)) {
                         for (final Path file : found.filter(Files::isRegularFile)
                             .sorted().collect(Collectors.toList())) {
+                            final byte[] content = Files.readAllBytes(file);
                             digest.update(
-                                base.relativize(file).toString().getBytes(StandardCharsets.UTF_8)
+                                String.format(
+                                    "%s\0%d\0", base.relativize(file), content.length
+                                ).getBytes(StandardCharsets.UTF_8)
                             );
-                            digest.update(Files.readAllBytes(file));
+                            digest.update(content);
                         }
                     }
                 }
