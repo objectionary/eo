@@ -35,7 +35,7 @@ jobs:
           aws-resource-tags: '[{"Key":"Name","Value":"eo-runtime"}]'
           github-token: ${{ secrets.AWS_PAT }}
           ec2-image-id: ${{ secrets.AWS_AMI }}
-          ec2-instance-type: c8i.8xlarge
+          ec2-instance-type: c8i.4xlarge
           subnet-id: ${{ secrets.AWS_SUBNET }}
           security-group-id: ${{ secrets.AWS_SGROUP }}
   runtime:
@@ -64,7 +64,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=4G' '-Dheap-size=48G' -Psite -Pjacoco clean install site
+      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=4G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
   terminate-instance:
     needs:
       - start-instance
