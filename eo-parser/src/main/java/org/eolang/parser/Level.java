@@ -62,10 +62,19 @@ final class Level {
     /**
      * The source name on this entry's naming line ({@code foo} for
      * {@code > foo}, the handle for {@code >> foo}, empty for a bare
-     * {@code >>}), or {@code null} when unnamed. Doubles as the named
-     * flag ({@link #named()}) and names the offender in §4.5 errors.
+     * {@code >>}), or {@code null} when unnamed. Names the offender in
+     * §4.5 errors.
      */
     private String label;
+
+    /**
+     * Whether the line that currently owns this entry carried a name
+     * suffix — the named flag ({@link #named()}). A same-indent
+     * {@code .method} continuation takes the entry over and drops it
+     * ({@link #sealed()}), since R-6.2.2 puts the chain's naming line
+     * on the last link.
+     */
+    private boolean suffixed;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -232,7 +241,7 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.label != null;
+        return this.suffixed;
     }
 
     /**
@@ -370,6 +379,7 @@ final class Level {
      */
     void name(final String text) {
         this.label = text;
+        this.suffixed = true;
     }
 
     /**
@@ -450,10 +460,12 @@ final class Level {
     }
 
     /**
-     * Forget the compact-tuple state, after the closer has already
-     * accounted for it - the entry stays on the stack as the wrapper a
-     * same-indent {@code .method} continuation put around it, and the
-     * wrapper is no tuple of its own.
+     * Forget the compact-tuple state and the name the sealed line
+     * carried, after the closer has already accounted for them - the
+     * entry stays on the stack as the wrapper a same-indent
+     * {@code .method} continuation put around it, and the wrapper is
+     * neither a tuple of its own nor named by the link it replaced
+     * (R-6.2.2).
      */
     void sealed() {
         this.star = false;
@@ -462,7 +474,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
-        this.label = null;
+        this.suffixed = false;
     }
 
     /**
@@ -565,6 +577,7 @@ final class Level {
 
     private void absorb(final Level other) {
         this.label = other.label;
+        this.suffixed = other.suffixed;
         this.formation = other.formation;
         this.atom = other.atom;
         this.taken = other.taken;

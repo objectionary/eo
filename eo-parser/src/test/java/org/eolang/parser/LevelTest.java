@@ -73,6 +73,20 @@ final class LevelTest {
     }
 
     @Test
+    void dropsNamedFlagOnSeal() {
+        final Level level = new Level(
+            2, 5, Kind.VMETHOD, Openness.OPEN, Kind.BARE_FORMATION, false
+        );
+        level.name("intermediate");
+        level.sealed();
+        MatcherAssert.assertThat(
+            "sealed() must forget the name the replaced chain link carried",
+            level.named(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void leavesNamedFlagFalseByDefault() {
         MatcherAssert.assertThat(
             "a fresh level cannot be named before name() is invoked",

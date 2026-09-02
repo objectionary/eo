@@ -4,7 +4,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='.tmpfile' and @name='file']
+  - //o[@base='Φ.tmpdir.tmpfile' and @name='file']
   - //o[@base='ξ.file.open' and @name='fd']
 input: |
   [] > main

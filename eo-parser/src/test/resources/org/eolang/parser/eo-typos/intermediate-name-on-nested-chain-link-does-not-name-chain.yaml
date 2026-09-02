@@ -5,8 +5,8 @@
 line: 2
 message: |-
   [2:2] error: 'object inside formation must have a name'
-  tmpdir
-  ^
+    tmpdir
+    ^
 input: |
   [] > main
     tmpdir
