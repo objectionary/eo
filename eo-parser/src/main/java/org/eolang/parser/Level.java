@@ -71,7 +71,7 @@ final class Level {
      * link left here ({@link #sealed()}), since R-6.2.2 puts the
      * chain's naming line on the last link.
      */
-    private Optional<String> label;
+    private Optional<String> label = Optional.empty();
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -177,7 +177,6 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.label = Optional.empty();
         this.atom = false;
         this.taken = false;
         this.count = 0;
