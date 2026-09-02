@@ -26,11 +26,6 @@ package org.eolang;
 public final class Handle {
 
     /**
-     * The largest magnitude a double counts to in whole steps.
-     */
-    private static final double EXACT = 9_007_199_254_740_992.0d;
-
-    /**
      * Expect.
      */
     private final Expect<Phi> expect;
@@ -64,7 +59,7 @@ public final class Handle {
             .otherwise("must be finite")
             .must(number -> number % 1 == 0)
             .otherwise("must be an integer")
-            .must(number -> Math.abs(number) <= Handle.EXACT)
+            .must(number -> Math.abs(number) <= 9_007_199_254_740_992.0d)
             .otherwise("must not exceed 2^53 in magnitude")
             .that(Double::longValue)
             .it();
