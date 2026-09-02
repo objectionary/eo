@@ -125,13 +125,33 @@ final class Bindings {
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
         final Level parent = stack.below();
-        if (parent.kind() == Kind.TOP_LEVEL || parent.kind() == Kind.BARE_FORMATION) {
+        if (Bindings.isFormationLevel(parent.kind())) {
             Bindings.rejectBinding(outer, span);
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
         } else if (Bindings.tracksBindings(parent.kind())) {
             parent.observeBinding(!outer.isEmpty(), span);
         }
+    }
+
+    /**
+     * Reject a binding on a {@code .method} chain whose parent is a
+     * formation body or the top level — R-3.12.3. A chain continuation
+     * does not push a fresh child onto the stack, so it cannot reach
+     * {@link #observeChild}; this covers the one branch of that rule
+     * a continuation still needs.
+     * @param parent The chain's parent level
+     * @param outer Outer binding label, empty when the line carries none
+     * @param span Source span of the continuation line
+     */
+    static void checkFormationBinding(final Level parent, final String outer, final Span span) {
+        if (Bindings.isFormationLevel(parent.kind())) {
+            Bindings.rejectBinding(outer, span);
+        }
+    }
+
+    private static boolean isFormationLevel(final Kind kind) {
+        return kind == Kind.TOP_LEVEL || kind == Kind.BARE_FORMATION;
     }
 
     private static boolean tracksBindings(final Kind kind) {

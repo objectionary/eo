@@ -35,6 +35,8 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-3.12.3 — an outer binding on a {@code .method} chain whose
+ * parent is a formation body or the top level.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -88,6 +90,7 @@ final class LnMethod implements Line {
         if (!outer.isEmpty()) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
+            Bindings.checkFormationBinding(under, outer, this.span);
             under.upgradeArgBinding();
         }
         stack.seal();
