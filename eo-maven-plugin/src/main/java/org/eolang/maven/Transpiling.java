@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.github.lombrozo.xnav.Xnav;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -32,11 +31,6 @@ import org.eolang.parser.OnDetailed;
  * The intermediate optimized XMIRs are stored in the {@link #PRE} directory.</p>
  *
  * @since 0.1
- * @todo #6125:30min Take the rest of the writing out of here too.
- *  The three that are left, the generated directory, the tests flag and
- *  the roots, describe one thing, where the output lands, and belong
- *  together in an object of their own, along with the tail of
- *  {@link #exec()} that logs it.
  */
 final class Transpiling implements Step {
 
@@ -66,19 +60,9 @@ final class Transpiling implements Step {
     private final Path target;
 
     /**
-     * Generated sources directory.
+     * Where the output lands.
      */
-    private final Path generated;
-
-    /**
-     * Whether to transpile tests.
-     */
-    private final boolean tests;
-
-    /**
-     * Directories with the Java sources a human wrote.
-     */
-    private final Collection<Path> roots;
+    private final Written written;
 
     /**
      * The XSL train that does the transpiling.
@@ -94,46 +78,33 @@ final class Transpiling implements Step {
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
-     * @param generated Generated sources directory
-     * @param tests Whether to transpile tests
-     * @param java Directories with the Java sources a human wrote
+     * @param written Where the output lands
      * @param train The XSL train that does the transpiling
      * @param store The cache shared with every build on this machine
      */
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
-        final Path generated,
-        final boolean tests,
-        final Collection<Path> java,
+        final Written written,
         final Transpilation train,
         final GlobalCache store
     ) {
         this.sources = srcs;
         this.target = target;
-        this.generated = generated;
-        this.tests = tests;
-        this.roots = java;
+        this.written = written;
         this.train = train;
         this.cache = store;
     }
 
     @Override
     public void exec() throws IOException {
-        final JavaFiles files = new JavaFiles(this.generated);
+        final JavaFiles files = this.written.files();
         final int transpiled = new Threaded<>(
             this.sources,
             tojo -> this.transpiled(tojo, files)
         ).total();
         files.removeStale();
-        Logger.info(
-            this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(),
-            transpiled + new PackageInfos(
-                this.generated, this.roots, files.directories()
-            ).create(),
-            this.generated
-        );
+        this.written.log(transpiled, this.sources.size(), files);
     }
 
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
@@ -157,7 +128,7 @@ final class Transpiling implements Step {
             }
         ).apply(source, dest);
         return files.total(
-            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered(),
+            rewrite.get(), dest, hsh.get(), this.written.tests(tojo),
             store
         );
     }
