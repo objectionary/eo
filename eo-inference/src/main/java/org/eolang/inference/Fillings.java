@@ -33,12 +33,12 @@ import java.util.Map;
  * five members where it had more than a cap's worth, and the five are worth
  * reading.</p>
  *
- * <p>A filling whose walk runs into a void is no type, and it is no silence
- * either: it says this void is handed whatever another void is handed. So it
- * is kept as the variable it is, beside the types the other callers bring,
- * because a void that four callers fill with a {@code Φ.string} and a fifth
- * fills with a void of its own is not the same void as one that four callers
- * fill and nobody else touches.</p>
+ * <p>A filling whose walk runs into a void has no type of its own to give, and
+ * it is not thereby nothing: what fills that void reaches this one too, a hop
+ * further along. {@link Carried} walks the hop, so a void filled with an
+ * {@code oak} by one caller and handed on from a void filled with a number is
+ * seen to hold both, and a void whose every caller passes on a void of its own
+ * is described by that rather than by silence.</p>
  *
  * @since 0.69.0
  */
@@ -74,16 +74,24 @@ final class Fillings {
         final Map<String, String> names = new Ends(pairs.all()).names();
         final Map<String, String> landings = new Landed(pairs, this.given).all();
         final Forms forms = new Forms(pairs.forms());
-        final Map<String, Map<String, Type>> chosen = new LinkedHashMap<>(0);
+        final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
+        final Map<String, Map<String, Type>> handed = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<String>> bound : pairs.puts().entrySet()) {
             for (final String put : bound.getValue()) {
-                final String end = landings.getOrDefault(put, names.getOrDefault(put, put));
-                chosen.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
-                    .putIfAbsent(forms.name(end), forms.type(end));
+                final String end = landings.get(put);
+                if (end == null) {
+                    final String stopped = names.getOrDefault(put, put);
+                    handed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
+                        .putIfAbsent(forms.name(stopped), forms.type(stopped));
+                } else {
+                    placed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
+                        .putIfAbsent(forms.name(end), forms.type(end));
+                }
             }
         }
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : chosen.entrySet()) {
+        for (final Map.Entry<String, Map<String, Type>> hollow
+            : new Carried(placed, handed).all().entrySet()) {
             found.put(hollow.getKey(), hollow.getValue().values());
         }
         return found;
