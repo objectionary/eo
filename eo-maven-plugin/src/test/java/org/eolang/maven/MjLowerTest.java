@@ -110,6 +110,24 @@ final class MjLowerTest {
     }
 
     @Test
+    void skipsQuietlyWhenDisabledEvenWhenDemanded(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "eo.lowering set to false must outrank eo.loweringRequired, but it didnt",
+            Files.exists(
+                MjLowerTest.marker(
+                    new FakeMaven(temp)
+                        .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+                        .with("binary", temp.resolve("no-such-phino").toString())
+                        .with("lowering", false)
+                        .with("demanded", true)
+                        .execute(new PpLower())
+                )
+            ),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void removesTheMarkerWhenDisabled(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
