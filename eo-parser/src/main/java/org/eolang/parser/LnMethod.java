@@ -155,17 +155,9 @@ final class LnMethod implements Line {
                 "method continuation not allowed after only-phi formation"
             );
         }
-        if (stack.top().test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "method continuation not allowed on a test attribute"
-            );
-        }
-        if (stack.top().tied()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "inline binding allowed only on the last method in a chain"
-            );
+        final String refusal = stack.top().refusal();
+        if (!refusal.isEmpty()) {
+            throw new ParseError(this.span.line(), this.span.indent(), refusal);
         }
     }
 
