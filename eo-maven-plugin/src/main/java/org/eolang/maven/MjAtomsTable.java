@@ -42,11 +42,6 @@ import org.cactoos.text.UncheckedText;
 public final class MjAtomsTable extends MjSafe {
 
     /**
-     * XSL that extracts atom entries from a single XMIR file.
-     */
-    private static final String XSL = "/org/eolang/maven/atoms-table.xsl";
-
-    /**
      * Directory with XMIR sources to scan for atoms.
      */
     @Parameter(
@@ -88,7 +83,9 @@ public final class MjAtomsTable extends MjSafe {
             return;
         }
         final Map<String, String> table = new TreeMap<>();
-        final Xsline xsline = new Xsline(new StClasspath(MjAtomsTable.XSL));
+        final Xsline xsline = new Xsline(
+            new StClasspath("/org/eolang/maven/atoms-table.xsl")
+        );
         for (final Path source : new WkDefault(home)) {
             final XML before = new XMLDocument(
                 new UncheckedText(new TextOf(source)).asString()

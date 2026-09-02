@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
@@ -18,7 +19,7 @@ final class WpaCacheKeyTest {
 
     @Test
     void changesWhenWpaVersionChanges() {
-        final Map<String, java.nio.file.Path> paths = Collections.emptyMap();
+        final Map<String, Path> paths = Collections.emptyMap();
         MatcherAssert.assertThat(
             "An upgrade of the wpa artifact must invalidate the cache key even when every other input stays the same",
             new WpaCacheKey(paths, Collections.emptyList(), false, "0.1.0").get(),
@@ -32,7 +33,7 @@ final class WpaCacheKeyTest {
 
     @Test
     void staysTheSameWhenNothingChanges() {
-        final Map<String, java.nio.file.Path> paths = Collections.emptyMap();
+        final Map<String, Path> paths = Collections.emptyMap();
         MatcherAssert.assertThat(
             "The same inputs must produce the same cache key",
             new WpaCacheKey(paths, Collections.emptyList(), false, "0.1.1").get(),

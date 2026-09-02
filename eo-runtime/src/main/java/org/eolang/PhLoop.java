@@ -52,16 +52,6 @@ public final class PhLoop implements Phi {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
     public Phi copy() {
         return new PhLoop(this.origin.copy());
     }

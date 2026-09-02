@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import org.apache.maven.settings.Proxy;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ final class MvnProxyTest {
 
     @Test
     void excludesAHostListedInNonProxyHosts() {
-        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        final Proxy origin = new Proxy();
         origin.setHost("prox.eolang.org");
         origin.setPort(8080);
         origin.setNonProxyHosts("localhost|*.internal.example.com");
@@ -29,7 +30,7 @@ final class MvnProxyTest {
 
     @Test
     void doesNotExcludeAHostAbsentFromNonProxyHosts() {
-        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        final Proxy origin = new Proxy();
         origin.setHost("prox.eolang.org");
         origin.setPort(8080);
         origin.setNonProxyHosts("localhost");
@@ -42,7 +43,7 @@ final class MvnProxyTest {
 
     @Test
     void excludesAHostSpelledInCapitals() {
-        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        final Proxy origin = new Proxy();
         origin.setHost("prox.eolang.org");
         origin.setPort(8080);
         origin.setNonProxyHosts("*.internal.example.com");
@@ -55,7 +56,7 @@ final class MvnProxyTest {
 
     @Test
     void answersTheChallengeWithTheCredentialsOfTheSettings() {
-        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        final Proxy origin = new Proxy();
         origin.setHost("prox.eolang.org");
         origin.setPort(3128);
         origin.setUsername("jeff");
@@ -69,7 +70,7 @@ final class MvnProxyTest {
 
     @Test
     void saysNothingWhenTheSettingsCarryNoCredentials() {
-        final org.apache.maven.settings.Proxy origin = new org.apache.maven.settings.Proxy();
+        final Proxy origin = new Proxy();
         origin.setHost("prox.eolang.org");
         origin.setPort(3128);
         MatcherAssert.assertThat(

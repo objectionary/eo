@@ -5,6 +5,7 @@
 package org.eolang;
 
 import com.yegor256.Together;
+import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
@@ -460,8 +461,8 @@ final class PhDefaultTest {
     void keepsSubPackageInForma() {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOstring$EOregex$EOcompile().forma(),
-            Matchers.equalTo("Φ.string.regex.compile")
+            new EObytes$EOsize().forma(),
+            Matchers.equalTo("Φ.bytes.size")
         );
     }
 
@@ -687,7 +688,7 @@ final class PhDefaultTest {
     @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static void cleansUpNesting() {
         try {
-            final java.lang.reflect.Field field =
+            final Field field =
                 Class.forName("org.eolang.PhDefault").getDeclaredField("NESTING");
             field.setAccessible(true);
             final ThreadLocal<?> nesting = (ThreadLocal<?>) field.get(null);

@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import org.hamcrest.MatcherAssert;
@@ -25,9 +26,11 @@ final class KeptTest {
                 new Xembler(
                     new Directives().add("type").append(
                         new Kept(
-                            new XMLDocument(
-                                "<links><type id='a'><union k='1'><data/></union></type></links>"
-                            ).nodes("/links/type").get(0)
+                            new Xnav(
+                                new XMLDocument(
+                                    "<links><type id='a'><union k='1'><data/></union></type></links>"
+                                ).inner()
+                            ).element("links").element("type")
                         ).directives()
                     )
                 ).domQuietly()

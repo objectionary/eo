@@ -75,8 +75,10 @@ public final class VerboseBytesAsString implements Supplier<String> {
         final char[] chars = new String(this.data, StandardCharsets.UTF_8).toCharArray();
         final StringBuilder out = new StringBuilder(chars.length);
         for (final char chr : chars) {
-            if (chr < 0x20 || chr > 0x7F) {
+            if (chr < 0x20 || chr == 0x7F || chr > 0x7F) {
                 out.append(String.format("\\u%04x", (int) chr));
+            } else if (chr == '"' || chr == '\\') {
+                out.append('\\').append(chr);
             } else {
                 out.append(chr);
             }

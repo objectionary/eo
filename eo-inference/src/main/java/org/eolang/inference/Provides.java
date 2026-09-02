@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.yegor256.tojos.MnMemory;
 import com.yegor256.tojos.TjDeferred;
@@ -13,8 +15,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * What every object certainly has.
@@ -92,27 +96,7 @@ final class Provides implements Clue {
         final Collection<XML> made = world.formations();
         try (Tojos rows = new TjDeferred(new MnMemory())) {
             for (final XML formation : made) {
-                final String owner = formation.xpath("@loc").get(0);
-                final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
-                rows.add(owner).set("complete", Boolean.toString(whole));
-                for (final String back
-                    : formation.xpath("o[@name='λ']/@atom[starts-with(., 'Φ.')]")) {
-                    rows.add(owner).set("returns", back);
-                }
-                for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
-                    final String name = attr.xpath("@name").get(0);
-                    final Tojo row = rows.add(String.join(" ", owner, name))
-                        .set("owner", owner)
-                        .set("name", name)
-                        .set("type", attr.xpath("@loc").get(0));
-                    if (attr.xpath("@base").contains("∅")) {
-                        row.set("void", "true");
-                        final List<String> held = attr.xpath("@type[starts-with(., 'Φ.')]");
-                        if (!held.isEmpty()) {
-                            row.set("holds", held.get(0));
-                        }
-                    }
-                }
+                Provides.fill(rows, new Xnav(formation.inner()));
             }
             new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
@@ -121,5 +105,66 @@ final class Provides implements Clue {
                 new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
             );
         }
+    }
+
+    private static void fill(final Tojos rows, final Xnav shape) {
+        final String owner = new Noted(shape).says("loc");
+        final List<Xnav> kids = shape.elements(Filter.withName("o")).collect(Collectors.toList());
+        rows.add(owner).set("complete", Boolean.toString(Provides.whole(kids)));
+        for (final String back : Provides.returns(kids)) {
+            rows.add(owner).set("returns", back);
+        }
+        for (final Xnav kid : Provides.named(kids)) {
+            final Noted attr = new Noted(kid);
+            final String name = attr.says("name");
+            final Tojo row = rows.add(String.join(" ", owner, name))
+                .set("owner", owner)
+                .set("name", name)
+                .set("type", attr.says("loc"));
+            if ("∅".equals(attr.says("base"))) {
+                row.set("void", "true");
+                final String held = attr.says("type");
+                if (held.startsWith("Φ.")) {
+                    row.set("holds", held);
+                }
+            }
+        }
+    }
+
+    private static Collection<Xnav> named(final Collection<Xnav> kids) {
+        final Collection<Xnav> found = new ArrayList<>(0);
+        for (final Xnav kid : kids) {
+            final String name = new Noted(kid).says("name");
+            if (!name.isEmpty() && !"λ".equals(name)) {
+                found.add(kid);
+            }
+        }
+        return found;
+    }
+
+    private static boolean whole(final Collection<Xnav> kids) {
+        boolean found = true;
+        for (final Xnav kid : kids) {
+            final String name = new Noted(kid).says("name");
+            if ("λ".equals(name) || "φ".equals(name)) {
+                found = false;
+                break;
+            }
+        }
+        return found;
+    }
+
+    private static Collection<String> returns(final Collection<Xnav> kids) {
+        final Collection<String> found = new ArrayList<>(0);
+        for (final Xnav kid : kids) {
+            final Noted attr = new Noted(kid);
+            if ("λ".equals(attr.says("name"))) {
+                final String back = attr.says("atom");
+                if (back.startsWith("Φ.")) {
+                    found.add(back);
+                }
+            }
+        }
+        return found;
     }
 }

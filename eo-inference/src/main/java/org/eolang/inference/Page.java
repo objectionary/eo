@@ -7,6 +7,7 @@ package org.eolang.inference;
 import com.jcabi.xml.XML;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,12 +66,13 @@ final class Page {
     Directives directives(final String name) {
         final List<String> lines = this.lines();
         final Map<Integer, Collection<Written>> written = this.written();
+        final Map<Integer, Integer> counted = this.counted();
         final Directives dirs = new Directives()
             .add("page")
             .attr("file", name)
-            .attr("named", Integer.toString(this.counted(2)))
-            .attr("rooted", Integer.toString(this.counted(1)))
-            .attr("blank", Integer.toString(this.counted(0)));
+            .attr("named", Integer.toString(counted.getOrDefault(2, 0)))
+            .attr("rooted", Integer.toString(counted.getOrDefault(1, 0)))
+            .attr("blank", Integer.toString(counted.getOrDefault(0, 0)));
         for (int index = 0; index < lines.size(); index = index + 1) {
             dirs.add("line").attr("n", Integer.toString(index + 1));
             dirs.append(
@@ -100,22 +102,16 @@ final class Page {
     private Map<Integer, Collection<Written>> written() {
         final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
         for (final XML object : this.xmir.nodes("//o[@loc and @line and @pos]")) {
-            final String loc = object.xpath("@loc").get(0);
+            final Noted noted = new Noted(object);
+            final String loc = noted.says("loc");
             final Answer answer = this.answers.get(loc);
             if (answer != null) {
-                final List<String> called = object.xpath("@name");
-                final String name;
-                if (called.isEmpty()) {
-                    name = "";
-                } else {
-                    name = called.get(0);
-                }
                 found.computeIfAbsent(
-                    Integer.parseInt(object.xpath("@line").get(0)),
+                    Integer.parseInt(noted.says("line")),
                     key -> new ArrayList<>(1)
                 ).add(
                     new Written(
-                        loc, Integer.parseInt(object.xpath("@pos").get(0)), name, answer
+                        loc, Integer.parseInt(noted.says("pos")), noted.says("name"), answer
                     )
                 );
             }
@@ -123,12 +119,12 @@ final class Page {
         return found;
     }
 
-    private int counted(final int floor) {
-        int found = 0;
+    private Map<Integer, Integer> counted() {
+        final Map<Integer, Integer> found = new HashMap<>(3);
         for (final String loc : this.xmir.xpath("//o[@loc]/@loc")) {
             final Answer answer = this.answers.get(loc);
-            if (answer != null && (answer.rung() == floor || floor == 2 && answer.rung() > 2)) {
-                found = found + 1;
+            if (answer != null) {
+                found.merge(Math.min(answer.rung(), 2), 1, Integer::sum);
             }
         }
         return found;

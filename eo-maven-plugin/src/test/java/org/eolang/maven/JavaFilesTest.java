@@ -41,9 +41,9 @@ final class JavaFilesTest {
                 "the Java files written are not as many as the classes in the XMIR, seed: %d",
                 seed
             ),
-            new JavaFiles(
-                temp.resolve("generated"), new GlobalCache.GcFresh()
-            ).total(true, xmir, "", false),
+            new JavaFiles(temp.resolve("generated")).total(
+                true, xmir, "", false, new GlobalCache.GcFresh()
+            ),
             Matchers.equalTo(1)
         );
     }
@@ -61,12 +61,12 @@ final class JavaFilesTest {
             "<object><class java-name='org.eolang.EOsecond'><java>class EOsecond {}</java></class></object>",
             second
         ).value();
-        final JavaFiles initial = new JavaFiles(generated, new GlobalCache.GcFresh());
-        initial.total(true, first, "", false);
-        initial.total(true, second, "", false);
+        final JavaFiles initial = new JavaFiles(generated);
+        initial.total(true, first, "", false, new GlobalCache.GcFresh());
+        initial.total(true, second, "", false, new GlobalCache.GcFresh());
         initial.removeStale();
-        final JavaFiles current = new JavaFiles(generated, new GlobalCache.GcFresh());
-        current.total(true, second, "", false);
+        final JavaFiles current = new JavaFiles(generated);
+        current.total(true, second, "", false, new GlobalCache.GcFresh());
         current.removeStale();
         MatcherAssert.assertThat(
             "a stale Java file must be deleted while a currently-generated one must remain",
@@ -89,8 +89,8 @@ final class JavaFilesTest {
             "<object><class java-name='org.eolang.EOfirst'><java>class EOfirst {}</java></class></object>",
             xmir
         ).value();
-        final JavaFiles files = new JavaFiles(generated, new GlobalCache.GcFresh());
-        files.total(true, xmir, "", false);
+        final JavaFiles files = new JavaFiles(generated);
+        files.total(true, xmir, "", false, new GlobalCache.GcFresh());
         files.removeStale();
         MatcherAssert.assertThat(
             "a .java file written by another tool outside eo's own output directories must survive, but it didn't",
@@ -136,8 +136,8 @@ final class JavaFilesTest {
             "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
             plain
         ).value();
-        final JavaFiles first = new JavaFiles(generated, new GlobalCache.GcFresh());
-        first.total(true, plain, "", false);
+        final JavaFiles first = new JavaFiles(generated);
+        first.total(true, plain, "", false, new GlobalCache.GcFresh());
         first.removeStale();
         final Path atom = temp.resolve("atom.xmir");
         new Saved(
@@ -149,8 +149,8 @@ final class JavaFilesTest {
             ),
             atom
         ).value();
-        final JavaFiles second = new JavaFiles(generated, new GlobalCache.GcFresh());
-        second.total(true, atom, "", false);
+        final JavaFiles second = new JavaFiles(generated);
+        second.total(true, atom, "", false, new GlobalCache.GcFresh());
         second.removeStale();
         MatcherAssert.assertThat(
             "the class of an object that became an atom must go, but it survived the run",
@@ -173,11 +173,36 @@ final class JavaFilesTest {
             "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
             xmir
         ).value();
-        new JavaFiles(generated, new GcShared(dir, "1.0-key")).total(false, xmir, "abcdef", false);
+        new JavaFiles(generated).total(
+            false, xmir, "abcdef", false, new GcShared(dir, "1.0-key")
+        );
         MatcherAssert.assertThat(
             "the Java file must come from the directory the global cache names",
             Files.readString(generated.resolve("EOmain.java")),
             Matchers.equalTo("class EOcached {}")
+        );
+    }
+
+    @Test
+    void missesTheJavaFileCachedUnderAnotherKey(@Mktmp final Path temp) throws IOException {
+        final Path generated = temp.resolve("generated");
+        final Path dir = temp.resolve("cache");
+        new Saved(
+            "class EOcached {}",
+            dir.resolve("1.0-with-rows").resolve("abcdef").resolve("EOmain.java")
+        ).value();
+        final Path xmir = temp.resolve("main.xmir");
+        new Saved(
+            "<object><class java-name='EOmain'><java>class EOmain {}</java></class></object>",
+            xmir
+        ).value();
+        new JavaFiles(generated).total(
+            false, xmir, "abcdef", false, new GcShared(dir, "1.0-without-rows")
+        );
+        MatcherAssert.assertThat(
+            "a Java file cached under another key must not be taken",
+            Files.readString(generated.resolve("EOmain.java")),
+            Matchers.equalTo("class EOmain {}")
         );
     }
 
@@ -193,8 +218,8 @@ final class JavaFilesTest {
             ),
             xmir
         ).value();
-        return new JavaFiles(
-            temp.resolve("generated"), new GlobalCache.GcFresh()
-        ).total(true, xmir, "", false);
+        return new JavaFiles(temp.resolve("generated")).total(
+            true, xmir, "", false, new GlobalCache.GcFresh()
+        );
     }
 }

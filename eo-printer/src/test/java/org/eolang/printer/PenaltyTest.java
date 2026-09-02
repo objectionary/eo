@@ -89,7 +89,7 @@ final class PenaltyTest {
         MatcherAssert.assertThat(
             "Each character past the 80th column should cost three points",
             new Penalty(
-                String.join("", java.util.Collections.nCopies(85, "x")),
+                String.join("", Collections.nCopies(85, "x")),
                 Collections.singletonMap(PenaltyKey.SYMBOL, 0)
             ).points(),
             Matchers.equalTo(15)
