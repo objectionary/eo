@@ -71,11 +71,6 @@ final class EndsTest {
         );
     }
 
-    /**
-     * The pairs, read as a flat list of key and value.
-     * @param flat The names, a key followed by the name it is a copy of
-     * @return The pairs
-     */
     private Map<String, String> pairs(final String... flat) {
         final Map<String, String> pairs = new LinkedHashMap<>(flat.length / 2);
         for (int idx = 0; idx < flat.length; idx = idx + 2) {

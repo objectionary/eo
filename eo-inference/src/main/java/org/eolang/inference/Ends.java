@@ -58,13 +58,6 @@ final class Ends {
         return ends;
     }
 
-    /**
-     * The name a ring of copies goes by - the first of its names in
-     * alphabetical order, which is the same one wherever the ring is
-     * entered.
-     * @param node A name on the ring, the one the walk came back to
-     * @return The name the whole ring answers with
-     */
     private String anchor(final String node) {
         String chosen = node;
         String next = this.copies.get(node);
