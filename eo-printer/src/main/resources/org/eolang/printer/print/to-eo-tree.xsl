@@ -83,6 +83,38 @@
     <xsl:sequence select="if ($fragile and contains($surface, '.')) then concat(substring($surface, 1, string-length($surface) - string-length($last) - 1), '?.', $last) else $surface"/>
   </xsl:function>
   <!--
+  The name of the sibling a nameless method-dispatch continuation
+  (§3.5) dispatches on, or "" when "$o" is not that shape: its parent
+  is not a formation (an application's own receiver and positional
+  arguments are nameless too, but they are not this construct), it has
+  a name of its own, or its base is not rooted at a self-reference
+  ("ξ.<name>...").
+  Such a continuation carries no receiver child - the base is already
+  qualified with the receiver's name by an earlier shift - and is
+  legal without a name only because the parser reconstructs that
+  receiver from source position, not from an explicit head (#7452).
+  The base may name more than one hop past the receiver, since one such
+  line per hop collapses into a single object: "?.y" and "?.q" below a
+  "42 > z" are one "ξ.z.y.q" (#7478). Only the receiver is answered
+  here; "eo:continuation-hops" spells the hops that follow it.
+  -->
+  <xsl:function name="eo:continuation-receiver" as="xs:string">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="segments" select="tokenize(string($o/@base), '\.')"/>
+    <xsl:sequence select="if (eo:abstract($o/..) and not($o/@name) and count($segments) &gt; 2 and $segments[1] = $eo:xi) then $segments[2] else ''"/>
+  </xsl:function>
+  <!--
+  The hops a nameless method-dispatch continuation makes past the
+  sibling it dispatches on: the segments of its base after the "ξ" and
+  the receiver's own name. Every hop was a line of its own in the
+  source and has to become one again, since the grammar takes only one
+  hop per line ("unexpected content after name suffix" otherwise).
+  -->
+  <xsl:function name="eo:continuation-hops" as="xs:string*">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="tokenize(string($o/@base), '\.')[position() &gt; 2]"/>
+  </xsl:function>
+  <!--
   First name segment of a program-rooted base (Φ.foo.bar -> foo). The raw
   "@base" node is atomised here for the reason spelled out on "eo:surface"
   above (#6669).
@@ -289,13 +321,42 @@
       below the named formation it applies to (R-3.14.7) — reordering
       would strand it. In both cases the sort key collapses to a
       constant, and since xsl:sort is stable the original order stands.
+      A nameless method-dispatch continuation (§3.5) has no @name to
+      sort by either, but it is not source-order-stable like the two
+      cases above (an earlier shift may have floated it ahead of the
+      sibling it dispatches on), so it cannot simply collapse to a
+      constant key: it sorts on that sibling's own name instead, one
+      character past it (eo:continuation-receiver, #7452), which places
+      it immediately below the sibling it depends on regardless of
+      where the shift left it.
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
       <xsl:apply-templates select="o[not(eo:void(.)) or eo:vertical-void(.)]" mode="tree">
         <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
-        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else string((@local, @name)[1])"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else if (eo:continuation-receiver(.) != '') then concat(eo:continuation-receiver(.), '~') else string((@local, @name)[1])"/>
       </xsl:apply-templates>
     </line>
+  </xsl:template>
+  <!-- METHOD-DISPATCH CONTINUATION OVER SEVERAL HOPS (§3.5) -->
+  <!--
+  A line per hop, since the grammar reads one hop per continuation line
+  and the parser folds the run of them back into the single object this
+  node is: "?.y" and "?.q" below a "42 > z" are one "ξ.z.y.q", and
+  printing that as one line spells an object the grammar refuses inside
+  a formation, having no name to give it (#7478).
+  The fragile marker goes on the last hop. The base carries a single
+  "@fragile" for the whole run, and a dispatch that follows a fragile
+  one must repeat the "?." itself, so a run whose last hop is marked
+  reads back as this very object, while one marked earlier would not
+  parse at all.
+  -->
+  <xsl:template match="o[eo:continuation-receiver(.) != '' and count(eo:continuation-hops(.)) &gt; 1]" mode="tree" priority="3">
+    <xsl:variable name="fragile" select="exists(@fragile)"/>
+    <xsl:for-each select="eo:continuation-hops(.)">
+      <line abstract="no" test="no" reversed="no" data="no" tail="">
+        <xsl:attribute name="base" select="concat(if (position() = last() and $fragile) then '?' else '', '.', eo:printable(.))"/>
+      </line>
+    </xsl:for-each>
   </xsl:template>
   <!-- IDENTITY OBJECT -->
   <!--
@@ -349,6 +410,16 @@
   -->
   <xsl:template match="o[@pipe and (@base = concat($eo:xi-prefix, preceding-sibling::o[1]/@name) or @base = preceding-sibling::o[1]/@name)]" mode="head" priority="2">
     <xsl:text>|</xsl:text>
+  </xsl:template>
+  <!-- METHOD-DISPATCH CONTINUATION (§3.5) -->
+  <!--
+  Writing the receiver back into the head of a nameless continuation
+  (see "eo:continuation-receiver" above) turns it into an ordinary
+  application, which reparsing then rejects as unnamed (#7452); print
+  only the trailing continuation, the same way the source wrote it.
+  -->
+  <xsl:template match="o[eo:continuation-receiver(.) != '']" mode="head" priority="2">
+    <xsl:value-of select="concat(if (@fragile) then '?' else '', '.', eo:printable(tokenize(@base, '\.')[last()]))"/>
   </xsl:template>
   <!-- BASED -->
   <xsl:template match="o[@base and not(eo:has-data(.))]" mode="head">
