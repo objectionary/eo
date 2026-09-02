@@ -167,26 +167,27 @@ final class LnCompactTupleTest {
     }
 
     @Test
-    void acceptsTerminatorHeadWithoutChain() {
+    void acceptsIdentityHeadWithoutChain() {
         final Stack stack = new Stack();
-        new LnCompactTuple(new Span("T *1 > x", 1))
+        new LnCompactTuple(new Span("I *2 > x", 1))
             .into(stack, new Globals(), new Emit());
         MatcherAssert.assertThat(
-            "a non-chainable T head must still push COMPACT_TUPLE, taking the empty-chain branch",
+            "an I head is not chainable, so the empty-chain branch must still push COMPACT_TUPLE",
             stack.top().kind(),
             Matchers.equalTo(Kind.COMPACT_TUPLE)
         );
     }
 
     @Test
-    void acceptsIdentityHeadWithoutChain() {
-        final Stack stack = new Stack();
+    void emitsIdentityHeadAsVoidFormation() {
+        final Emit emit = new Emit();
         new LnCompactTuple(new Span("I *2 > x", 1))
-            .into(stack, new Globals(), new Emit());
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
         MatcherAssert.assertThat(
-            "a non-chainable I head must still push COMPACT_TUPLE, taking the empty-chain branch",
-            stack.top().kind(),
-            Matchers.equalTo(Kind.COMPACT_TUPLE)
+            "an I head must open a baseless formation holding a void and a phi bound to it",
+            LnCompactTupleTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and not(@base)]/o[@name='φ' and @base='x']")
         );
     }
 
@@ -197,7 +198,7 @@ final class LnCompactTupleTest {
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "a compact-tuple headed by the bare T term must still emit @base='⊥'",
+            "a compact tuple headed by the bare T term must emit the error base",
             LnCompactTupleTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='x' and @base='⊥']")
         );
