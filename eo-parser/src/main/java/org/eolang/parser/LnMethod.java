@@ -35,6 +35,9 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-5.2.3(b″) — {@code .method} as the receiver of a void
+ * attribute, which declares an attribute rather than an expression to
+ * dispatch on.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -150,6 +153,12 @@ final class LnMethod implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "method continuation not allowed after only-phi formation"
+            );
+        }
+        if (stack.top().kind() == Kind.VOID) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "method continuation not allowed after void attribute"
             );
         }
         if (stack.top().tied()) {
