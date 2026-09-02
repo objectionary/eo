@@ -74,7 +74,7 @@ final class PhinoTest {
         Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "the bytes of a Δ formation must come back verbatim, but they didnt",
-            phino.dataize("⟦ Δ ⤍ 2A- ⟧"),
+            phino.dataize("⟦ Δ ⤍ 2A- ⟧").bytes(),
             Matchers.equalTo("2A-")
         );
     }
@@ -85,7 +85,7 @@ final class PhinoTest {
         Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "a reference in one expression must resolve in another, but it didnt",
-            phino.dataize("⟦ x ↦ ⟦ Δ ⤍ AB- ⟧ ⟧", "⟦ φ ↦ ξ.x ⟧"),
+            phino.dataize("⟦ x ↦ ⟦ Δ ⤍ AB- ⟧ ⟧", "⟦ φ ↦ ξ.x ⟧").bytes(),
             Matchers.equalTo("AB-")
         );
     }

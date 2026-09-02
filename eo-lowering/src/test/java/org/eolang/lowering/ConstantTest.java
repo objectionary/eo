@@ -43,32 +43,48 @@ final class ConstantTest {
                         "</o>"
                     )
                 ).element("o")
-            ).value(),
+            ).value().bytes(),
             Matchers.equalTo("40-35-00-00-00-00-00-00")
         );
     }
 
     @Test
-    void namesFormaOfComparison(@Mktmp final Path temp) {
+    void namesFormaOfComparison(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "a fragment led by gt must carry a bool, but this one doesnt",
             new Constant(
-                new Phino("phino", 7, temp),
-                new Xnav("<o base='.gt'><o base='Φ.true'/></o>").element("o")
-            ).forma(),
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.gt'>",
+                        "<o base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-45-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o")
+            ).value().forma(),
             Matchers.equalTo("bool")
         );
     }
 
     @Test
     void refusesForeignMethod(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
         Assertions.assertThrows(
             IllegalStateException.class,
             new Constant(
-                new Phino("phino", 7, temp),
+                phino,
                 new Xnav("<o base='.as-i64'><o base='Φ.true'/></o>").element("o")
-            )::forma,
-            "a method outside the twelve primitives cannot name a forma, but it did"
+            )::value,
+            "a method the universe does not hold cannot fold, but it did"
         );
     }
 }

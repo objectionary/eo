@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -117,13 +118,17 @@ public final class Phino {
      * <p>Each expression must be complete on its own; {@code phino merge}
      * joins their root formations into one document, which is then
      * dataized. This is how a fragment meets the universe that holds the
-     * method tables its references resolve against.</p>
+     * method tables its references resolve against. The run also writes a
+     * protocol of atom evaluations, and the term the last atom returned
+     * names the carrier of the whole value, since the outermost atom
+     * fires last; a run that fired no atom yields a value of unknown
+     * forma, the way {@link Datum} explains.</p>
      *
      * @param expressions The expressions, in phi syntax
-     * @return The dataized bytes, as dash-joined hex pairs
+     * @return The value: its bytes and the term of the last evaluation
      * @throws IOException If the executable cannot be run
      */
-    public String dataize(final String... expressions) throws IOException {
+    public Datum dataize(final String... expressions) throws IOException {
         final Path place = this.workspace();
         final Collection<Path> files = new ArrayList<>(expressions.length);
         try {
@@ -141,9 +146,12 @@ public final class Phino {
             command.add("-t");
             command.add(merged.toString());
             this.executed(command.toArray(new String[0]));
+            final Path protocol = Files.createTempFile(place, "evaluations", ".tsv");
+            files.add(protocol);
             final String output = this.executed(
                 this.binary, "dataize",
                 "--max-steps", Integer.toString(this.steps),
+                "--evaluations", protocol.toString(),
                 merged.toString()
             );
             if (!Phino.HEX.matcher(output).matches()) {
@@ -154,12 +162,24 @@ public final class Phino {
                     )
                 );
             }
-            return output;
+            return new Datum(output, Phino.answer(protocol));
         } finally {
             for (final Path file : files) {
                 Files.deleteIfExists(file);
             }
         }
+    }
+
+    private static String answer(final Path protocol) throws IOException {
+        final List<String> lines = Files.readAllLines(protocol, StandardCharsets.UTF_8);
+        final String term;
+        if (lines.isEmpty()) {
+            term = "";
+        } else {
+            final String last = lines.get(lines.size() - 1);
+            term = last.substring(last.lastIndexOf('\t') + 1);
+        }
+        return term;
     }
 
     private String executed(final String... command) throws IOException {
