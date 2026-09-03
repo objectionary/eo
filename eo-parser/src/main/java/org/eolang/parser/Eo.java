@@ -188,6 +188,11 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
+            if (next.trailing()) {
+                emit.error(next.line(), 0, Eo.TRAILING);
+                broken = true;
+                break;
+            }
             if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
