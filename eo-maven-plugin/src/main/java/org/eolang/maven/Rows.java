@@ -77,13 +77,21 @@ final class Rows {
                         && !row.getKey().startsWith(String.format("%s.", locator))) {
                         break;
                     }
-                    sha.update(row.getKey().getBytes(StandardCharsets.UTF_8));
-                    sha.update(row.getValue().getBytes(StandardCharsets.UTF_8));
+                    Rows.feed(sha, row.getKey());
+                    Rows.feed(sha, row.getValue());
                 }
             }
             return String.format("%064x", new BigInteger(1, sha.digest())).substring(0, 12);
         } catch (final NoSuchAlgorithmException ex) {
             throw new IllegalStateException("SHA-256 is not available", ex);
         }
+    }
+
+    private static void feed(final MessageDigest digest, final String value) {
+        final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        digest.update(
+            String.format("%d\0", bytes.length).getBytes(StandardCharsets.UTF_8)
+        );
+        digest.update(bytes);
     }
 }
