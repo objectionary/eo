@@ -307,6 +307,12 @@ final class LnOnlyPhi implements Line {
                 digits = false;
                 break;
             }
+            if (idx > from && lhs.charAt(from) == '0') {
+                throw new ParseError(
+                    span.line(), span.indent() + from,
+                    "integer literal must not have leading zeros"
+                );
+            }
             count = count * 10 + glyph - '0';
             if (count > Integer.MAX_VALUE) {
                 throw new ParseError(

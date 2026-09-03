@@ -278,6 +278,21 @@ final class LnOnlyPhiTest {
         );
     }
 
+    @Test
+    void rejectsCompactTupleCountWithLeadingZeros() {
+        final ParseError failure = Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnOnlyPhi(new Span("seq *01 > [m] > bar", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "an only-phi compact-tuple count with a leading zero must be rejected"
+        );
+        MatcherAssert.assertThat(
+            "the leading-zero diagnostic must match the sibling parser",
+            failure.getMessage(),
+            Matchers.containsString("integer literal must not have leading zeros")
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())
