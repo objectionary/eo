@@ -119,7 +119,7 @@ public final class Report {
     }
 
     private String named(final Path file) {
-        final String path = this.world.relativize(file).toString();
+        final String path = this.world.relativize(file).toString().replace('\\', '/');
         return path.substring(0, path.length() - ".xmir".length()).concat(".eo");
     }
 
