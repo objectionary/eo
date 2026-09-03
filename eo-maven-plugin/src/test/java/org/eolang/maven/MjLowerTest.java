@@ -80,6 +80,65 @@ final class MjLowerTest {
     }
 
     @Test
+    void transpilesLoweredFormationIntoAtomClass(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the lowered formation must transpile into its own atom class, but it didnt",
+            Files.readString(
+                MjLowerTest.symbolic(temp)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.containsString(
+                "public final class EOfoo$EObump extends PhDefault implements Atom {"
+            )
+        );
+    }
+
+    @Test
+    void splicesSidecarBodyIntoLambda(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the generated lambda must read the void through the public API, but it doesnt",
+            Files.readString(
+                MjLowerTest.symbolic(temp)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.containsString(
+                "final double v0 = new Dataized(this.take(\"x\")).asNumber();"
+            )
+        );
+    }
+
+    @Test
+    void generatesNoAtomClassWhenDisabled(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a run disabled by eo.lowering must generate no atom class, but it did",
+            Files.exists(
+                MjLowerTest.symbolic(temp)
+                    .with("lowering", false)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void skipsQuietlyWithoutTheBinary(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a machine without phino must build with no marker left behind, but one was left",
@@ -171,6 +230,21 @@ final class MjLowerTest {
         return new FakeMaven(temp)
             .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
             .execute(new PpLower());
+    }
+
+    private static FakeMaven symbolic(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            MjLowerTest.program(
+                "[] > foo",
+                "  [x] > bump",
+                "    (x.times 2).plus 1 > @",
+                "  bump 5 > @"
+            ),
+            "foo", "foo.eo"
+        ).withProgram(
+            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
+            "number", "number.eo"
+        );
     }
 
     private static String constant() {

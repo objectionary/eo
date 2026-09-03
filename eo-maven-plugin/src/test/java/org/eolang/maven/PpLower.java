@@ -18,6 +18,7 @@ final class PpLower implements Iterable<Class<? extends AbstractMojo>> {
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Arrays.<Class<? extends AbstractMojo>>asList(
             MjParse.class,
+            MjInference.class,
             MjMerge.class,
             MjLower.class
         ).iterator();
