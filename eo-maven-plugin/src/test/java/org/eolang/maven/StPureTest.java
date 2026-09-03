@@ -80,6 +80,44 @@ final class StPureTest {
         );
     }
 
+    @Test
+    void readsATableThatWasRewritten(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @", "  [x] > power", "    x > @", ""
+                )
+            ).parsed().toString()
+        );
+        final Path source = parsed.resolve("app.xmir");
+        Files.writeString(
+            source,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(), "[] > app", "  2.power 63 > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        final Path tables = temp.resolve("tables");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        MatcherAssert.assertThat(
+            "the tables of this program mark the application, but nothing was marked",
+            StPureTest.stamped(tables, source).nodes("//o[@name='x' and @pure='true']"),
+            Matchers.not(Matchers.empty())
+        );
+        new Inferring(
+            Files.createDirectories(temp.resolve("none")), temp.resolve("again"), tables
+        ).exec();
+        MatcherAssert.assertThat(
+            "a table rewritten between two transpilations of one JVM must be read again, but the copy parsed first was handed over",
+            StPureTest.stamped(tables, source).nodes("//o[@name='x' and @pure='true']"),
+            Matchers.empty()
+        );
+    }
+
     private Collection<String> unmatched(final Xtory pack) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {

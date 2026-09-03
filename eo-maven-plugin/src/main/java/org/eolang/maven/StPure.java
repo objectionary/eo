@@ -12,7 +12,12 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StXSL;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URI;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -50,6 +55,14 @@ import org.xml.sax.SAXException;
  * since those megabytes are hundreds once parsed and reading a table again is
  * better than running a build out of memory.</p>
  *
+ * <p>What is kept is one snapshot of a table, not the name of its file. The
+ * same Maven process runs {@code eo:inference} and then transpiles more than
+ * once, and the second inference writes its tables to the same paths, so a
+ * copy kept by URI alone would answer the second transpilation with what the
+ * first one read, and the Java it generates would be marked by types that
+ * have moved on. The modification time and the length of the file are kept
+ * beside the copy and asked again before it is handed over.</p>
+ *
  * @since 0.75.0
  */
 final class StPure extends StEnvelope {
@@ -58,6 +71,11 @@ final class StPure extends StEnvelope {
      * The tables read so far, by their URIs.
      */
     private static final Map<String, SoftReference<Node>> TABLES = new HashMap<>(0);
+
+    /**
+     * What each kept table looked like on disk when it was read, by URI.
+     */
+    private static final Map<String, String> STAMPS = new HashMap<>(0);
 
     /**
      * The lock on {@link #TABLES}, held while a table is being read, so that
@@ -104,19 +122,35 @@ final class StPure extends StEnvelope {
     private static Node table(final String href) throws TransformerException {
         StPure.LOCK.lock();
         try {
+            final String stamp = StPure.stamp(href);
             final SoftReference<Node> kept = StPure.TABLES.get(href);
             Node found = null;
-            if (kept != null) {
+            if (kept != null && stamp.equals(StPure.STAMPS.get(href))) {
                 found = kept.get();
             }
             if (found == null) {
                 found = StPure.parsed(href);
                 StPure.TABLES.put(href, new SoftReference<>(found));
+                StPure.STAMPS.put(href, stamp);
             }
             return found;
         } finally {
             StPure.LOCK.unlock();
         }
+    }
+
+    private static String stamp(final String href) {
+        String stamp;
+        try {
+            final BasicFileAttributes attrs = Files.readAttributes(
+                Paths.get(URI.create(href)), BasicFileAttributes.class
+            );
+            stamp = String.format("%s %d", attrs.lastModifiedTime(), attrs.size());
+        } catch (final IOException | IllegalArgumentException
+            | FileSystemNotFoundException ex) {
+            stamp = "";
+        }
+        return stamp;
     }
 
     private static Node parsed(final String href) throws TransformerException {
