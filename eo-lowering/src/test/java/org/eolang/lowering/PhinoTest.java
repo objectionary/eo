@@ -91,6 +91,47 @@ final class PhinoTest {
     }
 
     @Test
+    void survivesParkedAtom(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a partial run reaching a marker cannot be total, but it is",
+            phino.partial(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)).plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧))) ⟧"
+            ).total(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void recordsParkedAtom(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the atom stuck on a marker must land in the records, but it didnt",
+            phino.partial(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)).plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧))) ⟧"
+            ).records().stream().anyMatch(
+                record -> "L_number_plus".equals(record.name()) && record.parked()
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void staysTotalOnData(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a partial run over plain data must stay total, but it didnt",
+            phino.partial("⟦ φ ↦ ⟦ Δ ⤍ 2A- ⟧ ⟧").total(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void refusesUndataizableDocument(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
