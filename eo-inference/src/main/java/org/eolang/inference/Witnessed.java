@@ -33,12 +33,17 @@ import org.xembly.Xembler;
  *   &lt;/witnessed&gt;
  * &lt;/attr&gt;</pre>
  *
- * <p>This is evidence of callers and never a contract. Nothing may work out
- * the type of a void from it: the callers a program happens to have today do
- * not oblige the one written tomorrow, and a void filled with a
- * {@code number} everywhere is still a void. It is written because it is true
- * and because whoever reads the tables wants it, which is the whole of the
- * reason.</p>
+ * <p>Where the choice has one member, that member is the type of the void, and
+ * {@link Answers} says so. There is no tomorrow for such a claim to leak into:
+ * a build parses the library it uses along with the program, transpiles it
+ * again, and keys the cache on the rows it wrote, so a caller who passes
+ * something else is in a run of their own, where the void has two witnesses
+ * and is a void again. What a program does with a void everywhere is a fact
+ * about that program, and refusing to read it is refusing to know it.</p>
+ *
+ * <p>A choice of several stays a choice. {@code Φ.bool.and.x} is filled with a
+ * {@code Φ.true}, with a {@code Φ.false} and with five other things, and
+ * naming any one of them would be picking a favourite among facts.</p>
  *
  * <p>A choice longer than the cap is written as {@code unknown} instead of its
  * members. {@code Φ.tuple.head} is filled with 56 different types, and a
