@@ -162,6 +162,18 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
+    static int compactStar(final String lhs, final Span span) {
+        final int space = LnOnlyPhi.topLevelSpace(lhs);
+        final int result;
+        if (space > 0 && lhs.charAt(space - 1) != '.'
+            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
+            result = LnOnlyPhi.starCount(lhs, space + 2, span);
+        } else {
+            result = -1;
+        }
+        return result;
+    }
+
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
@@ -248,20 +260,8 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HCOMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test())
+            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
-    }
-
-    private static int compactStar(final String lhs, final Span span) {
-        final int space = LnOnlyPhi.topLevelSpace(lhs);
-        final int result;
-        if (space > 0 && lhs.charAt(space - 1) != '.'
-            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
-            result = LnOnlyPhi.starCount(lhs, space + 2, span);
-        } else {
-            result = -1;
-        }
-        return result;
     }
 
     private static Tokens reader(final Span inner, final int stars) {
@@ -306,6 +306,12 @@ final class LnOnlyPhi implements Line {
             if (glyph < '0' || glyph > '9') {
                 digits = false;
                 break;
+            }
+            if (idx > from && lhs.charAt(from) == '0') {
+                throw new ParseError(
+                    span.line(), span.indent() + from,
+                    "integer literal must not have leading zeros"
+                );
             }
             count = count * 10 + glyph - '0';
             if (count > Integer.MAX_VALUE) {

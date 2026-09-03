@@ -35,11 +35,15 @@ import java.util.Map;
  * already worked out on the way to the rung. Whoever counts the program and
  * whoever shows it to somebody read the same one.</p>
  *
- * <p>A name rooted at a void goes back with what {@link Seen} found in that
- * void besides. Nothing in the walk reads it and no rung moves because of it:
- * a void filled with a {@code number} at every call site is still a void, and
- * saying otherwise would turn the habits of today's callers into a promise
- * nobody made.</p>
+ * <p>A void the program fills one way and no other is that one thing and
+ * climbs the ladder as that thing, which is {@link Sole}'s question. A void
+ * that keeps itself stays on the rung where a name rooted at a void belongs,
+ * true of every caller and concrete for none.</p>
+ *
+ * <p>Where the void keeps itself, what {@link Seen} found in it goes back
+ * beside it, for a reader who is told their object is whatever
+ * {@code Φ.bool.and.x} turns out to be and would rather be told that
+ * {@code Φ.true} and {@code Φ.false} have both been put there.</p>
  *
  * @since 0.69.0
  */
@@ -97,6 +101,7 @@ final class Answers {
     Answer of(final String locator, final Collection<String> filled) {
         final String end = this.ends.getOrDefault(locator, locator);
         final String root = this.root(end);
+        final String sole = this.sole(end);
         final Answer found;
         if (this.ground.contains(end)) {
             found = new Answer(end, 4);
@@ -104,10 +109,18 @@ final class Answers {
             found = new Answer(end, this.depth(end, this.free(end, filled)));
         } else if (root.isEmpty()) {
             found = new Answer(end, 0);
-        } else {
+        } else if (sole.isEmpty()) {
             found = new Answer(end, 1, this.hollows.get(root));
+        } else {
+            found = new Answer(sole, this.depth(sole, this.free(sole, filled)));
         }
         return found;
+    }
+
+    private String sole(final String end) {
+        return new Sole(
+            this.hollows.getOrDefault(end, Collections.emptyList()), this.table.keySet()
+        ).names();
     }
 
     private int depth(final String type, final int free) {

@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8188: a vertical method chain (`foo` / `.bar`) that ends in a `+>`
+# test attribute is one expression spread over two lines; the mandatory
+# R-6.5.3 blank line before the attribute belongs directly above the
+# `.method` line that carries it, not above the chain's plain head.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@base='Φ.foo.bar' and @name='+t']
+input: |
+  [] > main
+    foo
+
+    .bar +> t
