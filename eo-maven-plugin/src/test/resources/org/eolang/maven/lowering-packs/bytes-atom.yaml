@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void witnessed as bytes reads through take(), and the body goes
+# through the public Bytes API of the runtime.
+input: |
+  [] > foo
+    [b] > mask
+      (b.and 1F-).size > @
+    mask 2A- > @
+prelude:
+  bytes.eo: |
+    [data] > bytes
+      data > @
+unit: mask
+voids:
+  b: bytes
+lowered: |
+  [] > foo
+    mask 2A- > @
+    [] > mask /Q.number
+      ? > b /Q.bytes
+protocol: |
+  s1 ← L_bytes_and sym:v0 bytes:1F-
+  s2 ← L_bytes_size sym:s1
+  answer sym:s2 number
+java: |
+  final byte[] v0 = new Dataized(this.take("b")).take();
+  final byte[] s1 = new BytesOf(v0).and(new BytesOf(new byte[] {(byte) 0x1F})).take();
+  final double s2 = s1.length;
+  return new Data.ToPhi(s2);

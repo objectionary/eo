@@ -10,11 +10,13 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Protocol;
@@ -113,18 +115,62 @@ final class LoweringTest {
         );
     }
 
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
+    void writesSidecarBody(final String yaml) throws IOException {
+        final Xtory story = new XtSticky(new XtYaml(yaml));
+        Assumptions.assumeTrue(story.map().containsKey("java"));
+        Assumptions.assumeTrue(new Phino("phino", 1000, this.temp).suitable());
+        try (Stream<Path> files = Files.list(LoweringTest.atoms(this.temp, story))) {
+            MatcherAssert.assertThat(
+                "the sidecar must hold the Java body the pack promises, but it doesnt",
+                Files.readString(files.findFirst().orElseThrow(IllegalStateException::new)),
+                Matchers.equalTo(
+                    story.map().get("java").toString().stripTrailing().lines()
+                        .map(line -> String.format("        %s", line))
+                        .collect(Collectors.joining(System.lineSeparator()))
+                )
+            );
+        }
+    }
+
+    private static Path atoms(final Path temp, final Xtory story) throws IOException {
+        return LoweringTest.maven(temp, story).execute(new PpLower())
+            .targetPath().resolve("4-lower").resolve("atoms");
+    }
+
     private static FakeMaven maven(final Path temp, final Xtory story) throws IOException {
-        return new FakeMaven(temp)
+        final FakeMaven maven = new FakeMaven(temp)
             .withProgram(story.map().get("input").toString(), "foo", "foo.eo");
+        final Object prelude = story.map().getOrDefault("prelude", Collections.emptyMap());
+        for (final Map.Entry<?, ?> entry : ((Map<?, ?>) prelude).entrySet()) {
+            maven.withProgram(
+                entry.getValue().toString(),
+                entry.getKey().toString().replace(".eo", ""),
+                entry.getKey().toString()
+            );
+        }
+        return maven;
     }
 
     private static Xnav formation(final Path temp, final Xtory story) throws IOException {
-        return new Xnav(
+        Xnav found = new Xnav(
             new XMLDocument(
                 LoweringTest.maven(temp, story).execute(MjParse.class)
                     .targetPath().resolve("1-parse").resolve("foo.xmir")
             ).inner()
         ).element("object").element("o");
+        final Object unit = story.map().get("unit");
+        if (unit != null) {
+            found = found.elements(Filter.withName("o"))
+                .filter(kid -> unit.toString().equals(kid.attribute("name").text().orElse("")))
+                .findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("The program binds no '%s'", unit)
+                    )
+                );
+        }
+        return found;
     }
 
     private static Xnav fragment(final Xnav formation) {

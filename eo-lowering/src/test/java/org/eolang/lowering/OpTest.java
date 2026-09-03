@@ -61,6 +61,24 @@ final class OpTest {
     }
 
     @Test
+    void rendersAdditionAsJava() {
+        MatcherAssert.assertThat(
+            "the addition must render as the plus operator, but it doesnt",
+            String.format(new Op("L_number_plus").java(), "a", "b"),
+            Matchers.equalTo("a + b")
+        );
+    }
+
+    @Test
+    void refusesRenderingOfShift() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Op("L_bytes_right")::java,
+            "the shift has no faithful Java rendering, but one was given"
+        );
+    }
+
+    @Test
     void disownsUnknownLambda() {
         MatcherAssert.assertThat(
             "an atom outside the table cannot be listed, but it is",

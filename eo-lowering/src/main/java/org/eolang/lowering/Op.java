@@ -74,6 +74,27 @@ public final class Op {
     }
 
     /**
+     * The Java rendering of this operation, as a format string whose
+     * positional arguments are the receiver and then the arguments.
+     * An operation may have no rendering — {@code right} and {@code slice}
+     * coerce their bounds the way only the hand-written atoms can — and
+     * such an operation reduces fine but refuses to become Java.
+     * @return A format, such as {@code %1$s + %2$s}
+     */
+    public String java() {
+        final String[] row = this.row();
+        if (row.length < 6 || row[5].isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The atom '%s' has no faithful Java rendering",
+                    this.lambda
+                )
+            );
+        }
+        return row[5];
+    }
+
+    /**
      * The names of the arguments, in their positional order.
      * @return The names, such as {@code start} and {@code len}
      */

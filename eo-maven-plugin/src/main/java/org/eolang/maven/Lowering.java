@@ -41,6 +41,13 @@ import org.xembly.Xembler;
  * folded is neither rewritten nor repointed, so a build without foldable
  * fragments leaves no trace of this step at all.</p>
  *
+ * <p>Before the constants, {@link Lowered} rewrites the pure formations
+ * whose value symbolic reduction can compute: their bodies become sidecar
+ * Java files, and the formations keep only their voids and a {@code λ}
+ * marker, so {@code lowered.xsl} later renders each one as an atom class.
+ * The same best-effort rule holds there: a formation that refuses stays
+ * as written.</p>
+ *
  * @since 0.76.0
  */
 final class Lowering implements Step {
@@ -78,21 +85,44 @@ final class Lowering implements Step {
     private final Phino phino;
 
     /**
+     * The rewriter of pure formations into synthetic atoms.
+     */
+    private final Lowered riser;
+
+    /**
      * Ctor.
      * @param srcs XMIR sources to fold
      * @param target The directory for the folded XMIR
      * @param exe The binary that dataizes
+     * @param tables The directory with the tables of {@link MjInference}
      */
-    Lowering(final Collection<TjForeign> srcs, final Path target, final Phino exe) {
+    Lowering(final Collection<TjForeign> srcs, final Path target,
+        final Phino exe, final Path tables) {
+        this(
+            srcs, target, exe,
+            new Lowered(exe, tables, target.resolve(Lowering.ATOMS))
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param srcs XMIR sources to fold
+     * @param target The directory for the folded XMIR
+     * @param exe The binary that dataizes
+     * @param atoms The rewriter of pure formations into synthetic atoms
+     */
+    Lowering(final Collection<TjForeign> srcs, final Path target,
+        final Phino exe, final Lowered atoms) {
         this.sources = srcs;
         this.home = target;
         this.phino = exe;
+        this.riser = atoms;
     }
 
     @Override
     public void exec() throws IOException {
         Logger.info(
-            this, "Folded %d constant fragment(s) in %d XMIR(s), into %[file]s",
+            this, "Folded or lowered %d fragment(s) in %d XMIR(s), into %[file]s",
             new Threaded<>(this.sources, this::folded).total(),
             this.sources.size(), this.home
         );
@@ -100,12 +130,12 @@ final class Lowering implements Step {
 
     private int folded(final TjForeign tojo) throws IOException {
         final XMLDocument doc = new XMLDocument(tojo.xmir());
+        int count = this.riser.rewrite(doc);
         final Collection<Xnav> found = new ArrayList<>(0);
         Lowering.selected(
             new Xnav(doc.inner()).element("object").element("o"),
             found
         );
-        int count = 0;
         for (final Xnav node : found) {
             if (this.spliced(node)) {
                 ++count;
