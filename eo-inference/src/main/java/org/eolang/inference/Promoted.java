@@ -38,11 +38,13 @@ import java.util.Map;
  * program does not say. What is written down is the dispatches this answers,
  * which are facts about the objects they are dispatches of.</p>
  *
- * <p>Only what the tables have seen is counted, and they have not seen
- * everything: a caller that passes on a void of its own is a caller nobody has
- * looked into, and {@link Fillings} leaves it out of the choice without saying
- * that it did (#8226). So a void with one witness and such a caller is promoted
- * here as though the one witness were all there is.</p>
+ * <p>A caller that passes on a void of its own names no type, and that leaves
+ * no gap in the choice: {@link Carried} walks the hop until no void learns
+ * anything new, and where a forma arrives as well it beats the hop, so a void
+ * filled with an {@code oak} once and handed on from a formation nobody copies
+ * is filled with an {@code oak} and nothing else (#8229). Where the hop is all
+ * a void has, what comes back is a {@link Var}, which names nothing a reader
+ * could go and look at, and {@link Sole} refuses it.</p>
  *
  * @since 0.71.0
  * @todo #8231:90min Settle the voids without the XML in the middle.
