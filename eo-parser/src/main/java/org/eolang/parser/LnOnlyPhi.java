@@ -178,7 +178,7 @@ final class LnOnlyPhi implements Line {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
         final Level level = this.transition(
-            stack, suffix, stars >= 0 || this.bare(tokens)
+            stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
         );
         tokens.seek(0);
         if (stars >= 0) {
@@ -217,9 +217,8 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private boolean bare(final Tokens tokens) {
-        final Value head = tokens.readValue();
-        if (Emissions.reversedDispatch(tokens, head)) {
+    private static boolean bare(final Tokens tokens) {
+        if (Emissions.reversedDispatch(tokens, tokens.readValue())) {
             tokens.consumeDispatch();
         } else {
             tokens.readChain();
