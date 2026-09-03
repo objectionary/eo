@@ -33,7 +33,9 @@ import java.util.Map;
  * <p>The receiver of a dispatch fills a void too, when the formation it
  * dispatches into declares one for it. That void is named {@code ρ} and is
  * not counted among the places, since it is answered by whoever dispatches
- * and not by an argument written to the right of the name.</p>
+ * and not by an argument written to the right of the name. A name written by
+ * itself dispatches as well, off the object it is written inside, and
+ * {@link Taken} answers for both.</p>
  *
  * @since 0.69.0
  */
@@ -50,7 +52,7 @@ final class Bound {
     private final Map<String, Map<String, String>> named;
 
     /**
-     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     * What every dispatch takes its attribute from, from {@link Taken}.
      */
     private final Map<String, String> receivers;
 
