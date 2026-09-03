@@ -17,8 +17,11 @@ import java.util.stream.Collectors;
  * <p>Dispatches become sites, literal carriers become literals, and a
  * {@code ξ} reference to a declared void becomes the symbol of that
  * void, named positionally so that no spelling of a void name ever
- * leaks into a marker. Anything else is refused, since its meaning
- * depends on a context the reduction does not carry — the same contract
+ * leaks into a marker. The parser rolls a dispatch chain rooted in a
+ * reference into the base itself, so {@code ξ.b.size.plus} unrolls here
+ * into nested sites, with the arguments of the element attached to the
+ * last link. Anything else is refused, since its meaning depends on a
+ * context the reduction does not carry — the same contract
  * {@link Expression} keeps for the constant folding path.</p>
  *
  * @since 0.76.0
@@ -65,7 +68,7 @@ public final class Parsed {
         } else if ("Φ.bytes".equals(base)) {
             out = new Literal("bytes", Parsed.datum(Parsed.kids(node), base));
         } else if (base.startsWith("ξ.")) {
-            out = this.referenced(base.substring(2));
+            out = this.chained(node, base.substring(2));
         } else if (base.length() > 1 && base.charAt(0) == '.') {
             out = this.dispatched(node, base);
         } else {
@@ -87,6 +90,24 @@ public final class Parsed {
         return new Symbol(String.format("v%d", idx), this.voids.get(name));
     }
 
+    private Term chained(final Xnav node, final String path) {
+        final String[] parts = path.split("\\.");
+        Term out = this.referenced(parts[0]);
+        final int last = parts.length - 1;
+        if (last == 0 && !Parsed.kids(node).isEmpty()) {
+            throw new IllegalStateException(
+                String.format("The void 'ξ.%s' cannot take arguments", path)
+            );
+        }
+        for (int idx = 1; idx < last; ++idx) {
+            out = new Site(parts[idx], out, new ArrayList<>(0));
+        }
+        if (last > 0) {
+            out = new Site(parts[last], out, this.bound(Parsed.kids(node)));
+        }
+        return out;
+    }
+
     private Term dispatched(final Xnav node, final String base) {
         final List<Xnav> kids = Parsed.kids(node);
         if (kids.isEmpty()) {
@@ -94,8 +115,16 @@ public final class Parsed {
                 String.format("The dispatch '%s' has no receiver", base)
             );
         }
-        final List<Binding> args = new ArrayList<>(kids.size() - 1);
-        for (final Xnav kid : kids.subList(1, kids.size())) {
+        return new Site(
+            base.substring(1),
+            this.parsed(kids.get(0)),
+            this.bound(kids.subList(1, kids.size()))
+        );
+    }
+
+    private List<Binding> bound(final List<Xnav> nodes) {
+        final List<Binding> args = new ArrayList<>(nodes.size());
+        for (final Xnav kid : nodes) {
             final String name = kid.attribute("as").text().orElse("");
             if (name.isEmpty()) {
                 throw new IllegalStateException(
@@ -104,7 +133,7 @@ public final class Parsed {
             }
             args.add(new Binding(name, this.parsed(kid)));
         }
-        return new Site(base.substring(1), this.parsed(kids.get(0)), args);
+        return args;
     }
 
     private static String datum(final List<Xnav> kids, final String base) {
