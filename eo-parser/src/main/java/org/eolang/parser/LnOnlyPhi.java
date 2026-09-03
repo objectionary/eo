@@ -252,7 +252,7 @@ final class LnOnlyPhi implements Line {
         );
     }
 
-    private static int compactStar(final String lhs, final Span span) {
+    static int compactStar(final String lhs, final Span span) {
         final int space = LnOnlyPhi.topLevelSpace(lhs);
         final int result;
         if (space > 0 && lhs.charAt(space - 1) != '.'
