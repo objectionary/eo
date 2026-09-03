@@ -43,6 +43,11 @@ final class LnMeta implements Line {
     private static final String ROOT = "Φ";
 
     /**
+     * The §9.9 text of R-3.2.4, for anything but one space between parts.
+     */
+    private static final String SEPARATOR = "meta parts must be separated by exactly one space";
+
+    /**
      * The meta line's span.
      */
     private final Span span;
@@ -179,7 +184,7 @@ final class LnMeta implements Line {
             if (tail.charAt(idx) == ' ') {
                 throw new ParseError(
                     span.line(), span.indent() + base + idx,
-                    "meta parts must be separated by exactly one space"
+                    LnMeta.SEPARATOR
                 );
             }
             int end = idx;
@@ -189,7 +194,7 @@ final class LnMeta implements Line {
             if (end < tail.length() && tail.charAt(end) != ' ') {
                 throw new ParseError(
                     span.line(), span.indent() + base + end,
-                    "meta parts must be separated by a single ASCII space"
+                    LnMeta.SEPARATOR
                 );
             }
             out.add(LnMeta.promoteQ(tail.substring(idx, end)));
