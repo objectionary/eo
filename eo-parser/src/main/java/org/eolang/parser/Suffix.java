@@ -333,6 +333,10 @@ final class Suffix {
         return promoted;
     }
 
+    private static int clamped(final int pos, final Span span) {
+        return Math.min(pos, span.text().length() - 1);
+    }
+
     private static String phi(final String raw) {
         final String mapped;
         if ("@".equals(raw)) {
@@ -390,7 +394,7 @@ final class Suffix {
         idx = Suffix.skipName(tail, idx);
         if (start == idx) {
             throw new ParseError(
-                span.line(), home + start,
+                span.line(), Suffix.clamped(home + start, span),
                 "test attribute requires a name"
             );
         }
@@ -502,7 +506,7 @@ final class Suffix {
     ) {
         if (Suffix.blank(tail, from)) {
             throw new ParseError(
-                span.line(), home + from,
+                span.line(), Suffix.clamped(home + from, span),
                 "name suffix requires a name"
             );
         }

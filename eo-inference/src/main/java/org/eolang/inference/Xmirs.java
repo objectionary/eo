@@ -258,6 +258,7 @@ final class Xmirs {
         try (Stream<Path> found = Files.walk(this.dir)) {
             return found
                 .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
                 .sorted()
                 .collect(Collectors.toList());
         }

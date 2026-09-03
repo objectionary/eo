@@ -485,6 +485,13 @@ final class Emissions {
                 "inline-phi inside parentheses must be anonymous"
             );
         }
+        final Span sub = new Span(" ".repeat(column).concat(lhs), line);
+        if (LnOnlyPhi.compactStar(lhs, sub) >= 0) {
+            throw new ParseError(
+                line, column + lhs.lastIndexOf('*'),
+                "compact tuple marker is not allowed inside a parenthesised inline-phi"
+            );
+        }
         emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
@@ -492,7 +499,6 @@ final class Emissions {
             emit.voidParam(new VoidName(param).asString(), line, pcol);
             pcol = pcol + param.length() + 1;
         }
-        final Span sub = new Span(" ".repeat(column).concat(lhs), line);
         final Tokens tokens = new Tokens(sub.body(), sub);
         Emissions.expression(emit, "φ", tokens, line);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");

@@ -175,7 +175,7 @@ final class Tokens {
         final int start = this.cursor;
         if (this.atEnd()) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
                 "expected identifier"
             );
         }
@@ -496,7 +496,7 @@ final class Tokens {
         }
         if (this.cursor == start) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
                 "expected binding label after `:`"
             );
         }
@@ -595,6 +595,10 @@ final class Tokens {
             idx = idx + 1;
         }
         return idx;
+    }
+
+    private static int clamped(final int pos, final Span source) {
+        return Math.min(pos, source.text().length() - 1);
     }
 
     private static boolean singleToken(final String inside) {

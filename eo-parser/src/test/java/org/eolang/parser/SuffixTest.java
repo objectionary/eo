@@ -469,6 +469,32 @@ final class SuffixTest {
     }
 
     @Test
+    void clampsColumnWhenNamedSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix(" >", new Span("[] >", 1), 2),
+                "`>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void clampsColumnWhenPlusGreaterSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix("+>", new Span("[] +>", 1), 3),
+                "`+>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
     void reportsAutoFlagOnDoubleArrow() {
         MatcherAssert.assertThat(
             "auto() must report true for `>>` suffix",

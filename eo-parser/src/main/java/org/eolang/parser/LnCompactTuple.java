@@ -100,8 +100,10 @@ final class LnCompactTuple implements Line {
     }
 
     private Level transition(final Stack stack, final Suffix suffix) {
-        return new Transition(stack, this.span)
-            .apply(Kind.COMPACT_TUPLE, Openness.OPEN, new Admission(suffix.named(), suffix.test()));
+        return new Transition(stack, this.span).apply(
+            Kind.COMPACT_TUPLE, Openness.OPEN,
+            new Admission(suffix.named(), suffix.test(), suffix.test())
+        );
     }
 
     private static int readCount(final Tokens tokens, final Span span) {

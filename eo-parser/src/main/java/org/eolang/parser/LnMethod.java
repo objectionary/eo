@@ -35,6 +35,9 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-6.3.3 — a {@code .method} continuation on a predecessor whose
+ * naming line declared it a test attribute, which would otherwise
+ * overwrite that attribute's label with the chain's own.</li>
  * <li>R-3.12.3 — an outer binding on a {@code .method} chain whose
  * parent is a formation body or the top level.</li>
  * </ul>
@@ -122,7 +125,7 @@ final class LnMethod implements Line {
             top.tie();
         }
         if (suffix.present()) {
-            top.name(suffix.label());
+            top.name(suffix.label(), suffix.test());
         }
         globals.clearBlanks();
         globals.markEmitted();
@@ -155,11 +158,9 @@ final class LnMethod implements Line {
                 "method continuation not allowed after only-phi formation"
             );
         }
-        if (stack.top().tied()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "inline binding allowed only on the last method in a chain"
-            );
+        final String refusal = stack.top().refusal();
+        if (!refusal.isEmpty()) {
+            throw new ParseError(this.span.line(), this.span.indent(), refusal);
         }
     }
 
