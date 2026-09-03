@@ -45,6 +45,15 @@ import java.util.Map;
  * here as though the one witness were all there is.</p>
  *
  * @since 0.71.0
+ * @todo #8231:90min Settle the voids without the XML in the middle.
+ *  Every pass renders the whole table through {@link Types#asXml()} and
+ *  {@link Fillings} reads it straight back out with {@link Pairs}, which
+ *  costs about 320ms of a pass on {@code eo-runtime}, and it takes 45
+ *  passes there to name 510 voids. Then every void named asks all 11,314
+ *  dispatches again from scratch, where only the ones rooted at that void
+ *  can have changed. Between them the two turn 7s of inference into 28s.
+ *  Let {@link Fillings} take the rows themselves, and ask again only the
+ *  dispatches the new name reaches.
  */
 final class Promoted {
 
