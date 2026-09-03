@@ -61,10 +61,18 @@ final class UnpackedJar {
             ZipEntry entry = zis.getNextEntry();
             while (entry != null) {
                 final Path target = this.dest.resolve(entry.getName()).normalize();
-                if (!target.startsWith(home) || UnpackedJar.linked(target, home)) {
+                if (!target.startsWith(home)) {
                     throw new IOException(
                         String.format(
                             "Zip entry '%s' would unpack to '%s', outside of '%s'",
+                            entry.getName(), target, home
+                        )
+                    );
+                }
+                if (UnpackedJar.linked(target, home)) {
+                    throw new IOException(
+                        String.format(
+                            "Zip entry '%s' would unpack to '%s' through a symbolic link inside '%s'",
                             entry.getName(), target, home
                         )
                     );

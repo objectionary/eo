@@ -59,16 +59,20 @@ final class UnpackedJarTest {
         Files.createDirectories(outside);
         Files.createSymbolicLink(dest.resolve("linked"), outside);
         UnpackedJarTest.archived(temp.resolve("sneaky.jar"), "linked/result.txt");
-        Assertions.assertThrows(
-            IOException.class,
-            () -> new UnpackedJar(temp.resolve("sneaky.jar"), dest).unpack(),
-            "the entry must be refused before anything is written"
-        );
         MatcherAssert.assertThat(
             "the directory the link points at must stay untouched, but it didnt",
-            Files.exists(outside.resolve("result.txt")),
+            UnpackedJarTest.leaked(temp.resolve("sneaky.jar"), dest, outside),
             Matchers.is(false)
         );
+    }
+
+    private static boolean leaked(final Path jar, final Path dest, final Path outside) {
+        Assertions.assertThrows(
+            IOException.class,
+            () -> new UnpackedJar(jar, dest).unpack(),
+            "the entry must be refused before anything is written"
+        );
+        return Files.exists(outside.resolve("result.txt"));
     }
 
     private static void archived(final Path jar, final String entry) throws IOException {
