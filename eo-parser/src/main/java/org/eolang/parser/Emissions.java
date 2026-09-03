@@ -472,6 +472,13 @@ final class Emissions {
                 "only-phi parameter list missing closing `]`"
             );
         }
+        final int chained = Eo.topLevelGreaterBracketIndex(inner.substring(close + 1));
+        if (chained >= 0) {
+            throw new ParseError(
+                line, column + close + 1 + chained,
+                "chained inline-phi suffixes are not allowed"
+            );
+        }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
         final boolean suffixed = new Suffix(
