@@ -76,7 +76,7 @@ final class LnFormation implements Line {
         }
         Blanks.enterAfterMeta(this.span, globals, emit);
         globals.seal(emit, this.span);
-        this.transition(stack, suffix);
+        this.transition(stack, suffix, emit);
         Bindings.observeChild(stack, binding, this.span);
         globals.clearBlanks();
         globals.markEmitted();
@@ -117,8 +117,8 @@ final class LnFormation implements Line {
         }
     }
 
-    private void transition(final Stack stack, final Suffix suffix) {
-        final Level level = new Transition(stack, this.span).apply(
+    private void transition(final Stack stack, final Suffix suffix, final Emit emit) {
+        final Level level = new Transition(stack, this.span, emit).apply(
             Kind.BARE_FORMATION, Openness.OPEN,
             new Admission(suffix.named(), suffix.test(), suffix.atom(), suffix.test())
         );

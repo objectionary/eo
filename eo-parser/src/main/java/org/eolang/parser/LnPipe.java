@@ -82,7 +82,7 @@ final class LnPipe implements Line {
         } else {
             openness = Openness.VCOMPLETED;
         }
-        new Transition(stack, this.span).apply(
+        new Transition(stack, this.span, emit).apply(
             Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), false)
         );
         globals.clearBlanks();

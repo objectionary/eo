@@ -144,7 +144,7 @@ final class LnOnlyPhi implements Line {
         globals.seal(emit, this.span);
         final Tokens tokens = this.slot(
             stack, suffix,
-            new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line())
+            new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line()), emit
         );
         globals.clearBlanks();
         globals.markEmitted();
@@ -174,11 +174,13 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
-    private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
+    private Tokens slot(
+        final Stack stack, final Suffix suffix, final Span inner, final Emit emit
+    ) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
         final Level level = this.transition(
-            stack, suffix, stars >= 0 || this.bare(tokens)
+            stack, suffix, stars >= 0 || this.bare(tokens), emit
         );
         tokens.seek(0);
         if (stars >= 0) {
@@ -252,15 +254,18 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
-    private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
+    private Level transition(
+        final Stack stack, final Suffix suffix, final boolean open, final Emit emit
+    ) {
         final Openness openness;
         if (open) {
             openness = Openness.OPEN;
         } else {
             openness = Openness.HCOMPLETED;
         }
-        return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
+        return new Transition(stack, this.span, emit).apply(
+            Kind.ONLY_PHI, openness,
+            new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

@@ -123,6 +123,7 @@ final class LnMethod implements Line {
         }
         if (suffix.present()) {
             top.name(suffix.label(), suffix.test());
+            Eo.checkArgumentNaming(top, emit, this.span);
         }
         globals.clearBlanks();
         globals.markEmitted();
