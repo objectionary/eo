@@ -162,7 +162,7 @@ The parser recognises the following lexical tokens:
 
 | Token | Description / pattern |
 | --- | --- |
-| `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
+| `META` | `+` followed by a **meta name** — `[a-z][a-z0-9]*` (R-3.2.6), stricter than `NAME` below — then zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
 | `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. |
 | `PHI` | `@` |
@@ -246,6 +246,7 @@ R-3.2.2. Legal only **before** any non-meta object has been emitted.
 R-3.2.3. Each space-separated token after the `+name` becomes a `<part>` element. A leading `Q` in any part is promoted to `Φ`.
 R-3.2.4. At most one space between parts.
 R-3.2.5. `+` followed by a digit is **not** a meta (see §3.6 — it's a signed-number literal). If the digits do not form a valid `INT` or `FLOAT` token per §9.8 (e.g., `+1foo` where the digit-run is followed by an identifier-letter with no intervening separator), the lexer rejects with a lexical error; **the parser does not silently fall back to interpreting the line as a meta**.
+R-3.2.6. A meta's name is **not** a `NAME` token: it matches `[a-z][a-z0-9]*` — lowercase ASCII letters and digits only, starting with a letter. This is narrower than `NAME` (§2.3), which additionally allows hyphens and most other characters; the narrower charset is what the `<head>` element of `XMIR.xsd`'s `meta` type accepts, and what the emitted XMIR must validate against.
 
 ```
 +architect yegor256@gmail.com         ← meta, legal at top
@@ -1366,6 +1367,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bracket-parameter name that is neither NAME, `@` nor `^` (§4.5) | `parameter names in voids must be NAME, @ or ^` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
+| Meta name outside `[a-z][a-z0-9]*` (R-3.2.6, e.g. a hyphen or an uppercase letter) | `meta name must be lowercase letters and digits, starting with a letter` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
 | Leading-zero in integer literal (R-9.8.1, e.g., `007`) | `integer literal must not have leading zeros` |
 | Decimal `INT`/`FLOAT` literal whose exact decimal value differs from the IEEE-754 double it parses to (dead digits; e.g., `2.7182818284590452354`). Alternate spellings of the same value (`+42`, `1.50`) are accepted. | `<literal> is over-precise, write <canonical> instead` (literal and canonical substituted) |

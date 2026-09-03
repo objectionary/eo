@@ -212,6 +212,16 @@ final class LnMetaTest {
     }
 
     @Test
+    void rejectsMetaNameWithHyphen() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+co-op", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a meta name with a hyphen must be rejected per R-3.2.6"
+        );
+    }
+
+    @Test
     void clearsPendingBlanksOnEmission() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# doc", 1));
