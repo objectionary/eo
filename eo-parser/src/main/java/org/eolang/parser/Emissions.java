@@ -76,9 +76,11 @@ final class Emissions {
      *  {@code null}
      * @param tokens Token reader (cursor positioned at the head)
      * @param line Source line number
+     * @return True when the object emitted is a reversed dispatch still
+     *  missing its receiver (no horizontal args)
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    static void expression(
+    static boolean expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
         final Span span = new Span(tokens.body(), line);
@@ -97,7 +99,7 @@ final class Emissions {
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
-            return;
+            return rargs.isEmpty();
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
@@ -109,6 +111,7 @@ final class Emissions {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
+        return false;
     }
 
     /**
@@ -500,8 +503,11 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);
-        Emissions.expression(emit, "φ", tokens, line);
+        final boolean unreceived = Emissions.expression(emit, "φ", tokens, line);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");
+        if (unreceived) {
+            throw new ParseError(line, column, "reversed dispatch missing receiver");
+        }
         emit.close();
     }
 

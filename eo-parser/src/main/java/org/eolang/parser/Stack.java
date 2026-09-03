@@ -230,9 +230,9 @@ final class Stack {
             fresh.argues(owner);
         }
         this.levels.add(fresh);
-        if (parent == Kind.BARE_REVERSED) {
+        if (parent == Kind.BARE_REVERSED || parent == Kind.ONLY_PHI) {
             final Level host = this.levels.get(this.levels.size() - 2);
-            if (!host.taken()) {
+            if (host.receiverAware() && !host.taken()) {
                 host.consumeReceiver();
             }
         }

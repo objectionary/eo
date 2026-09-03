@@ -177,9 +177,19 @@ final class LnOnlyPhi implements Line {
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
-        final Level level = this.transition(
-            stack, suffix, stars >= 0 || this.bare(tokens)
-        );
+        final boolean open;
+        final boolean reversed;
+        if (stars >= 0) {
+            open = true;
+            reversed = false;
+        } else {
+            reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+            open = this.bare(tokens, reversed);
+        }
+        final Level level = this.transition(stack, suffix, open);
+        if (reversed) {
+            level.markReversedPhi();
+        }
         tokens.seek(0);
         if (stars >= 0) {
             level.compact(stars);
@@ -217,8 +227,7 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private boolean bare(final Tokens tokens) {
-        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+    private boolean bare(final Tokens tokens, final boolean reversed) {
         if (reversed) {
             tokens.consumeDispatch();
         } else {
