@@ -76,14 +76,14 @@ final class Emissions {
      *  {@code null}
      * @param tokens Token reader (cursor positioned at the head)
      * @param line Source line number
-     * @param onlyPhi Whether this expression is the φ body of an
-     *  only-phi formation, where R-3.10.6 forbids a reversed dispatch
-     *  carrying horizontal arguments
+     * @param phi Whether this expression is the φ body of an only-phi
+     *  formation, where R-3.10.6 forbids a reversed dispatch carrying
+     *  horizontal arguments
      * @checkstyle ParameterNumberCheck (4 lines)
      */
     static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line,
-        final boolean onlyPhi
+        final boolean phi
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
@@ -94,7 +94,7 @@ final class Emissions {
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
             }
-            if (onlyPhi && !rargs.isEmpty()) {
+            if (phi && !rargs.isEmpty()) {
                 throw new ParseError(
                     line, head.pos(),
                     "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
@@ -254,6 +254,34 @@ final class Emissions {
                 "parameter names in voids must be NAME, @ or ^"
             );
         }
+    }
+
+    /**
+     * Does a reversed-dispatch head (a trailing-dot method, e.g.
+     * {@code if.} or {@code ^.}) sit ahead of the cursor? Shared by
+     * {@link #expression} and {@link LnOnlyPhi#bare}, which both need to
+     * tell a reversed dispatch from a plain identifier head before
+     * deciding how to walk the rest of the tokens.
+     * @param tokens Token reader (cursor positioned at the head)
+     * @param head The head already read from {@code tokens}
+     * @return True if a reversed dispatch follows the head
+     */
+    static boolean reversedDispatch(final Tokens tokens, final Value head) {
+        final boolean reversed;
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
+            reversed = probe >= tokens.body().length()
+                || tokens.body().charAt(probe) == ' ';
+        } else {
+            reversed = false;
+        }
+        return reversed;
     }
 
     private static void openBase(
@@ -419,34 +447,6 @@ final class Emissions {
             Emissions.expression(emit, name, tokens, line, false);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
-    }
-
-    /**
-     * Does a reversed-dispatch head (a trailing-dot method, e.g.
-     * {@code if.} or {@code ^.}) sit ahead of the cursor? Shared by
-     * {@link #expression} and {@link LnOnlyPhi#bare}, which both need to
-     * tell a reversed dispatch from a plain identifier head before
-     * deciding how to walk the rest of the tokens.
-     * @param tokens Token reader (cursor positioned at the head)
-     * @param head The head already read from {@code tokens}
-     * @return True if a reversed dispatch follows the head
-     */
-    static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
     }
 
     private static String reversedHead(final Value head) {
