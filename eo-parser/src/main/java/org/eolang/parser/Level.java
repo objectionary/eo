@@ -149,11 +149,13 @@ final class Level {
     private int arg;
 
     /**
-     * True when the chain link this entry currently ends with carries an
-     * inline binding, read by {@link LnMethod} to refuse a continuation
-     * that would leave it on a link the chain no longer ends with.
+     * Why a same-indent {@code .method} continuation must be refused on
+     * this entry, empty while one is still allowed. Read by
+     * {@link LnMethod} — a chain link carrying an inline binding
+     * (R-6.6.4) and a naming line declaring a test attribute (R-6.3.3)
+     * both close the chain, each with its own diagnostic.
      */
-    private boolean tied;
+    private String refusal;
 
     /**
      * Source span recorded with the in-progress arg, used for error
@@ -189,6 +191,7 @@ final class Level {
         this.children = 0;
         this.tupled = false;
         this.star = false;
+        this.refusal = "";
     }
 
     /**
@@ -370,9 +373,14 @@ final class Level {
      * ({@link #named()}).
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
+     * @param form Whether the suffix that set this name was a
+     *  {@code TEST} or {@code THROWS} form
      */
-    void name(final String text) {
+    void name(final String text, final boolean form) {
         this.label = Optional.of(text);
+        if (form) {
+            this.refusal = "method continuation not allowed on a test attribute";
+        }
     }
 
     /**
@@ -536,12 +544,11 @@ final class Level {
     }
 
     /**
-     * Whether the link this chain currently ends with carries an inline
-     * binding.
-     * @return Tied flag
+     * Why a {@code .method} continuation is refused on this entry.
+     * @return The diagnostic, empty when a continuation is allowed
      */
-    boolean tied() {
-        return this.tied;
+    String refusal() {
+        return this.refusal;
     }
 
     /**
@@ -551,7 +558,7 @@ final class Level {
      * (R-6.6.4).
      */
     void tie() {
-        this.tied = true;
+        this.refusal = "inline binding allowed only on the last method in a chain";
     }
 
     /**
@@ -581,6 +588,6 @@ final class Level {
         this.bindings = other.bindings;
         this.arg = other.arg;
         this.argspan = other.argspan;
-        this.tied = other.tied;
+        this.refusal = other.refusal;
     }
 }

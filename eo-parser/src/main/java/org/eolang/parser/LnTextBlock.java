@@ -83,7 +83,7 @@ final class LnTextBlock implements Line {
         new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

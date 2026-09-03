@@ -45,11 +45,6 @@ import org.eolang.lowering.Phino;
  * that a diverging one is refused in milliseconds.</p>
  *
  * @since 0.76.0
- * @todo #8137:45min Install phino in <code>.rultor.yml</code> and pass
- *  <code>-Deo.loweringRequired=true</code> in its merge and release
- *  scripts, so that a release is never silently unlowered. The image
- *  rultor builds in has no Haskell toolchain and no build cache, so this
- *  needs either a prebuilt phino binary or an image that carries one.
  */
 @Mojo(
     name = "lower",
