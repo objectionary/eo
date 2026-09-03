@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The difference is pure EO sugar, not one of the lowerable atoms, so
+# the reduction refuses the fragment and it stays unlowered, exactly
+# as it stands in the EO.
+input: |
+  [x] > foo
+    x.minus 2 > @
+voids:
+  x: number
+lowered: |
+  x.minus > [x] > foo
+    2
+stuck: "The reduction is stuck: no atom parked at any known operation"
