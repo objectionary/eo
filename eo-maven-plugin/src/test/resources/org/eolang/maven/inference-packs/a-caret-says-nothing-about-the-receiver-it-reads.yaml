@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A caret reads a receiver and fills none. `^` inside `leaf` is the `grove`
+# that `leaf` was taken off, and `^.^` is what the `grove` was taken off, so
+# taking a caret off a `grove` says what the `oak` around it holds and says
+# nothing about the `oak` itself: the `^` of an `oak` comes from whoever took
+# the `oak`, which is the `app`, and never from the `grove` inside it. Read the
+# caret as any other dispatch and the two answers arrive together, the `oak`
+# keeps a receiver nobody can name, and the `acorn` three carets up is lost.
+eo:
+  app.eo: |
+    [] > app
+      oak > @
+      [^] > oak
+        grove > @
+        [^] > grove
+          leaf > @
+          [^] > leaf
+            ^.^.^.acorn > @
+      [] > acorn
+provides:
+  - "//type[@id='Φ.app.oak']/attr[@name='ρ']/witnessed[count(ref)=1]/ref[@loc='Φ.app']"
+links:
+  - "/links/type[@id='Φ.app.oak.grove.leaf.φ']/ref[@loc='Φ.app.acorn']"
