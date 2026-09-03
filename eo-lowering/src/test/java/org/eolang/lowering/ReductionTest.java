@@ -38,22 +38,7 @@ final class ReductionTest {
             "a two-application chain must make two steps, but it didnt",
             new Reduction(
                 phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.plus'>",
-                        "<o base='.times'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
+                ReductionTest.chain(),
                 Collections.singletonMap("x", "number"),
                 8
             ).protocol().moves(),
@@ -69,22 +54,7 @@ final class ReductionTest {
             "the answer must name the final step, but it doesnt",
             new Reduction(
                 phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.plus'>",
-                        "<o base='.times'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
+                ReductionTest.chain(),
                 Collections.singletonMap("x", "number"),
                 8
             ).protocol().answer(),
@@ -100,22 +70,7 @@ final class ReductionTest {
             "the first step must take the void and the literal, but it doesnt",
             new Reduction(
                 phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.plus'>",
-                        "<o base='.times'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
+                ReductionTest.chain(),
                 Collections.singletonMap("x", "number"),
                 8
             ).protocol().moves().get(0).keys(),
@@ -295,22 +250,7 @@ final class ReductionTest {
             IllegalStateException.class,
             new Reduction(
                 phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.plus'>",
-                        "<o base='.times'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
+                ReductionTest.chain(),
                 Collections.singletonMap("x", "number"),
                 1
             )::protocol,
@@ -372,5 +312,24 @@ final class ReductionTest {
             ).protocol().answer(),
             Matchers.equalTo("number:40-14-00-00-00-00-00-00")
         );
+    }
+
+    private static Xnav chain() {
+        return new Xnav(
+            String.join(
+                "",
+                "<o base='.plus'>",
+                "<o base='.times'>",
+                "<o base='ξ.x'/>",
+                "<o as='α0' base='Φ.number'>",
+                "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                "</o>",
+                "</o>",
+                "<o as='α0' base='Φ.number'>",
+                "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                "</o>",
+                "</o>"
+            )
+        ).element("o");
     }
 }
