@@ -392,10 +392,10 @@
       30-
 
   eq. ++> can-answer-the-length-of-the-formatted-text
+    2
     length.
       "%s".printf
         * "ab"
-    2
 
   eq. ++> can-answer-the-size-of-the-formatted-text
     size.
