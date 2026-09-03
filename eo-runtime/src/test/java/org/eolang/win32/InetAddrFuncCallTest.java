@@ -8,9 +8,11 @@ import com.sun.jna.Native;
 import java.util.Collections;
 import org.eolang.Data;
 import org.eolang.Dataized;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -91,5 +93,23 @@ final class InetAddrFuncCallTest {
     private Phi made(final String address) {
         return new InetAddrFuncCall(Phi.Φ.take("win32").copy())
             .make(new Data.ToPhi(address));
+    }
+
+    @Test
+    void refusesAnAddressWithNul() {
+        MatcherAssert.assertThat(
+            "the 'address' argument of inet_addr carrying a NUL must be refused by name, but it wasnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new InetAddrFuncCall(Phi.Φ.take("win32").copy()).make(
+                    new Data.ToPhi(String.join(String.valueOf((char) 0), "127.0.0.1", "suffix"))
+                ),
+                "an address whose NUL would make inet_addr convert only its prefix was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("'address' argument of inet_addr"),
+                Matchers.containsString("NUL")
+            )
+        );
     }
 }

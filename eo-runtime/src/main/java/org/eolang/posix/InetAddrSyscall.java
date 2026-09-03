@@ -6,8 +6,8 @@ package org.eolang.posix;
 
 import com.sun.jna.Native;
 import java.util.Collections;
+import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
@@ -52,7 +52,9 @@ public final class InetAddrSyscall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
-        final String address = new Dataized(params[0]).asString();
+        final String address = new Cstring(
+            "the 'address' argument of inet_addr", params[0]
+        ).it();
         final int converted = CStdLib.INSTANCE.inet_addr(address);
         if (converted == -1 && !InetAddrSyscall.BROADCAST.equals(address)) {
             Native.setLastError(22);
