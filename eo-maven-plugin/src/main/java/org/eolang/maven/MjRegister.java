@@ -159,5 +159,6 @@ public final class MjRegister extends MjSafe {
                 new Deleted(file).get();
             }
         }
+        Catalogs.INSTANCE.drop(this.foreign.toPath());
     }
 }
