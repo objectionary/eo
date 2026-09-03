@@ -4,8 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.Optional;
-
 /**
  * One entry of the indent stack — §5.1 of the spec.
  *
@@ -26,11 +24,6 @@ import java.util.Optional;
  * @since 0.1
  */
 final class Level {
-
-    /**
-     * The label an entry carries while no naming line has claimed it.
-     */
-    private static final Optional<String> NO_NAME = Optional.empty();
 
     /**
      * Indent (spaces) at which this entry's expression starts.
@@ -69,14 +62,14 @@ final class Level {
     /**
      * The source name on the line that currently owns this entry
      * ({@code foo} for {@code > foo}, the handle for {@code >> foo},
-     * empty for a bare {@code >>}), or absent when that line carried
-     * no suffix. Doubles as the named flag ({@link #named()}) and
-     * names the offender in §4.5 errors. A same-indent {@code .method}
-     * continuation takes the entry over and drops what the previous
-     * link left here ({@link #sealed()}), since R-6.2.2 puts the
-     * chain's naming line on the last link.
+     * empty for a bare {@code >>}), or {@code null} when that line
+     * carried no suffix. Doubles as the named flag ({@link #named()})
+     * and names the offender in §4.5 errors. A same-indent
+     * {@code .method} continuation takes the entry over and drops what
+     * the previous link left here ({@link #sealed()}), since R-6.2.2
+     * puts the chain's naming line on the last link.
      */
-    private Optional<String> label;
+    private String label;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -184,7 +177,6 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.label = Level.NO_NAME;
         this.atom = false;
         this.taken = false;
         this.count = 0;
@@ -247,7 +239,7 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.label.isPresent();
+        return this.label != null;
     }
 
     /**
@@ -259,13 +251,17 @@ final class Level {
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
-        final String result;
+        final String owner;
         if (this.kind == Kind.ONLY_PHI) {
-            result = this.label.orElse("");
-        } else if (this.formation == null) {
+            owner = this.label;
+        } else {
+            owner = this.formation;
+        }
+        final String result;
+        if (owner == null) {
             result = "";
         } else {
-            result = this.formation;
+            result = owner;
         }
         return result;
     }
@@ -282,10 +278,15 @@ final class Level {
         } else {
             owner = String.format("only-phi formation %s", this.formation);
         }
+        final String attribute;
+        if (this.label == null || this.label.isEmpty()) {
+            attribute = "an auto-named attribute";
+        } else {
+            attribute = this.label;
+        }
         return String.format(
             "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            this.label.filter(text -> !text.isEmpty()).orElse("an auto-named attribute"),
-            owner
+            attribute, owner
         );
     }
 
@@ -377,7 +378,7 @@ final class Level {
      *  {@code TEST} or {@code THROWS} form
      */
     void name(final String text, final boolean form) {
-        this.label = Optional.of(text);
+        this.label = text;
         if (form) {
             this.refusal = "method continuation not allowed on a test attribute";
         }
@@ -475,7 +476,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
-        this.label = Level.NO_NAME;
+        this.label = null;
     }
 
     /**
