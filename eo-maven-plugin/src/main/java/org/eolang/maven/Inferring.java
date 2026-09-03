@@ -150,6 +150,7 @@ final class Inferring implements Step {
         try (Stream<Path> found = Files.walk(this.input)) {
             return found
                 .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
                 .sorted()
                 .collect(Collectors.toList());
         }

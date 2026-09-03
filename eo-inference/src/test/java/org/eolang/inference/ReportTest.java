@@ -77,6 +77,18 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void ignoresADirectoryNamedLikeAnXmirFile(@Mktmp final Path temp) throws IOException {
+        final Path program = ReportTest.program(temp);
+        final Path tables = ReportTest.tables(temp);
+        Files.createDirectories(program.resolve("stale.xmir"));
+        MatcherAssert.assertThat(
+            "a folder whose name ends with .xmir must not become a page, but it did",
+            new Report(program, tables).written(temp.resolve("out")),
+            Matchers.equalTo(1)
+        );
+    }
+
     private static Path program(final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
