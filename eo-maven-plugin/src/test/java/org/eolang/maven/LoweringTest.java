@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Protocol;
@@ -99,14 +100,13 @@ final class LoweringTest {
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
         final Xnav foo = LoweringTest.formation(this.temp, story);
-        final Reduction reduction = new Reduction(
-            phino, LoweringTest.fragment(foo), LoweringTest.voids(foo, story), 8
-        );
         MatcherAssert.assertThat(
             "the refusal must say why the fragment stays unlowered, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                reduction::protocol,
+                new Reduction(
+                    phino, LoweringTest.fragment(foo), LoweringTest.voids(foo, story), 8
+                )::protocol,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
             Matchers.containsString(story.map().get("stuck").toString())
@@ -131,9 +131,7 @@ final class LoweringTest {
         return formation.elements(Filter.withName("o"))
             .filter(kid -> "φ".equals(kid.attribute("name").text().orElse("")))
             .findFirst()
-            .orElseThrow(
-                () -> new IllegalStateException("The formation binds no φ")
-            );
+            .orElseThrow(() -> new IllegalStateException("The formation binds no φ"));
     }
 
     private static Map<String, String> voids(final Xnav formation, final Xtory story) {
@@ -141,14 +139,13 @@ final class LoweringTest {
             "voids", Collections.emptyMap()
         );
         final Map<String, String> out = new LinkedHashMap<>();
-        formation.elements(Filter.withName("o"))
-            .filter(kid -> "∅".equals(kid.attribute("base").text().orElse("")))
-            .forEach(
-                kid -> {
-                    final String name = kid.attribute("name").text().get();
-                    out.put(name, ((Map<?, ?>) formas).get(name).toString());
-                }
-            );
+        for (final Xnav kid
+            : formation.elements(Filter.withName("o")).collect(Collectors.toList())) {
+            if ("∅".equals(kid.attribute("base").text().orElse(""))) {
+                final String name = kid.attribute("name").text().get();
+                out.put(name, ((Map<?, ?>) formas).get(name).toString());
+            }
+        }
         return out;
     }
 
