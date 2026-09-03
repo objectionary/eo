@@ -156,7 +156,7 @@ final class LnReversed implements Line {
         final Emit emit
     ) {
         new Transition(stack, this.span, emit).apply(
-            kind, openness, new Admission(suffix.named(), suffix.test())
+            kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

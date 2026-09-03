@@ -3,12 +3,13 @@
 ---
 # The program of the design note, and everything the rules can say about it.
 # `t` does have `next`, but the object attached to `next` has nothing, so
-# `x.next.foo` asks for something that will never be there. Every fact needed
-# to know that is in the rows below — that the `next` of a `t` is complete and
-# empty, that `foo` is asked of what `next` gives, that the `x` it is asked of
-# is the `t` — and no row says it. Reading them together is what was parked in
-# #6661. The links now name the two computed objects as well: `x.next` is the
-# `next` of whatever fills `x`, and `x.next.foo` the `foo` of that.
+# `x.next.foo` asks for something that will never be there. Most of what is
+# needed to see that now stands in one row: `inc` is handed a `t` by the only
+# caller it has, so `x.next` is the `next` of a `t` and not a name rooted at
+# `x`, and `foo` asked of that complete and empty object is a dispatch nothing
+# answers at all. Calling the last row a complaint rather than an admission is
+# what was parked in #6661. The void keeps itself either way, since a `t`
+# arriving in it is a fact about the caller.
 eo:
   app.eo: |
     [] > app
@@ -33,5 +34,6 @@ links:
   - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.app.inc']"
   - "/links/type[@id='Φ.app.φ.α0']/ref[@loc='Φ.app.t']"
   - "/links/type[@id='Φ.app.inc.φ.ρ.ρ']/ref[@loc='Φ.app.inc.x']"
-  - "/links/type[@id='Φ.app.inc.φ.ρ']/ref[@loc='Φ.app.inc.x.next']"
-  - "/links/type[@id='Φ.app.inc.φ']/ref[@loc='Φ.app.inc.x.next.foo']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ']/ref[@loc='Φ.app.t.next']"
+  - "/links/type[@id='Φ.app.inc.φ']/unknown"
+  - "/links/type[@id='Φ.app.inc.x']/var"

@@ -8,17 +8,6 @@
 # whether or not its target exists; the exclusivity that guards the
 # plain-file race stays for every other path, and win32 keeps its exclusive
 # open unconditionally, since its reparse points do not share that rule.
-#
-# @todo #7077:60min Add a synchronization-based regression test that creates
-#  the target file between the exists() probe and the exclusive open below,
-#  so the race this fixes is actually exercised. A single-threaded EO `++>`
-#  test can't trigger it: `^.exists.if` always sees a consistent snapshot in
-#  one thread. It needs a JUnit test against the generated `EOtouched` class
-#  (see PhDefaultRaceTest.java for the com.yegor256.Together idiom this repo
-#  already uses for exactly this kind of interleaving), with one thread
-#  paused right after the exists() probe while another thread creates and
-#  writes to the file, then confirms the paused thread's touched() does not
-#  truncate it.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -33,8 +22,9 @@
     if.
       or.
         descriptor.gte 0
-        linked.not.and
+        and.
           errno.eq eexist
+          linked.not
       seq *
         if.
           descriptor.gte 0

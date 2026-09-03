@@ -110,6 +110,7 @@ public final class Report {
         if (Files.exists(this.world)) {
             try (Stream<Path> walked = Files.walk(this.world)) {
                 walked.filter(path -> path.toString().endsWith(".xmir"))
+                    .filter(Files::isRegularFile)
                     .sorted()
                     .forEach(found::add);
             }
@@ -118,7 +119,7 @@ public final class Report {
     }
 
     private String named(final Path file) {
-        final String path = this.world.relativize(file).toString();
+        final String path = this.world.relativize(file).toString().replace('\\', '/');
         return path.substring(0, path.length() - ".xmir".length()).concat(".eo");
     }
 
