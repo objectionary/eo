@@ -86,12 +86,7 @@ final class LnMethod implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
-        if (top.patom() && !suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "atom may contain only test attributes"
-            );
-        }
+        this.checkAtom(top, suffix);
         if (suffix.test()) {
             Blanks.checkTest(this.span, stack, globals, emit);
         } else {
@@ -169,6 +164,15 @@ final class LnMethod implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "inline binding allowed only on the last method in a chain"
+            );
+        }
+    }
+
+    private void checkAtom(final Level top, final Suffix suffix) {
+        if (top.patom() && !suffix.test()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "atom may contain only test attributes"
             );
         }
     }
