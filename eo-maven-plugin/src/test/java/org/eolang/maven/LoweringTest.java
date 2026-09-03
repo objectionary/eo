@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Protocol;
@@ -121,17 +120,18 @@ final class LoweringTest {
         final Xtory story = new XtSticky(new XtYaml(yaml));
         Assumptions.assumeTrue(story.map().containsKey("java"));
         Assumptions.assumeTrue(new Phino("phino", 1000, this.temp).suitable());
-        try (Stream<Path> files = Files.list(LoweringTest.atoms(this.temp, story))) {
-            MatcherAssert.assertThat(
-                "the sidecar must hold the Java body the pack promises, but it doesnt",
-                Files.readString(files.findFirst().orElseThrow(IllegalStateException::new)),
-                Matchers.equalTo(
-                    story.map().get("java").toString().stripTrailing().lines()
-                        .map(line -> String.format("        %s", line))
-                        .collect(Collectors.joining(System.lineSeparator()))
+        final String body = story.map().get("java").toString().stripTrailing().lines()
+            .map(line -> String.format("        %s", line))
+            .collect(Collectors.joining(System.lineSeparator()));
+        MatcherAssert.assertThat(
+            "the sidecar must hold the Java body the pack promises, but it doesnt",
+            Files.readString(
+                LoweringTest.atoms(this.temp, story).resolve(
+                    String.format("%s.java", new Digest(body).hex())
                 )
-            );
-        }
+            ),
+            Matchers.equalTo(body)
+        );
     }
 
     private static Path atoms(final Path temp, final Xtory story) throws IOException {
