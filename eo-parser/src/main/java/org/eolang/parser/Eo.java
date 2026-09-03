@@ -270,6 +270,7 @@ final class Eo implements Iterable<Directive> {
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
+            Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
