@@ -84,17 +84,6 @@ final class InetAddrFuncCallTest {
         );
     }
 
-    private Double converted(final String address) {
-        return new Dataized(
-            this.made(address).take("code")
-        ).asNumber();
-    }
-
-    private Phi made(final String address) {
-        return new InetAddrFuncCall(Phi.Φ.take("win32").copy())
-            .make(new Data.ToPhi(address));
-    }
-
     @Test
     void refusesAnAddressWithNul() {
         MatcherAssert.assertThat(
@@ -111,5 +100,16 @@ final class InetAddrFuncCallTest {
                 Matchers.containsString("NUL")
             )
         );
+    }
+
+    private Double converted(final String address) {
+        return new Dataized(
+            this.made(address).take("code")
+        ).asNumber();
+    }
+
+    private Phi made(final String address) {
+        return new InetAddrFuncCall(Phi.Φ.take("win32").copy())
+            .make(new Data.ToPhi(address));
     }
 }
