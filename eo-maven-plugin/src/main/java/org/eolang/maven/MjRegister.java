@@ -155,10 +155,10 @@ public final class MjRegister extends MjSafe {
             this.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
         };
         for (final File file : files) {
-            if (file.exists() && !new Deleted(file).get()) {
+            if (file.exists() && !new Deleted(file).get() && file.exists()) {
                 throw new IllegalStateException(
                     String.format(
-                        "Failed to delete %s, so the sources of the previous build would stay registered",
+                        "Failed to delete %s, so the previous build would leak into this one",
                         file
                     )
                 );
