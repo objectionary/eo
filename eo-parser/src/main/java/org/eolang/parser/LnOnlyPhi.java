@@ -47,7 +47,7 @@ import java.util.List;
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
  * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
  * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
- * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens)}
+ * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, boolean)}
  * reading the {@code *} as a completed empty-tuple argument.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
@@ -187,8 +187,8 @@ final class LnOnlyPhi implements Line {
             open = this.bare(tokens, reversed);
         }
         final Level level = this.transition(stack, suffix, open);
-        if (reversed) {
-            level.markReversedPhi();
+        if (!reversed) {
+            level.consumeReceiver();
         }
         tokens.seek(0);
         if (stars >= 0) {

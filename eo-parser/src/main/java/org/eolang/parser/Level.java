@@ -82,16 +82,13 @@ final class Level {
     private boolean atom;
 
     /**
-     * For a {@link #receiverAware()} entry: whether the receiver child
-     * has been consumed yet.
+     * For {@link Kind#BARE_REVERSED}, and for {@link Kind#ONLY_PHI}
+     * whose φ is a bare reversed dispatch: whether the receiver child
+     * has been consumed yet. Every other {@link Kind#ONLY_PHI} starts
+     * with this already true — {@link LnOnlyPhi} sets it right after
+     * construction — since it needs no receiver.
      */
     private boolean taken;
-
-    /**
-     * For {@link Kind#ONLY_PHI}: true when its φ is a bare reversed
-     * dispatch, so {@link #receiverAware()} applies to it too.
-     */
-    private boolean reversedPhi;
 
     /**
      * True once a non-void child has been added under this entry —
@@ -306,23 +303,6 @@ final class Level {
      */
     boolean taken() {
         return this.taken;
-    }
-
-    /**
-     * Whether a missing receiver child is an error for this entry.
-     * @return True for {@link Kind#BARE_REVERSED}, or a
-     *  {@link Kind#ONLY_PHI} whose φ is a bare reversed dispatch
-     */
-    boolean receiverAware() {
-        return this.kind == Kind.BARE_REVERSED
-            || this.kind == Kind.ONLY_PHI && this.reversedPhi;
-    }
-
-    /**
-     * Flag this only-phi's φ as a bare reversed dispatch.
-     */
-    void markReversedPhi() {
-        this.reversedPhi = true;
     }
 
     /**
@@ -597,7 +577,6 @@ final class Level {
         this.formation = other.formation;
         this.atom = other.atom;
         this.taken = other.taken;
-        this.reversedPhi = other.reversedPhi;
         this.plain = other.plain;
         this.count = other.count;
         this.children = other.children;

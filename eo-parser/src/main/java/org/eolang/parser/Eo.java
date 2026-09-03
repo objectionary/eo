@@ -657,7 +657,8 @@ final class Eo implements Iterable<Directive> {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
         Eo.checkNaming(level, emit, naming);
-        if (level.receiverAware() && !level.taken()) {
+        if ((level.kind() == Kind.BARE_REVERSED || level.kind() == Kind.ONLY_PHI)
+            && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
                 "reversed dispatch missing receiver"

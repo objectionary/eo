@@ -232,7 +232,7 @@ final class Stack {
         this.levels.add(fresh);
         if (parent == Kind.BARE_REVERSED || parent == Kind.ONLY_PHI) {
             final Level host = this.levels.get(this.levels.size() - 2);
-            if (host.receiverAware() && !host.taken()) {
+            if (!host.taken()) {
                 host.consumeReceiver();
             }
         }

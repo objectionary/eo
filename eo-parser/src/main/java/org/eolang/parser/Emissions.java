@@ -26,6 +26,10 @@ import java.util.regex.Pattern;
  * {@link LnReversed#readHead} does.</p>
  *
  * @since 0.1
+ * @todo #8244:30min Reject a receiverless reversed dispatch used as the
+ *  phi of a parenthesised inline-phi formation, e.g.
+ *  {@code bar (if. > [x]) > z}, the same way LnOnlyPhi now does for the
+ *  vertical-body shape (see #8244).
  */
 final class Emissions {
 
@@ -76,11 +80,9 @@ final class Emissions {
      *  {@code null}
      * @param tokens Token reader (cursor positioned at the head)
      * @param line Source line number
-     * @return True when the object emitted is a reversed dispatch still
-     *  missing its receiver (no horizontal args)
      * @checkstyle ParameterNumberCheck (3 lines)
      */
-    static boolean expression(
+    static void expression(
         final Emit emit, final String name, final Tokens tokens, final int line
     ) {
         final Span span = new Span(tokens.body(), line);
@@ -99,7 +101,7 @@ final class Emissions {
             for (final Value arg : rargs) {
                 Emissions.emitArg(emit, arg, line);
             }
-            return rargs.isEmpty();
+            return;
         }
         final List<MethodChain> chain = tokens.readChain();
         final List<Value> args = tokens.readArgs();
@@ -111,7 +113,6 @@ final class Emissions {
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
-        return false;
     }
 
     /**
@@ -503,11 +504,8 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);
-        final boolean unreceived = Emissions.expression(emit, "φ", tokens, line);
+        Emissions.expression(emit, "φ", tokens, line);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");
-        if (unreceived) {
-            throw new ParseError(line, column, "reversed dispatch missing receiver");
-        }
         emit.close();
     }
 
