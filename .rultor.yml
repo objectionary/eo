@@ -12,11 +12,20 @@ assets:
   settings.xml: yegor256/objectionary-secrets#settings.xml
   pubring.gpg: yegor256/objectionary-secrets#pubring.gpg
   secring.gpg: yegor256/objectionary-secrets#secring.gpg
+# The `lower` goal needs the exact phino version pinned in eo-lowering, and
+# the image carries no Haskell toolchain to build it with. The binary
+# published for Ubuntu 24.04, which this image is based on, is taken as it
+# is, and `--version` right after the download fails the build when the
+# wrong one arrives.
 install: |
   pdd --file=/dev/null
+  version=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
+  curl --silent --show-error --fail --location --output /usr/local/bin/phino "http://phino.objectionary.com/releases/ubuntu-24.04/phino-${version}"
+  chmod +x /usr/local/bin/phino
+  phino --version
 merge:
   script: |
-    mvn clean install -ntp -DskipTests -Pqulice --errors -Dstyle.color=never
+    mvn clean install -ntp -DskipTests -Pqulice --errors -Dstyle.color=never -Deo.loweringRequired=true
 release:
   pre: false
   script: |-
@@ -26,5 +35,5 @@ release:
     mvn -ntp versions:set "-DnewVersion=${tag}" -Dstyle.color=never
     sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
-    mvn clean install -ntp -DskipTests -DskipITs -Dinvoker.skip
-    mvn clean deploy -ntp -DskipTests -DskipITs -Dinvoker.skip -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never
+    mvn clean install -ntp -DskipTests -DskipITs -Dinvoker.skip -Deo.loweringRequired=true
+    mvn clean deploy -ntp -DskipTests -DskipITs -Dinvoker.skip -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never -Deo.loweringRequired=true

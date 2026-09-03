@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8188: when the chain's head is itself a master (a bare formation),
+# R-6.5.3's "zero or one blank line before a master object" and its
+# "exactly one blank line before a `+>` test attribute" happen to share
+# the same blank line, so this spelling parses cleanly today.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='main']/o[@name='f']
+  - /object/o[@name='main']/o[@base='ξ.f.x' and @name='+t']
+input: |
+  [] > main
+
+    [] > f
+
+    .x +> t

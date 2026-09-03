@@ -140,6 +140,24 @@ final class InferringTest {
         );
     }
 
+    @Test
+    void ignoresADirectoryNamedLikeAnXmirFile(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("yard"));
+        Files.writeString(
+            sources.resolve("spade.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > spade", "  [] > handle", "")
+            ).parsed().toString()
+        );
+        Files.createDirectories(sources.resolve("stale.xmir"));
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a folder whose name ends with .xmir must be left alone, but it was read",
+            new XMLDocument(temp.resolve("rows").resolve("provides.xml")),
+            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.spade']/attr[@name='handle']")
+        );
+    }
+
     private Map<String, String> sources(final Xtory pack) {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("eo")).entrySet()) {
