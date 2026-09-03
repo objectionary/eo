@@ -76,10 +76,14 @@ final class Emissions {
      *  {@code null}
      * @param tokens Token reader (cursor positioned at the head)
      * @param line Source line number
-     * @checkstyle ParameterNumberCheck (3 lines)
+     * @param onlyPhi Whether this expression is the φ body of an
+     *  only-phi formation, where R-3.10.6 forbids a reversed dispatch
+     *  carrying horizontal arguments
+     * @checkstyle ParameterNumberCheck (4 lines)
      */
     static void expression(
-        final Emit emit, final String name, final Tokens tokens, final int line
+        final Emit emit, final String name, final Tokens tokens, final int line,
+        final boolean onlyPhi
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
@@ -89,6 +93,12 @@ final class Emissions {
             Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
+            }
+            if (onlyPhi && !rargs.isEmpty()) {
+                throw new ParseError(
+                    line, head.pos(),
+                    "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+                );
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
@@ -406,12 +416,22 @@ final class Emissions {
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
             final Tokens tokens = new Tokens(sub.body(), sub);
-            Emissions.expression(emit, name, tokens, line);
+            Emissions.expression(emit, name, tokens, line, false);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
     }
 
-    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
+    /**
+     * Does a reversed-dispatch head (a trailing-dot method, e.g.
+     * {@code if.} or {@code ^.}) sit ahead of the cursor? Shared by
+     * {@link #expression} and {@link LnOnlyPhi#bare}, which both need to
+     * tell a reversed dispatch from a plain identifier head before
+     * deciding how to walk the rest of the tokens.
+     * @param tokens Token reader (cursor positioned at the head)
+     * @param head The head already read from {@code tokens}
+     * @return True if a reversed dispatch follows the head
+     */
+    static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
         if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
@@ -500,7 +520,7 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);
-        Emissions.expression(emit, "φ", tokens, line);
+        Emissions.expression(emit, "φ", tokens, line, true);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }

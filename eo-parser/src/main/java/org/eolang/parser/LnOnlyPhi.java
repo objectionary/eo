@@ -205,7 +205,7 @@ final class LnOnlyPhi implements Line {
     }
 
     private void emitPhi(final Emit emit, final Tokens tokens, final boolean open) {
-        Emissions.expression(emit, "φ", tokens, this.span.line());
+        Emissions.expression(emit, "φ", tokens, this.span.line(), true);
         if (!tokens.atEnd()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + tokens.cursor(),
@@ -218,38 +218,13 @@ final class LnOnlyPhi implements Line {
     }
 
     private boolean bare(final Tokens tokens) {
-        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
-        if (reversed) {
+        final Value head = tokens.readValue();
+        if (Emissions.reversedDispatch(tokens, head)) {
             tokens.consumeDispatch();
         } else {
             tokens.readChain();
         }
-        final boolean empty = tokens.readArgs().isEmpty();
-        if (reversed && !empty) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
-            );
-        }
-        return empty;
-    }
-
-    private static boolean reversedAhead(final Tokens tokens, final Value head) {
-        final boolean result;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            result = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            result = false;
-        }
-        return result;
+        return tokens.readArgs().isEmpty();
     }
 
     private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
