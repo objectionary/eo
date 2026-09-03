@@ -90,15 +90,16 @@ final class Emissions {
         if (Emissions.reversedDispatch(tokens, head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
+            final boolean empty = rargs.isEmpty();
             Bindings.checkAllOrNothing(rargs, span);
-            if (!rargs.isEmpty()) {
+            if (!empty) {
                 Bindings.checkReceiver(rargs.get(0), span);
-                if (phi) {
-                    throw new ParseError(
-                        line, head.pos(),
-                        "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
-                    );
-                }
+            }
+            if (phi && !empty) {
+                throw new ParseError(
+                    line, head.pos(),
+                    "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+                );
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
