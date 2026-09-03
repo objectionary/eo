@@ -202,6 +202,40 @@ final class LnMetaTest {
     }
 
     @Test
+    void rejectsASingleTrailingSpace() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+foo bar ", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a meta line ending in one trailing space must still be rejected"
+        );
+    }
+
+    @Test
+    void reportsTrailingSpacePositionNotSeparatorCount() {
+        MatcherAssert.assertThat(
+            "two trailing spaces must be reported as trailing whitespace, not a separator count",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("+foo bar  ", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a meta line ending in two trailing spaces must be rejected"
+            ).getMessage(),
+            Matchers.equalTo("meta line must not end with trailing whitespace")
+        );
+    }
+
+    @Test
+    void rejectsATrailingSpaceWithNoParts() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+foo ", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a bare name followed by a trailing space and no parts must still be rejected"
+        );
+    }
+
+    @Test
     void rejectsATabBetweenParts() {
         Assertions.assertThrows(
             ParseError.class,
