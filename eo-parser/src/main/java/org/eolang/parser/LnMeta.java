@@ -43,11 +43,6 @@ final class LnMeta implements Line {
     private static final String ROOT = "Φ";
 
     /**
-     * The §9.9 text of R-3.2.4, for anything but one space between parts.
-     */
-    private static final String SEPARATOR = "meta parts must be separated by exactly one space";
-
-    /**
      * The meta line's span.
      */
     private final Span span;
@@ -100,9 +95,7 @@ final class LnMeta implements Line {
             parts = new ArrayList<>(0);
         } else {
             head = body.substring(1, space);
-            parts = LnMeta.split(
-                body.substring(space + 1), this.span, space + 1
-            );
+            parts = this.split(body.substring(space + 1), space + 1);
         }
         this.checkHead(head, parts);
         globals.seal(emit, this.span);
@@ -175,26 +168,18 @@ final class LnMeta implements Line {
         }
     }
 
-    private static List<String> split(
-        final String tail, final Span span, final int base
-    ) {
+    private List<String> split(final String tail, final int base) {
         final List<String> out = new ArrayList<>(2);
         int idx = 0;
         while (idx < tail.length()) {
-            if (tail.charAt(idx) == ' ') {
-                throw new ParseError(
-                    span.line(), span.indent() + base + idx,
-                    LnMeta.SEPARATOR
-                );
-            }
             int end = idx;
             while (end < tail.length() && !Character.isWhitespace(tail.charAt(end))) {
                 end = end + 1;
             }
-            if (end < tail.length() && tail.charAt(end) != ' ') {
+            if (end == idx || end < tail.length() && tail.charAt(end) != ' ') {
                 throw new ParseError(
-                    span.line(), span.indent() + base + end,
-                    LnMeta.SEPARATOR
+                    this.span.line(), this.span.indent() + base + end,
+                    "meta parts must be separated by exactly one space"
                 );
             }
             out.add(LnMeta.promoteQ(tail.substring(idx, end)));
