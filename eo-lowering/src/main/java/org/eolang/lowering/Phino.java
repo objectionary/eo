@@ -132,20 +132,7 @@ public final class Phino {
         final Path place = this.workspace();
         final Collection<Path> files = new ArrayList<>(expressions.length);
         try {
-            final Collection<String> command = new ArrayList<>(expressions.length + 4);
-            command.add(this.binary);
-            command.add("merge");
-            for (final String expression : expressions) {
-                final Path file = Files.createTempFile(place, "expression", ".phi");
-                Files.write(file, expression.getBytes(StandardCharsets.UTF_8));
-                files.add(file);
-                command.add(file.toString());
-            }
-            final Path merged = Files.createTempFile(place, "merged", ".phi");
-            files.add(merged);
-            command.add("-t");
-            command.add(merged.toString());
-            this.executed(command.toArray(new String[0]));
+            final Path merged = this.merged(place, files, expressions);
             final Path protocol = Files.createTempFile(place, "evaluations", ".tsv");
             files.add(protocol);
             final String output = this.executed(
@@ -168,6 +155,69 @@ public final class Phino {
                 Files.deleteIfExists(file);
             }
         }
+    }
+
+    /**
+     * Partially dataize the merge of the given φ-calculus expressions.
+     *
+     * <p>Under {@code --partial} an atom that cannot fire — a marker, or
+     * a known atom whose input reaches one — parks in place instead of
+     * failing the run, and lands in the protocol as a record with no
+     * result term. The run then ends successfully either way: with data
+     * when everything fired, with the residual expression when something
+     * parked, and the records tell which sites did what. A genuinely
+     * wrong expression, such as one reaching an error terminator, still
+     * fails.</p>
+     *
+     * @param expressions The expressions, in phi syntax
+     * @return The trace of the run: whether it was total, and its records
+     * @throws IOException If the executable cannot be run
+     */
+    public Trace partial(final String... expressions) throws IOException {
+        final Path place = this.workspace();
+        final Collection<Path> files = new ArrayList<>(expressions.length);
+        try {
+            final Path merged = this.merged(place, files, expressions);
+            final Path protocol = Files.createTempFile(place, "evaluations", ".tsv");
+            files.add(protocol);
+            final String output = this.executed(
+                this.binary, "dataize",
+                "--partial",
+                "--max-steps", Integer.toString(this.steps),
+                "--evaluations", protocol.toString(),
+                merged.toString()
+            );
+            final List<Evaluation> records = new ArrayList<>(0);
+            for (final String line : Files.readAllLines(protocol, StandardCharsets.UTF_8)) {
+                if (!line.isEmpty()) {
+                    records.add(new Evaluation(line));
+                }
+            }
+            return new Trace(Phino.HEX.matcher(output).matches(), records);
+        } finally {
+            for (final Path file : files) {
+                Files.deleteIfExists(file);
+            }
+        }
+    }
+
+    private Path merged(final Path place, final Collection<Path> files,
+        final String... expressions) throws IOException {
+        final Collection<String> command = new ArrayList<>(expressions.length + 4);
+        command.add(this.binary);
+        command.add("merge");
+        for (final String expression : expressions) {
+            final Path file = Files.createTempFile(place, "expression", ".phi");
+            Files.write(file, expression.getBytes(StandardCharsets.UTF_8));
+            files.add(file);
+            command.add(file.toString());
+        }
+        final Path merged = Files.createTempFile(place, "merged", ".phi");
+        files.add(merged);
+        command.add("-t");
+        command.add(merged.toString());
+        this.executed(command.toArray(new String[0]));
+        return merged;
     }
 
     private static String answer(final Path protocol) throws IOException {

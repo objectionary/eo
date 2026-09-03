@@ -1,0 +1,12 @@
+L_number_plus	plus	number	number	x
+L_number_times	times	number	number	x
+L_number_div	div	number	number	x
+L_number_gt	gt	number	bool	x
+L_bytes_and	and	bytes	bytes	b
+L_bytes_or	or	bytes	bytes	b
+L_bytes_not	not	bytes	bytes
+L_bytes_concat	concat	bytes	bytes	b
+L_bytes_eq	eq	bytes	bool	b
+L_bytes_right	right	bytes	bytes	x
+L_bytes_size	size	bytes	number
+L_bytes_slice	slice	bytes	bytes	start,len

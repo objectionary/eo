@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One void keeps the fragment from folding, so the EO stays as written,
+# while the symbolic reduction parks the sum as the single step of the
+# protocol.
+input: |
+  [x] > foo
+    x.plus 2 > @
+voids:
+  x: number
+lowered: |
+  x.plus > [x] > foo
+    2
+protocol: |
+  s1 ← L_number_plus sym:v0 number:40-00-00-00-00-00-00-00
+  answer sym:s1 number
