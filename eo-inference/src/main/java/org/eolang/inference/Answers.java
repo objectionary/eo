@@ -35,13 +35,10 @@ import java.util.Map;
  * already worked out on the way to the rung. Whoever counts the program and
  * whoever shows it to somebody read the same one.</p>
  *
- * <p>A void the program fills one way and no other is that one thing, and
- * stands where it stands: {@code Φ.string.printf.args} is a {@code Φ.tuple}
- * because every call site in the program puts one there, and a build reads the
- * program whole, library and all. A void filled several ways is still a void —
- * {@code Φ.bool.and.x} is seven things and therefore none of them — and so is
- * a void whose one filling names nothing a reader could go and look at, since
- * a rung above the first has to be a name.</p>
+ * <p>A void the program fills one way and no other is that one thing and
+ * climbs the ladder as that thing, which is {@link Sole}'s question. A void
+ * that keeps itself stays on the rung where a name rooted at a void belongs,
+ * true of every caller and concrete for none.</p>
  *
  * <p>Where the void keeps itself, what {@link Seen} found in it goes back
  * beside it, for a reader who is told their object is whatever
@@ -121,17 +118,9 @@ final class Answers {
     }
 
     private String sole(final String end) {
-        final Collection<Type> told = this.hollows.getOrDefault(
-            end, Collections.emptyList()
-        );
-        String found = "";
-        if (told.size() == 1) {
-            found = told.iterator().next().names();
-        }
-        if (!this.table.containsKey(found)) {
-            found = "";
-        }
-        return found;
+        return new Sole(
+            this.hollows.getOrDefault(end, Collections.emptyList()), this.table.keySet()
+        ).names();
     }
 
     private int depth(final String type, final int free) {

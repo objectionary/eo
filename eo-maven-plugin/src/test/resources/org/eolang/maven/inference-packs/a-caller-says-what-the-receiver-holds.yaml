@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# Inside the body of `halved` there is nothing to say about `^` but the void
-# declared for it, since every caller may hand over something different. At a
-# call site there is: `42.halved` says the receiver is a number, so what the
-# body reads through `^` can be followed from there. The answer in the body
-# stays rooted at the void and the answer at the call site does not, which is
-# the same substitution an argument already gets.
+# A dispatch says what the receiver of the body holds: `42.halved` fills the
+# void `halved` declares for `^`, exactly as an argument fills the void it is
+# written against. Since that is the only caller `halved` has in the whole
+# program, the body knows what it reads through `^` as well — `^.plus` is the
+# `plus` of `Φ.number` and not a name rooted at the void, and `.as-bytes` back
+# at the call site follows the chain all the way through `plus` to what a
+# number holds. The void keeps itself all the same, since a number arriving in
+# it is a fact about the caller.
 eo:
   app.eo: |
     [] > app
@@ -19,5 +21,7 @@ eo:
       [^] > halved
         ^.plus 0 > @
 links:
-  - "/links/type[@id='Φ.number.halved.φ']/ref[@loc='Φ.number.halved.ρ.plus']"
-  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.plus.x.as-bytes']"
+  - "/links/type[@id='Φ.app.φ.ρ']/ref[@loc='Φ.number.halved']/bind[@void='Φ.number.halved.ρ']"
+  - "/links/type[@id='Φ.number.halved.φ']/ref[@loc='Φ.number.plus']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.as-bytes']"
+  - "/links/type[@id='Φ.number.halved.ρ']/var"
