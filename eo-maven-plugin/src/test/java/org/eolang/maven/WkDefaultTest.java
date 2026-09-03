@@ -45,9 +45,8 @@ final class WkDefaultTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void skipsAnEntryThatIsNotARegularFile(@Mktmp final Path temp) throws Exception {
-        final Path pipe = temp.resolve("blocked.eo");
         Assumptions.assumeTrue(
-            WkDefaultTest.fifo(pipe),
+            WkDefaultTest.fifo(temp.resolve("blocked.eo")),
             "mkfifo is not available here, can't test"
         );
         MatcherAssert.assertThat(
