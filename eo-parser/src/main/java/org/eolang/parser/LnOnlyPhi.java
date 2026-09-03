@@ -39,6 +39,11 @@ import java.util.List;
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
  * and the line is {@link Openness#HCOMPLETED} — no body is accepted.
+ * A parenthesised φ counts as a full application too, so that a pair of
+ * parentheses cannot turn a closed φ into an open one: {@code (foo x) >
+ * [y] > bar} accepts no body, exactly as {@code foo x > [y] > bar} does
+ * not. A chain after the group reopens it, since the φ is then the last
+ * link and not the group.
  * An only-phi argument may not carry a name suffix (the
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
@@ -206,11 +211,14 @@ final class LnOnlyPhi implements Line {
     }
 
     private boolean bare(final Tokens tokens) {
-        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+        final Value head = tokens.readValue();
+        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, head);
+        final boolean chained;
         if (reversed) {
             tokens.consumeDispatch();
+            chained = true;
         } else {
-            tokens.readChain();
+            chained = !tokens.readChain().isEmpty();
         }
         final boolean empty = tokens.readArgs().isEmpty();
         if (reversed && !empty) {
@@ -219,7 +227,7 @@ final class LnOnlyPhi implements Line {
                 "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
             );
         }
-        return empty;
+        return empty && (chained || !head.group());
     }
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
