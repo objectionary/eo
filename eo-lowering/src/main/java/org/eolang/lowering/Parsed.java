@@ -91,7 +91,7 @@ public final class Parsed {
     }
 
     private Term chained(final Xnav node, final String path) {
-        final String[] parts = path.split("\\.");
+        final String[] parts = path.split("\\.", -1);
         Term out = this.referenced(parts[0]);
         final int last = parts.length - 1;
         if (last == 0 && !Parsed.kids(node).isEmpty()) {
