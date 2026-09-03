@@ -259,13 +259,17 @@ final class Level {
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
-        final String result;
+        final String owner;
         if (this.kind == Kind.ONLY_PHI) {
-            result = this.label.orElse("");
-        } else if (this.formation == null) {
+            owner = this.label.orElse("");
+        } else {
+            owner = this.formation;
+        }
+        final String result;
+        if (owner == null) {
             result = "";
         } else {
-            result = this.formation;
+            result = owner;
         }
         return result;
     }
