@@ -110,6 +110,7 @@ public final class Report {
         if (Files.exists(this.world)) {
             try (Stream<Path> walked = Files.walk(this.world)) {
                 walked.filter(path -> path.toString().endsWith(".xmir"))
+                    .filter(Files::isRegularFile)
                     .sorted()
                     .forEach(found::add);
             }
