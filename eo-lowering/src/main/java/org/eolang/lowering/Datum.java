@@ -62,7 +62,7 @@ public final class Datum {
      */
     public String bytes() {
         final String out;
-        if (this.numeric() && Datum.nan(this.hex)) {
+        if (this.numeric() && this.nan()) {
             out = "7F-F8-00-00-00-00-00-00";
         } else {
             out = this.hex;
@@ -97,8 +97,8 @@ public final class Datum {
         return this.term.startsWith("Φ.number");
     }
 
-    private static boolean nan(final String hex) {
-        final String digits = hex.replace("-", "");
+    private boolean nan() {
+        final String digits = this.hex.replace("-", "");
         return digits.length() == 16
             && Double.isNaN(
                 Double.longBitsToDouble(Long.parseUnsignedLong(digits, 16))
