@@ -39,6 +39,11 @@ import java.util.List;
  * a body block is {@code [x] > bar} whose φ is {@code foo} applied to
  * that block. With horizontal args the φ is already a full application
  * and the line is {@link Openness#HCOMPLETED} — no body is accepted.
+ * A parenthesised φ counts as a full application too, so that a pair of
+ * parentheses cannot turn a closed φ into an open one: {@code (foo x) >
+ * [y] > bar} accepts no body, exactly as {@code foo x > [y] > bar} does
+ * not. A chain after the group reopens it, since the φ is then the last
+ * link and not the group.
  * An only-phi argument may not carry a name suffix (the
  * formation binds only φ); the {@link Stack} flags such arguments and
  * the close-time check in {@link Eo} rejects a name on them.</p>
@@ -47,7 +52,7 @@ import java.util.List;
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
  * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
  * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
- * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, boolean)}
+ * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, Value, boolean)}
  * reading the {@code *} as a completed empty-tuple argument.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
@@ -193,8 +198,9 @@ final class LnOnlyPhi implements Line {
             open = true;
             reversed = false;
         } else {
-            reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
-            open = this.bare(tokens, reversed);
+            final Value head = tokens.readValue();
+            reversed = LnOnlyPhi.reversedAhead(tokens, head);
+            open = this.bare(tokens, head, reversed);
         }
         final Level level = this.transition(stack, suffix, open);
         if (!reversed) {
@@ -237,11 +243,13 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private boolean bare(final Tokens tokens, final boolean reversed) {
+    private boolean bare(final Tokens tokens, final Value head, final boolean reversed) {
+        final boolean chained;
         if (reversed) {
             tokens.consumeDispatch();
+            chained = true;
         } else {
-            tokens.readChain();
+            chained = !tokens.readChain().isEmpty();
         }
         final boolean empty = tokens.readArgs().isEmpty();
         if (reversed && !empty) {
@@ -250,7 +258,7 @@ final class LnOnlyPhi implements Line {
                 "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
             );
         }
-        return empty;
+        return empty && (chained || !head.group());
     }
 
     private static boolean reversedAhead(final Tokens tokens, final Value head) {
