@@ -18,6 +18,15 @@ import org.cactoos.list.ListEnvelope;
 
 /**
  * Default implementation of {@link Walk}.
+ *
+ * <p>Only regular files are walked. A directory is not one, and neither is
+ * a FIFO, a socket, a device node or a link with nothing at the end of it,
+ * and a goal handed such an entry cannot make an EO program out of it: it
+ * would hash and read it, and reading a FIFO waits for a writer that never
+ * comes. A link to an ordinary file is still walked, since
+ * {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)} follows
+ * links by default, and such a source reads exactly like the file it names.</p>
+ *
  * @since 0.1
  */
 final class WkDefault extends ListEnvelope<Path> implements Walk {
@@ -88,7 +97,7 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     private static Collection<Path> regular(final Path dir) throws IOException {
         try (Stream<Path> walk = Files.walk(dir)) {
-            return walk.filter(file -> !file.toFile().isDirectory())
+            return walk.filter(Files::isRegularFile)
                 .collect(Collectors.toList());
         }
     }
