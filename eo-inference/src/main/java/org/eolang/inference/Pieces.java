@@ -42,6 +42,15 @@ import org.xembly.Directives;
  * wrote, such as the {@code dataized} that a trailing {@code !} slips into the
  * middle of a chain, since a reader has no word to hang it on.</p>
  *
+ * <p>A mark shared that way is coloured by the worst object under it. A
+ * stretch of text with something unknown beneath it has to say so: colouring
+ * it by whichever object came first drew green what the tally counts as
+ * unknown, and the tally is counted from these same answers for exactly that
+ * reason. The body of an atom sits under the bracket that opens it, so an
+ * atom nobody can answer for used to be invisible on the page while being
+ * counted at the top of it (#8318). Which object the warning is about the
+ * reader finds in the popup, where all of them are listed.</p>
+ *
  * @since 0.70.0
  */
 final class Pieces {
@@ -175,15 +184,15 @@ final class Pieces {
     private static Directives marked(final String text, final Collection<Written> said) {
         final Directives dirs = new Directives()
             .add("bit")
-            .attr("band", Pieces.band(said.iterator().next().answer()));
+            .attr("band", Pieces.band(Pieces.worst(said)));
         for (final Written object : said) {
             dirs.add("told")
                 .attr("label", object.label())
-                .attr("band", Pieces.band(object.answer()))
+                .attr("band", Pieces.band(object.answer().rung()))
                 .attr("where", object.answer().where())
                 .attr("loc", object.loc());
             if (object.loc().equals(object.answer().where())
-                && "rooted".equals(Pieces.band(object.answer()))) {
+                && "rooted".equals(Pieces.band(object.answer().rung()))) {
                 dirs.attr("void", "true");
             }
             Pieces.witnessed(dirs, object.answer().seen());
@@ -202,11 +211,19 @@ final class Pieces {
         }
     }
 
-    private static String band(final Answer answer) {
+    private static int worst(final Collection<Written> said) {
+        int found = Integer.MAX_VALUE;
+        for (final Written object : said) {
+            found = Math.min(found, object.answer().rung());
+        }
+        return found;
+    }
+
+    private static String band(final int rung) {
         final String found;
-        if (answer.rung() == 0) {
+        if (rung == 0) {
             found = "blank";
-        } else if (answer.rung() == 1) {
+        } else if (rung == 1) {
             found = "rooted";
         } else {
             found = "named";
