@@ -4,7 +4,6 @@
  */
 package org.eolang.inference;
 
-import java.util.Collection;
 import java.util.Map;
 import org.xembly.Directives;
 
@@ -34,6 +33,10 @@ import org.xembly.Directives;
  * asked for, 77 of the 2,303 in eo-runtime, and a fact that cannot be written
  * where it belongs is still a fact.</p>
  *
+ * <p>A name is not the only thing the program asks of a void. It also applies
+ * one, and that demand is {@link Applies}, written beside these on the same
+ * row and checked the other way round.</p>
+ *
  * @since 0.69.0
  */
 final class Demands {
@@ -44,10 +47,9 @@ final class Demands {
     private final Map<String, Map<String, String>> asked;
 
     /**
-     * The voids these demands are made of: this one, and every void it is
-     * handed into.
+     * The voids these demands are made of.
      */
-    private final Collection<String> roots;
+    private final Rooted rooted;
 
     /**
      * Ctor.
@@ -55,9 +57,9 @@ final class Demands {
      * @param objects The voids these demands are made of: the void itself,
      *  and every void it is handed into
      */
-    Demands(final Map<String, Map<String, String>> all, final Collection<String> objects) {
+    Demands(final Map<String, Map<String, String>> all, final Rooted objects) {
         this.asked = all;
-        this.roots = objects;
+        this.rooted = objects;
     }
 
     /**
@@ -67,7 +69,7 @@ final class Demands {
     Directives directives() {
         final Directives dirs = new Directives();
         for (final Map.Entry<String, Map<String, String>> bearer : this.asked.entrySet()) {
-            if (this.below(bearer.getKey())) {
+            if (this.rooted.covers(bearer.getKey())) {
                 for (final Map.Entry<String, String> demand : bearer.getValue().entrySet()) {
                     dirs.add("demand")
                         .attr("of", bearer.getKey())
@@ -87,18 +89,7 @@ final class Demands {
     boolean any() {
         boolean found = false;
         for (final String bearer : this.asked.keySet()) {
-            if (this.below(bearer)) {
-                found = true;
-                break;
-            }
-        }
-        return found;
-    }
-
-    private boolean below(final String object) {
-        boolean found = false;
-        for (final String root : this.roots) {
-            if (object.equals(root) || object.startsWith(root.concat("."))) {
+            if (this.rooted.covers(bearer)) {
                 found = true;
                 break;
             }
