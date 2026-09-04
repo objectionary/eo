@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[@line='2']
+  - /object/errors/error[contains(text(),'exactly one blank line')]
+input: |
+  +foo
+  """
+  text
+  """ > app
