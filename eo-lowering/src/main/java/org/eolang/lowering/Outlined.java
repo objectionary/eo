@@ -7,8 +7,6 @@ package org.eolang.lowering;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -124,12 +122,7 @@ public final class Outlined implements Rewrite {
         }
         final boolean done = !carrier.isEmpty();
         if (done) {
-            final String digest = new Digest(text).hex();
-            Files.createDirectories(this.atoms);
-            Files.write(
-                this.atoms.resolve(String.format("%s.java", digest)),
-                text.getBytes(StandardCharsets.UTF_8)
-            );
+            final String digest = new Sidecar(this.atoms, text).save();
             final String name = String.format("l🌵%s", digest);
             if (!Outlined.bound(host, name)) {
                 host.appendChild(Outlined.formation(host, name, digest, cut, carrier));

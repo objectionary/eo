@@ -7,8 +7,6 @@ package org.eolang.lowering;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -110,13 +108,10 @@ public final class Lowered implements Rewrite {
         }
         final boolean done = !carrier.isEmpty();
         if (done) {
-            final String digest = new Digest(text).hex();
-            Files.createDirectories(this.atoms);
-            Files.write(
-                this.atoms.resolve(String.format("%s.java", digest)),
-                text.getBytes(StandardCharsets.UTF_8)
+            Lowered.marked(
+                (Element) node.node(), body, inputs,
+                new Sidecar(this.atoms, text).save(), carrier
             );
-            Lowered.marked((Element) node.node(), body, inputs, digest, carrier);
         }
         return done;
     }
