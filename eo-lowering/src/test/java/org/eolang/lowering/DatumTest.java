@@ -62,4 +62,52 @@ final class DatumTest {
             Matchers.equalTo("DE-AD-BE-EF")
         );
     }
+
+    @Test
+    void canonicalizesNanNumber() {
+        MatcherAssert.assertThat(
+            "a NaN with the sign bit set must fold to the bytes of nan, but it didnt",
+            new Datum(
+                "FF-F8-00-00-00-00-00-00",
+                "Φ.number( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ FF-F8-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) )"
+            ).bytes(),
+            Matchers.equalTo("7F-F8-00-00-00-00-00-00")
+        );
+    }
+
+    @Test
+    void canonicalizesNanNumberWithPayload() {
+        MatcherAssert.assertThat(
+            "a NaN carrying a payload must fold to the bytes of nan, but it didnt",
+            new Datum(
+                "7F-F8-00-00-00-00-BE-EF",
+                "Φ.number( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ 7F-F8-00-00-00-00-BE-EF, ρ ↦ ∅ ⟧ ) )"
+            ).bytes(),
+            Matchers.equalTo("7F-F8-00-00-00-00-00-00")
+        );
+    }
+
+    @Test
+    void keepsInfinityVerbatim() {
+        MatcherAssert.assertThat(
+            "negative infinity is not a NaN, so its bytes must stay, but they didnt",
+            new Datum(
+                "FF-F0-00-00-00-00-00-00",
+                "Φ.number( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ FF-F0-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) )"
+            ).bytes(),
+            Matchers.equalTo("FF-F0-00-00-00-00-00-00")
+        );
+    }
+
+    @Test
+    void keepsNanBytesOutsideNumber() {
+        MatcherAssert.assertThat(
+            "bytes that merely look like a NaN are not a number, so they must stay, but they didnt",
+            new Datum(
+                "FF-F8-00-00-00-00-00-00",
+                "Φ.bytes( data ↦ ⟦ Δ ⤍ FF-F8-00-00-00-00-00-00, ρ ↦ ∅ ⟧ )"
+            ).bytes(),
+            Matchers.equalTo("FF-F8-00-00-00-00-00-00")
+        );
+    }
 }

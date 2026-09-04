@@ -49,6 +49,32 @@ final class ConstantTest {
     }
 
     @Test
+    void foldsZeroByZeroIntoNan(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the quotient of zero and zero must fold to the bytes of nan, whatever NaN the host makes, but it didnt",
+            new Constant(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.div'>",
+                        "<o base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o")
+            ).value().bytes(),
+            Matchers.equalTo("7F-F8-00-00-00-00-00-00")
+        );
+    }
+
+    @Test
     void namesFormaOfComparison(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

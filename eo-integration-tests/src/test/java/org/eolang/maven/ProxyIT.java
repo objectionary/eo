@@ -37,6 +37,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
+ *
+ * <p>The sandbox is walled off from the network: the only repository it is
+ * given is a Jetty serving the local {@code ~/.m2/repository}, so every
+ * artifact it asks for has to be in there already. It is taken no further
+ * than {@code process-sources}, the last phase the four goals under test are
+ * bound to, because the phases after it bind plugins of their own, at the
+ * versions Maven defaults to rather than the ones this build pins, and the
+ * one missing from the local repository fails the sandbox before the proxy
+ * is ever exercised.</p>
+ *
  * @since 0.60
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -75,7 +85,7 @@ final class ProxyIT {
             new Farea(tmp).together(
                 f -> {
                     ProxyIT.setupForProxy(f, port, ProxyIT.port(repo));
-                    f.exec("package");
+                    f.exec("process-sources");
                     log[0] = f.log().content();
                 }
             );
