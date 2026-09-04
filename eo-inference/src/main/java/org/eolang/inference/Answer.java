@@ -28,8 +28,9 @@ import java.util.Collections;
  * once, or a single one naming nothing a reader could go and look at. A reader
  * told that their object is whatever {@code Φ.bool.and.x} turns out to be has
  * nowhere to go next, and a reader told that {@code Φ.true} and
- * {@code Φ.false} have both been put there has. The rung is untouched by
- * it.</p>
+ * {@code Φ.false} have both been put there has. Nothing carried at all is an
+ * answer of its own rather than the want of one: nobody fills that void, so
+ * there is no caller to be sent to (#8355). The rung is untouched by it.</p>
  *
  * <p>Such an object also says whether the void it is rooted at is one that
  * only an atom fills. {@code Φ.posix.return.code} is filled in Java, by the

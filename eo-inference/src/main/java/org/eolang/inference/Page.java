@@ -73,6 +73,7 @@ final class Page {
             .attr("named", Integer.toString(counted.getOrDefault("named", 0)))
             .attr("rooted", Integer.toString(counted.getOrDefault("rooted", 0)))
             .attr("atom", Integer.toString(counted.getOrDefault("atom", 0)))
+            .attr("unfilled", Integer.toString(counted.getOrDefault("unfilled", 0)))
             .attr("blank", Integer.toString(counted.getOrDefault("blank", 0)));
         for (int index = 0; index < lines.size(); index = index + 1) {
             dirs.add("line").attr("n", Integer.toString(index + 1));
@@ -121,7 +122,7 @@ final class Page {
     }
 
     private Map<String, Integer> counted() {
-        final Map<String, Integer> found = new HashMap<>(4);
+        final Map<String, Integer> found = new HashMap<>(5);
         for (final String loc : this.xmir.xpath("//o[@loc]/@loc")) {
             final Answer answer = this.answers.get(loc);
             if (answer != null) {
