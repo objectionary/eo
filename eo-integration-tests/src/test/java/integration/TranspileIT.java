@@ -48,7 +48,7 @@ final class TranspileIT {
                 MatcherAssert.assertThat(
                     "User-written test sources must be generated",
                     TranspileIT.generatedNames(temp),
-                    Matchers.hasItem("EOsimpleTest.java")
+                    Matchers.hasItem("TestEOsimple.java")
                 );
             }
         );
@@ -64,7 +64,7 @@ final class TranspileIT {
                 MatcherAssert.assertThat(
                     "EO runtime test sources must not be generated in a user project",
                     TranspileIT.generatedNames(temp),
-                    Matchers.not(Matchers.hasItem(Matchers.containsString("EOstringTest")))
+                    Matchers.not(Matchers.hasItem(Matchers.containsString("TestEOstring")))
                 );
             }
         );
