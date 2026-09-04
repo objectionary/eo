@@ -17,6 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -68,9 +71,7 @@ public final class Report {
     public int written(final Path out) throws IOException {
         Files.createDirectories(out);
         final Map<String, Answer> told = new Answered(this.world, this.tables).all();
-        final XSLDocument page = new XSLDocument(
-            Report.class.getResourceAsStream("/org/eolang/inference/report/page.xsl")
-        );
+        final XSLDocument page = new XSLDocument(Report.stylesheet("page.xsl"));
         final Map<String, XML> pages = new LinkedHashMap<>(0);
         for (final Path file : this.sources()) {
             final String name = this.named(file);
@@ -94,9 +95,7 @@ public final class Report {
         }
         Files.write(
             out.resolve("index.html"),
-            new XSLDocument(
-                Report.class.getResourceAsStream("/org/eolang/inference/report/index.xsl")
-            ).applyTo(
+            new XSLDocument(Report.stylesheet("index.xsl")).applyTo(
                 new XMLDocument(
                     new Xembler(Report.listed(pages)).xmlQuietly()
                 )
@@ -121,6 +120,17 @@ public final class Report {
     private String named(final Path file) {
         final String path = this.world.relativize(file).toString().replace('\\', '/');
         return path.substring(0, path.length() - ".xmir".length()).concat(".eo");
+    }
+
+    private static String stylesheet(final String name) {
+        return new UncheckedText(
+            new TextOf(
+                new ResourceOf(
+                    String.format("org/eolang/inference/report/%s", name),
+                    Report.class
+                )
+            )
+        ).asString();
     }
 
     private static XML rooted(final XML made, final String name) {
