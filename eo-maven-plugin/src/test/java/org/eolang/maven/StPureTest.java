@@ -100,9 +100,7 @@ final class StPureTest {
         final Path source = parsed.resolve("app.xmir");
         new Inferring(parsed, temp.resolve("pre"), tables).exec();
         StPureTest.stamped(tables, source);
-        new Inferring(
-            Files.createDirectories(temp.resolve("none")), temp.resolve("again"), tables
-        ).exec();
+        new Inferring(StPureTest.alone(temp), temp.resolve("again"), tables).exec();
         MatcherAssert.assertThat(
             "a table rewritten between two transpilations of one JVM must be read again, but the copy parsed first was handed over",
             StPureTest.stamped(tables, source).nodes("//o[@name='x' and @pure='true']"),
@@ -161,6 +159,15 @@ final class StPureTest {
                     System.lineSeparator(), "[] > app", "  2.power 63 > x", "  x > @", ""
                 )
             ).parsed().toString()
+        );
+        return parsed;
+    }
+
+    private static Path alone(final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("alone"));
+        Files.copy(
+            temp.resolve("parsed").resolve("app.xmir"),
+            parsed.resolve("app.xmir")
         );
         return parsed;
     }
