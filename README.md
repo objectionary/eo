@@ -54,7 +54,7 @@ First, install [Java SE] and [npm].
 Then, install [eoc]:
 
 ```bash
-npm install -g eolang@0.37.1
+npm install -g eolang@0.63.1
 ```
 
 Then, start with a simple EO program in the `app.eo` file:
