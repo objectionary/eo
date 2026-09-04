@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name written by itself is an attribute taken off the object the name sits
+# in, the same as a name written after a dot: `grove` inside the body of `app`
+# is the `grove` of that `app`, so the void `grove` declares for its receiver
+# is filled with an `app`. Nothing else in the text says so, since the parser
+# writes no receiver beside such a name, and without it the body of `grove`
+# knows nothing about what it reads through `^`. With it, `^.oak` is the `oak`
+# of an `app`. The void keeps itself, as every void does.
+eo:
+  app.eo: |
+    [] > app
+      grove > @
+      [^] > grove
+        ^.oak > @
+      [] > oak
+links:
+  - "/links/type[@id='Φ.app.grove.φ']/ref[@loc='Φ.app.oak']"
+  - "/links/type[@id='Φ.app.grove.ρ']/var"

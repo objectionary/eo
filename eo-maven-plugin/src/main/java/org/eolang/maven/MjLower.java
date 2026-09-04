@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,10 +21,14 @@ import org.eolang.lowering.Phino;
  * the full object-graph cost at runtime for a value the compiler could
  * know. This goal computes such fragments through the external
  * {@code phino} binary and splices the values back as literals, so the
- * graphs are never built. It runs after {@link MjMerge} and before
- * {@link MjTranspile}, reading the XMIR of each object and repointing it
- * at the rewritten copy in {@link Lowering#DIR} — only when something in
- * it was actually folded.</p>
+ * graphs are never built. A pure formation whose voids are witnessed as
+ * data goes further: its body is reduced symbolically into a protocol,
+ * the protocol becomes the Java body of a synthetic atom in a sidecar
+ * file under {@link Lowering#ATOMS}, and the formation keeps only its
+ * voids and a {@code λ} marker. The goal runs after {@link MjMerge} and
+ * before {@link MjTranspile}, reading the XMIR of each object and
+ * repointing it at the rewritten copy in {@link Lowering#DIR} — only when
+ * something in it was actually folded or lowered.</p>
  *
  * <p>The goal is part of the normal chain but soft by default: without a
  * {@code phino} of the pinned version on the PATH it warns once and does
@@ -45,11 +50,6 @@ import org.eolang.lowering.Phino;
  * that a diverging one is refused in milliseconds.</p>
  *
  * @since 0.76.0
- * @todo #8137:45min Install phino in <code>.rultor.yml</code> and pass
- *  <code>-Deo.loweringRequired=true</code> in its merge and release
- *  scripts, so that a release is never silently unlowered. The image
- *  rultor builds in has no Haskell toolchain and no build cache, so this
- *  needs either a prebuilt phino binary or an image that carries one.
  */
 @Mojo(
     name = "lower",
@@ -86,6 +86,21 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The directory with the tables that {@link MjInference} writes, read
+     * to learn which formations are pure and what data forma every void
+     * of them was witnessed as. A build that skips {@code eo:inference}
+     * leaves the directory absent, and then no formation is lowered while
+     * the constants still fold.
+     */
+    @Parameter(
+        alias = "inferenceDir",
+        property = "eo.inferenceDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/6-inference"
+    )
+    private File tables;
+
+    /**
      * Ctor.
      */
     public MjLower() {
@@ -101,14 +116,17 @@ public final class MjLower extends MjSafe {
             if (phino.suitable()) {
                 try (TjsForeign tojos = this.tojos()) {
                     new Timed(
-                        new Lowering(tojos.standalone(), home, phino)
+                        new Lowering(tojos.standalone(), home, phino, this.tables.toPath())
                     ).exec();
                 }
                 new Saved(
                     String.format(
                         "lower-%s-%s",
                         phino.pin(),
-                        new Fingerprint("/org/eolang/lowering/universe.phi").get()
+                        new Fingerprint(
+                            "/org/eolang/lowering/universe.phi",
+                            "/org/eolang/lowering/ops.tsv"
+                        ).get()
                     ),
                     marker
                 ).value();

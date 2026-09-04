@@ -91,6 +91,14 @@ final class Inferring implements Step {
     public void exec() throws IOException {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
+            if (Files.exists(this.prepared)) {
+                throw new IOException(
+                    Logger.format(
+                        "Can't clean up %[file]s: prepared XMIRs of an earlier run are still there, and inferring them together with the current ones would describe sources that no longer exist",
+                        this.prepared
+                    )
+                );
+            }
             final int ready = this.ready();
             final long start = System.currentTimeMillis();
             new Witnessed(new Relayed(new Demanded(new Resolved(new Clues()))))
@@ -150,6 +158,7 @@ final class Inferring implements Step {
         try (Stream<Path> found = Files.walk(this.input)) {
             return found
                 .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
                 .sorted()
                 .collect(Collectors.toList());
         }

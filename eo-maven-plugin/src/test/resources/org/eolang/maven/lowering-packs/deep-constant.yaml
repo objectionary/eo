@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The outermost qualifying fragment wins: both parenthesized sums are
+# constant, so the product over them folds as one whole.
+input: |
+  [] > foo
+    (2.plus 3).times (10.div 4) > @
+lowered: |
+  12.5 > [] > foo
+protocol: |
+  answer number:40-29-00-00-00-00-00-00 number

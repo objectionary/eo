@@ -32,6 +32,16 @@ import org.xembly.Directive;
 final class Eo implements Iterable<Directive> {
 
     /**
+     * What a line indented with a tab is told, wherever it is written.
+     */
+    static final String TAB = "tab character in leading whitespace";
+
+    /**
+     * What a line indented with neither a space nor a tab is told.
+     */
+    static final String ALIEN = "invalid character in leading whitespace";
+
+    /**
      * What a line with a space at its end is told, wherever it is written.
      */
     private static final String TRAILING = "trailing whitespace at end of line";
@@ -188,6 +198,11 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
+            if (next.trailing()) {
+                emit.error(next.line(), 0, Eo.TRAILING);
+                broken = true;
+                break;
+            }
             if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
@@ -257,10 +272,10 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
-            emit.error(span.line(), 0, "tab character in leading whitespace");
+            emit.error(span.line(), 0, Eo.TAB);
             failed = true;
         } else if (span.alien() && !span.blank()) {
-            emit.error(span.line(), 0, "invalid character in leading whitespace");
+            emit.error(span.line(), 0, Eo.ALIEN);
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
@@ -270,6 +285,7 @@ final class Eo implements Iterable<Directive> {
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
+            Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
@@ -325,6 +341,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
+            globals.clearBlanks();
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
@@ -642,7 +659,8 @@ final class Eo implements Iterable<Directive> {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
         Eo.checkNaming(level, emit, naming);
-        if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
+        if ((level.kind() == Kind.BARE_REVERSED || level.kind() == Kind.ONLY_PHI)
+            && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
                 "reversed dispatch missing receiver"

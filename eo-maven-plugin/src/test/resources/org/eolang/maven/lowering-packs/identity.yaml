@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A fragment answering its own void needs no computation: the protocol
+# has no steps, and the printer spells the formation with the identity
+# glyph.
+input: |
+  [x] > foo
+    x > @
+voids:
+  x: number
+lowered: |
+  I > foo
+protocol: |
+  answer sym:v0 number

@@ -47,7 +47,7 @@ import java.util.List;
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
  * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
  * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
- * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens)}
+ * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, boolean)}
  * reading the {@code *} as a completed empty-tuple argument.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
@@ -162,12 +162,34 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
+    static int compactStar(final String lhs, final Span span) {
+        final int space = LnOnlyPhi.topLevelSpace(lhs);
+        final int result;
+        if (space > 0 && lhs.charAt(space - 1) != '.'
+            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
+            result = LnOnlyPhi.starCount(lhs, space + 2, span);
+        } else {
+            result = -1;
+        }
+        return result;
+    }
+
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
-        final Level level = this.transition(
-            stack, suffix, stars >= 0 || this.bare(tokens)
-        );
+        final boolean open;
+        final boolean reversed;
+        if (stars >= 0) {
+            open = true;
+            reversed = false;
+        } else {
+            reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+            open = this.bare(tokens, reversed);
+        }
+        final Level level = this.transition(stack, suffix, open);
+        if (!reversed) {
+            level.consumeReceiver();
+        }
         tokens.seek(0);
         if (stars >= 0) {
             level.compact(stars);
@@ -205,8 +227,7 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private boolean bare(final Tokens tokens) {
-        final boolean reversed = LnOnlyPhi.reversedAhead(tokens, tokens.readValue());
+    private boolean bare(final Tokens tokens, final boolean reversed) {
         if (reversed) {
             tokens.consumeDispatch();
         } else {
@@ -248,20 +269,8 @@ final class LnOnlyPhi implements Line {
             openness = Openness.HCOMPLETED;
         }
         return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test())
+            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
-    }
-
-    private static int compactStar(final String lhs, final Span span) {
-        final int space = LnOnlyPhi.topLevelSpace(lhs);
-        final int result;
-        if (space > 0 && lhs.charAt(space - 1) != '.'
-            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
-            result = LnOnlyPhi.starCount(lhs, space + 2, span);
-        } else {
-            result = -1;
-        }
-        return result;
     }
 
     private static Tokens reader(final Span inner, final int stars) {
@@ -307,6 +316,12 @@ final class LnOnlyPhi implements Line {
                 digits = false;
                 break;
             }
+            if (idx > from && lhs.charAt(from) == '0') {
+                throw new ParseError(
+                    span.line(), span.indent() + from,
+                    "integer literal must not have leading zeros"
+                );
+            }
             count = count * 10 + glyph - '0';
             if (count > Integer.MAX_VALUE) {
                 throw new ParseError(
@@ -342,7 +357,7 @@ final class LnOnlyPhi implements Line {
                 end = end + 1;
             }
             final String raw = text.substring(idx, end);
-            Emissions.validParam(raw, span.line(), span.indent() + origin + idx);
+            Emissions.validPhiParam(raw, span.line(), span.indent() + origin + idx);
             out.add(raw);
             if (end < text.length()) {
                 if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {

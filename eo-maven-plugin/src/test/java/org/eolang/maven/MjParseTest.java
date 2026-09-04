@@ -254,6 +254,35 @@ final class MjParseTest {
         );
     }
 
+    @Test
+    void parsesAgainWhenTheSourceChangesUnderTheSameTimestamp(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        final Path parsed = maven
+            .withHelloWorld()
+            .execute(new PpParse())
+            .result()
+            .get(String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR));
+        final Path source = temp.resolve(Paths.get("foo", "x", "main.eo"));
+        new Saved(
+            String.join(
+                System.lineSeparator(),
+                "+package foo.x",
+                "",
+                "[greeting] > main",
+                "  greeting > @"
+            ),
+            source
+        ).value();
+        Files.setLastModifiedTime(source, Files.getLastModifiedTime(parsed));
+        maven.execute(MjParse.class);
+        MatcherAssert.assertThat(
+            "the XMIR stayed as it was, while the source it came from had changed",
+            new XMLDocument(parsed),
+            XhtmlMatchers.hasXPaths("//o[@name='greeting']")
+        );
+    }
+
     /**
      * The test with high number of eo programs reveals concurrency problems of the ParseMojo.
      * Since other tests works only with single program - it's hard to find concurrency mistakes.
