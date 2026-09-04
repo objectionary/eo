@@ -22,6 +22,13 @@ import java.util.regex.PatternSyntaxException;
  * inside the flag group itself lands before that start and is reported
  * without an offset.</p>
  *
+ * <p>What stands after the closing slash is a flag section, and it is
+ * checked against the same alphabet the EO half of this object reads with
+ * ({@code [dimsux]}) before it is spliced between {@code (?} and {@code )}.
+ * Without that check a literal such as {@code /b/i)|(?:a} closed the flag
+ * group and injected its own alternation into the pattern, so the regex that
+ * ran was not the one that was written, and nothing reported it.</p>
+ *
  * @since 0.39.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -72,20 +79,36 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
     }
 
     private Phi compile(final String expression, final int last) {
+        final String modifiers = expression.substring(last + 1);
+        final Phi result;
+        if (modifiers.chars().anyMatch(chr -> "dimsux".indexOf(chr) < 0)) {
+            result = this.fallback(
+                String.format(
+                    "regex flags '%s' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'",
+                    modifiers
+                )
+            );
+        } else {
+            result = this.pattern(expression, last, modifiers);
+        }
+        return result;
+    }
+
+    private Phi pattern(final String expression, final int last, final String modifiers) {
         final StringBuilder builder = new StringBuilder();
-        if (!expression.endsWith("/")) {
-            builder.append("(?").append(expression.substring(last + 1)).append(')');
+        if (!modifiers.isEmpty()) {
+            builder.append("(?").append(modifiers).append(')');
         }
         final int flags = builder.length();
         builder.append(expression, 1, last);
-        Phi result;
+        Phi outcome;
         try {
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final ObjectOutputStream ous = new ObjectOutputStream(baos);
             ous.writeObject(Pattern.compile(builder.toString()));
             ous.close();
-            result = this.take(Phi.RHO).take("pattern");
-            result.put(0, new Data.ToPhi(baos.toByteArray()));
+            outcome = this.take(Phi.RHO).take("pattern");
+            outcome.put(0, new Data.ToPhi(baos.toByteArray()));
         } catch (final PatternSyntaxException ex) {
             final int offset = ex.getIndex() - flags;
             final String reason;
@@ -97,10 +120,10 @@ public final class EOstring$EOregex$EOcompile extends PhDefault implements Atom 
                     ex.getDescription(), offset
                 );
             }
-            result = this.fallback(reason);
+            outcome = this.fallback(reason);
         } catch (final IOException ex) {
             throw new ExFailure("cannot serialize the compiled regex pattern", ex);
         }
-        return result;
+        return outcome;
     }
 }

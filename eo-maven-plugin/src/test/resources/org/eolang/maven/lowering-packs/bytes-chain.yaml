@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A chain over bytes crosses formas: the mask stays bytes, its size is
+# a number, and the comparison answers the protocol with a bool.
+input: |
+  [b] > foo
+    (b.and 1F-).size.gt 2 > @
+voids:
+  b: bytes
+lowered: |
+  gt. > [b] > foo
+    size.
+      b.and 1F-
+    2
+protocol: |
+  s1 ← L_bytes_and sym:v0 bytes:1F-
+  s2 ← L_bytes_size sym:s1
+  s3 ← L_number_gt sym:s2 number:40-00-00-00-00-00-00-00
+  answer sym:s3 bool

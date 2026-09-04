@@ -286,7 +286,7 @@ R-3.4.4. No leading/trailing space inside `[ ]`.
 R-3.4.12. The formation head's `[` must be closed by a matching `]` on the same line; a missing `]` is its own error, distinct from R-3.4.4's leading/trailing-space check, which never runs without a `]` to bound the search.
 R-3.4.5. No double space between parameter names.
 R-3.4.6. The formation line may end with one of the optional name suffixes (§3.10).
-R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), in source order behind the head voids, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The parser emits the voids of a formation ahead of everything else it holds — in particular ahead of an atom's `λ` marker (R-9.4), which is read off the head line but written out only once the last void has landed. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. The name may also be `^`, which declares the receiver and emits a void named `ρ` (R-3.4.11), in whatever position it is written. `? > name`, `? >> name` and `? > ^`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`a void attribute must be written as ? > name or ? >> name`); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises a void to the bracket form, since the two are indistinguishable in XMIR — except where the bracket form cannot carry what the void holds: an auto-name handle (R-3.10.12), a type annotation (R-3.4.8), or membership in an atom (R-3.4.10), each of which prints vertically.
+R-3.4.7. A void attribute may also be declared **vertically** as a `? > name` body line of the formation (the `?` is the `VOID` token of §2.3). It is equivalent to listing `name` among the bracket parameters: it emits the same void child (§9.4), in source order behind the head voids, so `[name] > foo` with body lines `? > bar` and `? > test` is identical in XMIR to `[name bar test] > foo`. The parser emits the voids of a formation ahead of everything else it holds — in particular ahead of an atom's `λ` marker (R-9.4), which is read off the head line but written out only once the last void has landed. The `>>` auto-name suffix (§3.10) is also accepted: `? >> name` declares a void whose external `@name` is an auto-generated cactus name (§9.2, unreachable from outside), while `name` is a *file-local handle* (R-3.10.12) usable within the same `.eo` file; a bare `? >>` is a void with an auto-generated name and no handle. Filling stays positional, so the auto-generated external name does not affect how callers bind the void. The name may also be `^`, which declares the receiver and emits a void named `ρ` (R-3.4.11), in whatever position it is written. `? > name`, `? >> name` and `? > ^`, each optionally followed by one type annotation (§3.4.8), are the **only** shapes the `?` marker may take: the marker is not a value, so it may not appear as an argument (`foo ? bar`), a method receiver (`?.read`), or a reversed-dispatch argument (`foo. ? q`), and a bare `?` or any other trailing tokens are an error. The form requires a name (or auto-name) suffix and is legal only as a direct child of a formation, which has no children of its own (a deeper-indent line under a void is rejected). A `!` const marker on a void is rejected (`` a void attribute must be written as `? > name` or `? >> name` ``); a type annotation, however, is permitted inside an atom (§3.4.8). Reverse printing canonicalises a void to the bracket form, since the two are indistinguishable in XMIR — except where the bracket form cannot carry what the void holds: an auto-name handle (R-3.10.12), a type annotation (R-3.4.8), or membership in an atom (R-3.4.10), each of which prints vertically.
 R-3.4.8. **Type annotations on voids (atom-only).** Inside an **atom** (a formation whose head carries `/sig`), a void — always a vertical one, per R-3.4.10 — may carry **exactly one** type annotation. Both forms below are optional; an unannotated void is left untyped (its type is inferred), and an annotated void may be followed by an unannotated one. Outside an atom either form is an error (`a void type annotation is allowed only inside an atom`), and the two forms are mutually exclusive on one void (`a void attribute may carry at most one type annotation`).
 
 ```
@@ -896,7 +896,7 @@ When a level record is popped or replaced:
 
 R-5.3.1. **Naming check.** If `parent_kind = formation` or `parent_kind = top-level`, then `named?` must be true. Otherwise: error "object inside formation must have a name" at `start_line`.
 R-5.3.2. **Bare reversed completeness.** If `kind = bare-reversed` and `receiver_consumed? = false`: error "reversed dispatch missing receiver."
-R-5.3.3. **Compact tuple count.** If `kind = compact-tuple` and `child_count < compact_tuple_n`: error "compact tuple `*N` requires at least N children, got `child_count`."
+R-5.3.3. **Compact tuple count.** If `kind = compact-tuple` and `child_count < compact_tuple_n`: error "compact tuple requires at least N children, got `child_count`."
 R-5.3.4. **Atom body.** If the popped entry's `parent_is_atom?` is true, the popped entry's kind must be `bare-formation` **AND** its name-suffix form must be a test attribute (`+>` or `->`) (R-6.3.1). Otherwise: error `atom may contain only test attributes`. (`+>` is a name-suffix variant, not a property of the kind itself; this rule checks both fields.) Note: even when this check passes, the `+>` child must additionally satisfy the depth constraint of R-6.3.3 (verified separately by R-5.3.5); a `+>` child of a *nested* atom fails R-5.3.5 because tests are legal only at indent 2 of a top-level object.
 
 R-5.3.4a. **R-5.3.4 and R-5.3.5 are disjoint.** Both rules check the popped entry's suffix and parent, but on disjoint conditions: R-5.3.4 fires *only when* the popped entry is **not** a `+>` test (so it can't have `+>` to feed R-5.3.5); R-5.3.5 fires *only when* the popped entry **is** a `+>` test (so the atom-body check passes vacuously). A single popped entry cannot trigger both rules. Multiple errors per source line are possible only when the line introduces *multiple* level records that each independently fail (e.g., a nested atom *and* a deeply-placed test in the same file), but in that case each error attaches to its own entry's `start_line`.
@@ -1364,6 +1364,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Formation head `[` with no closing `]` (R-3.4.12) | `formation is missing its closing bracket` |
 | Double space between parameter names in voids (R-3.4.5) | `parameter names in voids must be separated by exactly one space` |
 | Bracket-parameter name that is neither NAME, `@` nor `^` (§4.5) | `parameter names in voids must be NAME, @ or ^` |
+| `@` among the bracket parameters of an only-phi formation, which binds its φ from the left-hand side | `an only-phi formation binds φ from its left-hand side, so @ is not allowed among its voids` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
 | More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
@@ -1407,6 +1408,69 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Unexpected odd character after a name suffix | `unexpected content after name suffix` |
 | Excessive trailing blank lines | `more than one trailing blank line` |
 | Line head matching no shape of §3 | `line head does not start any known object shape` |
+| Value expected at the cursor but the line ends there | `expected value` |
+| Paren group expected but the cursor is not on `(` | `` expected `(` `` |
+| Parentheses wrapping a single token (`(x)`) | `` redundant parentheses around a single token — `(<token>)` should be written as `<token>` `` (token substituted) |
+| Parentheses wrapping a whole top-level expression | `` redundant parentheses around a top-level expression — drop the outer `(` and `)` `` |
+| Identifier expected, absent or not opening with a lowercase letter (§2.3) | `expected identifier` |
+| Cactus emoji inside an identifier, a binding label or a name suffix (§9.2) | `cactus emoji is reserved for auto-names; not allowed in identifiers` |
+| Root identifier expected — `Q`, `@`, `^` or `$` (§9.3) | `expected root identifier` |
+| String literal expected but the cursor is not on `"` (§9.7) | `expected string literal` |
+| String literal closed by neither a quote nor the end of the line (§9.7) | `unterminated string literal` |
+| String opened inside a paren group and never closed | `unterminated string inside paren group` |
+| Paren group with no matching `)` | `unterminated paren group` |
+| `:` with no binding label after it (§3.12) | `` expected binding label after `:` `` |
+| Hexadecimal literal expected but the text does not open with `0x` (R-9.8.3) | `expected hexadecimal literal` |
+| `0x` with no hex digit after it (R-9.8.3) | `hexadecimal literal requires at least one digit` |
+| Hexadecimal literal wider than a signed 64-bit value (R-9.8.3) | `hexadecimal literal is out of range` |
+| Name suffix with no name after it (§3.10) | `name suffix requires a name` |
+| Name that does not open with a lowercase letter (§3.10) | `name must start with a lowercase letter` |
+| Test attribute `+>` or `->` with no name after it (§3.10) | `test attribute requires a name` |
+| Atom signature `/` with no sig after it, or a bare `/Q` (R-3.10.10) | `atom signature requires a name` |
+| Atom signature on a line shape that is not a formation (R-3.10.10) | `only a formation can declare an atom signature` |
+| Type with a leading, trailing or empty dotted segment (R-3.10.10) | `type must be a dotted name with no leading, trailing, or empty segment` |
+| File-local handle after `>>` that is a scope token rather than an identifier (R-3.10.12) | `file-local handle must be an identifier, not <token>` (token substituted) |
+| `+` with no meta name after it (§3.2) | `meta directive requires a name` |
+| Meta name that is not lowercase letters and digits opening with a letter (§3.2) | `meta name must be lowercase letters and digits, starting with a letter` |
+| Whitespace other than a plain space between meta parts (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
+| `+package` carrying a number of parts other than one (§3.2) | `'+package' directive requires exactly one argument` |
+| `+package` path with an empty dotted segment (§3.2) | `'+package' path must not have an empty segment` |
+| `+alias` carrying no part (R-3.2.3) | `'+alias' directive requires at least one argument` |
+| `+alias` renaming the root token `Q` (R-3.2.3) | `'+alias' cannot rename the root token Q` |
+| `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
+| `+alias` target that is a scope token rather than an object name (R-3.2.3) | `'+alias' target must be an object name, not a scope token` |
+| `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
+| Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
+| `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
+| Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
+| Only-phi parameter list `> [` with no closing `]` (R-3.10.1) | `` only-phi parameter list missing closing `]` `` |
+| Only-phi line carrying none of the arrows that introduce one (R-3.10.8) | `` only-phi formation must contain `> [`, `++>` or `-->` `` |
+| Only-phi line with an empty body before its arrow (R-3.10.6) | `` only-phi formation requires a non-empty body before `> [` or `++>` `` |
+| Trailing text after the φ expression of an only-phi formation (R-3.10.1) | `unexpected content in the body of an only-phi formation` |
+| Only-phi body that is a reversed dispatch carrying horizontal arguments (R-3.10.6) | `only-phi formation body cannot be a reversed dispatch with horizontal arguments` |
+| Paren-grouped inline-phi carrying a name or a test attribute (R-3.10.10a) | `inline-phi inside parentheses must be anonymous` |
+| Compact tuple marker not preceded by a space (§3.9) | `compact tuple marker must follow a space` |
+| Compact tuple marker that is not `*` (§3.9) | `` compact tuple marker must start with `*` `` |
+| Compact tuple count wider than a signed 32-bit value (§3.9) | `compact tuple count is too large` |
+| `.method` line whose body does not open with a dot (§3.5) | `method continuation must start with a dot` |
+| Reversed dispatch whose receiver is not followed by a dot (§3.8) | `reversed dispatch must end with a dot` |
+| Pipe line whose `\|` is not followed by a space (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
+| Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
+| Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
+| Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
+| Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
+| First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
+| Blank line between two meta directives (R-6.5.5) | `blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block` |
+| Cactus emoji at the head of a line (§9.2) | `cactus emoji is reserved for auto-names; not allowed as a line head` |
+| Compact tuple marker inside a paren-grouped inline-phi (R-3.10.10a) | `compact tuple marker is not allowed inside a parenthesised inline-phi` |
+| `.method` continuation on a test attribute (§6.3) | `method continuation not allowed on a test attribute` |
+| Horizontal argument on the identity object `I` (R-3.16.1) | `the identity object takes no horizontal arguments; put the argument on a deeper-indent line` |
+| Trailing tokens after a void type annotation (R-3.4.8) | `trailing garbage after a void type annotation` |
+| Backslash at the very end of a literal (§9.7) | `backslash at the end of the text has nothing to escape` |
+| Escape sequence that names no known escape (§9.7) | `unrecognised escape sequence '<seq>'` (sequence substituted) |
+| Octal escape above `0o377` (§9.7) | `octal escape \<digits> is out of range: value <n> exceeds the 1-byte limit of 0o377 (255)` (digits and value substituted) |
+| Unicode escape that is not exactly four hexadecimal digits (§9.7) | `unicode escape \<digits> is not exactly four hexadecimal digits` (digits substituted) |
+| Unicode escape naming a lone surrogate (§9.7) | `unicode escape \u<XXXX> is a lone surrogate, not a valid standalone codepoint` (codepoint substituted) |
 
 R-9.9.2. The position prefix `[L:P]` (with L = line, P = pos) is prepended to every error message before insertion into the `<error>` element body. Conventions: 1-indexed line, 0-indexed pos.
 

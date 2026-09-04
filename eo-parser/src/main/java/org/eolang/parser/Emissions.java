@@ -26,6 +26,10 @@ import java.util.regex.Pattern;
  * {@link LnReversed#readHead} does.</p>
  *
  * @since 0.1
+ * @todo #8244:30min Reject a receiverless reversed dispatch used as the
+ *  phi of a parenthesised inline-phi formation, e.g.
+ *  {@code bar (if. > [x]) > z}, the same way LnOnlyPhi now does for the
+ *  vertical-body shape (see #8244).
  */
 final class Emissions {
 
@@ -253,6 +257,25 @@ final class Emissions {
             throw new ParseError(
                 line, pos,
                 "parameter names in voids must be NAME, @ or ^"
+            );
+        }
+    }
+
+    /**
+     * Reject a bracket entry of an only-phi formation that names φ. Such a
+     * formation binds its φ from the left-hand side, so a {@code @} void
+     * would leave it holding two attributes of that name and the object
+     * would keep only one of them.
+     * @param raw The parameter text, as written
+     * @param line Source line (for error reporting)
+     * @param pos Source column of the parameter's first character
+     */
+    static void validPhiParam(final String raw, final int line, final int pos) {
+        Emissions.validParam(raw, line, pos);
+        if ("@".equals(raw)) {
+            throw new ParseError(
+                line, pos,
+                "an only-phi formation binds φ from its left-hand side, so @ is not allowed among its voids"
             );
         }
     }
@@ -493,6 +516,13 @@ final class Emissions {
                 "only-phi parameter list missing closing `]`"
             );
         }
+        final int chained = Eo.topLevelGreaterBracketIndex(inner.substring(close + 1));
+        if (chained >= 0) {
+            throw new ParseError(
+                line, column + close + 1 + chained,
+                "chained inline-phi suffixes are not allowed"
+            );
+        }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
         final boolean suffixed = new Suffix(
@@ -516,7 +546,7 @@ final class Emissions {
         emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
-            Emissions.validParam(param, line, pcol);
+            Emissions.validPhiParam(param, line, pcol);
             emit.voidParam(new VoidName(param).asString(), line, pcol);
             pcol = pcol + param.length() + 1;
         }

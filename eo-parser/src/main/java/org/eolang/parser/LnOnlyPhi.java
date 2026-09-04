@@ -47,7 +47,7 @@ import java.util.List;
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
  * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
  * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
- * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens)}
+ * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, boolean)}
  * reading the {@code *} as a completed empty-tuple argument.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
@@ -177,9 +177,19 @@ final class LnOnlyPhi implements Line {
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);
-        final Level level = this.transition(
-            stack, suffix, stars >= 0 || LnOnlyPhi.bare(tokens)
-        );
+        final boolean open;
+        final boolean reversed;
+        if (stars >= 0) {
+            open = true;
+            reversed = false;
+        } else {
+            reversed = Emissions.reversedDispatch(tokens, tokens.readValue());
+            open = LnOnlyPhi.bare(tokens, reversed);
+        }
+        final Level level = this.transition(stack, suffix, open);
+        if (!reversed) {
+            level.consumeReceiver();
+        }
         tokens.seek(0);
         if (stars >= 0) {
             level.compact(stars);
@@ -217,8 +227,8 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private static boolean bare(final Tokens tokens) {
-        if (Emissions.reversedDispatch(tokens, tokens.readValue())) {
+    private static boolean bare(final Tokens tokens, final boolean reversed) {
+        if (reversed) {
             tokens.consumeDispatch();
         } else {
             tokens.readChain();
@@ -322,7 +332,7 @@ final class LnOnlyPhi implements Line {
                 end = end + 1;
             }
             final String raw = text.substring(idx, end);
-            Emissions.validParam(raw, span.line(), span.indent() + origin + idx);
+            Emissions.validPhiParam(raw, span.line(), span.indent() + origin + idx);
             out.add(raw);
             if (end < text.length()) {
                 if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {

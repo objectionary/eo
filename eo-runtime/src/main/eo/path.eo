@@ -59,10 +59,12 @@
               if.
                 len.eq 0
                 ^.separator
-                as-bytes.
-                  text.slice
-                    0
-                    text.last-index-of ^.separator >> len!
+                ^.stripped
+                  string
+                    as-bytes.
+                      text.slice
+                        0
+                        text.last-index-of ^.separator >> len!
       tail.index-of ^.separator > first!
       ^.stripped ^.driveless > pth!
       and. > root
@@ -691,10 +693,25 @@
       path ""
     "."
 
+  eq. ++> can-return-the-dirname-collapsing-a-longer-run-of-separators
+    dirname.
+      path.posix "a///b"
+    "a"
+
+  eq. ++> can-return-the-dirname-collapsing-a-run-of-separators
+    dirname.
+      path.posix "a//b"
+    "a"
+
   eq. ++> can-return-the-dirname-ignoring-repeated-trailing-separators
     dirname.
       path.posix "foo//"
     "."
+
+  eq. ++> can-return-the-dirname-keeping-an-earlier-run-of-separators
+    dirname.
+      path.posix "a//b//c"
+    "a//b"
 
   eq. ++> can-return-the-dirname-of-a-directory-path
     dirname.
@@ -754,6 +771,11 @@
     dirname.
       path.win32 "\\\\server\\share\\folder"
     "\\\\server\\share"
+
+  eq. ++> can-return-the-dirname-of-an-absolute-path-with-a-run-of-separators
+    dirname.
+      path.posix "/a//b"
+    "/a"
 
   eq. ++> can-return-the-dirname-of-an-absolute-path-with-repeated-trailing-separators
     dirname.

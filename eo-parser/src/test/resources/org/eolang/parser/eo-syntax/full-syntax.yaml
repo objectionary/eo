@@ -98,7 +98,7 @@ input: |
 
     [] > terminator
       ^.obj > x
-      .method ^.y
+      .method ^.y > z
     test > tst
       me
         (now (f (f (f (f 1)))).f):i

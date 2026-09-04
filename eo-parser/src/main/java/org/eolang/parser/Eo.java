@@ -285,6 +285,7 @@ final class Eo implements Iterable<Directive> {
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
+            Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
@@ -340,6 +341,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
+            globals.clearBlanks();
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
@@ -657,7 +659,8 @@ final class Eo implements Iterable<Directive> {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
         Eo.checkNaming(level, emit, naming);
-        if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
+        if ((level.kind() == Kind.BARE_REVERSED || level.kind() == Kind.ONLY_PHI)
+            && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
                 "reversed dispatch missing receiver"

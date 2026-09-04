@@ -173,7 +173,9 @@ final class Parsing implements Step {
                 return new XMLDocument(node).toString();
             }
         ).apply(source, xmir);
-        tojo.withXmir(xmir).withVersion(Parsing.tojoVersion(xmir, refs));
+        tojo.withXmir(xmir)
+            .withVersion(Parsing.tojoVersion(xmir, refs))
+            .withDigest(new Sha(source).toString());
         final List<Xnav> errors = new Xnav(xmir)
             .element("object")
             .element("errors")
