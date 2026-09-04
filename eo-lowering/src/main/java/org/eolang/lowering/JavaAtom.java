@@ -66,7 +66,7 @@ public final class JavaAtom {
             lines.add(JavaAtom.reading(index, name, this.voids.get(name)));
         }
         for (final Step step : this.protocol.moves()) {
-            lines.add(JavaAtom.computed(step));
+            lines.add(this.computed(step));
         }
         lines.add(
             String.format(
@@ -114,17 +114,104 @@ public final class JavaAtom {
         return out;
     }
 
-    private static String computed(final Step step) {
+    private String computed(final Step step) {
         final Op operation = new Op(step.atom());
         return String.format(
             "final %s %s = %s;",
             JavaAtom.typed(operation.forma()),
             step.label(),
-            String.format(
-                operation.java(),
-                step.keys().stream().map(JavaAtom::expression).toArray(Object[]::new)
-            )
+            this.applied(step, operation)
         );
+    }
+
+    private String applied(final Step step, final Op operation) {
+        final String out;
+        if ("eq".equals(operation.method())) {
+            out = this.compared(step);
+        } else {
+            final String format = operation.java();
+            for (final String key : step.keys()) {
+                if (!operation.carrier().equals(this.forma(key))) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "The operand '%s' of '%s' does not carry a %s",
+                            key, step.atom(), operation.carrier()
+                        )
+                    );
+                }
+            }
+            out = String.format(
+                format,
+                step.keys().stream().map(JavaAtom::expression).toArray(Object[]::new)
+            );
+        }
+        return out;
+    }
+
+    private String compared(final Step step) {
+        final String kinds = step.keys().stream()
+            .map(this::forma)
+            .distinct()
+            .collect(Collectors.joining(","));
+        final List<String> sides = step.keys().stream()
+            .map(JavaAtom::expression)
+            .collect(Collectors.toList());
+        final String out;
+        if ("number".equals(kinds)) {
+            out = String.format(
+                "Double.doubleToRawLongBits(%s) == Double.doubleToRawLongBits(%s)",
+                sides.get(0), sides.get(1)
+            );
+        } else if ("bytes".equals(kinds)) {
+            out = String.format(
+                "java.util.Arrays.equals(%s, %s)",
+                sides.get(0), sides.get(1)
+            );
+        } else if ("bool".equals(kinds)) {
+            out = String.format("%s == %s", sides.get(0), sides.get(1));
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "The equality '%s' mixes the formas '%s' and cannot render",
+                    step.label(), kinds
+                )
+            );
+        }
+        return out;
+    }
+
+    private String forma(final String key) {
+        final String[] parts = key.split(":", 2);
+        final String out;
+        if ("sym".equals(parts[0])) {
+            if (parts[1].charAt(0) == 'v') {
+                out = this.voids.get(
+                    new ArrayList<>(this.voids.keySet())
+                        .get(Integer.parseInt(parts[1].substring(1)))
+                );
+            } else {
+                out = new Op(this.move(parts[1]).atom()).forma();
+            }
+        } else {
+            out = parts[0];
+        }
+        return out;
+    }
+
+    private Step move(final String label) {
+        Step found = null;
+        for (final Step step : this.protocol.moves()) {
+            if (step.label().equals(label)) {
+                found = step;
+                break;
+            }
+        }
+        if (found == null) {
+            throw new IllegalStateException(
+                String.format("The protocol has no step '%s'", label)
+            );
+        }
+        return found;
     }
 
     private static String typed(final String forma) {
