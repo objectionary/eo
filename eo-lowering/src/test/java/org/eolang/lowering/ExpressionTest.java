@@ -18,7 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link Expression}.
  *
  * <p>The translation is phino's, so these tests need the real binary
- * and skip without it, the same way {@link ConstantTest} does.</p>
+ * and skip without it, the same way {@link ConstantTest} does. The
+ * {@code plus()} fragment they share is the XMIR of {@code 1.plus 2},
+ * a dispatch over two literals.</p>
  *
  * @since 0.76.0
  */
@@ -32,20 +34,7 @@ final class ExpressionTest {
         MatcherAssert.assertThat(
             "the fragment must become the φ of the root formation, but it didnt",
             new Expression(
-                phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.plus'>",
-                        "<o base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o")
+                phino, this.plus()
             ).text().replaceAll("\\s+", " "),
             Matchers.containsString(
                 String.join(
@@ -89,23 +78,26 @@ final class ExpressionTest {
             phino.dataize(
                 new Universe().text(),
                 new Expression(
-                    phino,
-                    new Xnav(
-                        String.join(
-                            "",
-                            "<o base='.plus'>",
-                            "<o base='Φ.number'>",
-                            "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                            "</o>",
-                            "<o as='α0' base='Φ.number'>",
-                            "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                            "</o>",
-                            "</o>"
-                        )
-                    ).element("o")
+                    phino, this.plus()
                 ).text()
             ).bytes(),
             Matchers.equalTo("40-08-00-00-00-00-00-00")
         );
+    }
+
+    private Xnav plus() {
+        return new Xnav(
+            String.join(
+                "",
+                "<o base='.plus'>",
+                "<o base='Φ.number'>",
+                "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                "</o>",
+                "<o as='α0' base='Φ.number'>",
+                "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                "</o>",
+                "</o>"
+            )
+        ).element("o");
     }
 }
