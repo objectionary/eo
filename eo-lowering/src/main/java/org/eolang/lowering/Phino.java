@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The phino binary on this machine.
@@ -104,19 +104,13 @@ public final class Phino {
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
     public String pin() {
-        try {
-            return new IoCheckedText(
-                new Trimmed(
-                    new TextOf(
-                        new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
-                    )
+        return new UncheckedText(
+            new Trimmed(
+                new TextOf(
+                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
                 )
-            ).asString();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Failed to read phino-version.txt from classpath", ex
-            );
-        }
+            )
+        ).asString();
     }
 
     /**

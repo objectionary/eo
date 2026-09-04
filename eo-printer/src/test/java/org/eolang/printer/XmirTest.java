@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrFull;
@@ -336,9 +336,9 @@ final class XmirTest {
         return new Xmir(xml, config);
     }
 
-    private XML mergeMonikers() throws IOException {
+    private XML mergeMonikers() {
         return new XMLDocument(
-            new IoCheckedText(
+            new UncheckedText(
                 new TextOf(
                     new ResourceOf(
                         "org/eolang/printer/print/merge-monikers.xsl",

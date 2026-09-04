@@ -4,10 +4,9 @@
  */
 package org.eolang.lowering;
 
-import java.io.IOException;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The φ-calculus expression holding the method tables of the primitives.
@@ -39,16 +38,10 @@ public final class Universe {
      * @return The text of the {@code universe.phi} resource
      */
     public String text() {
-        try {
-            return new IoCheckedText(
-                new TextOf(
-                    new ResourceOf("org/eolang/lowering/universe.phi", this.getClass())
-                )
-            ).asString();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Failed to read universe.phi from classpath", ex
-            );
-        }
+        return new UncheckedText(
+            new TextOf(
+                new ResourceOf("org/eolang/lowering/universe.phi", this.getClass())
+            )
+        ).asString();
     }
 }

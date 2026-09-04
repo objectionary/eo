@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -122,8 +122,8 @@ public final class Report {
         return path.substring(0, path.length() - ".xmir".length()).concat(".eo");
     }
 
-    private static String stylesheet(final String name) throws IOException {
-        return new IoCheckedText(
+    private static String stylesheet(final String name) {
+        return new UncheckedText(
             new TextOf(
                 new ResourceOf(
                     String.format("org/eolang/inference/report/%s", name),

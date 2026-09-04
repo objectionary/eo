@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.bytes.BytesOf;
-import org.cactoos.bytes.IoCheckedBytes;
+import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.io.ResourceOf;
 
 /**
@@ -87,7 +87,7 @@ final class Fingerprint implements Supplier<String> {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (final String resource : this.resources) {
                 digest.update(
-                    new IoCheckedBytes(
+                    new UncheckedBytes(
                         new BytesOf(
                             new ResourceOf(Fingerprint.global(resource), Fingerprint.class)
                         )
