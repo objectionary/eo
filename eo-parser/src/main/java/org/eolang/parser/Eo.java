@@ -340,6 +340,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
+            globals.clearBlanks();
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
