@@ -4,9 +4,14 @@
  */
 package org.eolang.maven;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import org.cactoos.set.SetOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,6 +21,25 @@ import org.junit.jupiter.api.io.TempDir;
  * @since 0.61.0
  */
 final class CompilingTest {
+
+    @Test
+    void runsEveryStepInTheOrderItIsGiven() throws IOException {
+        final Collection<String> done = new ArrayList<>(5);
+        new Compiling(
+            () -> done.add("assembling"),
+            () -> done.add("linting"),
+            () -> done.add("merging"),
+            () -> done.add("resolving"),
+            () -> done.add("placing")
+        ).exec();
+        MatcherAssert.assertThat(
+            "every step must run once, in the order it was handed over, but they didnt",
+            done,
+            Matchers.contains(
+                "assembling", "linting", "merging", "resolving", "placing"
+            )
+        );
+    }
 
     @Test
     void runsWithoutExceptions(@TempDir final Path temp) {
@@ -56,6 +80,7 @@ final class CompilingTest {
                     false,
                     true
                 ),
+                new Merging(new TjsForeign(), temp.resolve(Merging.DIR)),
                 new Resolving(
                     new TjsForeign(),
                     temp.resolve("resolve"),

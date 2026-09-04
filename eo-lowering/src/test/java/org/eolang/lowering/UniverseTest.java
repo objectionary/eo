@@ -30,6 +30,15 @@ final class UniverseTest {
     }
 
     @Test
+    void shadowsTheSlicingOfTheDecoratee() {
+        MatcherAssert.assertThat(
+            "the string must hide the byte slicing behind an unknown atom, but it doesnt",
+            new Universe().text(),
+            Matchers.containsString("λ ⤍ L_string_slice")
+        );
+    }
+
+    @Test
     void resolvesReferenceWhenMerged(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());

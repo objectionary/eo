@@ -7,6 +7,11 @@
     plus ↦ ⟦ x ↦ ∅, λ ⤍ L_number_plus ⟧,
     times ↦ ⟦ x ↦ ∅, λ ⤍ L_number_times ⟧
   ⟧,
+  string ↦ ⟦
+    as-bytes ↦ ∅,
+    φ ↦ ξ.as-bytes,
+    slice ↦ ⟦ start ↦ ∅, len ↦ ∅, λ ⤍ L_string_slice ⟧
+  ⟧,
   bytes ↦ ⟦
     data ↦ ∅,
     φ ↦ ξ.data,

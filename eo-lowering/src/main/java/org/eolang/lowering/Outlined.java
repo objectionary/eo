@@ -20,8 +20,8 @@ import org.w3c.dom.Node;
  *
  * <p>An application qualifies when everything under it is a literal, a
  * reference whose locator the tables of {@code eo:inference} decide as
- * number or bytes, or such an application again — so its value is a
- * straight-line computation over data inputs. This is the constructive
+ * number, string or bytes, or such an application again — so its value
+ * is a straight-line computation over data inputs. This is the constructive
  * purity check of {@code purify.xsl}, taken one step further: where the
  * stylesheet stops at any part that is itself an application, the walk
  * here descends into it, so a whole arithmetic expression qualifies at

@@ -101,6 +101,82 @@ final class ConstantTest {
     }
 
     @Test
+    void foldsSizeOfText(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the size of a four-byte text must fold to the bytes of 4, but it didnt",
+            new Constant(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.size'>",
+                        "<o base='Φ.string'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>D0-B4-D1-80</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o")
+            ).value().bytes(),
+            Matchers.equalTo("40-10-00-00-00-00-00-00")
+        );
+    }
+
+    @Test
+    void foldsTextHoldingAnEscape(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a text with a line break must equal its own bytes, but it didnt",
+            new Constant(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.eq'>",
+                        "<o base='Φ.string'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>65-0A-65-0A-65</o></o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>65-0A-65-0A-65</o></o>",
+                        "</o>"
+                    )
+                ).element("o")
+            ).value().bytes(),
+            Matchers.equalTo("01-")
+        );
+    }
+
+    @Test
+    void refusesTextSlicing(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Constant(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.slice'>",
+                        "<o base='Φ.string'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>D0-B4-D1-80</o></o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "<o as='α1' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o")
+            )::value,
+            "slicing a text counts characters, so the byte atom must not fold it, but it did"
+        );
+    }
+
+    @Test
     void refusesForeignMethod(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One formation, and under its φ a single tree of nested dispatches: the
+# (2,2) Pade approximant of the exponential, each of its two quadratics
+# folded by Horner and written in the vertical style of `printf.eo`.
+# Nothing recurses and nothing is named along the way, so every
+# coefficient stands as a literal operand of its own step, and both
+# branches of the quotient reduce in the same pass. Seven steps is one
+# short of what the eight rounds of a reduction may spend, and the whole
+# rational function leaves the EO as one atom of straight-line Java.
+input: |
+  [] > foo
+    [x] > pade
+      div. > @
+        plus.
+          times.
+            plus.
+              x
+              6
+            x
+          12
+        plus.
+          times.
+            plus.
+              x
+              -6
+            x
+          12
+    pade 0.5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: pade
+voids:
+  x: number
+lowered: |
+  [] > foo
+    pade 0.5 > @
+    [] > pade /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_plus sym:v0 number:40-18-00-00-00-00-00-00
+  s2 ← L_number_times sym:s1 sym:v0
+  s3 ← L_number_plus sym:s2 number:40-28-00-00-00-00-00-00
+  s4 ← L_number_plus sym:v0 number:C0-18-00-00-00-00-00-00
+  s5 ← L_number_times sym:s4 sym:v0
+  s6 ← L_number_plus sym:s5 number:40-28-00-00-00-00-00-00
+  s7 ← L_number_div sym:s3 sym:s6
+  answer sym:s7 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 + Double.longBitsToDouble(0x4018000000000000L);
+  final double s2 = s1 * v0;
+  final double s3 = s2 + Double.longBitsToDouble(0x4028000000000000L);
+  final double s4 = v0 + Double.longBitsToDouble(0xC018000000000000L);
+  final double s5 = s4 * v0;
+  final double s6 = s5 + Double.longBitsToDouble(0x4028000000000000L);
+  final double s7 = s3 / s6;
+  return new Data.ToPhi(s7);

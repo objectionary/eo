@@ -189,6 +189,53 @@ final class JavaAtomTest {
     }
 
     @Test
+    void readsStringVoidAsItsBytes() {
+        MatcherAssert.assertThat(
+            "a string void must be dataized into a byte array, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Step(
+                            "s1", "L_bytes_concat",
+                            Arrays.asList("sym:v0", "string:21-")
+                        ),
+                        new Step("s2", "L_bytes_size", Collections.singletonList("sym:s1"))
+                    ),
+                    "sym:s2",
+                    "number"
+                ),
+                Collections.singletonMap("t", "string")
+            ).text(),
+            Matchers.containsString(
+                "final byte[] v0 = new Dataized(this.take(\"t\")).take();"
+            )
+        );
+    }
+
+    @Test
+    void rendersStringEqualityThroughArrays() {
+        MatcherAssert.assertThat(
+            "equality over a string and a text literal must go through Arrays, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "string:61-62-63"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("t", "string")
+            ).text(),
+            Matchers.containsString(
+                String.format(
+                    "final boolean s1 = java.util.Arrays.equals(v0, %s);",
+                    "new byte[] {(byte) 0x61, (byte) 0x62, (byte) 0x63}"
+                )
+            )
+        );
+    }
+
+    @Test
     void rendersBytesEqualityThroughArrays() {
         MatcherAssert.assertThat(
             "equality over bytes must go through Arrays, but it doesnt",
@@ -276,10 +323,22 @@ final class JavaAtomTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             new JavaAtom(
-                new Protocol(Collections.emptyList(), "sym:v0", "string"),
-                Collections.singletonMap("s", "string")
+                new Protocol(Collections.emptyList(), "sym:v0", "tuple"),
+                Collections.singletonMap("s", "tuple")
             )::text,
             "a void of a foreign forma cannot be read, but it was"
+        );
+    }
+
+    @Test
+    void refusesStringAnswer() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "string"),
+                Collections.singletonMap("t", "string")
+            )::text,
+            "a byte array handed over as a string would change the forma, but it was"
         );
     }
 }
