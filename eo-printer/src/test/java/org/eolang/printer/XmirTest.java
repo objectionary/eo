@@ -122,7 +122,7 @@ final class XmirTest {
     }
 
     @Test
-    void avoidsRepeatingHostedLookup() throws IOException {
+    void avoidsRepeatingHostedLookup() {
         MatcherAssert.assertThat(
             "The hosted template must not repeat the full first-host lookup",
             this.mergeMonikers(),
@@ -137,7 +137,7 @@ final class XmirTest {
     }
 
     @Test
-    void guardsExpensiveTemplatePredicates() throws IOException {
+    void guardsExpensiveTemplatePredicates() {
         MatcherAssert.assertThat(
             "Cheap predicates must reject nodes before hosted/applied lookups",
             this.mergeMonikers(),
@@ -149,7 +149,7 @@ final class XmirTest {
     }
 
     @Test
-    void sortsOnlyMultipleDispatches() throws IOException {
+    void sortsOnlyMultipleDispatches() {
         MatcherAssert.assertThat(
             "Dispatch ordering must sort only when at least two candidates exist",
             this.mergeMonikers(),
