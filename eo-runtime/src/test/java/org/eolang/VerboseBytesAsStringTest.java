@@ -70,8 +70,9 @@ final class VerboseBytesAsStringTest {
                 ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67d).array(),
                 "12.34567"
             ),
-            Arguments.of(new byte[]{1}, "[0x01] = true"),
+            Arguments.of(new byte[]{-1}, "[0xFF] = true"),
             Arguments.of(new byte[]{0}, "[0x00] = false"),
+            Arguments.of(new byte[]{1}, "[0x01] = false"),
             Arguments.of(new byte[]{2}, "[0x02] = false"),
             Arguments.of(new byte[]{}, "[<no bytes>]"),
             Arguments.of(new byte[]{12}, "[0x0C] = false"),

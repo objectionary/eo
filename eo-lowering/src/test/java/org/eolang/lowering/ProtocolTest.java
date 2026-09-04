@@ -28,7 +28,7 @@ final class ProtocolTest {
     void namesCarrier() {
         MatcherAssert.assertThat(
             "the forma must come back as given, but it didnt",
-            new Protocol(Collections.emptyList(), "bool:01-", "bool").carrier(),
+            new Protocol(Collections.emptyList(), "bool:FF-", "bool").carrier(),
             Matchers.equalTo("bool")
         );
     }

@@ -45,7 +45,7 @@ final class UniverseTest {
         MatcherAssert.assertThat(
             "the universe must be a complete expression phino can merge with, but it isnt",
             phino.dataize(new Universe().text(), "⟦ φ ↦ Φ.true ⟧").bytes(),
-            Matchers.equalTo("01-")
+            Matchers.equalTo("FF-")
         );
     }
 }

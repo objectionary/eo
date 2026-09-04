@@ -117,13 +117,13 @@ public final class Dataized {
                 weak.length, Arrays.toString(weak)
             );
         }
-        if (weak[0] != 0 && weak[0] != 1) {
+        if (weak[0] != 0 && weak[0] != -1) {
             throw new ExFailure(
-                "Can't dataize the byte %s to boolean, only 00- and 01- are booleans",
+                "Can't dataize the byte %s to boolean, only 00- and FF- are booleans",
                 Arrays.toString(weak)
             );
         }
-        return weak[0] == 1;
+        return weak[0] == -1;
     }
 
     /**

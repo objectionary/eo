@@ -42,7 +42,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
             result = String.format(
                 "[0x%02X] = %s",
                 this.data[0],
-                this.data[0] == 1
+                this.data[0] == -1
             );
         } else if (this.data.length == Double.BYTES) {
             result = String.format(
