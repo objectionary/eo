@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A text literal stands as the operand of a byte atom, and the
+# comparison renders as an array equality over the two UTF-8 sequences.
+input: |
+  [] > foo
+    [t] > greets
+      t.eq "hi" > @
+    greets "hi" > @
+prelude:
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+  bytes.eo: |
+    [data] > bytes
+      data > @
+unit: greets
+voids:
+  t: string
+lowered: |
+  [] > foo
+    greets "hi" > @
+    [] > greets /Q.bool
+      ? > t /Q.string
+protocol: |
+  s1 ← L_bytes_eq sym:v0 string:68-69
+  answer sym:s1 bool
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final boolean s1 = java.util.Arrays.equals(v0, new byte[] {(byte) 0x68, (byte) 0x69});
+  return new Data.ToPhi(s1);

@@ -25,6 +25,15 @@ final class SymbolTest {
     }
 
     @Test
+    void rendersMarkedStringCarrier() {
+        MatcherAssert.assertThat(
+            "a symbolic string must render as a string around a marked bytes, but it didnt",
+            new Symbol("v1", "string").phi(),
+            Matchers.equalTo("Φ.string(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v1 ⟧))")
+        );
+    }
+
+    @Test
     void namesKey() {
         MatcherAssert.assertThat(
             "the key must carry the name of the symbol, but it doesnt",

@@ -34,6 +34,15 @@ import java.util.Optional;
  * failure.</p>
  *
  * @since 0.76.0
+ * @todo #8308:30min Let a string literal stand as the receiver of a step.
+ *  A record shows its receiver as the instance the atom fired on, and a
+ *  string has already dispatched into its own bytes by then, so the
+ *  shape names a bytes datum while the tree still holds a string one,
+ *  the two never match, and {@code "abc".concat b} refuses where
+ *  {@code b.concat "abc"} reduces. Teach {@link Shape} that a bytes
+ *  receiver covers a string one carrying the same datum — the two
+ *  compute the same value for every atom of the {@link Universe}, since
+ *  the only method a string answers differently is shadowed there.
  */
 public final class Reduction {
 

@@ -62,13 +62,25 @@ final class FormasTest {
     }
 
     @Test
-    void refusesStringEndpoint() {
+    void chasesReferenceChainToTheStringForma() {
         MatcherAssert.assertThat(
-            "a chase landing on the string forma must refuse, but it didnt",
+            "a chase landing on the string forma must name it, but it didnt",
             new Formas(
                 Collections.singletonMap("Φ.foo.txt", "Φ.string"),
                 Collections.emptyMap()
             ).at("Φ.foo.txt"),
+            Matchers.equalTo("string")
+        );
+    }
+
+    @Test
+    void refusesBoolEndpoint() {
+        MatcherAssert.assertThat(
+            "a chase landing on a bool must refuse, but it didnt",
+            new Formas(
+                Collections.singletonMap("Φ.foo.flag", "Φ.false"),
+                Collections.emptyMap()
+            ).at("Φ.foo.flag"),
             Matchers.equalTo("")
         );
     }
@@ -109,6 +121,22 @@ final class FormasTest {
             "a void filled only with numbers must be witnessed as one, but it wasnt",
             new Formas(temp).given("Φ.foo.calc.x"),
             Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void witnessesStringVoid(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.foo.calc\">%s</type></provides>",
+                "<attr name=\"t\" void=\"true\"> <witnessed><ref loc=\"Φ.string\"/></witnessed> </attr>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled only with strings must be witnessed as one, but it wasnt",
+            new Formas(temp).given("Φ.foo.calc.t"),
+            Matchers.equalTo("string")
         );
     }
 

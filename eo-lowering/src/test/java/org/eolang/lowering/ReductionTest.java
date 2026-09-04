@@ -160,6 +160,84 @@ final class ReductionTest {
     }
 
     @Test
+    void reducesStringThroughItsBytes(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a symbolic string must reach the byte atoms through its own phi, but it didnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.t.size.plus'>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("t", "string"),
+                8
+            ).protocol().moves().get(0).atom(),
+            Matchers.equalTo("L_bytes_size")
+        );
+    }
+
+    @Test
+    void takesStringLiteralAsAnArgument(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a text literal must stand as the operand of the byte atom, but it doesnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.t.concat'>",
+                        "<o as='α0' base='Φ.string'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>21-</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("t", "string"),
+                8
+            ).protocol().moves().get(0).keys(),
+            Matchers.contains("sym:v0", "string:21-")
+        );
+    }
+
+    @Test
+    void refusesTextSlicing(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.t.slice'>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "<o as='α1' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("t", "string"),
+                8
+            )::protocol,
+            "slicing a string counts characters, not bytes, so it cannot reduce, but it did"
+        );
+    }
+
+    @Test
     void answersComparisonWithBool(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

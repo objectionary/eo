@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 /**
  * One XMIR fragment, read into a reduction tree.
  *
- * <p>Dispatches become sites, literal carriers become literals, and a
+ * <p>Dispatches become sites, literal carriers become literals — a
+ * number and a string alike wrap their datum in a bytes carrier — and a
  * {@code ξ} reference to a declared void becomes the symbol of that
  * void, named positionally so that no spelling of a void name ever
  * leaks into a marker. The parser rolls a dispatch chain rooted in a
@@ -63,8 +64,8 @@ public final class Parsed {
             out = new Literal("bool", "01-");
         } else if ("Φ.false".equals(base)) {
             out = new Literal("bool", "00-");
-        } else if ("Φ.number".equals(base)) {
-            out = new Literal("number", Parsed.datum(Parsed.kids(node), base));
+        } else if ("Φ.number".equals(base) || "Φ.string".equals(base)) {
+            out = new Literal(base.substring(2), Parsed.datum(Parsed.kids(node), base));
         } else if ("Φ.bytes".equals(base)) {
             out = new Literal("bytes", Parsed.datum(Parsed.kids(node), base));
         } else if (base.startsWith("ξ.")) {
@@ -138,11 +139,13 @@ public final class Parsed {
 
     private static String datum(final List<Xnav> kids, final String base) {
         List<Xnav> inner = kids;
-        if ("Φ.number".equals(base)) {
+        if (!"Φ.bytes".equals(base)) {
             if (inner.size() != 1
                 || !"Φ.bytes".equals(inner.get(0).attribute("base").text().orElse(""))) {
                 throw new IllegalStateException(
-                    "A number literal must wrap exactly one bytes carrier"
+                    String.format(
+                        "The literal '%s' must wrap exactly one bytes carrier", base
+                    )
                 );
             }
             inner = Parsed.kids(inner.get(0));

@@ -12,10 +12,11 @@ package org.eolang.lowering;
  * forma names, holding a marker formation in the data slot: dispatch
  * finds the methods of the carrier as usual, and the marker parks the
  * atom that finally demands the bytes, which is how the next record
- * points here. A bool has no such carrier — {@code Φ.true} and
- * {@code Φ.false} are plain data — so a bool-valued symbol may only
- * finish a protocol, never feed a later step, and rendering one is
- * refused.</p>
+ * points here. A number and a string wrap the marker in a bytes carrier
+ * of their own, since that is the one void each of them declares. A bool
+ * has no such carrier — {@code Φ.true} and {@code Φ.false} are plain
+ * data — so a bool-valued symbol may only finish a protocol, never feed
+ * a later step, and rendering one is refused.</p>
  *
  * @since 0.76.0
  */
@@ -44,9 +45,9 @@ public final class Symbol implements Term {
     @Override
     public String phi() {
         final String out;
-        if ("number".equals(this.forma)) {
+        if ("number".equals(this.forma) || "string".equals(this.forma)) {
             out = String.format(
-                "Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧))", this.name
+                "Φ.%s(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧))", this.forma, this.name
             );
         } else if ("bytes".equals(this.forma)) {
             out = String.format("Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧)", this.name);
