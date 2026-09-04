@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -23,6 +24,11 @@ import java.util.stream.Stream;
  * the amount of bytes read from it, so that trees differing in file names or in file boundaries
  * never collide. Only files speak into the digest, hence a directory holding none of them stays
  * invisible to the hash, the way Git also sees it.
+ * The walk follows symbolic links, because everything else here already does:
+ * a path is called a directory with {@link Files#isDirectory(Path, java.nio.file.LinkOption...)}
+ * and a file with {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)}, and both look
+ * through a link. Without that, a link to a directory was walked but never entered, so the digest
+ * was the one of empty input, the same for every such link and unchanged by anything behind it.
  * @since 0.62.0
  */
 final class Sha {
@@ -72,7 +78,7 @@ final class Sha {
         } else {
             active = any -> true;
         }
-        try (Stream<Path> walk = Files.walk(this.path)) {
+        try (Stream<Path> walk = Files.walk(this.path, FileVisitOption.FOLLOW_LINKS)) {
             walk.filter(Files::isRegularFile)
                 .filter(active)
                 .sorted(Comparator.comparing(this::relative))
