@@ -118,8 +118,7 @@ public final class Phino {
      * <p>Reading XMIR is phino's own job, done under {@code --input=xmir}:
      * the document is parsed into the very AST its own parser builds and
      * printed back in phi syntax. No rule is applied, so nothing but the
-     * dialect decides what comes out, and no part of that dialect has to
-     * be spelled out on this side.</p>
+     * dialect of the pinned binary decides what comes out.</p>
      *
      * @param xmir The document, in XMIR
      * @return The expression, in phi syntax
@@ -129,9 +128,7 @@ public final class Phino {
         final Path file = Files.createTempFile(this.workspace(), "fragment", ".xmir");
         try {
             Files.write(file, xmir.getBytes(StandardCharsets.UTF_8));
-            return this.executed(
-                this.binary, "rewrite", "--input", "xmir", file.toString()
-            );
+            return this.executed(this.binary, "rewrite", "--input", "xmir", file.toString());
         } finally {
             Files.deleteIfExists(file);
         }

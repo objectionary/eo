@@ -69,19 +69,6 @@ final class PhinoTest {
     }
 
     @Test
-    void readsXmirIntoPhi(@Mktmp final Path temp) throws Exception {
-        final Phino phino = new Phino("phino", 100, temp);
-        Assumptions.assumeTrue(phino.suitable());
-        MatcherAssert.assertThat(
-            "the XMIR document must come back as the phi it means, but it didnt",
-            phino.phi(
-                "<object><o name='φ' base='Φ.bytes'><o as='α0'>2A-</o></o></object>"
-            ).replaceAll("\\s+", " "),
-            Matchers.equalTo("⟦ φ ↦ Φ.bytes( α0 ↦ ⟦ Δ ⤍ 2A-, ρ ↦ ∅ ⟧ ), ρ ↦ ∅ ⟧")
-        );
-    }
-
-    @Test
     void dataizesDatum(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());

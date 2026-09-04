@@ -18,28 +18,20 @@ import org.w3c.dom.Element;
 /**
  * One XMIR fragment as a φ-calculus expression.
  *
- * <p>Turning XMIR into phi is phino's own job, reached with
- * {@code --input=xmir}, and this class only asks for it: the fragment is
- * wrapped into the document shape that reader expects — an
- * {@code <object/>} holding one {@code <o/>} named {@code φ} — and
- * {@link Phino#phi(String)} prints it back in phi syntax. No phi is
- * written here, so nothing on this side has to know how a dispatch, a
- * literal carrier or a datum spells out; when the dialect moves, the
- * pinned binary moves with it and this class does not.</p>
- *
- * <p>The copy handed over is bound to {@code φ} of the root formation,
- * which is what a {@code name} attribute means to the XMIR reader, and
- * loses the {@code as} of the site it was carved from, since a binding
- * of the root belongs to no application.</p>
- *
- * <p>What comes back is a formation binding the fragment to {@code φ}, a
+ * <p>The fragment is rendered as a formation binding it to {@code φ}, a
  * complete expression of its own. It is not evaluatable alone, though:
  * the {@code Φ.number} and {@code Φ.bytes} references inside it resolve
  * only when {@code phino merge} joins this expression with the
- * {@link Universe}, whose root formation holds those method tables. A
- * fragment whose meaning depends on a context this document does not
+ * {@link Universe}, whose root formation holds those method tables.</p>
+ *
+ * <p>The rendering is phino's own, reached with {@code --input=xmir}:
+ * this class only wraps the fragment into the document that reader
+ * expects — an {@code <object/>} holding one {@code <o/>} named
+ * {@code φ}, every other attribute of it ignored — and
+ * {@link Phino#phi(String)} prints it. No phi syntax is written here, so
+ * a subtree whose meaning depends on a context this document does not
  * carry — a {@code ξ} reference to a void declared elsewhere — renders
- * like any other and is refused later, by the dataization that walks
+ * like any other, and is refused later by the dataization that walks
  * into the error terminator.</p>
  *
  * @since 0.76.0
@@ -77,7 +69,6 @@ public final class Expression {
 
     private String document() {
         final Element root = (Element) this.fragment.node().cloneNode(true);
-        root.removeAttribute("as");
         root.setAttribute("name", "φ");
         final StringWriter writer = new StringWriter();
         try {
