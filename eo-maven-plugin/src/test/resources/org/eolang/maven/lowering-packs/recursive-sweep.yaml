@@ -1,0 +1,112 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Composite Simpson integration of `t/(1+t*t)`, swept over four panels
+# by tail recursion, and the three answers lowering gives one program.
+# `curve` is pure and every site fills it with data, so it becomes an
+# atom. `panel` is pure and reduces fine — the protocol below is its
+# own — but its voids are filled with computed objects that no forma
+# witnesses, so it stays as written. `sweep` recurses, which means it
+# declares `^` and reads its own name through it, and a formation that
+# names ρ is refused before the reduction is even tried. Recursion
+# shields nothing, though: the midpoint inside the recursive call is
+# still a pure application, and it leaves for a synthetic atom of its
+# own.
+input: |
+  [] > foo
+    [^ h k left acc] > sweep
+      if. > @
+        k.lte 0
+        acc
+        ^.sweep
+          h
+          k.plus -1
+          left.plus h
+          plus.
+            acc
+            ^.panel
+              h
+              ^.curve left
+              ^.curve
+                left.plus
+                  h.div 2
+              ^.curve
+                left.plus h
+    [w a b c] > panel
+      times. > @
+        div.
+          w
+          6
+        plus.
+          plus.
+            a
+            times.
+              b
+              4
+          c
+    [t] > curve
+      div. > @
+        t
+        plus.
+          times.
+            t
+            t
+          1
+    sweep 0.25 4 0 0 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: panel
+voids:
+  w: number
+  a: number
+  b: number
+  c: number
+lowered: |
+  [] > foo
+    sweep > @
+      0.25
+      4
+      0
+      0
+    [] > curve /Q.number
+      ? > t /Q.number
+    times. > [w a b c] > panel
+      w.div 6
+      plus.
+        a.plus
+          b.times 4
+        c
+    [^ h k left acc] > sweep
+      if. > @
+        k.lte 0
+        acc
+        ^.sweep
+          h
+          k.plus -1
+          left.plus h
+          acc.plus
+            ^.panel
+              h
+              ^.curve left
+              ^.curve
+                l🌵0c18c794d21f h left
+              ^.curve
+                left.plus h
+      [] > l🌵0c18c794d21f /Q.number
+        ? > v0 /Q.number
+        ? > v1 /Q.number
+protocol: |
+  s1 ← L_number_div sym:v0 number:40-18-00-00-00-00-00-00
+  s2 ← L_number_times sym:v2 number:40-10-00-00-00-00-00-00
+  s3 ← L_number_plus sym:v1 sym:s2
+  s4 ← L_number_plus sym:s3 sym:v3
+  s5 ← L_number_times sym:s1 sym:s4
+  answer sym:s5 number
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double v1 = new Dataized(this.take("v1")).asNumber();
+  final double s1 = v0 / Double.longBitsToDouble(0x4000000000000000L);
+  final double s2 = v1 + s1;
+  return new Data.ToPhi(s2);
