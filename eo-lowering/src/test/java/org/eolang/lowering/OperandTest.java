@@ -89,7 +89,7 @@ final class OperandTest {
         MatcherAssert.assertThat(
             "a bare truth must anchor to its byte, but it didnt",
             new Operand("Φ.true").key(),
-            Matchers.equalTo("bool:01-")
+            Matchers.equalTo("bool:FF-")
         );
     }
 

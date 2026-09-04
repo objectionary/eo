@@ -41,7 +41,7 @@ final class LiteralTest {
     void rendersTruthAsDispatch() {
         MatcherAssert.assertThat(
             "the byte of truth must render as Φ.true, but it didnt",
-            new Literal("bool", "01-").phi(),
+            new Literal("bool", "FF-").phi(),
             Matchers.equalTo("Φ.true")
         );
     }

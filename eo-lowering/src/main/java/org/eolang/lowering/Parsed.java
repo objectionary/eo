@@ -60,7 +60,7 @@ public final class Parsed {
         final String base = node.attribute("base").text().orElse("");
         final Term out;
         if ("Φ.true".equals(base)) {
-            out = new Literal("bool", "01-");
+            out = new Literal("bool", "FF-");
         } else if ("Φ.false".equals(base)) {
             out = new Literal("bool", "00-");
         } else if ("Φ.number".equals(base) || "Φ.string".equals(base)) {

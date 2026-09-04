@@ -1,4 +1,4 @@
-# Bytes as a boolean: TRUE when the single byte equals `01-`, FALSE otherwise.
+# Bytes as a boolean: TRUE when the single byte equals `FF-`, FALSE otherwise.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -8,7 +8,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > as-bool
-  ^.eq 01- > @
+  ^.eq FF- > @
 
   not. ++> can-convert-bytes-to-a-bool
-    01-.as-bool.eq 00-.as-bool
+    FF-.as-bool.eq 00-.as-bool

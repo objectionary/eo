@@ -68,7 +68,7 @@ public final class Operand {
 
     /**
      * The identity of the value.
-     * @return A key such as {@code sym:s1}, {@code number:40-14-...} or {@code bool:01-}
+     * @return A key such as {@code sym:s1}, {@code number:40-14-...} or {@code bool:FF-}
      */
     public String key() {
         final String out = this.guessed();
@@ -86,7 +86,7 @@ public final class Operand {
     private String guessed() {
         String out = "";
         if ("Φ.true".equals(this.text)) {
-            out = "bool:01-";
+            out = "bool:FF-";
         } else if ("Φ.false".equals(this.text)) {
             out = "bool:00-";
         } else {
