@@ -6,8 +6,8 @@
 input: |
   [] > foo
     [t] > greets
-      t.eq "hi" > @
-    greets "hi" > @
+      t.eq "h" > @
+    greets "h" > @
 prelude:
   string.eo: |
     [as-bytes] > string
@@ -20,13 +20,13 @@ voids:
   t: string
 lowered: |
   [] > foo
-    greets "hi" > @
+    greets "h" > @
     [] > greets /Q.bool
       ? > t /Q.string
 protocol: |
-  s1 ← L_bytes_eq sym:v0 string:68-69
+  s1 ← L_bytes_eq sym:v0 string:68-
   answer sym:s1 bool
 java: |
   final byte[] v0 = new Dataized(this.take("t")).take();
-  final boolean s1 = java.util.Arrays.equals(v0, new byte[] {(byte) 0x68, (byte) 0x69});
+  final boolean s1 = java.util.Arrays.equals(v0, new byte[] {(byte) 0x68});
   return new Data.ToPhi(s1);
