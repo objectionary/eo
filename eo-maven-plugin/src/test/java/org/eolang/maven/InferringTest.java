@@ -12,6 +12,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +26,11 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
@@ -137,6 +142,68 @@ final class InferringTest {
             "a file in a folder must be written to the same folder again, but it wasnt",
             Files.exists(temp.resolve("copy").resolve("one").resolve("leaf.xmir")),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresADirectoryNamedLikeAnXmirFile(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("yard"));
+        Files.writeString(
+            sources.resolve("spade.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > spade", "  [] > handle", "")
+            ).parsed().toString()
+        );
+        Files.createDirectories(sources.resolve("stale.xmir"));
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a folder whose name ends with .xmir must be left alone, but it was read",
+            new XMLDocument(temp.resolve("rows").resolve("provides.xml")),
+            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.spade']/attr[@name='handle']")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void stopsWhenPreparedXmirsSurviveTheCleanup(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("yard"));
+        Files.writeString(
+            sources.resolve("spade.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > spade", "  [] > handle", "")
+            ).parsed().toString()
+        );
+        final Path pre = temp.resolve("pre");
+        final Path locked = Files.createDirectories(pre.resolve("locked"));
+        Files.writeString(locked.resolve("old.xmir"), "<object/>");
+        Files.setPosixFilePermissions(locked, PosixFilePermissions.fromString("r-xr-xr-x"));
+        try {
+            Assumptions.assumeTrue(
+                !Files.isWritable(locked),
+                "read-only directories don't stop deletions for this user (root?), can't test"
+            );
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new Inferring(sources, pre, temp.resolve("rows")).exec(),
+                "a prepared XMIR of an earlier run that could not be removed must stop inference, not be read together with the current ones"
+            );
+        } finally {
+            Files.setPosixFilePermissions(locked, PosixFilePermissions.fromString("rwxr-xr-x"));
+        }
+    }
+
+    @Test
+    void saysNothingWhenThereIsNothingToCleanUp(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("shed"));
+        Files.writeString(
+            sources.resolve("rake.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > rake", "  [] > teeth", "")
+            ).parsed().toString()
+        );
+        Assertions.assertDoesNotThrow(
+            () -> new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec(),
+            "a prepared directory that was never made is not a failed cleanup, but it was taken for one"
         );
     }
 

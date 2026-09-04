@@ -9,6 +9,8 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import org.hamcrest.MatcherAssert;
@@ -80,6 +82,32 @@ final class CatalogsTest {
             IllegalStateException.class,
             () -> Catalogs.INSTANCE.make(file, "json"),
             "Asking for the same path with a different format must fail loudly"
+        );
+    }
+
+    @Test
+    void forgetsTheCatalogOfADeletedFile(@Mktmp final Path tmp) throws IOException {
+        final Path file = tmp.resolve("foreign.csv");
+        final Tojos catalog = Catalogs.INSTANCE.make(file, "csv");
+        catalog.add("first");
+        catalog.close();
+        Files.delete(file);
+        Catalogs.INSTANCE.drop(file);
+        MatcherAssert.assertThat(
+            "the cache is keyed by path alone, so after the file is gone the next catalog must start empty, but it kept the removed rows",
+            Catalogs.INSTANCE.make(file, "csv").select(tojo -> true),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void letsADroppedPathTakeAnotherFormat(@Mktmp final Path tmp) throws IOException {
+        final Path file = tmp.resolve("foreign");
+        Catalogs.INSTANCE.make(file, "csv").close();
+        Catalogs.INSTANCE.drop(file);
+        Assertions.assertDoesNotThrow(
+            () -> Catalogs.INSTANCE.make(file, "json"),
+            "a path nobody holds a catalog for any more must be free to take another format"
         );
     }
 }

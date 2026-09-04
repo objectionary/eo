@@ -7,10 +7,10 @@ package org.eolang.parser;
 /**
  * What is wrong with the indent of one line of a multi-line bytes literal.
  *
- * <p>A continuation must not de-indent below the line that opened the
- * literal, must not sit on an odd indent (R-2.2.1), and must not jump more
- * than one level deeper than the line above it, which is the same rule
- * every other block line obeys.</p>
+ * <p>A continuation is indented with spaces, must not de-indent below the
+ * line that opened the literal, must not sit on an odd indent (R-2.2.1), and
+ * must not jump more than one level deeper than the line above it, which is
+ * the same rule every other block line obeys.</p>
  *
  * @since 0.1
  */
@@ -61,6 +61,10 @@ final class BytesIndent {
         final String found;
         if (this.line.blank()) {
             found = "";
+        } else if (this.line.tab()) {
+            found = Eo.TAB;
+        } else if (this.line.alien()) {
+            found = Eo.ALIEN;
         } else if (this.line.indent() < this.head) {
             found = "multi-line bytes continuation must not de-indent";
         } else if (this.line.indent() % 2 == 1) {

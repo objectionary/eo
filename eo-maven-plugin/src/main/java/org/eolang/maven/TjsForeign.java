@@ -311,7 +311,14 @@ final class TjsForeign implements Closeable {
         /**
          * Git SHA of the object in the {@code objectionary/home}.
          */
-        HASH("hash");
+        HASH("hash"),
+
+        /**
+         * SHA-256 of the {@code .eo} source the XMIR was parsed from, which
+         * tells a changed source from an untouched one no matter what the
+         * modification time of either file says.
+         */
+        DIGEST("digest");
 
         /**
          * Attribute name.

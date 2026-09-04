@@ -22,12 +22,14 @@ import java.util.Collections;
  * sure that cannot happen is for both to read the same answer.</p>
  *
  * <p>An object that settled on nothing better than somebody else's void
- * carries what the program was seen putting into that void as well. It is
- * evidence and not an answer — the callers of today do not oblige the one
- * written tomorrow — but a reader told that their object is whatever
- * {@code Φ.bool.and.x} turns out to be has nowhere to go next, and a reader
- * told that {@code Φ.true} and {@code Φ.false} have both been put there has.
- * The rung is untouched by it.</p>
+ * carries what the program was seen putting into that void as well. A void
+ * filled one way and no other is that one thing and settles there instead, so
+ * what is carried here is what the walk could not settle on — several types at
+ * once, or a single one naming nothing a reader could go and look at. A reader
+ * told that their object is whatever {@code Φ.bool.and.x} turns out to be has
+ * nowhere to go next, and a reader told that {@code Φ.true} and
+ * {@code Φ.false} have both been put there has. The rung is untouched by
+ * it.</p>
  *
  * @since 0.70.0
  */

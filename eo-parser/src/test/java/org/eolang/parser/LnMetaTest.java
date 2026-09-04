@@ -212,6 +212,20 @@ final class LnMetaTest {
     }
 
     @Test
+    void reportsATabBetweenPartsWithTheCanonicalMessage() {
+        MatcherAssert.assertThat(
+            "a tab between meta parts must carry the §9.9 text of R-3.2.4, but it didnt",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnMeta(new Span("+rt jvm\torg.eolang:eo-runtime:0.0.0", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "a tab between meta parts must be rejected per R-3.2.4"
+            ).getMessage(),
+            Matchers.equalTo("meta parts must be separated by exactly one space")
+        );
+    }
+
+    @Test
     void clearsPendingBlanksOnEmission() {
         final Globals globals = new Globals();
         globals.addComment(new Span("# doc", 1));

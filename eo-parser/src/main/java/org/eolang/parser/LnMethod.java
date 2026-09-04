@@ -35,6 +35,9 @@ import java.util.List;
  * <li>R-6.6.4 — a {@code .method} continuation after a link that
  * carries an inline binding, which the continuation would leave on a
  * link the chain no longer ends with.</li>
+ * <li>R-6.3.3 — a {@code .method} continuation on a predecessor whose
+ * naming line declared it a test attribute, which would otherwise
+ * overwrite that attribute's label with the chain's own.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -43,10 +46,11 @@ import java.util.List;
  * (cursor exits), then the new link opens — the link's element is the
  * one that remains on the cursor for either more chain continuations
  * or deeper-indent children. The line's optional name suffix attaches
- * to <em>this</em> link's {@code <o>} (the last-link rule means each
- * incoming {@code .method} carries the chain's current "tip" — if the
- * suffix is set, it stays unless a later {@code .method} replaces
- * it).</p>
+ * to <em>this</em> link's {@code <o>} only: per R-6.2.3 an
+ * intermediate name is independent of the chain's outermost name, so
+ * closing the predecessor's link (§5.2.5) also forgets any name it
+ * carried — only the last link's own suffix, if any, names the
+ * chain.</p>
  *
  * @since 0.1
  */
@@ -119,7 +123,7 @@ final class LnMethod implements Line {
             top.tie();
         }
         if (suffix.present()) {
-            top.name(suffix.label());
+            top.name(suffix.label(), suffix.test());
         }
         globals.clearBlanks();
         globals.markEmitted();
@@ -152,11 +156,9 @@ final class LnMethod implements Line {
                 "method continuation not allowed after only-phi formation"
             );
         }
-        if (stack.top().tied()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "inline binding allowed only on the last method in a chain"
-            );
+        final String refusal = stack.top().refusal();
+        if (!refusal.isEmpty()) {
+            throw new ParseError(this.span.line(), this.span.indent(), refusal);
         }
     }
 

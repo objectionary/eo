@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.Optional;
+
 /**
  * One entry of the indent stack — §5.1 of the spec.
  *
@@ -24,6 +26,11 @@ package org.eolang.parser;
  * @since 0.1
  */
 final class Level {
+
+    /**
+     * The label an entry carries while no naming line has claimed it.
+     */
+    private static final Optional<String> NO_NAME = Optional.empty();
 
     /**
      * Indent (spaces) at which this entry's expression starts.
@@ -60,12 +67,16 @@ final class Level {
     private Openness openness;
 
     /**
-     * The source name on this entry's naming line ({@code foo} for
-     * {@code > foo}, the handle for {@code >> foo}, empty for a bare
-     * {@code >>}), or {@code null} when unnamed. Doubles as the named
-     * flag ({@link #named()}) and names the offender in §4.5 errors.
+     * The source name on the line that currently owns this entry
+     * ({@code foo} for {@code > foo}, the handle for {@code >> foo},
+     * empty for a bare {@code >>}), or absent when that line carried
+     * no suffix. Doubles as the named flag ({@link #named()}) and
+     * names the offender in §4.5 errors. A same-indent {@code .method}
+     * continuation takes the entry over and drops what the previous
+     * link left here ({@link #sealed()}), since R-6.2.2 puts the
+     * chain's naming line on the last link.
      */
-    private String label;
+    private Optional<String> label;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -82,8 +93,11 @@ final class Level {
     private boolean atom;
 
     /**
-     * For {@link Kind#BARE_REVERSED}: whether the receiver child has been
-     * consumed yet.
+     * For {@link Kind#BARE_REVERSED}, and for {@link Kind#ONLY_PHI}
+     * whose φ is a bare reversed dispatch: whether the receiver child
+     * has been consumed yet. Every other {@link Kind#ONLY_PHI} starts
+     * with this already true — {@link LnOnlyPhi} sets it right after
+     * construction — since it needs no receiver.
      */
     private boolean taken;
 
@@ -138,11 +152,13 @@ final class Level {
     private int arg;
 
     /**
-     * True when the chain link this entry currently ends with carries an
-     * inline binding, read by {@link LnMethod} to refuse a continuation
-     * that would leave it on a link the chain no longer ends with.
+     * Why a same-indent {@code .method} continuation must be refused on
+     * this entry, empty while one is still allowed. Read by
+     * {@link LnMethod} — a chain link carrying an inline binding
+     * (R-6.6.4) and a naming line declaring a test attribute (R-6.3.3)
+     * both close the chain, each with its own diagnostic.
      */
-    private boolean tied;
+    private String refusal;
 
     /**
      * Source span recorded with the in-progress arg, used for error
@@ -171,12 +187,14 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
+        this.label = Level.NO_NAME;
         this.atom = false;
         this.taken = false;
         this.count = 0;
         this.children = 0;
         this.tupled = false;
         this.star = false;
+        this.refusal = "";
     }
 
     /**
@@ -232,7 +250,7 @@ final class Level {
      * @return Named flag
      */
     boolean named() {
-        return this.label != null;
+        return this.label.isPresent();
     }
 
     /**
@@ -246,7 +264,7 @@ final class Level {
     String governingFormation() {
         final String owner;
         if (this.kind == Kind.ONLY_PHI) {
-            owner = this.label;
+            owner = this.label.orElse("");
         } else {
             owner = this.formation;
         }
@@ -271,15 +289,10 @@ final class Level {
         } else {
             owner = String.format("only-phi formation %s", this.formation);
         }
-        final String attribute;
-        if (this.label == null || this.label.isEmpty()) {
-            attribute = "an auto-named attribute";
-        } else {
-            attribute = this.label;
-        }
         return String.format(
             "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            attribute, owner
+            this.label.filter(text -> !text.isEmpty()).orElse("an auto-named attribute"),
+            owner
         );
     }
 
@@ -367,9 +380,14 @@ final class Level {
      * ({@link #named()}).
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
+     * @param form Whether the suffix that set this name was a
+     *  {@code TEST} or {@code THROWS} form
      */
-    void name(final String text) {
-        this.label = text;
+    void name(final String text, final boolean form) {
+        this.label = Optional.of(text);
+        if (form) {
+            this.refusal = "method continuation not allowed on a test attribute";
+        }
     }
 
     /**
@@ -450,10 +468,12 @@ final class Level {
     }
 
     /**
-     * Forget the compact-tuple state, after the closer has already
-     * accounted for it - the entry stays on the stack as the wrapper a
-     * same-indent {@code .method} continuation put around it, and the
-     * wrapper is no tuple of its own.
+     * Forget the compact-tuple state and the name the sealed line
+     * carried, after the closer has already accounted for them - the
+     * entry stays on the stack as the wrapper a same-indent
+     * {@code .method} continuation put around it, and the wrapper is
+     * neither a tuple of its own nor named by the link it replaced
+     * (R-6.2.2).
      */
     void sealed() {
         this.star = false;
@@ -462,6 +482,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
+        this.label = Level.NO_NAME;
     }
 
     /**
@@ -530,12 +551,11 @@ final class Level {
     }
 
     /**
-     * Whether the link this chain currently ends with carries an inline
-     * binding.
-     * @return Tied flag
+     * Why a {@code .method} continuation is refused on this entry.
+     * @return The diagnostic, empty when a continuation is allowed
      */
-    boolean tied() {
-        return this.tied;
+    String refusal() {
+        return this.refusal;
     }
 
     /**
@@ -545,7 +565,7 @@ final class Level {
      * (R-6.6.4).
      */
     void tie() {
-        this.tied = true;
+        this.refusal = "inline binding allowed only on the last method in a chain";
     }
 
     /**
@@ -575,6 +595,6 @@ final class Level {
         this.bindings = other.bindings;
         this.arg = other.arg;
         this.argspan = other.argspan;
-        this.tied = other.tied;
+        this.refusal = other.refusal;
     }
 }

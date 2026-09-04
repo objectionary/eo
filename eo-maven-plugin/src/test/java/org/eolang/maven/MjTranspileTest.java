@@ -507,6 +507,34 @@ final class MjTranspileTest {
     }
 
     @Test
+    void namesTheAtomOfAPackageMemberInsideItsPackageObject(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the atom of a package member must be a class nested in the class of the package object, which is where the library that ships it puts it (#8295)",
+            new TextOf(
+                MjTranspileTest.withMember(temp)
+                    .execute(MjParse.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EOfoo.java")
+            ).asString(),
+            Matchers.containsString("new EOfoo$EObar$EObaz()")
+        );
+    }
+
+    @Test
+    void compilesAPackageMemberAsAPartOfItsObject(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "a member of a package this build compiles an object for must not be compiled apart, even when the merge goal was never named",
+            MjTranspileTest.withMember(temp)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.not(Matchers.hasKey("target/generated/org/eolang/EO_foo/EObar.java"))
+        );
+    }
+
+    @Test
     void createsPackageInfoFilesForAllPackages(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "TranspileMojo must generate package-info.java files for all of the packages",
@@ -909,5 +937,31 @@ final class MjTranspileTest {
         ).pass(
             new EoSyntax(String.format("[] > %s%n  42 > @%n", name)).parsed()
         ).xpath("//@java-name").get(0);
+    }
+
+    // A workspace with an object and a member of its package, where the
+    // member holds an atom.
+    private static FakeMaven withMember(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > foo",
+                "  42 > @"
+            ),
+            "foo",
+            "foo.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "+rt jvm org.eolang:eo-runtime:0.0.0",
+                "",
+                "[] > bar",
+                "  [] > baz /bytes",
+                "    ? > x"
+            ),
+            "foo.bar",
+            "foo/bar.eo"
+        );
     }
 }

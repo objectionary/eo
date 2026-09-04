@@ -33,11 +33,12 @@ import java.util.stream.Collectors;
  * filled with a {@code Φ.string} deserves to know that somebody also fills it
  * with something nobody has looked into.</p>
  *
- * <p>This is evidence and never a contract, exactly as {@link Witnessed}
- * says: nothing may work out the type of a void from what is read here.
- * It is read so that a reader who is told an object is whatever
- * {@code Φ.bool.and.x} turns out to be can also be told what the program was
- * seen putting there.</p>
+ * <p>What is read here is what {@link Answers} types a void from, exactly as
+ * {@link Witnessed} says: one member and the void is that member, several and
+ * it is still a void. So it is read twice over — to type the voids that can be
+ * typed, and to tell a reader who is told their object is whatever
+ * {@code Φ.bool.and.x} turns out to be what the program was seen putting
+ * there.</p>
  *
  * @since 0.70.0
  */
