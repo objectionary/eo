@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -74,6 +75,22 @@ final class RowsTest {
                         value
                     )
                 ).get()
+            )
+        );
+    }
+
+    @Test
+    void answersEveryThreadThatAsksAtOnce(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            temp.resolve("provides.xml"),
+            "<provides><type id=\"Q.foo\"><attr name=\"x\"/></type></provides>"
+        );
+        final Rows rows = new Rows(temp);
+        MatcherAssert.assertThat(
+            "threads that ask for a digest at the same moment must all be answered, one wasnt",
+            new Together<>(30, thread -> rows.digest(Collections.singletonList("Q.foo"))).asList(),
+            Matchers.everyItem(
+                Matchers.equalTo(new Rows(temp).digest(Collections.singletonList("Q.foo")))
             )
         );
     }

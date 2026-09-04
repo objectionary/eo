@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
@@ -37,21 +36,12 @@ import org.junit.jupiter.api.io.TempDir;
  * gigabytes of heap and minutes of collecting it, for no more of the race than
  * four reach.</p>
  *
- * <p>The temporary directory is kept when the repetition does not succeed,
- * because a repetition that {@link Maxmem} terminates has threads of its own
- * still on the way out: they make the directory back while JUnit walks the
- * temporary one to delete it, and the walk ends with a directory that refuses
- * to be empty, reported as an error of the test rather than as the skip it
- * is.</p>
- *
  * @since 0.75.0
  */
 final class EOdirectoryEOmadeRaceTest {
 
     @RepeatedTest(10)
-    void makesOneDirectoryFromManyThreadsAtOnce(
-        @TempDir(cleanup = CleanupMode.ON_SUCCESS) final Path temp
-    ) {
+    void makesOneDirectoryFromManyThreadsAtOnce(@TempDir final Path temp) {
         MatcherAssert.assertThat(
             "every thread racing for the same missing directory must be told it is there, since the one that loses the mkdir is the one the EEXIST branch rescues",
             new Together<>(

@@ -24,6 +24,14 @@ import java.util.Map;
  * object green while the printed number counts it among the ones we know
  * nothing about is worse than either of them alone.</p>
  *
+ * <p>What an atom comes back with is asked for along with the rest. The body
+ * of an atom is a {@code λ} nobody types and nothing here can read, so it is
+ * a copy of nothing, has no row of its own and no void above it, and comes out
+ * as an object we know nothing about — which was every atom of the program
+ * until {@link Returned} was asked here as well as inside the walk (#8317).
+ * The source said all along what running the body gives back, and now the body
+ * answers with it.</p>
+ *
  * @since 0.70.0
  */
 final class Answered {
@@ -56,11 +64,13 @@ final class Answered {
     Map<String, Answer> all() throws IOException {
         final XML given = new XMLDocument(this.tables.resolve("provides.xml"));
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
+        final Map<String, String> ends = new LinkedHashMap<>(new Ends(pairs.all()).names());
+        ends.putAll(new Returned(given).bodies());
         final Answers answers = new Answers(
             new Ungrouped(given, Collections.emptyMap()).rows(),
             new Seen(given).all(),
             new HashSet<>(pairs.certain()),
-            new Ends(pairs.all()).names()
+            ends
         );
         final Map<String, Collection<String>> filled = pairs.filled();
         final Map<String, Answer> found = new LinkedHashMap<>(0);

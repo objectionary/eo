@@ -52,8 +52,9 @@ import java.util.List;
  * {@code *N} marker, e.g. {@code seq * > [m]} — keeps the φ
  * {@link Openness#OPEN} and flags the level {@link Level#star()}, so its
  * deeper-indent lines are absorbed into a {@code Φ.tuple} as §3.9 does
- * for a bare {@link LnCompactTuple} rather than {@link #bare(Tokens, Value, boolean)}
- * reading the {@code *} as a completed empty-tuple argument.</p>
+ * for a bare {@link LnCompactTuple} rather than
+ * {@link Lhs#bare(Tokens, Value, boolean)} reading the {@code *} as a
+ * completed empty-tuple argument.</p>
  *
  * <p>This iteration accepts identifier and root LHS heads with
  * optional chains and identifier / INT / STAR / STRING / FLOAT /
@@ -62,9 +63,10 @@ import java.util.List;
  * while a reversed dispatch carrying horizontal args reaches this line
  * shape and is rejected here.</p>
  *
- * <p>The head of a line ends at the first space that sits at paren depth 0
- * and outside any string literal, which is what {@code topLevelSpace} finds,
- * the way {@code Eo.topLevelMarker} finds other top-level markers.</p>
+ * <p>What the LHS is — how many stars it carries, whether it is a
+ * reversed dispatch, whether it is bare — is read by {@link Lhs}, since
+ * the same questions are asked of a parenthesised inline-phi that never
+ * reaches this line.</p>
  *
  * @since 0.1
  */
@@ -167,31 +169,10 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
-    static int compactStar(final String lhs, final Span span) {
-        final int space = LnOnlyPhi.topLevelSpace(lhs);
-        final int result;
-        if (space > 0 && lhs.charAt(space - 1) != '.'
-            && space + 1 < lhs.length() && lhs.charAt(space + 1) == '*') {
-            result = LnOnlyPhi.starCount(lhs, space + 2, span);
-        } else {
-            result = -1;
-        }
-        return result;
-    }
-
-    static boolean receiverless(final Span span) {
-        final Tokens tokens = new Tokens(span.body(), span);
-        boolean bare = false;
-        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
-            tokens.consumeDispatch();
-            bare = tokens.readArgs().isEmpty();
-        }
-        return bare;
-    }
-
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
-        final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
-        final Tokens tokens = LnOnlyPhi.reader(inner, stars);
+        final Lhs lhs = new Lhs(inner);
+        final int stars = lhs.stars();
+        final Tokens tokens = lhs.tokens(stars);
         final boolean open;
         final boolean reversed;
         if (stars >= 0) {
@@ -199,8 +180,8 @@ final class LnOnlyPhi implements Line {
             reversed = false;
         } else {
             final Value head = tokens.readValue();
-            reversed = LnOnlyPhi.reversedAhead(tokens, head);
-            open = this.bare(tokens, head, reversed);
+            reversed = tokens.reversedAhead(head);
+            open = lhs.bare(tokens, head, reversed);
         }
         final Level level = this.transition(stack, suffix, open);
         if (!reversed) {
@@ -243,42 +224,6 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private boolean bare(final Tokens tokens, final Value head, final boolean reversed) {
-        final boolean chained;
-        if (reversed) {
-            tokens.consumeDispatch();
-            chained = true;
-        } else {
-            chained = !tokens.readChain().isEmpty();
-        }
-        final boolean empty = tokens.readArgs().isEmpty();
-        if (reversed && !empty) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
-            );
-        }
-        return empty && (chained || !head.group());
-    }
-
-    private static boolean reversedAhead(final Tokens tokens, final Value head) {
-        final boolean result;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            result = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            result = false;
-        }
-        return result;
-    }
-
     private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
         final Openness openness;
         if (open) {
@@ -289,72 +234,6 @@ final class LnOnlyPhi implements Line {
         return new Transition(stack, this.span).apply(
             Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
-    }
-
-    private static Tokens reader(final Span inner, final int stars) {
-        final String lhs = inner.body();
-        final String head;
-        if (stars < 0) {
-            head = lhs;
-        } else {
-            head = lhs.substring(0, LnOnlyPhi.topLevelSpace(lhs));
-        }
-        final Span span = new Span(
-            " ".repeat(inner.indent()).concat(head), inner.line()
-        );
-        return new Tokens(span.body(), span);
-    }
-
-    private static int topLevelSpace(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == ' ') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
-    }
-
-    private static int starCount(final String lhs, final int from, final Span span) {
-        long count = 0;
-        boolean digits = true;
-        for (int idx = from; idx < lhs.length(); idx = idx + 1) {
-            final char glyph = lhs.charAt(idx);
-            if (glyph < '0' || glyph > '9') {
-                digits = false;
-                break;
-            }
-            if (idx > from && lhs.charAt(from) == '0') {
-                throw new ParseError(
-                    span.line(), span.indent() + from,
-                    "integer literal must not have leading zeros"
-                );
-            }
-            count = count * 10 + glyph - '0';
-            if (count > Integer.MAX_VALUE) {
-                throw new ParseError(
-                    span.line(), span.indent() + from,
-                    "compact tuple count is too large"
-                );
-            }
-        }
-        final int result;
-        if (digits) {
-            result = (int) count;
-        } else {
-            result = -1;
-        }
-        return result;
     }
 
     private static List<String> parseParams(

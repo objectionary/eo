@@ -5,6 +5,8 @@
 
 package org.eolang;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,10 +14,7 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.io.CleanupMode;
-import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@code file.touched} under concurrency.
@@ -25,33 +24,31 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * treated as a successful touch rather than as a failure from a later syscall
  * that overwrote {@code errno} (#7077).</p>
  *
- * <p>Four threads, and the repetitions one after another rather than beside
- * each other, because of what the losing branch costs: it asks
- * {@code file.is-symlink}, which is tens of megabytes of allocation, so
- * eight of those threads, in twenty bunches at once, allocate several times
- * the {@code eo.maxmem} a single repetition is given, and {@link Maxmem}
- * terminates the repetition instead of letting it finish. Three touching
- * threads still leave somebody holding the {@code EEXIST}, which is the
- * branch this reaches for.</p>
+ * <p>Two touchers, not seven: exactly one caller wins an exclusive create, so
+ * a second toucher is all it takes to leave a loser, while every one of them
+ * dataizes a whole object and {@link Maxmem} charges the lot to one test.
+ * Seven of them ate more than the {@code eo.maxmem} of eo-runtime, so every
+ * repetition was terminated and the test proved nothing at all on the box
+ * slow enough to take that path (#8336).</p>
  *
- * <p>The temporary directory is kept when a repetition does not succeed,
- * since a repetition that is terminated has threads of its own still on the
- * way out: they write the file back while JUnit walks the directory to
- * delete it, the walk ends on a directory that refuses to be empty, and the
- * skip is reported as an error of the test.</p>
+ * <p>The directory is one {@link MktmpResolver} hands out, because it deletes
+ * nothing. A test terminated for its memory is interrupted and reported while
+ * the threads it started may still hold the file open, and a directory JUnit
+ * owns is deleted the moment the test's context closes: on windows that
+ * delete meets the open file, fails, and turns a skip into a broken
+ * context.</p>
  *
  * @since 0.75.0
  */
-@Execution(ExecutionMode.SAME_THREAD)
+@ExtendWith(MktmpResolver.class)
 final class EOfileEOtouchedTest {
 
     @RepeatedTest(20)
-    void keepsWhatAnotherThreadWroteInBetween(
-        @TempDir(cleanup = CleanupMode.ON_SUCCESS) final Path temp
-    ) throws Exception {
+    void keepsWhatAnotherThreadWroteInBetween(@Mktmp final Path temp)
+        throws Exception {
         final Path target = temp.resolve("shared.txt");
         new Together<>(
-            4,
+            3,
             thread -> {
                 if (thread == 0) {
                     Files.writeString(target, "content", StandardCharsets.UTF_8);

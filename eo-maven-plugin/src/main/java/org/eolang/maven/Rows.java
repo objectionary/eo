@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -26,6 +27,12 @@ import org.cactoos.scalar.Unchecked;
  *
  * <p>{@code purify.xsl} reads {@code provides.xml} and {@code links.xml} by
  * locator only, so a transpile of one file reads that file's rows (#7945).</p>
+ *
+ * <p>The reading is remembered under a lock, because a parallel transpile
+ * asks one of these from every worker at once. A {@link Sticky} on its own
+ * keeps the answer in a map nobody guards, so a worker arriving while
+ * another was still putting the answer there was handed nothing and fell
+ * over on it (#8324).</p>
  *
  * @since 0.75.0
  */
@@ -41,23 +48,25 @@ final class Rows {
      * @param tables The directory with the tables of {@link MjInference}
      */
     Rows(final Path tables) {
-        this.index = new Sticky<>(
-            () -> {
-                final SortedMap<String, String> rows = new TreeMap<>();
-                for (final String name : new String[] {"provides.xml", "links.xml"}) {
-                    final Path table = tables.resolve(name);
-                    if (Files.exists(table)) {
-                        for (final XML row : new XMLDocument(table).nodes("/*/type[@id]")) {
-                            rows.merge(
-                                row.xpath("@id").get(0),
-                                String.format("%s:%s", name, row),
-                                String::concat
-                            );
+        this.index = new Synced<>(
+            new Sticky<>(
+                () -> {
+                    final SortedMap<String, String> rows = new TreeMap<>();
+                    for (final String name : new String[] {"provides.xml", "links.xml"}) {
+                        final Path table = tables.resolve(name);
+                        if (Files.exists(table)) {
+                            for (final XML row : new XMLDocument(table).nodes("/*/type[@id]")) {
+                                rows.merge(
+                                    row.xpath("@id").get(0),
+                                    String.format("%s:%s", name, row),
+                                    String::concat
+                                );
+                            }
                         }
                     }
+                    return rows;
                 }
-                return rows;
-            }
+            )
         );
     }
 

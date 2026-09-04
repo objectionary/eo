@@ -45,6 +45,14 @@ import org.opentest4j.TestAbortedException;
  * code under test.</p>
  *
  * @since 0.75.0
+ * @todo #8336:30min Let a body that will not stop be waited for. A terminated
+ *  body gets half a second to die and the skip is reported whether it died or
+ *  not, so its threads outlive the test that owns them, holding whatever they
+ *  opened. JUnit closes the context right behind them and deletes the
+ *  {@code @TempDir} of that test, which on windows cannot be deleted while a
+ *  file in it is open, so the skip comes out as a failure that names neither
+ *  the memory nor the test. Either wait for the group to empty, or say
+ *  plainly that the body outlived its test.
  */
 @SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
 final class Watched {
