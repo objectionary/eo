@@ -1,4 +1,14 @@
 # Represents the current operating system.
+#
+# The family is decided by a plain substring of the name the JVM reports and
+# not by a regular expression, even though a regex says the same thing more
+# directly. Almost every object that reaches the filesystem asks
+# `is-windows` before it makes a syscall, and the expression of a regex is
+# read in EO now (#6388), which costs hundreds of megabytes of allocation
+# per question, against a fraction of a megabyte for a `contains`. The
+# spellings looked for here, `Linux`, `Mac` and `Windows`, are the ones the
+# JVM writes into `os.name` itself, so the check stays exactly as
+# case-sensitive as the property it reads.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -10,18 +20,9 @@
 
 [] > os
   name > @
-  as-bool. > is-linux
-    exists.
-      next.
-        "/linux/i".regex.match name
-  as-bool. > is-macos
-    exists.
-      next.
-        "/mac/i".regex.match name
-  as-bool. > is-windows
-    exists.
-      next.
-        "/windows/i".regex.match name
+  name.contains "Linux" > is-linux
+  name.contains "Mac" > is-macos
+  name.contains "Windows" > is-windows
   [] > name /Q.string
     ? > ^
 
