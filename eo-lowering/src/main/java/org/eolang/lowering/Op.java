@@ -5,12 +5,13 @@
 package org.eolang.lowering;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
 
 /**
  * One lowerable operation, looked up by the λ name phino reports.
@@ -131,16 +132,21 @@ public final class Op {
     }
 
     private List<String[]> rows() {
-        try (InputStream stream = this.getClass().getResourceAsStream("ops.tsv")) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8)
-                .lines()
-                .filter(line -> !line.isEmpty())
-                .map(line -> line.split("\t", -1))
-                .collect(Collectors.toList());
+        final String table;
+        try {
+            table = new IoCheckedText(
+                new TextOf(
+                    new ResourceOf("org/eolang/lowering/ops.tsv", this.getClass())
+                )
+            ).asString();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 "Failed to read ops.tsv from classpath", ex
             );
         }
+        return table.lines()
+            .filter(line -> !line.isEmpty())
+            .map(line -> line.split("\t", -1))
+            .collect(Collectors.toList());
     }
 }

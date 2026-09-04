@@ -7,7 +7,6 @@ package org.eolang.lowering;
 import com.yegor256.Jaxec;
 import com.yegor256.Result;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
 
 /**
  * The phino binary on this machine.
@@ -101,10 +104,14 @@ public final class Phino {
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
     public String pin() {
-        try (InputStream stream = this.getClass().getResourceAsStream("phino-version.txt")) {
-            return new String(
-                stream.readAllBytes(), StandardCharsets.UTF_8
-            ).trim();
+        try {
+            return new IoCheckedText(
+                new Trimmed(
+                    new TextOf(
+                        new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
+                    )
+                )
+            ).asString();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 "Failed to read phino-version.txt from classpath", ex

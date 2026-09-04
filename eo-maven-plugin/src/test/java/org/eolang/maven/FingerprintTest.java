@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import java.io.UncheckedIOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -64,7 +65,7 @@ final class FingerprintTest {
     @Test
     void failsOnMissingResource() {
         Assertions.assertThrows(
-            IllegalStateException.class,
+            UncheckedIOException.class,
             () -> new Fingerprint("/org/eolang/maven/transpile/does-not-exist.xsl").get(),
             "a missing resource must fail loudly, not silently produce a wrong fingerprint"
         );

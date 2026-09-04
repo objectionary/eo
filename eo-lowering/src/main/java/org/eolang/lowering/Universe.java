@@ -5,8 +5,9 @@
 package org.eolang.lowering;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.IoCheckedText;
+import org.cactoos.text.TextOf;
 
 /**
  * The φ-calculus expression holding the method tables of the primitives.
@@ -38,8 +39,12 @@ public final class Universe {
      * @return The text of the {@code universe.phi} resource
      */
     public String text() {
-        try (InputStream stream = this.getClass().getResourceAsStream("universe.phi")) {
-            return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        try {
+            return new IoCheckedText(
+                new TextOf(
+                    new ResourceOf("org/eolang/lowering/universe.phi", this.getClass())
+                )
+            ).asString();
         } catch (final IOException ex) {
             throw new IllegalStateException(
                 "Failed to read universe.phi from classpath", ex
