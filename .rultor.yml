@@ -16,12 +16,13 @@ assets:
 # the image carries no Haskell toolchain to build it with. The binary
 # published for Ubuntu 24.04, which this image is based on, is taken as it
 # is, and `--version` right after the download fails the build when the
-# wrong one arrives.
+# wrong one arrives. Rultor runs the build as a non-root user, thus the
+# download into `/usr/local/bin` goes through `sudo`.
 install: |
   pdd --file=/dev/null
   version=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-  curl --silent --show-error --fail --location --output /usr/local/bin/phino "http://phino.objectionary.com/releases/ubuntu-24.04/phino-${version}"
-  chmod +x /usr/local/bin/phino
+  sudo curl --no-progress-meter --show-error --fail --location --output /usr/local/bin/phino "http://phino.objectionary.com/releases/ubuntu-24.04/phino-${version}"
+  sudo chmod +x /usr/local/bin/phino
   phino --version
 merge:
   script: |
