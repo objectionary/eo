@@ -174,6 +174,16 @@ final class LnOnlyPhi implements Line {
         return result;
     }
 
+    static boolean receiverless(final Span span) {
+        final Tokens tokens = new Tokens(span.body(), span);
+        boolean bare = false;
+        if (LnOnlyPhi.reversedAhead(tokens, tokens.readValue())) {
+            tokens.consumeDispatch();
+            bare = tokens.readArgs().isEmpty();
+        }
+        return bare;
+    }
+
     private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
         final int stars = LnOnlyPhi.compactStar(inner.body(), inner);
         final Tokens tokens = LnOnlyPhi.reader(inner, stars);

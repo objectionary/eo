@@ -26,10 +26,6 @@ import java.util.regex.Pattern;
  * {@link LnReversed#readHead} does.</p>
  *
  * @since 0.1
- * @todo #8244:30min Reject a receiverless reversed dispatch used as the
- *  phi of a parenthesised inline-phi formation, e.g.
- *  {@code bar (if. > [x]) > z}, the same way LnOnlyPhi now does for the
- *  vertical-body shape (see #8244).
  */
 final class Emissions {
 
@@ -520,6 +516,11 @@ final class Emissions {
             throw new ParseError(
                 line, column + lhs.lastIndexOf('*'),
                 "compact tuple marker is not allowed inside a parenthesised inline-phi"
+            );
+        }
+        if (LnOnlyPhi.receiverless(sub)) {
+            throw new ParseError(
+                line, column, "reversed dispatch missing receiver"
             );
         }
         emit.baselessObject(name, line, column);
