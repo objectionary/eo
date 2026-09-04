@@ -197,6 +197,25 @@ final class PiecesTest {
         );
     }
 
+    @Test
+    void marksAVoidAnAtomFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void filled inside an atom must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  size",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.info.size", 2, "size",
+                        new Answer(
+                            "Φ.posix.return.output.size", 1, Collections.emptyList(), true
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='size'][@band='atom']")
+        );
+    }
+
     private static String drawn(final String line, final Collection<Written> written) {
         return new Xembler(
             new Directives()

@@ -68,6 +68,30 @@ final class AnsweredTest {
     }
 
     @Test
+    void tellsApartTheVoidsOnlyAnAtomFills(@Mktmp final Path temp)
+        throws IOException {
+        final Path world = Files.createDirectories(temp.resolve("xmirs"));
+        Files.writeString(
+            world.resolve("reply.xmir"),
+            String.join(
+                "",
+                "<object><o line='1' loc='Φ.reply' name='reply' pos='0'>",
+                "<o base='∅' line='2' loc='Φ.reply.code' name='code' pos='2'/></o>",
+                "<o line='3' loc='Φ.syscall' name='syscall' pos='0'>",
+                "<o atom='Φ.reply' line='3' loc='Φ.syscall.λ' name='λ' pos='0'/>",
+                "</o></object>"
+            )
+        );
+        final Path tables = temp.resolve("tables");
+        new Resolved(new Clues()).follow(world, tables);
+        MatcherAssert.assertThat(
+            "a void nothing but an atom fills must be told apart, but it wasnt",
+            new Answered(world, tables).all().get("Φ.reply.code").forged(),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void answersACallerOfSuchAnAtomWithWhatItPutIn(@Mktmp final Path temp)
         throws IOException {
         final Path world = Files.createDirectories(temp.resolve("xmirs"));
