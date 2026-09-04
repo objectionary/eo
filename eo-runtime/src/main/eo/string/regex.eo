@@ -43,8 +43,9 @@
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     [^ txt] > match
-      [^ position start from to groups existing] > matched
+      [^ state from to groups] > matched
         groups.length > count
+        state.at 2 > existing
         start.gte 0 > exists
         ^.groups.at index > [^ index] > group
         ^.existing.at index > [^ index] > group-exists
@@ -62,6 +63,8 @@
                 to
           T
             "Matched block does not exist, can't get next"
+        state.at 0 > position
+        state.at 1 > start
         exists.if > text
           group 0
           T
