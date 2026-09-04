@@ -89,14 +89,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
     }
 
     private void fill(final Phi result, final Matcher matcher, final String text) {
-        result.put(
-            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
-        );
-        result.put(
-            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START)
-        );
         result.put("from", new Data.ToPhi(text.codePointCount(0, matcher.start())));
         result.put("to", new Data.ToPhi(text.codePointCount(0, matcher.end())));
         final Phi[] groups;
@@ -113,18 +105,31 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
             groups = new Phi[]{new Data.ToPhi(matcher.group())};
             exist = new Phi[]{new Data.ToPhi(true)};
         }
+        result.put(
+            "state",
+            new Data.ToPhi(
+                new Phi[]{
+                    this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION),
+                    this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START),
+                    new Data.ToPhi(exist),
+                }
+            )
+        );
         result.put("groups", new Data.ToPhi(groups));
-        result.put("existing", new Data.ToPhi(exist));
     }
 
     private void blank(final Phi result) {
         result.put(
-            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION,
-            this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION)
-        );
-        result.put(
-            EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.START,
-            new Data.ToPhi(-1)
+            "state",
+            new Data.ToPhi(
+                new Phi[]{
+                    this.take(EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index.POSITION),
+                    new Data.ToPhi(-1),
+                    new PhTerminator(
+                        new Data.ToPhi("Matched block does not exist, can't get groups")
+                    ),
+                }
+            )
         );
         result.put(
             "from",
@@ -140,10 +145,6 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOmatched_from_index exten
         );
         result.put(
             "groups",
-            new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
-        );
-        result.put(
-            "existing",
             new PhTerminator(new Data.ToPhi("Matched block does not exist, can't get groups"))
         );
     }
