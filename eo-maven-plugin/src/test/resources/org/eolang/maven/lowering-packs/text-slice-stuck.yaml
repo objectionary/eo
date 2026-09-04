@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Slicing a string counts characters while slicing bytes counts bytes,
+# so the universe hides the byte atom behind one it does not know, and
+# the fragment stays exactly as it stands in the EO.
+input: |
+  [t] > foo
+    t.slice 0 1 > @
+voids:
+  t: string
+lowered: |
+  t.slice > [t] > foo
+    0
+    1
+stuck: "the atom 'L_string_slice' is not among the lowerable operations"

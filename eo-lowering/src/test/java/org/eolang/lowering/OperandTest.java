@@ -54,6 +54,28 @@ final class OperandTest {
     }
 
     @Test
+    void anchorsStringLiteral() {
+        MatcherAssert.assertThat(
+            "a string carrier wrapping a datum must anchor to its bytes, but it didnt",
+            new Operand(
+                "Φ.string( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ 61-62-63, ρ ↦ ∅ ⟧ ) )"
+            ).key(),
+            Matchers.equalTo("string:61-62-63")
+        );
+    }
+
+    @Test
+    void anchorsMarkedString() {
+        MatcherAssert.assertThat(
+            "a string carrier wrapping a marker must anchor to its name, but it didnt",
+            new Operand(
+                "Φ.string( α0 ↦ Φ.bytes( α0 ↦ ⟦ λ ⤍ Sym_v2, ρ ↦ ∅ ⟧ ) )"
+            ).key(),
+            Matchers.equalTo("sym:v2")
+        );
+    }
+
+    @Test
     void anchorsBytesLiteral() {
         MatcherAssert.assertThat(
             "a bytes carrier wrapping a datum must anchor to its bytes, but it didnt",

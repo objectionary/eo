@@ -15,12 +15,21 @@ import org.cactoos.text.UncheckedText;
  * dispatches into, and phino resolves a {@code Φ.x} reference against the
  * root formation of the document it evaluates. This is that root, read
  * from the {@code universe.phi} resource: {@code number} and {@code bytes}
- * with their twelve λ methods, and {@code true}/{@code false} as data,
- * since the comparing atoms answer with a reference to them. It is a
- * complete expression of its own, merged with an {@link Expression} by
+ * with their twelve λ methods, {@code string} which owns none and reaches
+ * every one of them through its {@code φ}, and {@code true}/{@code false}
+ * as data, since the comparing atoms answer with a reference to them. It is
+ * a complete expression of its own, merged with an {@link Expression} by
  * {@code phino merge} before dataization; a dispatch into anything it
  * does not hold leaves the dataization stuck, which the caller reads as
  * a refusal to fold.</p>
+ *
+ * <p>A decorator must shadow whatever its decoratee answers differently,
+ * or the wrong atom fires. {@code eo:merge} makes every object of the
+ * {@code string} package a real attribute of {@code string}, and one of
+ * them — {@code slice}, which counts characters where {@code bytes.slice}
+ * counts bytes — names a method this universe models. It therefore stands
+ * here bound to a λ no {@link Op} row knows, so a text slicing refuses
+ * instead of quietly reaching the bytes atom below it.</p>
  *
  * @since 0.76.0
  */

@@ -11,7 +11,9 @@ package org.eolang.lowering;
  * a fired atom folded back into the tree. Either way it is a forma and
  * the bytes it carries, rendered as the same carrier application the
  * compiler itself writes, with the positional {@code α0} binding names
- * that phino resolves on dispatch.</p>
+ * that phino resolves on dispatch. A number and a string wrap their
+ * datum in a bytes carrier of their own, since that is the one void
+ * each of them declares.</p>
  *
  * @since 0.76.0
  */
@@ -40,9 +42,9 @@ public final class Literal implements Term {
     @Override
     public String phi() {
         final String out;
-        if ("number".equals(this.forma)) {
+        if ("number".equals(this.forma) || "string".equals(this.forma)) {
             out = String.format(
-                "Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ %s ⟧))", this.hex
+                "Φ.%s(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ %s ⟧))", this.forma, this.hex
             );
         } else if ("bytes".equals(this.forma)) {
             out = String.format("Φ.bytes(α0 ↦ ⟦ Δ ⤍ %s ⟧)", this.hex);
