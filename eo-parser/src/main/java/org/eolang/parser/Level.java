@@ -82,8 +82,11 @@ final class Level {
     private boolean atom;
 
     /**
-     * For {@link Kind#BARE_REVERSED}: whether the receiver child has been
-     * consumed yet.
+     * For {@link Kind#BARE_REVERSED}, and for {@link Kind#ONLY_PHI}
+     * whose φ is a bare reversed dispatch: whether the receiver child
+     * has been consumed yet. Every other {@link Kind#ONLY_PHI} starts
+     * with this already true — {@link LnOnlyPhi} sets it right after
+     * construction — since it needs no receiver.
      */
     private boolean taken;
 
