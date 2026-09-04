@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.lowering.Digest;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Protocol;
 import org.eolang.lowering.Reduction;

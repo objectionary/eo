@@ -77,8 +77,10 @@ public final class Op {
      * The Java rendering of this operation, as a format string whose
      * positional arguments are the receiver and then the arguments.
      * An operation may have no rendering — {@code right} and {@code slice}
-     * coerce their bounds the way only the hand-written atoms can — and
-     * such an operation reduces fine but refuses to become Java.
+     * coerce their bounds the way only the hand-written atoms can, and
+     * {@code eq} renders by the forma of its operands in {@code JavaAtom} —
+     * and such an operation otherwise reduces fine but refuses to become
+     * Java.
      * @return A format, such as {@code %1$s + %2$s}
      */
     public String java() {

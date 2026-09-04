@@ -362,16 +362,19 @@
   result is decided by its inputs alone.
   -->
   <xsl:template match="atom">
-    <xsl:param name="parent"/>
     <xsl:param name="name"/>
     <xsl:param name="context"/>
     <xsl:param name="indent"/>
     <xsl:variable name="argument" select="o[1]"/>
-    <xsl:variable name="class">
-      <xsl:value-of select="$parent"/>
-      <xsl:value-of select="'$'"/>
-      <xsl:value-of select="eo:class-name($name)"/>
-    </xsl:variable>
+    <!--
+    The class is named after the chain of formations from the top-level
+    class down, not after the threaded "$parent": the two agree in the
+    main body, but a test body threads its own "Test"-prefixed root, and
+    the one atom class "lowered.xsl" declares carries the main name - so
+    a lowered atom under a test attribute must reach for that class, the
+    way the test body already reaches for every other main-side class.
+    -->
+    <xsl:variable name="class" select="string-join((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name($name)), '$')"/>
     <xsl:variable name="variable">
       <xsl:if test="$context!='this'">
         <xsl:value-of select="$context"/>

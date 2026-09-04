@@ -161,6 +161,96 @@ final class JavaAtomTest {
     }
 
     @Test
+    void rendersNumberEqualityAsBitComparison() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "equality over numbers must compare their raw bits, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Step("s1", "L_number_div", Arrays.asList("sym:v0", "sym:v1")),
+                        new Step("s2", "L_bytes_eq", Arrays.asList("sym:s1", "sym:v0"))
+                    ),
+                    "sym:s2",
+                    "bool"
+                ),
+                voids
+            ).text(),
+            Matchers.containsString(
+                String.format(
+                    "final boolean s2 = %s == %s;",
+                    "Double.doubleToRawLongBits(s1)",
+                    "Double.doubleToRawLongBits(v0)"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersBytesEqualityThroughArrays() {
+        MatcherAssert.assertThat(
+            "equality over bytes must go through Arrays, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:1F-2E-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("b", "bytes")
+            ).text(),
+            Matchers.containsString(
+                String.format(
+                    "final boolean s1 = java.util.Arrays.equals(v0, %s);",
+                    "new byte[] {(byte) 0x1F, (byte) 0x2E}"
+                )
+            )
+        );
+    }
+
+    @Test
+    void refusesEqualityOverMixedFormas() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:01-02-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "equality mixing a number with raw bytes cannot render, but it did"
+        );
+    }
+
+    @Test
+    void refusesOperandOfForeignForma() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Step(
+                            "s1", "L_number_plus",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                Collections.singletonMap("b", "bytes")
+            )::text,
+            "a number operation over a bytes operand cannot render, but it did"
+        );
+    }
+
+    @Test
     void refusesOperationWithoutRendering() {
         Assertions.assertThrows(
             IllegalStateException.class,

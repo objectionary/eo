@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.lowering;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
  *
  * @since 0.76.0
  */
-final class Digest {
+public final class Digest {
 
     /**
      * The content to digest.
@@ -34,7 +34,7 @@ final class Digest {
      * Ctor.
      * @param body The content to digest
      */
-    Digest(final String body) {
+    public Digest(final String body) {
         this.text = body;
     }
 
@@ -42,7 +42,7 @@ final class Digest {
      * The digest.
      * @return Twelve hex characters
      */
-    String hex() {
+    public String hex() {
         try {
             return String.format(
                 "%064x",
