@@ -357,7 +357,7 @@ final class LnOnlyPhi implements Line {
                 end = end + 1;
             }
             final String raw = text.substring(idx, end);
-            Emissions.validParam(raw, span.line(), span.indent() + origin + idx);
+            Emissions.validPhiParam(raw, span.line(), span.indent() + origin + idx);
             out.add(raw);
             if (end < text.length()) {
                 if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {
