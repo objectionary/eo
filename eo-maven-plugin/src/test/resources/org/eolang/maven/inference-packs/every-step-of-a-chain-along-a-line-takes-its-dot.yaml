@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A dispatch begins at its dot, so a chain written along one line is read back
+# dot by dot, and the name the chain stands on keeps the column it starts at.
+eo:
+  clock.eo: |
+    [x] > clock
+      x.seconds.times > @
+xmir:
+  clock.eo:
+    - "//o[@base='.times' and @line=2 and @pos=11]/o[@base='.seconds' and @line=2 and @pos=3]/o[@base='ξ.x' and @line=2 and @pos=2]"
