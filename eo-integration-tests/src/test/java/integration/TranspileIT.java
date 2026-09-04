@@ -25,6 +25,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for transpile behavior.
+ *
+ * <p>The sandbox compiles the {@code .eo} sources of the runtime it depends
+ * on, so it runs the merge the runtime's own build runs. A member of a
+ * package is an attribute of the object the package names only after the
+ * merge, and the name of the class an atom of such a member transpiles to
+ * follows: unmerged, {@code string.regex.compile} asks for a
+ * {@code org.eolang.EO_string.EOregex$EOcompile} that the runtime jar,
+ * merged when it was built, does not carry.</p>
+ *
  * @since 0.62
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -72,7 +81,7 @@ final class TranspileIT {
         );
         new EoMavenPlugin(farea).appended()
             .execution("transpile-it")
-            .goals("register", "compile", "transpile")
+            .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("failOnWarning", "false")
             .set("skipLinting", "true");
