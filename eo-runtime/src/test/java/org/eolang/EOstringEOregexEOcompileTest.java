@@ -78,4 +78,35 @@ final class EOstringEOregexEOcompileTest {
             )
         );
     }
+
+    @Test
+    void refusesFlagsThatCarryRegexSyntax() {
+        MatcherAssert.assertThat(
+            "a flag section that closes its own group must be refused, not spliced into the pattern where it silently changes what the regex means",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new Data.ToPhi("/b/i)|(?:a").take("regex").take("compiled")
+                ).take()
+            ).toString(),
+            Matchers.containsString("regex flags 'i)|(?:a' must be a sequence")
+        );
+    }
+
+    @Test
+    void refusesAFlagLetterTheEoSideDoesNotRead() {
+        MatcherAssert.assertThat(
+            "an unknown flag letter must be reported as a flag, since the EO half of this object reads only [dimsux], rather than as whatever the engine makes of it",
+            Assertions.assertThrows(
+                ExAbstract.class,
+                () -> new Dataized(
+                    new Data.ToPhi("/b/z").take("regex").take("compiled")
+                ).take()
+            ).toString(),
+            Matchers.allOf(
+                Matchers.containsString("regex flags 'z' must be a sequence"),
+                Matchers.not(Matchers.containsString("Unknown inline modifier"))
+            )
+        );
+    }
 }
