@@ -18,6 +18,14 @@ import org.apache.maven.plugins.annotations.Mojo;
  * the need to call each goal separately.</p>
  *
  * @since 0.52
+ * @todo #6659:30min Let this goal merge the packages too. Since the merge
+ *  became mandatory, a build that does not run {@link MjMerge} between this
+ *  goal and {@link MjTranspile} names the atom of a package member after the
+ *  member, while the runtime jar, merged when it was built, carries the name
+ *  the merge gives it, and the generated Java does not compile. Every project
+ *  has to list {@code merge} of its own accord today, this one and the README
+ *  of the plugin included. Chain it here, once it is safe to run it twice,
+ *  since {@code eo-runtime} lists it after this goal already.
  */
 @Mojo(
     name = "compile",
