@@ -14,7 +14,8 @@
  *
  * <p>A fragment arrives as XMIR: an application whose every leaf is a
  * literal, such as {@code 1.plus 1}. {@link org.eolang.lowering.Expression}
- * renders it as a φ-calculus expression, and
+ * hands it to {@code phino rewrite --input=xmir}, which is where XMIR
+ * becomes a φ-calculus expression, and
  * {@link org.eolang.lowering.Universe} carries the method tables of the
  * primitive λ-atoms — {@code number.plus}, {@code bytes.slice} and the
  * rest — under the short names phino registers for them.

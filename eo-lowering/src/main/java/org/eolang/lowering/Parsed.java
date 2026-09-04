@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
  * reference into the base itself, so {@code ξ.b.size.plus} unrolls here
  * into nested sites, with the arguments of the element attached to the
  * last link. Anything else is refused, since its meaning depends on a
- * context the reduction does not carry — the same contract
- * {@link Expression} keeps for the constant folding path.</p>
+ * context the reduction does not carry.</p>
  *
  * @since 0.76.0
  */

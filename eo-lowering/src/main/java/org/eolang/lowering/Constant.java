@@ -54,7 +54,7 @@ public final class Constant {
     public Datum value() throws IOException {
         return this.phino.dataize(
             new Universe().text(),
-            new Expression(this.fragment).text()
+            new Expression(this.phino, this.fragment).text()
         );
     }
 }
