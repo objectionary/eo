@@ -461,8 +461,8 @@ final class PhDefaultTest {
     void keepsSubPackageInForma() {
         MatcherAssert.assertThat(
             "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOstring$EOregex$EOcompile().forma(),
-            Matchers.equalTo("Φ.string.regex.compile")
+            new EOstring$EOregex$EOpattern$EOchecked().forma(),
+            Matchers.equalTo("Φ.string.regex.pattern.checked")
         );
     }
 

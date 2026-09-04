@@ -39,7 +39,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * because the shape of an object decides the name of the Java class of every
  * atom it holds, and a build that skipped the goal would name classes that
  * the library it compiles against does not carry. {@code Φ.string.regex} is
- * such an object: its atoms ship as {@code EOstring$EOregex$EOcompile} and
+ * such an object: its atoms ship as {@code EOstring$EOregex$EOpattern$EOchecked} and
  * friends, which is where they land once {@code regex} is an attribute of
  * {@code string}, and nowhere near the {@code org.eolang.EO_string} package
  * an unmerged {@code +package string} would compile it into (#8295).</p>
