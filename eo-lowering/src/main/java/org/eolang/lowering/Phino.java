@@ -113,6 +113,28 @@ public final class Phino {
     }
 
     /**
+     * Translate one XMIR document into a φ-calculus expression.
+     *
+     * <p>Reading XMIR is phino's own job, done under {@code --input=xmir}:
+     * the document is parsed into the very AST its own parser builds and
+     * printed back in phi syntax. No rule is applied, so nothing but the
+     * dialect of the pinned binary decides what comes out.</p>
+     *
+     * @param xmir The document, in XMIR
+     * @return The expression, in phi syntax
+     * @throws IOException If the executable cannot be run
+     */
+    public String phi(final String xmir) throws IOException {
+        final Path file = Files.createTempFile(this.workspace(), "fragment", ".xmir");
+        try {
+            Files.write(file, xmir.getBytes(StandardCharsets.UTF_8));
+            return this.executed(this.binary, "rewrite", "--input", "xmir", file.toString());
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+    /**
      * Dataize the merge of the given φ-calculus expressions.
      *
      * <p>Each expression must be complete on its own; {@code phino merge}
