@@ -2,16 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# #7478: two nameless continuation lines below the same object are one
-# object by the time the printer sees them - "?.y" and "?.q" under a
-# "42 > z" parse into a single "ξ.z.y.q" - and the grammar reads only one
-# hop per continuation line, so printing that object as one line spelled
-# a nameless application the parser refuses inside a formation. The fix
-# gives every hop a line of its own again. The fragile marker sits on the
-# last hop: the object carries one "@fragile" for the whole run, and a
-# dispatch following a fragile one has to repeat the "?." itself, so a
-# run marked on its last hop reads back as this very object while one
-# marked earlier does not parse at all.
+# #7478: two continuation lines below the same object are one object by
+# the time the printer sees them - ".y" and "?.q" under a "42 > z" parse
+# into a single "ξ.z.y.q". R-6.2.2 puts the chain's naming line on the
+# last link, so "?.q" carries "> w" while ".y" stays an intermediate hop
+# and "z" stays the intermediate name of the head R-6.2.3 allows. The
+# whole run then prints as one head line carrying its receiver, and the
+# fragile marker of the run sits on the hop that dispatches fragilely,
+# so the line reads back as this very object.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -23,4 +21,9 @@ origin: |
   [] > m
     42 > z
     .y
-    ?.q
+    ?.q > w
+
+printed: |
+  [] > m
+    z.y?.q > w
+    42 > z
