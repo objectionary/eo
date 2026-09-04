@@ -100,6 +100,21 @@ final class Catalogs {
         return this.all.computeIfAbsent(abs, f -> Catalogs.build(f, format));
     }
 
+    /**
+     * Forget the catalog of this file, if there is one.
+     *
+     * <p>The cache is keyed by path alone, so it outlives the file. Whoever
+     * deletes a catalog has to say so here, or the next {@link #make(Path)}
+     * for the same path answers with the rows that were just removed.</p>
+     *
+     * @param file The file
+     */
+    void drop(final Path file) {
+        final Path abs = file.toAbsolutePath();
+        this.all.remove(abs);
+        this.formats.remove(abs);
+    }
+
     private static Tojos build(final Path path, final String fmt) {
         Mono mono;
         if ("json".equals(fmt)) {
