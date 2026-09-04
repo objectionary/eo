@@ -66,13 +66,15 @@ final class Page {
     Directives directives(final String name) {
         final List<String> lines = this.lines();
         final Map<Integer, Collection<Written>> written = this.written();
-        final Map<Integer, Integer> counted = this.counted();
+        final Map<String, Integer> counted = this.counted();
         final Directives dirs = new Directives()
             .add("page")
             .attr("file", name)
-            .attr("named", Integer.toString(counted.getOrDefault(2, 0)))
-            .attr("rooted", Integer.toString(counted.getOrDefault(1, 0)))
-            .attr("blank", Integer.toString(counted.getOrDefault(0, 0)));
+            .attr("named", Integer.toString(counted.getOrDefault("named", 0)))
+            .attr("rooted", Integer.toString(counted.getOrDefault("rooted", 0)))
+            .attr("atom", Integer.toString(counted.getOrDefault("atom", 0)))
+            .attr("unfilled", Integer.toString(counted.getOrDefault("unfilled", 0)))
+            .attr("blank", Integer.toString(counted.getOrDefault("blank", 0)));
         for (int index = 0; index < lines.size(); index = index + 1) {
             dirs.add("line").attr("n", Integer.toString(index + 1));
             dirs.append(
@@ -119,12 +121,12 @@ final class Page {
         return found;
     }
 
-    private Map<Integer, Integer> counted() {
-        final Map<Integer, Integer> found = new HashMap<>(3);
+    private Map<String, Integer> counted() {
+        final Map<String, Integer> found = new HashMap<>(5);
         for (final String loc : this.xmir.xpath("//o[@loc]/@loc")) {
             final Answer answer = this.answers.get(loc);
             if (answer != null) {
-                found.merge(Math.min(answer.rung(), 2), 1, Integer::sum);
+                found.merge(new Band(answer).name(), 1, Integer::sum);
             }
         }
         return found;

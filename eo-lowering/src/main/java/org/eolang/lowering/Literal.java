@@ -49,7 +49,7 @@ public final class Literal implements Term {
         } else if ("bytes".equals(this.forma)) {
             out = String.format("Φ.bytes(α0 ↦ ⟦ Δ ⤍ %s ⟧)", this.hex);
         } else if ("bool".equals(this.forma)) {
-            if ("01-".equals(this.hex)) {
+            if ("FF-".equals(this.hex)) {
                 out = "Φ.true";
             } else {
                 out = "Φ.false";

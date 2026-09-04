@@ -143,7 +143,7 @@ final class ConstantTest {
                     )
                 ).element("o")
             ).value().bytes(),
-            Matchers.equalTo("01-")
+            Matchers.equalTo("FF-")
         );
     }
 

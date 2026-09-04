@@ -105,7 +105,7 @@ final class PiecesTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/line/bit[.='[']",
-                "/line/bit[text='if'][@band='rooted']",
+                "/line/bit[text='if'][@band='unfilled']",
                 "/line/bit[.='] > bool']"
             )
         );
@@ -194,6 +194,59 @@ final class PiecesTest {
                 )
             ),
             XhtmlMatchers.hasXPath("/line/bit[@band='blank'][count(told)=2]")
+        );
+    }
+
+    @Test
+    void marksAVoidAnAtomFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void filled inside an atom must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  size",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.info.size", 2, "size",
+                        new Answer(
+                            "Φ.posix.return.output.size", 1, Collections.emptyList(), true
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='size'][@band='atom']")
+        );
+    }
+
+    @Test
+    void marksAVoidNobodyFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void nothing was ever put into must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  cant-convert",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.@.α2", 2, "",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='cant-convert'][@band='unfilled']")
+        );
+    }
+
+    @Test
+    void saysAVoidNobodyFillsIsStillAVoid() {
+        MatcherAssert.assertThat(
+            "a void nobody fills is still a void and must be said to be one, but it wasnt",
+            PiecesTest.drawn(
+                "[cant-convert] > as-i16",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.cant-convert", 1, "cant-convert",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
         );
     }
 

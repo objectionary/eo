@@ -33,17 +33,18 @@
 # rather than in reading order, because the linter sorts them by name.
 #
 # The `%s` conversion refuses an argument whose bytes do not decode as UTF-8.
-# `false` and `true` dataize to the single bytes `00-` and `01-`, which are
-# also the valid one-character encodings of U+0000 and U+0001, so an object
-# knows its own bytes here and not its type: a boolean routed through `%s`
-# is printed as that control character instead of being rejected, and `%b`
-# remains the conversion to reach for a boolean.
+# `false` dataizes to the single byte `00-`, which is also the valid
+# one-character encoding of U+0000, so an object knows its own bytes here
+# and not its type: FALSE routed through `%s` is printed as that control
+# character instead of being rejected. TRUE dataizes to `FF-`, which no
+# text encodes, so it is rejected. `%b` remains the conversion to reach
+# for a boolean either way.
 #
 # The `%b` conversion refuses an argument whose bytes are neither `00-` nor
-# `01-`, so a text or a number reaching it terminates instead of being
+# `FF-`, so a text or a number reaching it terminates instead of being
 # printed as `false`. The coin lands the other way up as well: the
-# one-character texts of U+0000 and U+0001 are accepted as booleans, since
-# their bytes are the bytes of `false` and `true`.
+# one-character text of U+0000 is accepted as a boolean, since its byte is
+# the byte of `false`.
 #
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
@@ -230,7 +231,7 @@
               62-.eq conv
               if.
                 or.
-                  01-.eq datum
+                  FF-.eq datum
                   00-.eq datum
                 capped
                   arg.as-bool.if "true" "false"
@@ -428,11 +429,6 @@
     "%25x".printf
       * 42.as-bytes
 
-  eq. ++> can-format-a-boolean-as-a-control-character
-    "\u0001"
-    "%s".printf
-      * true
-
   eq. ++> can-format-a-computed-string
     "abcd"
     "%s".printf
@@ -626,6 +622,10 @@
     "-9223372036854775808"
     "%d".printf
       * -9.223372036854776e18
+
+  printf. --> stops-on-a-boolean-as-a-string
+    "%s"
+    * true
 
   printf. --> stops-on-a-comma-flag-with-s
     "%,s"

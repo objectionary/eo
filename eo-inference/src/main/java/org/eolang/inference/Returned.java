@@ -24,10 +24,11 @@ import java.util.Map;
  * file, where the body of an atom is the {@code λ} nobody types. Both are
  * answering the same question and must not answer it apart.</p>
  *
- * <p>An annotation that names no object never reaches the column, {@code
- * Provides} having passed over it: {@code [] > recovered /A} comes back with
- * whatever the caller put in, which is a variable, and nothing in these tables
- * understands one yet.</p>
+ * <p>An annotation that names a variable rather than an object reaches the
+ * column as the void that carries the same letter, {@code Provides} having put
+ * it there: {@code [] > recovered /A} comes back with whatever the caller put
+ * in, so the column holds the void it was put in, and a caller who filled it
+ * with a {@code number} is answered with a {@code number} (#8348).</p>
  *
  * @since 0.71.0
  */

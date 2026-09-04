@@ -263,7 +263,7 @@ public final class JavaAtom {
             }
             out = String.format("Double.longBitsToDouble(0x%sL)", hex);
         } else if ("bool".equals(parts[0])) {
-            if ("01-".equals(parts[1])) {
+            if ("FF-".equals(parts[1])) {
                 out = "true";
             } else if ("00-".equals(parts[1])) {
                 out = "false";

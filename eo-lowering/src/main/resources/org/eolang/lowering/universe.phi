@@ -24,6 +24,6 @@
     size ↦ ⟦ λ ⤍ L_bytes_size ⟧,
     slice ↦ ⟦ start ↦ ∅, len ↦ ∅, cant-slice ↦ ∅, λ ⤍ L_bytes_slice ⟧
   ⟧,
-  true ↦ ⟦ Δ ⤍ 01- ⟧,
+  true ↦ ⟦ Δ ⤍ FF- ⟧,
   false ↦ ⟦ Δ ⤍ 00- ⟧
 ⟧
