@@ -5,13 +5,16 @@
 # #8184: a `.method` continuation re-purposes the top entry via
 # `stack.seal()` instead of `Transition.apply`, so the atom-body check
 # never ran on it — the continuation escaped R-6.3.1 / R-5.3.4.
-line: 4
+# The predecessor is a void, because a void is the only line shape that
+# both sits under an atom parent (`Admission` permits it outright) and
+# leaves the entry unnamed by a test suffix, so R-6.3.3 does not refuse
+# the continuation first.
+line: 3
 message: |-
-  [4:2] error: 'atom may contain only test attributes'
+  [3:2] error: 'atom may contain only test attributes'
     .bar > baz
     ^
 input: |
   [] > foo /number
-
-    [] +> t
+    ? > x
     .bar > baz
