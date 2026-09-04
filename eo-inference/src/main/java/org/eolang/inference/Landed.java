@@ -64,15 +64,12 @@ final class Landed {
      */
     Map<String, String> all() {
         final Collection<String> made = new HashSet<>(0);
-        final Map<String, String> comes = new LinkedHashMap<>(0);
         for (final Xnav type : new Rows(this.given).all()) {
-            final String owner = new Noted(type).says("id");
-            made.add(owner);
-            type.attribute("returns").text().ifPresent(back -> comes.put(owner, back));
+            made.add(new Noted(type).says("id"));
         }
         final Collection<String> plain = new HashSet<>(this.links.certain());
         final Map<String, String> hops = this.links.all();
-        final Walked walked = new Walked(hops, comes);
+        final Walked walked = new Walked(hops, new Returned(this.given).all());
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final String type : made) {
             found.put(type, type);

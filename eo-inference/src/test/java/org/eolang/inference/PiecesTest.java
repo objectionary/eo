@@ -182,6 +182,21 @@ final class PiecesTest {
         );
     }
 
+    @Test
+    void warnsAboutTheWorstObjectUnderOneMark() {
+        MatcherAssert.assertThat(
+            "a mark over an object nobody can name must say so, but the name beside it hid it",
+            PiecesTest.drawn(
+                "  [] > pour /Q.mug",
+                Arrays.asList(
+                    new Written("Φ.cup.pour", 2, "pour", new Answer("Φ.cup.pour", 3)),
+                    new Written("Φ.cup.pour.λ", 2, "λ", new Answer("Φ.cup.pour.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[@band='blank'][count(told)=2]")
+        );
+    }
+
     private static String drawn(final String line, final Collection<Written> written) {
         return new Xembler(
             new Directives()

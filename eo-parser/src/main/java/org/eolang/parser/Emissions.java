@@ -512,13 +512,14 @@ final class Emissions {
             );
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        if (LnOnlyPhi.compactStar(lhs, sub) >= 0) {
+        final Lhs slot = new Lhs(sub);
+        if (slot.stars() >= 0) {
             throw new ParseError(
                 line, column + lhs.lastIndexOf('*'),
                 "compact tuple marker is not allowed inside a parenthesised inline-phi"
             );
         }
-        if (LnOnlyPhi.receiverless(sub)) {
+        if (slot.receiverless()) {
             throw new ParseError(
                 line, column, "reversed dispatch missing receiver"
             );
