@@ -212,14 +212,14 @@ final class Transpilation {
      *
      * <p>{@code purify.xsl} reads the tables and stamps {@code @pure}, which
      * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so a source
-     * with different rows is different Java (#7627, #7945).</p>
+     * with different rows is different Java (#7627, #7945). The Java files
+     * of that source are keyed by the same segment: {@code Transpiling}
+     * derives the cache of one tojo from this and hands it to
+     * {@code JavaFiles}, so a class never comes back from a slot the rows
+     * of another build filled (#8001).</p>
      *
      * @param locators The locators of the objects the file holds
      * @return The version segment for {@link CachePath}
-     * @todo #7945:40min Key the Java files by the rows as well.
-     *  `Transpiling` still pools them in one directory made from
-     *  {@link #version()}, which knows nothing about the tables. Hand
-     *  `JavaFiles.total` the directory of the tojo, made here.
      */
     String version(final Collection<String> locators) {
         return String.format("%s-%s", this.version(), this.rows.digest(locators));
