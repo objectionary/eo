@@ -1,0 +1,89 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Depth decides which pass claims a formation. Only a named attribute of
+# the top object may become an atom outright, so Heron's step loses its
+# body to a sidecar and keeps just its voids. The formations nested
+# deeper keep their shape, and only their bodies leave, each into a
+# synthetic sibling named after its own digest: the cube, the quadratic
+# sample, and Horner's cubic, whose five voids are numbered in the order
+# the carve first meets them, which is why `t` leads. What calls a
+# sibling formation reduces nowhere and stays as written, so `sum` and
+# `rest` print exactly as they were parsed.
+input: |
+  [] > foo
+    [n g] > heron
+      (g.plus (n.div g)).div 2 > @
+    [] > cubic
+      [t] > pow3
+        (t.times t).times t > @
+      [] > horner
+        [a b c d t] > poly
+          (((((a.times t).plus b).times t).plus c).times t).plus d > @
+        [t] > sample
+          (t.times t).plus (t.times 6) > @
+    (heron 2 1.5).plus (cubic.horner.poly 1 2 3 4 5) > sum
+    (cubic.pow3 3).plus (cubic.horner.sample 4) > rest
+    sum.plus rest > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: heron
+voids:
+  n: number
+  g: number
+lowered: |
+  [] > foo
+    sum.plus rest > @
+    [] > cubic
+      [] > horner
+        [a b c d t] > poly
+          l🌵933af847a7e6 > @
+            t
+            a
+            b
+            c
+            d
+          [] > l🌵933af847a7e6 /Q.number
+            ? > v0 /Q.number
+            ? > v1 /Q.number
+            ? > v2 /Q.number
+            ? > v3 /Q.number
+            ? > v4 /Q.number
+        [t] > sample
+          l🌵63b5710f978f t > @
+          [] > l🌵63b5710f978f /Q.number
+            ? > v0 /Q.number
+      [t] > pow3
+        l🌵425fc1b5fc0f t > @
+        [] > l🌵425fc1b5fc0f /Q.number
+          ? > v0 /Q.number
+    [] > heron /Q.number
+      ? > n /Q.number
+      ? > g /Q.number
+    plus. > rest
+      cubic.pow3 3
+      cubic.horner.sample 4
+    plus. > sum
+      heron
+        2
+        1.5
+      cubic.horner.poly
+        1
+        2
+        3
+        4
+        5
+protocol: |
+  s1 ← L_number_div sym:v0 sym:v1
+  s2 ← L_number_plus sym:v1 sym:s1
+  s3 ← L_number_div sym:s2 number:40-00-00-00-00-00-00-00
+  answer sym:s3 number
+java: |
+  final double v0 = new Dataized(this.take("n")).asNumber();
+  final double v1 = new Dataized(this.take("g")).asNumber();
+  final double s1 = v0 / v1;
+  final double s2 = v1 + s1;
+  final double s3 = s2 / Double.longBitsToDouble(0x4000000000000000L);
+  return new Data.ToPhi(s3);
