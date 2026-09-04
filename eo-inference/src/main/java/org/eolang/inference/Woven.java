@@ -40,7 +40,7 @@ final class Woven {
     private final Given applied;
 
     /**
-     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     * What every dispatch takes its attribute from, from {@link Taken}.
      */
     private final Map<String, String> receivers;
 

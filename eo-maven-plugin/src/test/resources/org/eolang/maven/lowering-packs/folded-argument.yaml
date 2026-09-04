@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The constant subterm folds even inside a symbolic fragment: the
+# lowering step rewrites the product in the EO itself, and the
+# reduction folds it into the operand of the one parked step.
+input: |
+  [x] > foo
+    x.plus (2.times 3) > @
+voids:
+  x: number
+lowered: |
+  x.plus > [x] > foo
+    6
+protocol: |
+  s1 ← L_number_plus sym:v0 number:40-18-00-00-00-00-00-00
+  answer sym:s1 number

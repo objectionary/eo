@@ -10,6 +10,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.eolang.lowering.Phino;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -76,6 +77,137 @@ final class MjLowerTest {
                 .xmir()
                 .toString(),
             Matchers.not(Matchers.containsString(Lowering.DIR))
+        );
+    }
+
+    @Test
+    void transpilesLoweredFormationIntoAtomClass(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the lowered formation must transpile into its own atom class, but it didnt",
+            Files.readString(
+                MjLowerTest.symbolic(temp)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.containsString(
+                "public final class EOfoo$EObump extends PhDefault implements Atom {"
+            )
+        );
+    }
+
+    @Test
+    void splicesSidecarBodyIntoLambda(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the generated lambda must read the void through the public API, but it doesnt",
+            Files.readString(
+                MjLowerTest.symbolic(temp)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.containsString(
+                "final double v0 = new Dataized(this.take(\"x\")).asNumber();"
+            )
+        );
+    }
+
+    @Test
+    void outlinesPureApplicationIntoAtomClass(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the outlined application must transpile into its own atom class, but it didnt",
+            Files.readString(MjLowerTest.outlined(temp)),
+            Matchers.containsString("implements Atom {")
+        );
+    }
+
+    @Test
+    void splicesOutlinedChainIntoLambda(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the whole chain must reduce into straight-line Java, but it didnt",
+            Files.readString(MjLowerTest.outlined(temp)),
+            Matchers.containsString("final double s1 = v0 * v0;")
+        );
+    }
+
+    @Test
+    void callsOutlinedAtomAtTheSite(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the site must turn into a call of the synthetic attribute, but it didnt",
+            new XMLDocument(
+                MjLowerTest.compound(temp)
+                    .execute(new PpLower())
+                    .foreignTojos()
+                    .find("foo")
+                    .xmir()
+            ).xpath("//o[@name='calc']/o[@name='φ']/@base").get(0),
+            Matchers.startsWith("ξ.l🌵")
+        );
+    }
+
+    @Test
+    void outlinesNothingButTheCompoundSite(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the single-step neighbour must stay as written, but it was outlined too",
+            new XMLDocument(
+                MjLowerTest.compound(temp)
+                    .execute(new PpLower())
+                    .foreignTojos()
+                    .find("foo")
+                    .xmir()
+            ).xpath("//o[@lowered]/@name"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void callsMainAtomClassFromJunitBody(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "the test body must reach for the main-side atom class, but it doesnt",
+            Files.readString(
+                MjLowerTest.tested(temp)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .getParent()
+                    .resolve("generated-test-sources")
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("TestEOfoo.java")
+            ),
+            Matchers.containsString("new EOfoo$EO$u002Bcan_square$EOl$uF335")
+        );
+    }
+
+    @Test
+    void generatesNoAtomClassWhenDisabled(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a run disabled by eo.lowering must generate no atom class, but it did",
+            Files.exists(
+                MjLowerTest.symbolic(temp)
+                    .with("lowering", false)
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.is(false)
         );
     }
 
@@ -171,6 +303,73 @@ final class MjLowerTest {
         return new FakeMaven(temp)
             .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
             .execute(new PpLower());
+    }
+
+    private static FakeMaven compound(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            MjLowerTest.program(
+                "[] > foo",
+                "  [x] > calc",
+                "    x.plus 1 > incr",
+                "    (x.times x).plus 2 > @",
+                "  calc 5 > @"
+            ),
+            "foo", "foo.eo"
+        ).withProgram(
+            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
+            "number", "number.eo"
+        );
+    }
+
+    private static Path outlined(final Path temp) throws IOException {
+        return MjLowerTest.atom(
+            MjLowerTest.compound(temp)
+                .execute(new PpLower())
+                .execute(MjTranspile.class)
+                .generatedPath()
+        );
+    }
+
+    private static Path atom(final Path generated) throws IOException {
+        try (Stream<Path> walk = Files.walk(generated)) {
+            return walk.filter(
+                file -> file.getFileName().toString().startsWith("EOfoo$EOcalc$EOl")
+            ).findFirst().orElseThrow(
+                () -> new IllegalStateException("no outlined atom class was generated")
+            );
+        }
+    }
+
+    private static FakeMaven tested(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            MjLowerTest.program(
+                "[] > foo",
+                "  eq. ++> can-square",
+                "    (two.times two).plus 2",
+                "    6"
+            ),
+            "foo", "foo.eo"
+        ).withProgram(
+            "2 > two", "two", "two.eo"
+        ).withProgram(
+            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
+            "number", "number.eo"
+        );
+    }
+
+    private static FakeMaven symbolic(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            MjLowerTest.program(
+                "[] > foo",
+                "  [x] > bump",
+                "    (x.times 2).plus 1 > @",
+                "  bump 5 > @"
+            ),
+            "foo", "foo.eo"
+        ).withProgram(
+            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
+            "number", "number.eo"
+        );
     }
 
     private static String constant() {

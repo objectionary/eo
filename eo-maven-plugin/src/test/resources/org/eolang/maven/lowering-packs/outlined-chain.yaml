@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A pure application over a witnessed void is outlined: the whole chain
+# becomes a synthetic atom attribute of the enclosing formation, named
+# after the digest of its own Java body, and the site turns into a call
+# of it with the original reference as the argument. The one-step
+# neighbour stays as written, since its op is a Java atom already.
+input: |
+  [] > foo
+    [x] > calc
+      x.plus 1 > incr
+      (x.times x).plus 2 > @
+    calc 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+lowered: |
+  [] > foo
+    calc 5 > @
+    [x] > calc
+      l🌵0783825bc960 x > @
+      x.plus 1 > incr
+      [] > l🌵0783825bc960 /Q.number
+        ? > v0 /Q.number
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double s1 = v0 * v0;
+  final double s2 = s1 + Double.longBitsToDouble(0x4000000000000000L);
+  return new Data.ToPhi(s2);

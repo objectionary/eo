@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The whole fragment is literals, so the lowering step folds it at
+# build time into the one literal it computes, and the protocol needs
+# no steps at all.
+input: |
+  [] > foo
+    2.plus 3 > @
+lowered: |
+  5 > [] > foo
+protocol: |
+  answer number:40-14-00-00-00-00-00-00 number

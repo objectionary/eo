@@ -134,15 +134,12 @@ final class TjForeign {
      */
     boolean notParsed() {
         boolean res = true;
-        if (this.delegate.exists(TjsForeign.Attribute.XMIR.getKey())) {
-            final Path xmir = this.xmir();
-            if (xmir.toFile().lastModified() >= this.source().toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already parsed %s to %[file]s (it's newer than the source)",
-                    this.identifier(), xmir
-                );
-                res = false;
-            }
+        if (this.delegate.exists(TjsForeign.Attribute.XMIR.getKey()) && this.unchanged()) {
+            Logger.debug(
+                this, "Already parsed %s to %[file]s (the source is the very same one)",
+                this.identifier(), this.xmir()
+            );
+            res = false;
         }
         return res;
     }
@@ -260,6 +257,16 @@ final class TjForeign {
     }
 
     /**
+     * Set the digest of the source the xmir was parsed from.
+     * @param digest The digest
+     * @return The tojo itself
+     */
+    TjForeign withDigest(final String digest) {
+        this.delegate.set(TjsForeign.Attribute.DIGEST.getKey(), digest);
+        return this;
+    }
+
+    /**
      * Set the version.
      * @param ver The version
      * @return The tojo itself
@@ -285,6 +292,13 @@ final class TjForeign {
      */
     String scope() {
         return this.attribute(TjsForeign.Attribute.SCOPE);
+    }
+
+    private boolean unchanged() {
+        return this.delegate.exists(TjsForeign.Attribute.DIGEST.getKey())
+            && this.source().toFile().exists()
+            && this.attribute(TjsForeign.Attribute.DIGEST)
+                .equals(new Sha(this.source()).toString());
     }
 
     private String attribute(final TjsForeign.Attribute attribute) {
