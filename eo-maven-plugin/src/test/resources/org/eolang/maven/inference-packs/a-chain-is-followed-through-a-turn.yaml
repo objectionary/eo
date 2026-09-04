@@ -11,4 +11,4 @@ eo:
         ^.seconds
 xmir:
   gauge.eo:
-    - "//o[@base='.times' and @line=2 and @pos=2]/o[@base='.seconds' and @line=3 and @pos=5]/o[@base='ξ.ρ' and @line=3 and @pos=4]"
+    - "//o[@base='.times'][@line=2][@pos=2]/o[@base='.seconds'][@line=3][@pos=5]/o[@base='ξ.ρ'][@line=3][@pos=4]"

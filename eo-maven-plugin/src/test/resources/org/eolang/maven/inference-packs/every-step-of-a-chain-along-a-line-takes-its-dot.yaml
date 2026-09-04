@@ -9,4 +9,4 @@ eo:
       x.seconds.times > @
 xmir:
   clock.eo:
-    - "//o[@base='.times' and @line=2 and @pos=11]/o[@base='.seconds' and @line=2 and @pos=3]/o[@base='ξ.x' and @line=2 and @pos=2]"
+    - "//o[@base='.times'][@line=2][@pos=11]/o[@base='.seconds'][@line=2][@pos=3]/o[@base='ξ.x'][@line=2][@pos=2]"

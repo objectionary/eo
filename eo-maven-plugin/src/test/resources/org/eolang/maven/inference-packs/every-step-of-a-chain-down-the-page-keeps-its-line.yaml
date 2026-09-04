@@ -12,4 +12,4 @@ eo:
           x
 xmir:
   clock.eo:
-    - "//o[@base='.times' and @line=2 and @pos=2]/o[@base='.seconds' and @line=3 and @pos=4]/o[@base='ξ.x' and @line=4 and @pos=6]"
+    - "//o[@base='.times'][@line=2][@pos=2]/o[@base='.seconds'][@line=3][@pos=4]/o[@base='ξ.x'][@line=4][@pos=6]"

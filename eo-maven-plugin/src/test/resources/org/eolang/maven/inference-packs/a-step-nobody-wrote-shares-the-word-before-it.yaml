@@ -13,4 +13,4 @@ eo:
         "hello"
 xmir:
   app.eo:
-    - "//o[@base='.stdout' and @line=4 and @pos=2]/o[@base='.io' and @line=4 and @pos=2]"
+    - "//o[@base='.stdout'][@line=4][@pos=2]/o[@base='.io'][@line=4][@pos=2]"
