@@ -1,16 +1,17 @@
-# Check that all signs in `text` are letters.
+# Check that all signs in the string are letters.
 # Works only for english letters.
+# An empty string is not a letter and is not accepted, since the pattern
+# asks for one sign at least.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > is-alpha
-  "/^[a-zA-Z]+$/".regex.matches text > @
-  ^ > text
+  "/^[a-zA-Z]+$/".regex.matches ^ > @
 
   "eEo".is-alpha ++> can-be-alphabetic-when-simple-text
 

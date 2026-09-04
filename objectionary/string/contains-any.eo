@@ -1,19 +1,18 @@
-# Checks if `text` contains any element from `substrings`.
+# Checks if the string contains any element from `substrings`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ substrings] > contains-any
   reduced. > @
     substrings.mapped
-      ^.text.contains x > [^ x] >>
+      ^.^.contains x > [^ x] >>
     false
     x.or a > [a x]
-  ^ > text
 
   contains-any. ++> can-contain-any-substring
     "Good morning"

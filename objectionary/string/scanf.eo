@@ -1,12 +1,13 @@
-# Reads formatted input from a string.
-# This object has two free attributes:
-# 1. `format` - is a formatter string (e.g. "Hello, %s!")
-# 2. `read` - is a string where data exists (e.g. "Hello, John!")
-# returns a `org.eolang.tuple` of formatted values (e.g. * "John").
+# Reads formatted input from a string. It is a method of the formatter
+# string (e.g. "Hello, %s!"), with one free attribute `read`, the string
+# where the data exists (e.g. "Hello, John!"). It returns a
+# `org.eolang.tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
 # - %s - parse as string and convert to `string`.
+# A space in the format matches a run of one or more spaces in the input, so
+# extra spaces between fields never shift or drop the values that follow.
 #
 # The `%f` conversion never materializes the whole power of ten at once,
 # because `10.power 309` is already infinity: a single multiplication by it
@@ -27,12 +28,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ read] > scanf
-  ^ > format
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -193,21 +193,19 @@
           text
         "/^0+/".regex
         ""
-    [^ group acc] >> convert
-      ^.matched.exists.not.if > @
-        *
-        if.
-          group.gt ^.specifiers.length
-          acc
-          next
-      ^.convert > next
-        group.plus 1
-        acc.with
-          ^.converted
-            ^.specifiers.at
-              group.minus 1
-              T
-            ^.matched.group group
+    ^.matched.exists.not.if > [^ group acc] >> convert
+      *
+      if.
+        group.gt ^.specifiers.length
+        acc
+        ^.convert
+          group.plus 1
+          acc.with
+            ^.converted
+              ^.specifiers.at
+                group.minus 1
+                T
+              ^.matched.group group
     | > @
       1
       *
@@ -219,12 +217,10 @@
         ^.as-integer text
         ^.as-float text
     [text] > fold-digits
-      [^ index acc] >> rec
-        if. > @
-          index.eq ^.text.length
-          acc
-          next
-        ^.rec > next
+      if. > [^ index acc] >> rec
+        index.eq ^.text.length
+        acc
+        ^.rec
           index.plus 1
           plus.
             acc.times 10
@@ -270,7 +266,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.format.length
+      position.gte ^.^.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -317,14 +313,22 @@
             accumulated
             found
             true
-          ^.tokenize
-            position.plus 1
-            accumulated.chained
-              *
-                escaped ch
-            found
-            false
-    ^.format.slice > ch
+          if.
+            ch.eq " "
+            ^.tokenize
+              position.plus 1
+              accumulated.chained
+                * "\\s+"
+              found
+              false
+            ^.tokenize
+              position.plus 1
+              accumulated.chained
+                *
+                  escaped ch
+              found
+              false
+    ^.^.slice > ch
       position
       1
   | >> tokens
@@ -433,6 +437,21 @@
     "hello"
     head.
       "%s!".scanf "hello!"
+
+  eq. ++> can-scan-two-fields-separated-by-extra-spaces
+    "%s %s".scanf
+      "a  b"
+    *
+      "a"
+      "b"
+
+  eq. ++> can-scan-three-fields-separated-by-extra-spaces
+    "%s %s %s".scanf
+      "a  b c"
+    *
+      "a"
+      "b"
+      "c"
 
   eq. ++> can-scan-while-ignoring-trailing-text
     42

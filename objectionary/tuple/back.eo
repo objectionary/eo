@@ -1,10 +1,10 @@
-# Last `index` elements of `list` (an `index` larger than `list.length`
-# returns the whole `list`).
+# Last `index` elements of the tuple (an `index` larger than its `length`
+# returns the whole tuple).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -12,9 +12,9 @@
   index.is-integer.if > @
     if.
       0.gt
-        list.length.minus index! >> start!
-      list
-      list.reducedi
+        ^.length.minus index! >> start!
+      ^
+      ^.reducedi
         *
         if. > [^ accum item idx] >>
           idx.gte start
@@ -22,7 +22,6 @@
           accum
     T
       "Given index must be an integer"
-  ^ > list
 
   eq. ++> can-take-a-back-slice
     back.

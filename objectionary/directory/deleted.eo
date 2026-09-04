@@ -1,15 +1,15 @@
 # Recursively deletes a directory and all of its contents. It is a method of
-# `directory`, and `d` is the directory it is taken off. The walk that feeds
-# `entries` reports everything underneath `d` and never `d` itself, so the
-# recursion below empties the directory but leaves it standing. The root is
-# removed by the step after it, once the walk is done and the directory is
-# empty, through `file.deleted`, which reaches for `rmdir` over `unlink`
-# when the path it is given is a directory.
+# `directory`, taken off the directory it deletes. The walk that feeds
+# `entries` reports everything underneath that directory and never the
+# directory itself, so the recursion below empties it but leaves it standing.
+# The root is removed by the step after it, once the walk is done and the
+# directory is empty, through `file.deleted`, which reaches for `rmdir` over
+# `unlink` when the path it is given is a directory.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -22,13 +22,12 @@
         tup.head.deleted
         ^.r tup.tail
     | entries
-    d.as-path.as-file.deleted
-    d
-  ^ > d
+    ^.as-path.as-file.deleted
+    ^
   recovered > [^] > entries
-    ^.d.walk "**"
-    ^.d.exists.if
-      ^.d.walk "**"
+    ^.^.walk "**"
+    ^.^.exists.if
+      ^.^.walk "**"
       *
 
   ++> can-delete-a-directory-containing-a-dangling-symlink

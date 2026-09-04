@@ -1,23 +1,23 @@
-# Drop the first `shift` elements of `list` (a negative `shift` drops nothing).
+# Drop the first `shift` elements of the tuple (a negative `shift` drops
+# nothing).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ shift] > shifted
   shift.is-integer.if > @
-    list.slice
+    ^.slice
       if.
         shift.lt 0
         0
         shift
-      list.length
+      ^.length
     T
       "Given shift must be an integer"
-  ^ > list
 
   eq. ++> can-ignore-a-negative-shift
     shifted.

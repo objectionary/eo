@@ -1,26 +1,25 @@
-# Minimum `number` in `sequence`, which must be a `tuple` or any `tuple`
+# Minimum `number` in the sequence, which must be a `tuple` or any `tuple`
 # decorator of `number` objects. An empty sequence has no minimum, so `cant-min`
 # is dataized with an explanatory message and stands in as the result.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ cant-min] > minimum
-  sequence.is-empty.if > @
+  ^.is-empty.if > @
     cant-min
       "cannot get the minimum number from an empty sequence"
-    sequence.reduced
+    ^.reduced
       pinf
       if. > [min item]
         item.as-number.is-nan.or
           min.gt item.as-number
         item
         min
-  ^ > sequence
 
   is-nan. ++> can-be-nan-when-taking-the-minimum-of-a-lone-nan
     minimum.

@@ -20,7 +20,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -29,25 +29,16 @@
     cases.length.eq 0
     fallback
       "Switch cases are empty"
-    if.
-      true.eq
-        match.
-          @. >> found
-            [^ tup] >> rec-case
-              if. > @
-                and.
-                  tup.length.gt 1
-                  previous.match
-                previous
-                [^] >>
-                  ^.tup.head.head > head
-                  ^.tup.head.tail.head > match!
-              @. > previous
-                ^.rec-case tup.tail
-            | cases
-      found.head
-      fallback
-        "No switch case matched"
+    [^ rest] >> rec-case
+      if. > @
+        rest.length.eq 0
+        ^.fallback
+          "No switch case matched"
+        if.
+          true.eq rest.head.tail.head!
+          rest.head.head
+          ^.rec-case rest.tail
+    | cases.reversed
 
   eq. ++> can-recover-from-an-empty-switch
     "recovered"

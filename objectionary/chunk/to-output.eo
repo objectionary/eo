@@ -1,5 +1,5 @@
-# Makes an output from a `chunk` of memory. It is a method of `chunk`, and
-# `allocated` is the chunk it is taken off:
+# Makes an output from a `chunk` of memory. It is a method of `chunk`,
+# taken off the chunk it writes into:
 #
 # ```
 # malloc.of > result
@@ -15,12 +15,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package chunk
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > to-output
-  ^ > allocated
   [^ buffer] > write
     write. > @
       [^ offset] >> output-block
@@ -29,13 +28,13 @@
           if.
             gt.
               ^.offset.plus buffer.size
-              ^.^.^.allocated.size
+              ^.^.^.^.size
             write.
-              ^.^.^.allocated.resized
+              ^.^.^.^.resized
                 ^.offset.plus buffer.size
               ^.offset
               buffer
-            ^.^.^.allocated.write ^.offset buffer
+            ^.^.^.^.write ^.offset buffer
           ^.^.output-block
             ^.offset.plus buffer.size
       | 0

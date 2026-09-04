@@ -1,6 +1,6 @@
-# Writes the number `n` in scientific notation, as a mantissa with six fraction
-# digits, the letter `e`, and the power of ten that scales the mantissa back to
-# `n`, so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
+# Writes the number in scientific notation, as a mantissa with six fraction
+# digits, the letter `e`, and the power of ten that scales the mantissa back,
+# so that `1.0e19` becomes `1.000000e19`, and `1e-7` becomes
 # `1.000000e-7`. A magnitude past the range of a signed 64-bit integer is
 # named this way, since `as-decimal` writes only what it spells out digit by
 # digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,
@@ -13,16 +13,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > as-scientific
-  n.is-finite.not.if > @
-    n.is-nan.if
+  ^.is-finite.not.if > @
+    ^.is-nan.if
       "nan".as-bytes
       if.
-        n.lt 0
+        ^.lt 0
         "-infinity".as-bytes
         "infinity".as-bytes
     if.
@@ -49,7 +49,6 @@
       10.power
         number raw
     6
-  ^ > n
   carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
@@ -74,16 +73,16 @@
         as-number.
           count.plus 1
   tiny.as-bool.if > scaled
-    n.times boost
-    n
+    ^.times boost
+    ^
   tiny.as-bool.if > shift!
     300
     0
   and. > tiny!
-    n.abs.lt
+    ^.abs.lt
       1.div boost
     not.
-      n.eq 0
+      ^.eq 0
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"

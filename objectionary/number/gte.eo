@@ -1,18 +1,17 @@
-# TRUE when `n` is greater than or equal to `x`.
+# TRUE when the number is greater than or equal to `x`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ x] > gte
   or. > @
-    n.gt
+    ^.gt
       x >> value!
-    n.eq value
-  ^ > n
+    ^.eq value
 
   eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity
     pinf.gte 42.5

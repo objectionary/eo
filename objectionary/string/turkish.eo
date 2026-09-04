@@ -1,6 +1,6 @@
 # Turkish locale specializing the default `english` casing with the dotted
 # and dotless I mappings that Turkish and Azeri override the default with.
-# Being a decorator of its `s` string, a `turkish` object behaves like the
+# Being a decorator of its string, a `turkish` object behaves like the
 # string itself (`.length`, `.eq` and so on pass through), while adding
 # `lower` and `upper` that honour those mappings. Lower casing maps capital
 # dotless I (U+0049) to small dotless i (U+0131) and capital dotted I
@@ -15,23 +15,22 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > turkish
-  s > @
+  ^ > @
   lower. > [^] > lower
     english.
       replaced.
-        ^.s.replaced "/I/".regex "ı"
+        ^.^.replaced "/I/".regex "ı"
         "/İ/".regex
         "i"
-  ^ > s
   upper. > [^] > upper
     english.
       replaced.
-        ^.s.replaced "/i/".regex "İ"
+        ^.^.replaced "/i/".regex "İ"
         "/ı/".regex
         "I"
 

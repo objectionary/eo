@@ -1,37 +1,36 @@
 # Deletes a file from the filesystem, returning the same file, unchanged, if it
-# does not exist. It is a method of `file`, and `f` is the file it is taken off.
+# does not exist. It is a method of `file`, taken off the file it deletes.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > deleted
-  f.exists.if > @
+  ^.exists.if > @
     if.
       or.
         removed.code.eq 0
-        f.exists.not
-      f
+        ^.exists.not
+      ^
       T
         "Cant delete the file '%s': %s".printf
-          * f.path removed.output
-    f
-  ^ > f
+          * ^.path removed.output
+    ^
   called. > removed
     os.is-windows.if
       win32 *1
-        f.is-symlink.if
+        ^.is-symlink.if
           "_unlink"
-          f.is-directory.if "_rmdir" "_unlink"
-        f.path
+          ^.is-directory.if "_rmdir" "_unlink"
+        ^.path
       posix *1
-        f.is-symlink.if
+        ^.is-symlink.if
           "unlink"
-          f.is-directory.if "rmdir" "unlink"
-        f.path
+          ^.is-directory.if "rmdir" "unlink"
+        ^.path
 
   ++> can-delete-a-dangling-symlink
     os.is-windows.or > @

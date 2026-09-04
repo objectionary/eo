@@ -1,4 +1,4 @@
-# Writes the number `n` as fixed-point decimal with exactly `places` fraction
+# Writes the number as fixed-point decimal with exactly `places` fraction
 # digits, rounding to the nearest unit in the last place, so that `2.5` with
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer below 2^53 (negative,
@@ -22,20 +22,20 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ places cant-print] > as-fixed
   if. > @
-    n.is-finite.not.or
+    ^.is-finite.not.or
       huge.or
         or.
           0.gt places
           places.is-integer.not.or
             places.gt 9007199254740991
     cant-print
-      n.is-finite.not.if
+      ^.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
         huge.if
           "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
@@ -44,7 +44,7 @@
               * places
             "Can't write a fixed-point decimal with a non-finite number of fraction places"
     if.
-      n.as-bytes.eq 80-00-00-00-00-00-00-00
+      ^.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
         [^ a] >> positive
           if. > @
@@ -73,7 +73,7 @@
           a.floor > whole
         | 0
       if.
-        n.lt 0
+        ^.lt 0
         if. > [^ a] >> signed
           eq.
             floor.
@@ -85,10 +85,9 @@
           positive a
           "-".as-bytes.concat
             positive a
-        | (n.times -1)
-        positive n
-  n.abs.gte 9.223372036854776e18 > huge
-  ^ > n
+        | (^.times -1)
+        positive ^
+  ^.abs.gte 9.223372036854776e18 > huge
   if. > [^ p] >> pow10
     p.eq 0
     1

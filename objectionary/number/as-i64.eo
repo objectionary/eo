@@ -1,13 +1,13 @@
-# Converts the number `n` to an `i64`, truncating the fractional part toward
-# zero. The exponent and the mantissa are pulled out of the IEEE 754 layout of
-# `n` and the magnitude is shifted into place, with the two's complement taken
-# when `n` is negative. When `n` does not fit into the bounds of an `i64`,
+# Converts the number to an `i64`, truncating the fractional part toward
+# zero. The exponent and the mantissa are pulled out of its IEEE 754 layout
+# and the magnitude is shifted into place, with the two's complement taken
+# when it is negative. When it does not fit into the bounds of an `i64`,
 # the caller-supplied `cant-convert` fallback is returned.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -18,7 +18,7 @@
         as-number. >> exp
           as-i64.
             right.
-              n.as-bytes.and 7F-F0-00-00-00-00-00-00
+              ^.as-bytes.and 7F-F0-00-00-00-00-00-00
               52
         2047
       or.
@@ -28,17 +28,17 @@
           not.
             and.
               eq. >> negative
-                n.as-bytes.and 80-00-00-00-00-00-00-00
+                ^.as-bytes.and 80-00-00-00-00-00-00-00
                 80-00-00-00-00-00-00-00
               eq.
                 or. >> mantissa
-                  n.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+                  ^.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
                   00-10-00-00-00-00-00-00
                 00-10-00-00-00-00-00-00
     cant-convert
       "Can't convert number %s to i64 because it's out of i64 bounds".printf
         *
-          string n.as-scientific
+          string ^.as-scientific
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64
@@ -54,7 +54,6 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
-  ^ > n
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes

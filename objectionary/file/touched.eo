@@ -1,6 +1,6 @@
 # Touches a file, creating it if it does not exist yet, and returning the same
-# file, unchanged, if it already does. It is a method of `file`, and `f` is the
-# file it is taken off. `f.exists` counts any symbolic link, dangling or not,
+# file, unchanged, if it already does. It is a method of `file`, taken off the
+# file it touches. `file.exists` counts any symbolic link, dangling or not,
 # as existing, so this checks reachability directly instead: an ordinary
 # absent path or a dangling symlink both get created. On POSIX, opening a
 # symlink is done without the exclusive flag, since POSIX defines
@@ -8,33 +8,23 @@
 # whether or not its target exists; the exclusivity that guards the
 # plain-file race stays for every other path, and win32 keeps its exclusive
 # open unconditionally, since its reparse points do not share that rule.
-#
-# @todo #7077:60min Add a synchronization-based regression test that creates
-#  the target file between the exists() probe and the exclusive open below,
-#  so the race this fixes is actually exercised. A single-threaded EO `++>`
-#  test can't trigger it: `f.exists.if` always sees a consistent snapshot in
-#  one thread. It needs a JUnit test against the generated `EOtouched` class
-#  (see PhDefaultRaceTest.java for the com.yegor256.Together idiom this repo
-#  already uses for exactly this kind of interleaving), with one thread
-#  paused right after the exists() probe while another thread creates and
-#  writes to the file, then confirms the paused thread's touched() does not
-#  truncate it.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > touched
   reachable.if > @
-    f
+    ^
     if.
       or.
         descriptor.gte 0
-        linked.not.and
+        and.
           errno.eq eexist
+          linked.not
       seq *
         if.
           descriptor.gte 0
@@ -47,19 +37,19 @@
                 "close"
                 descriptor
           0
-        f
+        ^
       T
         "Cant touch the file '%s': %s".printf
-          * f.path opened.output
+          * ^.path opened.output
   code. > accessible
     os.is-windows.if
       win32 *1
         "_access"
-        f.path
+        ^.path
         0
       posix *1
         "access"
-        f.path
+        ^.path
         0
   opened.code > descriptor
   os.is-windows.if > eexist
@@ -76,30 +66,95 @@
   linked.not.if > exclusive
     posix.exclusive
     0
-  ^ > f
-  f.is-symlink false > linked
+  ^.is-symlink false > linked
   called. > opened
     os.is-windows.if
       win32 *1
         "_open"
-        f.path
+        ^.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
       posix *1
         "open"
-        f.path
+        ^.path
         plus.
           posix.creat.plus exclusive
           posix.wronly
         posix.mode
   accessible.eq 0 > reachable
 
+  ++> can-keep-the-symlink-path-after-touching-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.touched.path.eq link
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "broken-link-2" > link
+    d.resolved "missing-target-2" > target
+
+  eq. ++> can-preserve-content-of-an-existing-file-when-touched
+    13
+    size.
+      touched.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world!" > [^ f]
+
   ++> can-return-itself-after-touching
     temp.deleted.touched.path.eq temp.path > @
     mktemp.tmpfile > temp
 
+  ++> can-touch-a-dangling-symlink
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.touched.exists.and target.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "broken-link" > link
+    d.resolved "missing-target" > target
+
   mktemp.tmpfile.deleted.touched.exists ++> can-touch-a-file
 
   mktemp.tmpfile.deleted.touched.touched.exists ++> can-touch-a-file-twice
+
+  ++> can-touch-a-file-with-a-long-name
+    target.as-file.touched.exists > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    "a".repeated 200 > name
+    d.resolved name > target
+
+  ++> can-touch-a-file-with-a-unicode-name
+    target.as-file.touched.exists > @
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "файл-тест.txt" > target
+
+  ++> can-touch-a-non-dangling-symlink-without-truncating-its-target
+    os.is-windows.or > @
+      seq *
+        target.as-file.open
+          "w"
+          f.write "seed-content" > [^ f]
+        code.
+          posix *1
+            "symlink"
+            target
+            link
+        link.as-file.touched.exists.and
+          link.as-file.size.eq 12
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "existing-link" > link
+    d.resolved "target.txt" > target
+
+  touched. --> stops-on-touching-a-file-in-a-missing-directory
+    as-file.
+      mktemp.tmpfile.deleted.as-path.resolved "missing-dir/file"

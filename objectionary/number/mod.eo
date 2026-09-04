@@ -1,7 +1,7 @@
 # Calculate MOD.
-# An operation that finds the remainder after dividing `x` by `y`. When `y`
-# is zero, the result is the caller-supplied `cant-mod` fallback, or the
-# terminator when none was provided, which terminates on use. Otherwise
+# An operation that finds the remainder after dividing the number by `y`.
+# When `y` is zero, the result is the caller-supplied `cant-mod` fallback, or
+# the terminator when none was provided, which terminates on use. Otherwise
 # the divisor is doubled until it reaches the dividend and then halved back
 # down, subtracting it from the dividend whenever it fits. Doubling and
 # halving a double are exact, and every subtraction happens while the
@@ -14,7 +14,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -28,13 +28,13 @@
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if
-        divisor.is-nan.if nan x
+        divisor.is-nan.if nan ^
         if.
-          x.as-bytes.eq 80-00-00-00-00-00-00-00
-          x
+          ^.as-bytes.eq 80-00-00-00-00-00-00-00
+          ^
           if.
             gte.
-              number x.as-bytes >> dividend
+              number ^.as-bytes >> dividend
               0
             [^] >> abs-mod
               shrink > @
@@ -57,7 +57,6 @@
                     rest.minus chunk
                     rest
             abs-mod.neg
-  ^ > x
 
   eq. ++> can-recover-from-a-modulo-by-zero
     "recovered"

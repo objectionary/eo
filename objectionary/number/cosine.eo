@@ -1,23 +1,22 @@
-# Cosine of `num` radians as `org.eolang.number`, taken from the sine of the
-# argument advanced by a quarter turn, since cos(x) equals sin(x + pi/2). The
-# finite approximation of `pi` used in that shift misses the exact extremum
-# at zero, so zero is special-cased to return the exact unit value.
+# Cosine of the angle in radians as `org.eolang.number`, taken from the sine
+# of the angle advanced by a quarter turn, since cos(x) equals sin(x + pi/2).
+# The finite approximation of `pi` used in that shift misses the exact
+# extremum at zero, so zero is special-cased to return the exact unit value.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > cosine
   if. > @
-    num.eq 0
+    ^.eq 0
     1
     sine.
-      num.plus
+      ^.plus
         pi.div 2
-  ^ > num
 
   lt. ++> can-behave-as-an-even-function
     abs.

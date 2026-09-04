@@ -1,15 +1,16 @@
-# Check that all signs in `text` are ASCII characters.
+# Check that all signs in the string are ASCII characters.
+# An empty string is not accepted, since the pattern asks for one sign at
+# least, which is what its three siblings answer for the empty text too.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > is-ascii
-  "/^[\\x00-\\x7F]+$/".regex.matches text > @
-  ^ > text
+  "/^[\\x00-\\x7F]+$/".regex.matches ^ > @
 
   "123".is-ascii ++> can-be-ascii-when-digits
 

@@ -1,24 +1,23 @@
-# TRUE when `n` is a valid eight-byte IEEE-754 value that is neither infinite
-# nor not-a-number. A byte sequence of any other width can never represent a
-# number, so it is not finite: `is-nan` returns FALSE for such widths, which
-# would otherwise let them fall through as finite.
+# TRUE when the number is a valid eight-byte IEEE-754 value that is neither
+# infinite nor not-a-number. A byte sequence of any other width can never
+# represent a number, so it is not finite: `is-nan` returns FALSE for such
+# widths, which would otherwise let them fall through as finite.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > is-finite
   and. > @
-    n.as-bytes.size.eq 8
-    n.is-nan.not.and
+    ^.as-bytes.size.eq 8
+    ^.is-nan.not.and
       not.
         or.
-          n.as-bytes.eq 7F-F0-00-00-00-00-00-00
-          n.as-bytes.eq FF-F0-00-00-00-00-00-00
-  ^ > n
+          ^.as-bytes.eq 7F-F0-00-00-00-00-00-00
+          ^.as-bytes.eq FF-F0-00-00-00-00-00-00
 
   32.is-finite ++> can-be-finite-when-a-simple-number
 

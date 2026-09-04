@@ -1,8 +1,9 @@
-# Returns the first `limit` characters of `text`, so that `Jeffrey` truncated
-# to three characters becomes `Jef`. Characters are counted, and not bytes,
-# so a multi-byte character counts as one. A `text` of `limit` characters
-# or shorter is returned unchanged, which is how this differs from `slice`,
-# where a `limit` beyond the end of the `text` terminates the computation.
+# Returns the first `limit` characters of the string, so that `Jeffrey`
+# truncated to three characters becomes `Jef`. Characters are counted, and
+# not bytes, so a multi-byte character counts as one. A string of `limit`
+# characters or shorter is returned unchanged, which is how this differs
+# from `slice`, where a `limit` beyond the end of the string terminates the
+# computation.
 # If `limit` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-truncate` fallback is returned, or the terminator
 # when unbound.
@@ -10,7 +11,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -27,10 +28,9 @@
           *
             string limit.as-scientific
     if.
-      limit.lt text.length
-      text.slice 0 limit
-      text
-  ^ > text
+      limit.lt ^.length
+      ^.slice 0 limit
+      ^
 
   eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"

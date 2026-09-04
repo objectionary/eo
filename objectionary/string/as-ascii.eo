@@ -1,27 +1,26 @@
-# Reads the single character `char` as its ASCII numeric value (0-255).
-# The byte of `char` is left-padded with a zero byte into a 16-bit word,
-# read as an integer and then expressed as a number. If `char` is not
-# exactly one byte wide (an empty string, or a multi-byte UTF-8
+# Reads the single character as its ASCII numeric value (0-255).
+# The byte of the character is left-padded with a zero byte into a 16-bit
+# word, read as an integer and then expressed as a number. If the character
+# is not exactly one byte wide (an empty string, or a multi-byte UTF-8
 # character), the `cant-read` fallback is returned, or the terminator
 # when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ cant-read] > as-ascii
   if. > @
-    char.as-bytes.size.eq 1
+    ^.as-bytes.size.eq 1
     as-number.
       as-i16.
-        00-.concat char.as-bytes
+        00-.concat ^.as-bytes
     cant-read
       "Can't read %x as an ASCII code, it is not a single byte".printf
-        * char.as-bytes
-  ^ > char
+        * ^.as-bytes
 
   97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 

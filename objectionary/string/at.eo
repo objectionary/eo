@@ -1,13 +1,13 @@
-# Retrieve symbol by given index as `text`.
-# A negative `index` counts from the end of `text` (`length + index`).
+# Retrieve symbol by given index as `string`.
+# A negative `index` counts from the end of the string (`length + index`).
 # If `index` is not a finite integer (fractional, nan or infinite), or the
-# resolved index is still negative or is >= `text.length`, the `fallback`
-# value is returned, or the terminator when unbound.
+# resolved index is still negative or is >= the string's `length`, the
+# `fallback` value is returned, or the terminator when unbound.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -37,12 +37,11 @@
         0.gt index
         gte.
           number index
-          text.length >> len!
+          ^.length >> len!
       fallback
         "Given index %f is out of text bounds".printf
           * i
-      text.slice index 1
-  ^ > text
+      ^.slice index 1
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Index must be an integer, but was 1.500000"

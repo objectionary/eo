@@ -1,5 +1,5 @@
 # Creates a directory, making missing parent directories as needed. It is a
-# method of `directory`, and `d` is the directory it is taken off. When the
+# method of `directory`, taken off the directory it creates. When the
 # path already exists, it must already be a directory: if a regular file (or
 # any non-directory entry) occupies the path, the computation terminates
 # instead of returning that entry decorated as a directory.
@@ -12,41 +12,40 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > made
-  d.exists.if > @
-    d.is-directory.if
-      d
+  ^.exists.if > @
+    ^.is-directory.if
+      ^
       T
         "Cant make the directory '%s': a file already occupies that path".printf
-          * d.path
+          * ^.path
     seq *
       made.
         directory
-          file d.as-path.dirname
+          file ^.as-path.dirname
       if.
         or.
           created.code.eq 0
           and.
             errno.eq eexist
-            d.is-directory
-        d
+            ^.is-directory
+        ^
         T
           "Cant make the directory '%s': %s".printf
-            * d.path created.output
+            * ^.path created.output
   called. > created
     os.is-windows.if
       win32 *1
         "_mkdir"
-        d.path
+        ^.path
       posix *1
         "mkdir"
-        d.path
+        ^.path
         posix.permissions
-  ^ > d
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist

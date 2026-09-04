@@ -5,18 +5,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ cant-convert] > as-u8
   if. > @
-    b.size.eq 1
-    u8 b
+    ^.size.eq 1
+    u8 ^
     cant-convert
       "Can't convert non 1 length bytes to u8, bytes are %x".printf
-        * b
-  ^ > b
+        * ^
 
   2A-.as-u8.as-bytes.eq 2A- ++> can-convert-bytes-to-u8-and-back
 

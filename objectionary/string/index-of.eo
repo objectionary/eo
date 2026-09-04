@@ -1,10 +1,10 @@
-# Returns index of `substring` in `text`.
+# Returns index of `substring` in the string.
 # If no `substring` was found, it returns -1.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -21,7 +21,7 @@
           not.
             eq.
               substring >> part!
-              text >> txt!
+              ^ >> txt!
       found.eq -1
     -1
     length.
@@ -42,7 +42,6 @@
     eq. > includes
       txt.slice idx size
       part
-  ^ > text
 
   eq. ++> can-find-a-present-substring-in-utf-text
     3
@@ -52,6 +51,12 @@
   eq. ++> can-find-no-index-of-a-longer-substring
     -1
     "Hello".index-of "Somebody"
+
+  eq. ++> can-find-no-index-of-an-absent-substring-in-a-long-text
+    -1
+    index-of.
+      "x".repeated 500
+      "y"
 
   eq. ++> can-find-no-index-of-an-absent-substring-in-utf-text
     -1

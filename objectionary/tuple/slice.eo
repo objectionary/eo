@@ -1,10 +1,10 @@
-# Sublist of `list` from `start` (inclusive) to `end` (exclusive).
-# Supports negative indices and clamps to list bounds.
+# Sublist of the tuple from `start` (inclusive) to `end` (exclusive).
+# Supports negative indices and clamps to the bounds of the tuple.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -17,25 +17,25 @@
           if. >> s!
             start.gte 0
             if.
-              start.gte list.length
-              list.length
+              start.gte ^.length
+              ^.length
               start
             if.
-              list.length.neg.lte start
-              start.plus list.length
+              ^.length.neg.lte start
+              start.plus ^.length
               0
         if. >> e!
           end.gte 0
           if.
-            end.gte list.length
-            list.length
+            end.gte ^.length
+            ^.length
             end
           if.
-            list.length.neg.lte end
-            end.plus list.length
+            ^.length.neg.lte end
+            end.plus ^.length
             0
       *
-      list.reducedi
+      ^.reducedi
         *
         if. > [^ accum item index] >>
           and.
@@ -45,7 +45,6 @@
           accum
     T
       "Given slice start and end must both be integers"
-  ^ > list
 
   eq. ++> can-slice-a-list
     slice.

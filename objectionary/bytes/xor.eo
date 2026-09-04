@@ -1,18 +1,26 @@
-# Bitwise exclusive OR of the byte chain `bts` with another chain `b`,
+# Bitwise exclusive OR of the byte chain with another chain `x`,
 # derived from the `and`, `or`, and `not` atoms.
+#
+# The lengths are compared here first, ahead of the derivation, because
+# `and` requires operands of the same length and would otherwise report a
+# mismatched `xor` under the name of an atom the caller never called.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ x] > xor
-  or. > @
-    b.and x.not
-    b.not.and x
-  ^ > b
+  if. > @
+    ^.size.eq x.size
+    or.
+      ^.and x.not
+      ^.not.and x
+    T
+      "bytes.xor requires operands of the same length, got %d and %d".printf
+        * ^.size x.size
 
   eq. ++> can-xor-negative-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00

@@ -7,16 +7,25 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ func] > eachi
-  ^.reducedi > @
+  if. > [^ rest index] >> rec
+    rest.length.eq 0
     true
-    seq * > [^ acc item index] >>
-      acc
-      ^.func item index
+    if.
+      rest.length.eq 1
+      ^.func rest.head index
+      seq *
+        ^.func rest.head index
+        ^.rec
+          rest.tail
+          index.plus 1
+  | > @
+    ^.reversed
+    0
 
   ++> can-iterate-over-a-list-with-indexes
     eq. > @

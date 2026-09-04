@@ -1,7 +1,7 @@
-# Returns `text` padded on the left with zeros until it counts `width`
+# Returns the string padded on the left with zeros until it counts `width`
 # characters, keeping a leading minus sign in front of them, so that `-42`
 # padded to five characters becomes `-0042` and not `00-42`. Characters are
-# counted, and not bytes. A `text` of `width` characters or longer is
+# counted, and not bytes. A string of `width` characters or longer is
 # returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-pad` fallback is returned, or the terminator
@@ -10,7 +10,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -29,14 +29,14 @@
     if.
       and.
         0.lt
-          text.length >> len!
+          ^.length >> len!
         "-".eq
-          text.slice 0 1
+          ^.slice 0 1
       string
         2D-.concat
           as-bytes.
             padded-left.
-              text.slice 1 ((number len).minus 1).as-number
+              ^.slice 1 ((number len).minus 1).as-number
               if.
                 1.gt width
                 0
@@ -44,11 +44,10 @@
                   width.minus 1
               "0"
               cant-pad
-      text.padded-left
+      ^.padded-left
         width
         "0"
         cant-pad
-  ^ > text
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-with-zeros
     "00Ж"

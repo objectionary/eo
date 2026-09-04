@@ -1,11 +1,23 @@
 # Regular expression in Perl format.
-# Here `expression` is a string pattern.
+# The pattern is the string it is taken off.
 # It starts and ends with slash (e.g. "/(your-expression)/"),
 # Also it can be specified by the flag option,
 # e.g.
 # ```
 # (`Q.string.regex "/(word)/i").compiled.matches "WORD"
 # ```
+#
+# There are two entry points and one letter between their names.
+# `matches` answers whether the whole text matches: the block it finds has
+# to start at zero and end at the length of the text, so a pattern that
+# covers only part of it answers `false`.
+# `match` searches instead: it hands back the first block found anywhere in
+# the text, and `next` moves to the one after it.
+# ```
+# (`Q.string.regex "/[a-z]+/").compiled.matches "1abc"  # false
+# (`Q.string.regex "/[a-z]+/").compiled.match "1abc"    # the block "abc"
+# ```
+#
 # Supported flags:
 # /d - Enables Unix lines mode.
 # /i - Enables case-insensitive matching.
@@ -17,9 +29,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.63.0
++rt jvm org.eolang:eo-runtime:0.63.1
 +rt node eo2js-runtime:0.0.0
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -28,28 +40,26 @@
   [] > compile /Q.string.regex.pattern
     ? > ^
     ? > cant-compile /{Q.string}
-  ^ > expression
   [^ serialized] > pattern
     ^.pattern serialized > compiled
     [^ txt] > match
-      [^ position start from to groups] > matched
+      [^ position start from to groups existing] > matched
         groups.length > count
         start.gte 0 > exists
         ^.groups.at index > [^ index] > group
-        $ > matched
+        ^.existing.at index > [^ index] > group-exists
         exists.if > next
           if.
             and.
               from.eq to
               to.eq ^.txt.length
             ^.missing
-            matched.
-              ^.matched-from-index
-                position.plus 1
-                if.
-                  from.eq to
-                  to.plus 1
-                  to
+            ^.matched-from-index
+              position.plus 1
+              if.
+                from.eq to
+                to.plus 1
+                to
           T
             "Matched block does not exist, can't get next"
         exists.if > text
@@ -63,11 +73,15 @@
       [] > missing
         T > count
           "Matched block does not exist, can't get count"
+        T > existing
+          "Matched block does not exist, can't get groups"
         start.gte 0 > exists
         T > from
           "Matched block does not exist, can't get 'from' position"
         T > [index] > group
           "Matched block does not exist, can't get group"
+        T > [index] > group-exists
+          "Matched block does not exist, can't get group-exists"
         T > groups
           "Matched block does not exist, can't get groups"
         T > next
@@ -78,8 +92,7 @@
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
-      matched. > next
-        matched-from-index 1 0
+      matched-from-index 1 0 > next
     [^ txt] > matches
       found.exists.and > @
         and.
@@ -96,7 +109,7 @@
       parsed.group 1 > group1!
       parsed.group 2 > group2!
       next. > parsed
-        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.expression
+        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.^
       "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
         * group1 group2
       ^.commented.regex.compile ^.retry-quoted > [^ message] > retry-commented
@@ -117,6 +130,17 @@
     next. > first
       "/./".regex.compiled.match "😀x"
     first.next > second
+
+  ++> can-expose-group-exists-for-a-non-participating-group
+    not. > @
+      first.group-exists 1
+    next. > first
+      "/(x)?y/".regex.compiled.match "y"
+
+  ++> can-expose-group-exists-for-a-participating-group
+    first.group-exists 1 > @
+    next. > first
+      "/(x*)y/".regex.compiled.match "y"
 
   ++> can-expose-groups-on-each-matched-block
     and. > @
@@ -154,6 +178,12 @@
 
   "/[0-9]/\\d+/".regex.compiled.matches "2/75" ++> can-match-an-entire-pattern
 
+  exists. ++> can-match-with-serialized-bytes-of-the-right-type
+    next.
+      match.
+        regex.pattern "/h.llo/".regex.compiled.serialized
+        "hello"
+
   matches. ++> can-match-with-the-case-insensitive-option
     "/(string)/i".regex.compiled
     "StRiNg"
@@ -177,6 +207,14 @@
   matches. ++> can-match-with-the-unix-lines-option
     "/(.+)/d".regex.compiled
     "A\\r\\nB\\rC\\nD"
+
+  eq. ++> can-name-the-construct-and-the-offset-of-an-invalid-pattern
+    "/a**/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
+
+  eq. ++> can-name-the-offset-inside-a-pattern-that-carries-flags
+    "/a**/i".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
 
   eq. ++> can-recover-from-a-pattern-with-a-missing-slash
     "no-slash"
@@ -220,6 +258,10 @@
   not. ++> can-stop-at-a-terminal-zero-width-match
     exists. ("/$/".regex.match "x").next.next
 
+  eq. ++> can-tell-an-unclosed-group-from-a-dangling-repetition
+    "/(/".regex.compile I
+    "regex syntax is invalid: Unclosed group at offset 1 of the pattern"
+
   not. ++> can-tell-it-does-not-match-a-text-against-a-wrong-pattern
     "/[a-z]+/".regex.compiled.matches "123"
 
@@ -229,16 +271,22 @@
   not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
     "/[a-z]+/".regex.compiled.matches "1abc"
 
-  next. --> rejects-serialized-bytes-of-the-wrong-type
-    match.
-      ^.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
-      "hello"
+  exists. --> rejects-serialized-bytes-of-the-wrong-type
+    next.
+      match.
+        regex.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
+        "hello"
 
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 
   "(.)+".regex.compiled --> stops-on-a-missing-first-slash
 
   "/[a-z/".regex.compile --> stops-on-compiling-an-invalid-pattern
+
+  group-exists. --> stops-on-taking-a-group-exists-of-an-unmatched-block
+    next.
+      "/[a-z]+/".regex.match "123"
+    1
 
   group. --> stops-on-taking-a-group-of-a-terminal-zero-width-match
     next.

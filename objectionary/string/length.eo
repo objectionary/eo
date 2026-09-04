@@ -1,4 +1,4 @@
-# Counts the characters in the `text`, and not its bytes. The UTF-8 sequence
+# Counts the characters in the string, and not its bytes. The UTF-8 sequence
 # is walked character by character, so a multi-byte character counts as one.
 # Every multi-byte sequence is validated against the UTF-8 rules of the
 # Unicode standard (Table 3-7): the leading byte fixes the character width and
@@ -13,14 +13,14 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > length
   if. > @
     eq.
-      text.as-bytes.size >> size!
+      ^.as-bytes.size >> size!
       0
     0
     [^ index accum] >> reclen
@@ -56,7 +56,7 @@
                 T
                   "Unknown byte format (%x), can't recognize character".printf
                     * lead
-      ^.text.as-bytes.slice > b1
+      ^.^.as-bytes.slice > b1
         index.plus 1
         1
       eq. > b1808f
@@ -78,13 +78,13 @@
       eq. > b1cont
         b1.and C0-
         80-
-      ^.text.as-bytes.slice > b2
+      ^.^.as-bytes.slice > b2
         index.plus 2
         1
       eq. > b2cont
         b2.and C0-
         80-
-      ^.text.as-bytes.slice > b3
+      ^.^.as-bytes.slice > b3
         index.plus 3
         1
       eq. > b3cont
@@ -92,7 +92,7 @@
         80-
       b2cont.and > fourvalid
         b3cont.and second4
-      ^.text.as-bytes.slice index 1 > lead
+      ^.^.as-bytes.slice index 1 > lead
       eq. > leadc0c1
         lead.and FE-
         C0-
@@ -125,7 +125,7 @@
         *
           csize
           idx
-          ^.text.as-bytes
+          ^.^.as-bytes
     valid.if
       reclen
         idx.plus csize
@@ -133,9 +133,8 @@
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.text.as-bytes.slice idx csize
+            ^.^.as-bytes.slice idx csize
             idx
-  ^ > text
 
   eq. ++> can-count-a-text-of-spaces-only
     " ".length

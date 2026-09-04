@@ -1,4 +1,4 @@
-# Returns the `text` in upper case, using the default English casing rules.
+# Returns the string in upper case, using the default English casing rules.
 # This is a thin string method: `"hello".upper` is the same as
 # `(string.english "hello").upper`. Only the ASCII letters `a`-`z` are
 # folded; every other byte, including accented Latin, Cyrillic and Greek
@@ -9,13 +9,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > upper
-  text.english.upper > @
-  ^ > text
+  ^.english.upper > @
 
   "ÄÖÜ".eq "ÄÖÜ".upper ++> can-keep-non-ascii-letters-when-upper-casing
 

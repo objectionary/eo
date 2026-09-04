@@ -1,9 +1,9 @@
-# Checks that `text` starts with `substring`.
+# Checks that the string starts with `substring`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -15,11 +15,10 @@
       txt.size >> length!
     eq.
       slice.
-        text >> txt!
+        ^ >> txt!
         0
         size
       substring >> part!
-  ^ > text
 
   starts-with. ++> can-start-with-a-substring
     "Hello, world"

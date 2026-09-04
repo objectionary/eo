@@ -1,4 +1,4 @@
-# Insert `item` into collection `list` at the given `index`.
+# Insert `item` into the tuple at the given `index`.
 # The `index` must be an integer, the same requirement `tuple.front` and
 # `tuple.back` make; anything else terminates. A negative index is clamped
 # to the front of the list and an index past the end appends the item.
@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -14,20 +14,19 @@
   index.is-integer.if > @
     concat.
       with.
-        list.front bounded
+        ^.front bounded
         item
-      list.back
-        list.length.minus bounded
+      ^.back
+        ^.length.minus bounded
     T
       "Given index must be an integer"
   if. > bounded
     0.gt index
     0
     if.
-      index.gt list.length
-      list.length
+      index.gt ^.length
+      ^.length
       index
-  ^ > list
 
   eq. ++> can-clamp-a-negative-index-to-the-front-without-duplicating
     withi.

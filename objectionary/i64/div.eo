@@ -1,12 +1,14 @@
-# Integer division of the `i64` number `n` by the `i64` number `x`, truncated
+# Integer division of an `i64` number by the `i64` number `x`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `x` is
-# zero, the caller-supplied `cant-divide` fallback is returned.
+# zero, the caller-supplied `cant-divide` fallback is returned, and so it is
+# when the smallest `i64` is divided by minus one, since that quotient is one
+# past the largest `i64` and has no answer here.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package i64
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -16,18 +18,12 @@
     cant-divide
       "i64 cannot be divided by zero"
     if.
-      eq.
-        and.
-          n.as-bytes.xor x.as-bytes
-          80-00-00-00-00-00-00-00
-        80-00-00-00-00-00-00-00
-      as-bytes.
-        plus.
-          i64
-            not.
-              looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
-          i64 00-00-00-00-00-00-00-01
-      i64 quotient
+      and.
+        ^.as-bytes.eq 80-00-00-00-00-00-00-00
+        x.as-bytes.eq FF-FF-FF-FF-FF-FF-FF-FF
+      cant-divide
+        "the smallest i64 divided by minus one is past the largest i64"
+      quotiented
   00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^ index remainder quot] >> looped
     if. > @
@@ -57,11 +53,23 @@
             remainder.left 1
             and.
               right.
-                magnitude ^.n.as-bytes
+                magnitude ^.^.as-bytes
                 index
               00-00-00-00-00-00-00-01
           quot
-  ^ > n
+  if. > quotiented
+    eq.
+      and.
+        ^.as-bytes.xor x.as-bytes
+        80-00-00-00-00-00-00-00
+      80-00-00-00-00-00-00-00
+    as-bytes.
+      plus.
+        i64
+          not.
+            looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
+        i64 00-00-00-00-00-00-00-01
+    i64 quotient
   as-bytes. >> subtrahend
     plus.
       i64
@@ -112,14 +120,19 @@
       0.as-i64
       "recovered" > [message]
 
+  eq. ++> can-recover-from-min-divided-by-minus-one
+    "recovered"
+    div.
+      i64 80-00-00-00-00-00-00-00
+      -1.as-i64
+      "recovered" > [message]
+
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64
     -2.as-i64
 
-  eq. ++> can-wrap-min-divided-by-minus-one
-    div.
-      i64 80-00-00-00-00-00-00-00
-      -1.as-i64
-    i64 80-00-00-00-00-00-00-00
-
   2.as-i64.div 0.as-i64 --> stops-on-division-by-zero
+
+  div. --> stops-on-min-divided-by-minus-one
+    i64 80-00-00-00-00-00-00-00
+    -1.as-i64

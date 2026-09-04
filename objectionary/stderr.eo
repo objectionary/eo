@@ -8,13 +8,13 @@
 # ```
 #
 # Here the "Something went wrong!" string is printed to the operating
-# system standard error stream (file descriptor 2). The object writes to
-# the console in a platform-specific way, with different implementations
-# for POSIX and Windows systems.
+# system standard error stream (file descriptor 2). One output block does
+# the writing, and the platform enters it as an adapter carrying the raw
+# syscall object, the name of the call and the descriptor to write to.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -22,8 +22,8 @@
   seq * > @
     write.
       os.is-windows.if
-        [] >>
-          [buffer] > write
+        [sys] >> impl
+          [^ buffer] > write
             @. > @
               output-block.write buffer
             [^] > output-block
@@ -38,9 +38,9 @@
                   code
                   remainder
                 code. > code
-                  win32 *1
-                    "_write"
-                    win32.stderr
+                  ^.^.^.sys.raw *1
+                    ^.^.^.sys.name
+                    ^.^.^.sys.descriptor
                     buffer
                     buffer.size
                 if. > remainder
@@ -48,32 +48,16 @@
                   ^.^.output-block.write
                     buffer.slice code (buffer.size.minus code)
                   ^.^.output-block
-        [] >>
-          [buffer] > write
-            @. > @
-              output-block.write buffer
-            [^] > output-block
-              true > @
-              [^ buffer] > write
-                seq * > @
-                  if. >>!
-                    code.eq -1
-                    T
-                      "Failed to write to standard error"
-                    ^.^.output-block
-                  code
-                  remainder
-                code. > code
-                  posix *1
-                    "write"
-                    posix.stderr
-                    buffer
-                    buffer.size
-                if. > remainder
-                  code.lt buffer.size
-                  ^.^.output-block.write
-                    buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
+        |
+          []
+            win32.stderr > descriptor
+            "_write" > name
+            win32 > raw
+        impl
+          []
+            posix.stderr > descriptor
+            "write" > name
+            posix > raw
       text
     true
 

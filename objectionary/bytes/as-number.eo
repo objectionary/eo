@@ -5,28 +5,27 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ cant-convert] > as-number
   if. > @
-    b.size.eq 8
+    ^.size.eq 8
     if.
       is-nan.
-        number b
+        number ^
       nan
       if.
-        b.eq pinf.as-bytes
+        ^.eq pinf.as-bytes
         pinf
         if.
-          b.eq ninf.as-bytes
+          ^.eq ninf.as-bytes
           ninf
-          number b
+          number ^
     cant-convert
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
-        * b
-  ^ > b
+        * ^
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
     "recovered"

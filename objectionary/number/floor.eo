@@ -1,30 +1,29 @@
-# Largest integer not greater than `n`. Non-finite numbers and magnitudes
-# beyond the range of exact integers are returned unchanged.
+# Largest integer not greater than the number. Non-finite numbers and
+# magnitudes beyond the range of exact integers are returned unchanged.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > floor
   if. > @
-    n.as-bytes.eq 80-00-00-00-00-00-00-00
-    n
+    ^.as-bytes.eq 80-00-00-00-00-00-00-00
+    ^
     if.
-      n.is-finite.not.or
+      ^.is-finite.not.or
         or.
-          n.gte 4503599627370496
-          n.lte -4503599627370496
-      n
+          ^.gte 4503599627370496
+          ^.lte -4503599627370496
+      ^
       if.
         gt.
-          n.as-i64.as-number >> trunc
-          n
+          ^.as-i64.as-number >> trunc
+          ^
         trunc.minus 1
-        n.as-i64.as-number
-  ^ > n
+        ^.as-i64.as-number
 
   -1.0e20.floor.eq -1.0e20 ++> can-floor-a-large-negative-integer
 

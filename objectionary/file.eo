@@ -2,7 +2,7 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -67,11 +67,11 @@
   [^ mode scope cant-open] > open
     known.not.if > @
       T
-        "Wrong access mod. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+        "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and ^.exists.not
         cant-open
-          "File must exist for given access mod: '%s'".printf
+          "File must exist for given access mode: '%s'".printf
             *
               mode >> access!
         seq *
@@ -353,12 +353,39 @@
       I
       "recovered" > [reason]
 
+  eq. ++> can-represent-a-file-as-a-path
+    as-path.
+      file "abc"
+    "abc"
+
   ++> can-resolve-a-path-and-touch-it
     resolved.as-dir.made.tmpfile.exists.and > @
       resolved.contains
         Q.path.separator.joined
           * "foo" "bar"
     mktemp.as-path.resolved "foo/bar" > resolved
+
+  eq. ++> can-shrink-a-file-when-reopened-with-w-plus-mode
+    size.
+      open.
+        mktemp.tmpfile.open
+          "w"
+          f.write "Hello, world" > [^ f]
+        "w+"
+        f.write "Hi" > [^ f]
+    2
+
+  ++> can-tell-that-a-dangling-symbolic-link-exists
+    os.is-windows.or > @
+      seq *
+        code.
+          posix *1
+            "symlink"
+            d.resolved "absent"
+            link
+        link.as-file.exists
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    d.resolved "dangling-symlink" > link
 
   ++> can-tell-that-a-directory-beside-a-symbolic-link-is-not-one
     os.is-windows.or > @
@@ -371,6 +398,8 @@
         not.
           d.as-file.is-symlink true
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+
+  mktemp.tmpfile.is-directory.not ++> can-tell-that-a-regular-file-is-not-a-directory
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
     mktemp.tmpfile.is-symlink true
@@ -390,6 +419,8 @@
   not. ++> can-tell-that-an-absent-file-does-not-exist
     exists.
       file "absent.txt"
+
+  mktemp.tmpfile.exists ++> can-tell-that-an-existing-file-exists
 
   is-directory. ++> can-tell-that-the-current-directory-is-a-directory
     file "."
@@ -433,6 +464,24 @@
         "w+"
         true > [f]
     0
+
+  ++> can-write-and-read-a-file-opened-with-r-plus-mode
+    eq. > @
+      malloc.of
+        5
+        [^ m]
+          seq * > @
+            open.
+              mktemp.tmpfile.open
+                "w"
+                f.write "Hello, world" > [^ f]
+              "r+"
+              ^.m.put > [^ f] >>
+                seq *
+                  f.write "HELLO"
+                  f.read 5
+            m
+      ", wor"
 
   eq. ++> can-write-data-to-a-file
     size.

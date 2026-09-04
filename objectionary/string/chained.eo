@@ -1,22 +1,21 @@
-# Returns concatenation of `text` with all `other` strings.
+# Returns concatenation of the string with all `other` strings.
 # Here `others` must be a `tuple` of `strings`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ others] > chained
   if. > @
     0.eq others.length
-    text
+    ^
     string
       others.reduced
-        text.as-bytes
+        ^.as-bytes
         accum.concat str.as-bytes > [accum str]
-  ^ > text
 
   eq. ++> can-chain-with-other-strings
     "Hello, world!"

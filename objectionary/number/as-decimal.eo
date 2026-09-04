@@ -1,35 +1,42 @@
-# Writes the number `n` as signed decimal digits, truncating its fraction
+# Writes the number as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
 #
 # The digits are peeled off an `i64`, where division by ten is exact, so every
 # magnitude below `2^63` is written exactly, and not only the magnitudes below
 # `2^53` that a double divides without losing a digit.
+#
+# The sign of an exact negative zero is kept, as `as-fixed` and `as-scientific`
+# keep it, so `-0.0` becomes `-0` and not `0`. A negative number whose fraction
+# is truncated away loses its sign, since `-0.5` is written as the `0` it
+# truncates to.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > as-decimal
-  n.is-finite.not.if > @
+  ^.is-finite.not.if > @
     T
       "Can't write a non-finite number as decimal"
     if.
-      n.eq -9.223372036854776e18
+      ^.eq -9.223372036854776e18
       "-9223372036854775808".as-bytes
       if.
-        n.abs.gte 9.223372036854776e18
+        ^.abs.gte 9.223372036854776e18
         T
           "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
         if.
-          n.abs.lt 9007199254740992
+          ^.abs.lt 9007199254740992
           if.
-            and.
-              n.lt 0
-              not.
-                truncated.eq 0
+            or.
+              ^.as-bytes.eq 80-00-00-00-00-00-00-00
+              and.
+                ^.lt 0
+                not.
+                  truncated.eq 0
             "-".as-bytes.concat
               [^ m] >> quick
                 if. > @
@@ -47,16 +54,13 @@
               | truncated
             quick truncated
           if.
-            n.lt 0
+            ^.lt 0
             if. > [^ m] >> negative
               m.as-number.eq 0
               digits m
               "-".as-bytes.concat
                 digits m
-            |
-              as-i64.
-                n.times -1
-                T message > [message] >> failure
+            | ((^.times -1).as-i64 I)
             [^ n] >> digits
               if. > @
                 n.lt ^.ten
@@ -66,12 +70,11 @@
                   ^.digits q
                   as-char.
                     plus. (n.minus (q.times ^.ten)).as-number 48
-              n.div ^.ten failure > bits!
+              n.div ^.ten I > bits!
               i64 bits > q
-            | (n.as-i64 failure)
-  ^ > n
-  10.as-i64 failure > ten!
-  n.abs.floor > truncated
+            | (^.as-i64 I)
+  10.as-i64 I > ten!
+  ^.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"
@@ -80,6 +83,10 @@
   eq. ++> can-drop-the-sign-of-a-negative-truncating-to-zero
     "0"
     string -0.5.as-decimal
+
+  eq. ++> can-keep-the-sign-of-an-exact-negative-zero
+    "-0"
+    string 0.neg.as-decimal
 
   eq. ++> can-truncate-a-negative-fraction
     "-7"

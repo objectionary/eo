@@ -35,10 +35,12 @@
 # prints it to the operating system console and returns the next output block
 # ready to `write` again.
 #
-# Console operations are platform-specific, with different implementations
-# for POSIX and Windows systems. Each access to the `console` object creates
-# a new console instance, so reusing returned input/output blocks improves
-# performance by maintaining the same console session:
+# One implementation does the reading and the writing, and the platform
+# enters it as an adapter carrying the raw syscall object and, for each of
+# the two streams, the name of the call and the descriptor. Each access
+# to the `console` object creates a new console instance, so reusing the
+# returned input/output blocks improves performance by maintaining the
+# same console session:
 #
 # Efficient (recommended):
 # ```
@@ -58,14 +60,14 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [] > console
   os.is-windows.if > @
-    [] >>
-      [size] > read
+    [sys] >> impl
+      [^ size] > read
         @. > @
           read.
             [^ buffer] >> input-block
@@ -80,13 +82,13 @@
                   received
                   ^.^.input-block chunk
                 called. > received
-                  win32 *1
-                    "_read"
-                    win32.stdin
+                  ^.^.^.sys.raw *1
+                    ^.^.^.sys.input.name
+                    ^.^.^.sys.input.descriptor
                     size
             | --
             size
-      [buffer] > write
+      [^ buffer] > write
         @. > @
           write.
             [^] >> output-block
@@ -101,9 +103,9 @@
                   code
                   remainder
                 code. > code
-                  win32 *1
-                    "_write"
-                    win32.stdout
+                  ^.^.^.sys.raw *1
+                    ^.^.^.sys.output.name
+                    ^.^.^.sys.output.descriptor
                     buffer
                     buffer.size
                 if. > remainder
@@ -112,54 +114,24 @@
                     buffer.slice code (buffer.size.minus code)
                   ^.^.output-block
             buffer
-    [] >>
-      [size] > read
-        @. > @
-          read.
-            [^ buffer] >> input-block
-              buffer > @
-              [^ size] > read
-                seq * > @
-                  if. >> chunk!
-                    received.code.eq -1
-                    T
-                      "Failed to read from standard input"
-                    received.output
-                  received
-                  ^.^.input-block chunk
-                called. > received
-                  posix *1
-                    "read"
-                    posix.stdin
-                    size
-            | --
-            size
-      [buffer] > write
-        @. > @
-          write.
-            [^] >> output-block
-              true > @
-              [^ buffer] > write
-                seq * > @
-                  if. >>!
-                    code.eq -1
-                    T
-                      "Failed to write to standard output"
-                    ^.^.output-block
-                  code
-                  remainder
-                code. > code
-                  posix *1
-                    "write"
-                    posix.stdout
-                    buffer
-                    buffer.size
-                if. > remainder
-                  code.lt buffer.size
-                  ^.^.output-block.write
-                    buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
-            buffer
+    |
+      []
+        [] > input
+          win32.stdin > descriptor
+          "_read" > name
+        [] > output
+          win32.stdout > descriptor
+          "_write" > name
+        win32 > raw
+    impl
+      []
+        [] > input
+          posix.stdin > descriptor
+          "read" > name
+        [] > output
+          posix.stdout > descriptor
+          "write" > name
+        posix > raw
 
   ++> can-chain-writes-across-output-blocks
     seq * > @

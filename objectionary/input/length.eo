@@ -1,5 +1,5 @@
 # Reads all the bytes from an input and returns its length. It is a method of
-# `input`, and `origin` is the input it is taken off. Bytes are pulled in
+# `input`, taken off the input it reads. Bytes are pulled in
 # 1 MiB chunks: since each chunk costs one level of recursion, a chunk this
 # large keeps an ordinary multi-megabyte or few-gigabyte input well inside
 # the evaluation stack instead of one recursive call per 4 KiB.
@@ -7,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package input
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -23,9 +23,8 @@
       read.
         input.read 1048576
   | > @
-    origin
+    ^
     0
-  ^ > origin
 
   eq. ++> can-read-all-bytes-and-return-the-length
     length.

@@ -6,12 +6,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ start func] > reducedi
-  list.is-empty.if > @
+  ^.is-empty.if > @
     start
     if. > [^ tup] >> rec-reducedi
       tup.length.eq 1
@@ -23,8 +23,7 @@
         ^.rec-reducedi tup.tail
         tup.head
         tup.tail.length
-    | list
-  ^ > list
+    | ^
 
   eq. ++> can-reduce-a-list-with-indexes
     6

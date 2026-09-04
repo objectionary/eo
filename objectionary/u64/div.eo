@@ -1,4 +1,4 @@
-# Unsigned division of the `u64` number `n` by the `u64` number `x`. The
+# Unsigned division of a `u64` number by the `u64` number `x`. The
 # dividend is halved first, so the signed `i64` division underneath never
 # sees a negative operand, and the quotient is corrected back afterwards.
 # When `x` is zero, the caller-supplied `cant-divide` fallback is returned.
@@ -6,7 +6,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package u64
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -15,24 +15,24 @@
     d.as-bytes.eq 00-00-00-00-00-00-00-00
     cant-divide
       "Can't divide %d by u64 zero".printf
-        * n.as-number
+        * ^.as-number
     if.
       eq.
         d.as-bytes.and 80-00-00-00-00-00-00-00
         80-00-00-00-00-00-00-00
       if.
-        n.gte x.as-u64
+        ^.gte x.as-u64
         u64 00-00-00-00-00-00-00-01
         u64 00-00-00-00-00-00-00-00
       if.
         gte.
-          n.minus
+          ^.minus
             times.
               u64
                 left. >> q0
                   as-bytes.
                     div.
-                      i64 (n.as-bytes.right 1)
+                      i64 (^.as-bytes.right 1)
                       i64
                         as-bytes.
                           x.as-u64 >> d
@@ -43,7 +43,6 @@
           u64 q0
           u64 00-00-00-00-00-00-00-01
         u64 q0
-  ^ > n
 
   eq. ++> can-divide-a-small-value-by-a-larger-divisor
     00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64

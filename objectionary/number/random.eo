@@ -3,12 +3,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > random
-  seed.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
+  ^.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
   [clock] > clocked
     random. > @
       as-number.
@@ -41,17 +41,16 @@
                   left.
                     and.
                       as-bytes.
-                        ((seed.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                        ((^.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
                           25214903917.as-i64
                       00-00-00-00-03-FF-FF-FF
                     26
                 as-i64.
-                  (seed.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                  (^.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
                     25214903917.as-i64
               11.as-i64
           00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
-  ^ > seed
 
   not. ++> can-differ-between-two-draws
     eq.

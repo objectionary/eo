@@ -1,7 +1,7 @@
-# Returns the original `text` as `number`.
+# Returns the original string as `number`.
 # If the text is not numeric, the `cant-parse` fallback is returned,
 # or the terminator when unbound.
-# The whole `text` must be the number: `scanf` matches its `%f` pattern
+# The whole string must be the number: `scanf` matches its `%f` pattern
 # unanchored (via `find`), so on its own it would accept any text that
 # merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.
 # The text is therefore validated against the anchored equivalent of that
@@ -10,19 +10,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^ cant-parse] > as-number
   if. > @
     not.
-      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches text
+      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches ^
     cant-parse
       "Can't convert text %s to number".printf
-        * text
-    head. ("%f".scanf text).at.^
-  ^ > text
+        * ^
+    head. ("%f".scanf ^).at.^
 
   1000.eq "1e3".as-number ++> can-convert-exponent-text
 

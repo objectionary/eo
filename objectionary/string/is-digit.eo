@@ -1,16 +1,17 @@
-# Check that all signs in `text` are decimal digits.
+# Check that all signs in the string are decimal digits.
 # Works only for english digits.
+# An empty string is not a digit and is not accepted, since the pattern
+# asks for one sign at least.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > is-digit
-  "/^[0-9]+$/".regex.matches text > @
-  ^ > text
+  "/^[0-9]+$/".regex.matches ^ > @
 
   "2026".is-digit ++> can-be-digits-when-a-number
 

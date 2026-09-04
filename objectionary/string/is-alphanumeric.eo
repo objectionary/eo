@@ -1,16 +1,17 @@
-# Check that all signs in `text` are numbers or letters.
+# Check that all signs in the string are numbers or letters.
 # Works only for english letters.
+# An empty string is neither and is not accepted, since the pattern asks
+# for one sign at least.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > is-alphanumeric
-  "/^[A-Za-z0-9]+$/".regex.matches text > @
-  ^ > text
+  "/^[A-Za-z0-9]+$/".regex.matches ^ > @
 
   "eEo".is-alphanumeric ++> can-be-alphanumeric-when-simple-text
 

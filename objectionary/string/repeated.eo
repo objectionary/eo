@@ -1,4 +1,4 @@
-# Returns `text` repeated `times` times.
+# Returns the string repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-repeat` fallback is returned,
 # or the terminator when unbound.
@@ -7,7 +7,7 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -35,9 +35,8 @@
             concat.
               half.concat >> twice
                 ^.rec-repeated (n.div 2).floor >> half!
-              ^.text.as-bytes
+              ^.^.as-bytes
       | times
-  ^ > text
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"

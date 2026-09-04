@@ -1,12 +1,17 @@
-# Writes the ASCII `code` (0-255) as its single byte, the inverse of `as-ascii`.
-# The receiver must be an integer within the range [0, 255]; any other value
-# (negative, above 255, or fractional) terminates the computation instead of
+# Writes the ASCII `code` (0-127) as its single byte, the inverse of `as-ascii`.
+# The receiver must be an integer within the range [0, 127]; any other value
+# (negative, above 127, or fractional) terminates the computation instead of
 # being silently truncated to its least-significant byte.
+#
+# The range stops at 127 because that is where ASCII stops. A byte from `80-`
+# to `FF-` is never a character on its own in UTF-8, it is a continuation byte
+# or the lead of a sequence, so a string holding one alone is one that
+# `length`, `slice` and `at` all terminate on.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.63.0
++version 0.63.1
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
@@ -15,10 +20,10 @@
     or.
       or.
         0.gt ^
-        ^.gt 255
+        ^.gt 127
       ^.is-integer.not
     T
-      "The receiver of as-char must be an integer within the range [0, 255]"
+      "The receiver of as-char must be an integer within the range [0, 127]"
     ^.as-i64.as-bytes.slice
       7
       1
@@ -51,7 +56,7 @@
     "0"
     string 48.as-char
 
-  256.as-char --> stops-on-a-code-past-the-byte-range
+  128.as-char --> stops-on-a-code-past-the-ascii-range
 
   3.5.as-char --> stops-on-a-fractional-code
 
