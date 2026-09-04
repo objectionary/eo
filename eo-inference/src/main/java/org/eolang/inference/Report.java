@@ -34,9 +34,10 @@ import org.xembly.Xembler;
  * machine.</p>
  *
  * <p>Green is a formation we can name, amber is a name rooted in a void the
- * callers of the program fill, violet is a name rooted in a void only an atom
- * fills, and red is nothing. The colours are {@link Band}'s, worked out from
- * the same {@link Answered} the goal counts, so a page and a number cannot
+ * callers of the program fill several ways, violet is a name rooted in a void
+ * only an atom fills, slate is a name rooted in a void nobody fills, and red
+ * is nothing. The colours are {@link Band}'s, worked out from the same
+ * {@link Answered} the goal counts, so a page and a number cannot
  * disagree.</p>
  *
  * @since 0.70.0
@@ -184,6 +185,7 @@ public final class Report {
                 .attr("named", made.xpath("/page/@named").get(0))
                 .attr("rooted", made.xpath("/page/@rooted").get(0))
                 .attr("atom", made.xpath("/page/@atom").get(0))
+                .attr("unfilled", made.xpath("/page/@unfilled").get(0))
                 .attr("blank", made.xpath("/page/@blank").get(0))
                 .up();
         }
@@ -193,16 +195,19 @@ public final class Report {
         int named = 0;
         int rooted = 0;
         int atom = 0;
+        int unfilled = 0;
         int blank = 0;
         for (final XML made : pages) {
             named = named + Integer.parseInt(made.xpath("/page/@named").get(0));
             rooted = rooted + Integer.parseInt(made.xpath("/page/@rooted").get(0));
             atom = atom + Integer.parseInt(made.xpath("/page/@atom").get(0));
+            unfilled = unfilled + Integer.parseInt(made.xpath("/page/@unfilled").get(0));
             blank = blank + Integer.parseInt(made.xpath("/page/@blank").get(0));
         }
         dirs.attr("named", Integer.toString(named))
             .attr("rooted", Integer.toString(rooted))
             .attr("atom", Integer.toString(atom))
+            .attr("unfilled", Integer.toString(unfilled))
             .attr("blank", Integer.toString(blank));
     }
 }

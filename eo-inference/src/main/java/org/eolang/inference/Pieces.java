@@ -188,13 +188,13 @@ final class Pieces {
             .add("bit")
             .attr("band", Pieces.worst(said));
         for (final Written object : said) {
-            final String band = new Band(object.answer()).name();
+            final Band band = new Band(object.answer());
             dirs.add("told")
                 .attr("label", object.label())
-                .attr("band", band)
+                .attr("band", band.name())
                 .attr("where", object.answer().where())
                 .attr("loc", object.loc());
-            if (object.loc().equals(object.answer().where()) && "rooted".equals(band)) {
+            if (object.loc().equals(object.answer().where()) && band.hollow()) {
                 dirs.attr("void", "true");
             }
             Pieces.witnessed(dirs, object.answer().seen());

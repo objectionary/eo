@@ -12,19 +12,22 @@ import java.util.List;
  *
  * <p>A rung is a number and a band is a colour, and the two are not the same
  * thing. The ladder has five rungs because a walk can end in five places, and
- * a page has four colours because a reader wants four different things done
+ * a page has five colours because a reader wants five different things done
  * about what they are looking at: a name they can go and read, a name that
- * waits on whoever calls them, a name that waits on Java, and nothing at
- * all.</p>
+ * waits on whoever calls them, a name that waits on Java, a name that waits on
+ * a caller who never came, and nothing at all.</p>
  *
  * <p>Two rungs share the green band, since a formation with voids still free
  * and a formation with none are both a place a reader can go and look at, and
- * one rung splits in two: a name rooted at a void is amber when the callers of
- * the program fill that void and violet when only an atom does. A void an atom
+ * one rung splits in three. A name rooted at a void is amber when the callers
+ * of the program fill that void with several different things, violet when
+ * only an atom fills it, and slate when nobody fills it at all. A void an atom
  * fills is not a gap in what we know — it is filled, in Java, where no caller
  * of the program can be looked at to find out with what, and telling a reader
  * to go and find the caller would send them looking for something that is not
- * there (#8352).</p>
+ * there (#8352). A void nobody fills sends them looking for the same missing
+ * thing, and each colour is worth having only while it asks for one thing
+ * (#8355).</p>
  *
  * <p>The band is worked out here and nowhere else. A page that colours a word
  * and a tally that counts it are two readers of the same answer, and the one
@@ -39,7 +42,7 @@ final class Band {
      * The bands, from the least known to the most.
      */
     private static final List<String> NAMES = Arrays.asList(
-        "blank", "rooted", "atom", "named"
+        "blank", "unfilled", "rooted", "atom", "named"
     );
 
     /**
@@ -71,12 +74,30 @@ final class Band {
         final int found;
         if (this.told.rung() == 0) {
             found = 0;
-        } else if (this.told.rung() > 1) {
-            found = Band.NAMES.size() - 1;
-        } else if (this.told.forged()) {
-            found = 2;
+        } else if (this.hollow()) {
+            found = this.shade();
         } else {
+            found = Band.NAMES.size() - 1;
+        }
+        return found;
+    }
+
+    /**
+     * Whether the walk ended at somebody else's void.
+     * @return TRUE when the answer is a void rather than a formation
+     */
+    boolean hollow() {
+        return this.told.rung() == 1;
+    }
+
+    private int shade() {
+        final int found;
+        if (this.told.forged()) {
+            found = 3;
+        } else if (this.told.seen().isEmpty()) {
             found = 1;
+        } else {
+            found = 2;
         }
         return found;
     }

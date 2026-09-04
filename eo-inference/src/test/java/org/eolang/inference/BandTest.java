@@ -30,10 +30,34 @@ final class BandTest {
     void ranksAVoidTheCallersFillWorseThanOneAnAtomFills() {
         MatcherAssert.assertThat(
             "a void whose callers disagree is less known than one an atom fills, but it ranked above",
-            new Band(new Answer("Φ.bool.if", 1)).rank(),
+            new Band(
+                new Answer("Φ.bool.if", 1, Collections.singletonList(new Ref("Φ.true")))
+            ).rank(),
             Matchers.lessThan(
                 new Band(
                     new Answer("Φ.reply.code", 1, Collections.emptyList(), true)
+                ).rank()
+            )
+        );
+    }
+
+    @Test
+    void namesTheBandOfAVoidNobodyFills() {
+        MatcherAssert.assertThat(
+            "a void nobody fills must have a band of its own, but it took another",
+            new Band(new Answer("Φ.bytes.as-i16.cant-convert", 1)).name(),
+            Matchers.equalTo("unfilled")
+        );
+    }
+
+    @Test
+    void ranksAVoidNobodyFillsWorseThanOneTheCallersFill() {
+        MatcherAssert.assertThat(
+            "a void nobody fills is less known than one the callers fill, but it ranked above",
+            new Band(new Answer("Φ.chunk.copy.source", 1)).rank(),
+            Matchers.lessThan(
+                new Band(
+                    new Answer("Φ.bool.if", 1, Collections.singletonList(new Ref("Φ.true")))
                 ).rank()
             )
         );

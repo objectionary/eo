@@ -27,12 +27,16 @@ SPDX-License-Identifier: MIT
             <xsl:value-of select="@atom"/>
             <xsl:text> filled by an atom</xsl:text>
           </span>
+          <span class="unfilled">
+            <xsl:value-of select="@unfilled"/>
+            <xsl:text> filled by nobody</xsl:text>
+          </span>
           <span class="blank">
             <xsl:value-of select="@blank"/>
             <xsl:text> nothing known</xsl:text>
           </span>
         </p>
-        <p class="note">A mark is green where we can name the formation an object was copied from, amber where all we have is a name rooted in a void the callers fill, violet where the void is one only an atom fills and no caller can be looked at, and red where we have nothing. Hover a mark to see what we found.</p>
+        <p class="note">A mark is green where we can name the formation an object was copied from, amber where all we have is a name rooted in a void the callers fill several ways, violet where the void is one only an atom fills and no caller can be looked at, slate where nobody fills the void at all, and red where we have nothing. Hover a mark to see what we found.</p>
         <xsl:apply-templates select="dir|file"/>
       </body>
     </html>
@@ -57,10 +61,11 @@ SPDX-License-Identifier: MIT
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@rooted} rooted at a void, {@atom} filled by an atom, {@blank} nothing known">
+    <span class="bar" title="{@named} named, {@rooted} rooted at a void, {@atom} filled by an atom, {@unfilled} filled by nobody, {@blank} nothing known">
       <span class="named" style="flex: {@named}"/>
       <span class="rooted" style="flex: {@rooted}"/>
       <span class="atom" style="flex: {@atom}"/>
+      <span class="unfilled" style="flex: {@unfilled}"/>
       <span class="blank" style="flex: {@blank}"/>
     </span>
   </xsl:template>
@@ -75,6 +80,7 @@ SPDX-License-Identifier: MIT
       .tally .named { background: #d7f0d7; }
       .tally .rooted { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
+      .tally .unfilled { background: #dfe6e9; }
       .tally .blank { background: #f7d4d4; }
       details { margin: 0; }
       summary { cursor: pointer; display: flex; align-items: center; gap: .8em; padding: .1em 0; font-weight: 600; }
@@ -85,6 +91,7 @@ SPDX-License-Identifier: MIT
       .bar .named { background: #6bbf6b; }
       .bar .rooted { background: #e8b64c; }
       .bar .atom { background: #9b7fd4; }
+      .bar .unfilled { background: #90a4ae; }
       .bar .blank { background: #d76b6b; }
     </style>
   </xsl:template>
