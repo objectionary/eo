@@ -32,6 +32,12 @@ import java.util.Map;
  * The source said all along what running the body gives back, and now the body
  * answers with it.</p>
  *
+ * <p>Which voids an atom fills is stamped on afterwards, by {@link Forged},
+ * rather than worked out inside the walk. It is not something the walk found
+ * out — it is the same name rooted at the same void, and only the reason it
+ * stayed there differs — and the walk has no business carrying a fact it never
+ * uses (#8352).</p>
+ *
  * @since 0.70.0
  */
 final class Answered {
@@ -79,6 +85,6 @@ final class Answered {
                 locator, answers.of(locator, filled.getOrDefault(locator, Collections.emptyList()))
             );
         }
-        return found;
+        return new Forged(given).marked(found);
     }
 }
