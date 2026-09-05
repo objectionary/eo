@@ -1065,6 +1065,7 @@ R-6.5.3. Before a master object (formation, atom, inline-phi formation): zero or
 R-6.5.4. Between two plain siblings: blank lines forbidden.
 R-6.5.5. After the meta header: exactly one blank line separates metas from whatever follows.
 R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an error.
+R-6.5.7. Inside the meta header: blank lines forbidden. The metas of a file form a single contiguous block; a blank line between two of them is rejected: error "blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block".
 
 Examples:
 
@@ -1460,7 +1461,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
-| Blank line between two meta directives (R-6.5.5) | `blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block` |
+| Blank line between two meta directives (R-6.5.7) | `blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block` |
 | Cactus emoji at the head of a line (§9.2) | `cactus emoji is reserved for auto-names; not allowed as a line head` |
 | Compact tuple marker inside a paren-grouped inline-phi (R-3.10.10a) | `compact tuple marker is not allowed inside a parenthesised inline-phi` |
 | `.method` continuation on a test attribute (§6.3) | `method continuation not allowed on a test attribute` |
