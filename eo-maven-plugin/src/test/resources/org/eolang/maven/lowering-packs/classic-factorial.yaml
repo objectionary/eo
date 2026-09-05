@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The classic factorial, as the textbook writes it: `n` times the
+# factorial of `n` less one. The call to itself is the argument of the
+# multiplication, which still awaits its value, so the call is not in a
+# tail position and there is no loop to lower it into: the guard
+# settles, the reduction forks on it, and refuses the arm where the
+# call stands under the `times`. The formation stays as written and
+# runs through the continuations of the transpiler, while the
+# `looped-countdown` pack shows the same product written with an
+# accumulator, which the lowering does take.
+input: |
+  [] > foo
+    [^ n] > fact
+      if. > @
+        n.gt 1
+        n.times
+          ^.fact
+            n.plus -1
+        1
+    fact 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: fact
+voids:
+  n: number
+lowered: |
+  [] > foo
+    fact 5 > @
+    if. > [^ n] > fact
+      n.gt 1
+      n.times
+        ^.fact
+          n.plus -1
+      1
+stuck: "The call to itself is not in a tail position, so the fragment cannot repeat"
