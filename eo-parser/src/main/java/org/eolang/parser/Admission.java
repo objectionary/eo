@@ -8,7 +8,7 @@ package org.eolang.parser;
  * A line's naming suffix, as {@link Transition#apply} needs it: names
  * the pushed-or-replaced level when the line carries a name suffix, and
  * says whether the line shape is allowed to sit under an atom parent
- * (R-3.10.13).
+ * (R-5.3.4).
  * @since 0.1
  */
 final class Admission {
