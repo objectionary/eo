@@ -2,6 +2,7 @@ L_number_plus	plus	number	number	x	%1$s + %2$s
 L_number_times	times	number	number	x	%1$s * %2$s
 L_number_div	div	number	number	x	%1$s / %2$s
 L_number_gt	gt	number	bool	x	%1$s > %2$s
+L_bool_if	if	bool		t,f
 L_bytes_and	and	bytes	bytes	b	new BytesOf(%1$s).and(new BytesOf(%2$s)).take()
 L_bytes_or	or	bytes	bytes	b	new BytesOf(%1$s).or(new BytesOf(%2$s)).take()
 L_bytes_not	not	bytes	bytes		new BytesOf(%1$s).not().take()

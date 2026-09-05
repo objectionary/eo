@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,69 @@ final class ShapeTest {
                 Collections.emptyList(),
                 Collections.emptyList()
             ).covers("size", "sym:v1", Collections.emptyList()),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void coversAnyArgumentWhereBlank() {
+        MatcherAssert.assertThat(
+            "a blank identity must let any argument through, but it doesnt",
+            new Shape(
+                "if", "sym:s1", Arrays.asList("t", "f"), Arrays.asList("", "")
+            ).covers(
+                "if",
+                "sym:s1",
+                Arrays.asList(
+                    new Binding("α0", new Literal("number", "11-")),
+                    new Binding(
+                        "α1",
+                        new Site("size", new Symbol("v0", "bytes"), Collections.emptyList())
+                    )
+                )
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void coversSiteByItsOwnBindings() {
+        final List<Binding> args = Arrays.asList(
+            new Binding("α0", new Literal("number", "11-")),
+            new Binding(
+                "α1",
+                new Site("size", new Symbol("v0", "bytes"), Collections.emptyList())
+            )
+        );
+        MatcherAssert.assertThat(
+            "a shape taken off a site must cover that very site, but it doesnt",
+            new Shape("if", "sym:s1", args).covers("if", "sym:s1", args),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void tellsSitesApartByTheirText() {
+        MatcherAssert.assertThat(
+            "an argument still a site must match only its own text, but it matched another",
+            new Shape(
+                "if", "sym:s1",
+                Collections.singletonList(
+                    new Binding(
+                        "α0",
+                        new Site("size", new Symbol("v0", "bytes"), Collections.emptyList())
+                    )
+                )
+            ).covers(
+                "if",
+                "sym:s1",
+                Collections.singletonList(
+                    new Binding(
+                        "α0",
+                        new Site("size", new Symbol("v1", "bytes"), Collections.emptyList())
+                    )
+                )
+            ),
             Matchers.is(false)
         );
     }

@@ -26,7 +26,8 @@
   ⟧,
   bool ↦ ⟦
     as-bytes ↦ ∅,
-    φ ↦ ξ.as-bytes
+    φ ↦ ξ.as-bytes,
+    if ↦ ⟦ t ↦ ∅, f ↦ ∅, λ ⤍ L_bool_if ⟧
   ⟧,
   true ↦ Φ.bool(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ FF- ⟧)),
   false ↦ Φ.bool(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 00- ⟧))

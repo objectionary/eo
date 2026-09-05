@@ -7,6 +7,8 @@ package org.eolang.lowering;
 import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,12 +28,25 @@ import java.util.Optional;
  * only matches records to sites, by the shapes {@link Operand} anchors
  * and the one {@link Op} table of lowerable operations.</p>
  *
+ * <p>An {@code if} is the one operation whose arguments must not be
+ * reduced in place: they are the arms of a choice, and a step minted
+ * from either would compute regardless of the bool that guards it. So
+ * when the {@code if} atom parks on a symbolic bool, the two arguments
+ * are taken out of the site as they stand in the tree, each is reduced
+ * by a loop of its own, and the site becomes a {@link Fork} holding one
+ * protocol per arm. Every loop of one reduction shares the voids and one
+ * ledger of the steps minted so far, by label, so that a label never
+ * repeats across the arms and the forma of any step can be looked up
+ * wherever its symbol ends up. When the bool is data instead, the site
+ * simply gives way to the arm it picks.</p>
+ *
  * <p>Whatever does not settle is refused with an exception, never
  * repaired: a foreign atom, a site the records cannot anchor, a value of
- * a forma no carrier stands for, an exhausted budget. The caller treats
- * every refusal as one fragment staying unlowered, the way {@link Constant}
- * refusals are treated, so a refusal here is a filter, not a
- * failure.</p>
+ * a forma no carrier stands for, an exhausted budget, an arm of a fork
+ * that refuses or answers a forma the other arm does not. The caller
+ * treats every refusal as one fragment staying unlowered, the way
+ * {@link Constant} refusals are treated, so a refusal here is a filter,
+ * not a failure.</p>
  *
  * @since 0.76.0
  * @todo #8308:30min Let a string literal stand as the receiver of a step.
@@ -87,8 +102,16 @@ public final class Reduction {
      * @throws IOException If the binary cannot be run
      */
     public Protocol protocol() throws IOException {
+        return this.settled(
+            new Parsed(this.fragment, this.voids).term(),
+            new LinkedHashMap<>(0)
+        );
+    }
+
+    private Protocol settled(final Term start, final Map<String, String> minted)
+        throws IOException {
         final List<Step> steps = new ArrayList<>(0);
-        Term tree = new Parsed(this.fragment, this.voids).term();
+        Term tree = start;
         int round = 0;
         while (tree.key().isEmpty()) {
             if (round >= this.rounds) {
@@ -97,12 +120,13 @@ public final class Reduction {
                 );
             }
             ++round;
-            tree = this.grown(tree, steps);
+            tree = this.grown(tree, steps, minted);
         }
-        return new Protocol(steps, tree.key(), this.carrier(tree.key(), steps));
+        return new Protocol(steps, tree.key(), this.carrier(tree.key(), minted));
     }
 
-    private Term grown(final Term tree, final List<Step> steps) throws IOException {
+    private Term grown(final Term tree, final List<Step> steps,
+        final Map<String, String> minted) throws IOException {
         final Trace trace = this.phino.partial(
             new Universe().text(),
             String.format("⟦%n  φ ↦ %s%n⟧%n", tree.phi())
@@ -121,29 +145,79 @@ public final class Reduction {
                 );
                 continue;
             }
-            final Optional<Shape> shape = Reduction.shaped(operation, record);
-            if (!shape.isPresent() || !out.matches(shape.get())) {
-                continue;
-            }
-            final Term swap;
-            if (record.parked()) {
-                final String label = String.format("s%d", steps.size() + 1);
-                final List<String> keys = new ArrayList<>(1);
-                keys.add(Reduction.self(operation, record));
-                keys.addAll(Reduction.arguments(operation, record).get());
-                steps.add(new Step(label, record.name(), keys));
-                swap = new Symbol(label, operation.forma());
+            final Optional<Term> next;
+            if (record.parked() && operation.forma().isEmpty()) {
+                next = this.forked(out, operation, record, steps, minted);
             } else {
-                final String[] parts = new Operand(record.result()).key().split(":", 2);
-                swap = new Literal(parts[0], parts[1]);
+                next = Reduction.applied(out, operation, record, steps, minted);
             }
-            out = out.swapped(shape.get(), swap);
-            ++done;
+            if (next.isPresent()) {
+                out = next.get();
+                ++done;
+            }
         }
         if (done == 0) {
             throw new IllegalStateException(
                 String.format("The reduction is stuck: %s", excuse)
             );
+        }
+        return out;
+    }
+
+    private static Optional<Term> applied(final Term tree, final Op operation,
+        final Evaluation record, final List<Step> steps, final Map<String, String> minted) {
+        Optional<Term> out = Optional.empty();
+        final Optional<Shape> shape = Reduction.shaped(operation, record);
+        if (shape.isPresent() && tree.matches(shape.get())) {
+            final Term swap;
+            if (record.parked()) {
+                final String label = String.format("s%d", minted.size() + 1);
+                minted.put(label, operation.forma());
+                final List<String> keys = new ArrayList<>(1);
+                keys.add(Reduction.self(operation, record));
+                keys.addAll(Reduction.arguments(operation, record).get());
+                steps.add(new Application(label, record.name(), keys));
+                swap = new Symbol(label, operation.forma());
+            } else {
+                final String[] parts = new Operand(record.result()).key().split(":", 2);
+                swap = new Literal(parts[0], parts[1]);
+            }
+            out = Optional.of(tree.swapped(shape.get(), swap));
+        }
+        return out;
+    }
+
+    private Optional<Term> forked(final Term tree, final Op operation,
+        final Evaluation record, final List<Step> steps, final Map<String, String> minted)
+        throws IOException {
+        final String self = Reduction.self(operation, record);
+        final Optional<List<Binding>> found = tree.arguments(
+            new Shape(
+                operation.method(), self, operation.args(),
+                Collections.nCopies(operation.args().size(), "")
+            )
+        );
+        Optional<Term> out = Optional.empty();
+        if (found.isPresent()) {
+            final List<Binding> args = found.get();
+            final Term swap;
+            if ("bool:FF-".equals(self)) {
+                swap = args.get(0).value();
+            } else if ("bool:00-".equals(self)) {
+                swap = args.get(1).value();
+            } else {
+                final String label = String.format("s%d", minted.size() + 1);
+                minted.put(label, "");
+                final Step fork = new Fork(
+                    label, record.name(), self,
+                    this.settled(args.get(0).value(), minted),
+                    this.settled(args.get(1).value(), minted)
+                );
+                minted.put(label, fork.forma());
+                steps.add(fork);
+                swap = new Symbol(label, fork.forma());
+            }
+            out = Optional.of(tree.swapped(new Shape(operation.method(), self, args), swap));
         }
         return out;
     }
@@ -204,23 +278,15 @@ public final class Reduction {
         return out;
     }
 
-    private String carrier(final String key, final List<Step> steps) {
+    private String carrier(final String key, final Map<String, String> minted) {
         final String out;
         if (key.startsWith("sym:s")) {
-            final String label = key.substring(4);
-            String atom = "";
-            for (final Step step : steps) {
-                if (step.label().equals(label)) {
-                    atom = step.atom();
-                    break;
-                }
-            }
-            if (atom.isEmpty()) {
+            out = minted.getOrDefault(key.substring(4), "");
+            if (out.isEmpty()) {
                 throw new IllegalStateException(
                     String.format("The answer '%s' names no step", key)
                 );
             }
-            out = new Op(atom).forma();
         } else if (key.startsWith("sym:v")) {
             out = new ArrayList<>(this.voids.values())
                 .get(Integer.parseInt(key.substring(5)));

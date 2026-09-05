@@ -32,11 +32,11 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Arrays.asList(
-                        new Step(
+                        new Application(
                             "s1", "L_number_plus",
                             Arrays.asList("sym:v0", "number:40-00-00-00-00-00-00-00")
                         ),
-                        new Step("s2", "L_number_times", Arrays.asList("sym:s1", "sym:v0"))
+                        new Application("s2", "L_number_times", Arrays.asList("sym:s1", "sym:v0"))
                     ),
                     "sym:s2",
                     "number"
@@ -62,12 +62,12 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Arrays.asList(
-                        new Step(
+                        new Application(
                             "s1", "L_bytes_and",
                             Arrays.asList("sym:v0", "bytes:1F-")
                         ),
-                        new Step("s2", "L_bytes_size", Collections.singletonList("sym:s1")),
-                        new Step(
+                        new Application("s2", "L_bytes_size", Collections.singletonList("sym:s1")),
+                        new Application(
                             "s3", "L_number_gt",
                             Arrays.asList("sym:s2", "number:40-00-00-00-00-00-00-00")
                         )
@@ -100,7 +100,7 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bool:FF-"))
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bool:FF-"))
                     ),
                     "sym:s1",
                     "bool"
@@ -164,7 +164,7 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step(
+                        new Application(
                             "s1", "L_number_plus",
                             Arrays.asList("sym:v1", "number:3F-F0-00-00-00-00-00-00")
                         )
@@ -195,8 +195,8 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Arrays.asList(
-                        new Step("s1", "L_number_div", Arrays.asList("sym:v0", "sym:v1")),
-                        new Step("s2", "L_bytes_eq", Arrays.asList("sym:s1", "sym:v0"))
+                        new Application("s1", "L_number_div", Arrays.asList("sym:v0", "sym:v1")),
+                        new Application("s2", "L_bytes_eq", Arrays.asList("sym:s1", "sym:v0"))
                     ),
                     "sym:s2",
                     "bool"
@@ -220,11 +220,11 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Arrays.asList(
-                        new Step(
+                        new Application(
                             "s1", "L_bytes_concat",
                             Arrays.asList("sym:v0", "string:21-")
                         ),
-                        new Step("s2", "L_bytes_size", Collections.singletonList("sym:s1"))
+                        new Application("s2", "L_bytes_size", Collections.singletonList("sym:s1"))
                     ),
                     "sym:s2",
                     "number"
@@ -244,7 +244,9 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "string:61-62-63"))
+                        new Application(
+                            "s1", "L_bytes_eq", Arrays.asList("sym:v0", "string:61-62-63")
+                        )
                     ),
                     "sym:s1",
                     "bool"
@@ -267,7 +269,7 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:1F-2E-"))
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:1F-2E-"))
                     ),
                     "sym:s1",
                     "bool"
@@ -284,13 +286,120 @@ final class JavaAtomTest {
     }
 
     @Test
+    void rendersForkAsIfElse() {
+        MatcherAssert.assertThat(
+            "a fork must declare a blank final and assign it in both arms, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_number_gt",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        ),
+                        new Fork(
+                            "s2", "L_bool_if", "sym:s1",
+                            new Protocol(
+                                Collections.emptyList(), "number:3F-F0-00-00-00-00-00-00", "number"
+                            ),
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s3", "L_number_times", Arrays.asList("sym:v0", "sym:v0")
+                                    )
+                                ),
+                                "sym:s3",
+                                "number"
+                            )
+                        )
+                    ),
+                    "sym:s2",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                    "        final boolean s1 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);",
+                    "        final double s2;",
+                    "        if (s1) {",
+                    "            s2 = Double.longBitsToDouble(0x3FF0000000000000L);",
+                    "        } else {",
+                    "            final double s3 = v0 * v0;",
+                    "            s2 = s3;",
+                    "        }",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void hoistsVoidReadOutOfArm() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("f", "bool");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "a void read inside an arm alone must be dataized at the top, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                            new Protocol(
+                                Collections.emptyList(), "number:00-00-00-00-00-00-00-00", "number"
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.startsWith(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final double v1 = new Dataized(this.take(\"y\")).asNumber();",
+                    "        final double s1;",
+                    "        if (v0) {"
+                )
+            )
+        );
+    }
+
+    @Test
+    void refusesForkOnNumberCondition() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(Collections.emptyList(), "sym:v0", "number")
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "a number cannot decide a fork, but one rendered"
+        );
+    }
+
+    @Test
     void refusesEqualityOverMixedFormas() {
         Assertions.assertThrows(
             IllegalStateException.class,
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:01-02-"))
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:01-02-"))
                     ),
                     "sym:s1",
                     "bool"
@@ -308,7 +417,7 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step(
+                        new Application(
                             "s1", "L_number_plus",
                             Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
                         )
@@ -329,7 +438,7 @@ final class JavaAtomTest {
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
-                        new Step(
+                        new Application(
                             "s1", "L_bytes_right",
                             Arrays.asList("sym:v0", "number:40-00-00-00-00-00-00-00")
                         )

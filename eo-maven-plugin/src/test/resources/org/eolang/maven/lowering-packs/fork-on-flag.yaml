@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A bool void decides between two computations. The `.if` parks on the
+# symbolic bool at once, with no guard to reduce first, so the fork is
+# the first and only step at the top, each arm holds one step of its
+# own, and the label of the else arm counts on from the then arm. The
+# formation stays as written all the same: the tables witness the
+# `true` filling `flag` by the locator of the argument, not as a bool
+# carrier, so the lowering never learns the forma of that void.
+input: |
+  [] > foo
+    [flag x] > pick
+      if. > @
+        flag
+        x.plus 1
+        x.times 2
+    pick true 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: pick
+voids:
+  flag: bool
+  x: number
+lowered: |
+  [] > foo
+    pick > @
+      true
+      5
+    flag.if > [flag x] > pick
+      x.plus 1
+      x.times 2
+protocol: |
+  s1 ← fork sym:v0 number
+    then
+      s2 ← L_number_plus sym:v1 number:3F-F0-00-00-00-00-00-00
+      answer sym:s2 number
+    else
+      s3 ← L_number_times sym:v1 number:40-00-00-00-00-00-00-00
+      answer sym:s3 number
+  answer sym:s1 number

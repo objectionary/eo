@@ -4,6 +4,9 @@
  */
 package org.eolang.lowering;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * A value known at build time, standing in the reduction tree.
  *
@@ -70,6 +73,11 @@ public final class Literal implements Term {
     @Override
     public boolean matches(final Shape shape) {
         return false;
+    }
+
+    @Override
+    public Optional<List<Binding>> arguments(final Shape shape) {
+        return Optional.empty();
     }
 
     @Override

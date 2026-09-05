@@ -88,7 +88,8 @@ final class LoweringTest {
                     LoweringTest.fragment(foo),
                     LoweringTest.voids(foo, story),
                     8
-                ).protocol()
+                ).protocol(),
+                ""
             ).trim(),
             Matchers.equalTo(story.map().get("protocol").toString().trim())
         );
@@ -196,16 +197,30 @@ final class LoweringTest {
         return out;
     }
 
-    private static String rendered(final Protocol protocol) {
+    private static String rendered(final Protocol protocol, final String pad) {
         final StringBuilder out = new StringBuilder(64);
         for (final Step step : protocol.moves()) {
-            out.append(step.label()).append(" ← ").append(step.atom());
-            for (final String key : step.keys()) {
-                out.append(' ').append(key);
+            out.append(pad).append(step.label()).append(" ← ");
+            if (step.branches().isEmpty()) {
+                out.append(step.atom());
+                for (final String key : step.keys()) {
+                    out.append(' ').append(key);
+                }
+                out.append(System.lineSeparator());
+            } else {
+                out.append("fork ").append(step.keys().get(0)).append(' ')
+                    .append(step.forma()).append(System.lineSeparator());
+                final String[] arms = {"then", "else"};
+                for (int idx = 0; idx < arms.length; ++idx) {
+                    final String arm = LoweringTest.rendered(
+                        step.branches().get(idx), String.format("%s    ", pad)
+                    );
+                    out.append(pad).append("  ").append(arms[idx])
+                        .append(System.lineSeparator()).append(arm);
+                }
             }
-            out.append(System.lineSeparator());
         }
-        return out.append("answer ").append(protocol.answer())
-            .append(' ').append(protocol.carrier()).toString();
+        return out.append(pad).append("answer ").append(protocol.answer())
+            .append(' ').append(protocol.carrier()).append(System.lineSeparator()).toString();
     }
 }

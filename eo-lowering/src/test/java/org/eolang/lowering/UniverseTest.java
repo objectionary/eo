@@ -39,6 +39,20 @@ final class UniverseTest {
     }
 
     @Test
+    void parksTheChoiceOfABool(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the choice of a bool must park instead of firing, but it didnt",
+            phino.partial(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.true.if(α0 ↦ Φ.true, α1 ↦ Φ.false) ⟧"
+            ).records().get(0).name(),
+            Matchers.equalTo("L_bool_if")
+        );
+    }
+
+    @Test
     void carriesTheMethodsOfABool(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());

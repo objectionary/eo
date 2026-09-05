@@ -7,17 +7,22 @@ package org.eolang.lowering;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The Java body of one lowered fragment.
  *
- * <p>A protocol is a straight-line program, so its Java is a straight
- * line too: one local per void a step reads, dataized through the public
- * runtime API, one local per step, rendered by the format the {@link Op}
- * table holds for its atom, and one return handing the answer to
+ * <p>A protocol is a program of steps, so its Java is one statement per
+ * step: one local per void any step reads, dataized through the public
+ * runtime API and hoisted to the top of the body, one local per
+ * application, rendered by the format the {@link Op} table holds for its
+ * atom, one blank final per fork, assigned at the end of each of its two
+ * arms, whose own steps sit inside the arm's block and so compute only
+ * when the arm is taken, and one return handing the answer to
  * {@code Data.ToPhi}. A string is bytes here: its Δ is the very UTF-8
  * sequence the byte atoms it reaches through {@code φ} operate on, so a
  * string void is read as a {@code byte[]} and meets a bytes carrier as
@@ -74,9 +79,7 @@ public final class JavaAtom {
             final String name = names.get(index);
             lines.add(JavaAtom.reading(index, name, this.voids.get(name)));
         }
-        for (final Step step : this.protocol.moves()) {
-            lines.add(this.computed(step));
-        }
+        lines.addAll(this.computed(this.protocol, ""));
         lines.add(
             String.format(
                 "return new Data.ToPhi(%s);",
@@ -89,18 +92,25 @@ public final class JavaAtom {
     }
 
     private SortedSet<Integer> used() {
-        final List<String> keys = new ArrayList<>(0);
-        for (final Step step : this.protocol.moves()) {
-            keys.addAll(step.keys());
-        }
-        keys.add(this.protocol.answer());
         final SortedSet<Integer> out = new TreeSet<>();
-        for (final String key : keys) {
-            if (key.startsWith("sym:v")) {
-                out.add(Integer.parseInt(key.substring(5)));
-            }
-        }
+        final Stream<String> keys = JavaAtom.unfolded(this.protocol).flatMap(
+            proto -> Stream.concat(
+                proto.moves().stream().flatMap(step -> step.keys().stream()),
+                Stream.of(proto.answer())
+            )
+        );
+        keys.filter(key -> key.startsWith("sym:v"))
+            .forEach(key -> out.add(Integer.parseInt(key.substring(5))));
         return out;
+    }
+
+    private static Stream<Protocol> unfolded(final Protocol proto) {
+        return Stream.concat(
+            Stream.of(proto),
+            proto.moves().stream()
+                .flatMap(step -> step.branches().stream())
+                .flatMap(JavaAtom::unfolded)
+        );
     }
 
     private static String reading(final int index, final String name, final String forma) {
@@ -128,17 +138,56 @@ public final class JavaAtom {
         return out;
     }
 
-    private String computed(final Step step) {
-        final Op operation = new Op(step.atom());
-        return String.format(
-            "final %s %s = %s;",
-            JavaAtom.typed(operation.forma()),
-            step.label(),
-            this.applied(step, operation)
-        );
+    private List<String> computed(final Protocol proto, final String pad) {
+        final List<String> out = new ArrayList<>(proto.moves().size());
+        for (final Step step : proto.moves()) {
+            if (step.branches().isEmpty()) {
+                out.add(
+                    String.format(
+                        "%sfinal %s %s = %s;",
+                        pad, JavaAtom.typed(step.forma()), step.label(), this.applied(step)
+                    )
+                );
+            } else {
+                out.addAll(this.forked(step, pad));
+            }
+        }
+        return out;
     }
 
-    private String applied(final Step step, final Op operation) {
+    private List<String> forked(final Step step, final String pad) {
+        final String test = step.keys().get(0);
+        if (!"bool".equals(this.forma(test))) {
+            throw new IllegalStateException(
+                String.format(
+                    "The condition '%s' of the fork '%s' does not carry a bool",
+                    test, step.label()
+                )
+            );
+        }
+        final String inner = String.format("%s    ", pad);
+        final List<String> out = new ArrayList<>(8);
+        out.add(
+            String.format(
+                "%sfinal %s %s;", pad, JavaAtom.typed(JavaAtom.carried(step.forma())), step.label()
+            )
+        );
+        out.add(String.format("%sif (%s) {", pad, JavaAtom.expression(test)));
+        out.addAll(this.assigned(step.label(), step.branches().get(0), inner));
+        out.add(String.format("%s} else {", pad));
+        out.addAll(this.assigned(step.label(), step.branches().get(1), inner));
+        out.add(String.format("%s}", pad));
+        return out;
+    }
+
+    private List<String> assigned(final String label, final Protocol arm, final String pad) {
+        final List<String> out = this.computed(arm, pad);
+        out.add(String.format("%s%s = %s;", pad, label, JavaAtom.expression(arm.answer())));
+        return out;
+    }
+
+    private String applied(final Step step) {
+        final Op operation = new Op(step.atom());
         final String out;
         if ("eq".equals(operation.method())) {
             out = this.compared(step);
@@ -204,7 +253,7 @@ public final class JavaAtom {
                         .get(Integer.parseInt(parts[1].substring(1)))
                 );
             } else {
-                out = new Op(this.move(parts[1]).atom()).forma();
+                out = this.move(parts[1]).forma();
             }
         } else {
             out = parts[0];
@@ -223,19 +272,16 @@ public final class JavaAtom {
     }
 
     private Step move(final String label) {
-        Step found = null;
-        for (final Step step : this.protocol.moves()) {
-            if (step.label().equals(label)) {
-                found = step;
-                break;
-            }
-        }
-        if (found == null) {
+        final Optional<Step> found = JavaAtom.unfolded(this.protocol)
+            .flatMap(proto -> proto.moves().stream())
+            .filter(step -> step.label().equals(label))
+            .findFirst();
+        if (!found.isPresent()) {
             throw new IllegalStateException(
                 String.format("The protocol has no step '%s'", label)
             );
         }
-        return found;
+        return found.get();
     }
 
     private static String typed(final String forma) {

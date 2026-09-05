@@ -66,8 +66,10 @@ public final class Op {
     }
 
     /**
-     * The forma of the value.
-     * @return One of {@code number}, {@code bool}, {@code bytes}
+     * The forma of the value. An operation may have none: {@code if}
+     * answers whatever the arm it picks answers, so its row leaves the
+     * column empty, and {@link Reduction} reads that as the sign to fork.
+     * @return One of {@code number}, {@code bool}, {@code bytes}, or empty
      */
     public String forma() {
         return this.row()[3];
