@@ -182,7 +182,15 @@ final class LnMeta implements Line {
                     "meta parts must be separated by exactly one space"
                 );
             }
-            out.add(LnMeta.promoteQ(tail.substring(idx, end)));
+            final String part = tail.substring(idx, end);
+            final int control = new Scrubbed(part).found();
+            if (control >= 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + base + idx + control,
+                    "control character is not allowed in a meta"
+                );
+            }
+            out.add(LnMeta.promoteQ(part));
             idx = end;
             if (idx < tail.length()) {
                 idx = idx + 1;

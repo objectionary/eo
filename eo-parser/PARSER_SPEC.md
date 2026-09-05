@@ -1380,6 +1380,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Plain child without name in formation | `object inside formation must have a name` |
 | Root identifier glued to a letter or a digit (e.g. the legacy `QQ.io.stdout`) | `<token> is not a valid object name, root <root> must be followed by a dot` (token and root substituted) |
 | Control character inside an identifier or a name suffix | `control character is not allowed in an identifier` |
+| Control character inside a meta part (R-3.2.4) | `control character is not allowed in a meta` |
 | Atom containing non-test child | `atom may contain only test attributes` |
 | `+>` outside indent 2 of top level | `test attribute legal only as direct child of top-level object` |
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |
