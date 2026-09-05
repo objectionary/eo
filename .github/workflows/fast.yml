@@ -68,17 +68,26 @@ jobs:
                 done \
               | paste -sd, -
           ) || true
-          # The `|| true` is what lets the guard below run at all. A step
+          # The `|| true` is what lets the lines below run at all. A step
           # script runs under `-e -o pipefail`, so a branch that touches no
           # `.eo` file leaves `grep` with nothing to match, `grep` exits 1,
           # the pipeline inherits it and the assignment dies before anything
           # reads `classes`. On the left of `||` the status is nobody's
           # business and `classes` simply comes out empty.
+          # The concurrency tests are hand-written Java, so no .eo file names
+          # them and the loop above never picks them up. They lose every race
+          # against the one-second `eo.deadline` and the 256M `eo.maxmem` of
+          # the ordinary build, which report an over-budget test as skipped:
+          # `EOdirectoryEOmadeRaceTest` is skipped in all ten repetitions of
+          # every job that completes. They are added here unconditionally, so
+          # the branch they guard is executed rather than reported as covered.
+          always='EOdirectoryEOmadeRaceTest,EOfileEOtouchedTest'
           if [ -z "${classes}" ]; then
-            echo 'This branch touches no .eo file that owns tests, nothing to run'
+            classes="${always}"
           else
-            echo "Test classes to run: ${classes}"
+            classes="${always},${classes}"
           fi
+          echo "Test classes to run: ${classes}"
           echo "classes=${classes}" >> "${GITHUB_OUTPUT}"
       - uses: actions/setup-java@v6
         with:
