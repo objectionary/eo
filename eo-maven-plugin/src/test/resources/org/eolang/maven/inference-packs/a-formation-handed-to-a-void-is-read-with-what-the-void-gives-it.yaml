@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A `grove` hands an `oak` to the `scope` it takes, and two callers write the
+# formation that catches it. Neither of them can be named as the `scope`, so
+# the walk would stop at the void, yet both are handed an `oak` all the same.
+# So the name each of them catches holds an `oak`, and a `grown` taken off it
+# is the `grown` of an `oak`.
+eo:
+  oak.eo: |
+    [] > oak
+      [^ height width] > grown
+        height.plus width > @
+  grove.eo: |
+    [scope] > grove
+      scope oak > @
+  app.eo: |
+    [] > app
+      grove > @
+        [tree]
+          tree.grown 3 5 > @
+  path.eo: |
+    [] > path
+      grove > @
+        [twig]
+          twig.grown 1 2 > @
+links:
+  - "/links/type[@id='Φ.app.φ.α0.φ']/ref[@loc='Φ.oak.grown']"
+  - "/links/type[@id='Φ.path.φ.α0.φ']/ref[@loc='Φ.oak.grown']"

@@ -21,7 +21,6 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
-import org.eolang.inference.Relayed;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
@@ -101,7 +100,7 @@ final class Inferring implements Step {
             }
             final int ready = this.ready();
             final long start = System.currentTimeMillis();
-            new Witnessed(new Relayed(new Demanded(new Resolved(new Clues()))))
+            new Witnessed(new Demanded(new Resolved(new Clues())))
                 .follow(this.prepared, this.tables);
             Logger.info(
                 this, "Inferred the types of %d XMIR(s) in %[ms]s",
