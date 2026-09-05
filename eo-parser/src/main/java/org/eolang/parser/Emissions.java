@@ -233,6 +233,11 @@ final class Emissions {
 
     /**
      * Reject a void parameter name the grammar does not accept — §4.5.
+     *
+     * <p>The shape check leaves a control character through, since §2.3
+     * does not count one among the NAME terminators, so the glyph check
+     * every other identifier position runs happens here too.</p>
+     *
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
      * @param pos Source column of the parameter's first character
@@ -244,6 +249,7 @@ final class Emissions {
                 "parameter names in voids must be NAME, @ or ^"
             );
         }
+        Suffix.checkGlyphs(raw, line, pos);
     }
 
     /**
