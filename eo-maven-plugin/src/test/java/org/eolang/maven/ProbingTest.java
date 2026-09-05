@@ -8,12 +8,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.cactoos.set.SetOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.mockito.AdditionalAnswers;
+import org.mockito.Mockito;
 
 /**
  * Test cases for {@link Probing}.
@@ -44,11 +48,118 @@ final class ProbingTest {
     void completesPartiallyProbedPackage(@TempDir final Path temp) throws IOException {
         final TjsForeign tojos = new TjsForeign();
         tojos.add("test").withXmir(this.caller(temp));
-        new Probing(tojos, this.tuples(), true).exec();
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>(
+                        "tuple.each",
+                        "tuple.eachi",
+                        "tuple.withouti"
+                    )
+                )
+            ),
+            true
+        ).exec();
         MatcherAssert.assertThat(
-            "Probe should have registered the siblings that were never probed directly",
-            tojos.contains("tuple.eachi") && tojos.contains("tuple.withouti"),
-            Matchers.is(true)
+            "Probe should register all siblings from the same package",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("tuple.eachi", tojos.contains("tuple.eachi")),
+                new MapEntry<>("tuple.withouti", tojos.contains("tuple.withouti"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("tuple.eachi", true),
+                Matchers.hasEntry("tuple.withouti", true)
+            )
+        );
+    }
+
+    @Test
+    void completesRootPackage(@TempDir final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > test",
+                    "  Q.foo > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>("foo", "bar")
+                )
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should register the object and its root-package sibling",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("foo", tojos.contains("foo")),
+                new MapEntry<>("bar", tojos.contains("bar"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("foo", true),
+                Matchers.hasEntry("bar", true)
+            )
+        );
+    }
+
+    @Test
+    void completesRootPackageOnce(@TempDir final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > test",
+                    "  Q.foo > first",
+                    "  Q.baz > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        final Objectionary observed = Mockito.mock(
+            Objectionary.class,
+            AdditionalAnswers.delegatesTo(
+                new OyIndexed(
+                    new Objectionary.Fake(),
+                    new ObjectsIndex(
+                        () -> new SetOf<>("foo", "bar", "baz")
+                    )
+                )
+            )
+        );
+        new Probing(
+            tojos,
+            observed,
+            true
+        ).exec();
+        Mockito.verify(observed).children("");
+        MatcherAssert.assertThat(
+            "A single completion should register every root object",
+            new MapOf<String, Boolean>(
+                new MapEntry<>("all", tojos.size() == 4),
+                new MapEntry<>("foo", tojos.contains("foo")),
+                new MapEntry<>("bar", tojos.contains("bar")),
+                new MapEntry<>("baz", tojos.contains("baz"))
+            ),
+            Matchers.allOf(
+                Matchers.hasEntry("all", true),
+                Matchers.hasEntry("foo", true),
+                Matchers.hasEntry("bar", true),
+                Matchers.hasEntry("baz", true)
+            )
         );
     }
 

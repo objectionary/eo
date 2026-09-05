@@ -82,18 +82,17 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
-                    "Foreign must contain only 3 references to objects, but it doesn't",
-                    foreign.size(),
-                    Matchers.equalTo(3)
-                );
-                MatcherAssert.assertThat(
-                    "Foreign must contain refs to Number, Bytes, and current object",
-                    MjRegisterIT.existences(foreign, "number", "bytes", "foo"),
+                    "Foreign must contain required objects and root-package siblings",
+                    MjRegisterIT.existences(
+                        foreign, "number", "bytes", "string", "foo"
+                    ),
                     Matchers.everyItem(Matchers.is(true))
                 );
                 MatcherAssert.assertThat(
                     "Foreign must not contain a reference to an old object",
-                    foreign.select(tojo -> "string".equals(tojo.get("id"))).isEmpty(),
+                    foreign.select(
+                        tojo -> "io.stdout".equals(tojo.get("id"))
+                    ).isEmpty(),
                     Matchers.is(true)
                 );
             }
@@ -106,7 +105,7 @@ final class MjRegisterIT {
             f -> {
                 MjRegisterIT.run(
                     f,
-                    new String[]{"  \"Hello\" > @", "  42 > @"},
+                    new String[]{"  Q.io.stdout > @", "  42 > @"},
                     "eo:register", "eo:parse", "eo:probe", "eo:pull"
                 );
                 f.exec("eo:register", "eo:parse", "eo:probe", "eo:pull");
@@ -118,7 +117,7 @@ final class MjRegisterIT {
                 );
                 MatcherAssert.assertThat(
                     "Unnecessary objects were not removed",
-                    temp.resolve("target/eo/2-pull/string.eo").toFile().exists(),
+                    temp.resolve("target/eo/2-pull/io/stdout.eo").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -157,7 +156,7 @@ final class MjRegisterIT {
                 "+rt jvm org.eolang:eo-runtime:0.25.0",
                 "",
                 "[] > foo",
-                "  \"42\" > @"
+                "  Q.io.stdout > @"
             )
         );
         new AppendedPlugin(farea).value();
