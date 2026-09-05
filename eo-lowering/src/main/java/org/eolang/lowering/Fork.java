@@ -18,9 +18,11 @@ import java.util.List;
  * alone touches, which is what keeps a guard guarding: an operation that
  * is partial, and an argument whose dataization may never end, both
  * stay behind the bool that protects them. The value of the fork is
- * whatever the taken arm answers, so the two arms
- * must answer the same forma, and a fork whose arms disagree refuses to
- * name one.</p>
+ * whatever the taken arm answers, so the two arms must answer the same
+ * forma, and a fork whose arms disagree refuses to name one. An arm may
+ * also repeat the whole fragment instead of answering, and then the
+ * fork answers what the other arm does; a fork repeating in both arms
+ * answers nothing and refuses too.</p>
  *
  * @since 0.76.0
  */
@@ -80,14 +82,28 @@ public final class Fork implements Step {
 
     @Override
     public String forma() {
-        final String out = this.taken.carrier();
-        if (!out.equals(this.other.carrier())) {
+        final String yes = this.taken.carrier();
+        final String not = this.other.carrier();
+        if (yes.isEmpty() && not.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The fork '%s' repeats in both arms, so it answers nothing", this.name
+                )
+            );
+        }
+        if (!yes.isEmpty() && !not.isEmpty() && !yes.equals(not)) {
             throw new IllegalStateException(
                 String.format(
                     "The fork '%s' answers a %s in one arm and a %s in the other",
-                    this.name, out, this.other.carrier()
+                    this.name, yes, not
                 )
             );
+        }
+        final String out;
+        if (yes.isEmpty()) {
+            out = not;
+        } else {
+            out = yes;
         }
         return out;
     }

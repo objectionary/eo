@@ -81,6 +81,11 @@ public final class Literal implements Term {
     }
 
     @Override
+    public Optional<List<Term>> again() {
+        return Optional.empty();
+    }
+
+    @Override
     public Term swapped(final Shape shape, final Term swap) {
         return this;
     }

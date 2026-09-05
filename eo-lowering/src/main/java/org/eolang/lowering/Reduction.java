@@ -8,10 +8,8 @@ import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -39,6 +37,18 @@ import java.util.Optional;
  * repeats across the arms and the forma of any step can be looked up
  * wherever its symbol ends up. When the bool is data instead, the site
  * simply gives way to the arm it picks.</p>
+ *
+ * <p>A call of the formation to itself is the one term that never goes
+ * to phino: it is a repeat, and φ has no expression for one. When such
+ * a call is the root of the tree being settled, its arguments are
+ * reduced in turn into the same list of steps — a repeat evaluates all
+ * of them, there is nothing lazy about it — and the tree settles into
+ * the keys they become, one per void, instead of an answer. When the
+ * call stands anywhere else, phino parks on its marker and the
+ * fragment is refused: the recursion is not in a tail position, and a
+ * fork whose arm repeats is held to the same rule, since a repeat below
+ * an operation that still awaits the value would rerun the whole body
+ * in its place.</p>
  *
  * <p>Whatever does not settle is refused with an exception, never
  * repaired: a foreign atom, a site the records cannot anchor, a value of
@@ -82,6 +92,11 @@ public final class Reduction {
     private final int rounds;
 
     /**
+     * The name of the formation the fragment is the body of, or empty.
+     */
+    private final String formation;
+
+    /**
      * Ctor.
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
@@ -90,10 +105,25 @@ public final class Reduction {
      */
     public Reduction(final Phino exe, final Xnav xmir,
         final Map<String, String> inputs, final int budget) {
+        this(exe, xmir, inputs, budget, "");
+    }
+
+    /**
+     * Ctor.
+     * @param exe The binary that dataizes
+     * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param budget The most partial runs one reduction may take
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself become repeats; empty when there is none
+     */
+    public Reduction(final Phino exe, final Xnav xmir,
+        final Map<String, String> inputs, final int budget, final String name) {
         this.phino = exe;
         this.fragment = xmir;
         this.voids = inputs;
         this.rounds = budget;
+        this.formation = name;
     }
 
     /**
@@ -103,17 +133,29 @@ public final class Reduction {
      */
     public Protocol protocol() throws IOException {
         return this.settled(
-            new Parsed(this.fragment, this.voids).term(),
-            new LinkedHashMap<>(0)
+            new Parsed(this.fragment, this.voids, this.formation).term(),
+            new Minted(this.voids)
         );
     }
 
-    private Protocol settled(final Term start, final Map<String, String> minted)
-        throws IOException {
+    private Protocol settled(final Term start, final Minted minted) throws IOException {
         final List<Step> steps = new ArrayList<>(0);
+        final Term tree = this.reduced(start, steps, minted);
+        final Optional<List<Term>> again = tree.again();
+        final Protocol out;
+        if (again.isPresent()) {
+            out = new Protocol(steps, this.repeated(again.get(), steps, minted));
+        } else {
+            out = new Protocol(steps, tree.key(), minted.carrier(tree.key()));
+        }
+        return out;
+    }
+
+    private Term reduced(final Term start, final List<Step> steps, final Minted minted)
+        throws IOException {
         Term tree = start;
         int round = 0;
-        while (tree.key().isEmpty()) {
+        while (tree.key().isEmpty() && !tree.again().isPresent()) {
             if (round >= this.rounds) {
                 throw new IllegalStateException(
                     String.format("The reduction did not settle in %d rounds", this.rounds)
@@ -122,11 +164,44 @@ public final class Reduction {
             ++round;
             tree = this.grown(tree, steps, minted);
         }
-        return new Protocol(steps, tree.key(), this.carrier(tree.key(), minted));
+        return tree;
     }
 
-    private Term grown(final Term tree, final List<Step> steps,
-        final Map<String, String> minted) throws IOException {
+    private List<String> repeated(final List<Term> args, final List<Step> steps,
+        final Minted minted) throws IOException {
+        final List<String> formas = new ArrayList<>(this.voids.values());
+        if (args.size() != formas.size()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The call to itself passes %d arguments to %d voids",
+                    args.size(), formas.size()
+                )
+            );
+        }
+        final List<String> keys = new ArrayList<>(args.size());
+        for (int idx = 0; idx < args.size(); ++idx) {
+            final String key = this.reduced(args.get(idx), steps, minted).key();
+            if (key.isEmpty()) {
+                throw new IllegalStateException(
+                    "A call to itself cannot be an argument of a call to itself"
+                );
+            }
+            final String forma = minted.carrier(key);
+            if (!formas.get(idx).equals(forma)) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The call to itself passes a %s where void #%d carries a %s",
+                        forma, idx, formas.get(idx)
+                    )
+                );
+            }
+            keys.add(key);
+        }
+        return keys;
+    }
+
+    private Term grown(final Term tree, final List<Step> steps, final Minted minted)
+        throws IOException {
         final Trace trace = this.phino.partial(
             new Universe().text(),
             String.format("⟦%n  φ ↦ %s%n⟧%n", tree.phi())
@@ -137,6 +212,11 @@ public final class Reduction {
         for (final Evaluation record : trace.records()) {
             if (record.name().startsWith("Sym_")) {
                 continue;
+            }
+            if ("L_self".equals(record.name())) {
+                throw new IllegalStateException(
+                    "The call to itself is not in a tail position, so the fragment cannot repeat"
+                );
             }
             final Op operation = new Op(record.name());
             if (!operation.listed()) {
@@ -165,17 +245,18 @@ public final class Reduction {
     }
 
     private static Optional<Term> applied(final Term tree, final Op operation,
-        final Evaluation record, final List<Step> steps, final Map<String, String> minted) {
+        final Evaluation record, final List<Step> steps, final Minted minted) {
         Optional<Term> out = Optional.empty();
-        final Optional<Shape> shape = Reduction.shaped(operation, record);
+        final Anchored anchored = new Anchored(operation, record);
+        final Optional<Shape> shape = anchored.shape();
         if (shape.isPresent() && tree.matches(shape.get())) {
             final Term swap;
             if (record.parked()) {
-                final String label = String.format("s%d", minted.size() + 1);
-                minted.put(label, operation.forma());
+                final String label = minted.next();
+                minted.bind(label, operation.forma());
                 final List<String> keys = new ArrayList<>(1);
-                keys.add(Reduction.self(operation, record));
-                keys.addAll(Reduction.arguments(operation, record).get());
+                keys.add(anchored.receiver());
+                keys.addAll(anchored.arguments().get());
                 steps.add(new Application(label, record.name(), keys));
                 swap = new Symbol(label, operation.forma());
             } else {
@@ -188,12 +269,12 @@ public final class Reduction {
     }
 
     private Optional<Term> forked(final Term tree, final Op operation,
-        final Evaluation record, final List<Step> steps, final Map<String, String> minted)
+        final Evaluation record, final List<Step> steps, final Minted minted)
         throws IOException {
-        final String self = Reduction.self(operation, record);
+        final String test = new Anchored(operation, record).receiver();
         final Optional<List<Binding>> found = tree.arguments(
             new Shape(
-                operation.method(), self, operation.args(),
+                operation.method(), test, operation.args(),
                 Collections.nCopies(operation.args().size(), "")
             )
         );
@@ -201,97 +282,39 @@ public final class Reduction {
         if (found.isPresent()) {
             final List<Binding> args = found.get();
             final Term swap;
-            if ("bool:FF-".equals(self)) {
+            if ("bool:FF-".equals(test)) {
                 swap = args.get(0).value();
-            } else if ("bool:00-".equals(self)) {
+            } else if ("bool:00-".equals(test)) {
                 swap = args.get(1).value();
             } else {
-                final String label = String.format("s%d", minted.size() + 1);
-                minted.put(label, "");
+                final String label = minted.next();
                 final Step fork = new Fork(
-                    label, record.name(), self,
+                    label, record.name(), test,
                     this.settled(args.get(0).value(), minted),
                     this.settled(args.get(1).value(), minted)
                 );
-                minted.put(label, fork.forma());
+                minted.bind(label, fork.forma());
                 steps.add(fork);
                 swap = new Symbol(label, fork.forma());
             }
-            out = Optional.of(tree.swapped(new Shape(operation.method(), self, args), swap));
-        }
-        return out;
-    }
-
-    private static Optional<Shape> shaped(final Op operation, final Evaluation record) {
-        Optional<Shape> out = Optional.empty();
-        final Optional<List<String>> keys = Reduction.arguments(operation, record);
-        final boolean whole = keys.isPresent()
-            && (record.parked() || new Operand(record.result()).anchored());
-        if (whole) {
-            out = Optional.of(
-                new Shape(
-                    operation.method(),
-                    Reduction.self(operation, record),
-                    operation.args(),
-                    keys.get()
-                )
-            );
-        }
-        return out;
-    }
-
-    private static Optional<List<String>> arguments(final Op operation, final Evaluation record) {
-        final Map<String, String> bindings = record.bindings();
-        final List<String> names = operation.args();
-        final List<String> keys = new ArrayList<>(names.size());
-        boolean good = bindings.size() == names.size();
-        for (int idx = 0; good && idx < names.size(); ++idx) {
-            final Operand operand = new Operand(
-                Objects.toString(
-                    bindings.getOrDefault(
-                        names.get(idx),
-                        bindings.get(String.format("α%d", idx))
-                    ),
-                    ""
-                )
-            );
-            good = operand.anchored();
-            if (good) {
-                keys.add(operand.key());
-            }
-        }
-        Optional<List<String>> out = Optional.empty();
-        if (good) {
-            out = Optional.of(keys);
-        }
-        return out;
-    }
-
-    private static String self(final Op operation, final Evaluation record) {
-        final String found = record.receiver();
-        final String out;
-        if (found.startsWith("Δ:")) {
-            out = String.format("%s:%s", operation.carrier(), found.substring(2));
-        } else {
-            out = found;
-        }
-        return out;
-    }
-
-    private String carrier(final String key, final Map<String, String> minted) {
-        final String out;
-        if (key.startsWith("sym:s")) {
-            out = minted.getOrDefault(key.substring(4), "");
-            if (out.isEmpty()) {
+            final Term next = tree.swapped(new Shape(operation.method(), test, args), swap);
+            if (Reduction.repeating(swap, steps) && !next.key().equals(swap.key())) {
                 throw new IllegalStateException(
-                    String.format("The answer '%s' names no step", key)
+                    "The fork repeats in one arm but is not in a tail position itself"
                 );
             }
-        } else if (key.startsWith("sym:v")) {
-            out = new ArrayList<>(this.voids.values())
-                .get(Integer.parseInt(key.substring(5)));
-        } else {
-            out = key.split(":", 2)[0];
+            out = Optional.of(next);
+        }
+        return out;
+    }
+
+    private static boolean repeating(final Term swap, final List<Step> steps) {
+        boolean out = false;
+        for (final Step step : steps) {
+            if (swap.key().equals(String.format("sym:%s", step.label()))) {
+                out = step.branches().stream().anyMatch(Protocol::repeats);
+                break;
+            }
         }
         return out;
     }

@@ -80,16 +80,18 @@ final class LoweringTest {
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
         final Xnav foo = LoweringTest.formation(this.temp, story);
+        final Map<String, String> voids = LoweringTest.voids(foo, story);
         MatcherAssert.assertThat(
             "the fragment must reduce into the protocol the pack promises, but it doesnt",
-            LoweringTest.rendered(
+            LoweringTest.printed(
                 new Reduction(
                     phino,
                     LoweringTest.fragment(foo),
-                    LoweringTest.voids(foo, story),
-                    8
+                    voids,
+                    8,
+                    story.map().getOrDefault("unit", "").toString()
                 ).protocol(),
-                ""
+                voids.size()
             ).trim(),
             Matchers.equalTo(story.map().get("protocol").toString().trim())
         );
@@ -189,10 +191,32 @@ final class LoweringTest {
         final Map<String, String> out = new LinkedHashMap<>();
         for (final Xnav kid
             : formation.elements(Filter.withName("o")).collect(Collectors.toList())) {
-            if ("∅".equals(kid.attribute("base").text().orElse(""))) {
-                final String name = kid.attribute("name").text().get();
+            final String name = kid.attribute("name").text().orElse("");
+            if ("∅".equals(kid.attribute("base").text().orElse("")) && !"ρ".equals(name)) {
                 out.put(name, ((Map<?, ?>) formas).get(name).toString());
             }
+        }
+        return out;
+    }
+
+    /**
+     * Render a protocol as the packs spell it, with a {@code loop} line
+     * naming the voids in front of a program that repeats.
+     * @param protocol The protocol
+     * @param voids How many voids the fragment declares
+     * @return The text, ending with a line break
+     */
+    private static String printed(final Protocol protocol, final int voids) {
+        final String out;
+        if (protocol.repeats()) {
+            final StringBuilder head = new StringBuilder("loop");
+            for (int idx = 0; idx < voids; ++idx) {
+                head.append(" v").append(idx);
+            }
+            out = head.append(System.lineSeparator())
+                .append(LoweringTest.rendered(protocol, "  ")).toString();
+        } else {
+            out = LoweringTest.rendered(protocol, "");
         }
         return out;
     }
@@ -220,7 +244,15 @@ final class LoweringTest {
                 }
             }
         }
-        return out.append(pad).append("answer ").append(protocol.answer())
-            .append(' ').append(protocol.carrier()).append(System.lineSeparator()).toString();
+        if (protocol.again().isEmpty()) {
+            out.append(pad).append("answer ").append(protocol.answer())
+                .append(' ').append(protocol.carrier());
+        } else {
+            out.append(pad).append("repeat");
+            for (final String key : protocol.again()) {
+                out.append(' ').append(key);
+            }
+        }
+        return out.append(System.lineSeparator()).toString();
     }
 }

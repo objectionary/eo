@@ -22,7 +22,8 @@ import java.util.stream.Stream;
  * single arm dominates such a void; a void exactly one arm reads is
  * left to the protocol of that arm, which decides the same way. Whatever
  * an enclosing block declared already is in scope and is not declared
- * again.</p>
+ * again. The keys a repeat hands the voids count as reads of the
+ * protocol that repeats, the way its answer would.</p>
  *
  * @since 0.76.0
  */
@@ -79,7 +80,10 @@ public final class Reads {
         final SortedSet<Integer> out = new TreeSet<>();
         final Stream<String> keys = Stream.concat(
             this.protocol.moves().stream().flatMap(step -> step.keys().stream()),
-            Stream.of(this.protocol.answer())
+            Stream.concat(
+                Stream.of(this.protocol.answer()),
+                this.protocol.again().stream()
+            )
         );
         keys.filter(key -> key.startsWith("sym:v"))
             .forEach(key -> out.add(Integer.parseInt(key.substring(5))));

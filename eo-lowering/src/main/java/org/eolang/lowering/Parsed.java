@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
  * number and a string alike wrap their datum in a bytes carrier — and a
  * {@code ξ} reference to a declared void becomes the symbol of that
  * void, named positionally so that no spelling of a void name ever
- * leaks into a marker. The parser rolls a dispatch chain rooted in a
+ * leaks into a marker, and a {@code ξ.ρ} reference to the formation
+ * being lowered, with arguments, becomes the {@link Again} of its own
+ * body. The parser rolls a dispatch chain rooted in a
  * reference into the base itself, so {@code ξ.b.size.plus} unrolls here
  * into nested sites, with the arguments of the element attached to the
  * last link. Anything else is refused, since its meaning depends on a
@@ -39,13 +41,31 @@ public final class Parsed {
     private final Map<String, String> voids;
 
     /**
+     * The name of the formation being lowered, or empty when the
+     * fragment is not the body of one.
+     */
+    private final String self;
+
+    /**
      * Ctor.
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      */
     public Parsed(final Xnav xmir, final Map<String, String> inputs) {
+        this(xmir, inputs, "");
+    }
+
+    /**
+     * Ctor.
+     * @param xmir The XMIR fragment to read, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself through {@code ξ.ρ} become repeats
+     */
+    public Parsed(final Xnav xmir, final Map<String, String> inputs, final String name) {
         this.fragment = xmir;
         this.voids = inputs;
+        this.self = name;
     }
 
     /**
@@ -67,6 +87,12 @@ public final class Parsed {
             out = new Literal(base.substring(2), Parsed.datum(Parsed.kids(node), base));
         } else if ("Φ.bytes".equals(base)) {
             out = new Literal("bytes", Parsed.datum(Parsed.kids(node), base));
+        } else if (this.recursive(base)) {
+            out = new Again(
+                this.bound(Parsed.kids(node)).stream()
+                    .map(Binding::value)
+                    .collect(Collectors.toList())
+            );
         } else if (base.startsWith("ξ.")) {
             out = this.chained(node, base.substring(2));
         } else if (base.length() > 1 && base.charAt(0) == '.') {
@@ -77,6 +103,10 @@ public final class Parsed {
             );
         }
         return out;
+    }
+
+    private boolean recursive(final String base) {
+        return !this.self.isEmpty() && base.equals(String.format("ξ.ρ.%s", this.self));
     }
 
     private Term referenced(final String name) {

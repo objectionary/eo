@@ -78,6 +78,17 @@ final class ReadsTest {
         );
     }
 
+    @Test
+    void countsVoidsARepeatHandsOn() {
+        MatcherAssert.assertThat(
+            "a void a repeat hands on must count as read, but it doesnt",
+            new Reads(
+                new Protocol(Collections.emptyList(), Arrays.asList("number:11-", "sym:v1"))
+            ).all(),
+            Matchers.contains(1)
+        );
+    }
+
     private static Protocol forked(final String yes, final String not) {
         return new Protocol(
             Collections.singletonList(

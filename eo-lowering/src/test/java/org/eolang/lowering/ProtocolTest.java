@@ -25,6 +25,36 @@ final class ProtocolTest {
     }
 
     @Test
+    void repeatsWhenAnArmDoes() {
+        MatcherAssert.assertThat(
+            "a program whose fork repeats in one arm must repeat, but it doesnt",
+            new Protocol(
+                Collections.singletonList(
+                    new Fork(
+                        "s1", "L_bool_if", "sym:v0",
+                        new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
+                        new Protocol(Collections.emptyList(), "sym:v0", "bool")
+                    )
+                ),
+                "sym:s1",
+                "bool"
+            ).repeats(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void answersNothingWhenRepeating() {
+        MatcherAssert.assertThat(
+            "a program that repeats must name no carrier, but it does",
+            new Protocol(
+                Collections.emptyList(), Collections.singletonList("sym:v0")
+            ).carrier(),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
     void namesCarrier() {
         MatcherAssert.assertThat(
             "the forma must come back as given, but it didnt",
