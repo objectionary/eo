@@ -32,9 +32,12 @@ import org.w3c.dom.Element;
  * public attribute keeps the formation as written, since deleting the
  * body must not change the object's interface, and a helper that stays
  * reachable would be dispatchable with nothing behind it. The formation
- * may declare {@code ρ}, but its body may reach through it only to call
+ * may declare {@code ρ}, and its body may reach through it only to call
  * the formation itself again, which the reduction turns into a repeat;
- * any other use of {@code ρ} depends on a context the atom does not
+ * a helper reaches through {@code ρ} to the voids and the other helpers
+ * of the formation, which the atom carries, and helpers that apply one
+ * another in tail positions become one loop with them; any other use of
+ * {@code ρ} depends on a context the atom does not
  * carry and refuses. Purity needs no separate analysis:
  * the reduction itself is constructive proof, since it settles only a
  * body made of literals, void references, and the lowerable operations,
@@ -113,14 +116,15 @@ public final class Lowered implements Rewrite {
         String text = "";
         String carrier = "";
         try {
-            final Protocol protocol = new Reduction(
+            final Program program = new Reduction(
                 this.phino, body, inputs, 8,
                 node.attribute("name").text().orElse(""),
                 Lowered.helpers(node)
-            ).protocol();
-            if (!protocol.moves().isEmpty()) {
-                text = new JavaAtom(protocol, inputs).text();
-                carrier = protocol.carrier();
+            ).program();
+            if (program.bodies().size() > 1
+                || !program.bodies().get(0).protocol().moves().isEmpty()) {
+                text = new JavaAtom(program).text();
+                carrier = program.carrier();
             }
         } catch (final IllegalStateException | IOException ex) {
             carrier = "";

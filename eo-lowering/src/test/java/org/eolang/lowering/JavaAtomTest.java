@@ -26,6 +26,77 @@ import org.junit.jupiter.api.Test;
 final class JavaAtomTest {
 
     @Test
+    void rendersBodiesAsStateMachine() {
+        MatcherAssert.assertThat(
+            "bodies resuming one another must run as one loop over a state, but they dont",
+            new JavaAtom(
+                new Program(
+                    Arrays.asList(
+                        new Body(
+                            "", 0, Collections.singletonList("number"),
+                            new Protocol(
+                                Collections.emptyList(), "a🌵3-4",
+                                Collections.singletonList("sym:v0")
+                            )
+                        ),
+                        new Body(
+                            "a🌵3-4", 1, Collections.singletonList("number"),
+                            new Protocol(
+                                Arrays.asList(
+                                    new Application(
+                                        "s1", "L_bytes_eq",
+                                        Arrays.asList("sym:v1", "number:00-00-00-00-00-00-00-00")
+                                    ),
+                                    new Fork(
+                                        "s2", "L_bool_if", "sym:s1",
+                                        new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                                        new Protocol(
+                                            Collections.singletonList(
+                                                new Application(
+                                                    "s3", "L_number_plus",
+                                                    Arrays.asList(
+                                                        "sym:v1", "number:BF-F0-00-00-00-00-00-00"
+                                                    )
+                                                )
+                                            ),
+                                            "a🌵3-4",
+                                            Collections.singletonList("sym:s3")
+                                        )
+                                    )
+                                ),
+                                "sym:s2", "number"
+                            )
+                        )
+                    ),
+                    Collections.singletonMap("n", "number")
+                )
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "double v0 = new Dataized(this.take(\"n\")).asNumber();",
+                "double v1 = 0.0;",
+                "int body = 0;",
+                "final double out;",
+                "while (true) {",
+                "if (body == 0) {",
+                "v1 = v0;",
+                "body = 1;",
+                "continue;",
+                "} else {",
+                "final double s2;",
+                "if (s1) {",
+                "s2 = v1;",
+                "} else {",
+                "v1 = s3;",
+                "body = 1;",
+                "continue;",
+                "out = s2;",
+                "break;",
+                "return new Data.ToPhi(out);"
+            )
+        );
+    }
+
+    @Test
     void rendersChainOfNumberSteps() {
         MatcherAssert.assertThat(
             "a chain of two steps must render one line each, but it doesnt",

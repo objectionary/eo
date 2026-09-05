@@ -56,15 +56,15 @@ final class ForkTest {
     }
 
     @Test
-    void refusesRepeatingInBothArms() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
+    void answersNothingWhenBothArmsRepeat() {
+        MatcherAssert.assertThat(
+            "a fork whose both arms repeat has no value and must name no forma, but it did",
             new Fork(
                 "s2", "L_bool_if", "sym:s1",
                 new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
                 new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0"))
-            )::forma,
-            "a fork whose both arms repeat answers nothing, but it named a forma"
+            ).forma(),
+            Matchers.equalTo("")
         );
     }
 

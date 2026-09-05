@@ -20,9 +20,9 @@ import java.util.List;
  * stay behind the bool that protects them. The value of the fork is
  * whatever the taken arm answers, so the two arms must answer the same
  * forma, and a fork whose arms disagree refuses to name one. An arm may
- * also repeat the whole fragment instead of answering, and then the
- * fork answers what the other arm does; a fork repeating in both arms
- * answers nothing and refuses too.</p>
+ * also resume a body instead of answering, and then the fork answers
+ * what the other arm does; a fork resuming in both arms has no value
+ * and names no forma, since nothing after it ever runs.</p>
  *
  * @since 0.76.0
  */
@@ -84,13 +84,6 @@ public final class Fork implements Step {
     public String forma() {
         final String yes = this.taken.carrier();
         final String not = this.other.carrier();
-        if (yes.isEmpty() && not.isEmpty()) {
-            throw new IllegalStateException(
-                String.format(
-                    "The fork '%s' repeats in both arms, so it answers nothing", this.name
-                )
-            );
-        }
         if (!yes.isEmpty() && !not.isEmpty() && !yes.equals(not)) {
             throw new IllegalStateException(
                 String.format(

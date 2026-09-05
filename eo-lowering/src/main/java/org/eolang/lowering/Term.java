@@ -61,12 +61,11 @@ public interface Term {
     Optional<List<Binding>> arguments(Shape shape);
 
     /**
-     * The arguments of the call of the fragment to itself that this term
-     * is, if it is one.
-     * @return The arguments in their positional order, or empty for any
-     *  other term
+     * The call this term is, of the formation to itself or of one of
+     * its recursive helpers, if it is one.
+     * @return The call, or empty for any other term
      */
-    Optional<List<Term>> again();
+    Optional<Again> again();
 
     /**
      * This tree with every site matching the shape replaced.
