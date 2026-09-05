@@ -59,6 +59,11 @@ public final class Again implements Term {
     }
 
     @Override
+    public String forma() {
+        return "";
+    }
+
+    @Override
     public boolean matches(final Shape shape) {
         return this.args.stream().anyMatch(arg -> arg.matches(shape));
     }

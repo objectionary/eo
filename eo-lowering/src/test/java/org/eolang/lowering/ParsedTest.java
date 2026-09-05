@@ -116,6 +116,44 @@ final class ParsedTest {
     }
 
     @Test
+    void readsConstAsBytesOfItsTarget() {
+        MatcherAssert.assertThat(
+            "a const must read as the bytes of what it forces, but it doesnt",
+            new Parsed(
+                new Xnav(
+                    "<o base='.as-bytes'><o base='Φ.dataized'><o base='ξ.x'/></o></o>"
+                ).element("o"),
+                Collections.singletonMap("x", "number")
+            ).term().forma(),
+            Matchers.equalTo("bytes")
+        );
+    }
+
+    @Test
+    void keepsKeyOfForcedVoid() {
+        MatcherAssert.assertThat(
+            "the bytes of a void must still be keyed as the void, but they arent",
+            new Parsed(
+                new Xnav("<o base='ξ.x.as-bytes'/>").element("o"),
+                Collections.singletonMap("x", "number")
+            ).term().key(),
+            Matchers.equalTo("sym:v0")
+        );
+    }
+
+    @Test
+    void refusesDataizedOfManyTargets() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Parsed(
+                new Xnav("<o base='Φ.dataized'><o base='ξ.x'/><o base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number")
+            )::term,
+            "a dataized object forcing two targets is malformed, but it parsed"
+        );
+    }
+
+    @Test
     void readsHelperInPlace() {
         MatcherAssert.assertThat(
             "a reference to a helper must stand as the helper's own body, but it doesnt",

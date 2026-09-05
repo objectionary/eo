@@ -62,4 +62,28 @@ final class MintedTest {
             "a label taken but bound to no forma names no finished step, but it answered"
         );
     }
+
+    @Test
+    void refusesViewThatChangesForma() {
+        final Minted minted = new Minted(Collections.singletonMap("x", "number"));
+        MatcherAssert.assertThat(
+            "the bytes of a number must not be handed over as the number, but they are",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> minted.carried(new Forced(new Symbol("v0", "number"))),
+                "a view changing the forma of its key was handed over, but it must not"
+            ).getMessage(),
+            Matchers.containsString("settles into its bytes")
+        );
+    }
+
+    @Test
+    void handsOverFormaOfPlainSymbol() {
+        MatcherAssert.assertThat(
+            "a plain symbol must hand over the forma of its void, but it doesnt",
+            new Minted(Collections.singletonMap("x", "number"))
+                .carried(new Symbol("v0", "number")),
+            Matchers.equalTo("number")
+        );
+    }
 }

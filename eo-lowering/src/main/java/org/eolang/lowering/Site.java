@@ -71,6 +71,11 @@ public final class Site implements Term {
     }
 
     @Override
+    public String forma() {
+        return "";
+    }
+
+    @Override
     public boolean matches(final Shape shape) {
         boolean found = shape.covers(this.method, this.receiver.key(), this.args);
         found = found || this.receiver.matches(shape);

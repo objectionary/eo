@@ -178,7 +178,7 @@ public final class Reduction {
         if (again.isPresent()) {
             out = new Protocol(steps, this.repeated(again.get(), steps, minted));
         } else {
-            out = new Protocol(steps, tree.key(), minted.carrier(tree.key()));
+            out = new Protocol(steps, tree.key(), minted.carried(tree));
         }
         return out;
     }
@@ -212,13 +212,14 @@ public final class Reduction {
         }
         final List<String> keys = new ArrayList<>(args.size());
         for (int idx = 0; idx < args.size(); ++idx) {
-            final String key = this.reduced(args.get(idx), steps, minted).key();
+            final Term arg = this.reduced(args.get(idx), steps, minted);
+            final String key = arg.key();
             if (key.isEmpty()) {
                 throw new IllegalStateException(
                     "A call to itself cannot be an argument of a call to itself"
                 );
             }
-            final String forma = minted.carrier(key);
+            final String forma = minted.carried(arg);
             if (!formas.get(idx).equals(forma)) {
                 throw new IllegalStateException(
                     String.format(

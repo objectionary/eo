@@ -1,27 +1,37 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A const helper is privatized too, but the parser wraps it into a
-# dataized object, and the reduction has no atom for one, so the
-# formation stays as written; `shifted!` of `i64.scan` waits on this.
+# yamllint disable rule:line-length
+# A const helper is privatized too, and the parser wraps it into a
+# dataized object followed by `as-bytes`. Forcing is already what a
+# protocol does, since every step of it is a Java local computed once,
+# in order, so the wrapper reads as the bytes of its target, which the
+# universe resolves without an atom, and the helper folds like any
+# other: this is the shape of `shifted!` in `i64.scan`.
 input: |
   [] > foo
-    [x] > bump
-      x.times x >> square!
-      square.plus 1 > @
-    bump 5 > @
+    [m] > probe
+      m.and 0F-0F-0F-0F-0F-0F-0F-0F >> masked!
+      masked.eq 00-00-00-00-00-00-00-00 > @
+    probe 43-30-00-00-00-00-00-00 > @
 prelude:
-  number.eo: |
-    [as-bytes] > number
-      as-bytes > @
-unit: bump
+  bytes.eo: |
+    [data] > bytes
+      data > @
+unit: probe
 voids:
-  x: number
+  m: bytes
 lowered: |
   [] > foo
-    bump 5 > @
-    [x] > bump
-      plus. > @
-        x.times x >> square!
-        1
-stuck: "The base 'Φ.dataized' carries no datum"
+    probe 43-30-00-00-00-00-00-00 > @
+    [] > probe /Q.bool
+      ? > m /Q.bytes
+protocol: |
+  s1 ← L_bytes_and sym:v0 bytes:0F-0F-0F-0F-0F-0F-0F-0F
+  s2 ← L_bytes_eq sym:s1 bytes:00-00-00-00-00-00-00-00
+  answer sym:s2 bool
+java: |
+  final byte[] v0 = new Dataized(this.take("m")).take();
+  final byte[] s1 = new BytesOf(v0).and(new BytesOf(new byte[] {(byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F})).take();
+  final boolean s2 = java.util.Arrays.equals(s1, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+  return new Data.ToPhi(s2);
