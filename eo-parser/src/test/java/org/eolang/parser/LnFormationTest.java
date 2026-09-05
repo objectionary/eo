@@ -278,6 +278,19 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsParameterStartingWithCapital() {
+        MatcherAssert.assertThat(
+            "a parameter name outside the NAME grammar must be rejected per R-3.4.1",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[Ünïcode] > foo", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("parameter names in voids must be NAME, @ or ^")
+        );
+    }
+
+    @Test
     void rejectsDoubleSpaceBetweenParameters() {
         Assertions.assertThrows(
             ParseError.class,
@@ -333,6 +346,33 @@ final class LnFormationTest {
             () -> new LnFormation(new Span("  []:tag > x", 2))
                 .into(stack, new Globals(), new Emit()),
             "a formation child in argument position may still carry a binding"
+        );
+    }
+
+    @Test
+    void emitsSlotForOuterBinding() {
+        final Emit emit = new Emit();
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.VAPPLICATION, Openness.OPEN);
+        new LnFormation(new Span("  []:tag > x", 2)).into(stack, new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "an outer binding must land on the formation as @as='tag' per R-9.4",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and @as='tag']")
+        );
+    }
+
+    @Test
+    void rejectsOuterBindingStartingWithCapital() {
+        MatcherAssert.assertThat(
+            "an outer binding label outside the NAME grammar must be rejected per R-3.12",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("[]:Tag > x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("binding label \"Tag\" must be a name or a slot number")
         );
     }
 
