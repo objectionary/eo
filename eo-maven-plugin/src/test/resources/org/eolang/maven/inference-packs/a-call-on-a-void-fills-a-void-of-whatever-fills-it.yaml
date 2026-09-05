@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call made on a void is a call on whatever fills it, so the argument lands
+# in a void of that, and of every one of them where the callers disagree. The
+# two halves are written down apart, the call on the row of the void and the
+# filling on the row of the formation, and nobody puts them together until
+# they are read as one.
+eo:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [scope] > grip
+      scope oak > @
+  app.eo: |
+    [] > app
+      grip hold > @
+      grip pick > twin
+      [k] > hold
+      [j] > pick
+provides:
+  - "//attr[@name='k']/witnessed/ref[@loc='Φ.oak']"
+  - "//attr[@name='j']/witnessed/ref[@loc='Φ.oak']"
