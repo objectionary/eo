@@ -205,13 +205,6 @@ final class LoweringTest {
         return out;
     }
 
-    /**
-     * Render a protocol as the packs spell it, with a {@code loop} line
-     * naming the voids in front of a program that repeats.
-     * @param protocol The protocol
-     * @param voids How many voids the fragment declares
-     * @return The text, ending with a line break
-     */
     private static String printed(final Protocol protocol, final int voids) {
         final String out;
         if (protocol.repeats()) {
@@ -238,23 +231,34 @@ final class LoweringTest {
                 }
                 out.append(System.lineSeparator());
             } else {
-                out.append("fork ").append(step.keys().get(0)).append(' ')
-                    .append(step.forma()).append(System.lineSeparator());
-                final String[] arms = {"then", "else"};
-                for (int idx = 0; idx < arms.length; ++idx) {
-                    final String arm = LoweringTest.rendered(
-                        step.branches().get(idx), String.format("%s    ", pad)
-                    );
-                    out.append(pad).append("  ").append(arms[idx])
-                        .append(System.lineSeparator()).append(arm);
-                }
+                out.append(LoweringTest.forked(step, pad));
             }
         }
+        return out.append(LoweringTest.ended(protocol, pad)).toString();
+    }
+
+    private static String forked(final Step step, final String pad) {
+        final StringBuilder out = new StringBuilder(64);
+        out.append("fork ").append(step.keys().get(0)).append(' ')
+            .append(step.forma()).append(System.lineSeparator());
+        final String[] arms = {"then", "else"};
+        for (int idx = 0; idx < arms.length; ++idx) {
+            final String arm = LoweringTest.rendered(
+                step.branches().get(idx), String.format("%s    ", pad)
+            );
+            out.append(pad).append("  ").append(arms[idx])
+                .append(System.lineSeparator()).append(arm);
+        }
+        return out.toString();
+    }
+
+    private static String ended(final Protocol protocol, final String pad) {
+        final StringBuilder out = new StringBuilder(pad);
         if (protocol.again().isEmpty()) {
-            out.append(pad).append("answer ").append(protocol.answer())
+            out.append("answer ").append(protocol.answer())
                 .append(' ').append(protocol.carrier());
         } else {
-            out.append(pad).append("repeat");
+            out.append("repeat");
             for (final String key : protocol.again()) {
                 out.append(' ').append(key);
             }
