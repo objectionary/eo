@@ -50,6 +50,14 @@ import java.util.Optional;
  * an operation that still awaits the value would rerun the whole body
  * in its place.</p>
  *
+ * <p>A helper the formation binds next to its body is read in place
+ * wherever the body names it, by {@link Parsed}, so the tree phino sees
+ * is the one the body would be with every helper written out, and the
+ * protocol is the one that body would give: a helper named twice
+ * stands twice and costs one step, since identical sites collapse, and
+ * a helper named in one arm of a fork alone is computed in that arm
+ * alone.</p>
+ *
  * <p>Whatever does not settle is refused with an exception, never
  * repaired: a foreign atom, a site the records cannot anchor, a value of
  * a forma no carrier stands for, an exhausted budget, an arm of a fork
@@ -97,6 +105,12 @@ public final class Reduction {
     private final String formation;
 
     /**
+     * The helpers the formation binds next to the fragment: names to
+     * their {@code <o/>} elements.
+     */
+    private final Map<String, Xnav> helpers;
+
+    /**
      * Ctor.
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
@@ -119,11 +133,29 @@ public final class Reduction {
      */
     public Reduction(final Phino exe, final Xnav xmir,
         final Map<String, String> inputs, final int budget, final String name) {
+        this(exe, xmir, inputs, budget, name, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     * @param exe The binary that dataizes
+     * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param budget The most partial runs one reduction may take
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself become repeats; empty when there is none
+     * @param bound The helpers the formation binds next to the fragment:
+     *  names to their {@code <o/>} elements, read in place when named
+     */
+    public Reduction(final Phino exe, final Xnav xmir,
+        final Map<String, String> inputs, final int budget, final String name,
+        final Map<String, Xnav> bound) {
         this.phino = exe;
         this.fragment = xmir;
         this.voids = inputs;
         this.rounds = budget;
         this.formation = name;
+        this.helpers = bound;
     }
 
     /**
@@ -133,7 +165,7 @@ public final class Reduction {
      */
     public Protocol protocol() throws IOException {
         return this.settled(
-            new Parsed(this.fragment, this.voids, this.formation).term(),
+            new Parsed(this.fragment, this.voids, this.formation, this.helpers).term(),
             new Minted(this.voids)
         );
     }

@@ -146,6 +146,27 @@ final class ReductionTest {
     }
 
     @Test
+    void foldsHelperNamedTwiceIntoOneStep(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a helper named twice must be read in place and cost one step, but it doesnt",
+            new Reduction(
+                phino,
+                new Xnav("<o base='ξ.a🌵3-4.plus'><o as='α0' base='ξ.a🌵3-4'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                8,
+                "",
+                Collections.singletonMap(
+                    "a🌵3-4",
+                    new Xnav("<o base='ξ.x.times'><o as='α0' base='ξ.x'/></o>").element("o")
+                )
+            ).protocol().moves(),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
     void reducesBytesOperation(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

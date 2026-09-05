@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const helper is privatized too, but the parser wraps it into a
+# dataized object, and the reduction has no atom for one, so the
+# formation stays as written; `shifted!` of `i64.scan` waits on this.
+input: |
+  [] > foo
+    [x] > bump
+      x.times x >> square!
+      square.plus 1 > @
+    bump 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bump 5 > @
+    [x] > bump
+      plus. > @
+        x.times x >> square!
+        1
+stuck: "The base 'Φ.dataized' carries no datum"

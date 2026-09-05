@@ -116,6 +116,60 @@ final class ParsedTest {
     }
 
     @Test
+    void readsHelperInPlace() {
+        MatcherAssert.assertThat(
+            "a reference to a helper must stand as the helper's own body, but it doesnt",
+            new Parsed(
+                new Xnav("<o base='ξ.a🌵3-4.plus'><o as='α0' base='ξ.a🌵3-4'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                Collections.singletonMap("a🌵3-4", ParsedTest.square())
+            ).term().phi(),
+            Matchers.stringContainsInOrder(".times(", ".plus(", ".times(")
+        );
+    }
+
+    @Test
+    void refusesHelperReadingItself() {
+        MatcherAssert.assertThat(
+            "a helper reading itself is a cycle and must be refused as one, but it wasnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                new Parsed(
+                    new Xnav("<o base='ξ.a🌵3-4.plus'><o as='α0' base='ξ.x'/></o>").element("o"),
+                    Collections.singletonMap("x", "number"),
+                    "",
+                    Collections.singletonMap(
+                        "a🌵3-4",
+                        new Xnav(
+                            "<o base='ξ.a🌵3-4.times'><o as='α0' base='ξ.x'/></o>"
+                        ).element("o")
+                    )
+                )::term,
+                "a helper reading itself never settles, but it parsed"
+            ).getMessage(),
+            Matchers.containsString("reads itself")
+        );
+    }
+
+    @Test
+    void refusesHelperReadingTheBody() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Parsed(
+                new Xnav("<o base='ξ.a🌵3-4.plus'><o as='α0' base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                Collections.singletonMap(
+                    "a🌵3-4",
+                    new Xnav("<o base='ξ.φ.times'><o as='α0' base='ξ.x'/></o>").element("o")
+                )
+            )::term,
+            "a helper reading the body it is read by is a cycle, but it parsed"
+        );
+    }
+
+    @Test
     void refusesArgumentsOnBareReference() {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -134,5 +188,9 @@ final class ParsedTest {
             )::term,
             "a void applied to arguments cannot be reduced, but it was"
         );
+    }
+
+    private static Xnav square() {
+        return new Xnav("<o base='ξ.x.times'><o as='α0' base='ξ.x'/></o>").element("o");
     }
 }

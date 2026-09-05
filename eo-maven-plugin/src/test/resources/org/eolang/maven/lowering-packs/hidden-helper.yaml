@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A helper the source privatized with `>>` is no part of the formation's
+# interface, so nothing outside can miss it once the body is gone: the
+# body reads it in place, the two reads are identical sites and collapse
+# into one step, and the helper leaves with the body. Compare
+# helper-atom.yaml, where the same helper is public and keeps the
+# formation as written.
+input: |
+  [] > foo
+    [x] > bump
+      x.times x >> square
+      square.plus square > @
+    bump 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bump 5 > @
+    [] > bump /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_times sym:v0 sym:v0
+  s2 ← L_number_plus sym:s1 sym:s1
+  answer sym:s2 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 * v0;
+  final double s2 = s1 + s1;
+  return new Data.ToPhi(s2);
