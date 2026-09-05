@@ -40,6 +40,15 @@ import java.util.Map;
  * seen to hold both, and a void whose every caller passes on a void of its own
  * is described by that rather than by silence.</p>
  *
+ * <p>An atom fills a void too, and says so in a brace list {@link Handed}
+ * reads. That is spent here and not later, because the two rules feed each
+ * other: a hop says which formation an atom is handed, the atom says what
+ * lands in that formation, and a hop carries it on from there. So the walk is
+ * made again for as long as the atoms have anything left to add, and what they
+ * add is put among the fillings a call site names rather than among the
+ * answers, so that a void left holding the far end of a hop gives that up as
+ * soon as a forma arrives for it (#8396).</p>
+ *
  * @since 0.69.0
  */
 final class Fillings {
@@ -89,9 +98,13 @@ final class Fillings {
                 }
             }
         }
+        final Handed atoms = new Handed(this.table, this.given);
+        Map<String, Map<String, Type>> walked = new Carried(placed, handed).all();
+        while (atoms.fills(placed, walked)) {
+            walked = new Carried(placed, handed).all();
+        }
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow
-            : new Carried(placed, handed).all().entrySet()) {
+        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
             found.put(hollow.getKey(), hollow.getValue().values());
         }
         return found;

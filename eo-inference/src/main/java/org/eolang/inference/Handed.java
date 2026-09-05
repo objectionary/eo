@@ -8,7 +8,6 @@ import com.jcabi.xml.XML;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -35,6 +34,13 @@ import java.util.regex.Pattern;
  * the atom carries from one void to another and says nothing about what is put
  * in, which is a question for whoever fills the void the letter came from.</p>
  *
+ * <p>What the list says is a filling like any other and is spent among the
+ * others, in the walk {@link Carried} makes and not after it. Both ends of the
+ * walk need it there: which formation the atom is handed is itself carried in
+ * by a hop at {@code malloc.eo:64}, and what the atom puts into that formation
+ * is handed on again a line later, to the {@code m} of {@code [m] > x} that
+ * Java fills with a chunk on every run (#8396).</p>
+ *
  * @since 0.69.0
  */
 final class Handed {
@@ -45,9 +51,9 @@ final class Handed {
     private static final Pattern SPACE = Pattern.compile(" ");
 
     /**
-     * The provides table.
+     * The rows of the provides table that say what an atom hands in.
      */
-    private final XML given;
+    private final Collection<XML> annotated;
 
     /**
      * The rows of the provides table, asked what void a place lands in.
@@ -55,70 +61,63 @@ final class Handed {
     private final Provided provided;
 
     /**
-     * What the applications of the program put into every void.
-     */
-    private final Map<String, Collection<Type>> filled;
-
-    /**
      * Ctor.
      * @param links The links table, as {@link Resolved} left it
      * @param provides The provides table, which says what an atom hands in
-     * @param found What is put into every void, from {@link Fillings}
      */
-    Handed(final XML links, final XML provides, final Map<String, Collection<Type>> found) {
+    Handed(final XML links, final XML provides) {
         this(
-            provides,
+            provides.nodes("//attr[@void='true' and @args]"),
             new Provided(
                 provides,
                 new Ends(new Pairs(links).all()).names(),
                 provides.xpath("//attr[@void='true']/@type")
-            ),
-            found
+            )
         );
     }
 
     /**
      * Ctor.
-     * @param provides The provides table, which says what an atom hands in
+     * @param attrs The rows of the provides table that carry a brace list
      * @param rows The provides table, asked what void a place lands in
-     * @param found What is put into every void, from {@link Fillings}
      */
-    Handed(final XML provides, final Provided rows, final Map<String, Collection<Type>> found) {
-        this.given = provides;
+    Handed(final Collection<XML> attrs, final Provided rows) {
+        this.annotated = attrs;
         this.provided = rows;
-        this.filled = found;
     }
 
     /**
-     * What is ever put into every void, by the program and by the atoms alike.
-     * @return The types put in, by the locator of the void
+     * Put what the atoms hand in among the fillings the call sites name.
+     * @param named What every void is filled with where a call site says so,
+     *  which is what the atoms are added to
+     * @param filled What every void is filled with, the hops walked through,
+     *  which is where the formation an atom is handed is read from
+     * @return Whether any void learnt anything it did not know before
      */
-    Map<String, Collection<Type>> all() {
-        final Map<String, Collection<Type>> found = new LinkedHashMap<>(this.filled);
-        for (final Map.Entry<String, Collection<String>> hole : this.holes().entrySet()) {
-            final Collection<Type> members = new ArrayList<>(
-                found.getOrDefault(hole.getKey(), Collections.emptyList())
+    boolean fills(
+        final Map<String, Map<String, Type>> named,
+        final Map<String, Map<String, Type>> filled
+    ) {
+        boolean grown = false;
+        for (final Map.Entry<String, Collection<String>> hole : this.holes(filled).entrySet()) {
+            final Map<String, Type> members = named.computeIfAbsent(
+                hole.getKey(), key -> new LinkedHashMap<>(0)
             );
-            final Collection<String> seen = new HashSet<>(0);
-            for (final Type member : members) {
-                seen.add(member.names());
-            }
             for (final String handed : hole.getValue()) {
-                if (seen.add(handed)) {
-                    members.add(new Ref(handed));
+                if (members.putIfAbsent(handed, new Ref(handed)) == null) {
+                    grown = true;
                 }
             }
-            found.put(hole.getKey(), members);
         }
-        return found;
+        return grown;
     }
 
-    private Map<String, Collection<String>> holes() {
+    private Map<String, Collection<String>> holes(final Map<String, Map<String, Type>> filled) {
         final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
-        for (final XML attr : this.given.nodes("//attr[@void='true' and @args]")) {
+        for (final XML attr : this.annotated) {
             final Noted row = new Noted(attr);
             for (final Type filler
-                : this.filled.getOrDefault(row.says("type"), Collections.emptyList())) {
+                : filled.getOrDefault(row.says("type"), Collections.emptyMap()).values()) {
                 this.landed(filler.names(), row.says("args")).forEach(
                     (hollow, member) -> found
                         .computeIfAbsent(hollow, key -> new ArrayList<>(0))

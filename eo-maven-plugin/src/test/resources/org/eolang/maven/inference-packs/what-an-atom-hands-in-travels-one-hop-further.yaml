@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The brace list is the only thing that says what lands in the void of the
+# formation an atom is handed, and that void is handed on again. What the atom
+# puts in has to walk the hop like any other filling, or the far end of it is
+# left holding a variable while Java fills it on every run.
+eo:
+  oak.eo: |
+    [] > oak
+  keep.eo: |
+    [k] > keep
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+        keep m > @
+provides:
+  - "//attr[@name='k']/witnessed/ref[@loc='Φ.oak']"
