@@ -8,6 +8,16 @@
 # whether or not its target exists; the exclusivity that guards the
 # plain-file race stays for every other path, and win32 keeps its exclusive
 # open unconditionally, since its reparse points do not share that rule.
+#
+# The file may be made by somebody else between the question and the answer,
+# so an `open` coming back with `EEXIST` is taken for the file it names rather
+# than for a failure, and the file is handed back with whatever that somebody
+# put in it, since nothing here opens with `O_TRUNC`. That arm asks for `errno`
+# before it asks about `linked`: `errno` belongs to the last native call this
+# thread made, and `linked` is not a `const`, so reading it first would run
+# another `lstat` and leave the `EEXIST` of the `open` overwritten by whatever
+# that one ended with. `EOfileEOtouchedRaceTest` holds the interleaving that
+# reaches the arm.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
