@@ -52,6 +52,24 @@ final class OpTest {
     }
 
     @Test
+    void namesNoFormaOfChoice() {
+        MatcherAssert.assertThat(
+            "a choice answers whatever its arms answer, so it must name no forma, but it does",
+            new Op("L_bool_if").forma(),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
+    void listsArmsOfChoice() {
+        MatcherAssert.assertThat(
+            "a choice must take its two arms in positional order, but it doesnt",
+            new Op("L_bool_if").args(),
+            Matchers.contains("t", "f")
+        );
+    }
+
+    @Test
     void listsNoArgumentsOfSize() {
         MatcherAssert.assertThat(
             "the size of bytes must take no arguments, but it does",

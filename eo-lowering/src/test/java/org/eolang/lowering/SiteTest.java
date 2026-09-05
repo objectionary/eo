@@ -4,6 +4,7 @@
  */
 package org.eolang.lowering;
 
+import java.util.Arrays;
 import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -98,6 +99,43 @@ final class SiteTest {
                     ".plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_s1 ⟧)))"
                 )
             )
+        );
+    }
+
+    @Test
+    void handsOutArgumentsOfMatchingSite() {
+        MatcherAssert.assertThat(
+            "the arguments of the site below the root must come back, but they didnt",
+            new Site(
+                "plus",
+                new Site(
+                    "if",
+                    new Symbol("s1", "bool"),
+                    Arrays.asList(
+                        new Binding("α0", new Literal("number", "11-")),
+                        new Binding("α1", new Symbol("v0", "number"))
+                    )
+                ),
+                Collections.singletonList(
+                    new Binding("α0", new Literal("number", "22-"))
+                )
+            ).arguments(
+                new Shape("if", "sym:s1", Arrays.asList("t", "f"), Arrays.asList("", ""))
+            ).get().get(1).value().key(),
+            Matchers.equalTo("sym:v0")
+        );
+    }
+
+    @Test
+    void handsOutNothingForForeignShape() {
+        MatcherAssert.assertThat(
+            "a shape no site matches must find no arguments, but it did",
+            new Site(
+                "size", new Symbol("v0", "bytes"), Collections.emptyList()
+            ).arguments(
+                new Shape("if", "sym:v0", Arrays.asList("t", "f"), Arrays.asList("", ""))
+            ).isPresent(),
+            Matchers.is(false)
         );
     }
 

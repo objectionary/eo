@@ -2,16 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # Two clamps and a degree selector guard the easing polynomials of
-# Perlin: smootherstep for the then, smoothstep for the else. The
-# `.if` is void selection and the universe holds no `if` at all, so
-# no fragment reaching one ever reduces: the first guard parks into
-# a symbolic bool, and the `.if` reading that bool then dispatches
-# on a method nothing models, which is why `ease` keeps its body.
-# The guards are the only part that refuses, though. Each branch is
-# a pure application of its own, so both polynomials leave for
-# synthetic atoms and the `.if` spine stays behind to pick between
-# them at run time. Neither guard is outlined, since a lone
-# comparison is a Java atom already.
+# Perlin: smootherstep for the then, smoothstep for the else. Each
+# `.if` parks on the symbolic bool its guard leaves behind and becomes
+# a fork, whose arms are reduced on their own and nest the next guard,
+# so the whole formation leaves the EO as one atom. Every step of an
+# arm sits inside the block of that arm in the Java, so a polynomial is
+# computed only when its guards let it through, and the void `k`, read
+# by the innermost guard alone, is still dataized at the top with `t`.
 input: |
   [] > foo
     [t k] > ease
@@ -61,29 +58,73 @@ lowered: |
     ease > @
       0.3
       1
-    [t k] > ease
-      if. > @
-        0.gt t
-        0
-        if.
-          t.gt 1
-          1
-          if.
-            k.gt 0
-            l🌵01dcbdee24f2 t
-            l🌵14de55c7653e t
-      [] > l🌵01dcbdee24f2 /Q.number
-        ? > v0 /Q.number
-      [] > l🌵14de55c7653e /Q.number
-        ? > v0 /Q.number
-stuck: "no atom parked at any known operation"
+    [] > ease /Q.number
+      ? > t /Q.number
+      ? > k /Q.number
+protocol: |
+  s1 ← L_number_gt number:00-00-00-00-00-00-00-00 sym:v0
+  s2 ← fork sym:s1 number
+    then
+      answer number:00-00-00-00-00-00-00-00 number
+    else
+      s3 ← L_number_gt sym:v0 number:3F-F0-00-00-00-00-00-00
+      s4 ← fork sym:s3 number
+        then
+          answer number:3F-F0-00-00-00-00-00-00 number
+        else
+          s5 ← L_number_gt sym:v1 number:00-00-00-00-00-00-00-00
+          s6 ← fork sym:s5 number
+            then
+              s7 ← L_number_times sym:v0 number:40-18-00-00-00-00-00-00
+              s8 ← L_number_plus sym:s7 number:C0-2E-00-00-00-00-00-00
+              s9 ← L_number_times sym:s8 sym:v0
+              s10 ← L_number_plus sym:s9 number:40-24-00-00-00-00-00-00
+              s11 ← L_number_times sym:s10 sym:v0
+              s12 ← L_number_times sym:s11 sym:v0
+              s13 ← L_number_times sym:s12 sym:v0
+              answer sym:s13 number
+            else
+              s14 ← L_number_times sym:v0 sym:v0
+              s15 ← L_number_times sym:v0 number:C0-00-00-00-00-00-00-00
+              s16 ← L_number_plus sym:s15 number:40-08-00-00-00-00-00-00
+              s17 ← L_number_times sym:s14 sym:s16
+              answer sym:s17 number
+          answer sym:s6 number
+      answer sym:s4 number
+  answer sym:s2 number
 java: |
-  final double v0 = new Dataized(this.take("v0")).asNumber();
-  final double s1 = v0 * Double.longBitsToDouble(0x4018000000000000L);
-  final double s2 = s1 + Double.longBitsToDouble(0xC02E000000000000L);
-  final double s3 = s2 * v0;
-  final double s4 = s3 + Double.longBitsToDouble(0x4024000000000000L);
-  final double s5 = s4 * v0;
-  final double s6 = s5 * v0;
-  final double s7 = s6 * v0;
-  return new Data.ToPhi(s7);
+  final double v0 = new Dataized(this.take("t")).asNumber();
+  final double v1 = new Dataized(this.take("k")).asNumber();
+  final boolean s1 = Double.longBitsToDouble(0x0000000000000000L) > v0;
+  final double s2;
+  if (s1) {
+      s2 = Double.longBitsToDouble(0x0000000000000000L);
+  } else {
+      final boolean s3 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+      final double s4;
+      if (s3) {
+          s4 = Double.longBitsToDouble(0x3FF0000000000000L);
+      } else {
+          final boolean s5 = v1 > Double.longBitsToDouble(0x0000000000000000L);
+          final double s6;
+          if (s5) {
+              final double s7 = v0 * Double.longBitsToDouble(0x4018000000000000L);
+              final double s8 = s7 + Double.longBitsToDouble(0xC02E000000000000L);
+              final double s9 = s8 * v0;
+              final double s10 = s9 + Double.longBitsToDouble(0x4024000000000000L);
+              final double s11 = s10 * v0;
+              final double s12 = s11 * v0;
+              final double s13 = s12 * v0;
+              s6 = s13;
+          } else {
+              final double s14 = v0 * v0;
+              final double s15 = v0 * Double.longBitsToDouble(0xC000000000000000L);
+              final double s16 = s15 + Double.longBitsToDouble(0x4008000000000000L);
+              final double s17 = s14 * s16;
+              s6 = s17;
+          }
+          s4 = s6;
+      }
+      s2 = s4;
+  }
+  return new Data.ToPhi(s2);

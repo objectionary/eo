@@ -5,16 +5,19 @@
 package org.eolang.lowering;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The shape of one recorded evaluation, ready to meet the tree.
  *
  * <p>It is the identity of the site an atom fired or parked at: the
- * method that dispatched it, the key of its receiver, and the keys of
- * its arguments under their positional names. A site of the tree matches
- * when all three agree, with the argument names read either way — the
- * resolved name the record shows, or the {@code α}-positional name the
- * XMIR wrote.</p>
+ * method that dispatched it, the key of its receiver, and the identities
+ * of its arguments under their positional names — the key of an argument
+ * that is a value, the phi text of one that is still a site, or nothing
+ * at all where any argument will do. A site of the tree matches when all
+ * three agree, with the argument names read either way — the resolved
+ * name the record shows, or the {@code α}-positional name the XMIR
+ * wrote.</p>
  *
  * @since 0.76.0
  */
@@ -36,16 +39,32 @@ public final class Shape {
     private final List<String> names;
 
     /**
-     * The keys of the arguments, in the same order.
+     * The identities of the arguments, in the same order.
      */
     private final List<String> keys;
+
+    /**
+     * Ctor, for the shape of exactly one site as it stands in the tree.
+     * @param verb The method the site dispatches
+     * @param self The key of its receiver
+     * @param args The bindings of the site
+     */
+    public Shape(final String verb, final String self, final List<Binding> args) {
+        this(
+            verb,
+            self,
+            args.stream().map(Binding::label).collect(Collectors.toList()),
+            args.stream().map(arg -> Shape.identity(arg.value())).collect(Collectors.toList())
+        );
+    }
 
     /**
      * Ctor.
      * @param verb The method that dispatched the atom
      * @param self The key of the receiver
      * @param labels The names of the arguments, in their positional order
-     * @param values The keys of the arguments, in the same order
+     * @param values The identities of the arguments, in the same order,
+     *  an empty one standing for any argument at all
      */
     public Shape(final String verb, final String self,
         final List<String> labels, final List<String> values) {
@@ -71,8 +90,18 @@ public final class Shape {
             final Binding arg = args.get(idx);
             good = arg.label().equals(this.names.get(idx))
                 || arg.label().equals(String.format("α%d", idx));
-            good = good && this.keys.get(idx).equals(arg.value().key());
+            final String expected = this.keys.get(idx);
+            good = good
+                && (expected.isEmpty() || expected.equals(Shape.identity(arg.value())));
         }
         return good;
+    }
+
+    private static String identity(final Term term) {
+        String out = term.key();
+        if (out.isEmpty()) {
+            out = term.phi();
+        }
+        return out;
     }
 }

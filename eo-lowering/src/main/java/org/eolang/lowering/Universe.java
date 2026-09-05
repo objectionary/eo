@@ -16,7 +16,9 @@ import org.cactoos.text.UncheckedText;
  * root formation of the document it evaluates. This is that root, read
  * from the {@code universe.phi} resource: {@code number} and {@code bytes}
  * with their twelve λ methods, {@code string} which owns none and reaches
- * every one of them through its {@code φ}, and {@code true}/{@code false}
+ * every one of them through its {@code φ}, {@code bool} with the one
+ * {@code if} that phino never fires but always parks, so that the
+ * reduction learns where a choice stands, and {@code true}/{@code false}
  * as data, since the comparing atoms answer with a reference to them. It is
  * a complete expression of its own, merged with an {@link Expression} by
  * {@code phino merge} before dataization; a dispatch into anything it

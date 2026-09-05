@@ -4,6 +4,9 @@
  */
 package org.eolang.lowering;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * One node of the tree a reduction works on.
  *
@@ -39,6 +42,13 @@ public interface Term {
      * @return True if {@link #swapped(Shape, Term)} would rewrite something
      */
     boolean matches(Shape shape);
+
+    /**
+     * The arguments of the first site of this tree matching the shape.
+     * @param shape The shape of a recorded evaluation
+     * @return The bindings of that site, or empty when no site matches
+     */
+    Optional<List<Binding>> arguments(Shape shape);
 
     /**
      * This tree with every site matching the shape replaced.

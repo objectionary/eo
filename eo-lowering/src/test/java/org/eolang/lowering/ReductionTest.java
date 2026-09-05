@@ -293,6 +293,132 @@ final class ReductionTest {
     }
 
     @Test
+    void forksOnSymbolicBool(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a choice on a parked comparison must fork on its symbol, but it doesnt",
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    ReductionTest.guard(),
+                    ReductionTest.number("α0", "40-00-00-00-00-00-00-00"),
+                    "<o as='α1' base='ξ.x'/>"
+                ),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().get(1).keys(),
+            Matchers.contains("sym:s1")
+        );
+    }
+
+    @Test
+    void numbersArmStepsAfterFork(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the steps of the second arm must count on from the first arm, but they dont",
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    ReductionTest.guard(),
+                    String.format(
+                        "<o as='α0' base='.plus'><o base='ξ.x'/>%s</o>",
+                        ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00")
+                    ),
+                    "<o as='α1' base='.times'><o base='ξ.x'/><o as='α0' base='ξ.x'/></o>"
+                ),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().get(1).branches().get(1).moves().get(0).label(),
+            Matchers.equalTo("s4")
+        );
+    }
+
+    @Test
+    void picksArmOfLiteralCondition(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a choice decided by data must keep only the arm it picks, but it didnt",
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    "<o base='Φ.false'/>",
+                    "<o as='α0' base='ξ.x'/>",
+                    "<o as='α1' base='.times'><o base='ξ.x'/><o as='α0' base='ξ.x'/></o>"
+                ),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().get(0).atom(),
+            Matchers.equalTo("L_number_times")
+        );
+    }
+
+    @Test
+    void forksOnBoolVoid(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a choice on a bool void must fork on that void, but it doesnt",
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    "<o base='ξ.f'/>",
+                    ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00"),
+                    ReductionTest.number("α1", "40-00-00-00-00-00-00-00")
+                ),
+                Collections.singletonMap("f", "bool"),
+                8
+            ).protocol().moves().get(0).keys(),
+            Matchers.contains("sym:v0")
+        );
+    }
+
+    @Test
+    void refusesForkOfDisagreeingArms(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    ReductionTest.guard(),
+                    "<o as='α0' base='ξ.x'/>",
+                    "<o as='α1' base='Φ.true'/>"
+                ),
+                Collections.singletonMap("x", "number"),
+                8
+            )::protocol,
+            "arms of a number and a bool cannot share one carrier, but they reduced"
+        );
+    }
+
+    @Test
+    void refusesForkWithStuckArm(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    ReductionTest.guard(),
+                    "<o as='α0' base='ξ.x'/>",
+                    String.format(
+                        "<o as='α1' base='.minus'><o base='ξ.x'/>%s</o>",
+                        ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00")
+                    )
+                ),
+                Collections.singletonMap("x", "number"),
+                8
+            )::protocol,
+            "an arm the universe cannot reduce must refuse the whole fork, but it didnt"
+        );
+    }
+
+    @Test
     void refusesNumberMethodOnBool(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
@@ -418,6 +544,26 @@ final class ReductionTest {
                 8
             ).protocol().answer(),
             Matchers.equalTo("number:40-14-00-00-00-00-00-00")
+        );
+    }
+
+    private static Xnav choice(final String test, final String yes, final String not) {
+        return new Xnav(
+            String.format("<o base='.if'>%s%s%s</o>", test, yes, not)
+        ).element("o");
+    }
+
+    private static String guard() {
+        return String.format(
+            "<o base='.gt'><o base='ξ.x'/>%s</o>",
+            ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00")
+        );
+    }
+
+    private static String number(final String name, final String hex) {
+        return String.format(
+            "<o as='%s' base='Φ.number'><o as='α0' base='Φ.bytes'><o as='α0'>%s</o></o></o>",
+            name, hex
         );
     }
 

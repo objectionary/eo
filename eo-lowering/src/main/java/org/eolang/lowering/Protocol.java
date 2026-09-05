@@ -8,14 +8,18 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * What a fragment computes, as a straight-line program.
+ * What a fragment computes, as a program of steps.
  *
  * <p>A reduction settles into this: the steps in their dependency order,
  * the key of the value the fragment answers with — the last step,
  * usually, though a fragment may also collapse into a literal or answer
- * one of its voids unchanged — and the forma of that value. This is the
- * whole input of code generation: rendering each step as one Java
- * expression, in order, is a faithful compilation of the fragment.</p>
+ * one of its voids unchanged — and the forma of that value. A step is an
+ * application or a {@link Fork}, and a fork holds one protocol of this
+ * very kind per arm, so a program with choices in it is a tree of
+ * protocols whose every path is straight. This is the whole input of
+ * code generation: rendering each step as one Java statement, in order,
+ * with a block under each arm, is a faithful compilation of the
+ * fragment.</p>
  *
  * @since 0.76.0
  */

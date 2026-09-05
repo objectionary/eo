@@ -6,7 +6,9 @@ package org.eolang.lowering;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * One application of the fragment, standing in the reduction tree.
@@ -76,6 +78,20 @@ public final class Site implements Term {
             found = this.args.get(idx).value().matches(shape);
         }
         return found;
+    }
+
+    @Override
+    public Optional<List<Binding>> arguments(final Shape shape) {
+        Optional<List<Binding>> out;
+        if (shape.covers(this.method, this.receiver.key(), this.args)) {
+            out = Optional.of(Collections.unmodifiableList(this.args));
+        } else {
+            out = this.receiver.arguments(shape);
+            for (int idx = 0; !out.isPresent() && idx < this.args.size(); ++idx) {
+                out = this.args.get(idx).value().arguments(shape);
+            }
+        }
+        return out;
     }
 
     @Override
