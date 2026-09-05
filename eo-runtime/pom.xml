@@ -27,10 +27,13 @@
     How much memory a single test may allocate before Maxmem terminates it
     and reports it as skipped. The suffixes of -Xmx are understood: "2G",
     "512M", "65536K", or plain bytes. Empty, or zero, means no limit at all
-    and no watching either, which is the default: a box with memory to
-    spare should run every test to its end.
+    and no watching either: a box with memory to spare should run every
+    test to its end. The value here sits above the band an ordinary test
+    occupies — a directory walk passes about 300M through the allocator
+    without ever holding much — so that the guard fires on a runaway test
+    rather than on the population (#8341).
     -->
-    <eo.maxmem>256M</eo.maxmem>
+    <eo.maxmem>1G</eo.maxmem>
   </properties>
   <dependencies>
     <dependency>
