@@ -4,12 +4,14 @@
  */
 package org.eolang;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.opentest4j.TestAbortedException;
 
 /**
@@ -80,6 +82,16 @@ final class WatchedTest {
     }
 
     @Test
+    @Timeout(value = 10L, unit = TimeUnit.SECONDS)
+    void refusesToSkipBodyThatWillNotStop() {
+        MatcherAssert.assertThat(
+            "A body that will not stop must be said to outlive its test, but it wasnt",
+            WatchedTest.lingering(),
+            Matchers.containsString("outlived the test")
+        );
+    }
+
+    @Test
     void letsFrugalBodyThrough() {
         MatcherAssert.assertThat(
             "A body that eats almost nothing must run to its end, but it didnt",
@@ -128,6 +140,30 @@ final class WatchedTest {
             "A body that never stops allocating must be terminated, but it wasnt"
         );
         return WatchedTest.awaited(stopped);
+    }
+
+    private static String lingering() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            return Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Watched(1024L * 1024L).through(
+                    () -> {
+                        final byte[][] junk = new byte[1][];
+                        for (int idx = 0; idx < 16; ++idx) {
+                            junk[0] = new byte[256 * 1024];
+                        }
+                        while (!release.get()) {
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A body that ignores its interrupt must fail the test, but it didnt"
+            ).getMessage();
+        } finally {
+            release.set(true);
+        }
     }
 
     private static boolean interrupted() {
