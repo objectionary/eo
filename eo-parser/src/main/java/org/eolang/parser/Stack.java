@@ -12,7 +12,7 @@ import java.util.List;
  *
  * <p>The stack carries one {@link Level} per occupied indent level. Indents
  * grow strictly bottom-to-top in steps of exactly two (R-5.1.1, R-5.1.2);
- * the caller enforces the step (R-5.1.3) before calling
+ * the caller enforces the step (R-5.2.7) before calling
  * {@link #push(int, int, Kind, Openness)}. The bottom entry's
  * {@code parent} is always {@link Kind#TOP_LEVEL}; higher entries carry the
  * kind of the entry directly below them as their parent.</p>
