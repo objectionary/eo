@@ -74,14 +74,14 @@ final class FormasTest {
     }
 
     @Test
-    void refusesBoolEndpoint() {
+    void chasesReferenceChainToTheBoolForma() {
         MatcherAssert.assertThat(
-            "a chase landing on a bool must refuse, but it didnt",
+            "a chase landing on a bool state must name the bool forma, but it didnt",
             new Formas(
                 Collections.singletonMap("Φ.foo.flag", "Φ.false"),
                 Collections.emptyMap()
             ).at("Φ.foo.flag"),
-            Matchers.equalTo("")
+            Matchers.equalTo("bool")
         );
     }
 
@@ -137,6 +137,23 @@ final class FormasTest {
             "a void filled only with strings must be witnessed as one, but it wasnt",
             new Formas(temp).given("Φ.foo.calc.t"),
             Matchers.equalTo("string")
+        );
+    }
+
+    @Test
+    void witnessesBoolVoidSeeingBothStates(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.foo.calc\"><attr name=\"f\" void=\"true\">%s%s</attr></type></provides>",
+                "<witnessed><ref loc=\"Φ.true\"/></witnessed>",
+                "<witnessed><ref loc=\"Φ.false\"/></witnessed>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled with both bool states must be witnessed as one bool, but it wasnt",
+            new Formas(temp).given("Φ.foo.calc.f"),
+            Matchers.equalTo("bool")
         );
     }
 

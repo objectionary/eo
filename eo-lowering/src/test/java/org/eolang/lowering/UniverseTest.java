@@ -39,6 +39,20 @@ final class UniverseTest {
     }
 
     @Test
+    void carriesTheMethodsOfABool(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a bool must reach the byte methods below it, but it doesnt",
+            phino.dataize(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.true.eq(α0 ↦ Φ.false) ⟧"
+            ).bytes(),
+            Matchers.equalTo("00-")
+        );
+    }
+
+    @Test
     void resolvesReferenceWhenMerged(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());

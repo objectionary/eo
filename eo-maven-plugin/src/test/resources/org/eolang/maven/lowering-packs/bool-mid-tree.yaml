@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A bool is a one-byte carrier like any other, so a comparison may
+# hand its answer to the step after it. The `gt` parks into a
+# symbolic bool, the `eq` below reaches the byte atoms through the
+# `φ` of that bool, and the two settle into one atom of two steps.
+input: |
+  [] > foo
+    [n] > cool
+      eq. > @
+        n.gt 10
+        false
+    cool 42 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: cool
+voids:
+  n: number
+lowered: |
+  [] > foo
+    cool 42 > @
+    [] > cool /Q.bool
+      ? > n /Q.number
+protocol: |
+  s1 ← L_number_gt sym:v0 number:40-24-00-00-00-00-00-00
+  s2 ← L_bytes_eq sym:s1 bool:00-
+  answer sym:s2 bool
+java: |
+  final double v0 = new Dataized(this.take("n")).asNumber();
+  final boolean s1 = v0 > Double.longBitsToDouble(0x4024000000000000L);
+  final boolean s2 = s1 == false;
+  return new Data.ToPhi(s2);

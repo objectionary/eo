@@ -8,7 +8,6 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,25 +23,24 @@ import org.w3c.dom.Node;
  *
  * <p>The links table binds every locator to what fills it: a literal, a
  * void, or a reference to another locator. Chasing the references from a
- * locator lands on an endpoint, and when that endpoint is the number, the
- * string or the bytes forma, everything the locator may ever hold is data
- * of that forma — the same walk {@code purify.xsl} takes in
- * {@code eo:decided}, answered here with the forma instead of a verdict. A
+ * locator lands on an endpoint, and when that endpoint names a carrier
+ * forma, everything the locator may ever hold is data of that forma —
+ * the same walk {@code purify.xsl} takes in {@code eo:decided}, answered
+ * here with the forma instead of a verdict. A
  * void endpoint answers through the provides table, which witnesses what
- * every filling site actually passes in. Anything else — a missing row, a
- * cycle, a bool, a raw literal — answers with the empty string, and the
- * caller refuses.</p>
+ * every filling site actually passes in. The two bool states are one
+ * forma between them, so a void the sites fill with both is witnessed as
+ * a bool all the same. Anything else — a missing row, a cycle, a raw
+ * literal — answers with the empty string, and the caller refuses.</p>
  *
  * @since 0.76.0
  */
 public final class Formas {
 
     /**
-     * The locators of the formas a symbolic carrier can stand for.
+     * The forma a symbolic carrier stands for, by the locator naming it.
      */
-    private static final Set<String> CARRIERS = new HashSet<>(
-        Arrays.asList("Φ.number", "Φ.string", "Φ.bytes")
-    );
+    private static final Map<String, String> CARRIERS = Formas.carriers();
 
     /**
      * The target locator of every locator whose single filling is a
@@ -106,11 +104,8 @@ public final class Formas {
         String out = "";
         String cursor = start;
         while (seen.add(cursor)) {
-            if (Formas.CARRIERS.contains(cursor)) {
-                out = cursor.substring(2);
-                break;
-            }
-            if ("Φ.true".equals(cursor) || "Φ.false".equals(cursor)) {
+            if (Formas.CARRIERS.containsKey(cursor)) {
+                out = Formas.CARRIERS.get(cursor);
                 break;
             }
             final String next = this.links.getOrDefault(cursor, "");
@@ -169,15 +164,27 @@ public final class Formas {
 
     private static void admitted(final Xnav attr, final String place,
         final Map<String, String> out) {
-        final Set<String> refs = attr.elements(Filter.withName("witnessed"))
+        final Set<String> kinds = attr.elements(Filter.withName("witnessed"))
             .flatMap(Formas::refs)
+            .map(loc -> Formas.CARRIERS.getOrDefault(loc, ""))
             .collect(Collectors.toSet());
-        final String kind = String.join("", refs);
-        if (refs.size() == 1 && Formas.CARRIERS.contains(kind)) {
+        if (kinds.size() == 1 && !kinds.contains("")) {
             attr.attribute("name").text().ifPresent(
-                name -> out.put(String.format("%s.%s", place, name), kind.substring(2))
+                name -> out.put(
+                    String.format("%s.%s", place, name), kinds.iterator().next()
+                )
             );
         }
+    }
+
+    private static Map<String, String> carriers() {
+        final Map<String, String> out = new HashMap<>(5);
+        out.put("Φ.number", "number");
+        out.put("Φ.string", "string");
+        out.put("Φ.bytes", "bytes");
+        out.put("Φ.true", "bool");
+        out.put("Φ.false", "bool");
+        return out;
     }
 
     private static Stream<String> refs(final Xnav node) {

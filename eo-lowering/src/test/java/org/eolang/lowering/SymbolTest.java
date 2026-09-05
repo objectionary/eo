@@ -43,11 +43,20 @@ final class SymbolTest {
     }
 
     @Test
-    void refusesBoolCarrier() {
+    void rendersMarkedBoolCarrier() {
+        MatcherAssert.assertThat(
+            "a symbolic bool must render as a bool around a marked bytes, but it didnt",
+            new Symbol("s1", "bool").phi(),
+            Matchers.equalTo("Φ.bool(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_s1 ⟧))")
+        );
+    }
+
+    @Test
+    void refusesUnmodelledCarrier() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new Symbol("s1", "bool")::phi,
-            "a bool has no symbolic carrier to render, but one rendered"
+            new Symbol("s2", "tuple")::phi,
+            "a tuple has no symbolic carrier to render, but one rendered"
         );
     }
 }

@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * {@code v0}, {@code v1} and so on in the order of first appearance,
  * with its forma chased through {@link Formas}. Two references to the
  * same locator share one void. The carve refuses — and the site stays
- * as written — on a reference outside number, string and bytes, a
+ * as written — on a reference outside the carrier formas, a
  * formation where data is expected, a call of a sibling formation, or
  * a subtree of fewer than two operations, since a one-step computation
  * is a Java atom already and a synthetic clone of it would buy
@@ -49,7 +49,7 @@ final class Fragment {
      * The formas a symbolic carrier can stand for.
      */
     private static final Collection<String> CARRIERS = new HashSet<>(
-        Arrays.asList("number", "string", "bytes")
+        Arrays.asList("number", "string", "bytes", "bool")
     );
 
     /**

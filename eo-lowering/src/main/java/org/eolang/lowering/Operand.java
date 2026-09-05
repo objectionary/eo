@@ -102,10 +102,10 @@ public final class Operand {
     }
 
     private static Map<Pattern, String> shapes() {
-        final Map<Pattern, String> out = new LinkedHashMap<>(6);
+        final Map<Pattern, String> out = new LinkedHashMap<>(8);
         out.put(Pattern.compile(Operand.bytes(Operand.DATUM)), "bytes");
         out.put(Pattern.compile(Operand.bytes(Operand.MARKER)), "sym");
-        for (final String carrier : new String[] {"number", "string"}) {
+        for (final String carrier : new String[] {"number", "string", "bool"}) {
             out.put(Pattern.compile(Operand.carried(carrier, Operand.DATUM)), carrier);
             out.put(Pattern.compile(Operand.carried(carrier, Operand.MARKER)), "sym");
         }

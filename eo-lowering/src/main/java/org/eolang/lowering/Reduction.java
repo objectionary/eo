@@ -27,9 +27,9 @@ import java.util.Optional;
  * and the one {@link Op} table of lowerable operations.</p>
  *
  * <p>Whatever does not settle is refused with an exception, never
- * repaired: a foreign atom, a site the records cannot anchor, a bool
- * feeding a later step, an exhausted budget. The caller treats every
- * refusal as one fragment staying unlowered, the way {@link Constant}
+ * repaired: a foreign atom, a site the records cannot anchor, a value of
+ * a forma no carrier stands for, an exhausted budget. The caller treats
+ * every refusal as one fragment staying unlowered, the way {@link Constant}
  * refusals are treated, so a refusal here is a filter, not a
  * failure.</p>
  *

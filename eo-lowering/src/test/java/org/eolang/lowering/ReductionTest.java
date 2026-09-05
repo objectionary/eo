@@ -264,7 +264,36 @@ final class ReductionTest {
     }
 
     @Test
-    void refusesComparisonMidTree(@Mktmp final Path temp) {
+    void reducesComparisonMidTree(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a bool standing mid-tree must feed the step after it, but it didnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.eq'>",
+                        "<o base='.gt'>",
+                        "<o base='ξ.x'/>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.false'/>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().get(1).keys(),
+            Matchers.contains("sym:s1", "bool:00-")
+        );
+    }
+
+    @Test
+    void refusesNumberMethodOnBool(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
         Assertions.assertThrows(
@@ -290,7 +319,7 @@ final class ReductionTest {
                 Collections.singletonMap("x", "number"),
                 8
             )::protocol,
-            "a bool feeding a later step cannot reduce, but it did"
+            "a bool has no number method to answer, but one reduced"
         );
     }
 

@@ -110,6 +110,11 @@ public final class JavaAtom {
                 "final double v%d = new Dataized(this.take(\"%s\")).asNumber();",
                 index, name
             );
+        } else if ("bool".equals(forma)) {
+            out = String.format(
+                "final boolean v%d = new Dataized(this.take(\"%s\")).asBool();",
+                index, name
+            );
         } else if ("bytes".equals(JavaAtom.carried(forma))) {
             out = String.format(
                 "final byte[] v%d = new Dataized(this.take(\"%s\")).take();",

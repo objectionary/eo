@@ -94,6 +94,28 @@ final class OperandTest {
     }
 
     @Test
+    void anchorsBoolLiteral() {
+        MatcherAssert.assertThat(
+            "a bool carrier wrapping a datum must anchor to its byte, but it didnt",
+            new Operand(
+                "Φ.bool( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ FF-, ρ ↦ ∅ ⟧ ) )"
+            ).key(),
+            Matchers.equalTo("bool:FF-")
+        );
+    }
+
+    @Test
+    void anchorsMarkedBool() {
+        MatcherAssert.assertThat(
+            "a bool carrier wrapping a marker must anchor to its name, but it didnt",
+            new Operand(
+                "Φ.bool( α0 ↦ Φ.bytes( α0 ↦ ⟦ λ ⤍ Sym_s1, ρ ↦ ∅ ⟧ ) )"
+            ).key(),
+            Matchers.equalTo("sym:s1")
+        );
+    }
+
+    @Test
     void rejectsUnreducedApplication() {
         MatcherAssert.assertThat(
             "an application still to reduce cannot anchor, but it did",

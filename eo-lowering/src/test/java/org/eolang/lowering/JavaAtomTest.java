@@ -94,6 +94,31 @@ final class JavaAtomTest {
     }
 
     @Test
+    void readsBoolVoid() {
+        MatcherAssert.assertThat(
+            "a bool void must be read through asBool, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Step("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bool:FF-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("f", "bool")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final boolean s1 = v0 == true;",
+                    "        return new Data.ToPhi(s1);"
+                )
+            )
+        );
+    }
+
+    @Test
     void answersVoidWithoutSteps() {
         MatcherAssert.assertThat(
             "an identity protocol must read the void and answer it, but it doesnt",
