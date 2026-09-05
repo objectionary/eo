@@ -197,13 +197,6 @@ final class LoweringTest {
         return out;
     }
 
-    /**
-     * Render a protocol as the packs spell it: one line per step, and
-     * under a fork an indented block per arm, each a protocol of its own.
-     * @param protocol The protocol
-     * @param pad The indentation of this protocol
-     * @return The text, ending with a line break
-     */
     private static String rendered(final Protocol protocol, final String pad) {
         final StringBuilder out = new StringBuilder(64);
         for (final Step step : protocol.moves()) {
@@ -219,12 +212,11 @@ final class LoweringTest {
                     .append(step.forma()).append(System.lineSeparator());
                 final String[] arms = {"then", "else"};
                 for (int idx = 0; idx < arms.length; ++idx) {
-                    out.append(pad).append("  ").append(arms[idx]).append(System.lineSeparator())
-                        .append(
-                            LoweringTest.rendered(
-                                step.branches().get(idx), String.format("%s    ", pad)
-                            )
-                        );
+                    final String arm = LoweringTest.rendered(
+                        step.branches().get(idx), String.format("%s    ", pad)
+                    );
+                    out.append(pad).append("  ").append(arms[idx])
+                        .append(System.lineSeparator()).append(arm);
                 }
             }
         }

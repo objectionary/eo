@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # Two clamps and a degree selector guard the easing polynomials of
 # Perlin: smootherstep for the then, smoothstep for the else. Each
 # `.if` parks on the symbolic bool its guard leaves behind and becomes
