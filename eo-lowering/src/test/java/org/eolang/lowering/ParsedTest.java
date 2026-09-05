@@ -6,6 +6,8 @@ package org.eolang.lowering;
 
 import com.github.lombrozo.xnav.Xnav;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -154,6 +156,74 @@ final class ParsedTest {
     }
 
     @Test
+    void appliesHelperFormationToArguments() {
+        MatcherAssert.assertThat(
+            "a helper with voids must be applied where it is named, but it isnt",
+            new Parsed(
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.a🌵3-4'>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                Collections.singletonMap("a🌵3-4", ParsedTest.scaled())
+            ).term().phi(),
+            Matchers.stringContainsInOrder(
+                "Sym_v0", ".times(", "Δ ⤍ 40-00-00-00-00-00-00-00"
+            )
+        );
+    }
+
+    @Test
+    void appliesHelperNamedFromAnotherHelper() {
+        final Map<String, Xnav> helpers = new LinkedHashMap<>();
+        helpers.put("a🌵3-4", ParsedTest.scaled());
+        helpers.put(
+            "a🌵7-4",
+            new Xnav(
+                String.join(
+                    "",
+                    "<o name='a🌵7-4'><o base='∅' name='ρ'/><o base='∅' name='j'/>",
+                    "<o base='ξ.ρ.a🌵3-4' name='φ'><o as='α0' base='ξ.j'/></o></o>"
+                )
+            ).element("o")
+        );
+        MatcherAssert.assertThat(
+            "a helper naming its sibling through ρ must apply it, but it doesnt",
+            new Parsed(
+                new Xnav("<o base='ξ.a🌵7-4'><o as='α0' base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                helpers
+            ).term().phi(),
+            Matchers.stringContainsInOrder("Sym_v0", ".times(", "Sym_v0")
+        );
+    }
+
+    @Test
+    void refusesReachBeyondTheFormation() {
+        MatcherAssert.assertThat(
+            "a reference past the root through ρ depends on a context the fragment lacks",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                new Parsed(
+                    new Xnav("<o base='ξ.ρ.ρ.x'/>").element("o"),
+                    Collections.singletonMap("x", "number"),
+                    "f"
+                )::term,
+                "a reference through two ρ from the root parsed, but it must not"
+            ).getMessage(),
+            Matchers.containsString("beyond the formation")
+        );
+    }
+
+    @Test
     void readsHelperInPlace() {
         MatcherAssert.assertThat(
             "a reference to a helper must stand as the helper's own body, but it doesnt",
@@ -226,6 +296,16 @@ final class ParsedTest {
             )::term,
             "a void applied to arguments cannot be reduced, but it was"
         );
+    }
+
+    private static Xnav scaled() {
+        return new Xnav(
+            String.join(
+                "",
+                "<o name='a🌵3-4'><o base='∅' name='ρ'/><o base='∅' name='i'/>",
+                "<o base='ξ.ρ.x.times' name='φ'><o as='α0' base='ξ.i'/></o></o>"
+            )
+        ).element("o");
     }
 
     private static Xnav square() {

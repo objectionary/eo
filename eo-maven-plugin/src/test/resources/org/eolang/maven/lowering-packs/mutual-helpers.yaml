@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two helpers applying each other never settle by application alone:
+# reading either where it is named reads the other, and then the first
+# again, so the reduction refuses the cycle before phino is asked and the
+# formation stays as written. Such a pair needs the loop, not the
+# application, the way `walk` and `spec` of `printf` do.
+input: |
+  [] > foo
+    [x] > bounce
+      [^ i] >> ping
+        pong (i.plus 1) > @
+      [^ j] >> pong
+        ping (j.times 2) > @
+      ping x > @
+    bounce 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bounce
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bounce 5 > @
+    [x] > bounce
+      ping x > @
+      pong > [^ i] >> ping
+        i.plus 1
+      ping > [^ j] >> pong
+        j.times 2
+stuck: "reads itself, so the fragment never settles"

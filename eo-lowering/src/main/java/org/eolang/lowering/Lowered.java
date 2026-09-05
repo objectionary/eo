@@ -27,7 +27,8 @@ import org.w3c.dom.Element;
  * carrier can stand for it. A helper is an attribute the source
  * privatized with {@code >>}, or a const the parser wrapped, and it
  * shows up under a synthetic {@code a🌵} name: the body reads it in
- * place, so it is folded into the atom and leaves with the body. A
+ * place, applying it to its arguments when it is a formation of its
+ * own, so it is folded into the atom and leaves with the body. A
  * public attribute keeps the formation as written, since deleting the
  * body must not change the object's interface, and a helper that stays
  * reachable would be dispatchable with nothing behind it. The formation

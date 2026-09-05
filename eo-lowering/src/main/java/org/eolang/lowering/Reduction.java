@@ -51,7 +51,8 @@ import java.util.Optional;
  * in its place.</p>
  *
  * <p>A helper the formation binds next to its body is read in place
- * wherever the body names it, by {@link Parsed}, so the tree phino sees
+ * wherever the body names it, by {@link Parsed}, applied to its
+ * arguments when it has voids of its own, so the tree phino sees
  * is the one the body would be with every helper written out, and the
  * protocol is the one that body would give: a helper named twice
  * stands twice and costs one step, since identical sites collapse, and
