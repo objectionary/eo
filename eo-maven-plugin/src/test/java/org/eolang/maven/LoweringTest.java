@@ -82,14 +82,13 @@ final class LoweringTest {
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
         final Xnav foo = LoweringTest.formation(this.temp, story);
-        final Map<String, String> voids = LoweringTest.voids(foo, story);
         MatcherAssert.assertThat(
             "the fragment must reduce into the protocol the pack promises, but it doesnt",
             LoweringTest.printed(
                 new Reduction(
                     phino,
                     LoweringTest.fragment(foo),
-                    voids,
+                    LoweringTest.voids(foo, story),
                     8,
                     story.map().getOrDefault("unit", "").toString(),
                     LoweringTest.helpers(foo)
