@@ -54,6 +54,28 @@ final class ReportTest {
     }
 
     @Test
+    void countsTheVoidsAnAtomFillsApart(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the tally must count the voids an atom fills apart from the rest, but it didnt",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.containsString("filled by an atom")
+        );
+    }
+
+    @Test
+    void countsTheVoidsNobodyFillsApart(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the tally must count the voids nobody fills apart from the rest, but it didnt",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.containsString("filled by nobody")
+        );
+    }
+
+    @Test
     void listsEveryPageOnTheIndex(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.tables(temp))
             .written(temp.resolve("out"));

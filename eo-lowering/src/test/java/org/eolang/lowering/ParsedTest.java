@@ -63,6 +63,33 @@ final class ParsedTest {
     }
 
     @Test
+    void readsStringLiteralIntoItsCarrier() {
+        MatcherAssert.assertThat(
+            "a string literal must keep its own carrier around the datum, but it didnt",
+            new Parsed(
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.t.eq'>",
+                        "<o as='α0' base='Φ.string'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>61-62-63</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("t", "string")
+            ).term().phi(),
+            Matchers.equalTo(
+                String.join(
+                    "",
+                    "Φ.string(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)).eq",
+                    "(α0 ↦ Φ.string(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 61-62-63 ⟧)))"
+                )
+            )
+        );
+    }
+
+    @Test
     void refusesArgumentsOnBareReference() {
         Assertions.assertThrows(
             IllegalStateException.class,

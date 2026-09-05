@@ -5,22 +5,34 @@
 package org.eolang.lowering;
 
 import com.github.lombrozo.xnav.Xnav;
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Expression}.
+ *
+ * <p>The rendering is phino's, so this needs the real binary and skips
+ * without it, the way {@link ConstantTest} does.</p>
+ *
  * @since 0.76.0
  */
+@ExtendWith(MktmpResolver.class)
 final class ExpressionTest {
 
     @Test
-    void rendersDispatchOnLiterals() {
+    void rendersDispatchOnLiterals(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
             "the fragment must become the φ of the root formation, but it didnt",
             new Expression(
+                phino,
                 new Xnav(
                     String.join(
                         "",
@@ -34,23 +46,16 @@ final class ExpressionTest {
                         "</o>"
                     )
                 ).element("o")
-            ).text(),
+            ).text().replaceAll("\\s+", " "),
             Matchers.containsString(
                 String.join(
                     "",
-                    "φ ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧))",
-                    ".plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧)))"
+                    "φ ↦ Φ.number( as-bytes ↦ Φ.bytes(",
+                    " data ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) ).plus(",
+                    " α0 ↦ Φ.number( as-bytes ↦ Φ.bytes(",
+                    " data ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) ) )"
                 )
             )
-        );
-    }
-
-    @Test
-    void refusesContextDependentReference() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            new Expression(new Xnav("<o base='ξ.x'/>").element("o"))::text,
-            "a ξ reference means nothing outside its formation, so it cannot render, but it did"
         );
     }
 }

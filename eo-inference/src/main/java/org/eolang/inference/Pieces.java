@@ -42,6 +42,17 @@ import org.xembly.Directives;
  * wrote, such as the {@code dataized} that a trailing {@code !} slips into the
  * middle of a chain, since a reader has no word to hang it on.</p>
  *
+ * <p>A mark shared that way is coloured by the worst object under it. A
+ * stretch of text with something unknown beneath it has to say so: colouring
+ * it by whichever object came first drew green what the tally counts as
+ * unknown, and the tally is counted from these same answers for exactly that
+ * reason. The body of an atom sits under the bracket that opens it, so an
+ * atom nobody can answer for used to be invisible on the page while being
+ * counted at the top of it (#8318). Which object the warning is about the
+ * reader finds in the popup, where all of them are listed. Which colour any of
+ * it comes out as is {@link Band}'s to say and not this one's, so that a word
+ * on the page and the tally above it cannot disagree.</p>
+ *
  * @since 0.70.0
  */
 final class Pieces {
@@ -175,15 +186,15 @@ final class Pieces {
     private static Directives marked(final String text, final Collection<Written> said) {
         final Directives dirs = new Directives()
             .add("bit")
-            .attr("band", Pieces.band(said.iterator().next().answer()));
+            .attr("band", Pieces.worst(said));
         for (final Written object : said) {
+            final Band band = new Band(object.answer());
             dirs.add("told")
                 .attr("label", object.label())
-                .attr("band", Pieces.band(object.answer()))
+                .attr("band", band.name())
                 .attr("where", object.answer().where())
                 .attr("loc", object.loc());
-            if (object.loc().equals(object.answer().where())
-                && "rooted".equals(Pieces.band(object.answer()))) {
+            if (object.loc().equals(object.answer().where()) && band.hollow()) {
                 dirs.attr("void", "true");
             }
             Pieces.witnessed(dirs, object.answer().seen());
@@ -202,14 +213,15 @@ final class Pieces {
         }
     }
 
-    private static String band(final Answer answer) {
-        final String found;
-        if (answer.rung() == 0) {
-            found = "blank";
-        } else if (answer.rung() == 1) {
-            found = "rooted";
-        } else {
-            found = "named";
+    private static String worst(final Collection<Written> said) {
+        String found = "named";
+        int rank = Integer.MAX_VALUE;
+        for (final Written object : said) {
+            final Band band = new Band(object.answer());
+            if (band.rank() < rank) {
+                rank = band.rank();
+                found = band.name();
+            }
         }
         return found;
     }

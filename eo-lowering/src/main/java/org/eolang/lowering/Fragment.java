@@ -28,10 +28,11 @@ import org.w3c.dom.NodeList;
  * {@code v0}, {@code v1} and so on in the order of first appearance,
  * with its forma chased through {@link Formas}. Two references to the
  * same locator share one void. The carve refuses — and the site stays
- * as written — on a reference outside number and bytes, a formation
- * where data is expected, a call of a sibling formation, or a subtree
- * of fewer than two operations, since a one-step computation is a Java
- * atom already and a synthetic clone of it would buy nothing.</p>
+ * as written — on a reference outside number, string and bytes, a
+ * formation where data is expected, a call of a sibling formation, or
+ * a subtree of fewer than two operations, since a one-step computation
+ * is a Java atom already and a synthetic clone of it would buy
+ * nothing.</p>
  *
  * @since 0.76.0
  */
@@ -42,6 +43,13 @@ final class Fragment {
      */
     private static final Collection<String> LITERALS = new HashSet<>(
         Arrays.asList("Φ.number", "Φ.string", "Φ.bytes", "Φ.true", "Φ.false")
+    );
+
+    /**
+     * The formas a symbolic carrier can stand for.
+     */
+    private static final Collection<String> CARRIERS = new HashSet<>(
+        Arrays.asList("number", "string", "bytes")
     );
 
     /**
@@ -192,7 +200,7 @@ final class Fragment {
 
     private String named(final String prefix, final String forma) {
         String name = "";
-        if ("number".equals(forma) || "bytes".equals(forma)) {
+        if (Fragment.CARRIERS.contains(forma)) {
             final String known = this.names.get(prefix);
             if (known == null) {
                 name = String.format("v%d", this.names.size());

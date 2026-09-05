@@ -18,11 +18,15 @@ import java.util.stream.Collectors;
  * line too: one local per void a step reads, dataized through the public
  * runtime API, one local per step, rendered by the format the {@link Op}
  * table holds for its atom, and one return handing the answer to
- * {@code Data.ToPhi}. The text is exactly what the {@code lambda()} of
- * the generated atom class holds, indented for that spot, and it is the
- * content the sidecar file is named after. A protocol that steps outside
+ * {@code Data.ToPhi}. A string is bytes here: its Δ is the very UTF-8
+ * sequence the byte atoms it reaches through {@code φ} operate on, so a
+ * string void is read as a {@code byte[]} and meets a bytes carrier as
+ * one. The text is exactly what the {@code lambda()} of the generated
+ * atom class holds, indented for that spot, and it is the content the
+ * sidecar file is named after. A protocol that steps outside
  * what the table renders — an operation with no Java column, a void of a
- * forma the runtime cannot hand over — is refused, and the caller treats
+ * forma the runtime cannot hand over, an answer whose carrier no
+ * {@code Data.ToPhi} argument names — is refused, and the caller treats
  * the refusal as one fragment staying unlowered.</p>
  *
  * @since 0.76.0
@@ -54,6 +58,11 @@ public final class JavaAtom {
      * @return Java statements, one per line, without a trailing newline
      */
     public String text() {
+        if ("string".equals(this.protocol.carrier())) {
+            throw new IllegalStateException(
+                "A string answer cannot be handed over, since Data.ToPhi makes bytes of a byte array"
+            );
+        }
         final List<String> names = new ArrayList<>(this.voids.keySet());
         final List<String> lines = new ArrayList<>(names.size());
         for (final Integer index : this.used()) {
@@ -101,7 +110,7 @@ public final class JavaAtom {
                 "final double v%d = new Dataized(this.take(\"%s\")).asNumber();",
                 index, name
             );
-        } else if ("bytes".equals(forma)) {
+        } else if ("bytes".equals(JavaAtom.carried(forma))) {
             out = String.format(
                 "final byte[] v%d = new Dataized(this.take(\"%s\")).take();",
                 index, name
@@ -195,6 +204,16 @@ public final class JavaAtom {
         } else {
             out = parts[0];
         }
+        return JavaAtom.carried(out);
+    }
+
+    private static String carried(final String forma) {
+        final String out;
+        if ("string".equals(forma)) {
+            out = "bytes";
+        } else {
+            out = forma;
+        }
         return out;
     }
 
@@ -244,7 +263,7 @@ public final class JavaAtom {
             }
             out = String.format("Double.longBitsToDouble(0x%sL)", hex);
         } else if ("bool".equals(parts[0])) {
-            if ("01-".equals(parts[1])) {
+            if ("FF-".equals(parts[1])) {
                 out = "true";
             } else if ("00-".equals(parts[1])) {
                 out = "false";
@@ -253,7 +272,7 @@ public final class JavaAtom {
                     String.format("The bool '%s' is not one byte", parts[1])
                 );
             }
-        } else if ("bytes".equals(parts[0])) {
+        } else if ("bytes".equals(JavaAtom.carried(parts[0]))) {
             out = JavaAtom.array(parts[1]);
         } else {
             throw new IllegalStateException(

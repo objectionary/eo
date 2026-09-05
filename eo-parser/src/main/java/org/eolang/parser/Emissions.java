@@ -26,10 +26,6 @@ import java.util.regex.Pattern;
  * {@link LnReversed#readHead} does.</p>
  *
  * @since 0.1
- * @todo #8244:30min Reject a receiverless reversed dispatch used as the
- *  phi of a parenthesised inline-phi formation, e.g.
- *  {@code bar (if. > [x]) > z}, the same way LnOnlyPhi now does for the
- *  vertical-body shape (see #8244).
  */
 final class Emissions {
 
@@ -80,30 +76,19 @@ final class Emissions {
      *  {@code null}
      * @param tokens Token reader (cursor positioned at the head)
      * @param line Source line number
-     * @param phi Whether this expression is the φ body of an only-phi
-     *  formation, where R-3.10.6 forbids a reversed dispatch carrying
-     *  horizontal arguments
-     * @checkstyle ParameterNumberCheck (4 lines)
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     static void expression(
-        final Emit emit, final String name, final Tokens tokens, final int line,
-        final boolean phi
+        final Emit emit, final String name, final Tokens tokens, final int line
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
         if (Emissions.reversedDispatch(tokens, head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
-            final boolean empty = rargs.isEmpty();
             Bindings.checkAllOrNothing(rargs, span);
-            if (!empty) {
+            if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
-            }
-            if (phi && !empty) {
-                throw new ParseError(
-                    line, head.pos(),
-                    "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
-                );
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
@@ -280,34 +265,6 @@ final class Emissions {
         }
     }
 
-    /**
-     * Does a reversed-dispatch head (a trailing-dot method, e.g.
-     * {@code if.} or {@code ^.}) sit ahead of the cursor? Shared by
-     * {@link #expression} and {@link LnOnlyPhi#bare}, which both need to
-     * tell a reversed dispatch from a plain identifier head before
-     * deciding how to walk the rest of the tokens.
-     * @param tokens Token reader (cursor positioned at the head)
-     * @param head The head already read from {@code tokens}
-     * @return True if a reversed dispatch follows the head
-     */
-    static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
-    }
-
     private static void openBase(
         final Emit emit, final String name, final Value value, final int line
     ) {
@@ -468,9 +425,27 @@ final class Emissions {
                 " ".repeat(value.pos() + 1).concat(inner), line
             );
             final Tokens tokens = new Tokens(sub.body(), sub);
-            Emissions.expression(emit, name, tokens, line, false);
+            Emissions.expression(emit, name, tokens, line);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
+    }
+
+    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
+        final boolean reversed;
+        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+            final int skip;
+            if (tokens.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = tokens.cursor() + skip;
+            reversed = probe >= tokens.body().length()
+                || tokens.body().charAt(probe) == ' ';
+        } else {
+            reversed = false;
+        }
+        return reversed;
     }
 
     private static String reversedHead(final Value head) {
@@ -537,10 +512,16 @@ final class Emissions {
             );
         }
         final Span sub = new Span(" ".repeat(column).concat(lhs), line);
-        if (LnOnlyPhi.compactStar(lhs, sub) >= 0) {
+        final Lhs slot = new Lhs(sub);
+        if (slot.stars() >= 0) {
             throw new ParseError(
                 line, column + lhs.lastIndexOf('*'),
                 "compact tuple marker is not allowed inside a parenthesised inline-phi"
+            );
+        }
+        if (slot.receiverless()) {
+            throw new ParseError(
+                line, column, "reversed dispatch missing receiver"
             );
         }
         emit.baselessObject(name, line, column);
@@ -551,7 +532,7 @@ final class Emissions {
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);
-        Emissions.expression(emit, "φ", tokens, line, true);
+        Emissions.expression(emit, "φ", tokens, line);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }

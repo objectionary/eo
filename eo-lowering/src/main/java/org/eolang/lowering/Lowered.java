@@ -24,8 +24,8 @@ import org.w3c.dom.Element;
  * top-level object, its body is voids plus one {@code φ} and nothing
  * else — deleting the body must not change the object's interface — it
  * neither declares nor reads {@code ρ}, and every void is witnessed in
- * the tables of {@code eo:inference} as a number or as bytes, so a
- * symbolic carrier can stand for it. Purity needs no separate analysis:
+ * the tables of {@code eo:inference} as a number, a string or bytes, so
+ * a symbolic carrier can stand for it. Purity needs no separate analysis:
  * the reduction itself is constructive proof, since it settles only a
  * body made of literals, void references, and the lowerable operations,
  * and refuses everything else. Such a formation is reduced into a

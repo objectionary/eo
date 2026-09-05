@@ -7,7 +7,6 @@ package org.eolang.lowering;
 import com.yegor256.Jaxec;
 import com.yegor256.Result;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The phino binary on this machine.
@@ -101,14 +104,34 @@ public final class Phino {
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
     public String pin() {
-        try (InputStream stream = this.getClass().getResourceAsStream("phino-version.txt")) {
-            return new String(
-                stream.readAllBytes(), StandardCharsets.UTF_8
-            ).trim();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Failed to read phino-version.txt from classpath", ex
-            );
+        return new UncheckedText(
+            new Trimmed(
+                new TextOf(
+                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
+                )
+            )
+        ).asString();
+    }
+
+    /**
+     * Translate one XMIR document into a φ-calculus expression.
+     *
+     * <p>Reading XMIR is phino's own job, done under {@code --input=xmir}:
+     * the document is parsed into the very AST its own parser builds and
+     * printed back in phi syntax. No rule is applied, so nothing but the
+     * dialect of the pinned binary decides what comes out.</p>
+     *
+     * @param xmir The document, in XMIR
+     * @return The expression, in phi syntax
+     * @throws IOException If the executable cannot be run
+     */
+    public String phi(final String xmir) throws IOException {
+        final Path file = Files.createTempFile(this.workspace(), "fragment", ".xmir");
+        try {
+            Files.write(file, xmir.getBytes(StandardCharsets.UTF_8));
+            return this.executed(this.binary, "rewrite", "--input", "xmir", file.toString());
+        } finally {
+            Files.deleteIfExists(file);
         }
     }
 

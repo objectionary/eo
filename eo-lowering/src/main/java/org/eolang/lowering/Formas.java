@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,18 +24,25 @@ import org.w3c.dom.Node;
  *
  * <p>The links table binds every locator to what fills it: a literal, a
  * void, or a reference to another locator. Chasing the references from a
- * locator lands on an endpoint, and when that endpoint is the number or
- * the bytes forma, everything the locator may ever hold is data of that
- * forma — the same walk {@code purify.xsl} takes in {@code eo:decided},
- * answered here with the forma instead of a verdict. A void endpoint
- * answers through the provides table, which witnesses what every filling
- * site actually passes in. Anything else — a missing row, a cycle, a
- * string, a bool, a raw literal — answers with the empty string, and the
+ * locator lands on an endpoint, and when that endpoint is the number, the
+ * string or the bytes forma, everything the locator may ever hold is data
+ * of that forma — the same walk {@code purify.xsl} takes in
+ * {@code eo:decided}, answered here with the forma instead of a verdict. A
+ * void endpoint answers through the provides table, which witnesses what
+ * every filling site actually passes in. Anything else — a missing row, a
+ * cycle, a bool, a raw literal — answers with the empty string, and the
  * caller refuses.</p>
  *
  * @since 0.76.0
  */
 public final class Formas {
+
+    /**
+     * The locators of the formas a symbolic carrier can stand for.
+     */
+    private static final Set<String> CARRIERS = new HashSet<>(
+        Arrays.asList("Φ.number", "Φ.string", "Φ.bytes")
+    );
 
     /**
      * The target locator of every locator whose single filling is a
@@ -98,16 +106,11 @@ public final class Formas {
         String out = "";
         String cursor = start;
         while (seen.add(cursor)) {
-            if ("Φ.number".equals(cursor)) {
-                out = "number";
+            if (Formas.CARRIERS.contains(cursor)) {
+                out = cursor.substring(2);
                 break;
             }
-            if ("Φ.bytes".equals(cursor)) {
-                out = "bytes";
-                break;
-            }
-            if ("Φ.string".equals(cursor) || "Φ.true".equals(cursor)
-                || "Φ.false".equals(cursor)) {
+            if ("Φ.true".equals(cursor) || "Φ.false".equals(cursor)) {
                 break;
             }
             final String next = this.links.getOrDefault(cursor, "");
@@ -170,7 +173,7 @@ public final class Formas {
             .flatMap(Formas::refs)
             .collect(Collectors.toSet());
         final String kind = String.join("", refs);
-        if (refs.size() == 1 && ("Φ.number".equals(kind) || "Φ.bytes".equals(kind))) {
+        if (refs.size() == 1 && Formas.CARRIERS.contains(kind)) {
             attr.attribute("name").text().ifPresent(
                 name -> out.put(String.format("%s.%s", place, name), kind.substring(2))
             );

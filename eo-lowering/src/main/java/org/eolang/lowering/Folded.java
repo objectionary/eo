@@ -87,7 +87,7 @@ public final class Folded implements Rewrite {
             element.setAttribute("base", "Φ.number");
             element.appendChild(Folded.wrapped(element.getOwnerDocument(), value));
         } else if ("bool".equals(forma)) {
-            if ("01-".equals(value)) {
+            if ("FF-".equals(value)) {
                 element.setAttribute("base", "Φ.true");
             } else if ("00-".equals(value)) {
                 element.setAttribute("base", "Φ.false");

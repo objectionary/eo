@@ -65,7 +65,7 @@ final class Answers {
     private final Collection<String> ground;
 
     /**
-     * Every chain of copies, walked to its end, from {@link Ends}.
+     * Where the answer for every object is to be looked for.
      */
     private final Map<String, String> ends;
 
@@ -77,7 +77,9 @@ final class Answers {
      *  it, from {@link Seen}
      * @param answered The objects the table answers by itself, from
      *  {@link Pairs}
-     * @param names Every chain of copies, walked to its end
+     * @param names Where the answer for every object is to be looked for,
+     *  which is the end of its chain of copies, and for the body of an atom
+     *  the forma the atom declares
      */
     Answers(
         final Map<String, Collection<Map<String, String>>> rows,

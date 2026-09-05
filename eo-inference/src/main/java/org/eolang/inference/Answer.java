@@ -28,8 +28,18 @@ import java.util.Collections;
  * once, or a single one naming nothing a reader could go and look at. A reader
  * told that their object is whatever {@code Φ.bool.and.x} turns out to be has
  * nowhere to go next, and a reader told that {@code Φ.true} and
- * {@code Φ.false} have both been put there has. The rung is untouched by
- * it.</p>
+ * {@code Φ.false} have both been put there has. Nothing carried at all is an
+ * answer of its own rather than the want of one: nobody fills that void, so
+ * there is no caller to be sent to (#8355). The rung is untouched by it.</p>
+ *
+ * <p>Such an object also says whether the void it is rooted at is one that
+ * only an atom fills. {@code Φ.posix.return.code} is filled in Java, by the
+ * syscall that hands the object back, and no caller of the program can be
+ * looked at to find out what goes in there — which is a different thing to
+ * say than that the callers disagree, and asks a different thing of whoever
+ * reads it (#8352). The rung is untouched by this as well: it is the same
+ * name rooted at the same void, and only the reason it stayed there
+ * differs.</p>
  *
  * @since 0.70.0
  */
@@ -49,6 +59,11 @@ final class Answer {
      * What the program was seen putting into the void it is rooted at.
      */
     private final Collection<Type> witnesses;
+
+    /**
+     * Whether that void is one only an atom fills.
+     */
+    private final boolean hammered;
 
     /**
      * Ctor.
@@ -71,9 +86,25 @@ final class Answer {
      *  rooted at, empty when it is rooted at none or nobody fills it
      */
     Answer(final String where, final int rung, final Collection<Type> seen) {
+        this(where, rung, seen, false);
+    }
+
+    /**
+     * Ctor.
+     * @param where The object this one settled on, which is the object itself
+     *  when the walk went nowhere
+     * @param rung The rung it stands on, from nothing at all up to nothing
+     *  left to find out
+     * @param seen What the program was seen putting into the void it is
+     *  rooted at, empty when it is rooted at none or nobody fills it
+     * @param atom Whether that void is one only an atom fills
+     */
+    Answer(final String where, final int rung, final Collection<Type> seen,
+        final boolean atom) {
         this.settled = where;
         this.climbed = rung;
         this.witnesses = seen;
+        this.hammered = atom;
     }
 
     /**
@@ -98,5 +129,13 @@ final class Answer {
      */
     Collection<Type> seen() {
         return this.witnesses;
+    }
+
+    /**
+     * Whether the void it is rooted at is one only an atom fills.
+     * @return TRUE when no caller of the program can be looked at
+     */
+    boolean forged() {
+        return this.hammered;
     }
 }

@@ -27,10 +27,21 @@ final class LiteralTest {
     }
 
     @Test
+    void rendersStringCarrier() {
+        MatcherAssert.assertThat(
+            "a string must render as the carrier application around its bytes, but it didnt",
+            new Literal("string", "D0-B4-D1-80-D1-83-D0-B3").phi(),
+            Matchers.equalTo(
+                "Φ.string(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ D0-B4-D1-80-D1-83-D0-B3 ⟧))"
+            )
+        );
+    }
+
+    @Test
     void rendersTruthAsDispatch() {
         MatcherAssert.assertThat(
             "the byte of truth must render as Φ.true, but it didnt",
-            new Literal("bool", "01-").phi(),
+            new Literal("bool", "FF-").phi(),
             Matchers.equalTo("Φ.true")
         );
     }
@@ -48,7 +59,7 @@ final class LiteralTest {
     void refusesStrangeForma() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new Literal("string", "41-")::phi,
+            new Literal("tuple", "41-")::phi,
             "a forma with no carrier application cannot render, but it did"
         );
     }
