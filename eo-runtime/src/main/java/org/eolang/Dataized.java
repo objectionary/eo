@@ -5,6 +5,9 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -91,10 +94,31 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to string.
+     *
+     * <p>The bytes must spell valid UTF-8. A malformed sequence fails here
+     * instead of turning into U+FFFD, so that a Java-backed operation reads
+     * the same text {@code string.length} and {@code string.slice} read, and
+     * never an unrelated one the program never supplied.</p>
+     *
      * @return Data as string
      */
     public String asString() {
-        return new String(this.take(), StandardCharsets.UTF_8);
+        final byte[] bytes = this.take();
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes))
+                .toString();
+        } catch (final CharacterCodingException ex) {
+            throw new ExFailure(
+                String.format(
+                    "The datum %s is not valid UTF-8 text",
+                    Arrays.toString(bytes)
+                ),
+                ex
+            );
+        }
     }
 
     /**
