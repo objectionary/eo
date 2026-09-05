@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A rolled base carries one line and one column, the ones of the name the
+# chain ends with, so the steps of a chain written down the page all came out
+# on the top line of it and the lines below were left with nothing on them.
+eo:
+  clock.eo: |
+    [x] > clock
+      times. > @
+        seconds.
+          x
+xmir:
+  clock.eo:
+    - "//o[@base='.times'][@line=2][@pos=2]/o[@base='.seconds'][@line=3][@pos=4]/o[@base='ξ.x'][@line=4][@pos=6]"
