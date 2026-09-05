@@ -4,7 +4,6 @@
  */
 package org.eolang.posix;
 
-import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
 import org.eolang.Cstring;
@@ -19,7 +18,9 @@ import org.eolang.Syscall;
  * {@code stat} or through {@code lstat} when a symbolic link has to be seen as
  * itself, and hands its mode bits and byte size to EO. Linux x86-64, Linux
  * aarch64 and macOS lay that struct out differently, so each keeps its own
- * {@link FileStat}; the divergence is spelled out rather than papered over.</p>
+ * {@link FileStat}; the divergence is spelled out rather than papered over.
+ * An architecture whose layout is none of those three fails loudly instead of
+ * reading the fields of another ABI.</p>
  *
  * @since 0.57.0
  */
@@ -50,22 +51,8 @@ public final class StatSyscall implements Syscall {
     public Phi make(final Phi... params) {
         final Phi result = this.posix.take("return").copy();
         final String path = new Cstring("the 'path' argument of stat", params[0]).it();
-        final FileStat info;
-        final int code;
-        if (Platform.isMac()) {
-            final MacFileStat mac = new MacFileStat();
-            code = this.call.applyAsInt(path, mac);
-            info = mac;
-        } else if (Platform.isARM()) {
-            final LinuxArmFileStat arm = new LinuxArmFileStat();
-            code = this.call.applyAsInt(path, arm);
-            info = arm;
-        } else {
-            final LinuxFileStat linux = new LinuxFileStat();
-            code = this.call.applyAsInt(path, linux);
-            info = linux;
-        }
-        result.put(0, new Data.ToPhi(code));
+        final FileStat info = new StatLayout().stat(path);
+        result.put(0, new Data.ToPhi(this.call.applyAsInt(path, (Structure) info)));
         final Phi struct = this.posix.take("stat");
         struct.put(0, new Data.ToPhi(info.mode()));
         struct.put(1, new Data.ToPhi(info.length()));
