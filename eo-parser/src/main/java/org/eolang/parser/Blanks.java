@@ -8,8 +8,8 @@ package org.eolang.parser;
  * Blank-line bookkeeping helpers for {@link Line} subclasses — §6.5 of
  * the spec.
  *
- * <p>R-6.5.3 caps consecutive blanks at one (enforced in
- * {@link LnBlank}) and requires exactly one blank line in front of
+ * <p>R-6.5.7 caps consecutive blanks at one (enforced in
+ * {@link LnBlank}). R-6.5.3 requires exactly one blank line in front of
  * every {@code +>} test attribute — enforced here by
  * {@link #checkTest}. R-6.5.4 forbids a blank line before a plain
  * child or between two plain siblings — enforced here by
