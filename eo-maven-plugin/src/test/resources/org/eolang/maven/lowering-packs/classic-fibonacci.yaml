@@ -40,4 +40,4 @@ lowered: |
         ^.fib
           n.plus -2
       n
-stuck: "The call to itself is not in a tail position, so the fragment cannot repeat"
+stuck: "The call to itself is not in a tail position"
