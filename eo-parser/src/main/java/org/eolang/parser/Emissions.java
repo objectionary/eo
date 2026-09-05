@@ -524,6 +524,12 @@ final class Emissions {
                 line, column, "reversed dispatch missing receiver"
             );
         }
+        if (slot.loaded()) {
+            throw new ParseError(
+                line, column,
+                "only-phi formation body cannot be a reversed dispatch with horizontal arguments"
+            );
+        }
         emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
