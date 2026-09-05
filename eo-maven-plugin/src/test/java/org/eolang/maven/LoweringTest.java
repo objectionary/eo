@@ -110,7 +110,11 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 new Reduction(
-                    phino, LoweringTest.fragment(foo), LoweringTest.voids(foo, story), 8
+                    phino,
+                    LoweringTest.fragment(foo),
+                    LoweringTest.voids(foo, story),
+                    8,
+                    story.map().getOrDefault("unit", "").toString()
                 )::protocol,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
