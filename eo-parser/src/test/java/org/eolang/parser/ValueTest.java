@@ -177,11 +177,11 @@ final class ValueTest {
     }
 
     @Test
-    void marksStarNotChainable() {
+    void marksStarChainable() {
         MatcherAssert.assertThat(
-            "a STAR tuple marker must not allow a .method chain behind it",
+            "a STAR tuple marker must allow a .method chain behind it, as R-3.6 spells out with `*.with 1`",
             new Value(Value.Kind.STAR, "*", 0).chainable(),
-            Matchers.equalTo(false)
+            Matchers.equalTo(true)
         );
     }
 
