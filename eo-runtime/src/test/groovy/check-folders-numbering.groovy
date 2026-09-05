@@ -12,6 +12,7 @@ List<String> allowed = [
     '1-parse',
     '2-pull',
     '3-lint',
+    '4-lower',
     '4-merge',
     '4-resolve',
     '5-pre-transpile',
