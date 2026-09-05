@@ -14,9 +14,11 @@ import java.util.List;
  * <p>It is what an {@code if} parked on a symbolic bool turns into: the
  * key of that bool, and one protocol per arm, each reduced on its own
  * from the argument the site held. The steps of an arm are computed only
- * when the arm is taken, which is what keeps a guard guarding: an
- * operation that is partial stays behind the bool that protects it. The
- * value of the fork is whatever the taken arm answers, so the two arms
+ * when the arm is taken, and so are the reads of the voids that arm
+ * alone touches, which is what keeps a guard guarding: an operation that
+ * is partial, and an argument whose dataization may never end, both
+ * stay behind the bool that protects them. The value of the fork is
+ * whatever the taken arm answers, so the two arms
  * must answer the same forma, and a fork whose arms disagree refuses to
  * name one.</p>
  *

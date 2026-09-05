@@ -336,12 +336,12 @@ final class JavaAtomTest {
     }
 
     @Test
-    void hoistsVoidReadOutOfArm() {
+    void readsVoidInsideTheArmThatAloneUsesIt() {
         final Map<String, String> voids = new LinkedHashMap<>();
         voids.put("f", "bool");
         voids.put("y", "number");
         MatcherAssert.assertThat(
-            "a void read inside an arm alone must be dataized at the top, but it isnt",
+            "a void one arm alone reads must be dataized inside that arm, but it isnt",
             new JavaAtom(
                 new Protocol(
                     Collections.singletonList(
@@ -358,13 +358,60 @@ final class JavaAtomTest {
                 ),
                 voids
             ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final double s1;",
+                    "        if (v0) {",
+                    "            final double v1 = new Dataized(this.take(\"y\")).asNumber();",
+                    "            s1 = v1;",
+                    "        } else {",
+                    "            s1 = Double.longBitsToDouble(0x0000000000000000L);",
+                    "        }",
+                    "        return new Data.ToPhi(s1);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void readsVoidBothArmsUseAboveTheFork() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("f", "bool");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "a void both arms read must be dataized once, above the fork, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s2", "L_number_times", Arrays.asList("sym:v1", "sym:v1")
+                                    )
+                                ),
+                                "sym:s2",
+                                "number"
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
             Matchers.startsWith(
                 String.join(
                     System.lineSeparator(),
                     "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
                     "        final double v1 = new Dataized(this.take(\"y\")).asNumber();",
                     "        final double s1;",
-                    "        if (v0) {"
+                    "        if (v0) {",
+                    "            s1 = v1;"
                 )
             )
         );

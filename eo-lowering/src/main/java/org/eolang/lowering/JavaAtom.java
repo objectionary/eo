@@ -5,11 +5,13 @@
 package org.eolang.lowering;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,12 +20,16 @@ import java.util.stream.Stream;
  *
  * <p>A protocol is a program of steps, so its Java is one statement per
  * step: one local per void any step reads, dataized through the public
- * runtime API and hoisted to the top of the body, one local per
- * application, rendered by the format the {@link Op} table holds for its
- * atom, one blank final per fork, assigned at the end of each of its two
- * arms, whose own steps sit inside the arm's block and so compute only
- * when the arm is taken, and one return handing the answer to
- * {@code Data.ToPhi}. A string is bytes here: its Δ is the very UTF-8
+ * runtime API, one local per application, rendered by the format the
+ * {@link Op} table holds for its atom, one blank final per fork,
+ * assigned at the end of each of its two arms, whose own steps sit
+ * inside the arm's block and so compute only when the arm is taken, and
+ * one return handing the answer to {@code Data.ToPhi}. A void is read
+ * at the top of the innermost block that reaches every use of it: at the
+ * top of the body when a step outside every fork reads it, or both arms
+ * of one fork do, and at the top of an arm when that arm alone does, so
+ * that an argument a guard protects is never forced while the guard
+ * holds it back. A string is bytes here: its Δ is the very UTF-8
  * sequence the byte atoms it reaches through {@code φ} operate on, so a
  * string void is read as a {@code byte[]} and meets a bytes carrier as
  * one. The text is exactly what the {@code lambda()} of the generated
@@ -68,18 +74,9 @@ public final class JavaAtom {
                 "A string answer cannot be handed over, since Data.ToPhi makes bytes of a byte array"
             );
         }
-        final List<String> names = new ArrayList<>(this.voids.keySet());
-        final List<String> lines = new ArrayList<>(names.size());
-        for (final Integer index : this.used()) {
-            if (index >= names.size()) {
-                throw new IllegalStateException(
-                    String.format("The protocol reads void #%d, which the fragment lacks", index)
-                );
-            }
-            final String name = names.get(index);
-            lines.add(JavaAtom.reading(index, name, this.voids.get(name)));
-        }
-        lines.addAll(this.computed(this.protocol, ""));
+        final List<String> lines = this.computed(
+            this.protocol, "", Collections.emptySet()
+        );
         lines.add(
             String.format(
                 "return new Data.ToPhi(%s);",
@@ -91,19 +88,6 @@ public final class JavaAtom {
             .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    private SortedSet<Integer> used() {
-        final SortedSet<Integer> out = new TreeSet<>();
-        final Stream<String> keys = JavaAtom.unfolded(this.protocol).flatMap(
-            proto -> Stream.concat(
-                proto.moves().stream().flatMap(step -> step.keys().stream()),
-                Stream.of(proto.answer())
-            )
-        );
-        keys.filter(key -> key.startsWith("sym:v"))
-            .forEach(key -> out.add(Integer.parseInt(key.substring(5))));
-        return out;
-    }
-
     private static Stream<Protocol> unfolded(final Protocol proto) {
         return Stream.concat(
             Stream.of(proto),
@@ -111,6 +95,17 @@ public final class JavaAtom {
                 .flatMap(step -> step.branches().stream())
                 .flatMap(JavaAtom::unfolded)
         );
+    }
+
+    private String dataized(final int index) {
+        final List<String> names = new ArrayList<>(this.voids.keySet());
+        if (index >= names.size()) {
+            throw new IllegalStateException(
+                String.format("The protocol reads void #%d, which the fragment lacks", index)
+            );
+        }
+        final String name = names.get(index);
+        return JavaAtom.reading(index, name, this.voids.get(name));
     }
 
     private static String reading(final int index, final String name, final String forma) {
@@ -138,8 +133,15 @@ public final class JavaAtom {
         return out;
     }
 
-    private List<String> computed(final Protocol proto, final String pad) {
+    private List<String> computed(final Protocol proto, final String pad,
+        final Set<Integer> above) {
         final List<String> out = new ArrayList<>(proto.moves().size());
+        final SortedSet<Integer> here = new Reads(proto).own(above);
+        for (final Integer index : here) {
+            out.add(String.format("%s%s", pad, this.dataized(index)));
+        }
+        final Set<Integer> known = new HashSet<>(above);
+        known.addAll(here);
         for (final Step step : proto.moves()) {
             if (step.branches().isEmpty()) {
                 out.add(
@@ -149,13 +151,13 @@ public final class JavaAtom {
                     )
                 );
             } else {
-                out.addAll(this.forked(step, pad));
+                out.addAll(this.forked(step, pad, known));
             }
         }
         return out;
     }
 
-    private List<String> forked(final Step step, final String pad) {
+    private List<String> forked(final Step step, final String pad, final Set<Integer> known) {
         final String test = step.keys().get(0);
         if (!"bool".equals(this.forma(test))) {
             throw new IllegalStateException(
@@ -173,15 +175,16 @@ public final class JavaAtom {
             )
         );
         out.add(String.format("%sif (%s) {", pad, JavaAtom.expression(test)));
-        out.addAll(this.assigned(step.label(), step.branches().get(0), inner));
+        out.addAll(this.assigned(step.label(), step.branches().get(0), inner, known));
         out.add(String.format("%s} else {", pad));
-        out.addAll(this.assigned(step.label(), step.branches().get(1), inner));
+        out.addAll(this.assigned(step.label(), step.branches().get(1), inner, known));
         out.add(String.format("%s}", pad));
         return out;
     }
 
-    private List<String> assigned(final String label, final Protocol arm, final String pad) {
-        final List<String> out = this.computed(arm, pad);
+    private List<String> assigned(final String label, final Protocol arm,
+        final String pad, final Set<Integer> known) {
+        final List<String> out = this.computed(arm, pad, known);
         out.add(String.format("%s%s = %s;", pad, label, JavaAtom.expression(arm.answer())));
         return out;
     }
