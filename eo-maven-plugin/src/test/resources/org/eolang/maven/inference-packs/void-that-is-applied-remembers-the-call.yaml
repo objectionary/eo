@@ -12,4 +12,4 @@ eo:
   oak.eo: |
     [] > oak
 provides:
-  - "//attr[@name='cant-read']/apply[@of='Φ.as-ascii.cant-read' and @place='0']/ref[@loc='Φ.oak']"
+  - "//attr[@name='cant-read']/apply[@of='Φ.as-ascii.cant-read'][@place='0']/ref[@loc='Φ.oak']"
