@@ -17,8 +17,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eolang.jucs.ClasspathSource;
+import org.eolang.lowering.Body;
 import org.eolang.lowering.Digest;
 import org.eolang.lowering.Phino;
+import org.eolang.lowering.Program;
 import org.eolang.lowering.Protocol;
 import org.eolang.lowering.Reduction;
 import org.eolang.lowering.Step;
@@ -91,8 +93,7 @@ final class LoweringTest {
                     8,
                     story.map().getOrDefault("unit", "").toString(),
                     LoweringTest.helpers(foo)
-                ).protocol(),
-                voids.size()
+                ).program()
             ).trim(),
             Matchers.equalTo(story.map().get("protocol").toString().trim())
         );
@@ -117,7 +118,7 @@ final class LoweringTest {
                     8,
                     story.map().getOrDefault("unit", "").toString(),
                     LoweringTest.helpers(foo)
-                )::protocol,
+                )::program,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
             Matchers.containsString(story.map().get("stuck").toString())
@@ -220,19 +221,28 @@ final class LoweringTest {
         return out;
     }
 
-    private static String printed(final Protocol protocol, final int voids) {
-        final String out;
-        if (protocol.repeats()) {
-            final StringBuilder head = new StringBuilder("loop");
-            for (int idx = 0; idx < voids; ++idx) {
-                head.append(" v").append(idx);
+    private static String printed(final Program program) {
+        final StringBuilder out = new StringBuilder(64);
+        final Body first = program.bodies().get(0);
+        if (program.repeats()) {
+            out.append("loop");
+            for (int idx = 0; idx < program.inputs().size(); ++idx) {
+                out.append(" v").append(idx);
             }
-            out = head.append(System.lineSeparator())
-                .append(LoweringTest.rendered(protocol, "  ")).toString();
+            out.append(System.lineSeparator())
+                .append(LoweringTest.rendered(first.protocol(), "  "));
+            for (final Body body : program.bodies().subList(1, program.bodies().size())) {
+                out.append("body ").append(body.name());
+                for (int idx = 0; idx < body.formas().size(); ++idx) {
+                    out.append(" v").append(body.offset() + idx);
+                }
+                out.append(System.lineSeparator())
+                    .append(LoweringTest.rendered(body.protocol(), "  "));
+            }
         } else {
-            out = LoweringTest.rendered(protocol, "");
+            out.append(LoweringTest.rendered(first.protocol(), ""));
         }
-        return out;
+        return out.toString();
     }
 
     private static String rendered(final Protocol protocol, final String pad) {
@@ -274,6 +284,9 @@ final class LoweringTest {
                 .append(' ').append(protocol.carrier());
         } else {
             out.append("repeat");
+            if (!protocol.target().isEmpty()) {
+                out.append(' ').append(protocol.target());
+            }
             for (final String key : protocol.again()) {
                 out.append(' ').append(key);
             }

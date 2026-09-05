@@ -100,7 +100,7 @@ public final class Site implements Term {
     }
 
     @Override
-    public Optional<List<Term>> again() {
+    public Optional<Again> again() {
         return Optional.empty();
     }
 

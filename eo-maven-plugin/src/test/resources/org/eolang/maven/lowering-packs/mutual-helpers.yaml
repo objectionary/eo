@@ -1,19 +1,28 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# Two helpers applying each other never settle by application alone:
-# reading either where it is named reads the other, and then the first
-# again, so the reduction refuses the cycle before phino is asked and the
-# formation stays as written. Such a pair needs the loop, not the
-# application, the way `walk` and `spec` of `printf` do.
+# yamllint disable rule:line-length
+# Two privatized helpers that apply each other in tail positions are
+# mutual tail recursion, the shape of `walk` and `spec` in `printf`, and
+# one loop expresses it: each helper is a body of its own, reduced once
+# over voids of its own, a state says which body runs next, and every
+# tail call hands the next body its values, sets the state, and goes
+# round again. The formation's own body only starts the first helper,
+# and the answer comes from whichever body reaches the base case.
 input: |
   [] > foo
     [x] > bounce
-      [^ i] >> ping
-        pong (i.plus 1) > @
-      [^ j] >> pong
-        ping (j.times 2) > @
-      ping x > @
+      [^ n acc] >> ping
+        if. > @
+          n.eq 0
+          acc
+          pong (n.plus -1) (acc.plus 1)
+      [^ n acc] >> pong
+        if. > @
+          n.eq 0
+          acc
+          ping (n.plus -1) (acc.times 2)
+      ping x 1 > @
     bounce 5 > @
 prelude:
   number.eo: |
@@ -25,10 +34,75 @@ voids:
 lowered: |
   [] > foo
     bounce 5 > @
-    [x] > bounce
-      ping x > @
-      pong > [^ i] >> ping
-        i.plus 1
-      ping > [^ j] >> pong
-        j.times 2
-stuck: "reads itself, so the fragment never settles"
+    [] > bounce /Q.number
+      ? > x /Q.number
+protocol: |
+  loop v0
+    repeat a🌵3-4 sym:v0 number:3F-F0-00-00-00-00-00-00
+  body a🌵3-4 v1 v2
+    s1 ← L_bytes_eq sym:v1 number:00-00-00-00-00-00-00-00
+    s2 ← fork sym:s1 number
+      then
+        answer sym:v2 number
+      else
+        s3 ← L_number_plus sym:v1 number:BF-F0-00-00-00-00-00-00
+        s4 ← L_number_plus sym:v2 number:3F-F0-00-00-00-00-00-00
+        repeat a🌵8-4 sym:s3 sym:s4
+    answer sym:s2 number
+  body a🌵8-4 v3 v4
+    s5 ← L_bytes_eq sym:v3 number:00-00-00-00-00-00-00-00
+    s6 ← fork sym:s5 number
+      then
+        answer sym:v4 number
+      else
+        s7 ← L_number_plus sym:v3 number:BF-F0-00-00-00-00-00-00
+        s8 ← L_number_times sym:v4 number:40-00-00-00-00-00-00-00
+        repeat a🌵3-4 sym:s7 sym:s8
+    answer sym:s6 number
+java: |
+  double v0 = new Dataized(this.take("x")).asNumber();
+  double v1 = 0.0;
+  double v2 = 0.0;
+  double v3 = 0.0;
+  double v4 = 0.0;
+  int body = 0;
+  final double out;
+  while (true) {
+      if (body == 0) {
+          v1 = v0;
+          v2 = Double.longBitsToDouble(0x3FF0000000000000L);
+          body = 1;
+          continue;
+      } else if (body == 1) {
+          final boolean s1 = Double.doubleToRawLongBits(v1) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+          final double s2;
+          if (s1) {
+              s2 = v2;
+          } else {
+              final double s3 = v1 + Double.longBitsToDouble(0xBFF0000000000000L);
+              final double s4 = v2 + Double.longBitsToDouble(0x3FF0000000000000L);
+              v3 = s3;
+              v4 = s4;
+              body = 2;
+              continue;
+          }
+          out = s2;
+          break;
+      } else {
+          final boolean s5 = Double.doubleToRawLongBits(v3) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+          final double s6;
+          if (s5) {
+              s6 = v4;
+          } else {
+              final double s7 = v3 + Double.longBitsToDouble(0xBFF0000000000000L);
+              final double s8 = v4 * Double.longBitsToDouble(0x4000000000000000L);
+              v1 = s7;
+              v2 = s8;
+              body = 1;
+              continue;
+          }
+          out = s6;
+          break;
+      }
+  }
+  return new Data.ToPhi(out);

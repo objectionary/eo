@@ -99,7 +99,7 @@ final class ParsedTest {
                 new Xnav("<o base='ξ.ρ.f'><o as='α0' base='ξ.x'/></o>").element("o"),
                 Collections.singletonMap("x", "number"),
                 "f"
-            ).term().again().get(),
+            ).term().again().get().arguments(),
             Matchers.hasSize(1)
         );
     }

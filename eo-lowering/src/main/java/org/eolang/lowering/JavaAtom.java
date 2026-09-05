@@ -31,7 +31,14 @@ import java.util.stream.Collectors;
  * finals, so every one of them is read before the loop, the answer of
  * the fork that ends the program is assigned and followed by
  * {@code break}, and a repeat assigns the voids their next values,
- * through temporaries wherever a value names a void, and continues. The
+ * through temporaries wherever a value names a void the same repeat
+ * rebinds, and continues. A
+ * program of several bodies runs the same loop over a state naming the
+ * body that runs next: the voids of every body are locals, the
+ * formation's read before the loop and the helpers' blank until a repeat
+ * hands them values, each body is one branch on the state, a body that
+ * answers assigns the one answer and breaks, and a repeat assigns the
+ * voids of the body it resumes, then the state, and continues. The
  * text is exactly what the {@code lambda()} of the generated atom class
  * holds, indented for that spot, and it is the content the sidecar file
  * is named after. A protocol the rendering refuses, or one whose answer
@@ -43,14 +50,9 @@ import java.util.stream.Collectors;
 public final class JavaAtom {
 
     /**
-     * The protocol to render.
+     * The program to render.
      */
-    private final Protocol protocol;
-
-    /**
-     * The voids of the fragment: names to formas, in declaration order.
-     */
-    private final Map<String, String> voids;
+    private final Program program;
 
     /**
      * The spelling of the values.
@@ -58,14 +60,28 @@ public final class JavaAtom {
     private final Rendering values;
 
     /**
-     * Ctor.
+     * Ctor, for a program of one body.
      * @param proto The protocol to render
      * @param inputs The voids of the fragment: names to formas, in order
      */
     public JavaAtom(final Protocol proto, final Map<String, String> inputs) {
-        this.protocol = proto;
-        this.voids = inputs;
-        this.values = new Rendering(proto, inputs);
+        this(
+            new Program(
+                Collections.singletonList(
+                    new Body("", 0, new ArrayList<>(inputs.values()), proto)
+                ),
+                inputs
+            )
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param plan The program to render
+     */
+    public JavaAtom(final Program plan) {
+        this.program = plan;
+        this.values = new Rendering(plan);
     }
 
     /**
@@ -73,31 +89,40 @@ public final class JavaAtom {
      * @return Java statements, one per line, without a trailing newline
      */
     public String text() {
-        if ("string".equals(this.protocol.carrier())) {
+        if ("string".equals(this.program.carrier())) {
             throw new IllegalStateException(
                 "A string answer cannot be handed over, since Data.ToPhi makes bytes of a byte array"
             );
         }
+        final Protocol first = this.program.bodies().get(0).protocol();
         final List<String> lines;
-        if (this.protocol.repeats()) {
+        if (this.program.bodies().size() > 1) {
+            lines = this.resumed();
+        } else if (first.repeats()) {
             lines = this.looped();
+            lines.add(
+                String.format(
+                    "return new Data.ToPhi(%s);", this.values.expression(first.answer())
+                )
+            );
         } else {
-            lines = this.computed(this.protocol, "", Collections.emptySet(), "");
+            lines = this.computed(first, "", Collections.emptySet(), "");
+            lines.add(
+                String.format(
+                    "return new Data.ToPhi(%s);", this.values.expression(first.answer())
+                )
+            );
         }
-        lines.add(
-            String.format(
-                "return new Data.ToPhi(%s);",
-                this.values.expression(this.protocol.answer())
-            )
-        );
         return lines.stream()
             .map(line -> String.format("        %s", line))
             .collect(Collectors.joining(System.lineSeparator()));
     }
 
     private List<String> looped() {
-        final String exit = this.protocol.answer();
-        if (!exit.startsWith("sym:s") || this.values.step(exit.substring(4)).branches().isEmpty()) {
+        final Protocol first = this.program.bodies().get(0).protocol();
+        final String exit = first.answer();
+        if (!exit.startsWith("sym:s") || this.values.step(exit.substring(4)).branches().isEmpty()
+            || this.values.forma(exit).isEmpty()) {
             throw new IllegalStateException(
                 String.format(
                     "A program that repeats must answer through a fork, but it answers '%s'",
@@ -106,17 +131,81 @@ public final class JavaAtom {
             );
         }
         final Step last = this.values.step(exit.substring(4));
-        final List<String> out = new ArrayList<>(this.voids.size() + 4);
-        final Set<Integer> all = new HashSet<>(this.voids.size());
-        for (int idx = 0; idx < this.voids.size(); ++idx) {
+        final int inputs = this.program.inputs().size();
+        final List<String> out = new ArrayList<>(inputs + 4);
+        final Set<Integer> all = new HashSet<>(inputs);
+        for (int idx = 0; idx < inputs; ++idx) {
             out.add(this.values.reading(idx));
             all.add(idx);
         }
         out.add(String.format("final %s %s;", this.values.type(exit), last.label()));
         out.add("while (true) {");
-        out.addAll(this.computed(this.protocol, "    ", all, last.label()));
+        out.addAll(this.computed(first, "    ", all, last.label()));
         out.add("}");
         return out;
+    }
+
+    private List<String> resumed() {
+        final int inputs = this.program.inputs().size();
+        final int total = this.program.formas().size();
+        final List<String> out = new ArrayList<>(total + 8);
+        final Set<Integer> all = new HashSet<>(total);
+        for (int idx = 0; idx < total; ++idx) {
+            if (idx < inputs) {
+                out.add(this.values.reading(idx));
+            } else {
+                out.add(this.values.blank(idx));
+            }
+            all.add(idx);
+        }
+        out.add("int body = 0;");
+        out.add(String.format("final %s out;", this.values.type(this.answer())));
+        out.add("while (true) {");
+        final List<Body> bodies = this.program.bodies();
+        for (int idx = 0; idx < bodies.size(); ++idx) {
+            out.add(JavaAtom.branch(idx, bodies.size()));
+            out.addAll(this.ran(bodies.get(idx).protocol(), all));
+        }
+        out.add("    }");
+        out.add("}");
+        out.add("return new Data.ToPhi(out);");
+        return out;
+    }
+
+    private static String branch(final int idx, final int count) {
+        final String out;
+        if (idx == 0) {
+            out = "    if (body == 0) {";
+        } else if (idx == count - 1) {
+            out = "    } else {";
+        } else {
+            out = String.format("    } else if (body == %d) {", idx);
+        }
+        return out;
+    }
+
+    private List<String> ran(final Protocol proto, final Set<Integer> all) {
+        final String pad = "        ";
+        final List<String> out = this.computed(proto, pad, all, "");
+        if (proto.again().isEmpty()) {
+            if (!proto.carrier().isEmpty()) {
+                out.add(
+                    String.format("%sout = %s;", pad, this.values.expression(proto.answer()))
+                );
+                out.add(String.format("%sbreak;", pad));
+            }
+        } else {
+            out.addAll(this.rebound(proto.target(), proto.again(), pad));
+        }
+        return out;
+    }
+
+    private String answer() {
+        this.program.carrier();
+        return this.program.bodies().stream()
+            .map(Body::protocol)
+            .filter(proto -> !proto.carrier().isEmpty())
+            .findFirst().get().answer();
     }
 
     private List<String> computed(final Protocol proto, final String pad,
@@ -157,7 +246,7 @@ public final class JavaAtom {
         }
         final String inner = String.format("%s    ", pad);
         final List<String> out = new ArrayList<>(8);
-        if (!step.label().equals(exit)) {
+        if (!step.label().equals(exit) && !step.forma().isEmpty()) {
             out.add(
                 String.format(
                     "%sfinal %s %s;",
@@ -184,49 +273,64 @@ public final class JavaAtom {
                 out.add(String.format("%sbreak;", pad));
             }
         } else {
-            out.addAll(this.rebound(arm.again(), pad));
+            out.addAll(this.rebound(arm.target(), arm.again(), pad));
         }
         return out;
     }
 
-    private List<String> rebound(final List<String> keys, final String pad) {
-        final List<String> names = new ArrayList<>(this.voids.keySet());
-        if (keys.size() != names.size()) {
+    private List<String> rebound(final String target, final List<String> keys,
+        final String pad) {
+        final Body body = this.program.body(target);
+        if (keys.size() != body.formas().size()) {
             throw new IllegalStateException(
                 String.format(
-                    "The repeat hands %d values to %d voids", keys.size(), names.size()
+                    "The repeat hands %d values to %d voids", keys.size(), body.formas().size()
                 )
             );
         }
-        final List<String> out = new ArrayList<>(keys.size() * 2 + 1);
-        final List<String> later = new ArrayList<>(keys.size());
+        final List<String> out = new ArrayList<>(keys.size() * 2 + 2);
+        final List<String> later = new ArrayList<>(keys.size() + 1);
         for (int idx = 0; idx < keys.size(); ++idx) {
             final String key = keys.get(idx);
-            final String type = this.values.type(String.format("sym:v%d", idx));
+            final String local = String.format("v%d", body.offset() + idx);
+            final String type = this.values.type(String.format("sym:%s", local));
             if (!type.equals(this.values.type(key))) {
                 throw new IllegalStateException(
                     String.format(
                         "The repeat hands '%s' to the void '%s', which is a %s",
-                        key, names.get(idx), type
+                        key, local, type
                     )
                 );
             }
-            if (key.equals(String.format("sym:v%d", idx))) {
+            if (key.equals(String.format("sym:%s", local))) {
                 continue;
             }
-            if (key.startsWith("sym:v")) {
+            if (JavaAtom.inside(key, body)) {
                 out.add(
                     String.format(
-                        "%sfinal %s r%d = %s;", pad, type, idx, this.values.expression(key)
+                        "%sfinal %s r%d = %s;", pad, type, body.offset() + idx,
+                        this.values.expression(key)
                     )
                 );
-                later.add(String.format("%sv%d = r%d;", pad, idx, idx));
+                later.add(String.format("%s%s = r%d;", pad, local, body.offset() + idx));
             } else {
-                later.add(String.format("%sv%d = %s;", pad, idx, this.values.expression(key)));
+                later.add(String.format("%s%s = %s;", pad, local, this.values.expression(key)));
             }
         }
         out.addAll(later);
+        if (this.program.bodies().size() > 1) {
+            out.add(String.format("%sbody = %d;", pad, this.program.index(target)));
+        }
         out.add(String.format("%scontinue;", pad));
+        return out;
+    }
+
+    private static boolean inside(final String key, final Body body) {
+        boolean out = false;
+        if (key.startsWith("sym:v")) {
+            final int idx = Integer.parseInt(key.substring(5));
+            out = idx >= body.offset() && idx < body.offset() + body.formas().size();
+        }
         return out;
     }
 }

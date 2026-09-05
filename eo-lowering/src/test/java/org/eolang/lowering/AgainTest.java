@@ -48,7 +48,7 @@ final class AgainTest {
             "the arguments must come back in their order, but they dont",
             new Again(
                 Arrays.asList(new Symbol("v1", "number"), new Symbol("v0", "number"))
-            ).again().get().get(0).key(),
+            ).again().get().arguments().get(0).key(),
             Matchers.equalTo("sym:v1")
         );
     }
