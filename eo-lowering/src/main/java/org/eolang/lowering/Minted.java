@@ -5,30 +5,35 @@
 package org.eolang.lowering;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * The ledger of the steps one reduction has minted so far.
+ * The ledger of the labels and formas one reduction shares.
  *
  * <p>Every loop of one reduction — the top of it, the arms of its forks,
- * the arguments of its repeats — shares one ledger, so that a label
- * never repeats across the arms and the forma of any step can be looked
- * up wherever its symbol ends up. A label is taken before the step is
- * finished, since the arms of a fork mint their own steps before the
- * fork knows what forma it answers, and it is bound to a forma once
- * that is known. The ledger also knows the voids of the fragment, so it
- * names the carrier of any key: a step by its binding, a void by its
- * declaration, a literal by its own prefix.</p>
+ * the arguments of its repeats, the bodies of its recursive helpers —
+ * shares one ledger, so that a label never repeats across the arms and
+ * the forma of any step can be looked up wherever its symbol ends up. A
+ * label is taken before the step is finished, since the arms of a fork
+ * mint their own steps before the fork knows what forma it answers, and
+ * it is bound to a forma once that is known. The ledger also knows the
+ * voids: those of the formation first, and those of every body a repeat
+ * resumes after them, declared with the formas of the values the first
+ * repeat hands over, so it names the carrier of any key — a step by its
+ * binding, a void by its position, a literal by its own prefix.</p>
  *
  * @since 0.76.0
  */
 public final class Minted {
 
     /**
-     * The voids of the fragment: names to formas, in declaration order.
+     * The formas of all the voids, by position.
      */
-    private final Map<String, String> voids;
+    private final List<String> voids;
 
     /**
      * The formas of the steps, by label, in the order they were taken.
@@ -36,12 +41,35 @@ public final class Minted {
     private final Map<String, String> formas;
 
     /**
+     * The voids of every body: names to the formas of their voids, the
+     * formation itself under the empty name.
+     */
+    private final Map<String, List<String>> bodies;
+
+    /**
+     * The position of the first void of every body, by name.
+     */
+    private final Map<String, Integer> offsets;
+
+    /**
      * Ctor.
      * @param inputs The voids of the fragment: names to formas, in order
      */
     public Minted(final Map<String, String> inputs) {
-        this.voids = inputs;
-        this.formas = new LinkedHashMap<>(0);
+        this(
+            new ArrayList<>(inputs.values()),
+            new LinkedHashMap<>(0),
+            Minted.first(new ArrayList<>(inputs.values())),
+            Minted.first(0)
+        );
+    }
+
+    private Minted(final List<String> kinds, final Map<String, String> labels,
+        final Map<String, List<String>> parts, final Map<String, Integer> starts) {
+        this.voids = kinds;
+        this.formas = labels;
+        this.bodies = parts;
+        this.offsets = starts;
     }
 
     /**
@@ -64,6 +92,63 @@ public final class Minted {
     }
 
     /**
+     * Declare the voids of a body a repeat resumes.
+     * @param name The name of the helper
+     * @param kinds The formas of its voids, in declaration order
+     */
+    public void declare(final String name, final List<String> kinds) {
+        if (this.bodies.containsKey(name)) {
+            throw new IllegalStateException(
+                String.format("The body '%s' is declared already", name)
+            );
+        }
+        this.offsets.put(name, this.voids.size());
+        this.bodies.put(name, new ArrayList<>(kinds));
+        this.voids.addAll(kinds);
+    }
+
+    /**
+     * Whether the voids of a body are declared.
+     * @param name The name of the helper, empty for the formation itself
+     * @return True if declared
+     */
+    public boolean declared(final String name) {
+        return this.bodies.containsKey(name);
+    }
+
+    /**
+     * The names of the bodies declared, the formation itself first.
+     * @return The names, in the order they were declared
+     */
+    public Collection<String> names() {
+        return Collections.unmodifiableCollection(this.bodies.keySet());
+    }
+
+    /**
+     * The formas of the voids of a body.
+     * @param name The name of the helper, empty for the formation itself
+     * @return The formas, in declaration order
+     */
+    public List<String> voids(final String name) {
+        if (!this.bodies.containsKey(name)) {
+            throw new IllegalStateException(
+                String.format("The body '%s' is not declared", name)
+            );
+        }
+        return Collections.unmodifiableList(this.bodies.get(name));
+    }
+
+    /**
+     * The position of the first void of a body among all voids.
+     * @param name The name of the helper, empty for the formation itself
+     * @return The position
+     */
+    public int offset(final String name) {
+        this.voids(name);
+        return this.offsets.get(name);
+    }
+
+    /**
      * The carrier of a key.
      * @param key The key, such as {@code sym:s2}, {@code sym:v0} or {@code bool:FF-}
      * @return The forma, such as {@code number}
@@ -78,8 +163,13 @@ public final class Minted {
                 );
             }
         } else if (key.startsWith("sym:v")) {
-            out = new ArrayList<>(this.voids.values())
-                .get(Integer.parseInt(key.substring(5)));
+            final int idx = Integer.parseInt(key.substring(5));
+            if (idx >= this.voids.size()) {
+                throw new IllegalStateException(
+                    String.format("The key '%s' names no declared void", key)
+                );
+            }
+            out = this.voids.get(idx);
         } else {
             out = key.split(":", 2)[0];
         }
@@ -113,5 +203,11 @@ public final class Minted {
             );
         }
         return carrier;
+    }
+
+    private static <T> Map<String, T> first(final T value) {
+        final Map<String, T> out = new LinkedHashMap<>(1);
+        out.put("", value);
+        return out;
     }
 }

@@ -194,6 +194,70 @@ final class ReductionTest {
     }
 
     @Test
+    void resumesHelpersApplyingEachOther(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "two helpers applying each other in tail positions must become two more bodies",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.a🌵3-4'><o as='α0' base='ξ.x'/>",
+                        ReductionTest.number("α1", "3F-F0-00-00-00-00-00-00"),
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8,
+                "bounce",
+                ReductionTest.bouncers()
+            ).program().bodies(),
+            Matchers.hasSize(3)
+        );
+    }
+
+    @Test
+    void refusesHelpersThatNeverAnswer(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        final Map<String, Xnav> helpers = new LinkedHashMap<>();
+        helpers.put(
+            "a🌵3-4",
+            ReductionTest.bouncer(
+                "a🌵3-4",
+                "<o base='ξ.ρ.a🌵8-4'><o as='α0' base='ξ.n'/><o as='α1' base='ξ.acc'/></o>"
+            )
+        );
+        helpers.put(
+            "a🌵8-4",
+            ReductionTest.bouncer(
+                "a🌵8-4",
+                "<o base='ξ.ρ.a🌵3-4'><o as='α0' base='ξ.n'/><o as='α1' base='ξ.acc'/></o>"
+            )
+        );
+        MatcherAssert.assertThat(
+            "helpers that only resume each other never answer and must refuse, but they didnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                new Reduction(
+                    phino,
+                    new Xnav(
+                        "<o base='ξ.a🌵3-4'><o as='α0' base='ξ.x'/><o as='α1' base='ξ.x'/></o>"
+                    ).element("o"),
+                    Collections.singletonMap("x", "number"),
+                    8,
+                    "bounce",
+                    helpers
+                )::program,
+                "a program that never answers reduced, but it must not"
+            ).getMessage(),
+            Matchers.containsString("never answers")
+        );
+    }
+
+    @Test
     void appliesHelperFormationTwice(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
@@ -781,6 +845,66 @@ final class ReductionTest {
                 "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
                 "</o>",
                 "</o>"
+            )
+        ).element("o");
+    }
+
+    private static Map<String, Xnav> bouncers() {
+        final Map<String, Xnav> out = new LinkedHashMap<>();
+        out.put(
+            "a🌵3-4",
+            ReductionTest.bouncer(
+                "a🌵3-4",
+                String.join(
+                    "",
+                    "<o base='.if'>",
+                    "<o base='ξ.n.eq'>",
+                    ReductionTest.number("α0", "00-00-00-00-00-00-00-00"),
+                    "</o>",
+                    "<o as='α0' base='ξ.acc'/>",
+                    "<o as='α1' base='ξ.ρ.a🌵8-4'>",
+                    "<o as='α0' base='ξ.n.plus'>",
+                    ReductionTest.number("α0", "BF-F0-00-00-00-00-00-00"),
+                    "</o>",
+                    "<o as='α1' base='ξ.acc.plus'>",
+                    ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00"),
+                    "</o>",
+                    "</o>",
+                    "</o>"
+                )
+            )
+        );
+        out.put(
+            "a🌵8-4",
+            ReductionTest.bouncer(
+                "a🌵8-4",
+                String.join(
+                    "",
+                    "<o base='.if'>",
+                    "<o base='ξ.n.eq'>",
+                    ReductionTest.number("α0", "00-00-00-00-00-00-00-00"),
+                    "</o>",
+                    "<o as='α0' base='ξ.acc'/>",
+                    "<o as='α1' base='ξ.ρ.a🌵3-4'>",
+                    "<o as='α0' base='ξ.n.plus'>",
+                    ReductionTest.number("α0", "BF-F0-00-00-00-00-00-00"),
+                    "</o>",
+                    "<o as='α1' base='ξ.acc.times'>",
+                    ReductionTest.number("α0", "40-00-00-00-00-00-00-00"),
+                    "</o>",
+                    "</o>",
+                    "</o>"
+                )
+            )
+        );
+        return out;
+    }
+
+    private static Xnav bouncer(final String name, final String body) {
+        return new Xnav(
+            String.format(
+                "<o name='%s'><o base='∅' name='ρ'/><o base='∅' name='n'/><o base='∅' name='acc'/>%s</o>",
+                name, body.replaceFirst("<o base=", "<o name='φ' base=")
             )
         ).element("o");
     }

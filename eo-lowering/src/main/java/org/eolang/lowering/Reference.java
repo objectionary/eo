@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * One name a fragment reaches in a scope, with the arguments handed to it.
@@ -18,9 +19,13 @@ import java.util.Optional;
  * takes no arguments, or a helper of the scope, which is read where it
  * is named: an application over the voids of the scope stands as its
  * own body, and a formation of its own is applied, its body read in the
- * {@link Scope} that binds its voids to the arguments. A helper that
- * names itself, directly or through another helper, is a cycle and is
- * refused, since reading it would never end.</p>
+ * {@link Scope} that binds its voids to the arguments. A helper the
+ * scope knows to be recursive is not read but resumed: naming it is the
+ * {@link Again} of that helper's body, over the arguments, and the
+ * reduction turns it into a repeat when it stands in a tail position.
+ * Any other helper that names itself, directly or through another
+ * helper, is a cycle and is refused, since reading it would never
+ * end.</p>
  *
  * @since 0.76.0
  */
@@ -89,6 +94,19 @@ public final class Reference {
     }
 
     private Term applied(final Xnav helper) {
+        final Term out;
+        if (this.scope.resumes(this.name)) {
+            out = new Again(
+                this.name,
+                this.args.stream().map(Binding::value).collect(Collectors.toList())
+            );
+        } else {
+            out = this.read(helper);
+        }
+        return out;
+    }
+
+    private Term read(final Xnav helper) {
         if (this.trail.contains(this.name)) {
             throw new IllegalStateException(
                 String.format(

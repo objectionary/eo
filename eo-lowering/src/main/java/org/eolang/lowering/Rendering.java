@@ -5,6 +5,7 @@
 package org.eolang.lowering;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
  * comes from the format the {@link Op} table holds for its atom, except
  * an equality, which compares by the forma of its operands; and a void
  * is read through the public runtime API. The forma of a key is looked
- * up in the voids of the fragment or in the steps of the protocol,
+ * up in the voids of the program or in the steps of its bodies,
  * nested arms included. Whatever the table cannot spell — an operation
  * with no Java column, a void of a forma the runtime cannot hand over,
  * an operand of a forma the atom does not take — is refused.</p>
@@ -33,39 +34,48 @@ import java.util.stream.Stream;
 public final class Rendering {
 
     /**
-     * The protocol.
+     * The program.
      */
-    private final Protocol protocol;
+    private final Program program;
 
     /**
-     * The voids of the fragment: names to formas, in declaration order.
-     */
-    private final Map<String, String> voids;
-
-    /**
-     * Ctor.
+     * Ctor, for a program of one body.
      * @param proto The protocol
      * @param inputs The voids of the fragment: names to formas, in order
      */
     public Rendering(final Protocol proto, final Map<String, String> inputs) {
-        this.protocol = proto;
-        this.voids = inputs;
+        this(
+            new Program(
+                Collections.singletonList(
+                    new Body("", 0, new ArrayList<>(inputs.values()), proto)
+                ),
+                inputs
+            )
+        );
     }
 
     /**
-     * The declaration reading one void, without {@code final}.
+     * Ctor.
+     * @param plan The program
+     */
+    public Rendering(final Program plan) {
+        this.program = plan;
+    }
+
+    /**
+     * The declaration reading one void of the formation, without {@code final}.
      * @param index The index of the void
      * @return A statement such as {@code double v0 = new Dataized(this.take("x")).asNumber();}
      */
     public String reading(final int index) {
-        final List<String> names = new ArrayList<>(this.voids.keySet());
+        final List<String> names = new ArrayList<>(this.program.inputs().keySet());
         if (index >= names.size()) {
             throw new IllegalStateException(
                 String.format("The protocol reads void #%d, which the fragment lacks", index)
             );
         }
         final String name = names.get(index);
-        final String forma = this.voids.get(name);
+        final String forma = this.program.inputs().get(name);
         final String out;
         if ("number".equals(forma)) {
             out = String.format(
@@ -83,6 +93,25 @@ public final class Rendering {
             throw new IllegalStateException(
                 String.format("The void '%s' of forma '%s' cannot be read in Java", name, forma)
             );
+        }
+        return out;
+    }
+
+    /**
+     * The declaration of one void of a resumed body, blank until a repeat
+     * hands it a value, without {@code final}.
+     * @param index The index of the void
+     * @return A statement such as {@code double v3 = 0.0;}
+     */
+    public String blank(final int index) {
+        final String type = this.type(String.format("sym:v%d", index));
+        final String out;
+        if ("double".equals(type)) {
+            out = String.format("double v%d = 0.0;", index);
+        } else if ("boolean".equals(type)) {
+            out = String.format("boolean v%d = false;", index);
+        } else {
+            out = String.format("byte[] v%d = new byte[0];", index);
         }
         return out;
     }
@@ -123,20 +152,7 @@ public final class Rendering {
      * @return The type, such as {@code double} or {@code byte[]}
      */
     public String type(final String key) {
-        final String carrier = this.forma(key);
-        final String out;
-        if ("number".equals(carrier)) {
-            out = "double";
-        } else if ("bool".equals(carrier)) {
-            out = "boolean";
-        } else if ("bytes".equals(carrier)) {
-            out = "byte[]";
-        } else {
-            throw new IllegalStateException(
-                String.format("The value '%s' has no Java type to carry it", key)
-            );
-        }
-        return out;
+        return Rendering.typed(this.forma(key), key);
     }
 
     /**
@@ -149,10 +165,7 @@ public final class Rendering {
         final String out;
         if ("sym".equals(parts[0])) {
             if (parts[1].charAt(0) == 'v') {
-                out = this.voids.get(
-                    new ArrayList<>(this.voids.keySet())
-                        .get(Integer.parseInt(parts[1].substring(1)))
-                );
+                out = this.program.formas().get(Integer.parseInt(parts[1].substring(1)));
             } else {
                 out = this.step(parts[1]).forma();
             }
@@ -168,7 +181,9 @@ public final class Rendering {
      * @return The step
      */
     public Step step(final String label) {
-        final Optional<Step> found = Rendering.unfolded(this.protocol)
+        final Optional<Step> found = this.program.bodies().stream()
+            .map(Body::protocol)
+            .flatMap(Rendering::unfolded)
             .flatMap(proto -> proto.moves().stream())
             .filter(step -> step.label().equals(label))
             .findFirst();
@@ -214,6 +229,22 @@ public final class Rendering {
         } else {
             throw new IllegalStateException(
                 String.format("The operand '%s' has no Java expression", key)
+            );
+        }
+        return out;
+    }
+
+    private static String typed(final String carrier, final String what) {
+        final String out;
+        if ("number".equals(carrier)) {
+            out = "double";
+        } else if ("bool".equals(carrier)) {
+            out = "boolean";
+        } else if ("bytes".equals(carrier)) {
+            out = "byte[]";
+        } else {
+            throw new IllegalStateException(
+                String.format("The value '%s' has no Java type to carry it", what)
             );
         }
         return out;

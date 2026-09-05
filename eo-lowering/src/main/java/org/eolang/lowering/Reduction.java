@@ -38,17 +38,22 @@ import java.util.Optional;
  * wherever its symbol ends up. When the bool is data instead, the site
  * simply gives way to the arm it picks.</p>
  *
- * <p>A call of the formation to itself is the one term that never goes
- * to phino: it is a repeat, and φ has no expression for one. When such
- * a call is the root of the tree being settled, its arguments are
- * reduced in turn into the same list of steps — a repeat evaluates all
- * of them, there is nothing lazy about it — and the tree settles into
- * the keys they become, one per void, instead of an answer. When the
- * call stands anywhere else, phino parks on its marker and the
- * fragment is refused: the recursion is not in a tail position, and a
- * fork whose arm repeats is held to the same rule, since a repeat below
- * an operation that still awaits the value would rerun the whole body
- * in its place.</p>
+ * <p>A call of the formation to itself, or of a recursive helper of it,
+ * is the one term that never goes to phino: it is a repeat, and φ has
+ * no expression for one. When such a call is the root of the tree being
+ * settled, its arguments are reduced in turn into the same list of
+ * steps — a repeat evaluates all of them, there is nothing lazy about
+ * it — and the tree settles into the body it resumes and the keys its
+ * voids take, one per void, instead of an answer; the first repeat into
+ * a helper declares the formas of the helper's voids, and every later
+ * one must agree. When the call stands anywhere else, phino parks on
+ * its marker and the fragment is refused: the recursion is not in a
+ * tail position, and a fork whose arm repeats is held to the same rule,
+ * since a repeat below an operation that still awaits the value would
+ * rerun the whole body in its place. The keys a repeat hands over, and
+ * the formas it declares or checks, are the concern of {@link Repeat};
+ * the bodies a program is made of, and the order they are reduced in,
+ * of {@link Bodies}.</p>
  *
  * <p>A helper the formation binds next to its body is read in place
  * wherever the body names it, by {@link Parsed}, applied to its
@@ -160,31 +165,60 @@ public final class Reduction {
     }
 
     /**
-     * The protocol the fragment reduces to.
+     * The protocol the fragment reduces to, when it is one body.
      * @return The steps, the answer, and its forma
      * @throws IOException If the binary cannot be run
      */
     public Protocol protocol() throws IOException {
-        return this.settled(
-            new Parsed(this.fragment, this.voids, this.formation, this.helpers).term(),
-            new Minted(this.voids)
-        );
+        final Program program = this.program();
+        if (program.bodies().size() > 1) {
+            throw new IllegalStateException(
+                "The fragment resumes a helper of the formation, which one protocol cannot express"
+            );
+        }
+        return program.bodies().get(0).protocol();
     }
 
-    private Protocol settled(final Term start, final Minted minted) throws IOException {
+    /**
+     * The program the fragment reduces to: its own body, and the body of
+     * every recursive helper it resumes.
+     * @return The bodies, the fragment's own first
+     * @throws IOException If the binary cannot be run
+     */
+    public Program program() throws IOException {
+        return new Bodies(
+            this, this.fragment, this.voids, this.formation, this.helpers
+        ).program();
+    }
+
+    /**
+     * The protocol one tree settles into.
+     * @param start The tree
+     * @param minted The ledger this reduction shares
+     * @return The protocol
+     * @throws IOException If the binary cannot be run
+     */
+    Protocol settled(final Term start, final Minted minted) throws IOException {
         final List<Step> steps = new ArrayList<>(0);
         final Term tree = this.reduced(start, steps, minted);
-        final Optional<List<Term>> again = tree.again();
         final Protocol out;
-        if (again.isPresent()) {
-            out = new Protocol(steps, this.repeated(again.get(), steps, minted));
+        if (tree.again().isPresent()) {
+            out = new Repeat(this, minted).protocol(tree.again().get(), steps);
         } else {
             out = new Protocol(steps, tree.key(), minted.carried(tree));
         }
         return out;
     }
 
-    private Term reduced(final Term start, final List<Step> steps, final Minted minted)
+    /**
+     * The value one tree settles into, over the steps it adds.
+     * @param start The tree
+     * @param steps The steps of the protocol being built
+     * @param minted The ledger this reduction shares
+     * @return A term with a key, or the call the tree is
+     * @throws IOException If the binary cannot be run
+     */
+    Term reduced(final Term start, final List<Step> steps, final Minted minted)
         throws IOException {
         Term tree = start;
         int round = 0;
@@ -198,40 +232,6 @@ public final class Reduction {
             tree = this.grown(tree, steps, minted);
         }
         return tree;
-    }
-
-    private List<String> repeated(final List<Term> args, final List<Step> steps,
-        final Minted minted) throws IOException {
-        final List<String> formas = new ArrayList<>(this.voids.values());
-        if (args.size() != formas.size()) {
-            throw new IllegalStateException(
-                String.format(
-                    "The call to itself passes %d arguments to %d voids",
-                    args.size(), formas.size()
-                )
-            );
-        }
-        final List<String> keys = new ArrayList<>(args.size());
-        for (int idx = 0; idx < args.size(); ++idx) {
-            final Term arg = this.reduced(args.get(idx), steps, minted);
-            final String key = arg.key();
-            if (key.isEmpty()) {
-                throw new IllegalStateException(
-                    "A call to itself cannot be an argument of a call to itself"
-                );
-            }
-            final String forma = minted.carried(arg);
-            if (!formas.get(idx).equals(forma)) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The call to itself passes a %s where void #%d carries a %s",
-                        forma, idx, formas.get(idx)
-                    )
-                );
-            }
-            keys.add(key);
-        }
-        return keys;
     }
 
     private Term grown(final Term tree, final List<Step> steps, final Minted minted)
