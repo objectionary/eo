@@ -195,9 +195,11 @@ final class LoweringTest {
         final Map<String, String> out = new LinkedHashMap<>();
         for (final Xnav kid
             : formation.elements(Filter.withName("o")).collect(Collectors.toList())) {
-            final String name = kid.attribute("name").text().orElse("");
-            if ("∅".equals(kid.attribute("base").text().orElse("")) && !"ρ".equals(name)) {
-                out.put(name, ((Map<?, ?>) formas).get(name).toString());
+            if ("∅".equals(kid.attribute("base").text().orElse(""))) {
+                final String name = kid.attribute("name").text().get();
+                if (!"ρ".equals(name)) {
+                    out.put(name, ((Map<?, ?>) formas).get(name).toString());
+                }
             }
         }
         return out;
