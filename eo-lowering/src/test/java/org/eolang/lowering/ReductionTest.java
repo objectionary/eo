@@ -194,6 +194,45 @@ final class ReductionTest {
     }
 
     @Test
+    void appliesHelperFormationTwice(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a helper with a void must be applied to each argument it is handed, but it isnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.plus'>",
+                        "<o base='ξ.a🌵3-4'>",
+                        ReductionTest.number("α0", "40-00-00-00-00-00-00-00"),
+                        "</o>",
+                        "<o as='α0' base='ξ.a🌵3-4'>",
+                        ReductionTest.number("α0", "40-08-00-00-00-00-00-00"),
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8,
+                "",
+                Collections.singletonMap(
+                    "a🌵3-4",
+                    new Xnav(
+                        String.join(
+                            "",
+                            "<o name='a🌵3-4'><o base='∅' name='ρ'/><o base='∅' name='i'/>",
+                            "<o base='ξ.ρ.x.times' name='φ'><o as='α0' base='ξ.i'/></o></o>"
+                        )
+                    ).element("o")
+                )
+            ).protocol().moves(),
+            Matchers.hasSize(3)
+        );
+    }
+
+    @Test
     void foldsHelperNamedTwiceIntoOneStep(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

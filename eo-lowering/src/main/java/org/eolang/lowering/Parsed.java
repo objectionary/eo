@@ -9,7 +9,6 @@ import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,10 +26,13 @@ import java.util.stream.Collectors;
  * leaks into a marker, and a {@code ξ.ρ} reference to the formation
  * being lowered, with arguments, becomes the {@link Again} of its own
  * body. A {@code ξ} reference to a helper the formation binds next to
- * its body becomes the helper's own body, read in place: the helper is
- * an application over the same voids, so it stands wherever it is
- * named, twice when named twice, and identical sites collapse into one
- * step anyway. A helper that reads itself, directly or through another
+ * its body becomes the helper's own body, read in place: an application
+ * over the same voids stands wherever it is named, and a formation of
+ * its own is applied where it is named, its voids bound to the argument
+ * terms in a {@link Scope} of its own, the way phino would bind them,
+ * so its body stands there with every void spelled out. A helper named
+ * twice stands twice, and identical sites collapse into one step
+ * anyway. A helper that reads itself, directly or through another
  * helper, is a cycle and is refused. The parser rolls a dispatch chain
  * rooted in a reference into the base itself, so {@code ξ.b.size.plus}
  * unrolls here into nested sites, with the arguments of the element
@@ -47,21 +49,9 @@ public final class Parsed {
     private final Xnav fragment;
 
     /**
-     * The voids of the fragment: names to formas, in declaration order.
+     * What the names of the fragment mean.
      */
-    private final Map<String, String> voids;
-
-    /**
-     * The name of the formation being lowered, or empty when the
-     * fragment is not the body of one.
-     */
-    private final String self;
-
-    /**
-     * The helpers the formation binds next to its body: names to their
-     * {@code <o/>} elements.
-     */
-    private final Map<String, Xnav> helpers;
+    private final Scope scope;
 
     /**
      * The helpers being read at the moment, outermost first, so that a
@@ -97,18 +87,22 @@ public final class Parsed {
      *  whose calls to itself through {@code ξ.ρ} become repeats
      * @param bound The helpers the formation binds next to its body:
      *  names to their {@code <o/>} elements, read in place when named
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public Parsed(final Xnav xmir, final Map<String, String> inputs,
         final String name, final Map<String, Xnav> bound) {
-        this(xmir, inputs, name, bound, Collections.emptyList());
+        this(xmir, new Scope(inputs, name, bound), Collections.emptyList());
     }
 
-    private Parsed(final Xnav xmir, final Map<String, String> inputs,
-        final String name, final Map<String, Xnav> bound, final Collection<String> above) {
+    /**
+     * Ctor.
+     * @param xmir The XMIR fragment to read, an {@code <o/>} element
+     * @param where What the names of the fragment mean
+     * @param above The helpers being read at the moment, outermost first
+     */
+    Parsed(final Xnav xmir, final Scope where, final Collection<String> above) {
         this.fragment = xmir;
-        this.voids = inputs;
-        this.self = name;
-        this.helpers = bound;
+        this.scope = where;
         this.trail = above;
     }
 
@@ -127,12 +121,6 @@ public final class Parsed {
             out = new Forced(this.parsed(Parsed.target(node)));
         } else if (base.startsWith("Φ.")) {
             out = new Carrier(node).literal();
-        } else if (this.recursive(base)) {
-            out = new Again(
-                this.bound(Parsed.kids(node)).stream()
-                    .map(Binding::value)
-                    .collect(Collectors.toList())
-            );
         } else if (base.startsWith("ξ.")) {
             out = this.chained(node, base.substring(2));
         } else if (base.length() > 1 && base.charAt(0) == '.') {
@@ -145,59 +133,51 @@ public final class Parsed {
         return out;
     }
 
-    private boolean recursive(final String base) {
-        return !this.self.isEmpty() && base.equals(String.format("ξ.ρ.%s", this.self));
-    }
-
-    private Term referenced(final String name) {
-        final List<String> names = new ArrayList<>(this.voids.keySet());
-        final int idx = names.indexOf(name);
-        final Term out;
-        if (idx >= 0) {
-            out = new Symbol(String.format("v%d", idx), this.voids.get(name));
-        } else if (this.helpers.containsKey(name)) {
-            out = this.expanded(name);
-        } else {
-            throw new IllegalStateException(
-                String.format(
-                    "The reference 'ξ.%s' names no void or helper of the fragment", name
-                )
-            );
-        }
-        return out;
-    }
-
-    private Term expanded(final String name) {
-        if (this.trail.contains(name)) {
-            throw new IllegalStateException(
-                String.format(
-                    "The helper 'ξ.%s' reads itself, so the fragment never settles", name
-                )
-            );
-        }
-        final Collection<String> deeper = new LinkedHashSet<>(this.trail);
-        deeper.add(name);
-        return new Parsed(
-            this.helpers.get(name), this.voids, this.self, this.helpers, deeper
-        ).term();
-    }
-
     private Term chained(final Xnav node, final String path) {
         final String[] parts = path.split("\\.", -1);
-        Term out = this.referenced(parts[0]);
-        final int last = parts.length - 1;
-        if (last == 0 && !Parsed.kids(node).isEmpty()) {
+        final List<Binding> args = this.bound(Parsed.kids(node));
+        Scope where = this.scope;
+        int hops = 0;
+        while (hops < parts.length && "ρ".equals(parts[hops]) && !where.root()) {
+            where = where.above();
+            ++hops;
+        }
+        if (hops == parts.length) {
             throw new IllegalStateException(
-                String.format("The reference 'ξ.%s' cannot take arguments", path)
+                String.format("The reference 'ξ.%s' names a formation, not a value", path)
             );
         }
-        for (int idx = 1; idx < last; ++idx) {
+        final int last = parts.length - 1;
+        Term out;
+        int next = hops + 1;
+        if ("ρ".equals(parts[hops])) {
+            out = Parsed.again(where, path, parts, args);
+            next = parts.length;
+        } else if (hops == last) {
+            out = new Reference(where, this.trail, parts[hops], args).term();
+        } else {
+            out = new Reference(where, this.trail, parts[hops], new ArrayList<>(0)).term();
+        }
+        for (int idx = next; idx < last; ++idx) {
             out = Parsed.site(parts[idx], out, new ArrayList<>(0));
         }
-        if (last > 0) {
-            out = Parsed.site(parts[last], out, this.bound(Parsed.kids(node)));
+        if (next <= last) {
+            out = Parsed.site(parts[last], out, args);
         }
         return out;
+    }
+
+    private static Term again(final Scope where, final String path,
+        final String[] parts, final List<Binding> args) {
+        if (where.name().isEmpty() || parts.length != 2 || !parts[1].equals(where.name())) {
+            throw new IllegalStateException(
+                String.format(
+                    "The reference 'ξ.%s' reaches through ρ beyond the formation being lowered",
+                    path
+                )
+            );
+        }
+        return new Again(args.stream().map(Binding::value).collect(Collectors.toList()));
     }
 
     private Term dispatched(final Xnav node, final String base) {

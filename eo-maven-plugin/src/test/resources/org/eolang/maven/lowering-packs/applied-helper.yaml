@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A privatized helper may be a formation of its own, taking arguments,
+# the way the helpers of the runtime's `printf` do. It is applied where
+# it is named: its voids are bound to the arguments, the outer void is
+# read through the `^` the author wrote, and a helper of the helper is
+# applied the same way one level down. The body stands with every void
+# spelled out, so the protocol is the one the inline expression gives,
+# and both helpers leave with the body.
+input: |
+  [] > foo
+    [x] > bump
+      [^ i] >> scaled
+        [^ k] >> shifted
+          k.plus ^.^.x > @
+        shifted (^.x.times i) > @
+      (scaled 2).plus (scaled 3) > @
+    bump 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bump 5 > @
+    [] > bump /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_times sym:v0 number:40-00-00-00-00-00-00-00
+  s2 ← L_number_plus sym:s1 sym:v0
+  s3 ← L_number_times sym:v0 number:40-08-00-00-00-00-00-00
+  s4 ← L_number_plus sym:s3 sym:v0
+  s5 ← L_number_plus sym:s2 sym:s4
+  answer sym:s5 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 * Double.longBitsToDouble(0x4000000000000000L);
+  final double s2 = s1 + v0;
+  final double s3 = v0 * Double.longBitsToDouble(0x4008000000000000L);
+  final double s4 = s3 + v0;
+  final double s5 = s2 + s4;
+  return new Data.ToPhi(s5);
