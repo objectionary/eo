@@ -197,6 +197,11 @@ final class Eo implements Iterable<Directive> {
         boolean broken = false;
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
+            if (next.trailing()) {
+                emit.error(next.line(), 0, Eo.TRAILING);
+                broken = true;
+                break;
+            }
             final String trimmed = next.body().stripTrailing();
             if (next.trailing()) {
                 emit.error(next.line(), 0, Eo.TRAILING);
