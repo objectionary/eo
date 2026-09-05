@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What a void is called with is often another void, and it has no type of its
+# own to hand on. What fills it reaches one hop further, so a call made with a
+# void passes on whatever was put into that void rather than nothing at all.
+eo:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [scope] > grip
+      arm oak > @
+      [^ m] > arm
+        ^.scope m > @
+  app.eo: |
+    [] > app
+      grip hold > @
+      grip pick > twin
+      [k] > hold
+      [j] > pick
+provides:
+  - "//attr[@name='k']/witnessed/ref[@loc='Φ.oak']"
+  - "//attr[@name='j']/witnessed/ref[@loc='Φ.oak']"

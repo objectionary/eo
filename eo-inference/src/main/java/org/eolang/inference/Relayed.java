@@ -40,6 +40,12 @@ import org.xembly.Xembler;
  * is: the caller written tomorrow may put a formation of another shape
  * there.</p>
  *
+ * <p>What a caller puts in is a locator of its own, so what fills the void is
+ * looked up by the name it goes by. Only a formation written out at the call
+ * site is its own name, and {@code malloc.for 0 x} is the common case: the
+ * argument is a copy of an {@code x} written beside it, and the voids belong
+ * to that (#8389).</p>
+ *
  * @since 0.70.0
  */
 public final class Relayed implements Clue {
@@ -66,7 +72,8 @@ public final class Relayed implements Clue {
         final Pairs written = new Pairs(links);
         final Map<String, String> pairs = written.all();
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
-        final Provided owned = new Provided(given, new Ends(pairs).names(), voids);
+        final Map<String, String> names = new Ends(pairs).names();
+        final Provided owned = new Provided(given, names, voids);
         final Collection<String> hollows = new HashSet<>(voids);
         final Map<String, Collection<String>> fillers = written.puts();
         final Map<String, Node> rows = written.refs();
@@ -77,6 +84,7 @@ public final class Relayed implements Clue {
                 new Xembler(
                     new Passed(
                         owned,
+                        names,
                         fillers.getOrDefault(hollow, Collections.emptyList()),
                         application.getValue()
                     ).directives()
