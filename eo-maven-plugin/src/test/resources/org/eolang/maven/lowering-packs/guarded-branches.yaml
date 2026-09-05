@@ -8,8 +8,10 @@
 # a fork, whose arms are reduced on their own and nest the next guard,
 # so the whole formation leaves the EO as one atom. Every step of an
 # arm sits inside the block of that arm in the Java, so a polynomial is
-# computed only when its guards let it through, and the void `k`, read
-# by the innermost guard alone, is still dataized at the top with `t`.
+# computed only when its guards let it through, and so is every read of
+# a void that arm alone touches: `t` is read at the top, since the first
+# guard needs it, while `k`, read by the innermost guard alone, is
+# dataized inside the arm that reaches that guard and nowhere else.
 input: |
   [] > foo
     [t k] > ease
@@ -95,7 +97,6 @@ protocol: |
   answer sym:s2 number
 java: |
   final double v0 = new Dataized(this.take("t")).asNumber();
-  final double v1 = new Dataized(this.take("k")).asNumber();
   final boolean s1 = Double.longBitsToDouble(0x0000000000000000L) > v0;
   final double s2;
   if (s1) {
@@ -106,6 +107,7 @@ java: |
       if (s3) {
           s4 = Double.longBitsToDouble(0x3FF0000000000000L);
       } else {
+          final double v1 = new Dataized(this.take("k")).asNumber();
           final boolean s5 = v1 > Double.longBitsToDouble(0x0000000000000000L);
           final double s6;
           if (s5) {
