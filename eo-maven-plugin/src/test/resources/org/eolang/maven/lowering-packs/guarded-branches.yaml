@@ -1,0 +1,89 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two clamps and a degree selector guard the easing polynomials of
+# Perlin: smootherstep for the then, smoothstep for the else. The
+# `.if` is void selection and the universe holds no `if` at all, so
+# no fragment reaching one ever reduces: the first guard parks into
+# a symbolic bool, and the `.if` reading that bool then dispatches
+# on a method nothing models, which is why `ease` keeps its body.
+# The guards are the only part that refuses, though. Each branch is
+# a pure application of its own, so both polynomials leave for
+# synthetic atoms and the `.if` spine stays behind to pick between
+# them at run time. Neither guard is outlined, since a lone
+# comparison is a Java atom already.
+input: |
+  [] > foo
+    [t k] > ease
+      if. > @
+        0.gt t
+        0
+        if.
+          t.gt 1
+          1
+          if.
+            k.gt 0
+            times.
+              times.
+                times.
+                  plus.
+                    times.
+                      plus.
+                        times.
+                          t
+                          6
+                        -15
+                      t
+                    10
+                  t
+                t
+              t
+            times.
+              times.
+                t
+                t
+              plus.
+                times.
+                  t
+                  -2
+                3
+    ease 0.3 1 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: ease
+voids:
+  t: number
+  k: number
+lowered: |
+  [] > foo
+    ease > @
+      0.3
+      1
+    [t k] > ease
+      if. > @
+        0.gt t
+        0
+        if.
+          t.gt 1
+          1
+          if.
+            k.gt 0
+            l🌵01dcbdee24f2 t
+            l🌵14de55c7653e t
+      [] > l🌵01dcbdee24f2 /Q.number
+        ? > v0 /Q.number
+      [] > l🌵14de55c7653e /Q.number
+        ? > v0 /Q.number
+stuck: "no atom parked at any known operation"
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double s1 = v0 * Double.longBitsToDouble(0x4018000000000000L);
+  final double s2 = s1 + Double.longBitsToDouble(0xC02E000000000000L);
+  final double s3 = s2 * v0;
+  final double s4 = s3 + Double.longBitsToDouble(0x4024000000000000L);
+  final double s5 = s4 * v0;
+  final double s6 = s5 * v0;
+  final double s7 = s6 * v0;
+  return new Data.ToPhi(s7);
