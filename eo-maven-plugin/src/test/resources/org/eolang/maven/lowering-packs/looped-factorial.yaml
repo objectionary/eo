@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The factorial written tail-recursively, with the product gathered in
+# `acc`: while `n` is above one, the formation calls itself with `n`
+# less one and the product so far, and answers `acc` otherwise. The
+# call is the whole of the then arm, so it is a repeat and the formation
+# lowers into one loop, with the arm that repeats first and the arm
+# that breaks out second, the other way round from `looped-countdown`.
+# The `^` is declared for the call alone and leaves with the body.
+input: |
+  [] > foo
+    [^ n acc] > fact
+      if. > @
+        n.gt 1
+        ^.fact
+          n.plus -1
+          acc.times n
+        acc
+    fact 5 1 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: fact
+voids:
+  n: number
+  acc: number
+lowered: |
+  [] > foo
+    fact > @
+      5
+      1
+    [] > fact /Q.number
+      ? > n /Q.number
+      ? > acc /Q.number
+protocol: |
+  loop v0 v1
+    s1 ← L_number_gt sym:v0 number:3F-F0-00-00-00-00-00-00
+    s2 ← fork sym:s1 number
+      then
+        s3 ← L_number_plus sym:v0 number:BF-F0-00-00-00-00-00-00
+        s4 ← L_number_times sym:v1 sym:v0
+        repeat sym:s3 sym:s4
+      else
+        answer sym:v1 number
+    answer sym:s2 number
+java: |
+  double v0 = new Dataized(this.take("n")).asNumber();
+  double v1 = new Dataized(this.take("acc")).asNumber();
+  final double s2;
+  while (true) {
+      final boolean s1 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+      if (s1) {
+          final double s3 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+          final double s4 = v1 * v0;
+          v0 = s3;
+          v1 = s4;
+          continue;
+      } else {
+          s2 = v1;
+          break;
+      }
+  }
+  return new Data.ToPhi(s2);
