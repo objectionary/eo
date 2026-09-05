@@ -179,7 +179,7 @@ final class LnMeta implements Line {
             if (end == idx || end < tail.length() && tail.charAt(end) != ' ') {
                 throw new ParseError(
                     this.span.line(), this.span.indent() + base + end,
-                    "meta parts must be separated by exactly one space"
+                    "meta parts must be separated by a single ASCII space"
                 );
             }
             out.add(LnMeta.promoteQ(tail.substring(idx, end)));

@@ -221,7 +221,7 @@ final class LnMetaTest {
                     .into(new Stack(), new Globals(), new Emit()),
                 "a tab between meta parts must be rejected per R-3.2.4"
             ).getMessage(),
-            Matchers.equalTo("meta parts must be separated by exactly one space")
+            Matchers.equalTo("meta parts must be separated by a single ASCII space")
         );
     }
 
