@@ -1,0 +1,41 @@
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        impl 03-
+        impl 04-
+      [^ sys] > impl
+        [^ size] > listen
+          size > @
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.sock.flag']/var"
+  - "/links/type[@id='Φ.sock.φ']/ref[@loc='Φ.choice.pick']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.sock.impl.listen']"

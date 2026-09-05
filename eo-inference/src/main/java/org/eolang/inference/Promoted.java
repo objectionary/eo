@@ -75,16 +75,28 @@ final class Promoted {
     private final Map<String, Type> others;
 
     /**
+     * The locator of every void.
+     */
+    private final Collection<String> hollows;
+
+    /**
      * Ctor.
      * @param woven The rows that follow from a set of pairs
      * @param provides The provides table, which says where a filling can land
      * @param kept The rows of the links table that are not pairs, without which
      *  a filling that arrives at a literal is not seen to be one
+     * @param voids The locator of every void, from {@link Hollows}
      */
-    Promoted(final Woven woven, final XML provides, final Map<String, Type> kept) {
+    Promoted(
+        final Woven woven,
+        final XML provides,
+        final Map<String, Type> kept,
+        final Collection<String> voids
+    ) {
         this.table = woven;
         this.given = provides;
         this.others = kept;
+        this.hollows = voids;
     }
 
     /**
@@ -96,10 +108,16 @@ final class Promoted {
      */
     Map<String, String> from(final Map<String, String> pairs) {
         final Collection<String> known = this.known();
+        final Provided owned = new Provided(
+            this.given, new Ends(pairs).names(), this.hollows
+        );
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
             : new Fillings(this.links(pairs), this.given).all().entrySet()) {
-            final String sole = new Sole(hollow.getValue(), known).names();
+            String sole = new Sole(hollow.getValue(), known).names();
+            if (sole.isEmpty()) {
+                sole = new Shared(hollow.getValue(), known, owned).names();
+            }
             if (!sole.isEmpty() && !pairs.containsKey(hollow.getKey())) {
                 found.put(hollow.getKey(), sole);
             }
