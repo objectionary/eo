@@ -45,6 +45,11 @@ import org.xembly.Xembler;
  * {@code Φ.true}, with a {@code Φ.false} and with five other things, and
  * naming any one of them would be picking a favourite among facts.</p>
  *
+ * <p>Not every filling is an application. An atom calls what it is handed, and
+ * a formation only Java ever copies is filled where no source can be read, so
+ * the voids of one are answered by the annotation the atom carries and by
+ * {@link Handed}, which reads it (#8380).</p>
+ *
  * <p>A choice longer than the cap is written as {@code unknown} instead of its
  * members. {@code Φ.tuple.head} is filled with 56 different types, and a
  * choice of 56 tells a reader nothing except that nobody has thought about
@@ -91,8 +96,9 @@ public final class Witnessed implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final Map<String, Collection<Type>> filled = new Fillings(
-            new XMLDocument(tables.resolve("links.xml")), given
+        final XML links = new XMLDocument(tables.resolve("links.xml"));
+        final Map<String, Collection<Type>> filled = new Handed(
+            links, given, new Fillings(links, given).all()
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(

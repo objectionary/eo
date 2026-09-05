@@ -82,6 +82,14 @@ import java.util.stream.Collectors;
  * walks behind a delegation, so a name asked of it is answered once and for
  * all rather than left to a caller.</p>
  *
+ * <p>A void may also say what will be handed to whatever goes into it.
+ * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
+ * its {@code scope} with a chunk, which is what {@code EOmalloc$EOof} then
+ * does, and the row keeps that list as it stands. Nobody else in the program
+ * says it: the formation {@code malloc.for} hands in is copied by Java alone,
+ * so without the annotation its void is filled by nobody and looks empty to
+ * every reader (#8380). {@link Handed} is where the list is spent.</p>
+ *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
  * belongs to {@code Φ.number} without ever appearing among its children,
@@ -135,6 +143,10 @@ final class Provides implements Clue {
                 final String held = attr.says("type");
                 if (held.startsWith("Φ.")) {
                     row.set("holds", held);
+                }
+                final String args = attr.says("args");
+                if (!args.isEmpty()) {
+                    row.set("args", args);
                 }
             }
         }
