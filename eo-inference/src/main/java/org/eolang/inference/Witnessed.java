@@ -96,9 +96,8 @@ public final class Witnessed implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final XML links = new XMLDocument(tables.resolve("links.xml"));
-        final Map<String, Collection<Type>> filled = new Handed(
-            links, given, new Fillings(links, given).all()
+        final Map<String, Collection<Type>> filled = new Fillings(
+            new XMLDocument(tables.resolve("links.xml")), given
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(
