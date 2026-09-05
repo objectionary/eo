@@ -65,13 +65,13 @@ public final class Symbol implements Term {
     }
 
     @Override
-    public String key() {
-        return String.format("sym:%s", this.name);
+    public String forma() {
+        return this.forma;
     }
 
     @Override
-    public String forma() {
-        return this.forma;
+    public String key() {
+        return String.format("sym:%s", this.name);
     }
 
     @Override
