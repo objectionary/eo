@@ -149,7 +149,7 @@ more question:
 | Pass | Answers |
 | --- | --- |
 | `Resolved` | What every dispatch turns out to be. `a.b.c` is walked one hop at a time, each hop asked of the type the last one arrived at, looking behind a delegation and into a package where it has to. |
-| `Demanded` | What a void will have to offer, gathered from everything ever asked of it. A contract: a caller that fills it owes these attributes. |
+| `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
 | `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
 
 `Depth` then walks the finished tables and puts every object on its rung.

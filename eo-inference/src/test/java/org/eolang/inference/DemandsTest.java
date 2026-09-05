@@ -30,7 +30,9 @@ final class DemandsTest {
             new XMLDocument(
                 new Xembler(
                     new Directives().add("attr").append(
-                        new Demands(asked, Collections.singletonList("Φ.inc.x")).directives()
+                        new Demands(
+                            asked, new Rooted(Collections.singletonList("Φ.inc.x"))
+                        ).directives()
                     )
                 ).xmlQuietly()
             ).nodes("/attr/demand[@of='Φ.inc.x.next' and @name='foo']"),
@@ -46,7 +48,7 @@ final class DemandsTest {
                 Collections.singletonMap(
                     "Φ.dec.y", Collections.singletonMap("prev", "Φ.dec.y.prev")
                 ),
-                Collections.singletonList("Φ.inc.x")
+                new Rooted(Collections.singletonList("Φ.inc.x"))
             ).any(),
             Matchers.is(false)
         );
