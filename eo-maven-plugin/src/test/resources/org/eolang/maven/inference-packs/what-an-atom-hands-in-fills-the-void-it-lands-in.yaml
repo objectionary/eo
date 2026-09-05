@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An atom calls what it is handed, and the brace list says with what. Nobody in
+# the program fills the void that argument lands in, so the annotation is the
+# only thing that can answer for it, and without it the void looks unfilled
+# while Java fills it on every run.
+eo:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+provides:
+  - "//attr[@name='m']/witnessed/ref[@loc='Φ.oak']"
