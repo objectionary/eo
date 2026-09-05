@@ -1065,6 +1065,7 @@ R-6.5.3. Before a master object (formation, atom, inline-phi formation): zero or
 R-6.5.4. Between two plain siblings: blank lines forbidden.
 R-6.5.5. After the meta header: exactly one blank line separates metas from whatever follows.
 R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an error.
+R-6.5.7. Between two metas: blank lines forbidden; the meta header is a single contiguous block.
 
 Examples:
 
