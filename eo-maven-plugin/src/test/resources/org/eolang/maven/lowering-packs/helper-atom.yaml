@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A helper attribute is part of the formation's interface, and deleting
-# the body would delete it too, so the formation stays as written even
-# though it is pure.
+# A public helper attribute is part of the formation's interface, and
+# deleting the body would delete it too, so the formation stays as
+# written even though it is pure. Compare hidden-helper.yaml, where the
+# same helper is privatized with `>>` and the formation lowers.
 input: |
   [] > foo
     [x] > bump

@@ -7,6 +7,9 @@ package org.eolang.lowering;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,17 +17,22 @@ import java.util.stream.Collectors;
 /**
  * One XMIR fragment, read into a reduction tree.
  *
- * <p>Dispatches become sites, literal carriers become literals — a
- * number and a string alike wrap their datum in a bytes carrier — and a
+ * <p>Dispatches become sites, the data carriers become literals, by
+ * {@link Carrier}, and a
  * {@code ξ} reference to a declared void becomes the symbol of that
  * void, named positionally so that no spelling of a void name ever
  * leaks into a marker, and a {@code ξ.ρ} reference to the formation
  * being lowered, with arguments, becomes the {@link Again} of its own
- * body. The parser rolls a dispatch chain rooted in a
- * reference into the base itself, so {@code ξ.b.size.plus} unrolls here
- * into nested sites, with the arguments of the element attached to the
- * last link. Anything else is refused, since its meaning depends on a
- * context the reduction does not carry.</p>
+ * body. A {@code ξ} reference to a helper the formation binds next to
+ * its body becomes the helper's own body, read in place: the helper is
+ * an application over the same voids, so it stands wherever it is
+ * named, twice when named twice, and identical sites collapse into one
+ * step anyway. A helper that reads itself, directly or through another
+ * helper, is a cycle and is refused. The parser rolls a dispatch chain
+ * rooted in a reference into the base itself, so {@code ξ.b.size.plus}
+ * unrolls here into nested sites, with the arguments of the element
+ * attached to the last link. Anything else is refused, since its
+ * meaning depends on a context the reduction does not carry.</p>
  *
  * @since 0.76.0
  */
@@ -47,6 +55,18 @@ public final class Parsed {
     private final String self;
 
     /**
+     * The helpers the formation binds next to its body: names to their
+     * {@code <o/>} elements.
+     */
+    private final Map<String, Xnav> helpers;
+
+    /**
+     * The helpers being read at the moment, outermost first, so that a
+     * helper reading itself is caught.
+     */
+    private final Collection<String> trail;
+
+    /**
      * Ctor.
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
@@ -63,9 +83,30 @@ public final class Parsed {
      *  whose calls to itself through {@code ξ.ρ} become repeats
      */
     public Parsed(final Xnav xmir, final Map<String, String> inputs, final String name) {
+        this(xmir, inputs, name, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     * @param xmir The XMIR fragment to read, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself through {@code ξ.ρ} become repeats
+     * @param bound The helpers the formation binds next to its body:
+     *  names to their {@code <o/>} elements, read in place when named
+     */
+    public Parsed(final Xnav xmir, final Map<String, String> inputs,
+        final String name, final Map<String, Xnav> bound) {
+        this(xmir, inputs, name, bound, Collections.emptyList());
+    }
+
+    private Parsed(final Xnav xmir, final Map<String, String> inputs,
+        final String name, final Map<String, Xnav> bound, final Collection<String> above) {
         this.fragment = xmir;
         this.voids = inputs;
         this.self = name;
+        this.helpers = bound;
+        this.trail = above;
     }
 
     /**
@@ -79,14 +120,8 @@ public final class Parsed {
     private Term parsed(final Xnav node) {
         final String base = node.attribute("base").text().orElse("");
         final Term out;
-        if ("Φ.true".equals(base)) {
-            out = new Literal("bool", "FF-");
-        } else if ("Φ.false".equals(base)) {
-            out = new Literal("bool", "00-");
-        } else if ("Φ.number".equals(base) || "Φ.string".equals(base)) {
-            out = new Literal(base.substring(2), Parsed.datum(Parsed.kids(node), base));
-        } else if ("Φ.bytes".equals(base)) {
-            out = new Literal("bytes", Parsed.datum(Parsed.kids(node), base));
+        if (base.startsWith("Φ.")) {
+            out = new Carrier(node).literal();
         } else if (this.recursive(base)) {
             out = new Again(
                 this.bound(Parsed.kids(node)).stream()
@@ -112,12 +147,34 @@ public final class Parsed {
     private Term referenced(final String name) {
         final List<String> names = new ArrayList<>(this.voids.keySet());
         final int idx = names.indexOf(name);
-        if (idx < 0) {
+        final Term out;
+        if (idx >= 0) {
+            out = new Symbol(String.format("v%d", idx), this.voids.get(name));
+        } else if (this.helpers.containsKey(name)) {
+            out = this.expanded(name);
+        } else {
             throw new IllegalStateException(
-                String.format("The reference 'ξ.%s' names no void of the fragment", name)
+                String.format(
+                    "The reference 'ξ.%s' names no void or helper of the fragment", name
+                )
             );
         }
-        return new Symbol(String.format("v%d", idx), this.voids.get(name));
+        return out;
+    }
+
+    private Term expanded(final String name) {
+        if (this.trail.contains(name)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The helper 'ξ.%s' reads itself, so the fragment never settles", name
+                )
+            );
+        }
+        final Collection<String> deeper = new LinkedHashSet<>(this.trail);
+        deeper.add(name);
+        return new Parsed(
+            this.helpers.get(name), this.voids, this.self, this.helpers, deeper
+        ).term();
     }
 
     private Term chained(final Xnav node, final String path) {
@@ -126,7 +183,7 @@ public final class Parsed {
         final int last = parts.length - 1;
         if (last == 0 && !Parsed.kids(node).isEmpty()) {
             throw new IllegalStateException(
-                String.format("The void 'ξ.%s' cannot take arguments", path)
+                String.format("The reference 'ξ.%s' cannot take arguments", path)
             );
         }
         for (int idx = 1; idx < last; ++idx) {
@@ -164,29 +221,6 @@ public final class Parsed {
             args.add(new Binding(name, this.parsed(kid)));
         }
         return args;
-    }
-
-    private static String datum(final List<Xnav> kids, final String base) {
-        List<Xnav> inner = kids;
-        if (!"Φ.bytes".equals(base)) {
-            if (inner.size() != 1
-                || !"Φ.bytes".equals(inner.get(0).attribute("base").text().orElse(""))) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The literal '%s' must wrap exactly one bytes carrier", base
-                    )
-                );
-            }
-            inner = Parsed.kids(inner.get(0));
-        }
-        if (inner.size() != 1
-            || inner.get(0).attribute("base").text().isPresent()
-            || !Parsed.kids(inner.get(0)).isEmpty()) {
-            throw new IllegalStateException(
-                String.format("The carrier '%s' does not wrap a plain datum", base)
-            );
-        }
-        return inner.get(0).text().orElse("").replaceAll("\\s+", "");
     }
 
     private static List<Xnav> kids(final Xnav node) {

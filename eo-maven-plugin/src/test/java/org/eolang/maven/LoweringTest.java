@@ -89,7 +89,8 @@ final class LoweringTest {
                     LoweringTest.fragment(foo),
                     voids,
                     8,
-                    story.map().getOrDefault("unit", "").toString()
+                    story.map().getOrDefault("unit", "").toString(),
+                    LoweringTest.helpers(foo)
                 ).protocol(),
                 voids.size()
             ).trim(),
@@ -114,7 +115,8 @@ final class LoweringTest {
                     LoweringTest.fragment(foo),
                     LoweringTest.voids(foo, story),
                     8,
-                    story.map().getOrDefault("unit", "").toString()
+                    story.map().getOrDefault("unit", "").toString(),
+                    LoweringTest.helpers(foo)
                 )::protocol,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
@@ -200,6 +202,19 @@ final class LoweringTest {
                 if (!"ρ".equals(name)) {
                     out.put(name, ((Map<?, ?>) formas).get(name).toString());
                 }
+            }
+        }
+        return out;
+    }
+
+    private static Map<String, Xnav> helpers(final Xnav formation) {
+        final Map<String, Xnav> out = new LinkedHashMap<>();
+        for (final Xnav kid
+            : formation.elements(Filter.withName("o")).collect(Collectors.toList())) {
+            final String name = kid.attribute("name").text().orElse("");
+            if (!name.isEmpty() && !"φ".equals(name)
+                && !"∅".equals(kid.attribute("base").text().orElse(""))) {
+                out.put(name, kid);
             }
         }
         return out;

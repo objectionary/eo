@@ -21,10 +21,16 @@ import org.w3c.dom.Element;
  * Rewrite the pure formations of one XMIR into synthetic atoms.
  *
  * <p>A formation qualifies when it is a named direct attribute of a
- * top-level object, its body is voids plus one {@code φ} and nothing
- * else — deleting the body must not change the object's interface — and
- * every void is witnessed in the tables of {@code eo:inference} as a
- * number, a string or bytes, so a symbolic carrier can stand for it. It
+ * top-level object, its body is voids plus one {@code φ} plus helpers
+ * nothing outside can name, and every void is witnessed in the tables
+ * of {@code eo:inference} as a number, a string or bytes, so a symbolic
+ * carrier can stand for it. A helper is an attribute the source
+ * privatized with {@code >>}, or a const the parser wrapped, and it
+ * shows up under a synthetic {@code a🌵} name: the body reads it in
+ * place, so it is folded into the atom and leaves with the body. A
+ * public attribute keeps the formation as written, since deleting the
+ * body must not change the object's interface, and a helper that stays
+ * reachable would be dispatchable with nothing behind it. The formation
  * may declare {@code ρ}, but its body may reach through it only to call
  * the formation itself again, which the reduction turns into a repeat;
  * any other use of {@code ρ} depends on a context the atom does not
@@ -92,9 +98,10 @@ public final class Lowered implements Rewrite {
         final List<Xnav> bodies = Lowered.bodies(node);
         final List<Xnav> kids = Lowered.kids(node);
         final long rhos = kids.stream().filter(Lowered::rho).count();
+        final long hidden = kids.stream().filter(Lowered::hidden).count();
         boolean done = false;
         if (!inputs.isEmpty() && bodies.size() == 1
-            && kids.size() == inputs.size() + 1 + (int) rhos) {
+            && kids.size() == inputs.size() + 1 + (int) rhos + (int) hidden) {
             done = this.spliced(node, bodies.get(0), inputs);
         }
         return done;
@@ -106,7 +113,9 @@ public final class Lowered implements Rewrite {
         String carrier = "";
         try {
             final Protocol protocol = new Reduction(
-                this.phino, body, inputs, 8, node.attribute("name").text().orElse("")
+                this.phino, body, inputs, 8,
+                node.attribute("name").text().orElse(""),
+                Lowered.helpers(node)
             ).protocol();
             if (!protocol.moves().isEmpty()) {
                 text = new JavaAtom(protocol, inputs).text();
@@ -131,7 +140,7 @@ public final class Lowered implements Rewrite {
         element.setAttribute("lowered", digest);
         element.removeChild(body.node());
         for (final Xnav kid : Lowered.kids(new Xnav(element))) {
-            if (Lowered.rho(kid)) {
+            if (Lowered.rho(kid) || Lowered.hidden(kid)) {
                 element.removeChild(kid.node());
             }
         }
@@ -173,6 +182,20 @@ public final class Lowered implements Rewrite {
     private static boolean rho(final Xnav kid) {
         return "∅".equals(kid.attribute("base").text().orElse(""))
             && "ρ".equals(kid.attribute("name").text().orElse(""));
+    }
+
+    private static boolean hidden(final Xnav kid) {
+        return kid.attribute("name").text().orElse("").startsWith("a🌵");
+    }
+
+    private static Map<String, Xnav> helpers(final Xnav node) {
+        final Map<String, Xnav> out = new LinkedHashMap<>();
+        for (final Xnav kid : Lowered.kids(node)) {
+            if (Lowered.hidden(kid)) {
+                out.put(kid.attribute("name").text().get(), kid);
+            }
+        }
+        return out;
     }
 
     private static Collection<Xnav> candidates(final Xnav doc) {
