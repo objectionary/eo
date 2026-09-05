@@ -71,6 +71,11 @@ public final class Literal implements Term {
     }
 
     @Override
+    public String forma() {
+        return this.forma;
+    }
+
+    @Override
     public boolean matches(final Shape shape) {
         return false;
     }

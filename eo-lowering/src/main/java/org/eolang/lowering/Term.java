@@ -19,7 +19,10 @@ import java.util.Optional;
  * matching a fired record becomes the literal it computed, a site
  * matching a parked record becomes the symbol of a new step. Values
  * carry a key naming their identity, and matching is key equality, so
- * identical sites collapse into one step wherever they stand.</p>
+ * identical sites collapse into one step wherever they stand. A
+ * {@link Forced} is the bytes view of any of them, what {@code as-bytes}
+ * answers and what a const is, and it stands for the same value under
+ * the forma bytes.</p>
  *
  * @since 0.76.0
  */
@@ -36,6 +39,12 @@ public interface Term {
      * @return A key such as {@code sym:s1} or {@code number:40-14-...}, empty for a site
      */
     String key();
+
+    /**
+     * The forma of the value this term stands for.
+     * @return A forma such as {@code number} or {@code bytes}, empty for a site
+     */
+    String forma();
 
     /**
      * Whether any site of this tree matches the shape.

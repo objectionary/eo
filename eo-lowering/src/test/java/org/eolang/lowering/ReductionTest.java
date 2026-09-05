@@ -146,6 +146,54 @@ final class ReductionTest {
     }
 
     @Test
+    void readsConstThroughItsBytes(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a const must fold into the steps of what it forces, but it doesnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.eq'>",
+                        "<o base='.as-bytes'><o base='Φ.dataized'>",
+                        "<o base='.and'><o base='ξ.m'/>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>0F-0F</o></o>",
+                        "</o>",
+                        "</o></o>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00</o></o>",
+                        "</o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("m", "bytes"),
+                8
+            ).protocol().carrier(),
+            Matchers.equalTo("bool")
+        );
+    }
+
+    @Test
+    void refusesBytesOfNumberAsAnswer(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the bytes of a number cannot be answered yet and must refuse, but they didnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                new Reduction(
+                    phino,
+                    new Xnav("<o base='ξ.x.as-bytes'/>").element("o"),
+                    Collections.singletonMap("x", "number"),
+                    8
+                )::protocol,
+                "a fragment answering the bytes of a number reduced, but it must not"
+            ).getMessage(),
+            Matchers.containsString("carries a number")
+        );
+    }
+
+    @Test
     void foldsHelperNamedTwiceIntoOneStep(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

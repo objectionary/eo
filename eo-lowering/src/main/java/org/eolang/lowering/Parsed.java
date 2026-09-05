@@ -18,7 +18,10 @@ import java.util.stream.Collectors;
  * One XMIR fragment, read into a reduction tree.
  *
  * <p>Dispatches become sites, the data carriers become literals, by
- * {@link Carrier}, and a
+ * {@link Carrier}, an {@code as-bytes} dispatch and a {@code dataized}
+ * object alike become the {@link Forced} bytes of what they are applied
+ * to, since a const is the latter followed by the former and forcing is
+ * already what a protocol does, and a
  * {@code ξ} reference to a declared void becomes the symbol of that
  * void, named positionally so that no spelling of a void name ever
  * leaks into a marker, and a {@code ξ.ρ} reference to the formation
@@ -120,7 +123,9 @@ public final class Parsed {
     private Term parsed(final Xnav node) {
         final String base = node.attribute("base").text().orElse("");
         final Term out;
-        if (base.startsWith("Φ.")) {
+        if ("Φ.dataized".equals(base)) {
+            out = new Forced(this.parsed(Parsed.target(node)));
+        } else if (base.startsWith("Φ.")) {
             out = new Carrier(node).literal();
         } else if (this.recursive(base)) {
             out = new Again(
@@ -187,10 +192,10 @@ public final class Parsed {
             );
         }
         for (int idx = 1; idx < last; ++idx) {
-            out = new Site(parts[idx], out, new ArrayList<>(0));
+            out = Parsed.site(parts[idx], out, new ArrayList<>(0));
         }
         if (last > 0) {
-            out = new Site(parts[last], out, this.bound(Parsed.kids(node)));
+            out = Parsed.site(parts[last], out, this.bound(Parsed.kids(node)));
         }
         return out;
     }
@@ -202,11 +207,34 @@ public final class Parsed {
                 String.format("The dispatch '%s' has no receiver", base)
             );
         }
-        return new Site(
+        return Parsed.site(
             base.substring(1),
             this.parsed(kids.get(0)),
             this.bound(kids.subList(1, kids.size()))
         );
+    }
+
+    private static Term site(final String method, final Term receiver,
+        final List<Binding> args) {
+        final Term out;
+        if ("as-bytes".equals(method) && args.isEmpty()) {
+            out = new Forced(receiver);
+        } else {
+            out = new Site(method, receiver, args);
+        }
+        return out;
+    }
+
+    private static Xnav target(final Xnav node) {
+        final List<Xnav> kids = Parsed.kids(node);
+        if (kids.size() != 1) {
+            throw new IllegalStateException(
+                String.format(
+                    "The dataized object must force exactly one target, not %d", kids.size()
+                )
+            );
+        }
+        return kids.get(0);
     }
 
     private List<Binding> bound(final List<Xnav> nodes) {

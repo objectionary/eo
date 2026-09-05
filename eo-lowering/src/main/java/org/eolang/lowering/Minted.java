@@ -85,4 +85,33 @@ public final class Minted {
         }
         return out;
     }
+
+    /**
+     * The forma a settled term hands over, checked against the ledger.
+     *
+     * <p>A term keyed by a symbol stands for the value of that symbol,
+     * and a {@link Forced} view of it stands for the bytes of the same
+     * value under the same key, so the two agree on the key and differ
+     * on the forma; a protocol settling into such a view would hand the
+     * Java local over as it is, so the view is refused wherever a tree
+     * settles.</p>
+     *
+     * @param tree The settled term, with a key
+     * @return The forma the ledger holds for the key
+     */
+    public String carried(final Term tree) {
+        final String key = tree.key();
+        final String carrier = this.carrier(key);
+        if (!tree.forma().equals(carrier)) {
+            throw new IllegalStateException(
+                String.join(
+                    " ",
+                    String.format("The value '%s' carries a %s,", key, carrier),
+                    String.format("but the fragment settles into its %s,", tree.forma()),
+                    "which the atom cannot hand over yet"
+                )
+            );
+        }
+        return carrier;
+    }
 }

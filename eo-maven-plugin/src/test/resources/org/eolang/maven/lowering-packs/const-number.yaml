@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const of a number is the bytes of that number, so the const reads
+# through its bytes and keeps the key of the step it forces, and the
+# equality that compares it compares the raw bits of two doubles, which
+# is what comparing two dataized values means.
+input: |
+  [] > foo
+    [x] > same
+      x.times x >> square!
+      square.eq (x.plus x) > @
+    same 2 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: same
+voids:
+  x: number
+lowered: |
+  [] > foo
+    same 2 > @
+    [] > same /Q.bool
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_times sym:v0 sym:v0
+  s2 ← L_number_plus sym:v0 sym:v0
+  s3 ← L_bytes_eq sym:s1 sym:s2
+  answer sym:s3 bool
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 * v0;
+  final double s2 = v0 + v0;
+  final boolean s3 = Double.doubleToRawLongBits(s1) == Double.doubleToRawLongBits(s2);
+  return new Data.ToPhi(s3);
