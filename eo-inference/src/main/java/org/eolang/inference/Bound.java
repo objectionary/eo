@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,22 @@ import java.util.Map;
  * and not by an argument written to the right of the name. A name written by
  * itself dispatches as well, off the object it is written inside, and
  * {@link Taken} answers for both.</p>
+ *
+ * <p>An application whose base is a void declares no place at all, and its
+ * arguments would go nowhere: {@code cant-read "foo"}, written inside the
+ * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
+ * nobody has named yet. A caller names it, though, and once it does the
+ * argument has somewhere to land — an {@code as-ascii} given the formation
+ * {@code "bar" > [message]} puts that {@code message} in the way of the
+ * {@code "foo"}. So what the program is seen to put into a void is read off
+ * the fillings gathered here, and the arguments of an application on that void
+ * are passed on to every formation it holds.</p>
+ *
+ * <p>It is evidence and not a contract, as everything gathered from callers
+ * is: the caller written tomorrow may put a formation of another shape there.
+ * And it belongs here rather than after the passes, since an argument that
+ * reaches a formation this way is what tells a dispatch on that void what it
+ * turns out to be (#8405).</p>
  *
  * @since 0.69.0
  */
@@ -107,6 +124,43 @@ final class Bound {
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
                     .put(hollow, dispatch.getValue());
+            }
+        }
+        this.relayed(found);
+        return found;
+    }
+
+    private Map<String, Collection<String>> puts(final Map<String, Map<String, String>> found) {
+        final Map<String, Collection<String>> fillers = new LinkedHashMap<>(0);
+        for (final Map<String, String> filled : found.values()) {
+            for (final Map.Entry<String, String> fill : filled.entrySet()) {
+                fillers.computeIfAbsent(fill.getKey(), key -> new LinkedHashSet<>(0))
+                    .add(this.base(fill.getValue()));
+            }
+        }
+        return fillers;
+    }
+
+    private void relayed(final Map<String, Map<String, String>> found) {
+        final Map<String, Collection<String>> fillers = this.puts(found);
+        for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
+            for (final String filler
+                : fillers.getOrDefault(this.base(application.getKey()), Collections.emptyList())) {
+                final Map<String, String> passed = this.passed(filler, application.getValue());
+                if (!passed.isEmpty()) {
+                    found.computeIfAbsent(application.getKey(), key -> new LinkedHashMap<>(1))
+                        .putAll(passed);
+                }
+            }
+        }
+    }
+
+    private Map<String, String> passed(final String filler, final List<String> given) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (int place = 0; place < given.size(); place += 1) {
+            final String hollow = this.owned.vacant(filler, Collections.emptyList(), place);
+            if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
+                found.put(hollow, given.get(place));
             }
         }
         return found;
