@@ -440,6 +440,117 @@ final class JavaAtomTest {
     }
 
     @Test
+    void rendersRepeatAsLoop() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("n", "number");
+        voids.put("acc", "number");
+        MatcherAssert.assertThat(
+            "a program that repeats must run as a loop, but it doesnt",
+            new JavaAtom(JavaAtomTest.countdown(), voids).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        double v0 = new Dataized(this.take(\"n\")).asNumber();",
+                    "        double v1 = new Dataized(this.take(\"acc\")).asNumber();",
+                    "        final double s2;",
+                    "        while (true) {",
+                    String.format(
+                        "            final boolean s1 = %s == %s;",
+                        "Double.doubleToRawLongBits(v0)",
+                        "Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L))"
+                    ),
+                    "            if (s1) {",
+                    "                s2 = v1;",
+                    "                break;",
+                    "            } else {",
+                    "                final double s3 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);",
+                    "                final double s4 = v1 * v0;",
+                    "                v0 = s3;",
+                    "                v1 = s4;",
+                    "                continue;",
+                    "            }",
+                    "        }",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void swapsVoidsThroughTemporaries() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("a", "number");
+        voids.put("b", "number");
+        voids.put("f", "bool");
+        MatcherAssert.assertThat(
+            "two voids trading places must go through temporaries, but they dont",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v2",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(
+                                Collections.emptyList(), Arrays.asList("sym:v1", "sym:v0", "sym:v2")
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.containsString(
+                String.join(
+                    System.lineSeparator(),
+                    "                final double r0 = v1;",
+                    "                final double r1 = v0;",
+                    "                v0 = r0;",
+                    "                v1 = r1;",
+                    "                continue;"
+                )
+            )
+        );
+    }
+
+    @Test
+    void refusesRepeatOfForeignForma() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("f", "bool");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v1",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(Collections.emptyList(), Arrays.asList("sym:v1", "sym:v1"))
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            )::text,
+            "a bool handed to a number void cannot render, but it did"
+        );
+    }
+
+    @Test
+    void refusesProgramThatNeverAnswers() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "a program that only repeats never answers, but it rendered"
+        );
+    }
+
+    @Test
     void refusesEqualityOverMixedFormas() {
         Assertions.assertThrows(
             IllegalStateException.class,
@@ -520,6 +631,34 @@ final class JavaAtomTest {
                 Collections.singletonMap("t", "string")
             )::text,
             "a byte array handed over as a string would change the forma, but it was"
+        );
+    }
+
+    private static Protocol countdown() {
+        return new Protocol(
+            Arrays.asList(
+                new Application(
+                    "s1", "L_bytes_eq", Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                ),
+                new Fork(
+                    "s2", "L_bool_if", "sym:s1",
+                    new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                    new Protocol(
+                        Arrays.asList(
+                            new Application(
+                                "s3", "L_number_plus",
+                                Arrays.asList("sym:v0", "number:BF-F0-00-00-00-00-00-00")
+                            ),
+                            new Application(
+                                "s4", "L_number_times", Arrays.asList("sym:v1", "sym:v0")
+                            )
+                        ),
+                        Arrays.asList("sym:s3", "sym:s4")
+                    )
+                )
+            ),
+            "sym:s2",
+            "number"
         );
     }
 }

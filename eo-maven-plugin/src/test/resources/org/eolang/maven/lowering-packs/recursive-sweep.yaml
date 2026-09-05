@@ -6,9 +6,11 @@
 # `curve` is pure and every site fills it with data, so it becomes an
 # atom. `panel` is pure and reduces fine — the protocol below is its
 # own — but its voids are filled with computed objects that no forma
-# witnesses, so it stays as written. `sweep` recurses, which means it
-# declares `^` and reads its own name through it, and a formation that
-# names ρ is refused before the reduction is even tried. Recursion
+# witnesses, so it stays as written. `sweep` recurses through `^`, and
+# a tail call of a formation to itself is a repeat the lowering can
+# take, but this one also reaches through `^` to its sibling `panel`,
+# and its guard is a `lte` the universe does not model, so the
+# reduction refuses and the formation stays as written. Recursion
 # shields nothing, though: the midpoint inside the recursive call is
 # still a pure application, and it leaves for a synthetic atom of its
 # own.

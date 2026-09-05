@@ -95,6 +95,11 @@ public final class Site implements Term {
     }
 
     @Override
+    public Optional<List<Term>> again() {
+        return Optional.empty();
+    }
+
+    @Override
     public Term swapped(final Shape shape, final Term swap) {
         final Term out;
         if (shape.covers(this.method, this.receiver.key(), this.args)) {

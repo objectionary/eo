@@ -80,16 +80,18 @@ final class LoweringTest {
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
         final Xnav foo = LoweringTest.formation(this.temp, story);
+        final Map<String, String> voids = LoweringTest.voids(foo, story);
         MatcherAssert.assertThat(
             "the fragment must reduce into the protocol the pack promises, but it doesnt",
-            LoweringTest.rendered(
+            LoweringTest.printed(
                 new Reduction(
                     phino,
                     LoweringTest.fragment(foo),
-                    LoweringTest.voids(foo, story),
-                    8
+                    voids,
+                    8,
+                    story.map().getOrDefault("unit", "").toString()
                 ).protocol(),
-                ""
+                voids.size()
             ).trim(),
             Matchers.equalTo(story.map().get("protocol").toString().trim())
         );
@@ -108,7 +110,11 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 new Reduction(
-                    phino, LoweringTest.fragment(foo), LoweringTest.voids(foo, story), 8
+                    phino,
+                    LoweringTest.fragment(foo),
+                    LoweringTest.voids(foo, story),
+                    8,
+                    story.map().getOrDefault("unit", "").toString()
                 )::protocol,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
@@ -191,8 +197,25 @@ final class LoweringTest {
             : formation.elements(Filter.withName("o")).collect(Collectors.toList())) {
             if ("∅".equals(kid.attribute("base").text().orElse(""))) {
                 final String name = kid.attribute("name").text().get();
-                out.put(name, ((Map<?, ?>) formas).get(name).toString());
+                if (!"ρ".equals(name)) {
+                    out.put(name, ((Map<?, ?>) formas).get(name).toString());
+                }
             }
+        }
+        return out;
+    }
+
+    private static String printed(final Protocol protocol, final int voids) {
+        final String out;
+        if (protocol.repeats()) {
+            final StringBuilder head = new StringBuilder("loop");
+            for (int idx = 0; idx < voids; ++idx) {
+                head.append(" v").append(idx);
+            }
+            out = head.append(System.lineSeparator())
+                .append(LoweringTest.rendered(protocol, "  ")).toString();
+        } else {
+            out = LoweringTest.rendered(protocol, "");
         }
         return out;
     }
@@ -208,19 +231,38 @@ final class LoweringTest {
                 }
                 out.append(System.lineSeparator());
             } else {
-                out.append("fork ").append(step.keys().get(0)).append(' ')
-                    .append(step.forma()).append(System.lineSeparator());
-                final String[] arms = {"then", "else"};
-                for (int idx = 0; idx < arms.length; ++idx) {
-                    final String arm = LoweringTest.rendered(
-                        step.branches().get(idx), String.format("%s    ", pad)
-                    );
-                    out.append(pad).append("  ").append(arms[idx])
-                        .append(System.lineSeparator()).append(arm);
-                }
+                out.append(LoweringTest.forked(step, pad));
             }
         }
-        return out.append(pad).append("answer ").append(protocol.answer())
-            .append(' ').append(protocol.carrier()).append(System.lineSeparator()).toString();
+        return out.append(LoweringTest.ended(protocol, pad)).toString();
+    }
+
+    private static String forked(final Step step, final String pad) {
+        final StringBuilder out = new StringBuilder(64);
+        out.append("fork ").append(step.keys().get(0)).append(' ')
+            .append(step.forma()).append(System.lineSeparator());
+        final String[] arms = {"then", "else"};
+        for (int idx = 0; idx < arms.length; ++idx) {
+            final String arm = LoweringTest.rendered(
+                step.branches().get(idx), String.format("%s    ", pad)
+            );
+            out.append(pad).append("  ").append(arms[idx])
+                .append(System.lineSeparator()).append(arm);
+        }
+        return out.toString();
+    }
+
+    private static String ended(final Protocol protocol, final String pad) {
+        final StringBuilder out = new StringBuilder(pad);
+        if (protocol.again().isEmpty()) {
+            out.append("answer ").append(protocol.answer())
+                .append(' ').append(protocol.carrier());
+        } else {
+            out.append("repeat");
+            for (final String key : protocol.again()) {
+                out.append(' ').append(key);
+            }
+        }
+        return out.append(System.lineSeparator()).toString();
     }
 }

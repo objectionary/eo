@@ -90,6 +90,32 @@ final class ParsedTest {
     }
 
     @Test
+    void readsCallToItselfAsRepeat() {
+        MatcherAssert.assertThat(
+            "a call of the formation to itself must become a repeat, but it didnt",
+            new Parsed(
+                new Xnav("<o base='ξ.ρ.f'><o as='α0' base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "f"
+            ).term().again().get(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void refusesCallThroughRhoToAnother() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Parsed(
+                new Xnav("<o base='ξ.ρ.g'><o as='α0' base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "f"
+            )::term,
+            "a call through ρ to a sibling depends on a context the fragment lacks, but it parsed"
+        );
+    }
+
+    @Test
     void refusesArgumentsOnBareReference() {
         Assertions.assertThrows(
             IllegalStateException.class,

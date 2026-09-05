@@ -9,6 +9,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -419,6 +421,69 @@ final class ReductionTest {
     }
 
     @Test
+    void repeatsOnTailCallToItself(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the arm calling the formation again must end in a repeat, but it doesnt",
+            new Reduction(
+                phino, ReductionTest.countdown(), ReductionTest.pair(), 8, "down"
+            ).protocol().moves().get(1).branches().get(1).again(),
+            Matchers.contains("sym:s3", "sym:s4")
+        );
+    }
+
+    @Test
+    void answersThroughForkAroundRepeat(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the program must answer with the fork that guards the repeat, but it doesnt",
+            new Reduction(
+                phino, ReductionTest.countdown(), ReductionTest.pair(), 8, "down"
+            ).protocol().answer(),
+            Matchers.equalTo("sym:s2")
+        );
+    }
+
+    @Test
+    void refusesCallToItselfOutsideTail(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.format(
+                        "<o base='.plus'><o base='ξ.ρ.f'><o as='α0' base='ξ.x'/></o>%s</o>",
+                        ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00")
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8,
+                "f"
+            )::protocol,
+            "a call to itself feeding an operation is no tail call, but it reduced"
+        );
+    }
+
+    @Test
+    void refusesCallToItselfOfWrongArity(@Mktmp final Path temp) {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Reduction(
+                new Phino("phino", 1000, temp),
+                new Xnav("<o base='ξ.ρ.down'><o as='α0' base='ξ.n'/></o>").element("o"),
+                ReductionTest.pair(),
+                8,
+                "down"
+            )::protocol,
+            "one argument cannot rebind two voids, but it did"
+        );
+    }
+
+    @Test
     void refusesNumberMethodOnBool(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
@@ -545,6 +610,32 @@ final class ReductionTest {
             ).protocol().answer(),
             Matchers.equalTo("number:40-14-00-00-00-00-00-00")
         );
+    }
+
+    private static Xnav countdown() {
+        return ReductionTest.choice(
+            String.format(
+                "<o base='ξ.n.eq'>%s</o>",
+                ReductionTest.number("α0", "00-00-00-00-00-00-00-00")
+            ),
+            "<o as='α0' base='ξ.acc'/>",
+            String.join(
+                "",
+                "<o as='α1' base='ξ.ρ.down'>",
+                "<o as='α0' base='.plus'><o base='ξ.n'/>",
+                ReductionTest.number("α0", "BF-F0-00-00-00-00-00-00"),
+                "</o>",
+                "<o as='α1' base='.times'><o base='ξ.acc'/><o as='α0' base='ξ.n'/></o>",
+                "</o>"
+            )
+        );
+    }
+
+    private static Map<String, String> pair() {
+        final Map<String, String> out = new LinkedHashMap<>();
+        out.put("n", "number");
+        out.put("acc", "number");
+        return out;
     }
 
     private static Xnav choice(final String test, final String yes, final String not) {

@@ -13,7 +13,8 @@ import java.util.Optional;
  * <p>The tree mirrors the XMIR fragment being lowered: a {@link Site} for
  * every application, a {@link Literal} for every datum, a {@link Symbol}
  * for every value that is not known yet — a void of the fragment, or a
- * step already minted. The tree renders itself into phi text for each
+ * step already minted — and an {@link Again} for every call of the
+ * fragment to itself. The tree renders itself into phi text for each
  * partial run, and rewrites itself as the records come back: a site
  * matching a fired record becomes the literal it computed, a site
  * matching a parked record becomes the symbol of a new step. Values
@@ -49,6 +50,14 @@ public interface Term {
      * @return The bindings of that site, or empty when no site matches
      */
     Optional<List<Binding>> arguments(Shape shape);
+
+    /**
+     * The arguments of the call of the fragment to itself that this term
+     * is, if it is one.
+     * @return The arguments in their positional order, or empty for any
+     *  other term
+     */
+    Optional<List<Term>> again();
 
     /**
      * This tree with every site matching the shape replaced.

@@ -22,17 +22,22 @@ import org.w3c.dom.Element;
  *
  * <p>A formation qualifies when it is a named direct attribute of a
  * top-level object, its body is voids plus one {@code φ} and nothing
- * else — deleting the body must not change the object's interface — it
- * neither declares nor reads {@code ρ}, and every void is witnessed in
- * the tables of {@code eo:inference} as a number, a string or bytes, so
- * a symbolic carrier can stand for it. Purity needs no separate analysis:
+ * else — deleting the body must not change the object's interface — and
+ * every void is witnessed in the tables of {@code eo:inference} as a
+ * number, a string or bytes, so a symbolic carrier can stand for it. It
+ * may declare {@code ρ}, but its body may reach through it only to call
+ * the formation itself again, which the reduction turns into a repeat;
+ * any other use of {@code ρ} depends on a context the atom does not
+ * carry and refuses. Purity needs no separate analysis:
  * the reduction itself is constructive proof, since it settles only a
  * body made of literals, void references, and the lowerable operations,
  * and refuses everything else. Such a formation is reduced into a
  * protocol, the protocol is rendered into a Java body, the body goes
  * into a sidecar file named by its own digest, and the formation keeps
  * only its voids, the digest, and a {@code λ} marker — the shape
- * {@code lowered.xsl} later renders into an atom class. Whatever refuses
+ * {@code lowered.xsl} later renders into an atom class, which binds
+ * {@code ρ} of its own, so a declared {@code ρ} leaves with the body.
+ * Whatever refuses
  * along the way — an unwitnessed void, an operation outside the tables,
  * a body that needs no computation — leaves the formation as
  * written.</p>
@@ -85,9 +90,11 @@ public final class Lowered implements Rewrite {
     private boolean lowered(final Xnav node, final String place) throws IOException {
         final Map<String, String> inputs = this.voids(node, place);
         final List<Xnav> bodies = Lowered.bodies(node);
+        final List<Xnav> kids = Lowered.kids(node);
+        final long rhos = kids.stream().filter(Lowered::rho).count();
         boolean done = false;
         if (!inputs.isEmpty() && bodies.size() == 1
-            && Lowered.kids(node).size() == inputs.size() + 1) {
+            && kids.size() == inputs.size() + 1 + (int) rhos) {
             done = this.spliced(node, bodies.get(0), inputs);
         }
         return done;
@@ -98,7 +105,9 @@ public final class Lowered implements Rewrite {
         String text = "";
         String carrier = "";
         try {
-            final Protocol protocol = new Reduction(this.phino, body, inputs, 8).protocol();
+            final Protocol protocol = new Reduction(
+                this.phino, body, inputs, 8, node.attribute("name").text().orElse("")
+            ).protocol();
             if (!protocol.moves().isEmpty()) {
                 text = new JavaAtom(protocol, inputs).text();
                 carrier = protocol.carrier();
@@ -121,6 +130,11 @@ public final class Lowered implements Rewrite {
         element.setAttribute("pure", "true");
         element.setAttribute("lowered", digest);
         element.removeChild(body.node());
+        for (final Xnav kid : Lowered.kids(new Xnav(element))) {
+            if (Lowered.rho(kid)) {
+                element.removeChild(kid.node());
+            }
+        }
         final Document doc = element.getOwnerDocument();
         final Element marker = doc.createElement("o");
         marker.setAttribute("name", "λ");
@@ -143,14 +157,22 @@ public final class Lowered implements Rewrite {
                 continue;
             }
             final String name = kid.attribute("name").text().orElse("");
+            if ("ρ".equals(name)) {
+                continue;
+            }
             final String forma = this.formas.given(String.format("%s.%s", place, name));
-            if ("ρ".equals(name) || forma.isEmpty()) {
+            if (forma.isEmpty()) {
                 out.clear();
                 break;
             }
             out.put(name, forma);
         }
         return out;
+    }
+
+    private static boolean rho(final Xnav kid) {
+        return "∅".equals(kid.attribute("base").text().orElse(""))
+            && "ρ".equals(kid.attribute("name").text().orElse(""));
     }
 
     private static Collection<Xnav> candidates(final Xnav doc) {

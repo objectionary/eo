@@ -43,6 +43,32 @@ final class ForkTest {
     }
 
     @Test
+    void answersWithArmThatDoesNotRepeat() {
+        MatcherAssert.assertThat(
+            "a fork repeating in one arm must answer what the other does, but it doesnt",
+            new Fork(
+                "s2", "L_bool_if", "sym:s1",
+                new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
+                new Protocol(Collections.emptyList(), "sym:v0", "number")
+            ).forma(),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void refusesRepeatingInBothArms() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Fork(
+                "s2", "L_bool_if", "sym:s1",
+                new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
+                new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0"))
+            )::forma,
+            "a fork whose both arms repeat answers nothing, but it named a forma"
+        );
+    }
+
+    @Test
     void readsOnlyItsCondition() {
         MatcherAssert.assertThat(
             "the one key a fork reads directly must be its condition, but it isnt",

@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A countdown that multiplies its way down, the way a factorial does,
+# calling itself in the else arm of its one guard. The formation
+# declares `^` and reads it only to call itself, so it is lowered
+# whole: the call becomes a repeat that hands the voids their next
+# values, the protocol runs as a `while (true)`, the arm that answers
+# breaks out of it, and the arm that repeats rebinds `n` and `acc` and
+# goes round again. The `^` leaves with the body, since the atom class
+# binds a ρ of its own.
+input: |
+  [] > foo
+    [^ n acc] > down
+      if. > @
+        n.eq 0
+        acc
+        ^.down
+          n.plus -1
+          acc.times n
+    down 5 1 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: down
+voids:
+  n: number
+  acc: number
+lowered: |
+  [] > foo
+    down > @
+      5
+      1
+    [] > down /Q.number
+      ? > n /Q.number
+      ? > acc /Q.number
+protocol: |
+  loop v0 v1
+    s1 ← L_bytes_eq sym:v0 number:00-00-00-00-00-00-00-00
+    s2 ← fork sym:s1 number
+      then
+        answer sym:v1 number
+      else
+        s3 ← L_number_plus sym:v0 number:BF-F0-00-00-00-00-00-00
+        s4 ← L_number_times sym:v1 sym:v0
+        repeat sym:s3 sym:s4
+    answer sym:s2 number
+java: |
+  double v0 = new Dataized(this.take("n")).asNumber();
+  double v1 = new Dataized(this.take("acc")).asNumber();
+  final double s2;
+  while (true) {
+      final boolean s1 = Double.doubleToRawLongBits(v0) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+      if (s1) {
+          s2 = v1;
+          break;
+      } else {
+          final double s3 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+          final double s4 = v1 * v0;
+          v0 = s3;
+          v1 = s4;
+          continue;
+      }
+  }
+  return new Data.ToPhi(s2);
