@@ -98,19 +98,14 @@ public final class JavaAtom {
         final List<String> lines;
         if (this.program.bodies().size() > 1) {
             lines = this.resumed();
-        } else if (first.repeats()) {
-            lines = this.looped();
-            lines.add(
-                String.format(
-                    "return new Data.ToPhi(%s);",
-                    this.values.handed(this.values.expression(first.answer()), first.answer())
-                )
-            );
         } else {
-            lines = this.computed(first, "", Collections.emptySet(), "");
+            if (first.repeats()) {
+                lines = this.looped();
+            } else {
+                lines = this.computed(first, "", Collections.emptySet(), "");
+            }
             lines.add(
-                String.format(
-                    "return new Data.ToPhi(%s);",
+                JavaAtom.returned(
                     this.values.handed(this.values.expression(first.answer()), first.answer())
                 )
             );
@@ -147,6 +142,10 @@ public final class JavaAtom {
         return out;
     }
 
+    private static String returned(final String value) {
+        return String.format("return new Data.ToPhi(%s);", value);
+    }
+
     private List<String> resumed() {
         final int inputs = this.program.inputs().size();
         final int total = this.program.formas().size();
@@ -170,11 +169,7 @@ public final class JavaAtom {
         }
         out.add("    }");
         out.add("}");
-        out.add(
-            String.format(
-                "return new Data.ToPhi(%s);", this.values.handed("out", this.answer())
-            )
-        );
+        out.add(JavaAtom.returned(this.values.handed("out", this.answer())));
         return out;
     }
 
