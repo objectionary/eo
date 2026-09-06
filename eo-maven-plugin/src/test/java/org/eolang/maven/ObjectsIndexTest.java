@@ -5,12 +5,19 @@
 package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -40,6 +47,51 @@ final class ObjectsIndexTest {
             ),
             calls.get(),
             Matchers.is(1)
+        );
+    }
+
+    @RepeatedTest(20)
+    void readsTheIndexOnceFromManyThreads() throws Exception {
+        final AtomicInteger calls = new AtomicInteger(0);
+        final ObjectsIndex index = new ObjectsIndex(
+            new ScalarOf<>(
+                () -> {
+                    calls.incrementAndGet();
+                    Thread.sleep(5L);
+                    return Collections.singleton("io.stderr");
+                }
+            )
+        );
+        final int workers = 8;
+        final CountDownLatch latch = new CountDownLatch(1);
+        final ExecutorService pool = Executors.newFixedThreadPool(workers);
+        try {
+            final List<Future<Boolean>> futures = new ArrayList<>(workers);
+            for (int worker = 0; worker < workers; ++worker) {
+                futures.add(
+                    pool.submit(
+                        () -> {
+                            latch.await();
+                            return index.contains("org.eolang.io.stderr");
+                        }
+                    )
+                );
+            }
+            latch.countDown();
+            for (final Future<Boolean> future : futures) {
+                MatcherAssert.assertThat(
+                    "every worker must see the object, not a half-built index",
+                    future.get(),
+                    Matchers.is(true)
+                );
+            }
+        } finally {
+            pool.shutdownNow();
+        }
+        MatcherAssert.assertThat(
+            "the index must be read once, whatever the number of workers",
+            calls.get(),
+            Matchers.equalTo(1)
         );
     }
 
