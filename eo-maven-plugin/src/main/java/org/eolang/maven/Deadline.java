@@ -46,14 +46,6 @@ final class Deadline {
      * @param unroll Whether the chain of causes goes to the log
      */
     Deadline(final Object mojo, final long seconds, final boolean unroll) {
-        if (seconds < 0L) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "The timeout must not be negative, while %d was given through eo.timeout",
-                    seconds
-                )
-            );
-        }
         this.mojo = mojo;
         this.seconds = seconds;
         this.unroll = unroll;
@@ -78,6 +70,14 @@ final class Deadline {
      * @throws MojoFailureException If the deadline passes or the body fails
      */
     void spent(final Callable<?> body) throws MojoFailureException {
+        if (this.seconds < 0L) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The timeout must not be negative, while %d was given through eo.timeout",
+                    this.seconds
+                )
+            );
+        }
         final FutureTask<?> task = new FutureTask<>(body);
         final Thread thread = new Thread(
             task,

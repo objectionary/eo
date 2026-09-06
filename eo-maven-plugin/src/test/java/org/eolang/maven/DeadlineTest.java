@@ -32,7 +32,7 @@ final class DeadlineTest {
             "a negative timeout must be reported as a configuration mistake, not as a timeout",
             Assertions.assertThrows(
                 IllegalArgumentException.class,
-                () -> new Deadline(this, -1L, false),
+                () -> new Deadline(this, -1L, false).spent(() -> "never"),
                 "a negative timeout was expected to be refused"
             ).getMessage(),
             Matchers.containsString("must not be negative")
