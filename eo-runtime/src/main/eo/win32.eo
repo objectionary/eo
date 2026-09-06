@@ -141,6 +141,23 @@
           "::1"
       win32.unresolved
 
+  os.is-windows.not.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
+    seq *
+      code.
+        win32 *1
+          "_open"
+          mktemp.tmpfile.as-path
+          plus.
+            win32.rdonly.plus win32.creat
+            win32.exclusive
+          win32.mode
+      eq.
+        code.
+          win32
+            "_errno"
+            *
+        win32.eexist
+
   os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
       code.
@@ -164,24 +181,6 @@
       win32 *1
         "_stat64"
         "NUL"
-
-  os.is-windows.not.if --> stops-on-creating-an-existing-file-exclusively
-    1.div 0
-    seq *
-      code.
-        win32 *1
-          "_open"
-          "NUL"
-          plus.
-            win32.rdonly.plus win32.creat
-            win32.exclusive
-          win32.mode
-      eq.
-        code.
-          win32
-            "_errno"
-            *
-        win32.eexist
 
   --> stops-on-write-size-being-negative
     os.is-windows.not.if > @
