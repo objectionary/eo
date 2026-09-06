@@ -111,6 +111,8 @@
     <xsl:apply-templates select="/object" mode="package"/>
     <xsl:text>import java.util.function.Function;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.function.Supplier;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -215,7 +217,42 @@
     <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="eo:class-name(@name)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="nested"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <!-- Ctor and factory that let a wrapping class copy itself into its own type -->
+  <xsl:template name="wrapper">
+    <xsl:param name="class"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param obj The object to wrap</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param term Supplier of the term</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:value-of select="concat('private ', $class, '(final Supplier&lt;Phi&gt; obj, final Supplier&lt;String&gt; term) {')"/>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>super(obj, term);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>protected Phi wrapped(final Supplier&lt;Phi&gt; obj, final Supplier&lt;String&gt; term) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="concat('return new ', $class, '(obj, term);')"/>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -793,6 +830,11 @@
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:apply-templates select="." mode="testing-ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="concat(eo:class-name(@name), 'Test')"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="." mode="tests"/>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>

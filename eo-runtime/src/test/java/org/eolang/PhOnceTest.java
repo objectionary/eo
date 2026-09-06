@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,18 +18,18 @@ final class PhOnceTest {
     @Test
     void delegatesTermToWrappedObjectByDefault() {
         MatcherAssert.assertThat(
-            "PhOnce without explicit term must delegate φ-term to the wrapped object, but it didnt",
-            new PhOnce(() -> new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
+            "wrapper without explicit term must delegate φ-term to the wrapped object, but it didnt",
+            new PhOnceTest.Fake(() -> new PhDefault(new byte[] {(byte) 0x01})).φTerm(),
             Matchers.equalTo("[D> 01-]")
         );
     }
 
     @Test
-    void keepsOnceWrapperAfterNormalized() {
+    void keepsTypeAfterNormalized() {
         MatcherAssert.assertThat(
-            "normalized() must remain wrapped in PhOnce, so the once-caching guarantee survives, but it didn't",
-            new PhOnce(() -> new PhDefault()).normalized(),
-            Matchers.instanceOf(PhOnce.class)
+            "normalized() must stay wrapped in the very type it started from, but it didnt",
+            new PhOnceTest.Fake(() -> new PhDefault()).normalized(),
+            Matchers.instanceOf(PhOnceTest.Fake.class)
         );
     }
 
@@ -36,7 +37,7 @@ final class PhOnceTest {
     void letsANormalizedTerminatorPropagateBare() {
         MatcherAssert.assertThat(
             "normalized() must not re-wrap a terminator, so callers can still detect it with instanceof",
-            new PhOnce(PhTerminator::new).normalized(),
+            new PhOnceTest.Fake(PhTerminator::new).normalized(),
             Matchers.instanceOf(PhTerminator.class)
         );
     }
@@ -45,7 +46,7 @@ final class PhOnceTest {
     void doesNotNeedRhoWithoutEvaluatingWrappedObject() {
         MatcherAssert.assertThat(
             "PhOnce must never ask for a receiver, and must not evaluate itself to say so",
-            new PhOnce(
+            new PhOnceTest.Fake(
                 () -> {
                     throw new IllegalStateException("must not be evaluated");
                 }
@@ -57,8 +58,8 @@ final class PhOnceTest {
     @Test
     void doesNotEvaluateWrappedObjectForTerm() {
         MatcherAssert.assertThat(
-            "PhOnce with explicit term must render it without evaluating the wrapped object, but it didnt",
-            new PhOnce(
+            "wrapper with explicit term must render it without evaluating the wrapped object, but it didnt",
+            new PhOnceTest.Fake(
                 () -> {
                     throw new IllegalStateException("must not be evaluated");
                 },
@@ -66,5 +67,34 @@ final class PhOnceTest {
             ).φTerm(),
             Matchers.equalTo("x.foo")
         );
+    }
+
+    /**
+     * A wrapper made concrete, since PhOnce is abstract.
+     * @since 0.60
+     */
+    private static final class Fake extends PhOnce {
+
+        /**
+         * Ctor.
+         * @param obj The object to wrap
+         */
+        Fake(final Supplier<Phi> obj) {
+            this(obj, null);
+        }
+
+        /**
+         * Ctor.
+         * @param obj The object to wrap
+         * @param term Supplier of the term
+         */
+        Fake(final Supplier<Phi> obj, final Supplier<String> term) {
+            super(obj, term);
+        }
+
+        @Override
+        public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+            return new PhOnceTest.Fake(obj, phrase);
+        }
     }
 }
