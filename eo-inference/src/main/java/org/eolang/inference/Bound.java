@@ -173,18 +173,11 @@ final class Bound {
         return found;
     }
 
-    /**
-     * The copies further along the chain than the given name.
-     *
-     * <p>The pairs may close into a ring, and a walk on a ring comes back to
-     * where it started. The walk stops at the first name it has seen already,
-     * and the name it started from is not part of the answer: an application
-     * is not a copy of itself, and counting it as one would mark the voids it
-     * is about to fill as filled by somebody else.</p>
-     *
-     * @param name The name to walk from
-     * @return The names further along, in the order they are reached
-     */
+    // The pairs may close into a ring, and a walk on a ring comes back to
+    // where it started, so the walk stops at the first name it has seen
+    // already. The name it started from is not part of the answer: an
+    // application is not a copy of itself, and counting it as one would mark
+    // the voids it is about to fill as filled by somebody else.
     private List<String> chain(final String name) {
         final List<String> found = new ArrayList<>(0);
         final Collection<String> seen = new HashSet<>(0);
