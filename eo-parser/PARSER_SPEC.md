@@ -870,6 +870,7 @@ R-5.2.3. **MethodDispatch line dispatch.** If the line's kind is `MethodDispatch
   - **(a) Extend:** If the top's openness ∈ {`open`, `vertical-completed`} AND the top's kind is **not** in the horizontally-completed set (Appendix A) AND the top's kind is **not** `inline-phi-formation`: extend the top's kind to `vmethod` (or to `vmethod-with-hargs` if the new line carries ≥1 hargs), update `named?` if the line carries a name suffix, leave openness `open` (or transition to `horizontal-completed` if the new kind is `vmethod-with-hargs`).
   - **(b) Reject — horizontally-completed predecessor:** If the top's openness is `horizontal-completed` (equivalently, kind ∈ horizontally-completed set): error `method continuation not allowed after horizontal application, try vertical application instead` (§9.9).
   - **(b′) Reject — only-phi predecessor:** If the top's kind is `inline-phi-formation` (whose bare-φ form is `open` but is not a method-chain host): error `method continuation not allowed after only-phi formation` (§9.9).
+  - **(b″) Reject — void predecessor:** If the top's kind is `void` (a `? > name` line declares an attribute, not an expression to dispatch on, even though its openness is `vertical-completed` like an ordinary wrappable kind): error `method continuation not allowed after void attribute` (§9.9).
 
 R-5.2.4. **Non-MethodDispatch same-indent line.** If the line's kind is **not** MethodDispatch: the top entry is a *completed previous sibling*. Run close-time checks (§5.3) on it, then **replace** it with a new entry built from the new line. The new entry's `parent_kind` is read from the stack entry below.
 
@@ -1355,6 +1356,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
+| `.method` continuation on a void attribute | `method continuation not allowed after void attribute` |
 | Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
@@ -1499,6 +1501,7 @@ R-9.9.3. New error conditions added to the spec must extend this table with a ca
 | `pipe-application` | 1 line (+ body if 0 hargs) | yes if 0 hargs (vertical form's args) | yes (after) | `\| [args] [> name]`; applies args to the same-indent named formation/pipe above (§3.14) |
 | `identity-object` | 1 line | yes (its vertical args) | yes (after) | a bare `I` (§3.16); a formation a pipe may apply args to, whose own children are arguments |
 | `text-block` | multi-line | n/a | yes (after closing `"""`) | `"""…"""` |
+| `void` | 1 line | **no** | **no** | `? > name` / `? >> name` / `? > ^`; declares an attribute, not an expression to dispatch on (R-5.2.3(b″)) |
 
 **Horizontally-completed kinds (the single source of truth)** — these never receive deeper children and cannot be wrapped by same-indent `.method`:
 

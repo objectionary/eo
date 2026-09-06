@@ -38,6 +38,9 @@ import java.util.List;
  * <li>R-6.3.3 — a {@code .method} continuation on a predecessor whose
  * naming line declared it a test attribute, which would otherwise
  * overwrite that attribute's label with the chain's own.</li>
+ * <li>R-5.2.3(b″) — {@code .method} as the receiver of a void
+ * attribute, which declares an attribute rather than an expression to
+ * dispatch on.</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -150,15 +153,24 @@ final class LnMethod implements Line {
                 "method continuation not allowed after horizontal application, try vertical application instead"
             );
         }
-        if (stack.top().kind() == Kind.ONLY_PHI) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "method continuation not allowed after only-phi formation"
-            );
-        }
+        this.precheckKind(stack.top().kind());
         final String refusal = stack.top().refusal();
         if (!refusal.isEmpty()) {
             throw new ParseError(this.span.line(), this.span.indent(), refusal);
+        }
+    }
+
+    private void precheckKind(final Kind kind) {
+        final String message;
+        if (kind == Kind.ONLY_PHI) {
+            message = "method continuation not allowed after only-phi formation";
+        } else if (kind == Kind.VOID) {
+            message = "method continuation not allowed after void attribute";
+        } else {
+            message = "";
+        }
+        if (!message.isEmpty()) {
+            throw new ParseError(this.span.line(), this.span.indent(), message);
         }
     }
 
