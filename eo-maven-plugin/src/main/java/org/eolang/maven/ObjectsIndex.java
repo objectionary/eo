@@ -13,6 +13,7 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -56,7 +57,7 @@ final class ObjectsIndex {
      * @param all All objects index
      */
     ObjectsIndex(final Scalar<? extends Set<String>> all) {
-        this.objects = new Sticky<>(all);
+        this.objects = new Synced<>(new Sticky<>(all));
     }
 
     /**
