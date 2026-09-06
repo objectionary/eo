@@ -80,8 +80,10 @@ public final class PhSticky implements Phi {
     /**
      * What a caller holds while it computes an answer, by key, shared with
      * every copy, so that two callers asking for the same answer wait for
-     * one computation instead of running two. An entry lives no longer than
-     * the computation it guards.
+     * one computation instead of running two. An entry outlives the
+     * computation it guards, the way {@code ConcurrentCache} keeps its
+     * own: a lock taken out of the map while it is still held hands the
+     * next caller a different one and lets it in (#8050).
      */
     private final Map<String, Lock> guards;
 
@@ -217,7 +219,6 @@ public final class PhSticky implements Phi {
                 result = found;
             }
         } finally {
-            this.guards.remove(key, guard);
             guard.unlock();
         }
         return result.clone();
