@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An arm of a choice that reads a void nobody filled hands nothing back: the
+# moment anyone looks at it, it terminates. A caller who gets a value from the
+# choice therefore got it from the other arm, and that is the only arm worth
+# joining. This is how every fragile object is written, with a fallback void
+# left empty by everyone who wants the answer rather than the excuse.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        dial 03-
+        cant-read
+          "the gauge cannot be read"
+  held.eo: |
+    [] > held
+      gauge yes > @
+  other.eo: |
+    [] > other
+      gauge no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.dial.listen']"

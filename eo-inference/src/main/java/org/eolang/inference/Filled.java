@@ -91,6 +91,12 @@ final class Filled {
      *  no caller says what the void holds
      */
     String instead(final String answer, final String bearer) {
+        return this.instead(answer, bearer, new HashSet<>(0));
+    }
+
+    private String instead(
+        final String answer, final String bearer, final Collection<String> seen
+    ) {
         final Map<String, String> fillings = this.fillings(bearer);
         final String found;
         if (fillings.containsKey(answer)) {
@@ -104,7 +110,7 @@ final class Filled {
                 }
             }
             if (longest.isEmpty()) {
-                found = this.branch(answer, fillings);
+                found = this.branch(answer, fillings, seen);
             } else {
                 found = this.asked(
                     fillings.get(longest), answer.substring(longest.length() + 1), answer
@@ -114,32 +120,29 @@ final class Filled {
         return found;
     }
 
-    private String branch(final String answer, final Map<String, String> fillings) {
-        final String root = this.root(answer);
+    private String branch(
+        final String answer, final Map<String, String> fillings, final Collection<String> seen
+    ) {
+        final String root = new Rooted(this.hollows).names(answer);
         String found = answer;
         if (!root.isEmpty()) {
-            final String handed = new Branched(this.owned, fillings).names();
-            if (!handed.isEmpty()) {
-                found = this.asked(
-                    handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
-                );
+            final String handed = new Branched(this.owned, fillings, this.hollows).names();
+            if (!handed.isEmpty() && seen.add(handed)) {
+                found = this.through(answer, root, handed, seen);
             }
         }
         return found;
     }
 
-    private String root(final String answer) {
-        String found = "";
-        String walked = answer;
-        while (!walked.isEmpty()) {
-            if (this.hollows.contains(walked)) {
-                found = walked;
-                break;
-            }
-            if (!walked.contains(".")) {
-                break;
-            }
-            walked = walked.substring(0, walked.lastIndexOf('.'));
+    private String through(
+        final String answer, final String root, final String handed,
+        final Collection<String> seen
+    ) {
+        String found = this.asked(
+            handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
+        );
+        if (found.equals(answer)) {
+            found = this.instead(answer, handed, seen);
         }
         return found;
     }
