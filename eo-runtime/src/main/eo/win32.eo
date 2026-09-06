@@ -106,9 +106,9 @@
     code. > fd
       win32 *1
         "_open"
-        "NUL"
+        mktemp.tmpfile.as-path
         win32.wronly.plus win32.trunc
-        0
+        win32.mode
 
   ++> can-open-a-tcp-socket
     os.is-windows.not.or > @
