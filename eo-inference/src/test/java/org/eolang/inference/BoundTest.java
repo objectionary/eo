@@ -78,4 +78,30 @@ final class BoundTest {
             Matchers.equalTo(Map.of("pair.y", "only.y", "pair.x", "only.x"))
         );
     }
+
+    @Test
+    void readsTheReceiverOfARingOffTheNameTheRingGoesBy() {
+        final Map<String, String> pairs = new HashMap<>(0);
+        pairs.put("Φ.app.zebra", "Φ.app.alpha");
+        pairs.put("Φ.app.alpha", "Φ.app.zebra");
+        MatcherAssert.assertThat(
+            "a dispatch into a ring must read its ρ off the name the ring goes by, but it didnt",
+            new Bound(
+                Collections.emptyMap(),
+                Collections.emptyMap(),
+                Map.of("Φ.app.zebra", "Φ.app.thing"),
+                pairs,
+                new Provided(
+                    Map.of(
+                        "Φ.app.alpha",
+                        List.of(Map.of("void", "true", "name", "ρ", "type", "Φ.app.alpha.ρ"))
+                    ),
+                    Collections.emptyMap(),
+                    Collections.emptyList(),
+                    Collections.emptyMap()
+                )
+            ).all().get("Φ.app.zebra"),
+            Matchers.equalTo(Map.of("Φ.app.alpha.ρ", "Φ.app.thing"))
+        );
+    }
 }

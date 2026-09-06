@@ -20,6 +20,13 @@ import java.util.Map;
  * the same thing, so every name on that ring answers with the same one - the
  * first of them in alphabetical order - no matter which of them is asked.</p>
  *
+ * <p>The walk lives here and nowhere else. It is short enough to write out by
+ * hand and it was written out by hand twice, but a hand-written walk stops at
+ * the first name it meets a second time, which on a ring is whichever name the
+ * walk started from. That is two answers about one object. So
+ * {@link #name(String)} answers for a single name the way {@link #names()}
+ * answers for all of them, and both go round a ring the same way.</p>
+ *
  * @since 0.68.0
  */
 final class Ends {
@@ -43,19 +50,28 @@ final class Ends {
      */
     Map<String, String> names() {
         final Map<String, String> ends = new HashMap<>(this.copies.size());
-        for (final Map.Entry<String, String> link : this.copies.entrySet()) {
-            final Collection<String> walked = new HashSet<>(0);
-            walked.add(link.getKey());
-            String end = link.getValue();
-            while (this.copies.containsKey(end) && walked.add(end)) {
-                end = this.copies.get(end);
-            }
-            if (this.copies.containsKey(end)) {
-                end = this.anchor(end);
-            }
-            ends.put(link.getKey(), end);
+        for (final String type : this.copies.keySet()) {
+            ends.put(type, this.name(type));
         }
         return ends;
+    }
+
+    /**
+     * The name one type goes by.
+     * @param type The name of the type
+     * @return The end of its chain of copies, or the type itself when it is a
+     *  copy of nothing
+     */
+    String name(final String type) {
+        final Collection<String> walked = new HashSet<>(0);
+        String end = type;
+        while (this.copies.containsKey(end) && walked.add(end)) {
+            end = this.copies.get(end);
+        }
+        if (this.copies.containsKey(end)) {
+            end = this.anchor(end);
+        }
+        return end;
     }
 
     private String anchor(final String node) {

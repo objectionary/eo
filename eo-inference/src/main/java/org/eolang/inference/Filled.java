@@ -173,7 +173,7 @@ final class Filled {
         while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
                 : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
-                found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
+                found.putIfAbsent(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
             }
             if (this.pairs.containsKey(walked)) {
                 walked = this.pairs.get(walked);
@@ -196,15 +196,6 @@ final class Filled {
         }
         if (walked.isEmpty()) {
             walked = back;
-        }
-        return walked;
-    }
-
-    private String end(final String locator) {
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = locator;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
         }
         return walked;
     }
