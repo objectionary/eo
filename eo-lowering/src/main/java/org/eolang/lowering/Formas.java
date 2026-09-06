@@ -34,16 +34,6 @@ import org.w3c.dom.Node;
  * literal — answers with the empty string, and the caller refuses.</p>
  *
  * @since 0.76.0
- * @todo #8365:30min Witness a bool void filled with {@code true} or
- *  {@code false}. The provides table records such an argument by the
- *  locator of the argument itself, {@code Φ.foo.φ.α0} say, with no
- *  links row behind it, where a number literal is recorded as
- *  {@code Φ.number} outright. So {@code admitted} finds no carrier, and
- *  the {@code pick} formation of the {@code fork-on-flag} pack stays as
- *  written, though its reduction forks on the void fine. Find out how
- *  {@code eo:inference} names the fillings of a void, teach it to name
- *  {@code Φ.true} and {@code Φ.false} the way it names {@code Φ.number},
- *  and let that pack lower into Java.
  */
 public final class Formas {
 
