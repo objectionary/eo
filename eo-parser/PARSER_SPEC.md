@@ -1366,7 +1366,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bracket-parameter name that is neither NAME, `@` nor `^` (§4.5) | `parameter names in voids must be NAME, @ or ^` |
 | `@` among the bracket parameters of an only-phi formation, which binds its φ from the left-hand side | `an only-phi formation binds φ from its left-hand side, so @ is not allowed among its voids` |
 | Bracket parameters on an atom head (R-3.4.10) | `an atom must declare its void attributes vertically, as ? > name lines` |
-| More than one space between meta parts (R-3.2.4) | `meta parts must be separated by exactly one space` |
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
 | Leading-zero in integer literal (R-9.8.1, e.g., `007`) | `integer literal must not have leading zeros` |
 | Decimal `INT`/`FLOAT` literal whose exact decimal value differs from the IEEE-754 double it parses to (dead digits; e.g., `2.7182818284590452354`). Alternate spellings of the same value (`+42`, `1.50`) are accepted. | `<literal> is over-precise, write <canonical> instead` (literal and canonical substituted) |
@@ -1432,7 +1431,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | File-local handle after `>>` that is a scope token rather than an identifier (R-3.10.12) | `file-local handle must be an identifier, not <token>` (token substituted) |
 | `+` with no meta name after it (§3.2) | `meta directive requires a name` |
 | Meta name that is not lowercase letters and digits opening with a letter (§3.2) | `meta name must be lowercase letters and digits, starting with a letter` |
-| Whitespace other than a plain space between meta parts (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
+| Anything but a single plain space between meta parts — a second space, a tab, an ideographic space (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
 | `+package` carrying a number of parts other than one (§3.2) | `'+package' directive requires exactly one argument` |
 | `+package` path with an empty dotted segment (§3.2) | `'+package' path must not have an empty segment` |
 | `+alias` carrying no part (R-3.2.3) | `'+alias' directive requires at least one argument` |
