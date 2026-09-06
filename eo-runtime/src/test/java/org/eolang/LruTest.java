@@ -18,7 +18,7 @@ final class LruTest {
 
     @Test
     void keepsNothingWhenCapacityIsZero() {
-        final Lru map = new Lru(0);
+        final Lru<byte[]> map = new Lru<>(0);
         map.put("a", new byte[] {(byte) 0x01});
         MatcherAssert.assertThat(
             "a map of no capacity must not remember what was put into it, but it did",
@@ -29,7 +29,7 @@ final class LruTest {
 
     @Test
     void staysEmptyWhenCapacityIsZero() {
-        final Lru map = new Lru(0);
+        final Lru<byte[]> map = new Lru<>(0);
         map.put("a", new byte[] {(byte) 0x01});
         map.put("b", new byte[] {(byte) 0x02});
         MatcherAssert.assertThat(
@@ -43,7 +43,7 @@ final class LruTest {
     void refusesNegativeCapacity() {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            () -> new Lru(-1),
+            () -> new Lru<byte[]>(-1),
             "a negative capacity must be refused by the constructor, but it wasnt"
         );
     }

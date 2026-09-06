@@ -7,7 +7,6 @@ package org.eolang;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -70,7 +69,7 @@ public final class EOstring$EOregex$EOpattern$EOmatch$EOsearched extends PhDefau
         }
         final Matcher matcher;
         try {
-            matcher = Pattern.compile(source).matcher(text);
+            matcher = new Compiled(source).it().matcher(text);
         } catch (final PatternSyntaxException ex) {
             throw new ExFailure(
                 String.format("cannot search with the regex pattern '%s'", source),

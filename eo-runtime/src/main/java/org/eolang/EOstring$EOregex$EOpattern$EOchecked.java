@@ -5,7 +5,6 @@
 
 package org.eolang;
 
-import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
@@ -53,7 +52,7 @@ public final class EOstring$EOregex$EOpattern$EOchecked extends PhDefault implem
         final Phi pattern = this.take(Phi.RHO);
         Phi result = pattern;
         try {
-            Pattern.compile(new Dataized(pattern.take("source")).asString());
+            new Compiled(new Dataized(pattern.take("source")).asString()).it();
         } catch (final PatternSyntaxException ex) {
             result = this.take(EOstring$EOregex$EOpattern$EOchecked.FALLBACK);
             result.put(0, new Data.ToPhi(ex.getDescription()));
