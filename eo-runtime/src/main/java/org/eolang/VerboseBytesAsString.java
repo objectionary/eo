@@ -38,7 +38,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
         final String result;
         if (this.data.length == 0) {
             result = "[<no bytes>]";
-        } else if (this.data.length == 1) {
+        } else if (this.data.length == 1 && (this.data[0] == 0 || this.data[0] == -1)) {
             result = String.format(
                 "[0x%02X] = %s",
                 this.data[0],
