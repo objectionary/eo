@@ -1,12 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The bytes of a number are a view of a double, so the fragment settles
-# into a key whose local is a double while the formation answers bytes.
-# That is no longer a refusal: the reduction settles, and the answer
-# carries the bytes. The formation stays as written all the same, since
-# the protocol has no step in it and an atom of no steps is worth
-# nothing over the object it would replace.
+# The bytes of a number are a view of a double, so the answer is bytes
+# of a local the step declared a double. The reduction settles all the
+# same, yet the formation stays as written: the protocol has no step in
+# it, and an atom of no steps is worth nothing over the object it
+# replaces.
 input: |
   [] > foo
     [x] > raw

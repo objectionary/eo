@@ -182,9 +182,8 @@ public final class Minted {
      * <p>A term keyed by a symbol stands for the value of that symbol,
      * and a {@link Forced} view of it stands for the bytes of the same
      * value under the same key, so the two agree on the key and differ
-     * on the forma. The fragment settles into the bytes all the same:
-     * the ledger answers with them, and the atom renders the local
-     * through its raw bits when it hands the answer over.</p>
+     * on the forma. The fragment settles into the bytes all the same,
+     * and the atom renders the local through its raw bits.</p>
      *
      * @param tree The settled term, with a key
      * @return The forma the ledger holds for the key

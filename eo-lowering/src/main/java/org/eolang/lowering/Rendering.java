@@ -237,12 +237,9 @@ public final class Rendering {
     /**
      * The Java expression the atom hands to {@code Data.ToPhi}.
      *
-     * <p>A local carries the forma of the step that computed it, and the
-     * program answers the forma the fragment settled into. The two part
-     * company where the fragment settled into a view of the local rather
-     * than the local itself, as {@code x!} does: the step is a double and
-     * the answer is bytes. The raw bits of the local are those bytes, the
-     * same reading {@code L_bytes_eq} takes of a number.</p>
+     * <p>Where the fragment settled into a view of a local rather than
+     * the local itself, as {@code x!} does, the step is a double and the
+     * answer is bytes: the raw bits of the local are those bytes.</p>
      *
      * @param local The Java expression of the value, such as {@code s1}
      * @param key The key that value stands under, such as {@code sym:s1}

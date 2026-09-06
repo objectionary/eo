@@ -23,11 +23,8 @@ import java.util.Optional;
  * protocol does, since every step of it is a Java local computed once,
  * in order, so the view is all that is left of the wrapper.</p>
  *
- * <p>A fragment may settle into such a view, and then the answer is the
- * bytes of a local the step declared a double. {@link Rendering} hands
- * that answer over through the raw bits of the local, the same reading
- * {@code L_bytes_eq} takes of a number, so the atom answers bytes where
- * the formation did.</p>
+ * <p>A fragment may settle into such a view, and then {@link Rendering}
+ * hands the answer over through the raw bits of the local.</p>
  *
  * @since 0.76.0
  */
