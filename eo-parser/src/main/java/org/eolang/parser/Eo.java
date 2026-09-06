@@ -208,7 +208,9 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
             above = next.indent();
-            if (!Eo.isBytesOnly(trimmed)) {
+            final boolean bytes = new BytesLine(trimmed).onlyBytes();
+            final boolean named = Eo.namedTerminator(body, trimmed);
+            if (!bytes && !named) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
                 );
@@ -217,7 +219,7 @@ final class Eo implements Iterable<Directive> {
             }
             body.append(trimmed);
             idx = idx + 1;
-            if (!Eo.isBytesContinuation(trimmed)) {
+            if (named || !Eo.isBytesContinuation(trimmed)) {
                 break;
             }
         }
@@ -235,33 +237,24 @@ final class Eo implements Iterable<Directive> {
         return resumption;
     }
 
+    private static boolean namedTerminator(final CharSequence body, final String chunk) {
+        return body.length() > 0
+            && body.charAt(body.length() - 1) == '-'
+            && Eo.namedChunk(chunk);
+    }
+
+    private static boolean namedChunk(final String body) {
+        final int space = body.indexOf(' ');
+        return space > 0
+            && new BytesLine(body.substring(0, space)).onlyBytes()
+            && body.substring(space + 1).startsWith(">");
+    }
+
     private static boolean isBytesContinuation(final String body) {
         final String trimmed = body.stripTrailing();
-        return trimmed.length() >= 6 && trimmed.endsWith("-") && Eo.isBytesOnly(trimmed);
-    }
-
-    private static boolean isBytesOnly(final String body) {
-        boolean valid = !body.isEmpty();
-        int idx = 0;
-        while (valid && idx < body.length()) {
-            if (idx + 1 >= body.length()
-                || !Eo.hex(body.charAt(idx))
-                || !Eo.hex(body.charAt(idx + 1))) {
-                valid = false;
-            } else {
-                idx = idx + 2;
-                if (idx < body.length() && body.charAt(idx) != '-') {
-                    valid = false;
-                } else {
-                    idx = idx + 1;
-                }
-            }
-        }
-        return valid;
-    }
-
-    private static boolean hex(final char glyph) {
-        return glyph >= '0' && glyph <= '9' || glyph >= 'A' && glyph <= 'F';
+        return trimmed.length() >= 6
+            && trimmed.endsWith("-")
+            && new BytesLine(trimmed).onlyBytes();
     }
 
     private static boolean process(
