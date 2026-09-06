@@ -119,26 +119,26 @@ final class BoundTest {
     @Test
     void fillsAVoidFromAnApplicationInsideARing() {
         final Map<String, String> pairs = new HashMap<>(0);
-        pairs.put("\u03a6.app.zebra", "\u03a6.app.alpha");
-        pairs.put("\u03a6.app.alpha", "\u03a6.app.zebra");
+        pairs.put("Φ.app.zebra", "Φ.app.alpha");
+        pairs.put("Φ.app.alpha", "Φ.app.zebra");
         MatcherAssert.assertThat(
             "an application on a ring must still fill the void it names, but it didnt",
             new Bound(
-                Map.of("\u03a6.app.zebra", List.of("\u03a6.app.one")),
+                Map.of("Φ.app.zebra", List.of("Φ.app.one")),
                 Collections.emptyMap(),
                 Collections.emptyMap(),
                 pairs,
                 new Provided(
                     Map.of(
-                        "\u03a6.app.alpha",
-                        List.of(Map.of("void", "true", "type", "\u03a6.app.alpha.x"))
+                        "Φ.app.alpha",
+                        List.of(Map.of("void", "true", "type", "Φ.app.alpha.x"))
                     ),
                     Collections.emptyMap(),
                     Collections.emptyList(),
                     Collections.emptyMap()
                 )
-            ).all().get("\u03a6.app.zebra"),
-            Matchers.equalTo(Map.of("\u03a6.app.alpha.x", "\u03a6.app.one"))
+            ).all().get("Φ.app.zebra"),
+            Matchers.equalTo(Map.of("Φ.app.alpha.x", "Φ.app.one"))
         );
     }
 
