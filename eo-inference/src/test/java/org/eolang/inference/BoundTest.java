@@ -80,6 +80,43 @@ final class BoundTest {
     }
 
     @Test
+    void passesArgumentsOnToAFormationHeldByAVoidMidwayAlongAChain() {
+        final Map<String, Collection<Map<String, String>>> rows = new HashMap<>(0);
+        rows.put(
+            "Φ.app.gate",
+            List.of(Map.of("void", "true", "name", "func", "type", "Φ.app.gate.func"))
+        );
+        rows.put(
+            "Φ.app.leaf",
+            List.of(Map.of("void", "true", "name", "item", "type", "Φ.app.leaf.item"))
+        );
+        rows.put(
+            "Φ.app.twig",
+            List.of(Map.of("void", "true", "name", "item", "type", "Φ.app.twig.item"))
+        );
+        final Map<String, List<String>> args = new HashMap<>(0);
+        args.put("Φ.app.call", List.of("Φ.app.arg"));
+        args.put("Φ.app.put", List.of("Φ.app.leaf"));
+        final Map<String, String> pairs = new HashMap<>(0);
+        pairs.put("Φ.app.call", "Φ.app.gate.func");
+        pairs.put("Φ.app.gate.func", "Φ.app.twig");
+        pairs.put("Φ.app.put", "Φ.app.gate");
+        MatcherAssert.assertThat(
+            "an argument must reach the formation a void in the middle of the chain holds, but it didnt",
+            new Bound(
+                args, Collections.emptyMap(), Collections.emptyMap(), pairs,
+                new Provided(
+                    rows, Collections.emptyMap(),
+                    Collections.emptyList(), Collections.emptyMap()
+                )
+            ).all().get("Φ.app.call"),
+            Matchers.equalTo(
+                Map.of("Φ.app.twig.item", "Φ.app.arg", "Φ.app.leaf.item", "Φ.app.arg")
+            )
+        );
+    }
+
+    @Test
     void readsTheReceiverOfARingOffTheNameTheRingGoesBy() {
         final Map<String, String> pairs = new HashMap<>(0);
         pairs.put("Φ.app.zebra", "Φ.app.alpha");
