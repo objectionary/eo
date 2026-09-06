@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two numbers compare as the doubles they are, not as the eight bytes
+# that encode them. The contract `number.eq` states is IEEE 754: a
+# not-a-number equals nothing, not even itself, and the two zeroes equal
+# each other. Raw bytes disagree with both, so `number` owns an `eq` of
+# its own here, shadowing the byte atom its `φ` would otherwise reach,
+# and the equality renders as the Java `==` the contract asks for.
+input: |
+  [] > foo
+    [x y] > same
+      x.eq y > @
+    same 2 3 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: same
+voids:
+  x: number
+  y: number
+lowered: |
+  [] > foo
+    same > @
+      2
+      3
+    [] > same /Q.bool
+      ? > x /Q.number
+      ? > y /Q.number
+protocol: |
+  s1 ← L_number_eq sym:v0 sym:v1
+  answer sym:s1 bool
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double v1 = new Dataized(this.take("y")).asNumber();
+  final boolean s1 = v0 == v1;
+  return new Data.ToPhi(s1);

@@ -34,8 +34,7 @@ import java.util.Optional;
  *  it hands {@code Data.ToPhi} the Java local as it is, a double where
  *  the formation answered bytes, and {@link Reduction} refuses such an
  *  answer for now, wherever a tree settles. Render the view through the
- *  raw bits of the local instead, the way {@code L_bytes_eq} already
- *  compares two numbers, and let the answer carry bytes.
+ *  raw bits of the local instead, and let the answer carry bytes.
  */
 public final class Forced implements Term {
 

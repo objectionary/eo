@@ -36,7 +36,7 @@ lowered: |
       ? > acc /Q.number
 protocol: |
   loop v0 v1
-    s1 ← L_bytes_eq sym:v0 number:00-00-00-00-00-00-00-00
+    s1 ← L_number_eq sym:v0 number:00-00-00-00-00-00-00-00
     s2 ← fork sym:s1 number
       then
         answer sym:v1 number
@@ -50,7 +50,7 @@ java: |
   double v1 = new Dataized(this.take("acc")).asNumber();
   final double s2;
   while (true) {
-      final boolean s1 = Double.doubleToRawLongBits(v0) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+      final boolean s1 = v0 == Double.longBitsToDouble(0x0000000000000000L);
       if (s1) {
           s2 = v1;
           break;

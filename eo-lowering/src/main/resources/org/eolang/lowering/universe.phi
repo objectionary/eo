@@ -3,6 +3,7 @@
     as-bytes ↦ ∅,
     φ ↦ ξ.as-bytes,
     div ↦ ⟦ x ↦ ∅, λ ⤍ L_number_div ⟧,
+    eq ↦ ⟦ x ↦ ∅, λ ⤍ L_number_eq ⟧,
     gt ↦ ⟦ x ↦ ∅, λ ⤍ L_number_gt ⟧,
     plus ↦ ⟦ x ↦ ∅, λ ⤍ L_number_plus ⟧,
     times ↦ ⟦ x ↦ ∅, λ ⤍ L_number_times ⟧

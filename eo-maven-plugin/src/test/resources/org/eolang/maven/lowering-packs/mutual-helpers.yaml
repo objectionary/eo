@@ -40,7 +40,7 @@ protocol: |
   loop v0
     repeat a🌵3-4 sym:v0 number:3F-F0-00-00-00-00-00-00
   body a🌵3-4 v1 v2
-    s1 ← L_bytes_eq sym:v1 number:00-00-00-00-00-00-00-00
+    s1 ← L_number_eq sym:v1 number:00-00-00-00-00-00-00-00
     s2 ← fork sym:s1 number
       then
         answer sym:v2 number
@@ -50,7 +50,7 @@ protocol: |
         repeat a🌵8-4 sym:s3 sym:s4
     answer sym:s2 number
   body a🌵8-4 v3 v4
-    s5 ← L_bytes_eq sym:v3 number:00-00-00-00-00-00-00-00
+    s5 ← L_number_eq sym:v3 number:00-00-00-00-00-00-00-00
     s6 ← fork sym:s5 number
       then
         answer sym:v4 number
@@ -74,7 +74,7 @@ java: |
           body = 1;
           continue;
       } else if (body == 1) {
-          final boolean s1 = Double.doubleToRawLongBits(v1) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+          final boolean s1 = v1 == Double.longBitsToDouble(0x0000000000000000L);
           final double s2;
           if (s1) {
               s2 = v2;
@@ -89,7 +89,7 @@ java: |
           out = s2;
           break;
       } else {
-          final boolean s5 = Double.doubleToRawLongBits(v3) == Double.doubleToRawLongBits(Double.longBitsToDouble(0x0000000000000000L));
+          final boolean s5 = v3 == Double.longBitsToDouble(0x0000000000000000L);
           final double s6;
           if (s5) {
               s6 = v4;

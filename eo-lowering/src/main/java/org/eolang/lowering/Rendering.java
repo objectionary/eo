@@ -24,7 +24,9 @@ import java.util.stream.Stream;
  * answers carried as the {@code Phi} itself, since neither is a datum
  * and every operation on either dispatches back into EO. The value of an application
  * comes from the format the {@link Op} table holds for its atom, except
- * an equality, which compares by the forma of its operands; and a void
+ * an equality, which compares by the forma of its operands: two numbers
+ * by their value, so that a not-a-number equals nothing and the two
+ * zeroes equal each other, and anything else by its bytes; and a void
  * is read through the public runtime API. The forma of a key is looked
  * up in the voids of the program or in the steps of its bodies,
  * nested arms included. Whatever the table cannot spell — an operation
@@ -272,10 +274,7 @@ public final class Rendering {
             .collect(Collectors.toList());
         final String out;
         if ("number".equals(kinds)) {
-            out = String.format(
-                "Double.doubleToRawLongBits(%s) == Double.doubleToRawLongBits(%s)",
-                sides.get(0), sides.get(1)
-            );
+            out = String.format("%s == %s", sides.get(0), sides.get(1));
         } else if ("bytes".equals(kinds)) {
             out = String.format(
                 "java.util.Arrays.equals(%s, %s)",

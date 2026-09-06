@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 # A const of a number is the bytes of that number, so the const reads
 # through its bytes and keeps the key of the step it forces, and the
-# equality that compares it compares the raw bits of two doubles, which
-# is what comparing two dataized values means.
+# equality that compares it compares the two doubles themselves, the
+# way `number.eq` does.
 input: |
   [] > foo
     [x] > same
@@ -27,11 +27,11 @@ lowered: |
 protocol: |
   s1 ← L_number_times sym:v0 sym:v0
   s2 ← L_number_plus sym:v0 sym:v0
-  s3 ← L_bytes_eq sym:s1 sym:s2
+  s3 ← L_number_eq sym:s1 sym:s2
   answer sym:s3 bool
 java: |
   final double v0 = new Dataized(this.take("x")).asNumber();
   final double s1 = v0 * v0;
   final double s2 = v0 + v0;
-  final boolean s3 = Double.doubleToRawLongBits(s1) == Double.doubleToRawLongBits(s2);
+  final boolean s3 = s1 == s2;
   return new Data.ToPhi(s3);

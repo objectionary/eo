@@ -15,7 +15,7 @@ import org.cactoos.text.UncheckedText;
  * dispatches into, and phino resolves a {@code Φ.x} reference against the
  * root formation of the document it evaluates. This is that root, read
  * from the {@code universe.phi} resource: {@code number} and {@code bytes}
- * with their twelve λ methods, {@code string} which owns none and reaches
+ * with their thirteen λ methods, {@code string} which owns none and reaches
  * every one of them through its {@code φ}, {@code bool} with the one
  * {@code if} that phino never fires but always parks, so that the
  * reduction learns where a choice stands, and {@code true}/{@code false}
@@ -31,7 +31,13 @@ import org.cactoos.text.UncheckedText;
  * them — {@code slice}, which counts characters where {@code bytes.slice}
  * counts bytes — names a method this universe models. It therefore stands
  * here bound to a λ no {@link Op} row knows, so a text slicing refuses
- * instead of quietly reaching the bytes atom below it.</p>
+ * instead of quietly reaching the bytes atom below it. The same shadowing
+ * keeps {@code number.eq} honest: its contract is IEEE 754, where a
+ * not-a-number equals nothing and the two zeroes equal each other, while
+ * {@code bytes.eq} below it reads eight raw bytes and answers the opposite
+ * on both. It stands here bound to a λ of its own, which an {@link Op} row
+ * renders as the Java {@code ==} of two doubles, the very comparison the
+ * contract asks for.</p>
  *
  * @since 0.76.0
  */
