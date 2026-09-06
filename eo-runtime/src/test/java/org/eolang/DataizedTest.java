@@ -91,8 +91,9 @@ final class DataizedTest {
             Matchers.containsString("length 0")
         );
     }
+
     @Test
-    void refusesBytesThatAreNotValidUtf8() {
+    void refusesBytesThatAreNotValidText() {
         MatcherAssert.assertThat(
             "bytes that are not UTF-8 must be refused, not replaced with U+FFFD",
             Assertions.assertThrows(
@@ -103,5 +104,4 @@ final class DataizedTest {
             Matchers.containsString("not valid UTF-8")
         );
     }
-
 }

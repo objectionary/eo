@@ -104,7 +104,7 @@ final class SyscallTest {
         listen.put(1, Phi.Φ.take("dataized").copy());
         MatcherAssert.assertThat(
             "the limited-broadcast address 255.255.255.255 must be accepted as a valid IPv4 conversion, not rejected as unparsable",
-            new Dataized(listen).asString(),
+            new String(new Dataized(listen).take(), StandardCharsets.UTF_8),
             Matchers.not(Matchers.containsString("into a 32-bit integer"))
         );
     }
