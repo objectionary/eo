@@ -84,6 +84,64 @@ final class RenderingTest {
     }
 
     @Test
+    void readsTupleVoidAsPhi() {
+        MatcherAssert.assertThat(
+            "a tuple void must be held as the Phi itself, but it isnt",
+            new Rendering(
+                new Protocol(Collections.emptyList(), "sym:v0", "tuple"),
+                Collections.singletonMap("items", "tuple")
+            ).reading(0),
+            Matchers.equalTo("Phi v0 = this.take(\"items\");")
+        );
+    }
+
+    @Test
+    void typesObjectAsPhi() {
+        MatcherAssert.assertThat(
+            "an object a tuple answers must be typed as Phi, but it isnt",
+            new Rendering(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_tuple_at",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1", "object"
+                ),
+                Collections.singletonMap("items", "tuple")
+            ).type("sym:s1"),
+            Matchers.equalTo("Phi")
+        );
+    }
+
+    @Test
+    void dispatchesIntoTheTupleForItsElement() {
+        MatcherAssert.assertThat(
+            "the element of a tuple must be taken through the at attribute, but it isnt",
+            new Rendering(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_tuple_at",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1", "object"
+                ),
+                Collections.singletonMap("items", "tuple")
+            ).applied(
+                new Application(
+                    "s1", "L_tuple_at", Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                )
+            ),
+            Matchers.equalTo(
+                "new PhWith(new PhCopy(new PhMethod(v0, \"at\")), 0, new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L)))"
+            )
+        );
+    }
+
+    @Test
     void refusesOperandOfForeignForma() {
         Assertions.assertThrows(
             IllegalStateException.class,

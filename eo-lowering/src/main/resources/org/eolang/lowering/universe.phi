@@ -29,6 +29,15 @@
     φ ↦ ξ.as-bytes,
     if ↦ ⟦ t ↦ ∅, f ↦ ∅, λ ⤍ L_bool_if ⟧
   ⟧,
+  tuple ↦ ⟦
+    self ↦ ∅,
+    length ↦ ⟦ λ ⤍ L_tuple_length ⟧,
+    at ↦ ⟦ i ↦ ∅, λ ⤍ L_tuple_at ⟧
+  ⟧,
+  object ↦ ⟦
+    self ↦ ∅,
+    as-bytes ↦ ⟦ λ ⤍ L_object_as_bytes ⟧
+  ⟧,
   true ↦ Φ.bool(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ FF- ⟧)),
   false ↦ Φ.bool(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 00- ⟧))
 ⟧

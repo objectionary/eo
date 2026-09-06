@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An element a tuple answers is an object of no known forma, so the atom
+# takes it through `at` as the Phi it is, without dataizing it, and only
+# the `as-bytes` the body asks of it dataizes it, into the bytes every
+# object has. The comparison then runs over those bytes in Java.
+input: |
+  [] > foo
+    [items] > second
+      (items.at 1).as-bytes.eq 40-00-00-00-00-00-00-00 > @
+    second (* 1 2 3) > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  tuple.eo: |
+    [tail head length] > tuple
+      [] > empty
+        0 > length
+unit: second
+voids:
+  items: tuple
+lowered: |
+  [] > foo
+    second * > @
+      1
+      2
+      3
+    [] > second /Q.bool
+      ? > items /Q.tuple
+protocol: |
+  s1 ← L_tuple_at sym:v0 number:3F-F0-00-00-00-00-00-00
+  s2 ← L_object_as_bytes sym:s1
+  s3 ← L_bytes_eq sym:s2 bytes:40-00-00-00-00-00-00-00
+  answer sym:s3 bool
+java: |
+  final Phi v0 = this.take("items");
+  final Phi s1 = new PhWith(new PhCopy(new PhMethod(v0, "at")), 0, new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L)));
+  final byte[] s2 = new Dataized(s1).take();
+  final boolean s3 = java.util.Arrays.equals(s2, new byte[] {(byte) 0x40, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+  return new Data.ToPhi(s3);

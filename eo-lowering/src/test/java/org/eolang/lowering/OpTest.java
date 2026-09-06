@@ -52,6 +52,33 @@ final class OpTest {
     }
 
     @Test
+    void namesFormaOfIndexArgument() {
+        MatcherAssert.assertThat(
+            "the index of a tuple must carry a number where the tuple carries none, but it doesnt",
+            new Op("L_tuple_at").formas(),
+            Matchers.contains("number")
+        );
+    }
+
+    @Test
+    void namesArgumentWithoutItsForma() {
+        MatcherAssert.assertThat(
+            "the forma of an argument must not leak into its name, but it did",
+            new Op("L_tuple_at").args(),
+            Matchers.contains("i")
+        );
+    }
+
+    @Test
+    void carriesArgumentsAsTheReceiverByDefault() {
+        MatcherAssert.assertThat(
+            "an argument without a forma of its own must carry the receiver's, but it doesnt",
+            new Op("L_number_plus").formas(),
+            Matchers.contains("number")
+        );
+    }
+
+    @Test
     void namesNoFormaOfChoice() {
         MatcherAssert.assertThat(
             "a choice answers whatever its arms answer, so it must name no forma, but it does",

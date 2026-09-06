@@ -26,6 +26,46 @@ import org.junit.jupiter.api.Test;
 final class JavaAtomTest {
 
     @Test
+    void holdsTupleAndReadsItsLength() {
+        MatcherAssert.assertThat(
+            "a tuple void must be held as a Phi and its length dataized, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_tuple_length", Collections.singletonList("sym:v0")
+                        ),
+                        new Application(
+                            "s2", "L_number_plus",
+                            Arrays.asList("sym:s1", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s2", "number"
+                ),
+                Collections.singletonMap("items", "tuple")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final Phi v0 = this.take(\"items\");",
+                "final double s1 = new Dataized(v0.take(\"length\")).asNumber();",
+                "final double s2 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);",
+                "return new Data.ToPhi(s2);"
+            )
+        );
+    }
+
+    @Test
+    void refusesTupleAnswer() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "tuple"),
+                Collections.singletonMap("items", "tuple")
+            )::text,
+            "a tuple cannot be handed to Data.ToPhi, but it was rendered"
+        );
+    }
+
+    @Test
     void rendersBodiesAsStateMachine() {
         MatcherAssert.assertThat(
             "bodies resuming one another must run as one loop over a state, but they dont",

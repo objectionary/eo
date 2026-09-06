@@ -4,6 +4,7 @@
  */
 package org.eolang.lowering;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,11 @@ import java.util.Optional;
  * bytes themselves. A const is such a view: the parser turns {@code x!}
  * into {@code (dataized x).as-bytes}, and forcing is already what a
  * protocol does, since every step of it is a Java local computed once,
- * in order, so the view is all that is left of the wrapper.</p>
+ * in order, so the view is all that is left of the wrapper. Over an
+ * object that is no datum — an element a tuple answers — {@code as-bytes}
+ * is not a view but the one operation such an object takes, its
+ * dataization, so there the term stands unsettled like a site until the
+ * atom of the universe parks on it and a step takes its place.</p>
  *
  * @since 0.76.0
  * @todo #8407:30min Let a fragment answer the bytes of a number. The view
@@ -62,10 +67,12 @@ public final class Forced implements Term {
     public String key() {
         final String key = this.inner.key();
         final String out;
-        if (key.isEmpty() || key.startsWith("sym:")) {
+        if (this.viewed() && key.startsWith("sym:")) {
             out = key;
-        } else {
+        } else if (this.viewed()) {
             out = String.format("bytes:%s", key.split(":", 2)[1]);
+        } else {
+            out = "";
         }
         return out;
     }
@@ -73,22 +80,28 @@ public final class Forced implements Term {
     @Override
     public String forma() {
         final String out;
-        if (this.inner.key().isEmpty()) {
-            out = "";
-        } else {
+        if (this.viewed()) {
             out = "bytes";
+        } else {
+            out = "";
         }
         return out;
     }
 
     @Override
     public boolean matches(final Shape shape) {
-        return this.inner.matches(shape);
+        return this.covered(shape) || this.inner.matches(shape);
     }
 
     @Override
     public Optional<List<Binding>> arguments(final Shape shape) {
-        return this.inner.arguments(shape);
+        final Optional<List<Binding>> out;
+        if (this.covered(shape)) {
+            out = Optional.of(Collections.emptyList());
+        } else {
+            out = this.inner.arguments(shape);
+        }
+        return out;
     }
 
     @Override
@@ -98,6 +111,25 @@ public final class Forced implements Term {
 
     @Override
     public Term swapped(final Shape shape, final Term swap) {
-        return new Forced(this.inner.swapped(shape, swap));
+        final Term out;
+        if (this.covered(shape)) {
+            out = swap;
+        } else {
+            out = new Forced(this.inner.swapped(shape, swap));
+        }
+        return out;
+    }
+
+    private boolean viewed() {
+        return Forced.datum(this.inner.forma());
+    }
+
+    private boolean covered(final Shape shape) {
+        return shape.covers("as-bytes", this.inner.key(), Collections.emptyList());
+    }
+
+    private static boolean datum(final String forma) {
+        return "number".equals(forma) || "string".equals(forma)
+            || "bool".equals(forma) || "bytes".equals(forma);
     }
 }

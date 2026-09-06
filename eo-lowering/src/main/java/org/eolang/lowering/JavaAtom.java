@@ -89,9 +89,17 @@ public final class JavaAtom {
      * @return Java statements, one per line, without a trailing newline
      */
     public String text() {
-        if ("string".equals(this.program.carrier())) {
+        final String carrier = this.program.carrier();
+        if ("string".equals(carrier)) {
             throw new IllegalStateException(
                 "A string answer cannot be handed over, since Data.ToPhi makes bytes of a byte array"
+            );
+        }
+        if ("tuple".equals(carrier) || "object".equals(carrier)) {
+            throw new IllegalStateException(
+                String.format(
+                    "A %s answer cannot be handed over, since Data.ToPhi takes data alone", carrier
+                )
             );
         }
         final Protocol first = this.program.bodies().get(0).protocol();
