@@ -6,6 +6,8 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.util.function.Supplier;
 
 /**
@@ -36,9 +38,13 @@ final class Deleted implements Supplier<Boolean> {
     // still holds a file nobody could delete is not deleted either, and the
     // caller has to hear about it instead of reading a clean build that kept
     // the files of the previous one (#8146).
+    // A symbolic link is an entry of this directory, not the directory it
+    // points at: walking through it would delete files that no build of ours
+    // ever wrote (#8145). Only a real directory is descended into, and the
+    // link itself goes as a leaf, which is what File.delete does to it.
     private boolean purge(final File dir) {
         boolean state = true;
-        if (dir.isDirectory()) {
+        if (Files.isDirectory(dir.toPath(), LinkOption.NOFOLLOW_LINKS)) {
             final File[] contents = dir.listFiles();
             if (null != contents) {
                 for (final File file : contents) {
