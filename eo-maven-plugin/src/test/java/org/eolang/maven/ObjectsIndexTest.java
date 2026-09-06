@@ -6,6 +6,8 @@ package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -62,9 +64,29 @@ final class ObjectsIndexTest {
                 }
             )
         );
-        final int workers = 8;
+        MatcherAssert.assertThat(
+            "the index must be read once, however many workers ask it at once",
+            ObjectsIndexTest.asked(index, 8),
+            Matchers.equalTo(1)
+        );
+        MatcherAssert.assertThat(
+            "the reads must be counted only once too",
+            calls.get(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    /**
+     * Ask one index from many threads at once.
+     * @param index The index to ask
+     * @param workers How many threads ask it
+     * @return How many distinct answers came back
+     * @throws Exception If any of the workers fails
+     */
+    private static int asked(final ObjectsIndex index, final int workers) throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         final ExecutorService pool = Executors.newFixedThreadPool(workers);
+        final Collection<Boolean> answers = new HashSet<>(1);
         try {
             final List<Future<Boolean>> futures = new ArrayList<>(workers);
             for (int worker = 0; worker < workers; ++worker) {
@@ -79,20 +101,12 @@ final class ObjectsIndexTest {
             }
             latch.countDown();
             for (final Future<Boolean> future : futures) {
-                MatcherAssert.assertThat(
-                    "every worker must see the object, not a half-built index",
-                    future.get(),
-                    Matchers.is(true)
-                );
+                answers.add(future.get());
             }
         } finally {
-            pool.shutdownNow();
+            pool.shutdown();
         }
-        MatcherAssert.assertThat(
-            "the index must be read once, whatever the number of workers",
-            calls.get(),
-            Matchers.equalTo(1)
-        );
+        return answers.size();
     }
 
     @Test
