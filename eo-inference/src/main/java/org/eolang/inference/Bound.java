@@ -55,6 +55,13 @@ import java.util.Map;
  * turns out to be (#8405).</p>
  *
  * @since 0.69.0
+ * @todo #8424:35min Walk a ring of copies once in {@code taken} too.
+ *  The chain it collects is the copies further along than this application,
+ *  and on a ring it comes back round to the application itself, so the voids
+ *  this very application is about to fill are counted as taken already and
+ *  the fillings are lost. {@link Ends} settles a ring on one of its names for
+ *  everyone else; the chain here wants the whole path rather than its end, so
+ *  it needs a rule of its own about where a ring starts and stops.
  */
 final class Bound {
 
@@ -202,11 +209,6 @@ final class Bound {
     }
 
     private String base(final String name) {
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = name;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
-        }
-        return walked;
+        return new Ends(this.pairs).name(name);
     }
 }

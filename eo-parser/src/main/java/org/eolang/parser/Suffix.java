@@ -306,7 +306,7 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
-        Suffix.checkGlyphs(raw, span, pos);
+        Suffix.checkGlyphs(raw, span.line(), pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z'
             && !Suffix.VARIABLE.matcher(raw).matches() && !raw.startsWith("Q.")) {
@@ -331,6 +331,36 @@ final class Suffix {
             promoted = raw;
         }
         return promoted;
+    }
+
+    /**
+     * Reject an identifier carrying a glyph no identifier may hold.
+     *
+     * <p>The cactus emoji is reserved for auto-names (§2.3). A control
+     * character is worse than reserved: an XML attribute cannot hold it,
+     * so a name that keeps one reaches xembly and breaks the parse with
+     * an exception that names neither the file nor the line. Every
+     * position that reads an identifier runs this, and reports the
+     * character at the column it sits in.</p>
+     *
+     * @param name The identifier, as written
+     * @param line Source line
+     * @param pos Source column of the identifier's first character
+     */
+    static void checkGlyphs(final String name, final int line, final int pos) {
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                line, pos,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        final int control = new Scrubbed(name).found();
+        if (control >= 0) {
+            throw new ParseError(
+                line, pos + control,
+                "control character is not allowed in an identifier"
+            );
+        }
     }
 
     private static int clamped(final int pos, final Span span) {
@@ -399,7 +429,7 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        Suffix.checkGlyphs(name, span, home + start);
+        Suffix.checkGlyphs(name, span.line(), home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
@@ -422,22 +452,6 @@ final class Suffix {
                 );
             }
             from = end + 1;
-        }
-    }
-
-    private static void checkGlyphs(final String name, final Span span, final int pos) {
-        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
-        final int control = new Scrubbed(name).found();
-        if (control >= 0) {
-            throw new ParseError(
-                span.line(), pos + control,
-                "control character is not allowed in an identifier"
-            );
         }
     }
 
@@ -484,7 +498,7 @@ final class Suffix {
                 )
             );
         }
-        Suffix.checkGlyphs(handle, span, home + begin);
+        Suffix.checkGlyphs(handle, span.line(), home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -514,7 +528,7 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        Suffix.checkGlyphs(name, span, home + begin);
+        Suffix.checkGlyphs(name, span.line(), home + begin);
         Suffix.checkLowercaseStart(name, span, home, begin);
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {

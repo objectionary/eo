@@ -71,6 +71,33 @@ final class EndsTest {
         );
     }
 
+    @Test
+    void walksOneNameToTheEndOfItsChain() {
+        MatcherAssert.assertThat(
+            "a name asked on its own must arrive where the whole chain arrives, but it didnt",
+            new Ends(this.pairs("a", "b", "b", "c")).name("a"),
+            Matchers.equalTo("c")
+        );
+    }
+
+    @Test
+    void answersForARingWhicheverOfItsNamesIsAsked() {
+        MatcherAssert.assertThat(
+            "a ring asked at one of its names must answer with the name the ring goes by, but it didnt",
+            new Ends(this.pairs("b", "c", "c", "a", "a", "b")).name("c"),
+            Matchers.equalTo("a")
+        );
+    }
+
+    @Test
+    void keepsANameTheTableSaysNothingAbout() {
+        MatcherAssert.assertThat(
+            "a name that is a copy of nothing must come back as it went in, but it didnt",
+            new Ends(this.pairs("a", "b")).name("z"),
+            Matchers.equalTo("z")
+        );
+    }
+
     private Map<String, String> pairs(final String... flat) {
         final Map<String, String> pairs = new LinkedHashMap<>(flat.length / 2);
         for (int idx = 0; idx < flat.length; idx = idx + 2) {

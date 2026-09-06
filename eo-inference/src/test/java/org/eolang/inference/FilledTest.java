@@ -41,7 +41,8 @@ final class FilledTest {
                     Map.of("app", List.of("value-x", "value-foo")),
                     Collections.emptyMap(), Collections.emptyMap(),
                     Map.of("app", "form"), owned
-                ).all()
+                ).all(),
+                Collections.emptyList()
             ).instead("Φ.node.x", "app"),
             Matchers.equalTo("value-x")
         );
@@ -70,9 +71,37 @@ final class FilledTest {
                     Map.of("app", List.of("short-fill", "long-fill")),
                     Collections.emptyMap(), Collections.emptyMap(),
                     Map.of("app", "form"), owned
-                ).all()
+                ).all(),
+                Collections.emptyList()
             ).instead("Φ.node.x.y", "app"),
             Matchers.equalTo("Φ.result")
+        );
+    }
+
+    @Test
+    void namesAFillingOnARingTheWayTheRestOfThePassNamesIt() {
+        final Map<String, Collection<Map<String, String>>> rows = new HashMap<>(0);
+        rows.put("form", List.of(Map.of("void", "true", "type", "Φ.node.x")));
+        final Map<String, String> pairs = new HashMap<>(0);
+        pairs.put("app", "form");
+        pairs.put("zebra", "alpha");
+        pairs.put("alpha", "zebra");
+        final Provided owned = new Provided(
+            rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
+        );
+        MatcherAssert.assertThat(
+            "a filling that sits on a ring must come back under the name the ring goes by, but it didnt",
+            new Filled(
+                pairs,
+                owned,
+                new Bound(
+                    Map.of("app", List.of("zebra")),
+                    Collections.emptyMap(), Collections.emptyMap(),
+                    pairs, owned
+                ).all(),
+                Collections.emptyList()
+            ).instead("Φ.node.x", "app"),
+            Matchers.equalTo("alpha")
         );
     }
 }
