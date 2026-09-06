@@ -19,6 +19,14 @@ import java.util.stream.Collectors;
  * name the record shows, or the {@code α}-positional name the XMIR
  * wrote.</p>
  *
+ * <p>A bytes receiver covers a string one carrying the same datum. A
+ * record shows its receiver as the instance the atom fired on, and a
+ * string has dispatched into its own bytes by then, so the record names
+ * a bytes datum where the tree still holds a string one and the texts
+ * would never meet themselves. The two compute the same value for every
+ * atom of the {@link Universe}, since the one method a string answers
+ * differently, {@code slice}, is shadowed there and parks.</p>
+ *
  * @since 0.76.0
  */
 public final class Shape {
@@ -84,7 +92,7 @@ public final class Shape {
     public boolean covers(final String verb, final String self, final List<Binding> args) {
         boolean good = this.method.equals(verb)
             && !self.isEmpty()
-            && this.receiver.equals(self)
+            && (this.receiver.equals(self) || this.receiver.equals(Shape.bytewise(self)))
             && this.names.size() == args.size();
         for (int idx = 0; good && idx < args.size(); ++idx) {
             final Binding arg = args.get(idx);
@@ -95,6 +103,16 @@ public final class Shape {
                 && (expected.isEmpty() || expected.equals(Shape.identity(arg.value())));
         }
         return good;
+    }
+
+    private static String bytewise(final String self) {
+        final String out;
+        if (self.startsWith("string:")) {
+            out = String.format("bytes:%s", self.substring("string:".length()));
+        } else {
+            out = self;
+        }
+        return out;
     }
 
     private static String identity(final Term term) {

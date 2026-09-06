@@ -54,6 +54,46 @@ final class ShapeTest {
     }
 
     @Test
+    void coversTextReceiverRecordedAsBytes() {
+        MatcherAssert.assertThat(
+            "a bytes receiver must cover the string of the same datum, but it doesnt",
+            new Shape(
+                "concat",
+                "bytes:68-",
+                Collections.singletonList("b"),
+                Collections.singletonList("sym:v0")
+            ).covers(
+                "concat",
+                "string:68-",
+                Collections.singletonList(
+                    new Binding("α0", new Symbol("v0", "bytes"))
+                )
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void rejectsTextReceiverOfAnotherDatum() {
+        MatcherAssert.assertThat(
+            "a string of another datum must stay uncovered, but it doesnt",
+            new Shape(
+                "concat",
+                "bytes:68-",
+                Collections.singletonList("b"),
+                Collections.singletonList("sym:v0")
+            ).covers(
+                "concat",
+                "string:69-",
+                Collections.singletonList(
+                    new Binding("α0", new Symbol("v0", "bytes"))
+                )
+            ),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void coversAnyArgumentWhereBlank() {
         MatcherAssert.assertThat(
             "a blank identity must let any argument through, but it doesnt",
