@@ -75,10 +75,6 @@
             value.minus operand
           err
         0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
 
   ++> can-integrate-a-linear-function
     close-to > @
@@ -97,10 +93,6 @@
             value.minus operand
           err
         0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
 
   ++> can-integrate-a-quadratic-function
     close-to > @
@@ -119,10 +111,6 @@
             value.minus operand
           err
         0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
 
   ++> can-integrate-with-a-single-partition
     close-to > @
@@ -141,10 +129,6 @@
             value.minus operand
           err
         0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
 
   ++> can-integrate-with-an-evenly-dividing-step
     close-to > @
@@ -163,10 +147,6 @@
             value.minus operand
           err
         0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
 
   eq. ++> can-recover-from-partitions-at-the-precision-boundary
     "recovered"
