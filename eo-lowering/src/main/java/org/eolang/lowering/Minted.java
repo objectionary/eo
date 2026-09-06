@@ -182,9 +182,8 @@ public final class Minted {
      * <p>A term keyed by a symbol stands for the value of that symbol,
      * and a {@link Forced} view of it stands for the bytes of the same
      * value under the same key, so the two agree on the key and differ
-     * on the forma; a protocol settling into such a view would hand the
-     * Java local over as it is, so the view is refused wherever a tree
-     * settles.</p>
+     * on the forma. The fragment settles into the bytes all the same,
+     * and the atom renders the local through its raw bits.</p>
      *
      * @param tree The settled term, with a key
      * @return The forma the ledger holds for the key
@@ -192,17 +191,22 @@ public final class Minted {
     public String carried(final Term tree) {
         final String key = tree.key();
         final String carrier = this.carrier(key);
-        if (!tree.forma().equals(carrier)) {
+        final String out;
+        if (tree.forma().equals(carrier)) {
+            out = carrier;
+        } else if ("bytes".equals(tree.forma())) {
+            out = "bytes";
+        } else {
             throw new IllegalStateException(
                 String.join(
                     " ",
                     String.format("The value '%s' carries a %s,", key, carrier),
                     String.format("but the fragment settles into its %s,", tree.forma()),
-                    "which the atom cannot hand over yet"
+                    "which no view of it explains"
                 )
             );
         }
-        return carrier;
+        return out;
     }
 
     private static <T> Map<String, T> first(final T value) {

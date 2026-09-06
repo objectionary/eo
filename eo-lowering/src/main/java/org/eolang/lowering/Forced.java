@@ -23,14 +23,10 @@ import java.util.Optional;
  * protocol does, since every step of it is a Java local computed once,
  * in order, so the view is all that is left of the wrapper.</p>
  *
+ * <p>A fragment may settle into such a view, and then {@link Rendering}
+ * hands the answer over through the raw bits of the local.</p>
+ *
  * @since 0.76.0
- * @todo #8407:30min Let a fragment answer the bytes of a number. The view
- *  of a symbol keeps the key of the symbol, so a protocol settling into
- *  it hands {@code Data.ToPhi} the Java local as it is, a double where
- *  the formation answered bytes, and {@link Reduction} refuses such an
- *  answer for now, wherever a tree settles. Render the view through the
- *  raw bits of the local instead, the way {@code L_bytes_eq} already
- *  compares two numbers, and let the answer carry bytes.
  */
 public final class Forced implements Term {
 

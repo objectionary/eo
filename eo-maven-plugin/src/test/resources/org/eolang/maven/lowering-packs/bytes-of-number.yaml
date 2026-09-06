@@ -1,10 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The bytes of a number are a view of a double, and the atom would hand
-# the double itself to Data.ToPhi, answering a number where the
-# formation answered bytes, so a fragment settling into such a view is
-# refused and the formation stays as written.
+# The bytes of a number are a view of a double, so the answer is bytes
+# of a local the step declared a double. The reduction settles all the
+# same, yet the formation stays as written: the protocol has no step in
+# it, and an atom of no steps is worth nothing over the object it
+# replaces.
 input: |
   [] > foo
     [x] > raw
@@ -21,4 +22,5 @@ lowered: |
   [] > foo
     raw 5 > @
     x.as-bytes > [x] > raw
-stuck: "carries a number, but the fragment settles into its bytes"
+protocol: |
+  answer sym:v0 bytes

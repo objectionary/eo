@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A formation whose body is a const of a number answers the bytes of
+# that number, not the number. The view keeps the key of the step it
+# forces, so the protocol settles into a symbol whose Java local is a
+# double, and the answer has to be rendered through the raw bits of it.
+input: |
+  [] > foo
+    [x] > raw
+      x.plus 1 >> sum!
+      sum > @
+    raw 2 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: raw
+voids:
+  x: number
+lowered: |
+  [] > foo
+    raw 2 > @
+    [] > raw /Q.bytes
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_plus sym:v0 number:3F-F0-00-00-00-00-00-00
+  answer sym:s1 bytes
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(java.nio.ByteBuffer.allocate(8).putLong(Double.doubleToRawLongBits(s1)).array());
