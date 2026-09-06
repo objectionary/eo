@@ -8,6 +8,11 @@
 # so a `mkdir` coming back with `EEXIST` over a directory is taken for the
 # directory it names rather than for a failure. `EOdirectoryEOmadeRaceTest`
 # holds the interleaving that reaches that branch.
+#
+# The walk up to the missing parents stops at a path that is its own dirname,
+# like the root of a volume: without that stop the walk asks the same path for
+# its parent forever. A path whose parent is itself and which does not exist
+# cannot be made, so the computation terminates instead.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,9 +29,13 @@
         "Cant make the directory '%s': a file already occupies that path".printf
           * ^.path
     seq *
-      made.
-        directory
-          file ^.as-path.dirname
+      if.
+        above.path.eq ^.path
+        T
+          "Cant make the directory '%s': it has no parent".printf
+            * ^.path
+        made.
+          directory above
       if.
         or.
           created.code.eq 0
@@ -37,6 +46,7 @@
         T
           "Cant make the directory '%s': %s".printf
             * ^.path created.output
+  file ^.as-path.dirname > above
   called. > created
     os.is-windows.if
       win32 *1
