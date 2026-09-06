@@ -46,6 +46,14 @@ final class Deadline {
      * @param unroll Whether the chain of causes goes to the log
      */
     Deadline(final Object mojo, final long seconds, final boolean unroll) {
+        if (seconds < 0L) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The timeout must not be negative, while %d was given through eo.timeout",
+                    seconds
+                )
+            );
+        }
         this.mojo = mojo;
         this.seconds = seconds;
         this.unroll = unroll;
