@@ -70,6 +70,14 @@ final class Deadline {
      * @throws MojoFailureException If the deadline passes or the body fails
      */
     void spent(final Callable<?> body) throws MojoFailureException {
+        if (this.seconds < 0L) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The timeout must not be negative, while %d was given through eo.timeout",
+                    this.seconds
+                )
+            );
+        }
         final FutureTask<?> task = new FutureTask<>(body);
         final Thread thread = new Thread(
             task,
