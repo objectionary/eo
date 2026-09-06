@@ -37,7 +37,7 @@ public final class ReadSyscall implements Syscall {
             new Expect<>("the 'size' argument of read", () -> params[1])
         ).it();
         final Phi result = this.posix.take("return").copy();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer("the 'size' argument of read", size).it();
         final int count = CStdLib.INSTANCE.read(
             new Int("the 'descriptor' argument of read", params[0]).it(), buf, size
         );

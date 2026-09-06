@@ -37,7 +37,7 @@ public final class RecvSyscall implements Syscall {
         final int size = new Natural(
             new Expect<>("the 'size' argument of recv", () -> params[1])
         ).it();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer("the 'size' argument of recv", size).it();
         final int received = CStdLib.INSTANCE.recv(
             new Int("the 'descriptor' argument of recv", params[0]).it(),
             buf,
