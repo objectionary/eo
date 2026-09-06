@@ -90,7 +90,7 @@ public final class Resolved implements Clue {
         final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Map<String, Type> kept = written.others();
         final Woven woven = new Woven(given, applied, receivers, voids);
-        final Promoted promoted = new Promoted(woven, given, kept);
+        final Promoted promoted = new Promoted(woven, given, kept, voids);
         final Map<String, String> pairs = new Settled(
             new Dispatched(given, dispatches, args, named, receivers, voids), promoted
         ).from(
