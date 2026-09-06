@@ -115,7 +115,18 @@ jobs:
       # here from a clean target with them. An hour per test leaves `Deadline`
       # nothing to swallow, so a test that fails is reported as a failure and
       # not as a skip.
-      - if: steps.eo.outputs.classes != ''
-        env:
+      #
+      # `EOscanfDiagnosticTest` is hand-written and no `.eo` file names it, so
+      # the walk above never picks it up, while both guards abort it in an
+      # ordinary run: one dataization of a twenty-digit `%d` takes longer than
+      # `eo.deadline` and passes about 800M through the allocator. It is named
+      # here so that a regression in the message is a failure and not a skip
+      # (#8327).
+      - env:
           CLASSES: ${{ steps.eo.outputs.classes }}
-        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"
+        run: |
+          tests='EOscanfDiagnosticTest'
+          if [ -n "${CLASSES}" ]; then
+            tests="${tests},${CLASSES}"
+          fi
+          mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${tests}"
