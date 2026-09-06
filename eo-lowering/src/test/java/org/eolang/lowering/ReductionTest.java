@@ -174,22 +174,18 @@ final class ReductionTest {
     }
 
     @Test
-    void refusesBytesOfNumberAsAnswer(@Mktmp final Path temp) {
+    void answersBytesOfNumber(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
         MatcherAssert.assertThat(
-            "the bytes of a number cannot be answered yet and must refuse, but they didnt",
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                new Reduction(
-                    phino,
-                    new Xnav("<o base='ξ.x.as-bytes'/>").element("o"),
-                    Collections.singletonMap("x", "number"),
-                    8
-                )::protocol,
-                "a fragment answering the bytes of a number reduced, but it must not"
-            ).getMessage(),
-            Matchers.containsString("carries a number")
+            "a fragment settling into the bytes of a number must answer bytes, but it doesnt",
+            new Reduction(
+                phino,
+                new Xnav("<o base='ξ.x.as-bytes'/>").element("o"),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().carrier(),
+            Matchers.equalTo("bytes")
         );
     }
 

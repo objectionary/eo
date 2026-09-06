@@ -234,6 +234,44 @@ public final class Rendering {
         return out;
     }
 
+    /**
+     * The Java expression the atom hands to {@code Data.ToPhi}.
+     *
+     * <p>A local carries the forma of the step that computed it, and the
+     * program answers the forma the fragment settled into. The two part
+     * company where the fragment settled into a view of the local rather
+     * than the local itself, as {@code x!} does: the step is a double and
+     * the answer is bytes. The raw bits of the local are those bytes, the
+     * same reading {@code L_bytes_eq} takes of a number.</p>
+     *
+     * @param local The Java expression of the value, such as {@code s1}
+     * @param key The key that value stands under, such as {@code sym:s1}
+     * @return The expression to hand over, wrapped when the formas part
+     */
+    public String handed(final String local, final String key) {
+        final String carrier = Rendering.carried(this.program.carrier());
+        final String own = this.forma(key);
+        final String out;
+        if (carrier.equals(own)) {
+            out = local;
+        } else if ("bytes".equals(carrier) && "number".equals(own)) {
+            out = String.format(
+                "java.nio.ByteBuffer.allocate(8).putLong(Double.doubleToRawLongBits(%s)).array()",
+                local
+            );
+        } else if ("bytes".equals(carrier) && "bool".equals(own)) {
+            out = String.format("new byte[] {(byte) (%s ? 0xFF : 0x00)}", local);
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "The answer '%s' carries a %s, which no view renders as a %s",
+                    key, own, carrier
+                )
+            );
+        }
+        return out;
+    }
+
     private static String typed(final String carrier, final String what) {
         final String out;
         if ("number".equals(carrier)) {

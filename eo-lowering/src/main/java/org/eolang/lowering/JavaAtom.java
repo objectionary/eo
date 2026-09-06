@@ -102,14 +102,16 @@ public final class JavaAtom {
             lines = this.looped();
             lines.add(
                 String.format(
-                    "return new Data.ToPhi(%s);", this.values.expression(first.answer())
+                    "return new Data.ToPhi(%s);",
+                    this.values.handed(this.values.expression(first.answer()), first.answer())
                 )
             );
         } else {
             lines = this.computed(first, "", Collections.emptySet(), "");
             lines.add(
                 String.format(
-                    "return new Data.ToPhi(%s);", this.values.expression(first.answer())
+                    "return new Data.ToPhi(%s);",
+                    this.values.handed(this.values.expression(first.answer()), first.answer())
                 )
             );
         }
@@ -168,7 +170,11 @@ public final class JavaAtom {
         }
         out.add("    }");
         out.add("}");
-        out.add("return new Data.ToPhi(out);");
+        out.add(
+            String.format(
+                "return new Data.ToPhi(%s);", this.values.handed("out", this.answer())
+            )
+        );
         return out;
     }
 
