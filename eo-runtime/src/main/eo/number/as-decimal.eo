@@ -1,9 +1,23 @@
 # Writes the number as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
 #
-# The digits are peeled off an `i64`, where division by ten is exact, so every
-# magnitude below `2^63` is written exactly, and not only the magnitudes below
-# `2^53` that a double divides without losing a digit.
+# A magnitude below a billion is written a digit at a time, dividing by ten,
+# which a double does without losing anything while the magnitude stays below
+# `2^53`. Above a billion the magnitude is split at the ninth digit first, and
+# each half is written the same way.
+#
+# The split is exact for every magnitude a double holds below `2^63`. `top` is
+# below `2^33`, so it is an integer a double keeps whole; `top` times a billion
+# is a multiple of `2^9`, and a double spaces its values no wider than that
+# anywhere below `2^63`, so the product is exact too; and `rest` is what is
+# left, below a billion, which makes the subtraction exact because its answer
+# is representable. Dividing by a billion is not exact, so `guess` can land one
+# either side of the true quotient, and the sign of `slack` says which way to
+# step it back.
+#
+# `rest` is written with a leading billion and the leading digit dropped, since
+# the nine digits it stands for are nine digits whether or not they start with
+# a zero.
 #
 # The sign of an exact negative zero is kept, as `as-fixed` and `as-scientific`
 # keep it, so `-0.0` becomes `-0` and not `0`. A negative number whose fraction
@@ -28,52 +42,53 @@
         ^.abs.gte 9.223372036854776e18
         T
           "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
-        if.
-          ^.abs.lt 9007199254740992
-          if.
-            or.
-              ^.as-bytes.eq 80-00-00-00-00-00-00-00
-              and.
-                ^.lt 0
-                not.
-                  truncated.eq 0
-            "-".as-bytes.concat
-              [^ m] >> quick
-                if. > @
-                  m.lt 10
-                  as-char.
-                    m.plus 48
-                  concat.
-                    ^.quick head
-                    as-char.
-                      plus.
-                        m.minus (head.times 10)
-                        48
-                floor. > head
-                  m.div 10
-              | truncated
-            quick truncated
-          if.
-            ^.lt 0
-            if. > [^ m] >> negative
-              m.as-number.eq 0
-              digits m
-              "-".as-bytes.concat
-                digits m
-            | ((^.times -1).as-i64 I)
-            [^ n] >> digits
-              if. > @
-                n.lt ^.ten
-                as-char.
-                  n.as-number.plus 48
-                concat.
-                  ^.digits q
-                  as-char.
-                    plus. (n.minus (q.times ^.ten)).as-number 48
-              n.div ^.ten I > bits!
-              i64 bits > q
-            | (^.as-i64 I)
-  10.as-i64 I > ten!
+        signed.if
+          "-".as-bytes.concat spelled
+          spelled
+  1000000000 > billion
+  floor. > guess
+    truncated.div billion
+  truncated.minus > rest
+    top.times billion
+  or. > signed
+    ^.as-bytes.eq 80-00-00-00-00-00-00-00
+    and.
+      ^.lt 0
+      not.
+        truncated.eq 0
+  truncated.minus > slack
+    guess.times billion
+  if. > spelled
+    truncated.lt billion
+    [^ m] >> quick
+      if. > @
+        m.lt 10
+        as-char.
+          m.plus 48
+        concat.
+          ^.quick head
+          as-char.
+            plus.
+              m.minus
+                head.times 10
+              48
+      floor. > head
+        m.div 10
+    | truncated
+    concat.
+      quick top
+      slice.
+        quick
+          billion.plus rest
+        1
+        9
+  if. > top
+    slack.lt 0
+    guess.minus 1
+    if.
+      slack.gte billion
+      guess.plus 1
+      guess
   ^.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
@@ -104,9 +119,21 @@
     "9007199254740992"
     string 9007199254740992.as-decimal
 
+  eq. ++> can-write-a-magnitude-just-above-a-billion
+    "1000000001"
+    string 1000000001.as-decimal
+
+  eq. ++> can-write-a-magnitude-with-nine-inner-zeroes
+    "1000000000000000"
+    string 1000000000000000.as-decimal
+
   eq. ++> can-write-a-multi-digit-number
     "31415"
     string 31415.as-decimal
+
+  eq. ++> can-write-a-negative-magnitude-above-two-to-the-53rd
+    "-10000000000000000"
+    string -10000000000000000.as-decimal
 
   eq. ++> can-write-a-negative-number
     "-42"
@@ -119,6 +146,14 @@
   eq. ++> can-write-a-single-digit
     "7"
     string 7.as-decimal
+
+  eq. ++> can-write-ten-to-the-eighteenth
+    "1000000000000000000"
+    string 1000000000000000000.as-decimal
+
+  eq. ++> can-write-ten-to-the-sixteenth
+    "10000000000000000"
+    string 10000000000000000.as-decimal
 
   eq. ++> can-write-the-largest-exactly-representable-magnitude
     "9007199254740991"
