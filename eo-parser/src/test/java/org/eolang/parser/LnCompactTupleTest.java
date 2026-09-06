@@ -166,6 +166,44 @@ final class LnCompactTupleTest {
         );
     }
 
+    @Test
+    void acceptsIdentityHeadWithoutChain() {
+        final Stack stack = new Stack();
+        new LnCompactTuple(new Span("I *2 > x", 1))
+            .into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "an I head is not chainable, so the empty-chain branch must still push COMPACT_TUPLE",
+            stack.top().kind(),
+            Matchers.equalTo(Kind.COMPACT_TUPLE)
+        );
+    }
+
+    @Test
+    void emitsIdentityHeadAsVoidFormation() {
+        final Emit emit = new Emit();
+        new LnCompactTuple(new Span("I *2 > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "an I head must open a baseless formation holding a void and a phi bound to it",
+            LnCompactTupleTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and not(@base)]/o[@name='φ' and @base='x']")
+        );
+    }
+
+    @Test
+    void emitsTerminatorHeadAsErrorBase() {
+        final Emit emit = new Emit();
+        new LnCompactTuple(new Span("T *1 > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a compact tuple headed by the bare T term must emit the error base",
+            LnCompactTupleTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and @base='⊥']")
+        );
+    }
+
     private static String render(final Emit emit) {
         return new Xembler(
             new Directives().add("object").append(emit.directives())
