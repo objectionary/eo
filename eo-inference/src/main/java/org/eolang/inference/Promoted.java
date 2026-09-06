@@ -7,6 +7,7 @@ package org.eolang.inference;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,6 +27,14 @@ import java.util.Map;
  *
  * <p>{@link Sole} decides what a void is worth and this asks it, of every void
  * at once, off the table {@link Woven} builds from the pairs settled so far.
+ * {@link Shared} is asked where the fillings share an ancestor and {@link
+ * Agreed} where they share nothing but their answers, so a void nothing can be
+ * called as a whole still carries the dispatches its fillings agree on. Which
+ * names those are is read back off the answers themselves, since a dispatch a
+ * void leaves unanswered is answered with a name rooted at the void. Only the
+ * first hop is read: what a further hop asks is asked of an answer nobody has
+ * settled yet, and once this settles the first the next pass reaches the
+ * second.
  * Being asked off a table is what makes the answer improve as the passes go on:
  * an argument whose own type was worked out this pass is a filling with a type
  * next pass, and a void nothing could be said about becomes a void filled one
@@ -111,6 +120,7 @@ final class Promoted {
         final Provided owned = new Provided(
             this.given, new Ends(pairs).names(), this.hollows
         );
+        final Map<String, Collection<String>> asked = this.asked(pairs);
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
             : new Fillings(this.links(pairs), this.given).all().entrySet()) {
@@ -118,8 +128,31 @@ final class Promoted {
             if (sole.isEmpty()) {
                 sole = new Shared(hollow.getValue(), known, owned).names();
             }
-            if (!sole.isEmpty() && !pairs.containsKey(hollow.getKey())) {
+            if (sole.isEmpty()) {
+                found.putAll(
+                    new Agreed(hollow.getValue(), known, owned).members(
+                        hollow.getKey(),
+                        asked.getOrDefault(hollow.getKey(), Collections.emptyList())
+                    )
+                );
+            } else {
                 found.put(hollow.getKey(), sole);
+            }
+        }
+        found.keySet().removeAll(pairs.keySet());
+        return found;
+    }
+
+    private Map<String, Collection<String>> asked(final Map<String, String> pairs) {
+        final Rooted rooted = new Rooted(this.hollows);
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final String answer : pairs.values()) {
+            final String hollow = rooted.names(answer);
+            if (!hollow.isEmpty() && answer.length() > hollow.length()) {
+                final String name = answer.substring(hollow.length() + 1);
+                if (!name.contains(".")) {
+                    found.computeIfAbsent(hollow, key -> new HashSet<>(0)).add(name);
+                }
             }
         }
         return found;
