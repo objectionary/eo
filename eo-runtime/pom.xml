@@ -308,6 +308,16 @@
                 receiver as reaching outward even when the head declares it.
                 -->
                 <lint>redundant-attachment</lint>
+                <!--
+                @todo #6985:30min Stop skipping 'many-void-attributes' here.
+                The rule caps a formation at five voids to keep it callable,
+                but it counts 'ρ' among them, and 'string.regex.matched' has
+                five real ones. Writing the receiver down did not add an
+                argument, so the cap now bites any head honest enough to
+                declare what it already had. Remove this entry once
+                objectionary/lints#1299 leaves the receiver out of the count.
+                -->
+                <lint>many-void-attributes</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
