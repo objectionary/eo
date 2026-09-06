@@ -57,14 +57,6 @@ import java.util.Map;
  * turns out to be (#8405).</p>
  *
  * @since 0.69.0
- * @todo #8424:35min Walk a ring of copies once in {@code taken} too.
- *  The chain it collects is the copies further along than this application,
- *  and on a ring it comes back round to the application itself, so the voids
- *  this very application is about to fill are counted as taken already and
- *  the fillings are lost. {@link Ends} settles a ring on one of its names for
- *  everyone else; the chain here wants the whole path rather than its end, so
- *  it needs a rule of its own about where a ring starts and stops. Once there
- *  is one, {@code copies} walks the same path and both can share it.
  */
 final class Bound {
 
@@ -176,9 +168,34 @@ final class Bound {
 
     private Collection<String> copies(final String name) {
         final Collection<String> found = new LinkedHashSet<>(0);
+        found.add(name);
+        found.addAll(this.chain(name));
+        return found;
+    }
+
+    /**
+     * The copies further along the chain than the given name.
+     *
+     * <p>The pairs may close into a ring, and a walk on a ring comes back to
+     * where it started. The walk stops at the first name it has seen already,
+     * and the name it started from is not part of the answer: an application
+     * is not a copy of itself, and counting it as one would mark the voids it
+     * is about to fill as filled by somebody else.</p>
+     *
+     * @param name The name to walk from
+     * @return The names further along, in the order they are reached
+     */
+    private List<String> chain(final String name) {
+        final List<String> found = new ArrayList<>(0);
+        final Collection<String> seen = new HashSet<>(0);
+        seen.add(name);
         String walked = name;
-        while (found.add(walked) && this.pairs.containsKey(walked)) {
+        while (this.pairs.containsKey(walked)) {
             walked = this.pairs.get(walked);
+            if (!seen.add(walked)) {
+                break;
+            }
+            found.add(walked);
         }
         return found;
     }
@@ -214,13 +231,7 @@ final class Bound {
     }
 
     private Collection<String> taken(final String application) {
-        final List<String> chain = new ArrayList<>(0);
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = application;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
-            chain.add(walked);
-        }
+        final List<String> chain = this.chain(application);
         Collections.reverse(chain);
         final Collection<String> found = new HashSet<>(0);
         for (final String step : chain) {
