@@ -4,20 +4,14 @@
 # yamllint disable rule:line-length
 name: ec2
 'on':
-  push:
-    branches:
-      - master
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
 concurrency:
   group: ec2-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  wait:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 70
-    steps:
-      - run: sleep 3600
   start-instance:
-    needs: wait
     runs-on: ubuntu-24.04
     outputs:
       label: ${{ steps.start.outputs.label }}
@@ -98,7 +92,7 @@ jobs:
         run: |
           set -e
           seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
-            --jq '[ .jobs[] | select(.completed_at) | select(.name != "wait") ]
+            --jq '[ .jobs[] | select(.completed_at) ]
               | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
               | [ ., 0 ] | max')
           echo "This run took ${seconds} seconds"
@@ -125,7 +119,7 @@ jobs:
         run: |
           set -e
           seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
-            --jq '[ .jobs[] | select(.completed_at) | select(.name != "wait") ]
+            --jq '[ .jobs[] | select(.completed_at) ]
               | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
               | [ ., 0 ] | max')
           echo "This run took ${seconds} seconds"
