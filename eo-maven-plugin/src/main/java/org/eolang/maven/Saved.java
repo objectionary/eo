@@ -110,7 +110,7 @@ final class Saved implements Scalar<Path> {
             }
             final Path tmp = Files.createTempFile(
                 dir,
-                this.target.getFileName().toString(),
+                Saved.prefix(this.target),
                 ".tmp"
             );
             try {
@@ -140,6 +140,25 @@ final class Saved implements Scalar<Path> {
             );
         }
         return this.target;
+    }
+
+    /**
+     * The prefix of the temporary file that sits next to the target.
+     *
+     * <p>{@link Files#createTempFile(Path, String, String, java.nio.file.attribute.FileAttribute[])}
+     * refuses a prefix shorter than three characters, while a file name of one or two
+     * characters is valid everywhere, so the name is padded here.</p>
+     *
+     * @param target The file we are going to save
+     * @return The prefix, at least three characters long
+     */
+    private static String prefix(final Path target) {
+        final String name = target.getFileName().toString();
+        final StringBuilder out = new StringBuilder(name);
+        while (out.length() < 3) {
+            out.append('_');
+        }
+        return out.toString();
     }
 
     @RetryOnFailure(
