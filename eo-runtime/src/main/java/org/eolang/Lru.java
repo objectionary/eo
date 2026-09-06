@@ -23,14 +23,15 @@ import java.util.Set;
  * {@link java.util.Collections#synchronizedMap(Map)} when several
  * threads share it.</p>
  *
+ * @param <T> The type of the values kept
  * @since 0.75
  */
-final class Lru implements Map<String, byte[]> {
+final class Lru<T> implements Map<String, T> {
 
     /**
      * The entries, in the order of access.
      */
-    private final Map<String, byte[]> origin;
+    private final Map<String, T> origin;
 
     /**
      * How many entries to keep.
@@ -70,13 +71,13 @@ final class Lru implements Map<String, byte[]> {
     }
 
     @Override
-    public byte[] get(final Object key) {
+    public T get(final Object key) {
         return this.origin.get(key);
     }
 
     @Override
-    public byte[] put(final String key, final byte[] value) {
-        final byte[] result;
+    public T put(final String key, final T value) {
+        final T result;
         if (this.capacity == 0) {
             result = null;
         } else {
@@ -91,13 +92,13 @@ final class Lru implements Map<String, byte[]> {
     }
 
     @Override
-    public byte[] remove(final Object key) {
+    public T remove(final Object key) {
         return this.origin.remove(key);
     }
 
     @Override
-    public void putAll(final Map<? extends String, ? extends byte[]> map) {
-        for (final Map.Entry<? extends String, ? extends byte[]> entry : map.entrySet()) {
+    public void putAll(final Map<? extends String, ? extends T> map) {
+        for (final Map.Entry<? extends String, ? extends T> entry : map.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -113,12 +114,12 @@ final class Lru implements Map<String, byte[]> {
     }
 
     @Override
-    public Collection<byte[]> values() {
+    public Collection<T> values() {
         return this.origin.values();
     }
 
     @Override
-    public Set<Map.Entry<String, byte[]>> entrySet() {
+    public Set<Map.Entry<String, T>> entrySet() {
         return this.origin.entrySet();
     }
 }

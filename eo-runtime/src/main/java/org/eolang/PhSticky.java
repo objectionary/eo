@@ -101,7 +101,7 @@ public final class PhSticky implements Phi {
     public PhSticky(final Phi obj, final int capacity) {
         this(
             obj,
-            Collections.synchronizedMap(new Lru(capacity)),
+            Collections.synchronizedMap(new Lru<>(capacity)),
             new CopyOnWriteArrayList<>(),
             new ConcurrentHashMap<>(0)
         );
