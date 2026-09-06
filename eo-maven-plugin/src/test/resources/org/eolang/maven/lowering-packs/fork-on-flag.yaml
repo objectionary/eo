@@ -5,9 +5,11 @@
 # symbolic bool at once, with no guard to reduce first, so the fork is
 # the first and only step at the top, each arm holds one step of its
 # own, and the label of the else arm counts on from the then arm. The
-# formation stays as written all the same: the tables witness the
-# `true` filling `flag` by the locator of the argument, not as a bool
-# carrier, so the lowering never learns the forma of that void.
+# `true` filling `flag` is a copy of the object the state names, so the
+# tables witness the void as `Φ.true` the way they witness a number
+# literal as `Φ.number`, and the formation leaves the EO as one atom.
+# Both arms read `x`, so it is read at the top beside the flag rather
+# than inside either block.
 input: |
   [] > foo
     [flag x] > pick
@@ -20,6 +22,8 @@ prelude:
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+  true.eo: |
+    [] > true
 unit: pick
 voids:
   flag: bool
@@ -29,9 +33,9 @@ lowered: |
     pick > @
       true
       5
-    flag.if > [flag x] > pick
-      x.plus 1
-      x.times 2
+    [] > pick /Q.number
+      ? > flag /Q.bool
+      ? > x /Q.number
 protocol: |
   s1 ← fork sym:v0 number
     then
@@ -41,3 +45,15 @@ protocol: |
       s3 ← L_number_times sym:v1 number:40-00-00-00-00-00-00-00
       answer sym:s3 number
   answer sym:s1 number
+java: |
+  final boolean v0 = new Dataized(this.take("flag")).asBool();
+  final double v1 = new Dataized(this.take("x")).asNumber();
+  final double s1;
+  if (v0) {
+      final double s2 = v1 + Double.longBitsToDouble(0x3FF0000000000000L);
+      s1 = s2;
+  } else {
+      final double s3 = v1 * Double.longBitsToDouble(0x4000000000000000L);
+      s1 = s3;
+  }
+  return new Data.ToPhi(s1);
