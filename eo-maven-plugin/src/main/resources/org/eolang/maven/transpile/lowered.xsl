@@ -21,6 +21,18 @@
   A lowered formation without its sidecar stops the build: the stamp and
   the sidecar are written together by the goal, so one without the other
   is an invariant violation, not an input to tolerate.
+
+  The constructor registers the voids of the formation and nothing else,
+  never a receiver of its own (see #8439). The goal leaves no "ρ" behind,
+  since the body that could have read one is gone, and "purify.xsl" gave
+  the formation its "@pure" label on exactly that reading: a receiver
+  never declared is a receiver never looked at, so it is no input of the
+  atom. A class declaring a vacant "ρ" would contradict that label at run
+  time, because "AtWithRho" fills such a "ρ" with the object the atom
+  hangs on, "PhSticky" counts every fill as an input of the answer it
+  remembers, and the key it builds normalizes that object - which is the
+  very object whose body is asking for this answer. The dataization would
+  then reenter itself and never end.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:import href="/org/eolang/maven/transpile/_java-names.xsl"/>
@@ -92,7 +104,7 @@
     <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
     <xsl:variable name="voids" as="xs:string*" select="for $v in o[@base = $eo:empty] return concat('new Attr(&quot;', eo:literal(eo:attr-name($v/@name, false())), '&quot;, new AtVoid(&quot;', eo:literal(eo:attr-name($v/@name, false())), '&quot;))')"/>
     <xsl:variable name="header" as="xs:string*" select="(concat('/* ', $disclaimer, ' */'), '', concat('package org.eolang', if ($pkg) then concat('.', eo:package-name($pkg)) else '', ';'), '', 'import org.eolang.*;', '')"/>
-    <xsl:variable name="ctor" as="xs:string*" select="('    /**', '     * Ctor.', '     */', concat('    public ', $class, '() {'), concat('        super(new Attrs(', string-join(('new Attr(Phi.RHO, new AtRho())', $voids), ', '), '));'), '    }')"/>
+    <xsl:variable name="ctor" as="xs:string*" select="('    /**', '     * Ctor.', '     */', concat('    public ', $class, '() {'), concat('        super(new Attrs(', string-join($voids, ', '), '));'), '    }')"/>
     <xsl:variable name="lambda" as="xs:string*" select="('    @Override', '    public Phi lambda() {', replace(unparsed-text($file, 'UTF-8'), '[&#13;&#10;]+$', ''), '    }')"/>
     <class lowered="true">
       <xsl:attribute name="java-name">

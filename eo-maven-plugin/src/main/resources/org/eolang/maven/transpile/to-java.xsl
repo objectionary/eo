@@ -359,7 +359,10 @@
   "o[1]"), and its instance is wrapped in PhSticky, the same way the
   "abstract" template below wraps a pure formation: the class of such an
   atom is a straight-line computation rendered by "lowered.xsl", and its
-  result is decided by its inputs alone.
+  result is decided by its inputs alone. Those inputs are its voids and
+  nothing more, which is why "lowered.xsl" gives the class no "ρ" of its
+  own: a vacant one would be filled with the object the atom hangs on and
+  counted among the inputs PhSticky keys its answers by (see #8439).
   -->
   <xsl:template match="atom">
     <xsl:param name="name"/>

@@ -66,13 +66,22 @@ final class StLoweredTest {
     }
 
     @Test
-    void registersReceiverAndVoidInCtor(@Mktmp final Path temp) throws IOException {
+    void registersEveryVoidInCtor(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "the ctor must register the receiver and every void through super(), but it doesnt",
+            "the ctor must register every void through super(), but it doesnt",
             StLoweredTest.generated(temp, "0b54e17d92cc"),
             Matchers.containsString(
-                "super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr(\"x\", new AtVoid(\"x\"))));"
+                "super(new Attrs(new Attr(\"x\", new AtVoid(\"x\"))));"
             )
+        );
+    }
+
+    @Test
+    void declaresNoReceiverInCtor(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the ctor must leave the receiver out, but it registers one",
+            StLoweredTest.generated(temp, "1a2b3c4d5e6f"),
+            Matchers.not(Matchers.containsString("new AtRho()"))
         );
     }
 

@@ -47,8 +47,10 @@ import org.w3c.dom.Element;
  * protocol, the protocol is rendered into a Java body, the body goes
  * into a sidecar file named by its own digest, and the formation keeps
  * only its voids, the digest, and a {@code λ} marker — the shape
- * {@code lowered.xsl} later renders into an atom class, which binds
- * {@code ρ} of its own, so a declared {@code ρ} leaves with the body.
+ * {@code lowered.xsl} later renders into an atom class, which declares
+ * no {@code ρ} at all, since the body that could have read one leaves
+ * with the digest and an atom holding a receiver it never reads is what
+ * makes its own dataization reenter itself (#8439).
  * Whatever refuses
  * along the way — an unwitnessed void, an operation outside the tables,
  * a body that needs no computation — leaves the formation as
