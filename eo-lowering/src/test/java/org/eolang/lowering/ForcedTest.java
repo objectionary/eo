@@ -70,6 +70,38 @@ final class ForcedTest {
     }
 
     @Test
+    void waitsForTheAtomOverAnObject() {
+        MatcherAssert.assertThat(
+            "the bytes of an object are no view and must stay unsettled, but they didnt",
+            new Forced(new Symbol("s1", "object")).key(),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void matchesDataizationOfAnObject() {
+        MatcherAssert.assertThat(
+            "the dataization of an object must match the as-bytes record, but it doesnt",
+            new Forced(new Symbol("s1", "object")).matches(
+                new Shape("as-bytes", "sym:s1", Collections.emptyList())
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void givesWayToTheStepOfDataization() {
+        MatcherAssert.assertThat(
+            "the dataization of an object must become the step that parked on it, but it didnt",
+            new Forced(new Symbol("s1", "object")).swapped(
+                new Shape("as-bytes", "sym:s1", Collections.emptyList()),
+                new Symbol("s2", "bytes")
+            ).key(),
+            Matchers.equalTo("sym:s2")
+        );
+    }
+
+    @Test
     void swapsInsideTheView() {
         MatcherAssert.assertThat(
             "the view must follow the site it wraps into its step, but it doesnt",

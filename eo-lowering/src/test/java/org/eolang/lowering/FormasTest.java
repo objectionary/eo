@@ -125,6 +125,22 @@ final class FormasTest {
     }
 
     @Test
+    void witnessesTupleVoid(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.foo.calc\">%s</type></provides>",
+                "<attr name=\"items\" void=\"true\"> <witnessed><ref loc=\"Φ.tuple\"/></witnessed> </attr>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled only with tuples must be witnessed as one, but it wasnt",
+            new Formas(temp).given("Φ.foo.calc.items"),
+            Matchers.equalTo("tuple")
+        );
+    }
+
+    @Test
     void witnessesStringVoid(@Mktmp final Path temp) throws IOException {
         Files.write(
             temp.resolve("provides.xml"),

@@ -59,7 +59,8 @@ public final class Op {
 
     /**
      * The forma of the receiver.
-     * @return Either {@code number} or {@code bytes}
+     * @return One of {@code number}, {@code string}, {@code bytes},
+     *  {@code bool}, {@code tuple} or {@code object}
      */
     public String carrier() {
         return this.row()[2];
@@ -103,6 +104,36 @@ public final class Op {
      * @return The names, such as {@code start} and {@code len}
      */
     public List<String> args() {
+        return this.columns().stream()
+            .map(cell -> cell.split(":", 2)[0])
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * The formas of the arguments, in their positional order. An argument
+     * carries the forma of the receiver unless its cell says otherwise,
+     * as {@code i:number} does for the index of a tuple.
+     * @return The formas, one per argument
+     */
+    public List<String> formas() {
+        final String carrier = this.carrier();
+        return this.columns().stream()
+            .map(cell -> Op.forma(cell, carrier))
+            .collect(Collectors.toList());
+    }
+
+    private static String forma(final String cell, final String carrier) {
+        final String[] parts = cell.split(":", 2);
+        final String out;
+        if (parts.length > 1) {
+            out = parts[1];
+        } else {
+            out = carrier;
+        }
+        return out;
+    }
+
+    private List<String> columns() {
         final String[] row = this.row();
         final List<String> out;
         if (row.length > 4 && !row[4].isEmpty()) {

@@ -194,6 +194,8 @@ public final class Formas {
         out.put("Φ.bytes", "bytes");
         out.put("Φ.true", "bool");
         out.put("Φ.false", "bool");
+        out.put("Φ.tuple", "tuple");
+        out.put("Φ.tuple.empty", "tuple");
         return out;
     }
 

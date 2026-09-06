@@ -20,7 +20,9 @@ import java.util.stream.Stream;
  * encode, a bool is {@code true} or {@code false}, and bytes or a string
  * are a byte array. Every forma has one Java type, with a string carried
  * as bytes, since its Δ is the very UTF-8 sequence the byte atoms it
- * reaches through {@code φ} operate on. The value of an application
+ * reaches through {@code φ} operate on, and a tuple or an object it
+ * answers carried as the {@code Phi} itself, since neither is a datum
+ * and every operation on either dispatches back into EO. The value of an application
  * comes from the format the {@link Op} table holds for its atom, except
  * an equality, which compares by the forma of its operands; and a void
  * is read through the public runtime API. The forma of a key is looked
@@ -89,6 +91,8 @@ public final class Rendering {
             out = String.format(
                 "byte[] v%d = new Dataized(this.take(\"%s\")).take();", index, name
             );
+        } else if ("tuple".equals(forma)) {
+            out = String.format("Phi v%d = this.take(\"%s\");", index, name);
         } else {
             throw new IllegalStateException(
                 String.format("The void '%s' of forma '%s' cannot be read in Java", name, forma)
@@ -110,6 +114,8 @@ public final class Rendering {
             out = String.format("double v%d = 0.0;", index);
         } else if ("boolean".equals(type)) {
             out = String.format("boolean v%d = false;", index);
+        } else if ("Phi".equals(type)) {
+            out = String.format("Phi v%d = Phi.Φ;", index);
         } else {
             out = String.format("byte[] v%d = new byte[0];", index);
         }
@@ -128,12 +134,16 @@ public final class Rendering {
             out = this.compared(step);
         } else {
             final String format = operation.java();
-            for (final String key : step.keys()) {
-                if (!operation.carrier().equals(this.forma(key))) {
+            final List<String> expected = new ArrayList<>(step.keys().size());
+            expected.add(operation.carrier());
+            expected.addAll(operation.formas());
+            for (int idx = 0; idx < step.keys().size(); ++idx) {
+                final String key = step.keys().get(idx);
+                if (!expected.get(idx).equals(this.forma(key))) {
                     throw new IllegalStateException(
                         String.format(
                             "The operand '%s' of '%s' does not carry a %s",
-                            key, step.atom(), operation.carrier()
+                            key, step.atom(), expected.get(idx)
                         )
                     );
                 }
@@ -242,6 +252,8 @@ public final class Rendering {
             out = "boolean";
         } else if ("bytes".equals(carrier)) {
             out = "byte[]";
+        } else if ("tuple".equals(carrier) || "object".equals(carrier)) {
+            out = "Phi";
         } else {
             throw new IllegalStateException(
                 String.format("The value '%s' has no Java type to carry it", what)

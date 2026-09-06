@@ -51,8 +51,9 @@ public final class Symbol implements Term {
             out = String.format(
                 "Φ.%s(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧))", this.forma, this.name
             );
-        } else if ("bytes".equals(this.forma)) {
-            out = String.format("Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧)", this.name);
+        } else if ("bytes".equals(this.forma) || "tuple".equals(this.forma)
+            || "object".equals(this.forma)) {
+            out = String.format("Φ.%s(α0 ↦ ⟦ λ ⤍ Sym_%s ⟧)", this.forma, this.name);
         } else {
             throw new IllegalStateException(
                 String.format(

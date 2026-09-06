@@ -34,6 +34,15 @@ final class SymbolTest {
     }
 
     @Test
+    void rendersTupleAsMarkedCarrier() {
+        MatcherAssert.assertThat(
+            "a symbolic tuple must be the tuple carrier around its marker, but it isnt",
+            new Symbol("v0", "tuple").phi(),
+            Matchers.equalTo("Φ.tuple(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)")
+        );
+    }
+
+    @Test
     void namesKey() {
         MatcherAssert.assertThat(
             "the key must carry the name of the symbol, but it doesnt",
@@ -55,8 +64,8 @@ final class SymbolTest {
     void refusesUnmodelledCarrier() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            new Symbol("s2", "tuple")::phi,
-            "a tuple has no symbolic carrier to render, but one rendered"
+            new Symbol("s2", "file")::phi,
+            "a file has no symbolic carrier to render, but one rendered"
         );
     }
 }

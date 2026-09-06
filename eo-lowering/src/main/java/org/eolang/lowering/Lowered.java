@@ -23,8 +23,10 @@ import org.w3c.dom.Element;
  * <p>A formation qualifies when it is a named direct attribute of a
  * top-level object, its body is voids plus one {@code φ} plus helpers
  * nothing outside can name, and every void is witnessed in the tables
- * of {@code eo:inference} as a number, a string or bytes, so a symbolic
- * carrier can stand for it. A helper is an attribute the source
+ * of {@code eo:inference} as a number, a string, bytes or a bool, so a
+ * symbolic carrier can stand for it, or as a tuple, which the atom holds
+ * as the object itself and asks its length and its elements of by
+ * dispatching back into EO. A helper is an attribute the source
  * privatized with {@code >>}, or a const the parser wrapped, and it
  * shows up under a synthetic {@code a🌵} name: the body reads it in
  * place, applying it to its arguments when it is a formation of its
