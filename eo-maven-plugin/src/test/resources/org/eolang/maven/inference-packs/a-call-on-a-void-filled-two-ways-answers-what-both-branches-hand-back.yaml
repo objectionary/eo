@@ -1,3 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void the program fills two ways still says something, as long as the two
+# fillings are copies of one object: whichever arrives, it is a copy of that,
+# so a call rooted at the void goes on past it. Where the filling hands back
+# what the call put into it, as both arms of a choice do, the call is one of
+# its own arguments, and it does not matter which one when they agree.
 eo:
   choice.eo: |
     [pick] > choice
