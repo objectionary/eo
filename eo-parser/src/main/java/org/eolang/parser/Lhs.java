@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.List;
+
 /**
  * The left-hand side of an only-phi shape — the {@code lhs} of
  * {@code lhs > [params] > name} (§3.10) and of a parenthesised
@@ -13,9 +15,11 @@ package org.eolang.parser;
  * the shape has to settle before emitting it is a question about the text
  * alone: how many objects a compact-tuple {@code *N} marker asks for
  * (R-3.9.1), whether the head is a reversed dispatch, whether that
- * dispatch has a receiver at all, and whether the expression is bare — a
- * head with no chain and no horizontal arguments, which is what leaves the
- * φ {@link Openness#OPEN} for a deeper-indent body to fill (§4.5).</p>
+ * dispatch has a receiver at all, whether it is loaded with horizontal
+ * arguments — the shape R-3.10.6 forbids as a φ — and whether the
+ * expression is bare, a head with no chain and no horizontal arguments,
+ * which is what leaves the φ {@link Openness#OPEN} for a deeper-indent
+ * body to fill (§4.5).</p>
  *
  * <p>The head of the text ends at the first space that sits at paren depth
  * 0 and outside any string literal, which is what {@link #space()} finds,
@@ -66,13 +70,11 @@ final class Lhs {
     }
 
     boolean receiverless() {
-        final Tokens tokens = new Tokens(this.span.body(), this.span);
-        boolean bare = false;
-        if (tokens.reversedAhead(tokens.readValue())) {
-            tokens.consumeDispatch();
-            bare = tokens.readArgs().isEmpty();
-        }
-        return bare;
+        return this.reversed() && this.rargs().isEmpty();
+    }
+
+    boolean loaded() {
+        return this.reversed() && !this.rargs().isEmpty();
     }
 
     boolean bare(final Tokens tokens, final Value head, final boolean reversed) {
@@ -91,6 +93,18 @@ final class Lhs {
             );
         }
         return empty && (chained || !head.group());
+    }
+
+    private boolean reversed() {
+        final Tokens tokens = new Tokens(this.span.body(), this.span);
+        return tokens.reversedAhead(tokens.readValue());
+    }
+
+    private List<Value> rargs() {
+        final Tokens tokens = new Tokens(this.span.body(), this.span);
+        tokens.readValue();
+        tokens.consumeDispatch();
+        return tokens.readArgs();
     }
 
     private int space() {
