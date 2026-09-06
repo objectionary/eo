@@ -1,5 +1,13 @@
 # Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
 # the one-half power. A negative argument, negative infinity included, is nan.
+#
+# The half power goes through a logarithm and an exponential, both of which
+# lose digits as the exponent of the receiver grows, so at `1e300` only
+# fourteen of the sixteen digits a double holds are right. One Heron step
+# takes that seed to the last place: the step squares the relative error, and
+# an error of `1e-14` squared is far below what a double can tell apart. A
+# seed that is zero, infinite or nan has nothing to polish and is the answer
+# already.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,8 +23,16 @@
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
       arg
-      arg.power 0.5
+      if.
+        seed.is-finite.and
+          seed.gt 0
+        div.
+          seed.plus
+            arg.div seed
+          2
+        seed
   number ^.as-bytes > arg
+  arg.power 0.5 > seed
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.
@@ -39,6 +55,10 @@
       0.25.sqrt.minus 0.5
     1.0e-9
 
+  1.0e300.sqrt.eq 1.0e150 ++> can-take-a-square-root-of-a-huge-magnitude
+
+  1.0e-300.sqrt.eq 1.0e-150 ++> can-take-a-square-root-of-a-tiny-magnitude
+
   lt. ++> can-take-a-square-root-of-four
     abs.
       4.sqrt.minus 2
@@ -51,6 +71,8 @@
   1.sqrt.eq 1 ++> can-take-a-square-root-of-one
 
   pinf.sqrt.eq pinf ++> can-take-a-square-root-of-positive-infinity
+
+  1.0e308.sqrt.eq 1.0e154 ++> can-take-a-square-root-of-the-largest-power-of-ten
 
   lt. ++> can-take-a-square-root-of-two
     abs.
