@@ -106,15 +106,16 @@
       mantissa.length.minus > places
         dot.plus 1
       if. > [^ value power] > raised
-        and.
+        ^.scalable value
+        if.
           power.gt 200
-          ^.scalable value
-        ^.raised
+          ^.raised
+            value.times
+              10.power 200
+            power.minus 200
           value.times
-            10.power 200
-          power.minus 200
-        value.times
-          10.power power
+            10.power power
+        value
       and. > [value] > scalable
         not.
           value.eq 0
@@ -497,6 +498,11 @@
     "00009223372036854775808"
 
   "%l".scanf "error" --> stops-on-a-wrong-format
+
+  eq. ++> can-scan-a-zero-mantissa-with-an-out-of-range-exponent
+    0
+    head.
+      "%f".scanf "0e309"
 
   eq. ++> can-scan-a-float-in-scientific-notation
     1000
