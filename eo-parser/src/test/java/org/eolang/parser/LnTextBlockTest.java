@@ -119,7 +119,28 @@ final class LnTextBlockTest {
         );
     }
 
-    @Test
+
+@Test
+void acceptsOuterBindingAfterCloser() {
+    final Globals globals = new Globals();
+    globals.openTextBlock(1, 0);
+    globals.appendTextLine("hi");
+    final Stack stack = new Stack();
+    final Emit emit = new Emit();
+
+    new LnTextBlock(new Span("\"\"\":x", 3))
+        .into(stack, globals, emit);
+    emit.close();
+
+    MatcherAssert.assertThat(
+        "a `:name` binding immediately after a text-block closer must be accepted",
+        LnTextBlockTest.render(emit),
+        XhtmlMatchers.hasXPath(
+            "/object/o[@as='x' and @base='Φ.string']"
+        )
+    );
+}  
+ @Test
     void marksLevelNamedWhenSuffixFollowsChain() {
         final Globals globals = new Globals();
         globals.openTextBlock(1, 0);
