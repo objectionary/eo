@@ -91,4 +91,17 @@ final class DataizedTest {
             Matchers.containsString("length 0")
         );
     }
+
+    @Test
+    void refusesBytesThatAreNotValidText() {
+        MatcherAssert.assertThat(
+            "bytes that are not UTF-8 must be refused, not replaced with U+FFFD",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new Data.ToPhi(new byte[]{(byte) 0xFF})).asString(),
+                "a lone FF byte was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("not valid UTF-8")
+        );
+    }
 }
