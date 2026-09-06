@@ -5,16 +5,10 @@
 package org.eolang.maven;
 
 import com.yegor256.WeAreOnline;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
@@ -53,7 +47,7 @@ final class ObjectsIndexTest {
     }
 
     @RepeatedTest(20)
-    void readsTheIndexOnceFromManyThreads() throws Exception {
+    void readsTheIndexOnceFromManyThreads() {
         final AtomicInteger calls = new AtomicInteger(0);
         final ObjectsIndex index = new ObjectsIndex(
             new ScalarOf<>(
@@ -64,49 +58,18 @@ final class ObjectsIndexTest {
                 }
             )
         );
+        new Threaded<>(
+            IntStream.range(0, 8).boxed().collect(Collectors.toList()),
+            ignored -> {
+                index.contains("org.eolang.io.stderr");
+                return ignored;
+            }
+        ).total();
         MatcherAssert.assertThat(
-            "the index must be read once, however many workers ask it at once",
-            ObjectsIndexTest.asked(index, 8),
-            Matchers.equalTo(1)
-        );
-        MatcherAssert.assertThat(
-            "the reads must be counted only once too",
+            "the index must be read once, however many threads ask it at once",
             calls.get(),
             Matchers.equalTo(1)
         );
-    }
-
-    /**
-     * Ask one index from many threads at once.
-     * @param index The index to ask
-     * @param workers How many threads ask it
-     * @return How many distinct answers came back
-     * @throws Exception If any of the workers fails
-     */
-    private static int asked(final ObjectsIndex index, final int workers) throws Exception {
-        final CountDownLatch latch = new CountDownLatch(1);
-        final ExecutorService pool = Executors.newFixedThreadPool(workers);
-        final Collection<Boolean> answers = new HashSet<>(1);
-        try {
-            final List<Future<Boolean>> futures = new ArrayList<>(workers);
-            for (int worker = 0; worker < workers; ++worker) {
-                futures.add(
-                    pool.submit(
-                        () -> {
-                            latch.await();
-                            return index.contains("org.eolang.io.stderr");
-                        }
-                    )
-                );
-            }
-            latch.countDown();
-            for (final Future<Boolean> future : futures) {
-                answers.add(future.get());
-            }
-        } finally {
-            pool.shutdown();
-        }
-        return answers.size();
     }
 
     @Test
