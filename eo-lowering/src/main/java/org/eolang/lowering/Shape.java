@@ -91,8 +91,7 @@ public final class Shape {
      */
     public boolean covers(final String verb, final String self, final List<Binding> args) {
         boolean good = this.method.equals(verb)
-            && !self.isEmpty()
-            && (this.receiver.equals(self) || this.receiver.equals(Shape.bytewise(self)))
+            && this.same(self)
             && this.names.size() == args.size();
         for (int idx = 0; good && idx < args.size(); ++idx) {
             final Binding arg = args.get(idx);
@@ -103,6 +102,11 @@ public final class Shape {
                 && (expected.isEmpty() || expected.equals(Shape.identity(arg.value())));
         }
         return good;
+    }
+
+    private boolean same(final String self) {
+        return !self.isEmpty()
+            && (this.receiver.equals(self) || this.receiver.equals(Shape.bytewise(self)));
     }
 
     private static String bytewise(final String self) {
