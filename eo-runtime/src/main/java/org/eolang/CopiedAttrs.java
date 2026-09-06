@@ -7,7 +7,6 @@ package org.eolang;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 
 /**
@@ -30,7 +29,9 @@ import java.util.function.BiConsumer;
  * decided and reads the same whenever it is copied out.</p>
  *
  * @since 0.63
+ * @checkstyle RegexpSinglelineCheck (120 lines)
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkable {
 
     /**
@@ -44,14 +45,14 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkab
     private final Phi owner;
 
     /**
-     * The ones taken out of the origin so far.
+     * The ones taken out of the origin so far, guarded by the monitor of this
+     * map. The monitor is the map itself and not a lock of its own, because
+     * every copy of an object makes one of these and there are millions of
+     * them in the heap of a program that runs for a while: a lock costs two
+     * objects each, while a monitor costs nothing until two threads want it
+     * at the same time.
      */
     private final Bindings taken;
-
-    /**
-     * Guards {@link #taken} against concurrent readers.
-     */
-    private final ReentrantLock lock;
 
     /**
      * Ctor.
@@ -63,23 +64,18 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkab
         this.origin = from;
         this.owner = phi;
         this.taken = new Bindings();
-        this.lock = new ReentrantLock();
     }
 
     @Override
     public boolean containsKey(final Object key) {
-        this.lock.lock();
-        try {
+        synchronized (this) {
             return this.taken.containsKey(key) || this.origin.containsKey(key);
-        } finally {
-            this.lock.unlock();
         }
     }
 
     @Override
     public Attribute get(final Object key) {
-        this.lock.lock();
-        try {
+        synchronized (this) {
             final Attribute ready = this.taken.get(key);
             final Attribute attr;
             if (ready == null) {
@@ -88,41 +84,30 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkab
                 attr = ready;
             }
             return attr;
-        } finally {
-            this.lock.unlock();
         }
     }
 
     @Override
     public Attribute put(final String key, final Attribute value) {
-        this.lock.lock();
-        try {
+        synchronized (this) {
             return this.taken.put(key, value);
-        } finally {
-            this.lock.unlock();
         }
     }
 
     @Override
     public Set<Map.Entry<String, Attribute>> entrySet() {
-        this.lock.lock();
-        try {
+        synchronized (this) {
             for (final String key : this.origin.keySet()) {
                 this.taken.put(key, this.get(key));
             }
             return this.taken.entrySet();
-        } finally {
-            this.lock.unlock();
         }
     }
 
     @Override
     public void each(final BiConsumer<String, Attribute> action) {
-        this.lock.lock();
-        try {
+        synchronized (this) {
             this.taken.each(action);
-        } finally {
-            this.lock.unlock();
         }
     }
 
