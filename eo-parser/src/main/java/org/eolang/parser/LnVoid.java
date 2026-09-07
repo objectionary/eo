@@ -95,12 +95,11 @@ final class LnVoid implements Line {
         final Stack stack, final Globals globals, final Emit emit, final int slash
     ) {
         globals.seal(emit, this.span);
-        this.checkTyped(
-            new Transition(stack, this.span).apply(
-                Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
-            ),
-            slash
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
         );
+        this.checkPlaced(level);
+        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object("ρ", "∅", this.span.line(), this.span.indent());
@@ -121,12 +120,11 @@ final class LnVoid implements Line {
             );
         }
         globals.seal(emit, this.span);
-        this.checkTyped(
-            new Transition(stack, this.span).apply(
-                Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
-            ),
-            slash
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
+        this.checkPlaced(level);
+        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(
@@ -135,6 +133,15 @@ final class LnVoid implements Line {
         );
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
+        }
+    }
+
+    private void checkPlaced(final Level level) {
+        if (!level.parent().formation()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void attribute is legal only as a direct child of a formation"
+            );
         }
     }
 

@@ -1441,6 +1441,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
 | `+alias` target that is a scope token rather than an object name (R-3.2.3) | `'+alias' target must be an object name, not a scope token` |
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
+| `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
