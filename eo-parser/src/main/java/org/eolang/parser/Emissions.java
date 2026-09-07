@@ -438,7 +438,7 @@ final class Emissions {
 
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;
@@ -457,7 +457,7 @@ final class Emissions {
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
-            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+            mapped = head.rootSymbol();
         } else {
             mapped = head.raw();
         }
