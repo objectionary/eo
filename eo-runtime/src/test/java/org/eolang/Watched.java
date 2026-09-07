@@ -44,15 +44,15 @@ import org.opentest4j.TestAbortedException;
  * a box with more memory would never have reached says nothing about the
  * code under test.</p>
  *
+ * <p>That skip is reported only once the group is empty. A body that
+ * outlasts its grace keeps whatever it opened, and JUnit deletes the
+ * {@code @TempDir} of the test right behind it — which on Windows cannot be
+ * done while a file in it is open, so the skip comes out as a failure that
+ * names neither the memory nor the test. So a group that still holds
+ * threads when the grace runs out fails the test with a sentence saying how
+ * many of them are left, instead of a skip that is not true yet.</p>
+ *
  * @since 0.75.0
- * @todo #8336:30min Let a body that will not stop be waited for. A terminated
- *  body gets half a second to die and the skip is reported whether it died or
- *  not, so its threads outlive the test that owns them, holding whatever they
- *  opened. JUnit closes the context right behind them and deletes the
- *  {@code @TempDir} of that test, which on windows cannot be deleted while a
- *  file in it is open, so the skip comes out as a failure that names neither
- *  the memory nor the test. Either wait for the group to empty, or say
- *  plainly that the body outlived its test.
  */
 @SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
 final class Watched {
@@ -65,6 +65,21 @@ final class Watched {
         "The test allocated %d bytes, which is over the %d bytes",
         "of eo.maxmem it was given, so it was terminated"
     );
+
+    /**
+     * What is said about a body that would not stop.
+     */
+    private static final String LINGERED = String.join(
+        " ",
+        "The test allocated %d bytes, which is over the %d bytes of eo.maxmem",
+        "it was given, and %d of its threads were still running %d ms after the",
+        "group was interrupted, so the body outlived the test that owns it"
+    );
+
+    /**
+     * How many milliseconds a terminated body is given to actually stop.
+     */
+    private static final long GRACE = 500L;
 
     /**
      * How many tests have been watched, to give every group its own name.
@@ -131,7 +146,11 @@ final class Watched {
         }
         if (over) {
             group.interrupt();
-            Watched.settle(done);
+            Watched.settle(group, done);
+            final int alive = group.activeCount();
+            if (alive > 0) {
+                throw this.outlived(consumed.bytes(), alive);
+            }
             throw this.aborted(consumed.bytes());
         }
         final Throwable error = failure.get();
@@ -143,9 +162,13 @@ final class Watched {
         }
     }
 
-    private static void settle(final CountDownLatch done) {
+    private static void settle(final ThreadGroup group, final CountDownLatch done) {
+        final long deadline = System.currentTimeMillis() + Watched.GRACE;
         try {
-            done.await(500L, TimeUnit.MILLISECONDS);
+            while (System.currentTimeMillis() < deadline
+                && (done.getCount() > 0L || group.activeCount() > 0)) {
+                Thread.sleep(10L);
+            }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
@@ -154,6 +177,12 @@ final class Watched {
     private TestAbortedException aborted(final long taken) {
         return new TestAbortedException(
             String.format(Watched.MESSAGE, taken, this.limit)
+        );
+    }
+
+    private IllegalStateException outlived(final long taken, final int alive) {
+        return new IllegalStateException(
+            String.format(Watched.LINGERED, taken, this.limit, alive, Watched.GRACE)
         );
     }
 
