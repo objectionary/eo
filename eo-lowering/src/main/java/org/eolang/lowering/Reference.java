@@ -52,18 +52,26 @@ public final class Reference {
     private final List<Binding> args;
 
     /**
+     * The tables witnessing the forma of the value at each locator.
+     */
+    private final Formas tables;
+
+    /**
      * Ctor.
      * @param where The scope the name is reached in
      * @param above The helpers being read at the moment, outermost first
      * @param label The name
      * @param arguments The arguments handed to the name
+     * @param witnessed The tables witnessing the forma of the value at
+     *  each locator
      */
     public Reference(final Scope where, final Collection<String> above,
-        final String label, final List<Binding> arguments) {
+        final String label, final List<Binding> arguments, final Formas witnessed) {
         this.scope = where;
         this.trail = above;
         this.name = label;
         this.args = arguments;
+        this.tables = witnessed;
     }
 
     /**
@@ -126,10 +134,10 @@ public final class Reference {
                     )
                 );
             }
-            out = new Parsed(helper, this.scope, deeper).term();
+            out = new Parsed(helper, this.scope, deeper, this.tables).term();
         } else {
             out = new Parsed(
-                this.body(helper), this.scope.inside(helper, this.args), deeper
+                this.body(helper), this.scope.inside(helper, this.args), deeper, this.tables
             ).term();
         }
         return out;

@@ -68,6 +68,21 @@ import java.util.Optional;
  * its value would never get one; and a program whose every path fails
  * answers nothing and is refused too.</p>
  *
+ * <p>A method the universe does not model — an EO object of the runtime,
+ * such as {@code minus} or {@code as-fixed} — is the third term phino
+ * cannot evaluate, and the one it must not refuse: a {@link Site}
+ * dispatching such a method on a settled receiver renders as a marker
+ * phino parks on when it demands the value, and the record turns into
+ * a {@link Dispatch} step, by {@link Dispatched}: a call back into EO
+ * over the keys of the receiver and the arguments, typed by the forma
+ * the tables of {@code eo:inference} witness for the site, or holding
+ * the object as it is when they witness none. The arguments of such a
+ * call are reduced in turn, the way the arguments of a repeat are, so
+ * the call is strict, and a method lazy in an argument is refused.
+ * Every other operation keeps its Java row, and the choice between a
+ * row and a dispatch is one of speed, not of whether the fragment
+ * lowers at all.</p>
+ *
  * <p>A helper the formation binds next to its body is read in place
  * wherever the body names it, by {@link Parsed}, applied to its
  * arguments when it has voids of its own, so the tree phino sees
@@ -121,6 +136,11 @@ public final class Reduction {
     private final Map<String, Xnav> helpers;
 
     /**
+     * The tables witnessing the forma of the value at each locator.
+     */
+    private final Formas tables;
+
+    /**
      * Ctor.
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
@@ -160,12 +180,35 @@ public final class Reduction {
     public Reduction(final Phino exe, final Xnav xmir,
         final Map<String, String> inputs, final int budget, final String name,
         final Map<String, Xnav> bound) {
+        this(
+            exe, xmir, inputs, budget, name, bound,
+            new Formas(Collections.emptyMap(), Collections.emptyMap())
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param exe The binary that dataizes
+     * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param budget The most partial runs one reduction may take
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself become repeats; empty when there is none
+     * @param bound The helpers the formation binds next to the fragment:
+     *  names to their {@code <o/>} elements, read in place when named
+     * @param witnessed The tables witnessing the forma of the value at
+     *  each locator, which type the dispatches back into EO
+     */
+    public Reduction(final Phino exe, final Xnav xmir,
+        final Map<String, String> inputs, final int budget, final String name,
+        final Map<String, Xnav> bound, final Formas witnessed) {
         this.phino = exe;
         this.fragment = xmir;
         this.voids = inputs;
         this.rounds = budget;
         this.formation = name;
         this.helpers = bound;
+        this.tables = witnessed;
     }
 
     /**
@@ -191,7 +234,7 @@ public final class Reduction {
      */
     public Program program() throws IOException {
         return new Bodies(
-            this, this.fragment, this.voids, this.formation, this.helpers
+            this, this.fragment, this.voids, this.formation, this.helpers, this.tables
         ).program();
     }
 
@@ -255,18 +298,16 @@ public final class Reduction {
                 continue;
             }
             Reduction.tailed(record);
-            final Op operation = new Op(record.name());
-            if (!operation.listed()) {
+            final Optional<Term> next;
+            if ("L_dispatch".equals(record.name())) {
+                next = new Dispatched(this, minted).applied(out, record, steps);
+            } else if (new Op(record.name()).listed()) {
+                next = this.stepped(out, new Op(record.name()), record, steps, minted);
+            } else {
                 excuse = String.format(
                     "the atom '%s' is not among the lowerable operations", record.name()
                 );
-                continue;
-            }
-            final Optional<Term> next;
-            if (record.parked() && operation.forma().isEmpty()) {
-                next = this.forked(out, operation, record, steps, minted);
-            } else {
-                next = Reduction.applied(out, operation, record, steps, minted);
+                next = Optional.empty();
             }
             if (next.isPresent()) {
                 out = next.get();
@@ -277,6 +318,18 @@ public final class Reduction {
             throw new IllegalStateException(
                 String.format("The reduction is stuck: %s", excuse)
             );
+        }
+        return out;
+    }
+
+    private Optional<Term> stepped(final Term tree, final Op operation,
+        final Evaluation record, final List<Step> steps, final Minted minted)
+        throws IOException {
+        final Optional<Term> out;
+        if (record.parked() && operation.forma().isEmpty()) {
+            out = this.forked(tree, operation, record, steps, minted);
+        } else {
+            out = new Anchored(operation, record).applied(tree, steps, minted);
         }
         return out;
     }
@@ -292,30 +345,6 @@ public final class Reduction {
                 "The terminator is not in a tail position, so the fragment cannot fail there"
             );
         }
-    }
-
-    private static Optional<Term> applied(final Term tree, final Op operation,
-        final Evaluation record, final List<Step> steps, final Minted minted) {
-        Optional<Term> out = Optional.empty();
-        final Anchored anchored = new Anchored(operation, record);
-        final Optional<Shape> shape = anchored.shape();
-        if (shape.isPresent() && tree.matches(shape.get())) {
-            final Term swap;
-            if (record.parked()) {
-                final String label = minted.next();
-                minted.bind(label, operation.forma());
-                final List<String> keys = new ArrayList<>(1);
-                keys.add(anchored.receiver());
-                keys.addAll(anchored.arguments().get());
-                steps.add(new Application(label, record.name(), keys));
-                swap = new Symbol(label, operation.forma());
-            } else {
-                final String[] parts = new Operand(record.result()).key().split(":", 2);
-                swap = new Literal(parts[0], parts[1]);
-            }
-            out = Optional.of(tree.swapped(shape.get(), swap));
-        }
-        return out;
     }
 
     private Optional<Term> forked(final Term tree, final Op operation,

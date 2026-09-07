@@ -515,6 +515,137 @@ final class ReductionTest {
     }
 
     @Test
+    void dispatchesMethodTheUniverseLacks(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        final Step step = new Reduction(
+            phino,
+            new Xnav(
+                String.format(
+                    "<o base='ξ.x.minus'>%s</o>",
+                    ReductionTest.number("α0", "40-00-00-00-00-00-00-00")
+                )
+            ).element("o"),
+            Collections.singletonMap("x", "number"),
+            8
+        ).protocol().moves().get(0);
+        MatcherAssert.assertThat(
+            "a method the universe lacks must become a call back into EO, but it didnt",
+            String.join(" ", step.atom(), String.join(" ", step.keys()), step.forma()),
+            Matchers.equalTo(".minus sym:v0 number:40-00-00-00-00-00-00-00 object")
+        );
+    }
+
+    @Test
+    void typesDispatchByWitnessedForma(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        final Map<String, String> rows = new LinkedHashMap<>();
+        rows.put("Φ.foo.sign.φ.ρ", "Φ.number.lt");
+        rows.put("Φ.number.lt.φ", "Φ.number.gt");
+        MatcherAssert.assertThat(
+            "a call the tables witness as a bool must fork like one, but it doesnt",
+            new Reduction(
+                phino,
+                ReductionTest.choice(
+                    String.format(
+                        "<o base='ξ.x.lt' loc='Φ.foo.sign.φ.ρ'>%s</o>",
+                        ReductionTest.number("α0", "00-00-00-00-00-00-00-00")
+                    ),
+                    ReductionTest.number("α0", "BF-F0-00-00-00-00-00-00"),
+                    ReductionTest.number("α1", "3F-F0-00-00-00-00-00-00")
+                ),
+                Collections.singletonMap("x", "number"),
+                8,
+                "sign",
+                Collections.emptyMap(),
+                new Formas(
+                    rows, Collections.emptyMap(), Collections.singletonMap("Φ.number.gt", "bool")
+                )
+            ).protocol().moves().stream()
+                .map(step -> String.format("%s:%s", step.atom(), step.forma()))
+                .collect(Collectors.toList()),
+            Matchers.contains(".lt:bool", "L_bool_if:number")
+        );
+    }
+
+    @Test
+    void reducesArgumentOfDispatchFirst(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "an argument the call takes must be computed before the call, but it isnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.format(
+                        "<o base='ξ.x.minus'><o as='α0' base='ξ.x.times'>%s</o></o>",
+                        ReductionTest.number("α0", "40-00-00-00-00-00-00-00")
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().stream()
+                .map(step -> String.format("%s %s", step.atom(), String.join(" ", step.keys())))
+                .collect(Collectors.toList()),
+            Matchers.contains(
+                "L_number_times sym:v0 number:40-00-00-00-00-00-00-00",
+                ".minus sym:v0 sym:s1"
+            )
+        );
+    }
+
+    @Test
+    void dispatchesAgainOnObject(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a method on an object of unknown forma must be called back into EO too, but it isnt",
+            new Reduction(
+                phino,
+                new Xnav(
+                    String.format(
+                        "<o base='ξ.x.neg.plus'>%s</o>",
+                        ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00")
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                8
+            ).protocol().moves().stream()
+                .map(Step::atom)
+                .collect(Collectors.toList()),
+            Matchers.contains(".neg", ".plus")
+        );
+    }
+
+    @Test
+    void refusesLazyMethodOnObject(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "an 'if' on an object of unknown forma would compute its arms, so it must refuse",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                new Reduction(
+                    phino,
+                    ReductionTest.choice(
+                        String.format(
+                            "<o base='ξ.items.at'>%s</o>",
+                            ReductionTest.number("α0", "00-00-00-00-00-00-00-00")
+                        ),
+                        ReductionTest.number("α0", "3F-F0-00-00-00-00-00-00"),
+                        ReductionTest.number("α1", "40-00-00-00-00-00-00-00")
+                    ),
+                    Collections.singletonMap("items", "tuple"),
+                    8
+                )::protocol,
+                "a strict call of 'if' reduced, but it must not"
+            ).getMessage(),
+            Matchers.containsString("lazy in an argument")
+        );
+    }
+
+    @Test
     void failsInArmOfChoice(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());
@@ -689,63 +820,6 @@ final class ReductionTest {
                 "down"
             )::protocol,
             "one argument cannot rebind two voids, but it did"
-        );
-    }
-
-    @Test
-    void refusesNumberMethodOnBool(@Mktmp final Path temp) {
-        final Phino phino = new Phino("phino", 1000, temp);
-        Assumptions.assumeTrue(phino.suitable());
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            new Reduction(
-                phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.gt'>",
-                        "<o base='.gt'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
-                Collections.singletonMap("x", "number"),
-                8
-            )::protocol,
-            "a bool has no number method to answer, but one reduced"
-        );
-    }
-
-    @Test
-    void refusesForeignMethod(@Mktmp final Path temp) {
-        final Phino phino = new Phino("phino", 1000, temp);
-        Assumptions.assumeTrue(phino.suitable());
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            new Reduction(
-                phino,
-                new Xnav(
-                    String.join(
-                        "",
-                        "<o base='.minus'>",
-                        "<o base='ξ.x'/>",
-                        "<o as='α0' base='Φ.number'>",
-                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
-                        "</o>",
-                        "</o>"
-                    )
-                ).element("o"),
-                Collections.singletonMap("x", "number"),
-                8
-            )::protocol,
-            "a method the universe does not hold cannot reduce, but it did"
         );
     }
 

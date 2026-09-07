@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -111,8 +112,10 @@ public final class Outlined implements Rewrite {
         String text = "";
         String carrier = "";
         try {
-            final Protocol protocol =
-                new Reduction(this.phino, cut.fragment(), cut.voids(), 8).protocol();
+            final Protocol protocol = new Reduction(
+                this.phino, cut.fragment(), cut.voids(), 8, "",
+                Collections.emptyMap(), this.formas
+            ).protocol();
             if (protocol.moves().size() >= 2) {
                 text = new JavaAtom(protocol, cut.voids()).text();
                 carrier = protocol.carrier();

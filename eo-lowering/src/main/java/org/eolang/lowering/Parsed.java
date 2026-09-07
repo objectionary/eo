@@ -36,9 +36,13 @@ import java.util.stream.Collectors;
  * itself, directly or through another helper, is a cycle and is refused.
  * The parser rolls a dispatch chain rooted in a reference into the base
  * itself, so {@code ξ.b.size.plus} unrolls here into nested sites, with
- * the arguments of the element attached to the last link. Anything else
- * is refused, since its meaning depends on a context the reduction does
- * not carry.</p>
+ * the arguments of the element attached to the last link. Every site
+ * carries the forma the tables of {@code eo:inference} witness for its
+ * value, looked up by the locator of the node — the unrolled links of a
+ * chain by the locators the inference gives them, one {@code ρ} below
+ * the other — so that a dispatch the universe does not model can still
+ * be typed when it becomes a step. Anything else is refused, since its
+ * meaning depends on a context the reduction does not carry.</p>
  *
  * @since 0.76.0
  */
@@ -59,6 +63,11 @@ public final class Parsed {
      * helper reading itself is caught.
      */
     private final Collection<String> trail;
+
+    /**
+     * The tables witnessing the forma of the value at each locator.
+     */
+    private final Formas tables;
 
     /**
      * Ctor.
@@ -88,11 +97,30 @@ public final class Parsed {
      *  whose calls to itself through {@code ξ.ρ} become repeats
      * @param bound The helpers the formation binds next to its body:
      *  names to their {@code <o/>} elements, read in place when named
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public Parsed(final Xnav xmir, final Map<String, String> inputs,
         final String name, final Map<String, Xnav> bound) {
-        this(xmir, new Scope(inputs, name, bound), Collections.emptyList());
+        this(
+            xmir, inputs, name, bound,
+            new Formas(Collections.emptyMap(), Collections.emptyMap())
+        );
+    }
+
+    /**
+     * Ctor.
+     * @param xmir The XMIR fragment to read, an {@code <o/>} element
+     * @param inputs The voids of the fragment: names to formas, in order
+     * @param name The name of the formation the fragment is the body of,
+     *  whose calls to itself through {@code ξ.ρ} become repeats
+     * @param bound The helpers the formation binds next to its body:
+     *  names to their {@code <o/>} elements, read in place when named
+     * @param witnessed The tables witnessing the forma of the value at
+     *  each locator
+     * @checkstyle ParameterNumberCheck (5 lines)
+     */
+    public Parsed(final Xnav xmir, final Map<String, String> inputs,
+        final String name, final Map<String, Xnav> bound, final Formas witnessed) {
+        this(xmir, new Scope(inputs, name, bound), Collections.emptyList(), witnessed);
     }
 
     /**
@@ -100,11 +128,15 @@ public final class Parsed {
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param where What the names of the fragment mean
      * @param above The helpers being read at the moment, outermost first
+     * @param witnessed The tables witnessing the forma of the value at
+     *  each locator
      */
-    Parsed(final Xnav xmir, final Scope where, final Collection<String> above) {
+    Parsed(final Xnav xmir, final Scope where, final Collection<String> above,
+        final Formas witnessed) {
         this.fragment = xmir;
         this.scope = where;
         this.trail = above;
+        this.tables = witnessed;
     }
 
     /**
@@ -157,17 +189,27 @@ public final class Parsed {
             out = Parsed.again(where, path, parts, args);
             next = parts.length;
         } else if (hops == last) {
-            out = new Reference(where, this.trail, parts[hops], args).term();
+            out = new Reference(where, this.trail, parts[hops], args, this.tables).term();
         } else {
-            out = new Reference(where, this.trail, parts[hops], new ArrayList<>(0)).term();
+            out = new Reference(
+                where, this.trail, parts[hops], new ArrayList<>(0), this.tables
+            ).term();
         }
+        final String place = Parsed.place(node);
         for (int idx = next; idx < last; ++idx) {
-            out = Parsed.site(parts[idx], out, new ArrayList<>(0));
+            out = Parsed.site(
+                parts[idx], out, new ArrayList<>(0),
+                this.tables.at(String.format("%s%s", place, ".ρ".repeat(last - idx)))
+            );
         }
         if (next <= last) {
-            out = Parsed.site(parts[last], out, args);
+            out = Parsed.site(parts[last], out, args, this.tables.at(place));
         }
         return out;
+    }
+
+    private static String place(final Xnav node) {
+        return node.attribute("loc").text().orElse("");
     }
 
     private static Term again(final Scope where, final String path,
@@ -193,17 +235,18 @@ public final class Parsed {
         return Parsed.site(
             base.substring(1),
             this.parsed(kids.get(0)),
-            this.bound(kids.subList(1, kids.size()))
+            this.bound(kids.subList(1, kids.size())),
+            this.tables.at(Parsed.place(node))
         );
     }
 
     private static Term site(final String method, final Term receiver,
-        final List<Binding> args) {
+        final List<Binding> args, final String forma) {
         final Term out;
         if ("as-bytes".equals(method) && args.isEmpty()) {
             out = new Forced(receiver);
         } else {
-            out = new Site(method, receiver, args);
+            out = new Site(method, receiver, args, forma);
         }
         return out;
     }

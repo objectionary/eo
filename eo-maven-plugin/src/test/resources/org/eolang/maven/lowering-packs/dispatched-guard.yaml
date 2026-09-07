@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The comparison `lt` is an EO object, not one of the lowerable atoms,
+# so the universe cannot answer it: the site renders as a marker phino
+# parks on when the `if` demands its condition, and the reduction turns
+# the marker into a call back into EO over the void and the literal. The
+# tables of eo:inference witness what the call answers: `lt` is a
+# formation whose body is the atom `gt`, declared to answer a bool, so
+# the step is a bool and the `if` forks on it. The Java wraps the void
+# back into a number, takes `lt` of it, applies the literal, and
+# dataizes the call with asBool before choosing an arm, while the EO
+# behind `lt` stays where it is.
+input: |
+  [] > foo
+    [x] > sign
+      if. > @
+        x.lt 0
+        -1
+        1
+    sign 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [] > gt /Q.bool
+        ? > ^
+        ? > x /Q.number
+      [^ x] > lt
+        x.gt ^ > @
+unit: sign
+voids:
+  x: number
+lowered: |
+  [] > foo
+    sign 5 > @
+    [] > sign /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← .lt sym:v0 number:00-00-00-00-00-00-00-00
+  s2 ← fork sym:s1 number
+    then
+      answer number:BF-F0-00-00-00-00-00-00 number
+    else
+      answer number:3F-F0-00-00-00-00-00-00 number
+  answer sym:s2 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final boolean s1 = new Dataized(new PhApplication(new PhDispatch(new Data.ToPhi(v0), "lt"), new Bind(0, new Data.ToPhi(Double.longBitsToDouble(0x0000000000000000L))))).asBool();
+  final double s2;
+  if (s1) {
+      s2 = Double.longBitsToDouble(0xBFF0000000000000L);
+  } else {
+      s2 = Double.longBitsToDouble(0x3FF0000000000000L);
+  }
+  return new Data.ToPhi(s2);

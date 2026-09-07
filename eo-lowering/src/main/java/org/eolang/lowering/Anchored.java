@@ -21,7 +21,10 @@ import java.util.Optional;
  * name the row of the operation gives it or under the positional name
  * phino may still show. A record whose arguments do not all anchor, or
  * whose result does not, has no shape yet: the site it names holds a
- * value that is not reduced, and the loop waits for a later round.</p>
+ * value that is not reduced, and the loop waits for a later round. A
+ * record with a shape rewrites the tree: the site it names gives way
+ * to the literal a fired atom computed, or to the symbol of the step a
+ * parked atom is minted into.</p>
  *
  * @since 0.76.0
  */
@@ -89,6 +92,39 @@ public final class Anchored {
         Optional<List<String>> out = Optional.empty();
         if (good) {
             out = Optional.of(keys);
+        }
+        return out;
+    }
+
+    /**
+     * The tree with the site of the record replaced by what the record
+     * proves: the literal a fired atom computed, or the symbol of the
+     * step a parked atom is minted into.
+     * @param tree The tree
+     * @param steps The steps of the protocol so far, to add to
+     * @param minted The ledger the reduction shares
+     * @return The rewritten tree, or empty when the record is not
+     *  anchored yet or no site of the tree is the one recorded
+     */
+    public Optional<Term> applied(final Term tree, final List<Step> steps,
+        final Minted minted) {
+        Optional<Term> out = Optional.empty();
+        final Optional<Shape> shape = this.shape();
+        if (shape.isPresent() && tree.matches(shape.get())) {
+            final Term swap;
+            if (this.record.parked()) {
+                final String label = minted.next();
+                minted.bind(label, this.operation.forma());
+                final List<String> keys = new ArrayList<>(1);
+                keys.add(this.receiver());
+                keys.addAll(this.arguments().get());
+                steps.add(new Application(label, this.record.name(), keys));
+                swap = new Symbol(label, this.operation.forma());
+            } else {
+                final String[] parts = new Operand(this.record.result()).key().split(":", 2);
+                swap = new Literal(parts[0], parts[1]);
+            }
+            out = Optional.of(tree.swapped(shape.get(), swap));
         }
         return out;
     }

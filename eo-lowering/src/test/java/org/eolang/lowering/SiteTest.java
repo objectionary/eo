@@ -40,6 +40,58 @@ final class SiteTest {
     }
 
     @Test
+    void rendersMarkerForMethodTheUniverseLacks() {
+        MatcherAssert.assertThat(
+            "a method the universe lacks must render as a marker phino parks on, but it doesnt",
+            new Site(
+                "minus",
+                new Symbol("v0", "number"),
+                Collections.singletonList(
+                    new Binding("α0", new Literal("number", "3F-F0-00-00-00-00-00-00"))
+                ),
+                "number"
+            ).phi(),
+            Matchers.equalTo(
+                String.join(
+                    "",
+                    "⟦ self ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)), ",
+                    "m🌵 ↦ ⟦ Δ ⤍ 6D-69-6E-75-73 ⟧, f🌵 ↦ ⟦ Δ ⤍ 6E-75-6D-62-65-72 ⟧, ",
+                    "a0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧)), ",
+                    "λ ⤍ L_dispatch ⟧"
+                )
+            )
+        );
+    }
+
+    @Test
+    void leavesFormaSlotOutWhenUnwitnessed() {
+        MatcherAssert.assertThat(
+            "a marker of an unwitnessed value must carry no forma slot, but it does",
+            new Site("neg", new Symbol("v0", "number"), Collections.emptyList()).phi(),
+            Matchers.equalTo(
+                String.join(
+                    "",
+                    "⟦ self ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)), ",
+                    "m🌵 ↦ ⟦ Δ ⤍ 6E-65-67 ⟧, λ ⤍ L_dispatch ⟧"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersDispatchWhileReceiverIsUnsettled() {
+        MatcherAssert.assertThat(
+            "a method on a site still unsettled must render as the dispatch, but it doesnt",
+            new Site(
+                "minus",
+                new Site("plus", new Symbol("v0", "number"), Collections.emptyList()),
+                Collections.emptyList()
+            ).phi(),
+            Matchers.endsWith(".plus.minus")
+        );
+    }
+
+    @Test
     void carriesNoKey() {
         MatcherAssert.assertThat(
             "an application has no value yet, but it names one",

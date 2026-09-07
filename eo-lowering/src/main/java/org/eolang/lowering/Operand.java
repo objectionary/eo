@@ -109,12 +109,21 @@ public final class Operand {
             out.put(Pattern.compile(Operand.carried(carrier, Operand.DATUM)), carrier);
             out.put(Pattern.compile(Operand.carried(carrier, Operand.MARKER)), "sym");
         }
+        for (final String carrier : new String[] {"tuple", "object"}) {
+            out.put(Pattern.compile(Operand.held(carrier)), "sym");
+        }
         return out;
     }
 
     private static String carried(final String forma, final String payload) {
         return String.format(
             "Φ\\.%s\\( (?:as-bytes|α0) ↦ %s \\)", forma, Operand.bytes(payload)
+        );
+    }
+
+    private static String held(final String forma) {
+        return String.format(
+            "Φ\\.%s\\( (?:self|α0) ↦ ⟦ %s, ρ ↦ ∅ ⟧ \\)", forma, Operand.MARKER
         );
     }
 

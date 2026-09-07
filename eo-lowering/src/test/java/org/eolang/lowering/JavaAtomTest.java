@@ -441,6 +441,59 @@ final class JavaAtomTest {
     }
 
     @Test
+    void rendersDispatchAsCall() {
+        MatcherAssert.assertThat(
+            "a call back into EO must be dataized into its forma, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Dispatch(
+                            "s1", "minus",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00"),
+                            "number"
+                        )
+                    ),
+                    "sym:s1", "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                String.format(
+                    "final double s1 = new Dataized(new PhApplication(new PhDispatch(%s, %s), new Bind(0, %s))).asNumber();",
+                    "new Data.ToPhi(v0)", "\"minus\"",
+                    "new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L))"
+                ),
+                "return new Data.ToPhi(s1);"
+            )
+        );
+    }
+
+    @Test
+    void holdsObjectOfCallUntilDataized() {
+        MatcherAssert.assertThat(
+            "an object a call answers must be held as a Phi until something dataizes it",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Dispatch("s1", "neg", Collections.singletonList("sym:v0"), "object"),
+                        new Application(
+                            "s2", "L_object_as_bytes", Collections.singletonList("sym:s1")
+                        )
+                    ),
+                    "sym:s2", "bytes"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final Phi s1 = new PhDispatch(new Data.ToPhi(v0), \"neg\");",
+                "final byte[] s2 = new Dataized(s1).take();",
+                "return new Data.ToPhi(s2);"
+            )
+        );
+    }
+
+    @Test
     void rendersFailingArmAsThrow() {
         MatcherAssert.assertThat(
             "an arm that fails must throw with its reason and assign nothing, but it doesnt",

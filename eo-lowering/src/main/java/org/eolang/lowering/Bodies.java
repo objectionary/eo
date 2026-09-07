@@ -60,20 +60,29 @@ public final class Bodies {
     private final Map<String, Xnav> helpers;
 
     /**
+     * The tables witnessing the forma of the value at each locator.
+     */
+    private final Formas tables;
+
+    /**
      * Ctor.
      * @param reduction The reduction settling each tree
      * @param xmir The XMIR fragment that is the formation's own body
      * @param inputs The voids of the formation: names to formas, in order
      * @param name The name of the formation, or empty
      * @param bound The helpers the formation binds next to its body
+     * @param witnessed The tables witnessing the forma of the value at
+     *  each locator
      */
     public Bodies(final Reduction reduction, final Xnav xmir,
-        final Map<String, String> inputs, final String name, final Map<String, Xnav> bound) {
+        final Map<String, String> inputs, final String name, final Map<String, Xnav> bound,
+        final Formas witnessed) {
         this.core = reduction;
         this.fragment = xmir;
         this.voids = inputs;
         this.formation = name;
         this.helpers = bound;
+        this.tables = witnessed;
     }
 
     /**
@@ -91,7 +100,10 @@ public final class Bodies {
             new Body(
                 "", 0, new ArrayList<>(this.voids.values()),
                 this.core.settled(
-                    new Parsed(this.fragment, root, Collections.emptyList()).term(), minted
+                    new Parsed(
+                        this.fragment, root, Collections.emptyList(), this.tables
+                    ).term(),
+                    minted
                 )
             )
         );
@@ -109,7 +121,8 @@ public final class Bodies {
                         new Parsed(
                             Bodies.body(name, helper),
                             root.body(helper, minted.offset(name), minted.voids(name)),
-                            Collections.singletonList(name)
+                            Collections.singletonList(name),
+                            this.tables
                         ).term(),
                         minted
                     )

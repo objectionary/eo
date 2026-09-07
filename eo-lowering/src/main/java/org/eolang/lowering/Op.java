@@ -46,7 +46,7 @@ public final class Op {
      * @return True if the table has a row for the λ name
      */
     public boolean listed() {
-        return this.rows().stream().anyMatch(row -> row[0].equals(this.lambda));
+        return Op.table().stream().anyMatch(row -> row[0].equals(this.lambda));
     }
 
     /**
@@ -122,6 +122,20 @@ public final class Op {
             .collect(Collectors.toList());
     }
 
+    /**
+     * The rows of the table, one per operation.
+     * @return The cells of every row: the λ name, the method, the carrier,
+     *  the forma, the arguments and the Java format
+     */
+    static List<String[]> table() {
+        return new UncheckedText(
+            new TextOf(new ResourceOf("org/eolang/lowering/ops.tsv", Op.class))
+        ).asString().lines()
+            .filter(line -> !line.isEmpty())
+            .map(line -> line.split("\t", -1))
+            .collect(Collectors.toList());
+    }
+
     private static String forma(final String cell, final String carrier) {
         final String[] parts = cell.split(":", 2);
         final String out;
@@ -146,7 +160,7 @@ public final class Op {
 
     private String[] row() {
         String[] out = null;
-        for (final String[] row : this.rows()) {
+        for (final String[] row : Op.table()) {
             if (row[0].equals(this.lambda)) {
                 out = row;
                 break;
@@ -161,14 +175,5 @@ public final class Op {
             );
         }
         return out;
-    }
-
-    private List<String[]> rows() {
-        return new UncheckedText(
-            new TextOf(new ResourceOf("org/eolang/lowering/ops.tsv", this.getClass()))
-        ).asString().lines()
-            .filter(line -> !line.isEmpty())
-            .map(line -> line.split("\t", -1))
-            .collect(Collectors.toList());
     }
 }

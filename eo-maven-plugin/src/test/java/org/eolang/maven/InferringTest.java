@@ -105,6 +105,26 @@ final class InferringTest {
     }
 
     @Test
+    void writesDeclaredFormasOfAtoms(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("stove"));
+        Files.writeString(
+            sources.resolve("kettle.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > kettle", "  [] > heat /Q.number", "    ? > ^", ""
+                )
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "the forma an atom declares must be written next to the other tables, but it isnt",
+            new XMLDocument(temp.resolve("rows").resolve("atoms.xml")),
+            XhtmlMatchers.hasXPath("/atoms/atom[@loc='Φ.kettle.heat' and @forma='Φ.number']")
+        );
+    }
+
+    @Test
     void forgetsSourceThatIsGone(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("shed"));
         Files.writeString(

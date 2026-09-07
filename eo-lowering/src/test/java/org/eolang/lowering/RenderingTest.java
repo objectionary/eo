@@ -136,7 +136,7 @@ final class RenderingTest {
                 )
             ),
             Matchers.equalTo(
-                "new PhWith(new PhCopy(new PhMethod(v0, \"at\")), 0, new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L)))"
+                "new PhApplication(new PhDispatch(v0, \"at\"), new Bind(0, new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L))))"
             )
         );
     }

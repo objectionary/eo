@@ -20,41 +20,40 @@ import org.w3c.dom.Element;
 /**
  * Rewrite the pure formations of one XMIR into synthetic atoms.
  *
- * <p>A formation qualifies when it is a named direct attribute of a
- * top-level object, its body is voids plus one {@code φ} plus helpers
- * nothing outside can name, and every void is witnessed in the tables
- * of {@code eo:inference} as a number, a string, bytes or a bool, so a
+ * <p>A formation qualifies when it is a named direct attribute of a top-
+ * level object, its body is voids plus one {@code φ} plus helpers
+ * nothing outside can name, and every void is witnessed in the tables of
+ * {@code eo:inference} as a number, a string, bytes or a bool, so a
  * symbolic carrier can stand for it, or as a tuple, which the atom holds
  * as the object itself and asks its length and its elements of by
  * dispatching back into EO. A helper is an attribute the source
  * privatized with {@code >>}, or a const the parser wrapped, and it
  * shows up under a synthetic {@code a🌵} name: the body reads it in
- * place, applying it to its arguments when it is a formation of its
- * own, so it is folded into the atom and leaves with the body. A
- * public attribute keeps the formation as written, since deleting the
- * body must not change the object's interface, and a helper that stays
- * reachable would be dispatchable with nothing behind it. The formation
- * may declare {@code ρ}, and its body may reach through it only to call
- * the formation itself again, which the reduction turns into a repeat;
- * a helper reaches through {@code ρ} to the voids and the other helpers
- * of the formation, which the atom carries, and helpers that apply one
+ * place, applying it to its arguments when it is a formation of its own,
+ * so it is folded into the atom and leaves with the body. A public
+ * attribute keeps the formation as written, since deleting the body must
+ * not change the object's interface, and a helper that stays reachable
+ * would be dispatchable with nothing behind it. The formation may
+ * declare {@code ρ}, and its body may reach through it only to call the
+ * formation itself again, which the reduction turns into a repeat; a
+ * helper reaches through {@code ρ} to the voids and the other helpers of
+ * the formation, which the atom carries, and helpers that apply one
  * another in tail positions become one loop with them; any other use of
- * {@code ρ} depends on a context the atom does not
- * carry and refuses. Purity needs no separate analysis:
- * the reduction itself is constructive proof, since it settles only a
- * body made of literals, void references, and the lowerable operations,
- * and refuses everything else. Such a formation is reduced into a
- * protocol, the protocol is rendered into a Java body, the body goes
- * into a sidecar file named by its own digest, and the formation keeps
- * only its voids, the digest, and a {@code λ} marker — the shape
- * {@code lowered.xsl} later renders into an atom class, which declares
- * no {@code ρ} at all, since the body that could have read one leaves
- * with the digest and an atom holding a receiver it never reads is what
- * makes its own dataization reenter itself (#8439).
- * Whatever refuses
- * along the way — an unwitnessed void, an operation outside the tables,
- * a body that needs no computation — leaves the formation as
- * written.</p>
+ * {@code ρ} depends on a context the atom does not carry and refuses.
+ * Purity needs no separate analysis: the reduction itself is
+ * constructive proof, since it settles only a body made of literals,
+ * void references, the lowerable operations, and dispatches back into EO
+ * of the methods it does not model, and refuses everything else. Such a
+ * formation is reduced into a protocol, the protocol is rendered into a
+ * Java body, the body goes into a sidecar file named by its own digest,
+ * and the formation keeps only its voids, the digest, and a {@code λ}
+ * marker — the shape {@code lowered.xsl} later renders into an atom
+ * class, which declares no {@code ρ} at all, since the body that could
+ * have read one leaves with the digest and an atom holding a receiver it
+ * never reads is what makes its own dataization reenter itself (#8439).
+ * Whatever refuses along the way — an unwitnessed void, an operation
+ * outside the tables, a body that needs no computation — leaves the
+ * formation as written.</p>
  *
  * @since 0.76.0
  */
@@ -123,7 +122,7 @@ public final class Lowered implements Rewrite {
             final Program program = new Reduction(
                 this.phino, body, inputs, 8,
                 node.attribute("name").text().orElse(""),
-                Lowered.helpers(node)
+                Lowered.helpers(node), this.formas
             ).program();
             if (program.bodies().size() > 1
                 || !program.bodies().get(0).protocol().moves().isEmpty()) {

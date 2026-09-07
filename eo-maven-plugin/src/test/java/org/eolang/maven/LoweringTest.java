@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.lowering.Body;
 import org.eolang.lowering.Digest;
+import org.eolang.lowering.Formas;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Program;
 import org.eolang.lowering.Protocol;
@@ -81,7 +82,8 @@ final class LoweringTest {
         Assumptions.assumeTrue(story.map().containsKey("protocol"));
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
-        final Xnav foo = LoweringTest.formation(this.temp, story);
+        final FakeMaven maven = LoweringTest.inferred(this.temp, story);
+        final Xnav foo = LoweringTest.formation(maven, story);
         MatcherAssert.assertThat(
             "the fragment must reduce into the protocol the pack promises, but it doesnt",
             LoweringTest.printed(
@@ -91,7 +93,8 @@ final class LoweringTest {
                     LoweringTest.voids(foo, story),
                     8,
                     story.map().getOrDefault("unit", "").toString(),
-                    LoweringTest.helpers(foo)
+                    LoweringTest.helpers(foo),
+                    LoweringTest.tables(maven)
                 ).program()
             ).trim(),
             Matchers.equalTo(story.map().get("protocol").toString().trim())
@@ -105,7 +108,8 @@ final class LoweringTest {
         Assumptions.assumeTrue(story.map().containsKey("stuck"));
         final Phino phino = new Phino("phino", 1000, this.temp);
         Assumptions.assumeTrue(phino.suitable());
-        final Xnav foo = LoweringTest.formation(this.temp, story);
+        final FakeMaven maven = LoweringTest.inferred(this.temp, story);
+        final Xnav foo = LoweringTest.formation(maven, story);
         MatcherAssert.assertThat(
             "the refusal must say why the fragment stays unlowered, but it doesnt",
             Assertions.assertThrows(
@@ -116,7 +120,8 @@ final class LoweringTest {
                     LoweringTest.voids(foo, story),
                     8,
                     story.map().getOrDefault("unit", "").toString(),
-                    LoweringTest.helpers(foo)
+                    LoweringTest.helpers(foo),
+                    LoweringTest.tables(maven)
                 )::program,
                 "a fragment the pack calls stuck cannot reduce, but it did"
             ).getMessage(),
@@ -163,11 +168,18 @@ final class LoweringTest {
         return maven;
     }
 
-    private static Xnav formation(final Path temp, final Xtory story) throws IOException {
+    private static FakeMaven inferred(final Path temp, final Xtory story) throws IOException {
+        return LoweringTest.maven(temp, story).execute(MjParse.class).execute(MjInference.class);
+    }
+
+    private static Formas tables(final FakeMaven maven) {
+        return new Formas(maven.targetPath().resolve("6-inference"));
+    }
+
+    private static Xnav formation(final FakeMaven maven, final Xtory story) throws IOException {
         Xnav found = new Xnav(
             new XMLDocument(
-                LoweringTest.maven(temp, story).execute(MjParse.class)
-                    .targetPath().resolve("1-parse").resolve("foo.xmir")
+                maven.targetPath().resolve("1-parse").resolve("foo.xmir")
             ).inner()
         ).element("object").element("o");
         final Object unit = story.map().get("unit");

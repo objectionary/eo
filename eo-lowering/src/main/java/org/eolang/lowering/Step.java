@@ -12,8 +12,9 @@ import java.util.List;
  * <p>It is one value run time must compute, named so that the steps
  * after it and the answer can refer to it by the key {@code sym:<label>}.
  * An {@link Application} is one atom applied to operands that are
- * already values; a {@link Fork} picks between two nested protocols by a
- * bool that is already a value. Either way a step reads only keys minted
+ * already values; a {@link Dispatch} is one method of EO applied to
+ * such operands, called back into EO; a {@link Fork} picks between two
+ * nested protocols by a bool that is already a value. Either way a step reads only keys minted
  * before it — a void of the fragment, an earlier step, or a literal with
  * its forma and bytes — so a protocol is a static single-assignment
  * program over the values the fragment starts from, with a block of its
@@ -30,8 +31,10 @@ public interface Step {
     String label();
 
     /**
-     * The λ name of the atom that parked into this step.
-     * @return The name, such as {@code L_number_plus} or {@code L_bool_if}
+     * The λ name of the atom that parked into this step, or the method
+     * of a dispatch back into EO, dot-prefixed.
+     * @return The name, such as {@code L_number_plus} or {@code L_bool_if},
+     *  or a method such as {@code .minus}
      */
     String atom();
 

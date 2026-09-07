@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An element a tuple answers is an object of no known forma, so the `if`
+# on it cannot be the fork of the universe, which decides on a bool; it
+# would have to be a call back into EO, and a call computes every
+# argument before it is made, while the `if` of EO computes one arm
+# alone. A strict call would compute what EO leaves alone, so the
+# reduction refuses the method and the formation stays as written.
+input: |
+  [] > foo
+    [items] > pick
+      if. > @
+        items.at 0
+        1
+        2
+    pick (* true) > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  tuple.eo: |
+    [tail head length] > tuple
+      [] > empty
+        0 > length
+unit: pick
+voids:
+  items: tuple
+lowered: |
+  [] > foo
+    pick > @
+      * true
+    if. > [items] > pick
+      items.at 0
+      1
+      2
+stuck: "is lazy in an argument"

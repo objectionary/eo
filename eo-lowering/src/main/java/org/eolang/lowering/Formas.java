@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +31,12 @@ import org.w3c.dom.Node;
  * void endpoint answers through the provides table, which witnesses what
  * every filling site actually passes in. The two bool states are one
  * forma between them, so a void the sites fill with both is witnessed as
- * a bool all the same. Anything else — a missing row, a cycle, a raw
+ * a bool all the same. An endpoint naming a formation answers what the
+ * body of that formation answers, since an instance of it is data of
+ * whatever its {@code φ} is, so the chase steps into the {@code φ} row
+ * and goes on; and an endpoint naming an atom answers the forma the
+ * atom declares, read from the atoms table the inference writes next to
+ * the other two. Anything else — a missing row, a cycle, a raw
  * literal — answers with the empty string, and the caller refuses.</p>
  *
  * @since 0.76.0
@@ -55,6 +61,11 @@ public final class Formas {
     private final Map<String, String> voids;
 
     /**
+     * The declared data formas, by the locator of each atom.
+     */
+    private final Map<String, String> atoms;
+
+    /**
      * Ctor.
      * @param tables The directory with the tables of {@code eo:inference},
      *  which does not have to exist
@@ -62,18 +73,31 @@ public final class Formas {
     public Formas(final Path tables) {
         this(
             Formas.chained(tables.resolve("links.xml")),
-            Formas.witnessed(tables.resolve("provides.xml"))
+            Formas.witnessed(tables.resolve("provides.xml")),
+            Formas.declared(tables.resolve("atoms.xml"))
         );
+    }
+
+    /**
+     * Ctor, without atoms.
+     * @param rows The single filling of each locator
+     * @param given The witnessed data formas, by the locator of each void
+     */
+    public Formas(final Map<String, String> rows, final Map<String, String> given) {
+        this(rows, given, Collections.emptyMap());
     }
 
     /**
      * Ctor.
      * @param rows The single filling of each locator
      * @param given The witnessed data formas, by the locator of each void
+     * @param lambdas The declared data formas, by the locator of each atom
      */
-    public Formas(final Map<String, String> rows, final Map<String, String> given) {
+    public Formas(final Map<String, String> rows, final Map<String, String> given,
+        final Map<String, String> lambdas) {
         this.links = rows;
         this.voids = given;
+        this.atoms = lambdas;
     }
 
     /**
@@ -108,10 +132,17 @@ public final class Formas {
                 out = Formas.CARRIERS.get(cursor);
                 break;
             }
-            final String next = this.links.getOrDefault(cursor, "");
+            if (this.atoms.containsKey(cursor)) {
+                out = this.atoms.get(cursor);
+                break;
+            }
+            String next = this.links.getOrDefault(cursor, "");
             if (next.isEmpty()) {
                 out = this.given(cursor);
-                break;
+                next = String.format("%s.φ", cursor);
+                if (!out.isEmpty() || !this.links.containsKey(next)) {
+                    break;
+                }
             }
             cursor = next;
         }
@@ -177,11 +208,32 @@ public final class Formas {
         }
     }
 
+    private static Map<String, String> declared(final Path table) {
+        final Map<String, String> out = new HashMap<>(0);
+        if (Files.exists(table)) {
+            new Xnav(table)
+                .element("atoms")
+                .elements(Filter.withName("atom"))
+                .forEach(row -> Formas.announced(row, out));
+        }
+        return out;
+    }
+
+    private static void announced(final Xnav row, final Map<String, String> out) {
+        final String forma = Formas.CARRIERS.getOrDefault(
+            row.attribute("forma").text().orElse(""), ""
+        );
+        if (!forma.isEmpty()) {
+            row.attribute("loc").text().ifPresent(loc -> out.put(loc, forma));
+        }
+    }
+
     private static Map<String, String> carriers() {
-        final Map<String, String> out = new HashMap<>(5);
+        final Map<String, String> out = new HashMap<>(8);
         out.put("Φ.number", "number");
         out.put("Φ.string", "string");
         out.put("Φ.bytes", "bytes");
+        out.put("Φ.bool", "bool");
         out.put("Φ.true", "bool");
         out.put("Φ.false", "bool");
         out.put("Φ.tuple", "tuple");

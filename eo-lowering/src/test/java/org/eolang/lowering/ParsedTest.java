@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.github.lombrozo.xnav.Xnav;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
@@ -199,6 +200,65 @@ final class ParsedTest {
                 "a bare terminator parsed, but it must not"
             ).getMessage(),
             Matchers.containsString("The terminator must carry exactly one target, not 0")
+        );
+    }
+
+    @Test
+    void witnessesFormaOfSiteByItsLocator() {
+        final Map<String, String> rows = new HashMap<>();
+        rows.put("Φ.foo.f.φ", "Φ.number.lt");
+        rows.put("Φ.number.lt.φ", "Φ.number.gt");
+        MatcherAssert.assertThat(
+            "a site must carry the forma the tables witness at its locator, but it doesnt",
+            new Parsed(
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.lt' loc='Φ.foo.f.φ'><o base='ξ.x'/>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>00-00-00-00-00-00-00-00</o></o>",
+                        "</o></o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                Collections.emptyMap(),
+                new Formas(
+                    rows, Collections.emptyMap(), Collections.singletonMap("Φ.number.gt", "bool")
+                )
+            ).term().phi(),
+            Matchers.containsString("f🌵 ↦ ⟦ Δ ⤍ 62-6F-6F-6C ⟧")
+        );
+    }
+
+    @Test
+    void witnessesInnerLinkOfChainBelowItsLocator() {
+        final Map<String, String> rows = new HashMap<>();
+        rows.put("Φ.foo.f.φ.ρ", "Φ.number.neg");
+        rows.put("Φ.number.neg.φ", "Φ.number.times");
+        MatcherAssert.assertThat(
+            "the inner link of a chain must be looked up one ρ below the node, but it isnt",
+            new Parsed(
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='ξ.x.neg.plus' loc='Φ.foo.f.φ'>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>3F-F0-00-00-00-00-00-00</o></o>",
+                        "</o></o>"
+                    )
+                ).element("o"),
+                Collections.singletonMap("x", "number"),
+                "",
+                Collections.emptyMap(),
+                new Formas(
+                    rows, Collections.emptyMap(),
+                    Collections.singletonMap("Φ.number.times", "number")
+                )
+            ).term().phi(),
+            Matchers.startsWith(
+                "⟦ self ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)), m🌵 ↦ ⟦ Δ ⤍ 6E-65-67 ⟧, f🌵 ↦ ⟦ Δ ⤍ 6E-75-6D-62-65-72 ⟧"
+            )
         );
     }
 

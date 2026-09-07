@@ -16,22 +16,23 @@ import java.util.stream.Stream;
  * The Java spelling of the values one protocol computes.
  *
  * <p>Every operand key has one Java expression: a symbol is the local
- * named after it, a number literal is the double its eight bytes
- * encode, a bool is {@code true} or {@code false}, and bytes or a string
- * are a byte array. Every forma has one Java type, with a string carried
- * as bytes, since its Δ is the very UTF-8 sequence the byte atoms it
+ * named after it, a number literal is the double its eight bytes encode,
+ * a bool is {@code true} or {@code false}, and bytes or a string are a
+ * byte array. Every forma has one Java type, with a string carried as
+ * bytes, since its Δ is the very UTF-8 sequence the byte atoms it
  * reaches through {@code φ} operate on, and a tuple or an object it
  * answers carried as the {@code Phi} itself, since neither is a datum
- * and every operation on either dispatches back into EO. The value of an application
- * comes from the format the {@link Op} table holds for its atom, except
- * an equality, which compares by the forma of its operands: two numbers
- * by their value, so that a not-a-number equals nothing and the two
- * zeroes equal each other, and anything else by its bytes; and a void
- * is read through the public runtime API. The forma of a key is looked
- * up in the voids of the program or in the steps of its bodies,
- * nested arms included. Whatever the table cannot spell — an operation
- * with no Java column, a void of a forma the runtime cannot hand over,
- * an operand of a forma the atom does not take — is refused.</p>
+ * and every operation on either dispatches back into EO. The value of an
+ * application comes from the format the {@link Op} table holds for its
+ * atom, except a dispatch back into EO, which is a {@link Call}, and an
+ * equality, which compares by the forma of its operands: two numbers by
+ * their value, so that a not-a-number equals nothing and the two zeroes
+ * equal each other, and anything else by its bytes; and a void is read
+ * through the public runtime API. The forma of a key is looked up in the
+ * voids of the program or in the steps of its bodies, nested arms
+ * included. Whatever the table cannot spell — an operation with no Java
+ * column, a void of a forma the runtime cannot hand over, an operand of
+ * a forma the atom does not take — is refused.</p>
  *
  * @since 0.76.0
  */
@@ -130,30 +131,13 @@ public final class Rendering {
      * @return A Java expression over the locals of its operands
      */
     public String applied(final Step step) {
-        final Op operation = new Op(step.atom());
         final String out;
-        if ("eq".equals(operation.method())) {
+        if (step.atom().charAt(0) == '.') {
+            out = new Call(step, this).text();
+        } else if ("eq".equals(new Op(step.atom()).method())) {
             out = this.compared(step);
         } else {
-            final String format = operation.java();
-            final List<String> expected = new ArrayList<>(step.keys().size());
-            expected.add(operation.carrier());
-            expected.addAll(operation.formas());
-            for (int idx = 0; idx < step.keys().size(); ++idx) {
-                final String key = step.keys().get(idx);
-                if (!expected.get(idx).equals(this.forma(key))) {
-                    throw new IllegalStateException(
-                        String.format(
-                            "The operand '%s' of '%s' does not carry a %s",
-                            key, step.atom(), expected.get(idx)
-                        )
-                    );
-                }
-            }
-            out = String.format(
-                format,
-                step.keys().stream().map(this::expression).toArray(Object[]::new)
-            );
+            out = this.formatted(step, new Op(step.atom()));
         }
         return out;
     }
@@ -173,6 +157,15 @@ public final class Rendering {
      * @return The forma, one of {@code number}, {@code bool}, {@code bytes}
      */
     public String forma(final String key) {
+        return Rendering.carried(this.kind(key));
+    }
+
+    /**
+     * The forma a key names, before Java carries it.
+     * @param key The key, such as {@code sym:v0} or {@code string:68-69-}
+     * @return The forma, such as {@code string} or {@code object}
+     */
+    public String kind(final String key) {
         final String[] parts = key.split(":", 2);
         final String out;
         if ("sym".equals(parts[0])) {
@@ -184,7 +177,7 @@ public final class Rendering {
         } else {
             out = parts[0];
         }
-        return Rendering.carried(out);
+        return out;
     }
 
     /**
@@ -297,6 +290,28 @@ public final class Rendering {
             );
         }
         return out;
+    }
+
+    private String formatted(final Step step, final Op operation) {
+        final String format = operation.java();
+        final List<String> expected = new ArrayList<>(step.keys().size());
+        expected.add(operation.carrier());
+        expected.addAll(operation.formas());
+        for (int idx = 0; idx < step.keys().size(); ++idx) {
+            final String key = step.keys().get(idx);
+            if (!expected.get(idx).equals(this.forma(key))) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The operand '%s' of '%s' does not carry a %s",
+                        key, step.atom(), expected.get(idx)
+                    )
+                );
+            }
+        }
+        return String.format(
+            format,
+            step.keys().stream().map(this::expression).toArray(Object[]::new)
+        );
     }
 
     private String compared(final Step step) {

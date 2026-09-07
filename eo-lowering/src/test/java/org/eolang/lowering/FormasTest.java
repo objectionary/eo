@@ -50,6 +50,63 @@ final class FormasTest {
     }
 
     @Test
+    void stepsIntoBodyOfFormation() {
+        final Map<String, String> rows = new HashMap<>();
+        rows.put("Φ.foo.f.φ.ρ", "Φ.number.lt");
+        rows.put("Φ.number.lt.φ", "Φ.number.gt");
+        MatcherAssert.assertThat(
+            "a formation must answer what its body answers, and an atom its declared forma",
+            new Formas(
+                rows, Collections.emptyMap(), Collections.singletonMap("Φ.number.gt", "bool")
+            ).at("Φ.foo.f.φ.ρ"),
+            Matchers.equalTo("bool")
+        );
+    }
+
+    @Test
+    void staysSilentWhenBodyIsUnresolved() {
+        final Map<String, String> rows = new HashMap<>();
+        rows.put("Φ.foo.f.φ", "Φ.number.minus");
+        rows.put("Φ.number.minus.φ", "Φ.number.minus.ρ.plus");
+        MatcherAssert.assertThat(
+            "a body the tables do not resolve names no forma, but it did",
+            new Formas(rows, Collections.emptyMap()).at("Φ.foo.f.φ"),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void readsDeclaredFormasOfAtoms(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("atoms.xml"),
+            String.join(
+                "",
+                "<atoms><atom loc='Φ.number.gt' forma='Φ.bool'/>",
+                "<atom loc='Φ.foo.opaque' forma='Φ.foo.thing'/></atoms>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "an atom must answer the carrier forma it declares, but it doesnt",
+            new Formas(temp).at("Φ.number.gt"),
+            Matchers.equalTo("bool")
+        );
+    }
+
+    @Test
+    void ignoresAtomOfForeignForma(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("atoms.xml"),
+            "<atoms><atom loc='Φ.foo.opaque' forma='Φ.foo.thing'/></atoms>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "an atom declaring no carrier forma names none, but it did",
+            new Formas(temp).at("Φ.foo.opaque"),
+            Matchers.equalTo("")
+        );
+    }
+
+    @Test
     void refusesCyclicChain() {
         final Map<String, String> rows = new HashMap<>();
         rows.put("Φ.foo.a", "Φ.foo.b");
