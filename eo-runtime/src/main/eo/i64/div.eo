@@ -94,7 +94,7 @@
               00-00-00-00-00-00-00-00
         i64 00-00-00-00-00-00-00-01
     i64 quotient
-  as-bytes. >> subtrahend
+  as-bytes. >> subtrahend!
     plus.
       i64
         not.
