@@ -8,6 +8,8 @@
 # Every key is dataized to bytes exactly once, when the map is built, and the
 # hash code is derived from those bytes rather than from the key itself,
 # so that keys with side effects are never evaluated more than once.
+# A missing key is named in the error as the key itself when it is text, or as
+# its bytes otherwise. The hash code is not printed: the caller never saw it.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -64,8 +66,14 @@
       [^] > not-found
         false > exists
         cant-get > [^ cant-get] > get
-          "Object by hash code %d from given key does not exists".printf
-            * hash
+          if.
+            recovered
+              ^.^.key.length.gte 0
+              false
+            "The key '%s' is not in the map".printf
+              * ^.^.key
+            "The key '%x' is not in the map".printf
+              * kbts
     exists. > [^ key] > has
       ^.found key
     entries.mapped > keys
@@ -180,6 +188,24 @@
     map * > mp
       map.entry 1 1
       map.entry 1 2
+
+  eq. ++> can-name-the-missing-key-by-its-bytes-when-it-is-not-text
+    "The key '40-45-00-00-00-00-00-00' is not in the map"
+    get.
+      found.
+        map *
+          map.entry 1 1
+        42
+      I
+
+  eq. ++> can-name-the-missing-key-in-the-error
+    "The key 'absent' is not in the map"
+    get.
+      found.
+        map *
+          map.entry "one" 1
+        "absent"
+      I
 
   ++> can-rebuild-itself
     2.eq mp.size > @
