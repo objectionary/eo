@@ -49,8 +49,13 @@ import java.util.regex.Pattern;
  * It carries a type annotation like any other void, which is to say
  * inside an atom only.</p>
  *
- * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
- * optionally followed by one type annotation — are the only shapes the
+ * <p>Inside an atom, whose bracket head stays empty (R-3.4.10), the name
+ * may instead be {@code @}, the only spelling left for a φ void there;
+ * it maps to {@code φ} per R-3.4.2 / R-9.3, the same way {@code ^} maps
+ * to {@code ρ}.</p>
+ *
+ * <p>{@code ? > name}, {@code ? >> name}, {@code ? > ^} and {@code ? > @}
+ * — each optionally followed by one type annotation — are the only shapes the
  * {@code ?} marker may take, never an argument, a method receiver, or
  * anywhere else a value is expected. The marker is therefore <em>not</em> a {@link Value}
  * kind; this line is its sole producer. Cross-line behaviour: a closed
