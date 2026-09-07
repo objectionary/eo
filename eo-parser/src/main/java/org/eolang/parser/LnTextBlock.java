@@ -45,12 +45,6 @@ final class LnTextBlock implements Line {
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         final String body = this.span.body();
-        if (!body.startsWith("\"\"\"")) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "text block closer must start with triple-quote"
-            );
-        }
         final Tokens tokens = new Tokens(body, this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
