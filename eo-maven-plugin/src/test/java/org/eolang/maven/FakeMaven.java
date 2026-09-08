@@ -165,25 +165,25 @@ final class FakeMaven {
         if (this.defaults) {
             this.params.putIfAbsent("targetDir", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
+                "measures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
-            this.params.putIfAbsent("foreignFormat", "csv");
+            this.params.putIfAbsent("foreignfmt", "csv");
             final MavenProjectStub stub = new MavenProjectStub();
             stub.setCompileSourceRoots(new ArrayList<>(0));
             this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
-            this.params.putIfAbsent("discoverSelf", false);
+            this.params.putIfAbsent("discover", false);
             this.params.putIfAbsent("ignoreConflicts", false);
             this.params.putIfAbsent("central", new DummyCentral());
-            this.params.putIfAbsent("resolveInCentral", false);
+            this.params.putIfAbsent("centrally", false);
             this.params.putIfAbsent(
                 "placed",
                 this.workspace.resolve(Paths.get("placed.json")).toFile()
             );
-            this.params.putIfAbsent("placedFormat", "json");
+            this.params.putIfAbsent("placedfmt", "json");
             this.params.putIfAbsent(
                 "sourcesDir", this.workspace.resolve(".").toFile()
             );
@@ -200,7 +200,7 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "pages", this.targetPath().getParent().resolve("site/inference").toFile()
             );
-            this.params.putIfAbsent("placedFormat", "csv");
+            this.params.putIfAbsent("placedfmt", "csv");
             this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
             this.params.putIfAbsent(
                 "objectionary",

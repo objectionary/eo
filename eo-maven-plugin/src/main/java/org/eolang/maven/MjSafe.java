@@ -86,10 +86,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Format of "foreign" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.foreignFormat", required = true, defaultValue = "csv")
-    protected String foreignFormat = "csv";
+    @Parameter(
+        alias = "foreignFormat",
+        property = "eo.foreignFormat",
+        required = true,
+        defaultValue = "csv"
+    )
+    protected String foreignfmt = "csv";
 
     /**
      * Directory in which .eo files are located.
@@ -133,10 +137,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Format of "placed" file ("json" or "csv").
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
-    protected String placedFormat = "json";
+    @Parameter(
+        alias = "placedFormat",
+        property = "eo.placedFormat",
+        required = true,
+        defaultValue = "json"
+    )
+    protected String placedfmt = "json";
 
     /**
      * Generated sourced directory.
@@ -153,7 +161,6 @@ abstract class MjSafe extends AbstractMojo {
      * The path of the file where XSL measurements (time of execution
      * in milliseconds) will be stored.
      * @since 0.41.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "xslMeasuresFile",
@@ -161,7 +168,7 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
     )
-    protected File xslMeasures;
+    protected File measures;
 
     /**
      * Mojo execution timeout in seconds.
@@ -254,10 +261,14 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Pull again even if the .eo file is already present?
      * @since 0.10.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
-    protected boolean overWrite;
+    @Parameter(
+        alias = "overWrite",
+        property = "eo.overWrite",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean overwrite;
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -283,10 +294,14 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Shall we discover JAR artifacts for .EO sources?
      * @since 0.12.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
-    protected boolean discoverSelf;
+    @Parameter(
+        alias = "discoverSelf",
+        property = "eo.discoverSelf",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean discover;
 
     /**
      * List of inclusion GLOB filters for finding class files while placing them from where
@@ -397,17 +412,15 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Resolve default JNA dependency or not.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    protected boolean resolveJna = true;
+    protected boolean jna = true;
 
     /**
      * Resolve dependencies in central or not.
-     * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
-    protected boolean resolveInCentral = true;
+    protected boolean centrally = true;
 
     /**
      * Objectionary.
@@ -465,7 +478,7 @@ abstract class MjSafe extends AbstractMojo {
      */
     protected final TjsForeign tojos() {
         return new TjsForeign(
-            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignfmt),
             () -> this.scope
         );
     }
@@ -477,7 +490,7 @@ abstract class MjSafe extends AbstractMojo {
      */
     protected final TjsPlaced placed() {
         return new TjsPlaced(
-            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedFormat)
+            () -> Catalogs.INSTANCE.make(this.placed.toPath(), this.placedfmt)
         );
     }
 
@@ -487,7 +500,7 @@ abstract class MjSafe extends AbstractMojo {
      */
     protected final TjsForeign compileTojos() {
         return new TjsForeign(
-            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignFormat),
+            () -> Catalogs.INSTANCE.make(this.foreign.toPath(), this.foreignfmt),
             () -> "compile"
         );
     }
@@ -507,7 +520,7 @@ abstract class MjSafe extends AbstractMojo {
      * @return Scalar supplying the runtime dependency
      */
     Scalar<Dep> runtime() {
-        return new RtChosen(this.project, this.resolveInCentral);
+        return new RtChosen(this.project, this.centrally);
     }
 
     /**
@@ -537,7 +550,7 @@ abstract class MjSafe extends AbstractMojo {
                     this.objectionary(),
                     this.cache.toPath().resolve(Pulling.CACHE),
                     this.plugin.getVersion(),
-                    this.overWrite,
+                    this.overwrite,
                     this.cacheEnabled,
                     this.offline
                 )
