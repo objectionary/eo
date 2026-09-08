@@ -113,31 +113,32 @@ final class CallTest {
 
     @Test
     void refusesReceiverRebuiltFromEarlierCall() {
-        final Step read = new Dispatch(
-            "s1", "read", Arrays.asList("sym:v0", "number:40-24-00-00-00-00-00-00"), "bytes"
-        );
-        final Step size = new Dispatch(
-            "s2", "size", Collections.singletonList("sym:s1"), "number"
-        );
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> CallTest.chained(read, size, Collections.singletonMap("i", "object")).text(),
+            () -> CallTest.chained(
+                new Dispatch(
+                    "s1", "read",
+                    Arrays.asList("sym:v0", "number:40-24-00-00-00-00-00-00"), "bytes"
+                ),
+                new Dispatch("s2", "size", Collections.singletonList("sym:s1"), "number"),
+                Collections.singletonMap("i", "object")
+            ).text(),
             "the bytes an earlier call was dataized into are no object to dispatch on, but they are"
         );
     }
 
     @Test
     void wrapsDatumOfOperationAsReceiver() {
-        final Step plus = new Application(
-            "s1", "L_number_plus",
-            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
-        );
-        final Step nan = new Dispatch(
-            "s2", "is-nan", Collections.singletonList("sym:s1"), "bool"
-        );
         MatcherAssert.assertThat(
             "the value of a Java operation is the whole of the number it is, but it was refused",
-            CallTest.chained(plus, nan, Collections.singletonMap("x", "number")).text(),
+            CallTest.chained(
+                new Application(
+                    "s1", "L_number_plus",
+                    Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                ),
+                new Dispatch("s2", "is-nan", Collections.singletonList("sym:s1"), "bool"),
+                Collections.singletonMap("x", "number")
+            ).text(),
             Matchers.equalTo(
                 "new Dataized(new PhDispatch(new Data.ToPhi(s1), \"is-nan\")).asBool()"
             )
@@ -146,15 +147,13 @@ final class CallTest {
 
     @Test
     void holdsObjectOfEarlierCallAsReceiver() {
-        final Step head = new Dispatch(
-            "s1", "head", Collections.singletonList("sym:v0"), "object"
-        );
-        final Step next = new Dispatch(
-            "s2", "next", Collections.singletonList("sym:s1"), "object"
-        );
         MatcherAssert.assertThat(
             "an object an earlier call answered must stay the Phi it is, but it was rebuilt",
-            CallTest.chained(head, next, Collections.singletonMap("q", "tuple")).text(),
+            CallTest.chained(
+                new Dispatch("s1", "head", Collections.singletonList("sym:v0"), "object"),
+                new Dispatch("s2", "next", Collections.singletonList("sym:s1"), "object"),
+                Collections.singletonMap("q", "tuple")
+            ).text(),
             Matchers.equalTo("new PhDispatch(s1, \"next\")")
         );
     }
