@@ -17,7 +17,11 @@ import java.util.List;
  * wrapped back into an object — a number, a bool and bytes through
  * {@code Data.ToPhi}, a string through the same after the bytes are read
  * as text, since that is what the runtime makes a string of, and a tuple
- * or an object as the {@code Phi} it already is. The method
+ * or an object as the {@code Phi} it already is. A step that is itself
+ * a call is no receiver, though: its value was dataized into the forma
+ * the tables witness, and the object that answered — the one owning the
+ * method the datum never had — is gone by then, so a call on it is
+ * refused and the fragment stays as written. The method
  * is taken of the receiver with {@code PhDispatch} and applied to the
  * arguments by position with {@code PhApplication}, the way the
  * transpiler spells a call, and the value is dataized into the forma the step
@@ -56,7 +60,7 @@ public final class Call {
         final List<String> keys = this.step.keys();
         String call = String.format(
             "new PhDispatch(%s, \"%s\")",
-            this.wrapped(keys.get(0)), this.step.atom().substring(1)
+            this.receiver(keys.get(0)), this.step.atom().substring(1)
         );
         if (keys.size() > 1) {
             final Collection<String> binds = new ArrayList<>(keys.size());
@@ -77,6 +81,30 @@ public final class Call {
             out = String.format("new Dataized(%s).take()", call);
         } else {
             out = call;
+        }
+        return out;
+    }
+
+    private String receiver(final String key) {
+        if (this.rebuilt(key)) {
+            throw new IllegalStateException(
+                String.join(
+                    " ",
+                    String.format("The receiver '%s' of '%s' is the", key, this.step.atom()),
+                    String.format("%s an earlier call was dataized into,", this.values.kind(key)),
+                    "and the object it answered with is gone"
+                )
+            );
+        }
+        return this.wrapped(key);
+    }
+
+    private boolean rebuilt(final String key) {
+        boolean out = false;
+        if (key.startsWith("sym:s")) {
+            final String kind = this.values.kind(key);
+            out = !"tuple".equals(kind) && !"object".equals(kind)
+                && this.values.step(key.substring(4)).atom().charAt(0) == '.';
         }
         return out;
     }
