@@ -166,6 +166,79 @@ final class WatchedTest {
     }
 
     @Test
+    void stopsThreadTheBodyLeftBehind() {
+        MatcherAssert.assertThat(
+            "A thread the body left behind must be gone before the guard returns, but it wasnt",
+            WatchedTest.lingering(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void skipsTerminatedBodyThatLeftAThread() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            Assertions.assertThrows(
+                TestAbortedException.class,
+                () -> new Watched(1024L * 1024L, 100L).through(
+                    () -> {
+                        final Thread extra = new Thread(
+                            () -> {
+                                while (!release.get()) {
+                                    WatchedTest.rest(1L);
+                                }
+                            }
+                        );
+                        extra.setDaemon(true);
+                        extra.start();
+                        final byte[][] junk = new byte[1][];
+                        while (!Thread.currentThread().isInterrupted()) {
+                            junk[0] = new byte[256 * 1024];
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A terminated body that left a thread must stay a skip, but it didnt"
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void namesThreadThatOutlivedItsBody() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            MatcherAssert.assertThat(
+                "The thread that outlived the test must be named, but it wasnt",
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                        () -> {
+                            final Thread extra = new Thread(
+                                () -> {
+                                    while (!release.get()) {
+                                        WatchedTest.rest(1L);
+                                    }
+                                },
+                                "deaf-worker"
+                            );
+                            extra.setDaemon(true);
+                            extra.start();
+                            return null;
+                        }
+                    ),
+                    "A thread outliving the body it was started by must fail, but it didnt"
+                ).getMessage(),
+                Matchers.containsString("deaf-worker")
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
     void letsFrugalBodyThrough() {
         MatcherAssert.assertThat(
             "A body that eats almost nothing must run to its end, but it didnt",
@@ -214,6 +287,29 @@ final class WatchedTest {
             "A body that never stops allocating must be terminated, but it wasnt"
         );
         return WatchedTest.awaited(stopped);
+    }
+
+    private static boolean lingering() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        Assertions.assertDoesNotThrow(
+            () -> new Watched(64L * 1024L * 1024L).through(
+                () -> {
+                    final Thread extra = new Thread(
+                        () -> {
+                            while (!Thread.currentThread().isInterrupted()) {
+                                WatchedTest.rest(1L);
+                            }
+                            stopped.set(true);
+                        }
+                    );
+                    extra.setDaemon(true);
+                    extra.start();
+                    return null;
+                }
+            ),
+            "A body leaving a thread that stops when told must not fail, but it did"
+        );
+        return stopped.get();
     }
 
     private static boolean interrupted() {
