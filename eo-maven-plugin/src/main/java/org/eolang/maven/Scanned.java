@@ -56,10 +56,6 @@ final class Scanned implements Iterable<Path> {
         return files.iterator();
     }
 
-    /**
-     * The files the scanner lets through.
-     * @return Absolute paths of them
-     */
     private Collection<Path> found() {
         final DirectoryScanner scanner = new DirectoryScanner();
         scanner.setBasedir(this.home.toFile());

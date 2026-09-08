@@ -6,7 +6,6 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
@@ -45,9 +44,8 @@ final class ScannedTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void skipsDirectoryReachedThroughALink(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(temp.resolve("sources"));
-        Files.write(temp.resolve("sources/ωmega.eo"), "[] > omega".getBytes("UTF-8"));
+    void skipsDirectoryReachedThroughALink(@Mktmp final Path temp) throws Exception {
+        new Saved("[] > omega", temp.resolve("sources/ωmega.eo")).value();
         Files.createSymbolicLink(temp.resolve("mirror"), temp.resolve("sources"));
         MatcherAssert.assertThat(
             "a linked directory must not be descended into, since its files carry their own names",
