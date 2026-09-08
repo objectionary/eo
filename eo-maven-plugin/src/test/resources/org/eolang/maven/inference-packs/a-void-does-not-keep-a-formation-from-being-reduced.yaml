@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void is public today and is on its way to being a moniker, named by the
+# parser and unreadable from outside, so it is not counted among the attributes
+# that keep a formation from being reduced. Almost nobody reads back the thing
+# he has just put in.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  grafted.eo: |
+    [x] > grafted
+      oak > @
+provides:
+  - "/provides/type[@id='Φ.grafted' and @reduced='Φ.oak']"

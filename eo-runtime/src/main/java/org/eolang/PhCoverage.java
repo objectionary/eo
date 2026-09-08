@@ -57,6 +57,7 @@ public final class PhCoverage implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The origin
      * @param mark The location to write, as {@code loc:line:pos}
      */
@@ -66,6 +67,7 @@ public final class PhCoverage implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The origin
      * @param seen Locations written already, per destination
      * @param mark The location to write, as {@code loc:line:pos}

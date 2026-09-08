@@ -57,6 +57,7 @@ public final class Clues implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow
      */
     public Clues(final Collection<Clue> clues) {

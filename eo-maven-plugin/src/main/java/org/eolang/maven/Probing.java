@@ -47,6 +47,7 @@ final class Probing implements Step {
 
     /**
      * Constructor.
+     *
      * @param tjs Tojos
      * @param obj Objectionary
      * @param net Whether we are online

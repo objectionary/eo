@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 /**
  * Convert {@code EOtuple} of arguments to Java array.
+ *
  * @since 0.40.0
  */
 public final class TupleToArray implements Supplier<Phi[]> {
@@ -20,6 +21,7 @@ public final class TupleToArray implements Supplier<Phi[]> {
 
     /**
      * Ctor.
+     *
      * @param tup Tuple of arguments
      */
     public TupleToArray(final Phi tup) {

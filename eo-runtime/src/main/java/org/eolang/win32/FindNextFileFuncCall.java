@@ -30,6 +30,7 @@ public final class FindNextFileFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public FindNextFileFuncCall(final Phi win) {

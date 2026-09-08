@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Cstring}.
+ *
  * @since 0.57.0
  */
 final class CstringTest {

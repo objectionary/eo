@@ -10,6 +10,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _ftime64_s function call.
+ *
  * @since 0.74.0
  */
 public final class FtimeFuncCall implements Syscall {
@@ -21,6 +22,7 @@ public final class FtimeFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public FtimeFuncCall(final Phi win) {

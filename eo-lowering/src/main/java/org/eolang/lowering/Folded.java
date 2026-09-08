@@ -44,6 +44,7 @@ public final class Folded implements Rewrite {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      */
     public Folded(final Phino exe) {

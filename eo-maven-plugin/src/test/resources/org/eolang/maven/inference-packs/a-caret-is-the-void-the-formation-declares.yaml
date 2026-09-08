@@ -3,9 +3,10 @@
 ---
 # `^` names the receiver a formation declares and not the object it happens to
 # be written inside. `inner` says `[^]`, so `^.held` asks `held` of that void
-# and the answer waits for whoever dispatches on `inner`. Walking outward
-# through the text would name `outer` here, which is only one of the things a
-# caller could hand over, and since #6657 the text no longer decides.
+# and the answer waits for whoever dispatches on `inner`. Since #6657 the void
+# is declared, so the demand is written against the void and not against the
+# `outer` the body happens to sit in. What the void will hold is a fact of its
+# own, written down apart and asserted apart.
 eo:
   outer.eo: |
     [] > outer

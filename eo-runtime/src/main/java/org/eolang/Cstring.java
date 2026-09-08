@@ -24,6 +24,7 @@ public final class Cstring {
 
     /**
      * Ctor.
+     *
      * @param subject What the text is, for the failure message
      * @param phi The object holding the text
      */
@@ -33,6 +34,7 @@ public final class Cstring {
 
     /**
      * Ctor.
+     *
      * @param expect Expect
      */
     public Cstring(final Expect<Phi> expect) {
@@ -41,6 +43,7 @@ public final class Cstring {
 
     /**
      * Return it.
+     *
      * @return The text
      */
     public String it() {

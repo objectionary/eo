@@ -30,6 +30,7 @@ public final class ExAgain extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param phi The next copy of the formation
      */
     public ExAgain(final Phi phi) {
@@ -39,6 +40,7 @@ public final class ExAgain extends ExAbstract {
 
     /**
      * The next copy of the formation.
+     *
      * @return The object the tail call made
      */
     public Phi next() {

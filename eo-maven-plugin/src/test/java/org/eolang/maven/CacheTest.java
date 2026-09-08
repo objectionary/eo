@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link Cache}.
+ *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)
@@ -343,6 +344,7 @@ final class CacheTest {
     /**
      * A cache whose payload path has been replaced with a directory, so
      * that a following write to it fails.
+     *
      * @since 0.60
      */
     private static final class Corrupted {
@@ -369,6 +371,7 @@ final class CacheTest {
 
         /**
          * Ctor.
+         *
          * @param base Base cache directory
          * @param source Source file
          * @param target Target file

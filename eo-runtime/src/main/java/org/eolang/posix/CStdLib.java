@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * C standard library with unix syscalls.
+ *
  * @since 0.40
  */
 public interface CStdLib extends Library {
@@ -73,6 +74,7 @@ public interface CStdLib extends Library {
 
     /**
      * Duplicates file descriptor.
+     *
      * @param descriptor Old file descriptor
      * @return New file descriptor
      */
@@ -80,6 +82,7 @@ public interface CStdLib extends Library {
 
     /**
      * Duplicates a file descriptor to another.
+     *
      * @param descriptor Old file descriptor
      * @param other New file descriptor
      * @return Duplicated file descriptor
@@ -88,6 +91,7 @@ public interface CStdLib extends Library {
 
     /**
      * The "getpid" syscall.
+     *
      * @return Process ID
      */
     int getpid();
@@ -109,6 +113,7 @@ public interface CStdLib extends Library {
 
     /**
      * Close file descriptor.
+     *
      * @param descriptor File descriptor
      * @return Zero on success, -1 on error
      */
@@ -116,6 +121,7 @@ public interface CStdLib extends Library {
 
     /**
      * Writes given bytes buffer to file descriptor.
+     *
      * @param descriptor File descriptor
      * @param buf Buffer
      * @param size Number of bytes to be written
@@ -125,6 +131,7 @@ public interface CStdLib extends Library {
 
     /**
      * Read bytes from file descriptor.
+     *
      * @param descriptor File descriptor
      * @param buf Buffer
      * @param size Number of bytes to be read
@@ -134,6 +141,7 @@ public interface CStdLib extends Library {
 
     /**
      * Check a file's accessibility.
+     *
      * @param path Path to the file
      * @param mode Accessibility check to perform (0 tests for existence)
      * @return Zero when the check succeeds, -1 on error
@@ -142,6 +150,7 @@ public interface CStdLib extends Library {
 
     /**
      * Get file status by path.
+     *
      * @param path Path to the file
      * @param statbuf Structure to fill with the file's metadata
      * @return Zero on success, -1 on error
@@ -150,6 +159,7 @@ public interface CStdLib extends Library {
 
     /**
      * Get file status by path, without following a symbolic link.
+     *
      * @param path Path to the file
      * @param statbuf Structure to fill with the file's metadata
      * @return Zero on success, -1 on error
@@ -158,6 +168,7 @@ public interface CStdLib extends Library {
 
     /**
      * Delete a name from the filesystem.
+     *
      * @param path Path to the file
      * @return Zero on success, -1 on error
      */
@@ -165,6 +176,7 @@ public interface CStdLib extends Library {
 
     /**
      * Remove an empty directory.
+     *
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
@@ -172,6 +184,7 @@ public interface CStdLib extends Library {
 
     /**
      * Create a directory.
+     *
      * @param path Path to the directory
      * @param mode Permission bits for the new directory
      * @return Zero on success, -1 on error
@@ -180,6 +193,7 @@ public interface CStdLib extends Library {
 
     /**
      * Create a new file, or truncate an existing one, and open it.
+     *
      * @param path Path to the file
      * @param mode Permission bits for a newly created file
      * @return File descriptor on success, -1 on error
@@ -188,6 +202,7 @@ public interface CStdLib extends Library {
 
     /**
      * Rename a file, moving it between directories if required.
+     *
      * @param from Current path of the file
      * @param target New path of the file
      * @return Zero on success, -1 on error
@@ -196,6 +211,7 @@ public interface CStdLib extends Library {
 
     /**
      * Create a symbolic link pointing at a file or a directory.
+     *
      * @param target Path the link leads to
      * @param path Path of the link itself
      * @return Zero on success, -1 on error
@@ -204,6 +220,7 @@ public interface CStdLib extends Library {
 
     /**
      * Get environment variable.
+     *
      * @param name Name of the variable
      * @return Name of the environment variable
      */
@@ -211,6 +228,7 @@ public interface CStdLib extends Library {
 
     /**
      * Get current time.
+     *
      * @param timeval Timevalue
      * @param timezone Timezone
      * @return Zero on success, -1 on error
@@ -219,6 +237,7 @@ public interface CStdLib extends Library {
 
     /**
      * Create an endpoint for communication.
+     *
      * @param domain Socket domain
      * @param type Socket type
      * @param protocol Socket protocol
@@ -228,6 +247,7 @@ public interface CStdLib extends Library {
 
     /**
      * Connects to the server at the specified IP address and port.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -238,6 +258,7 @@ public interface CStdLib extends Library {
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
      * by the file descriptor {@code sockfd}.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -247,6 +268,7 @@ public interface CStdLib extends Library {
 
     /**
      * Listen for incoming connections on socket.
+     *
      * @param sockfd Socket descriptor
      * @param backlog Specifies the queue length for completely established
      *  sockets waiting to be accepted
@@ -256,6 +278,7 @@ public interface CStdLib extends Library {
 
     /**
      * Accept connection on socket.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -266,6 +289,7 @@ public interface CStdLib extends Library {
 
     /**
      * Receive a message from a socket.
+     *
      * @param sockfd Socket descriptor
      * @param buf Byte buffer to store received bytes
      * @param len Size of received data
@@ -276,6 +300,7 @@ public interface CStdLib extends Library {
 
     /**
      * Send a message to a socket.
+     *
      * @param sockfd Socket descriptor
      * @param buf Byte buffer to store sent bytes
      * @param len Size of sent data
@@ -286,6 +311,7 @@ public interface CStdLib extends Library {
 
     /**
      * Convert IP string to binary form.
+     *
      * @param address IP address
      * @return IP address in binary form
      */
@@ -294,6 +320,7 @@ public interface CStdLib extends Library {
 
     /**
      * Open a directory for reading.
+     *
      * @param path Path to the directory
      * @return Pointer to the directory stream, or NULL on error
      */
@@ -313,6 +340,7 @@ public interface CStdLib extends Library {
 
     /**
      * Close a directory stream.
+     *
      * @param dirp The directory stream
      * @return Zero on success, -1 on error
      */
@@ -320,6 +348,7 @@ public interface CStdLib extends Library {
 
     /**
      * Converts {@code errno} to a human-readable string.
+     *
      * @param errno The error number
      * @return Error as string
      */

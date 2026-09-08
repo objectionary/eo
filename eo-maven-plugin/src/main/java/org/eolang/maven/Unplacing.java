@@ -39,6 +39,7 @@ final class Unplacing implements Step {
 
     /**
      * Constructor.
+     *
      * @param plcd Placed binaries catalog
      * @param clsses Classes output directory
      * @param keepbinaries Binaries to keep

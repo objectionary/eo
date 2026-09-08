@@ -31,6 +31,7 @@ final class RtChosen implements Scalar<Dep> {
 
     /**
      * Ctor.
+     *
      * @param project The project being built
      * @param central Whether Maven Central may be asked
      */

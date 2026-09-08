@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Offered}.
+ *
  * @since 0.76.0
  */
 final class OfferedTest {

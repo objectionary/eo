@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Constant}.
+ *
  * @since 0.76.0
  */
 @ExtendWith(MktmpResolver.class)

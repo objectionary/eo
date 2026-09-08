@@ -44,6 +44,7 @@ public final class MjRegister extends MjSafe {
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      */
@@ -54,6 +55,7 @@ public final class MjRegister extends MjSafe {
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code defaultValue} attribute is omitted, because an empty
      *  one is not rendered into the descriptor of the plugin by
      *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Attrs}.
+ *
  * @since 0.59
  */
 final class AttrsTest {

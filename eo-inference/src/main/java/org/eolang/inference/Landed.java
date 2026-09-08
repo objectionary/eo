@@ -48,6 +48,7 @@ final class Landed {
 
     /**
      * Ctor.
+     *
      * @param table What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says what an atom comes back
      *  with and which objects are formations
@@ -59,6 +60,7 @@ final class Landed {
 
     /**
      * Where every object the table can place ends up.
+     *
      * @return The landings, by the locator of the object, without the objects
      *  whose walk runs into a void
      */

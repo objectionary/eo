@@ -44,6 +44,7 @@ final class Dead {
 
     /**
      * Ctor.
+     *
      * @param links What the links table says
      * @param dispatches Every dispatch of the program
      * @param ends The name every object goes by
@@ -56,6 +57,7 @@ final class Dead {
 
     /**
      * The locators of everything that terminates.
+     *
      * @return The locators, the dispatches on a termination among them
      */
     Collection<String> all() {

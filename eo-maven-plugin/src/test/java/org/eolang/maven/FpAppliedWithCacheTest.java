@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link FpAppliedWithCache}.
+ *
  * @since 0.56.7
  */
 @ExtendWith(MktmpResolver.class)

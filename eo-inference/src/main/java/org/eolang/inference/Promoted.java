@@ -90,6 +90,7 @@ final class Promoted {
 
     /**
      * Ctor.
+     *
      * @param woven The rows that follow from a set of pairs
      * @param provides The provides table, which says where a filling can land
      * @param kept The rows of the links table that are not pairs, without which
@@ -111,6 +112,7 @@ final class Promoted {
     /**
      * The voids these pairs turn out to have named, beyond the ones named
      * already.
+     *
      * @param pairs The pairs, each object against the one it is a copy of
      * @return The voids answered this time, each against the one object the
      *  program puts into it, empty when no void is worth anything further

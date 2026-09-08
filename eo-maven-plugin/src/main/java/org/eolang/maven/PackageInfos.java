@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Package info classes.
+ *
  * @since 0.60
  */
 final class PackageInfos {
@@ -62,6 +63,7 @@ final class PackageInfos {
 
     /**
      * Constructor.
+     *
      * @param root In which directory create files
      * @param sources Where the hand-written Java sources are
      * @param dirs Where this run's own transpiled classes landed

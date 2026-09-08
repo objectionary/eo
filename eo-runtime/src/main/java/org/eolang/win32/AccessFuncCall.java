@@ -14,6 +14,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _access function call.
+ *
  * @since 0.74.0
  */
 public final class AccessFuncCall implements Syscall {
@@ -25,6 +26,7 @@ public final class AccessFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public AccessFuncCall(final Phi win) {

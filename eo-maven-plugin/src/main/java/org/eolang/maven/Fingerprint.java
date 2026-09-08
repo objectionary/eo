@@ -60,6 +60,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param res Classpath resource paths to hash
      */
     Fingerprint(final String... res) {
@@ -68,6 +69,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param files The directory whose files to hash
      */
     Fingerprint(final Path files) {
@@ -76,6 +78,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param files The directories whose files to hash
      * @param res Classpath resource paths to hash
      */

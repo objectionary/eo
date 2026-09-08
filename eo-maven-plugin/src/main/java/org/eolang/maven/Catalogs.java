@@ -23,6 +23,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * All catalogs in one place, to avoid making multiple objects.
+ *
  * @since 0.29
  */
 final class Catalogs {
@@ -72,6 +73,7 @@ final class Catalogs {
 
     /**
      * Make it.
+     *
      * @param file The file
      * @return The Tojos
      */
@@ -81,6 +83,7 @@ final class Catalogs {
 
     /**
      * Make it.
+     *
      * @param file The file
      * @param fmt The format
      * @return The Tojos

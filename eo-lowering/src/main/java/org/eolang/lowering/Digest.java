@@ -32,6 +32,7 @@ public final class Digest {
 
     /**
      * Ctor.
+     *
      * @param body The content to digest
      */
     public Digest(final String body) {
@@ -40,6 +41,7 @@ public final class Digest {
 
     /**
      * The digest.
+     *
      * @return Twelve hex characters
      */
     public String hex() {

@@ -35,6 +35,7 @@ final class Escapes {
 
     /**
      * Decode a string body to its raw byte representation.
+     *
      * @param inner Source body without surrounding quotes
      * @return Decoded bytes
      */

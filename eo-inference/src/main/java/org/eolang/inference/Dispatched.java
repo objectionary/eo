@@ -64,6 +64,7 @@ final class Dispatched {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table
      * @param dispatches Every dispatch of the program
      * @param arguments The arguments of every application, from {@link Given}
@@ -90,6 +91,7 @@ final class Dispatched {
 
     /**
      * The pairs that follow from what is known, beyond what is known already.
+     *
      * @param pairs The pairs, each name against the one it is a copy of
      * @return The dispatches answered this time, each against the attribute it
      *  turns out to be, empty when nothing further can be answered
@@ -97,25 +99,47 @@ final class Dispatched {
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
+        final Map<String, Map<String, String>> bound = new Copied(
+            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
+            pairs,
+            new Lent(owned, this.all, this.args, this.hollows).sites(names)
+        ).all();
         final Filled filled = new Filled(
             pairs,
             owned,
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
+            new Puts(bound, new Holders(bound, pairs).all()),
             this.hollows
         );
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
-            if (!pairs.containsKey(made)) {
+            final String known = pairs.getOrDefault(made, "");
+            if (known.isEmpty() || this.rooted(known)) {
                 final String bearer = dispatch.bearer();
                 final String kept = filled.instead(
                     owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
-                    bearer
+                    bearer,
+                    made
                 );
-                if (!kept.isEmpty() && !kept.equals(made)) {
+                if (this.better(kept, known, made)) {
                     found.put(made, kept);
                 }
             }
+        }
+        return found;
+    }
+
+    private boolean rooted(final String type) {
+        return !this.hollows.isEmpty() && new Rooted(this.hollows).covers(type);
+    }
+
+    private boolean better(final String kept, final String known, final String made) {
+        final boolean found;
+        if (kept.isEmpty() || kept.equals(made) || kept.equals(known)) {
+            found = false;
+        } else {
+            found = known.isEmpty() || !this.rooted(kept)
+                || known.startsWith(kept.concat("."));
         }
         return found;
     }

@@ -53,6 +53,7 @@ public final class Handles {
 
     /**
      * Start keeping a pointer, under a number of its own.
+     *
      * @param pointer The pointer to keep
      * @return The number standing for it
      */
@@ -64,6 +65,7 @@ public final class Handles {
 
     /**
      * The pointer a number stands for.
+     *
      * @param subject What the number is, for the failure message
      * @param handle The number
      * @return The pointer
@@ -81,6 +83,7 @@ public final class Handles {
 
     /**
      * Stop keeping the pointer a number stands for, and give it back.
+     *
      * @param subject What the number is, for the failure message
      * @param handle The number
      * @return The pointer

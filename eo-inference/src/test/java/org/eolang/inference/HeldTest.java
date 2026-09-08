@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Held}.
+ *
  * @since 0.69.0
  */
 final class HeldTest {

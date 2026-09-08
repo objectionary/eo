@@ -45,6 +45,7 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@link MjInference}
      */
     Rows(final Path tables) {
@@ -73,6 +74,7 @@ final class Rows {
     /**
      * Digest of the rows these objects and what they hold are named in.
      * Absent tables and empty ones answer alike.
+     *
      * @param locators The locators of the objects a file holds
      * @return Twelve hex characters
      */

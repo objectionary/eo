@@ -45,6 +45,7 @@ public final class Body {
 
     /**
      * Ctor.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @param offset The position of the first void among all voids
      * @param formas The formas of the voids, in declaration order
@@ -60,6 +61,7 @@ public final class Body {
 
     /**
      * The name of the helper this is the body of.
+     *
      * @return The name, empty for the formation itself
      */
     public String name() {
@@ -68,6 +70,7 @@ public final class Body {
 
     /**
      * The position of the first void of this body among all voids.
+     *
      * @return The offset
      */
     public int offset() {
@@ -76,6 +79,7 @@ public final class Body {
 
     /**
      * The formas of the voids of this body.
+     *
      * @return The formas, in declaration order
      */
     public List<String> formas() {
@@ -84,6 +88,7 @@ public final class Body {
 
     /**
      * The protocol of the body.
+     *
      * @return The protocol
      */
     public Protocol protocol() {

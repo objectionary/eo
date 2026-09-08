@@ -32,6 +32,7 @@ final class Tabled {
 
     /**
      * Ctor.
+     *
      * @param tables The directory the tables are in
      */
     Tabled(final Path tables) {
@@ -40,6 +41,7 @@ final class Tabled {
 
     /**
      * How many tables there are and how much they weigh together.
+     *
      * @return The description, for a log line
      * @throws IOException If the directory cannot be read
      */

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link UnpackedJar}.
+ *
  * @since 0.64
  */
 @ExtendWith(MktmpResolver.class)

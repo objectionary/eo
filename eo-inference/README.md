@@ -4,12 +4,12 @@
 
 # eo-inference
 
-Works out, for every object in an EO program, which object it was copied from.
+Works out, for every object in an EO program, which formation it behaves as.
 
 EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
-written in the source. That formation is the answer, and its FQN is the whole
-of what this module means by a type:
+written in the source. That formation is where the answer is looked for, and an
+FQN is the whole of what this module means by a type:
 
 ```eo
 [as-bytes] > number      # Φ.number.as-bytes is a Φ.bytes
@@ -18,9 +18,13 @@ of what this module means by a type:
     $.^.plus ($.x.times -1) > @      # Φ.number.minus.@ is a Φ.number
 ```
 
-Nothing else counts as an answer. `Φ.number.plus.x` is not "a number-ish
-thing", it is `Φ.number`, and if we cannot say which formation it is we say so
-rather than dressing up a guess.
+Where the chain arrives is not always where it stops. A formation that binds
+nothing the outside can read but its own `φ` has no behaviour of its own: it
+hands on everything it can be asked, and its name says less about an object
+than the name behind it. So `1.plus 2` is a `Φ.number` rather than a
+`Φ.number.plus`, and the `as-bytes` of a `Φ.bytes` is a `Φ.bytes`. A formation
+that does bind something of its own is where the walk ends, and if we cannot
+say which formation it is we say so rather than dressing up a guess.
 
 The goal runs after `pre-inference` and writes three XML tables into
 `target/eo/6-inference`. Nothing else in the compiler reads them yet.
@@ -48,8 +52,8 @@ the ground everything else stands on, and asking what more there is to know
 about them is asking nothing. So does a termination.
 
 Whether the formation still has voids free does not matter here. Knowing that
-something is a `Φ.number.plus` is knowing which object it is, even before
-knowing what went into its `x`.
+something is a `Φ.number` is knowing which object it is, even before knowing
+what went into its `as-bytes`.
 
 ### rooted at a void
 
@@ -128,7 +132,7 @@ No clue decides anything, and none of them can fail, so they compose in any
 order:
 
 ```java
-new Witnessed(new Demanded(new Resolved(new Clues())))
+new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
 ```
 
 `Clues` is the first pass and fills the three tables from the source text
@@ -149,6 +153,7 @@ more question:
 | Pass | Answers |
 | --- | --- |
 | `Resolved` | What every dispatch turns out to be. `a.b.c` is walked one hop at a time, each hop asked of the type the last one arrived at, looking behind a delegation and into a package where it has to. |
+| `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
 | `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
 | `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
 

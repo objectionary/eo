@@ -100,6 +100,7 @@ final class EoSourceRun implements Proc<Object> {
 
     /**
      * Ctor.
+     *
      * @param maven Fake maven reactor
      */
     EoSourceRun(final Farea maven) {
@@ -108,6 +109,7 @@ final class EoSourceRun implements Proc<Object> {
 
     /**
      * Ctor.
+     *
      * @param maven Fake maven reactor
      * @param dir Home of the fake project
      * @param stdin What to feed the program through its standard input
@@ -171,6 +173,7 @@ final class EoSourceRun implements Proc<Object> {
 
     /**
      * What the forked program printed on its standard output and error.
+     *
      * @return The output, empty when the program was not forked
      */
     String output() {

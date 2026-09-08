@@ -18,6 +18,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * PlacedTojos encapsulates tojos logic and keeps short information about all placed files.
+ *
  * @since 0.30
  */
 final class TjsPlaced implements Closeable {
@@ -29,6 +30,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
+     *
      * @param file Path to the tojos file
      */
     TjsPlaced(final Path file) {
@@ -37,6 +39,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
+     *
      * @param tojos Tojos source, read at most once
      */
     TjsPlaced(final Scalar<? extends Tojos> tojos) {
@@ -45,6 +48,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Ctor.
+     *
      * @param tojos Tojos
      */
     private TjsPlaced(final Tojos tojos) {
@@ -53,6 +57,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * The main ctor.
+     *
      * @param tojos Tojos unchecked source
      */
     private TjsPlaced(final Unchecked<? extends Tojos> tojos) {
@@ -66,6 +71,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all classes.
+     *
      * @return All classes
      */
     Collection<TjPlaced> classes() {
@@ -77,6 +83,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all jars.
+     *
      * @return All jars
      */
     Collection<TjPlaced> jars() {
@@ -88,6 +95,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Get all binaries.
+     *
      * @return All binaries jars with classes
      */
     List<TjPlaced> allBinaries() {
@@ -100,6 +108,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Find jar by dependency identifier.
+     *
      * @param dep Dependency identifier
      * @return Placed jar
      */
@@ -112,6 +121,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Find placed tojo by path.
+     *
      * @param target Path
      * @return Placed tojo
      */
@@ -123,6 +133,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Place class into placed tojos file.
+     *
      * @param target Path to the class
      * @param related Related
      * @param dep Dependency
@@ -150,6 +161,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Check whether tojos is empty.
+     *
      * @return True if empty
      */
     boolean isEmpty() {
@@ -158,6 +170,7 @@ final class TjsPlaced implements Closeable {
 
     /**
      * Placed tojo attributes.
+     *
      * @since 0.30
      */
     enum Attribute {
@@ -199,6 +212,7 @@ final class TjsPlaced implements Closeable {
 
         /**
          * Ctor.
+         *
          * @param attribute Key in a file
          */
         Attribute(final String attribute) {
@@ -207,6 +221,7 @@ final class TjsPlaced implements Closeable {
 
         /**
          * Get attribute key.
+         *
          * @return Key
          */
         String getKey() {

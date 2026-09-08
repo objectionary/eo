@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Answers}.
+ *
  * @since 0.70.0
  */
 final class AnswersTest {
@@ -182,6 +183,50 @@ final class AnswersTest {
                 Collections.singletonMap("Φ.app.half", "Φ.grow")
             ).of("Φ.app.half", Collections.singletonList("Φ.grow.ρ")).rung(),
             Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void answersWithTheNameATypeBehavesAs() {
+        final Map<String, Collection<Map<String, String>>> rows = new LinkedHashMap<>(0);
+        final Map<String, String> alias = new LinkedHashMap<>(0);
+        alias.put("id", "Φ.bytes.as-bytes");
+        alias.put("complete", "true");
+        alias.put("reduced", "Φ.bytes");
+        rows.put("Φ.bytes.as-bytes", Collections.singletonList(alias));
+        MatcherAssert.assertThat(
+            "an as-bytes has nothing of its own, so it must answer as bytes, but it kept its name",
+            new Answers(
+                rows, Collections.emptyMap(), Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.bytes.as-bytes", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.bytes")
+        );
+    }
+
+    @Test
+    void keepsTheRungOfTheTypeItArrivedAt() {
+        final Map<String, Collection<Map<String, String>>> rows = new LinkedHashMap<>(0);
+        final Map<String, String> alias = new LinkedHashMap<>(0);
+        alias.put("id", "Φ.bytes.as-bytes");
+        alias.put("complete", "true");
+        alias.put("reduced", "Φ.bytes");
+        rows.put("Φ.bytes.as-bytes", Collections.singletonList(alias));
+        final Map<String, String> whole = new LinkedHashMap<>(0);
+        whole.put("id", "Φ.bytes");
+        whole.put("complete", "true");
+        final Map<String, String> hollow = new LinkedHashMap<>(0);
+        hollow.put("name", "data");
+        hollow.put("void", "true");
+        hollow.put("type", "Φ.bytes.data");
+        rows.put("Φ.bytes", Arrays.asList(whole, hollow));
+        MatcherAssert.assertThat(
+            "an as-bytes has no void left free, but it was counted as wanting one",
+            new Answers(
+                rows, Collections.emptyMap(), Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.bytes.as-bytes", Collections.emptyList()).rung(),
+            Matchers.equalTo(4)
         );
     }
 

@@ -33,6 +33,7 @@ final class RuntimeSources implements Proc<Farea> {
 
     /**
      * Ctor.
+     *
      * @param home Directory with local {@code .eo} sources
      */
     RuntimeSources(final Path home) {

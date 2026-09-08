@@ -31,6 +31,7 @@ final class Placed {
 
     /**
      * Ctor.
+     *
      * @param objects The objects bound inside the application
      */
     Placed(final Collection<Xnav> objects) {
@@ -39,6 +40,7 @@ final class Placed {
 
     /**
      * The arguments, one per place, up to the highest place named.
+     *
      * @return The locator of every argument, by its place
      */
     List<String> args() {

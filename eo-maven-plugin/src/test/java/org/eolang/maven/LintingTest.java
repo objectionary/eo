@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Linting}.
+ *
  * @since 0.31.0
  */
 final class LintingTest {

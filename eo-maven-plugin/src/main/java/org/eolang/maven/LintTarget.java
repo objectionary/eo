@@ -13,6 +13,7 @@ import org.eolang.parser.OnDetailed;
 /**
  * The path a per-file lint result belongs at, derived from the XMIR
  * document's own object name.
+ *
  * @since 0.64
  */
 final class LintTarget {
@@ -30,6 +31,7 @@ final class LintTarget {
 
     /**
      * Ctor.
+     *
      * @param doc The XMIR document being linted
      * @param src The document's own source path
      */
@@ -40,6 +42,7 @@ final class LintTarget {
 
     /**
      * The lint result's path, under the given base directory.
+     *
      * @param base Base directory
      * @return Full path
      */

@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * The 'strerror' syscall.
+ *
  * @since 0.40
  */
 public final class StrerrorSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class StrerrorSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public StrerrorSyscall(final Phi posix) {

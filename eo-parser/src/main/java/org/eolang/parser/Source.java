@@ -37,6 +37,7 @@ final class Source implements Iterable<Span> {
 
     /**
      * Ctor.
+     *
      * @param raw The full source text
      */
     Source(final String raw) {

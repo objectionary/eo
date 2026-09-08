@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjInference}.
+ *
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)

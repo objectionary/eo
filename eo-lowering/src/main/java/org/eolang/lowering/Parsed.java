@@ -71,6 +71,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      */
@@ -80,6 +81,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -91,6 +93,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -108,6 +111,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -125,6 +129,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param where What the names of the fragment mean
      * @param above The helpers being read at the moment, outermost first
@@ -141,6 +146,7 @@ public final class Parsed {
 
     /**
      * The tree of the fragment.
+     *
      * @return The root term
      */
     public Term term() {

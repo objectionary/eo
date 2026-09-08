@@ -13,6 +13,7 @@ import org.cactoos.io.InputOf;
 
 /**
  * EO program of as many nested objects as the caller asks for.
+ *
  * @since 0.61.0
  */
 public final class LargeProgram implements Input {
@@ -24,6 +25,7 @@ public final class LargeProgram implements Input {
 
     /**
      * Constructor.
+     *
      * @param objects How many objects the program declares
      */
     public LargeProgram(final int objects) {

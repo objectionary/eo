@@ -34,6 +34,7 @@ final class Nesting {
 
     /**
      * Ctor.
+     *
      * @param made The locators of the formations of the program
      */
     Nesting(final Collection<String> made) {
@@ -42,6 +43,7 @@ final class Nesting {
 
     /**
      * The formation this locator is written inside.
+     *
      * @param locator The locator to walk out of
      * @return The locator of the formation, or an empty string when no
      *  formation is around it

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Bound}.
+ *
  * @since 0.69.0
  */
 final class BoundTest {

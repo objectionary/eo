@@ -34,6 +34,7 @@ final class Padding {
 
     /**
      * Ctor.
+     *
      * @param bytes The bytes given
      */
     Padding(final byte[] bytes) {
@@ -42,6 +43,7 @@ final class Padding {
 
     /**
      * The padding, when it is the right length.
+     *
      * @return The bytes of the padding
      */
     byte[] bytes() {

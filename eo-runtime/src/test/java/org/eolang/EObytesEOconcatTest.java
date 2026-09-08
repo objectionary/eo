@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EObytes}.
+ *
  * @since 0.23
  */
 final class EObytesEOconcatTest {

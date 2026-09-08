@@ -114,6 +114,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor with the forma taken from XMIR.
+     *
      * @param forma The forma of the object
      */
     public PhDefault(final String forma) {
@@ -122,6 +123,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor with initial attributes.
+     *
      * @param attributes Initial attributes to register
      */
     public PhDefault(final Map<String, Attribute> attributes) {
@@ -130,6 +132,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor.
+     *
      * @param dta Object data
      */
     public PhDefault(final byte[] dta) {
@@ -138,6 +141,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Ctor.
+     *
      * @param dta        Object data
      * @param attributes Initial attributes to register
      */
@@ -147,6 +151,7 @@ public class PhDefault implements Phi, Cloneable {
 
     /**
      * Primary ctor.
+     *
      * @param forma      The forma of the object, taken from XMIR
      * @param dta        Object data
      * @param attributes Initial attributes to register

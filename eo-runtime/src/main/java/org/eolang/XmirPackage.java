@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for a Java package made from XMIR meta.
+ *
  * @since 0.49
  */
 @Target(ElementType.PACKAGE)
@@ -20,6 +21,7 @@ public @interface XmirPackage {
 
     /**
      * The name of the package in EO.
+     *
      * @return The name as it is in EO
      */
     String value() default "";

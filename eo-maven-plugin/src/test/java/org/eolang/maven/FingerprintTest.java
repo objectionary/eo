@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Fingerprint}.
+ *
  * @since 0.63
  */
 @ExtendWith(MktmpResolver.class)

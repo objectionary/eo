@@ -72,6 +72,7 @@ final class LnVoid implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnVoid(final Span source) {

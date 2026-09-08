@@ -29,6 +29,7 @@ final class LcovReport {
 
     /**
      * Ctor.
+     *
      * @param hits Per source file, per line number, how many times it was hit
      */
     LcovReport(final Map<String, Map<Integer, Integer>> hits) {
@@ -37,6 +38,7 @@ final class LcovReport {
 
     /**
      * Render the whole tracefile.
+     *
      * @return The LCOV text
      */
     String text() {
@@ -63,6 +65,7 @@ final class LcovReport {
 
     /**
      * The percentage of lines with at least one hit, across every file.
+     *
      * @return A number from 0 to 100
      */
     double covered() {

@@ -26,6 +26,7 @@ import org.xembly.Xembler;
  * walks the source with the {@link Eo} spec-driven parser (see
  * {@code PARSER_SPEC.md}), then applies the canonical XSL chain to
  * normalise the output.
+ *
  * @since 0.1
  */
 public final class EoSyntax implements Syntax {
@@ -42,6 +43,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      */
     public EoSyntax(final String ipt) {
@@ -50,6 +52,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing
      */
@@ -75,6 +78,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor for testing.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing train
      */
@@ -89,6 +93,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
      */
@@ -98,6 +103,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param transform Transform XMIR after parsing function
      * @param ipt The EO program to parse
      */

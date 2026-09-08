@@ -11,6 +11,7 @@ import org.cactoos.iterator.Filtered;
 /**
  * Remove runtime dependency from the list of dependencies, if it is present there.
  * Useful for the "eo-runtime" module compilation.
+ *
  * @since 0.29
  */
 final class DpsWithoutRuntime implements Dependencies {
@@ -22,6 +23,7 @@ final class DpsWithoutRuntime implements Dependencies {
 
     /**
      * Constructor.
+     *
      * @param decoratee Dependencies delegate
      */
     DpsWithoutRuntime(final Dependencies decoratee) {

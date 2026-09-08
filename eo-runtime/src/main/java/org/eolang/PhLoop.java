@@ -44,6 +44,7 @@ public final class PhLoop implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The formation
      */
     public PhLoop(final Phi phi) {

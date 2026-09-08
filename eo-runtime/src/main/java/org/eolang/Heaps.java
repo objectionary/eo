@@ -15,6 +15,7 @@ import java.util.function.IntFunction;
 
 /**
  * Dynamic memory.
+ *
  * @since 0.19
  */
 final class Heaps {
@@ -50,6 +51,7 @@ final class Heaps {
 
     /**
      * Allocate a block in memory, let the scope use it, and free it afterwards.
+     *
      * @param size How many bytes
      * @param scope What to do with the identifier of the block
      * @param <T> Type of what the scope returns
@@ -66,6 +68,7 @@ final class Heaps {
 
     /**
      * Get size of allocated block in memory by provided identifier.
+     *
      * @param identifier Identifier of block in memory
      * @return Size
      */
@@ -86,6 +89,7 @@ final class Heaps {
 
     /**
      * Resize allocated block in memory.
+     *
      * @param identifier Identifier of block
      * @param size New size
      */
@@ -147,6 +151,7 @@ final class Heaps {
 
     /**
      * Get data from the block in memory by identifier.
+     *
      * @param identifier Identifier of the pointer
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
@@ -183,6 +188,7 @@ final class Heaps {
 
     /**
      * Write given data to the block in memory by given identifier.
+     *
      * @param identifier Identifier of the pointer
      * @param offset Writing offset
      * @param data Data to write

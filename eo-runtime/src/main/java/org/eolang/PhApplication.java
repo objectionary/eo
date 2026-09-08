@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 /**
  * A attr-putting object.
+ *
  * @since 0.1
  */
 public final class PhApplication extends PhOnce {
@@ -37,6 +38,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param binds The bindings to apply, in order
      */
@@ -55,6 +57,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param pos The position
      * @param attr The value
@@ -65,6 +68,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param name The name of attr
      * @param attr The value
@@ -75,6 +79,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param sup Supplier of the wrapped object
      * @param term Supplier of the φ-term
      */

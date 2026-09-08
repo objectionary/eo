@@ -14,6 +14,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _read function call.
+ *
  * @since 0.74.0
  */
 public final class ReadFuncCall implements Syscall {
@@ -25,6 +26,7 @@ public final class ReadFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public ReadFuncCall(final Phi win) {

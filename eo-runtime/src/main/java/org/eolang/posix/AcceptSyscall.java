@@ -14,6 +14,7 @@ import org.eolang.Syscall;
 
 /**
  * Accept syscall.
+ *
  * @since 0.40
  */
 public final class AcceptSyscall implements Syscall {
@@ -25,6 +26,7 @@ public final class AcceptSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public AcceptSyscall(final Phi posix) {

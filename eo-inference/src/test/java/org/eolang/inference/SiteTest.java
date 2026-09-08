@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Site}.
+ *
  * @since 0.71.0
  */
 final class SiteTest {

@@ -26,6 +26,7 @@ public final class Sockaddr {
 
     /**
      * Ctor.
+     *
      * @param phi The EO object holding the address
      */
     public Sockaddr(final Phi phi) {
@@ -34,6 +35,7 @@ public final class Sockaddr {
 
     /**
      * The struct itself.
+     *
      * @return The structure, in the layout of the platform
      */
     public Structure it() {

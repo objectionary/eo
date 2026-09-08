@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link MjSafe}.
+ *
  * @since 0.1
  */
 final class MjSafeTest {
@@ -53,6 +54,7 @@ final class MjSafeTest {
 
     /**
      * The mojo whose exec() always fails.
+     *
      * @since 0.1
      */
     @Mojo(name = "failing", defaultPhase = LifecyclePhase.VALIDATE)

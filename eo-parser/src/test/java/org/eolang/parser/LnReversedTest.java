@@ -13,6 +13,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnReversed}.
+ *
  * @since 0.1
  */
 final class LnReversedTest {

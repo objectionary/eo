@@ -170,6 +170,7 @@ final class Level {
     /**
      * Ctor — fresh level pushed at {@code indent} on {@code line} under
      * {@code parent}.
+     *
      * @param ind Indent
      * @param line Start line (1-indexed)
      * @param outer Initial outer kind
@@ -199,6 +200,7 @@ final class Level {
 
     /**
      * Indent of this entry.
+     *
      * @return Indent
      */
     int indent() {
@@ -207,6 +209,7 @@ final class Level {
 
     /**
      * Source line on which the entry was first pushed.
+     *
      * @return Start line
      */
     int start() {
@@ -215,6 +218,7 @@ final class Level {
 
     /**
      * Current outer kind.
+     *
      * @return Kind
      */
     Kind kind() {
@@ -223,6 +227,7 @@ final class Level {
 
     /**
      * Current openness.
+     *
      * @return Openness
      */
     Openness openness() {
@@ -231,6 +236,7 @@ final class Level {
 
     /**
      * Parent kind (or {@link Kind#TOP_LEVEL}).
+     *
      * @return Parent kind
      */
     Kind parent() {
@@ -239,6 +245,7 @@ final class Level {
 
     /**
      * Whether the parent entry is an atom.
+     *
      * @return Parent-atom flag
      */
     boolean patom() {
@@ -247,6 +254,7 @@ final class Level {
 
     /**
      * Whether this entry has been given a name on its naming line.
+     *
      * @return Named flag
      */
     boolean named() {
@@ -259,6 +267,7 @@ final class Level {
      * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
+     *
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
@@ -280,6 +289,7 @@ final class Level {
     /**
      * The §4.5 diagnostic naming the offending attribute and the
      * formation (generic when auto-named / anonymous).
+     *
      * @return The error message
      */
     String onlyPhiNamingError() {
@@ -298,6 +308,7 @@ final class Level {
 
     /**
      * Whether this entry's expression is itself an atom.
+     *
      * @return Atom flag
      */
     boolean atom() {
@@ -306,6 +317,7 @@ final class Level {
 
     /**
      * Whether the bare-reversed receiver child has been seen.
+     *
      * @return Receiver-consumed flag
      */
     boolean taken() {
@@ -314,6 +326,7 @@ final class Level {
 
     /**
      * Whether this entry is an argument of an only-phi formation's φ.
+     *
      * @return Argument-position flag
      */
     boolean argument() {
@@ -326,6 +339,7 @@ final class Level {
      * the only-phi entry, and for a deeper child that stays in argument
      * position — the flag propagates down through nested applications
      * but resets at a formation boundary, where naming resumes.
+     *
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
@@ -336,6 +350,7 @@ final class Level {
     /**
      * Flag this entry as an argument of an only-phi formation's φ,
      * recording the formation's name for the §4.5 diagnostic.
+     *
      * @param owner The formation's name (empty if anonymous, non-null)
      */
     void argues(final String owner) {
@@ -344,6 +359,7 @@ final class Level {
 
     /**
      * Compact-tuple {@code N} count.
+     *
      * @return Compact N
      */
     int count() {
@@ -352,6 +368,7 @@ final class Level {
 
     /**
      * Deeper-indent child count (for compact-tuple validation).
+     *
      * @return Child count
      */
     int children() {
@@ -361,6 +378,7 @@ final class Level {
     /**
      * Mutate the outer kind (e.g., promote {@link Kind#HEAD} to
      * {@link Kind#VAPPLICATION}).
+     *
      * @param next New kind
      */
     void become(final Kind next) {
@@ -369,6 +387,7 @@ final class Level {
 
     /**
      * Mutate the openness state.
+     *
      * @param next New openness
      */
     void close(final Openness next) {
@@ -378,6 +397,7 @@ final class Level {
     /**
      * Record the suffix's source name, which also marks the entry named
      * ({@link #named()}).
+     *
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
      * @param form Whether the suffix that set this name was a
@@ -409,6 +429,7 @@ final class Level {
      * entry, enforcing the void-ordering rule (R-3.4.9): a
      * {@link Kind#VOID} child is rejected once a non-void child has
      * appeared, and every non-void child records that fact.
+     *
      * @param shape Kind of the child being added
      * @param line Source line of the child (for the error)
      * @param column Source indent of the child (for the error)
@@ -427,6 +448,7 @@ final class Level {
 
     /**
      * Set the compact-tuple {@code N} count.
+     *
      * @param value N
      */
     void compact(final int value) {
@@ -442,6 +464,7 @@ final class Level {
 
     /**
      * Whether the compact-tuple wrapper has been opened.
+     *
      * @return Flag
      */
     boolean tupled() {
@@ -452,6 +475,7 @@ final class Level {
      * Whether this only-phi formation's φ is a compact tuple that
      * absorbs deeper-indent lines as {@code Φ.tuple} elements (R-3.9.1
      * + R-3.10.6).
+     *
      * @return Compact-φ flag
      */
     boolean star() {
@@ -552,6 +576,7 @@ final class Level {
 
     /**
      * Why a {@code .method} continuation is refused on this entry.
+     *
      * @return The diagnostic, empty when a continuation is allowed
      */
     String refusal() {
@@ -572,6 +597,7 @@ final class Level {
      * A detached twin of this entry, carrying the same mutable state at
      * the moment of copying. Lets {@link Stack} take a savepoint that
      * later mutation of this entry cannot reach (R-7.3).
+     *
      * @return A copy of this entry
      */
     Level twin() {

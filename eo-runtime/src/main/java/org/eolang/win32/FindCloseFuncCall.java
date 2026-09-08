@@ -30,6 +30,7 @@ public final class FindCloseFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public FindCloseFuncCall(final Phi win) {

@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * The sockaddr_in structure.
+ *
  * @since 0.40.0
  * @checkstyle VisibilityModifierCheck (50 lines)
  */
@@ -50,6 +51,7 @@ public final class SockaddrIn extends Structure {
 
     /**
      * Convenient ctor for testing.
+     *
      * @param family Family
      * @param port Port
      * @param addr Address
@@ -60,6 +62,7 @@ public final class SockaddrIn extends Structure {
 
     /**
      * Ctor.
+     *
      * @param family Family
      * @param port Port
      * @param addr Address
@@ -72,6 +75,7 @@ public final class SockaddrIn extends Structure {
     /**
      * Primary ctor, receiving an already validated padding. The padding
      * comes first so this signature differs from the public one above.
+     *
      * @param zero Validated padding
      * @param family Family
      * @param port Port

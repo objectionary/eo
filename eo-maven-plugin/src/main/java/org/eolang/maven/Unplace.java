@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Make program name from a path.
+ *
  * @since 0.1
  */
 final class Unplace {
@@ -26,6 +27,7 @@ final class Unplace {
 
     /**
      * Ctor.
+     *
      * @param dir The name of the parent dir
      */
     Unplace(final File dir) {
@@ -34,6 +36,7 @@ final class Unplace {
 
     /**
      * Ctor.
+     *
      * @param dir The name of the parent dir
      */
     Unplace(final Path dir) {
@@ -42,6 +45,7 @@ final class Unplace {
 
     /**
      * Make a program name.
+     *
      * @param file The file
      * @return The name of the program
      */

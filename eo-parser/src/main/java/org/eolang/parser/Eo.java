@@ -53,6 +53,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Ctor.
+     *
      * @param text The EO program text
      */
     Eo(final String text) {
@@ -66,6 +67,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Walk the source and accumulate directives.
+     *
      * @return Directives in source order
      */
     Iterable<Directive> directives() {
@@ -111,6 +113,7 @@ final class Eo implements Iterable<Directive> {
      * none exists. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where an only-phi formation
      * splits.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -133,6 +136,7 @@ final class Eo implements Iterable<Directive> {
      * formation. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where a compact test
      * shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -150,6 +154,7 @@ final class Eo implements Iterable<Directive> {
      * routes to a bare formation. Shared by the {@link Eo#onlyPhi}
      * classifier and {@link LnOnlyPhi}, so both agree on where a
      * compact throwing-test shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */

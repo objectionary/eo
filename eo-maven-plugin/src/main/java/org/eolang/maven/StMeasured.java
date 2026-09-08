@@ -14,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 
 /**
  * Shift that measures and saves stats into a file.
+ *
  * @since 0.30
  */
 final class StMeasured implements Shift {
@@ -30,6 +31,7 @@ final class StMeasured implements Shift {
 
     /**
      * Ctor.
+     *
      * @param shift Origin shift
      * @param log Log file
      */

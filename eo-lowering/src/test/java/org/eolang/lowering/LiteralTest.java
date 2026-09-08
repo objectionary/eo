@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Literal}.
+ *
  * @since 0.76.0
  */
 final class LiteralTest {

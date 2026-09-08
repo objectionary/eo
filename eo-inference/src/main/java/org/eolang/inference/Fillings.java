@@ -65,6 +65,7 @@ final class Fillings {
 
     /**
      * Ctor.
+     *
      * @param links The links table, as {@link Resolved} left it
      * @param provides The provides table, which says where a filling can land
      */
@@ -75,6 +76,7 @@ final class Fillings {
 
     /**
      * What is ever put into every void.
+     *
      * @return The types put in, by the locator of the void, without the voids
      *  nobody ever fills
      */

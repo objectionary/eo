@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Snapshot}.
+ *
  * @since 0.1
  */
 final class SnapshotTest {

@@ -10,6 +10,7 @@ import org.cactoos.text.UncheckedText;
 
 /**
  * A standard "hello world" EO program used as a shared test fixture.
+ *
  * @since 0.61.0
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

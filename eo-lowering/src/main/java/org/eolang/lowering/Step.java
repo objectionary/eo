@@ -26,6 +26,7 @@ public interface Step {
 
     /**
      * The name of the step.
+     *
      * @return The name, such as {@code s1}
      */
     String label();
@@ -33,6 +34,7 @@ public interface Step {
     /**
      * The λ name of the atom that parked into this step, or the method
      * of a dispatch back into EO, dot-prefixed.
+     *
      * @return The name, such as {@code L_number_plus} or {@code L_bool_if},
      *  or a method such as {@code .minus}
      */
@@ -40,12 +42,14 @@ public interface Step {
 
     /**
      * The forma of the value this step computes.
+     *
      * @return One of {@code number}, {@code bool}, {@code bytes}, {@code string}
      */
     String forma();
 
     /**
      * The keys of the values this step reads directly.
+     *
      * @return The receiver first and then the arguments, or the one
      *  condition of a fork
      */
@@ -53,6 +57,7 @@ public interface Step {
 
     /**
      * The protocols nested in this step.
+     *
      * @return The two arms of a fork, the taken one first; none for an application
      */
     List<Protocol> branches();

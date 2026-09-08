@@ -13,6 +13,7 @@ import org.eolang.SockaddrIn;
 
 /**
  * Interface definitions for <code>WS2_32.dll</code>.
+ *
  * @since 0.40
  * @checkstyle AbbreviationAsWordInNameCheck (1000 lines)
  */
@@ -64,6 +65,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Initializes winsock usage by DLL process.
+     *
      * @param version Highest Windows socket specification version
      * @param data Data with info about socket structure
      * @return Zero on success, error code on error
@@ -72,6 +74,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Stops usage of Winsock 2 by DLL.
+     *
      * @return Zero on success, SOCKET_ERROR on error
      */
     int WSACleanup();
@@ -93,6 +96,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Closes a socket.
+     *
      * @param socket Socket descriptor
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
@@ -100,6 +104,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Connects to the server at the specified IP address and port.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -110,6 +115,7 @@ public interface Winsock extends StdCallLibrary {
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
      * by the file descriptor {@code sockfd}.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -119,6 +125,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Listen for incoming connections on socket.
+     *
      * @param sockfd Socket descriptor
      * @param backlog Specifies the queue length for completely established sockets
      *  waiting to be accepted
@@ -128,6 +135,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Accept connection on socket.
+     *
      * @param sockfd Socket descriptor
      * @param addr Address structure
      * @param addrlen The size of the address structure
@@ -138,6 +146,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Send a message to a socket.
+     *
      * @param sockfd Socket descriptor
      * @param buf Byte buffer to store sent bytes
      * @param len Size of sent data
@@ -148,6 +157,7 @@ public interface Winsock extends StdCallLibrary {
 
     /**
      * Receive a message from a socket.
+     *
      * @param sockfd Socket descriptor
      * @param buf Byte buffer to store received bytes
      * @param len Size of received data

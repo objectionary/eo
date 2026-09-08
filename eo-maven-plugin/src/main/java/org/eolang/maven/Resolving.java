@@ -28,6 +28,7 @@ import org.cactoos.text.Joined;
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
  * unpacks and places them into the target directory.
+ *
  * @since 0.61.0
  */
 final class Resolving implements Step {
@@ -86,6 +87,7 @@ final class Resolving implements Step {
 
     /**
      * Ctor.
+     *
      * @param tjs Tojos
      * @param tgt Target directory
      * @param cntrl Central dependency consumer
@@ -146,6 +148,7 @@ final class Resolving implements Step {
 
     /**
      * Delete every stale sibling version found in the given directory.
+     *
      * @param dir The directory shared by every version of one dependency
      * @param version The version being resolved
      * @param keep The versions to keep, everything else in {@code dir} is stale

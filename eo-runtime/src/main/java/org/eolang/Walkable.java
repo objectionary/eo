@@ -21,6 +21,7 @@ interface Walkable {
 
     /**
      * Hand every name and attribute to the action, in the order they arrived.
+     *
      * @param action What to do with each name and attribute
      */
     void each(BiConsumer<String, Attribute> action);

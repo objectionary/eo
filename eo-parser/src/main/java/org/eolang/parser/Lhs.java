@@ -32,6 +32,7 @@ final class Lhs {
 
     /**
      * Ctor.
+     *
      * @param source The span of the left-hand side
      */
     Lhs(final Span source) {

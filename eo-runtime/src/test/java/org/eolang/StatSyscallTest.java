@@ -20,6 +20,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link StatSyscall}.
+ *
  * @since 0.74.0
  */
 final class StatSyscallTest {

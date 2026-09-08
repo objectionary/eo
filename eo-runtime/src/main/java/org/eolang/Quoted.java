@@ -37,6 +37,7 @@ final class Quoted implements Supplier<Optional<String>> {
 
     /**
      * Ctor.
+     *
      * @param data The bytes
      */
     Quoted(final byte[] data) {

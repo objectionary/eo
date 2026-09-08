@@ -35,6 +35,7 @@ public final class Failure {
 
     /**
      * Ctor.
+     *
      * @param core The reduction settling the reason
      * @param minted The ledger naming the carrier of the reason
      */
@@ -45,6 +46,7 @@ public final class Failure {
 
     /**
      * The protocol of the failure.
+     *
      * @param fail The terminator the tree is
      * @param steps The steps of the protocol so far, to add to
      * @return The protocol, ending in the failure

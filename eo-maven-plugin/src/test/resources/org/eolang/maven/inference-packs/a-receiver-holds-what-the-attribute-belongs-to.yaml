@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A `grow` is reached by taking it off a `tree` and there is no other way to
+# reach it, so the void it declares for its receiver holds a `tree`. A
+# decorator changes nothing about that: it hands the lookup down, and what the
+# lookup arrives at is still the `tree`. The row is the one the source already
+# asked for by writing `^` — a formation that declares no receiver is still
+# told nothing, and neither is one whose locator sits under a package nobody
+# formed, `Φ` in the case of an `inc` written at the top of its own file.
+eo:
+  tree.eo: |
+    [] > tree
+      [^ x] > grow
+        x > @
+  inc.eo: |
+    [^ x] > inc
+      x > @
+provides:
+  - "/provides/type[@id='Φ.tree.grow']/attr[@name='ρ' and @holds='Φ.tree']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='ρ' and not(@holds)]"

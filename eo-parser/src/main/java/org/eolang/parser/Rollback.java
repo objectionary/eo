@@ -10,6 +10,7 @@ import java.util.List;
  * A joint savepoint over the {@link Emit} sink and the {@link Stack}
  * levels, taken before a recoverable parse and rolled back together
  * on a {@link ParseError} (§7).
+ *
  * @since 0.1
  */
 final class Rollback {
@@ -28,6 +29,7 @@ final class Rollback {
 
     /**
      * Ctor.
+     *
      * @param stack The stack to snapshot and later restore
      * @param emit The sink to mark and later roll back
      * @param token The sink savepoint already taken

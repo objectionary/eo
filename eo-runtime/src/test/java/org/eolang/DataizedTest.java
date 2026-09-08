@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Dataized}.
+ *
  * @since 0.22
  */
 final class DataizedTest {

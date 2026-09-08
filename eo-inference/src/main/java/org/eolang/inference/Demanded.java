@@ -53,6 +53,7 @@ public final class Demanded implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are asked of
      */
     public Demanded(final Clue clues) {

@@ -14,6 +14,7 @@ import org.xembly.Xembler;
  * The bookkeeping list of sheets a document has been through. Every
  * shift appends its own name here, to a copy of the document -
  * nothing else about the tree is read or rebuilt.
+ *
  * @since 0.62.2
  */
 final class Sheets {
@@ -25,6 +26,7 @@ final class Sheets {
 
     /**
      * Ctor.
+     *
      * @param sheet The name to record
      */
     Sheets(final String sheet) {
@@ -34,6 +36,7 @@ final class Sheets {
     /**
      * The document with the sheet recorded in it - one whose root is
      * not an object keeps no record and comes back as it is.
+     *
      * @param xml The document
      * @return A copy with one more {@code sheet} in its {@code sheets}
      */

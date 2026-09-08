@@ -14,8 +14,6 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -45,6 +43,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
+ *
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
@@ -442,37 +441,39 @@ final class MjTranspileTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
     void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjTranspileTest.program())
-                .with("superclass", name)
-                .execute(new PpTranspile()),
-            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjTranspileTest.program())
+                            .with("superclass", name)
+                            .execute(new PpTranspile()),
+                        "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
     @Test
     void throwsDetailedError(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("# Absent.")
-                .execute(new PpTranspile()),
-            "TranspileMojo should throw an exception on invalid EO code"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram("# Absent.")
+                            .execute(new PpTranspile()),
+                        "TranspileMojo should throw an exception on invalid EO code"
+                    )
+                )
+            ).asString(),
             Matchers.allOf(
                 Matchers.containsString("Expected 1 child nodes, but found 0"),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")

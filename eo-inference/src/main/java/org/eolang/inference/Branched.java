@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -19,13 +20,15 @@ import java.util.Map;
  * on that void is one of the two arguments, and which one is not known —
  * whichever it is, it is what they both are.</p>
  *
- * <p>Nothing is guessed, since a formation that binds a body of its own is
- * passed over: the call goes into it and what comes back is that body, which
- * is a question for whoever walks a delegation and not for this. A void does
- * go by a name of its own once one thing has been seen in it, though, so the
- * body that was {@code left} yesterday is a {@code Φ.dial} today and reads
- * like a body the formation binds. What the call put in says which it is: a
- * body that is one of the arguments is a void wearing the argument's name.</p>
+ * <p>Nothing is guessed, so one formation that binds a body of its own is the
+ * end of it: the call may be that one, what comes back is then that body, and
+ * a body is a question for whoever walks a delegation and not for this. Where
+ * a void holds a formation of each kind there is no agreement to join, and the
+ * call is left rooted at the void it was. A void does go by a name of its own
+ * once one thing has been seen in it, though, so the body that was
+ * {@code left} yesterday is a {@code Φ.dial} today and reads like a body the
+ * formation binds. What the call put in says which it is: a body that is one
+ * of the arguments is a void wearing the argument's name.</p>
  *
  * <p>An arm rooted at a void this call leaves empty is left out of the
  * agreement. Reading a void nobody filled terminates, so that arm never hands
@@ -54,6 +57,7 @@ final class Branched {
 
     /**
      * Ctor.
+     *
      * @param provided What the types certainly have
      * @param filled What the call put into the voids, by the locator of the
      *  void
@@ -71,20 +75,45 @@ final class Branched {
 
     /**
      * The one thing every formation this call reaches hands back.
+     *
      * @return The locator, empty when no formation hands back what it was
      *  given or they share nothing
      */
     String names() {
         final Collection<String> handed = new LinkedHashSet<>(0);
-        for (final Map.Entry<String, String> bind : this.binds.entrySet()) {
-            final int dot = bind.getKey().lastIndexOf('.');
-            if (dot > 0
-                && this.hands(bind.getKey().substring(0, dot), bind)
-                && this.stands(bind.getValue())) {
-                handed.add(bind.getValue());
+        for (final Map.Entry<String, Map<String, String>> owner : this.owners().entrySet()) {
+            final Collection<String> given = this.given(owner.getKey(), owner.getValue());
+            if (given.isEmpty()) {
+                handed.clear();
+                break;
             }
+            given.removeIf(arm -> !this.stands(arm));
+            handed.addAll(given);
         }
         return new Joined(handed, this.owned).names();
+    }
+
+    private Map<String, Map<String, String>> owners() {
+        final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, String> bind : this.binds.entrySet()) {
+            final int dot = bind.getKey().lastIndexOf('.');
+            if (dot > 0) {
+                found.computeIfAbsent(
+                    bind.getKey().substring(0, dot), key -> new LinkedHashMap<>(1)
+                ).put(bind.getKey(), bind.getValue());
+            }
+        }
+        return found;
+    }
+
+    private Collection<String> given(final String owner, final Map<String, String> arms) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final Map.Entry<String, String> arm : arms.entrySet()) {
+            if (this.hands(owner, arm)) {
+                found.add(arm.getValue());
+            }
+        }
+        return found;
     }
 
     private boolean hands(final String owner, final Map.Entry<String, String> bind) {

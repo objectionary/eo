@@ -35,6 +35,7 @@ public interface Kernel32 extends Library {
     /**
      * Gets the attribute bits of a path, telling of the link itself rather
      * than of the file it points at.
+     *
      * @param path Path to the file
      * @return Attribute bits, or -1 on error
      */
@@ -43,6 +44,7 @@ public interface Kernel32 extends Library {
     /**
      * Starts a search over the entries a pattern matches and reports the
      * first of them.
+     *
      * @param pattern The pattern, a directory with a trailing wildcard
      * @param data Filled in with the entry that was found
      * @return Handle of the search, or INVALID_HANDLE_VALUE on error
@@ -51,6 +53,7 @@ public interface Kernel32 extends Library {
 
     /**
      * Reports the next entry of a search.
+     *
      * @param search Handle of the search
      * @param data Filled in with the entry that was found
      * @return False when there is nothing left to find
@@ -59,6 +62,7 @@ public interface Kernel32 extends Library {
 
     /**
      * Closes a search.
+     *
      * @param search Handle of the search
      * @return False on error
      */

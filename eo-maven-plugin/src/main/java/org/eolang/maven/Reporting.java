@@ -39,6 +39,7 @@ final class Reporting implements Step {
 
     /**
      * Ctor.
+     *
      * @param pre The directory with the prepared XMIR files
      * @param rows The directory with the tables
      * @param site The directory for the pages

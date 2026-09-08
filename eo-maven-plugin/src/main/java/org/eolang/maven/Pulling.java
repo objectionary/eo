@@ -80,6 +80,7 @@ final class Pulling implements Step {
 
     /**
      * Constructor.
+     *
      * @param tjs Foreign tojos catalog
      * @param dir Base target directory
      * @param hsh Commit hash

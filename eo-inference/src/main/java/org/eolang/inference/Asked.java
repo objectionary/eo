@@ -52,6 +52,7 @@ final class Asked {
 
     /**
      * Ctor.
+     *
      * @param needs The needs table, as {@link Needs} wrote it
      * @param aliases The name every type goes by, from {@link Ends}
      * @param provided What the types certainly have
@@ -64,6 +65,7 @@ final class Asked {
 
     /**
      * What is asked of every object of the program.
+     *
      * @return The names asked, by the object they are asked of, each against
      *  the object that answers it
      */

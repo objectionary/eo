@@ -42,6 +42,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link Xmir}.
+ *
  * @since 0.5
  */
 final class XmirTest {

@@ -11,12 +11,14 @@ import org.cactoos.func.UncheckedBiFunc;
 /**
  * Footprint that behaves like one of the given {@link Footprint}s depending on the give
  * condition.
+ *
  * @since 0.41
  */
 final class FpFork extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param condition Condition as boolean
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
@@ -27,6 +29,7 @@ final class FpFork extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param condition Lazy condition
      * @param first First wrapped footprint
      * @param second Second wrapped footprint

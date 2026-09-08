@@ -29,6 +29,7 @@ final class Kept implements Type {
 
     /**
      * Ctor.
+     *
      * @param written The row, as the document keeps it, rooted at the row
      *  itself and not at a document of its own
      */

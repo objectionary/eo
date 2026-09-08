@@ -79,6 +79,7 @@ final class Merging implements Step {
 
     /**
      * Ctor.
+     *
      * @param foreign The tojos of everything this build compiles
      * @param target The directory for the merged XMIR
      */

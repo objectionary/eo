@@ -38,6 +38,7 @@ public final class Constant {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to fold, an {@code <o/>} element
      */
@@ -48,6 +49,7 @@ public final class Constant {
 
     /**
      * The value of the fragment.
+     *
      * @return The dataized bytes together with their forma
      * @throws IOException If the binary cannot be run
      */

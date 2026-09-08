@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Concurrency tests for {@link Catalogs}.
  * All tests in that class must be executed in parallel and in order to be sure that
  * everything works fine it's important to run the tests many times.
+ *
  * @since 0.29.0
  */
 @ExtendWith(MktmpResolver.class)

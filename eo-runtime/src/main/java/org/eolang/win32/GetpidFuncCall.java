@@ -11,6 +11,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _getpid function call.
+ *
  * @since 0.74.0
  */
 public final class GetpidFuncCall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetpidFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public GetpidFuncCall(final Phi win) {

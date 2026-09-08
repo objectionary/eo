@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link DpsWithoutRuntime}.
+ *
  * @since 0.29
  */
 final class DpsWithoutRuntimeTest {

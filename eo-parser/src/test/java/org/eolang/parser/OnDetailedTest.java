@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Tests for {@link OnDetailed}.
+ *
  * @since 0.56.5
  */
 @ExtendWith(MktmpResolver.class)

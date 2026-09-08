@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Maxmem}.
+ *
  * @since 0.75.0
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

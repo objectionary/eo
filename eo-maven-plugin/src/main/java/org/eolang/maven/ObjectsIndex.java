@@ -20,6 +20,7 @@ import org.cactoos.text.TextOf;
 
 /**
  * The objects index that contains all available EO objects.
+ *
  * @see <a href="https://github.com/objectionary/home/blob/gh-pages/objectionary.lst">Example</a>
  * @since 0.29
  */
@@ -54,6 +55,7 @@ final class ObjectsIndex {
 
     /**
      * Ctor.
+     *
      * @param all All objects index
      */
     ObjectsIndex(final Scalar<? extends Set<String>> all) {
@@ -62,6 +64,7 @@ final class ObjectsIndex {
 
     /**
      * Checks whether object index contains the object.
+     *
      * @param name Object name
      * @return True if object index contains the object
      * @throws Exception If something unexpected happened.
@@ -77,6 +80,7 @@ final class ObjectsIndex {
      * bare root package (stripped to an empty string) works the same way:
      * its direct children are the top-level names with no dot at all, e.g.
      * {@code "tuple"} and {@code "math"} themselves.
+     *
      * @param pkg Package name, e.g. {@code "tuple"}, {@code "math.vector"}
      *  or {@code "org.eolang"} itself
      * @return Object names that live directly in that package

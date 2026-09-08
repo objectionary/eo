@@ -25,6 +25,7 @@ import org.xembly.Xembler;
 
 /**
  * EO source code for a single EO object.
+ *
  * @since 0.60
  */
 final class EoSource {
@@ -46,6 +47,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param source Path to the source file
      */
@@ -55,6 +57,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param input Object source code
      */
@@ -64,6 +67,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param source Path to the source file
      * @param transform Transform that parses EO into XMIR
@@ -74,6 +78,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param input Object source code
      * @param transform Transform that parses EO into XMIR
@@ -86,6 +91,7 @@ final class EoSource {
 
     /**
      * Parse the source code into XMIR.
+     *
      * @return Parsed XMIR
      * @throws IOException If fails
      */

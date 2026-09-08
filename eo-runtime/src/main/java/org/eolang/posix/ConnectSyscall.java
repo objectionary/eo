@@ -13,6 +13,7 @@ import org.eolang.Syscall;
 
 /**
  * Connect syscall.
+ *
  * @since 0.40
  */
 public final class ConnectSyscall implements Syscall {
@@ -24,6 +25,7 @@ public final class ConnectSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ConnectSyscall(final Phi posix) {

@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Fold the constant fragments of a program.
+ *
  * @since 0.76.0
  */
 final class PpLower implements Iterable<Class<? extends AbstractMojo>> {

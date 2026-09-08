@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Reach}.
+ *
  * @since 0.70.0
  */
 final class ReachTest {

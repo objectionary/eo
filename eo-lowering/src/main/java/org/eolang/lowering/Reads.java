@@ -42,6 +42,7 @@ public final class Reads {
 
     /**
      * Ctor.
+     *
      * @param proto The protocol
      */
     public Reads(final Protocol proto) {
@@ -50,6 +51,7 @@ public final class Reads {
 
     /**
      * Every void the protocol reads, nested arms included.
+     *
      * @return The indices of the voids, ascending
      */
     public SortedSet<Integer> all() {
@@ -62,6 +64,7 @@ public final class Reads {
 
     /**
      * The voids the block of this protocol declares.
+     *
      * @param above The indices of the voids the enclosing blocks declared
      * @return The indices of the voids, ascending
      */

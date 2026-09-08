@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link MacSockaddrIn}.
+ *
  * @since 0.74.0
  */
 final class MacSockaddrInTest {

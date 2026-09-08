@@ -32,6 +32,7 @@ final class Site {
 
     /**
      * Ctor.
+     *
      * @param made The dispatch, as the XMIR holds it
      */
     Site(final Xnav made) {
@@ -40,6 +41,7 @@ final class Site {
 
     /**
      * Where this dispatch is written.
+     *
      * @return The locator of it
      */
     String made() {
@@ -48,6 +50,7 @@ final class Site {
 
     /**
      * The object this dispatch takes its name from.
+     *
      * @return The locator of it
      */
     String bearer() {
@@ -60,6 +63,7 @@ final class Site {
 
     /**
      * The name this dispatch takes.
+     *
      * @return The name, without the dot that says it is a dispatch
      */
     String name() {

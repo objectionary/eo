@@ -5,6 +5,7 @@
 
 /**
  * Integration tests only.
+ *
  * @since 0.57
  */
 package integration;

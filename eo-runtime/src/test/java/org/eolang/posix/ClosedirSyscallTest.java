@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ClosedirSyscall}.
+ *
  * @since 0.76.0
  */
 final class ClosedirSyscallTest {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Ladder}.
+ *
  * @since 0.69.0
  */
 final class LadderTest {

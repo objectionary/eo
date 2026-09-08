@@ -43,6 +43,7 @@ public final class InetAddrSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public InetAddrSyscall(final Phi posix) {

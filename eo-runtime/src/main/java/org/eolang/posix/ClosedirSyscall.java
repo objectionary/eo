@@ -29,6 +29,7 @@ public final class ClosedirSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ClosedirSyscall(final Phi posix) {

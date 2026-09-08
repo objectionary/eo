@@ -10,6 +10,7 @@ import org.eolang.Syscall;
 
 /**
  * Gettimeofday syscall.
+ *
  * @since 0.40
  */
 public final class GettimeofdaySyscall implements Syscall {
@@ -21,6 +22,7 @@ public final class GettimeofdaySyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public GettimeofdaySyscall(final Phi posix) {

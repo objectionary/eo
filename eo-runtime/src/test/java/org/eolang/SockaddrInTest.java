@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link SockaddrIn}.
+ *
  * @since 0.40.0
  */
 final class SockaddrInTest {

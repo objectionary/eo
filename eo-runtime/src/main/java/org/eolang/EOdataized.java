@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * DATAIZED.
+ *
  * @since 0.74.0
  */
 @XmirObject(oname = "dataized")

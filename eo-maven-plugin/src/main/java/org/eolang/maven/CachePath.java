@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 /**
  * Function that builds full path to file in global cache.
+ *
  * @since 0.41
  */
 final class CachePath implements Supplier<Path> {
@@ -36,6 +37,7 @@ final class CachePath implements Supplier<Path> {
 
     /**
      * Ctor.
+     *
      * @param base Base cache directory
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
@@ -46,6 +48,7 @@ final class CachePath implements Supplier<Path> {
 
     /**
      * Ctor.
+     *
      * @param base Base cache directory
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path
@@ -59,6 +62,7 @@ final class CachePath implements Supplier<Path> {
 
     /**
      * Ctor.
+     *
      * @param base Base cache directory
      * @param semver Semver as part of absolute cache path
      * @param hash Git hash as part of absolute cache path

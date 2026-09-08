@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link TupleToArray}.
+ *
  * @since 0.57
  */
 final class TupleToArrayTest {

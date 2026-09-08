@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * Open syscall.
+ *
  * @since 0.74.0
  */
 public final class OpenSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class OpenSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public OpenSyscall(final Phi posix) {

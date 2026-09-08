@@ -145,6 +145,7 @@ enum Kind {
      * Whether a pipe application (§3.14) may attach to a predecessor of
      * this kind — a formation, an identity object, or another pipe.
      * Read by {@link LnPipe} to enforce R-3.14.2 / R-5.2.4a.
+     *
      * @return True iff this kind may be a pipe's predecessor
      */
     boolean pipeable() {

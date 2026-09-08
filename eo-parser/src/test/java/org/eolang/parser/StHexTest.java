@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link StHex}.
+ *
  * @since 0.54.0
  */
 final class StHexTest {

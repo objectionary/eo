@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Compiled}.
+ *
  * @since 0.77
  */
 final class CompiledTest {

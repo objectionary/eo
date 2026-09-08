@@ -40,6 +40,7 @@ public final class Call {
 
     /**
      * Ctor.
+     *
      * @param dispatch The step to render
      * @param spelling The spelling of the values
      */
@@ -50,6 +51,7 @@ public final class Call {
 
     /**
      * The Java expression of the call.
+     *
      * @return An expression over the locals of the operands
      */
     public String text() {

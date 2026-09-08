@@ -13,6 +13,7 @@ import org.eolang.Syscall;
 
 /**
  * The closesocket WS2_32 function call.
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-closesocket">here for details</a>
  * @since 0.40.0
  */
@@ -25,6 +26,7 @@ public final class ClosesocketFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public ClosesocketFuncCall(final Phi win) {

@@ -16,6 +16,7 @@ import org.eolang.Syscall;
 
 /**
  * Write syscall.
+ *
  * @since 0.40
  */
 public final class WriteSyscall implements Syscall {
@@ -27,6 +28,7 @@ public final class WriteSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public WriteSyscall(final Phi posix) {

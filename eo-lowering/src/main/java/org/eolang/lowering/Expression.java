@@ -50,6 +50,7 @@ public final class Expression {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that reads XMIR
      * @param xmir The XMIR fragment to render, an {@code <o/>} element
      */
@@ -60,6 +61,7 @@ public final class Expression {
 
     /**
      * The expression, in phi syntax.
+     *
      * @return The text for {@link Phino#dataize(String...)}
      * @throws IOException If the binary cannot be run
      */

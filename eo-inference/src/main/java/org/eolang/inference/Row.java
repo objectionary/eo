@@ -28,6 +28,7 @@ final class Row {
 
     /**
      * Ctor.
+     *
      * @param row The element of the document the row was written as
      */
     Row(final Xnav row) {
@@ -36,6 +37,7 @@ final class Row {
 
     /**
      * The cells of the row.
+     *
      * @return The cells, by their names, in the order the document keeps them
      */
     Map<String, String> cells() {

@@ -96,6 +96,7 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * Ctor.
+     *
      * @param objects Space separated qualified names ("package.name")
      *  of the local package objects the compiler is aware of; a bare
      *  reference is homed into the current package only if

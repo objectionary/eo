@@ -31,6 +31,7 @@ final class Forms {
 
     /**
      * Ctor.
+     *
      * @param forms The form every object was given by the links table, by the
      *  locator of the object
      */
@@ -40,6 +41,7 @@ final class Forms {
 
     /**
      * The name the form of this object goes by.
+     *
      * @param object The locator of the object
      * @return The name, which is the locator itself unless every object of
      *  that form is one type
@@ -57,6 +59,7 @@ final class Forms {
 
     /**
      * The form of this object, to be written somewhere else.
+     *
      * @param object The locator of the object
      * @return The type
      */

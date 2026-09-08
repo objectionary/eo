@@ -19,6 +19,7 @@ import java.util.List;
  * the proxy regardless of what the user excluded. A failed connection is
  * only logged: {@link OyRemote} retries the whole request itself, so there
  * is no per-address bookkeeping for this selector to keep.
+ *
  * @since 0.73.4
  */
 final class NonProxyHostsSelector extends ProxySelector {
@@ -30,6 +31,7 @@ final class NonProxyHostsSelector extends ProxySelector {
 
     /**
      * Ctor.
+     *
      * @param proxy The proxy this selects, or steps around
      */
     NonProxyHostsSelector(final MvnProxy proxy) {

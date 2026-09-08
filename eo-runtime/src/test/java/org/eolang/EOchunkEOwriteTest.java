@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link EOchunk$EOwrite}: the bytes it hands back
  * and the {@link Expect}-based errors it raises when its integer
  * attributes are invalid.
+ *
  * @since 0.51
  */
 final class EOchunkEOwriteTest {

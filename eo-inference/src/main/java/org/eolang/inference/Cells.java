@@ -35,6 +35,7 @@ final class Cells {
 
     /**
      * Ctor.
+     *
      * @param cells The row, every cell of which is a fact
      */
     Cells(final Map<String, String> cells) {
@@ -43,6 +44,7 @@ final class Cells {
 
     /**
      * Ctor.
+     *
      * @param cells The row
      * @param skipped The names of the cells that only place the row
      */
@@ -53,6 +55,7 @@ final class Cells {
 
     /**
      * These cells as attributes of the element being built.
+     *
      * @return The directives
      */
     Directives directives() {

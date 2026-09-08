@@ -24,6 +24,7 @@ public final class Int {
 
     /**
      * Ctor.
+     *
      * @param subject What the number is, for the failure message
      * @param phi The object holding the number
      */
@@ -33,6 +34,7 @@ public final class Int {
 
     /**
      * Ctor.
+     *
      * @param expect Expect
      */
     public Int(final Expect<Phi> expect) {
@@ -41,6 +43,7 @@ public final class Int {
 
     /**
      * Return it.
+     *
      * @return The token
      */
     public Integer it() {

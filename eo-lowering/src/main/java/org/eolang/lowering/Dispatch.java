@@ -51,6 +51,7 @@ public final class Dispatch implements Step {
 
     /**
      * Ctor.
+     *
      * @param label The name of the step, such as {@code s1}
      * @param verb The method dispatched, such as {@code minus}
      * @param keys The keys of the operands, the receiver first

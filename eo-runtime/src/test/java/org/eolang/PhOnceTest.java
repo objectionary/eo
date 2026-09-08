@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhOnce}.
+ *
  * @since 0.60
  */
 final class PhOnceTest {

@@ -32,6 +32,7 @@ final class Refs {
 
     /**
      * Ctor.
+     *
      * @param pairs The pairs, each object against the one it is a copy of
      * @param binds What every application put into the voids of what it
      *  copies, from {@link Bound}
@@ -43,6 +44,7 @@ final class Refs {
 
     /**
      * These pairs as rows.
+     *
      * @return The types, by the locator of the object they are about, in the
      *  order the pairs came in
      */

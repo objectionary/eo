@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Numeral}.
+ *
  * @since 0.73.3
  */
 final class NumeralTest {

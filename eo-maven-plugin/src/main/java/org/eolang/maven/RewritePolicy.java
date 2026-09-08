@@ -10,6 +10,7 @@ import org.cactoos.BiFunc;
 
 /**
  * Rewrite policy.
+ *
  * @since 0.56.7
  */
 final class RewritePolicy implements BiFunc<Path, Path, Boolean> {
@@ -26,6 +27,7 @@ final class RewritePolicy implements BiFunc<Path, Path, Boolean> {
 
     /**
      * Ctor.
+     *
      * @param rwrte Rewrite?
      * @param tgt Target directory
      */

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjAtomsTable}.
+ *
  * @since 0.57
  */
 @ExtendWith(MktmpResolver.class)

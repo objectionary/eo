@@ -15,6 +15,7 @@ import org.apache.maven.model.Dependency;
  * Every version legitimately resolved in a run, grouped by coordinate, so
  * {@link Resolving#cleanPlace} can tell a stale version (absent from the
  * whole set) from a sibling version resolved alongside it in the same run.
+ *
  * @since 0.61.0
  */
 final class ResolvedVersions {
@@ -26,6 +27,7 @@ final class ResolvedVersions {
 
     /**
      * Ctor.
+     *
      * @param resolved Dependencies resolved in this run
      */
     ResolvedVersions(final Collection<Dep> resolved) {
@@ -34,6 +36,7 @@ final class ResolvedVersions {
 
     /**
      * Every version, by coordinate.
+     *
      * @return Versions, by coordinate
      */
     Map<String, Set<String>> byCoordinate() {

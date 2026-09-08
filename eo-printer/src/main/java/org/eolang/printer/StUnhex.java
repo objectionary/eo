@@ -17,6 +17,7 @@ import org.eolang.parser.StXnav;
 /**
  * This {@link Shift} turns hex data inside XMIR.
  * into EO-printable data.
+ *
  * @since 0.29.0
  */
 final class StUnhex extends StEnvelope {
@@ -83,6 +84,7 @@ final class StUnhex extends StEnvelope {
 
     /**
      * Base ctor.
+     *
      * @param origin Original shift
      */
     StUnhex(final Shift origin) {

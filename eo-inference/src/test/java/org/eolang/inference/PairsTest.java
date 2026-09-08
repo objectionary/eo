@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Pairs}.
+ *
  * @since 0.69.0
  */
 final class PairsTest {

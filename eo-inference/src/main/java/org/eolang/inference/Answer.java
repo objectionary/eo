@@ -67,6 +67,7 @@ final class Answer {
 
     /**
      * Ctor.
+     *
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
      * @param rung The rung it stands on, from nothing at all up to nothing
@@ -78,6 +79,7 @@ final class Answer {
 
     /**
      * Ctor.
+     *
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
      * @param rung The rung it stands on, from nothing at all up to nothing
@@ -91,6 +93,7 @@ final class Answer {
 
     /**
      * Ctor.
+     *
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
      * @param rung The rung it stands on, from nothing at all up to nothing
@@ -109,6 +112,7 @@ final class Answer {
 
     /**
      * The object this one settled on.
+     *
      * @return The locator
      */
     String where() {
@@ -117,6 +121,7 @@ final class Answer {
 
     /**
      * The rung it stands on.
+     *
      * @return The rung, from nothing at all up to nothing left to find out
      */
     int rung() {
@@ -125,6 +130,7 @@ final class Answer {
 
     /**
      * What the program was seen putting into the void it is rooted at.
+     *
      * @return The types, empty when nobody was seen filling it
      */
     Collection<Type> seen() {
@@ -133,6 +139,7 @@ final class Answer {
 
     /**
      * Whether the void it is rooted at is one only an atom fills.
+     *
      * @return TRUE when no caller of the program can be looked at
      */
     boolean forged() {

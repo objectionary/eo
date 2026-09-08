@@ -11,6 +11,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt getenv function call.
+ *
  * @since 0.74.0
  */
 public final class GetenvFuncCall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetenvFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public GetenvFuncCall(final Phi win) {

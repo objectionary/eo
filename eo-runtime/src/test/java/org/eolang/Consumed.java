@@ -56,6 +56,7 @@ final class Consumed {
 
     /**
      * Ctor.
+     *
      * @param grp The group whose threads are counted
      */
     Consumed(final ThreadGroup grp) {
@@ -65,6 +66,7 @@ final class Consumed {
 
     /**
      * Does this JVM count the bytes a thread allocates?
+     *
      * @return TRUE if it does, FALSE if there is nothing to count with
      */
     static boolean counting() {
@@ -73,6 +75,7 @@ final class Consumed {
 
     /**
      * How many bytes the group has allocated so far.
+     *
      * @return Bytes allocated, or zero if this JVM does not count them
      */
     long bytes() {

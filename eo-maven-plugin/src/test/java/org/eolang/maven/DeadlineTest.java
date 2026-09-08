@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Timeout;
 
 /**
  * Test case for {@link Deadline}.
+ *
  * @since 0.62.0
  */
 final class DeadlineTest {

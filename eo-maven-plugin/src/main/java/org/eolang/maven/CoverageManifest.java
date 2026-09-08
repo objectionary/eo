@@ -79,6 +79,7 @@ final class CoverageManifest {
      * all: a parser error element carries a line and a position and
      * nothing else, and every other element of a parsed XMIR that
      * carries both carries a locator too.
+     *
      * @param xmir The XMIR a source was parsed and optimized into
      * @return The locations, in document order
      */

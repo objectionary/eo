@@ -35,6 +35,7 @@ public final class Op {
 
     /**
      * Ctor.
+     *
      * @param name The λ name, such as {@code L_number_plus}
      */
     public Op(final String name) {
@@ -43,6 +44,7 @@ public final class Op {
 
     /**
      * Whether this operation may become a step of a protocol.
+     *
      * @return True if the table has a row for the λ name
      */
     public boolean listed() {
@@ -51,6 +53,7 @@ public final class Op {
 
     /**
      * The method that dispatches this operation.
+     *
      * @return The name, such as {@code plus}
      */
     public String method() {
@@ -59,6 +62,7 @@ public final class Op {
 
     /**
      * The forma of the receiver.
+     *
      * @return One of {@code number}, {@code string}, {@code bytes},
      *  {@code bool}, {@code tuple} or {@code object}
      */
@@ -70,6 +74,7 @@ public final class Op {
      * The forma of the value. An operation may have none: {@code if}
      * answers whatever the arm it picks answers, so its row leaves the
      * column empty, and {@link Reduction} reads that as the sign to fork.
+     *
      * @return One of {@code number}, {@code bool}, {@code bytes}, or empty
      */
     public String forma() {
@@ -84,6 +89,7 @@ public final class Op {
      * {@code eq} renders by the forma of its operands in {@code JavaAtom} —
      * and such an operation otherwise reduces fine but refuses to become
      * Java.
+     *
      * @return A format, such as {@code %1$s + %2$s}
      */
     public String java() {
@@ -101,6 +107,7 @@ public final class Op {
 
     /**
      * The names of the arguments, in their positional order.
+     *
      * @return The names, such as {@code start} and {@code len}
      */
     public List<String> args() {
@@ -113,6 +120,7 @@ public final class Op {
      * The formas of the arguments, in their positional order. An argument
      * carries the forma of the receiver unless its cell says otherwise,
      * as {@code i:number} does for the index of a tuple.
+     *
      * @return The formas, one per argument
      */
     public List<String> formas() {
@@ -124,6 +132,7 @@ public final class Op {
 
     /**
      * The rows of the table, one per operation.
+     *
      * @return The cells of every row: the λ name, the method, the carrier,
      *  the forma, the arguments and the Java format
      */

@@ -53,6 +53,7 @@ public final class Minted {
 
     /**
      * Ctor.
+     *
      * @param inputs The voids of the fragment: names to formas, in order
      */
     public Minted(final Map<String, String> inputs) {
@@ -74,6 +75,7 @@ public final class Minted {
 
     /**
      * Take the next label, bound to no forma yet.
+     *
      * @return The label, such as {@code s3}
      */
     public String next() {
@@ -84,6 +86,7 @@ public final class Minted {
 
     /**
      * Bind a label to the forma of its step.
+     *
      * @param label The label
      * @param forma The forma
      */
@@ -93,6 +96,7 @@ public final class Minted {
 
     /**
      * Declare the voids of a body a repeat resumes.
+     *
      * @param name The name of the helper
      * @param kinds The formas of its voids, in declaration order
      */
@@ -109,6 +113,7 @@ public final class Minted {
 
     /**
      * Whether the voids of a body are declared.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @return True if declared
      */
@@ -118,6 +123,7 @@ public final class Minted {
 
     /**
      * The names of the bodies declared, the formation itself first.
+     *
      * @return The names, in the order they were declared
      */
     public Collection<String> names() {
@@ -126,6 +132,7 @@ public final class Minted {
 
     /**
      * The formas of the voids of a body.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @return The formas, in declaration order
      */
@@ -140,6 +147,7 @@ public final class Minted {
 
     /**
      * The position of the first void of a body among all voids.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @return The position
      */
@@ -150,6 +158,7 @@ public final class Minted {
 
     /**
      * The carrier of a key.
+     *
      * @param key The key, such as {@code sym:s2}, {@code sym:v0} or {@code bool:FF-}
      * @return The forma, such as {@code number}
      */

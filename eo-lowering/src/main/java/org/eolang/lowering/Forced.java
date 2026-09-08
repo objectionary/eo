@@ -42,6 +42,7 @@ public final class Forced implements Term {
 
     /**
      * Ctor.
+     *
      * @param term The term whose bytes this is
      */
     public Forced(final Term term) {

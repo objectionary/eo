@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Forged}.
+ *
  * @since 0.71.0
  */
 final class ForgedTest {

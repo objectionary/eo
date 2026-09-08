@@ -59,6 +59,7 @@ public final class NamedFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param name The Win32 name of the function
      * @param rho The object the function call belongs to
      */

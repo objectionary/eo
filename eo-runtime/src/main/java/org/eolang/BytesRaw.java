@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * Bytes to be created from byte array only.
+ *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.GodClass")
@@ -21,6 +22,7 @@ final class BytesRaw implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param data Data
      */
     BytesRaw(final byte[] data) {

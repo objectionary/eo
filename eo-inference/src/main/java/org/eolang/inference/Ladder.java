@@ -41,6 +41,7 @@ public final class Ladder {
 
     /**
      * Ctor.
+     *
      * @param rungs How many objects stand on each rung, from the shallowest up
      */
     public Ladder(final Map<String, Integer> rungs) {
@@ -49,6 +50,7 @@ public final class Ladder {
 
     /**
      * How many objects stand on each rung.
+     *
      * @return The rungs, from the shallowest up
      */
     public Map<String, Integer> rungs() {
@@ -57,6 +59,7 @@ public final class Ladder {
 
     /**
      * How many objects the program has.
+     *
      * @return The objects
      */
     public int total() {
@@ -93,6 +96,7 @@ public final class Ladder {
 
     /**
      * How many of them we say nothing about.
+     *
      * @return The share, out of a hundred
      */
     public double blank() {

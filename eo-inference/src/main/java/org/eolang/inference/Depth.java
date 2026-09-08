@@ -36,6 +36,7 @@ public final class Depth {
 
     /**
      * Ctor.
+     *
      * @param xmirs The directory with the prepared XMIR files
      * @param rows The directory with the tables
      */
@@ -46,6 +47,7 @@ public final class Depth {
 
     /**
      * How much of the program was understood.
+     *
      * @return The objects of the program, counted by the rung they stand on
      * @throws IOException If a table or a file cannot be read
      */

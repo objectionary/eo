@@ -36,6 +36,7 @@ final class JavaPath {
 
     /**
      * Ctor.
+     *
      * @param obj Object name
      */
     JavaPath(final String obj) {
@@ -51,6 +52,7 @@ final class JavaPath {
      * The Java name of the package that hosts this object, i.e. with every
      * segment (including the last one) treated as a package. Used to locate
      * the {@code package-info} of the object's own package.
+     *
      * @return Java package name
      */
     String pkg() {

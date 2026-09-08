@@ -36,6 +36,7 @@ final class Walked {
 
     /**
      * Ctor.
+     *
      * @param copies What every object is a copy of, from {@link Pairs}
      * @param returns What every atom comes back with
      */
@@ -46,6 +47,7 @@ final class Walked {
 
     /**
      * Where the chain from this object stops.
+     *
      * @param start The locator to walk from
      * @return The locator the walk arrives at
      */

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Digest}.
+ *
  * @since 0.76.0
  */
 final class DigestTest {

@@ -18,6 +18,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Runtime dependency downloaded from Maven Central.
+ *
  * @since 0.62.0
  */
 final class RtCentral implements Scalar<Dep> {

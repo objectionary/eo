@@ -45,6 +45,7 @@ final class Compiled {
 
     /**
      * Ctor.
+     *
      * @param src The source of the expression, as the engine reads it
      */
     Compiled(final String src) {
@@ -53,6 +54,7 @@ final class Compiled {
 
     /**
      * Return it.
+     *
      * @return The pattern built from the source
      */
     Pattern it() {

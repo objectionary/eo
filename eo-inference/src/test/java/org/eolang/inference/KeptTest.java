@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Kept}.
+ *
  * @since 0.69.0
  */
 final class KeptTest {

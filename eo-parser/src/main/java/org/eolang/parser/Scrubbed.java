@@ -37,6 +37,7 @@ final class Scrubbed {
 
     /**
      * Ctor.
+     *
      * @param text The text as it came from the source
      */
     Scrubbed(final String text) {

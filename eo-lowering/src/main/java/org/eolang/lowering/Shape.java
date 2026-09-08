@@ -53,6 +53,7 @@ public final class Shape {
 
     /**
      * Ctor, for the shape of exactly one site as it stands in the tree.
+     *
      * @param verb The method the site dispatches
      * @param self The key of its receiver
      * @param args The bindings of the site
@@ -68,6 +69,7 @@ public final class Shape {
 
     /**
      * Ctor.
+     *
      * @param verb The method that dispatched the atom
      * @param self The key of the receiver
      * @param labels The names of the arguments, in their positional order
@@ -84,6 +86,7 @@ public final class Shape {
 
     /**
      * Whether a site with these parts matches this shape.
+     *
      * @param verb The method of the site
      * @param self The key of the receiver of the site
      * @param args The bindings of the site

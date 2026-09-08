@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link CopiedAttrs}.
+ *
  * @since 0.63
  */
 final class CopiedAttrsTest {
@@ -160,6 +161,7 @@ final class CopiedAttrsTest {
 
     /**
      * Attribute that remembers how many times it was copied.
+     *
      * @since 0.63
      */
     private static final class AtCounting implements Attribute {
@@ -171,6 +173,7 @@ final class CopiedAttrsTest {
 
         /**
          * Ctor.
+         *
          * @param count Where to count the copies
          */
         AtCounting(final AtomicInteger count) {

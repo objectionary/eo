@@ -9,6 +9,7 @@ import org.cactoos.Text;
 
 /**
  * Auto name for abstract object.
+ *
  * @since 0.57.4
  */
 final class AutoName implements Text {
@@ -25,6 +26,7 @@ final class AutoName implements Text {
 
     /**
      * Ctor.
+     *
      * @param lne Line number
      * @param ind Indent number
      */

@@ -40,6 +40,7 @@ final class Joined {
 
     /**
      * Ctor.
+     *
      * @param objects The objects to join
      * @param provided What the types certainly have
      */
@@ -50,6 +51,7 @@ final class Joined {
 
     /**
      * The nearest object all of them are copies of.
+     *
      * @return The locator, empty when they share nothing
      */
     String names() {

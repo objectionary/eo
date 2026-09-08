@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Xmirs}.
+ *
  * @since 0.73.4
  */
 @ExtendWith(MktmpResolver.class)

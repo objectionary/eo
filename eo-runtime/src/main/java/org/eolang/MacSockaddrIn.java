@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * The sockaddr_in structure, as macOS and the BSDs lay it out: a one-byte
  * {@code sin_len} and a one-byte {@code sin_family}, not a two-byte family.
+ *
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (50 lines)
  */
@@ -44,6 +45,7 @@ public final class MacSockaddrIn extends Structure {
 
     /**
      * Ctor.
+     *
      * @param family Family
      * @param port Port
      * @param addr Address
@@ -58,6 +60,7 @@ public final class MacSockaddrIn extends Structure {
     /**
      * Primary ctor, receiving an already validated padding. The padding
      * comes first so this signature differs from the public one above.
+     *
      * @param zero Validated padding
      * @param family Family
      * @param port Port

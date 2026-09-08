@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _rmdir function call.
+ *
  * @since 0.74.0
  */
 public final class RmdirFuncCall implements Syscall {
@@ -23,6 +24,7 @@ public final class RmdirFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public RmdirFuncCall(final Phi win) {

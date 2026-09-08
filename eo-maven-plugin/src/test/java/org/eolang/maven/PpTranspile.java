@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Transpile full pipeline.
+ *
  * @since 0.29.0
  */
 final class PpTranspile implements Iterable<Class<? extends AbstractMojo>> {

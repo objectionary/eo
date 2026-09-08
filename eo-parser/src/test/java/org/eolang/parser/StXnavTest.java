@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link StXnav}.
+ *
  * @since 0.53.0
  */
 final class StXnavTest {

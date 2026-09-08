@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link StrerrorSyscall}.
+ *
  * @since 0.57.0
  */
 final class StrerrorSyscallTest {

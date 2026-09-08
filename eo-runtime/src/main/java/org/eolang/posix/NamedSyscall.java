@@ -77,6 +77,7 @@ public final class NamedSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param name The POSIX name of the syscall
      * @param rho The object the syscall belongs to
      */

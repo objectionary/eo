@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ChCached}.
+ *
  * @since 0.28.11
  */
 final class ChCachedTest {

@@ -36,6 +36,7 @@ final class LnTextBlock implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnTextBlock(final Span source) {

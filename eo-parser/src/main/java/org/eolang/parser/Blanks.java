@@ -37,6 +37,7 @@ final class Blanks {
      * (formations, atoms, only-phi formations, {@code +>} tests)
      * are exempt and call this method only when they want to
      * not exempt themselves.
+     *
      * @param span The offending line's span (used for error position)
      * @param globals The global parser state
      * @param emit The directives sink
@@ -100,6 +101,7 @@ final class Blanks {
      * line, reporting R-6.5.5 when that line is not preceded by
      * exactly one blank line. Does nothing once the header is already
      * closed.
+     *
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink

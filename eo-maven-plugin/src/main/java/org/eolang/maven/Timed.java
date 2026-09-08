@@ -9,6 +9,7 @@ import java.io.IOException;
 
 /**
  * A {@link Step} decorator that measures and logs elapsed execution time.
+ *
  * @since 0.61.0
  */
 final class Timed implements Step {
@@ -20,6 +21,7 @@ final class Timed implements Step {
 
     /**
      * Constructor.
+     *
      * @param step Step to wrap
      */
     Timed(final Step step) {

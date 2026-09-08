@@ -64,6 +64,7 @@ public final class Dispatched {
 
     /**
      * Ctor.
+     *
      * @param reduction The reduction settling each argument
      * @param ledger The ledger the reduction shares
      */
@@ -74,6 +75,7 @@ public final class Dispatched {
 
     /**
      * The tree with the site of the record replaced by the step.
+     *
      * @param tree The tree
      * @param record The record of the parked marker
      * @param steps The steps of the protocol so far, to add to

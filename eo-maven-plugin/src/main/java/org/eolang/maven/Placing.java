@@ -59,6 +59,7 @@ final class Placing implements Step {
 
     /**
      * Constructor.
+     *
      * @param placedtojos Catalog of placed binaries
      * @param homedir Home directory of resolved deps
      * @param classesdir Output classes directory
@@ -130,6 +131,7 @@ final class Placing implements Step {
 
     /**
      * Dependency whose binaries are being placed.
+     *
      * @since 0.61.0
      */
     private final class PlacedDependency implements Supplier<Long> {
@@ -151,6 +153,7 @@ final class Placing implements Step {
 
         /**
          * Ctor.
+         *
          * @param directory The directory to read from
          * @param dependency The name of the dependency
          * @param rewrite Rewrite binaries in output directory or not

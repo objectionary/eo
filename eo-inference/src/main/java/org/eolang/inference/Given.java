@@ -37,6 +37,7 @@ final class Given {
 
     /**
      * Ctor.
+     *
      * @param applications Every application of the program
      */
     Given(final Collection<XML> applications) {
@@ -45,6 +46,7 @@ final class Given {
 
     /**
      * The arguments of every application, by the locator of the application.
+     *
      * @return The arguments, each list in the order the places run, with an
      *  empty locator where an inline binding has left a place unfilled
      */
@@ -63,6 +65,7 @@ final class Given {
     /**
      * The arguments of every application bound by name, by the locator of the
      * application.
+     *
      * @return The arguments, by the name of the void each names
      */
     Map<String, Map<String, String>> named() {

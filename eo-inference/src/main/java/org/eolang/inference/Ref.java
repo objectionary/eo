@@ -33,6 +33,7 @@ final class Ref implements Type {
 
     /**
      * Ctor.
+     *
      * @param target The locator of what this object is a copy of
      */
     Ref(final String target) {
@@ -41,6 +42,7 @@ final class Ref implements Type {
 
     /**
      * Ctor.
+     *
      * @param target The locator of what this object is a copy of
      * @param binds What this copy has put into the voids, by the locator of
      *  the void, in the order the voids were declared

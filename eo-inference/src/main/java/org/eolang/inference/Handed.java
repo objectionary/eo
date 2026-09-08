@@ -62,6 +62,7 @@ final class Handed {
 
     /**
      * Ctor.
+     *
      * @param links The links table, as {@link Resolved} left it
      * @param provides The provides table, which says what an atom hands in
      */
@@ -78,6 +79,7 @@ final class Handed {
 
     /**
      * Ctor.
+     *
      * @param attrs The rows of the provides table that carry a brace list
      * @param rows The provides table, asked what void a place lands in
      */
@@ -88,6 +90,7 @@ final class Handed {
 
     /**
      * Put what the atoms hand in among the fillings the call sites name.
+     *
      * @param named What every void is filled with where a call site says so,
      *  which is what the atoms are added to
      * @param filled What every void is filled with, the hops walked through,

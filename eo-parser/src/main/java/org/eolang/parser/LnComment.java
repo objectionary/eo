@@ -37,6 +37,7 @@ final class LnComment implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The comment span
      */
     LnComment(final Span source) {

@@ -38,6 +38,7 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param pos The position
      * @param obj The object to bind
      */
@@ -51,6 +52,7 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param name The name of the attribute
      * @param obj The object to bind
      */
@@ -64,6 +66,7 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param first Whether the binding fills the first slot
      * @param command Attaches the bound object to a target
      * @param term Renders the φ-term fragment
@@ -92,6 +95,7 @@ public final class Bind {
 
     /**
      * Attach this binding to the given object.
+     *
      * @param phi The object to bind into
      */
     void attach(final Phi phi) {
@@ -100,6 +104,7 @@ public final class Bind {
 
     /**
      * The φ-term fragment of this binding, like {@code 0->x} or {@code name->y}.
+     *
      * @return The fragment
      * @checkstyle MethodNameCheck (5 lines)
      */

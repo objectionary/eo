@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What a `λ` does is written in Java and nobody here can read it, and it is
+# not public either — the syntax gives no way to name it. So an atom that says
+# what it comes back with says the whole of what it is, and a `grow` is an
+# `oak` in the same way that an alias is what it delegates to.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  grow.eo: |
+    [] > grow /Q.oak
+      ? > x
+provides:
+  - "/provides/type[@id='Φ.grow' and @reduced='Φ.oak']"

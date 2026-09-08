@@ -31,6 +31,7 @@ final class Hex {
 
     /**
      * Ctor from a {@code double}. Produces 8-byte IEEE-754 big-endian.
+     *
      * @param value Numeric value
      */
     Hex(final double value) {
@@ -39,6 +40,7 @@ final class Hex {
 
     /**
      * Primary ctor from a raw byte array.
+     *
      * @param raw Bytes
      */
     Hex(final byte[] raw) {

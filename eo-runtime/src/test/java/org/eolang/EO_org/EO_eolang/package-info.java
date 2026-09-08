@@ -5,6 +5,7 @@
 
 /**
  * Deep package fixtures, tests.
+ *
  * @since 0.73.1
  * @checkstyle TrailingCommentCheck (3 lines)
  */

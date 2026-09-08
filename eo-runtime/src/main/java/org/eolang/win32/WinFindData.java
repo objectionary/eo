@@ -78,6 +78,7 @@ public final class WinFindData extends Structure {
 
     /**
      * The name of the entry, as text.
+     *
      * @return The name, up to the NUL that ends it
      */
     public String filename() {

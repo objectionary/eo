@@ -74,6 +74,7 @@ final class Fragment {
 
     /**
      * Ctor.
+     *
      * @param site The application to carve a copy of
      * @param decided The tables that decide the forma of a leaf
      */
@@ -88,6 +89,7 @@ final class Fragment {
 
     /**
      * Ctor.
+     *
      * @param copy The copy of the site, to carve in place
      * @param leaves The void names, by the leaf base each one replaced
      * @param voids The formas, by void name, in declaration order
@@ -103,6 +105,7 @@ final class Fragment {
 
     /**
      * Carve the fragment out of the copy, once.
+     *
      * @return TRUE when the fragment is worth lowering
      */
     boolean carved() {
@@ -111,6 +114,7 @@ final class Fragment {
 
     /**
      * The carved body, voids referenced where the leaves stood.
+     *
      * @return The root element of the copy
      */
     Xnav fragment() {
@@ -119,6 +123,7 @@ final class Fragment {
 
     /**
      * The voids: names to formas, in declaration order.
+     *
      * @return The unmodifiable map
      */
     Map<String, String> voids() {
@@ -127,6 +132,7 @@ final class Fragment {
 
     /**
      * The leaf bases, in the order their voids are declared.
+     *
      * @return The unmodifiable collection
      */
     Collection<String> leaves() {

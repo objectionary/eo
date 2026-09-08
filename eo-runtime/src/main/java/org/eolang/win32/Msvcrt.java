@@ -73,6 +73,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Reads bytes from a file descriptor into the buffer.
+     *
      * @param descriptor File descriptor
      * @param buffer Buffer to read into
      * @param size Number of bytes to read
@@ -82,6 +83,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Writes bytes from the buffer to a file descriptor.
+     *
      * @param descriptor File descriptor
      * @param buffer Buffer to write from
      * @param size Number of bytes to write
@@ -91,6 +93,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Closes a file descriptor.
+     *
      * @param descriptor File descriptor
      * @return Zero on success, -1 on error
      */
@@ -98,6 +101,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Checks a file's accessibility.
+     *
      * @param path Path to the file
      * @param mode Accessibility check to perform (0 tests for existence)
      * @return Zero when the check succeeds, -1 on error
@@ -107,6 +111,7 @@ public interface Msvcrt extends Library {
     /**
      * Gets a file's status by path, filling a {@code struct _stat64} whose
      * 64-bit {@code st_size} reports sizes past two gigabytes.
+     *
      * @param path Path to the file
      * @param statbuf Structure to fill with the file's metadata
      * @return Zero on success, -1 on error
@@ -115,6 +120,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Deletes a file.
+     *
      * @param path Path to the file
      * @return Zero on success, -1 on error
      */
@@ -122,6 +128,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Removes an empty directory.
+     *
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
@@ -130,6 +137,7 @@ public interface Msvcrt extends Library {
     /**
      * Creates a directory, taking no permission bits, so the mode passed at the
      * EO level is ignored here.
+     *
      * @param path Path to the directory
      * @return Zero on success, -1 on error
      */
@@ -137,6 +145,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Creates a new file, or truncates an existing one, and opens it.
+     *
      * @param path Path to the file
      * @param mode Permission bits for a newly created file
      * @return File descriptor on success, -1 on error
@@ -145,6 +154,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Renames a file, the wide twin of the ISO C {@code rename} export.
+     *
      * @param from Current path of the file
      * @param target New path of the file
      * @return Zero on success, -1 on error
@@ -154,6 +164,7 @@ public interface Msvcrt extends Library {
     /**
      * Returns the process identifier of the calling process, the CRT
      * counterpart of Kernel32's {@code GetCurrentProcessId}.
+     *
      * @return Process identifier
      */
     int _getpid();
@@ -161,6 +172,7 @@ public interface Msvcrt extends Library {
     /**
      * Gets an environment variable's value, the ISO C export without a leading
      * underscore.
+     *
      * @param name Name of the variable
      * @return Value of the variable, or {@code null} when it is not defined
      */
@@ -174,6 +186,7 @@ public interface Msvcrt extends Library {
      * status code, unlike the older {@code _ftime} that returns {@code void}.
      * The 64-bit variant is used because the 32-bit {@code _ftime32_s} can
      * only represent dates through 18 January 2038.
+     *
      * @param timeb Structure to fill with the current time
      * @return Zero on success, an errno value on failure
      */
@@ -181,6 +194,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Duplicates a file descriptor.
+     *
      * @param descriptor File descriptor to duplicate
      * @return New file descriptor, or -1 on error
      */
@@ -188,6 +202,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Reassigns a file descriptor to refer to the same file as another one.
+     *
      * @param descriptor File descriptor to duplicate
      * @param other File descriptor to reassign
      * @return Zero on success, -1 on error
@@ -208,6 +223,7 @@ public interface Msvcrt extends Library {
 
     /**
      * Converts a CRT {@code errno} value into a human-readable message.
+     *
      * @param errnum The error number
      * @return Error as a string
      */

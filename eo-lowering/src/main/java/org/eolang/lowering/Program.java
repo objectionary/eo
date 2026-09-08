@@ -40,6 +40,7 @@ public final class Program {
 
     /**
      * Ctor.
+     *
      * @param bodies The bodies, the formation's own first
      * @param inputs The voids of the formation: names to formas, in order
      */
@@ -50,6 +51,7 @@ public final class Program {
 
     /**
      * The bodies.
+     *
      * @return The bodies, the formation's own first
      */
     public List<Body> bodies() {
@@ -58,6 +60,7 @@ public final class Program {
 
     /**
      * The voids of the formation.
+     *
      * @return Names to formas, in declaration order
      */
     public Map<String, String> inputs() {
@@ -66,6 +69,7 @@ public final class Program {
 
     /**
      * The formas of all the voids of all the bodies.
+     *
      * @return The formas, by the positions the bodies know
      */
     public List<String> formas() {
@@ -87,6 +91,7 @@ public final class Program {
 
     /**
      * The body of a name.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @return The body
      */
@@ -96,6 +101,7 @@ public final class Program {
 
     /**
      * The position of the body of a name, which is the state that runs it.
+     *
      * @param name The name of the helper, empty for the formation itself
      * @return The position, zero for the formation itself
      */
@@ -112,6 +118,7 @@ public final class Program {
 
     /**
      * The forma the program answers.
+     *
      * @return The forma, the same from every body that answers
      */
     public String carrier() {
@@ -138,6 +145,7 @@ public final class Program {
 
     /**
      * Whether the Java of the program needs a loop.
+     *
      * @return True if a body resumes any body
      */
     public boolean repeats() {

@@ -13,6 +13,7 @@ import org.eolang.Syscall;
 
 /**
  * The kernel32 GetFileAttributesW function call.
+ *
  * @since 0.75.0
  */
 public final class GetFileAttributesFuncCall implements Syscall {
@@ -24,6 +25,7 @@ public final class GetFileAttributesFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public GetFileAttributesFuncCall(final Phi win) {

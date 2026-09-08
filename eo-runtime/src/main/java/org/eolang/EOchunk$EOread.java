@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * Chunk.read object.
+ *
  * @since 0.36.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)

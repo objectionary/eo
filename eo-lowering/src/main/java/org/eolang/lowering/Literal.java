@@ -34,6 +34,7 @@ public final class Literal implements Term {
 
     /**
      * Ctor.
+     *
      * @param carrier The forma of the value
      * @param bytes The bytes, as dash-joined hex pairs
      */

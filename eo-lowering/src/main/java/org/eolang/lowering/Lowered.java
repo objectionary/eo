@@ -85,6 +85,7 @@ public final class Lowered implements Rewrite {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param tables The tables with the witnessed forma of each void
      * @param home The directory for the sidecar bodies

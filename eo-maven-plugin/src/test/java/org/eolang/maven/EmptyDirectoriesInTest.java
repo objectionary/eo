@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link EmptyDirectoriesIn}.
+ *
  * @since 0.55
  */
 @ExtendWith(MktmpResolver.class)

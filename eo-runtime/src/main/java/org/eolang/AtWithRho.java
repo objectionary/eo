@@ -16,6 +16,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Every caller takes a copy of its own, since that copy is where the caller puts its
  * own arguments, and the copying happens under a lock, so that no thread reads the
  * object being bound while another one is still copying it.
+ *
  * @since 0.36.0
  */
 final class AtWithRho implements Attribute {
@@ -37,6 +38,7 @@ final class AtWithRho implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param attr Attribute
      * @param rho Rho
      */

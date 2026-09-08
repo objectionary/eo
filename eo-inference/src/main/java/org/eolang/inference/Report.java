@@ -56,6 +56,7 @@ public final class Report {
 
     /**
      * Ctor.
+     *
      * @param xmirs The directory with the prepared XMIR files
      * @param rows The directory with the tables
      */
@@ -66,6 +67,7 @@ public final class Report {
 
     /**
      * Write the pages.
+     *
      * @param out The directory to write them into
      * @return How many pages were written
      * @throws IOException If a table or a file cannot be read or written

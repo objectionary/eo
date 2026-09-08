@@ -31,24 +31,28 @@ public interface Term {
 
     /**
      * The term, in phi syntax.
+     *
      * @return The text, ready to stand inside an expression
      */
     String phi();
 
     /**
      * The identity of the value this term stands for.
+     *
      * @return A key such as {@code sym:s1} or {@code number:40-14-...}, empty for a site
      */
     String key();
 
     /**
      * The forma of the value this term stands for.
+     *
      * @return A forma such as {@code number} or {@code bytes}, empty for a site
      */
     String forma();
 
     /**
      * Whether any site of this tree matches the shape.
+     *
      * @param shape The shape of a recorded evaluation
      * @return True if {@link #swapped(Shape, Term)} would rewrite something
      */
@@ -56,6 +60,7 @@ public interface Term {
 
     /**
      * The arguments of the first site of this tree matching the shape.
+     *
      * @param shape The shape of a recorded evaluation
      * @return The bindings of that site, or empty when no site matches
      */
@@ -64,18 +69,21 @@ public interface Term {
     /**
      * The call this term is, of the formation to itself or of one of
      * its recursive helpers, if it is one.
+     *
      * @return The call, or empty for any other term
      */
     Optional<Again> again();
 
     /**
      * The terminator this term is, if it is one.
+     *
      * @return The failure, or empty for any other term
      */
     Optional<Fail> terminator();
 
     /**
      * This tree with every site matching the shape replaced.
+     *
      * @param shape The shape of a recorded evaluation
      * @param swap The term to stand where a matching site stood
      * @return The rewritten tree, or this one if nothing matched

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
+ *
  * @since 0.54
  * @todo #5047:30min Re-enable runsProgramWithTwoObjects after next release.
  *  The released string.printf carries a stale "+rt jvm org.eolang:eo-runtime"
@@ -254,6 +255,7 @@ final class JarIT {
 
     /**
      * An EO object represented as a file name and its content.
+     *
      * @since 0.60
      */
     private static final class ElegantObject {
@@ -270,6 +272,7 @@ final class JarIT {
 
         /**
          * Ctor.
+         *
          * @param file File name
          * @param content Joined file content
          */
@@ -280,6 +283,7 @@ final class JarIT {
 
         /**
          * Factory.
+         *
          * @param file File name
          * @param content File content lines
          * @return New ElegantObject
@@ -290,6 +294,7 @@ final class JarIT {
 
         /**
          * Write the EO object to Farea.
+         *
          * @param farea Farea
          * @throws IOException If fails to write
          */

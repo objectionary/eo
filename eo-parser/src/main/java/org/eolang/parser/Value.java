@@ -77,6 +77,7 @@ final class Value {
 
     /**
      * Ctor — no binding, no chain.
+     *
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
@@ -87,6 +88,7 @@ final class Value {
 
     /**
      * Ctor — with binding, no chain.
+     *
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
@@ -100,6 +102,7 @@ final class Value {
 
     /**
      * Primary ctor.
+     *
      * @param tag Kind
      * @param text Raw text
      * @param column Start column
@@ -121,6 +124,7 @@ final class Value {
 
     /**
      * Kind tag.
+     *
      * @return Kind
      */
     Kind kind() {
@@ -129,6 +133,7 @@ final class Value {
 
     /**
      * Raw text.
+     *
      * @return Raw text
      */
     String raw() {
@@ -137,6 +142,7 @@ final class Value {
 
     /**
      * Start column.
+     *
      * @return Position
      */
     int pos() {
@@ -145,6 +151,7 @@ final class Value {
 
     /**
      * Whether an inline binding (R-3.12) follows the value.
+     *
      * @return True when a {@code :label} or {@code :N} is present
      */
     boolean bound() {
@@ -155,6 +162,7 @@ final class Value {
      * Inline binding label (e.g., {@code y}) or numeric slot (e.g.,
      * {@code 0}), or the empty string when no binding follows the
      * value — check {@link #bound()} first.
+     *
      * @return Binding tag, empty when absent
      */
     String binding() {
@@ -171,6 +179,7 @@ final class Value {
      * Method-dispatch chain attached to this value when it sits in
      * argument position — empty for the line head and for plain args
      * without {@code .method} suffix.
+     *
      * @return The chain (possibly empty)
      */
     List<MethodChain> chain() {
@@ -180,6 +189,7 @@ final class Value {
     /**
      * Whether this value carries a trailing {@code !} const marker as
      * an inline argument (R-9.4).
+     *
      * @return Const flag
      */
     boolean constant() {
@@ -188,6 +198,7 @@ final class Value {
 
     /**
      * Whether this value may carry a {@code .method} chain behind it.
+     *
      * @return True if a chain may follow
      */
     boolean chainable() {
@@ -196,6 +207,7 @@ final class Value {
 
     /**
      * A numeric literal — {@code INT} or {@code FLOAT} (§9.0.3)?
+     *
      * @return True for {@link Kind#INTEGER} or {@link Kind#FLOAT}
      */
     boolean number() {
@@ -204,6 +216,7 @@ final class Value {
 
     /**
      * A {@code HEX} numeric literal — {@code 0xFF} form (§9.0.3)?
+     *
      * @return True for {@link Kind#HEX}
      */
     boolean hex() {
@@ -212,6 +225,7 @@ final class Value {
 
     /**
      * A {@code BYTES} literal (§3.13.1)?
+     *
      * @return True for {@link Kind#BYTES}
      */
     boolean bytes() {
@@ -220,6 +234,7 @@ final class Value {
 
     /**
      * A {@code STRING} literal (§9.0.3)?
+     *
      * @return True for {@link Kind#STRING}
      */
     boolean string() {
@@ -228,6 +243,7 @@ final class Value {
 
     /**
      * The {@code STAR} tuple marker (§9.0.3)?
+     *
      * @return True for {@link Kind#STAR}
      */
     boolean star() {
@@ -236,6 +252,7 @@ final class Value {
 
     /**
      * The {@code T} terminator term (§9.3)?
+     *
      * @return True for {@link Kind#TERM}
      */
     boolean term() {
@@ -244,6 +261,7 @@ final class Value {
 
     /**
      * The {@code I} identity object (§3.16)?
+     *
      * @return True for {@link Kind#IDENTITY}
      */
     boolean identity() {
@@ -252,6 +270,7 @@ final class Value {
 
     /**
      * A paren group — {@code (expr)} (§3.6)?
+     *
      * @return True for {@link Kind#GROUP}
      */
     boolean group() {
@@ -262,6 +281,7 @@ final class Value {
      * May this value open a reversed dispatch as the line's head — a
      * bare identifier or a root glyph, the only kinds R-3.8.1 allows in
      * that position?
+     *
      * @return True for {@link Kind#IDENTIFIER} or {@link Kind#ROOT}
      */
     boolean reversible() {
@@ -273,6 +293,7 @@ final class Value {
      * {@code Q} to {@code Φ}, {@code @} to {@code φ}, {@code ^} to
      * {@code ρ}, {@code $} to {@code ξ}. Call only when {@link #kind()}
      * is {@link Kind#ROOT}.
+     *
      * @return The mapped symbol
      */
     String rootSymbol() {
@@ -291,6 +312,7 @@ final class Value {
 
     /**
      * Does this head open a formation body?
+     *
      * @return True for identity, or a group wrapping inline {@code > [...]}
      */
     boolean opensFormationBody() {
@@ -324,6 +346,7 @@ final class Value {
      * The kinds of value recognised by the parser. Further kinds
      * (HEX, BYTES, paren groups) attach as the corresponding line
      * shapes are added.
+     *
      * @since 0.1
      */
     enum Kind {

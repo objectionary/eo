@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
  * Test case verifying {@link Expect}-based error messages
  * raised by {@link EOchunk$EOread} when its integer attributes
  * are invalid.
+ *
  * @since 0.51
  */
 final class EOchunkEOreadTest {

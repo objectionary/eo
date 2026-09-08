@@ -53,6 +53,7 @@ final class Demands {
 
     /**
      * Ctor.
+     *
      * @param all What is asked of every object, from {@link Asked}
      * @param objects The voids these demands are made of: the void itself,
      *  and every void it is handed into
@@ -64,6 +65,7 @@ final class Demands {
 
     /**
      * These demands, to be put inside the row of the void.
+     *
      * @return The directives, empty when nothing is ever asked of it
      */
     Directives directives() {
@@ -84,6 +86,7 @@ final class Demands {
 
     /**
      * Whether anything is ever asked of this void, or of a name rooted at it.
+     *
      * @return True when at least one name is
      */
     boolean any() {

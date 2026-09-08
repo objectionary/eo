@@ -48,6 +48,7 @@ public final class InetAddrFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public InetAddrFuncCall(final Phi win) {

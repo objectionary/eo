@@ -61,6 +61,7 @@ final class Saved implements Scalar<Path> {
 
     /**
      * Ctor.
+     *
      * @param content Content as string
      * @param target Path to save content to
      */
@@ -70,6 +71,7 @@ final class Saved implements Scalar<Path> {
 
     /**
      * Ctor.
+     *
      * @param content Content as bytes
      * @param target Path to save content to
      */
@@ -79,6 +81,7 @@ final class Saved implements Scalar<Path> {
 
     /**
      * Ctor.
+     *
      * @param content Content as text
      * @param target Path to save content to
      */
@@ -88,6 +91,7 @@ final class Saved implements Scalar<Path> {
 
     /**
      * Ctor.
+     *
      * @param content Content as lambda
      * @param target Path to save content to
      */

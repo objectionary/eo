@@ -31,6 +31,7 @@ final class Buffer {
 
     /**
      * Ctor.
+     *
      * @param subject What the size is, for the failure message
      * @param size How many bytes are wanted
      */
@@ -41,6 +42,7 @@ final class Buffer {
 
     /**
      * Make it.
+     *
      * @return The array
      */
     byte[] it() {

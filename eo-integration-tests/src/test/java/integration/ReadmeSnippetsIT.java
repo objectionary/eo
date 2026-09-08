@@ -28,6 +28,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Integration test for EO snippets in `README.md`.
+ *
  * @since 0.56.3
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

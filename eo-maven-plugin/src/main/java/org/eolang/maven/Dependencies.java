@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * List of dependencies.
+ *
  * @since 0.54
  */
 @FunctionalInterface
@@ -22,6 +23,7 @@ interface Dependencies extends Iterable<Dep> {
 
     /**
      * Fake dependencies.
+     *
      * @since 0.54.0
      */
     final class Fake implements Dependencies {
@@ -44,6 +46,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param size Number of fake dependencies
          */
         Fake(final int size) {
@@ -56,6 +59,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param deps Dependencies
          */
         Fake(final Dep... deps) {
@@ -64,6 +68,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param deps Dependencies
          */
         private Fake(final Collection<Dep> deps) {
@@ -77,6 +82,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a random dependency with specified scope.
+         *
          * @param scope Scope
          * @return Dependency
          */
@@ -91,6 +97,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a eo-runtime dependency.
+         *
          * @return Dependency
          */
         static Dep runtimeDep() {

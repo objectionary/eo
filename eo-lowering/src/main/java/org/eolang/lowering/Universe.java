@@ -60,6 +60,7 @@ public final class Universe {
 
     /**
      * The expression, in phi syntax.
+     *
      * @return The text of the {@code universe.phi} resource
      */
     public String text() {

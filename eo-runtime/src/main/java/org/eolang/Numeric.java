@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * Transform {@link Expect} to a floating-point number.
+ *
  * @since 0.51
  */
 final class Numeric {
@@ -18,6 +19,7 @@ final class Numeric {
 
     /**
      * Ctor.
+     *
      * @param expect Expect
      */
     Numeric(final Expect<Phi> expect) {
@@ -26,6 +28,7 @@ final class Numeric {
 
     /**
      * Return it.
+     *
      * @return The token
      */
     Double it() {

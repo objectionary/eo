@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Dispatch}.
+ *
  * @since 0.76.0
  */
 final class DispatchTest {

@@ -54,6 +54,7 @@ final class Answered {
 
     /**
      * Ctor.
+     *
      * @param xmirs The directory with the prepared XMIR files
      * @param rows The directory with the tables
      */
@@ -64,6 +65,7 @@ final class Answered {
 
     /**
      * The answer for every object of the program.
+     *
      * @return The answers, by the locator of the object
      * @throws IOException If a table or a file cannot be read
      */

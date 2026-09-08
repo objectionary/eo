@@ -103,6 +103,12 @@ import java.util.stream.Collectors;
  * outright what it is dispatched on, and one that says nothing has no
  * {@code ρ} at all for anybody to name.</p>
  *
+ * <p>What goes into the {@code ρ} a formation does declare is written down,
+ * which is a different claim and {@link Received}'s: an attribute of an
+ * {@code oak} is reached by taking it off an {@code oak}, so the void holds
+ * one. Only a formation that asked for a receiver is told what it gets, and
+ * the row was already there for the asking.</p>
+ *
  * @since 0.67.0
  */
 final class Provides implements Clue {
@@ -116,6 +122,7 @@ final class Provides implements Clue {
                 Provides.fill(rows, new Xnav(formation.inner()));
             }
             new Members(made, world.roots()).fill(rows);
+            new Received(made).fill(rows);
             Files.createDirectories(tables);
             Files.write(
                 tables.resolve("provides.xml"),

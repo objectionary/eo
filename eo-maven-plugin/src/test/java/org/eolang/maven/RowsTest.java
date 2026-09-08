@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Rows}.
+ *
  * @since 0.75.0
  */
 @ExtendWith(MktmpResolver.class)

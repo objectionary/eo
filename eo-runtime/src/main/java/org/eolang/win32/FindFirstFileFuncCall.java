@@ -33,6 +33,7 @@ public final class FindFirstFileFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public FindFirstFileFuncCall(final Phi win) {

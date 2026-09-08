@@ -11,6 +11,7 @@ import org.eolang.Syscall;
 
 /**
  * Getenv syscall.
+ *
  * @since 0.40
  */
 public final class GetenvSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetenvSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public GetenvSyscall(final Phi posix) {

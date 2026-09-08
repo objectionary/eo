@@ -76,6 +76,7 @@ public final class Main {
 
     /**
      * The method called by JVM when the program starts.
+     *
      * @param args Command line args
      * @throws Exception If fails
      */

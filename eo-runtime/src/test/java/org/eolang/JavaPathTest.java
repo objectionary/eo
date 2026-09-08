@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link JavaPath}.
+ *
  * @since 0.29
  */
 class JavaPathTest {

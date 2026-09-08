@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhApplication}.
+ *
  * @since 0.16
  */
 final class PhApplicationTest {
@@ -335,12 +336,14 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi with free attribute.
+     *
      * @since 0.1.0
      */
     private static final class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.
+         *
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
@@ -350,6 +353,7 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi.
+     *
      * @since 0.1.0
      */
     static final class Dummy extends PhDefault {

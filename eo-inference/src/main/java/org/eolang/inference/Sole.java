@@ -40,6 +40,7 @@ final class Sole {
 
     /**
      * Ctor.
+     *
      * @param witnesses What the program was seen putting into the void, from
      *  {@link Fillings}
      * @param objects The objects the provides table has a row for
@@ -51,6 +52,7 @@ final class Sole {
 
     /**
      * The object this void holds.
+     *
      * @return The locator, empty where the void is filled several ways or its
      *  one filling names nothing a reader could go and look at
      */

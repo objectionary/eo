@@ -105,6 +105,7 @@ final class Watched {
 
     /**
      * Ctor.
+     *
      * @param bytes How many bytes the body may allocate, zero for no limit
      */
     Watched(final long bytes) {
@@ -113,6 +114,7 @@ final class Watched {
 
     /**
      * Ctor.
+     *
      * @param bytes How many bytes the body may allocate, zero for no limit
      * @param millis How long a terminated body is given to stop
      */

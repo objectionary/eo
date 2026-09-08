@@ -11,6 +11,7 @@ import org.eolang.Syscall;
 
 /**
  * Rename syscall.
+ *
  * @since 0.74.0
  */
 public final class RenameSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class RenameSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public RenameSyscall(final Phi posix) {

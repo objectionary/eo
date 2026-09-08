@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link StEoLogged}.
+ *
  * @since 0.30
  */
 final class StEoLoggedTest {
@@ -119,6 +120,7 @@ final class StEoLoggedTest {
 
         /**
          * Ctor.
+         *
          * @param captured Captured messages
          */
         private FakeLog(final Queue<String> captured) {

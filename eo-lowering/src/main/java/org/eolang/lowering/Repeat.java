@@ -36,6 +36,7 @@ public final class Repeat {
 
     /**
      * Ctor.
+     *
      * @param reduction The reduction settling each argument
      * @param ledger The ledger the reduction shares
      */
@@ -46,6 +47,7 @@ public final class Repeat {
 
     /**
      * The protocol of the repeat.
+     *
      * @param call The call that resumes a body
      * @param steps The steps of the protocol so far, to add to
      * @return The protocol, ending in the repeat

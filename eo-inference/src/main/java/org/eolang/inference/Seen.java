@@ -51,6 +51,7 @@ final class Seen {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table
      */
     Seen(final XML provides) {
@@ -59,6 +60,7 @@ final class Seen {
 
     /**
      * What was seen going into every void.
+     *
      * @return The witnesses, by the locator of the void
      */
     Map<String, Collection<Type>> all() {

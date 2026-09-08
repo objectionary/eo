@@ -52,6 +52,7 @@ public final class Operand {
 
     /**
      * Ctor.
+     *
      * @param term The text of the term, as one record field holds it
      */
     public Operand(final String term) {
@@ -60,6 +61,7 @@ public final class Operand {
 
     /**
      * Whether the shape of the term names a value.
+     *
      * @return True if {@link #key()} would answer
      */
     public boolean anchored() {
@@ -68,6 +70,7 @@ public final class Operand {
 
     /**
      * The identity of the value.
+     *
      * @return A key such as {@code sym:s1}, {@code number:40-14-...} or {@code bool:FF-}
      */
     public String key() {

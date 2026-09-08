@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link AtWithRho}.
+ *
  * @since 0.59.0
  */
 final class AtWithRhoTest {

@@ -46,6 +46,7 @@ final class Calls {
 
     /**
      * Ctor.
+     *
      * @param applications Every application of the program
      * @param table What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says where an argument can
@@ -59,6 +60,7 @@ final class Calls {
 
     /**
      * Every call, one per argument.
+     *
      * @return The calls, without the ones that pass the same type at the same
      *  place of the same object twice
      */

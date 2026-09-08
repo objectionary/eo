@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * A subclass overriding add() to record every attribute name it is asked
  * to add, proving the method is overridable (#6273).
+ *
  * @since 0.1.0
  */
 final class Observant extends PhDefault {
@@ -36,6 +37,7 @@ final class Observant extends PhDefault {
 
     /**
      * Attribute names seen so far.
+     *
      * @return Names, in call order
      */
     List<String> seen() {

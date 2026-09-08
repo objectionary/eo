@@ -77,6 +77,7 @@ public final class Formas {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@code eo:inference},
      *  which does not have to exist
      */
@@ -90,6 +91,7 @@ public final class Formas {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@code eo:inference}
      * @param rows The single filling of each locator
      * @param lambdas The declared data formas, by the locator of each atom
@@ -105,6 +107,7 @@ public final class Formas {
 
     /**
      * Ctor, without atoms.
+     *
      * @param rows The single filling of each locator
      * @param given The witnessed data formas, by the locator of each void
      */
@@ -114,6 +117,7 @@ public final class Formas {
 
     /**
      * Ctor.
+     *
      * @param rows The single filling of each locator
      * @param given The witnessed data formas, by the locator of each void
      * @param lambdas The declared data formas, by the locator of each atom
@@ -127,6 +131,7 @@ public final class Formas {
 
     /**
      * Whether the tables are absent or empty.
+     *
      * @return TRUE when there is nothing to answer from
      */
     public boolean blank() {
@@ -135,6 +140,7 @@ public final class Formas {
 
     /**
      * The witnessed forma of one void.
+     *
      * @param place The locator of the void
      * @return The forma, or the empty string when it is not witnessed
      *  as a single data forma
@@ -145,6 +151,7 @@ public final class Formas {
 
     /**
      * The forma at the end of the reference chase from one locator.
+     *
      * @param start The locator to chase from
      * @return The forma, or the empty string when the chase refuses
      */

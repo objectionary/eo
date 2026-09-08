@@ -38,6 +38,7 @@ final class Settled {
 
     /**
      * Ctor.
+     *
      * @param dispatched What every dispatch turns out to be
      * @param promoted What the voids the program fills one way turn out to be
      */
@@ -48,6 +49,7 @@ final class Settled {
 
     /**
      * The pairs, with everything that follows from them added.
+     *
      * @param pairs The pairs, each name against the one it is a copy of
      * @return The pairs and the ones worked out from them
      */

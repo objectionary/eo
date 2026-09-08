@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 /**
  * This {@link Shift} finds all XPath matches and replaces them
  * with what a function suggests using {@link com.github.lombrozo.xnav.Xnav}.
+ *
  * @since 0.53.0
  */
 public final class StXnav implements Shift {
@@ -35,6 +36,7 @@ public final class StXnav implements Shift {
 
     /**
      * Ctor.
+     *
      * @param path The XPath
      * @param func The function
      */
@@ -44,6 +46,7 @@ public final class StXnav implements Shift {
 
     /**
      * Ctor.
+     *
      * @param identifier UID
      * @param path The XPath
      * @param func The function

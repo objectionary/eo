@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * It deletes binary files, which were previously copied by "place" mojo so
  * these binaries are not got into result JAR.
+ *
  * @since 0.11
  */
 @Mojo(

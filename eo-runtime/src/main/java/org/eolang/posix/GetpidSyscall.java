@@ -11,6 +11,7 @@ import org.eolang.Syscall;
 
 /**
  * Getpid syscall.
+ *
  * @since 0.40
  */
 public final class GetpidSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetpidSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public GetpidSyscall(final Phi posix) {

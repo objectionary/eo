@@ -50,6 +50,7 @@ final class Page {
 
     /**
      * Ctor.
+     *
      * @param file The XMIR of the file, as {@code pre-inference} left it
      * @param told What the tables answered, by the locator of the object
      */
@@ -60,6 +61,7 @@ final class Page {
 
     /**
      * The page.
+     *
      * @param name The path of the source file, relative to the program
      * @return The directives
      */

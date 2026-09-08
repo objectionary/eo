@@ -28,6 +28,7 @@ public final class Stat64FuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public Stat64FuncCall(final Phi win) {

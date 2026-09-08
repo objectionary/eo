@@ -50,6 +50,7 @@ final class LnReversed implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnReversed(final Span source) {

@@ -8,6 +8,7 @@ import org.eolang.win32.NamedFuncCall;
 
 /**
  * Win32 function call.
+ *
  * @since 0.40
  * @checkstyle IllegalIdentifierNameCheck (20 lines)
  * @checkstyle TypeNameCheck (19 lines)

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhSafe}.
+ *
  * @since 0.36.0
  */
 final class PhSafeTest {
@@ -287,6 +288,7 @@ final class PhSafeTest {
 
     /**
      * An atom that fails with a JVM error.
+     *
      * @since 0.60.0
      */
     private static final class Broken extends PhDefault implements Atom {

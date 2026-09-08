@@ -13,6 +13,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _creat function call.
+ *
  * @since 0.74.0
  */
 public final class CreatFuncCall implements Syscall {
@@ -24,6 +25,7 @@ public final class CreatFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public CreatFuncCall(final Phi win) {

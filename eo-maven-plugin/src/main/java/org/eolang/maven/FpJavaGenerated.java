@@ -14,12 +14,14 @@ import org.cactoos.text.Joined;
 
 /**
  * Footprint of Java generated files as input.
+ *
  * @since 0.56.7
  */
 final class FpJavaGenerated extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param clazz Transpiled Java class
      * @param generated Generated path
      * @param target Target path
@@ -30,6 +32,7 @@ final class FpJavaGenerated extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param clazz Transpiled Java class
      * @param generated Generated
      */

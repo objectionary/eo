@@ -34,6 +34,7 @@ final class Errno implements Supplier<Phi> {
 
     /**
      * Ctor.
+     *
      * @param status The code the native call returned
      */
     Errno(final int status) {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOstring$EOregex$EOpattern$EOchecked}.
+ *
  * @since 0.77
  */
 final class EOstringEOregexEOpatternEOcheckedTest {
@@ -78,6 +79,7 @@ final class EOstringEOregexEOpatternEOcheckedTest {
      * A fallback that renders the reason and the index it is given.
      * [reason index] > report
      * "%s at %d".printf (* reason index) > @
+     *
      * @since 0.77
      */
     private static final class Report extends PhDefault implements Atom {

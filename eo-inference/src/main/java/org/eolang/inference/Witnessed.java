@@ -74,6 +74,7 @@ public final class Witnessed implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are looked into
      */
     public Witnessed(final Clue clues) {
@@ -82,6 +83,7 @@ public final class Witnessed implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are looked into
      * @param members How many members a choice may have before it says
      *  nothing, measured at eight in the state document

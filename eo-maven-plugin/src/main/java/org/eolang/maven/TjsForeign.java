@@ -25,6 +25,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Foreign tojos.
+ *
  * @since 0.30
  */
 final class TjsForeign implements Closeable {
@@ -41,6 +42,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Ctor.
+     *
      * @param scalar Scalar
      * @param scope Scope
      */
@@ -58,6 +60,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Ctor with the default scope.
+     *
      * @param scalar Scalar
      */
     private TjsForeign(final Scalar<Tojos> scalar) {
@@ -66,6 +69,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Main constructor.
+     *
      * @param tojos The tojos
      * @param scope The scope
      */
@@ -84,6 +88,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Add a foreign tojo.
+     *
      * @param name The name of the tojo
      * @return The tojo
      */
@@ -97,6 +102,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Find tojo by tojo id.
+     *
      * @param id The id of the tojo
      * @return The tojo
      */
@@ -115,6 +121,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have corresponding xmir.
+     *
      * @return The tojos
      */
     Collection<TjForeign> withXmir() {
@@ -125,6 +132,7 @@ final class TjsForeign implements Closeable {
      * Get the tojos that have an XMIR of their own to compile, which is every
      * tojo with XMIR but the members that {@link MjMerge} has put inside the
      * object of their package, since those are compiled as a part of it.
+     *
      * @return The tojos
      */
     Collection<TjForeign> standalone() {
@@ -136,6 +144,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that doesn't have dependency.
+     *
      * @return The tojos
      */
     Collection<TjForeign> dependencies() {
@@ -148,6 +157,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have corresponding eo file.
+     *
      * @return The tojos
      */
     Collection<TjForeign> withSources() {
@@ -156,6 +166,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that do not have corresponding eo and xmir.
+     *
      * @return The tojos
      */
     Collection<TjForeign> withoutSources() {
@@ -167,6 +178,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the tojos that have not probed yet.
+     *
      * @return The tojos
      */
     Collection<TjForeign> unprobed() {
@@ -177,6 +189,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get all tojos as a collection.
+     *
      * @return Collection of tojos
      */
     Collection<TjForeign> all() {
@@ -187,6 +200,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Check if the tojos contains a foreign tojo with name.
+     *
      * @param name The name of the tojo
      * @return True if the tojo exists
      */
@@ -196,6 +210,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Get the size of the tojos.
+     *
      * @return The size of the tojos
      */
     int size() {
@@ -204,6 +219,7 @@ final class TjsForeign implements Closeable {
 
     /**
      * Status of tojos.
+     *
      * @return Status in text
      */
     String status() {
@@ -327,6 +343,7 @@ final class TjsForeign implements Closeable {
 
         /**
          * Ctor.
+         *
          * @param attribute The attribute name
          */
         Attribute(final String attribute) {
@@ -335,6 +352,7 @@ final class TjsForeign implements Closeable {
 
         /**
          * Get the attribute name.
+         *
          * @return The attribute name
          */
         String getKey() {

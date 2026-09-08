@@ -17,12 +17,14 @@ public interface Bytes {
 
     /**
      * NOT operation.
+     *
      * @return Bytes
      */
     Bytes not();
 
     /**
      * AND operation.
+     *
      * @param other Bytes
      * @return Bytes
      */
@@ -30,6 +32,7 @@ public interface Bytes {
 
     /**
      * OR operation.
+     *
      * @param other Bytes
      * @return Bytes
      */
@@ -37,6 +40,7 @@ public interface Bytes {
 
     /**
      * XOR operation.
+     *
      * @param other Bytes
      * @return Bytes
      */
@@ -46,6 +50,7 @@ public interface Bytes {
      * Big-endian unsigned shift.
      * Shifts right if the value is positive, or left otherwise.
      * Does not perform sign extension.
+     *
      * @param bits Bits to shift, negative to shift left
      * @return Bytes
      */
@@ -56,6 +61,7 @@ public interface Bytes {
      * Performs sign extension, i.e. it will
      * fill the top bits with 1 if the first bit is 1
      * and with 0 otherwise.
+     *
      * @param bits Bits to shift, negative value causes exception
      * @return Bytes
      */
@@ -63,12 +69,14 @@ public interface Bytes {
 
     /**
      * Convert to double number.
+     *
      * @return Number
      */
     Double asNumber();
 
     /**
      * Convert to number.
+     *
      * @param type Number type
      * @param <T> Type
      * @return Number
@@ -77,12 +85,14 @@ public interface Bytes {
 
     /**
      * Convert to string.
+     *
      * @return String
      */
     String asString();
 
     /**
      * Get bytes itself.
+     *
      * @return Bytes
      */
     byte[] take();

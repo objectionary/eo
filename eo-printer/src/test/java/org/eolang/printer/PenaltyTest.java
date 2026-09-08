@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Penalty}.
+ *
  * @since 0.57.0
  */
 final class PenaltyTest {

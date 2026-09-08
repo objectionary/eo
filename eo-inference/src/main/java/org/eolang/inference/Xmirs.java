@@ -48,6 +48,7 @@ final class Xmirs {
 
     /**
      * Ctor.
+     *
      * @param prepared The directory with the prepared XMIR files
      */
     Xmirs(final Path prepared) {
@@ -190,6 +191,7 @@ final class Xmirs {
 
     /**
      * The locator of every object of the program.
+     *
      * @return The locators
      * @throws IOException If a file cannot be read
      */

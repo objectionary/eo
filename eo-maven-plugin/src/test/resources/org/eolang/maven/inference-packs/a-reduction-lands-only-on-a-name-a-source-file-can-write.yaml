@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name with a moniker in it is walked through for the same reason it is not
+# counted: nobody can say it. `shaded` hands its answers to a formation the
+# author gave a file-local handle, so the only name behind it is the `a🌵` the
+# parser made up, and being told that is worse than being told `shaded`.
+eo:
+  tree.eo: |
+    [] > tree
+      [^] > shaded
+        hue 1 > @
+        [k] >> hue
+          k > @
+          [] > leaf
+provides:
+  - "/provides/type[@id='Φ.tree.shaded' and not(@reduced)]"
+  - "/provides/type[@id='Φ.tree.shaded']/attr[contains(@name, '🌵')]"

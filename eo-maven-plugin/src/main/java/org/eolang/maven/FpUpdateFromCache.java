@@ -12,6 +12,7 @@ import org.cactoos.text.TextOf;
 
 /**
  * Footprint that updates target from cache.
+ *
  * @since 0.41
  */
 final class FpUpdateFromCache implements Footprint {
@@ -23,6 +24,7 @@ final class FpUpdateFromCache implements Footprint {
 
     /**
      * Ctor.
+     *
      * @param cache Lazy path to cache
      */
     FpUpdateFromCache(final Supplier<Path> cache) {

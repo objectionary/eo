@@ -79,6 +79,7 @@ final class LnOnlyPhi implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnOnlyPhi(final Span source) {

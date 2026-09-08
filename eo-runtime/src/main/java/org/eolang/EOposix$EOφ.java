@@ -8,6 +8,7 @@ import org.eolang.posix.NamedSyscall;
 
 /**
  * Posix syscall.
+ *
  * @since 0.40
  * @checkstyle IllegalIdentifierNameCheck (20 lines)
  * @checkstyle TypeNameCheck (19 lines)

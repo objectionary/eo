@@ -52,6 +52,7 @@ final class LnPipe implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnPipe(final Span source) {

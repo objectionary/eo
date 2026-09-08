@@ -52,6 +52,7 @@ public class PhOnce implements Phi {
 
     /**
      * Ctor.
+     *
      * @param obj The object
      */
     public PhOnce(final Supplier<Phi> obj) {
@@ -60,6 +61,7 @@ public class PhOnce implements Phi {
 
     /**
      * Ctor.
+     *
      * @param obj The object
      * @param term Supplier of the φ-term
      */

@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Single register phase.
+ *
  * @since 0.1.0
  */
 final class PpRegister implements Iterable<Class<? extends AbstractMojo>> {

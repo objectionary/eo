@@ -5,9 +5,9 @@
 package org.eolang.inference;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -36,17 +36,30 @@ import java.util.Map;
  *
  * <p>An answer rooted at a void nothing here fills is not the end of it
  * either. The void may hold a formation that hands back what it is given, in
- * which case the answer is one of the things this call put in, and
- * {@link Branched} says which.</p>
+ * which case the answer is one of the things a call put in, and
+ * {@link Branched} says which. Which call is the question, since the chain a
+ * receiver resolves through reaches other applications of the same object and
+ * their arguments went into their own copies of the void. So the call asked is
+ * the one that landed here — the one that filled a void of a formation this
+ * void holds — and a reader further along the chain learns what that call was
+ * handed (#8508).</p>
+ *
+ * <p>Only the arms of those formations are counted. An argument is relayed to
+ * every formation the void might hold, because which one it turns out to be is
+ * not known where the argument is written, and a single stray relay among the
+ * arms is enough to make {@link Branched} give up on all of them: the
+ * {@code if} of an {@code abs} puts its {@code 0.plus value} into the two
+ * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
+ * well.</p>
  *
  * @since 0.69.0
  */
 final class Filled {
 
     /**
-     * What every application fills, from {@link Bound}.
+     * What the calls of the program put into its voids.
      */
-    private final Map<String, Map<String, String>> fills;
+    private final Puts puts;
 
     /**
      * The pairs, each name against the one it is a copy of.
@@ -65,19 +78,19 @@ final class Filled {
 
     /**
      * Ctor.
+     *
      * @param links The pairs, each name against the one it is a copy of
      * @param provided The provides table, by the name a type goes by
-     * @param bound What every application and every dispatch fills, from
-     *  {@link Bound}
+     * @param bound What the calls of the program put into its voids
      * @param voids The locator of every void, from {@link Hollows}
      */
     Filled(
         final Map<String, String> links,
         final Provided provided,
-        final Map<String, Map<String, String>> bound,
+        final Puts bound,
         final Collection<String> voids
     ) {
-        this.fills = bound;
+        this.puts = bound;
         this.pairs = links;
         this.owned = provided;
         this.hollows = voids;
@@ -85,17 +98,20 @@ final class Filled {
 
     /**
      * What this answer turns out to be for this receiver.
+     *
      * @param answer The type of the attribute, as the table gave it
      * @param bearer The locator of the receiver the question was asked of
+     * @param site The locator of the call the question is asked at
      * @return The type the answer stands for here, or the answer itself when
      *  no caller says what the void holds
      */
-    String instead(final String answer, final String bearer) {
-        return this.instead(answer, bearer, new HashSet<>(0));
+    String instead(final String answer, final String bearer, final String site) {
+        return this.instead(answer, bearer, site, new HashSet<>(0));
     }
 
     private String instead(
-        final String answer, final String bearer, final Collection<String> seen
+        final String answer, final String bearer, final String site,
+        final Collection<String> seen
     ) {
         final Map<String, String> fillings = this.fillings(bearer);
         final String found;
@@ -110,7 +126,7 @@ final class Filled {
                 }
             }
             if (longest.isEmpty()) {
-                found = this.branch(answer, fillings, seen);
+                found = this.branch(answer, fillings, bearer, site, seen);
             } else {
                 found = this.asked(
                     fillings.get(longest), answer.substring(longest.length() + 1), answer
@@ -121,28 +137,88 @@ final class Filled {
     }
 
     private String branch(
-        final String answer, final Map<String, String> fillings, final Collection<String> seen
+        final String answer, final Map<String, String> fillings, final String bearer,
+        final String site, final Collection<String> seen
     ) {
         final String root = new Rooted(this.hollows).names(answer);
         String found = answer;
         if (!root.isEmpty()) {
-            final String handed = new Branched(this.owned, fillings, this.hollows).names();
+            final String handed = this.handed(root, fillings, bearer, site);
             if (!handed.isEmpty() && seen.add(handed)) {
-                found = this.through(answer, root, handed, seen);
+                found = this.through(answer, root, handed, site, seen);
+            }
+        }
+        return found;
+    }
+
+    private String handed(
+        final String root, final Map<String, String> fillings, final String bearer,
+        final String site
+    ) {
+        String found = "";
+        for (final String call : this.calls(bearer, site)) {
+            final Map<String, String> arms = this.armed(this.arms(call), root);
+            if (!arms.isEmpty()) {
+                found = new Branched(this.owned, arms, this.hollows).names();
+                if (!found.isEmpty()) {
+                    break;
+                }
+            }
+        }
+        if (found.isEmpty()) {
+            found = new Branched(
+                this.owned, this.armed(fillings, root), this.hollows
+            ).names();
+        }
+        return found;
+    }
+
+    private Map<String, String> armed(final Map<String, String> arms, final String root) {
+        final Collection<String> holders = this.puts.holders(root);
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Map.Entry<String, String> arm : arms.entrySet()) {
+            final int dot = arm.getKey().lastIndexOf('.');
+            if (dot > 0 && holders.contains(arm.getKey().substring(0, dot))) {
+                found.put(arm.getKey(), arm.getValue());
+            }
+        }
+        return found;
+    }
+
+    private Collection<String> calls(final String bearer, final String site) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        found.add(site);
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = bearer;
+        while (!walked.isEmpty() && seen.add(walked)) {
+            found.add(walked);
+            if (this.pairs.containsKey(walked)) {
+                walked = this.pairs.get(walked);
+            } else {
+                walked = this.owned.body(walked);
             }
         }
         return found;
     }
 
     private String through(
-        final String answer, final String root, final String handed,
+        final String answer, final String root, final String handed, final String site,
         final Collection<String> seen
     ) {
         String found = this.asked(
             handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
         );
         if (found.equals(answer)) {
-            found = this.instead(answer, handed, seen);
+            found = this.instead(answer, handed, site, seen);
+        }
+        return found;
+    }
+
+    private Map<String, String> arms(final String site) {
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Map.Entry<String, String> fill
+            : this.puts.at(site).entrySet()) {
+            found.put(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
         }
         return found;
     }
@@ -175,7 +251,7 @@ final class Filled {
         String walked = type;
         while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
-                : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
+                : this.puts.at(walked).entrySet()) {
                 found.putIfAbsent(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
             }
             if (this.pairs.containsKey(walked)) {

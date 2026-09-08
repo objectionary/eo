@@ -31,6 +31,7 @@ public final class OpendirSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public OpendirSyscall(final Phi posix) {

@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt rename function call.
+ *
  * @since 0.74.0
  */
 public final class RenameFuncCall implements Syscall {
@@ -23,6 +24,7 @@ public final class RenameFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public RenameFuncCall(final Phi win) {

@@ -8,6 +8,7 @@ package org.eolang;
 /**
  * The exception raised when trying to put() an attribute,
  * which is read-only.
+ *
  * @since 0.21
  */
 public final class ExReadOnly extends ExAbstract {
@@ -19,6 +20,7 @@ public final class ExReadOnly extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Cause description
      */
     public ExReadOnly(final String cause) {
@@ -27,6 +29,7 @@ public final class ExReadOnly extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Cause description
      * @param root Caused exception
      */

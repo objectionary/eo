@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link BytesOf}.
+ *
  * @since 0.1.0
  */
 final class BytesOfTest {
@@ -280,6 +281,7 @@ final class BytesOfTest {
      * A legal {@link Bytes} that deliberately inherits the identity-based
      * {@link Object#equals(Object)}, as any implementation of the public
      * interface is free to do.
+     *
      * @since 0.1.0
      */
     private static final class PlainBytes implements Bytes {

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Unplacing}.
+ *
  * @since 0.61.0
  */
 final class UnplacingTest {

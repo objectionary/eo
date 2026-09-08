@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnOnlyPhi}.
+ *
  * @since 0.1
  */
 final class LnOnlyPhiTest {

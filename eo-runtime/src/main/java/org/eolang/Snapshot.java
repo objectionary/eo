@@ -10,6 +10,7 @@ import java.util.Arrays;
  * Bytes, defensively copied on construction and on every read, so that
  * neither the source array nor a previously handed-out one can mutate
  * this object's view of its own data.
+ *
  * @since 0.1
  */
 final class Snapshot {
@@ -21,6 +22,7 @@ final class Snapshot {
 
     /**
      * Ctor.
+     *
      * @param data Bytes to copy, or {@code null}
      */
     Snapshot(final byte[] data) {
@@ -33,6 +35,7 @@ final class Snapshot {
 
     /**
      * Whether no bytes were given.
+     *
      * @return True if empty
      */
     boolean empty() {
@@ -41,6 +44,7 @@ final class Snapshot {
 
     /**
      * Whether bytes were given.
+     *
      * @return True if present
      */
     boolean present() {
@@ -49,6 +53,7 @@ final class Snapshot {
 
     /**
      * A fresh copy of the bytes.
+     *
      * @return The copy, or {@code null} when {@link #empty()}
      */
     byte[] bytes() {

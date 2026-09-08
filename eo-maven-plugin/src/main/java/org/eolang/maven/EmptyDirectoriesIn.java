@@ -29,6 +29,7 @@ final class EmptyDirectoriesIn {
 
     /**
      * Ctor.
+     *
      * @param root Root directory
      */
     EmptyDirectoriesIn(final Path root) {
@@ -37,6 +38,7 @@ final class EmptyDirectoriesIn {
 
     /**
      * Ctor.
+     *
      * @param root Root directory
      */
     EmptyDirectoriesIn(final File root) {

@@ -35,6 +35,7 @@ public final class Symbol implements Term {
 
     /**
      * Ctor.
+     *
      * @param label The name, such as {@code v0} or {@code s1}
      * @param carrier The forma of the value
      */

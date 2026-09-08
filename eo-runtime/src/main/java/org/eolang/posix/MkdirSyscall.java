@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * Mkdir syscall.
+ *
  * @since 0.74.0
  */
 public final class MkdirSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class MkdirSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public MkdirSyscall(final Phi posix) {

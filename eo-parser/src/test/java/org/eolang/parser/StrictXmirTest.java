@@ -30,6 +30,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link StrictXmir}.
+ *
  * @since 0.5
  */
 final class StrictXmirTest {

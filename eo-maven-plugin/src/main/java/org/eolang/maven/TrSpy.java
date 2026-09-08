@@ -28,6 +28,7 @@ final class TrSpy extends TrEnvelope {
 
     /**
      * Ctor.
+     *
      * @param train Original one
      * @param dir The dir to save
      */

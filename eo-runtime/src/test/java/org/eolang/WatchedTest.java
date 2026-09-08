@@ -15,6 +15,7 @@ import org.opentest4j.TestAbortedException;
 
 /**
  * Test case for {@link Watched}.
+ *
  * @since 0.75.0
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

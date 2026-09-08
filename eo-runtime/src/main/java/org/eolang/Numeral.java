@@ -28,6 +28,7 @@ final class Numeral implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param num The number
      */
     Numeral(final double num) {

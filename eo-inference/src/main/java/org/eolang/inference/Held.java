@@ -32,6 +32,7 @@ final class Held {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, as {@link Provides} wrote it
      */
     Held(final XML provides) {
@@ -40,6 +41,7 @@ final class Held {
 
     /**
      * What every void that says so will hold.
+     *
      * @return The types, by the locator of the void, without the voids that
      *  say nothing
      */

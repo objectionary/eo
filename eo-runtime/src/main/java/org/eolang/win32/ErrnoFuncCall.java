@@ -13,6 +13,7 @@ import org.eolang.Syscall;
  * The msvcrt {@code _errno} function call: the raw CRT error code left by the
  * last failed {@code msvcrt} file function, read the same way {@link Errno}
  * reads it to build a failure message.
+ *
  * @since 0.75.0
  */
 public final class ErrnoFuncCall implements Syscall {
@@ -24,6 +25,7 @@ public final class ErrnoFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public ErrnoFuncCall(final Phi win) {

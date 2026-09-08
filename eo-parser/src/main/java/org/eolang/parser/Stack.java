@@ -66,6 +66,7 @@ final class Stack {
 
     /**
      * Ctor with only a closer; opener defaults to no-op.
+     *
      * @param hook Close-time check hook
      */
     Stack(final Closer hook) {
@@ -74,6 +75,7 @@ final class Stack {
 
     /**
      * Primary ctor.
+     *
      * @param closer Close-time check hook
      * @param opener Pre-child hook
      */
@@ -86,6 +88,7 @@ final class Stack {
 
     /**
      * Whether the stack has no entries.
+     *
      * @return True if empty
      */
     boolean empty() {
@@ -94,6 +97,7 @@ final class Stack {
 
     /**
      * Number of entries currently on the stack.
+     *
      * @return Depth
      */
     int depth() {
@@ -102,6 +106,7 @@ final class Stack {
 
     /**
      * The top entry.
+     *
      * @return Top
      */
     Level top() {
@@ -141,6 +146,7 @@ final class Stack {
      * a line that threw a {@link ParseError} (R-7.3) — the closer is
      * <em>not</em> invoked here because the rolled-back open directives
      * never reached the sink.
+     *
      * @param snapshot A snapshot taken earlier via {@link #snapshot()}
      */
     void restore(final List<Level> snapshot) {
@@ -152,6 +158,7 @@ final class Stack {
      * The entry directly below the top, or the bottom sentinel when the
      * stack holds fewer than two entries. Used by the FSM to read a new
      * entry's parent during the push step (R-5.2.8).
+     *
      * @return Entry below top, never null
      */
     Level below() {
@@ -169,6 +176,7 @@ final class Stack {
      * or the bottom sentinel when nothing has been pushed yet. Read by
      * R-6.3.3, which admits a {@code +>} test attribute only under a
      * top-level object that is a formation.
+     *
      * @return Outermost entry, never null
      */
     Level root() {
@@ -246,6 +254,7 @@ final class Stack {
      * indent {@code target} - 2 (a step occurred), its openness is
      * downgraded from {@link Openness#OPEN OPEN} to
      * {@link Openness#VCOMPLETED VCOMPLETED} per R-5.2.2.
+     *
      * @param target Target indent
      */
     void popDeeperThan(final int target) {
@@ -264,6 +273,7 @@ final class Stack {
      * Replace the top entry with a fresh one at the same indent
      * (R-5.2.4), invoking the closer on the entry being replaced. The
      * new entry's {@code parent} comes from the entry below.
+     *
      * @param line Start line of the new entry
      * @param kind Initial outer kind
      * @param openness Initial openness
@@ -347,6 +357,7 @@ final class Stack {
 
         /**
          * Run close-time checks on a popped, replaced or sealed level.
+         *
          * @param level The level being closed
          * @param naming Whether the naming requirement applies to it
          */
@@ -370,6 +381,7 @@ final class Stack {
 
         /**
          * React to a new child being pushed under {@code parent}.
+         *
          * @param parent The parent level (current top before push)
          */
         void beforeChild(Level parent);

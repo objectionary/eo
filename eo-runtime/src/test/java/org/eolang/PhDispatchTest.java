@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhDispatch}.
+ *
  * @since 0.16
  */
 final class PhDispatchTest {
@@ -90,6 +91,7 @@ final class PhDispatchTest {
 
     /**
      * Dummy default.
+     *
      * @since 0.1.0
      */
     static final class Dummy extends PhDefault {
@@ -101,6 +103,7 @@ final class PhDispatchTest {
 
         /**
          * Ctor.
+         *
          * @checkstyle ConstructorsCodeFreeCheck (30 lines)
          */
         Dummy() {

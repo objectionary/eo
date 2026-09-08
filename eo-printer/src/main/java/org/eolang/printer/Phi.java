@@ -84,6 +84,7 @@ final class Phi {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head of the formation
      * @param suffix The rendered suffix of the formation
      * @param phi The {@code φ} decoratee
@@ -96,6 +97,7 @@ final class Phi {
 
     /**
      * Render the collapsed formation at the given indentation level.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply

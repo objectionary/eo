@@ -29,6 +29,7 @@ public final class AtomSafe implements Atom {
 
     /**
      * Ctor.
+     *
      * @param atom Phi as atom
      */
     public AtomSafe(final Phi atom) {

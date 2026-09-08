@@ -49,6 +49,7 @@ final class LnApplication implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnApplication(final Span source) {

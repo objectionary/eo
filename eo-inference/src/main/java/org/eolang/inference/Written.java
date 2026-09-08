@@ -45,6 +45,7 @@ final class Written {
 
     /**
      * Ctor.
+     *
      * @param loc The locator of the object
      * @param place The column it was written at, counted from nought
      * @param name The name it goes by, empty when it has none
@@ -59,6 +60,7 @@ final class Written {
 
     /**
      * The locator of the object.
+     *
      * @return The locator
      */
     String loc() {
@@ -67,6 +69,7 @@ final class Written {
 
     /**
      * The column it was written at.
+     *
      * @return The column, counted from nought
      */
     int at() {
@@ -106,6 +109,7 @@ final class Written {
 
     /**
      * What the tables answered for it.
+     *
      * @return The answer
      */
     Answer answer() {
@@ -114,6 +118,7 @@ final class Written {
 
     /**
      * The same object, written at another column.
+     *
      * @param place The column
      * @return The object
      */

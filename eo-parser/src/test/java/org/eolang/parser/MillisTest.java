@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Millis}.
+ *
  * @since 0.73.4
  */
 final class MillisTest {

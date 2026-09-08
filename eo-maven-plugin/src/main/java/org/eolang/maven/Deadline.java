@@ -41,6 +41,7 @@ final class Deadline {
 
     /**
      * Ctor.
+     *
      * @param mojo The Mojo the body belongs to
      * @param seconds How many seconds the body may take
      * @param unroll Whether the chain of causes goes to the log

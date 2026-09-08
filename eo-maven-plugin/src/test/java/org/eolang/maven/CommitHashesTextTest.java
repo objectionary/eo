@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link CommitHashesText}.
+ *
  * @since 0.37.0
  */
 final class CommitHashesTextTest {

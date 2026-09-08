@@ -34,6 +34,7 @@ final class Reach {
 
     /**
      * Ctor.
+     *
      * @param text The line, as the source wrote it
      */
     Reach(final String text) {
@@ -42,6 +43,7 @@ final class Reach {
 
     /**
      * How many characters the thing at this column covers.
+     *
      * @param column The column it starts at, counted from nought
      * @return The characters, never fewer than none
      */

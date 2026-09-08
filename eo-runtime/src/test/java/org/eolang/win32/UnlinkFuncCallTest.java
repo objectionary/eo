@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link UnlinkFuncCall}.
+ *
  * @since 0.57.0
  */
 final class UnlinkFuncCallTest {

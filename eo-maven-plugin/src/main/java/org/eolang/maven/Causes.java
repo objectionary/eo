@@ -27,6 +27,7 @@ final class Causes implements Iterable<String> {
 
     /**
      * Ctor.
+     *
      * @param problem The problem to explain
      */
     Causes(final Throwable problem) {

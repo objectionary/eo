@@ -23,6 +23,7 @@ public final class PhLogged implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The origin
      */
     public PhLogged(final Phi phi) {

@@ -11,6 +11,7 @@ import org.cactoos.BiFunc;
 
 /**
  * Footprint after application with cache.
+ *
  * @since 0.56.7
  */
 final class FpAppliedWithCache implements Footprint {
@@ -37,6 +38,7 @@ final class FpAppliedWithCache implements Footprint {
 
     /**
      * Ctor.
+     *
      * @param ipt Input
      * @param che Cache
      * @param rwrte Rewrite

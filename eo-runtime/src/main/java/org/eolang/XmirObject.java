@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation for a Java class made from XMIR object.
+ *
  * @since 0.17
  */
 @Target(ElementType.TYPE)
@@ -20,12 +21,14 @@ public @interface XmirObject {
 
     /**
      * The original name of the object in EO, before optimization.
+     *
      * @return The name as it was in EO
      */
     String oname();
 
     /**
      * The name of the object in EO.
+     *
      * @return The name as it is in EO
      */
     String name() default "";
