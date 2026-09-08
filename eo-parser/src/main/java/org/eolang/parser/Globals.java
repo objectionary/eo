@@ -247,14 +247,6 @@ final class Globals {
     }
 
     /**
-     * Mark a text block as opened on the given line.
-     * @param line Open line
-     */
-    void openTextBlock(final int line) {
-        this.openTextBlock(line, 0);
-    }
-
-    /**
      * Mark a text block as opened with a recorded indent.
      * @param line Open line
      * @param indent Open indent

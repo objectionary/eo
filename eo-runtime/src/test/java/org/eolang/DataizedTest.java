@@ -104,4 +104,26 @@ final class DataizedTest {
             Matchers.containsString("not valid UTF-8")
         );
     }
+
+    @Test
+    void refusesHalfOfAMultiByteCharacter() {
+        MatcherAssert.assertThat(
+            "a sequence that merely stops early must be refused too, not padded with U+FFFD",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new Data.ToPhi(new byte[]{(byte) 0xD0})).asString(),
+                "the first half of a two-byte character was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.containsString("not valid UTF-8")
+        );
+    }
+
+    @Test
+    void readsAMultiByteCharacter() {
+        MatcherAssert.assertThat(
+            "a whole multi-byte character must still be read as it is",
+            new Dataized(new Data.ToPhi("привет")).asString(),
+            Matchers.equalTo("привет")
+        );
+    }
 }
