@@ -4,17 +4,21 @@
  */
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Attribute that retrieves object only once.
  *
  * <p>It's highly recommended to use it with {@link AtComposite}.</p>
  *
+ * <p>The first retrieval happens under the monitor of this very attribute,
+ * and not under a lock of its own, because an object of the language is made
+ * of these attributes and there are millions of them in the heap of a program
+ * that runs for a while: a lock costs two objects each, while a monitor
+ * costs nothing until two threads want it at the same time.</p>
+ *
  * @since 0.1
+ * @checkstyle RegexpSinglelineCheck (60 lines)
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 public final class AtOnce implements Attribute {
 
     /**
@@ -23,14 +27,9 @@ public final class AtOnce implements Attribute {
     private final Attribute origin;
 
     /**
-     * Cache.
+     * Cache, {@code null} until the origin is retrieved.
      */
-    private final AtomicReference<Phi> cached;
-
-    /**
-     * Lock guarding the first retrieval of the origin attribute.
-     */
-    private final Lock lock;
+    private volatile Phi cached;
 
     /**
      * Ctor.
@@ -38,8 +37,6 @@ public final class AtOnce implements Attribute {
      */
     public AtOnce(final Attribute attr) {
         this.origin = attr;
-        this.cached = new AtomicReference<>(null);
-        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -49,17 +46,16 @@ public final class AtOnce implements Attribute {
 
     @Override
     public Phi get() {
-        if (this.cached.get() == null) {
-            this.lock.lock();
-            try {
-                if (this.cached.get() == null) {
-                    this.cached.set(this.origin.get());
+        Phi ret = this.cached;
+        if (ret == null) {
+            synchronized (this) {
+                if (this.cached == null) {
+                    this.cached = this.origin.get();
                 }
-            } finally {
-                this.lock.unlock();
+                ret = this.cached;
             }
         }
-        return this.cached.get();
+        return ret;
     }
 
     @Override

@@ -5,9 +5,6 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
@@ -27,7 +24,9 @@ import java.util.function.Supplier;
  *
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (200 lines)
+ * @checkstyle RegexpSinglelineCheck (200 lines)
  */
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
 public class PhOnce implements Phi {
 
     /**
@@ -36,19 +35,18 @@ public class PhOnce implements Phi {
     private final Supplier<Phi> object;
 
     /**
-     * Reference.
+     * Reference, {@code null} until the object is fetched. The first fetch
+     * happens under the monitor of this very object, and not under a lock of
+     * its own, because there are millions of these in the heap of a program
+     * that runs for a while: a lock costs two objects each, while a monitor
+     * costs nothing until two threads want it at the same time.
      */
-    private final AtomicReference<Phi> ref;
+    private volatile Phi ref;
 
     /**
      * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
      */
     private final Supplier<String> term;
-
-    /**
-     * Lock guarding the first load of the reference.
-     */
-    private final Lock lock;
 
     /**
      * Ctor.
@@ -64,9 +62,7 @@ public class PhOnce implements Phi {
      * @param term Supplier of the φ-term
      */
     public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
-        this.ref = new AtomicReference<>(null);
         this.term = term;
-        this.lock = new ReentrantLock();
         this.object = () -> this.loaded(obj);
     }
 
@@ -147,16 +143,15 @@ public class PhOnce implements Phi {
     }
 
     private Phi loaded(final Supplier<Phi> obj) {
-        if (this.ref.get() == null) {
-            this.lock.lock();
-            try {
-                if (this.ref.get() == null) {
-                    this.ref.set(obj.get());
+        Phi ret = this.ref;
+        if (ret == null) {
+            synchronized (this) {
+                if (this.ref == null) {
+                    this.ref = obj.get();
                 }
-            } finally {
-                this.lock.unlock();
+                ret = this.ref;
             }
         }
-        return this.ref.get();
+        return ret;
     }
 }
