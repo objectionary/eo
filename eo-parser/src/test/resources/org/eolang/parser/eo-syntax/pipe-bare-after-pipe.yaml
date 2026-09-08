@@ -9,8 +9,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@pipe]/o[@base='Φ.number']
-  - //o[@pipe]/following-sibling::o[@pipe]/o[@base='Φ.number']
+  - //o[@pipe and @name]/o[@base='Φ.number']
+  - //o[@pipe and not(@name)]/o[@base='Φ.number']
 input: |
   [] > app
     foo > @
