@@ -199,12 +199,12 @@ final class Suffix {
      * @return The {@code @name} value, or {@code null}
      */
     String attribute(final int line, final int indent) {
-        final String name;
         if (this.form == Form.RECEIVER) {
             throw new ParseError(
                 line, indent, "only a void attribute can declare the receiver ^"
             );
         }
+        final String name;
         if (this.form == Form.NAME) {
             name = Suffix.phi(this.label);
         } else if (this.form == Form.TEST) {
