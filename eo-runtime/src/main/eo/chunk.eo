@@ -103,13 +103,17 @@
   eq. ++> can-read-back-what-write-returned
     malloc.of
       8
-      c.read 0 (c.write 0 "héllo").size > [c]
+      c.read > [c]
+        0
+        size.
+          c.write 0 "héllo"
     "héllo".as-bytes
 
   eq. ++> can-return-fewer-bytes-than-the-block-holds
     malloc.of
       8
-      (c.write 2 "日本").size > [c]
+      size. > [c]
+        c.write 2 "日本"
     6
 
   eq. ++> can-return-no-bytes-when-writing-nothing
