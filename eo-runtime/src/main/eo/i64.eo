@@ -7,6 +7,11 @@
 # nearest double of `9223372036854775807` is `2^63`, which is one past the
 # `long` range that `printf`'s own `%d` guard accepts, so the message itself
 # used to terminate instead of being printed.
+#
+# Negation is two's complement, one `plus` over the flipped bits, and not
+# `times` by minus one. Every bit of minus one is set, so the shift-and-add
+# loop of `times` ran a full addition on all sixty four of them, which is
+# what `minus`, `lt`, `lte`, `gt` and `gte` all rest on.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -138,7 +143,9 @@
         x >> value!
       ^.eq value
   ^.plus (i64 x!).neg > [^ x] > minus
-  times -1.as-i64 > neg
+  plus. > [^] > neg
+    i64 ^.as-bytes.not
+    i64 00-00-00-00-00-00-00-01
   [^ x] > plus
     if. > [^ a b] >> carried
       b.eq 00-00-00-00-00-00-00-00
@@ -275,6 +282,17 @@
   eq. ++> can-multiply-two-negatives
     -7.as-i64.times -6.as-i64
     42.as-i64
+
+  -42.as-i64.neg.eq 42.as-i64 ++> can-negate-a-negative
+
+  42.as-i64.neg.eq -42.as-i64 ++> can-negate-a-positive
+
+  eq. ++> can-negate-the-smallest-i64-to-itself
+    neg.
+      i64 80-00-00-00-00-00-00-00
+    i64 80-00-00-00-00-00-00-00
+
+  0.as-i64.neg.eq 0.as-i64 ++> can-negate-zero-to-zero
 
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
     "recovered"

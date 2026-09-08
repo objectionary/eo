@@ -21,7 +21,7 @@ final class CallTest {
     @Test
     void wrapsNumberAndDataizesNumber() {
         MatcherAssert.assertThat(
-            "a number receiver must be wrapped and the number answer dataized, but it isnt",
+            "a number receiver must be the object the void holds, and the answer dataized, but it isnt",
             CallTest.call(
                 new Dispatch(
                     "s1", "minus", Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00"),
@@ -32,7 +32,7 @@ final class CallTest {
             Matchers.equalTo(
                 String.join(
                     "",
-                    "new Dataized(new PhApplication(new PhDispatch(new Data.ToPhi(v0), ",
+                    "new Dataized(new PhApplication(new PhDispatch(this.take(\"x\"), ",
                     "\"minus\"), new Bind(0, new Data.ToPhi(",
                     "Double.longBitsToDouble(0x3FF0000000000000L))))).asNumber()"
                 )
@@ -49,7 +49,7 @@ final class CallTest {
                 Collections.singletonMap("x", "number")
             ),
             Matchers.equalTo(
-                "new Dataized(new PhDispatch(new Data.ToPhi(v0), \"is-nan\")).asBool()"
+                "new Dataized(new PhDispatch(this.take(\"x\"), \"is-nan\")).asBool()"
             )
         );
     }
@@ -57,7 +57,7 @@ final class CallTest {
     @Test
     void readsStringReceiverAsText() {
         MatcherAssert.assertThat(
-            "a string receiver must be made a string again, and bytes taken, but it isnt",
+            "a string receiver must be the object the void holds, and bytes taken, but it isnt",
             CallTest.call(
                 new Dispatch("s1", "trimmed", Collections.singletonList("sym:v0"), "string"),
                 Collections.singletonMap("t", "string")
@@ -65,8 +65,8 @@ final class CallTest {
             Matchers.equalTo(
                 String.join(
                     "",
-                    "new Dataized(new PhDispatch(new Data.ToPhi(",
-                    "new String(v0, java.nio.charset.StandardCharsets.UTF_8)), \"trimmed\")).take()"
+                    "new Dataized(new PhDispatch(",
+                    "this.take(\"t\"), \"trimmed\")).take()"
                 )
             )
         );
@@ -83,7 +83,11 @@ final class CallTest {
                 Collections.singletonMap("items", "tuple")
             ),
             Matchers.equalTo(
-                "new PhApplication(new PhDispatch(v0, \"with\"), new Bind(0, new Data.ToPhi(true)))"
+                String.join(
+                    "",
+                    "new PhApplication(new PhDispatch(this.take(\"items\"), \"with\"), ",
+                    "new Bind(0, new Data.ToPhi(true)))"
+                )
             )
         );
     }
@@ -100,7 +104,9 @@ final class CallTest {
                 new Dispatch("s1", "slice", Arrays.asList("sym:v0", "sym:v1", "sym:v2"), "object"),
                 voids
             ),
-            Matchers.endsWith(", new Bind(0, new Data.ToPhi(v1)), new Bind(1, new Data.ToPhi(v2)))")
+            Matchers.endsWith(
+                ", new Bind(0, this.take(\"a\")), new Bind(1, this.take(\"b\")))"
+            )
         );
     }
 

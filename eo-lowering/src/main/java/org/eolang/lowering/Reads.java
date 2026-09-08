@@ -26,6 +26,11 @@ import java.util.stream.Stream;
  * protocol that repeats, the way its answer would, and so does the
  * reason of a protocol that fails.</p>
  *
+ * <p>The operands of a {@link Dispatch} are no reads: a call takes the
+ * object a void holds, not the datum of its bytes, so a void nothing but
+ * a call reaches is never dataized here, the way EO leaves that to the
+ * method.</p>
+ *
  * @since 0.76.0
  */
 public final class Reads {
@@ -80,7 +85,9 @@ public final class Reads {
     private SortedSet<Integer> direct() {
         final SortedSet<Integer> out = new TreeSet<>();
         final Stream<String> keys = Stream.concat(
-            this.protocol.moves().stream().flatMap(step -> step.keys().stream()),
+            this.protocol.moves().stream()
+                .filter(step -> step.atom().charAt(0) != '.')
+                .flatMap(step -> step.keys().stream()),
             Stream.concat(
                 Stream.of(this.protocol.answer(), this.protocol.reason()),
                 this.protocol.again().stream()

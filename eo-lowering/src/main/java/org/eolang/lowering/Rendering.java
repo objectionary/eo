@@ -240,6 +240,37 @@ public final class Rendering {
     }
 
     /**
+     * The name of the void a key names, under which the atom holds the
+     * object it was given.
+     *
+     * <p>A {@link Call} needs that object, not the datum of its bytes:
+     * the tables witness the forma a void dataizes to, and an object
+     * decorating a datum — a chunk of memory, an input of bytes —
+     * answers there as well as the datum itself while owning methods the
+     * datum never heard of. A program that repeats has no such object to
+     * name, since its voids are locals the loop rebinds, so a call in
+     * one is refused.</p>
+     *
+     * @param key The key of a void, such as {@code sym:v0}
+     * @return The name, such as {@code x}
+     */
+    public String named(final String key) {
+        if (this.program.repeats()) {
+            throw new IllegalStateException(
+                String.format("The void '%s' is rebound by a repeat, so no call can reach it", key)
+            );
+        }
+        final List<String> names = new ArrayList<>(this.program.inputs().keySet());
+        final int index = Integer.parseInt(key.split(":", 2)[1].substring(1));
+        if (index >= names.size()) {
+            throw new IllegalStateException(
+                String.format("A call reads void #%d, which the fragment lacks", index)
+            );
+        }
+        return names.get(index);
+    }
+
+    /**
      * The Java expression the atom hands to {@code Data.ToPhi}.
      *
      * <p>Where the fragment settled into a view of a local rather than

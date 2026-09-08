@@ -31,7 +31,9 @@
     test to its end. The value here sits above the band an ordinary test
     occupies — a directory walk passes about 300M through the allocator
     without ever holding much — so that the guard fires on a runaway test
-    rather than on the population (#8341).
+    rather than on the population (#8341). It binds one test, while tests
+    run as wide as the box has cores, so a job raising it from the command
+    line must keep the value times the workers under -Xmx.
     -->
     <eo.maxmem>1G</eo.maxmem>
   </properties>

@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -59,6 +60,91 @@ final class WatchedTest {
             "A body must be stopped when the thread watching it is interrupted, but it wasnt",
             WatchedTest.interrupted(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void saysWhenBodyRefusesToStop() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            MatcherAssert.assertThat(
+                "A body ignoring the interrupt must be named as holding the heap, but it wasnt",
+                Assertions.assertThrows(
+                    TestAbortedException.class,
+                    () -> new Watched(1024L * 1024L, 100L).through(
+                        () -> {
+                            final byte[][] junk = new byte[1][];
+                            while (!release.get()) {
+                                junk[0] = new byte[256 * 1024];
+                                WatchedTest.rest(1L);
+                            }
+                            return null;
+                        }
+                    ),
+                    "A body that would not stop must still be skipped, but it wasnt"
+                ).getMessage(),
+                Matchers.containsString("would not stop")
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void reportsInterruptOfFrugalBodyThatWillNotStop() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        final Thread watcher = Thread.currentThread();
+        final Thread bell = new Thread(
+            () -> {
+                WatchedTest.rest(100L);
+                watcher.interrupt();
+            }
+        );
+        bell.setDaemon(true);
+        bell.start();
+        try {
+            Assertions.assertThrows(
+                InterruptedException.class,
+                () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                    () -> {
+                        while (!release.get()) {
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A body holding no heap must stay a skip when it will not stop, but it didnt"
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void interruptsBodyThatSwallowsTheFirstInterrupt() {
+        final AtomicInteger jolts = new AtomicInteger();
+        Assertions.assertThrows(
+            TestAbortedException.class,
+            () -> new Watched(1024L * 1024L).through(
+                () -> {
+                    final byte[][] junk = new byte[1][];
+                    while (jolts.get() < 2) {
+                        junk[0] = new byte[256 * 1024];
+                        try {
+                            Thread.sleep(5L);
+                        } catch (final InterruptedException ex) {
+                            jolts.incrementAndGet();
+                        }
+                    }
+                    return null;
+                }
+            ),
+            "A body that swallows the interrupt must be interrupted again, but it wasnt"
+        );
+        MatcherAssert.assertThat(
+            "The group must be interrupted on every turn of the wait, but it wasnt",
+            jolts.get(),
+            Matchers.greaterThanOrEqualTo(2)
         );
     }
 

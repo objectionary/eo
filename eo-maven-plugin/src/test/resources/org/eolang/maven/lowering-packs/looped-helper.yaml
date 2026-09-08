@@ -36,7 +36,7 @@ lowered: |
       ? > acc /Q.number
 protocol: |
   loop v0 v1
-    s1 ← L_number_eq sym:v0 number:00-00-00-00-00-00-00-00
+    s1 ← L_number_equal sym:v0 number:00-00-00-00-00-00-00-00
     s2 ← fork sym:s1 number
       then
         answer sym:v1 number

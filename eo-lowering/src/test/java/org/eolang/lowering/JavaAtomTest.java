@@ -84,7 +84,7 @@ final class JavaAtomTest {
                             new Protocol(
                                 Arrays.asList(
                                     new Application(
-                                        "s1", "L_number_eq",
+                                        "s1", "L_number_equal",
                                         Arrays.asList("sym:v1", "number:00-00-00-00-00-00-00-00")
                                     ),
                                     new Fork(
@@ -307,7 +307,7 @@ final class JavaAtomTest {
                 new Protocol(
                     Arrays.asList(
                         new Application("s1", "L_number_div", Arrays.asList("sym:v0", "sym:v1")),
-                        new Application("s2", "L_number_eq", Arrays.asList("sym:s1", "sym:v0"))
+                        new Application("s2", "L_number_equal", Arrays.asList("sym:s1", "sym:v0"))
                     ),
                     "sym:s2",
                     "bool"
@@ -458,10 +458,9 @@ final class JavaAtomTest {
                 Collections.singletonMap("x", "number")
             ).text(),
             Matchers.stringContainsInOrder(
-                "final double v0 = new Dataized(this.take(\"x\")).asNumber();",
                 String.format(
                     "final double s1 = new Dataized(new PhApplication(new PhDispatch(%s, %s), new Bind(0, %s))).asNumber();",
-                    "new Data.ToPhi(v0)", "\"minus\"",
+                    "this.take(\"x\")", "\"minus\"",
                     "new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L))"
                 ),
                 "return new Data.ToPhi(s1);"
@@ -486,7 +485,7 @@ final class JavaAtomTest {
                 Collections.singletonMap("x", "number")
             ).text(),
             Matchers.stringContainsInOrder(
-                "final Phi s1 = new PhDispatch(new Data.ToPhi(v0), \"neg\");",
+                "final Phi s1 = new PhDispatch(this.take(\"x\"), \"neg\");",
                 "final byte[] s2 = new Dataized(s1).take();",
                 "return new Data.ToPhi(s2);"
             )
@@ -927,7 +926,7 @@ final class JavaAtomTest {
         return new Protocol(
             Arrays.asList(
                 new Application(
-                    "s1", "L_number_eq", Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                    "s1", "L_number_equal", Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
                 ),
                 new Fork(
                     "s2", "L_bool_if", "sym:s1",

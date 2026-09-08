@@ -39,6 +39,14 @@ import org.cactoos.text.UncheckedText;
  * renders as the Java {@code ==} of two doubles, the very comparison the
  * contract asks for.</p>
  *
+ * <p>Such a λ of our own has to be a name phino does not know, or phino
+ * evaluates it by its own meaning. The equality is {@code L_number_equal}
+ * and not {@code L_number_eq} for that reason: phino owns the latter and
+ * answers it with the receiver when the two agree, so {@code 2.eq 2}
+ * folded into the number two instead of refusing to fold. An unknown λ
+ * parks, the way {@code bool.if} and {@code string.slice} park, and a
+ * parked run is no data — which is what a refusal is made of.</p>
+ *
  * @since 0.76.0
  */
 public final class Universe {

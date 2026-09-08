@@ -22,6 +22,27 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
   <!--
+  The dotted cactus prefix, hoisted out of the hot functions below: "$auto"
+  is a global variable rather than a literal, so Saxon rebuilds the same
+  concatenation at every call instead of folding it (#8529).
+  -->
+  <xsl:variable name="auto-dot" select="concat('.', $auto)"/>
+  <!--
+  Every reference to a cactus name, by the name it resolves to and by the
+  head segment of that name, which is the same thing for a bare reference
+  ("ξ.ρ.a🌵4-2") and the receiver for a method dispatch
+  ("ξ.ρ.a🌵4-2.seg"). The functions below used to answer "which references
+  name this binding?" with a "$target/..//o[...]" subtree scan, reached from
+  template patterns Saxon evaluates against every "o" node, which made a
+  print quadratic in the size of the largest formation (#8529). The indexes
+  answer the same question without walking anything, as in "merge-monikers"
+  (#6511); the scoping stays where it was, as a predicate on what the index
+  hands back, and keys answer in document order, so "the first reference"
+  and "the second one" keep their meaning.
+  -->
+  <xsl:key name="local-ref" match="o[contains(@base, $auto)]" use="eo:resolved-name(@base)"/>
+  <xsl:key name="local-head" match="o[contains(@base, $auto)]" use="substring-before(concat(eo:resolved-name(@base), '.'), '.')"/>
+  <!--
   A reference resolves to its own auto-name: given a base such as
   `ξ.ρ.a🌵4-2`, everything up to the cactus prefix is stripped, so the
   resolved name is the trailing `a🌵4-2`. This mirrors the `$name`
@@ -70,7 +91,7 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="seen" as="element()*"/>
     <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
-    <xsl:sequence select="if (contains($target/@base, concat('.', $auto)) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
+    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
   </xsl:function>
   <!--
   Inline a reference to an auto-named abstract. A `? >> name` void
@@ -112,7 +133,7 @@
   #5821): its cactus name is likewise dropped so the folded value reads inline
   as `a!`, not as a vertical `a >>!` line.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto))]" priority="0">
+  <xsl:template match="o[contains(@base, $auto-dot)]" priority="0">
     <xsl:variable name="name" select="eo:resolved-name(@base)"/>
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
@@ -379,7 +400,7 @@
       void alias target, whose own name (or const layout) still matters
       and is handled by the ordinary reference path instead.
       -->
-      <xsl:variable name="ref-name" select="if (contains(@base, concat('.', $auto))) then eo:resolved-name(@base) else ()"/>
+      <xsl:variable name="ref-name" select="if (contains(@base, $auto-dot)) then eo:resolved-name(@base) else ()"/>
       <xsl:variable name="ref-target" select="if (exists($ref-name)) then ancestor::o/o[@name=$ref-name][1] else ()"/>
       <xsl:choose>
         <xsl:when test="exists($ref-target) and not(eo:void($ref-target)) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
@@ -406,7 +427,7 @@
   <xsl:function name="eo:recursive" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
+    <xsl:sequence select="exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target]])"/>
   </xsl:function>
   <!--
   Whether a reference in the auto-named binding's owner reaches it through a
@@ -419,7 +440,7 @@
   <xsl:function name="eo:dispatched" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="exists($target/..//o[contains(@base, concat($name, '.')) and not(ancestor-or-self::o[. is $target])])"/>
+    <xsl:sequence select="exists(key('local-head', $name, root($target))[ancestor::*[. is $target/..]][contains(@base, concat($name, '.'))][not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <!--
   Whether the auto-named binding `$target` is a dataized-const wrapper: a
@@ -448,7 +469,7 @@
   -->
   <xsl:function name="eo:vertical-const" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
-    <xsl:sequence select="eo:dataized-const($target) and not(eo:abstract($target/o[1]/o[1])) and exists($target//o[contains(@base, concat('.', $auto))])"/>
+    <xsl:sequence select="eo:dataized-const($target) and not(eo:abstract($target/o[1]/o[1])) and exists($target//o[contains(@base, $auto-dot)])"/>
   </xsl:function>
   <!--
   Whether the auto-named abstract formation `$target` is immediately followed
@@ -468,7 +489,7 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
-    <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, concat('.', $auto)) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
+    <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, $auto-dot) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
   </xsl:function>
   <!--
   Whether the single-use auto-named abstract formation `$target` is applied by a
@@ -558,7 +579,7 @@
   <xsl:function name="eo:references" as="element()*">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
+    <xsl:sequence select="key('local-head', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][not(ancestor-or-self::o[. is $target])]"/>
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner reaches the auto-name

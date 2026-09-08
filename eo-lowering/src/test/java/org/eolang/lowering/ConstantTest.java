@@ -177,6 +177,32 @@ final class ConstantTest {
     }
 
     @Test
+    void refusesNumericEquality(@Mktmp final Path temp) {
+        final Phino phino = new Phino("phino", 1000, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new Constant(
+                phino,
+                new Xnav(
+                    String.join(
+                        "",
+                        "<o base='.eq'>",
+                        "<o base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "<o as='α0' base='Φ.number'>",
+                        "<o as='α0' base='Φ.bytes'><o as='α0'>40-00-00-00-00-00-00-00</o></o>",
+                        "</o>",
+                        "</o>"
+                    )
+                ).element("o")
+            )::value,
+            "the equality of two numbers is a λ phino never fires, so it must not fold, but it did"
+        );
+    }
+
+    @Test
     void refusesForeignMethod(@Mktmp final Path temp) {
         final Phino phino = new Phino("phino", 1000, temp);
         Assumptions.assumeTrue(phino.suitable());

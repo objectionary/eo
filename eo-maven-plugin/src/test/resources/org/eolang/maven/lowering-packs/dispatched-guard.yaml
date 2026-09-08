@@ -8,10 +8,11 @@
 # the marker into a call back into EO over the void and the literal. The
 # tables of eo:inference witness what the call answers: `lt` is a
 # formation whose body is the atom `gt`, declared to answer a bool, so
-# the step is a bool and the `if` forks on it. The Java wraps the void
-# back into a number, takes `lt` of it, applies the literal, and
-# dataizes the call with asBool before choosing an arm, while the EO
-# behind `lt` stays where it is.
+# the step is a bool and the `if` forks on it. The Java takes `lt` of
+# the object the void holds, applies the literal, and dataizes the call
+# with asBool before choosing an arm, while the EO behind `lt` stays
+# where it is. Nothing but the call reaches the void, so the atom never
+# dataizes it: the method does that, the way it would in EO.
 input: |
   [] > foo
     [x] > sign
@@ -46,8 +47,7 @@ protocol: |
       answer number:3F-F0-00-00-00-00-00-00 number
   answer sym:s2 number
 java: |
-  final double v0 = new Dataized(this.take("x")).asNumber();
-  final boolean s1 = new Dataized(new PhApplication(new PhDispatch(new Data.ToPhi(v0), "lt"), new Bind(0, new Data.ToPhi(Double.longBitsToDouble(0x0000000000000000L))))).asBool();
+  final boolean s1 = new Dataized(new PhApplication(new PhDispatch(this.take("x"), "lt"), new Bind(0, new Data.ToPhi(Double.longBitsToDouble(0x0000000000000000L))))).asBool();
   final double s2;
   if (s1) {
       s2 = Double.longBitsToDouble(0xBFF0000000000000L);

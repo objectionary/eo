@@ -142,6 +142,34 @@ final class RenderingTest {
     }
 
     @Test
+    void namesVoidBehindKey() {
+        MatcherAssert.assertThat(
+            "the void a key names must be named, so a call reaches its object, but it isnt",
+            new Rendering(
+                new Protocol(Collections.emptyList(), "sym:v0", "bytes"),
+                Collections.singletonMap("b", "bytes")
+            ).named("sym:v0"),
+            Matchers.equalTo("b")
+        );
+    }
+
+    @Test
+    void refusesToNameVoidRebound() {
+        final Rendering rendering = new Rendering(
+            new Protocol(
+                Collections.emptyList(),
+                Collections.singletonList("number:3F-F0-00-00-00-00-00-00")
+            ),
+            Collections.singletonMap("x", "number")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> rendering.named("sym:v0"),
+            "a repeat rebinds its voids, so no call may reach one of them, but it did"
+        );
+    }
+
+    @Test
     void refusesOperandOfForeignForma() {
         Assertions.assertThrows(
             IllegalStateException.class,

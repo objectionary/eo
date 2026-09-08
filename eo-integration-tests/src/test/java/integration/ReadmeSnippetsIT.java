@@ -53,8 +53,12 @@ final class ReadmeSnippetsIT {
                     "org.eolang", "eo-runtime", ReadmeSnippetsIT.runtimeVersion()
                 );
                 f.build().properties().set("directory", "target");
-                new EoSourceRun(f).exec("app");
-                log[0] = f.log().content();
+                try {
+                    new EoSourceRun(f).exec("app");
+                    log[0] = f.log().content();
+                } catch (final Farea.BuildFailureException ex) {
+                    log[0] = String.format("%s%n%s", ex.getMessage(), f.log().content());
+                }
             }
         );
         MatcherAssert.assertThat(

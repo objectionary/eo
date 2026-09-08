@@ -11,11 +11,13 @@ import java.util.List;
 /**
  * The Java of one {@link Dispatch} step: a call back into EO.
  *
- * <p>The receiver and the arguments are Java locals, so each is wrapped
- * back into the object it stands for: a number, a bool and bytes
- * through {@code Data.ToPhi}, a string through the same after the bytes
- * are read as text, since that is what the runtime makes a string of,
- * and a tuple or an object as the {@code Phi} it already is. The method
+ * <p>Every operand is the object it is: a void holds one already and
+ * hands it over, read off the atom by the name {@link Rendering} knows
+ * it under, while a step and a literal are the datum they are and are
+ * wrapped back into an object — a number, a bool and bytes through
+ * {@code Data.ToPhi}, a string through the same after the bytes are read
+ * as text, since that is what the runtime makes a string of, and a tuple
+ * or an object as the {@code Phi} it already is. The method
  * is taken of the receiver with {@code PhDispatch} and applied to the
  * arguments by position with {@code PhApplication}, the way the
  * transpiler spells a call, and the value is dataized into the forma the step
@@ -81,16 +83,18 @@ public final class Call {
 
     private String wrapped(final String key) {
         final String kind = this.values.kind(key);
-        final String expr = this.values.expression(key);
         final String out;
-        if ("string".equals(kind)) {
+        if (key.startsWith("sym:v")) {
+            out = String.format("this.take(\"%s\")", this.values.named(key));
+        } else if ("string".equals(kind)) {
             out = String.format(
-                "new Data.ToPhi(new String(%s, java.nio.charset.StandardCharsets.UTF_8))", expr
+                "new Data.ToPhi(new String(%s, java.nio.charset.StandardCharsets.UTF_8))",
+                this.values.expression(key)
             );
         } else if ("tuple".equals(kind) || "object".equals(kind)) {
-            out = expr;
+            out = this.values.expression(key);
         } else {
-            out = String.format("new Data.ToPhi(%s)", expr);
+            out = String.format("new Data.ToPhi(%s)", this.values.expression(key));
         }
         return out;
     }

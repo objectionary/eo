@@ -32,6 +32,11 @@
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
       <artifactId>jcabi-matchers</artifactId>
       <!-- version from parent POM -->
       <scope>test</scope>

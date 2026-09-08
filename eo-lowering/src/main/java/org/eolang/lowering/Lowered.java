@@ -6,10 +6,9 @@ package org.eolang.lowering;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +19,8 @@ import org.w3c.dom.Element;
 /**
  * Rewrite the pure formations of one XMIR into synthetic atoms.
  *
- * <p>A formation qualifies when it is a named direct attribute of a top-
- * level object, its body is voids plus one {@code φ} plus helpers
+ * <p>A formation qualifies when it is a named attribute of another
+ * formation, its body is voids plus one {@code φ} plus helpers
  * nothing outside can name, and every void is witnessed in the tables of
  * {@code eo:inference} as a number, a string, bytes or a bool, so a
  * symbolic carrier can stand for it, or as a tuple, which the atom holds
@@ -53,7 +52,17 @@ import org.w3c.dom.Element;
  * never reads is what makes its own dataization reenter itself (#8439).
  * Whatever refuses along the way — an unwitnessed void, an operation
  * outside the tables, a body that needs no computation — leaves the
- * formation as written.</p>
+ * formation as written and says at debug level why: a refusal is normal
+ * and must not fail the build, but a build that cannot tell one refusal
+ * from another cannot be reasoned about either.</p>
+ *
+ * <p>Depth decides nothing: the walk goes down every formation of the
+ * document. In a merged XMIR the top object is the package, so its
+ * members are the shells and the work of a program sits deeper, in the
+ * helpers a source privatized with {@code >>} (#8474). A formation that
+ * lowers leaves with its whole body, so nothing inside it is walked
+ * afterwards, and one that refuses hands its own attributes to the same
+ * walk.</p>
  *
  * @since 0.76.0
  */
@@ -90,10 +99,24 @@ public final class Lowered implements Rewrite {
     public int rewrite(final Xnav doc) throws IOException {
         int count = 0;
         if (!this.formas.blank()) {
-            for (final Xnav node : Lowered.candidates(doc)) {
-                final String place = node.attribute("loc").text().orElse("");
-                if (!place.isEmpty() && this.lowered(node, place)) {
-                    ++count;
+            for (final Xnav top : Lowered.kids(doc.element("object"))) {
+                count += this.through(top);
+            }
+        }
+        return count;
+    }
+
+    private int through(final Xnav node) throws IOException {
+        int count = 0;
+        if (node.attribute("base").text().isEmpty()) {
+            final String name = node.attribute("name").text().orElse("");
+            final String place = node.attribute("loc").text().orElse("");
+            if (!name.isEmpty() && !"λ".equals(name) && !place.isEmpty()
+                && this.lowered(node, place)) {
+                count = 1;
+            } else {
+                for (final Xnav kid : Lowered.kids(node)) {
+                    count += this.through(kid);
                 }
             }
         }
@@ -106,16 +129,29 @@ public final class Lowered implements Rewrite {
         final List<Xnav> kids = Lowered.kids(node);
         final long rhos = kids.stream().filter(Lowered::rho).count();
         final long hidden = kids.stream().filter(Lowered::hidden).count();
+        final int shape = inputs.size() + 1 + (int) rhos + (int) hidden;
         boolean done = false;
-        if (!inputs.isEmpty() && bodies.size() == 1
-            && kids.size() == inputs.size() + 1 + (int) rhos + (int) hidden) {
-            done = this.spliced(node, bodies.get(0), inputs);
+        if (!inputs.isEmpty()) {
+            if (bodies.size() == 1 && kids.size() == shape) {
+                done = this.spliced(node, bodies.get(0), inputs, place);
+            } else {
+                Logger.debug(
+                    this,
+                    String.join(
+                        "",
+                        "The formation at %s is not shaped to lower: ",
+                        "%d body(-ies) and %d attribute(s), ",
+                        "where one body and %d attribute(s) are expected"
+                    ),
+                    place, bodies.size(), kids.size(), shape
+                );
+            }
         }
         return done;
     }
 
     private boolean spliced(final Xnav node, final Xnav body,
-        final Map<String, String> inputs) throws IOException {
+        final Map<String, String> inputs, final String place) throws IOException {
         String text = "";
         String carrier = "";
         try {
@@ -131,6 +167,10 @@ public final class Lowered implements Rewrite {
             }
         } catch (final IllegalStateException | IOException ex) {
             carrier = "";
+            Logger.debug(
+                this, "The formation at %s refused to lower: %s",
+                place, ex.getMessage()
+            );
         }
         final boolean done = !carrier.isEmpty();
         if (done) {
@@ -179,6 +219,15 @@ public final class Lowered implements Rewrite {
             }
             final String forma = this.formas.given(String.format("%s.%s", place, name));
             if (forma.isEmpty()) {
+                Logger.debug(
+                    this,
+                    String.join(
+                        "",
+                        "The void '%s' of the formation at %s is witnessed ",
+                        "by no single data forma, so nothing can carry it"
+                    ),
+                    name, place
+                );
                 out.clear();
                 break;
             }
@@ -201,23 +250,6 @@ public final class Lowered implements Rewrite {
         for (final Xnav kid : Lowered.kids(node)) {
             if (Lowered.hidden(kid)) {
                 out.put(kid.attribute("name").text().get(), kid);
-            }
-        }
-        return out;
-    }
-
-    private static Collection<Xnav> candidates(final Xnav doc) {
-        final Collection<Xnav> out = new ArrayList<>(0);
-        for (final Xnav top : Lowered.kids(doc.element("object"))) {
-            if (top.attribute("base").text().isPresent()) {
-                continue;
-            }
-            for (final Xnav kid : Lowered.kids(top)) {
-                final String name = kid.attribute("name").text().orElse("");
-                if (kid.attribute("base").text().isEmpty()
-                    && !name.isEmpty() && !"λ".equals(name)) {
-                    out.add(kid);
-                }
             }
         }
         return out;

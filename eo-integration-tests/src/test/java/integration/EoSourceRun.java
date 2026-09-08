@@ -32,6 +32,18 @@ import org.cactoos.Proc;
  * file descriptor 0, and neither the exec plugin nor {@code Farea} can give
  * a process an input of its own.</p>
  *
+ * <p>Both the JVM that builds a snippet and the one that runs it are given
+ * their memory by hand. The sandbox sits under {@code target} of this
+ * module, so the {@code mvn} that Farea forks walks up from it looking for
+ * a {@code .mvn} and finds the one belonging to this repository, taking the
+ * heap and the {@code -XX:+HeapDumpOnOutOfMemoryError} written there for
+ * the build of the whole reactor. A snippet that never stops allocating
+ * then fills that heap and writes gigabytes of it to disk on the way out,
+ * for every snippet in the suite, and the run that comes back says only
+ * that the build failed. A {@code .mvn/jvm.config} of its own stops the
+ * walk at the sandbox and hands the snippet a heap sized for one small
+ * program, with the dump switched off.</p>
+ *
  * <p>That JVM is given a stack of its own too. Dataizing an EO object walks
  * the whole chain of its nested objects on the Java stack, and a recursive
  * object adds its own chain on every step, so the depth grows with the
@@ -44,6 +56,16 @@ import org.cactoos.Proc;
  * @since 0.56.3
  */
 final class EoSourceRun implements Proc<Object> {
+
+    /**
+     * What the JVMs that build and run a snippet are given, one line of
+     * {@code .mvn/jvm.config} and the same flags on the forked command.
+     */
+    private static final String[] FLAGS = {
+        "-Xmx1g",
+        "-Xss64m",
+        "-XX:-HeapDumpOnOutOfMemoryError",
+    };
 
     /**
      * Name of the file the forked program reads its standard input from.
@@ -99,6 +121,9 @@ final class EoSourceRun implements Proc<Object> {
 
     @Override
     public void exec(final Object args) throws IOException {
+        this.farea.files().file(".mvn/jvm.config").write(
+            String.join(" ", EoSourceRun.FLAGS).getBytes(StandardCharsets.UTF_8)
+        );
         new RuntimeSources(
             Paths.get(System.getProperty("basedir", System.getProperty("user.dir")))
                 .getParent()
@@ -156,7 +181,6 @@ final class EoSourceRun implements Proc<Object> {
         final List<String> line = new ArrayList<>(
             Arrays.asList(
                 ProcessHandle.current().info().command().orElse("java"),
-                "-Xss64M",
                 "-cp",
                 String.format(
                     "%s%s%s",
@@ -170,6 +194,7 @@ final class EoSourceRun implements Proc<Object> {
                 "org.eolang.Main"
             )
         );
+        line.addAll(1, Arrays.asList(EoSourceRun.FLAGS));
         for (final Object arg : (Iterable<?>) args) {
             line.add(arg.toString());
         }

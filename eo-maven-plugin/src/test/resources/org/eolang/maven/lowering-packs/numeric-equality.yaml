@@ -29,7 +29,7 @@ lowered: |
       ? > x /Q.number
       ? > y /Q.number
 protocol: |
-  s1 ← L_number_eq sym:v0 sym:v1
+  s1 ← L_number_equal sym:v0 sym:v1
   answer sym:s1 bool
 java: |
   final double v0 = new Dataized(this.take("x")).asNumber();
