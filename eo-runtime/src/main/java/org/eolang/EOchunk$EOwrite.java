@@ -28,12 +28,10 @@ public final class EOchunk$EOwrite extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        final int id = new Natural(Expect.at(this.take(Phi.RHO), "id")).it();
+        final int offset = new Natural(Expect.at(this, "offset")).it();
         final byte[] data = new Dataized(this.take("data")).take();
-        Heaps.INSTANCE.write(
-            new Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
-            new Natural(Expect.at(this, "offset")).it(),
-            data
-        );
+        Heaps.INSTANCE.write(id, offset, data);
         return new Data.ToPhi(data);
     }
 }
