@@ -9,7 +9,7 @@ asserts:
   - //o[@base='ξ.y.plus']/o[@base='ξ.result']
   - //o[@name='app']/o[@name='foo' and not(@base) and o[@base='∅' and @name='x']]
   - //o[@name='app']/o[starts-with(@base,'ξ.foo') and o[@base='Φ.number']]
-  - //o[@name='app']/o[@name='result']/@base = concat('ξ.', //o[@name='app']/o[starts-with(@base,'ξ.foo')]/@name)
+  - //o[@name='app']/o[@name='result'][@base = concat('ξ.', //o[@name='app']/o[starts-with(@base,'ξ.foo')]/@name)]
 input: |
   [y] > app
     y.plus > @
