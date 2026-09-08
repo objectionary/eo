@@ -12,7 +12,6 @@ import org.eolang.lowering.Rewrite;
 /**
  * A lowering pass that adds up, across threads, how many fragments it
  * rewrote, and prints itself as {@code 55 lowered}.
- *
  * @since 0.76.0
  */
 final class Tally implements Rewrite {

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Tally}.
- *
  * @since 0.76.0
  */
 final class TallyTest {
