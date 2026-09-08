@@ -166,6 +166,66 @@ final class WatchedTest {
     }
 
     @Test
+    void stopsThreadTheBodyLeftBehind() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        Assertions.assertDoesNotThrow(
+            () -> new Watched(64L * 1024L * 1024L).through(
+                () -> {
+                    final Thread extra = new Thread(
+                        () -> {
+                            while (!Thread.currentThread().isInterrupted()) {
+                                WatchedTest.rest(1L);
+                            }
+                            stopped.set(true);
+                        }
+                    );
+                    extra.setDaemon(true);
+                    extra.start();
+                    return null;
+                }
+            ),
+            "A body leaving a thread that stops when told must not fail the test, but it did"
+        );
+        MatcherAssert.assertThat(
+            "A thread the body left behind must be gone before the guard returns, but it wasnt",
+            stopped.get(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void namesThreadThatOutlivedTheTest() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            MatcherAssert.assertThat(
+                "The thread that outlived the test must be named, but it wasnt",
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                        () -> {
+                            final Thread extra = new Thread(
+                                () -> {
+                                    while (!release.get()) {
+                                        WatchedTest.rest(1L);
+                                    }
+                                },
+                                "deaf-worker"
+                            );
+                            extra.setDaemon(true);
+                            extra.start();
+                            return null;
+                        }
+                    ),
+                    "A thread of the body outliving the test must fail it, but it didnt"
+                ).getMessage(),
+                Matchers.containsString("deaf-worker")
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
     void letsFrugalBodyThrough() {
         MatcherAssert.assertThat(
             "A body that eats almost nothing must run to its end, but it didnt",
