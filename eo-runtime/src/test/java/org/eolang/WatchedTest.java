@@ -167,30 +167,9 @@ final class WatchedTest {
 
     @Test
     void stopsThreadTheBodyLeftBehind() {
-        final AtomicBoolean stopped = new AtomicBoolean(false);
         MatcherAssert.assertThat(
             "A thread the body left behind must be gone before the guard returns, but it wasnt",
-            Assertions.assertDoesNotThrow(
-                () -> {
-                    new Watched(64L * 1024L * 1024L).through(
-                        () -> {
-                            final Thread extra = new Thread(
-                                () -> {
-                                    while (!Thread.currentThread().isInterrupted()) {
-                                        WatchedTest.rest(1L);
-                                    }
-                                    stopped.set(true);
-                                }
-                            );
-                            extra.setDaemon(true);
-                            extra.start();
-                            return null;
-                        }
-                    );
-                    return stopped.get();
-                },
-                "A body leaving a thread that stops when told must not fail, but it did"
-            ),
+            WatchedTest.lingering(),
             Matchers.is(true)
         );
     }
@@ -308,6 +287,29 @@ final class WatchedTest {
             "A body that never stops allocating must be terminated, but it wasnt"
         );
         return WatchedTest.awaited(stopped);
+    }
+
+    private static boolean lingering() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        Assertions.assertDoesNotThrow(
+            () -> new Watched(64L * 1024L * 1024L).through(
+                () -> {
+                    final Thread extra = new Thread(
+                        () -> {
+                            while (!Thread.currentThread().isInterrupted()) {
+                                WatchedTest.rest(1L);
+                            }
+                            stopped.set(true);
+                        }
+                    );
+                    extra.setDaemon(true);
+                    extra.start();
+                    return null;
+                }
+            ),
+            "A body leaving a thread that stops when told must not fail, but it did"
+        );
+        return stopped.get();
     }
 
     private static boolean interrupted() {
