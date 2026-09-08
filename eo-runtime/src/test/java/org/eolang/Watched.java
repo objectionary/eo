@@ -63,9 +63,12 @@ import org.opentest4j.TestAbortedException;
  * <p>The threads a body started are waited for as well, not only the body
  * itself: one of them may still hold a file when JUnit deletes the
  * {@code @TempDir} of the test behind it, which on windows fails (#8336).
- * So the wait ends when the group is empty, and a test whose own threads
- * outlive the grace fails, naming them — a thread nobody waits for is a
- * leak of the test, and the next test pays for it.</p>
+ * Once the body is out, the group is given the same grace to empty, and a
+ * test that came out clean while its own threads keep running fails,
+ * naming them — a thread nobody waits for is a leak of the test, and the
+ * next test pays for it. A body that was terminated keeps the verdict it
+ * earned: its leftovers are waited for all the same, but a skip does not
+ * turn into a failure because one of them was slow to notice.</p>
  *
  * @since 0.75.0
  */
@@ -183,7 +186,7 @@ final class Watched {
             this.terminate(group, done, consumed);
             throw this.aborted(consumed.bytes());
         }
-        final boolean idle = this.stopped(group, done);
+        final boolean idle = this.emptied(group);
         final Throwable error = failure.get();
         if (error != null) {
             throw error;
@@ -200,7 +203,10 @@ final class Watched {
 
     private void terminate(final ThreadGroup group, final CountDownLatch done,
         final Consumed consumed) {
-        if (!this.stopped(group, done) && consumed.bytes() > this.limit) {
+        final boolean stopped = this.stopped(group, done);
+        if (stopped) {
+            this.emptied(group);
+        } else if (consumed.bytes() > this.limit) {
             throw new IllegalStateException(
                 String.format(Watched.OUTLIVED, consumed.bytes(), this.limit, this.grace)
             );
@@ -210,20 +216,29 @@ final class Watched {
     private boolean stopped(final ThreadGroup group, final CountDownLatch done) {
         final long deadline = System.currentTimeMillis() + this.grace;
         group.interrupt();
-        while (Watched.busy(group, done) && System.currentTimeMillis() < deadline) {
-            try {
-                Thread.sleep(10L);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+        while (done.getCount() > 0L && System.currentTimeMillis() < deadline) {
+            Watched.rest();
             group.interrupt();
         }
-        return !Watched.busy(group, done);
+        return done.getCount() == 0L;
     }
 
-    private static boolean busy(final ThreadGroup group, final CountDownLatch done) {
-        return done.getCount() > 0L || group.activeCount() > 0;
+    private boolean emptied(final ThreadGroup group) {
+        final long deadline = System.currentTimeMillis() + this.grace;
+        group.interrupt();
+        while (group.activeCount() > 0 && System.currentTimeMillis() < deadline) {
+            Watched.rest();
+            group.interrupt();
+        }
+        return group.activeCount() == 0;
+    }
+
+    private static void rest() {
+        try {
+            Thread.sleep(10L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private static String alive(final ThreadGroup group) {

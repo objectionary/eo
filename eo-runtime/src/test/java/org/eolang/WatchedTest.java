@@ -194,7 +194,39 @@ final class WatchedTest {
     }
 
     @Test
-    void namesThreadThatOutlivedTheTest() {
+    void skipsTerminatedBodyThatLeftAThread() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            Assertions.assertThrows(
+                TestAbortedException.class,
+                () -> new Watched(1024L * 1024L, 100L).through(
+                    () -> {
+                        final Thread extra = new Thread(
+                            () -> {
+                                while (!release.get()) {
+                                    WatchedTest.rest(1L);
+                                }
+                            }
+                        );
+                        extra.setDaemon(true);
+                        extra.start();
+                        final byte[][] junk = new byte[1][];
+                        while (!Thread.currentThread().isInterrupted()) {
+                            junk[0] = new byte[256 * 1024];
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A terminated body that left a thread must stay a skip, but it didnt"
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void namesThreadThatOutlivedItsBody() {
         final AtomicBoolean release = new AtomicBoolean(false);
         try {
             MatcherAssert.assertThat(
@@ -216,7 +248,7 @@ final class WatchedTest {
                             return null;
                         }
                     ),
-                    "A thread of the body outliving the test must fail it, but it didnt"
+                    "A thread outliving the body it was started by must fail, but it didnt"
                 ).getMessage(),
                 Matchers.containsString("deaf-worker")
             );
