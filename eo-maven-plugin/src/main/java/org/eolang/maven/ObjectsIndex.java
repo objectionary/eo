@@ -13,6 +13,7 @@ import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -23,11 +24,6 @@ import org.cactoos.text.TextOf;
  * @since 0.29
  */
 final class ObjectsIndex {
-
-    /**
-     * Tags.
-     */
-    private static final String HOME = "https://home.objectionary.com/objectionary.lst";
 
     /**
      * Cached objects index.
@@ -45,7 +41,9 @@ final class ObjectsIndex {
                     new Mapped<>(
                         Text::asString,
                         new Split(
-                            ObjectsIndex.asText(new URL(ObjectsIndex.HOME)),
+                            ObjectsIndex.asText(
+                                new URL("https://home.objectionary.com/objectionary.lst")
+                            ),
                             "\\n"
                         )
                     )
@@ -59,7 +57,7 @@ final class ObjectsIndex {
      * @param all All objects index
      */
     ObjectsIndex(final Scalar<? extends Set<String>> all) {
-        this.objects = new Sticky<>(all);
+        this.objects = new Synced<>(new Sticky<>(all));
     }
 
     /**

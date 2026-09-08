@@ -12,7 +12,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    timeout-minutes: 25
+    # Forty-five minutes and not twenty-five: the first run after a bump of
+    # the pinned phino version builds it from source, and only that run.
+    timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -26,7 +28,22 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install '-Deo.coverageTracking=true'
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cabal
+          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
+      - run: |
+          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
+          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+            cabal update
+            cabal install "phino-${ver}" --overwrite-policy=always
+          fi
+          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+      - run: mvn install '-Deo.coverageTracking=true' '-Deo.loweringRequired=true'
+      # Lowering must not only have run, it must have folded something:
+      # a build where no fragment folds at all means the selection or the
+      # phino dialect silently broke.
+      - run: ls eo-runtime/target/eo/4-lower/*.xmir
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

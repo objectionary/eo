@@ -99,7 +99,7 @@ input: |
 ```yaml
 line: 1
 message: |-
-  [1:5] error: 'meta parts must be separated by exactly one space'
+  [1:5] error: 'meta parts must be separated by a single ASCII space'
 input: |
   +meta with  spaces
 ```

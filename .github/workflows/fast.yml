@@ -68,17 +68,26 @@ jobs:
                 done \
               | paste -sd, -
           ) || true
-          # The `|| true` is what lets the guard below run at all. A step
+          # The `|| true` is what lets the lines below run at all. A step
           # script runs under `-e -o pipefail`, so a branch that touches no
           # `.eo` file leaves `grep` with nothing to match, `grep` exits 1,
           # the pipeline inherits it and the assignment dies before anything
           # reads `classes`. On the left of `||` the status is nobody's
           # business and `classes` simply comes out empty.
+          # The concurrency tests are hand-written Java, so no .eo file names
+          # them and the loop above never picks them up. They lose every race
+          # against the one-second `eo.deadline` and the 256M `eo.maxmem` of
+          # the ordinary build, which report an over-budget test as skipped:
+          # `EOdirectoryEOmadeRaceTest` is skipped in all ten repetitions of
+          # every job that completes. They are added here unconditionally, so
+          # the branch they guard is executed rather than reported as covered.
+          always='EOdirectoryEOmadeRaceTest,EOfileEOtouchedTest'
           if [ -z "${classes}" ]; then
-            echo 'This branch touches no .eo file that owns tests, nothing to run'
+            classes="${always}"
           else
-            echo "Test classes to run: ${classes}"
+            classes="${always},${classes}"
           fi
+          echo "Test classes to run: ${classes}"
           echo "classes=${classes}" >> "${GITHUB_OUTPUT}"
       - uses: actions/setup-java@v6
         with:
@@ -92,12 +101,41 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' clean install
+      # The `lower` goal needs the exact phino version pinned in
+      # eo-lowering; the Linux leg installs it and demands lowering,
+      # while the Windows leg builds without it, keeping the skip
+      # path of the goal continuously covered.
+      - if: ${{ matrix.os == 'ubuntu-24.04' }}
+        uses: actions/cache@v6
+        with:
+          path: ~/.cabal
+          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
+      - if: ${{ matrix.os == 'ubuntu-24.04' }}
+        run: |
+          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
+          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+            cabal update
+            cabal install "phino-${ver}" --overwrite-policy=always
+          fi
+          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+          echo "LOWERING=-Deo.loweringRequired=true" >> "$GITHUB_ENV"
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' ${{ env.LOWERING }} clean install
       # The build above transpiled no tests at all, so `eo-runtime` is rebuilt
       # here from a clean target with them. An hour per test leaves `Deadline`
       # nothing to swallow, so a test that fails is reported as a failure and
       # not as a skip.
-      - if: steps.eo.outputs.classes != ''
-        env:
+      #
+      # `EOscanfDiagnosticTest` is hand-written and no `.eo` file names it, so
+      # the walk above never picks it up, while both guards abort it in an
+      # ordinary run: one dataization of a twenty-digit `%d` takes longer than
+      # `eo.deadline` and passes about 800M through the allocator. It is named
+      # here so that a regression in the message is a failure and not a skip
+      # (#8327).
+      - env:
           CLASSES: ${{ steps.eo.outputs.classes }}
-        run: mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${CLASSES}"
+        run: |
+          tests='EOscanfDiagnosticTest'
+          if [ -n "${CLASSES}" ]; then
+            tests="${tests},${CLASSES}"
+          fi
+          mvn clean test -ntp -pl :eo-runtime '-Deo.deadline=3600' '-Deo.maxmem=2G' "-Dtest=${tests}"

@@ -4,7 +4,10 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.IntPredicate;
 import org.xembly.Directive;
 
 /**
@@ -29,26 +32,19 @@ import org.xembly.Directive;
 final class Eo implements Iterable<Directive> {
 
     /**
-     * NAME-like terminator characters per §2.3 (excluding the dot,
-     * which callers check explicitly).
+     * What a line indented with a tab is told, wherever it is written.
      */
-    private static final String NAME_TERMINATORS = " \t,|':;!?[]{}()";
+    static final String TAB = "tab character in leading whitespace";
 
     /**
-     * Head characters of §3.1 that open a root-headed line without
-     * opening a literal — group, star, root, and identity tokens.
+     * What a line indented with neither a space nor a tab is told.
      */
-    private static final String ROOT_TOKENS = "*(QTI@^$";
+    static final String ALIEN = "invalid character in leading whitespace";
 
     /**
      * What a line with a space at its end is told, wherever it is written.
      */
     private static final String TRAILING = "trailing whitespace at end of line";
-
-    /**
-     * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
-     */
-    private static final int SPANS_CAPACITY = 10;
 
     /**
      * Raw EO source text.
@@ -74,7 +70,7 @@ final class Eo implements Iterable<Directive> {
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        final List<Span> spans = new ArrayList<>(10);
         new Source(this.source).forEach(spans::add);
         final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
@@ -169,7 +165,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int topLevelMarker(
-        final String body, final java.util.function.IntPredicate marker
+        final String body, final IntPredicate marker
     ) {
         int depth = 0;
         int found = -1;
@@ -191,7 +187,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start, final Stack stack,
+        final List<Span> spans, final int start, final Stack stack,
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
@@ -202,6 +198,11 @@ final class Eo implements Iterable<Directive> {
         while (idx < spans.size()) {
             final Span next = spans.get(idx);
             final String trimmed = next.body().stripTrailing();
+            if (next.trailing()) {
+                emit.error(next.line(), 0, Eo.TRAILING);
+                broken = true;
+                break;
+            }
             if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
@@ -271,10 +272,10 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
-            emit.error(span.line(), 0, "tab character in leading whitespace");
+            emit.error(span.line(), 0, Eo.TAB);
             failed = true;
         } else if (span.alien() && !span.blank()) {
-            emit.error(span.line(), 0, "invalid character in leading whitespace");
+            emit.error(span.line(), 0, Eo.ALIEN);
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
@@ -284,6 +285,7 @@ final class Eo implements Iterable<Directive> {
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
+            Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
             globals.clearBlanks();
@@ -339,6 +341,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
+            globals.clearBlanks();
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
@@ -454,7 +457,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static void finish(
-        final Globals globals, final Emit emit, final java.util.List<Span> spans
+        final Globals globals, final Emit emit, final List<Span> spans
     ) {
         if (globals.inTextBlock()) {
             emit.error(
@@ -466,7 +469,7 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!globals.pendingComments().isEmpty()) {
-            final java.util.List<Span> pending = globals.pendingComments();
+            final List<Span> pending = globals.pendingComments();
             emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
@@ -484,7 +487,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean tokenHead(final char head) {
-        return Eo.ROOT_TOKENS.indexOf(head) >= 0;
+        return "*(QTI@^$".indexOf(head) >= 0;
     }
 
     private static boolean literalHead(final Span span) {
@@ -646,7 +649,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean nameTerminator(final char glyph) {
-        return Eo.NAME_TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
@@ -656,7 +659,8 @@ final class Eo implements Iterable<Directive> {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
         Eo.checkNaming(level, emit, naming);
-        if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
+        if ((level.kind() == Kind.BARE_REVERSED || level.kind() == Kind.ONLY_PHI)
+            && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
                 "reversed dispatch missing receiver"

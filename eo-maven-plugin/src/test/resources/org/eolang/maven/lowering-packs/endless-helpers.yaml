@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two helpers that only apply each other never reach an answer: every
+# body of the program resumes another, so the program answers nothing,
+# the reduction refuses it, and the formation stays as written.
+input: |
+  [] > foo
+    [x] > bounce
+      [^ i] >> ping
+        pong (i.plus 1) > @
+      [^ j] >> pong
+        ping (j.times 2) > @
+      ping x > @
+    bounce 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bounce
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bounce 5 > @
+    [x] > bounce
+      ping x > @
+      pong > [^ i] >> ping
+        i.plus 1
+      ping > [^ j] >> pong
+        j.times 2
+stuck: "The program never answers"

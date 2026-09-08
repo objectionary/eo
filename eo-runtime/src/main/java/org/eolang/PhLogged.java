@@ -78,16 +78,6 @@ public final class PhLogged implements Phi {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
-    }
-
-    @Override
     public byte[] delta() {
         System.out.printf("%d.delta()...%n", this.hashCode());
         final byte[] data = this.origin.delta();

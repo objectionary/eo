@@ -43,6 +43,13 @@ import org.w3c.dom.NodeList;
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
  *
+ * <p>Merging twice does nothing the second time: a member that has already
+ * moved is marked as merged in the tojos and is not standalone any more, so
+ * the package it came from is no longer a package with members and nothing
+ * is spliced into the object again. That is what lets {@link MjTranspile}
+ * merge on its own without asking whether the {@link MjMerge} goal has
+ * already run.</p>
+ *
  * <p>The tests a member declares do not travel with it. A test is legal only
  * as a direct child of the top-level object of a file, which is what the
  * parser demands and what the transpiler reads when it writes the test class,
@@ -88,10 +95,14 @@ final class Merging implements Step {
         for (final String pkg : found) {
             done = done + this.spliced(pkg, all);
         }
-        Logger.info(
-            this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
-            done, found.size(), this.dir
-        );
+        if (done == 0) {
+            Logger.debug(this, "No package member to put inside its object");
+        } else {
+            Logger.info(
+                this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
+                done, found.size(), this.dir
+            );
+        }
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
@@ -112,7 +123,7 @@ final class Merging implements Step {
 
     private Map<String, TjForeign> indexed() {
         final Map<String, TjForeign> all = new HashMap<>(0);
-        for (final TjForeign tojo : this.tojos.withXmir()) {
+        for (final TjForeign tojo : this.tojos.standalone()) {
             all.put(tojo.identifier(), tojo);
         }
         return all;

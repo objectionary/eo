@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,6 +15,9 @@ import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.UncheckedBytes;
+import org.cactoos.io.ResourceOf;
 
 /**
  * Short hex fingerprint of a set of classpath resources.
@@ -31,6 +33,12 @@ import java.util.stream.Stream;
  * join the same key (see #7627). A directory that is not there hashes to
  * the digest of nothing, which is what a build without those tables
  * deserves and still tells it apart from a build with them.</p>
+ *
+ * <p>Callers name their resources the way
+ * {@link Class#getResourceAsStream(String)} wants them, with a leading
+ * slash, because the very same names also build XSL trains. The reading
+ * here goes through the {@link ClassLoader} instead, which takes only
+ * the global name, so the slash is dropped first.</p>
  *
  * @since 0.63
  */
@@ -78,14 +86,13 @@ final class Fingerprint implements Supplier<String> {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (final String resource : this.resources) {
-                try (InputStream input = Fingerprint.class.getResourceAsStream(resource)) {
-                    if (input == null) {
-                        throw new IllegalStateException(
-                            String.format("Resource '%s' not found on classpath", resource)
-                        );
-                    }
-                    digest.update(input.readAllBytes());
-                }
+                digest.update(
+                    new UncheckedBytes(
+                        new BytesOf(
+                            new ResourceOf(Fingerprint.global(resource), Fingerprint.class)
+                        )
+                    ).asBytes()
+                );
             }
             for (final Path base : this.dirs) {
                 if (Files.isDirectory(base)) {
@@ -110,5 +117,15 @@ final class Fingerprint implements Supplier<String> {
         } catch (final IOException ex) {
             throw new UncheckedIOException("Failed to read a resource while fingerprinting", ex);
         }
+    }
+
+    private static String global(final String resource) {
+        final String global;
+        if (resource.startsWith("/")) {
+            global = resource.substring(1);
+        } else {
+            global = resource;
+        }
+        return global;
     }
 }

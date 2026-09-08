@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A text literal stands as the receiver of a byte atom, not as its
+# operand. The string has dispatched into its own bytes by the time the
+# atom fires, so the record names a bytes datum where the tree still
+# holds a string one, and the site is met all the same.
+input: |
+  [] > foo
+    [t] > greets
+      "h".concat t > @
+    greets "i" > @
+prelude:
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+  bytes.eo: |
+    [data] > bytes
+      data > @
+unit: greets
+voids:
+  t: string
+lowered: |
+  [] > foo
+    greets "i" > @
+    [] > greets /Q.bytes
+      ? > t /Q.string
+protocol: |
+  s1 ← L_bytes_concat bytes:68- sym:v0
+  answer sym:s1 bytes

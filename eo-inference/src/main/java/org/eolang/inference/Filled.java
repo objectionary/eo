@@ -28,6 +28,17 @@ import java.util.Map;
  * {@code held.next} asks. A void filled nearer the question wins over one
  * filled further away, and a void nobody fills keeps the answer as it was.</p>
  *
+ * <p>The chain is followed through the pairs as well as through the bodies,
+ * since what a receiver turns out to be is often worked out a pass later than
+ * the application that filled the void: a name settled this pass leads to an
+ * object whose voids were filled the pass before, and the fillings are wanted
+ * from both ends of that.</p>
+ *
+ * <p>An answer rooted at a void nothing here fills is not the end of it
+ * either. The void may hold a formation that hands back what it is given, in
+ * which case the answer is one of the things this call put in, and
+ * {@link Branched} says which.</p>
+ *
  * @since 0.69.0
  */
 final class Filled {
@@ -48,20 +59,28 @@ final class Filled {
     private final Provided owned;
 
     /**
+     * The locator of every void.
+     */
+    private final Collection<String> hollows;
+
+    /**
      * Ctor.
      * @param links The pairs, each name against the one it is a copy of
      * @param provided The provides table, by the name a type goes by
      * @param bound What every application and every dispatch fills, from
      *  {@link Bound}
+     * @param voids The locator of every void, from {@link Hollows}
      */
     Filled(
         final Map<String, String> links,
         final Provided provided,
-        final Map<String, Map<String, String>> bound
+        final Map<String, Map<String, String>> bound,
+        final Collection<String> voids
     ) {
         this.fills = bound;
         this.pairs = links;
         this.owned = provided;
+        this.hollows = voids;
     }
 
     /**
@@ -72,6 +91,12 @@ final class Filled {
      *  no caller says what the void holds
      */
     String instead(final String answer, final String bearer) {
+        return this.instead(answer, bearer, new HashSet<>(0));
+    }
+
+    private String instead(
+        final String answer, final String bearer, final Collection<String> seen
+    ) {
         final Map<String, String> fillings = this.fillings(bearer);
         final String found;
         if (fillings.containsKey(answer)) {
@@ -85,12 +110,39 @@ final class Filled {
                 }
             }
             if (longest.isEmpty()) {
-                found = answer;
+                found = this.branch(answer, fillings, seen);
             } else {
                 found = this.asked(
                     fillings.get(longest), answer.substring(longest.length() + 1), answer
                 );
             }
+        }
+        return found;
+    }
+
+    private String branch(
+        final String answer, final Map<String, String> fillings, final Collection<String> seen
+    ) {
+        final String root = new Rooted(this.hollows).names(answer);
+        String found = answer;
+        if (!root.isEmpty()) {
+            final String handed = new Branched(this.owned, fillings, this.hollows).names();
+            if (!handed.isEmpty() && seen.add(handed)) {
+                found = this.through(answer, root, handed, seen);
+            }
+        }
+        return found;
+    }
+
+    private String through(
+        final String answer, final String root, final String handed,
+        final Collection<String> seen
+    ) {
+        String found = this.asked(
+            handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
+        );
+        if (found.equals(answer)) {
+            found = this.instead(answer, handed, seen);
         }
         return found;
     }
@@ -124,9 +176,13 @@ final class Filled {
         while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
                 : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
-                found.putIfAbsent(fill.getKey(), this.end(fill.getValue()));
+                found.putIfAbsent(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
             }
-            walked = this.owned.body(walked);
+            if (this.pairs.containsKey(walked)) {
+                walked = this.pairs.get(walked);
+            } else {
+                walked = this.owned.body(walked);
+            }
         }
     }
 
@@ -143,15 +199,6 @@ final class Filled {
         }
         if (walked.isEmpty()) {
             walked = back;
-        }
-        return walked;
-    }
-
-    private String end(final String locator) {
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = locator;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
         }
         return walked;
     }

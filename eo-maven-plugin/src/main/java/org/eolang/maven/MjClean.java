@@ -46,6 +46,13 @@ public class MjClean extends MjSafe {
                 "Deleted all files in the %[file]s directory",
                 this.targetDir
             );
+        } else {
+            throw new IllegalStateException(
+                String.format(
+                    "Failed to delete the directory %s, some files are still there",
+                    this.targetDir
+                )
+            );
         }
     }
 }

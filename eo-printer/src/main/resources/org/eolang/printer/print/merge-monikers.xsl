@@ -188,10 +188,18 @@
         <xsl:sort select="eo:host-key(., $owner)"/>
       </xsl:perform-sort>
     </xsl:variable>
+    <xsl:variable name="dispatches" select="$refs[eo:dispatch-seg(.) != '']"/>
     <xsl:variable name="dispatch" as="element()*">
-      <xsl:perform-sort select="$refs[eo:dispatch-seg(.) != '']">
-        <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
-      </xsl:perform-sort>
+      <xsl:choose>
+        <xsl:when test="exists($dispatches[2])">
+          <xsl:perform-sort select="$dispatches">
+            <xsl:sort select="count(tokenize(eo:dispatch-seg(.), '\.'))" data-type="number" order="ascending"/>
+          </xsl:perform-sort>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="$dispatches"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:variable>
     <xsl:sequence select="if (eo:named-handle($attr)) then ($dispatch, $refs[eo:dispatch-seg(.) = '']) else ($refs[eo:dispatch-seg(.) = ''], $dispatch)"/>
   </xsl:function>
@@ -459,8 +467,9 @@
   The binding lands at the reference through the "merged" mode below, which
   carries whatever the binding hosts down with it (#5918).
   -->
-  <xsl:template match="o[exists(eo:hosted-binding(.))]" priority="1">
-    <xsl:variable name="binding" select="eo:hosted-binding(.)"/>
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]" priority="1">
+    <xsl:variable name="owner" select="ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]"/>
     <xsl:variable name="seg" select="eo:dispatch-seg(.)"/>
     <xsl:choose>
       <xsl:when test="$seg = ''">
@@ -574,7 +583,7 @@
   kept on the pipe so an argument slot survives; the standalone binding is
   dropped below.
   -->
-  <xsl:template match="o[exists(eo:applied-handle(.))]" priority="2">
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]" priority="2">
     <xsl:variable name="binding" select="eo:applied-handle(.)"/>
     <xsl:for-each select="$binding">
       <xsl:copy>

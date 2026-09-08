@@ -29,7 +29,11 @@ final class DemandsTest {
             "the name asked of the answer must stand beside the one that named it, but it didnt",
             new XMLDocument(
                 new Xembler(
-                    new Directives().add("attr").append(new Demands(asked, "Φ.inc.x").directives())
+                    new Directives().add("attr").append(
+                        new Demands(
+                            asked, new Rooted(Collections.singletonList("Φ.inc.x"))
+                        ).directives()
+                    )
                 ).xmlQuietly()
             ).nodes("/attr/demand[@of='Φ.inc.x.next' and @name='foo']"),
             Matchers.hasSize(1)
@@ -44,7 +48,7 @@ final class DemandsTest {
                 Collections.singletonMap(
                     "Φ.dec.y", Collections.singletonMap("prev", "Φ.dec.y.prev")
                 ),
-                "Φ.inc.x"
+                new Rooted(Collections.singletonList("Φ.inc.x"))
             ).any(),
             Matchers.is(false)
         );

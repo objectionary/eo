@@ -7,7 +7,6 @@ package org.eolang.inference;
 import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,10 +33,21 @@ import java.util.Map;
  * five members where it had more than a cap's worth, and the five are worth
  * reading.</p>
  *
- * <p>A filling whose walk runs into a void is nobody's answer here — what
- * fills that void is a fact about another caller. Such a filling is kept aside
- * and used only where it is all there is, since a void whose every caller
- * passes on a void of its own is better described by that than by silence.</p>
+ * <p>A filling whose walk runs into a void has no type of its own to give, and
+ * it is not thereby nothing: what fills that void reaches this one too, a hop
+ * further along. {@link Carried} walks the hop, so a void filled with an
+ * {@code oak} by one caller and handed on from a void filled with a number is
+ * seen to hold both, and a void whose every caller passes on a void of its own
+ * is described by that rather than by silence.</p>
+ *
+ * <p>An atom fills a void too, and says so in a brace list {@link Handed}
+ * reads. That is spent here and not later, because the two rules feed each
+ * other: a hop says which formation an atom is handed, the atom says what
+ * lands in that formation, and a hop carries it on from there. So the walk is
+ * made again for as long as the atoms have anything left to add, and what they
+ * add is put among the fillings a call site names rather than among the
+ * answers, so that a void left holding the far end of a hop gives that up as
+ * soon as a forma arrives for it (#8396).</p>
  *
  * @since 0.69.0
  */
@@ -69,30 +79,32 @@ final class Fillings {
      *  nobody ever fills
      */
     Map<String, Collection<Type>> all() {
-        final Map<String, String> names = new Ends(new Pairs(this.table).all()).names();
-        final Map<String, String> landings = new Landed(this.table, this.given).all();
-        final Forms forms = new Forms(this.table);
+        final Pairs pairs = new Pairs(this.table);
+        final Map<String, String> names = new Ends(pairs.all()).names();
+        final Map<String, String> landings = new Landed(pairs, this.given).all();
+        final Forms forms = new Forms(pairs.forms());
         final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
-        final Map<String, Map<String, Type>> loose = new LinkedHashMap<>(0);
-        for (final XML bind : this.table.nodes("/links/type/ref/bind")) {
-            final List<String> put = bind.xpath("ref/@loc");
-            if (!put.isEmpty()) {
-                final String hollow = bind.xpath("@void").get(0);
-                final String end = landings.get(put.get(0));
+        final Map<String, Map<String, Type>> handed = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Collection<String>> bound : pairs.puts().entrySet()) {
+            for (final String put : bound.getValue()) {
+                final String end = landings.get(put);
                 if (end == null) {
-                    final String stopped = names.getOrDefault(put.get(0), put.get(0));
-                    loose.computeIfAbsent(hollow, key -> new LinkedHashMap<>(0))
+                    final String stopped = names.getOrDefault(put, put);
+                    handed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
                         .putIfAbsent(forms.name(stopped), forms.type(stopped));
                 } else {
-                    placed.computeIfAbsent(hollow, key -> new LinkedHashMap<>(0))
+                    placed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
                         .putIfAbsent(forms.name(end), forms.type(end));
                 }
             }
         }
-        final Map<String, Map<String, Type>> chosen = new LinkedHashMap<>(loose);
-        chosen.putAll(placed);
+        final Handed atoms = new Handed(this.table, this.given);
+        Map<String, Map<String, Type>> walked = new Carried(placed, handed).all();
+        while (atoms.fills(placed, walked)) {
+            walked = new Carried(placed, handed).all();
+        }
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : chosen.entrySet()) {
+        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
             found.put(hollow.getKey(), hollow.getValue().values());
         }
         return found;

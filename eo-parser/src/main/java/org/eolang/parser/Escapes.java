@@ -28,11 +28,6 @@ import java.nio.charset.StandardCharsets;
 final class Escapes {
 
     /**
-     * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
-     */
-    private static final int MAX_OCTAL_BYTE = 0xFF;
-
-    /**
      * No instances.
      */
     private Escapes() {
@@ -85,7 +80,7 @@ final class Escapes {
             value = value * 8 + body.charAt(cursor) - '0';
             cursor = cursor + 1;
         }
-        if (value > Escapes.MAX_OCTAL_BYTE) {
+        if (value > 0xFF) {
             throw new NumberFormatException(
                 String.format(
                     "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",

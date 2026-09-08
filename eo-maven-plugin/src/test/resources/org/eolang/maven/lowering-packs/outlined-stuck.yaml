@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The carve accepts this chain — references and dispatches only — but
+# the reduction refuses it: "minus" is EO sugar that unfolds into sites
+# the fragment never held, so the protocol cannot anchor, and the
+# application stays as written.
+input: |
+  [] > foo
+    [x] > calc
+      (x.minus x).plus 2 > @
+    calc 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+lowered: |
+  [] > foo
+    calc 5 > @
+    plus. > [x] > calc
+      x.minus x
+      2

@@ -1,0 +1,953 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.lowering;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Test case for {@link JavaAtom}.
+ *
+ * <p>The protocols here are built by hand, so the tests need no phino:
+ * they pin the exact Java text each shape of protocol renders into,
+ * which is what lands in a sidecar file and then, verbatim, in the
+ * {@code lambda()} of a generated atom class.</p>
+ *
+ * @since 0.76.0
+ */
+final class JavaAtomTest {
+
+    @Test
+    void holdsTupleAndReadsItsLength() {
+        MatcherAssert.assertThat(
+            "a tuple void must be held as a Phi and its length dataized, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_tuple_length", Collections.singletonList("sym:v0")
+                        ),
+                        new Application(
+                            "s2", "L_number_plus",
+                            Arrays.asList("sym:s1", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s2", "number"
+                ),
+                Collections.singletonMap("items", "tuple")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final Phi v0 = this.take(\"items\");",
+                "final double s1 = new Dataized(v0.take(\"length\")).asNumber();",
+                "final double s2 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);",
+                "return new Data.ToPhi(s2);"
+            )
+        );
+    }
+
+    @Test
+    void refusesTupleAnswer() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "tuple"),
+                Collections.singletonMap("items", "tuple")
+            )::text,
+            "a tuple cannot be handed to Data.ToPhi, but it was rendered"
+        );
+    }
+
+    @Test
+    void rendersBodiesAsStateMachine() {
+        MatcherAssert.assertThat(
+            "bodies resuming one another must run as one loop over a state, but they dont",
+            new JavaAtom(
+                new Program(
+                    Arrays.asList(
+                        new Body(
+                            "", 0, Collections.singletonList("number"),
+                            new Protocol(
+                                Collections.emptyList(), "a🌵3-4",
+                                Collections.singletonList("sym:v0")
+                            )
+                        ),
+                        new Body(
+                            "a🌵3-4", 1, Collections.singletonList("number"),
+                            new Protocol(
+                                Arrays.asList(
+                                    new Application(
+                                        "s1", "L_number_eq",
+                                        Arrays.asList("sym:v1", "number:00-00-00-00-00-00-00-00")
+                                    ),
+                                    new Fork(
+                                        "s2", "L_bool_if", "sym:s1",
+                                        new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                                        new Protocol(
+                                            Collections.singletonList(
+                                                new Application(
+                                                    "s3", "L_number_plus",
+                                                    Arrays.asList(
+                                                        "sym:v1", "number:BF-F0-00-00-00-00-00-00"
+                                                    )
+                                                )
+                                            ),
+                                            "a🌵3-4",
+                                            Collections.singletonList("sym:s3")
+                                        )
+                                    )
+                                ),
+                                "sym:s2", "number"
+                            )
+                        )
+                    ),
+                    Collections.singletonMap("n", "number")
+                )
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "double v0 = new Dataized(this.take(\"n\")).asNumber();",
+                "double v1 = 0.0;",
+                "int body = 0;",
+                "final double out;",
+                "while (true) {",
+                "if (body == 0) {",
+                "v1 = v0;",
+                "body = 1;",
+                "continue;",
+                "} else {",
+                "final double s2;",
+                "if (s1) {",
+                "s2 = v1;",
+                "} else {",
+                "v1 = s3;",
+                "body = 1;",
+                "continue;",
+                "out = s2;",
+                "break;",
+                "return new Data.ToPhi(out);"
+            )
+        );
+    }
+
+    @Test
+    void rendersChainOfNumberSteps() {
+        MatcherAssert.assertThat(
+            "a chain of two steps must render one line each, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_number_plus",
+                            Arrays.asList("sym:v0", "number:40-00-00-00-00-00-00-00")
+                        ),
+                        new Application("s2", "L_number_times", Arrays.asList("sym:s1", "sym:v0"))
+                    ),
+                    "sym:s2",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                    "        final double s1 = v0 + Double.longBitsToDouble(0x4000000000000000L);",
+                    "        final double s2 = s1 * v0;",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersBytesOperationsThroughPublicApi() {
+        MatcherAssert.assertThat(
+            "the bytes steps must go through BytesOf and length, but they dont",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_bytes_and",
+                            Arrays.asList("sym:v0", "bytes:1F-")
+                        ),
+                        new Application("s2", "L_bytes_size", Collections.singletonList("sym:s1")),
+                        new Application(
+                            "s3", "L_number_gt",
+                            Arrays.asList("sym:s2", "number:40-00-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s3",
+                    "bool"
+                ),
+                Collections.singletonMap("b", "bytes")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final byte[] v0 = new Dataized(this.take(\"b\")).take();",
+                    String.format(
+                        "        final byte[] s1 = new BytesOf(v0)%s",
+                        ".and(new BytesOf(new byte[] {(byte) 0x1F})).take();"
+                    ),
+                    "        final double s2 = s1.length;",
+                    "        final boolean s3 = s2 > Double.longBitsToDouble(0x4000000000000000L);",
+                    "        return new Data.ToPhi(s3);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void readsBoolVoid() {
+        MatcherAssert.assertThat(
+            "a bool void must be read through asBool, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bool:FF-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("f", "bool")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final boolean s1 = v0 == true;",
+                    "        return new Data.ToPhi(s1);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void answersVoidWithoutSteps() {
+        MatcherAssert.assertThat(
+            "an identity protocol must read the void and answer it, but it doesnt",
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                    "        return new Data.ToPhi(v0);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void answersLiteralWithoutReadingVoids() {
+        MatcherAssert.assertThat(
+            "a constant protocol must not dataize the unused void, but it does",
+            new JavaAtom(
+                new Protocol(
+                    Collections.emptyList(),
+                    "number:40-14-00-00-00-00-00-00",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                "        return new Data.ToPhi(Double.longBitsToDouble(0x4014000000000000L));"
+            )
+        );
+    }
+
+    @Test
+    void skipsVoidNoStepReads() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "a void no step reads must not be dataized, but it is",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_number_plus",
+                            Arrays.asList("sym:v1", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v1 = new Dataized(this.take(\"y\")).asNumber();",
+                    "        final double s1 = v1 + Double.longBitsToDouble(0x3FF0000000000000L);",
+                    "        return new Data.ToPhi(s1);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersNumberEqualityAsValueComparison() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "equality over numbers must compare their values, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application("s1", "L_number_div", Arrays.asList("sym:v0", "sym:v1")),
+                        new Application("s2", "L_number_eq", Arrays.asList("sym:s1", "sym:v0"))
+                    ),
+                    "sym:s2",
+                    "bool"
+                ),
+                voids
+            ).text(),
+            Matchers.containsString("final boolean s2 = s1 == v0;")
+        );
+    }
+
+    @Test
+    void readsStringVoidAsItsBytes() {
+        MatcherAssert.assertThat(
+            "a string void must be dataized into a byte array, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_bytes_concat",
+                            Arrays.asList("sym:v0", "string:21-")
+                        ),
+                        new Application("s2", "L_bytes_size", Collections.singletonList("sym:s1"))
+                    ),
+                    "sym:s2",
+                    "number"
+                ),
+                Collections.singletonMap("t", "string")
+            ).text(),
+            Matchers.containsString(
+                "final byte[] v0 = new Dataized(this.take(\"t\")).take();"
+            )
+        );
+    }
+
+    @Test
+    void rendersStringEqualityThroughArrays() {
+        MatcherAssert.assertThat(
+            "equality over a string and a text literal must go through Arrays, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_bytes_eq", Arrays.asList("sym:v0", "string:61-62-63")
+                        )
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("t", "string")
+            ).text(),
+            Matchers.containsString(
+                String.format(
+                    "final boolean s1 = java.util.Arrays.equals(v0, %s);",
+                    "new byte[] {(byte) 0x61, (byte) 0x62, (byte) 0x63}"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersBytesEqualityThroughArrays() {
+        MatcherAssert.assertThat(
+            "equality over bytes must go through Arrays, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:1F-2E-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("b", "bytes")
+            ).text(),
+            Matchers.containsString(
+                String.format(
+                    "final boolean s1 = java.util.Arrays.equals(v0, %s);",
+                    "new byte[] {(byte) 0x1F, (byte) 0x2E}"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersForkAsIfElse() {
+        MatcherAssert.assertThat(
+            "a fork must declare a blank final and assign it in both arms, but it doesnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s1", "L_number_gt",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        ),
+                        new Fork(
+                            "s2", "L_bool_if", "sym:s1",
+                            new Protocol(
+                                Collections.emptyList(), "number:3F-F0-00-00-00-00-00-00", "number"
+                            ),
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s3", "L_number_times", Arrays.asList("sym:v0", "sym:v0")
+                                    )
+                                ),
+                                "sym:s3",
+                                "number"
+                            )
+                        )
+                    ),
+                    "sym:s2",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                    "        final boolean s1 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);",
+                    "        final double s2;",
+                    "        if (s1) {",
+                    "            s2 = Double.longBitsToDouble(0x3FF0000000000000L);",
+                    "        } else {",
+                    "            final double s3 = v0 * v0;",
+                    "            s2 = s3;",
+                    "        }",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void rendersDispatchAsCall() {
+        MatcherAssert.assertThat(
+            "a call back into EO must be dataized into its forma, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Dispatch(
+                            "s1", "minus",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00"),
+                            "number"
+                        )
+                    ),
+                    "sym:s1", "number"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                String.format(
+                    "final double s1 = new Dataized(new PhApplication(new PhDispatch(%s, %s), new Bind(0, %s))).asNumber();",
+                    "new Data.ToPhi(v0)", "\"minus\"",
+                    "new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L))"
+                ),
+                "return new Data.ToPhi(s1);"
+            )
+        );
+    }
+
+    @Test
+    void holdsObjectOfCallUntilDataized() {
+        MatcherAssert.assertThat(
+            "an object a call answers must be held as a Phi until something dataizes it",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Dispatch("s1", "neg", Collections.singletonList("sym:v0"), "object"),
+                        new Application(
+                            "s2", "L_object_as_bytes", Collections.singletonList("sym:s1")
+                        )
+                    ),
+                    "sym:s2", "bytes"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final Phi s1 = new PhDispatch(new Data.ToPhi(v0), \"neg\");",
+                "final byte[] s2 = new Dataized(s1).take();",
+                "return new Data.ToPhi(s2);"
+            )
+        );
+    }
+
+    @Test
+    void rendersFailingArmAsThrow() {
+        MatcherAssert.assertThat(
+            "an arm that fails must throw with its reason and assign nothing, but it doesnt",
+            new JavaAtom(
+                JavaAtomTest.guarded(
+                    new Protocol(Collections.emptyList(), "string:6F-70-73")
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final double v0 = new Dataized(this.take(\"x\")).asNumber();",
+                    "        final boolean s1 = v0 > Double.longBitsToDouble(0x0000000000000000L);",
+                    "        final double s2;",
+                    "        if (s1) {",
+                    "            s2 = v0;",
+                    "        } else {",
+                    String.format(
+                        "            throw new ExFailure(\"%%s\", new String(%s, %s));",
+                        "new byte[] {(byte) 0x6F, (byte) 0x70, (byte) 0x73}",
+                        "java.nio.charset.StandardCharsets.UTF_8"
+                    ),
+                    "        }",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void readsReasonInsideTheFailingArm() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("t", "string");
+        MatcherAssert.assertThat(
+            "a void only the reason names must be read inside the failing arm, but it isnt",
+            new JavaAtom(
+                JavaAtomTest.guarded(new Protocol(Collections.emptyList(), "sym:v1")),
+                voids
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "} else {",
+                "final byte[] v1 = new Dataized(this.take(\"t\")).take();",
+                "throw new ExFailure(\"%s\", new String(v1, java.nio.charset.StandardCharsets.UTF_8));",
+                "}"
+            )
+        );
+    }
+
+    @Test
+    void refusesNumberAsReason() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                JavaAtomTest.guarded(
+                    new Protocol(Collections.emptyList(), "number:3F-F0-00-00-00-00-00-00")
+                ),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "a number is no message to fail with, but it rendered"
+        );
+    }
+
+    @Test
+    void rendersFailingBodyAsThrow() {
+        MatcherAssert.assertThat(
+            "a body that fails must throw inside its branch of the state machine, but it doesnt",
+            new JavaAtom(
+                new Program(
+                    Arrays.asList(
+                        new Body(
+                            "", 0, Collections.singletonList("number"),
+                            new Protocol(
+                                Arrays.asList(
+                                    new Application(
+                                        "s1", "L_bytes_eq",
+                                        Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                                    ),
+                                    new Fork(
+                                        "s2", "L_bool_if", "sym:s1",
+                                        new Protocol(
+                                            Collections.emptyList(), "a🌵3-4",
+                                            Collections.singletonList("sym:v0")
+                                        ),
+                                        new Protocol(Collections.emptyList(), "sym:v0", "number")
+                                    )
+                                ),
+                                "sym:s2", "number"
+                            )
+                        ),
+                        new Body(
+                            "a🌵3-4", 1, Collections.singletonList("number"),
+                            new Protocol(Collections.emptyList(), "string:6F-70-73")
+                        )
+                    ),
+                    Collections.singletonMap("n", "number")
+                )
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "out = s2;",
+                "break;",
+                "} else {",
+                String.format(
+                    "throw new ExFailure(\"%%s\", new String(%s, %s));",
+                    "new byte[] {(byte) 0x6F, (byte) 0x70, (byte) 0x73}",
+                    "java.nio.charset.StandardCharsets.UTF_8"
+                ),
+                "return new Data.ToPhi(out);"
+            )
+        );
+    }
+
+    @Test
+    void readsVoidInsideTheArmThatAloneUsesIt() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("f", "bool");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "a void one arm alone reads must be dataized inside that arm, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                            new Protocol(
+                                Collections.emptyList(), "number:00-00-00-00-00-00-00-00", "number"
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final double s1;",
+                    "        if (v0) {",
+                    "            final double v1 = new Dataized(this.take(\"y\")).asNumber();",
+                    "            s1 = v1;",
+                    "        } else {",
+                    "            s1 = Double.longBitsToDouble(0x0000000000000000L);",
+                    "        }",
+                    "        return new Data.ToPhi(s1);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void readsVoidBothArmsUseAboveTheFork() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("f", "bool");
+        voids.put("y", "number");
+        MatcherAssert.assertThat(
+            "a void both arms read must be dataized once, above the fork, but it isnt",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s2", "L_number_times", Arrays.asList("sym:v1", "sym:v1")
+                                    )
+                                ),
+                                "sym:s2",
+                                "number"
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.startsWith(
+                String.join(
+                    System.lineSeparator(),
+                    "        final boolean v0 = new Dataized(this.take(\"f\")).asBool();",
+                    "        final double v1 = new Dataized(this.take(\"y\")).asNumber();",
+                    "        final double s1;",
+                    "        if (v0) {",
+                    "            s1 = v1;"
+                )
+            )
+        );
+    }
+
+    @Test
+    void refusesForkOnNumberCondition() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v0",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(Collections.emptyList(), "sym:v0", "number")
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "a number cannot decide a fork, but one rendered"
+        );
+    }
+
+    @Test
+    void rendersRepeatAsLoop() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("n", "number");
+        voids.put("acc", "number");
+        MatcherAssert.assertThat(
+            "a program that repeats must run as a loop, but it doesnt",
+            new JavaAtom(JavaAtomTest.countdown(), voids).text(),
+            Matchers.equalTo(
+                String.join(
+                    System.lineSeparator(),
+                    "        double v0 = new Dataized(this.take(\"n\")).asNumber();",
+                    "        double v1 = new Dataized(this.take(\"acc\")).asNumber();",
+                    "        final double s2;",
+                    "        while (true) {",
+                    String.format(
+                        "            final boolean s1 = v0 == %s;",
+                        "Double.longBitsToDouble(0x0000000000000000L)"
+                    ),
+                    "            if (s1) {",
+                    "                s2 = v1;",
+                    "                break;",
+                    "            } else {",
+                    "                final double s3 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);",
+                    "                final double s4 = v1 * v0;",
+                    "                v0 = s3;",
+                    "                v1 = s4;",
+                    "                continue;",
+                    "            }",
+                    "        }",
+                    "        return new Data.ToPhi(s2);"
+                )
+            )
+        );
+    }
+
+    @Test
+    void swapsVoidsThroughTemporaries() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("a", "number");
+        voids.put("b", "number");
+        voids.put("f", "bool");
+        MatcherAssert.assertThat(
+            "two voids trading places must go through temporaries, but they dont",
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v2",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(
+                                Collections.emptyList(), Arrays.asList("sym:v1", "sym:v0", "sym:v2")
+                            )
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            ).text(),
+            Matchers.containsString(
+                String.join(
+                    System.lineSeparator(),
+                    "                final double r0 = v1;",
+                    "                final double r1 = v0;",
+                    "                v0 = r0;",
+                    "                v1 = r1;",
+                    "                continue;"
+                )
+            )
+        );
+    }
+
+    @Test
+    void refusesRepeatOfForeignForma() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("x", "number");
+        voids.put("f", "bool");
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s1", "L_bool_if", "sym:v1",
+                            new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                            new Protocol(Collections.emptyList(), Arrays.asList("sym:v1", "sym:v1"))
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                voids
+            )::text,
+            "a bool handed to a number void cannot render, but it did"
+        );
+    }
+
+    @Test
+    void refusesProgramThatNeverAnswers() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), Collections.singletonList("sym:v0")),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "a program that only repeats never answers, but it rendered"
+        );
+    }
+
+    @Test
+    void refusesEqualityOverMixedFormas() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application("s1", "L_bytes_eq", Arrays.asList("sym:v0", "bytes:01-02-"))
+                    ),
+                    "sym:s1",
+                    "bool"
+                ),
+                Collections.singletonMap("x", "number")
+            )::text,
+            "equality mixing a number with raw bytes cannot render, but it did"
+        );
+    }
+
+    @Test
+    void refusesOperandOfForeignForma() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_number_plus",
+                            Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1",
+                    "number"
+                ),
+                Collections.singletonMap("b", "bytes")
+            )::text,
+            "a number operation over a bytes operand cannot render, but it did"
+        );
+    }
+
+    @Test
+    void refusesOperationWithoutRendering() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(
+                    Collections.singletonList(
+                        new Application(
+                            "s1", "L_bytes_right",
+                            Arrays.asList("sym:v0", "number:40-00-00-00-00-00-00-00")
+                        )
+                    ),
+                    "sym:s1",
+                    "bytes"
+                ),
+                Collections.singletonMap("b", "bytes")
+            )::text,
+            "an operation without a Java rendering cannot make a body, but it did"
+        );
+    }
+
+    @Test
+    void refusesVoidOfForeignForma() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "tuple"),
+                Collections.singletonMap("s", "tuple")
+            )::text,
+            "a void of a foreign forma cannot be read, but it was"
+        );
+    }
+
+    @Test
+    void refusesStringAnswer() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            new JavaAtom(
+                new Protocol(Collections.emptyList(), "sym:v0", "string"),
+                Collections.singletonMap("t", "string")
+            )::text,
+            "a byte array handed over as a string would change the forma, but it was"
+        );
+    }
+
+    private static Protocol guarded(final Protocol otherwise) {
+        return new Protocol(
+            Arrays.asList(
+                new Application(
+                    "s1", "L_number_gt",
+                    Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                ),
+                new Fork(
+                    "s2", "L_bool_if", "sym:s1",
+                    new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                    otherwise
+                )
+            ),
+            "sym:s2",
+            "number"
+        );
+    }
+
+    private static Protocol countdown() {
+        return new Protocol(
+            Arrays.asList(
+                new Application(
+                    "s1", "L_number_eq", Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                ),
+                new Fork(
+                    "s2", "L_bool_if", "sym:s1",
+                    new Protocol(Collections.emptyList(), "sym:v1", "number"),
+                    new Protocol(
+                        Arrays.asList(
+                            new Application(
+                                "s3", "L_number_plus",
+                                Arrays.asList("sym:v0", "number:BF-F0-00-00-00-00-00-00")
+                            ),
+                            new Application(
+                                "s4", "L_number_times", Arrays.asList("sym:v1", "sym:v0")
+                            )
+                        ),
+                        Arrays.asList("sym:s3", "sym:s4")
+                    )
+                )
+            ),
+            "sym:s2",
+            "number"
+        );
+    }
+}

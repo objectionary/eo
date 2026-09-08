@@ -72,8 +72,14 @@ final class DpsWithRuntime implements Dependencies {
         return all.iterator();
     }
 
+    // A classifier names a different artifact of the same coordinates, so
+    // "org.eolang:eo-runtime:tests" carries none of the classes the generated
+    // code imports. Reading it as the runtime would leave the main jar out of
+    // the build for anybody who asks for a classifier beside it (#8148), so
+    // only the unclassified one counts.
     private static boolean isRuntime(final Dependency other) {
         return "org.eolang".equals(other.getGroupId())
-            && "eo-runtime".equals(other.getArtifactId());
+            && "eo-runtime".equals(other.getArtifactId())
+            && (other.getClassifier() == null || other.getClassifier().isEmpty());
     }
 }

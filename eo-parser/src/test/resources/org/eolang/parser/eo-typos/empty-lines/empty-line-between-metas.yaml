@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:0] error: 'blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block'
+  [3:0] error: 'blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block'
   +meta other
   ^
 input: |

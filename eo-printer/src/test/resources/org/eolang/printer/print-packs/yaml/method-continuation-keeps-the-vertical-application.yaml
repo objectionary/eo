@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A method continuation parses only under a vertical application, so the
+# application it hangs on has to survive whatever the printer does with
+# it (#8058). R-6.2.2 puts the chain's naming line on the last link, so
+# ".y" carries "> w" while the application keeps "z" as the intermediate
+# name R-6.2.3 allows. That name is what lets the printer collapse the
+# application onto one line and still print the continuation as a chain
+# on "z", instead of leaving it below with nothing to attach to.
+penalties:
+  INDENT: 2
+  BRACKET: 19
+  LEADING: 4
+  PHI: 15
+  IF: 50
+  EXCESS: 3
+  SYMBOL: 1
+  SPACE: 7
+  WIDTH: 80
+  STEP: 2
+origin: |
+  [] > m
+    x > z
+      1
+    .y > w
+
+printed: |
+  [] > m
+    z.y > w
+    x 1 > z

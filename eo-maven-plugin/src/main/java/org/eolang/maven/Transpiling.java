@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.github.lombrozo.xnav.Xnav;
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -32,16 +31,6 @@ import org.eolang.parser.OnDetailed;
  * The intermediate optimized XMIRs are stored in the {@link #PRE} directory.</p>
  *
  * @since 0.1
- * @todo #6125:60min Take the writing of the Java files out of here too.
- *  {@link JavaFiles} still keeps a cache directory and an enabled flag of
- *  its own, so this class has to be handed one ready-made, and the key of
- *  that directory repeats the plugin version {@link GlobalCache} already
- *  folds in. Give {@link JavaFiles} the same {@link GlobalCache} instead,
- *  then it goes back to being made here, and {@link #version()}, which is
- *  read by nothing but the test, goes with it. The three that are left,
- *  the generated directory, the tests flag and the roots, describe one
- *  thing, where the output lands, and belong together in an object of
- *  their own, along with the tail of {@link #exec()} that logs it.
  */
 final class Transpiling implements Step {
 
@@ -71,19 +60,9 @@ final class Transpiling implements Step {
     private final Path target;
 
     /**
-     * Generated sources directory.
+     * Where the output lands.
      */
-    private final Path generated;
-
-    /**
-     * Whether to transpile tests.
-     */
-    private final boolean tests;
-
-    /**
-     * Directories with the Java sources a human wrote.
-     */
-    private final Collection<Path> roots;
+    private final Written written;
 
     /**
      * The XSL train that does the transpiling.
@@ -96,67 +75,39 @@ final class Transpiling implements Step {
     private final GlobalCache cache;
 
     /**
-     * The Java files this run writes, and the stale ones it removes.
-     */
-    private final JavaFiles files;
-
-    /**
      * Constructor.
      * @param srcs XMIR sources to transpile
      * @param target Target directory
-     * @param generated Generated sources directory
-     * @param tests Whether to transpile tests
-     * @param java Directories with the Java sources a human wrote
+     * @param written Where the output lands
      * @param train The XSL train that does the transpiling
      * @param store The cache shared with every build on this machine
-     * @param written The Java files this run writes
      */
     Transpiling(
         final Collection<TjForeign> srcs,
         final Path target,
-        final Path generated,
-        final boolean tests,
-        final Collection<Path> java,
+        final Written written,
         final Transpilation train,
-        final GlobalCache store,
-        final JavaFiles written
+        final GlobalCache store
     ) {
         this.sources = srcs;
         this.target = target;
-        this.generated = generated;
-        this.tests = tests;
-        this.roots = java;
+        this.written = written;
         this.train = train;
         this.cache = store;
-        this.files = written;
     }
 
     @Override
     public void exec() throws IOException {
+        final JavaFiles files = this.written.files();
         final int transpiled = new Threaded<>(
             this.sources,
-            this::transpiled
+            tojo -> this.transpiled(tojo, files)
         ).total();
-        this.files.removeStale();
-        Logger.info(
-            this, "Transpiled %d XMIRs, created %d Java files in %[file]s",
-            this.sources.size(),
-            transpiled + new PackageInfos(
-                this.generated, this.roots, this.files.directories()
-            ).create(),
-            this.generated
-        );
+        files.removeStale();
+        this.written.log(transpiled, this.sources.size(), files);
     }
 
-    /**
-     * The cache-key version segment of this transpiling.
-     * @return The version segment for {@link CachePath}
-     */
-    String version() {
-        return this.train.version();
-    }
-
-    private int transpiled(final TjForeign tojo) throws IOException {
+    private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.target.resolve(Transpiling.DIR);
@@ -165,7 +116,10 @@ final class Transpiling implements Step {
         final Supplier<String> hsh = new TojoHash(tojo);
         final AtomicBoolean rewrite = new AtomicBoolean(false);
         final Function<XML, XML> transform = this.train.forSource(name);
-        this.cache.with(this.train.version(xmir.xpath("/object/o/@loc"))).footprint(
+        final GlobalCache store = this.cache.with(
+            this.train.version(xmir.xpath("/object/o/@loc"))
+        );
+        store.footprint(
             base.relativize(dest),
             hsh,
             src -> {
@@ -173,8 +127,9 @@ final class Transpiling implements Step {
                 return transform.apply(xmir).toString();
             }
         ).apply(source, dest);
-        return this.files.total(
-            rewrite.get(), dest, hsh.get(), this.tests && !tojo.discovered()
+        return files.total(
+            rewrite.get(), dest, hsh.get(), this.written.tests(tojo),
+            store
         );
     }
 }

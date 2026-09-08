@@ -30,12 +30,29 @@ final class Admission {
     private final boolean own;
 
     /**
-     * Ctor.
+     * Whether the suffix that produced {@link #label} was a {@code TEST}
+     * or {@code THROWS} form.
+     */
+    private final boolean test;
+
+    /**
+     * Ctor — for a line shape whose suffix can never be a test attribute.
      * @param label The suffix's source name, or {@code null}
      * @param permitted Whether this line shape may sit under an atom parent
      */
     Admission(final String label, final boolean permitted) {
-        this(label, permitted, false);
+        this(label, permitted, false, false);
+    }
+
+    /**
+     * Ctor.
+     * @param label The suffix's source name, or {@code null}
+     * @param permitted Whether this line shape may sit under an atom parent
+     * @param test Whether the suffix that produced {@code label} was a
+     *  {@code TEST} or {@code THROWS} form
+     */
+    Admission(final String label, final boolean permitted, final boolean test) {
+        this(label, permitted, false, test);
     }
 
     /**
@@ -43,11 +60,16 @@ final class Admission {
      * @param label The suffix's source name, or {@code null}
      * @param permitted Whether this line shape may sit under an atom parent
      * @param own Whether the line declares an atom of its own
+     * @param test Whether the suffix that produced {@code label} was a
+     *  {@code TEST} or {@code THROWS} form
      */
-    Admission(final String label, final boolean permitted, final boolean own) {
+    Admission(
+        final String label, final boolean permitted, final boolean own, final boolean test
+    ) {
         this.label = label;
         this.permitted = permitted;
         this.own = own;
+        this.test = test;
     }
 
     /**
@@ -56,7 +78,7 @@ final class Admission {
      */
     void name(final Level level) {
         if (this.label != null) {
-            level.name(this.label);
+            level.name(this.label, this.test);
         }
     }
 

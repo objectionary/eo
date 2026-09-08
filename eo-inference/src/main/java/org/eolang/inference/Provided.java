@@ -198,6 +198,23 @@ final class Provided {
         return found;
     }
 
+    /**
+     * The type this one stands in front of.
+     * @param type The name the type goes by
+     * @return The locator of what it delegates to, or an empty string when it
+     *  delegates to nothing
+     */
+    String behind(final String type) {
+        String next = this.bound(type, "φ");
+        if (next.isEmpty()) {
+            next = this.cell(type, "returns");
+        }
+        if (next.isEmpty()) {
+            next = this.held.getOrDefault(type, "");
+        }
+        return this.names.getOrDefault(next, next);
+    }
+
     private boolean hollow(final String type) {
         boolean found = false;
         String walked = type;
@@ -225,17 +242,6 @@ final class Provided {
             found = this.kept(behind, name, walked);
         }
         return found;
-    }
-
-    private String behind(final String type) {
-        String next = this.bound(type, "φ");
-        if (next.isEmpty()) {
-            next = this.cell(type, "returns");
-        }
-        if (next.isEmpty()) {
-            next = this.held.getOrDefault(type, "");
-        }
-        return this.names.getOrDefault(next, next);
     }
 
     private boolean blank(final String type) {

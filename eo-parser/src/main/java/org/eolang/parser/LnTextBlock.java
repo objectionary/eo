@@ -71,7 +71,7 @@ final class LnTextBlock implements Line {
         this.transition(stack, suffix);
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         globals.closeTextBlock();
@@ -83,7 +83,7 @@ final class LnTextBlock implements Line {
         new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

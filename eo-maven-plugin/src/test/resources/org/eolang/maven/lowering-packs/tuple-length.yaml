@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void witnessed as a tuple is no datum, so the atom holds the argument
+# object itself, and the one thing the body asks of it, its length, is a
+# step that dispatches back into EO and dataizes what the tuple answers.
+input: |
+  [] > foo
+    [items] > count
+      items.length.plus 1 > @
+    count (* 7 8 9) > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  tuple.eo: |
+    [tail head length] > tuple
+      [] > empty
+        0 > length
+unit: count
+voids:
+  items: tuple
+lowered: |
+  [] > foo
+    count * > @
+      7
+      8
+      9
+    [] > count /Q.number
+      ? > items /Q.tuple
+protocol: |
+  s1 ← L_tuple_length sym:v0
+  s2 ← L_number_plus sym:s1 number:3F-F0-00-00-00-00-00-00
+  answer sym:s2 number
+java: |
+  final Phi v0 = this.take("items");
+  final double s1 = new Dataized(v0.take("length")).asNumber();
+  final double s2 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s2);

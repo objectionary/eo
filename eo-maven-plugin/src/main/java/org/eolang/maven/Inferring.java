@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
@@ -21,10 +22,11 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
-import org.eolang.inference.Relayed;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Work out the types of the objects of a program and write down what is known.
@@ -91,10 +93,19 @@ final class Inferring implements Step {
     public void exec() throws IOException {
         if (Files.exists(this.input)) {
             new Deleted(this.prepared.toFile()).get();
+            if (Files.exists(this.prepared)) {
+                throw new IOException(
+                    Logger.format(
+                        "Can't clean up %[file]s: prepared XMIRs of an earlier run are still there, and inferring them together with the current ones would describe sources that no longer exist",
+                        this.prepared
+                    )
+                );
+            }
             final int ready = this.ready();
             final long start = System.currentTimeMillis();
-            new Witnessed(new Relayed(new Demanded(new Resolved(new Clues()))))
+            new Witnessed(new Demanded(new Resolved(new Clues())))
                 .follow(this.prepared, this.tables);
+            this.declared();
             Logger.info(
                 this, "Inferred the types of %d XMIR(s) in %[ms]s",
                 ready, System.currentTimeMillis() - start
@@ -124,6 +135,31 @@ final class Inferring implements Step {
         }
     }
 
+    private void declared() throws IOException {
+        final Directives dirs = new Directives().add("atoms");
+        try (Stream<Path> found = Files.walk(this.prepared)) {
+            for (final Path source : found
+                .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
+                .sorted()
+                .collect(Collectors.toList())) {
+                final XML xmir = new XMLDocument(source);
+                for (final XML lambda
+                    : xmir.nodes("//o[@name='λ' and string-length(@atom) > 0]")) {
+                    dirs.add("atom")
+                        .attr("loc", lambda.xpath("../@loc").get(0))
+                        .attr("forma", lambda.xpath("@atom").get(0))
+                        .up();
+                }
+            }
+        }
+        Files.createDirectories(this.tables);
+        Files.write(
+            this.tables.resolve("atoms.xml"),
+            new Xembler(dirs).xmlQuietly().getBytes(StandardCharsets.UTF_8)
+        );
+    }
+
     private int ready() throws IOException {
         final Xsline train = new Xsline(
             new TrFull(
@@ -150,6 +186,7 @@ final class Inferring implements Step {
         try (Stream<Path> found = Files.walk(this.input)) {
             return found
                 .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
                 .sorted()
                 .collect(Collectors.toList());
         }

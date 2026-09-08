@@ -4,11 +4,15 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * What every application puts into the voids of what it copies.
@@ -47,7 +51,11 @@ final class Given {
     Map<String, List<String>> arguments() {
         final Map<String, List<String>> found = new HashMap<>(0);
         for (final XML application : this.all) {
-            found.put(application.xpath("@loc").get(0), new Placed(application).args());
+            final Xnav node = new Xnav(application.inner());
+            found.put(
+                node.attribute("loc").text().orElse(""),
+                new Placed(Given.args(node)).args()
+            );
         }
         return found;
     }
@@ -60,14 +68,21 @@ final class Given {
     Map<String, Map<String, String>> named() {
         final Map<String, Map<String, String>> found = new HashMap<>(0);
         for (final XML application : this.all) {
+            final Xnav node = new Xnav(application.inner());
             final Map<String, String> args = new HashMap<>(0);
-            for (final XML arg : application.nodes(
-                "o[@as][not(starts-with(@as, 'α'))][@loc]"
-            )) {
-                args.put(arg.xpath("@as").get(0), arg.xpath("@loc").get(0));
+            for (final Xnav arg : Given.args(node)) {
+                final Optional<String> place = arg.attribute("as").text();
+                final Optional<String> loc = arg.attribute("loc").text();
+                if (place.isPresent() && loc.isPresent() && !place.get().startsWith("α")) {
+                    args.put(place.get(), loc.get());
+                }
             }
-            found.put(application.xpath("@loc").get(0), args);
+            found.put(node.attribute("loc").text().orElse(""), args);
         }
         return found;
+    }
+
+    private static List<Xnav> args(final Xnav application) {
+        return application.elements(Filter.withName("o")).collect(Collectors.toList());
     }
 }

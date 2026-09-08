@@ -73,6 +73,18 @@ final class RecvSyscallTest {
         );
     }
 
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void rejectsSizeLargerThanTheHeap() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(Integer.MAX_VALUE), new Data.ToPhi(0)
+            ),
+            "A posix recv of more bytes than the heap holds must fail with ExFailure"
+        );
+    }
+
     private static List<Integer> outcome(final Phi result) {
         return Arrays.asList(
             new Dataized(result.take("code")).asNumber().intValue(),

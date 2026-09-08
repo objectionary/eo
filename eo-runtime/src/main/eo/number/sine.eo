@@ -1,11 +1,32 @@
 # Sine of `num` radians as `org.eolang.number`.
-# The argument is reduced into the [-pi, pi] range with a Cody-Waite style
-# two-part reduction constant, and the Taylor series is summed through
-# Horner's scheme. The high part of that constant has 26 trailing zero
-# mantissa bits, so `k times tau_hi` stays exact only while `k` is under
-# `2^26`, which puts the reduction's few-ULP accuracy at |num| up to about
-# 4e8; past that point the product itself rounds and the error lands
-# straight in the reduced angle. Non-finite arguments collapse to nan.
+# The argument is reduced into the [-pi, pi] range and the Taylor series is
+# summed over the reduced angle through Horner's scheme.
+#
+# The reduction takes `turns` whole turns off the angle, and the accuracy of
+# the answer is the accuracy of that one subtraction: at `1e15` the reduced
+# angle is what survives of a number sixteen digits long, so a product of
+# `turns` and two pi rounded into a single double keeps none of the digits
+# that decide the sine. The product is therefore carried in two doubles.
+#
+# `tau` is the nearest double to two pi and `tail` is what that double
+# misses. `turns times tau` is taken exactly by Dekker's method: `gap` is
+# two to the 27th plus one, and multiplying by it and subtracting back splits
+# a double into halves narrow enough that their pairwise products round
+# nowhere: `turns` into `top` and `foot`, `tau` into `crown` and `stub`.
+# The four partials `high`, `mid`, `cross` and `low` then say what the single
+# rounded `product` dropped, and `slip` is that dropped part. The `reduced`
+# angle is the argument less `product`, less `slip`, less `turns times tail`.
+#
+# The attributes below stand in alphabetical order, which is not the order
+# they are computed in; the paragraph above is the order.
+#
+# Two doubles carry about 106 bits, so the reduction holds to a few ULP for
+# as long as `turns times two pi` needs no more than that, which is |num| up
+# to about `1e15`. Past it the reduced angle drifts out of [-pi, pi] and the
+# series is summed further from zero than it is meant to be. Holding the
+# whole range of a double would take Payne-Hanek reduction, with two-over-pi
+# written out to more bits than any product of doubles carries.
+# Non-finite arguments collapse to nan.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,25 +36,14 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > sine
-  times. > @
-    minus. >> reduced
-      arg.minus
-        times.
-          floor. >> k
-            plus.
-              div.
-                number ^.as-bytes >> arg
-                pi.times 2
-              0.5
-          6.283185303211212
-      k.times 3.968374318722162e-9
+  reduced.times > @
     if. > [^ depth] >> factor
       depth.gt 15
       1
       1.minus
         times.
           div.
-            reduced.times reduced
+            ^.reduced.times ^.reduced
             times.
               depth.times 2
               plus.
@@ -42,6 +52,39 @@
           ^.factor
             depth.plus 1
     | 1
+  number ^.as-bytes > arg
+  spread.minus tau > away
+  foot.times crown > cross
+  spread.minus away > crown
+  turns.minus top > foot
+  134217729 > gap
+  top.times crown > high
+  foot.times stub > low
+  top.times stub > mid
+  turns.times tau > product
+  minus. > reduced
+    minus.
+      arg.minus product
+      slip
+    turns.times tail
+  wide.minus turns > shed
+  plus. > slip
+    plus.
+      plus.
+        high.minus product
+        mid
+      cross
+    low
+  tau.times gap > spread
+  tau.minus crown > stub
+  2.4492935982947064e-16 > tail
+  pi.times 2 > tau
+  wide.minus shed > top
+  floor. > turns
+    plus.
+      arg.div tau
+      0.5
+  turns.times gap > wide
 
   lt. ++> can-be-accurate-near-the-documented-four-hundred-million-boundary
     abs.
@@ -82,6 +125,11 @@
   ninf.sine.is-nan ++> can-return-nan-for-a-sine-of-negative-infinity
 
   pinf.sine.is-nan ++> can-return-nan-for-a-sine-of-positive-infinity
+
+  lt. ++> can-take-a-sine-of-a-quadrillion
+    abs.
+      1000000000000000.sine.minus 0.8582727931702359
+    1.0e-14
 
   lt. ++> can-take-a-sine-of-minus-pi-halves
     abs.

@@ -22,6 +22,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrFull;
@@ -115,6 +118,45 @@ final class XmirTest {
             "Printing in parallel threads cannot diverge from printing in one",
             new Together<>(thread -> new Xmir(xml).toEO()),
             Matchers.everyItem(Matchers.equalTo(new Xmir(xml).toEO()))
+        );
+    }
+
+    @Test
+    void avoidsRepeatingHostedLookup() {
+        MatcherAssert.assertThat(
+            "The hosted template must not repeat the full first-host lookup",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
+                "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",
+                "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='binding' and @select=\"key('moniker-binding', concat(generate-id($owner), ' ', eo:resolved-ref(.)), root(.))[1]\"]"
+            )
+        );
+    }
+
+    @Test
+    void guardsExpensiveTemplatePredicates() {
+        MatcherAssert.assertThat(
+            "Cheap predicates must reject nodes before hosted/applied lookups",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
+                "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+            )
+        );
+    }
+
+    @Test
+    void sortsOnlyMultipleDispatches() {
+        MatcherAssert.assertThat(
+            "Dispatch ordering must sort only when at least two candidates exist",
+            this.mergeMonikers(),
+            XhtmlMatchers.hasXPaths(
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='when' and @test='exists($dispatches[2])']/*[local-name()='perform-sort' and @select='$dispatches']",
+                "/*/*[local-name()='function' and @name='eo:moniker-refs']/*[local-name()='variable' and @name='dispatch']/*[local-name()='choose']/*[local-name()='otherwise']/*[local-name()='sequence' and @select='$dispatches']"
+            )
         );
     }
 
@@ -292,6 +334,19 @@ final class XmirTest {
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
         return new Xmir(xml, config);
+    }
+
+    private XML mergeMonikers() {
+        return new XMLDocument(
+            new UncheckedText(
+                new TextOf(
+                    new ResourceOf(
+                        "org/eolang/printer/print/merge-monikers.xsl",
+                        XmirTest.class
+                    )
+                )
+            ).asString()
+        );
     }
 
     private Map<PenaltyKey, Integer> weights(final Xtory xtory) {

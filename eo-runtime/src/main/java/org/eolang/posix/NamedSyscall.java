@@ -18,6 +18,7 @@ import org.eolang.Syscall;
  * the syscall that carries it out.</p>
  *
  * @since 0.62.0
+ * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */
 public final class NamedSyscall implements Syscall {
 
@@ -38,6 +39,9 @@ public final class NamedSyscall implements Syscall {
             "lstat",
             posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.lstat(path, buf))
         );
+        NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
+        NamedSyscall.ALL.put("readdir", ReaddirSyscall::new);
+        NamedSyscall.ALL.put("closedir", ClosedirSyscall::new);
         NamedSyscall.ALL.put("creat", CreatSyscall::new);
         NamedSyscall.ALL.put("unlink", UnlinkSyscall::new);
         NamedSyscall.ALL.put("rmdir", RmdirSyscall::new);

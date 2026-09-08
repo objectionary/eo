@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:7] error: 'Invalid bound object declaration'
+  [3:7] error: 'binding label "-1" must be a name or a slot number'
       42:-1
          ^
 input: |

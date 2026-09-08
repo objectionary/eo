@@ -46,11 +46,8 @@ final class Held {
     Map<String, String> all() {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final XML attr : this.table.nodes("//attr[@void='true' and @holds]")) {
-            final String holds = attr.xpath("@holds").get(0);
-            found.put(
-                attr.xpath("@type").get(0),
-                holds.replace("?", "")
-            );
+            final Noted row = new Noted(attr);
+            found.put(row.says("type"), row.says("holds").replace("?", ""));
         }
         return found;
     }

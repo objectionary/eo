@@ -15,18 +15,23 @@ import java.util.Set;
  * A map that holds no more than the given number of entries, letting
  * the entry asked for longest ago go first.
  *
+ * <p>A capacity of zero makes a map that keeps nothing: a put stores
+ * nothing and a get answers with nothing. A negative capacity is refused
+ * by the constructor.</p>
+ *
  * <p>The map is not thread-safe on its own — wrap it in
  * {@link java.util.Collections#synchronizedMap(Map)} when several
  * threads share it.</p>
  *
+ * @param <T> The type of the values kept
  * @since 0.75
  */
-final class Lru implements Map<String, byte[]> {
+final class Lru<T> implements Map<String, T> {
 
     /**
      * The entries, in the order of access.
      */
-    private final Map<String, byte[]> origin;
+    private final Map<String, T> origin;
 
     /**
      * How many entries to keep.
@@ -35,9 +40,12 @@ final class Lru implements Map<String, byte[]> {
 
     /**
      * Ctor.
-     * @param cap How many entries to keep
+     * @param cap How many entries to keep, zero for a map that keeps nothing
      */
     Lru(final int cap) {
+        if (cap < 0) {
+            throw new IllegalArgumentException("Capacity can't be negative");
+        }
         this.origin = new LinkedHashMap<>(16, 0.75f, true);
         this.capacity = cap;
     }
@@ -63,28 +71,34 @@ final class Lru implements Map<String, byte[]> {
     }
 
     @Override
-    public byte[] get(final Object key) {
+    public T get(final Object key) {
         return this.origin.get(key);
     }
 
     @Override
-    public byte[] put(final String key, final byte[] value) {
-        if (this.origin.size() >= this.capacity && !this.origin.containsKey(key)) {
-            final Iterator<String> eldest = this.origin.keySet().iterator();
-            eldest.next();
-            eldest.remove();
+    public T put(final String key, final T value) {
+        final T result;
+        if (this.capacity == 0) {
+            result = null;
+        } else {
+            if (this.origin.size() >= this.capacity && !this.origin.containsKey(key)) {
+                final Iterator<String> eldest = this.origin.keySet().iterator();
+                eldest.next();
+                eldest.remove();
+            }
+            result = this.origin.put(key, value);
         }
-        return this.origin.put(key, value);
+        return result;
     }
 
     @Override
-    public byte[] remove(final Object key) {
+    public T remove(final Object key) {
         return this.origin.remove(key);
     }
 
     @Override
-    public void putAll(final Map<? extends String, ? extends byte[]> map) {
-        for (final Map.Entry<? extends String, ? extends byte[]> entry : map.entrySet()) {
+    public void putAll(final Map<? extends String, ? extends T> map) {
+        for (final Map.Entry<? extends String, ? extends T> entry : map.entrySet()) {
             this.put(entry.getKey(), entry.getValue());
         }
     }
@@ -100,12 +114,12 @@ final class Lru implements Map<String, byte[]> {
     }
 
     @Override
-    public Collection<byte[]> values() {
+    public Collection<T> values() {
         return this.origin.values();
     }
 
     @Override
-    public Set<Map.Entry<String, byte[]>> entrySet() {
+    public Set<Map.Entry<String, T>> entrySet() {
         return this.origin.entrySet();
     }
 }

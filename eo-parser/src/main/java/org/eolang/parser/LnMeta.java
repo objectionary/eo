@@ -76,7 +76,7 @@ final class LnMeta implements Line {
         if (globals.inMetaHeader() && globals.pendingBlanks() > 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block"
+                "blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block"
             );
         }
         if (!globals.inMetaHeader() && globals.pendingBlanks() > 0
@@ -95,9 +95,7 @@ final class LnMeta implements Line {
             parts = new ArrayList<>(0);
         } else {
             head = body.substring(1, space);
-            parts = LnMeta.split(
-                body.substring(space + 1), this.span, space + 1
-            );
+            parts = this.split(body.substring(space + 1), space + 1);
         }
         this.checkHead(head, parts);
         globals.seal(emit, this.span);
@@ -170,29 +168,29 @@ final class LnMeta implements Line {
         }
     }
 
-    private static List<String> split(
-        final String tail, final Span span, final int base
-    ) {
+    private List<String> split(final String tail, final int base) {
         final List<String> out = new ArrayList<>(2);
         int idx = 0;
         while (idx < tail.length()) {
-            if (tail.charAt(idx) == ' ') {
-                throw new ParseError(
-                    span.line(), span.indent() + base + idx,
-                    "meta parts must be separated by exactly one space"
-                );
-            }
             int end = idx;
             while (end < tail.length() && !Character.isWhitespace(tail.charAt(end))) {
                 end = end + 1;
             }
-            if (end < tail.length() && tail.charAt(end) != ' ') {
+            if (end == idx || end < tail.length() && tail.charAt(end) != ' ') {
                 throw new ParseError(
-                    span.line(), span.indent() + base + end,
+                    this.span.line(), this.span.indent() + base + end,
                     "meta parts must be separated by a single ASCII space"
                 );
             }
-            out.add(LnMeta.promoteQ(tail.substring(idx, end)));
+            final String part = tail.substring(idx, end);
+            final int control = new Scrubbed(part).found();
+            if (control >= 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + base + idx + control,
+                    "control character is not allowed in a meta"
+                );
+            }
+            out.add(LnMeta.promoteQ(part));
             idx = end;
             if (idx < tail.length()) {
                 idx = idx + 1;

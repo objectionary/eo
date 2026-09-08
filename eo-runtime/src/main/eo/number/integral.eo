@@ -68,17 +68,12 @@
           100
       2499.75
       1.0e-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs.
-            value.minus operand
-          err
-        0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
+    lte. > [value operand err] > close-to
+      minus.
+        abs.
+          value.minus operand
+        err
+      0
 
   ++> can-integrate-a-linear-function
     close-to > @
@@ -90,17 +85,12 @@
           15
       49.5
       1.0e-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs.
-            value.minus operand
-          err
-        0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
+    lte. > [value operand err] > close-to
+      minus.
+        abs.
+          value.minus operand
+        err
+      0
 
   ++> can-integrate-a-quadratic-function
     close-to > @
@@ -112,17 +102,12 @@
           100
       333
       1.0e-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs.
-            value.minus operand
-          err
-        0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
+    lte. > [value operand err] > close-to
+      minus.
+        abs.
+          value.minus operand
+        err
+      0
 
   ++> can-integrate-with-a-single-partition
     close-to > @
@@ -134,17 +119,12 @@
           1
       0.5
       1.0e-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs.
-            value.minus operand
-          err
-        0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
+    lte. > [value operand err] > close-to
+      minus.
+        abs.
+          value.minus operand
+        err
+      0
 
   ++> can-integrate-with-an-evenly-dividing-step
     close-to > @
@@ -156,17 +136,12 @@
           10
       50
       1.0e-7
-    [value operand err] > close-to
-      lte. > @
-        minus.
-          abs.
-            value.minus operand
-          err
-        0
-      if. > [value] > abs
-        value.gte 0
-        value
-        value.neg
+    lte. > [value operand err] > close-to
+      minus.
+        abs.
+          value.minus operand
+        err
+      0
 
   eq. ++> can-recover-from-partitions-at-the-precision-boundary
     "recovered"

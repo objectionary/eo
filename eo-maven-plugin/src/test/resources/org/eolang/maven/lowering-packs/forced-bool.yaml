@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const of a bool answers bytes the same way a const of a number
+# does, and a bool is one byte rather than eight.
+input: |
+  [] > foo
+    [x] > raw
+      x.gt 1 >> flag!
+      flag > @
+    raw 2 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: raw
+voids:
+  x: number
+lowered: |
+  [] > foo
+    raw 2 > @
+    [] > raw /Q.bytes
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_gt sym:v0 number:3F-F0-00-00-00-00-00-00
+  answer sym:s1 bytes
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final boolean s1 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(new byte[] {(byte) (s1 ? 0xFF : 0x00)});

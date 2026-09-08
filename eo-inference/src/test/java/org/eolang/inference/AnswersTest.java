@@ -96,6 +96,71 @@ final class AnswersTest {
     }
 
     @Test
+    void answersAVoidWithTheOneTypeThatFillsIt() {
+        MatcherAssert.assertThat(
+            "a void the whole program fills with a tuple must answer that it is one, but it didnt",
+            new Answers(
+                AnswersTest.formation("Φ.tuple"),
+                Collections.singletonMap(
+                    "Φ.printf.args", Collections.singletonList(new Ref("Φ.tuple"))
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.printf.args", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.tuple")
+        );
+    }
+
+    @Test
+    void takesTheRungOfTheTypeThatFillsTheVoid() {
+        MatcherAssert.assertThat(
+            "a void filled with a whole formation must stand where it stands, but it stayed below",
+            new Answers(
+                AnswersTest.formation("Φ.tuple"),
+                Collections.singletonMap(
+                    "Φ.printf.args", Collections.singletonList(new Ref("Φ.tuple"))
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.printf.args", Collections.emptyList()).rung(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void leavesAVoidSeveralTypesFillAlone() {
+        MatcherAssert.assertThat(
+            "a void two formas fill cannot be either of them, but it was named one",
+            new Answers(
+                AnswersTest.formation("Φ.tuple"),
+                Collections.singletonMap(
+                    "Φ.i8.as-bytes",
+                    Arrays.asList(new Ref("Φ.tuple"), new Ref("Φ.string"))
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.i8.as-bytes", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.i8.as-bytes")
+        );
+    }
+
+    @Test
+    void leavesAVoidFilledFromAnotherVoidAlone() {
+        MatcherAssert.assertThat(
+            "a void filled from a void names no forma, so it must stay itself, but it moved",
+            new Answers(
+                AnswersTest.formation("Φ.tuple"),
+                Collections.singletonMap(
+                    "Φ.one.x", Collections.singletonList(new Var("Φ.two.y"))
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.one.x", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.one.x")
+        );
+    }
+
+    @Test
     void doesNotCountTheReceiverAmongTheVoidsFilled() {
         final Map<String, Collection<Map<String, String>>> rows = new LinkedHashMap<>(0);
         final Map<String, String> whole = new LinkedHashMap<>(0);
@@ -118,5 +183,12 @@ final class AnswersTest {
             ).of("Φ.app.half", Collections.singletonList("Φ.grow.ρ")).rung(),
             Matchers.equalTo(2)
         );
+    }
+
+    private static Map<String, Collection<Map<String, String>>> formation(final String locator) {
+        final Map<String, String> whole = new LinkedHashMap<>(0);
+        whole.put("id", locator);
+        whole.put("complete", "true");
+        return Collections.singletonMap(locator, Collections.singletonList(whole));
     }
 }

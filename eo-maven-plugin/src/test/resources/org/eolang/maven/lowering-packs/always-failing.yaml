@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A body that is the terminator alone fails on every path, so the
+# program answers nothing: there is no value for the atom to hand
+# over, the reduction refuses it, and the formation stays as written.
+input: |
+  [] > foo
+    [x] > boom
+      T "boom" > @
+    boom 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: boom
+voids:
+  x: number
+lowered: |
+  [] > foo
+    boom 5 > @
+    T "boom" > [x] > boom
+stuck: "The program never answers"

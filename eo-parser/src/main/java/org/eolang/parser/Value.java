@@ -260,7 +260,7 @@ final class Value {
 
     /**
      * May this value open a reversed dispatch as the line's head — a
-     * bare identifier or a root glyph, the only kinds R-9.0.3 allows in
+     * bare identifier or a root glyph, the only kinds R-3.8.1 allows in
      * that position?
      * @return True for {@link Kind#IDENTIFIER} or {@link Kind#ROOT}
      */

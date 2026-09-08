@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The classic Fibonacci, as the textbook writes it: the sum of two
+# calls to itself. Neither call is in a tail position, since the sum
+# still awaits both values, so this is not a repeat and there is no loop
+# to lower it into: the reduction settles the guard, forks on it, and
+# refuses the arm where the calls stand under the `plus`, which is the
+# one check that keeps a recursion honest. The formation stays as
+# written and runs through the continuations of the transpiler instead,
+# and nothing inside it is outlined either, since every application
+# that is not a call to itself is a single step.
+input: |
+  [] > foo
+    [^ n] > fib
+      if. > @
+        n.gt 1
+        plus.
+          ^.fib
+            n.plus -1
+          ^.fib
+            n.plus -2
+        n
+    fib 10 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: fib
+voids:
+  n: number
+lowered: |
+  [] > foo
+    fib 10 > @
+    if. > [^ n] > fib
+      n.gt 1
+      plus.
+        ^.fib
+          n.plus -1
+        ^.fib
+          n.plus -2
+      n
+stuck: "The call to itself is not in a tail position"

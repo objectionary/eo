@@ -64,11 +64,25 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.name("foo");
+        level.name("foo", false);
         MatcherAssert.assertThat(
             "named() must report true once name() has been called",
             level.named(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void dropsNamedFlagOnSeal() {
+        final Level level = new Level(
+            2, 5, Kind.VMETHOD, Openness.OPEN, Kind.BARE_FORMATION, false
+        );
+        level.name("intermediate", false);
+        level.sealed();
+        MatcherAssert.assertThat(
+            "sealed() must forget the name the replaced chain link carried",
+            level.named(),
+            Matchers.is(false)
         );
     }
 
@@ -169,6 +183,59 @@ final class LevelTest {
             "child() must increment children() by 1 each call",
             level.children(),
             Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void acceptsVoidBeforeAnyPlainChild() {
+        final Level level = new Level(
+            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
+        );
+        Assertions.assertDoesNotThrow(
+            () -> level.observeVoid(Kind.VOID, 2, 3),
+            "observeVoid must not reject a void child that has no plain sibling yet"
+        );
+    }
+
+    @Test
+    void acceptsPlainChildAfterVoid() {
+        final Level level = new Level(
+            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
+        );
+        level.observeVoid(Kind.VOID, 2, 3);
+        Assertions.assertDoesNotThrow(
+            () -> level.observeVoid(Kind.HEAD, 4, 5),
+            "observeVoid must not reject a plain child that follows a void one"
+        );
+    }
+
+    @Test
+    void rejectsVoidAfterPlainChild() {
+        final Level level = new Level(
+            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
+        );
+        level.observeVoid(Kind.HEAD, 2, 3);
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> level.observeVoid(Kind.VOID, 4, 5),
+            "observeVoid must reject a void child once a plain sibling has appeared"
+        );
+    }
+
+    @Test
+    void positionsVoidOrderingErrorAtOffendingVoid() {
+        final Level level = new Level(
+            0, 1, Kind.HEAD, Openness.OPEN, Kind.TOP_LEVEL, false
+        );
+        level.observeVoid(Kind.HEAD, 2, 3);
+        MatcherAssert.assertThat(
+            "error must be positioned at the line of the void that broke the ordering rule",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> level.observeVoid(Kind.VOID, 9, 4),
+                "observeVoid must reject a misplaced void with a ParseError"
+            ).line(),
+            Matchers.equalTo(9)
         );
     }
 }

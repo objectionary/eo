@@ -54,6 +54,28 @@ final class ReportTest {
     }
 
     @Test
+    void countsTheVoidsAnAtomFillsApart(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the tally must count the voids an atom fills apart from the rest, but it didnt",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.containsString("filled by an atom")
+        );
+    }
+
+    @Test
+    void countsTheVoidsNobodyFillsApart(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the tally must count the voids nobody fills apart from the rest, but it didnt",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.containsString("filled by nobody")
+        );
+    }
+
+    @Test
     void listsEveryPageOnTheIndex(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.tables(temp))
             .written(temp.resolve("out"));
@@ -61,6 +83,46 @@ final class ReportTest {
             "the index must lead to the page of every file, but it didnt",
             Files.readString(temp.resolve("out").resolve("index.html")),
             Matchers.containsString("cup.eo.html")
+        );
+    }
+
+    @Test
+    void linksANestedPageWithUrlSeparators(@Mktmp final Path temp) throws IOException {
+        final Path xmirs = ReportTest.program(temp);
+        Files.move(
+            xmirs.resolve("cup.xmir"),
+            Files.createDirectories(xmirs.resolve("deep")).resolve("cup.xmir")
+        );
+        new Report(xmirs, ReportTest.tables(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a nested page must be linked with URL separators, but it wasnt",
+            Files.readString(temp.resolve("out").resolve("index.html")),
+            Matchers.containsString("deep/cup.eo.html")
+        );
+    }
+
+    @Test
+    void writesAnIndexForAnEmptyProgram(@Mktmp final Path temp) throws IOException {
+        final Path xmirs = Files.createDirectories(temp.resolve("xmirs"));
+        final Path tables = temp.resolve("tables");
+        new Resolved(new Clues()).follow(xmirs, tables);
+        new Report(xmirs, tables).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the index must be written even when there are no source pages",
+            Files.exists(temp.resolve("out").resolve("index.html")),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void ignoresADirectoryNamedLikeAnXmirFile(@Mktmp final Path temp) throws IOException {
+        final Path program = ReportTest.program(temp);
+        final Path tables = ReportTest.tables(temp);
+        Files.createDirectories(program.resolve("stale.xmir"));
+        MatcherAssert.assertThat(
+            "a folder whose name ends with .xmir must not become a page, but it did",
+            new Report(program, tables).written(temp.resolve("out")),
+            Matchers.equalTo(1)
         );
     }
 

@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void the program fills two ways still says something, as long as the two
+# fillings are copies of one object: whichever arrives, it is a copy of that,
+# so a call rooted at the void goes on past it. Where the filling hands back
+# what the call put into it, as both arms of a choice do, the call is one of
+# its own arguments, and it does not matter which one when they agree.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        impl 03-
+        impl 04-
+      [^ sys] > impl
+        [^ size] > listen
+          size > @
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.sock.flag']/var"
+  - "/links/type[@id='Φ.sock.φ']/ref[@loc='Φ.choice.pick']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.sock.impl.listen']"

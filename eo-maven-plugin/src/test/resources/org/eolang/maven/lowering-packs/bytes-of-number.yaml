@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The bytes of a number are a view of a double, so the answer is bytes
+# of a local the step declared a double. The reduction settles all the
+# same, yet the formation stays as written: the protocol has no step in
+# it, and an atom of no steps is worth nothing over the object it
+# replaces.
+input: |
+  [] > foo
+    [x] > raw
+      x.as-bytes > @
+    raw 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: raw
+voids:
+  x: number
+lowered: |
+  [] > foo
+    raw 5 > @
+    x.as-bytes > [x] > raw
+protocol: |
+  answer sym:v0 bytes

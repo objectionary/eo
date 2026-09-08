@@ -10,10 +10,10 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object/o[@name='m']/o[@name='z' and @base='Φ.x']/o[@base='Φ.number']
-  - /object/o[@name='m']/o[@base='.y' and @fragile='' and @method='']
+  - /object/o[@name='m']/o[@base='.y' and @name='w' and @fragile='' and @method='']
 input: |
   [] > m
     x > z
       1
       2
-    ?.y
+    ?.y > w

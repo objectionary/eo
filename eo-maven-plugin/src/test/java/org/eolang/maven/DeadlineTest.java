@@ -27,6 +27,19 @@ final class DeadlineTest {
     }
 
     @Test
+    void refusesANegativeDeadline() {
+        MatcherAssert.assertThat(
+            "a negative timeout must be reported as a configuration mistake, not as a timeout",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Deadline(this, -1L, false).spent(() -> "never"),
+                "a negative timeout was expected to be refused"
+            ).getMessage(),
+            Matchers.containsString("must not be negative")
+        );
+    }
+
+    @Test
     @Timeout(30)
     void interruptsAHungBodyPromptlyOnTimeout() {
         final long start = System.nanoTime();

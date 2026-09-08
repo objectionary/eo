@@ -1,0 +1,183 @@
+# Names of everything the directory holds directly, ordered by their bytes.
+# It is a method of `directory`, taken off the directory it lists, and it
+# answers with a `tuple` of names and not of paths: what stands before them
+# is the directory itself.
+#
+# The stream is walked the way C walks it, one entry at a time, and it is
+# closed before the names are handed over. Posix opens it with `opendir` and
+# reads it with `readdir`; Windows opens a search over the directory and a
+# trailing wildcard with `FindFirstFileW`, which reports the first entry
+# along with the handle it hands back, and reads the rest with
+# `FindNextFileW`. Both report `.` and `..`, which name the directory itself
+# and its parent rather than anything inside it, and both are dropped here.
+#
+# The order is the one the bytes of the names give and not the one the
+# filesystem happens to keep, which is arbitrary and differs from machine to
+# machine. The names are sorted by insertion, which costs a comparison for
+# every pair of them in the worst case: this object is for the directories a
+# program walks and not for the ones holding thousands of entries.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package directory
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^] > listed
+  if. > @
+    opened.code.eq -1
+    T
+      "Can't list the directory '%s': %s".printf
+        * ^.path opened.output
+    seq *
+      entries.is-empty
+      closed
+      entries
+  if. > [^ acc name] > added
+    or.
+      name.eq "."
+      name.eq ".."
+    acc
+    acc.with name
+  [^ left right index] > ahead
+    if. > @
+      index.eq left.size
+      right.size.gt index
+      if.
+        index.eq right.size
+        false
+        if.
+          one.eq two
+          ^.ahead
+            left
+            right
+            index.plus 1
+          ^.smaller one two 7
+    left.slice > one
+      index
+      1
+    right.slice > two
+      index
+      1
+  eq. > closed
+    code.
+      os.is-windows.if
+        win32 *1
+          "FindClose"
+          opened.code
+        posix *1
+          "closedir"
+          opened.code
+    0
+  sorted > entries
+    gathered
+      os.is-windows.if
+        added
+          *
+          opened.output
+        *
+  [^ acc] > gathered
+    if. > @
+      read.code.eq -1
+      acc
+      ^.gathered
+        ^.added acc read.output
+    called. > read
+      os.is-windows.if
+        win32 *1
+          "FindNextFileW"
+          ^.opened.code
+        posix *1
+          "readdir"
+          ^.opened.code
+  if. > [^ rest item] > inserted
+    rest.length.eq 0
+    * item
+    if.
+      ^.ahead
+        item.as-bytes
+        rest.head.as-bytes
+        0
+      with.
+        ^.inserted rest.tail item
+        rest.head
+      rest.with item
+  called. > opened
+    os.is-windows.if
+      win32 *1
+        "FindFirstFileW"
+        ^.as-path.separator.joined
+          * ^.path "*"
+      posix *1
+        "opendir"
+        ^.path
+  [^ one two bit] > smaller
+    if. > @
+      lit.eq
+        and.
+          two.right bit
+          01-
+      ^.smaller
+        one
+        two
+        bit.minus 1
+      lit.eq 00-
+    and. > lit
+      one.right bit
+      01-
+  if. > [^ rest] > sorted
+    rest.length.eq 0
+    rest
+    ^.inserted
+      ^.sorted rest.tail
+      rest.head
+
+  ++> can-list-an-empty-directory
+    d.as-dir.listed.length.eq 0 > @
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-list-names-in-the-order-of-their-bytes
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "b.txt"
+      touched.
+        as-file.
+          d.resolved "C.txt"
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        ",".joined d.as-dir.listed
+        "C.txt,a.txt,b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-list-only-the-direct-children-of-a-directory
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "плюшка.txt"
+      made.
+        as-dir.
+          d.resolved "sub"
+      touched.
+        as-file.
+          d.resolved "sub/deep.txt"
+      eq.
+        ",".joined d.as-dir.listed
+        "sub,плюшка.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  listed. --> stops-on-listing-a-path-with-a-nul-character
+    directory
+      file "\u0000"
+
+  listed. --> stops-on-listing-an-absent-directory
+    directory mktemp.tmpfile.deleted

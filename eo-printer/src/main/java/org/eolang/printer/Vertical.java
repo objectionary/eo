@@ -15,7 +15,10 @@ import java.util.List;
  * itself through {@link Node#indented(Style, int)}. A child that carries
  * the bare {@code !} of an anonymous inline const (#5821) takes an
  * auto-name there, since the marker has no spelling on a line of its own
- * and this is the one place that puts a child there.</p>
+ * and this is the one place that puts a child there. A child a method
+ * continuation ({@code .y}) hangs on is laid out vertically whatever the
+ * penalties say, since the continuation has nothing to attach to under a
+ * one-line application (#8058).</p>
  *
  * @since 0.57.0
  */
@@ -50,8 +53,13 @@ final class Vertical {
     String print(final Style style, final int indent) {
         final StringBuilder block = new StringBuilder(style.indent(indent))
             .append(this.head);
-        for (final Node kid : this.kids) {
-            block.append(kid.indented(style, indent + 1));
+        for (int idx = 0; idx < this.kids.size(); ++idx) {
+            final Node kid = this.kids.get(idx);
+            if (idx + 1 < this.kids.size() && this.kids.get(idx + 1).continuation()) {
+                block.append(kid.stacked(style, indent + 1));
+            } else {
+                block.append(kid.indented(style, indent + 1));
+            }
         }
         return block.toString();
     }

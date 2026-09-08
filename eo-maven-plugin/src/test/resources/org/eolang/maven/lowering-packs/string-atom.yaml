@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void witnessed as a string carries text, and text is bytes: the
+# void is dataized into a byte array and the byte atoms it reaches
+# through its own phi do the rest.
+input: |
+  [] > foo
+    [t] > wide
+      t.size.gt 3 > @
+    wide "hello" > @
+prelude:
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+  bytes.eo: |
+    [data] > bytes
+      data > @
+unit: wide
+voids:
+  t: string
+lowered: |
+  [] > foo
+    wide "hello" > @
+    [] > wide /Q.bool
+      ? > t /Q.string
+protocol: |
+  s1 ← L_bytes_size sym:v0
+  s2 ← L_number_gt sym:s1 number:40-08-00-00-00-00-00-00
+  answer sym:s2 bool
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final double s1 = v0.length;
+  final boolean s2 = s1 > Double.longBitsToDouble(0x4008000000000000L);
+  return new Data.ToPhi(s2);

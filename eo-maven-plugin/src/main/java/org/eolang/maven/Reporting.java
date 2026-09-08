@@ -52,10 +52,17 @@ final class Reporting implements Step {
     @Override
     public void exec() throws IOException {
         if (Files.exists(this.tables)) {
-            Logger.info(
-                this, "Wrote %d page(s) to look at, they are in %[file]s",
-                new Report(this.prepared, this.tables).written(this.pages), this.pages
-            );
+            if (Files.exists(this.prepared)) {
+                Logger.info(
+                    this, "Wrote %d page(s) to look at, they are in %[file]s",
+                    new Report(this.prepared, this.tables).written(this.pages), this.pages
+                );
+            } else {
+                Logger.info(
+                    this, "The directory %[file]s is absent, nothing to draw from it",
+                    this.prepared
+                );
+            }
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to draw from it",

@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.yegor256.tojos.MnMemory;
 import com.yegor256.tojos.TjDeferred;
@@ -13,8 +15,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * What every object certainly has.
@@ -57,17 +61,34 @@ import java.util.List;
  * {@code [] > div /Q.number} says that a {@code div} is a {@code Φ.number}
  * once it has run, and the parser carries that annotation into the XMIR, so
  * the row keeps it and whoever reads the table can ask a {@code number} what
- * the atom itself cannot answer. An annotation that names no object is
- * skipped: {@code [] > recovered /A} comes back with whatever the caller put
- * in, and that is a variable, which nothing here understands yet.</p>
+ * the atom itself cannot answer.</p>
  *
- * <p>What a void says it will hold is written down for the same reason, and
- * skipped for the same one. {@code ? > code /Q.number} is how a formation that
- * only Java ever copies says what goes into its voids, since it has no caller
- * in the program to say it for it, and {@code /A} names no object and is
- * passed over. {@link Provided} walks through such a void the way it walks
- * behind a delegation, so a name asked of it is answered once and for all
- * rather than left to a caller.</p>
+ * <p>An annotation may name a variable rather than an object, and then it
+ * names the void that carries the same letter. {@code [] > recovered /A} over
+ * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
+ * back is what was put in, so the row keeps the {@code value}, and a caller
+ * who put a {@code number} there is answered with a {@code number} rather
+ * than with nothing (#8348). The letter stands on both voids, which is the
+ * source saying the two are one type; where a caller makes them two, the
+ * first is what the table has to go on. A mark of termination is dropped as
+ * {@link Held} drops it, since a termination answers to every name.</p>
+ *
+ * <p>What a void says it will hold is written down for the same reason as an
+ * atom's annotation, and only when it names an object. {@code ? > code
+ * /Q.number} is how a formation that only Java ever copies says what goes into
+ * its voids, since it has no caller in the program to say it for it, while a
+ * letter says nothing about what goes in and is read only by the atom above
+ * it. {@link Provided} walks through a void that says what it holds the way it
+ * walks behind a delegation, so a name asked of it is answered once and for
+ * all rather than left to a caller.</p>
+ *
+ * <p>A void may also say what will be handed to whatever goes into it.
+ * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
+ * its {@code scope} with a chunk, which is what {@code EOmalloc$EOof} then
+ * does, and the row keeps that list as it stands. Nobody else in the program
+ * says it: the formation {@code malloc.for} hands in is copied by Java alone,
+ * so without the annotation its void is filled by nobody and looks empty to
+ * every reader (#8380). {@link Handed} is where the list is spent.</p>
  *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
@@ -92,27 +113,7 @@ final class Provides implements Clue {
         final Collection<XML> made = world.formations();
         try (Tojos rows = new TjDeferred(new MnMemory())) {
             for (final XML formation : made) {
-                final String owner = formation.xpath("@loc").get(0);
-                final boolean whole = formation.nodes("o[@name='λ' or @name='φ']").isEmpty();
-                rows.add(owner).set("complete", Boolean.toString(whole));
-                for (final String back
-                    : formation.xpath("o[@name='λ']/@atom[starts-with(., 'Φ.')]")) {
-                    rows.add(owner).set("returns", back);
-                }
-                for (final XML attr : formation.nodes("o[@name and not(@name='λ')]")) {
-                    final String name = attr.xpath("@name").get(0);
-                    final Tojo row = rows.add(String.join(" ", owner, name))
-                        .set("owner", owner)
-                        .set("name", name)
-                        .set("type", attr.xpath("@loc").get(0));
-                    if (attr.xpath("@base").contains("∅")) {
-                        row.set("void", "true");
-                        final List<String> held = attr.xpath("@type[starts-with(., 'Φ.')]");
-                        if (!held.isEmpty()) {
-                            row.set("holds", held.get(0));
-                        }
-                    }
-                }
+                Provides.fill(rows, new Xnav(formation.inner()));
             }
             new Members(made, world.roots()).fill(rows);
             Files.createDirectories(tables);
@@ -121,5 +122,93 @@ final class Provides implements Clue {
                 new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
             );
         }
+    }
+
+    private static void fill(final Tojos rows, final Xnav shape) {
+        final String owner = new Noted(shape).says("loc");
+        final List<Xnav> kids = shape.elements(Filter.withName("o")).collect(Collectors.toList());
+        rows.add(owner).set("complete", Boolean.toString(Provides.whole(kids)));
+        for (final String back : Provides.returns(kids)) {
+            rows.add(owner).set("returns", back);
+        }
+        for (final Xnav kid : Provides.named(kids)) {
+            final Noted attr = new Noted(kid);
+            final String name = attr.says("name");
+            final Tojo row = rows.add(String.join(" ", owner, name))
+                .set("owner", owner)
+                .set("name", name)
+                .set("type", attr.says("loc"));
+            if ("∅".equals(attr.says("base"))) {
+                row.set("void", "true");
+                final String held = attr.says("type");
+                if (held.startsWith("Φ.")) {
+                    row.set("holds", held);
+                }
+                final String args = attr.says("args");
+                if (!args.isEmpty()) {
+                    row.set("args", args);
+                }
+            }
+        }
+    }
+
+    private static Collection<Xnav> named(final Collection<Xnav> kids) {
+        final Collection<Xnav> found = new ArrayList<>(0);
+        for (final Xnav kid : kids) {
+            final String name = new Noted(kid).says("name");
+            if (!name.isEmpty() && !"λ".equals(name)) {
+                found.add(kid);
+            }
+        }
+        return found;
+    }
+
+    private static boolean whole(final Collection<Xnav> kids) {
+        boolean found = true;
+        for (final Xnav kid : kids) {
+            final String name = new Noted(kid).says("name");
+            if ("λ".equals(name) || "φ".equals(name)) {
+                found = false;
+                break;
+            }
+        }
+        return found;
+    }
+
+    private static Collection<String> returns(final Collection<Xnav> kids) {
+        final Collection<String> found = new ArrayList<>(0);
+        for (final Xnav kid : kids) {
+            final Noted attr = new Noted(kid);
+            if ("λ".equals(attr.says("name"))) {
+                final String back = Provides.locator(attr.says("atom"), kids);
+                if (!back.isEmpty()) {
+                    found.add(back);
+                }
+            }
+        }
+        return found;
+    }
+
+    private static String locator(final String annotation, final Collection<Xnav> kids) {
+        String found = "";
+        if (annotation.startsWith("Φ.")) {
+            found = annotation;
+        } else if (!annotation.isEmpty()) {
+            found = Provides.carrying(kids, annotation);
+        }
+        return found;
+    }
+
+    private static String carrying(final Collection<Xnav> kids, final String letter) {
+        String found = "";
+        for (final Xnav kid : kids) {
+            final Noted attr = new Noted(kid);
+            if ("∅".equals(attr.says("base"))
+                && letter.equals(attr.says("type").replace("?", ""))) {
+                found = attr.says("loc");
+                break;
+            }
+        }
+        return found;
     }
 }

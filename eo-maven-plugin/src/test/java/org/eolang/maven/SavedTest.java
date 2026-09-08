@@ -41,6 +41,17 @@ final class SavedTest {
     }
 
     @Test
+    void savesContentToFileWithShortName(@Mktmp final Path temp) throws IOException {
+        final Path target = temp.resolve("x");
+        new Saved("hi", target).value();
+        MatcherAssert.assertThat(
+            "a one-character file name must be saved, not refused by the temporary prefix",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("hi")
+        );
+    }
+
+    @Test
     void savesContentToRelativeFilenameWithoutParentDirectory() throws IOException {
         final Path target = Path.of(String.format("saved-%s.tmp", UUID.randomUUID()));
         try {

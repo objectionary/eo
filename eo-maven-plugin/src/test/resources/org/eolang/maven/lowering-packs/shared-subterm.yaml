@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two copies of one application collapse into a single step, so the
+# protocol computes the square once and adds it to itself.
+input: |
+  [x] > foo
+    (x.times x).plus (x.times x) > @
+voids:
+  x: number
+lowered: |
+  plus. > [x] > foo
+    x.times x
+    x.times x
+protocol: |
+  s1 ← L_number_times sym:v0 sym:v0
+  s2 ← L_number_plus sym:s1 sym:s1
+  answer sym:s2 number

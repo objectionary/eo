@@ -65,6 +65,37 @@ final class WitnessedTest {
         );
     }
 
+    @Test
+    void carriesWhatTheVoidHandedOnIsFilledWith(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("wood.xmir"),
+            String.join(
+                "",
+                "<object><o loc='Φ.inc' name='inc'>",
+                "<o base='∅' loc='Φ.inc.x' name='x'/></o>",
+                "<o loc='Φ.oak' name='oak'/><o loc='Φ.elm' name='elm'/>",
+                "<o base='Φ.inc' loc='Φ.app' name='app'>",
+                "<o as='α0' base='Φ.oak' loc='Φ.app.α0'/></o>",
+                "<o loc='Φ.bee' name='bee'>",
+                "<o base='∅' loc='Φ.bee.y' name='y'/>",
+                "<o as='φ' base='Φ.inc' loc='Φ.bee.φ'>",
+                "<o as='α0' base='ξ.y' loc='Φ.bee.φ.α0'/></o></o>",
+                "<o base='Φ.bee' loc='Φ.hut' name='hut'>",
+                "<o as='α0' base='Φ.elm' loc='Φ.hut.α0'/></o></object>"
+            )
+        );
+        new Witnessed(new Demanded(new Resolved(new Clues()))).follow(
+            temp.resolve("xmirs"), temp.resolve("tables")
+        );
+        MatcherAssert.assertThat(
+            "what fills the void handed on must arrive in the choice, but it didnt",
+            new XMLDocument(temp.resolve("tables").resolve("provides.xml")).nodes(
+                "/provides/type[@id='Φ.inc']/attr[@name='x']/witnessed/union/ref[@loc='Φ.elm']"
+            ),
+            Matchers.hasSize(1)
+        );
+    }
+
     private static void program(final Path temp, final String... fillers) throws IOException {
         final StringBuilder text = new StringBuilder(
             String.join(

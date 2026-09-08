@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
+import org.cactoos.BiFunc;
 import org.cactoos.Func;
 import org.cactoos.io.InputOf;
 
@@ -31,6 +32,25 @@ interface GlobalCache {
     Footprint footprint(Path tail, Supplier<String> hash, Func<Path, String> compile);
 
     /**
+     * How one file, already made by a footprint of its own, is to be kept.
+     *
+     * <p>Unlike {@link #footprint(Path, Supplier, Func)}, the content does not
+     * come from a source file this cache can fingerprint: the caller knows on
+     * its own whether the target is out of date and says so through
+     * {@code rewrite}.</p>
+     *
+     * @param tail Path of that file inside the cache
+     * @param hash Hash segment of the cache path
+     * @param rewrite Whether the target has to be written again
+     * @param made How the file is produced when the cache has nothing
+     * @return The footprint that writes it
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    Footprint kept(
+        Path tail, Supplier<String> hash, BiFunc<Path, Path, Boolean> rewrite, Footprint made
+    );
+
+    /**
      * The same cache, with one more segment folded into its key.
      * @param segment The segment to fold in
      * @return The derived cache
@@ -53,6 +73,18 @@ interface GlobalCache {
             final Path tail, final Supplier<String> hash, final Func<Path, String> compile
         ) {
             return new FpGenerated(src -> new InputOf(compile.apply(src)));
+        }
+
+        @Override
+        public Footprint kept(
+            final Path tail,
+            final Supplier<String> hash,
+            final BiFunc<Path, Path, Boolean> rewrite,
+            final Footprint made
+        ) {
+            return new FpFork(
+                rewrite, made, new FpIfTargetExists(new FpIgnore(), made)
+            );
         }
 
         @Override

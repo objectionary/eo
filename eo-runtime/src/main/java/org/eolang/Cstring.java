@@ -46,6 +46,7 @@ public final class Cstring {
     public String it() {
         return this.expect
             .that(phi -> new Dataized(phi).asString())
+            .otherwise("must be a text")
             .must(text -> text.indexOf('\0') < 0)
             .otherwise("must not contain the NUL character, since a C string ends there")
             .it();

@@ -33,24 +33,21 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
 public final class Maxmem implements InvocationInterceptor {
 
     /**
-     * How many bytes are in a kilobyte.
-     */
-    private static final long KILO = 1024L;
-
-    /**
      * What a valid value of the property looks like.
      */
     private static final Pattern SIZE = Pattern.compile("(\\d+)\\s*([kKmMgG]?)[bB]?");
 
     /**
-     * The suffixes, in the order of how many kilobytes each one is worth.
-     */
-    private static final String SUFFIXES = "kmg";
-
-    /**
      * How many bytes a single test may allocate, zero if there is no limit.
      */
     private static final long LIMIT = Maxmem.limit(System.getProperty("eo.maxmem"));
+
+    /**
+     * Ctor.
+     */
+    public Maxmem() {
+        // nothing
+    }
 
     @Override
     public void interceptTestMethod(final Invocation<Void> invocation,
@@ -99,11 +96,11 @@ public final class Maxmem implements InvocationInterceptor {
     private static long scale(final String suffix) {
         long scale = 1L;
         if (!suffix.isEmpty()) {
-            final int power = 1 + Maxmem.SUFFIXES.indexOf(
+            final int power = 1 + "kmg".indexOf(
                 Character.toLowerCase(suffix.charAt(0))
             );
             for (int idx = 0; idx < power; ++idx) {
-                scale *= Maxmem.KILO;
+                scale *= 1024L;
             }
         }
         return scale;

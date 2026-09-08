@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A pure formation whose void is witnessed as a number becomes a
+# synthetic atom: the body leaves for a sidecar of straight-line Java,
+# and only the voids and the λ marker stay in the EO.
+input: |
+  [] > foo
+    [x] > bump
+      (x.times 2).plus 1 > @
+    bump 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bump 5 > @
+    [] > bump /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_times sym:v0 number:40-00-00-00-00-00-00-00
+  s2 ← L_number_plus sym:s1 number:3F-F0-00-00-00-00-00-00
+  answer sym:s2 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s1 = v0 * Double.longBitsToDouble(0x4000000000000000L);
+  final double s2 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s2);

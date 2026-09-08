@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +16,8 @@ import java.util.Base64;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -129,6 +132,58 @@ final class ShaTest {
             String.format("hashes of two identical dirs differ, seed=%d", seed),
             new Sha(temp.resolve("first")).toString(),
             Matchers.equalTo(new Sha(temp.resolve("second")).toString())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void hashesADirectoryLinkLikeTheDirectoryItself(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        new Saved(Long.toHexString(seed), temp.resolve("real/a.txt")).value();
+        Files.createSymbolicLink(temp.resolve("linked"), temp.resolve("real"));
+        MatcherAssert.assertThat(
+            String.format(
+                "a link to a directory was walked but never entered, so its hash was the one of empty input, seed=%d",
+                seed
+            ),
+            new Sha(temp.resolve("linked")).toString(),
+            Matchers.equalTo(new Sha(temp.resolve("real")).toString())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void noticesAChangeBehindADirectoryLink(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        new Saved(Long.toHexString(seed), temp.resolve("real/a.txt")).value();
+        Files.createSymbolicLink(temp.resolve("linked"), temp.resolve("real"));
+        final String before = new Sha(temp.resolve("linked")).toString();
+        new Saved(Long.toHexString(seed + 1L), temp.resolve("real/a.txt")).value();
+        MatcherAssert.assertThat(
+            String.format(
+                "a cache keyed by this hash keeps serving output built from contents that have changed, seed=%d",
+                seed
+            ),
+            new Sha(temp.resolve("linked")).toString(),
+            Matchers.not(Matchers.equalTo(before))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void seesAFileBehindALinkedSubdirectory(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        new Saved(Long.toHexString(seed), temp.resolve("first/a.txt")).value();
+        new Saved(Long.toHexString(seed), temp.resolve("second/a.txt")).value();
+        new Saved(Long.toHexString(seed), temp.resolve("outside/b.txt")).value();
+        Files.createSymbolicLink(temp.resolve("second/sub"), temp.resolve("outside"));
+        MatcherAssert.assertThat(
+            String.format(
+                "a file reachable through a linked subdirectory speaks into the digest, so the two trees must not hash alike, seed=%d",
+                seed
+            ),
+            new Sha(temp.resolve("second")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("first")).toString()))
         );
     }
 }

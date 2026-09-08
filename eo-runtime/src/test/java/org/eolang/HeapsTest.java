@@ -226,6 +226,38 @@ final class HeapsTest {
     }
 
     @Test
+    void blamesTheOffsetWhenItIsNegative() {
+        MatcherAssert.assertThat(
+            "a negative read offset must be named as the reason, not the allocated size",
+            Heaps.INSTANCE.malloc(
+                8,
+                idx -> Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, -1, 4),
+                    "a negative read offset must be refused"
+                ).getMessage()
+            ),
+            Matchers.containsString("negative offset '-1'")
+        );
+    }
+
+    @Test
+    void blamesTheLengthWhenItIsNegative() {
+        MatcherAssert.assertThat(
+            "a negative read length must be named as the reason, not the allocated size",
+            Heaps.INSTANCE.malloc(
+                8,
+                idx -> Assertions.assertThrows(
+                    ExFailure.class,
+                    () -> Heaps.INSTANCE.read(idx, 2, -3),
+                    "a negative read length must be refused"
+                ).getMessage()
+            ),
+            Matchers.containsString("negative number of bytes '-3'")
+        );
+    }
+
+    @Test
     void readsByOffsetAndLength() {
         MatcherAssert.assertThat(
             "Heaps should successfully read correct slice when reading with offset and length, but it didn't",

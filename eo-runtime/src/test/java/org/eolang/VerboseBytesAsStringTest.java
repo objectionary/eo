@@ -70,11 +70,17 @@ final class VerboseBytesAsStringTest {
                 ByteBuffer.allocate(Double.BYTES).putDouble(12.345_67d).array(),
                 "12.34567"
             ),
-            Arguments.of(new byte[]{1}, "[0x01] = true"),
+            Arguments.of(new byte[]{-1}, "[0xFF] = true"),
             Arguments.of(new byte[]{0}, "[0x00] = false"),
-            Arguments.of(new byte[]{2}, "[0x02] = false"),
+            Arguments.of(new byte[]{1}, "[0x01] = \"\\u0001\""),
+            Arguments.of(new byte[]{2}, "[0x02] = \"\\u0002\""),
             Arguments.of(new byte[]{}, "[<no bytes>]"),
-            Arguments.of(new byte[]{12}, "[0x0C] = false"),
+            Arguments.of(new byte[]{12}, "[0x0C] = \"\\u000c\""),
+            Arguments.of(new byte[]{0x41}, "[0x41] = \"A\""),
+            Arguments.of(
+                new byte[]{0x61, 0x22, 0x62, 0x5C, 0x63, 0x7F},
+                "[0x6122625C-637F] = \"a\\\"b\\\\c\\u007f\""
+            ),
             Arguments.of(
                 new byte[]{10, 11, 12, 13, 14, 15, 16, 17, -18, -19, -20, -21, 22},
                 "[0x0A0B0C0D-0E0F1011-EEEDECEB-16] = \"\\u000a\\u000b\\u000c\\u000d\\u000e\\u000f\\u0010\\u0011\\ufffd\\ufffd\\ufffd\\ufffd\\u0016\""

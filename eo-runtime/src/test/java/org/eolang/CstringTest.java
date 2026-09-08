@@ -27,6 +27,24 @@ final class CstringTest {
     }
 
     @Test
+    void namesTheConversionFailure() {
+        MatcherAssert.assertThat(
+            "an argument that is not a text must be named as such, but it wasnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Cstring(
+                    new Expect<>("the 'name' argument", () -> new PhTerminator("boom"))
+                ).it(),
+                "a non-text argument was expected to fail with ExFailure"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("the 'name' argument must be a text"),
+                Matchers.not(Matchers.containsString("NUL"))
+            )
+        );
+    }
+
+    @Test
     void refusesTextWithNul() {
         MatcherAssert.assertThat(
             "text carrying a NUL must be refused by name, but it wasnt",

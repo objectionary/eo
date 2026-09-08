@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The difference is an EO object the universe does not model, and the
+# tables of eo:inference witness nothing about what it answers, so the
+# call back into EO holds the object as it is. The protocol settles, but
+# an atom cannot hand an object over as its answer, since Data.ToPhi
+# takes data alone, so the formation stays as written: an atom that
+# only builds the object EO would build computes nothing the EO did not.
+input: |
+  [] > foo
+    [x] > dec
+      x.minus 1 > @
+    dec 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: dec
+voids:
+  x: number
+lowered: |
+  [] > foo
+    dec 5 > @
+    x.minus 1 > [x] > dec
+protocol: |
+  s1 ← .minus sym:v0 number:3F-F0-00-00-00-00-00-00
+  answer sym:s1 object

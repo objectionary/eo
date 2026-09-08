@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The package an aliased object is taken from is a step of the chain that the
+# source never wrote, so it keeps the place it was given and stands under the
+# same word, there being nothing else to hang it on.
+eo:
+  app.eo: |
+    +alias org.eolang.io.stdout
+
+    [] > app
+      stdout.write > @
+        "hello"
+xmir:
+  app.eo:
+    - "//o[@base='.stdout'][@line=4][@pos=2]/o[@base='.io'][@line=4][@pos=2]"

@@ -17,7 +17,6 @@ import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -29,10 +28,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjAssembleIT {
 
-    @Disabled("pulled .eo sources predate the comment-on-top rule and emit [ERROR]")
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
-        final String stdout = "target/eo/%s/io/stdout.%s";
+        final String stdout = "target/eo/%s/stdout.%s";
         final String parsed = String.format(stdout, "1-parse", "xmir");
         final String pulled = String.format(stdout, "2-pull", "eo");
         new Farea(temp).together(
@@ -110,12 +108,12 @@ final class MjAssembleIT {
     private static String program() {
         return String.join(
             System.lineSeparator(),
-            "+alias stdout io.stdout",
             "+package foo.x",
             "+version 0.1.1",
             "",
             "[x] > main",
-            "  (stdout \"Hello World!\" x).print > @"
+            "  Q.stdout > @",
+            "    x"
         );
     }
 

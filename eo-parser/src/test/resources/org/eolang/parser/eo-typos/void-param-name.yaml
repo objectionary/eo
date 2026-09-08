@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 1
 message: |-
-  [1:1] error: 'parameter names in voids must be NAME or @'
+  [1:1] error: 'parameter names in voids must be NAME, @ or ^'
   [a,b] > obj
    ^
 input: |

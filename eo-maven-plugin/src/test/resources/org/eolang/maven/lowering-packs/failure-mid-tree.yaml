@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The terminator feeds an operation, so the operation never gets its
+# value: phino parks on the marker of the terminator, the reduction
+# refuses the fragment, and the formation stays as written.
+input: |
+  [] > foo
+    [x] > bump
+      plus. > @
+        T "never"
+        x
+    bump 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [] > foo
+    bump 5 > @
+    plus. > [x] > bump
+      T "never"
+      x
+stuck: "The terminator is not in a tail position"

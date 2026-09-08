@@ -28,18 +28,6 @@ import java.util.List;
 final class Tokens {
 
     /**
-     * Characters that terminate a {@code NAME} token per §2.3, the dot
-     * among them.
-     */
-    private static final String TERMINATORS = " \t,.|':;!?[]{}()";
-
-    /**
-     * Characters that break a parenthesised group into more than one
-     * token, so their absence makes the group a single token.
-     */
-    private static final String BREAKERS = " ()[]";
-
-    /**
      * The line body being scanned.
      */
     private final String body;
@@ -187,7 +175,7 @@ final class Tokens {
         final int start = this.cursor;
         if (this.atEnd()) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
                 "expected identifier"
             );
         }
@@ -435,6 +423,32 @@ final class Tokens {
     }
 
     /**
+     * Whether a reversed dispatch stands at the cursor — a dispatch
+     * operator that nothing follows on the token, the way {@code if.}
+     * reads (R-3.6). A name after the operator makes it an ordinary
+     * chain link instead, and only a head that may be reversed at all
+     * can start one.
+     * @param head The value read right before the cursor
+     * @return True if the head is the name of a reversed dispatch
+     */
+    boolean reversedAhead(final Value head) {
+        final boolean result;
+        if (head.reversible() && !this.atEnd() && this.dispatchAhead()) {
+            final int skip;
+            if (this.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = this.cursor + skip;
+            result = probe >= this.body.length() || this.body.charAt(probe) == ' ';
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    /**
      * Consume a dispatch operator at the cursor — a plain {@code .} or
      * the fragile {@code ?.} (R-3.5) — and report which it was. The
      * cursor must sit on a {@link #dispatchAhead()} position.
@@ -508,7 +522,7 @@ final class Tokens {
         }
         if (this.cursor == start) {
             throw new ParseError(
-                this.span.line(), this.span.indent() + start,
+                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
                 "expected binding label after `:`"
             );
         }
@@ -536,7 +550,10 @@ final class Tokens {
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
-                "Invalid bound object declaration"
+                String.format(
+                    "binding label \"%s\" must be a name or a slot number",
+                    text
+                )
             );
         }
     }
@@ -606,6 +623,10 @@ final class Tokens {
         return idx;
     }
 
+    private static int clamped(final int pos, final Span source) {
+        return Math.min(pos, source.text().length() - 1);
+    }
+
     private static boolean singleToken(final String inside) {
         boolean single = true;
         int idx = 0;
@@ -613,7 +634,7 @@ final class Tokens {
             final char glyph = inside.charAt(idx);
             if (glyph == '"') {
                 idx = Tokens.closingQuote(inside, idx);
-            } else if (Tokens.BREAKERS.indexOf(glyph) >= 0) {
+            } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
                 break;
             }
@@ -690,7 +711,7 @@ final class Tokens {
     }
 
     private static boolean terminates(final char glyph) {
-        return Tokens.TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static boolean cactus(final String text) {

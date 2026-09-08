@@ -16,6 +16,11 @@
   <description>XMIR Type Inference</description>
   <dependencies>
     <dependency>
+      <groupId>com.github.volodya-lombrozo</groupId>
+      <artifactId>xnav</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->
@@ -29,6 +34,11 @@
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
       <version>0.20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.cactoos</groupId>
+      <artifactId>cactoos</artifactId>
+      <!-- version from parent POM -->
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>

@@ -58,7 +58,7 @@ final class SyscallTest {
                     new String(actual, StandardCharsets.UTF_8)
                 ),
                 actual,
-                Matchers.equalTo(new byte[]{1})
+                Matchers.equalTo(new byte[]{(byte) 0xFF})
             );
         } finally {
             server.stop();
@@ -76,7 +76,7 @@ final class SyscallTest {
         MatcherAssert.assertThat(
             "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
             new Dataized(connect).take(),
-            Matchers.equalTo(new byte[]{1})
+            Matchers.equalTo(new byte[]{(byte) 0xFF})
         );
     }
 
@@ -104,7 +104,7 @@ final class SyscallTest {
         listen.put(1, Phi.Φ.take("dataized").copy());
         MatcherAssert.assertThat(
             "the limited-broadcast address 255.255.255.255 must be accepted as a valid IPv4 conversion, not rejected as unparsable",
-            new Dataized(listen).asString(),
+            new String(new Dataized(listen).take(), StandardCharsets.UTF_8),
             Matchers.not(Matchers.containsString("into a 32-bit integer"))
         );
     }

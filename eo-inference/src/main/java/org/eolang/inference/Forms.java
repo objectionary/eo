@@ -4,9 +4,7 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Which form of type the links table gives an object.
@@ -27,46 +25,17 @@ import java.util.HashSet;
 final class Forms {
 
     /**
-     * The objects that are data.
+     * The form every object was given, from {@link Pairs}.
      */
-    private final Collection<String> ground;
-
-    /**
-     * The objects that terminate.
-     */
-    private final Collection<String> dead;
-
-    /**
-     * The objects that are voids.
-     */
-    private final Collection<String> free;
+    private final Map<String, String> given;
 
     /**
      * Ctor.
-     * @param links The links table, as {@link Resolved} left it
+     * @param forms The form every object was given by the links table, by the
+     *  locator of the object
      */
-    Forms(final XML links) {
-        this(
-            new HashSet<>(links.xpath("/links/type[data]/@id")),
-            new HashSet<>(links.xpath("/links/type[terminator]/@id")),
-            new HashSet<>(links.xpath("/links/type[var]/@id"))
-        );
-    }
-
-    /**
-     * Ctor.
-     * @param data The objects that are data
-     * @param terminators The objects that terminate
-     * @param voids The objects that are voids
-     */
-    Forms(
-        final Collection<String> data,
-        final Collection<String> terminators,
-        final Collection<String> voids
-    ) {
-        this.ground = data;
-        this.dead = terminators;
-        this.free = voids;
+    Forms(final Map<String, String> forms) {
+        this.given = forms;
     }
 
     /**
@@ -76,11 +45,10 @@ final class Forms {
      *  that form is one type
      */
     String name(final String object) {
+        final String form = this.given.getOrDefault(object, "");
         final String found;
-        if (this.ground.contains(object)) {
-            found = "data";
-        } else if (this.dead.contains(object)) {
-            found = "terminator";
+        if ("data".equals(form) || "terminator".equals(form)) {
+            found = form;
         } else {
             found = object;
         }
@@ -93,12 +61,13 @@ final class Forms {
      * @return The type
      */
     Type type(final String object) {
+        final String form = this.given.getOrDefault(object, "");
         final Type found;
-        if (this.ground.contains(object)) {
+        if ("data".equals(form)) {
             found = new Data();
-        } else if (this.dead.contains(object)) {
+        } else if ("terminator".equals(form)) {
             found = new Terminator();
-        } else if (this.free.contains(object)) {
+        } else if ("var".equals(form)) {
             found = new Var(object);
         } else {
             found = new Ref(object);

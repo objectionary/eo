@@ -16,14 +16,24 @@ import java.util.regex.Pattern;
 public final class PhApplication extends PhOnce {
 
     /**
-     * Matcher of raw bytes inside a φ-term, like {@code [D> 40-45-00]}.
+     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}.
+     *
+     * <p>It is the shape the transpiler emits for a literal and nothing
+     * else, so it is matched against the entire body rather than searched
+     * for inside it: the rendered text of a {@code string} binding is its
+     * own quoted text, and such text can spell a data block of its own
+     * (#8292). Only well-formed byte pairs are accepted, the way
+     * {@code PhDefault} prints them, so whatever matches here can be
+     * parsed back into bytes.</p>
      */
-    private static final Pattern DATA = Pattern.compile("\\[D> ([0-9A-F-]*)]");
+    private static final Pattern DATA = Pattern.compile(
+        "0->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
+    );
 
     /**
-     * The dash that terminates a single-byte hex string.
+     * The dashes that separate the hex pairs of a data block.
      */
-    private static final Pattern TRAILING = Pattern.compile("-$");
+    private static final Pattern DASHES = Pattern.compile("-");
 
     /**
      * Ctor.
@@ -76,7 +86,7 @@ public final class PhApplication extends PhOnce {
         final String head = phi.φTerm();
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
-        final boolean literal = binds.length == 1 && binds[0].first() && data.find();
+        final boolean literal = binds.length == 1 && binds[0].first() && data.matches();
         final String string;
         if (literal && "Φ.string".equals(head)) {
             string = PhApplication.string(PhApplication.bytes(data.group(1)));
@@ -112,18 +122,10 @@ public final class PhApplication extends PhOnce {
     }
 
     private static byte[] bytes(final String hex) {
-        final byte[] bytes;
-        if (hex.isEmpty() || "--".equals(hex)) {
-            bytes = new byte[0];
-        } else {
-            final String[] parts = PhApplication.TRAILING
-                .matcher(hex)
-                .replaceAll("")
-                .split("-", -1);
-            bytes = new byte[parts.length];
-            for (int idx = 0; idx < parts.length; ++idx) {
-                bytes[idx] = (byte) Integer.parseInt(parts[idx], 16);
-            }
+        final String digits = PhApplication.DASHES.matcher(hex).replaceAll("");
+        final byte[] bytes = new byte[digits.length() / 2];
+        for (int idx = 0; idx < bytes.length; ++idx) {
+            bytes[idx] = (byte) Integer.parseInt(digits.substring(idx * 2, idx * 2 + 2), 16);
         }
         return bytes;
     }

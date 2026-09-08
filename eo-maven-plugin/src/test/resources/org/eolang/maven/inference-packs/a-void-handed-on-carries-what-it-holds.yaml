@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `bee` puts an `oak` into `inc` and `wrap` passes on a void of its own, and
+# that void is filled with an `elm` by `app`. So an `elm` arrives in `inc` as
+# surely as the `oak` does, one hop further along, and both belong in the
+# choice. Saying only the `oak` would leave a void that two formas reach
+# looking like a void that one forma reaches.
+eo:
+  app.eo: |
+    [] > app
+      wrap elm > @
+  wrap.eo: |
+    [y] > wrap
+      inc y > @
+  bee.eo: |
+    [] > bee
+      inc oak > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+provides:
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/union/ref[@loc='Φ.oak']"
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/union/ref[@loc='Φ.elm']"

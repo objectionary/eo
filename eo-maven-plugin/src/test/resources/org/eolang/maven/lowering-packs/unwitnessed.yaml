@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The formation is pure and reducible, but its void is filled with
+# another void rather than data, so no forma witnesses it and the
+# formation stays as written.
+input: |
+  [q] > foo
+    [x] > bump
+      x.plus 2 > @
+    bump q > @
+unit: bump
+voids:
+  x: number
+lowered: |
+  [q] > foo
+    bump q > @
+    x.plus 2 > [x] > bump
+protocol: |
+  s1 ← L_number_plus sym:v0 number:40-00-00-00-00-00-00-00
+  answer sym:s1 number

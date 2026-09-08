@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A guard that aborts instead of answering: the `if` parks on the
+# symbolic bool and becomes a fork, whose else arm is the terminator
+# `T` with its reason. The arm settles into a failure, not an answer,
+# so it has no opinion about what the fork answers, and the fork
+# answers the number of the other arm. The Java of the failing arm
+# throws the reason as the message of an `ExFailure`, the way the
+# terminator itself does when dataized, so the statements after the
+# fork run only when the guard lets the number through.
+input: |
+  [] > foo
+    [x] > guard
+      if. > @
+        x.gt 0
+        x.plus 1
+        T "the number is not positive"
+    guard 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: guard
+voids:
+  x: number
+lowered: |
+  [] > foo
+    guard 5 > @
+    [] > guard /Q.number
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_gt sym:v0 number:00-00-00-00-00-00-00-00
+  s2 ← fork sym:s1 number
+    then
+      s3 ← L_number_plus sym:v0 number:3F-F0-00-00-00-00-00-00
+      answer sym:s3 number
+    else
+      fail string:74-68-65-20-6E-75-6D-62-65-72-20-69-73-20-6E-6F-74-20-70-6F-73-69-74-69-76-65
+  answer sym:s2 number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final boolean s1 = v0 > Double.longBitsToDouble(0x0000000000000000L);
+  final double s2;
+  if (s1) {
+      final double s3 = v0 + Double.longBitsToDouble(0x3FF0000000000000L);
+      s2 = s3;
+  } else {
+      throw new ExFailure("%s", new String(new byte[] {(byte) 0x74, (byte) 0x68, (byte) 0x65, (byte) 0x20, (byte) 0x6E, (byte) 0x75, (byte) 0x6D, (byte) 0x62, (byte) 0x65, (byte) 0x72, (byte) 0x20, (byte) 0x69, (byte) 0x73, (byte) 0x20, (byte) 0x6E, (byte) 0x6F, (byte) 0x74, (byte) 0x20, (byte) 0x70, (byte) 0x6F, (byte) 0x73, (byte) 0x69, (byte) 0x74, (byte) 0x69, (byte) 0x76, (byte) 0x65}, java.nio.charset.StandardCharsets.UTF_8));
+  }
+  return new Data.ToPhi(s2);

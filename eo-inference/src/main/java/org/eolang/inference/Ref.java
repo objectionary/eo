@@ -51,6 +51,11 @@ final class Ref implements Type {
     }
 
     @Override
+    public String names() {
+        return this.loc;
+    }
+
+    @Override
     public Directives directives() {
         final Directives dirs = new Directives().add("ref").attr("loc", this.loc);
         for (final Map.Entry<String, String> bind : this.filled.entrySet()) {

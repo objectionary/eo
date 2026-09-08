@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A chain can turn from down the page to along a line in the middle of itself,
+# and the caret it stands on is a word like any other, so the block below a
+# reversed dispatch is read from its right end leftwards.
+eo:
+  gauge.eo: |
+    [] > gauge
+      times. > @
+        ^.seconds
+xmir:
+  gauge.eo:
+    - "//o[@base='.times'][@line=2][@pos=2]/o[@base='.seconds'][@line=3][@pos=5]/o[@base='ξ.ρ'][@line=3][@pos=4]"

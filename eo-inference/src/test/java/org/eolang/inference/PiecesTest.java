@@ -40,6 +40,60 @@ final class PiecesTest {
     }
 
     @Test
+    void marksTheCaretAChainIsDispatchedOn() {
+        MatcherAssert.assertThat(
+            "the caret a walk is taken off must get a word of its own, but it stayed bare",
+            PiecesTest.drawn(
+                "  ^.walk",
+                Arrays.asList(
+                    new Written("Φ.w.α1", 3, "", new Answer("Φ.number", 3)),
+                    new Written("Φ.w.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='^']/told[@where='Φ.string']",
+                "/line/bit[text='.walk']/told[@where='Φ.number']"
+            )
+        );
+    }
+
+    @Test
+    void marksADispatchTakenOffTheCaret() {
+        MatcherAssert.assertThat(
+            "the step .^ must carry its dot into the mark, but the dot was marked alone",
+            PiecesTest.drawn(
+                "* ^.^",
+                Arrays.asList(
+                    new Written("Φ.t.α1", 3, "", new Answer("Φ.number", 3)),
+                    new Written("Φ.t.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='.^']/told[@where='Φ.number']")
+        );
+    }
+
+    @Test
+    void walksPastAStepTheSourceNeverWrote() {
+        MatcherAssert.assertThat(
+            "the steps above an unwritten one must keep their own words, but they piled onto one",
+            PiecesTest.drawn(
+                "    precise.as-bool.if > end!",
+                Arrays.asList(
+                    new Written("Φ.p.end", 19, "end", new Answer("Φ.bytes.as-bytes", 3)),
+                    new Written("Φ.p.end.ρ.α0", 19, "", new Answer("Φ.bool.if", 1)),
+                    new Written("Φ.p.end.ρ.α0.ρ", 19, "", new Answer("Φ.bytes.as-bool", 3)),
+                    new Written("Φ.p.end.ρ.α0.ρ.ρ", 19, "", new Answer("Φ.string", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='precise']/told[@where='Φ.string']",
+                "/line/bit[text='.as-bool']/told[@where='Φ.bytes.as-bool']",
+                "/line/bit[text='.if']/told[@label='end']"
+            )
+        );
+    }
+
+    @Test
     void keepsTextThatNoObjectClaims() {
         MatcherAssert.assertThat(
             "the brackets around a void are the author's text and must survive, but they didnt",
@@ -51,7 +105,7 @@ final class PiecesTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/line/bit[.='[']",
-                "/line/bit[text='if'][@band='rooted']",
+                "/line/bit[text='if'][@band='unfilled']",
                 "/line/bit[.='] > bool']"
             )
         );
@@ -87,6 +141,25 @@ final class PiecesTest {
     }
 
     @Test
+    void tellsAVoidApartFromANameRootedInOne() {
+        MatcherAssert.assertThat(
+            "a void answered by its own locator must be said to be one, but it wasnt",
+            PiecesTest.drawn(
+                "[args] > printf",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.printf.args", 1, "args",
+                        new Answer(
+                            "Φ.printf.args", 1, Collections.singletonList(new Ref("Φ.tuple"))
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
+        );
+    }
+
+    @Test
     void saysWhatCallersWereSeenPassing() {
         MatcherAssert.assertThat(
             "an amber mark must say what turned up in the void, but it didnt",
@@ -106,6 +179,74 @@ final class PiecesTest {
                 "/line/bit/told/seen/ref[@loc='Φ.true']",
                 "/line/bit/told/seen/ref[@loc='Φ.false']"
             )
+        );
+    }
+
+    @Test
+    void warnsAboutTheWorstObjectUnderOneMark() {
+        MatcherAssert.assertThat(
+            "a mark over an object nobody can name must say so, but the name beside it hid it",
+            PiecesTest.drawn(
+                "  [] > pour /Q.mug",
+                Arrays.asList(
+                    new Written("Φ.cup.pour", 2, "pour", new Answer("Φ.cup.pour", 3)),
+                    new Written("Φ.cup.pour.λ", 2, "λ", new Answer("Φ.cup.pour.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[@band='blank'][count(told)=2]")
+        );
+    }
+
+    @Test
+    void marksAVoidAnAtomFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void filled inside an atom must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  size",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.info.size", 2, "size",
+                        new Answer(
+                            "Φ.posix.return.output.size", 1, Collections.emptyList(), true
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='size'][@band='atom']")
+        );
+    }
+
+    @Test
+    void marksAVoidNobodyFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void nothing was ever put into must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  cant-convert",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.@.α2", 2, "",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='cant-convert'][@band='unfilled']")
+        );
+    }
+
+    @Test
+    void saysAVoidNobodyFillsIsStillAVoid() {
+        MatcherAssert.assertThat(
+            "a void nobody fills is still a void and must be said to be one, but it wasnt",
+            PiecesTest.drawn(
+                "[cant-convert] > as-i16",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.cant-convert", 1, "cant-convert",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
         );
     }
 

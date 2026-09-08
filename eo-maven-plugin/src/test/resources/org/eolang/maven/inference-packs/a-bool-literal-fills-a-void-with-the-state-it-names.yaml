@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A bool literal is a copy of the object its state names, so a void filled
+# with `true` is witnessed as `Φ.true` and a void filled with `false` as
+# `Φ.false`, the way a void filled with a number literal is witnessed as
+# `Φ.number`. What names the filling is the base resolving against the
+# sources of the program and nothing about the literal itself: a program
+# that carries no `true` names the same filling by the locator of the
+# argument, and a void so witnessed has no forma for a reader to use.
+eo:
+  app.eo: |
+    [] > app
+      pick true false > @
+  pick.eo: |
+    [on off] > pick
+      on > @
+  true.eo: |
+    [] > true
+  false.eo: |
+    [] > false
+provides:
+  - "//type[@id='Φ.pick']/attr[@name='on'][@void='true']/witnessed/ref[@loc='Φ.true']"
+  - "//type[@id='Φ.pick']/attr[@name='off'][@void='true']/witnessed/ref[@loc='Φ.false']"

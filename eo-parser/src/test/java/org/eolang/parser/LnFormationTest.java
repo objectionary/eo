@@ -252,6 +252,19 @@ final class LnFormationTest {
     }
 
     @Test
+    void rejectsMissingClosingBracketWhenBodyLacksLeadingBracket() {
+        MatcherAssert.assertThat(
+            "a body with no `[` anywhere must still report the missing-bracket message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
+        );
+    }
+
+    @Test
     void rejectsMissingClosingBracketWithNoSuffix() {
         MatcherAssert.assertThat(
             "a bare unclosed `[a` with no name suffix must report the same missing-bracket message",
@@ -364,6 +377,15 @@ final class LnFormationTest {
             "a `+>` test attribute preceded by one blank line must not emit any error",
             LnFormationTest.render(emit),
             Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
+    void locatesClosingBracketRegardlessOfLeadingCharacter() {
+        Assertions.assertDoesNotThrow(
+            () -> new LnFormation(new Span("x]", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "findClosing must search for `]` from the start, not require a leading `[`"
         );
     }
 

@@ -7,10 +7,13 @@ package org.eolang.maven;
 import com.yegor256.WeAreOnline;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -40,6 +43,32 @@ final class ObjectsIndexTest {
             ),
             calls.get(),
             Matchers.is(1)
+        );
+    }
+
+    @RepeatedTest(20)
+    void readsTheIndexOnceFromManyThreads() {
+        final AtomicInteger calls = new AtomicInteger(0);
+        final ObjectsIndex index = new ObjectsIndex(
+            new ScalarOf<>(
+                () -> {
+                    calls.incrementAndGet();
+                    Thread.sleep(5L);
+                    return Collections.singleton("io.stderr");
+                }
+            )
+        );
+        new Threaded<>(
+            IntStream.range(0, 8).boxed().collect(Collectors.toList()),
+            ignored -> {
+                index.contains("org.eolang.io.stderr");
+                return ignored;
+            }
+        ).total();
+        MatcherAssert.assertThat(
+            "the index must be read once, however many threads ask it at once",
+            calls.get(),
+            Matchers.equalTo(1)
         );
     }
 

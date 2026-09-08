@@ -32,16 +32,21 @@ final class Deleted implements Supplier<Boolean> {
         return this.purge(this.target);
     }
 
+    // The answer of a child is the answer of the parent too: a directory that
+    // still holds a file nobody could delete is not deleted either, and the
+    // caller has to hear about it instead of reading a clean build that kept
+    // the files of the previous one (#8146).
     private boolean purge(final File dir) {
+        boolean state = true;
         if (dir.isDirectory()) {
             final File[] contents = dir.listFiles();
             if (null != contents) {
                 for (final File file : contents) {
-                    this.purge(file);
+                    state &= this.purge(file);
                 }
             }
         }
-        final boolean state = dir.delete();
+        state &= dir.delete();
         if (state) {
             Logger.debug(this, "The file or directory %[file]s purged", dir);
         }

@@ -25,6 +25,22 @@
 # /m - Enables multiline mode.
 # /s - Enables dotall mode.
 # /u - Enables Unicode-aware case folding.
+#
+# `compile` reads the expression here: the slashes, the body between them
+# and the flag letters after the closing one. A flag that is not one of the
+# six above is refused before the flags are spliced in front of the body as
+# an inline `(?flags)` group, since a flag section such as `i)|(?:a` would
+# otherwise close that group and inject its own alternation into the
+# pattern. What comes out is a `pattern` holding the body and the flags.
+#
+# Two atoms remain, each doing one thing only the engine can do.
+# `pattern.checked` tells whether the spliced source compiles, and hands
+# the fallback the construct the engine choked on together with the index
+# it sits at in the source; the message and the offset into the body the
+# caller wrote are made here. `pattern.match.searched` finds the first
+# block at or after a position and answers its borders and groups as a
+# tuple, empty when there is none; the matched block and the missing one
+# are made here from that tuple.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -37,11 +53,57 @@
 
 [^] > regex
   compile > @
-  [] > compile /Q.string.regex.pattern
-    ? > ^
-    ? > cant-compile /{Q.string}
-  [^ serialized] > pattern
-    ^.pattern serialized > compiled
+  [^ cant-compile] > compile
+    if. > @
+      ^.^.starts-with "/"
+      if.
+        closes.eq 0
+        cant-compile
+          "regex is missing the closing slash"
+        if.
+          flags-valid 0
+          built.checked reported
+          cant-compile
+            "regex flags '%s' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".printf
+              * flags
+      cant-compile
+        "regex is missing the opening slash"
+    ^.^.slice > body
+      1
+      closes.minus 1
+    ^.pattern > built
+      body
+      flags
+    ^.^.last-index-of "/" > closes
+    ^.^.slice > flags
+      closes.plus 1
+      ^.^.length.minus
+        closes.plus 1
+    if. > [^ index] > flags-valid
+      index.eq ^.flags.length
+      true
+      and.
+        "dimsux".contains
+          ^.flags.at index
+        ^.flags-valid
+          index.plus 1
+    [^ reason index] > reported
+      ^.cant-compile > @
+        if.
+          offset.lt 0
+          "regex syntax is invalid: %s".printf
+            * reason
+          "regex syntax is invalid: %s at offset %d of the pattern".printf
+            * reason offset
+      index.minus > offset
+        ^.built.source.length.minus ^.body.length
+  [^ body flags] > pattern
+    [] > checked /Q.string.regex.pattern
+      ? > ^
+      ? > cant-check /{Q.string Q.number}
+    ^.pattern > compiled
+      body
+      flags
     [^ txt] > match
       [^ position start from to groups existing] > matched
         groups.length > count
@@ -54,6 +116,7 @@
               from.eq to
               to.eq ^.txt.length
             ^.missing
+              position.plus 1
             ^.matched-from-index
               position.plus 1
               if.
@@ -66,11 +129,19 @@
           group 0
           T
             "Matched block does not exist, can't get text"
-      [] > matched-from-index /Q.string.regex.pattern.match.matched
-        ? > ^
-        ? > position /Q.number
-        ? > start /Q.number
-      [] > missing
+      [^ position start] > matched-from-index
+        if. > @
+          block.length.eq 0
+          ^.missing position
+          ^.matched
+            position
+            start
+            block.at 0
+            block.at 1
+            block.at 2
+            block.at 3
+        ^.searched start > block
+      [^ position] > missing
         T > count
           "Matched block does not exist, can't get count"
         T > existing
@@ -86,38 +157,54 @@
           "Matched block does not exist, can't get groups"
         T > next
           "Matched block does not exist, can't get next"
-        0 > position
         -1 > start
         T > text
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
       matched-from-index 1 0 > next
+      [] > searched /Q.tuple
+        ? > ^
+        ? > start /Q.number
     [^ txt] > matches
       found.exists.and > @
         and.
           found.to.eq txt.length
           found.from.eq 0
-      "/(?:%s)(?![\\s\\S])/%s".printf > anchored
-        * group1 group2
-      "/(?:%s\n)(?![\\s\\S])/%s".printf > commented
-        * group1 group2
+      ^.^.pattern > anchored
+        "(?:%s)(?![\\s\\S])".printf
+          * ^.body
+        ^.flags
+      ^.^.pattern > commented
+        "(?:%s\n)(?![\\s\\S])".printf
+          * ^.body
+        ^.flags
       next. > found
         match.
-          anchored.regex.compile retry-commented
+          anchored.checked retry-commented
           txt
-      parsed.group 1 > group1!
-      parsed.group 2 > group2!
-      next. > parsed
-        "/^\\/([\\s\\S]*)\\/([dimsux]*)$/".regex.compiled.match ^.^.^
-      "/(?:%s\\E)(?![\\s\\S])/%s".printf > quoted
-        * group1 group2
-      ^.commented.regex.compile ^.retry-quoted > [^ message] > retry-commented
-      ^.quoted.regex.compile > [^ message] > retry-quoted
+      ^.^.pattern > quoted
+        "(?:%s\\E)(?![\\s\\S])".printf
+          * ^.body
+        ^.flags
+      ^.commented.checked ^.retry-quoted > [^ reason index] > retry-commented
+      ^.quoted.checked > [^ reason index] > retry-quoted
+    if. > source
+      flags.eq ""
+      body
+      "(?%s)%s".printf
+        * flags body
 
   eq. ++> can-advance-after-a-zero-width-match
     1
     from. ("/a*/".regex.match "xa").next.next
+
+  eq. ++> can-answer-an-empty-string-for-a-non-participating-group
+    group.
+      next.
+        "/(a)(b)?/".regex.match "a"
+      2
+    ""
 
   ++> can-count-supplementary-characters-as-one-position
     and. > @
@@ -166,9 +253,41 @@
       "/([a-z]+)([1-9]{1})/".regex.compiled.match "!hello1!world2"
     first.next > second
 
+  matches. ++> can-ignore-a-trailing-comment-after-an-inline-flag
+    "/a(?x) #tail/".regex.compiled
+    "a"
+
+  matches. ++> can-ignore-comments-after-an-inline-comments-flag
+    "/(?x)([0-9]) #ignore this comment/".regex.compiled
+    "4"
+
   matches. ++> can-ignore-comments-in-a-pattern
     "/(\\d) #ignore this comment/x".regex.compiled
     "4"
+
+  eq. ++> can-keep-a-slot-for-a-non-participating-group
+    count.
+      next.
+        "/(a)(b)?/".regex.match "a"
+    3
+
+  eq. ++> can-keep-the-position-of-a-missing-block
+    position.
+      next.
+        "/[0-9]/".regex.match "abc"
+    1
+
+  matches. ++> can-match-a-body-with-slashes-inside
+    "/a/b|a/bc/".regex.compiled
+    "a/bc"
+
+  matches. ++> can-match-a-quoted-body-with-a-missing-end-quote
+    "/\\Qa|ab/".regex.compiled
+    "a|ab"
+
+  matches. ++> can-match-a-reluctant-quantifier-against-the-entire-text
+    "/a+?/".regex.compiled
+    "aaa"
 
   "/[a-z]+/".regex.compiled.matches "hello" ++> can-match-a-text-against-a-pattern
 
@@ -176,13 +295,25 @@
     "/😀x/".regex.compiled
     "😀x"
 
+  matches. ++> can-match-an-alternative-after-backtracking
+    "/a|ab/".regex.compiled
+    "ab"
+
+  matches. ++> can-match-an-alternative-with-the-case-insensitive-option
+    "/a|ab/i".regex.compiled
+    "AB"
+
   "/[0-9]/\\d+/".regex.compiled.matches "2/75" ++> can-match-an-entire-pattern
 
-  exists. ++> can-match-with-serialized-bytes-of-the-right-type
+  exists. ++> can-match-with-a-pattern-built-from-a-body-and-flags
     next.
       match.
-        regex.pattern "/h.llo/".regex.compiled.serialized
+        regex.pattern "h.LLO" "i"
         "hello"
+
+  matches. ++> can-match-with-an-inline-flag-switched-off
+    "/(?x)a(?-x)/".regex.compiled
+    "a"
 
   matches. ++> can-match-with-the-case-insensitive-option
     "/(string)/i".regex.compiled
@@ -212,6 +343,14 @@
     "/a**/".regex.compile I
     "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
 
+  eq. ++> can-name-the-missing-closing-slash
+    "/pattern".regex.compile I
+    "regex is missing the closing slash"
+
+  eq. ++> can-name-the-missing-opening-slash
+    "(.)+".regex.compile I
+    "regex is missing the opening slash"
+
   eq. ++> can-name-the-offset-inside-a-pattern-that-carries-flags
     "/a**/i".regex.compile I
     "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
@@ -225,6 +364,14 @@
     "recovered"
     "/[a-z/".regex.compile
       "recovered" > [message]
+
+  eq. ++> can-refuse-a-flag-letter-it-does-not-read
+    "/b/z".regex.compile I
+    "regex flags 'z' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
+
+  eq. ++> can-refuse-flags-that-carry-regex-syntax
+    "/b/i)|(?:a".regex.compile I
+    "regex flags 'i)|(?:a' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
 
   ++> can-report-the-border-indexes-of-a-match
     and. > @
@@ -271,17 +418,17 @@
   not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
     "/[a-z]+/".regex.compiled.matches "1abc"
 
-  exists. --> rejects-serialized-bytes-of-the-wrong-type
-    next.
-      match.
-        regex.pattern AC-ED-00-05-74-00-0D-6E-6F-74-20-61-20-70-61-74-74-65-72-6E
-        "hello"
-
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 
   "(.)+".regex.compiled --> stops-on-a-missing-first-slash
 
   "/[a-z/".regex.compile --> stops-on-compiling-an-invalid-pattern
+
+  exists. --> stops-on-matching-with-a-body-that-does-not-compile
+    next.
+      match.
+        regex.pattern "[a-z" ""
+        "hello"
 
   group-exists. --> stops-on-taking-a-group-exists-of-an-unmatched-block
     next.

@@ -17,6 +17,13 @@ import org.opentest4j.TestAbortedException;
  */
 public final class Deadline implements TestExecutionExceptionHandler {
 
+    /**
+     * Ctor.
+     */
+    public Deadline() {
+        // nothing
+    }
+
     @Override
     public void handleTestExecutionException(final ExtensionContext context,
         final Throwable error) throws Throwable {

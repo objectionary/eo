@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A comparison at the root of a lowered formation makes an atom that
+# answers a bool, and the λ marker says so.
+input: |
+  [] > foo
+    [x] > check
+      x.gt 3 > @
+    check 7 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+unit: check
+voids:
+  x: number
+lowered: |
+  [] > foo
+    check 7 > @
+    [] > check /Q.bool
+      ? > x /Q.number
+protocol: |
+  s1 ← L_number_gt sym:v0 number:40-08-00-00-00-00-00-00
+  answer sym:s1 bool
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final boolean s1 = v0 > Double.longBitsToDouble(0x4008000000000000L);
+  return new Data.ToPhi(s1);

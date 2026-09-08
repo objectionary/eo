@@ -4,22 +4,38 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.w3c.dom.Node;
 
 /**
- * What the links table says, pair by pair.
+ * What the links table says, row by row.
  *
  * <p>{@link Links} writes one row per name that is a copy of another, and
  * reading them back is how a later pass adds to them without losing what is
  * there. The order they were written in is kept, so a document read and written
  * again keeps the rules' rows where they were and carries the worked-out ones
  * after them.</p>
+ *
+ * <p>This is the only place the table is read, and it is read by walking it
+ * rather than by asking it questions. A table of a program of any size is a
+ * document of megabytes, and asking such a document a question costs the same
+ * whether one row comes back or forty thousand do, since the whole of it is
+ * looked through either way. Every question here is about all the rows anyway,
+ * so one walk answers all of them, and the rows of that walk are kept for
+ * whoever asks next.</p>
  *
  * @since 0.68.0
  */
@@ -31,11 +47,17 @@ final class Pairs {
     private final XML table;
 
     /**
+     * The rows of the table, once they have been walked.
+     */
+    private final List<List<Xnav>> read;
+
+    /**
      * Ctor.
      * @param links The links table
      */
     Pairs(final XML links) {
         this.table = links;
+        this.read = new ArrayList<>(1);
     }
 
     /**
@@ -49,8 +71,11 @@ final class Pairs {
      */
     Map<String, String> all() {
         final Map<String, String> found = new LinkedHashMap<>(0);
-        for (final XML link : this.table.nodes("/links/type[ref]")) {
-            found.put(link.xpath("@id").get(0), link.xpath("ref/@loc").get(0));
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                found.put(new Noted(row).says("id"), new Noted(ref.get()).says("loc"));
+            }
         }
         return found;
     }
@@ -67,7 +92,32 @@ final class Pairs {
      * @return The locators
      */
     Collection<String> certain() {
-        return this.table.xpath("/links/type[data or terminator]/@id");
+        final Collection<String> found = new ArrayList<>(0);
+        for (final Xnav row : this.rows()) {
+            final String form = Pairs.form(row);
+            if ("data".equals(form) || "terminator".equals(form)) {
+                found.add(new Noted(row).says("id"));
+            }
+        }
+        return found;
+    }
+
+    /**
+     * Which form of answer every row of the table holds.
+     *
+     * <p>A row holds one element and the element says what kind of answer it
+     * is, so its name is the form: a {@code data}, a {@code terminator}, a
+     * {@code var}, a {@code ref} to the object this one is a copy of, or
+     * whatever a pass we know nothing about has written there.</p>
+     *
+     * @return The form, by the locator of the object the row is about
+     */
+    Map<String, String> forms() {
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Xnav row : this.rows()) {
+            found.put(new Noted(row).says("id"), Pairs.form(row));
+        }
+        return found;
     }
 
     /**
@@ -82,8 +132,10 @@ final class Pairs {
      */
     Map<String, Type> others() {
         final Map<String, Type> found = new LinkedHashMap<>(0);
-        for (final XML row : this.table.nodes("/links/type[not(ref)]")) {
-            found.put(row.xpath("@id").get(0), new Kept(row));
+        for (final Xnav row : this.rows()) {
+            if (!Pairs.ref(row).isPresent()) {
+                found.put(new Noted(row).says("id"), new Kept(row));
+            }
         }
         return found;
     }
@@ -101,11 +153,22 @@ final class Pairs {
      *  that filled them, without the objects that filled none
      */
     Map<String, Collection<String>> filled() {
+        final Map<String, String> hops = new LinkedHashMap<>(0);
         final Map<String, Collection<String>> own = new LinkedHashMap<>(0);
-        for (final XML link : this.table.nodes("/links/type[ref/bind]")) {
-            own.put(link.xpath("@id").get(0), link.xpath("ref/bind/@void"));
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                final String object = new Noted(row).says("id");
+                hops.put(object, new Noted(ref.get()).says("loc"));
+                final Collection<String> voids = ref.get()
+                    .elements(Filter.withName("bind"))
+                    .map(bind -> new Noted(bind).says("void"))
+                    .collect(Collectors.toList());
+                if (!voids.isEmpty()) {
+                    own.put(object, voids);
+                }
+            }
         }
-        final Map<String, String> hops = this.all();
         final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
         for (final String object : hops.keySet()) {
             final Collection<String> voids = new LinkedHashSet<>(0);
@@ -123,5 +186,73 @@ final class Pairs {
             }
         }
         return found;
+    }
+
+    /**
+     * What the table says went into every void.
+     *
+     * <p>A bind of a row names a void and what was put into it, and the same
+     * void is named by the row of every copy that filled it. What went in is
+     * gathered per void and not per row, since a void filled with a
+     * {@code number} at eleven call sites was filled one way eleven times.</p>
+     *
+     * @return The locators of what went in, by the locator of the void, in the
+     *  order the table names them, without the binds that put nothing
+     */
+    Map<String, Collection<String>> puts() {
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                ref.get().elements(Filter.withName("bind")).forEach(
+                    bind -> Pairs.ref(bind).ifPresent(
+                        put -> found.computeIfAbsent(
+                            new Noted(bind).says("void"), key -> new LinkedHashSet<>(0)
+                        ).add(new Noted(put).says("loc"))
+                    )
+                );
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The reference of every pair of the table, as the document holds it.
+     *
+     * <p>A pass that adds to a reference writes into the document itself
+     * rather than building a new one, so what comes back is the node the table
+     * keeps and not a copy of it.</p>
+     *
+     * @return The references, by the locator of the object they are about
+     */
+    Map<String, Node> refs() {
+        final Map<String, Node> found = new LinkedHashMap<>(0);
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                found.putIfAbsent(new Noted(row).says("id"), ref.get().node());
+            }
+        }
+        return found;
+    }
+
+    private List<Xnav> rows() {
+        if (this.read.isEmpty()) {
+            this.read.add(new Rows(this.table).all());
+        }
+        return this.read.get(0);
+    }
+
+    private static Optional<Xnav> ref(final Xnav node) {
+        return node.elements(Filter.withName("ref")).findFirst();
+    }
+
+    private static String form(final Xnav row) {
+        return row.elements()
+            .map(Xnav::node)
+            .filter(held -> held.getNodeType() == Node.ELEMENT_NODE)
+            .map(Node::getNodeName)
+            .findFirst()
+            .orElse("");
     }
 }

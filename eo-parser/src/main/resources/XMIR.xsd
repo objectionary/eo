@@ -253,6 +253,25 @@
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="lowered">
+      <xs:annotation>
+        <xs:appinfo>The digest of the sidecar with the lowered body of this formation (#8137)</xs:appinfo>
+        <xs:documentation>
+          Set by the "lower" goal of the compiler on a formation whose body
+          it folded into a straight-line Java computation: the body is
+          deleted, a "λ" marker stands in its place, and this attribute
+          names the sidecar file holding the body of the "lambda()" method,
+          which "lowered.xsl" splices into a generated atom class at
+          transpile time. The value is a digest of the sidecar's content,
+          so identical fragments share one sidecar file.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:pattern value="[0-9a-f]{12}"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="error">
     <xs:annotation>

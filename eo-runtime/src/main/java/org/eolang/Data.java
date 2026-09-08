@@ -70,16 +70,6 @@ public interface Data {
         }
 
         @Override
-        public boolean equals(final Object obj) {
-            return this == obj || this.object.equals(obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.object.hashCode();
-        }
-
-        @Override
         public Phi copy() {
             return this.object.copy();
         }

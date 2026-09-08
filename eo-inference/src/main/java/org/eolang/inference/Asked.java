@@ -4,10 +4,14 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Every name the program asks, gathered on the object that answers it.
@@ -65,20 +69,26 @@ final class Asked {
      */
     Map<String, Map<String, String>> all() {
         final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
-        for (final XML attr : this.wanted.nodes("/needs/type/attr")) {
-            final String name = attr.xpath("@name").get(0);
-            final String step = ".".concat(name);
-            final String bearer = attr.xpath("../@id").get(0);
-            final String answer = this.owned.attribute(
-                this.names.getOrDefault(bearer, bearer), name
-            );
-            if (answer.endsWith(step)) {
-                found.computeIfAbsent(
-                    answer.substring(0, answer.length() - step.length()),
-                    key -> new LinkedHashMap<>(0)
-                ).put(name, answer);
+        for (final Xnav type : new Rows(this.wanted).all()) {
+            final String bearer = new Noted(type).says("id");
+            for (final Xnav attr : Asked.attrs(type)) {
+                final String name = new Noted(attr).says("name");
+                final String step = ".".concat(name);
+                final String answer = this.owned.attribute(
+                    this.names.getOrDefault(bearer, bearer), name
+                );
+                if (answer.endsWith(step)) {
+                    found.computeIfAbsent(
+                        answer.substring(0, answer.length() - step.length()),
+                        key -> new LinkedHashMap<>(0)
+                    ).put(name, answer);
+                }
             }
         }
         return Collections.unmodifiableMap(found);
+    }
+
+    private static List<Xnav> attrs(final Xnav type) {
+        return type.elements(Filter.withName("attr")).collect(Collectors.toList());
     }
 }

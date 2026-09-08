@@ -5,6 +5,9 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -94,7 +97,22 @@ public final class Dataized {
      * @return Data as string
      */
     public String asString() {
-        return new String(this.take(), StandardCharsets.UTF_8);
+        final byte[] bytes = this.take();
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes))
+                .toString();
+        } catch (final CharacterCodingException ex) {
+            throw new ExFailure(
+                String.format(
+                    "Can't dataize the bytes %s to string, they are not valid UTF-8",
+                    new VerboseBytesAsString(bytes).get()
+                ),
+                ex
+            );
+        }
     }
 
     /**
@@ -117,7 +135,13 @@ public final class Dataized {
                 weak.length, Arrays.toString(weak)
             );
         }
-        return weak[0] == 1;
+        if (weak[0] != 0 && weak[0] != -1) {
+            throw new ExFailure(
+                "Can't dataize the byte %s to boolean, only 00- and FF- are booleans",
+                Arrays.toString(weak)
+            );
+        }
+        return weak[0] == -1;
     }
 
     /**

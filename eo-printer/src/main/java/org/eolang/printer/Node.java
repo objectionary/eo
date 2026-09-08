@@ -168,13 +168,41 @@ final class Node {
      * @return The rendered block with its leading newlines
      */
     String indented(final Style style, final int indent) {
-        final StringBuilder block = new StringBuilder();
-        if (this.test) {
-            block.append('\n');
-        }
-        return block.append('\n')
+        return this.opened()
             .append(this.lined().print(style, indent))
             .toString();
+    }
+
+    /**
+     * Print this node on the lines below the head of its parent, keeping
+     * its own children beneath it whatever the penalties say.
+     *
+     * <p>A method continuation ({@code .y}, §3.5) parses only under a
+     * vertical application: it attaches to the lines above it and the
+     * horizontal form has no place for it. So an application a
+     * continuation hangs on stays vertical however cheap its one-line
+     * spelling looks, or the printer writes a file the next build cannot
+     * read (#8058).</p>
+     *
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block with its leading newlines
+     */
+    String stacked(final Style style, final int indent) {
+        return this.opened()
+            .append(this.lined().vertical(style, indent))
+            .toString();
+    }
+
+    /**
+     * Whether this node is a nameless method-dispatch continuation
+     * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
+     * instead of carrying a receiver of its own.
+     * @return True when this node continues the sibling above it
+     */
+    boolean continuation() {
+        return this.children.isEmpty() && this.tail.isEmpty()
+            && (this.base.startsWith(".") || this.base.startsWith("?."));
     }
 
     /**
@@ -383,6 +411,14 @@ final class Node {
      */
     boolean anonymous() {
         return this.children.stream().allMatch(Node::nameless);
+    }
+
+    private StringBuilder opened() {
+        final StringBuilder block = new StringBuilder();
+        if (this.test) {
+            block.append('\n');
+        }
+        return block.append('\n');
     }
 
     private String shaped(final Style style, final int indent) {

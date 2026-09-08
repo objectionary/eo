@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A clamp is a guard and a choice, two operations over one witnessed
+# void, so the whole application is outlined into a synthetic atom: the
+# comparison is its first step and the fork its second, and the else
+# arm answers the void itself with no step at all. The one-step
+# neighbour stays as written, since its op is a Java atom already.
+input: |
+  [] > foo
+    [x] > clamp
+      if. > @
+        x.gt 1
+        1
+        x
+      x.plus 1 > incr
+    clamp 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+lowered: |
+  [] > foo
+    clamp 5 > @
+    [x] > clamp
+      l🌵99796751a821 x > @
+      x.plus 1 > incr
+      [] > l🌵99796751a821 /Q.number
+        ? > v0 /Q.number
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final boolean s1 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+  final double s2;
+  if (s1) {
+      s2 = Double.longBitsToDouble(0x3FF0000000000000L);
+  } else {
+      s2 = v0;
+  }
+  return new Data.ToPhi(s2);

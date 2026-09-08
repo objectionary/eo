@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,27 @@ import java.util.Map;
  * <p>The receiver of a dispatch fills a void too, when the formation it
  * dispatches into declares one for it. That void is named {@code ρ} and is
  * not counted among the places, since it is answered by whoever dispatches
- * and not by an argument written to the right of the name.</p>
+ * and not by an argument written to the right of the name. A name written by
+ * itself dispatches as well, off the object it is written inside, and
+ * {@link Taken} answers for both.</p>
+ *
+ * <p>An application whose base is a void declares no place at all, and its
+ * arguments would go nowhere: {@code cant-read "foo"}, written inside the
+ * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
+ * nobody has named yet. A caller names it, though, and once it does the
+ * argument has somewhere to land — an {@code as-ascii} given the formation
+ * {@code "bar" > [message]} puts that {@code message} in the way of the
+ * {@code "foo"}. So what the program is seen to put into a void is read off
+ * the fillings gathered here, and the arguments of an application on that void
+ * are passed on to every formation it holds. A void may itself be a copy of
+ * another one, and filling the second fills the first, so the formations are
+ * gathered along the whole chain of copies rather than off its end alone.</p>
+ *
+ * <p>It is evidence and not a contract, as everything gathered from callers
+ * is: the caller written tomorrow may put a formation of another shape there.
+ * And it belongs here rather than after the passes, since an argument that
+ * reaches a formation this way is what tells a dispatch on that void what it
+ * turns out to be (#8405).</p>
  *
  * @since 0.69.0
  */
@@ -50,7 +71,7 @@ final class Bound {
     private final Map<String, Map<String, String>> named;
 
     /**
-     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     * What every dispatch takes its attribute from, from {@link Taken}.
      */
     private final Map<String, String> receivers;
 
@@ -107,6 +128,79 @@ final class Bound {
                     .put(hollow, dispatch.getValue());
             }
         }
+        this.relayed(found);
+        return found;
+    }
+
+    private Map<String, Collection<String>> puts(final Map<String, Map<String, String>> found) {
+        final Map<String, Collection<String>> fillers = new LinkedHashMap<>(0);
+        for (final Map<String, String> filled : found.values()) {
+            for (final Map.Entry<String, String> fill : filled.entrySet()) {
+                fillers.computeIfAbsent(fill.getKey(), key -> new LinkedHashSet<>(0))
+                    .add(this.base(fill.getValue()));
+            }
+        }
+        return fillers;
+    }
+
+    private void relayed(final Map<String, Map<String, String>> found) {
+        final Map<String, Collection<String>> fillers = this.puts(found);
+        for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
+            for (final String filler : this.held(fillers, application.getKey())) {
+                final Map<String, String> passed = this.passed(filler, application.getValue());
+                if (!passed.isEmpty()) {
+                    found.computeIfAbsent(application.getKey(), key -> new LinkedHashMap<>(1))
+                        .putAll(passed);
+                }
+            }
+        }
+    }
+
+    private Collection<String> held(
+        final Map<String, Collection<String>> fillers, final String application
+    ) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final String step : this.copies(application)) {
+            found.addAll(fillers.getOrDefault(step, Collections.emptyList()));
+        }
+        return found;
+    }
+
+    private Collection<String> copies(final String name) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        found.add(name);
+        found.addAll(this.chain(name));
+        return found;
+    }
+
+    // The pairs may close into a ring, and a walk on a ring comes back to
+    // where it started, so the walk stops at the first name it has seen
+    // already. The name it started from is not part of the answer: an
+    // application is not a copy of itself, and counting it as one would mark
+    // the voids it is about to fill as filled by somebody else.
+    private List<String> chain(final String name) {
+        final List<String> found = new ArrayList<>(0);
+        final Collection<String> seen = new HashSet<>(0);
+        seen.add(name);
+        String walked = name;
+        while (this.pairs.containsKey(walked)) {
+            walked = this.pairs.get(walked);
+            if (!seen.add(walked)) {
+                break;
+            }
+            found.add(walked);
+        }
+        return found;
+    }
+
+    private Map<String, String> passed(final String filler, final List<String> given) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (int place = 0; place < given.size(); place += 1) {
+            final String hollow = this.owned.vacant(filler, Collections.emptyList(), place);
+            if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
+                found.put(hollow, given.get(place));
+            }
+        }
         return found;
     }
 
@@ -130,13 +224,7 @@ final class Bound {
     }
 
     private Collection<String> taken(final String application) {
-        final List<String> chain = new ArrayList<>(0);
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = application;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
-            chain.add(walked);
-        }
+        final List<String> chain = this.chain(application);
         Collections.reverse(chain);
         final Collection<String> found = new HashSet<>(0);
         for (final String step : chain) {
@@ -146,11 +234,6 @@ final class Bound {
     }
 
     private String base(final String name) {
-        final Collection<String> seen = new HashSet<>(0);
-        String walked = name;
-        while (this.pairs.containsKey(walked) && seen.add(walked)) {
-            walked = this.pairs.get(walked);
-        }
-        return walked;
+        return new Ends(this.pairs).name(name);
     }
 }

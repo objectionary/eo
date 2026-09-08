@@ -1,0 +1,79 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.lowering;
+
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+/**
+ * Test case for {@link Universe}.
+ * @since 0.76.0
+ */
+@ExtendWith(MktmpResolver.class)
+final class UniverseTest {
+
+    @Test
+    void holdsTheMethodTables() {
+        MatcherAssert.assertThat(
+            "the tables of the primitives must be in the universe, but they arent",
+            new Universe().text(),
+            Matchers.containsString("λ ⤍ L_number_plus")
+        );
+    }
+
+    @Test
+    void shadowsTheSlicingOfTheDecoratee() {
+        MatcherAssert.assertThat(
+            "the string must hide the byte slicing behind an unknown atom, but it doesnt",
+            new Universe().text(),
+            Matchers.containsString("λ ⤍ L_string_slice")
+        );
+    }
+
+    @Test
+    void parksTheChoiceOfABool(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the choice of a bool must park instead of firing, but it didnt",
+            phino.partial(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.true.if(α0 ↦ Φ.true, α1 ↦ Φ.false) ⟧"
+            ).records().get(0).name(),
+            Matchers.equalTo("L_bool_if")
+        );
+    }
+
+    @Test
+    void carriesTheMethodsOfABool(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "a bool must reach the byte methods below it, but it doesnt",
+            phino.dataize(
+                new Universe().text(),
+                "⟦ φ ↦ Φ.true.eq(α0 ↦ Φ.false) ⟧"
+            ).bytes(),
+            Matchers.equalTo("00-")
+        );
+    }
+
+    @Test
+    void resolvesReferenceWhenMerged(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        MatcherAssert.assertThat(
+            "the universe must be a complete expression phino can merge with, but it isnt",
+            phino.dataize(new Universe().text(), "⟦ φ ↦ Φ.true ⟧").bytes(),
+            Matchers.equalTo("FF-")
+        );
+    }
+}

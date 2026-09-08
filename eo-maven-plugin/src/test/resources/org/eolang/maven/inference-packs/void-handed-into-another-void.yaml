@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+eo:
+  a.eo: |
+    [pages] > book
+      pages.size > @
+
+    [stuff] > shelf
+      stuff.weight > w
+      book stuff > @
+provides:
+  - "/provides/type[@id='Φ.shelf']/attr[@name='stuff']/demand[@name='weight']"
+  - "/provides/type[@id='Φ.shelf']/attr[@name='stuff']/demand[@name='size']"

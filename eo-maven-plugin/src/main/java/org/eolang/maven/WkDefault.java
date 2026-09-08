@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +17,15 @@ import org.cactoos.list.ListEnvelope;
 
 /**
  * Default implementation of {@link Walk}.
+ *
+ * <p>Only regular files are walked. A directory is not one, and neither is
+ * a FIFO, a socket, a device node or a link with nothing at the end of it,
+ * and a goal handed such an entry cannot make an EO program out of it: it
+ * would hash and read it, and reading a FIFO waits for a writer that never
+ * comes. A link to an ordinary file is still walked, since
+ * {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)} follows
+ * links by default, and such a source reads exactly like the file it names.</p>
+ *
  * @since 0.1
  */
 final class WkDefault extends ListEnvelope<Path> implements Walk {
@@ -47,11 +55,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk includes(final Collection<String> globs) {
+        final Collection<Globbed> patterns = globs.stream()
+            .map(glob -> new Globbed(glob, "includes files into the walk"))
+            .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> globs.stream().anyMatch(
-                    glob -> this.matches(glob, file)
+                file -> patterns.stream().anyMatch(
+                    glob -> glob.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())
@@ -60,11 +71,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk excludes(final Collection<String> globs) {
+        final Collection<Globbed> patterns = globs.stream()
+            .map(glob -> new Globbed(glob, "excludes files from the walk"))
+            .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> globs.stream().noneMatch(
-                    glob -> this.matches(glob, file)
+                file -> patterns.stream().noneMatch(
+                    glob -> glob.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())
@@ -88,17 +102,15 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     private static Collection<Path> regular(final Path dir) throws IOException {
         try (Stream<Path> walk = Files.walk(dir)) {
-            return walk.filter(file -> !file.toFile().isDirectory())
+            return walk.filter(Files::isRegularFile)
                 .collect(Collectors.toList());
         }
     }
 
-    private boolean matches(final String text, final Path file) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
-            Paths.get(
-                file.toAbsolutePath().toString().substring(
-                    this.home.toAbsolutePath().toString().length() + 1
-                )
+    private Path relative(final Path file) {
+        return Paths.get(
+            file.toAbsolutePath().toString().substring(
+                this.home.toAbsolutePath().toString().length() + 1
             )
         );
     }

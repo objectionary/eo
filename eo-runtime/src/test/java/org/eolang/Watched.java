@@ -45,19 +45,17 @@ import org.opentest4j.TestAbortedException;
  * code under test.</p>
  *
  * @since 0.75.0
+ * @todo #8336:30min Let a body that will not stop be waited for. A terminated
+ *  body gets half a second to die and the skip is reported whether it died or
+ *  not, so its threads outlive the test that owns them, holding whatever they
+ *  opened. JUnit closes the context right behind them and deletes the
+ *  {@code @TempDir} of that test, which on windows cannot be deleted while a
+ *  file in it is open, so the skip comes out as a failure that names neither
+ *  the memory nor the test. Either wait for the group to empty, or say
+ *  plainly that the body outlived its test.
  */
 @SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
 final class Watched {
-
-    /**
-     * How many milliseconds pass between two readings of the appetite.
-     */
-    private static final long TICK = 50L;
-
-    /**
-     * How many milliseconds the group is given to stop after an interrupt.
-     */
-    private static final long GRACE = 500L;
 
     /**
      * What is said about a test that ate more than it was given.
@@ -121,7 +119,7 @@ final class Watched {
         thread.start();
         boolean over = false;
         try {
-            while (!done.await(Watched.TICK, TimeUnit.MILLISECONDS)) {
+            while (!done.await(50L, TimeUnit.MILLISECONDS)) {
                 if (consumed.bytes() > this.limit) {
                     over = true;
                     break;
@@ -147,7 +145,7 @@ final class Watched {
 
     private static void settle(final CountDownLatch done) {
         try {
-            done.await(Watched.GRACE, TimeUnit.MILLISECONDS);
+            done.await(500L, TimeUnit.MILLISECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
         }

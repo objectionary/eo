@@ -8,16 +8,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [file] > directory
   file > @
-  [] > listed /Q.tuple
-    ? > ^
   [dir time process random] > retried
     [^ index] >> attempted
       if. > @
@@ -350,24 +346,6 @@
     Q.file candidate.as-bytes > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file created.as-bytes > temp
-
-  ++> can-list-only-the-direct-children-of-a-directory
-    seq * > @
-      touched.
-        as-file.
-          d.resolved "плюшка.txt"
-      made.
-        as-dir.
-          d.resolved "sub"
-      touched.
-        as-file.
-          d.resolved "sub/deep.txt"
-      eq.
-        ",".joined d.as-dir.listed
-        "sub,плюшка.txt"
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted

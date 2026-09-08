@@ -6,10 +6,18 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
  * Delete empty directories in provided root.
+ *
+ * <p>A symbolic link is a leaf here, whatever stands at the end of it. EO
+ * may remove a directory it made and then emptied, but the tree behind a
+ * link is somebody else's: descending through one would delete directories
+ * outside the build output that EO never created. A link is also something
+ * a directory holds, so a directory holding one is not empty.</p>
+ *
  * @since 0.55
  */
 final class EmptyDirectoriesIn {
@@ -54,7 +62,7 @@ final class EmptyDirectoriesIn {
         final File[] before = dir.listFiles();
         if (before != null) {
             for (final File file : before) {
-                if (file.isDirectory()) {
+                if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
                     this.delete(file);
                 }
             }
