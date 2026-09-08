@@ -4,18 +4,49 @@
  */
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case verifying {@link Expect}-based error messages
- * raised by {@link EOchunk$EOwrite} when its integer attributes
- * are invalid.
+ * Test case for {@link EOchunk$EOwrite}: the bytes it hands back
+ * and the {@link Expect}-based errors it raises when its integer
+ * attributes are invalid.
  * @since 0.51
  */
 final class EOchunkEOwriteTest {
+
+    @Test
+    void returnsBytesItWrote() {
+        MatcherAssert.assertThat(
+            "the bytes given back by write are not the ones handed to it",
+            Heaps.INSTANCE.malloc(
+                6,
+                id -> new Dataized(
+                    new PhApplication(
+                        new PhApplication(
+                            new PhApplication(
+                                new EOchunk$EOwrite(),
+                                Phi.RHO,
+                                new PhApplication(
+                                    new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
+                                    "id",
+                                    new Data.ToPhi(id)
+                                )
+                            ),
+                            "offset",
+                            new Data.ToPhi(0)
+                        ),
+                        "data",
+                        new Data.ToPhi("héllo")
+                    )
+                ).take()
+            ),
+            Matchers.equalTo("héllo".getBytes(StandardCharsets.UTF_8))
+        );
+    }
 
     @Test
     void throwsCorrectErrorForNonNumericId() {
