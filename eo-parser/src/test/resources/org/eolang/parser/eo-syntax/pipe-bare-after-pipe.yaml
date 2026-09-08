@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The space after `|` separates the pipe from what follows it, so a pipe with
+# nothing to follow is the bare `|` (R-3.14.1). That spelling opens the
+# vertical form anywhere the horizontal one is allowed, including as the next
+# link of a chain (R-3.14.5), where the predecessor is the named pipe above.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@pipe]/o[@base='Φ.number']
+  - //o[@pipe]/following-sibling::o[@pipe]/o[@base='Φ.number']
+input: |
+  [] > app
+    foo > @
+      [a b] >>
+        a.plus b > @
+      | 2 >>
+      |
+        3
