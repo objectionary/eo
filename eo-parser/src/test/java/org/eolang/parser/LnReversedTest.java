@@ -81,6 +81,66 @@ final class LnReversedTest {
     }
 
     @Test
+    void emitsHorizontalFormWithoutMethodAttribute() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("if. cond then else > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "the horizontal form heads a chain too, so it must emit <o base='.if'> without @method",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='x' and @base='.if' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void emitsFragileDispatchWithoutMethodAttribute() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("if?. cond then > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a fragile reversed dispatch must carry @fragile alone, never @method alongside it (R-3.5.3a)",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='x' and @base='.if' and @fragile='' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void emitsRootHeadWithoutMethodAttribute() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("@. > x", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a root head maps to .φ and still heads a chain, so it must carry no @method",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='x' and @base='.φ' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
+    void emitsConstantDispatchWithoutMethodAttribute() {
+        final Emit emit = new Emit();
+        new LnReversed(new Span("if. cond then > x!", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a const-marked reversed dispatch must gain @const and still no @method",
+            LnReversedTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='x' and @base='.if' and @const='' and not(@method)]"
+            )
+        );
+    }
+
+    @Test
     void emitsHorizontalArgsAsChildren() {
         final Emit emit = new Emit();
         new LnReversed(new Span("if. cond then else > x", 1))
