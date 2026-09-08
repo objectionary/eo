@@ -132,8 +132,8 @@ final class Suffix {
     }
 
     /**
-     * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}, {@code THROWS}.
+     * The suffix form — one of {@code NONE}, {@code NAME},
+     * {@code RECEIVER}, {@code AUTO}, {@code TEST}, {@code THROWS}.
      * @return Form
      */
     Form form() {
@@ -191,7 +191,8 @@ final class Suffix {
      * <p>This is the single source of truth for naming any line shape
      * — formations, applications, method chains, reversed dispatches,
      * compact tuples, only-phi formations, text blocks. Returns
-     * {@code null} for {@link Form#NONE} (no name attribute).</p>
+     * {@code null} for {@link Form#NONE}, and refuses
+     * {@link Form#RECEIVER}, which only {@link LnVoid} may name.</p>
      *
      * @param line Source line (for {@link Form#AUTO} naming)
      * @param indent Source indent (for {@link Form#AUTO} naming)
@@ -199,6 +200,11 @@ final class Suffix {
      */
     String attribute(final int line, final int indent) {
         final String name;
+        if (this.form == Form.RECEIVER) {
+            throw new ParseError(
+                line, indent, "only a void attribute can declare the receiver ^"
+            );
+        }
         if (this.form == Form.NAME) {
             name = Suffix.phi(this.label);
         } else if (this.form == Form.TEST) {
@@ -529,7 +535,13 @@ final class Suffix {
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
         Suffix.checkGlyphs(name, span.line(), home + begin);
-        Suffix.checkLowercaseStart(name, span, home, begin);
+        final Form kind;
+        if ("^".equals(name)) {
+            kind = Form.RECEIVER;
+        } else {
+            Suffix.checkLowercaseStart(name, span, home, begin);
+            kind = Form.NAME;
+        }
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
             cnst = true;
@@ -552,7 +564,7 @@ final class Suffix {
             rest = idx;
         }
         Suffix.endsClean(tail, rest, span, home);
-        return new Suffix(Form.NAME, name, signature, cnst);
+        return new Suffix(kind, name, signature, cnst);
     }
 
     private static void endsClean(
@@ -652,6 +664,12 @@ final class Suffix {
          * Explicit name binding ({@code > name}).
          */
         NAME,
+
+        /**
+         * The receiver ({@code > ^}) — a name only a void attribute may
+         * bind (R-3.4.11).
+         */
+        RECEIVER,
 
         /**
          * Auto-generated name ({@code >>}), optional handle (§3.10).
