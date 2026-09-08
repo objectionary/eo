@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
+import org.eolang.Dataized;
+import org.eolang.Phi;
 
 /**
  * A {@code sockaddr_in} laid out the way the running platform lays it out.

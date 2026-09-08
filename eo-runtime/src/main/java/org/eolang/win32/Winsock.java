@@ -9,7 +9,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
-import org.eolang.SockaddrIn;
+import org.eolang.sys.SockaddrIn;
 
 /**
  * Interface definitions for <code>WS2_32.dll</code>.

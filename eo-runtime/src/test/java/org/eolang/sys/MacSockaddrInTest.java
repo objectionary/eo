@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import com.sun.jna.Structure;
 import org.hamcrest.MatcherAssert;
