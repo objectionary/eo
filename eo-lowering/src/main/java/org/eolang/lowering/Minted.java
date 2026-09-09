@@ -105,25 +105,6 @@ public final class Minted {
     }
 
     /**
-     * Remember that the value of a label is a call back into EO.
-     *
-     * @param label The label
-     */
-    public void called(final String label) {
-        this.calls.add(label);
-    }
-
-    /**
-     * Whether the value a key names came out of a call back into EO.
-     *
-     * @param key The key, such as {@code sym:s2} or {@code sym:v0}
-     * @return True if the key names a step that is such a call
-     */
-    public boolean calling(final String key) {
-        return key.startsWith("sym:s") && this.calls.contains(key.substring(4));
-    }
-
-    /**
      * Declare the voids of a body a repeat resumes.
      *
      * @param name The name of the helper
@@ -245,6 +226,25 @@ public final class Minted {
             );
         }
         return out;
+    }
+
+    /**
+     * Remember that the value of a label is a call back into EO.
+     *
+     * @param label The label
+     */
+    void called(final String label) {
+        this.calls.add(label);
+    }
+
+    /**
+     * Whether the value a key names came out of a call back into EO.
+     *
+     * @param key The key, such as {@code sym:s2} or {@code sym:v0}
+     * @return True if the key names a step that is such a call
+     */
+    boolean calling(final String key) {
+        return key.startsWith("sym:s") && this.calls.contains(key.substring(4));
     }
 
     private static <T> Map<String, T> first(final T value) {
