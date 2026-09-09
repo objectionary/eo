@@ -47,7 +47,6 @@
         signed.if
           "-".as-bytes.concat spelled
           spelled
-  10000000000 > tenbillion
   floor. > guess
     truncated.div tenbillion
   truncated.minus > rest
@@ -84,6 +83,7 @@
           tenbillion.plus rest
         1
         10
+  10000000000 > tenbillion
   if. > top
     slack.lt 0
     guess.minus 1
