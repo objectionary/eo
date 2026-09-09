@@ -4,6 +4,16 @@
 # zero, the caller-supplied `cant-divide` fallback is returned, and so it is
 # when the smallest `i64` is divided by minus one, since that quotient is one
 # past the largest `i64` and has no answer here.
+#
+# @todo #8385:60min Make an i64 division affordable. Starting the loop at the
+#  highest bit of the dividend brought `42 / 10` from 234MB to 85MB, but what
+#  is left is not in this loop. Measured on their own, `i64.plus` allocates
+#  4MB while `i64.neg` allocates 168MB, and `minus`, `gt` and `lt` cost
+#  170-220MB each because they are built on `neg`. A division of small
+#  numbers still costs tens of megabytes, so `1.5.as-fixed 2` still cannot
+#  run under a 300MB heap. Until that is cheaper, the tests below stay over
+#  the one second that `Deadline` allows and are recorded as skipped instead
+#  of being run.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -52,9 +62,7 @@
           or. >> shifted!
             remainder.left 1
             and.
-              right.
-                magnitude ^.^.as-bytes
-                index
+              numerator.right index
               00-00-00-00-00-00-00-01
           quot
   if. > quotiented
@@ -67,7 +75,23 @@
       plus.
         i64
           not.
-            looped 63 00-00-00-00-00-00-00-00 00-00-00-00-00-00-00-00 >> quotient
+            looped >> quotient
+              [^ m acc step] >> topbit
+                if. > @
+                  step.lt 1
+                  acc
+                  ^.topbit
+                    empty.if m shifted
+                    empty.if acc (acc.plus step)
+                    step.div 2
+                shifted.eq 00-00-00-00-00-00-00-00 > empty
+                m.right step > shifted!
+              |
+                magnitude ^.as-bytes >> numerator!
+                0
+                32
+              00-00-00-00-00-00-00-00
+              00-00-00-00-00-00-00-00
         i64 00-00-00-00-00-00-00-01
     i64 quotient
   as-bytes. >> subtrahend
