@@ -302,17 +302,6 @@
                 -->
                 <lint>redundant-object</lint>
                 <!--
-                @todo #6985:30min Stop skipping 'redundant-attachment' here. A
-                declared 'ρ' counts as one of the object's own voids, so
-                'outer-refs' comes back empty for formations that do reach into
-                the enclosing scope, and their '&gt;&gt;' names look
-                unreferenced. Dropping those names made the formatter reshape
-                the call sites and broke 'map', 'while', 'range' and 'input'.
-                Remove this entry once objectionary/lints#1301 treats the
-                receiver as reaching outward even when the head declares it.
-                -->
-                <lint>redundant-attachment</lint>
-                <!--
                 @todo #6985:30min Stop skipping 'many-void-attributes' here.
                 The rule caps a formation at five voids to keep it callable,
                 but it counts 'ρ' among them, and 'string.regex.matched' has
