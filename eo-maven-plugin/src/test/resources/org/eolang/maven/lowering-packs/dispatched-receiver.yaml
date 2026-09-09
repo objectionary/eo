@@ -28,5 +28,6 @@ voids:
 lowered: |
   [] > foo
     calc "z" > @
-    (x.holder "a").tail > [x] > calc
+    tail. > [x] > calc
+      x.holder "a"
 stuck: "is the value of a call"
