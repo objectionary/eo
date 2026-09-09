@@ -149,11 +149,27 @@ final class Xmirs {
      * @throws IOException If a file cannot be read
      */
     Collection<Site> dispatches() throws IOException {
-        final Collection<Site> found = new ArrayList<>(0);
-        for (final XML dispatch : this.matching("//o[starts-with(@base, '.')]")) {
-            found.add(new Site(new Xnav(dispatch.inner())));
-        }
-        return found;
+        return this.sites("//o[starts-with(@base, '.')]");
+    }
+
+    /**
+     * Every application of a name read off the object it is written in.
+     *
+     * <p>{@code if > not} inside {@code [if] > bool} takes the same name from
+     * the same object as {@code b.if} does from outside, only the object goes
+     * unwritten because it is the one the line is written in. The name is
+     * still taken from something, so the question a dispatch asks is worth
+     * asking here too — and when the name is a void, the arguments of this
+     * very application are what say what the void holds.</p>
+     *
+     * @return The applications, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<Site> reads() throws IOException {
+        return this.sites(
+            "//o[starts-with(@base, 'ξ.') and o[starts-with(@as, 'α')]]"
+        );
     }
 
     /**
@@ -247,6 +263,14 @@ final class Xmirs {
         return owner.elements(
             Filter.all(Filter.withName("o"), Filter.not(Filter.hasAttribute("as")))
         );
+    }
+
+    private Collection<Site> sites(final String xpath) throws IOException {
+        final Collection<Site> found = new ArrayList<>(0);
+        for (final XML site : this.matching(xpath)) {
+            found.add(new Site(new Xnav(site.inner())));
+        }
+        return found;
     }
 
     private Collection<XML> matching(final String xpath) throws IOException {

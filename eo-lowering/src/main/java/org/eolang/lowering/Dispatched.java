@@ -34,6 +34,16 @@ import java.util.regex.Pattern;
  * {@code and} and {@code or} of a bool, which are an {@code if} — is
  * refused, since a strict call would compute what EO leaves alone.</p>
  *
+ * <p>A method the tables witness as answering bytes is refused too.
+ * Bytes is what every tagged object dataizes to — an {@code i64} is a
+ * formation over the bytes it answers with, and so are the other
+ * integers — so the witness cannot tell the object from its data. The
+ * value of a call re-enters EO, as the answer of the atom or as the
+ * receiver of the next call, and there the difference decides which
+ * method a name finds: {@code as-number} of an {@code i64} reads two's
+ * complement, {@code as-number} of the same eight bytes reads a
+ * double.</p>
+ *
  * @since 0.76.0
  */
 public final class Dispatched {
@@ -139,6 +149,18 @@ public final class Dispatched {
                 keys.add(value.key());
             }
             final String forma = Dispatched.forma(bindings);
+            if ("bytes".equals(forma)) {
+                throw new IllegalStateException(
+                    String.format(
+                        String.join(
+                            " ",
+                            "The method '%s' answers bytes, which every tagged object",
+                            "dataizes to, so its value cannot stand for the object"
+                        ),
+                        method
+                    )
+                );
+            }
             final String label = this.minted.next();
             this.minted.bind(label, forma);
             steps.add(new Dispatch(label, method, keys, forma));

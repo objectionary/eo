@@ -1,6 +1,9 @@
 # Wall-clock time source backed by the operating system.
 # Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime64_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
+# The microseconds are cut down to milliseconds with number arithmetic,
+# since an `i64` division costs many megabytes for a value that never
+# leaves the range of a double.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,8 +29,8 @@
                 "gettimeofday"
                 *
           1000
-        as-number.
-          timeval.micros.as-i64.div 1000.as-i64
+        floor.
+          timeval.micros.div 1000
 
   clock.as-bytes.size.eq 8 ++> can-be-eight-bytes-long
 

@@ -1,6 +1,12 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 #
+# A temporary file is named after the clock in milliseconds, the process
+# and the microsecond within the current second, so two names asked for
+# within one millisecond, as parallel tests do, still differ; Windows has
+# no finer clock than a millisecond, so there the last part is derived
+# from the clock alone.
+#
 # @todo #6484:60min Walk a directory in constant stack space. The `stepped`
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
@@ -14,7 +20,7 @@
 
 [file] > directory
   file > @
-  [dir time process random] > retried
+  [dir time process fraction] > retried
     [^ index] >> attempted
       if. > @
         descriptor.eq -1
@@ -48,7 +54,7 @@
           ^.time
           ^.process
           index
-          ^.random
+          ^.fraction
     code. > [descriptor] > closed
       os.is-windows.if
         win32 *1
@@ -90,7 +96,15 @@
           posix
             "getpid"
             *
-      clock.as-number.random
+      os.is-windows.if
+        clock.as-number.random
+        div.
+          micros.
+            output.
+              posix
+                "gettimeofday"
+                *
+          1000000
   [^ glob] > walk
     [^ accum prefix dir] >> walked
       [^ rest] >> stepped
@@ -709,17 +723,14 @@
         directory mktemp.tmpfile.deleted
 
   ++> can-walk-with-a-star-inside-a-glob-character-class
-    seq * > @
-      touched.
-        as-file.
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "*.txt").as-file
+        touched. (d.resolved "a.txt").as-file
+        eq.
+          ",".joined
+            d.as-dir.walk "[*].txt"
           d.resolved "*.txt"
-      touched.
-        as-file.
-          d.resolved "a.txt"
-      eq.
-        ",".joined
-          d.as-dir.walk "[*].txt"
-        d.resolved "*.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

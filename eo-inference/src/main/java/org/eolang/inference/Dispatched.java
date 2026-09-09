@@ -21,6 +21,14 @@ import java.util.Map;
  * attribute is looked for is {@link Provided}'s business — the object itself,
  * its package, or behind its {@code φ}.</p>
  *
+ * <p>A name read off the object the line is written in is the same question
+ * with the receiver left out: {@code if > not} inside {@code [if] > bool}
+ * takes {@code if} from the {@code bool} around it. There is nothing to look
+ * the name up in, since the row already says what the name came out as, but
+ * the arguments of that very application say what the void it came out as
+ * holds — so the application stands in for its own receiver and {@link Filled}
+ * is asked all the same.</p>
+ *
  * <p>Nothing is guessed. A receiver whose type nothing describes is left
  * alone, and so is a receiver that is a void: {@code x.next} inside an object
  * that takes {@code x} is one object in the text and a different one for every
@@ -116,11 +124,16 @@ final class Dispatched {
             final String known = pairs.getOrDefault(made, "");
             if (known.isEmpty() || this.rooted(known)) {
                 final String bearer = dispatch.bearer();
-                final String kept = filled.instead(
-                    owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
-                    bearer,
-                    made
-                );
+                final String kept;
+                if (bearer.isEmpty()) {
+                    kept = filled.instead(known, made, made);
+                } else {
+                    kept = filled.instead(
+                        owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
+                        bearer,
+                        made
+                    );
+                }
                 if (this.better(kept, known, made)) {
                     found.put(made, kept);
                 }

@@ -204,11 +204,13 @@
   children: a third one is an argument applied to the formation, and the
   glyph leaves nowhere to put it, so such an object must keep the long
   layout. And the φ base rooted at "ξ": an unrooted name denotes some
-  other object entirely, not the void beside it.
+  other object entirely, not the void beside it. A receiver void is no
+  identity either: "[^] (^ > @)" hands its owner back, while "I" spells
+  "[x] (x > @)", a formation waiting for an argument nobody passes.
   -->
   <xsl:function name="eo:identity" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">

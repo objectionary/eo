@@ -24,7 +24,9 @@
       ^.is-integer.not
     T
       "The receiver of as-char must be an integer within the range [0, 127]"
-    ^.as-i64.as-bytes.slice
+    slice.
+      as-bytes.
+        ^.plus 4503599627370496
       7
       1
 

@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The tables of eo:inference witness bytes for the call back into EO,
+# and bytes is what every tagged object dataizes to: an i64 is a
+# formation over the bytes it answers with, and the witness of such a
+# call cannot tell the object from its data. The value of a call
+# re-enters EO, as the answer of the atom or as the receiver of the
+# next call, and there the difference decides which method a name
+# finds, since `as-number` of an i64 reads two's complement while
+# `as-number` of the same eight bytes reads a double. The reduction
+# refuses every call witnessed as bytes and the formation stays as
+# written.
+input: |
+  [] > foo
+    [x] > calc
+      x.raw > @
+    calc 5 > @
+prelude:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [] > raw /Q.bytes
+        ? > ^
+unit: calc
+voids:
+  x: number
+lowered: |
+  [] > foo
+    calc 5 > @
+    x.raw > [x] > calc
+stuck: "answers bytes"

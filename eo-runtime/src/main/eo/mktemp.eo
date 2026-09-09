@@ -6,6 +6,10 @@
 # For Windows uses the path reported by the Windows "GetTempPath" API function which
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
+#
+# A trailing separator of the supplied path is dropped, the way macOS sets
+# TMPDIR, so that the path of a temporary file is this path, one separator
+# and a name, and its dirname is this path again.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -18,7 +22,20 @@
     file
       string
         [] >>!
-          os.is-windows.if > @
+          if. > @
+            and.
+              raw.size.gt 1
+              eq.
+                raw.slice
+                  raw.size.minus 1
+                  1
+                path.separator.as-bytes
+            raw.slice
+              0
+              raw.size.minus 1
+            raw
+          -- > empty
+          os.is-windows.if > raw!
             if.
               tmp.eq empty
               if.
@@ -42,7 +59,6 @@
                   temp
                 tmp
               getenv "TMPDIR" empty >> tmpdir!
-          -- > empty
 
   mktemp.tmpfile.exists ++> can-create-a-temp-file
 

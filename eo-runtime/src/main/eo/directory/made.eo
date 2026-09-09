@@ -91,7 +91,7 @@
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
-        parent.resolved "foo-inner/foo-deepest"
+        parent.as-path.resolved "foo-inner/foo-deepest"
     made. > parent
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-partial"

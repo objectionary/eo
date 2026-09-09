@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -29,10 +30,18 @@ import org.w3c.dom.NodeList;
  * with its forma chased through {@link Formas}. Two references to the
  * same locator share one void. The carve refuses — and the site stays
  * as written — on a reference outside the carrier formas, a
- * formation where data is expected, a call of a sibling formation, or
- * a subtree of fewer than two operations, since a one-step computation
- * is a Java atom already and a synthetic clone of it would buy
- * nothing.</p>
+ * formation where data is expected, a call of a sibling formation, a
+ * method with arguments dispatched on the enclosing object itself,
+ * through {@code ξ.ρ} or a longer chain of {@code ρ}, or a subtree of
+ * fewer than two operations, since a one-step computation is a Java
+ * atom already and a synthetic clone of it would buy nothing. The
+ * enclosing object is refused as a receiver even when the tables
+ * witness a carrier forma for it: the object is the one whose value
+ * the site computes, so the atom would call back into it from a Java
+ * frame — a tail call the loop rewrite expects to catch never reaches
+ * the loop — and the memo key of the atom would normalize the object
+ * before the call, which is the very computation the fragment stands
+ * in, and the stack overflows.</p>
  *
  * @since 0.76.0
  */
@@ -44,6 +53,11 @@ final class Fragment {
     private static final Collection<String> LITERALS = new HashSet<>(
         Arrays.asList("Φ.number", "Φ.string", "Φ.bytes", "Φ.true", "Φ.false")
     );
+
+    /**
+     * The prefix that names the enclosing object, through one or more {@code ρ}.
+     */
+    private static final Pattern ENCLOSING = Pattern.compile("ξ(\\.ρ)+");
 
     /**
      * The formas a symbolic carrier can stand for.
@@ -183,7 +197,7 @@ final class Fragment {
             method = base.substring(cut + 1);
             row = String.format("%s.ρ", row);
             final int inner = this.gathered(node);
-            if (inner < 0) {
+            if (inner < 0 || Fragment.ENCLOSING.matcher(prefix).matches()) {
                 out = -1;
             } else {
                 out = inner + 1;

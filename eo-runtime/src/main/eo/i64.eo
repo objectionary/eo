@@ -12,6 +12,21 @@
 # `times` by minus one. Every bit of minus one is set, so the shift-and-add
 # loop of `times` ran a full addition on all sixty four of them, which is
 # what `minus`, `lt`, `lte`, `gt` and `gte` all rest on.
+#
+# `as-number` splits the two's complement into its top twelve and low
+# fifty-two bits and reads each half through the exponent pattern of
+# `2^52`: a double with that exponent and a mantissa `m` is exactly
+# `2^52 + m`, so one `or` and one subtraction turn a half into an exact
+# number. The two halves are then combined with one addition, which
+# rounds to the nearest even double, the same way a JVM `long` becomes a
+# `double`; a negative value is read as the negated complement of its
+# halves, so that no carry has to be propagated through the bytes.
+#
+# `plus` reads both operands through the same pattern as two thirty-two
+# bit halves, adds the halves as numbers, and carries from the low half
+# into the high one with a single comparison, so an addition costs the
+# same few dispatches whatever the length of its carry chain; the bytes of
+# each sum below `2^32` are the low four bytes of its `2^52` pattern.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -37,82 +52,30 @@
       ^.as-bytes.slice 4 4
   [^] > as-number
     if. > @
-      ^.as-bytes.eq 00-00-00-00-00-00-00-00
-      0
-      number
-        sign.or
-          exponentbits.or mantissa
-    rounded.eq 00-20-00-00-00-00-00-00 > carried
-    carried.if > exponentbits
-      as-bytes.
-        plus.
-          i64 40-00-00-00-00-00-00-00
-          i64 highestbits
-      as-bytes.
-        plus.
-          i64 3F-F0-00-00-00-00-00-00
-          i64 highestbits
-    eq. > guard
-      and.
-        magnitude.right
-          highest.minus 53
-        00-00-00-00-00-00-00-01
-      00-00-00-00-00-00-00-01
-    scanned.as-number.minus 4503599627370496 > highest
-    left. > highestbits!
-      scanned.and 00-00-00-00-00-00-00-3F
-      52
-    magnitude.right > kept!
-      highest.minus 52
-    if. > magnitude!
-      sign.eq 80-00-00-00-00-00-00-00
-      as-bytes.
-        plus.
-          i64 ^.as-bytes.not
-          i64 00-00-00-00-00-00-00-01
-      ^.as-bytes
-    if. > mantissa
-      highest.lte 52
-      and.
-        magnitude.left
-          52.minus highest
-        00-0F-FF-FF-FF-FF-FF-FF
-      rounded.and 00-0F-FF-FF-FF-FF-FF-FF
-    eq. > odd
-      kept.and 00-00-00-00-00-00-00-01
-      00-00-00-00-00-00-00-01
-    roundup.if > rounded!
-      as-bytes.
-        plus.
-          i64 kept
-          i64 00-00-00-00-00-00-00-01
-      kept
-    guard.and > roundup
-      sticky.or odd
-    [^ m acc step bit] > scan
-      if. > @
-        step.lt 1
-        acc
-        ^.scan
-          empty.if m shifted
-          empty.if
-            acc
-            acc.or bit
-          step.div 2
-          bit.right 1
-      shifted.eq 00-00-00-00-00-00-00-00 > empty
-      m.right step > shifted!
-    scan > scanned!
-      magnitude
-      43-30-00-00-00-00-00-00
-      32
-      00-00-00-00-00-00-00-20
-    ^.as-bytes.and 80-00-00-00-00-00-00-00 > sign!
-    not. > sticky
       eq.
-        magnitude.left
-          117.minus highest
+        ^.as-bytes.and 80-00-00-00-00-00-00-00
         00-00-00-00-00-00-00-00
+      plus.
+        high.times 4503599627370496
+        low
+      neg.
+        plus.
+          times.
+            4095.minus high
+            4503599627370496
+          4503599627370496.minus low
+    minus. > high
+      number
+        43-30-00-00-00-00-00-00.or
+          and.
+            ^.as-bytes.right 52
+            00-00-00-00-00-00-0F-FF
+      4503599627370496
+    minus. > low
+      number
+        43-30-00-00-00-00-00-00.or
+          ^.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+      4503599627370496
   [^ x] > gt
     if. > @
       not.
@@ -147,17 +110,48 @@
     i64 ^.as-bytes.not
     i64 00-00-00-00-00-00-00-01
   [^ x] > plus
-    if. > [^ a b] >> carried
-      b.eq 00-00-00-00-00-00-00-00
-      i64 a
-      ^.carried
-        a.xor b
-        left.
-          a.and b
-          1
-    | > @
-      ^.as-bytes
-      x.as-bytes
+    i64 > @
+      concat.
+        slice.
+          as-bytes.
+            if.
+              upper.gt 4503603922337791
+              upper.minus 4294967296
+              upper
+          4
+          4
+        slice.
+          as-bytes.
+            carried.if
+              lower.minus 4294967296
+              lower
+          4
+          4
+    lower.gt 4503603922337791 > carried
+    plus. > lower
+      number
+        43-30-00-00-00-00-00-00.or
+          ^.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+      minus.
+        number
+          43-30-00-00-00-00-00-00.or
+            x.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+        4503599627370496
+    plus. > upper
+      plus.
+        number
+          43-30-00-00-00-00-00-00.or
+            and.
+              ^.as-bytes.right 32
+              00-00-00-00-FF-FF-FF-FF
+        minus.
+          number
+            43-30-00-00-00-00-00-00.or
+              and.
+                x.as-bytes.right 32
+                00-00-00-00-FF-FF-FF-FF
+          4503599627370496
+      carried.if 1 0
   [^ x] > times
     if. > [^ acc a b] > looped
       b.eq 00-00-00-00-00-00-00-00
@@ -215,6 +209,10 @@
 
   not. ++> can-be-less-with-a-large-difference
     5000000000000000000.as-i64.lt -5000000000000000000.as-i64
+
+  eq. ++> can-carry-an-addition-into-the-upper-half
+    4294967295.as-i64.plus 1.as-i64
+    4294967296.as-i64
 
   eq. ++> can-carry-an-addition-through-all-bytes
     plus.

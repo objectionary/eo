@@ -2,6 +2,8 @@
 # IEEE 754: a not-a-number value is equal to nothing, not even to itself, while
 # positive and negative zero are equal to each other. Everything else is
 # compared byte by byte, so a value of any other type is simply not equal.
+# Identical bytes settle the answer at once, save for a not-a-number, so
+# the zero checks run only when the bytes differ.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,24 +14,19 @@
 
 [^ x] > eq
   if. > @
-    ^.is-nan.or
-      is-nan.
-        number
-          x >> xbts!
-    false
-    or.
-      and.
-        or.
-          xbts.eq
-            0.as-bytes >> pzero
-          xbts.eq
-            -0.as-bytes >> nzero
-        or.
-          eq.
-            ^.as-bytes >> b!
-            pzero
-          b.eq nzero
-      b.eq xbts
+    eq.
+      ^.as-bytes >> b!
+      x >> xbts!
+    ^.is-nan.not
+    and.
+      or.
+        b.eq
+          0.as-bytes >> pzero
+        b.eq
+          -0.as-bytes >> nzero
+      or.
+        xbts.eq pzero
+        xbts.eq nzero
 
   eq. ++> can-compare-two-different-number-types
     68.eq "12345678"

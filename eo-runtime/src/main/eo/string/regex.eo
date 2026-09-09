@@ -26,121 +26,755 @@
 # /s - Enables dotall mode.
 # /u - Enables Unicode-aware case folding.
 #
-# `compile` reads the expression here: the slashes, the body between them
-# and the flag letters after the closing one. A flag that is not one of the
-# six above is refused before the flags are spliced in front of the body as
-# an inline `(?flags)` group, since a flag section such as `i)|(?:a` would
-# otherwise close that group and inject its own alternation into the
-# pattern. What comes out is a `pattern` holding the body and the flags.
+# The engine is written here, in EO, on top of the byte primitives.
+# `compile` reads the expression: the slashes, the body between them and
+# the flag letters after the closing one. What comes out is a `pattern`
+# holding the body and the flags; `checked` hands the same pattern back
+# when the body parses and applies the fallback to the construct the
+# parser choked on and to the character offset it sits at otherwise, worded
+# as `java.util.regex` words it, so `/a**/` is refused with "Dangling meta
+# character '*'" at offset 2 whatever the flags are.
 #
-# Two atoms remain, each doing one thing only the engine can do.
-# `pattern.checked` tells whether the spliced source compiles, and hands
-# the fallback the construct the engine choked on together with the index
-# it sits at in the source; the message and the offset into the body the
-# caller wrote are made here. `pattern.match.searched` finds the first
-# block at or after a position and answers its borders and groups as a
-# tuple, empty when there is none; the matched block and the missing one
-# are made here from that tuple.
+# The parser walks the body as bytes, since every metacharacter is ASCII
+# and a multi-byte character is copied whole, and turns it once into a tree
+# of nodes with the flags baked in. It understands literals, the escapes
+# `\\ \/ \. \t \n \r \f \a \e \xHH` and `\Q...\E`, classes with ranges,
+# negation and `\d \D \s \S \w \W`, the dot, the anchors `^ $ \A \z \Z \b
+# \B`, the quantifiers `* + ? {n} {n,} {n,m}` with a lazy `?` or a
+# possessive `+` behind them, alternation, capturing and `(?:)` groups,
+# the inline flags `(?idmsux-idmsux)` and `(?flags:...)` scoped the way
+# Java scopes them, and `/x` comments. Lookaround, named groups, back
+# references, atomic groups, `\uHHHH`, `\p{}`, class intersections and
+# the remaining escape letters are refused at compile time with a message
+# saying so. A quantifier binds to the last character of a literal run,
+# also when that run came out of `\Q...\E`, as in Java.
+#
+# Every node has a `run` that takes the subject, a byte position, the
+# captures found so far and a continuation, and either applies the
+# continuation to the position it stops at or answers `nothing`, so
+# alternation and quantifiers backtrack by returning to the caller. The
+# `/i` flag folds ASCII; with `/u` it also folds Latin-1, Greek and
+# Cyrillic letters and treats `i`, `I`, the dotless i and the dotted
+# capital I as one letter. `\b` looks at ASCII word characters only.
+# Positions in the answer are counted in characters, as before, while the
+# engine counts bytes and converts at the border; a matched block remembers
+# where its bytes end, so `next` neither rescans the text nor parses the
+# pattern again.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+rt jvm org.eolang:eo-runtime:0.0.0
-+rt node eo2js-runtime:0.0.0
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
 [^] > regex
   compile > @
-  [^ cant-compile] > compile
+  or. > [^ c] >> alnum
+    numeric c
+    or.
+      capital c
+      small c
+  [^ dotall unix] >> any
+    [^ s at caps k] > run
+      if. > @
+        s.size.gt at
+        ^.dotall.if
+          k
+            number till
+            caps
+          if.
+            breaks c ^.unix
+            nothing
+            k
+              number till
+              caps
+        nothing
+      s.char at > c!
+      at.plus c.size > till!
+  [^ multiline unix] >> begin
+    if. > [^ s at caps k] > run
+      1.gt at
+      k at caps
+      ^.multiline.if
+        if.
+          and.
+            s.size.gt at
+            broken s at ^.unix
+          k at caps
+          nothing
+        nothing
+  number > [c] >> beyond
+    slice.
+      concat.
+        40-.concat c
+        01-00-00-00-00-00-00
+      0
+      8
+  or. > [b] >> blank
+    b.eq 20-
+    or.
+      b.eq 09-
+      or.
+        b.eq 0A-
+        or.
+          b.eq 0B-
+          or.
+            b.eq 0C-
+            b.eq 0D-
+  [begin marks end] >> block
+    true > exists
+  [^ negated] >> border
+    [^ s at caps k] > run
+      if. > @
+        eq.
+          left.eq right
+          ^.negated
+        k at caps
+        nothing
+      if. > left
+        1.gt at
+        false
+        word
+          s.text.slice
+            at.plus -1
+            1
+      if. > right
+        s.size.gt at
+        word
+          s.text.slice at 1
+        false
+  unix.if > [c unix] >> breaks
+    c.eq 0A-
+    or.
+      c.eq 0A-
+      or.
+        c.eq 0D-
+        or.
+          c.eq C2-85
+          or.
+            c.eq E2-80-A8
+            c.eq E2-80-A9
+  [s at unix] >> broken
     if. > @
-      ^.^.starts-with "/"
+      0A-.eq p
+      true
+      unix.if
+        false
+        if.
+          0D-.eq p
+          not.
+            0A-.eq
+              s.text.slice at 1
+          if.
+            and.
+              at.gt 1
+              C2-85.eq
+                s.text.slice
+                  at.plus -2
+                  2
+            true
+            and.
+              at.gt 2
+              or.
+                E2-80-A8.eq t
+                E2-80-A9.eq t
+    s.text.slice > p
+      at.plus -1
+      1
+    s.text.slice > t
+      at.plus -3
+      3
+  and. > [c] >> capital
+    eq.
+      c.and E0-
+      40-
+    not.
+      or.
+        c.eq 40-
+        or.
+          c.eq 5B-
+          eq.
+            c.and FC-
+            5C-
+  [^ child index] >> captured
+    [^ s at caps k] > run
+      ^.child.run > @
+        s
+        at
+        caps
+        ^.k > [^ at caps] >>
+          at
+          mark
+            ^.at
+            ^.^.index
+            caps
+            at
+  if. > [^ letter rest] >> chain
+    letter.eq 64-
+    range
+      26
+      16
+      rest
+    if.
+      letter.eq 73-
+      range
+        3.75
+        3.125
+        range
+          8.5
+          8
+          rest
+      range
+        26
+        16
+        range
+          108
+          34
+          range
+            128
+            124
+            range 432 136 rest
+  [left right] >> choice
+    [^ s at caps k] > run
+      tried.exists.if > @
+        tried
+        ^.right.run
+          s
+          at
+          caps
+          k
+      ^.left.run > tried
+        s
+        at
+        caps
+        k
+  slice. > [^ value] >> cipher
+    as-bytes.
+      value.plus 16
+    1
+    1
+  negated.if > [^ letter negated rest] >> cluster
+    except
+      chain letter none
+      rest
+    chain
+      letter
+      rest
+  [^ cant-compile] > compile
+    opens.if > @
       if.
-        closes.eq 0
+        1.gt closes
         cant-compile
           "regex is missing the closing slash"
         if.
-          flags-valid 0
+          if. > [^ index] >> legal
+            ^.size.gt index
+            if.
+              --.eq
+                flag
+                  ^.raw.slice index 1
+              false
+              ^.legal
+                index.plus 1
+            true
+          | (closes.plus 1)
           built.checked reported
           cant-compile
-            "regex flags '%s' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".printf
-              * flags
+            string
+              concat.
+                "regex flags '".as-bytes.concat flags
+                "' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".as-bytes
       cant-compile
         "regex is missing the opening slash"
-    ^.^.slice > body
+    raw.slice > body
       1
-      closes.minus 1
+      closes.plus -1
     ^.pattern > built
       body
       flags
-    ^.^.last-index-of "/" > closes
-    ^.^.slice > flags
+    number last > closes
+    raw.slice > flags
       closes.plus 1
-      ^.^.length.minus
+      size.minus
         closes.plus 1
-    if. > [^ index] > flags-valid
-      index.eq ^.flags.length
-      true
-      and.
-        "dimsux".contains
-          ^.flags.at index
-        ^.flags-valid
-          index.plus 1
-    [^ reason index] > reported
-      ^.cant-compile > @
+    slashed > last!
+      size.plus -1
+    if. > opens
+      size.gt 0
+      2F-.eq
+        raw.slice 0 1
+      false
+    ^.^.as-bytes > raw
+    ^.cant-compile > [^ reason offset] > reported
+      worded offset reason
+    raw.size > size
+    if. > [^ index] >> slashed
+      1.gt index
+      0
+      if.
+        2F-.eq
+          ^.raw.slice index 1
+        index
+        ^.slashed
+          index.plus -1
+  if. > [e] >> control
+    e.eq 74-
+    09-
+    if.
+      e.eq 6E-
+      0A-
+      if.
+        e.eq 72-
+        0D-
         if.
-          offset.lt 0
-          "regex syntax is invalid: %s".printf
-            * reason
-          "regex syntax is invalid: %s at offset %d of the pattern".printf
-            * reason offset
-      index.minus > offset
-        ^.built.source.length.minus ^.body.length
-  [^ body flags] > pattern
-    [] > checked /Q.string.regex.pattern
-      ? > ^
-      ? > cant-check /{Q.string Q.number}
-    ^.pattern > compiled
-      body
-      flags
-    [^ txt] > match
-      [^ position start from to groups existing] > matched
-        groups.length > count
-        start.gte 0 > exists
-        ^.groups.at index > [^ index] > group
-        ^.existing.at index > [^ index] > group-exists
-        exists.if > next
+          e.eq 66-
+          0C-
+          if.
+            e.eq 61-
+            07-
+            if.
+              e.eq 65-
+              1B-
+              --
+  [^ acc value] >> decimal
+    if. > @
+      10.gt value
+      concat.
+        cipher value
+        acc
+      ^.decimal
+        concat.
+          cipher
+            value.minus
+              times.
+                number tenfold
+                10
+          acc
+        number tenfold
+    tens > tenfold!
+      0
+      value
+  [] >> empty
+    k > [^ s at caps k] > run
+      at
+      caps
+  [^ value] >> encoded
+    if. > @
+      128.gt value
+      octet value
+      lead.concat
+        80-.or
+          octet
+            value.plus shift
+    if. > lead
+      192.gt value
+      C2-
+      C3-
+    if. > shift
+      192.gt value
+      -128
+      -192
+  [^ multiline unix] >> end
+    if. > [^ s at caps k] > run
+      ^.multiline.if
+        starts
+          s
+          at
+          ^.unix
+        terminal
+          s
+          at
+          ^.unix
+      k at caps
+      nothing
+  [inner rest] >> except
+    if. > [^ code] > has
+      ^.inner.has code
+      ^.rest.has code
+      true
+  if. > [b] >> flag
+    b.eq 64-
+    01-
+    if.
+      b.eq 69-
+      02-
+      if.
+        b.eq 6D-
+        04-
+        if.
+          b.eq 73-
+          08-
+          if.
+            b.eq 75-
+            10-
+            if.
+              b.eq 78-
+              20-
+              --
+  unicode.if > [^ c unicode] >> fold
+    lower
+      upper c true
+      true
+    lower
+      c
+      false
+  [^ text unicode] >> folded
+    fold > norm!
+      text
+      unicode
+    [^ s at caps k] > run
+      if. > @
+        s.size.gt at
+        if.
+          eq.
+            fold c ^.unicode
+            ^.norm
+          k
+            number till
+            caps
+          nothing
+        nothing
+      s.char at > c!
+      at.plus c.size > till!
+  [end marks] >> found
+    true > exists
+  if. > [^ e] >> glyph
+    alnum e
+    control e
+    e
+  [^ child least most] >> greedy
+    [^ s at caps k] > run
+      [^ n at caps] >> step
+        if. > @
+          ^.^.most.gt n
+          tried.exists.if
+            tried
+            if.
+              ^.^.least.gt n
+              nothing
+              ^.k at caps
+          ^.k at caps
+        ^.^.child.run > tried
+          ^.s
+          at
+          caps
+          [^ at caps] >>
+            if. > @
+              at.gt ^.at
+              ^.^.step
+                number bump
+                number here
+                caps
+              ^.^.k at caps
+            ^.n.plus 1 > bump!
+            at > here!
+      | > @
+        0
+        at
+        caps
+  number > [c] >> key
+    slice.
+      concat.
+        40-.concat c
+        00-00-00-00-00-00
+      0
+      8
+  marks.some.if > [^ group marks] >> latest
+    if.
+      marks.group.as-bytes.eq group.as-bytes
+      marks
+      ^.latest group marks.next
+    marks
+  [^ child least most] >> lazy
+    [^ s at caps k] > run
+      [^ n at caps] >> pace
+        if. > @
+          ^.^.least.gt n
+          ^.^.child.run
+            ^.s
+            at
+            caps
+            [^ at caps] >> anew
+              if. > @
+                at.gt ^.at
+                ^.^.pace
+                  number bump
+                  number here
+                  caps
+                ^.^.k at caps
+              ^.n.plus 1 > bump!
+              at > here!
+          tried.exists.if
+            tried
+            if.
+              ^.^.most.gt n
+              ^.^.child.run ^.s at caps anew
+              nothing
+        ^.k at caps > tried
+      | > @
+        0
+        at
+        caps
+  [^ text] >> literal
+    [^ s at caps k] > run
+      if. > @
+        gt.
+          number till
+          s.size
+        nothing
+        if.
+          eq.
+            s.text.slice at ^.size
+            ^.text
+          k
+            number till
+            caps
+          nothing
+      at.plus ^.size > till!
+    text.size > size
+  if. > [^ c unicode] >> lower
+    2.gt c.size
+    if.
+      capital c
+      c.or 20-
+      c
+    unicode.if
+      lowered c
+      c
+  [c] >> lowered
+    if. > @
+      3.gt c.size
+      if.
+        lead.eq C3-
+        if.
+          and.
+            eq.
+              b.and E0-
+              80-
+            not.
+              or.
+                b.eq 97-
+                b.eq 9F-
+          C3-.concat
+            b.or 20-
+          c
+        if.
+          lead.eq CE-
           if.
             and.
-              from.eq to
-              to.eq ^.txt.length
-            ^.missing
-              position.plus 1
+              eq.
+                b.and F0-
+                90-
+              not.
+                b.eq 90-
+            CE-.concat
+              b.or 20-
+            if.
+              or.
+                eq.
+                  b.and F8-
+                  A0-
+                eq.
+                  b.and FE-
+                  A8-
+              CF-.concat
+                or.
+                  b.and 0F-
+                  80-
+              c
+          if.
+            lead.eq D0-
+            if.
+              eq.
+                b.and F0-
+                90-
+              D0-.concat
+                b.or 20-
+              if.
+                eq.
+                  b.and F0-
+                  A0-
+                D1-.concat
+                  b.and 8F-
+                c
+            if.
+              c.eq C4-B0
+              69-
+              if.
+                c.eq C5-B8
+                C3-BF
+                c
+      c
+    c.slice > b
+      1
+      1
+    c.slice > lead
+      0
+      1
+  [from group next to] >> mark
+    true > some
+  [^ fold items negated unicode] >> member
+    [^ s at caps k] > run
+      if. > @
+        s.size.gt at
+        if.
+          hit.eq ^.negated
+          nothing
+          k
+            number till
+            caps
+        nothing
+      s.char at > c!
+      key c > code!
+      key > down!
+        lower c ^.unicode
+      if. > hit
+        ^.items.has
+          number code
+        true
+        ^.fold.if
+          if.
+            ^.items.has
+              number up
+            true
+            if.
+              ^.items.has
+                number down
+              true
+              ^.unicode.if
+                ^.items.has
+                  key
+                    ^.^.fold c true
+                false
+          false
+      at.plus c.size > till!
+      key > up!
+        upper c ^.unicode
+  [] >> none
+    false > [code] > has
+  [] >> nothing
+    false > exists
+  and. > [c] >> numeric
+    eq.
+      c.and F0-
+      30-
+    not.
+      or.
+        eq.
+          c.and FE-
+          3A-
+        eq.
+          c.and FC-
+          3C-
+  slice. > [n] >> octet
+    as-bytes.
+      n.plus 4503599627370496
+    7
+    1
+  [^ body flags] > pattern
+    ^.parsed.ok.if > [^ cant-check] > checked
+      ^
+      cant-check
+        ^.parsed.reason
+        indexed ^.parsed.at
+    ^.checked > compiled
+      T > [^ reason offset] >>
+        worded offset reason
+    flags.as-bytes > fraw
+    fraw.size > fsize
+    [^ index mode] >> modes
+      if. > @
+        ^.fsize.gt index
+        if.
+          bit.eq --
+          --
+          ^.modes
+            index.plus 1
+            mode.or bit
+        mode
+      flag > bit
+        ^.fraw.slice index 1
+    | > initial
+      0
+      00-
+    [^ txt] > match
+      [^ position start offset hit] > matched
+        ^.^.parsed.groups.plus 1 > count
+        from.plus > ending!
+          ^.subj.chars hit.begin hit.end
+        if. > [^ acc index] >> presence
+          ^.count.gt index
+          ^.presence
+            acc.with
+              present index
+            index.plus 1
+          acc
+        | > existing
+          *
+          0
+        true > exists
+        number origin > from
+        ^.groups.at index > [^ index] > group
+        ^.existing.at index > [^ index] > group-exists
+        if. > [^ acc index] >> texts
+          ^.count.gt index
+          ^.texts
+            acc.with
+              snippet index
+            index.plus 1
+          acc
+        | > groups
+          *
+          0
+        if. > next
+          origin.eq ending
+          if.
+            ^.subj.size.gt hit.end
             ^.matched-from-index
               position.plus 1
-              if.
-                from.eq to
-                to.plus 1
-                to
-          T
-            "Matched block does not exist, can't get next"
-        exists.if > text
-          group 0
-          T
-            "Matched block does not exist, can't get text"
-      [^ position start] > matched-from-index
-        if. > @
-          block.length.eq 0
-          ^.missing position
+              to.plus 1
+              hit.end.plus
+                width
+                  ^.subj.text.slice hit.end 1
+            ^.missing
+              position.plus 1
+          ^.matched-from-index
+            position.plus 1
+            to
+            hit.end
+        start.plus > origin!
+          ^.subj.chars offset hit.begin
+        group 0 > text
+        number ending > to
+        if. > [^ index] >> present
+          1.gt index
+          true
+          some.
+            latest index ^.hit.marks
+        [^ index] >> snippet
+          if. > @
+            1.gt index
+            string
+              ^.^.subj.text.slice
+                ^.hit.begin
+                ^.hit.end.minus ^.hit.begin
+            m.some.if
+              string
+                ^.^.subj.text.slice
+                  m.from
+                  m.to.minus m.from
+              ""
+          latest index ^.hit.marks > m
+      [^ position start offset] > matched-from-index
+        hit.exists.if > @
           ^.matched
             position
             start
-            block.at 0
-            block.at 1
-            block.at 2
-            block.at 3
-        ^.searched start > block
+            offset
+            hit
+          ^.missing position
+        sought offset > hit
       [^ position] > missing
         T > count
           "Matched block does not exist, can't get count"
@@ -162,38 +796,1346 @@
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
-      matched-from-index 1 0 > next
-      [] > searched /Q.tuple
-        ? > ^
-        ? > start /Q.number
+      matched-from-index > next
+        1
+        0
+        0
+      [^ start] > searched
+        if. > @
+          start.is-integer.not.or
+            or.
+              0.gt start
+              start.gt ^.total
+          T
+            "the 'start' attribute must be a non-negative integer no greater than the text length"
+          result.exists.if
+            *
+              result.from
+              result.to
+              result.groups
+              result.existing
+            *
+        ^.matched-from-index > result
+          1
+          start
+          ^.subj.offset start
+      [^ at] >> sought
+        hit.exists.if > @
+          hit
+          if.
+            ^.subj.size.gt at
+            ^.sought
+              at.plus
+                width
+                  ^.subj.text.slice at 1
+            nothing
+        ^.^.tree.run > hit
+          ^.subj
+          at
+          unmarked
+          block ^.at caps at > [^ at caps] >>
+      subject txt.as-bytes > subj
+      txt.length > total
     [^ txt] > matches
-      found.exists.and > @
+      exists. > @
+        ^.tree.run
+          subj
+          0
+          unmarked
+          if. > [^ at caps] >>
+            ^.subj.size.gt at
+            nothing
+            found at caps
+      subject txt.as-bytes > subj
+    alternatives > outcome
+      0
+      0
+      initial
+    if. > parsed
+      initial.eq --
+      [at reason] >> no
+        false > ok
+      | -1 "The flags must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
+      outcome.ok.if
+        if.
+          eq.
+            if. > [^ index] >> byte
+              ^.size.gt index
+              ^.raw.slice index 1
+              --
+            | outcome.at
+            --
+          outcome
+          no
+            outcome.at.plus -1
+            "Unmatched closing ')'"
+        outcome
+    body.as-bytes > raw
+    raw.size > size
+    parsed.ok.if > tree
+      parsed.node
+      T
+        string
+          concat.
+            "cannot search with the regex pattern '".as-bytes.concat
+              raw
+            "'".as-bytes
+    [at groups mode node text] >> yes
+      true > ok
+    [at text] >> read
+      true > ok
+    [at from to] >> span
+      true > ok
+      false > preset
+    [at letter negated] >> named
+      true > ok
+      true > preset
+    [at least most] >> bounds
+      true > ok
+    [at value] >> numeral
+    [at mode] >> switched
+      true > ok
+    bit.eq > [bit mode] >> flagged
+      mode.and bit
+    or. > [b] >> halts
+      b.eq --
+      or.
+        b.eq 7C-
+        b.eq 29-
+    [^ b] >> digit
+      if. > @
+        b.eq --
+        -1
+        if.
+          and.
+            k.gt 15.5
+            26.gt k
+          k.plus -16
+          -1
+      key b > k
+    [^ b] >> nibble
+      if. > @
+        b.eq --
+        -1
+        if.
+          0.gt d
+          if.
+            and.
+              k.gt 135
+              177.gt k
+            div.
+              k.plus -56
+              8
+            -1
+          d
+      digit b > d
+      key > k
+        b.or 20-
+    [^ index] >> hexed
+      if. > @
+        eq.
+          byte index
+          7B-
+        no
+          index.plus -2
+          "Braced hexadecimal escapes are not supported"
+        if.
+          0.gt h
+          no
+            index
+            "Illegal hexadecimal escape sequence"
+          if.
+            0.gt l
+            no
+              index.plus 1
+              "Illegal hexadecimal escape sequence"
+            read
+              index.plus 2
+              encoded
+                plus.
+                  h.times 16
+                  l
+      nibble > h
+        byte index
+      nibble > l
+        byte
+          index.plus 1
+    [^ acc index] >> counted
+      if. > @
+        0.gt d
+        numeral index acc
+        ^.counted
+          if.
+            0.gt acc
+            d
+            plus.
+              acc.times 10
+              d
+          index.plus 1
+      digit > d
+        byte index
+    if. > [^ index] >> indexed
+      0.gt index
+      index
+      measured
+        0
+        0
+        index
+    [^ at count index] >> measured
+      if. > @
         and.
-          found.to.eq txt.length
-          found.from.eq 0
-      ^.^.pattern > anchored
-        "(?:%s)(?![\\s\\S])".printf
-          * ^.body
-        ^.flags
-      ^.^.pattern > commented
-        "(?:%s\n)(?![\\s\\S])".printf
-          * ^.body
-        ^.flags
-      next. > found
-        match.
-          anchored.checked retry-commented
-          txt
-      ^.^.pattern > quoted
-        "(?:%s\\E)(?![\\s\\S])".printf
-          * ^.body
-        ^.flags
-      ^.commented.checked ^.retry-quoted > [^ reason index] > retry-commented
-      ^.quoted.checked > [^ reason index] > retry-quoted
-    if. > source
-      flags.eq ""
-      body
-      "(?%s)%s".printf
-        * flags body
+          ^.size.gt at
+          not.
+            gt.
+              number following
+              index
+        ^.measured
+          number following
+          count.plus 1
+          index
+        count
+      at.plus > following!
+        width
+          byte at
+    if. > [^ index mode] >> skip
+      flagged 20- mode
+      commented index mode
+      index
+    [^ index mode] >> commented
+      if. > @
+        blank b
+        ^.commented
+          index.plus 1
+          mode
+        if.
+          b.eq 23-
+          ^.commented
+            lined
+              index.plus 1
+              mode
+            mode
+          index
+      byte index > b
+    [^ index mode] >> lined
+      if. > @
+        or.
+          b.eq --
+          or.
+            b.eq 0A-
+            and.
+              b.eq 0D-
+              not.
+                flagged 01- mode
+        index
+        ^.lined
+          index.plus 1
+          mode
+      byte index > b
+    or. > [^ b mode] >> special
+      or.
+        b.eq 5B-
+        or.
+          b.eq 28-
+          or.
+            b.eq 29-
+            b.eq 7B-
+      or.
+        or.
+          b.eq 2A-
+          or.
+            b.eq 2B-
+            or.
+              b.eq 3F-
+              or.
+                b.eq 2E-
+                or.
+                  b.eq 5E-
+                  or.
+                    b.eq 24-
+                    b.eq 7C-
+        and.
+          flagged 20- mode
+          or.
+            b.eq 23-
+            blank b
+    [^ index opened bits] >> alternatives
+      p.ok.if > @
+        alternate p
+        p
+      pieces > p
+        index
+        opened
+        bits
+    [^ acc] >> alternate
+      if. > @
+        eq.
+          byte acc.at
+          7C-
+        n.ok.if
+          ^.alternate
+            yes
+              n.at
+              n.groups
+              n.mode
+              choice acc.node n.node
+              --
+          n
+        acc
+      pieces > n
+        acc.at.plus 1
+        acc.groups
+        acc.mode
+    [^ index opened bits] >> pieces
+      if. > @
+        halts
+          byte
+            number here
+        yes
+          number here
+          opened
+          bits
+          empty
+          --
+        p.ok.if
+          more p
+          p
+      skip index bits > here!
+      piece > p
+        number here
+        opened
+        bits
+    [^ acc] >> more
+      if. > @
+        halts
+          byte
+            number here
+        yes
+          number here
+          acc.groups
+          acc.mode
+          acc.node
+          --
+        p.ok.if
+          ^.more
+            yes
+              p.at
+              p.groups
+              p.mode
+              sequence acc.node p.node
+              --
+          p
+      skip acc.at acc.mode > here!
+      piece > p
+        number here
+        acc.groups
+        acc.mode
+    [^ index opened bits] >> piece
+      a.ok.if > @
+        if.
+          or.
+            q.eq 2A-
+            or.
+              q.eq 2B-
+              or.
+                q.eq 3F-
+                q.eq 7B-
+          b.ok.if
+            yes
+              after
+              a.groups
+              a.mode
+              quantified
+              --
+            b
+          a
+        a
+      atom > a
+        index
+        opened
+        bits
+      if. > after
+        or.
+          g.eq 3F-
+          g.eq 2B-
+        gat.plus 1
+        b.at
+      if. > b
+        q.eq 7B-
+        braces
+          qat.plus 1
+        if.
+          q.eq 2A-
+          bounds
+            qat.plus 1
+            0
+            number 7F-F0-00-00-00-00-00-00
+          if.
+            q.eq 2B-
+            bounds
+              qat.plus 1
+              1
+              number 7F-F0-00-00-00-00-00-00
+            bounds
+              qat.plus 1
+              0
+              1
+      back > cut!
+        a.text.size.plus -1
+        a.text
+      byte gat > g
+      skip b.at a.mode > gat
+      if. > greed
+        g.eq 3F-
+        1
+        if.
+          g.eq 2B-
+          2
+          0
+      a.text.slice > head
+        0
+        number cut
+      a.text.slice > last
+        number cut
+        a.text.size.minus
+          number cut
+      gt. > many
+        number cut
+        0
+      byte qat > q
+      skip a.at a.mode > qat
+      many.if > quantified
+        sequence
+          plain a.mode head
+          repeat
+            greed
+            b.least
+            b.most
+            plain a.mode last
+        repeat
+          greed
+          b.least
+          b.most
+          a.node
+    if. > [^ index text] >> back
+      1.gt index
+      0
+      if.
+        80-.eq
+          and.
+            text.slice index 1
+            C0-
+        ^.back
+          index.plus -1
+          text
+        index
+    if. > [^ greed least most node] >> repeat
+      1.gt greed
+      greedy
+        node
+        least
+        most
+      if.
+        2.gt greed
+        lazy
+          node
+          least
+          most
+        possessive
+          node
+          least
+          most
+    if. > [^ mode text] >> plain
+      1.gt text.size
+      empty
+      if.
+        flagged 02- mode
+        spelled
+          text
+          flagged 10- mode
+        literal text
+    [^ text unicode] >> spelled
+      if. > @
+        text.size.gt w
+        sequence
+          folded
+            text.slice 0 w
+            unicode
+          ^.spelled
+            text.slice
+              w
+              text.size.minus w
+            unicode
+        folded text unicode
+      width > w
+        text.slice 0 1
+    [^ index opened bits] >> atom
+      if. > @
+        or.
+          b.eq 2A-
+          or.
+            b.eq 2B-
+            b.eq 3F-
+        no
+          index
+          string
+            concat.
+              "Dangling meta character '".as-bytes.concat
+                b
+              "'".as-bytes
+        if.
+          b.eq 2E-
+          yes
+            index.plus 1
+            opened
+            bits
+            any
+              flagged 08- bits
+              flagged 01- bits
+            --
+          if.
+            b.eq 5E-
+            yes
+              index.plus 1
+              opened
+              bits
+              begin
+                flagged 04- bits
+                flagged 01- bits
+              --
+            if.
+              b.eq 24-
+              yes
+                index.plus 1
+                opened
+                bits
+                end
+                  flagged 04- bits
+                  flagged 01- bits
+                --
+              if.
+                b.eq 28-
+                group
+                  index.plus 1
+                  opened
+                  bits
+                if.
+                  b.eq 5B-
+                  bracket
+                    index.plus 1
+                    opened
+                    bits
+                  if.
+                    b.eq 7B-
+                    yes index opened bits empty --
+                    r.ok.if
+                      if.
+                        r.at.as-bytes.eq index.as-bytes
+                        escaped (index.plus 1) opened bits
+                        yes
+                          r.at
+                          opened
+                          bits
+                          plain bits r.text
+                          r.text
+                      r
+      byte index > b
+      scanned > r
+        index
+        bits
+        --
+    [^ index mode acc] >> scanned
+      if. > @
+        or.
+          b.eq --
+          special b mode
+        read index acc
+        if.
+          b.eq 5C-
+          if.
+            e.eq --
+            no
+              index.plus 1
+              "Unescaped trailing backslash"
+            if.
+              e.eq 51-
+              quoted
+                index.plus 2
+                mode
+                acc
+              if.
+                e.eq 78-
+                h.ok.if
+                  ^.scanned
+                    h.at
+                    mode
+                    acc.concat h.text
+                  h
+                if.
+                  g.eq --
+                  read index acc
+                  ^.scanned
+                    index.plus 2
+                    mode
+                    acc.concat g
+          ^.scanned
+            index.plus w
+            mode
+            acc.concat
+              ^.raw.slice index w
+      byte index > b
+      byte > e
+        index.plus 1
+      glyph e > g
+      hexed > h
+        index.plus 2
+      width b > w
+    [^ index mode acc] >> quoted
+      if. > @
+        b.eq --
+        read index acc
+        if.
+          and.
+            b.eq 5C-
+            eq.
+              byte
+                index.plus 1
+              45-
+          scanned
+            index.plus 2
+            mode
+            acc
+          ^.quoted
+            index.plus w
+            mode
+            acc.concat
+              ^.raw.slice index w
+      byte index > b
+      width b > w
+    if. > [^ index opened bits] >> bracket
+      eq.
+        byte index
+        5E-
+      members
+        index.plus 1
+        opened
+        bits
+        none
+        true
+        true
+      members
+        index
+        opened
+        bits
+        none
+        false
+        true
+    [^ index opened bits items negated first] >> members
+      if. > @
+        b.eq --
+        no
+          ^.size.plus -1
+          "Unclosed character class"
+        if.
+          and.
+            b.eq 5D-
+            first.not
+          yes
+            start.plus 1
+            opened
+            bits
+            member
+              flagged 02- bits
+              items
+              negated
+              flagged 10- bits
+            --
+          if.
+            b.eq 5B-
+            no
+              start
+              "Nested character classes are not supported"
+            if.
+              and.
+                b.eq 26-
+                eq.
+                  byte
+                    start.plus 1
+                  26-
+              no
+                start
+                "Character class intersections are not supported"
+              e.ok.if
+                ^.members
+                  e.at
+                  opened
+                  bits
+                  joined
+                  negated
+                  false
+                e
+      byte start > b
+      entry start bits > e
+      skip index bits > here!
+      e.preset.if > joined
+        cluster
+          e.letter
+          e.negated
+          items
+        range
+          beyond e.to
+          key e.from
+          items
+      number here > start
+    [^ index mode] >> entry
+      s.ok.if > @
+        s.preset.if
+          s
+          if.
+            d.eq 2D-
+            if.
+              or.
+                n.eq 5D-
+                n.eq 5B-
+              s
+              if.
+                n.eq --
+                no
+                  s.at.plus 1
+                  "Illegal character range"
+                u.ok.if
+                  if.
+                    u.preset.or
+                      gt.
+                        key s.from
+                        key u.from
+                    no
+                      u.at.plus -1
+                      "Illegal character range"
+                    span u.at s.from u.from
+                  u
+            s
+        s
+      byte s.at > d
+      byte > n
+        s.at.plus 1
+      single index mode > s
+      single > u
+        s.at.plus 1
+        mode
+    [^ index mode] >> single
+      if. > @
+        b.eq 5C-
+        classed
+          index.plus 1
+          mode
+        span
+          index.plus w
+          c
+          c
+      byte index > b
+      ^.raw.slice index w > c
+      width b > w
+    [^ index mode] >> classed
+      if. > @
+        e.eq --
+        no
+          index
+          "Unescaped trailing backslash"
+        if.
+          e.eq 78-
+          h.ok.if
+            span h.at h.text h.text
+            h
+          if.
+            e.eq 51-
+            no
+              index.plus -1
+              "Quoting inside a character class is not supported"
+            if.
+              or.
+                l.eq 64-
+                or.
+                  l.eq 73-
+                  l.eq 77-
+              named
+                index.plus 1
+                l
+                00-.eq
+                  e.and 20-
+              if.
+                g.eq --
+                refused index e
+                span
+                  index.plus 1
+                  g
+                  g
+      byte index > e
+      glyph e > g
+      hexed > h
+        index.plus 1
+      e.or 20- > l
+    [^ index opened bits] >> escaped
+      if. > @
+        or.
+          l.eq 64-
+          or.
+            l.eq 73-
+            l.eq 77-
+        yes
+          index.plus 1
+          opened
+          bits
+          member
+            false
+            cluster
+              l
+              00-.eq
+                e.and 20-
+              none
+            false
+            false
+          --
+        if.
+          e.eq 62-
+          yes
+            index.plus 1
+            opened
+            bits
+            border false
+            --
+          if.
+            e.eq 42-
+            yes
+              index.plus 1
+              opened
+              bits
+              border true
+              --
+            if.
+              e.eq 41-
+              yes
+                index.plus 1
+                opened
+                bits
+                begin false false
+                --
+              if.
+                e.eq 7A-
+                yes
+                  index.plus 1
+                  opened
+                  bits
+                  [^] >>
+                    if. > [^ s at caps k] > run
+                      s.size.gt at
+                      nothing
+                      k at caps
+                  --
+                if.
+                  e.eq 5A-
+                  yes
+                    index.plus 1
+                    opened
+                    bits
+                    end
+                      false
+                      flagged 01- bits
+                    --
+                  refused index e
+      byte index > e
+      e.or 20- > l
+    if. > [^ index e] >> refused
+      or.
+        e.eq 70-
+        e.eq 50-
+      no
+        index.plus -1
+        "Unicode property classes are not supported"
+      if.
+        e.eq 75-
+        no
+          index.plus -1
+          "Unicode escapes are not supported"
+        if.
+          e.eq 63-
+          no
+            index.plus -1
+            "Control escapes are not supported"
+          if.
+            e.eq 30-
+            no
+              index.plus -1
+              "Octal escapes are not supported"
+            if.
+              or.
+                e.eq 6B-
+                gt.
+                  digit e
+                  0
+              no
+                index.plus -1
+                "Back references are not supported"
+              if.
+                or.
+                  e.eq 47-
+                  or.
+                    e.eq 52-
+                    or.
+                      e.eq 68-
+                      or.
+                        e.eq 76-
+                        or.
+                          e.eq 58-
+                          e.eq 4E-
+                no
+                  index.plus -1
+                  string
+                    concat.
+                      "The escape sequence '\\".as-bytes.concat
+                        e
+                      "' is not supported".as-bytes
+                no
+                  index
+                  "Illegal/unsupported escape sequence"
+    [^ index opened bits] >> group
+      if. > @
+        b.eq 3F-
+        if.
+          or.
+            c.eq 3D-
+            c.eq 21-
+          no
+            index.plus -1
+            "Look-ahead groups are not supported"
+          if.
+            c.eq 3C-
+            if.
+              or.
+                d.eq 3D-
+                d.eq 21-
+              no
+                index.plus -1
+                "Look-behind groups are not supported"
+              no
+                index.plus -1
+                "Named groups are not supported"
+            if.
+              c.eq 3E-
+              no
+                index.plus -1
+                "Atomic groups are not supported"
+              if.
+                or.
+                  c.eq 24-
+                  c.eq 40-
+                no
+                  index.plus 1
+                  "Unknown group type"
+                modified
+                  index.plus 1
+                  opened
+                  bits
+        closed
+          index
+          opened.plus 1
+          bits
+          bits
+          opened.plus 1
+      byte index > b
+      byte > c
+        index.plus 1
+      byte > d
+        index.plus 2
+    [^ index opened bits] >> modified
+      m.ok.if > @
+        if.
+          c.eq 29-
+          yes
+            m.at.plus 1
+            opened
+            m.mode
+            empty
+            --
+          closed
+            m.at.plus 1
+            opened
+            m.mode
+            bits
+            0
+        m
+      byte m.at > c
+      modifiers > m
+        index
+        bits
+        true
+    [^ index bits on] >> modifiers
+      if. > @
+        or.
+          b.eq 29-
+          b.eq 3A-
+        switched index bits
+        if.
+          and.
+            b.eq 2D-
+            on
+          ^.modifiers
+            index.plus 1
+            bits
+            false
+          if.
+            or.
+              b.eq 55-
+              b.eq 63-
+            no
+              index
+              "The inline modifiers 'U' and 'c' are not supported"
+            if.
+              bit.eq --
+              no
+                index
+                "Unknown inline modifier"
+              ^.modifiers
+                index.plus 1
+                toggled
+                on
+      byte index > b
+      flag b > bit
+      on.if > toggled
+        bits.or bit
+        bits.and bit.not
+    [^ from opened bits outer index] >> closed
+      r.ok.if > @
+        if.
+          eq.
+            byte r.at
+            29-
+          yes
+            r.at.plus 1
+            r.groups
+            outer
+            inner
+            --
+          no
+            ^.size
+            "Unclosed group"
+        r
+      if. > inner
+        1.gt index
+        r.node
+        captured r.node index
+      alternatives > r
+        from
+        opened
+        bits
+    [^ index] >> braces
+      if. > @
+        0.gt n.value
+        no
+          index
+          "Illegal repetition"
+        if.
+          c.eq 7D-
+          bounds
+            n.at.plus 1
+            n.value
+            n.value
+          if.
+            c.eq 2C-
+            if.
+              d.eq 7D-
+              bounds
+                n.at.plus 2
+                n.value
+                number 7F-F0-00-00-00-00-00-00
+              if.
+                0.gt m.value
+                no
+                  n.at.plus 1
+                  "Unclosed counted closure"
+                if.
+                  eq. (byte m.at) 7D-
+                  if.
+                    n.value.gt m.value
+                    no m.at "Illegal repetition range"
+                    bounds (m.at.plus 1) n.value m.value
+                  no
+                    m.at
+                    "Unclosed counted closure"
+            no
+              n.at
+              "Unclosed counted closure"
+      byte n.at > c
+      byte > d
+        n.at.plus 1
+      counted > m
+        -1
+        n.at.plus 1
+      counted -1 index > n
+  [^ child least most] >> possessive
+    [^ s at caps k] > run
+      [^ n at caps] >> drain
+        if. > @
+          ^.^.most.gt n
+          hit.exists.if
+            if.
+              hit.end.gt at
+              ^.drain
+                number bump
+                number here
+                hit.marks
+              ^.k at hit.marks
+            if.
+              ^.^.least.gt n
+              nothing
+              ^.k at caps
+          ^.k at caps
+        n.plus 1 > bump!
+        hit.end > here!
+        ^.^.child.run > hit
+          ^.s
+          at
+          caps
+          found
+      | > @
+        0
+        at
+        caps
+  [c] >> raised
+    if. > @
+      3.gt c.size
+      if.
+        lead.eq C3-
+        if.
+          and.
+            eq.
+              b.and E0-
+              A0-
+            not.
+              b.eq B7-
+          C3-.concat
+            b.and DF-
+          if.
+            b.eq BF-
+            C5-B8
+            c
+        if.
+          lead.eq CE-
+          if.
+            and.
+              eq.
+                b.and F0-
+                B0-
+              not.
+                b.eq B0-
+            CE-.concat
+              b.and DF-
+            c
+          if.
+            lead.eq CF-
+            if.
+              b.eq 82-
+              CE-A3
+              if.
+                or.
+                  eq. (b.and F8-) 80-
+                  eq. (b.and FE-) 88-
+                CE-.concat
+                  or. (b.and 0F-) A0-
+                c
+            if.
+              lead.eq D0-
+              if.
+                eq.
+                  b.and F0-
+                  B0-
+                D0-.concat
+                  b.and DF-
+                c
+              if.
+                lead.eq D1-
+                if.
+                  eq. (b.and F0-) 80-
+                  D0-.concat
+                    b.or 20-
+                  c
+                if.
+                  c.eq C2-B5
+                  CE-9C
+                  if.
+                    c.eq C4-B1
+                    49-
+                    if. (c.eq C5-BF) 53- c
+      c
+    c.slice > b
+      1
+      1
+    c.slice > lead
+      0
+      1
+  [high low rest] >> range
+    if. > [^ code] > has
+      ^.low.gt code
+      ^.rest.has code
+      if.
+        ^.high.gt code
+        true
+        ^.rest.has code
+  [left right] >> sequence
+    [^ s at caps k] > run
+      ^.left.run > @
+        s
+        at
+        caps
+        ^.^.right.run > [^ at caps] >>
+          ^.s
+          at
+          caps
+          ^.k
+  and. > [c] >> small
+    eq.
+      c.and E0-
+      60-
+    not.
+      or.
+        c.eq 60-
+        or.
+          c.eq 7B-
+          eq.
+            c.and FC-
+            7C-
+  [^ s at unix] >> starts
+    if. > @
+      s.size.gt at
+      if.
+        0A-.eq c
+        unix.if
+          true
+          if.
+            1.gt at
+            true
+            not.
+              0D-.eq
+                s.text.slice
+                  at.plus -1
+                  1
+        breaks c unix
+      true
+    s.char at > c!
+  [^ text] >> subject
+    ^.text.slice > [^ at] > char
+      at
+      width
+        ^.text.slice at 1
+    [^ from to] > chars
+      [^ at count] >> tallied
+        if. > @
+          ^.to.gt at
+          ^.tallied
+            number stride
+            number bump
+          count
+        count.plus 1 > bump!
+        at.plus > stride!
+          width
+            ^.^.text.slice at 1
+      | from 0 > @
+    [^ n] > offset
+      [^ at count] >> advanced
+        if. > @
+          ^.n.gt count
+          if.
+            ^.^.size.gt at
+            ^.advanced
+              number stride
+              number bump
+            T
+              "the 'start' attribute is beyond the text"
+          at
+        count.plus 1 > bump!
+        at.plus > stride!
+          width
+            ^.^.text.slice at 1
+      | 0 0 > @
+    text.size > size
+  if. > [^ count value] >> tens
+    10.gt value
+    count
+    ^.tens
+      count.plus 1
+      value.minus 10
+  [s at unix] >> terminal
+    if. > @
+      1.gt n
+      true
+      unix.if
+        and.
+          2.gt n
+          0A-.eq r
+        if.
+          4.gt n
+          if.
+            r.eq 0A-
+            if.
+              1.gt at
+              true
+              not.
+                0D-.eq
+                  s.text.slice (at.plus -1) 1
+            or.
+              r.eq 0D-
+              or.
+                r.eq 0D-0A
+                or.
+                  r.eq C2-85
+                  or.
+                    r.eq E2-80-A8
+                    r.eq E2-80-A9
+          false
+    s.size.plus > n!
+      at.times -1
+    s.text.slice > r!
+      at
+      number n
+  [] >> unmarked
+    false > some
+  if. > [^ c unicode] >> upper
+    2.gt c.size
+    if.
+      small c
+      c.and DF-
+      c
+    unicode.if
+      raised c
+      c
+  if. > [b] >> width
+    00-.eq
+      b.and 80-
+    1
+    if.
+      C0-.eq
+        b.and E0-
+      2
+      if.
+        E0-.eq
+          b.and F0-
+        3
+        4
+  or. > [^ c] >> word
+    c.eq 5F-
+    alnum c
+  [^ offset reason] >> worded
+    string > @
+      if.
+        0.gt offset
+        prefix
+        concat.
+          concat.
+            prefix.concat
+              " at offset ".as-bytes
+            decimal -- offset
+          " of the pattern".as-bytes
+    "regex syntax is invalid: ".as-bytes.concat > prefix
+      reason.as-bytes
 
   eq. ++> can-advance-after-a-zero-width-match
     1
@@ -206,6 +2148,37 @@
       2
     ""
 
+  checked. ++> can-apply-the-fallback-to-the-construct-and-its-offset
+    regex.pattern
+      "a**"
+      ""
+    and. > [reason offset]
+      reason.eq
+        "Dangling meta character '*'"
+      offset.eq 2
+
+  matches. ++> can-bind-a-quantifier-to-the-last-character-of-a-run
+    "/xab*/".regex.compiled
+    "xa"
+
+  matches. ++> can-bind-a-quantifier-to-the-last-quoted-character
+    "/x\\Qa.\\E+/".regex.compiled
+    "xa.."
+
+  matches. ++> can-carry-an-inline-flag-across-an-alternative
+    "/(?i)a|b/".regex.compiled
+    "B"
+
+  eq. ++> can-count-a-two-digit-offset
+    "/abcdefghij**/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 11 of the pattern"
+
+  eq. ++> can-count-groups-without-a-non-capturing-one
+    2
+    count.
+      next.
+        "/(?:a)(b)/".regex.match "ab"
+
   ++> can-count-supplementary-characters-as-one-position
     and. > @
       and.
@@ -217,6 +2190,10 @@
     next. > first
       "/./".regex.compiled.match "😀x"
     first.next > second
+
+  eq. ++> can-count-the-offset-of-an-error-in-characters
+    "/ж**/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
 
   ++> can-expose-group-exists-for-a-non-participating-group
     not. > @
@@ -253,9 +2230,69 @@
       "/([a-z]+)([1-9]{1})/".regex.compiled.match "!hello1!world2"
     first.next > second
 
+  eq. ++> can-find-a-non-word-border
+    1
+    from.
+      next.
+        "/\\B/".regex.match
+          "ab cd"
+
+  eq. ++> can-find-a-word-border
+    3
+    from.
+      next.
+        "/\\bc/".regex.match
+          "ab cd"
+
+  exists. ++> can-find-the-end-anchor-before-a-final-line-terminator
+    next.
+      "/a$/".regex.match "a\n"
+
+  exists. ++> can-find-the-input-end-anchor-before-a-final-line-terminator
+    next.
+      "/a\\Z/".regex.match "a\n"
+
+  exists. ++> can-find-the-multiline-begin-anchor-after-a-carriage-return
+    next.
+      "/^b/m".regex.match "a\rb"
+
+  exists. ++> can-find-the-multiline-end-anchor-inside-the-text
+    next.
+      "/a$/m".regex.match "a\nb"
+
+  matches. ++> can-fold-a-class-onto-the-dotted-capital-i-under-unicode-folding
+    "/[a-z]/iu".regex.compiled
+    "İ"
+
+  matches. ++> can-fold-cyrillic-letters-under-unicode-folding
+    "/ж/iu".regex.compiled
+    "Ж"
+
+  matches. ++> can-fold-greek-letters-under-unicode-folding
+    "/σ/iu".regex.compiled
+    "Σ"
+
+  matches. ++> can-fold-latin-letters-under-unicode-folding
+    "/é/iu".regex.compiled
+    "É"
+
+  matches. ++> can-fold-the-final-sigma-under-unicode-folding
+    "/ς/iu".regex.compiled
+    "Σ"
+
+  matches. ++> can-hand-the-checked-pattern-back
+    checked.
+      regex.pattern "[a-z]+" ""
+      I
+    "abc"
+
   matches. ++> can-ignore-a-trailing-comment-after-an-inline-flag
     "/a(?x) #tail/".regex.compiled
     "a"
+
+  matches. ++> can-ignore-blanks-inside-a-class-with-the-comments-flag
+    "/[a b]+/x".regex.compiled
+    "ab"
 
   matches. ++> can-ignore-comments-after-an-inline-comments-flag
     "/(?x)([0-9]) #ignore this comment/".regex.compiled
@@ -271,6 +2308,10 @@
         "/(a)(b)?/".regex.match "a"
     3
 
+  matches. ++> can-keep-an-inline-flag-to-the-end-of-its-group
+    "/(a(?i)b)c/".regex.compiled
+    "aBc"
+
   eq. ++> can-keep-the-position-of-a-missing-block
     position.
       next.
@@ -280,6 +2321,46 @@
   matches. ++> can-match-a-body-with-slashes-inside
     "/a/b|a/bc/".regex.compiled
     "a/bc"
+
+  "/^a{2,3}$/".regex.compiled.matches "aaa" ++> can-match-a-bounded-repetition
+
+  matches. ++> can-match-a-class-ending-with-a-hyphen
+    "/[a-]+/".regex.compiled
+    "-a-"
+
+  matches. ++> can-match-a-class-of-hexadecimal-escapes
+    "/[\\x00-\\x1F]/".regex.compiled
+    "\t"
+
+  matches. ++> can-match-a-class-starting-with-a-closing-bracket
+    "/[]a]+/".regex.compiled
+    "a]a"
+
+  matches. ++> can-match-a-class-with-a-preset-inside
+    "/[\\d_]+/".regex.compiled
+    "1_2"
+
+  matches. ++> can-match-a-class-with-the-case-insensitive-option
+    "/[a-z]+/i".regex.compiled
+    "AbC"
+
+  "/^a{3}$/".regex.compiled.matches "aaa" ++> can-match-a-counted-repetition
+
+  "/\\xE9/".regex.compiled.matches "é" ++> can-match-a-hexadecimal-escape
+
+  eq. ++> can-match-a-lazy-quantifier-minimally
+    "a"
+    text.
+      next.
+        "/a+?/".regex.match "aaa"
+
+  matches. ++> can-match-a-negated-class-against-a-multibyte-character
+    "/[^a-z]/".regex.compiled
+    "ж"
+
+  matches. ++> can-match-a-quoted-block-literally
+    "/x\\Q.*\\Ey/".regex.compiled
+    "x.*y"
 
   matches. ++> can-match-a-quoted-body-with-a-missing-end-quote
     "/\\Qa|ab/".regex.compiled
@@ -304,6 +2385,18 @@
     "AB"
 
   "/[0-9]/\\d+/".regex.compiled.matches "2/75" ++> can-match-an-entire-pattern
+
+  "/^a{2,}$/".regex.compiled.matches "aaaa" ++> can-match-an-open-ended-repetition
+
+  matches. ++> can-match-control-escapes-by-their-letters
+    "/^\\t\\n\\r\\a\\e\\f$/".regex.compiled
+    "\t\n\r\u0007\u001b\f"
+
+  matches. ++> can-match-escaped-metacharacters
+    "/\\(\\)\\[\\]\\{\\}\\*\\+\\?\\.\\^\\$\\|\\\\\\//".regex.compiled
+    "()[]{}*+?.^$|\\/"
+
+  "/\\W\\S\\D/".regex.compiled.matches "-x?" ++> can-match-negated-preset-classes
 
   exists. ++> can-match-with-a-pattern-built-from-a-body-and-flags
     next.
@@ -339,6 +2432,57 @@
     "/(.+)/d".regex.compiled
     "A\\r\\nB\\rC\\nD"
 
+  matches. ++> can-match-word-space-and-digit-classes
+    "/\\w+\\s\\d+/".regex.compiled
+    "abc_1 42"
+
+  eq. ++> can-name-a-leading-unmatched-closing-parenthesis-without-an-offset
+    "/)/".regex.compile I
+    "regex syntax is invalid: Unmatched closing ')'"
+
+  eq. ++> can-name-a-trailing-backslash
+    "/a\\/".regex.compile I
+    "regex syntax is invalid: Unescaped trailing backslash at offset 2 of the pattern"
+
+  eq. ++> can-name-an-illegal-character-range
+    "/[z-a]/".regex.compile I
+    "regex syntax is invalid: Illegal character range at offset 3 of the pattern"
+
+  eq. ++> can-name-an-illegal-hexadecimal-escape
+    "/\\xZ1/".regex.compile I
+    "regex syntax is invalid: Illegal hexadecimal escape sequence at offset 2 of the pattern"
+
+  eq. ++> can-name-an-illegal-repetition
+    "/a{x}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition at offset 2 of the pattern"
+
+  eq. ++> can-name-an-illegal-repetition-range
+    "/a{3,2}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 5 of the pattern"
+
+  ++> can-name-an-unclosed-character-class
+    eq. ("/[a-z/".regex.compile I) "regex syntax is invalid: Unclosed character class at offset 3 of the pattern" > @
+
+  eq. ++> can-name-an-unclosed-counted-closure
+    "/a{2/".regex.compile I
+    "regex syntax is invalid: Unclosed counted closure at offset 3 of the pattern"
+
+  eq. ++> can-name-an-unknown-group-type
+    "/(?$/".regex.compile I
+    "regex syntax is invalid: Unknown group type at offset 2 of the pattern"
+
+  eq. ++> can-name-an-unknown-inline-modifier
+    "/(?z)/".regex.compile I
+    "regex syntax is invalid: Unknown inline modifier at offset 2 of the pattern"
+
+  eq. ++> can-name-an-unmatched-closing-parenthesis
+    "/a)/".regex.compile I
+    "regex syntax is invalid: Unmatched closing ')' at offset 0 of the pattern"
+
+  eq. ++> can-name-an-unsupported-escape-letter
+    "/\\g/".regex.compile I
+    "regex syntax is invalid: Illegal/unsupported escape sequence at offset 1 of the pattern"
+
   eq. ++> can-name-the-construct-and-the-offset-of-an-invalid-pattern
     "/a**/".regex.compile I
     "regex syntax is invalid: Dangling meta character '*' at offset 2 of the pattern"
@@ -365,13 +2509,77 @@
     "/[a-z/".regex.compile
       "recovered" > [message]
 
+  eq. ++> can-refuse-a-back-reference
+    "/(a)\\1/".regex.compile I
+    "regex syntax is invalid: Back references are not supported at offset 3 of the pattern"
+
+  eq. ++> can-refuse-a-braced-hexadecimal-escape
+    "/\\x{41}/".regex.compile I
+    "regex syntax is invalid: Braced hexadecimal escapes are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-a-character-class-intersection
+    "/[a&&b]/".regex.compile I
+    "regex syntax is invalid: Character class intersections are not supported at offset 2 of the pattern"
+
+  eq. ++> can-refuse-a-control-escape
+    "/\\cA/".regex.compile I
+    "regex syntax is invalid: Control escapes are not supported at offset 0 of the pattern"
+
   eq. ++> can-refuse-a-flag-letter-it-does-not-read
     "/b/z".regex.compile I
     "regex flags 'z' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
 
+  eq. ++> can-refuse-a-look-ahead-group
+    "/a(?=b)/".regex.compile I
+    "regex syntax is invalid: Look-ahead groups are not supported at offset 1 of the pattern"
+
+  eq. ++> can-refuse-a-look-behind-group
+    "/(?<=a)b/".regex.compile I
+    "regex syntax is invalid: Look-behind groups are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-a-named-group
+    "/(?<n>a)/".regex.compile I
+    "regex syntax is invalid: Named groups are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-a-nested-character-class
+    "/[a[b]]/".regex.compile I
+    "regex syntax is invalid: Nested character classes are not supported at offset 2 of the pattern"
+
+  eq. ++> can-refuse-a-unicode-escape
+    "/\\u0041/".regex.compile I
+    "regex syntax is invalid: Unicode escapes are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-a-unicode-property-class
+    "/\\p{L}/".regex.compile I
+    "regex syntax is invalid: Unicode property classes are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-an-atomic-group
+    "/(?>a)/".regex.compile I
+    "regex syntax is invalid: Atomic groups are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-an-escape-letter-it-does-not-read
+    "/\\R/".regex.compile I
+    "regex syntax is invalid: The escape sequence '\\R' is not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-an-octal-escape
+    "/\\0101/".regex.compile I
+    "regex syntax is invalid: Octal escapes are not supported at offset 0 of the pattern"
+
   eq. ++> can-refuse-flags-that-carry-regex-syntax
     "/b/i)|(?:a".regex.compile I
     "regex flags 'i)|(?:a' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
+
+  eq. ++> can-refuse-quoting-inside-a-character-class
+    "/[\\Qa\\E]/".regex.compile I
+    "regex syntax is invalid: Quoting inside a character class is not supported at offset 1 of the pattern"
+
+  eq. ++> can-refuse-the-unicode-character-class-modifier
+    "/(?U)a/".regex.compile I
+    "regex syntax is invalid: The inline modifiers 'U' and 'c' are not supported at offset 2 of the pattern"
+
+  matches. ++> can-repeat-nothing-before-a-leading-brace
+    "/{2}a/".regex.compiled
+    "a"
 
   ++> can-report-the-border-indexes-of-a-match
     and. > @
@@ -402,12 +2610,63 @@
       next.
         "/[a-z]+/".regex.match "!hello!world!"
 
+  "/(?i:a)b/".regex.compiled.matches "Ab" ++> can-scope-an-inline-flag-group
+
+  eq. ++> can-search-from-a-position
+    3
+    at.
+      searched.
+        "/a/".regex.match "xaxa"
+        2
+      0
+
+  eq. ++> can-search-from-the-text-length
+    3
+    at.
+      searched.
+        "/$/".regex.match "abc"
+        3
+      1
+
   not. ++> can-stop-at-a-terminal-zero-width-match
     exists. ("/$/".regex.match "x").next.next
+
+  not. ++> can-tell-a-bounded-repetition-stops-at-its-maximum
+    "/^a{2,3}$/".regex.compiled.matches "aaaa"
+
+  not. ++> can-tell-a-counted-repetition-needs-every-copy
+    "/^a{3}$/".regex.compiled.matches "aa"
+
+  not. ++> can-tell-a-group-repeated-zero-times-does-not-participate
+    group-exists.
+      next.
+        "/(a){0}b/".regex.match "b"
+      1
+
+  not. ++> can-tell-a-possessive-quantifier-gives-nothing-back
+    "/a*+a/".regex.compiled.matches "aaa"
+
+  not. ++> can-tell-a-quoted-block-is-not-a-pattern
+    "/x\\Q.*\\Ey/".regex.compiled.matches "xaay"
+
+  not. ++> can-tell-an-inline-flag-ends-with-its-group
+    "/(a(?i)b)c/".regex.compiled.matches "aBC"
+
+  not. ++> can-tell-an-inline-flag-group-ends-at-its-parenthesis
+    "/(?i:a)b/".regex.compiled.matches "AB"
 
   eq. ++> can-tell-an-unclosed-group-from-a-dangling-repetition
     "/(/".regex.compile I
     "regex syntax is invalid: Unclosed group at offset 1 of the pattern"
+
+  not. ++> can-tell-ascii-folding-leaves-cyrillic-letters-alone
+    "/ж/i".regex.compiled.matches "Ж"
+
+  not. ++> can-tell-ascii-folding-leaves-latin-letters-alone
+    "/é/i".regex.compiled.matches "É"
+
+  not. ++> can-tell-ascii-folding-leaves-the-dotted-capital-i-alone
+    "/[a-z]/i".regex.compiled.matches "İ"
 
   not. ++> can-tell-it-does-not-match-a-text-against-a-wrong-pattern
     "/[a-z]+/".regex.compiled.matches "123"
@@ -417,6 +2676,40 @@
 
   not. ++> can-tell-it-does-not-match-with-unmatched-leading-characters
     "/[a-z]+/".regex.compiled.matches "1abc"
+
+  not. ++> can-tell-the-end-anchor-needs-the-end-of-the-text
+    exists.
+      next.
+        "/a$/".regex.match "a\nb"
+
+  not. ++> can-tell-the-input-begin-anchor-needs-the-start-of-the-text
+    exists.
+      next.
+        "/\\Ab/m".regex.match "a\nb"
+
+  not. ++> can-tell-the-input-end-anchor-needs-the-end-of-the-text
+    exists.
+      next.
+        "/a\\z/".regex.match "a\n"
+
+  not. ++> can-tell-the-unix-lines-flag-ignores-a-carriage-return
+    exists.
+      next.
+        "/^b/dm".regex.match "a\rb"
+
+  ++> can-walk-a-hundred-blocks-without-parsing-again
+    eq. > @
+      walked
+        next.
+          "/[0-9]/".regex.match
+            "0123456789".repeated 10
+        0
+      100
+    block.exists.if > [^ block count] > walked
+      ^.walked
+        block.next
+        count.plus 1
+      count
 
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 
@@ -429,6 +2722,18 @@
       match.
         regex.pattern "[a-z" ""
         "hello"
+
+  searched. --> stops-on-searching-beyond-the-text-length
+    "/a/".regex.match "abc"
+    4
+
+  searched. --> stops-on-searching-from-a-fractional-position
+    "/a/".regex.match "abc"
+    1.5
+
+  searched. --> stops-on-searching-from-a-negative-position
+    "/a/".regex.match "abc"
+    -1
 
   group-exists. --> stops-on-taking-a-group-exists-of-an-unmatched-block
     next.
@@ -445,6 +2750,9 @@
     next.
       "/[a-z]+/".regex.match "123"
     1
+
+  compiled. --> stops-on-taking-the-compiled-form-of-an-invalid-pattern
+    "/[a-z/".regex
 
   to. --> stops-on-taking-the-end-position-of-an-unmatched-block
     next.

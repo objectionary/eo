@@ -458,11 +458,11 @@ final class PhDefaultTest {
     }
 
     @Test
-    void keepsSubPackageInForma() {
+    void keepsOwnerInForma() {
         MatcherAssert.assertThat(
-            "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOstring$EOregex$EOpattern$EOchecked().forma(),
-            Matchers.equalTo("Φ.string.regex.pattern.checked")
+            "forma must keep the EO owner without its EO marker, but it didnt",
+            new EObytes$EOsize().forma(),
+            Matchers.equalTo("Φ.bytes.size")
         );
     }
 

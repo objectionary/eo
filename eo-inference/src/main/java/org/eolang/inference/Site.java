@@ -19,7 +19,9 @@ import com.github.lombrozo.xnav.Xnav;
  *
  * <p>The object the name is taken from is the child that is not an argument:
  * {@code x.plus 5} takes {@code plus} from {@code x}, never from the
- * {@code 5}.</p>
+ * {@code 5}. It goes unwritten when the name belongs to the object the line
+ * itself is written in, the way {@code if > not} reads the {@code if} of the
+ * {@code bool} around it, and then there is no such child at all.</p>
  *
  * @since 0.71.0
  */
@@ -51,7 +53,8 @@ final class Site {
     /**
      * The object this dispatch takes its name from.
      *
-     * @return The locator of it
+     * @return The locator of it, empty when the name is read off the object
+     *  this dispatch is written in
      */
     String bearer() {
         return this.dispatch
@@ -64,9 +67,11 @@ final class Site {
     /**
      * The name this dispatch takes.
      *
-     * @return The name, without the dot that says it is a dispatch
+     * @return The name, without what stands before the dot that says a name
+     *  is being taken
      */
     String name() {
-        return new Noted(this.dispatch).says("base").substring(1);
+        final String base = new Noted(this.dispatch).says("base");
+        return base.substring(base.indexOf('.') + 1);
     }
 }
