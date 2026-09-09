@@ -181,7 +181,7 @@ final class LnOnlyPhiTest {
             "an only-phi may be a `+>` test attribute — the suffix names the formation",
             LnOnlyPhiTest.render(emit),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@name='+name']"
+                "/object/o[@name='p🌵name']"
             )
         );
     }

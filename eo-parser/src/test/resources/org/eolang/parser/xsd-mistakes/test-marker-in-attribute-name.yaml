@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8566: a test attribute is emitted as "p🌵name" or "n🌵name", so nothing
+# names an attribute with the "+" or the "-" the marker used to be, and
+# "attribute-name" no longer carries the character class that let one
+# through - a name beginning with either is not a φ-calculus name.
+errors: 4
+document: |
+  <object author="eo-parser">
+    <o name="real">
+      <o name="+can-tell-nan-from-a-number"/>
+      <o name="-stops-on-a-missing-argument"/>
+    </o>
+  </object>

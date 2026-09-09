@@ -24,9 +24,9 @@ eo:
 xmir:
   number.eo:
     - "/object/o[@name='number']/o[@name='lt']"
-    - "/object/o[@name='number']/o[@name='+can-tell-two-is-above-one']"
-    - "/object/o[@name='number']/o[@name='-stops-on-one-below-two']"
-    - "/object/o[@name='number']/o[@name='lt'][not(o[@name='+can-tell-two-is-above-one'])]"
+    - "/object/o[@name='number']/o[@name='p🌵can-tell-two-is-above-one']"
+    - "/object/o[@name='number']/o[@name='n🌵stops-on-one-below-two']"
+    - "/object/o[@name='number']/o[@name='lt'][not(o[@name='p🌵can-tell-two-is-above-one'])]"
 tests:
   number.eo:
     - 'class TestEOnumber'
