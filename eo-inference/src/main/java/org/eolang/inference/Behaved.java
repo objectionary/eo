@@ -26,13 +26,14 @@ import java.util.Map;
  *
  * <p>So a type is reduced to what stands behind its {@code @} when {@code @}
  * is its only public attribute. Public means readable from outside the object,
- * which is why the exclusion is not a matter of taste: every {@code 🌵} name,
- * an auto-name as much as a test attribute under its {@code p🌵} or
- * {@code n🌵} marker, is kept out of the {@code NAME} token by R-9.2.2 of the
- * parser spec, and no source file can write one down. One more public
- * attribute, though, is one more thing a reader loses by being told
- * something else, so an {@code english} that hands back its receiver and
- * binds {@code lower} and {@code upper} besides keeps its own name.</p>
+ * which is why the exclusions are not a matter of taste: a {@code 🌵}
+ * name is kept out of the {@code NAME} token by R-9.2.2 of the parser
+ * spec and no source file can write one down, which covers an auto-name
+ * and a test attribute alike, the latter under its {@code p🌵} or
+ * {@code n🌵} marker. One more public attribute, though, is one more thing
+ * a reader loses by being told something else, so an {@code english} that
+ * hands back its receiver and binds {@code lower} and {@code upper} besides
+ * keeps its own name.</p>
  *
  * <p>A void is ignored as well, and that clause has an expiry on it. A void is
  * public today, so the rule as it is meant to read — nothing public but

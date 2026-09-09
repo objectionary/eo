@@ -148,10 +148,10 @@
   </xsl:function>
   <!--
   The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
-  an alphabetical run by `(@local, @name)[1]` under its marker, with a
-  non-sortable, void, `φ`, truthy test or throwing test binding in its
-  own bucket. Hosting by this key, not by document order, makes a
-  reprint settle instead of moving the binding again.
+  an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
+  or test binding in its own bucket — truthy and throwing tests in two of
+  them, keyed by the name under the marker. Hosting by this key, not by
+  document order, makes a reprint settle instead of moving the binding again.
   -->
   <xsl:function name="eo:host-key" as="xs:string">
     <xsl:param name="ref" as="element()"/>
