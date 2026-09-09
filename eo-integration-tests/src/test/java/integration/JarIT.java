@@ -32,19 +32,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *  meta, so the sandbox skips transpiling it and no EOprintf lands on the
  *  classpath, while eo-runtime ships Java atoms only. Master already dropped
  *  that meta, so drop this annotation once the remote objectionary catches up.
- * @todo #6658:30min Re-enable the three disabled tests after next release.
- *  The sandbox pulls the released .eo sources of the runtime while linking
- *  against the runtime built here, and the released string.regex is still a
- *  package member, so it transpiles to an EO_string package whose atoms name
- *  classes this build no longer carries. Drop these annotations once the
- *  remote objectionary serves a runtime whose string package is merged.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
 final class JarIT {
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramFromJar(final @Mktmp Path temp) throws IOException {
@@ -69,7 +62,6 @@ final class JarIT {
     }
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithPackageFromJar(final @Mktmp Path temp) throws IOException {
@@ -123,7 +115,6 @@ final class JarIT {
     }
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void printsErrorToStderr(final @Mktmp Path temp) throws IOException {
@@ -222,7 +213,7 @@ final class JarIT {
         new EoMavenPlugin(farea)
             .appended()
             .execution("compile")
-            .goals("register", "compile", "transpile")
+            .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("ignoreRuntime", "true")
             .set("failOnWarning", "false")
