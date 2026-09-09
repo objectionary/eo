@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The receiver of the second call is the value of the first one, and the
+# tables of eo:inference witness a string for that value, since `holder`
+# is a formation whose φ is the very string it was given. A call comes
+# back into EO wrapped into the carrier of its forma, so the receiver
+# would be a string of those bytes and the object that answered the
+# first call would be gone, together with `tail` and every other method
+# of it. The reduction refuses the call and the formation stays as
+# written.
+input: |
+  [] > foo
+    [x] > calc
+      (x.holder "a").tail > @
+    calc "z" > @
+prelude:
+  string.eo: |
+    [as-bytes] > string
+      as-bytes > @
+      [^ uri] > holder
+        uri > @
+        [^] > tail
+          ^.uri > @
+unit: calc
+voids:
+  x: string
+lowered: |
+  [] > foo
+    calc "z" > @
+    (x.holder "a").tail > [x] > calc
+stuck: "is the value of a call"

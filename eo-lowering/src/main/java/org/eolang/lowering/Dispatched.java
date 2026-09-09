@@ -44,6 +44,17 @@ import java.util.regex.Pattern;
  * complement, {@code as-number} of the same eight bytes reads a
  * double.</p>
  *
+ * <p>The receiver of a call is refused when it is itself the value of a
+ * call the tables witness as a datum. Such a value comes back wrapped
+ * into the carrier of its forma — a string of the very bytes it
+ * dataized to — and the object that answered it is gone, together with
+ * every method of that object: {@code path.posix} answers a formation
+ * whose {@code φ} is a string, so the tables witness a string for it,
+ * and {@code basename} of that string is nowhere to be found. Only a
+ * void, which the atom holds as the object it was given, and a value
+ * the tables witness as nothing at all, which the call leaves as the
+ * object it is, may receive a call.</p>
+ *
  * @since 0.76.0
  */
 public final class Dispatched {
@@ -60,6 +71,13 @@ public final class Dispatched {
      */
     private static final Collection<String> LAZY = new HashSet<>(
         Arrays.asList("if", "and", "or")
+    );
+
+    /**
+     * The formas a call comes back as a datum in, losing the object.
+     */
+    private static final Collection<String> DATA = new HashSet<>(
+        Arrays.asList("number", "string", "bool", "bytes")
     );
 
     /**
@@ -132,6 +150,7 @@ public final class Dispatched {
         );
         Optional<Term> out = Optional.empty();
         if (found.isPresent()) {
+            this.reachable(receiver, method);
             final List<Binding> args = found.get();
             final Shape exact = new Shape(method, receiver, args);
             final List<String> keys = new ArrayList<>(args.size() + 1);
@@ -163,10 +182,30 @@ public final class Dispatched {
             }
             final String label = this.minted.next();
             this.minted.bind(label, forma);
+            this.minted.called(label);
             steps.add(new Dispatch(label, method, keys, forma));
             out = Optional.of(tree.swapped(exact, new Symbol(label, forma)));
         }
         return out;
+    }
+
+    private void reachable(final String receiver, final String method) {
+        if (this.minted.calling(receiver)) {
+            final String carrier = this.minted.carrier(receiver);
+            if (Dispatched.DATA.contains(carrier)) {
+                throw new IllegalStateException(
+                    String.format(
+                        String.join(
+                            " ",
+                            "The receiver of '%s' is the value of a call, which comes",
+                            "back into EO as a %s and not as the object that answered",
+                            "it, so no method of that object can be found on it"
+                        ),
+                        method, carrier
+                    )
+                );
+            }
+        }
     }
 
     private static String forma(final Map<String, String> bindings) {

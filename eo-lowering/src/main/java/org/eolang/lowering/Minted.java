@@ -7,6 +7,7 @@ package org.eolang.lowering;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,10 @@ import java.util.Map;
  * voids: those of the formation first, and those of every body a repeat
  * resumes after them, declared with the formas of the values the first
  * repeat hands over, so it names the carrier of any key — a step by its
- * binding, a void by its position, a literal by its own prefix.</p>
+ * binding, a void by its position, a literal by its own prefix. It also
+ * remembers which of the steps are calls back into EO, since the value
+ * of such a step is the datum the call was dataized into and not the
+ * object that answered it.</p>
  *
  * @since 0.76.0
  */
@@ -52,6 +56,11 @@ public final class Minted {
     private final Map<String, Integer> offsets;
 
     /**
+     * The labels of the steps whose value is a call back into EO.
+     */
+    private final Collection<String> calls;
+
+    /**
      * Ctor.
      *
      * @param inputs The voids of the fragment: names to formas, in order
@@ -71,6 +80,7 @@ public final class Minted {
         this.formas = labels;
         this.bodies = parts;
         this.offsets = starts;
+        this.calls = new HashSet<>(0);
     }
 
     /**
@@ -92,6 +102,25 @@ public final class Minted {
      */
     public void bind(final String label, final String forma) {
         this.formas.put(label, forma);
+    }
+
+    /**
+     * Remember that the value of a label is a call back into EO.
+     *
+     * @param label The label
+     */
+    public void called(final String label) {
+        this.calls.add(label);
+    }
+
+    /**
+     * Whether the value a key names came out of a call back into EO.
+     *
+     * @param key The key, such as {@code sym:s2} or {@code sym:v0}
+     * @return True if the key names a step that is such a call
+     */
+    public boolean calling(final String key) {
+        return key.startsWith("sym:s") && this.calls.contains(key.substring(4));
     }
 
     /**
