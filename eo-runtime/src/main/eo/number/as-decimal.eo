@@ -1,23 +1,25 @@
 # Writes the number as signed decimal digits, truncating its fraction
 # towards zero, so that `42.7` becomes `42` and `-42.7` becomes `-42`.
 #
-# A magnitude below a billion is written a digit at a time, dividing by ten,
+# A magnitude below ten billion is written a digit at a time, dividing by ten,
 # which a double does without losing anything while the magnitude stays below
-# `2^53`. Above a billion the magnitude is split at the ninth digit first, and
-# each half is written the same way.
+# `2^53`. Above ten billion the magnitude is split at the tenth digit first,
+# and each half is written the same way.
 #
 # The split is exact for every magnitude a double holds below `2^63`. `top` is
-# below `2^33`, so it is an integer a double keeps whole; `top` times a billion
-# is a multiple of `2^9`, and a double spaces its values no wider than that
-# anywhere below `2^63`, so the product is exact too; and `rest` is what is
-# left, below a billion, which makes the subtraction exact because its answer
-# is representable. Dividing by a billion is not exact, so `guess` can land one
-# either side of the true quotient, and the sign of `slack` says which way to
-# step it back.
+# below `2^30`, so it is an integer a double keeps whole; ten billion is
+# `2^10` times `5^10`, so `top` times ten billion is a multiple of `2^10`, and
+# a double spaces its values no wider than that anywhere below `2^63`, so the
+# product is exact too; and `rest` is what is left, below ten billion, which
+# makes the subtraction exact because its answer is representable. Splitting at
+# the ninth digit instead would leave the product only a multiple of `2^9`,
+# half a step off the `2^10` grid the topmost binade sits on. Dividing by ten
+# billion is not exact, so `guess` can land one either side of the true
+# quotient, and the sign of `slack` says which way to step it back.
 #
-# `rest` is written with a leading billion and the leading digit dropped, since
-# the nine digits it stands for are nine digits whether or not they start with
-# a zero.
+# `rest` is written with a leading ten billion and the leading digit dropped,
+# since the ten digits it stands for are ten digits whether or not they start
+# with a zero.
 #
 # The sign of an exact negative zero is kept, as `as-fixed` and `as-scientific`
 # keep it, so `-0.0` becomes `-0` and not `0`. A negative number whose fraction
@@ -45,11 +47,11 @@
         signed.if
           "-".as-bytes.concat spelled
           spelled
-  1000000000 > billion
+  10000000000 > tenbillion
   floor. > guess
-    truncated.div billion
+    truncated.div tenbillion
   truncated.minus > rest
-    top.times billion
+    top.times tenbillion
   or. > signed
     ^.as-bytes.eq 80-00-00-00-00-00-00-00
     and.
@@ -57,9 +59,9 @@
       not.
         truncated.eq 0
   truncated.minus > slack
-    guess.times billion
+    guess.times tenbillion
   if. > spelled
-    truncated.lt billion
+    truncated.lt tenbillion
     [^ m] >> quick
       if. > @
         m.lt 10
@@ -79,14 +81,14 @@
       quick top
       slice.
         quick
-          billion.plus rest
+          tenbillion.plus rest
         1
-        9
+        10
   if. > top
     slack.lt 0
     guess.minus 1
     if.
-      slack.gte billion
+      slack.gte tenbillion
       guess.plus 1
       guess
   ^.abs.floor > truncated
@@ -122,6 +124,18 @@
   eq. ++> can-write-a-magnitude-just-above-a-billion
     "1000000001"
     string 1000000001.as-decimal
+
+  eq. ++> can-write-a-magnitude-just-above-ten-billion
+    "10000000001"
+    string 10000000001.as-decimal
+
+  eq. ++> can-write-a-magnitude-just-below-ten-billion
+    "9999999999"
+    string 9999999999.as-decimal
+
+  eq. ++> can-write-a-magnitude-with-an-odd-top-in-the-highest-binade
+    "8375908841841529856"
+    string 8375908841841529856.as-decimal
 
   eq. ++> can-write-a-magnitude-with-nine-inner-zeroes
     "1000000000000000"
