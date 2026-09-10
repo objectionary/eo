@@ -289,6 +289,15 @@ final class Value {
     }
 
     /**
+     * The {@code Q} global-root glyph — R-3.8.1 excludes it from the
+     * reversed-head whitelist ({@code @}, {@code ^}, {@code $})?
+     * @return True for {@link Kind#ROOT} whose raw text is {@code Q}
+     */
+    boolean global() {
+        return this.kind == Kind.ROOT && "Q".equals(this.raw);
+    }
+
+    /**
      * The XMIR symbol a {@link Kind#ROOT} glyph maps to per §9.3 —
      * {@code Q} to {@code Φ}, {@code @} to {@code φ}, {@code ^} to
      * {@code ρ}, {@code $} to {@code ξ}. Call only when {@link #kind()}
