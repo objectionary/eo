@@ -4,7 +4,8 @@
 sheets: []
 asserts:
   - /object/errors[count(error)=1]
-  - /object/errors/error[@check='validate-package' and @line='2' and @severity='critical']
+  - /object/errors/error[@check='validate-package' and @line='2']
+  - /object/errors/error[@severity='critical']
 input: |
   +package test
   +package sandbox
