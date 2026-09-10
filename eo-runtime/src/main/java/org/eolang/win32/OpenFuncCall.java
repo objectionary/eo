@@ -5,11 +5,11 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * The msvcrt _open function call.

@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import org.eolang.sys.TupleToArray;
 import org.eolang.win32.NamedFuncCall;
 
 /**

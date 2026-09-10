@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import com.sun.jna.Pointer;
+import org.eolang.ExFailure;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
