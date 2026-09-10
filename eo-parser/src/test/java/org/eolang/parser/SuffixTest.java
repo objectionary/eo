@@ -134,11 +134,11 @@ final class SuffixTest {
     }
 
     @Test
-    void marksMinusGreaterAttributeWithMinusPrefix() {
+    void marksMinusGreaterAttributeWithThrowingPrefix() {
         MatcherAssert.assertThat(
-            "a throwing test's XMIR name must carry the `-` marker prefix",
+            "a throwing test's XMIR name must carry the `n🌵` marker prefix",
             new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).attribute(1, 2),
-            Matchers.equalTo("-on-add")
+            Matchers.equalTo("n🌵on-add")
         );
     }
 
@@ -553,9 +553,9 @@ final class SuffixTest {
     @Test
     void prefixesPlusFormAttribute() {
         MatcherAssert.assertThat(
-            "a `+> name` test suffix must surface as `+name` in the attribute",
+            "a `+> name` test suffix must surface as `p🌵name` in the attribute",
             new Suffix(" +> ready", new Span("[] +> ready", 1), 2).attribute(1, 0),
-            Matchers.equalTo("+ready")
+            Matchers.equalTo("p🌵ready")
         );
     }
 

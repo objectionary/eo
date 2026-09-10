@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='+fibo-5th-equals-to-seven']
-  - //o[@name='+fibo-2nd-equals-to-one']
+  - //o[@name='p🌵fibo-5th-equals-to-seven']
+  - //o[@name='p🌵fibo-2nd-equals-to-one']
 input: |
   [n] > fibo
     if. > @

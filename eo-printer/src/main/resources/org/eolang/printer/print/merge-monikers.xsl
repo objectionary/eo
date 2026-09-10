@@ -149,15 +149,16 @@
   <!--
   The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
   an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
-  or test binding in its own bucket. Hosting by this key, not by document
-  order, makes a reprint settle instead of moving the binding again.
+  or test binding in its own bucket — truthy and throwing tests in two of
+  them, keyed by the name under the marker. Hosting by this key, not by
+  document order, makes a reprint settle instead of moving the binding again.
   -->
   <xsl:function name="eo:host-key" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="owner" as="element()"/>
     <xsl:variable name="binding" select="$ref/ancestor-or-self::o[parent::*[. is $owner]][1]"/>
-    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (eo:test-attr($binding)) then 4 else 3"/>
-    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else string(($binding/@local, $binding/@name)[1]))"/>
+    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (starts-with($binding/@name, $eo:positive)) then 4 else if (starts-with($binding/@name, $eo:negative)) then 5 else 3"/>
+    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else eo:unmarked(string(($binding/@local, $binding/@name)[1])))"/>
   </xsl:function>
   <!--
   The references that can host the binding `$attr`, shortest spelling first: a
