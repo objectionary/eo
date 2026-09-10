@@ -55,6 +55,23 @@ final class PhApplicationTest {
     }
 
     @Test
+    void keepsANumberOfTheWrongWidthStructural() {
+        MatcherAssert.assertThat(
+            "bytes that are not eight wide denote no number and must render structurally, but they threw",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(new byte[] {(byte) 0x01})
+                )
+            ).φTerm(),
+            Matchers.startsWith("Φ.number(0->")
+        );
+    }
+
+    @Test
     void appliesSeveralBindingsToObject() {
         MatcherAssert.assertThat(
             "PhApplication must bind every pair to the object, but it didnt",
