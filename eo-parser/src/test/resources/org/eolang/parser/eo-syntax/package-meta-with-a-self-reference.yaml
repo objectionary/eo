@@ -8,7 +8,6 @@ asserts:
   - //o[@name='y' and @base='Φ.a.main.x']
 input: |
   +package a
-  +package b
 
   [] > main
     main.x > y
