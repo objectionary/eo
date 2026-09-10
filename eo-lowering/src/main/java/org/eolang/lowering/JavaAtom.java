@@ -120,7 +120,10 @@ public final class JavaAtom {
             }
             lines.add(
                 JavaAtom.returned(
-                    this.values.handed(this.values.expression(first.answer()), first.answer())
+                    this.values.viewed(
+                        this.values.expression(first.answer()), first.answer(),
+                        this.program.carrier()
+                    )
                 )
             );
         }
@@ -183,7 +186,11 @@ public final class JavaAtom {
         }
         out.add("    }");
         out.add("}");
-        out.add(JavaAtom.returned(this.values.handed("out", this.answer())));
+        out.add(
+            JavaAtom.returned(
+                this.values.viewed("out", this.answer(), this.program.carrier())
+            )
+        );
         return out;
     }
 
