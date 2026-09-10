@@ -623,7 +623,7 @@ size.
 
 A line whose first non-space character is `|` is a *pipe-application line*. It applies arguments to the **same-indent predecessor** — the object declared on the lines just above it — without naming that object at the call site. This is the surface form of phi-calculus *formation-with-application* `⟦…⟧(…)`: the predecessor is formed, then the pipe supplies its arguments. The `|` reads as an up-arrow to "the object above".
 
-R-3.14.1. The `|` is followed by a single space, then either a horizontal argument list (§3.6) or nothing, then an optional name suffix (§3.10). Its tail is parsed exactly as an application's argument list plus suffix — the pipe supplies the arguments; the *head* is the implicit predecessor.
+R-3.14.1. When anything follows the `|` — a horizontal argument list (§3.6), a name suffix (§3.10), or both — a single space separates it from the pipe. Nothing has to follow: the vertical form (R-3.14.3) carries no argument list and may carry no suffix either, and then the line is the bare `|` alone, since `| ` with a trailing space is rejected by R-2.2.5. The tail is parsed exactly as an application's argument list plus suffix — the pipe supplies the arguments; the *head* is the implicit predecessor.
 
 R-3.14.2. **Predecessor requirement.** The stack top at the pipe's indent must be a **formation** (`bare-formation`, `inline-phi-formation` or `identity-object`) or another **pipe-application**, and it must be **named** (an explicit `> name` or an auto-generated `>>`). A pipe with no predecessor (top-level / empty stack), a deeper-indent ("descending") pipe, or a pipe whose predecessor is an unnamed formation, a plain value, an application, or any `.method` dispatch is an error. The named requirement is what lets the pipe refer to the predecessor by name (R-3.14.7); an unnamed formation cannot be a pipe target — give it a `>>`.
 
@@ -1441,6 +1441,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
 | `+alias` target that is a scope token rather than an object name (R-3.2.3) | `'+alias' target must be an object name, not a scope token` |
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
+| `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
@@ -1455,7 +1456,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Compact tuple count wider than a signed 32-bit value (§3.9) | `compact tuple count is too large` |
 | `.method` line whose body does not open with a dot (§3.5) | `method continuation must start with a dot` |
 | Reversed dispatch whose receiver is not followed by a dot (§3.8) | `reversed dispatch must end with a dot` |
-| Pipe line whose `\|` is not followed by a space (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
+| Pipe line whose `\|` is glued to the argument list or suffix that follows it (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |

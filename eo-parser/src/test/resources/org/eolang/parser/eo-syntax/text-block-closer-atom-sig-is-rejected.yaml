@@ -4,15 +4,15 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/errors/error[contains(text(),'unicode')]
-  - /object/errors/error[contains(text(),'unicode')][@lossy]
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'atom')][@lossy]
   - /object[not(errors/error[contains(text(),'unclosed')])]
   - //o[@name='y']
   - //o[@name='z']
 input: |
   [] > app
     """
-    \uZZZZ
-    """ > x
+    hello
+    """ > x/org.eolang.foo
     42 > y
     43 > z

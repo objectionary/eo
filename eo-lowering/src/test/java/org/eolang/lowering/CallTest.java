@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -107,6 +108,64 @@ final class CallTest {
             ),
             Matchers.endsWith(
                 ", new Bind(0, this.take(\"a\")), new Bind(1, this.take(\"b\")))"
+            )
+        );
+    }
+
+    @Test
+    void refusesReceiverRebuiltFromEarlierCall() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.chained(
+                new Dispatch(
+                    "s1", "read",
+                    Arrays.asList("sym:v0", "number:40-24-00-00-00-00-00-00"), "bytes"
+                ),
+                new Dispatch("s2", "size", Collections.singletonList("sym:s1"), "number"),
+                Collections.singletonMap("i", "object")
+            ).text(),
+            "the bytes an earlier call was dataized into are no object to dispatch on, but they are"
+        );
+    }
+
+    @Test
+    void wrapsDatumOfOperationAsReceiver() {
+        MatcherAssert.assertThat(
+            "the value of a Java operation is the whole of the number it is, but it was refused",
+            CallTest.chained(
+                new Application(
+                    "s1", "L_number_plus",
+                    Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                ),
+                new Dispatch("s2", "is-nan", Collections.singletonList("sym:s1"), "bool"),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                "new Dataized(new PhDispatch(new Data.ToPhi(s1), \"is-nan\")).asBool()"
+            )
+        );
+    }
+
+    @Test
+    void holdsObjectOfEarlierCallAsReceiver() {
+        MatcherAssert.assertThat(
+            "an object an earlier call answered must stay the Phi it is, but it was rebuilt",
+            CallTest.chained(
+                new Dispatch("s1", "head", Collections.singletonList("sym:v0"), "object"),
+                new Dispatch("s2", "next", Collections.singletonList("sym:s1"), "object"),
+                Collections.singletonMap("q", "tuple")
+            ).text(),
+            Matchers.equalTo("new PhDispatch(s1, \"next\")")
+        );
+    }
+
+    private static Call chained(final Step first, final Step second,
+        final Map<String, String> voids) {
+        return new Call(
+            second,
+            new Rendering(
+                new Protocol(Arrays.asList(first, second), "sym:s2", second.forma()),
+                voids
             )
         );
     }
