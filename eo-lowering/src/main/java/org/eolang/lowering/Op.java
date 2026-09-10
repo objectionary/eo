@@ -145,11 +145,6 @@ public final class Op {
         return Op.TABLE;
     }
 
-    /**
-     * Read the operation table from the resource.
-     *
-     * @return Parsed operation rows
-     */
     private static List<String[]> load() {
         return new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/lowering/ops.tsv", Op.class))
