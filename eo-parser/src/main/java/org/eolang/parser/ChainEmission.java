@@ -119,6 +119,7 @@ final class ChainEmission {
      * @param line Source line
      * @param links The dispatch chain
      * @param label Name for the last link, or {@code null}
+     * @checkstyle ParameterNumberCheck (3 lines)
      */
     static void links(
         final Emit sink, final int line, final List<MethodChain> links, final String label
