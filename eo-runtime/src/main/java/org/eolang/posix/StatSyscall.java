@@ -9,8 +9,8 @@ import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * Stat syscall.

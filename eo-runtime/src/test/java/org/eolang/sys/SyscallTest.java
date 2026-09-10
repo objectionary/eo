@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang;
+package org.eolang.sys;
 
 import codes.ivanov.ephpo.Ephemeral;
 import codes.ivanov.ephpo.EphemeralResolver;
@@ -21,8 +21,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eolang.AtVoid;
+import org.eolang.Atom;
+import org.eolang.Attr;
+import org.eolang.Attrs;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 import org.eolang.posix.CStdLib;
-import org.eolang.sys.SockaddrIn;
 import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;

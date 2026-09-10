@@ -7,9 +7,9 @@ package org.eolang.posix;
 import com.sun.jna.Pointer;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.Cstring;
 import org.eolang.sys.Handles;
+import org.eolang.sys.Syscall;
 
 /**
  * Opendir syscall.

@@ -10,7 +10,7 @@ import org.eolang.Dataized;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * WriteFile kernel32 function call.

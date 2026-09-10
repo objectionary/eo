@@ -10,7 +10,7 @@ import org.eolang.Expect;
 import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * Read syscall.
