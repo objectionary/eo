@@ -63,7 +63,25 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "Number without injected bytes must fall back to its structural φ-term, but it didnt",
             Phi.Φ.take("number").φTerm(),
-            Matchers.containsString("as-bytes->?")
+            Matchers.containsString("φ->?")
+        );
+    }
+
+    @Test
+    void printsFilledNumberAsLiteral() {
+        MatcherAssert.assertThat(
+            "Number with injected bytes must print as the literal it stands for, but it didnt",
+            new Data.ToPhi(42.5).φTerm(),
+            Matchers.equalTo("42.5")
+        );
+    }
+
+    @Test
+    void printsFilledStringAsLiteral() {
+        MatcherAssert.assertThat(
+            "String with injected bytes must print as the literal it stands for, but it didnt",
+            new Data.ToPhi("привет").φTerm(),
+            Matchers.equalTo("\"привет\"")
         );
     }
 
