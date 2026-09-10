@@ -79,32 +79,32 @@
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-  [^] > tmpfile
-    ^.exists.if > @
-      Q.file touch.as-bytes
-      T
-        "Directory %s does not exist, can't create temporary file".printf
-          * ^.file
-    ^.^.retried > [^] > touch
-      ^.^.path
-      clock.as-number
-      code.
-        os.is-windows.if
-          win32
-            "_getpid"
-            *
-          posix
-            "getpid"
-            *
-      os.is-windows.if
-        clock.as-number.random
-        div.
-          micros.
-            output.
-              posix
-                "gettimeofday"
+  ^.exists.if > [^] > tmpfile
+    Q.file
+      as-bytes.
+        ^.retried
+          ^.path
+          clock.as-number
+          code.
+            os.is-windows.if
+              win32
+                "_getpid"
                 *
-          1000000
+              posix
+                "getpid"
+                *
+          os.is-windows.if
+            clock.as-number.random
+            div.
+              micros.
+                output.
+                  posix
+                    "gettimeofday"
+                    *
+              1000000
+    T
+      "Directory %s does not exist, can't create temporary file".printf
+        * ^.file
   [^ glob] > walk
     [^ accum prefix dir] >> walked
       [^ rest] >> stepped
