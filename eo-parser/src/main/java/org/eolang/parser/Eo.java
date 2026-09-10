@@ -549,17 +549,12 @@ final class Eo implements Iterable<Directive> {
 
     private static Line questioned(final Span span) {
         final Line line;
-        if (Eo.qdot(span.body(), 0)) {
+        if (Tokens.fragileAhead(span.body(), 0)) {
             line = new LnMethod(span);
         } else {
             line = new LnVoid(span);
         }
         return line;
-    }
-
-    private static boolean qdot(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private static boolean onlyPhi(final Span span) {
@@ -626,7 +621,7 @@ final class Eo implements Iterable<Directive> {
                 reversed = idx + 1 >= body.length() || body.charAt(idx + 1) == ' ';
                 break;
             }
-            if (Eo.qdot(body, idx)) {
+            if (Tokens.fragileAhead(body, idx)) {
                 reversed = idx + 2 >= body.length() || body.charAt(idx + 2) == ' ';
                 break;
             }
@@ -645,7 +640,7 @@ final class Eo implements Iterable<Directive> {
         final boolean reversed;
         if (root && body.length() >= 2 && body.charAt(1) == '.') {
             reversed = body.length() == 2 || body.charAt(2) == ' ';
-        } else if (root && Eo.qdot(body, 1)) {
+        } else if (root && Tokens.fragileAhead(body, 1)) {
             reversed = body.length() == 3 || body.charAt(3) == ' ';
         } else {
             reversed = false;

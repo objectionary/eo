@@ -668,7 +668,7 @@ final class Tokens {
         return single;
     }
 
-    private static boolean fragileAhead(final String body, final int idx) {
+    static boolean fragileAhead(final String body, final int idx) {
         return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
