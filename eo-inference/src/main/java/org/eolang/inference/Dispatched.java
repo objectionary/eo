@@ -5,8 +5,10 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,28 +120,106 @@ final class Dispatched {
             new Puts(bound, new Holders(bound, pairs).all()),
             this.hollows
         );
+        final Map<String, String> found;
+        if (this.hollows.isEmpty() && new Hollows(this.given).all().isEmpty()) {
+            found = this.queued(pairs, names, owned, filled);
+        } else {
+            found = this.scanned(pairs, names, owned, filled);
+        }
+        return found;
+    }
+
+    private Map<String, String> queued(
+        final Map<String, String> pairs, final Map<String, String> names,
+        final Provided owned, final Filled filled
+    ) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        final Map<String, String> learned = new LinkedHashMap<>(0);
+        List<Site> pending = new ArrayList<>(this.all);
+        while (!pending.isEmpty()) {
+            final List<Site> retry = new ArrayList<>(pending.size());
+            boolean changed = false;
+            for (final Site dispatch : pending) {
+                final String made = dispatch.made();
+                final String known = pairs.getOrDefault(
+                    made, learned.getOrDefault(made, "")
+                );
+                if (known.isEmpty()) {
+                    changed |= this.learned(
+                        dispatch, names, learned, owned, filled, known, made,
+                        found, retry
+                    );
+                }
+            }
+            pending = retry;
+            if (!changed) {
+                pending.clear();
+            }
+        }
+        return found;
+    }
+
+    private Map<String, String> scanned(
+        final Map<String, String> pairs, final Map<String, String> names,
+        final Provided owned, final Filled filled
+    ) {
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
             final String known = pairs.getOrDefault(made, "");
             if (known.isEmpty() || this.rooted(known)) {
-                final String bearer = dispatch.bearer();
-                final String kept;
-                if (bearer.isEmpty()) {
-                    kept = filled.instead(known, made, made);
-                } else {
-                    kept = filled.instead(
-                        owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
-                        bearer,
-                        made
-                    );
-                }
+                final String kept = Dispatched.kept(
+                    dispatch, names, new LinkedHashMap<>(0), owned,
+                    filled, known, made
+                );
                 if (this.better(kept, known, made)) {
                     found.put(made, kept);
                 }
             }
         }
         return found;
+    }
+
+    private boolean learned(
+        final Site dispatch, final Map<String, String> names,
+        final Map<String, String> learned, final Provided owned,
+        final Filled filled, final String known, final String made,
+        final Map<String, String> found,
+        final Collection<Site> retry
+    ) {
+        final String kept = Dispatched.kept(
+            dispatch, names, learned, owned, filled, known, made
+        );
+        final boolean changed = this.better(kept, known, made);
+        if (changed) {
+            found.put(made, kept);
+            learned.put(made, kept);
+        } else {
+            retry.add(dispatch);
+        }
+        return changed;
+    }
+
+    private static String kept(
+        final Site dispatch, final Map<String, String> names,
+        final Map<String, String> learned, final Provided owned,
+        final Filled filled, final String known, final String made
+    ) {
+        final String bearer = dispatch.bearer();
+        final String kept;
+        if (bearer.isEmpty()) {
+            kept = filled.instead(known, made, made);
+        } else {
+            kept = filled.instead(
+                owned.attribute(
+                    learned.getOrDefault(bearer, names.getOrDefault(bearer, bearer)),
+                    dispatch.name()
+                ),
+                bearer,
+                made
+            );
+        }
+        return kept;
     }
 
     private boolean rooted(final String type) {

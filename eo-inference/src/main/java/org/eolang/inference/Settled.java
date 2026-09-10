@@ -17,26 +17,13 @@ import java.util.Map;
  *
  * <p>There are two things to ask, and the second is asked only when the first
  * has nothing left to say. A dispatch is answered from what the tables hold
- * and costs a walk of them; what a void holds is answered from the whole of
- * the program's call sites and costs a table built to be read once, so it is
- * worth asking when a pass would otherwise be the last. Every void it names
- * opens the dispatches rooted at that void, and the passes go round again.</p>
+ * and keeps an ordered work queue for dependencies; what a void holds is
+ * answered from the whole of the program's call sites and costs a table built
+ * to be read once, so it is worth asking when a pass would otherwise be the
+ * last. Every void it names opens the dispatches rooted at that void, and the
+ * queue goes round again.</p>
  *
  * @since 0.69.0
- * @todo #8274:90min Settle a chain in fewer passes than it has hops.
- *  On eo-runtime this runs 128 passes of {@link Dispatched} and 44 of
- *  {@link Promoted} to settle 41,192 pairs, 77 of the passes adding one pair
- *  apiece, which is 30s of the 40s the tables take to build. The count is the
- *  cost and not the pass: of the 18.7s the dispatches take, {@link Bound} is
- *  9.4s and the rest of what a pass builds 6.5s, while the loop over all
- *  13,325 dispatches is 2.8s and already asks none but the ones left
- *  unanswered. So narrowing that loop further buys 7% and would need an index
- *  of what every answer was read off to be sound, since an answer changes when
- *  the fillings of a void change and not only when the end of its bearer does.
- *  What makes the passes is that a chain is read one hop to a pass, and
- *  bool.eo nests 40 formations that call each other. Read more than one hop, or
- *  ask again only what a new pair reaches, and mind that both change the order
- *  the pairs are learnt in, which {@link Dispatched} is not indifferent to.
  */
 final class Settled {
 
@@ -71,10 +58,18 @@ final class Settled {
         final Map<String, String> found = new LinkedHashMap<>(pairs);
         Map<String, String> answers = this.answers(found);
         while (!answers.isEmpty()) {
-            found.putAll(answers);
+            Settled.learn(found, answers);
             answers = this.answers(found);
         }
         return found;
+    }
+
+    private static void learn(
+        final Map<String, String> found, final Map<String, String> answers
+    ) {
+        for (final Map.Entry<String, String> answer : answers.entrySet()) {
+            found.put(answer.getKey(), answer.getValue());
+        }
     }
 
     private Map<String, String> answers(final Map<String, String> pairs) {
