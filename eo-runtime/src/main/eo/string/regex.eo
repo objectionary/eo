@@ -679,7 +679,7 @@
         ^.parsed.reason
         indexed ^.parsed.at
     ^.checked > compiled
-      T > [^ reason offset] >>
+      T > [^ reason offset]
         worded offset reason
     flags.as-bytes > fraw
     fraw.size > fsize
@@ -833,7 +833,7 @@
           ^.subj
           at
           unmarked
-          block ^.at caps at > [^ at caps] >>
+          block ^.at caps at > [^ at caps]
       subject txt.as-bytes > subj
       txt.length > total
     [^ txt] > matches
@@ -1625,7 +1625,7 @@
                   index.plus 1
                   opened
                   bits
-                  [^] >>
+                  [^]
                     if. > [^ s at caps k] > run
                       s.size.gt at
                       nothing
