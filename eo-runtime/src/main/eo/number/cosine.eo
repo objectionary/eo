@@ -25,9 +25,10 @@
 [^] > cosine
   1.minus > @
     2.times
-      half.times half
-  sine. > half
-    ^.div 2
+      times.
+        sine. >> half
+          ^.div 2
+        half
 
   lt. ++> can-behave-as-an-even-function
     abs.

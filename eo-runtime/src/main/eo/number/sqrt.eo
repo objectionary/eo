@@ -18,21 +18,23 @@
 
 [^] > sqrt
   if. > @
-    arg.lt 0
+    lt.
+      number ^.as-bytes >> arg
+      0
     nan
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
       arg
       if.
         seed.is-finite.and
-          seed.gt 0
+          gt.
+            arg.power 0.5 >> seed
+            0
         div.
           seed.plus
             arg.div seed
           2
         seed
-  number ^.as-bytes > arg
-  arg.power 0.5 > seed
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.

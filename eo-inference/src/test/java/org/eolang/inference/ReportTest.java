@@ -127,6 +127,17 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void saysNothingOfTheBytesOfALiteral(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.literal(temp), ReportTest.tables(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the page must not name the bytes of a literal after the literal, but it did",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.not(Matchers.containsString("Φ.cup.lid.α0"))
+        );
+    }
+
     private static Path program(final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
@@ -139,6 +150,25 @@ final class ReportTest {
                 "</listing>",
                 "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                 "<o line='2' loc='Φ.cup.lid' name='lid' pos='2'/></o></object>"
+            )
+        );
+        return temp.resolve("xmirs");
+    }
+
+    private static Path literal(final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            String.join(
+                "",
+                "<object><listing>",
+                String.join(
+                    System.lineSeparator(), "[] &gt; cup", "  cup 42 &gt; lid", ""
+                ),
+                "</listing>",
+                "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
+                "<o base='Φ.cup' line='2' loc='Φ.cup.lid' name='lid' pos='2'>",
+                "<o as='α0' line='2' loc='Φ.cup.lid.α0' pos='6'>2A-</o>",
+                "</o></o></object>"
             )
         );
         return temp.resolve("xmirs");

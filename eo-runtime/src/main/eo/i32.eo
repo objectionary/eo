@@ -11,13 +11,14 @@
   as-bytes > @
   [^ cant-convert] > as-i16
     if. > @
-      ^.eq left.as-i32
+      ^.eq
+        as-i32.
+          i16 >> left
+            ^.as-bytes.slice 2 2
       left
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * ^.as-i64.as-number
-    i16 > left
-      ^.as-bytes.slice 2 2
   [^] > as-i64
     i64 > @
       concat.

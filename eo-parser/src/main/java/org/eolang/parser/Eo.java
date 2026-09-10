@@ -313,7 +313,7 @@ final class Eo implements Iterable<Directive> {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
                 point.apply();
-                emit.error(err.line(), err.pos(), err.getMessage());
+                emit.error(err.line(), err.pos(), err.getMessage(), true);
                 globals.closeTextBlock();
             }
         } else {

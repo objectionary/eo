@@ -2,8 +2,15 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang;
+package org.eolang.sys;
 
+import org.eolang.AtVoid;
+import org.eolang.Attr;
+import org.eolang.Attrs;
+import org.eolang.Data;
+import org.eolang.ExAbstract;
+import org.eolang.PhDefault;
+import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

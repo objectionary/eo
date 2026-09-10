@@ -12,7 +12,7 @@ written in the source. That formation is where the answer is looked for, and an
 FQN is the whole of what this module means by a type:
 
 ```eo
-[as-bytes] > number      # Φ.number.as-bytes is a Φ.bytes
+[@] > number             # Φ.number.φ is a Φ.bytes
   [x] > plus             # Φ.number.plus.x is a Φ.number
   [x] > minus
     $.^.plus ($.x.times -1) > @      # Φ.number.minus.@ is a Φ.number
@@ -53,7 +53,7 @@ about them is asking nothing. So does a termination.
 
 Whether the formation still has voids free does not matter here. Knowing that
 something is a `Φ.number` is knowing which object it is, even before knowing
-what went into its `as-bytes`.
+what went into its `φ`.
 
 ### rooted at a void
 

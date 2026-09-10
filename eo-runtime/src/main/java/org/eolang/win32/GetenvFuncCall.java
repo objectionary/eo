@@ -4,10 +4,10 @@
  */
 package org.eolang.win32;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * The msvcrt getenv function call.

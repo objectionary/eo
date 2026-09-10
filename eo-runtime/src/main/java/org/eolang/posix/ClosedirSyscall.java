@@ -6,10 +6,10 @@ package org.eolang.posix;
 
 import com.sun.jna.Pointer;
 import org.eolang.Data;
-import org.eolang.Handles;
 import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Handles;
 
 /**
  * Closedir syscall.

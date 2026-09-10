@@ -69,8 +69,10 @@
       if. > @
         level.eq 0
         e
-        prev.times prev
-      ^.epow > prev
+        times.
+          number prev
+          number prev
+      ^.epow > prev!
         level.minus 1
     [m] > series
       2.times > @
@@ -95,8 +97,10 @@
       if. > @
         level.eq 0
         1
-        prev.plus prev
-      ^.step > prev
+        plus.
+          number prev
+          number prev
+      ^.step > prev!
         level.minus 1
   number ^.as-bytes > n
 

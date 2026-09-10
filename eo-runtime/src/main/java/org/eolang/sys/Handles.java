@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import com.sun.jna.Pointer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.eolang.ExFailure;
 
 /**
  * Native pointers the runtime keeps on behalf of EO.

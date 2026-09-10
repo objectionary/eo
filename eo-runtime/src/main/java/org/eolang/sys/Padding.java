@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
 
 import java.util.Arrays;
 

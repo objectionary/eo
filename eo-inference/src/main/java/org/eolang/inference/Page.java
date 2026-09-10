@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.xembly.Directives;
 
 /**
@@ -24,10 +28,23 @@ import org.xembly.Directives;
  * and this puts the two together: the source, line by line, with a mark on
  * every stretch of text we can say something about.</p>
  *
+ * <p>The bytes of a literal get no mark of their own. There is nothing to find
+ * out about {@code 42} beyond that it is what it is, so the only thing a mark
+ * over it could say is where the parser filed those bytes away, and a reader
+ * hovering over a number was told {@code Φ.cup.lid.α0} where the object above
+ * it had already said something worth reading (#8538).</p>
+ *
+ * <p>The objects are walked rather than asked for. Asking a document for the
+ * nodes that match something costs what the whole document costs and hands
+ * back a document per node, and a file of the runtime has six hundred of
+ * them (#8575).</p>
+ *
  * <p>The tally at the top is counted here too, from the same answers as the
  * marks. A page that says nine tenths green and then draws half the file red
- * would be worse than no page, and counting in one place is what stops
- * that.</p>
+ * would be worse than no page, and counting in one place is what stops that.
+ * The bytes stay counted: they are known as deeply as anything ever is, and
+ * dropping them from the tally would leave the page claiming less than it
+ * knows.</p>
  *
  * @since 0.70.0
  */
@@ -105,7 +122,7 @@ final class Page {
 
     private Map<Integer, Collection<Written>> written() {
         final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
-        for (final XML object : this.xmir.nodes("//o[@loc and @line and @pos]")) {
+        for (final Xnav object : this.marked()) {
             final Noted noted = new Noted(object);
             final String loc = noted.says("loc");
             final Answer answer = this.answers.get(loc);
@@ -121,6 +138,30 @@ final class Page {
             }
         }
         return found;
+    }
+
+    private Collection<Xnav> marked() {
+        return Page.deeper(new Xnav(this.xmir.inner()).element("object"))
+            .filter(Page::placed)
+            .filter(object -> !Page.datum(object))
+            .collect(Collectors.toList());
+    }
+
+    private static Stream<Xnav> deeper(final Xnav object) {
+        return object.elements(Filter.withName("o"))
+            .flatMap(kid -> Stream.concat(Stream.of(kid), Page.deeper(kid)));
+    }
+
+    private static boolean placed(final Xnav object) {
+        final Noted noted = new Noted(object);
+        return !noted.says("loc").isEmpty()
+            && !noted.says("line").isEmpty()
+            && !noted.says("pos").isEmpty();
+    }
+
+    private static boolean datum(final Xnav object) {
+        return object.elements(Filter.withName("o")).findAny().isEmpty()
+            && !object.text().orElse("").trim().isEmpty();
     }
 
     private Map<String, Integer> counted() {

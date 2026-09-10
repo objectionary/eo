@@ -557,18 +557,16 @@ final class Tokens {
      * reject anything that is neither a NAME-initial label nor a plain
      * slot number. Shared by {@link Tokens#readBinding()} and the outer
      * binding of a vertical formation, so both spell the same grammar.
+     * The glyph gate of {@link Suffix#checkGlyphs(String, int, int)} runs
+     * first, since a label is an identifier and a control character in one
+     * reaches xembly and breaks the parse instead of being reported.
      *
      * @param text Binding text, without the leading {@code :}
      * @param span Source span
      * @param pos Source column of the label (for errors)
      */
     static void checkBinding(final String text, final Span span, final int pos) {
-        if (Tokens.cactus(text)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkGlyphs(text, span.line(), pos);
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,

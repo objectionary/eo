@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,6 +59,10 @@ import java.util.Map;
  * a void has, what comes back is a {@link Var}, which names nothing a reader
  * could go and look at, and {@link Sole} refuses it.</p>
  *
+ * <p>A filling that waits on the very void it fills is settled first, by
+ * {@link Freed}, so that the two are not left waiting on each other for as
+ * long as the passes run.</p>
+ *
  * @since 0.71.0
  */
 final class Promoted {
@@ -83,6 +88,11 @@ final class Promoted {
     private final Collection<String> hollows;
 
     /**
+     * The arguments of every application, from {@link Given}.
+     */
+    private final Map<String, List<String>> arms;
+
+    /**
      * Ctor.
      *
      * @param woven The rows that follow from a set of pairs
@@ -90,17 +100,21 @@ final class Promoted {
      * @param said What the links table says, as the rules left it, without
      *  which a filling that arrives at a literal is not seen to be one
      * @param voids The locator of every void, from {@link Hollows}
+     * @param arguments The arguments of every application, without which a
+     *  filling that waits on the void it fills is not seen to be a choice
      */
     Promoted(
         final Woven woven,
         final XML provides,
         final Said said,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Map<String, List<String>> arguments
     ) {
         this.table = woven;
         this.given = provides;
         this.written = said;
         this.hollows = voids;
+        this.arms = arguments;
     }
 
     /**
@@ -117,10 +131,11 @@ final class Promoted {
             this.given, new Ends(pairs).names(), this.hollows
         );
         final Map<String, Collection<String>> asked = this.asked(pairs);
+        final Said said = this.written.with(pairs, this.table.binds(pairs));
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
-            : new Fillings(
-                this.written.with(pairs, this.table.binds(pairs)), this.given, this.hollows
+            : new Freed(
+                new Fillings(said, this.given, this.hollows).all(), said, owned, this.arms
             ).all().entrySet()) {
             String sole = new Sole(hollow.getValue(), known).names();
             if (sole.isEmpty()) {
