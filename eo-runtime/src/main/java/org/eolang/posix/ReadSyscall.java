@@ -5,6 +5,7 @@
 package org.eolang.posix;
 
 import java.util.Arrays;
+import org.eolang.Buffer;
 import org.eolang.Data;
 import org.eolang.Expect;
 import org.eolang.Int;

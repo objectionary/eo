@@ -5,6 +5,7 @@
 package org.eolang.win32;
 
 import java.util.Arrays;
+import org.eolang.Buffer;
 import org.eolang.Data;
 import org.eolang.Expect;
 import org.eolang.Int;
@@ -41,7 +42,7 @@ public final class ReadFuncCall implements Syscall {
         final int size = new Natural(
             new Expect<>("the 'size' argument of read", () -> params[1])
         ).it();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer("the 'size' argument of read", size).it();
         final int count = Msvcrt.INSTANCE._read(
             descriptor, buf, size
         );

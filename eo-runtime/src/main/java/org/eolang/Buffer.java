@@ -2,9 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.posix;
-
-import org.eolang.ExFailure;
+package org.eolang;
 
 /**
  * A byte array a syscall reads into.
@@ -15,9 +13,13 @@ import org.eolang.ExFailure;
  * instead, the way {@code write} and {@code send} check the size against the
  * buffer they were given.</p>
  *
+ * <p>Public because the win32 adapters, which live in another package,
+ * read into a buffer of a size the program chose just as the posix ones
+ * do, and both must refuse a size the heap cannot hold.</p>
+ *
  * @since 0.64.0
  */
-final class Buffer {
+public final class Buffer {
 
     /**
      * What the size is, for the failure message.
@@ -35,7 +37,7 @@ final class Buffer {
      * @param subject What the size is, for the failure message
      * @param size How many bytes are wanted
      */
-    Buffer(final String subject, final int size) {
+    public Buffer(final String subject, final int size) {
         this.subject = subject;
         this.size = size;
     }
@@ -45,7 +47,7 @@ final class Buffer {
      *
      * @return The array
      */
-    byte[] it() {
+    public byte[] it() {
         final Runtime runtime = Runtime.getRuntime();
         final long free = Math.min(
             runtime.maxMemory() - runtime.totalMemory() + runtime.freeMemory(),
