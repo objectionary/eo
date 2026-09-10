@@ -40,6 +40,25 @@ final class RecvFuncCallTest {
 
     @Test
     @DisabledOnOs({OS.MAC, OS.LINUX})
+    void rejectsSizeNoArrayCanHoldOnWindowsRecv() {
+        MatcherAssert.assertThat(
+            "the 'size' argument of recv must be refused by name, the way posix refuses it",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new RecvFuncCall(Phi.Φ.take("win32").copy()).make(
+                    new Data.ToPhi(0), new Data.ToPhi(Integer.MAX_VALUE), new Data.ToPhi(0)
+                ),
+                "A win32 recv size beyond any array must fail with ExFailure, not OutOfMemoryError"
+            ).getMessage(),
+            Matchers.allOf(
+                Matchers.containsString("'size' argument of recv"),
+                Matchers.containsString("Can't allocate")
+            )
+        );
+    }
+
+    @Test
+    @DisabledOnOs({OS.MAC, OS.LINUX})
     void rejectsNegativeSizeOnWindowsRecv() {
         Assertions.assertThrows(
             ExFailure.class,
