@@ -104,12 +104,26 @@ final class ChainEmission {
         final Emit sink, final int line, final Value head,
         final List<MethodChain> links, final String label
     ) {
-        final int last = links.size() - 1;
         if (links.isEmpty()) {
             Emissions.openValue(sink, label, head, line);
         } else {
             Emissions.openValue(sink, null, head, line);
         }
+        ChainEmission.links(sink, line, links, label);
+    }
+
+    /**
+     * Emit dispatch links after an already-open head.
+     *
+     * @param sink The directives sink
+     * @param line Source line
+     * @param links The dispatch chain
+     * @param label Name for the last link, or {@code null}
+     */
+    static void links(
+        final Emit sink, final int line, final List<MethodChain> links, final String label
+    ) {
+        final int last = links.size() - 1;
         for (int idx = 0; idx <= last; idx = idx + 1) {
             final MethodChain chained = links.get(idx);
             sink.close();

@@ -103,19 +103,10 @@ final class LnTextBlock implements Line {
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.unnamedObject(".".concat(link.name()), this.span.line(), link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(
-                suffix.attribute(this.span.line(), this.span.indent()),
-                ".".concat(last.name()), this.span.line(), last.dot()
+            ChainEmission.links(
+                emit, this.span.line(), chain,
+                suffix.attribute(this.span.line(), this.span.indent())
             );
-            emit.method(last.fragile());
             new Marked(emit, suffix).apply();
         }
     }
