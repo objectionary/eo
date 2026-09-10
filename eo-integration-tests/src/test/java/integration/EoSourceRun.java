@@ -126,14 +126,7 @@ final class EoSourceRun implements Proc<Object> {
         this.farea.files().file(".mvn/jvm.config").write(
             String.join(" ", EoSourceRun.FLAGS).getBytes(StandardCharsets.UTF_8)
         );
-        new RuntimeSources(
-            Paths.get(System.getProperty("basedir", System.getProperty("user.dir")))
-                .getParent()
-                .resolve("eo-runtime")
-                .resolve("src")
-                .resolve("main")
-                .resolve("eo")
-        ).exec(this.farea);
+        new RuntimeSources().exec(this.farea);
         new EoMavenPlugin(this.farea)
             .appended()
             .execution("compile")
