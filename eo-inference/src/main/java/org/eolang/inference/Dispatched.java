@@ -110,7 +110,7 @@ final class Dispatched {
         final Map<String, Map<String, String>> bound = new Copied(
             new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
             pairs,
-            new Lent(owned, this.all, this.args, this.hollows).sites(names)
+            new Lent(owned, this.all, this.args, this.receivers).sites(names)
         ).all();
         final Filled filled = new Filled(
             pairs,
