@@ -17,11 +17,10 @@ import java.util.Map;
  *
  * <p>There are two things to ask, and the second is asked only when the first
  * has nothing left to say. A dispatch is answered from what the tables hold
- * and keeps an ordered work queue for dependencies; what a void holds is
- * answered from the whole of the program's call sites and costs a table built
- * to be read once, so it is worth asking when a pass would otherwise be the
- * last. Every void it names opens the dispatches rooted at that void, and the
- * queue goes round again.</p>
+ * and costs a walk of them; what a void holds is answered from the whole of
+ * the program's call sites and costs a table built to be read once, so it is
+ * worth asking when a pass would otherwise be the last. Every void it names
+ * opens the dispatches rooted at that void, and the passes go round again.</p>
  *
  * @since 0.69.0
  */
@@ -58,18 +57,10 @@ final class Settled {
         final Map<String, String> found = new LinkedHashMap<>(pairs);
         Map<String, String> answers = this.answers(found);
         while (!answers.isEmpty()) {
-            Settled.learn(found, answers);
+            found.putAll(answers);
             answers = this.answers(found);
         }
         return found;
-    }
-
-    private static void learn(
-        final Map<String, String> found, final Map<String, String> answers
-    ) {
-        for (final Map.Entry<String, String> answer : answers.entrySet()) {
-            found.put(answer.getKey(), answer.getValue());
-        }
     }
 
     private Map<String, String> answers(final Map<String, String> pairs) {
