@@ -291,6 +291,7 @@ final class Value {
     /**
      * The {@code Q} global-root glyph — R-3.8.1 excludes it from the
      * reversed-head whitelist ({@code @}, {@code ^}, {@code $})?
+     *
      * @return True for {@link Kind#ROOT} whose raw text is {@code Q}
      */
     boolean global() {
