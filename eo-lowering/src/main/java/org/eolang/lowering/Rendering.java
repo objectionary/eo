@@ -292,7 +292,23 @@ public final class Rendering {
      * @return The expression to hand over, wrapped when the formas part
      */
     public String handed(final String local, final String key) {
-        final String carrier = Rendering.carried(this.program.carrier());
+        return this.viewed(local, key, Rendering.carried(this.program.carrier()));
+    }
+
+    /**
+     * The Java expression of a value, seen as the forma another place expects.
+     *
+     * <p>A local and the key it stands under may part, as {@code x!} makes
+     * them part: the local is a double and the key is bytes. Wherever such a
+     * value is handed over, returned or assigned, the bits have to be seen
+     * as the forma of the place that takes them.</p>
+     *
+     * @param local The Java expression of the value, such as {@code s1}
+     * @param key The key that value stands under, such as {@code sym:s1}
+     * @param carrier The forma the place expects, such as {@code bytes}
+     * @return The expression, wrapped when the formas part
+     */
+    public String viewed(final String local, final String key, final String carrier) {
         final String own = this.forma(key);
         final String out;
         if (carrier.equals(own)) {
@@ -304,6 +320,8 @@ public final class Rendering {
             );
         } else if ("bytes".equals(carrier) && "bool".equals(own)) {
             out = String.format("new byte[] {(byte) (%s ? 0xFF : 0x00)}", local);
+        } else if ("number".equals(carrier) && "bytes".equals(own)) {
+            out = String.format("java.nio.ByteBuffer.wrap(%s).getDouble()", local);
         } else {
             throw new IllegalStateException(
                 String.format(
