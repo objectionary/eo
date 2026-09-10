@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -123,6 +124,10 @@ public final class Outlined implements Rewrite {
             }
         } catch (final IllegalStateException | IOException ex) {
             carrier = "";
+            Logger.debug(
+                this, "The application at %s refused to outline: %s",
+                site.getAttribute("loc"), ex.getMessage()
+            );
         }
         final boolean done = !carrier.isEmpty();
         if (done) {
