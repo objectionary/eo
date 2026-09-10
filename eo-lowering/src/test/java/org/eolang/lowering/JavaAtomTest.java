@@ -66,6 +66,56 @@ final class JavaAtomTest {
     }
 
     @Test
+    void viewsTheAnswerOfAnArmAsTheFormaOfTheFork() {
+        MatcherAssert.assertThat(
+            "an arm answering a view of a local must be assigned as bytes, but it wasnt",
+            new JavaAtom(
+                new Protocol(
+                    Arrays.asList(
+                        new Application(
+                            "s0", "L_number_equal",
+                            Arrays.asList("sym:v0", "number:00-00-00-00-00-00-00-00")
+                        ),
+                        new Fork(
+                            "s2", "L_bool_if", "sym:s0",
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s1", "L_number_plus",
+                                        Arrays.asList(
+                                            "sym:v0", "number:3F-F0-00-00-00-00-00-00"
+                                        )
+                                    )
+                                ),
+                                "sym:s1", "bytes"
+                            ),
+                            new Protocol(
+                                Collections.singletonList(
+                                    new Application(
+                                        "s3", "L_number_times",
+                                        Arrays.asList(
+                                            "sym:v0", "number:40-00-00-00-00-00-00-00"
+                                        )
+                                    )
+                                ),
+                                "sym:s3", "bytes"
+                            )
+                        )
+                    ),
+                    "sym:s2", "bytes"
+                ),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.stringContainsInOrder(
+                "final byte[] s2;",
+                "s2 = java.nio.ByteBuffer.allocate(8)",
+                "s2 = java.nio.ByteBuffer.allocate(8)",
+                "return new Data.ToPhi(s2);"
+            )
+        );
+    }
+
+    @Test
     void rendersBodiesAsStateMachine() {
         MatcherAssert.assertThat(
             "bodies resuming one another must run as one loop over a state, but they dont",

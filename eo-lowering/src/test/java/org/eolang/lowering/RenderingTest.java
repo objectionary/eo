@@ -31,6 +31,18 @@ final class RenderingTest {
     }
 
     @Test
+    void viewsBytesAsANumber() {
+        MatcherAssert.assertThat(
+            "bytes assigned where a number is expected must be read back as a double, but they arent",
+            new Rendering(
+                new Protocol(Collections.emptyList(), "sym:v0", "number"),
+                Collections.singletonMap("b", "bytes")
+            ).viewed("v0", "sym:v0", "number"),
+            Matchers.equalTo("java.nio.ByteBuffer.wrap(v0).getDouble()")
+        );
+    }
+
+    @Test
     void carriesStringAsByteArray() {
         MatcherAssert.assertThat(
             "a string must be carried as bytes in Java, but it isnt",
