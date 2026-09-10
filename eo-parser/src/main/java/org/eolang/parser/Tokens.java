@@ -648,6 +648,10 @@ final class Tokens {
         return idx;
     }
 
+    static boolean fragileAhead(final String body, final int idx) {
+        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
+    }
+
     private static int clamped(final int pos, final Span source) {
         return Math.min(pos, source.text().length() - 1);
     }
@@ -666,10 +670,6 @@ final class Tokens {
             idx = idx + 1;
         }
         return single;
-    }
-
-    static boolean fragileAhead(final String body, final int idx) {
-        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private static boolean bytesStart(final String body, final int idx) {
