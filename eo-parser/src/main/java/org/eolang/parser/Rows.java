@@ -27,7 +27,7 @@ final class Rows {
      * Ctor.
      *
      * @param lines The source in lines
-     * @checkstyle ConstructorsCodeFreeCheck (2 lines)
+     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Rows(final List<Span> lines) {
         this.source = List.copyOf(lines);
