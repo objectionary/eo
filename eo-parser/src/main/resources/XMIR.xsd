@@ -64,7 +64,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="α[0-9]+|φ|ρ|[a-z+-]\S*|λ"/>
+      <xs:pattern value="α[0-9]+|φ|ρ|[a-z]\S*|λ"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="fqn">
@@ -116,7 +116,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="Φ(\.(ρ|φ|λ|α[0-9]+|[a-z+-][^\s.]*))*"/>
+      <xs:pattern value="Φ(\.(ρ|φ|λ|α[0-9]+|[a-z][^\s.]*))*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:complexType name="o" mixed="true">
