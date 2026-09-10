@@ -111,14 +111,8 @@ final class ChainEmission {
             Emissions.openValue(sink, null, head, line);
         }
         for (int idx = 0; idx <= last; idx = idx + 1) {
-            final MethodChain chained = links.get(idx);
             sink.close();
-            if (idx == last) {
-                sink.object(label, ".".concat(chained.name()), line, chained.dot());
-            } else {
-                sink.unnamedObject(".".concat(chained.name()), line, chained.dot());
-            }
-            sink.method(chained.fragile());
+            links.get(idx).write(sink, line, idx == last ? label : null);
         }
     }
 }

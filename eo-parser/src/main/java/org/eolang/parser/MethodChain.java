@@ -7,9 +7,9 @@ package org.eolang.parser;
 /**
  * One link in a {@code .method.method} chain — §3.5, §3.6.
  *
- * <p>Captures the method name and the source column of the leading
- * dot. Per R-9.1.3, the dot column is the {@code @pos} value emitted
- * for the link's {@code <o>} (not the column of the method name).</p>
+ * <p>Captures the method name, the source column of the leading dot, and
+ * whether the dispatch is fragile. Per R-9.1.3, the dot column is the
+ * {@code @pos} value emitted for the link's {@code <o>}.</p>
  *
  * @since 0.1
  */
@@ -26,8 +26,7 @@ final class MethodChain {
     private final int dot;
 
     /**
-     * Whether this link is a fragile dispatch ({@code ?.} instead of
-     * {@code .}) — R-3.5 / §9.4.
+     * Whether this link is a fragile dispatch ({@code ?.}).
      */
     private final boolean fragile;
 
@@ -35,39 +34,24 @@ final class MethodChain {
      * Ctor.
      *
      * @param ident Method name
-     * @param dot Column of the dot
+     * @param pos Column of the dot
      * @param weak Whether the link is a fragile {@code ?.} dispatch
      */
-    MethodChain(final String ident, final int dot, final boolean weak) {
+    MethodChain(final String ident, final int pos, final boolean weak) {
         this.name = ident;
-        this.dot = dot;
+        this.dot = pos;
         this.fragile = weak;
     }
 
     /**
-     * Whether this link is a fragile {@code ?.} dispatch.
+     * Write this method link to the emitter.
      *
-     * @return True for {@code ?.}, false for plain {@code .}
+     * @param sink Directives sink
+     * @param line Source line
+     * @param label Optional name for the emitted link
      */
-    boolean fragile() {
-        return this.fragile;
-    }
-
-    /**
-     * Method name (no leading dot).
-     *
-     * @return Name
-     */
-    String name() {
-        return this.name;
-    }
-
-    /**
-     * Column of the leading dot.
-     *
-     * @return Dot column
-     */
-    int dot() {
-        return this.dot;
+    void write(final Emit sink, final int line, final String label) {
+        sink.object(label, ".".concat(this.name), line, this.dot);
+        sink.method(this.fragile);
     }
 }
