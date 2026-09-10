@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -27,11 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Integration test that runs simple EO program from packaged jar.
  *
  * @since 0.54
- * @todo #5047:30min Re-enable runsProgramWithTwoObjects after next release.
- *  The released string.printf carries a stale "+rt jvm org.eolang:eo-runtime"
- *  meta, so the sandbox skips transpiling it and no EOprintf lands on the
- *  classpath, while eo-runtime ships Java atoms only. Master already dropped
- *  that meta, so drop this annotation once the remote objectionary catches up.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
@@ -91,7 +85,6 @@ final class JarIT {
     }
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
