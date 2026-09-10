@@ -563,12 +563,7 @@ final class Tokens {
      * @param pos Source column of the label (for errors)
      */
     static void checkBinding(final String text, final Span span, final int pos) {
-        if (Tokens.cactus(text)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkGlyphs(text, span.line(), pos);
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
