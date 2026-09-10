@@ -208,21 +208,23 @@ final class Placing implements Step {
         private void printLogInfoAboutBinary(
             final Path file, final Path target, final TjPlaced tojo
         ) {
-            if (!Files.exists(target)) {
+            if (Files.exists(target)) {
+                if (new Unchecked<>(
+                    () -> Files.size(target) != Files.size(file)
+                ).value()) {
+                    Logger.debug(
+                        this,
+                        "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
+                        file, file.toFile().length(),
+                        target, target.toFile().length(),
+                        tojo.dependency()
+                    );
+                }
+            } else {
                 Logger.debug(
                     this,
                     "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
                     file, target
-                );
-            } else if (new Unchecked<>(
-                () -> Files.size(target) != Files.size(file)
-            ).value()) {
-                Logger.debug(
-                    this,
-                    "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
-                    file, file.toFile().length(),
-                    target, target.toFile().length(),
-                    tojo.dependency()
                 );
             }
         }
