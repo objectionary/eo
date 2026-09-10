@@ -7,11 +7,11 @@ package org.eolang.win32;
 import com.sun.jna.Native;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * The 'inet_addr' WS2_32 function call.

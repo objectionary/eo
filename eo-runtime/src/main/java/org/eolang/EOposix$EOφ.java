@@ -5,6 +5,7 @@
 package org.eolang;
 
 import org.eolang.posix.NamedSyscall;
+import org.eolang.sys.TupleToArray;
 
 /**
  * Posix syscall.
