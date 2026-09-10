@@ -29,6 +29,11 @@ import org.cactoos.text.UncheckedText;
 public final class Op {
 
     /**
+     * Parsed operation table.
+     */
+    private static final List<String[]> TABLE = Op.load();
+
+    /**
      * The λ name, such as {@code L_number_plus}.
      */
     private final String lambda;
@@ -137,6 +142,15 @@ public final class Op {
      *  the forma, the arguments and the Java format
      */
     static List<String[]> table() {
+        return Op.TABLE;
+    }
+
+    /**
+     * Read the operation table from the resource.
+     *
+     * @return Parsed operation rows
+     */
+    private static List<String[]> load() {
         return new UncheckedText(
             new TextOf(new ResourceOf("org/eolang/lowering/ops.tsv", Op.class))
         ).asString().lines()

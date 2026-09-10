@@ -17,6 +17,15 @@ import org.junit.jupiter.api.Test;
 final class OpTest {
 
     @Test
+    void reusesParsedOperationTable() {
+        MatcherAssert.assertThat(
+            "operation table was parsed again instead of reused",
+            Op.table(),
+            Matchers.sameInstance(Op.table())
+        );
+    }
+
+    @Test
     void findsMethodOfLambda() {
         MatcherAssert.assertThat(
             "the λ of addition must dispatch as plus, but it doesnt",
