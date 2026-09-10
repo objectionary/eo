@@ -98,13 +98,17 @@ public final class PhApplication extends PhOnce {
         } else {
             string = null;
         }
+        final String number;
+        if (literal && "Φ.number".equals(head)) {
+            number = new Numbered(PhApplication.bytes(data.group(1))).get().orElse(null);
+        } else {
+            number = null;
+        }
         final String result;
         if (string != null) {
             result = string;
-        } else if (literal && "Φ.number".equals(head)) {
-            result = new Numeral(
-                new BytesOf(PhApplication.bytes(data.group(1))).asNumber()
-            ).get();
+        } else if (number != null) {
+            result = number;
         } else {
             result = String.format("%s(%s)", head, body);
         }
