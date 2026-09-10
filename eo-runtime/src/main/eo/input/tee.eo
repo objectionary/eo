@@ -76,10 +76,10 @@
               read.
                 tee.
                   input
-                    Q.source.tee m2.to-output
+                    ^.source.tee m2.to-output
                   ^.m1.to-output
                 5
               ^.m1.write 5 2A-
               ^.m1
+          input 01-02-03-04-05.as-input > source
       01-02-03-04-05-2A
-    input 01-02-03-04-05.as-input > source
