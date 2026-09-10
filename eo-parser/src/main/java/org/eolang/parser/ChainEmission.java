@@ -112,7 +112,13 @@ final class ChainEmission {
         }
         for (int idx = 0; idx <= last; idx = idx + 1) {
             sink.close();
-            links.get(idx).write(sink, line, idx == last ? label : null);
+            final String name;
+            if (idx == last) {
+                name = label;
+            } else {
+                name = null;
+            }
+            links.get(idx).write(sink, line, name);
         }
     }
 }
