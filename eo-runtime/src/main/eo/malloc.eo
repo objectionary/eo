@@ -41,7 +41,7 @@
 #   [m]
 #     seq > @
 #       *
-#         m.write 2 "Hello"   # write object "Hello" with offset 2
+#         m.write 2 "Hello"   # write "Hello" at offset 2 -> the bytes written
 #         m.read 3 4          # read 4 bytes from offset 3 -> "ello"
 #         m.put 42            # write object 42 with offset 0
 #         m.get               # just get all the data from the memory block -> 42
@@ -132,7 +132,7 @@
 
   malloc.for ++> can-copy-data-from-start-to-end
     01-02-03-04-05-06
-    and. > [m]
+    seq * > [m]
       m.copy
         0
         3
@@ -141,7 +141,7 @@
 
   malloc.for ++> can-copy-data-inside-itself
     01-02-03-04-05
-    and. > [m]
+    seq * > [m]
       m.copy
         1
         2
