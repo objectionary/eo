@@ -171,26 +171,14 @@ final class Emissions {
      * @param line Source line
      */
     static void emitArg(final Emit emit, final Value value, final int line) {
-        final List<MethodChain> tail = value.chain();
-        if (tail.isEmpty()) {
-            Emissions.openValue(emit, null, value, line);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
-        } else {
-            ChainEmission.link(emit, line, value, tail, null);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
+        ChainEmission.link(emit, line, value, value.chain(), null);
+        if (value.bound()) {
+            emit.slot(Emissions.bindingTag(value.binding()));
         }
+        if (value.constant()) {
+            emit.constant();
+        }
+        emit.close();
     }
 
     /**
