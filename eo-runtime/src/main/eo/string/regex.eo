@@ -60,6 +60,17 @@
 # engine counts bytes and converts at the border; a matched block remembers
 # where its bytes end, so `next` neither rescans the text nor parses the
 # pattern again.
+#
+# @todo #7485:30min Stop skipping 'redundant-attachment' here. It complains
+# about three formations, the fallback of `compiled`, the continuation
+# `sought` hands to `run` and the one the parser builds for `\z`, and reads
+# their `>>` names as unreferenced. At least the one in `sought` does reach
+# out of itself, through the receiver its own head declares, and the lint
+# misses it, because a void of the same name masks the reference. Dropping
+# the names breaks the engine and everything built on it, `string.scanf`,
+# `string.as-number` and `path` among them. Remove this directive once
+# objectionary/lints#1301 counts a hop through the receiver as reaching
+# outward even when the head declares a void of the same name.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -67,6 +78,7 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
 
 [^] > regex
   compile > @
