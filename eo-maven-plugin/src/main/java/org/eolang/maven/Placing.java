@@ -199,26 +199,32 @@ final class Placing implements Step {
             } else {
                 res = true;
                 if (tojo.isPresent() && Logger.isDebugEnabled(this)) {
-                    if (!Files.exists(target)) {
-                        Logger.debug(
-                            this,
-                            "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
-                            file, target
-                        );
-                    } else if (new Unchecked<>(
-                        () -> Files.size(target) != Files.size(file)
-                    ).value()) {
-                        Logger.debug(
-                            this,
-                            "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
-                            file, file.toFile().length(),
-                            target, target.toFile().length(),
-                            tojo.get().dependency()
-                        );
-                    }
+                    this.printLogInfoAboutBinary(file, target, tojo.get());
                 }
             }
             return res;
+        }
+
+        private void printLogInfoAboutBinary(
+            final Path file, final Path target, final TjPlaced tojo
+        ) {
+            if (!Files.exists(target)) {
+                Logger.debug(
+                    this,
+                    "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
+                    file, target
+                );
+            } else if (new Unchecked<>(
+                () -> Files.size(target) != Files.size(file)
+            ).value()) {
+                Logger.debug(
+                    this,
+                    "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
+                    file, file.toFile().length(),
+                    target, target.toFile().length(),
+                    tojo.dependency()
+                );
+            }
         }
 
         private void placeBinary(final Path file) {
