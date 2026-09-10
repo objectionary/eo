@@ -175,7 +175,6 @@ final class Placing implements Step {
                 .excludes(Placing.this.exclude)
                 .stream()
                 .filter(this::isNotAlreadyPlaced)
-                .peek(this::printLogInfoAboutBinary)
                 .peek(this::placeBinary)
                 .count();
         }
@@ -199,38 +198,27 @@ final class Placing implements Step {
                 res = false;
             } else {
                 res = true;
+                if (tojo.isPresent() && Logger.isDebugEnabled(this)) {
+                    if (!Files.exists(target)) {
+                        Logger.debug(
+                            this,
+                            "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
+                            file, target
+                        );
+                    } else if (new Unchecked<>(
+                        () -> Files.size(target) != Files.size(file)
+                    ).value()) {
+                        Logger.debug(
+                            this,
+                            "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
+                            file, file.toFile().length(),
+                            target, target.toFile().length(),
+                            tojo.get().dependency()
+                        );
+                    }
+                }
             }
             return res;
-        }
-
-        private void printLogInfoAboutBinary(final Path file) {
-            final Path target = Placing.this.classes.resolve(
-                this.dir.relativize(file)
-            );
-            final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
-            if (tojo.isPresent()) {
-                if (!Files.exists(target)) {
-                    Logger.debug(
-                        this,
-                        "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
-                        file, target
-                    );
-                }
-                if (
-                    Files.exists(target)
-                        && new Unchecked<>(
-                            () -> Files.size(target) != Files.size(file)
-                        ).value()
-                ) {
-                    Logger.debug(
-                        this,
-                        "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
-                        file, file.toFile().length(),
-                        target, target.toFile().length(),
-                        tojo.get().dependency()
-                    );
-                }
-            }
         }
 
         private void placeBinary(final Path file) {
