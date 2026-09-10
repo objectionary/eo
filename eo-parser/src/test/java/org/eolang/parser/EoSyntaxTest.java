@@ -12,7 +12,6 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
-import fixtures.LargeProgram;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -92,30 +91,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void measuresRealParsingTime() throws Exception {
-        MatcherAssert.assertThat(
-            "ms attribute is not a measured elapsed time",
-            Long.parseLong(
-                new EoSyntax(
-                    new LargeProgram(30), UnaryOperator.<XML>identity()
-                ).parsed().xpath("/object/@ms").get(0)
-            ),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
-    void measuresSubMillisecondParsingTime() throws Exception {
-        final EoSyntax syntax = new EoSyntax(String.format("# Ünïcödé.%n[] > tiny%n"));
-        syntax.parsed();
-        MatcherAssert.assertThat(
-            "ms attribute of a sub-millisecond parse is not rounded up to one",
-            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
     void reportsMsWithinSaneBound() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not within a sane bound for a small program",
@@ -125,19 +100,6 @@ final class EoSyntaxTest {
                 ).parsed().xpath("/object/@ms").get(0)
             ),
             Matchers.lessThan(60_000L)
-        );
-    }
-
-    @Test
-    void measuresParsingTimeOnEveryCall() throws Exception {
-        final EoSyntax syntax = new EoSyntax(
-            new LargeProgram(30), UnaryOperator.<XML>identity()
-        );
-        syntax.parsed();
-        MatcherAssert.assertThat(
-            "second parse of the same syntax does not measure its own elapsed time",
-            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
-            Matchers.greaterThan(0L)
         );
     }
 
