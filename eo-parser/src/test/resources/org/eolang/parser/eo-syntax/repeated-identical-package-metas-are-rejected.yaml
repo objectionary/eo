@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors[count(error)=2]
+  - /object/errors/error[@check='validate-package' and @line='2']
+  - /object/errors/error[@check='validate-package' and @line='3']
+input: |
+  +package same
+  +package same
+  +package same
+
+  [] > main
+    5 > x
