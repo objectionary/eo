@@ -18,7 +18,7 @@ final class ParseErrorTest {
     @Test
     void retainsLineFromCtor() {
         MatcherAssert.assertThat(
-            "line must round-trip the ctor argument so reporters can quote source location",
+            "line did not round-trip the ctor argument for source-location reporting",
             new ParseError(7, 3, "boom").line(),
             Matchers.equalTo(7)
         );
@@ -27,7 +27,7 @@ final class ParseErrorTest {
     @Test
     void retainsPosFromCtor() {
         MatcherAssert.assertThat(
-            "pos must round-trip the ctor argument with 0-indexed semantics",
+            "pos did not round-trip the ctor argument with 0-indexed semantics",
             new ParseError(1, 12, "boom").pos(),
             Matchers.equalTo(12)
         );
@@ -36,7 +36,7 @@ final class ParseErrorTest {
     @Test
     void exposesMessageThroughGetMessage() {
         MatcherAssert.assertThat(
-            "the canonical message text must be readable via getMessage()",
+            "the canonical message text was not readable via getMessage()",
             new ParseError(1, 0, "unexpected odd indent").getMessage(),
             Matchers.equalTo("unexpected odd indent")
         );

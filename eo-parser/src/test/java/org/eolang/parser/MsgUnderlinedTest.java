@@ -18,7 +18,7 @@ final class MsgUnderlinedTest {
     @Test
     void underlinesWholeLineWhenFromIsNegative() {
         MatcherAssert.assertThat(
-            "a negative from must underline every character of the origin",
+            "a negative from did not underline every character of the origin",
             new MsgUnderlined("hello", -1, 3).formatted(),
             Matchers.equalTo(String.format("hello%n^^^^^"))
         );
@@ -27,7 +27,7 @@ final class MsgUnderlinedTest {
     @Test
     void clampsCaretRunToLineLengthRemainingAfterFrom() {
         MatcherAssert.assertThat(
-            "a length reaching past the line end must be clamped to what remains from position",
+            "a length reaching past the line end was not clamped to what remains from position",
             new MsgUnderlined("0123456789", 8, 5).formatted(),
             Matchers.equalTo(String.format("0123456789%n        ^^"))
         );
@@ -36,7 +36,7 @@ final class MsgUnderlinedTest {
     @Test
     void leavesUnderlineEmptyWhenFromReachesLineEnd() {
         MatcherAssert.assertThat(
-            "a from at the line length must draw no caret since no position is left to underline",
+            "a from at the line length drew a caret although no position was left to underline",
             new MsgUnderlined("abc", 3, 2).formatted(),
             Matchers.equalTo(String.format("abc%n"))
         );
