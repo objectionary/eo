@@ -7,11 +7,11 @@ package org.eolang.win32;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
-import org.eolang.Cstring;
 import org.eolang.Data;
-import org.eolang.Handles;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Handles;
 
 /**
  * The kernel32 FindFirstFileW function call.

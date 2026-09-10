@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
+
+import org.eolang.Dataized;
+import org.eolang.Expect;
+import org.eolang.Natural;
+import org.eolang.Phi;
 
 /**
  * Transform {@link Expect} to text a C function can be given.

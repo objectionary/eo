@@ -353,7 +353,7 @@ public class PhDefault implements Phi, Cloneable {
         final String name = this.oname();
         final String result;
         if (this.literal(name)) {
-            final byte[] raw = this.loaded().get("as-bytes").get().delta();
+            final byte[] raw = this.loaded().get(Phi.PHI).get().delta();
             if ("string".equals(name)) {
                 result = new Quoted(raw).get().orElseGet(this::structural);
             } else {
@@ -475,8 +475,8 @@ public class PhDefault implements Phi, Cloneable {
 
     private boolean literal(final String name) {
         return ("number".equals(name) || "string".equals(name))
-            && this.loaded().containsKey("as-bytes")
-            && !"?".equals(this.loaded().get("as-bytes").φTerm());
+            && this.loaded().containsKey(Phi.PHI)
+            && !"?".equals(this.loaded().get(Phi.PHI).φTerm());
     }
 
     private String structural() {

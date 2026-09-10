@@ -7,10 +7,10 @@ package org.eolang.posix;
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * Stat syscall.
