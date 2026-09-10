@@ -13,6 +13,7 @@ import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Buffer;
 
 /**
  * ReadFile kernel32 function call.
@@ -45,7 +46,9 @@ public final class RecvFuncCall implements Syscall {
         final int size = new Natural(
             new Expect<>("the 'size' argument of recv", () -> params[1])
         ).it();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer(
+            "the 'size' argument of recv", size
+        ).it();
         final int received = Winsock.INSTANCE.recv(
             new Pointer(new Dataized(params[0]).asNumber().longValue()),
             buf,
