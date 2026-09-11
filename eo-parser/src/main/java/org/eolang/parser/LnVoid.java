@@ -103,7 +103,9 @@ final class LnVoid implements Line {
         this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object("ρ", "∅", this.span.line(), this.span.indent());
+        emit.object(
+            new VoidName("^").asString(), "∅", this.span.line(), this.span.indent()
+        );
     }
 
     private void attribute(
@@ -128,10 +130,13 @@ final class LnVoid implements Line {
         this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object(
-            suffix.attribute(this.span.line(), this.span.indent()),
-            "∅", this.span.line(), this.span.indent()
-        );
+        final String name;
+        if (suffix.form() == Suffix.Form.AUTO) {
+            name = suffix.attribute(this.span.line(), this.span.indent());
+        } else {
+            name = new VoidName(suffix.label()).asString();
+        }
+        emit.object(name, "∅", this.span.line(), this.span.indent());
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
         }
