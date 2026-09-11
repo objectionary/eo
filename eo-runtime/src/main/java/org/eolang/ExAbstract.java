@@ -58,7 +58,7 @@ public abstract class ExAbstract extends RuntimeException {
      * @param stack Whether the Java stack trace is worth recording, which it
      *  is not for an exception thrown as control flow
      */
-    public ExAbstract(final String cause, final Throwable root, final boolean stack) {
+    protected ExAbstract(final String cause, final Throwable root, final boolean stack) {
         super(cause, root, true, stack);
     }
 }
