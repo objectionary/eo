@@ -7,11 +7,14 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -119,6 +122,40 @@ final class FingerprintTest {
             Matchers.not(
                 Matchers.equalTo(new Fingerprint(temp.resolve("second")).get())
             )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void seesTheFilesBehindADirectoryLink(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        new Saved(Long.toHexString(seed), temp.resolve("real/a.txt")).value();
+        Files.createSymbolicLink(temp.resolve("linked"), temp.resolve("real"));
+        MatcherAssert.assertThat(
+            String.format(
+                "a link to a directory was walked but never entered, so nothing under it was hashed, seed=%d",
+                seed
+            ),
+            new Fingerprint(temp.resolve("linked")).get(),
+            Matchers.equalTo(new Fingerprint(temp.resolve("real")).get())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void noticesAChangeBehindADirectoryLink(@Mktmp final Path temp) throws IOException {
+        final long seed = System.nanoTime();
+        new Saved(Long.toHexString(seed), temp.resolve("real/a.txt")).value();
+        Files.createSymbolicLink(temp.resolve("linked"), temp.resolve("real"));
+        final String before = new Fingerprint(temp.resolve("linked")).get();
+        new Saved(Long.toHexString(seed + 1L), temp.resolve("real/a.txt")).value();
+        MatcherAssert.assertThat(
+            String.format(
+                "a cache keyed by this fingerprint keeps serving tables built from contents that have changed, seed=%d",
+                seed
+            ),
+            new Fingerprint(temp.resolve("linked")).get(),
+            Matchers.not(Matchers.equalTo(before))
         );
     }
 
