@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The receiver of a reversed dispatch is the target, not an argument, so it
+# stays out of the all-or-nothing group (R-6.6.3). The same expression is
+# legal on a line, and must be legal inside parentheses too.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='a']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='b']]
+input: |
+  [] > main
+    q.f (if. false 1:a 2:b) > z
