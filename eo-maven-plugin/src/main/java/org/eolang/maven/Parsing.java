@@ -89,21 +89,18 @@ final class Parsing implements Step {
      * @param target Target directory
      * @param sources EO sources directory
      * @param store Where the results of earlier builds are looked for and kept
-     * @param trees The trees the parser has already made of these sources
-     * @checkstyle ParameterNumberCheck (3 lines)
      */
     Parsing(
         final TjsForeign srcs,
         final Path target,
         final Path sources,
-        final GlobalCache store,
-        final Raws trees
+        final GlobalCache store
     ) {
         this.tojos = srcs;
         this.target = target;
         this.home = sources;
         this.cache = store;
-        this.raws = trees;
+        this.raws = new Raws(store.with("raws"), target.resolve("0-raw"));
     }
 
     @Override

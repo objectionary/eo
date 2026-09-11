@@ -52,8 +52,7 @@ final class CompilingTest {
                         new TjsForeign(),
                         temp,
                         temp,
-                        new GlobalCache.GcFresh(),
-                        new Raws(new GlobalCache.GcFresh(), temp.resolve(Raws.DIR))
+                        new GlobalCache.GcFresh()
                     ),
                     new Probing(new TjsForeign(), new Objectionary.Fake(), false),
                     new Pulling(
