@@ -5,6 +5,8 @@
 
 package org.eolang;
 
+import java.util.Optional;
+
 /**
  * Chunk.read object.
  *
@@ -47,8 +49,9 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
 
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;
-        if (Heaps.INSTANCE.fits(id, offset, length)) {
-            result = new Data.ToPhi(Heaps.INSTANCE.read(id, offset, length));
+        final Optional<byte[]> data = Heaps.INSTANCE.fetched(id, offset, length);
+        if (data.isPresent()) {
+            result = new Data.ToPhi(data.get());
         } else {
             result = this.take(EOchunk$EOread.FALLBACK);
             result.put(
