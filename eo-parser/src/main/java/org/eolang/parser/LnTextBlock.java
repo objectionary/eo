@@ -25,6 +25,10 @@ import java.util.List;
  * {@code <o base='.<name>'>} links, with the line's outer binding and
  * name suffix attaching to the last link.</p>
  *
+ * <p>The span arrives already checked: {@link Eo} builds this line only
+ * for a body that starts with {@code """}, so the closer is not
+ * checked for that a second time here.</p>
+ *
  * @since 0.1
  */
 final class LnTextBlock implements Line {
@@ -46,12 +50,6 @@ final class LnTextBlock implements Line {
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         final String body = this.span.body();
-        if (!body.startsWith("\"\"\"")) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "text block closer must start with triple-quote"
-            );
-        }
         final Tokens tokens = new Tokens(body, this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
