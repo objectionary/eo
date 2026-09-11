@@ -78,11 +78,6 @@ final class Parsing implements Step {
     private final GlobalCache cache;
 
     /**
-     * The trees the parser has already made of these sources.
-     */
-    private final Raws raws;
-
-    /**
      * Constructor.
      *
      * @param srcs Foreign tojos catalog
@@ -100,7 +95,6 @@ final class Parsing implements Step {
         this.target = target;
         this.home = sources;
         this.cache = store;
-        this.raws = new Raws(store.with("raws"), target.resolve("0-raw"));
     }
 
     @Override
@@ -208,7 +202,13 @@ final class Parsing implements Step {
         final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
         final Xmir xmir = new EoSource(identifier, source, pipeline)
-            .parsed(pipeline.apply(this.raws.of(identifier, source)));
+            .parsed(
+                pipeline.apply(
+                    new Raws(
+                        this.cache.with("raws"), this.target.resolve("0-raw")
+                    ).of(identifier, source)
+                )
+            );
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
