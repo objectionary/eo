@@ -24,7 +24,7 @@ final class GettimeofdaySyscallTest {
     void reportsSecondsCloseToCurrentWallClockTime() {
         MatcherAssert.assertThat(
             "gettimeofday must report seconds close to the current wall-clock time, not a value corrupted by a mismatched NativeLong/Java long field width",
-            new Dataized(this.output().take("seconds")).asNumber().doubleValue(),
+            new Dataized(this.output().take("seconds")).asNumber(),
             Matchers.closeTo(System.currentTimeMillis() / 1000.0, 5.0)
         );
     }
