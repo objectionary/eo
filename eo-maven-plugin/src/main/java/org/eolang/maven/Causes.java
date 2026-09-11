@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The chain of causes of a problem, ready for the log.
@@ -37,18 +38,12 @@ final class Causes implements Iterable<String> {
     @Override
     public Iterator<String> iterator() {
         final List<String> causes = Causes.all(this.problem);
-        for (int pos = 0; pos < causes.size(); ++pos) {
-            if (causes.get(pos) == null) {
-                causes.remove(pos);
-                break;
-            }
-        }
+        causes.removeIf(Objects::isNull);
         int idx = 0;
         while (idx < causes.size()) {
             final String cause = causes.get(idx);
             for (int later = idx + 1; later < causes.size(); ++later) {
-                final String another = causes.get(later);
-                if (another != null && cause.contains(another)) {
+                if (cause.contains(causes.get(later))) {
                     causes.remove(idx);
                     idx -= 1;
                     break;
