@@ -39,10 +39,19 @@ import java.util.Map;
  * which case the answer is one of the things a call put in, and
  * {@link Branched} says which. Which call is the question, since the chain a
  * receiver resolves through reaches other applications of the same object and
- * their arguments went into their own copies of the void. So the call asked is
- * the one that landed here — the one that filled a void of a formation this
- * void holds — and a reader further along the chain learns what that call was
- * handed (#8508).</p>
+ * their arguments went into their own copies of the void. The call that landed
+ * here is asked first — the one that filled a void of a formation this void
+ * holds — so that a reader further along the chain learns what that call was
+ * handed (#8508). Where its arms agree on nothing the next call up the chain
+ * is asked, and then the next, and when no call of its own agrees the fillings
+ * gathered along the whole chain are joined instead.</p>
+ *
+ * <p>Those later calls are strangers, and an answer taken from one of them is
+ * a guess: their arguments went into copies of the void this question is not
+ * about. The guess holds because an argument relayed into a copy of the same
+ * void is written for the same shape, and it is worth keeping because giving
+ * it up leaves hundreds of names rooted at a void again while settling almost
+ * nothing (#8571).</p>
  *
  * <p>Only the arms of those formations are counted. An argument is relayed to
  * every formation the void might hold, because which one it turns out to be is
