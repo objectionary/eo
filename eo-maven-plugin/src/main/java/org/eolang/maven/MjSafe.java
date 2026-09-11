@@ -561,7 +561,11 @@ abstract class MjSafe extends AbstractMojo {
                     tojos,
                     this.targetDir.toPath(),
                     this.sourcesDir.toPath(),
-                    this.caching(Parsing.CACHE)
+                    this.caching(Parsing.CACHE),
+                    new Raws(
+                        this.caching(Raws.CACHE),
+                        this.targetDir.toPath().resolve(Raws.DIR)
+                    )
                 )
             ),
             new Timed(

@@ -17,6 +17,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;
 
@@ -42,14 +43,19 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6263:30min Parse every {@code .eo} source once per build.
- *  This goal parses each source and throws the tree away, and then the
- *  {@code compile} goal parses the very same text again seconds later,
- *  so a clean build of {@code eo-runtime} parses its 170 sources twice.
- *  Hand the settled tree of {@link #canonical(Path, String)} over to
- *  {@link Parsing} instead, keyed by the source hash the way
- *  {@link GlobalCache} already keys its footprints, so that the second
- *  parse is skipped when the format goal has just produced the same tree.
+ * @todo #6627:30min Keep the tree of a source this goal has rewritten.
+ *  The first pass reads its tree through {@link Raws}, so the {@code parse}
+ *  goal finds it instead of running the grammar again, but the settling
+ *  passes still parse text that nobody else will ever ask for. When
+ *  {@link #autofix} is on, the last of those passes parses exactly the text
+ *  that ends up on disk, which is the text {@code parse} will read, so that
+ *  tree is worth keeping under the hash of the rewritten file too.
+ * @todo #6627:30min Bound the store of raw trees.
+ *  {@link Raws} writes a tree for every distinct source text it is asked
+ *  about and never takes one out again, so the machine-wide cache grows
+ *  with every edit of every source of every project built on this machine.
+ *  Give it the same treatment the rest of the cache gets, or an age at
+ *  which a tree nobody has asked for is dropped.
  */
 @Mojo(
     name = "format",
@@ -84,15 +90,16 @@ public final class MjFormat extends MjPenalties {
             final Collection<TjForeign> sources = tojos.withSources();
             this.report(
                 sources.size(),
-                new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
+                new Threaded<>(sources, this::reformat).total(),
                 System.currentTimeMillis() - start
             );
         }
     }
 
-    private int reformat(final Path source) throws IOException {
+    private int reformat(final TjForeign tojo) throws IOException {
+        final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(source, actual);
+        final String canonical = this.canonical(tojo.identifier(), source, actual);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -114,9 +121,20 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(final Path path, final String source) throws IOException {
+    private String canonical(
+        final String name, final Path path, final String source
+    ) throws IOException {
         String structure = source;
-        XML tree = MjFormat.parsed(path, structure);
+        XML tree = MjFormat.checked(
+            path,
+            structure,
+            new Canonical().apply(
+                new Raws(
+                    this.caching(Raws.CACHE),
+                    this.targetDir.toPath().resolve(Raws.DIR)
+                ).of(name, path)
+            )
+        );
         Optional<String> settled = Optional.empty();
         final int settle = 8;
         for (int pass = 0; pass < settle; ++pass) {
@@ -138,7 +156,12 @@ public final class MjFormat extends MjPenalties {
     }
 
     private static XML parsed(final Path source, final String structure) throws IOException {
-        final XML xmir = new EoSyntax(structure).parsed();
+        return MjFormat.checked(source, structure, new EoSyntax(structure).parsed());
+    }
+
+    private static XML checked(
+        final Path source, final String structure, final XML xmir
+    ) {
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
