@@ -49,8 +49,7 @@ final class LnTextBlock implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        final String body = this.span.body();
-        final Tokens tokens = new Tokens(body, this.span);
+        final Tokens tokens = new Tokens(this.span.body(), this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
         final String outer = LnApplication.readOuterBinding(tokens, this.span);
