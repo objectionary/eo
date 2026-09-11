@@ -115,16 +115,19 @@ final class Placing implements Step {
         }
         final Path dir = this.home.resolve(dep);
         final long copied = new Placing.PlacedDependency(dir, dep, this.rewrite).get();
-        if (copied > 0) {
-            Logger.debug(
-                this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new WkDefault(dir).size(), dep, this.classes
-            );
-        } else {
-            Logger.debug(
-                this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new WkDefault(dir).size(), dep, this.classes
-            );
+        if (Logger.isDebugEnabled(this)) {
+            final int total = new WkDefault(dir).size();
+            if (copied > 0) {
+                Logger.debug(
+                    this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
+                    copied, total, dep, this.classes
+                );
+            } else {
+                Logger.debug(
+                    this, "No binary file(s) out of %d were placed from %s, to %[file]s",
+                    total, dep, this.classes
+                );
+            }
         }
         return copied;
     }
