@@ -101,6 +101,7 @@ public final class MjFormat extends MjPenalties {
         final String actual = new UncheckedText(new TextOf(source)).asString();
         final String canonical = this.canonical(tojo.identifier(), source, actual);
         final Diff diff = new Diff(actual, canonical);
+
         final int diverged;
         if (diff.same()) {
             diverged = 0;

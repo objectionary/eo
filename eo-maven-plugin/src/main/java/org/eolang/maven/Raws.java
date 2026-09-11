@@ -7,10 +7,17 @@ package org.eolang.maven;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.function.UnaryOperator;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.eolang.parser.EoSyntax;
 
 /**
@@ -79,10 +86,38 @@ final class Raws {
         this.cache.footprint(
             this.base.relativize(target),
             sha::toString,
-            src -> new EoSyntax(
-                new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
-            ).parsed().toString()
+            src -> Raws.plain(
+                new EoSyntax(
+                    new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
+                ).parsed()
+            )
         ).apply(source, target);
         return new XMLDocument(target);
+    }
+
+    /**
+     * The tree as text, with no whitespace of its own.
+     *
+     * <p>An indented tree is not the same tree: the newlines a pretty
+     * printer puts between elements come back as text nodes of their own,
+     * and the XSL train the reader puts on top of the tree sees children
+     * that the parser never made. So the text kept here carries the tree
+     * and nothing else.</p>
+     *
+     * @param tree The tree to write down
+     * @return The text of it
+     * @throws IOException If fails to write
+     */
+    private static String plain(final XML tree) throws IOException {
+        try {
+            final Transformer transformer =
+                TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "no");
+            final StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(tree.inner()), new StreamResult(writer));
+            return writer.toString();
+        } catch (final TransformerException ex) {
+            throw new IOException("Failed to write down a parsed tree", ex);
+        }
     }
 }
