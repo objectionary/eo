@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A second "+package" is refused, and the self-reference is still shortened
+# against the first one while the file is being parsed, which is what used to
+# give Saxon two nodes for string() (#7448).
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'Package is declared more than once')]
+  - //o[@name='y' and @base='Φ.a.main.x']
+input: |
+  +package a
+  +package b
+
+  [] > main
+    main.x > y
+    5 > x
