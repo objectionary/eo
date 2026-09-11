@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A run of spaces around the arrow is admitted for every other void name,
+# so the receiver reads the same way instead of being refused as a name
+# that does not start with a lowercase letter (R-3.4.11).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='ρ' and @base='∅']
+input: |
+  [] > main
+    ?  >  ^
+    ? > x

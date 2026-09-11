@@ -61,9 +61,13 @@ import java.util.regex.Pattern;
 final class LnVoid implements Line {
 
     /**
-     * The shape of a head that declares the formation's receiver.
+     * The shape of a head that declares the formation's receiver. A run
+     * of spaces of any length is admitted around the arrow, the way
+     * {@code Suffix} admits one around every other void name, so that
+     * {@code ?  > ^} is read as the receiver it is rather than sent to
+     * the attribute branch to be refused as a lowercase name.
      */
-    private static final Pattern RECEIVER = Pattern.compile(" > \\^ *");
+    private static final Pattern RECEIVER = Pattern.compile(" +> +\\^ *");
 
     /**
      * The line's source span.
