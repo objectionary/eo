@@ -65,7 +65,7 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.BARE_FORMATION, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.name("foo", false);
+        level.name("foo", false, 1);
         MatcherAssert.assertThat(
             "named() must report true once name() has been called",
             level.named(),
@@ -78,7 +78,7 @@ final class LevelTest {
         final Level level = new Level(
             2, 5, Kind.VMETHOD, Openness.OPEN, Kind.BARE_FORMATION, false
         );
-        level.name("intermediate", false);
+        level.name("intermediate", false, 5);
         level.sealed();
         MatcherAssert.assertThat(
             "sealed() must forget the name the replaced chain link carried",

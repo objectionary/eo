@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors[count(error)=1]
+  - /object/errors/error[contains(text(),'cannot be a named attribute of only-phi formation')]
+  - /object/errors/error[@line='4']
+input: |
+  [] > main
+    foo > [x] > f
+      bar
+      .baz > z

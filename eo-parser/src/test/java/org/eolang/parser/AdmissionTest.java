@@ -18,7 +18,7 @@ final class AdmissionTest {
     @Test
     void namesTheLevelWhenLabelIsGiven() {
         final Level level = new Stack().push(0, 1, Kind.HEAD, Openness.OPEN);
-        new Admission("nu", false).name(level);
+        new Admission("nu", false).name(level, 1);
         MatcherAssert.assertThat(
             "a level named through a non-null label must be recorded as named",
             level.named(),
@@ -29,7 +29,7 @@ final class AdmissionTest {
     @Test
     void leavesTheLevelUnnamedWhenLabelIsNull() {
         final Level level = new Stack().push(0, 1, Kind.HEAD, Openness.OPEN);
-        new Admission(null, false).name(level);
+        new Admission(null, false).name(level, 1);
         MatcherAssert.assertThat(
             "a level left untouched by a null label must stay unnamed",
             level.named(),
