@@ -500,8 +500,8 @@
         <xs:appinfo>The amount of milliseconds that were spent on creating this document</xs:appinfo>
         <xs:documentation>
           The element contains a positive integer, which is the number of milliseconds
-          that were spent by the parser to generate this document. This information
-          is valuable for debugging purposes and may be omitted in production systems.
+          spent by the parser walking the EO source into XMIR directives. It does not
+          include building the DOM or applying the canonical XSL transformations.
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
