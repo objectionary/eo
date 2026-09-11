@@ -184,7 +184,7 @@ final class Tokens {
         final int start = this.cursor;
         if (this.atEnd()) {
             throw new ParseError(
-                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
+                this.span.line(), Suffix.clamped(this.span.indent() + start, this.span),
                 "expected identifier"
             );
         }
@@ -200,19 +200,7 @@ final class Tokens {
             idx = idx + 1;
         }
         final String raw = this.body.substring(start, idx);
-        if (Tokens.cactus(raw)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
-        final int control = new Scrubbed(raw).found();
-        if (control >= 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start + control,
-                "control character is not allowed in an identifier"
-            );
-        }
+        Suffix.checkGlyphs(raw, this.span.line(), this.span.indent() + start);
         this.cursor = idx;
         return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
@@ -543,7 +531,7 @@ final class Tokens {
         }
         if (this.cursor == start) {
             throw new ParseError(
-                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
+                this.span.line(), Suffix.clamped(this.span.indent() + start, this.span),
                 "expected binding label after `:`"
             );
         }
@@ -648,10 +636,6 @@ final class Tokens {
         return idx;
     }
 
-    private static int clamped(final int pos, final Span source) {
-        return Math.min(pos, source.text().length() - 1);
-    }
-
     private static boolean singleToken(final String inside) {
         boolean single = true;
         int idx = 0;
@@ -737,10 +721,6 @@ final class Tokens {
 
     private static boolean terminates(final char glyph) {
         return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
-    }
-
-    private static boolean cactus(final String text) {
-        return text.codePoints().anyMatch(cp -> cp == 0x1F335);
     }
 
     private static boolean validBinding(final String text) {

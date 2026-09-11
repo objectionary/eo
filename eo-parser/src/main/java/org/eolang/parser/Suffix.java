@@ -376,7 +376,14 @@ final class Suffix {
         }
     }
 
-    private static int clamped(final int pos, final Span span) {
+    /**
+     * Clamp an error column to the last character of the source span.
+     *
+     * @param pos Candidate source column
+     * @param span Source span
+     * @return Column inside the source span
+     */
+    static int clamped(final int pos, final Span span) {
         return Math.min(pos, span.text().length() - 1);
     }
 
