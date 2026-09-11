@@ -80,10 +80,11 @@ final class Admission {
      * Name the level with this suffix's label, when there is one.
      *
      * @param level The level to name
+     * @param line The source line the suffix sits on
      */
-    void name(final Level level) {
+    void name(final Level level, final int line) {
         if (this.label != null) {
-            level.name(this.label, this.test);
+            level.name(this.label, this.test, line);
         }
     }
 

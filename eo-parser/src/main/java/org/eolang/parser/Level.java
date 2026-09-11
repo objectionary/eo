@@ -79,6 +79,15 @@ final class Level {
     private Optional<String> label;
 
     /**
+     * The source line of the naming suffix that set {@link #label},
+     * which is the line a §4.5 error about that name belongs on. It is
+     * the line the entry was pushed on until a suffix claims the entry,
+     * and a same-indent {@code .method} continuation moves it to its own
+     * line the way it moves the label (R-6.2.2).
+     */
+    private int labelled;
+
+    /**
      * The source name of the only-phi formation this entry argues
      * (empty when anonymous), or {@code null} when it is not such an
      * argument. Set by {@link Stack} (see {@link #argues(String)});
@@ -189,6 +198,7 @@ final class Level {
         this.parent = parent;
         this.patom = patom;
         this.label = Level.NO_NAME;
+        this.labelled = line;
         this.atom = false;
         this.taken = false;
         this.count = 0;
@@ -214,6 +224,16 @@ final class Level {
      */
     int start() {
         return this.start;
+    }
+
+    /**
+     * Source line of the suffix that named the entry, or the line it was
+     * pushed on while no suffix has named it.
+     *
+     * @return Line of the name
+     */
+    int labelled() {
+        return this.labelled;
     }
 
     /**
@@ -402,9 +422,11 @@ final class Level {
      *  {@code null}
      * @param form Whether the suffix that set this name was a
      *  {@code TEST} or {@code THROWS} form
+     * @param line The source line the suffix sits on
      */
-    void name(final String text, final boolean form) {
+    void name(final String text, final boolean form, final int line) {
         this.label = Optional.of(text);
+        this.labelled = line;
         if (form) {
             this.refusal = "method continuation not allowed on a test attribute";
         }
@@ -507,6 +529,7 @@ final class Level {
         this.bindings = 0;
         this.arg = 0;
         this.label = Level.NO_NAME;
+        this.labelled = this.start;
     }
 
     /**
@@ -610,6 +633,7 @@ final class Level {
 
     private void absorb(final Level other) {
         this.label = other.label;
+        this.labelled = other.labelled;
         this.formation = other.formation;
         this.atom = other.atom;
         this.taken = other.taken;

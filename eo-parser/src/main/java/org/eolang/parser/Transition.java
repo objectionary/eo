@@ -64,7 +64,7 @@ final class Transition {
                 this.span.line(), this.span.indent(), admission.violation()
             );
         }
-        admission.name(level);
+        admission.name(level, this.span.line());
         return level;
     }
 
