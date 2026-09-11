@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -83,7 +82,11 @@ public final class PhSticky implements Phi {
      * one computation instead of running two. An entry outlives the
      * computation it guards, the way {@code ConcurrentCache} keeps its
      * own: a lock taken out of the map while it is still held hands the
-     * next caller a different one and lets it in (#8050).
+     * next caller a different one and lets it in (#8050). The map is
+     * bounded the way the answers are, letting the key asked for longest
+     * ago go first, so that a long-lived object dataized over many
+     * distinct inputs does not keep a lock for every key it has ever
+     * seen.
      */
     private final Map<String, Lock> guards;
 
@@ -107,7 +110,7 @@ public final class PhSticky implements Phi {
             obj,
             Collections.synchronizedMap(new Lru<>(capacity)),
             new CopyOnWriteArrayList<>(),
-            new ConcurrentHashMap<>(0)
+            Collections.synchronizedMap(new Lru<>(capacity))
         );
     }
 
