@@ -72,7 +72,7 @@ final class Raws {
             () -> new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(source)))
             ).asString(),
-            src -> Raws.plain(
+            src -> this.plain(
                 new EoSyntax(
                     new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
                 ).parsed()
@@ -81,7 +81,7 @@ final class Raws {
         return new XMLDocument(target);
     }
 
-    private static String plain(final XML tree) throws IOException {
+    private String plain(final XML tree) throws IOException {
         try {
             final Transformer transformer =
                 TransformerFactory.newInstance().newTransformer();
