@@ -27,30 +27,31 @@
     ^.write
       0
       object
-  seq * > [^ offset count cant-read] > read
-    if.
-      ^.valid.and
-        and.
-          0.lte offset
-          lte.
-            offset.plus count
-            ^.length
-      ^.^.read
-        ^.start.plus offset
-        count
-      cant-read
-        "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
-          * count offset ^.length
-  seq * > [^ capacity] > resized
-    "Can't resize a chunk slot of length %f".printf
-      * ^.length
-  seq * > [^] > size
-    ^.valid.if
-      ^.length
-      "Can't get the size of an invalid chunk slot"
-  ^.slot > [^ child-start child-length] > slot
-    ^.start.plus child-start
-    child-length
+  if. > [^ offset count cant-read] > read
+    ^.valid.and
+      and.
+        0.lte offset
+        lte.
+          offset.plus count
+          ^.length
+    ^.^.read
+      ^.start.plus offset
+      count
+    cant-read
+      "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
+        *
+          count
+          offset
+          ^.length
+  printf. > [^ capacity] > resized
+    "Can't resize a chunk slot of length %f"
+    * ^.length
+  ^.valid.if > [^] > size
+    ^.length
+    "Can't get the size of an invalid chunk slot"
+  ^.slot > [^ begin width] > slot
+    ^.start.plus begin
+    width
   and. > [^] > valid
     and.
       and.
@@ -62,22 +63,21 @@
     lte.
       ^.start.plus ^.length
       ^.^.size
-  seq * > [^ offset data] > write
-    if.
-      ^.valid.and
-        and.
-          0.lte offset
-          lte.
-            offset.plus data.size
-            ^.length
-      ^.^.write
-        ^.start.plus offset
-        data
-      "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
-        *
-          data.size
-          offset
+  if. > [^ offset data] > write
+    ^.valid.and
+      and.
+        0.lte offset
+        lte.
+          offset.plus data.size
           ^.length
+    ^.^.write
+      ^.start.plus offset
+      data
+    "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
+      *
+        data.size
+        offset
+        ^.length
 
   ++> can-create-a-slot
     eq. > @
@@ -97,6 +97,17 @@
           empty.size > @
           mem.slot 8 0 > empty
       0
+
+  ++> can-invalidate-a-stale-slot-after-parent-shrink
+    not. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            mem.resized 4
+            part.valid
+          mem.slot 0 8 > part
 
   ++> can-isolate-neighbouring-slots
     eq. > @
@@ -142,6 +153,38 @@
           mem.slot 2 4 > part
       01-02-03-04
 
+  ++> can-reject-a-fractional-slot-length
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot 1 2.5 > invalid
+
+  ++> can-reject-a-negative-slot-start
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot -1 2 > invalid
+
+  ++> can-reject-a-non-finite-slot-start
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot pinf 2 > invalid
+
+  ++> can-reject-a-slot-that-exceeds-the-parent
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot 7 2 > invalid
+
   ++> can-report-the-parent-id
     eq. > @
       malloc.of
@@ -152,46 +195,3 @@
             part.id.eq mem.id
           mem.slot 2 4 > part
       true
-
-  ++> rejects-a-fractional-slot-length
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot 1 2.5 > invalid
-
-  ++> rejects-a-negative-slot-start
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot -1 2 > invalid
-
-  ++> rejects-a-non-finite-slot-start
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot pinf 2 > invalid
-
-  ++> rejects-a-slot-that-exceeds-the-parent
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot 7 2 > invalid
-
-  ++> stale-slot-invalidates-after-parent-shrink
-    not. > @
-      malloc.of
-        8
-        [mem]
-          seq * > @
-            part
-            mem.resized 4
-            part.valid
-          mem.slot 0 8 > part
