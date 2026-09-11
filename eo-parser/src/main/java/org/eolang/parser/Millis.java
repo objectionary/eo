@@ -30,6 +30,6 @@ final class Millis implements Text {
 
     @Override
     public String asString() {
-        return String.valueOf((this.nanos + 999_999L) / 1_000_000L);
+        return String.valueOf(Math.max(1L, (this.nanos + 999_999L) / 1_000_000L));
     }
 }
