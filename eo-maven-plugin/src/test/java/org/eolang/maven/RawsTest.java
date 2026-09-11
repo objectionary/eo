@@ -35,7 +35,7 @@ final class RawsTest {
     @Test
     void readsAgainWhenTheTextChanges(@Mktmp final Path temp) throws IOException {
         final Raws raws = RawsTest.raws(temp);
-        raws.of("foo", RawsTest.saved(temp, "[] > foo%n")).toString();
+        raws.of("foo", RawsTest.saved(temp, "[] > foo%n"));
         MatcherAssert.assertThat(
             "a rewritten source must be parsed again, but the tree of its earlier text came back",
             raws.of("foo", RawsTest.saved(temp, "[] > foo%n  42 > bar%n")).toString(),
