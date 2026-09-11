@@ -135,15 +135,10 @@ final class LnReversed implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             base, this.span.line(), this.span.indent()
         );
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
         if (fragile) {
             emit.fragile();
         }
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }

@@ -92,13 +92,8 @@ final class LnPipe implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             this.span.line(), this.span.indent()
         );
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
         emit.pipe();
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }

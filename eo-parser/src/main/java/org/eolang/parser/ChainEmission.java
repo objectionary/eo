@@ -82,12 +82,7 @@ final class ChainEmission {
             this.emit, this.span.line(), this.head, this.chain,
             this.suffix.attribute(this.span.line(), this.span.indent())
         );
-        if (!this.suffix.handle().isEmpty()) {
-            this.emit.local(this.suffix.handle());
-        }
-        if (this.suffix.constant()) {
-            this.emit.constant();
-        }
+        new Marked(this.emit, this.suffix).apply();
     }
 
     /**
