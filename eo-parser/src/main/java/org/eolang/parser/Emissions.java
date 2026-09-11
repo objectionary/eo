@@ -84,7 +84,7 @@ final class Emissions {
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
-        if (Emissions.reversedDispatch(tokens, head)) {
+        if (!head.global() && tokens.reversedAhead(head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
             Bindings.checkAllOrNothing(rargs, span);
@@ -439,24 +439,6 @@ final class Emissions {
             Emissions.expression(emit, name, tokens, line);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
-    }
-
-    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
     }
 
     private static String reversedHead(final Value head) {
