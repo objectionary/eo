@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.function.UnaryOperator;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -31,6 +30,11 @@ import org.eolang.parser.EoSyntax;
  * kept here under the hash of the text it was made of, so a rewritten
  * source makes a key of its own and the tree of the old text is never
  * handed out for the new one.</p>
+ *
+ * <p>The tree is written with no indentation of its own, because an
+ * indented tree is not the same tree: the newlines a pretty printer puts
+ * between elements come back as text nodes, and the XSL train the reader
+ * puts on top then sees children the parser never made.</p>
  *
  * @since 0.62.0
  */
@@ -72,25 +76,21 @@ final class Raws {
             () -> new UncheckedText(
                 new HexOf(new Sha256DigestOf(new InputOf(source)))
             ).asString(),
-            src -> this.plain(
-                new EoSyntax(
-                    new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
-                ).parsed()
-            )
+            src -> {
+                final Transformer writer = TransformerFactory.newInstance().newTransformer();
+                writer.setOutputProperty(OutputKeys.INDENT, "no");
+                final StringWriter text = new StringWriter();
+                writer.transform(
+                    new DOMSource(
+                        new EoSyntax(
+                            new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
+                        ).parsed().inner()
+                    ),
+                    new StreamResult(text)
+                );
+                return text.toString();
+            }
         ).apply(source, target);
         return new XMLDocument(target);
-    }
-
-    private String plain(final XML tree) throws IOException {
-        try {
-            final Transformer transformer =
-                TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "no");
-            final StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(tree.inner()), new StreamResult(writer));
-            return writer.toString();
-        } catch (final TransformerException ex) {
-            throw new IOException("Failed to write down a parsed tree", ex);
-        }
     }
 }
