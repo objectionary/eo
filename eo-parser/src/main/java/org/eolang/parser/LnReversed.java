@@ -29,9 +29,12 @@ import java.util.List;
  * at close time if no receiver appeared.</li>
  * </ul>
  *
- * <p>Emission: opens {@code <o base='.<name>' method=''>} at the
- * current cursor and stays inside. For horizontal form, the receiver
- * and method args are appended as children before the cursor closes.
+ * <p>Emission: opens {@code <o base='.<name>'>} at the current cursor
+ * and stays inside. There is no {@code @method} on it: per §9.4 a
+ * reversed dispatch opens a chain, while {@code @method} marks a link
+ * that continues one, and R-3.5.3b reads the two apart. For horizontal
+ * form, the receiver and method args are appended as children before
+ * the cursor closes.
  * For vertical form, deeper-indent lines (dispatched through
  * {@link LnApplication} etc.) attach as children automatically.</p>
  *
