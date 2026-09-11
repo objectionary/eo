@@ -155,7 +155,7 @@
                 regex.
                   string
                     as-bytes.
-                      "".joined >>
+                      "".joined
                         *
                           "/^"
                           translated 0 "" false false
