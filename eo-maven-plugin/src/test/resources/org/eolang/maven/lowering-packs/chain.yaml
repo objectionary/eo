@@ -1,18 +1,25 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A chain of two applications reduces inside out: the sum parks first,
-# then the product over its symbol, and the answer names the last step.
+# D
 input: |
-  [x] > foo
-    (x.plus 2).times x > @
-voids:
-  x: number
+  [] > foo
+    [x] > calc
+      (x.plus 2).times x > @
+    calc 5 > @
+prelude:
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
 lowered: |
-  times. > [x] > foo
-    x.plus 2
-    x
-protocol: |
-  s1 ← L_number_plus sym:v0 number:40-00-00-00-00-00-00-00
-  s2 ← L_number_times sym:s1 sym:v0
-  answer sym:s2 number
+  [] > foo
+    [x] > calc
+      (x.plus 2).times x > @
+    calc 5 > @

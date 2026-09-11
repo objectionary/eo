@@ -1,10 +1,27 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The bytes of a text survive the fold exactly as the parser read them,
-# escape sequences included.
+# D
 input: |
   [] > foo
-    "e\ne".eq 65-0A-65 > @
+    [t] > lined
+      t.eq "e\ne" > @
+    lined "e" > @
+prelude:
+  bytes.eo: |
+    [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  string.eo: |
+    [@] > string
+  bool.eo: |
+    [if] > bool
+      if > @
+        FF-
+        00-
 lowered: |
-  true > [] > foo
+  [] > foo
+    [t] > lined
+      t.eq "e\ne" > @
+    lined "e" > @

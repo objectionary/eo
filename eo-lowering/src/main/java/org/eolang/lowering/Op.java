@@ -43,6 +43,15 @@ public final class Op {
     }
 
     /**
+     * The λ name.
+     *
+     * @return The name, such as {@code L_number_plus}
+     */
+    public String lambda() {
+        return this.lambda;
+    }
+
+    /**
      * Whether this operation may become a step of a protocol.
      *
      * @return True if the table has a row for the λ name

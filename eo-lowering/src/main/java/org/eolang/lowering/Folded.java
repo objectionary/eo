@@ -4,186 +4,192 @@
  */
 package org.eolang.lowering;
 
-import com.github.lombrozo.xnav.Filter;
-import com.github.lombrozo.xnav.Xnav;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
- * Fold the constant fragments of one XMIR into literals.
+ * A primitive operation on literals alone, computed by the engine itself.
  *
- * <p>A fragment qualifies when it is an application whose every leaf is
- * a literal, such as {@code 1.plus 1}: its value is decided by data
- * alone, so it is computed here, once, through {@code phino dataize},
- * and a literal of that value stands where the fragment stood. Which
- * methods can fold is phino's knowledge, not ours: every qualifying
- * fragment is simply tried, and one that dispatches outside the universe
- * fails there. Such a fragment is pure by construction — a literal
- * receiver dispatches into the standard library and nowhere else — so no
- * purity analysis is consulted. The walk is top-down and the outermost
- * qualifying fragment wins, since folding it folds everything inside
- * it.</p>
- *
- * <p>Folding is best-effort per fragment: whatever phino refuses — an
- * error-path expression, a method outside its tables, an exhausted
- * budget — stays as written, and the pass goes on.</p>
+ * <p>The result is answered as data, in the carrier of the operation, so
+ * that a body called on literals alone folds to a literal instead of
+ * hiding behind a symbol. An operation the engine does not know how to
+ * compute faithfully folds to nothing, and the fire mints a row for it
+ * instead.</p>
  *
  * @since 0.76.0
  */
-public final class Folded implements Rewrite {
+public final class Folded {
 
     /**
-     * The binary that dataizes.
+     * The operation.
      */
-    private final Phino phino;
+    private final Op operation;
+
+    /**
+     * The keys of the operands, the receiver first.
+     */
+    private final List<String> keys;
 
     /**
      * Ctor.
      *
-     * @param exe The binary that dataizes
+     * @param lambda The operation
+     * @param operands The keys of the operands, the receiver first
      */
-    public Folded(final Phino exe) {
-        this.phino = exe;
+    public Folded(final Op lambda, final List<String> operands) {
+        this.operation = lambda;
+        this.keys = operands;
     }
 
-    @Override
-    public int rewrite(final Xnav doc) throws IOException {
-        final Collection<Xnav> found = new ArrayList<>(0);
-        Folded.selected(doc.element("object").element("o"), found);
-        int count = 0;
-        for (final Xnav node : found) {
-            if (this.spliced(node)) {
-                ++count;
-            }
-        }
-        return count;
-    }
-
-    private boolean spliced(final Xnav node) {
-        boolean done;
-        try {
-            final Datum datum = new Constant(this.phino, node).value();
-            Folded.carrier((Element) node.node(), datum.forma(), datum.bytes());
-            done = true;
-        } catch (final IllegalStateException | IOException ex) {
-            done = false;
-        }
-        return done;
-    }
-
-    private static void carrier(final Element element, final String forma,
-        final String value) {
-        if ("number".equals(forma)) {
-            if (value.length() != 23) {
-                throw new IllegalStateException(
-                    String.format("A number must dataize to eight bytes, not to '%s'", value)
-                );
-            }
-            Folded.cleared(element);
-            element.setAttribute("base", "Φ.number");
-            element.appendChild(Folded.wrapped(element.getOwnerDocument(), value));
-        } else if ("bool".equals(forma)) {
-            if ("FF-".equals(value)) {
-                element.setAttribute("base", "Φ.true");
-            } else if ("00-".equals(value)) {
-                element.setAttribute("base", "Φ.false");
-            } else {
-                throw new IllegalStateException(
-                    String.format("A bool must dataize to one byte, not to '%s'", value)
-                );
-            }
-            Folded.cleared(element);
+    /**
+     * The φ-expression of the result.
+     *
+     * @return The text, or an empty string when the operation is not folded
+     */
+    public String phi() {
+        final String method = this.operation.method();
+        final String out;
+        if ("number".equals(this.operation.carrier())) {
+            out = this.arithmetic(method);
+        } else if ("bytes".equals(this.operation.carrier())) {
+            out = this.bitwise(method);
         } else {
-            Folded.cleared(element);
-            element.setAttribute("base", "Φ.bytes");
-            element.appendChild(Folded.datum(element.getOwnerDocument(), value));
+            out = "";
         }
-    }
-
-    private static Element wrapped(final Document doc, final String value) {
-        final Element out = doc.createElement("o");
-        out.setAttribute("as", "α0");
-        out.setAttribute("base", "Φ.bytes");
-        out.appendChild(Folded.datum(doc, value));
         return out;
     }
 
-    private static Element datum(final Document doc, final String value) {
-        final Element out = doc.createElement("o");
-        out.setAttribute("as", "α0");
-        out.setTextContent(value);
+    /**
+     * Fold an operation on numbers.
+     *
+     * @param method The method
+     * @return The text, or an empty string
+     */
+    private String arithmetic(final String method) {
+        final double left = this.hex(0).number();
+        final String out;
+        if ("plus".equals(method)) {
+            out = Folded.number(left + this.hex(1).number());
+        } else if ("times".equals(method)) {
+            out = Folded.number(left * this.hex(1).number());
+        } else if ("div".equals(method)) {
+            out = Folded.number(left / this.hex(1).number());
+        } else if ("gt".equals(method)) {
+            out = new Marker(
+                String.format("bool:%s", new Hex(left > this.hex(1).number()).text()), "bool"
+            ).phi();
+        } else {
+            out = "";
+        }
         return out;
     }
 
-    private static void cleared(final Element element) {
-        while (element.getFirstChild() != null) {
-            element.removeChild(element.getFirstChild());
-        }
-    }
-
-    private static void selected(final Xnav node, final Collection<Xnav> out) {
-        if (Folded.foldable(node)) {
-            out.add(node);
-        } else {
-            for (final Xnav kid : Folded.kids(node)) {
-                Folded.selected(kid, out);
+    /**
+     * Fold an operation on bytes.
+     *
+     * @param method The method
+     * @return The text, or an empty string
+     */
+    private String bitwise(final String method) {
+        final byte[] left = this.hex(0).bytes();
+        final String out;
+        if ("and".equals(method) || "or".equals(method)) {
+            final byte[] right = this.hex(1).bytes();
+            final byte[] result = new byte[Math.max(left.length, right.length)];
+            for (int idx = 0; idx < result.length; ++idx) {
+                result[idx] = Folded.combined(method, Folded.at(left, idx), Folded.at(right, idx));
             }
-        }
-    }
-
-    private static boolean foldable(final Xnav node) {
-        final String base = Folded.base(node);
-        return base.length() > 1 && base.charAt(0) == '.'
-            && Folded.decided(node);
-    }
-
-    private static boolean decided(final Xnav node) {
-        boolean good = Folded.literal(node);
-        if (!good) {
-            final String base = Folded.base(node);
-            if (base.length() > 1 && base.charAt(0) == '.') {
-                final List<Xnav> kids = Folded.kids(node);
-                good = !kids.isEmpty()
-                    && kids.get(0).attribute("as").text().isEmpty();
-                for (int idx = 1; good && idx < kids.size(); ++idx) {
-                    good = kids.get(idx).attribute("as").text().isPresent();
-                }
-                for (int idx = 0; good && idx < kids.size(); ++idx) {
-                    good = Folded.decided(kids.get(idx));
-                }
+            out = Folded.bytes(result);
+        } else if ("not".equals(method)) {
+            final byte[] result = new byte[left.length];
+            for (int idx = 0; idx < result.length; ++idx) {
+                result[idx] = (byte) ~left[idx];
             }
-        }
-        return good;
-    }
-
-    private static boolean literal(final Xnav node) {
-        final String base = Folded.base(node);
-        final List<Xnav> kids = Folded.kids(node);
-        final boolean good;
-        if ("Φ.true".equals(base) || "Φ.false".equals(base)) {
-            good = kids.isEmpty();
-        } else if ("Φ.bytes".equals(base)) {
-            good = kids.size() == 1
-                && Folded.base(kids.get(0)).isEmpty()
-                && Folded.kids(kids.get(0)).isEmpty();
-        } else if ("Φ.number".equals(base) || "Φ.string".equals(base)) {
-            good = kids.size() == 1 && Folded.literal(kids.get(0));
+            out = Folded.bytes(result);
+        } else if ("concat".equals(method)) {
+            final byte[] right = this.hex(1).bytes();
+            out = Folded.bytes(
+                ByteBuffer.allocate(left.length + right.length).put(left).put(right).array()
+            );
+        } else if ("eq".equals(method)) {
+            out = new Marker(
+                String.format(
+                    "bool:%s", new Hex(Arrays.equals(left, this.hex(1).bytes())).text()
+                ),
+                "bool"
+            ).phi();
+        } else if ("size".equals(method)) {
+            out = Folded.number(left.length);
         } else {
-            good = false;
+            out = "";
         }
-        return good;
+        return out;
     }
 
-    private static String base(final Xnav node) {
-        return node.attribute("base").text().orElse("");
+    /**
+     * One operand as bytes.
+     *
+     * @param index The position of the operand
+     * @return The bytes
+     */
+    private Hex hex(final int index) {
+        final String key = this.keys.get(index);
+        return new Hex(key.substring(key.indexOf(':') + 1));
     }
 
-    private static List<Xnav> kids(final Xnav node) {
-        return node.elements(Filter.withName("o")).collect(Collectors.toList());
+    /**
+     * A byte of an array, zero past its end.
+     *
+     * @param bytes The array
+     * @param idx The position
+     * @return The byte
+     */
+    private static byte at(final byte[] bytes, final int idx) {
+        final byte out;
+        if (idx < bytes.length) {
+            out = bytes[idx];
+        } else {
+            out = 0;
+        }
+        return out;
+    }
+
+    /**
+     * Combine two bytes.
+     *
+     * @param method The method, {@code and} or {@code or}
+     * @param left The left byte
+     * @param right The right byte
+     * @return The result
+     */
+    private static byte combined(final String method, final byte left, final byte right) {
+        final byte out;
+        if ("and".equals(method)) {
+            out = (byte) (left & right);
+        } else {
+            out = (byte) (left | right);
+        }
+        return out;
+    }
+
+    /**
+     * A number as data.
+     *
+     * @param value The number
+     * @return The text
+     */
+    private static String number(final double value) {
+        return new Marker(String.format("number:%s", new Hex(value).text()), "number").phi();
+    }
+
+    /**
+     * Bytes as data.
+     *
+     * @param value The bytes
+     * @return The text
+     */
+    private static String bytes(final byte[] value) {
+        return new Marker(String.format("bytes:%s", new Hex(value).text()), "bytes").phi();
     }
 }

@@ -89,7 +89,7 @@ public final class Reads {
         final SortedSet<Integer> out = new TreeSet<>();
         final Stream<String> keys = Stream.concat(
             this.protocol.moves().stream()
-                .filter(step -> step.atom().charAt(0) != '.')
+                .filter(step -> step.atom().charAt(0) != '.' && !step.atom().startsWith("Φ."))
                 .flatMap(step -> step.keys().stream()),
             Stream.concat(
                 Stream.of(this.protocol.answer(), this.protocol.reason()),

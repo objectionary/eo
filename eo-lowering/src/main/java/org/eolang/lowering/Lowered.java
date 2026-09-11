@@ -4,267 +4,164 @@
  */
 package org.eolang.lowering;
 
-import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
- * Rewrite the pure formations of one XMIR into synthetic atoms.
+ * Every fragment of one XMIR document lowered by a run of phino: the
+ * document is copied with the fragment left open and every other formation
+ * boxed, its voids are planted with markers, the copy is merged with the
+ * boxed variants of every other document into a world, phino morphs the
+ * fragment inside that world through the engine, and the residual comes
+ * back into the document with each marker turned into an atom.
  *
- * <p>A formation qualifies when it is a named attribute of another
- * formation, its body is voids plus one {@code φ} plus helpers
- * nothing outside can name, and every void is witnessed in the tables of
- * {@code eo:inference} as a number, a string, bytes or a bool, so a
- * symbolic carrier can stand for it, or as a tuple, which the atom holds
- * as the object itself and asks its length and its elements of by
- * dispatching back into EO. A helper is an attribute the source
- * privatized with {@code >>}, or a const the parser wrapped, and it
- * shows up under a synthetic {@code a🌵} name: the body reads it in
- * place, applying it to its arguments when it is a formation of its own,
- * so it is folded into the atom and leaves with the body. A public
- * attribute keeps the formation as written, since deleting the body must
- * not change the object's interface, and a helper that stays reachable
- * would be dispatchable with nothing behind it. The formation may
- * declare {@code ρ}, and its body may reach through it only to call the
- * formation itself again, which the reduction turns into a repeat; a
- * helper reaches through {@code ρ} to the voids and the other helpers of
- * the formation, which the atom carries, and helpers that apply one
- * another in tail positions become one loop with them; any other use of
- * {@code ρ} depends on a context the atom does not carry and refuses.
- * Purity needs no separate analysis: the reduction itself is
- * constructive proof, since it settles only a body made of literals,
- * void references, the lowerable operations, and dispatches back into EO
- * of the methods it does not model, and refuses everything else. Such a
- * formation is reduced into a protocol, the protocol is rendered into a
- * Java body, the body goes into a sidecar file named by its own digest,
- * and the formation keeps only its voids, the digest, and a {@code λ}
- * marker — the shape {@code lowered.xsl} later renders into an atom
- * class, which declares no {@code ρ} at all, since the body that could
- * have read one leaves with the digest and an atom holding a receiver it
- * never reads is what makes its own dataization reenter itself (#8439).
- * Whatever refuses along the way — an unwitnessed void, an operation
- * outside the tables, a body that needs no computation — leaves the
- * formation as written and says at debug level why: a refusal is normal
- * and must not fail the build, but a build that cannot tell one refusal
- * from another cannot be reasoned about either.</p>
+ * <p>A fragment phino cannot reduce, or whose program Java cannot render,
+ * stays as written, and the next fragment is tried, since each run is
+ * independent of the others: the boxes it enters are served by the engine
+ * from the tables, not from the results of earlier runs.</p>
  *
- * <p>Depth decides nothing: the walk goes down every formation of the
- * document. In a merged XMIR the top object is the package, so its
- * members are the shells and the work of a program sits deeper, in the
- * helpers a source privatized with {@code >>} (#8474). A formation that
- * lowers leaves with its whole body, so nothing inside it is walked
- * afterwards, and one that refuses hands its own attributes to the same
- * walk.</p>
- *
- * @since 0.76.0
+ * @since 0.77.0
  */
 public final class Lowered implements Rewrite {
 
     /**
-     * The binary that dataizes.
+     * The binary.
      */
     private final Phino phino;
 
     /**
-     * The tables with the witnessed forma of each void.
+     * The formas of the build.
      */
     private final Formas formas;
 
     /**
-     * The directory for the sidecar bodies.
+     * The directory of the build.
      */
-    private final Path atoms;
+    private final Home home;
+
+    /**
+     * The identifier of the document.
+     */
+    private final String name;
 
     /**
      * Ctor.
      *
-     * @param exe The binary that dataizes
-     * @param tables The tables with the witnessed forma of each void
-     * @param home The directory for the sidecar bodies
+     * @param exe The binary
+     * @param tables The formas of the build
+     * @param dir The directory of the build
+     * @param identifier The identifier of the document
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    public Lowered(final Phino exe, final Formas tables, final Path home) {
+    public Lowered(final Phino exe, final Formas tables, final Home dir,
+        final String identifier) {
         this.phino = exe;
         this.formas = tables;
-        this.atoms = home;
+        this.home = dir;
+        this.name = identifier;
     }
 
     @Override
     public int rewrite(final Xnav doc) throws IOException {
-        int count = 0;
-        if (!this.formas.blank()) {
-            for (final Xnav top : Lowered.kids(doc.element("object"))) {
-                count += this.through(top);
+        final Document document = Lowered.owner(doc.node());
+        final Boxes boxes = new Boxes(this.home.boxes());
+        int done = 0;
+        for (final Box box : boxes.all()) {
+            if (!this.owns(document, box.locator())) {
+                continue;
             }
-        }
-        return count;
-    }
-
-    private int through(final Xnav node) throws IOException {
-        int count = 0;
-        if (node.attribute("base").text().isEmpty()) {
-            final String name = node.attribute("name").text().orElse("");
-            final String place = node.attribute("loc").text().orElse("");
-            if (!name.isEmpty() && !"λ".equals(name) && !place.isEmpty()
-                && this.lowered(node, place)) {
-                count = 1;
-            } else {
-                for (final Xnav kid : Lowered.kids(node)) {
-                    count += this.through(kid);
-                }
-            }
-        }
-        return count;
-    }
-
-    private boolean lowered(final Xnav node, final String place) throws IOException {
-        final Map<String, String> inputs = this.voids(node, place);
-        final List<Xnav> bodies = Lowered.bodies(node);
-        final List<Xnav> kids = Lowered.kids(node);
-        final long rhos = kids.stream().filter(Lowered::rho).count();
-        final long hidden = kids.stream().filter(Lowered::hidden).count();
-        final int shape = inputs.size() + 1 + (int) rhos + (int) hidden;
-        boolean done = false;
-        if (!inputs.isEmpty()) {
-            if (bodies.size() == 1 && kids.size() == shape) {
-                done = this.spliced(node, bodies.get(0), inputs, place);
-            } else {
+            final Element original = new Located(
+                document.getDocumentElement(), box.locator()
+            ).element();
+            final Element copy = (Element) original.cloneNode(true);
+            original.getParentNode().replaceChild(copy, original);
+            boolean made = false;
+            try {
+                made = this.lowered(document, copy, boxes, box.locator()) > 0;
+            } catch (final IOException | IllegalStateException ex) {
                 Logger.debug(
-                    this,
-                    String.join(
-                        "",
-                        "The formation at %s is not shaped to lower: ",
-                        "%d body(-ies) and %d attribute(s), ",
-                        "where one body and %d attribute(s) are expected"
-                    ),
-                    place, bodies.size(), kids.size(), shape
+                    this, "The fragment at %s stays as written: %[exception]s",
+                    box.locator(), ex
                 );
+            }
+            if (made) {
+                ++done;
+            } else {
+                copy.getParentNode().replaceChild(original, copy);
             }
         }
         return done;
     }
 
-    private boolean spliced(final Xnav node, final Xnav body,
-        final Map<String, String> inputs, final String place) throws IOException {
-        String text = "";
-        String carrier = "";
+    private int lowered(final Document document, final Element fragment,
+        final Boxes boxes, final String locator) throws IOException {
+        final Path run = this.home.run();
         try {
-            final Program program = new Reduction(
-                this.phino, body, inputs, 8,
-                node.attribute("name").text().orElse(""),
-                Lowered.helpers(node), this.formas
-            ).program();
-            if (program.bodies().size() > 1
-                || !program.bodies().get(0).protocol().moves().isEmpty()) {
-                text = new JavaAtom(program).text();
-                carrier = program.carrier();
-            }
-        } catch (final IllegalStateException | IOException ex) {
-            carrier = "";
-            Logger.debug(
-                this, "The formation at %s refused to lower: %s",
-                place, ex.getMessage()
+            final Symbols symbols = new Symbols(run.resolve("symbols.tsv"));
+            final Document variant = new Boxed(document, boxes, locator).copy();
+            new Symbolized(variant, locator, this.formas, symbols).plant();
+            final Path planted = run.resolve("fragment.xmir");
+            new Xml(variant).saved(planted);
+            final List<Path> docs = new ArrayList<>(this.home.others(this.name));
+            docs.add(planted);
+            final Path world = run.resolve("world.phi");
+            this.phino.merged(docs, world);
+            final String residual = this.phino.morphed(
+                world, locator,
+                new Registry(run, run.resolve("symbols.tsv"), this.home.boxes()).saved()
             );
-        }
-        final boolean done = !carrier.isEmpty();
-        if (done) {
-            Lowered.marked(
-                (Element) node.node(), body, inputs,
-                new Sidecar(this.atoms, text).save(), carrier
-            );
-        }
-        return done;
-    }
-
-    private static void marked(final Element element, final Xnav body,
-        final Map<String, String> inputs, final String digest, final String carrier) {
-        element.setAttribute("pure", "true");
-        element.setAttribute("lowered", digest);
-        element.removeChild(body.node());
-        for (final Xnav kid : Lowered.kids(new Xnav(element))) {
-            if (Lowered.rho(kid) || Lowered.hidden(kid)) {
-                element.removeChild(kid.node());
-            }
-        }
-        final Document doc = element.getOwnerDocument();
-        final Element marker = doc.createElement("o");
-        marker.setAttribute("name", "λ");
-        marker.setAttribute("atom", String.format("Φ.%s", carrier));
-        element.appendChild(marker);
-        for (final Xnav kid : Lowered.kids(new Xnav(element))) {
-            final String name = kid.attribute("name").text().orElse("");
-            if (inputs.containsKey(name)) {
-                ((Element) kid.node()).setAttribute(
-                    "type", String.format("Φ.%s", inputs.get(name))
+            Logger.debug(this, "The residual of %s is: %s", locator, residual);
+            if (residual.contains("⊥")) {
+                throw new IllegalStateException(
+                    String.format("The residual of %s reaches the terminator", locator)
                 );
             }
+            new Splice(
+                fragment, (Element) new Xnav(residual).element("object").element("o").node()
+            ).apply();
+            return new Marked(fragment, new Table(symbols), this.home.atoms()).apply();
+        } finally {
+            Lowered.deleted(run);
         }
     }
 
-    private Map<String, String> voids(final Xnav node, final String place) {
-        final Map<String, String> out = new LinkedHashMap<>();
-        for (final Xnav kid : Lowered.kids(node)) {
-            if (!"∅".equals(kid.attribute("base").text().orElse(""))) {
-                continue;
-            }
-            final String name = kid.attribute("name").text().orElse("");
-            if ("ρ".equals(name)) {
-                continue;
-            }
-            final String forma = this.formas.given(String.format("%s.%s", place, name));
-            if (forma.isEmpty()) {
-                Logger.debug(
-                    this,
-                    String.join(
-                        "",
-                        "The void '%s' of the formation at %s is witnessed ",
-                        "by no single data forma, so nothing can carry it"
-                    ),
-                    name, place
-                );
-                out.clear();
+    private boolean owns(final Document document, final String locator) {
+        boolean out = false;
+        for (final Element top : new Kids(document.getDocumentElement())) {
+            final String place = top.getAttribute("loc");
+            if (locator.equals(place) || locator.startsWith(String.format("%s.", place))) {
+                out = true;
                 break;
             }
-            out.put(name, forma);
         }
         return out;
     }
 
-    private static boolean rho(final Xnav kid) {
-        return "∅".equals(kid.attribute("base").text().orElse(""))
-            && "ρ".equals(kid.attribute("name").text().orElse(""));
+    private static Document owner(final Node node) {
+        final Document out;
+        if (node.getNodeType() == Node.DOCUMENT_NODE) {
+            out = (Document) node;
+        } else {
+            out = node.getOwnerDocument();
+        }
+        return out;
     }
 
-    private static boolean hidden(final Xnav kid) {
-        return kid.attribute("name").text().orElse("").startsWith("a🌵");
-    }
-
-    private static Map<String, Xnav> helpers(final Xnav node) {
-        final Map<String, Xnav> out = new LinkedHashMap<>();
-        for (final Xnav kid : Lowered.kids(node)) {
-            if (Lowered.hidden(kid)) {
-                out.put(kid.attribute("name").text().get(), kid);
+    private static void deleted(final Path dir) throws IOException {
+        try (Stream<Path> files = Files.walk(dir)) {
+            for (final Path file : files.sorted(Comparator.reverseOrder()).toArray(Path[]::new)) {
+                Files.delete(file);
             }
         }
-        return out;
-    }
-
-    private static List<Xnav> bodies(final Xnav node) {
-        return Lowered.kids(node).stream()
-            .filter(kid -> "φ".equals(kid.attribute("name").text().orElse("")))
-            .filter(kid -> !kid.attribute("base").text().orElse("").isEmpty())
-            .filter(kid -> !"∅".equals(kid.attribute("base").text().orElse("")))
-            .collect(Collectors.toList());
-    }
-
-    private static List<Xnav> kids(final Xnav node) {
-        return node.elements(Filter.withName("o")).collect(Collectors.toList());
     }
 }

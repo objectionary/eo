@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# D
+input: |
+  [] > foo
+    2.plus 3 > @
+prelude:
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
+lowered: |
+  [] > foo
+    2.plus 3 > @

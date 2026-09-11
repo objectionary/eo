@@ -72,6 +72,21 @@
       </xsl:message>
     </xsl:if>
     <!--
+    The class below carries the voids of the formation and nothing else,
+    so a binding beside them would vanish from the program without a
+    word; the lower goal keeps such a formation and lowers its bindings
+    one by one instead, and a stamp on it means the goal broke that rule.
+    -->
+    <xsl:if test="o[not(@base = $eo:empty) and not(@name = 'λ')]">
+      <xsl:message terminate="yes">
+        <xsl:text>The formation at </xsl:text>
+        <xsl:value-of select="@loc"/>
+        <xsl:text> is lowered while it binds '</xsl:text>
+        <xsl:value-of select="o[not(@base = $eo:empty) and not(@name = 'λ')][1]/@name"/>
+        <xsl:text>' beside its voids, which the lower goal must never do</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <!--
     The digest is the only piece of the sidecar URI that comes from the
     document, so anything but the twelve hex digits the schema promises
     (a path, say) stops the build before it reaches the disk.

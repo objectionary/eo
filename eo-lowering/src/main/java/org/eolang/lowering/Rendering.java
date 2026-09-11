@@ -97,7 +97,8 @@ public final class Rendering {
             out = String.format(
                 "byte[] v%d = new Dataized(this.take(\"%s\")).take();", index, name
             );
-        } else if ("tuple".equals(forma)) {
+        } else if ("tuple".equals(forma) || "object".equals(forma)
+            || "formation".equals(forma)) {
             out = String.format("Phi v%d = this.take(\"%s\");", index, name);
         } else {
             throw new IllegalStateException(
@@ -137,7 +138,7 @@ public final class Rendering {
      */
     public String applied(final Step step) {
         final String out;
-        if (step.atom().charAt(0) == '.') {
+        if (step.atom().charAt(0) == '.' || step.atom().startsWith("Φ.")) {
             out = new Call(step, this).text();
         } else if ("eq".equals(new Op(step.atom()).method())) {
             out = this.compared(step);
@@ -323,7 +324,8 @@ public final class Rendering {
             out = "boolean";
         } else if ("bytes".equals(carrier)) {
             out = "byte[]";
-        } else if ("tuple".equals(carrier) || "object".equals(carrier)) {
+        } else if ("tuple".equals(carrier) || "object".equals(carrier)
+            || "formation".equals(carrier)) {
             out = "Phi";
         } else {
             throw new IllegalStateException(

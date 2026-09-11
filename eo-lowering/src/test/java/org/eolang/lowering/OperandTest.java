@@ -6,132 +6,58 @@ package org.eolang.lowering;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Operand}.
  *
- * <p>The fixtures are verbatim record fields of phino 0.0.114, so these
- * tests also pin the rendering this module relies on: if an upgrade of
- * phino reshapes its records, the anchoring breaks here first.</p>
- *
- * @since 0.76.0
+ * @since 0.77.0
  */
 final class OperandTest {
 
-    @Test
-    void anchorsNumberLiteral() {
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|',
+        value = {
+            "Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) )|sym:S2",
+            "Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) )|number:40-08-00-00-00-00-00-00",
+            "Φ.string( as-bytes ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 68-69 ⟧ ) )|string:68-69",
+            "Φ.bytes( φ ↦ ⟦ Δ ⤍ -- ⟧ )|bytes:--",
+            "Φ.bytes( φ ↦ ⟦ λ ⤍ S7, ρ ↦ ∅ ⟧ )|sym:S7",
+            "Φ.bool( if ↦ ⟦ left ↦ ∅, right ↦ ∅, guard ↦ ⟦ λ ⤍ S4 ⟧, λ ⤍ L_fork ⟧ )|sym:S4",
+            "⟦ left ↦ ∅, right ↦ ∅, guard ↦ ⟦ λ ⤍ S4 ⟧, λ ⤍ L_fork ⟧|sym:S4",
+            "⟦ Δ ⤍ 01- ⟧|bytes:01-",
+            "⟦ λ ⤍ S9 ⟧|sym:S9",
+            "⟦ φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 00- ⟧ ), ρ ↦ ∅ ⟧|bytes:00-",
+            "⟦ if ↦ ⟦ left ↦ ∅, right ↦ ∅, guard ↦ ⟦ λ ⤍ S3 ⟧, λ ⤍ L_fork ⟧, ρ ↦ ∅ ⟧|sym:S3",
+            "FF-|bytes:FF-"
+        }
+    )
+    void readsKeyOfNormalizedOperand(final String phi, final String key) {
         MatcherAssert.assertThat(
-            "a number carrier wrapping a datum must anchor to its bytes, but it didnt",
-            new Operand(
-                "Φ.number( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("number:40-00-00-00-00-00-00-00")
+            String.format("the operand '%s' must be read as '%s', but it wasnt", phi, key),
+            new Operand(phi).key(),
+            Matchers.equalTo(key)
         );
     }
 
     @Test
-    void anchorsPositionallyNamedLiteral() {
+    void answersBlankForUnreadableOperand() {
         MatcherAssert.assertThat(
-            "a carrier with unresolved α names must anchor all the same, but it didnt",
-            new Operand(
-                "Φ.number( α0 ↦ Φ.bytes( α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("number:3F-F0-00-00-00-00-00-00")
+            "an operand that is neither a marker nor data cannot have a key, but it has",
+            new Operand("Φ.number( φ ↦ ξ.ρ.x )").key(),
+            Matchers.is(Matchers.emptyString())
         );
     }
 
     @Test
-    void anchorsMarkedNumber() {
+    void ignoresSurroundingWhitespace() {
         MatcherAssert.assertThat(
-            "a number carrier wrapping a marker must anchor to its name, but it didnt",
-            new Operand(
-                "Φ.number( as-bytes ↦ Φ.bytes( data ↦ ⟦ λ ⤍ Sym_v0, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("sym:v0")
-        );
-    }
-
-    @Test
-    void anchorsStringLiteral() {
-        MatcherAssert.assertThat(
-            "a string carrier wrapping a datum must anchor to its bytes, but it didnt",
-            new Operand(
-                "Φ.string( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ 61-62-63, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("string:61-62-63")
-        );
-    }
-
-    @Test
-    void anchorsMarkedString() {
-        MatcherAssert.assertThat(
-            "a string carrier wrapping a marker must anchor to its name, but it didnt",
-            new Operand(
-                "Φ.string( α0 ↦ Φ.bytes( α0 ↦ ⟦ λ ⤍ Sym_v2, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("sym:v2")
-        );
-    }
-
-    @Test
-    void anchorsBytesLiteral() {
-        MatcherAssert.assertThat(
-            "a bytes carrier wrapping a datum must anchor to its bytes, but it didnt",
-            new Operand("Φ.bytes( data ↦ ⟦ Δ ⤍ 01-02, ρ ↦ ∅ ⟧ )").key(),
-            Matchers.equalTo("bytes:01-02")
-        );
-    }
-
-    @Test
-    void anchorsBareTruth() {
-        MatcherAssert.assertThat(
-            "a bare truth must anchor to its byte, but it didnt",
-            new Operand("Φ.true").key(),
-            Matchers.equalTo("bool:FF-")
-        );
-    }
-
-    @Test
-    void anchorsBoolLiteral() {
-        MatcherAssert.assertThat(
-            "a bool carrier wrapping a datum must anchor to its byte, but it didnt",
-            new Operand(
-                "Φ.bool( as-bytes ↦ Φ.bytes( data ↦ ⟦ Δ ⤍ FF-, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("bool:FF-")
-        );
-    }
-
-    @Test
-    void anchorsMarkedBool() {
-        MatcherAssert.assertThat(
-            "a bool carrier wrapping a marker must anchor to its name, but it didnt",
-            new Operand(
-                "Φ.bool( α0 ↦ Φ.bytes( α0 ↦ ⟦ λ ⤍ Sym_s1, ρ ↦ ∅ ⟧ ) )"
-            ).key(),
-            Matchers.equalTo("sym:s1")
-        );
-    }
-
-    @Test
-    void rejectsUnreducedApplication() {
-        MatcherAssert.assertThat(
-            "an application still to reduce cannot anchor, but it did",
-            new Operand(
-                "Φ.number( α0 ↦ Φ.bytes( α0 ↦ ⟦ λ ⤍ Sym_v0, ρ ↦ ∅ ⟧ ) ).times( x ↦ Φ.number( α0 ↦ Φ.bytes( α0 ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00, ρ ↦ ∅ ⟧ ) ) )"
-            ).anchored(),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
-    void refusesKeyOfUnanchoredTerm() {
-        Assertions.assertThrows(
-            IllegalStateException.class,
-            new Operand("ξ.as-bytes")::key,
-            "a term of no value shape cannot answer a key, but it did"
+            "whitespace around and inside the operand cannot change its key, but it did",
+            new Operand("  Φ.bytes(  φ ↦ ⟦ Δ ⤍ 2A- ⟧ )\n").key(),
+            Matchers.equalTo("bytes:2A-")
         );
     }
 }

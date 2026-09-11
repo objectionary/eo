@@ -133,4 +133,20 @@ final class ReadsTest {
             "number"
         );
     }
+
+    @Test
+    void leavesOperandsOfEntryToTheCall() {
+        MatcherAssert.assertThat(
+            "the voids an entry hands over as objects must not be read as locals, but they are",
+            new Reads(
+                new Protocol(
+                    Collections.singletonList(
+                        new Entry("s1", "Φ.foo.g(y)", Arrays.asList("sym:v0", "sym:v1"), "number")
+                    ),
+                    "sym:s1", "number"
+                )
+            ).all(),
+            Matchers.empty()
+        );
+    }
 }

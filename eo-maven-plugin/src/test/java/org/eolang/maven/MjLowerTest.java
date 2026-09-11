@@ -10,6 +10,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.lowering.Phino;
 import org.hamcrest.MatcherAssert;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link MjLower}.
  *
- * <p>The tests that fold for real hold only when a phino binary of the
+ * <p>The tests that lower for real hold only when a phino binary of the
  * pinned version is installed, which is what CI arranges; a machine
  * without it skips them, exactly as the goal itself would skip its
  * work.</p>
@@ -33,23 +34,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjLowerTest {
 
     @Test
-    void foldsConstantExpression(@Mktmp final Path temp) throws IOException {
+    void repointsTheObjectAtTheLoweredXmir(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "the sum of two literals must become one literal, but it didnt",
-            new XMLDocument(
-                MjLowerTest.lowered(temp).foreignTojos().find("foo").xmir()
-            ).xpath("/object/o/o[@name='φ']/@base").get(0),
-            Matchers.equalTo("Φ.number")
-        );
-    }
-
-    @Test
-    void repointsTheObjectAtTheFoldedXmir(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino(temp);
-        MatcherAssert.assertThat(
-            "the object must be transpiled from the folded XMIR and not from the parsed one",
-            MjLowerTest.lowered(temp).foreignTojos().find("foo").xmir().toString(),
+            "the object must be transpiled from the lowered XMIR and not from the parsed one",
+            MjLowerTest.symbolic(temp).execute(new PpLower())
+                .foreignTojos().find("foo").xmir().toString(),
             Matchers.containsString(Lowering.DIR)
         );
     }
@@ -58,17 +48,17 @@ final class MjLowerTest {
     void writesTheMarker(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "a run that folded must say so in the marker file, but it didnt",
+            "a run that lowered must say so in the marker file, but it didnt",
             Files.readString(MjLowerTest.marker(MjLowerTest.lowered(temp))),
             Matchers.startsWith("lower-")
         );
     }
 
     @Test
-    void leavesContextDependentExpressionAlone(@Mktmp final Path temp) throws IOException {
+    void leavesUnwitnessedVoidAlone(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "an expression reading a void cannot fold, so the object must keep its parsed XMIR",
+            "a void nothing fills has no forma to dispatch on, so the object must keep its parsed XMIR",
             new FakeMaven(temp)
                 .withProgram(MjLowerTest.program("[x] > foo", "  x.plus 1 > @"), "foo", "foo.eo")
                 .execute(new PpLower())
@@ -85,15 +75,7 @@ final class MjLowerTest {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "the lowered formation must transpile into its own atom class, but it didnt",
-            Files.readString(
-                MjLowerTest.symbolic(temp)
-                    .execute(new PpLower())
-                    .execute(MjTranspile.class)
-                    .generatedPath()
-                    .resolve("org")
-                    .resolve("eolang")
-                    .resolve("EOfoo$EObump.java")
-            ),
+            Files.readString(MjLowerTest.bump(temp)),
             Matchers.containsString(
                 "public final class EOfoo$EObump extends PhDefault implements Atom {"
             )
@@ -105,15 +87,7 @@ final class MjLowerTest {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
             "the generated lambda must read the void through the public API, but it doesnt",
-            Files.readString(
-                MjLowerTest.symbolic(temp)
-                    .execute(new PpLower())
-                    .execute(MjTranspile.class)
-                    .generatedPath()
-                    .resolve("org")
-                    .resolve("eolang")
-                    .resolve("EOfoo$EObump.java")
-            ),
+            Files.readString(MjLowerTest.bump(temp)),
             Matchers.containsString(
                 "final double v0 = new Dataized(this.take(\"x\")).asNumber();"
             )
@@ -121,30 +95,39 @@ final class MjLowerTest {
     }
 
     @Test
-    void outlinesPureApplicationIntoAtomClass(@Mktmp final Path temp) throws IOException {
+    void foldsThunkIntoTheFragmentEnteringIt(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "the outlined application must transpile into its own atom class, but it didnt",
-            Files.readString(MjLowerTest.outlined(temp)),
-            Matchers.containsString("implements Atom {")
+            "the thunk must fold into the literal it computes, inside the atom, but it didnt",
+            Files.readString(
+                new FakeMaven(temp).withProgram(
+                    MjLowerTest.program(
+                        "[] > foo",
+                        "  [^ x] > bump",
+                        "    x.plus ^.six > @",
+                        "  [] > six",
+                        "    2.times 3 > @",
+                        "  bump 5 > @"
+                    ),
+                    "foo", "foo.eo"
+                ).withProgram(MjLowerTest.number(), "number", "number.eo")
+                    .withProgram("[@] > bytes", "bytes", "bytes.eo")
+                    .execute(new PpLower())
+                    .execute(MjTranspile.class)
+                    .generatedPath()
+                    .resolve("org")
+                    .resolve("eolang")
+                    .resolve("EOfoo$EObump.java")
+            ),
+            Matchers.containsString("v0 + Double.longBitsToDouble(0x4018000000000000L)")
         );
     }
 
     @Test
-    void splicesOutlinedChainIntoLambda(@Mktmp final Path temp) throws IOException {
+    void callsSiblingAtomAtTheSite(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "the whole chain must reduce into straight-line Java, but it didnt",
-            Files.readString(MjLowerTest.outlined(temp)),
-            Matchers.containsString("final double s1 = v0 * v0;")
-        );
-    }
-
-    @Test
-    void callsOutlinedAtomAtTheSite(@Mktmp final Path temp) throws IOException {
-        MjLowerTest.assumePhino(temp);
-        MatcherAssert.assertThat(
-            "the site must turn into a call of the synthetic attribute, but it didnt",
+            "the body must turn into a call of the synthetic attribute, but it didnt",
             new XMLDocument(
                 MjLowerTest.compound(temp)
                     .execute(new PpLower())
@@ -157,10 +140,10 @@ final class MjLowerTest {
     }
 
     @Test
-    void outlinesNothingButTheCompoundSite(@Mktmp final Path temp) throws IOException {
+    void lowersEveryBindingOfTheFragment(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "the single-step neighbour must stay as written, but it was outlined too",
+            "the helper and the body must each become an atom, but they didnt",
             new XMLDocument(
                 MjLowerTest.compound(temp)
                     .execute(new PpLower())
@@ -168,27 +151,22 @@ final class MjLowerTest {
                     .find("foo")
                     .xmir()
             ).xpath("//o[@lowered]/@name"),
-            Matchers.hasSize(1)
+            Matchers.hasSize(2)
         );
     }
 
     @Test
-    void callsMainAtomClassFromJunitBody(@Mktmp final Path temp) throws IOException {
+    void transpilesSiblingAtomIntoStraightLineJava(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "the test body must reach for the main-side atom class, but it doesnt",
-            Files.readString(
-                MjLowerTest.tested(temp)
+            "the whole chain must reduce into straight-line Java, but it didnt",
+            MjLowerTest.siblings(
+                MjLowerTest.compound(temp)
                     .execute(new PpLower())
                     .execute(MjTranspile.class)
                     .generatedPath()
-                    .getParent()
-                    .resolve("generated-test-sources")
-                    .resolve("org")
-                    .resolve("eolang")
-                    .resolve("TestEOfoo.java")
             ),
-            Matchers.containsString("new EOfoo$EOp$uF335can_square$EOl$uF335")
+            Matchers.containsString(" = v0 * v0;")
         );
     }
 
@@ -218,7 +196,7 @@ final class MjLowerTest {
             Files.exists(
                 MjLowerTest.marker(
                     new FakeMaven(temp)
-                        .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+                        .withProgram(MjLowerTest.thunk(), "foo", "foo.eo")
                         .with("binary", temp.resolve("no-such-phino").toString())
                         .execute(new PpLower())
                 )
@@ -230,7 +208,7 @@ final class MjLowerTest {
     @Test
     void failsWithoutTheBinaryWhenDemanded(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+            .withProgram(MjLowerTest.thunk(), "foo", "foo.eo")
             .with("binary", temp.resolve("no-such-phino").toString())
             .with("demanded", true);
         final PpLower pipeline = new PpLower();
@@ -248,7 +226,7 @@ final class MjLowerTest {
             Files.exists(
                 MjLowerTest.marker(
                     new FakeMaven(temp)
-                        .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+                        .withProgram(MjLowerTest.thunk(), "foo", "foo.eo")
                         .with("binary", temp.resolve("no-such-phino").toString())
                         .with("lowering", false)
                         .with("demanded", true)
@@ -279,7 +257,7 @@ final class MjLowerTest {
     void removesTheMarkerWhenSkipping(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
-            "a run without phino must take the marker of an earlier fold away, but it didnt",
+            "a run without phino must take the marker of an earlier run away, but it didnt",
             Files.exists(
                 MjLowerTest.marker(
                     MjLowerTest.lowered(temp)
@@ -301,7 +279,7 @@ final class MjLowerTest {
 
     private static FakeMaven lowered(final Path temp) throws IOException {
         return new FakeMaven(temp)
-            .withProgram(MjLowerTest.constant(), "foo", "foo.eo")
+            .withProgram(MjLowerTest.thunk(), "foo", "foo.eo")
             .execute(new PpLower());
     }
 
@@ -315,46 +293,34 @@ final class MjLowerTest {
                 "  calc 5 > @"
             ),
             "foo", "foo.eo"
-        ).withProgram(
-            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
-            "number", "number.eo"
-        );
+        ).withProgram(MjLowerTest.number(), "number", "number.eo")
+            .withProgram("[@] > bytes", "bytes", "bytes.eo");
     }
 
-    private static Path outlined(final Path temp) throws IOException {
-        return MjLowerTest.atom(
-            MjLowerTest.compound(temp)
-                .execute(new PpLower())
-                .execute(MjTranspile.class)
-                .generatedPath()
-        );
-    }
-
-    private static Path atom(final Path generated) throws IOException {
+    private static String siblings(final Path generated) throws IOException {
         try (Stream<Path> walk = Files.walk(generated)) {
             return walk.filter(
                 file -> file.getFileName().toString().startsWith("EOfoo$EOcalc$EOl")
-            ).findFirst().orElseThrow(
-                () -> new IllegalStateException("no outlined atom class was generated")
-            );
+            ).map(
+                file -> {
+                    try {
+                        return Files.readString(file);
+                    } catch (final IOException ex) {
+                        throw new IllegalStateException(ex);
+                    }
+                }
+            ).collect(Collectors.joining());
         }
     }
 
-    private static FakeMaven tested(final Path temp) throws IOException {
-        return new FakeMaven(temp).withProgram(
-            MjLowerTest.program(
-                "[] > foo",
-                "  eq. ++> can-square",
-                "    (two.times two).plus 2",
-                "    6"
-            ),
-            "foo", "foo.eo"
-        ).withProgram(
-            "2 > two", "two", "two.eo"
-        ).withProgram(
-            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
-            "number", "number.eo"
-        );
+    private static Path bump(final Path temp) throws IOException {
+        return MjLowerTest.symbolic(temp)
+            .execute(new PpLower())
+            .execute(MjTranspile.class)
+            .generatedPath()
+            .resolve("org")
+            .resolve("eolang")
+            .resolve("EOfoo$EObump.java");
     }
 
     private static FakeMaven symbolic(final Path temp) throws IOException {
@@ -366,13 +332,23 @@ final class MjLowerTest {
                 "  bump 5 > @"
             ),
             "foo", "foo.eo"
-        ).withProgram(
-            MjLowerTest.program("[as-bytes] > number", "  as-bytes > @"),
-            "number", "number.eo"
+        ).withProgram(MjLowerTest.number(), "number", "number.eo")
+            .withProgram("[@] > bytes", "bytes", "bytes.eo");
+    }
+
+    private static String number() {
+        return MjLowerTest.program(
+            "[@] > number",
+            "  [] > plus /Q.number",
+            "    ? > ^",
+            "    ? > x /Q.number",
+            "  [] > times /Q.number",
+            "    ? > ^",
+            "    ? > x /Q.number"
         );
     }
 
-    private static String constant() {
+    private static String thunk() {
         return MjLowerTest.program("[] > foo", "  1.plus 1 > @");
     }
 

@@ -159,6 +159,40 @@ final class CallTest {
         );
     }
 
+    @Test
+    void entersFormationBindingVoidsByName() {
+        final Map<String, String> voids = new LinkedHashMap<>();
+        voids.put("v0", "formation");
+        voids.put("v1", "number");
+        MatcherAssert.assertThat(
+            "an entry must apply the formation it holds and bind by name, but it doesnt",
+            CallTest.call(
+                new Entry("s1", "Φ.foo.g(y)", Arrays.asList("sym:v0", "sym:v1"), "bool"),
+                voids
+            ),
+            Matchers.equalTo(
+                "new Dataized(new PhApplication(this.take(\"v0\"), new Bind(\"y\", this.take(\"v1\")))).asBool()"
+            )
+        );
+    }
+
+    @Test
+    void dispatchesEntryOnReceiverValue() {
+        MatcherAssert.assertThat(
+            "an entry with a receiver value must dispatch the last segment on it, but it doesnt",
+            CallTest.call(
+                new Entry(
+                    "s1", "Φ.number.min(x)",
+                    Arrays.asList("sym:v0", "number:40-14-00-00-00-00-00-00"), "number"
+                ),
+                Collections.singletonMap("a", "number")
+            ),
+            Matchers.startsWith(
+                "new Dataized(new PhApplication(new PhDispatch(this.take(\"a\"), \"min\"), new Bind(\"x\", "
+            )
+        );
+    }
+
     private static Call chained(final Step first, final Step second,
         final Map<String, String> voids) {
         return new Call(

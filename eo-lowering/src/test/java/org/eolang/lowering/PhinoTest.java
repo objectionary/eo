@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -69,76 +70,63 @@ final class PhinoTest {
     }
 
     @Test
-    void dataizesDatum(@Mktmp final Path temp) throws Exception {
+    void mergesXmirDocumentsIntoOneExpression(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
+        final Path first = temp.resolve("a.xmir");
+        Files.write(
+            first,
+            "<object><metas><meta><head>package</head><tail>foo</tail></meta></metas><o name=\"a\"><o base=\"Φ.bytes\" name=\"φ\"><o as=\"α0\">2A-</o></o></o></object>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        final Path second = temp.resolve("b.xmir");
+        Files.write(
+            second,
+            "<object><metas><meta><head>package</head><tail>foo</tail></meta></metas><o name=\"b\"><o name=\"x\"/><o base=\"ξ.ρ.a\" name=\"φ\"/></o></object>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        final Path world = temp.resolve("world.phi");
+        phino.merged(Arrays.asList(first, second), world);
         MatcherAssert.assertThat(
-            "the bytes of a Δ formation must come back verbatim, but they didnt",
-            phino.dataize("⟦ Δ ⤍ 2A- ⟧").bytes(),
-            Matchers.equalTo("2A-")
+            "both documents must land under the same package of the universe, but they didnt",
+            Files.readString(world, StandardCharsets.UTF_8).replaceAll("\\s+", " "),
+            Matchers.allOf(Matchers.containsString("a ↦"), Matchers.containsString("b ↦"))
         );
     }
 
     @Test
-    void mergesExpressionsBeforeDataizing(@Mktmp final Path temp) throws Exception {
+    void morphsInsideOneObjectToXmir(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
+        final Path world = temp.resolve("world.phi");
+        Files.write(
+            world,
+            "⟦ foo ↦ ⟦ gap ↦ ⟦ x ↦ ∅, φ ↦ ξ.x ⟧, λ ⤍ Package ⟧ ⟧".getBytes(StandardCharsets.UTF_8)
+        );
+        final Path registry = temp.resolve("atoms.json");
+        Files.write(registry, "{}".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
-            "a reference in one expression must resolve in another, but it didnt",
-            phino.dataize("⟦ x ↦ ⟦ Δ ⤍ AB- ⟧ ⟧", "⟦ φ ↦ ξ.x ⟧").bytes(),
-            Matchers.equalTo("AB-")
+            "the residual of the object must come back as an XMIR object, but it didnt",
+            phino.morphed(world, "Φ.foo.gap", registry),
+            Matchers.allOf(
+                Matchers.containsString("<object "),
+                Matchers.containsString("base=\"ξ.x\"")
+            )
         );
     }
 
     @Test
-    void survivesParkedAtom(@Mktmp final Path temp) throws Exception {
+    void refusesFailingRun(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
-        MatcherAssert.assertThat(
-            "a partial run reaching a marker cannot be total, but it is",
-            phino.partial(
-                new Universe().text(),
-                "⟦ φ ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)).plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧))) ⟧"
-            ).total(),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
-    void recordsParkedAtom(@Mktmp final Path temp) throws Exception {
-        final Phino phino = new Phino("phino", 100, temp);
-        Assumptions.assumeTrue(phino.suitable());
-        MatcherAssert.assertThat(
-            "the atom stuck on a marker must land in the records, but it didnt",
-            phino.partial(
-                new Universe().text(),
-                "⟦ φ ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ λ ⤍ Sym_v0 ⟧)).plus(α0 ↦ Φ.number(α0 ↦ Φ.bytes(α0 ↦ ⟦ Δ ⤍ 3F-F0-00-00-00-00-00-00 ⟧))) ⟧"
-            ).records().stream().anyMatch(
-                record -> "L_number_plus".equals(record.name()) && record.parked()
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void staysTotalOnData(@Mktmp final Path temp) throws Exception {
-        final Phino phino = new Phino("phino", 100, temp);
-        Assumptions.assumeTrue(phino.suitable());
-        MatcherAssert.assertThat(
-            "a partial run over plain data must stay total, but it didnt",
-            phino.partial("⟦ φ ↦ ⟦ Δ ⤍ 2A- ⟧ ⟧").total(),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void refusesUndataizableDocument(@Mktmp final Path temp) {
-        final Phino phino = new Phino("phino", 100, temp);
-        Assumptions.assumeTrue(phino.suitable());
+        final Path world = temp.resolve("world.phi");
+        Files.write(world, "this is not phi".getBytes(StandardCharsets.UTF_8));
+        final Path registry = temp.resolve("atoms.json");
+        Files.write(registry, "{}".getBytes(StandardCharsets.UTF_8));
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> phino.dataize("⟦ φ ↦ Φ.miracle ⟧"),
-            "a document that never reaches data cannot dataize quietly, but it did"
+            () -> phino.morphed(world, "Φ.foo", registry),
+            "a run the binary rejects must fail loudly, but it didnt"
         );
     }
 }

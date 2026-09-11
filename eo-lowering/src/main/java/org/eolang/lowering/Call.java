@@ -9,7 +9,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Java of one {@link Dispatch} step: a call back into EO.
+ * The Java of one {@link Dispatch} or {@link Entry} step: a call back
+ * into EO.
  *
  * <p>Every operand is the object it is: a void holds one already and
  * hands it over, read off the atom by the name {@link Rendering} knows
@@ -26,7 +27,9 @@ import java.util.List;
  * arguments by position with {@code PhApplication}, the way the
  * transpiler spells a call, and the value is dataized into the forma the step
  * carries — a number, a bool, or the bytes of bytes and a string — or
- * left as the object when the forma is {@code object}.</p>
+ * left as the object when the forma is {@code object}. An entry into a
+ * formation binds its arguments by name instead, and applies the
+ * formation itself when the atom holds it as an input.</p>
  *
  * @since 0.76.0
  */
@@ -60,17 +63,39 @@ public final class Call {
      */
     public String text() {
         final List<String> keys = this.step.keys();
-        String call = String.format(
-            "new PhDispatch(%s, \"%s\")",
-            this.receiver(keys.get(0)), this.step.atom().substring(1)
-        );
-        if (keys.size() > 1) {
-            final Collection<String> binds = new ArrayList<>(keys.size());
+        final String atom = this.step.atom();
+        final Collection<String> binds = new ArrayList<>(keys.size());
+        String call;
+        if (atom.charAt(0) == '.') {
+            call = String.format(
+                "new PhDispatch(%s, \"%s\")", this.receiver(keys.get(0)), atom.substring(1)
+            );
             for (int idx = 1; idx < keys.size(); ++idx) {
                 binds.add(
                     String.format("new Bind(%d, %s)", idx - 1, this.wrapped(keys.get(idx)))
                 );
             }
+        } else {
+            final String locator = atom.substring(0, atom.indexOf('('));
+            if ("formation".equals(this.values.kind(keys.get(0)))) {
+                call = this.wrapped(keys.get(0));
+            } else {
+                call = String.format(
+                    "new PhDispatch(%s, \"%s\")",
+                    this.receiver(keys.get(0)), locator.substring(locator.lastIndexOf('.') + 1)
+                );
+            }
+            final String[] names = atom.substring(atom.indexOf('(') + 1, atom.length() - 1)
+                .split(",");
+            for (int idx = 1; idx < keys.size(); ++idx) {
+                binds.add(
+                    String.format(
+                        "new Bind(\"%s\", %s)", names[idx - 1], this.wrapped(keys.get(idx))
+                    )
+                );
+            }
+        }
+        if (!binds.isEmpty()) {
             call = String.format("new PhApplication(%s, %s)", call, String.join(", ", binds));
         }
         final String forma = this.step.forma();
@@ -121,7 +146,7 @@ public final class Call {
                 "new Data.ToPhi(new String(%s, java.nio.charset.StandardCharsets.UTF_8))",
                 this.values.expression(key)
             );
-        } else if ("tuple".equals(kind) || "object".equals(kind)) {
+        } else if ("tuple".equals(kind) || "object".equals(kind) || "formation".equals(kind)) {
             out = this.values.expression(key);
         } else {
             out = String.format("new Data.ToPhi(%s)", this.values.expression(key));

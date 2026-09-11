@@ -150,6 +150,30 @@ public final class Formas {
     }
 
     /**
+     * Whether a locator names a data object, one of the carriers.
+     *
+     * @param place The locator
+     * @return TRUE for a data object
+     */
+    public boolean data(final String place) {
+        return Formas.CARRIERS.containsKey(place);
+    }
+
+    /**
+     * The forma of a void as witnessed, or as chased from it.
+     *
+     * @param place The locator of the void
+     * @return The forma, or the empty string when neither way answers
+     */
+    public String known(final String place) {
+        String out = this.given(place);
+        if (out.isEmpty()) {
+            out = this.at(place);
+        }
+        return out;
+    }
+
+    /**
      * The forma at the end of the reference chase from one locator.
      *
      * @param start The locator to chase from
@@ -239,6 +263,9 @@ public final class Formas {
         final Set<String> locators = attr.elements(Filter.withName("witnessed"))
             .flatMap(Formas::refs)
             .collect(Collectors.toSet());
+        attr.attribute("holds").text().ifPresent(
+            held -> locators.add(held.replace("?", ""))
+        );
         attr.attribute("name").text().ifPresent(
             name -> out.put(String.format("%s.%s", place, name), locators)
         );

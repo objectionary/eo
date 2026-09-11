@@ -186,4 +186,16 @@ final class RenderingTest {
             "a number operation over a bytes operand cannot spell, but it did"
         );
     }
+
+    @Test
+    void readsFormationVoidAsPhi() {
+        MatcherAssert.assertThat(
+            "a void holding a formation must be read as the Phi it is, but it isnt",
+            new Rendering(
+                new Protocol(Collections.emptyList(), "sym:v0", "formation"),
+                Collections.singletonMap("g", "formation")
+            ).reading(0),
+            Matchers.equalTo("Phi v0 = this.take(\"g\");")
+        );
+    }
 }

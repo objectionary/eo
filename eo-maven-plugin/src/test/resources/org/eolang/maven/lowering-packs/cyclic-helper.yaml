@@ -1,9 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A privatized helper that reads itself never settles, and reading it in
-# place would never end, so the reduction refuses before phino is asked
-# and the formation stays as written, helper and all.
+# D
 input: |
   [] > foo
     [x] > spin
@@ -12,16 +10,18 @@ input: |
     spin 5 > @
 prelude:
   number.eo: |
-    [as-bytes] > number
-      as-bytes > @
-unit: spin
-voids:
-  x: number
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
 lowered: |
   [] > foo
-    spin 5 > @
     [x] > spin
-      times. > @
-        v3_4.plus x >> more
-        2
-stuck: "reads itself, so the fragment never settles"
+      more.plus x >> more
+      more.times 2 > @
+    spin 5 > @
