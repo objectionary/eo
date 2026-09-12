@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.Joined;
 import org.eolang.lowering.Folded;
 import org.eolang.lowering.Formas;
 import org.eolang.lowering.Lowered;
@@ -93,14 +95,15 @@ final class Lowering implements Step {
         final Formas formas = new Formas(this.tables);
         final Path atoms = this.home.resolve(Lowering.ATOMS);
         final Iterable<Rewrite> passes = Arrays.asList(
-            new Lowered(this.phino, formas, atoms),
-            new Outlined(this.phino, formas, atoms),
-            new Folded(this.phino)
+            new Tally(new Lowered(this.phino, formas, atoms), "lowered"),
+            new Tally(new Outlined(this.phino, formas, atoms), "outlined"),
+            new Tally(new Folded(this.phino), "folded")
         );
         Logger.info(
-            this, "Folded or lowered %d fragment(s) in %d XMIR(s), into %[file]s",
+            this, "Modified %d fragment(s) in %d XMIR(s), into %[file]s: %s",
             new Threaded<>(this.sources, tojo -> this.folded(tojo, passes)).total(),
-            this.sources.size(), this.home
+            this.sources.size(), this.home,
+            new Joined(", ", new Mapped<>(Object::toString, passes))
         );
     }
 
