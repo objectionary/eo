@@ -7,7 +7,8 @@
 # it. The read is answered with a `pick`, since both arms are, and answering
 # it that way is what made it look like a copy of `pick` filling the first
 # void of one, so the arms were written down twice over — once against the
-# void the callers fill, where they never went.
+# void the callers fill, where they never went. Where they do go is into the
+# arms a caller put there, and the call says so.
 eo:
   pick.eo: |
     [choose] > pick
@@ -29,7 +30,7 @@ eo:
           ? >> right
           right > @
 links:
-  - "/links/type[@id='Φ.pick.taken']/ref[@loc='Φ.pick'][not(bind)]"
+  - "/links/type[@id='Φ.pick.taken']/ref[@loc='Φ.pick'][not(bind[@void='Φ.pick.choose'])]"
   - "/links[count(//bind[@void='Φ.pick.choose'])=2]"
   - "/links/type[@id='Φ.yes.φ']/ref/bind[@void='Φ.pick.choose']/ref[@loc='Φ.yes.φ.α0']"
   - "/links/type[@id='Φ.no.φ']/ref/bind[@void='Φ.pick.choose']/ref[@loc='Φ.no.φ.α0']"

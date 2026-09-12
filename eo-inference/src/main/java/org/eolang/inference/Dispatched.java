@@ -107,11 +107,8 @@ final class Dispatched {
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Map<String, Map<String, String>> bound = new Copied(
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
-            pairs,
-            new Lent(owned, this.all, this.args, this.receivers).sites(names)
-        ).all();
+        final Map<String, Map<String, String>> bound =
+            new Bound(this.args, this.named, this.receivers, pairs, owned).all();
         final Filled filled = new Filled(
             pairs,
             owned,
@@ -124,18 +121,20 @@ final class Dispatched {
             final String known = pairs.getOrDefault(made, "");
             if (known.isEmpty() || this.rooted(known)) {
                 final String bearer = dispatch.bearer();
-                final String kept;
+                final String asked;
+                final String from;
                 if (bearer.isEmpty()) {
-                    kept = filled.instead(known, made, made);
+                    asked = known;
+                    from = made;
                 } else {
-                    kept = filled.instead(
-                        owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
-                        bearer,
-                        made
-                    );
+                    asked = owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name());
+                    from = bearer;
                 }
-                if (this.better(kept, known, made)) {
-                    found.put(made, kept);
+                this.added(found, pairs, made, filled.instead(asked, from, made));
+                if (this.args.containsKey(made)) {
+                    this.added(
+                        found, pairs, new Applied(made).made(), filled.copies(asked, from)
+                    );
                 }
             }
         }
@@ -176,6 +175,15 @@ final class Dispatched {
             }
         }
         return found;
+    }
+
+    private void added(
+        final Map<String, String> found, final Map<String, String> pairs,
+        final String made, final String kept
+    ) {
+        if (this.better(kept, pairs.getOrDefault(made, ""), made)) {
+            found.put(made, kept);
+        }
     }
 
     private boolean rooted(final String type) {
