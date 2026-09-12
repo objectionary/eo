@@ -6,6 +6,8 @@
 # digit, and a non-finite number becomes `nan`, `infinity` or `-infinity`,
 # having no digits at all. The mantissa is always normalized to `[1, 10)`, so
 # a magnitude below one carries a negative power, as `5.000000e-1` for `0.5`.
+# Zero has no such mantissa, so it is written as `0.000000e0`, keeping the sign
+# of an exact negative zero the way `as-fixed` keeps it.
 # A magnitude below the normal range of a `double` is brought up into that range
 # before the mantissa is taken, since the power of ten that would scale it in
 # one step is itself subnormal and carries too few bits to divide by.
@@ -26,19 +28,22 @@
         "-infinity".as-bytes
         "infinity".as-bytes
     if.
-      or.
-        mantissa.eq "10.000000".as-bytes
-        carried
-      concat.
-        normalized.concat "e".as-bytes
-        as-decimal.
-          plus.
+      ^.eq 0
+      zero
+      if.
+        or.
+          mantissa.eq "10.000000".as-bytes
+          carried
+        concat.
+          normalized.concat "e".as-bytes
+          as-decimal.
+            plus.
+              number exponent
+              1
+        concat.
+          mantissa.concat "e".as-bytes
+          as-decimal.
             number exponent
-            1
-      concat.
-        mantissa.concat "e".as-bytes
-        as-decimal.
-          number exponent
   10.power 300 > boost!
   mantissa.eq "-10.000000".as-bytes > carried!
   minus. > exponent!
@@ -56,11 +61,9 @@
     scaled.abs
     0
   if. > [^ m count] >> rec-exponent
-    or.
-      m.eq 0
-      and.
-        m.gte 1
-        m.lt 10
+    and.
+      m.gte 1
+      m.lt 10
     count
     if.
       m.lt 1
@@ -78,11 +81,11 @@
   tiny.as-bool.if > shift!
     300
     0
-  and. > tiny!
-    ^.abs.lt
-      1.div boost
-    not.
-      ^.eq 0
+  ^.abs.lt > tiny!
+    1.div boost
+  concat. > zero
+    ^.as-fixed 6
+    "e0".as-bytes
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"
@@ -128,6 +131,10 @@
     "9.980126e-322"
     string 1.0e-321.as-scientific
 
+  eq. ++> can-name-an-exact-negative-zero
+    "-0.000000e0"
+    string 0.neg.as-scientific
+
   eq. ++> can-name-nan
     "nan"
     string nan.as-scientific
@@ -139,3 +146,7 @@
   eq. ++> can-name-positive-infinity
     "infinity"
     string pinf.as-scientific
+
+  eq. ++> can-name-zero
+    "0.000000e0"
+    string 0.as-scientific
