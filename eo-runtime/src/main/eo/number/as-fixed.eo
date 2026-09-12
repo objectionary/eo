@@ -18,6 +18,19 @@
 # trailing zero. This keeps the digits shared by two calls with different
 # `places` in agreement, instead of drifting as an unfloored accumulator was
 # carried through more divisions the larger `places` was.
+#
+# Which side of the half a fraction falls on is decided on the fraction, not
+# on the product that scales it. That product is itself rounded, and one just
+# below the half can round up onto it: `0.045` is 0.044999999999999998 as a
+# double, yet times 100 it is exactly 4.5, so adding a half carried it to
+# `0.05`, while `0.145`, whose product stays below the tie, went to `0.14`.
+# Two values of the same shape went opposite ways. So the product is taken
+# with its error kept beside it, the way Dekker splits a multiplication in
+# two, and when the scaled value lands exactly on a tie that error says which
+# side the fraction is really on. Only a tie asks for it, so the splitting
+# sits inside the branch a tie takes and costs nothing on the way every other
+# value goes. A fraction sitting on the half itself, such as `0.125`, carries
+# no error and still goes up.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -59,29 +72,47 @@
                   zeros (^.^.places.minus ^.k) --
             | (whole.plus 1) 0
             written whole digits
-          floor. > digits
+          134217729.times frac > cf
+          134217729.times scale > cs
+          if. > digits
+            sum.eq raised
+            if.
+              0.gt error
+              raised.minus 1
+              raised
+            raised
+          plus. > error
             plus.
-              times.
-                a.minus whole
-                scale
-              0.5
+              plus.
+                minus.
+                  fhi.times shi
+                  product
+                fhi.times slo
+              flo.times shi
+            flo.times slo
+          cf.minus > fhi
+            cf.minus frac
+          frac.minus fhi > flo
+          a.minus whole > frac
           if. > k
             ^.places.gt 15
             15
             ^.places
+          frac.times scale > product
+          sum.floor > raised
           pow10 k > scale
+          cs.minus > shi
+            cs.minus scale
+          scale.minus shi > slo
+          product.plus 0.5 > sum
           a.floor > whole
         | 0
       if.
         ^.lt 0
         if. > [^ a] >> signed
           eq.
-            floor.
-              plus.
-                a.times
-                  pow10 ^.places
-                0.5
-            0
+            positive a
+            positive 0
           positive a
           "-".as-bytes.concat
             positive a
@@ -140,6 +171,16 @@
     string
       0.9999999.as-fixed 0
 
+  eq. ++> can-decide-a-fraction-below-the-half-that-scales-onto-it
+    "0.04"
+    string
+      0.045.as-fixed 2
+
+  eq. ++> can-decide-a-fraction-below-the-half-whatever-its-leading-digit
+    "0.24"
+    string
+      0.245.as-fixed 2
+
   eq. ++> can-drop-the-sign-of-a-negative-rounding-to-zero
     "0.00"
     string
@@ -178,6 +219,11 @@
     "3.14"
     string
       3.14159.as-fixed 2
+
+  eq. ++> can-keep-the-sign-of-a-negative-fraction-below-the-half
+    "-0.34"
+    string
+      -0.345.as-fixed 2
 
   eq. ++> can-omit-the-decimal-point-with-zero-places
     "3"
@@ -263,6 +309,16 @@
     "0.123457"
     string
       0.123456789.as-fixed 6
+
+  eq. ++> can-round-up-a-fraction-just-above-the-half
+    "0.45"
+    string
+      0.445.as-fixed 2
+
+  eq. ++> can-round-up-a-fraction-sitting-exactly-on-the-half
+    "0.13"
+    string
+      0.125.as-fixed 2
 
   eq. ++> can-scale-a-magnitude-above-two-to-the-53rd
     "100000000000000000.000000"
