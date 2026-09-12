@@ -136,7 +136,7 @@ final class Inferring implements Step {
     private void measured() throws IOException {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
         final Path numbers = this.tables.resolveSibling("ladder.txt");
-        Files.write(numbers, ladder.asString().getBytes(StandardCharsets.UTF_8));
+        Files.write(numbers, ladder.lines(), StandardCharsets.UTF_8);
         Logger.info(
             this,
             "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",

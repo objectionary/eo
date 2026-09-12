@@ -135,18 +135,18 @@ public final class Ladder {
      *
      * <p>A build that only says them out loud leaves nothing behind: the line
      * scrolls past and the next branch has nothing to be measured against. So
-     * they are written too, one number a line, the value first and the name of
-     * it after — a shape a shell can read with one {@code read} and no
-     * knowledge of what any of it means.</p>
+     * they are handed over a line at a time as well, the value first and the
+     * name of it after — a shape a shell can read with one {@code read} and
+     * no knowledge of what any of it means. What ends a line is left to
+     * whoever writes them down.</p>
      *
-     * <p>The rungs go down with the shares and not instead of them. A share on
+     * <p>The rungs come with the shares and not instead of them. A share on
      * its own is a number to game, and the rungs are what makes the gaming
      * visible, so whoever is handed one of them is handed both.</p>
      *
-     * @return The text, ending in a newline, with never a carriage return in
-     *  it: the file is written on one machine and read on another
+     * @return The lines, four shares and a depth ahead of a rung apiece
      */
-    public String asString() {
+    public Collection<String> lines() {
         final Collection<String> lines = new ArrayList<>(0);
         lines.add(String.format(Locale.ROOT, "%d objects", this.total()));
         lines.add(String.format(Locale.ROOT, "%.1f named", this.named()));
@@ -156,8 +156,7 @@ public final class Ladder {
         for (final Map.Entry<String, Integer> rung : this.counts.entrySet()) {
             lines.add(String.format(Locale.ROOT, "%d %s", rung.getValue(), rung.getKey()));
         }
-        lines.add("");
-        return String.join("\n", lines);
+        return lines;
     }
 
     private int upto(final int rungs) {
