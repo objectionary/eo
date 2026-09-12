@@ -19,16 +19,15 @@
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * ^.as-i64.as-number
-  [^] > as-i64
-    i64 > @
-      concat.
-        if. >>
-          eq.
-            ^.as-bytes.and 80-00-00-00
-            00-00-00-00
+  i64 > [^] > as-i64
+    concat.
+      if.
+        eq.
+          ^.as-bytes.and 80-00-00-00
           00-00-00-00
-          FF-FF-FF-FF
-        ^.as-bytes
+        00-00-00-00
+        FF-FF-FF-FF
+      ^.as-bytes
   as-i64.as-number > as-number
   [^ x cant-divide] > div
     if. > @

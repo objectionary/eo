@@ -89,7 +89,7 @@
     not. >> has-port
       eq.
         if. >> port-colon-idx
-          host-port.starts-with "[" >>
+          host-port.starts-with "["
           if.
             eq.
               index-of. >> rel-colon
