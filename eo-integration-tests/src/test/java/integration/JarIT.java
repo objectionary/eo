@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -37,12 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * three tests below broke on it every time the two sets diverged.</p>
  *
  * @since 0.54
- * @todo #5047:30min Re-enable runsProgramWithTwoObjects.
- *  The two objects transpile and land in the jar now that the sandbox
- *  compiles the local sources of the runtime, but running "examples.app"
- *  from that jar exits with a non-zero code and prints "Can't overwrite the
- *  cached attribute org.eolang.AtComposite@...". Find out which object
- *  overwrites a cached attribute there, fix it, and drop this annotation.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
@@ -102,7 +95,6 @@ final class JarIT {
     }
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
@@ -162,20 +154,17 @@ final class JarIT {
             "[args] > app",
             "  number > n",
             "    at. > nn!",
-            "      Q.string.scanf",
-            "        \"%d\"",
+            "      \"%d\".scanf",
             "        args.at 0",
             "      0",
             "  at. > e!",
-            "    Q.string.scanf",
-            "      \"%d\"",
+            "    \"%d\".scanf",
             "      args.at 1",
             "    0",
             "  Q.examples.fibonacci n > f!",
             "  and. > @",
             "    Q.stdout",
-            "      Q.string.printf",
-            "        \"%dth Fibonacci number is %d\\n\"",
+            "      \"%dth Fibonacci number is %d\\n\".printf",
             "        * n f",
             "    e.eq f",
         };
@@ -186,7 +175,7 @@ final class JarIT {
             "+package examples",
             "+architect yegor256@gmail.com",
             "",
-            "[n] > fibonacci",
+            "[^ n] > fibonacci",
             "  if. > @",
             "    lt.",
             "      n",
