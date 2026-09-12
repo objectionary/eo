@@ -120,7 +120,10 @@ public final class JavaAtom {
             }
             lines.add(
                 JavaAtom.returned(
-                    this.values.handed(this.values.expression(first.answer()), first.answer())
+                    this.values.viewed(
+                        this.values.expression(first.answer()), first.answer(),
+                        this.program.carrier()
+                    )
                 )
             );
         }
@@ -183,7 +186,11 @@ public final class JavaAtom {
         }
         out.add("    }");
         out.add("}");
-        out.add(JavaAtom.returned(this.values.handed("out", this.answer())));
+        out.add(
+            JavaAtom.returned(
+                this.values.viewed("out", this.answer(), this.program.carrier())
+            )
+        );
         return out;
     }
 
@@ -203,7 +210,7 @@ public final class JavaAtom {
         final String pad = "        ";
         final List<String> out = this.computed(proto, pad, all, "");
         if (proto.again().isEmpty()) {
-            out.addAll(this.closed("out", proto, pad, true));
+            out.addAll(this.closed("out", proto, pad, true, this.values.forma(this.answer())));
         } else {
             out.addAll(this.rebound(proto.target(), proto.again(), pad));
         }
@@ -276,7 +283,12 @@ public final class JavaAtom {
         final String pad, final Set<Integer> known, final String exit) {
         final List<String> out = this.computed(arm, pad, known, exit);
         if (arm.again().isEmpty()) {
-            out.addAll(this.closed(label, arm, pad, label.equals(exit)));
+            out.addAll(
+                this.closed(
+                    label, arm, pad, label.equals(exit),
+                    this.values.forma(String.format("sym:%s", label))
+                )
+            );
         } else {
             out.addAll(this.rebound(arm.target(), arm.again(), pad));
         }
@@ -284,11 +296,16 @@ public final class JavaAtom {
     }
 
     private List<String> closed(final String label, final Protocol proto,
-        final String pad, final boolean exits) {
+        final String pad, final boolean exits, final String carrier) {
         final List<String> out = new ArrayList<>(2);
         if (proto.reason().isEmpty()) {
             out.add(
-                String.format("%s%s = %s;", pad, label, this.values.expression(proto.answer()))
+                String.format(
+                    "%s%s = %s;", pad, label,
+                    this.values.viewed(
+                        this.values.expression(proto.answer()), proto.answer(), carrier
+                    )
+                )
             );
             if (exits) {
                 out.add(String.format("%sbreak;", pad));
