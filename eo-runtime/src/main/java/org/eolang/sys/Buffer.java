@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.posix;
+package org.eolang.sys;
 
 import org.eolang.ExFailure;
 
@@ -15,9 +15,13 @@ import org.eolang.ExFailure;
  * instead, the way {@code write} and {@code send} check the size against the
  * buffer they were given.</p>
  *
+ * <p>Public because both families of adapters read into a buffer, and
+ * a size the process cannot allocate has to be refused the same way on
+ * either one.</p>
+ *
  * @since 0.64.0
  */
-final class Buffer {
+public final class Buffer {
 
     /**
      * What the size is, for the failure message.
@@ -35,7 +39,7 @@ final class Buffer {
      * @param subject What the size is, for the failure message
      * @param size How many bytes are wanted
      */
-    Buffer(final String subject, final int size) {
+    public Buffer(final String subject, final int size) {
         this.subject = subject;
         this.size = size;
     }
@@ -45,7 +49,7 @@ final class Buffer {
      *
      * @return The array
      */
-    byte[] it() {
+    public byte[] it() {
         final Runtime runtime = Runtime.getRuntime();
         final long free = Math.min(
             runtime.maxMemory() - runtime.totalMemory() + runtime.freeMemory(),
