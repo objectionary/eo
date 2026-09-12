@@ -159,6 +159,84 @@ final class CallTest {
         );
     }
 
+    @Test
+    void refusesReceiverRebuiltUnderFork() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.forked(
+                new Dispatch("s1", "size", Collections.singletonList("sym:v0"), "number"),
+                new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            "the number an arm of a fork was dataized into is no object to dispatch on, but it is"
+        );
+    }
+
+    @Test
+    void refusesReceiverRebuiltUnderNestedFork() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.forked(
+                new Dispatch("s1", "size", Collections.singletonList("sym:v0"), "number"),
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s4", "L_bool_if", "sym:v1",
+                            new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                            new Protocol(
+                                Collections.emptyList(), "number:40-08-00-00-00-00-00-00", "number"
+                            )
+                        )
+                    ),
+                    "sym:s4", "number"
+                ),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            "the number an arm of an arm was dataized into is no object to dispatch on, but it is"
+        );
+    }
+
+    @Test
+    void wrapsDatumOfForkOverOperationsAsReceiver() {
+        MatcherAssert.assertThat(
+            "the value of a fork over operations is the number it is, but it was refused",
+            CallTest.forked(
+                new Application(
+                    "s1", "L_number_plus",
+                    Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                ),
+                new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            Matchers.equalTo(
+                "new Dataized(new PhDispatch(new Data.ToPhi(s2), \"further\")).asBool()"
+            )
+        );
+    }
+
+    private static Call forked(final Step first, final Protocol taken, final Protocol other) {
+        final Step fork = new Fork("s2", "L_bool_if", "sym:v1", taken, other);
+        final Step further = new Dispatch(
+            "s3", "further", Collections.singletonList("sym:s2"), "bool"
+        );
+        final Map<String, String> voids = new LinkedHashMap<>(2);
+        voids.put("x", "number");
+        voids.put("f", "bool");
+        return new Call(
+            further,
+            new Rendering(
+                new Protocol(Arrays.asList(first, fork, further), "sym:s3", "bool"),
+                voids
+            )
+        );
+    }
+
     private static Call chained(final Step first, final Step second,
         final Map<String, String> voids) {
         return new Call(
