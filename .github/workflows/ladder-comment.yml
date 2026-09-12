@@ -8,7 +8,12 @@ name: ladder-comment
     workflows: ["ladder"]
     types:
       - completed
+# The artifact belongs to another run, so reading it needs a scope of its
+# own. A `permissions` block that names one scope silences every scope it
+# does not name, and the download would answer 403.
 permissions:
+  actions: read
+  contents: read
   pull-requests: write
 concurrency:
   group: ladder-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
