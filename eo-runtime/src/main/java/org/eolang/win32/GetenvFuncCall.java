@@ -6,8 +6,8 @@ package org.eolang.win32;
 
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt getenv function call.

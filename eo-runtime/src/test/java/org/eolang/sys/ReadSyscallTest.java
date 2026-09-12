@@ -2,8 +2,11 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang;
+package org.eolang.sys;
 
+import org.eolang.Data;
+import org.eolang.ExFailure;
+import org.eolang.Phi;
 import org.eolang.posix.ReadSyscall;
 import org.eolang.win32.ReadFuncCall;
 import org.junit.jupiter.api.Assertions;

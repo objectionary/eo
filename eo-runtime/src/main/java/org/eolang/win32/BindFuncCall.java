@@ -10,8 +10,8 @@ import org.eolang.Dataized;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.SockaddrIn;
+import org.eolang.sys.Syscall;
 
 /**
  * The socket WS2_32 function call.
