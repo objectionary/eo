@@ -64,7 +64,7 @@ final class Suffix {
      * but a token boundary.
      */
     private static final Pattern NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()]*"
     );
 
     /**
