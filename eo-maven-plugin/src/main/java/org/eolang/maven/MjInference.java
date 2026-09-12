@@ -39,9 +39,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  * them for mistakes.</p>
  *
  * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
- * tables in {@link #tables}, a document each. Not one of them fails the
- * build. The pages a reader opens are drawn by {@link MjInferenceReport},
- * a goal of its own, from those same two directories.</p>
+ * tables in {@link #tables}, a document each, with {@code ladder.txt} beside
+ * them saying how much of the program they turned out to describe. Not one of
+ * them fails the build. The pages a reader opens are drawn by
+ * {@link MjInferenceReport}, a goal of its own, from those same two
+ * directories.</p>
  *
  * @since 0.67.0
  */

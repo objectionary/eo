@@ -16,9 +16,10 @@ import java.util.Map;
  *
  * <p>This reads the tables back and puts every object of the program on the
  * ladder {@link Answers} describes. It is a measurement of ourselves rather than a
- * fact about the program, so it writes nothing: what comes out is meant for the
- * log of the goal, where two builds of the same sources can be compared by
- * anybody, and not for a document beside the tables.</p>
+ * fact about the program, so what comes out is no table: the goal says it in
+ * the log and leaves {@link Ladder#asString()} in a file beside the tables
+ * rather than among them, where two builds of the same sources can be compared
+ * by anybody.</p>
  *
  * @since 0.69.0
  */

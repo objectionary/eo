@@ -1,0 +1,127 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: ladder
+'on':
+  pull_request:
+    branches:
+      - master
+    # The numbers can only move when the rules move or when the program they
+    # are read from does. A branch that touches neither would spend two builds
+    # proving that nothing happened.
+    paths:
+      - 'eo-inference/**'
+      - 'eo-parser/**'
+      - 'eo-maven-plugin/src/main/**'
+      - 'eo-runtime/src/main/eo/**'
+permissions:
+  contents: read
+concurrency:
+  group: ladder-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ladder:
+    timeout-minutes: 60
+    runs-on: ubuntu-24.04
+    steps:
+      # The depth is two, not zero: nothing is read here but the merge commit
+      # and its first parent. A full clone drags in `gh-pages`, which is about
+      # three gigabytes of generated site snapshots.
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 26
+      - uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-26-maven-
+      - uses: JesseTG/rm@v1.0.3
+        with:
+          path: ~/.m2/repository/org/eolang
+      - id: ladder
+        run: |
+          # The numbers are of eo-runtime, the only program here big enough for
+          # them to mean anything, and the goal that writes them runs in its
+          # `process-sources` phase. None of its Java is wanted, so the plugin
+          # and what it stands on are installed and that one phase is asked for
+          # afterwards. Both builds clean first, or the second one would read
+          # the XMIR of a source the first one had and this one has not.
+          measure() {
+            git checkout --quiet --force "$1"
+            mvn clean install -ntp --batch-mode --errors -DskipTests -Dinvoker.skip -pl eo-maven-plugin -am
+            mvn clean process-sources -ntp --batch-mode --errors -DskipTests -Deo.transpileTests=false -pl eo-runtime
+            # A base older than the goal that writes the file leaves the
+            # numbers empty, and every one of them then reads as new.
+            cp eo-runtime/target/eo/ladder.txt "$2" 2>/dev/null || : > "$2"
+          }
+          # The base must be the first parent of the merge commit we are
+          # standing on, not `pull_request.base.sha`: the latter is the base
+          # branch tip from the moment the branch was last synced, while the
+          # merge ref is recomputed against the current tip. Comparing the two
+          # makes every commit that landed on master meanwhile look like a
+          # change made by this branch.
+          head=$(git rev-parse HEAD)
+          base=$(git rev-parse "${head}^1")
+          measure "${base}" "${RUNNER_TEMP}/master.txt"
+          measure "${head}" "${RUNNER_TEMP}/branch.txt"
+          # Every line is a number and the name it goes by, the value first, so
+          # that nothing here has to know what any of them mean. Shares are
+          # written with a decimal point and rungs without one, and `awk` takes
+          # the difference of either.
+          declare -A was
+          while read -r total metric; do
+            was["${metric}"]="${total}"
+          done < "${RUNNER_TEMP}/master.txt"
+          rows="${RUNNER_TEMP}/rows.md"
+          : > "${rows}"
+          while read -r total metric; do
+            before="${was["${metric}"]:-}"
+            if [ -z "${before}" ]; then
+              printf '| %s | none | %s | new |\n' "${metric}" "${total}" >> "${rows}"
+            elif [ "${before}" != "${total}" ]; then
+              printf '| %s | %s | %s | %s |\n' "${metric}" "${before}" "${total}" \
+                "$(awk -v was="${before}" -v now="${total}" 'BEGIN { printf "%+g", now - was }')" >> "${rows}"
+            fi
+          done < "${RUNNER_TEMP}/branch.txt"
+          report="${RUNNER_TEMP}/ladder.md"
+          if [ -s "${rows}" ]; then
+            {
+              echo 'These inference numbers moved in this branch. A share is a'
+              echo 'percentage of every object in the program, and the rungs are'
+              echo 'the counts it is made of, which come along because a share on'
+              echo 'its own is a number to game:'
+              echo ''
+              echo '| Number | master | branch | change |'
+              echo '|:--|--:|--:|--:|'
+              cat "${rows}"
+              echo ''
+              echo "They come from \`eo-runtime/target/eo/ladder.txt\`, written by the \`inference\` goal."
+            } > "${report}"
+            echo 'changed=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo 'None of the inference numbers moved in this branch' > "${report}"
+            echo 'changed=false' >> "${GITHUB_OUTPUT}"
+          fi
+          cat "${report}"
+      # Nothing is said on the pull request from here. This job builds the code
+      # of a branch that may come from a fork, and a job that does so must have
+      # a read-only token; the numbers travel to `ladder-comment.yml` instead,
+      # which builds nothing and can be trusted with the write.
+      - env:
+          NUMBER: ${{ github.event.pull_request.number }}
+          CHANGED: ${{ steps.ladder.outputs.changed }}
+        run: |
+          echo "${NUMBER}" > "${RUNNER_TEMP}/pr-number"
+          echo "${CHANGED}" > "${RUNNER_TEMP}/changed"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ladder
+          path: |
+            ${{ runner.temp }}/ladder.md
+            ${{ runner.temp }}/pr-number
+            ${{ runner.temp }}/changed

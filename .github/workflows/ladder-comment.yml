@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: ladder-comment
+'on':
+  workflow_run:
+    workflows: ["ladder"]
+    types:
+      - completed
+permissions:
+  pull-requests: write
+concurrency:
+  group: ladder-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+jobs:
+  # This job is handed the write the job that measured could not be given,
+  # because that one builds the code of the branch. Nothing of the branch is
+  # checked out here and nothing from it is run: the three files come out of
+  # the artifact and the only one that is read as anything but text is the
+  # pull request number, which is a number.
+  comment:
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: ladder
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - id: numbers
+        run: |
+          number=$(tr -cd '0-9' < pr-number)
+          if [ -z "${number}" ]; then
+            echo 'The artifact carries no pull request number'
+            exit 1
+          fi
+          echo "pr=${number}" >> "${GITHUB_OUTPUT}"
+          echo "changed=$(tr -d '[:space:]' < changed)" >> "${GITHUB_OUTPUT}"
+      # A branch that moved nothing gets no new comment, only an older one
+      # brought up to date, so that a pull request which never touched the
+      # rules is not told about them.
+      - uses: mshick/add-pr-comment@v3
+        with:
+          issue: ${{ steps.numbers.outputs.pr }}
+          message-id: ladder
+          message-path: ladder.md
+          update-only: ${{ steps.numbers.outputs.changed == 'false' }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

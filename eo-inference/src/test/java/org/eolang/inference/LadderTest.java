@@ -126,6 +126,42 @@ final class LadderTest {
     }
 
     @Test
+    void namesEveryShareInTheTextItWritesDown() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        rungs.put("a void", 1);
+        rungs.put("a forma", 2);
+        MatcherAssert.assertThat(
+            "half the objects know their forma and the text must say so by name, but it didnt",
+            new Ladder(rungs).asString(),
+            Matchers.containsString("50.0 named")
+        );
+    }
+
+    @Test
+    void writesEveryRungUnderTheNameItGoesBy() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 3);
+        rungs.put("a forma", 7);
+        MatcherAssert.assertThat(
+            "a share is a number to game, so the rungs must be written down beside it, but werent",
+            new Ladder(rungs).asString(),
+            Matchers.containsString("7 a forma")
+        );
+    }
+
+    @Test
+    void endsEveryLineTheSameWayOnEveryPlatform() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        MatcherAssert.assertThat(
+            "a file read on one machine and written on another cannot carry a stray return, but it did",
+            new Ladder(rungs).asString(),
+            Matchers.not(Matchers.containsString("\r"))
+        );
+    }
+
+    @Test
     void keepsTheRungsUnaffectedByLaterChangesToTheSourceMap() {
         final Map<String, Integer> rungs = new LinkedHashMap<>(0);
         rungs.put("nothing", 1);
