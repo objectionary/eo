@@ -71,6 +71,14 @@ import java.util.Map;
  * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
  * well.</p>
  *
+ * <p>What the call copies and what it comes back as are asked apart, since
+ * they are two objects and one answer used to stand for both. The rewrite into
+ * what a caller filled belongs to either: the {@code next} of whatever fills
+ * {@code x} is the {@code next} of a {@code t} where a {@code t} went in, and
+ * that is the object copied as much as the object handed back. The formation a
+ * void hands back belongs to the second alone, and {@link Applied} says under
+ * which name the first is written down (#8552).</p>
+ *
  * @since 0.69.0
  */
 final class Filled {
@@ -129,31 +137,55 @@ final class Filled {
         return this.instead(answer, bearer, site, new HashSet<>(0));
     }
 
+    /**
+     * What this answer is a copy of for this receiver.
+     *
+     * <p>The same rewrite as {@link #instead(String, String, String)} makes,
+     * without the last step of it. A call is a copy of the attribute it takes
+     * and of nothing else, and a formation a void hands back is not that
+     * attribute: it is what the call comes back as, which is the other
+     * question one locator used to answer (#8552).</p>
+     *
+     * @param answer The type of the attribute, as the table gave it
+     * @param bearer The locator of the receiver the question was asked of
+     * @return The type the call copies, the answer itself when no caller says
+     *  what the void holds, or an empty string when a caller says and the walk
+     *  into what it put there has nowhere to go yet
+     */
+    String copies(final String answer, final String bearer) {
+        final Map<String, String> fillings = this.fillings(bearer);
+        final String hollow = new Rooted(fillings.keySet()).names(answer);
+        final String found;
+        if (hollow.isEmpty()) {
+            found = answer;
+        } else {
+            found = this.reached(answer, hollow, fillings);
+        }
+        return found;
+    }
+
     private String instead(
         final String answer, final String bearer, final String site,
         final Collection<String> seen
     ) {
         final Map<String, String> fillings = this.fillings(bearer);
+        final String hollow = new Rooted(fillings.keySet()).names(answer);
         final String found;
-        if (fillings.containsKey(answer)) {
-            found = fillings.get(answer);
+        if (hollow.isEmpty()) {
+            found = this.branch(answer, fillings, bearer, site, seen);
         } else {
-            String longest = "";
-            for (final String hollow : fillings.keySet()) {
-                if (answer.startsWith(hollow.concat("."))
-                    && hollow.length() > longest.length()) {
-                    longest = hollow;
-                }
-            }
-            if (longest.isEmpty()) {
-                found = this.branch(answer, fillings, bearer, site, seen);
-            } else {
-                found = this.asked(
-                    fillings.get(longest), answer.substring(longest.length() + 1)
-                );
-            }
+            found = this.reached(answer, hollow, fillings);
         }
         return found;
+    }
+
+    private String reached(
+        final String answer, final String hollow, final Map<String, String> fillings
+    ) {
+        return this.asked(
+            fillings.get(hollow),
+            answer.substring(Math.min(hollow.length() + 1, answer.length()))
+        );
     }
 
     private String branch(

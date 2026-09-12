@@ -56,6 +56,24 @@ import java.util.Map;
  * reaches a formation this way is what tells a dispatch on that void what it
  * turns out to be (#8405).</p>
  *
+ * <p>Which object is copied is asked of the locator {@link Applied} makes and
+ * not of the one the text gives the call. A call on a void that every arm
+ * hands an argument back from comes back as one of its own arguments, and the
+ * row under the written locator says so; taking that for what the call copies
+ * put the {@code FF-.eq x} of an {@code and} into the {@code if} of
+ * {@code Φ.bool}, where every reader of that void found it (#8552). A call
+ * with nothing of the kind to say has the one row and is followed through
+ * it.</p>
+ *
+ * <p>A void is the end of that walk, which is one step short of where
+ * {@link Ends} would stop. What is written against a void is what its fillings
+ * have in common, and two arms that both hand back a {@code grip} have a
+ * {@code grip} in common without either of them being one. Reading that as a
+ * copy puts the arguments of a call on the void into the voids of a
+ * {@code grip} — the mix-up of the two facts again, a level down. The
+ * arguments reach the arms themselves anyway, since an application on a void
+ * is passed on to every formation that void is seen to hold.</p>
+ *
  * @since 0.69.0
  */
 final class Bound {
@@ -184,7 +202,8 @@ final class Bound {
         final List<String> found = new ArrayList<>(0);
         final Collection<String> seen = new HashSet<>(0);
         seen.add(name);
-        String walked = name;
+        String walked = this.applied(name);
+        seen.add(walked);
         while (this.pairs.containsKey(walked)) {
             walked = this.pairs.get(walked);
             if (!seen.add(walked)) {
@@ -236,6 +255,37 @@ final class Bound {
     }
 
     private String base(final String name) {
-        return new Ends(this.pairs).name(name);
+        return this.settled(this.applied(name));
+    }
+
+    private String settled(final String name) {
+        String found = "";
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = name;
+        while (seen.add(walked)) {
+            if (this.owned.hollow(walked)) {
+                found = walked;
+                break;
+            }
+            if (!this.pairs.containsKey(walked)) {
+                break;
+            }
+            walked = this.pairs.get(walked);
+        }
+        if (found.isEmpty()) {
+            found = new Ends(this.pairs).name(name);
+        }
+        return found;
+    }
+
+    private String applied(final String name) {
+        final String call = new Applied(name).made();
+        final String found;
+        if (this.pairs.containsKey(call)) {
+            found = call;
+        } else {
+            found = name;
+        }
+        return found;
     }
 }

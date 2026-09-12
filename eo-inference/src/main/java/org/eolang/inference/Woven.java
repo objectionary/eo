@@ -15,9 +15,8 @@ import java.util.Map;
  * halves of one row, and putting the halves together takes the provides table,
  * every application of the program and the pairs themselves. {@link Refs} joins
  * them, {@link Bound} works out what went where and {@link Provided} says which
- * voids there were to fill and {@link Copied} drops what a call was handed
- * rather than copied; this is the five of them wired up, so that whoever has
- * pairs and wants rows says so in one line.</p>
+ * voids there were to fill; this is the four of them wired up, so that whoever
+ * has pairs and wants rows says so in one line.</p>
  *
  * <p>Rows are asked for twice over. Once at the end, for the table the build
  * writes down, and once for every provisional table a fact is read off before
@@ -51,31 +50,23 @@ final class Woven {
     private final Collection<String> hollows;
 
     /**
-     * Every dispatch and read of the program.
-     */
-    private final Collection<Site> all;
-
-    /**
      * Ctor.
      *
      * @param provides The provides table, as {@link Provides} wrote it
      * @param applications What every application of the program gives
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void
-     * @param dispatches Every dispatch and read of the program
      */
     Woven(
         final XML provides,
         final Given applications,
         final Map<String, String> taken,
-        final Collection<String> voids,
-        final Collection<Site> dispatches
+        final Collection<String> voids
     ) {
         this.given = provides;
         this.applied = applications;
         this.receivers = taken;
         this.hollows = voids;
-        this.all = dispatches;
     }
 
     /**
@@ -103,18 +94,12 @@ final class Woven {
      *  the object that put them there
      */
     Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
-        final Map<String, String> names = new Ends(pairs).names();
-        final Provided owned = new Provided(this.given, names, this.hollows);
-        return new Copied(
-            new Bound(
-                this.applied.arguments(),
-                this.applied.named(),
-                this.receivers,
-                pairs,
-                owned
-            ).all(),
+        return new Bound(
+            this.applied.arguments(),
+            this.applied.named(),
+            this.receivers,
             pairs,
-            new Lent(owned, this.all, this.applied.arguments(), this.receivers).sites(names)
+            new Provided(this.given, new Ends(pairs).names(), this.hollows)
         ).all();
     }
 }

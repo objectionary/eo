@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call that carries arguments is two objects written on one line: the one it
+# copies, whose voids the arguments fill, and the one it comes back as. Here
+# they differ. The body of "both" takes "pick", which is a void, and applies it
+# to two grips; every arm the program puts into that void hands one of those
+# grips back, so the call comes back as a grip while copying a "pick". One
+# locator used to answer for both, and a reader after the second found the
+# first and put the arguments into the voids of a grip. So the application is
+# named apart, with the brackets a phi-calculus expression writes one with, and
+# the arguments land where they really go: in the voids of the arms the void
+# holds.
+eo:
+  grip.eo: |
+    [size] > grip
+      size > @
+  choice.eo: |
+    [pick] > choice
+      ^.pick > [^ x] > both
+        grip x
+        grip 04-
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+links:
+  - "/links/type[@id='Φ.choice.both.φ()']/ref[@loc='Φ.choice.pick']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref[@loc='Φ.grip']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.yes.φ.α0.left']/ref[@loc='Φ.choice.both.φ.α0']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.no.φ.α0.right']/ref[@loc='Φ.choice.both.φ.α1']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref[not(bind[@void='Φ.grip.size'])]"
