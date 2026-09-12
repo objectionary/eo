@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A file may carry more than one "+package" meta (the parser accepts it,
-# eo-syntax/multiple-package-metas-do-not-crash.yaml), and the printer must
-# not crash on it either: to-eo-tree.xsl reads the "package" variable while
+# The parser refuses a file that carries more than one "+package" meta
+# (eo-syntax/second-package-is-rejected.yaml), but the printer is also given
+# XMIR that never came through that parser, so it must not crash on such a
+# tree either: to-eo-tree.xsl reads the "package" variable while
 # shortening a self-reference, and picking `part[1]` of every matching meta
 # instead of the first meta gave Saxon two nodes for `string()` (#7448). Only
 # the first "+package" is used to build the self-reference prefix.

@@ -3,10 +3,10 @@
 ---
 sheets: []
 asserts:
-  - /object[not(errors)]
+  - /object/errors/error[contains(text(),'Package is declared more than once')]
 input: |
-  +package test
-  +package sandbox
+  +package foo
+  +package bar
 
-  [] > main
-    (stdout "Hello, world!").print > @
+  [] > app
+    1 > a
