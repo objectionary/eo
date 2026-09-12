@@ -3,12 +3,13 @@
 ---
 sheets: []
 asserts:
-  - /object/errors[count(error)=1]
+  - /object/errors[count(error)=2]
   - /object/errors/error[@check='validate-package' and @line='2']
-  - /object/errors/error[@severity='critical']
+  - /object/errors/error[@check='validate-package' and @line='3']
 input: |
-  +package test
-  +package sandbox
+  +package same
+  +package same
+  +package same
 
   [] > main
-    (stdout "Hello, world!").print > @
+    5 > x
