@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+asserts:
+  - /object[not(errors)]
+  - //o[@base='foo'][count(o)=2]
+  - //o[@base='Φ.bytes']/o[text()='00-']
+  - //o[@base='Φ.bytes']/o[text()='FF-']
+input: |
+  [] > main
+    foo > pair
+      00-
+      FF-
