@@ -42,14 +42,20 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6263:30min Parse every {@code .eo} source once per build.
- *  This goal parses each source and throws the tree away, and then the
- *  {@code compile} goal parses the very same text again seconds later,
- *  so a clean build of {@code eo-runtime} parses its 170 sources twice.
- *  Hand the settled tree of {@link #canonical(Path, String)} over to
- *  {@link Parsing} instead, keyed by the source hash the way
- *  {@link GlobalCache} already keys its footprints, so that the second
- *  parse is skipped when the format goal has just produced the same tree.
+ * @todo #6627:30min Read this goal's first tree through {@link Raws}.
+ *  The {@code parse} goal keeps the tree it makes before any XSL under the
+ *  hash of the text, so a second reader of that text is given it instead of
+ *  running the grammar again. This goal is that second reader and still
+ *  parses on its own, so a clean build of {@code eo-runtime} runs the
+ *  grammar over its 170 sources twice. Take the first pass of
+ *  {@link #canonical(Path, String)} from {@link Raws}, canonical train on
+ *  top, the way {@code EoSource} puts it.
+ * @todo #6627:30min Bound the store of raw trees.
+ *  {@link Raws} writes a tree for every distinct source text it is asked
+ *  about and never takes one out again, so the machine-wide cache grows
+ *  with every edit of every source built on this machine. Give it the
+ *  treatment the rest of the cache gets, or an age at which a tree nobody
+ *  has asked for is dropped.
  */
 @Mojo(
     name = "format",
