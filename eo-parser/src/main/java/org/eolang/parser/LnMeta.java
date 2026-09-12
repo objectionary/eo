@@ -17,8 +17,15 @@ import java.util.Locale;
  * emitted (R-3.2.2). At most one space between parts (R-3.2.4).</p>
  *
  * <p>A leading {@code Q} in any part is promoted to {@code Φ} in the
- * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion at
- * emission time.</p>
+ * emitted XMIR (R-3.2.3 / R-9.3). This class does the promotion while
+ * splitting the line into parts, before it ever reaches
+ * {@link Emit#meta(int, String, List)}.</p>
+ *
+ * <p>Two blank-line rules guard the meta header: a blank line between
+ * two meta directives is forbidden, the header being a single
+ * contiguous block (R-6.5.5), and the header itself must sit at the
+ * top of the file, so a blank line before it — unless a top comment
+ * block precedes it — is rejected too.</p>
  *
  * <p>Two directives name what they act on and are meaningless without
  * it: {@code +package} takes exactly one argument, and {@code +alias}
