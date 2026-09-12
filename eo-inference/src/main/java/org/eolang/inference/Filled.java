@@ -53,6 +53,16 @@ import java.util.Map;
  * it up leaves hundreds of names rooted at a void again while settling almost
  * nothing (#8571).</p>
  *
+ * <p>A walk that dies answers nothing at all, rather than handing back the
+ * name it was asked about. The two are not the same question: a void nobody
+ * fills is the answer, while a void this call fills with something the passes
+ * have not settled yet is an answer nobody has worked out. Writing the second
+ * one down as if it were the first froze it, since {@link Dispatched} asks
+ * again only about a name rooted at a void and takes one rooted answer for
+ * another only when the second stands under the first. The {@code if} of a
+ * {@code recovered} is a {@code Φ.bool.if}, which is rooted at a void as well,
+ * so the site kept the name of a void the line above it fills (#8351).</p>
+ *
  * <p>Only the arms of those formations are counted. An argument is relayed to
  * every formation the void might hold, because which one it turns out to be is
  * not known where the argument is written, and a single stray relay among the
@@ -111,8 +121,9 @@ final class Filled {
      * @param answer The type of the attribute, as the table gave it
      * @param bearer The locator of the receiver the question was asked of
      * @param site The locator of the call the question is asked at
-     * @return The type the answer stands for here, or the answer itself when
-     *  no caller says what the void holds
+     * @return The type the answer stands for here, the answer itself when no
+     *  caller says what the void holds, or an empty string when a caller says
+     *  and the walk into what it put there has nowhere to go yet
      */
     String instead(final String answer, final String bearer, final String site) {
         return this.instead(answer, bearer, site, new HashSet<>(0));
@@ -138,7 +149,7 @@ final class Filled {
                 found = this.branch(answer, fillings, bearer, site, seen);
             } else {
                 found = this.asked(
-                    fillings.get(longest), answer.substring(longest.length() + 1), answer
+                    fillings.get(longest), answer.substring(longest.length() + 1)
                 );
             }
         }
@@ -215,9 +226,9 @@ final class Filled {
         final Collection<String> seen
     ) {
         String found = this.asked(
-            handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
+            handed, answer.substring(Math.min(root.length() + 1, answer.length()))
         );
-        if (found.equals(answer)) {
+        if (found.isEmpty()) {
             found = this.instead(answer, handed, site, seen);
         }
         return found;
@@ -271,7 +282,7 @@ final class Filled {
         }
     }
 
-    private String asked(final String start, final String names, final String back) {
+    private String asked(final String start, final String names) {
         String walked = start;
         int from = 0;
         while (from < names.length() && !walked.isEmpty()) {
@@ -281,9 +292,6 @@ final class Filled {
             }
             walked = this.owned.attribute(walked, names.substring(from, next));
             from = next + 1;
-        }
-        if (walked.isEmpty()) {
-            walked = back;
         }
         return walked;
     }
