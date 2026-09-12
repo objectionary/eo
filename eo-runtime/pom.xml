@@ -302,13 +302,12 @@
                 -->
                 <lint>redundant-object</lint>
                 <!--
-                @todo #6985:30min Stop skipping 'many-void-attributes' here.
                 The rule caps a formation at five voids to keep it callable,
-                but it counts 'ρ' among them, and 'string.regex.pattern.yes'
-                has five real ones. Writing the receiver down did not add an
-                argument, so the cap now bites any head honest enough to
-                declare what it already had. Remove this entry once
-                objectionary/lints#1299 leaves the receiver out of the count.
+                but it counts the receiver 'ρ' among them, so a head that
+                writes '^' down is charged for an argument it never gained
+                (objectionary/lints#1299). Of the two formations it reports in
+                'string/regex.eo', only 'members' at line 1444 truly carries
+                six; 'closed' at line 1818 carries five and its receiver.
                 -->
                 <lint>many-void-attributes</lint>
                 <!--
