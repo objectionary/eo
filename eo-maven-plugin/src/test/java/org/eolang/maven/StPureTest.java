@@ -80,6 +80,34 @@ final class StPureTest {
         );
     }
 
+    @Test
+    void marksWhatTheTablesSay(@Mktmp final Path temp) throws IOException {
+        final Path parsed = StPureTest.program(temp);
+        final Path tables = temp.resolve("tables");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        MatcherAssert.assertThat(
+            "the tables of this program mark its application, but nothing was marked",
+            StPureTest.stamped(tables, parsed.resolve("app.xmir"))
+                .nodes("//o[@name='x' and @pure='true']"),
+            Matchers.not(Matchers.empty())
+        );
+    }
+
+    @Test
+    void readsATableThatWasRewritten(@Mktmp final Path temp) throws IOException {
+        final Path parsed = StPureTest.program(temp);
+        final Path tables = temp.resolve("tables");
+        final Path source = parsed.resolve("app.xmir");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        StPureTest.stamped(tables, source);
+        new Inferring(StPureTest.alone(temp), temp.resolve("again"), tables).exec();
+        MatcherAssert.assertThat(
+            "a table rewritten between two transpilations of one JVM must be read again, but the copy parsed first was handed over",
+            StPureTest.stamped(tables, source).nodes("//o[@name='x' and @pure='true']"),
+            Matchers.empty()
+        );
+    }
+
     private Collection<String> unmatched(final Xtory pack) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {
@@ -111,6 +139,37 @@ final class StPureTest {
             }
         }
         return failed;
+    }
+
+    private static Path program(final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @", "  [x] > power", "    x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(), "[] > app", "  2.power 63 > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        return parsed;
+    }
+
+    private static Path alone(final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("alone"));
+        Files.copy(
+            temp.resolve("parsed").resolve("app.xmir"),
+            parsed.resolve("app.xmir")
+        );
+        return parsed;
     }
 
     private static XML stamped(final Path tables, final Path source) throws IOException {
