@@ -319,13 +319,6 @@
                 -->
                 <lint>unit-test-is-not-verb</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'unsorted-metas' here. It reads
-                the nearest preceding meta now instead of the first one in the
-                file, and on that reading the '+spdx' meta sits out of order in
-                174 sources, 'string/turkish.eo:19' among them.
-                -->
-                <lint>unsorted-metas</lint>
-                <!--
                 @todo #8654:30min Stop skipping the three 'sprintf' lints here.
                 'string/printf.eo:162' hands an argument to a template whose
                 only conversion is an escaped '%%', while line 506 feeds two
