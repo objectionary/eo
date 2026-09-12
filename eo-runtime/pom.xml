@@ -326,15 +326,6 @@
                 -->
                 <lint>unsorted-metas</lint>
                 <!--
-                @todo #8654:30min Stop skipping the three 'sprintf' lints here.
-                'string/printf.eo:162' hands an argument to a template whose
-                only conversion is an escaped '%%', while line 506 feeds two
-                arguments to '%s' on purpose, to prove that extras are ignored.
-                -->
-                <lint>sprintf-constant-args</lint>
-                <lint>sprintf-without-formatters</lint>
-                <lint>wrong-sprintf-arguments</lint>
-                <!--
                 @todo #8654:30min Stop skipping 'invalid-name-notation' here.
                 The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no
                 room for the digit in 'bytes/as-u8.eo:12' or in its siblings
