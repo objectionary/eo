@@ -342,12 +342,13 @@
                 -->
                 <lint>invalid-name-notation</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'too-deep-object' and
-                'broad-scope' here. 'number.eq' nests sixteen levels against a
-                maximum of twelve, and 'number.integral:46' keeps 'subsection'
-                wider than the single object that reads it.
+                'broad-scope' asks for a private attribute read by one sibling
+                to move inside it, which for a recursive head means computing
+                it again on every step: 'i64.div' hoists 'bit' and 'dividend'
+                out of 'looped' on purpose. Thirty-four of its forty-six
+                reports sit in 'string/regex.eo', whose objects share one
+                vocabulary across the whole parser, and #8654 holds the rest.
                 -->
-                <lint>too-deep-object</lint>
                 <lint>broad-scope</lint>
               </skipSourceLints>
               <!--
