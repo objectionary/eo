@@ -312,10 +312,13 @@
                 -->
                 <lint>many-void-attributes</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'unit-test-is-not-verb' here.
-                Lints 0.4.9 registers a lint that 0.4.8 shipped but never ran,
-                and it wants a test name to open with a verb in singular form,
-                which no 'can-...' name in this module does.
+                The lint hands a test name to OpenNLP and keeps it only when
+                the first word is tagged as a verb in singular form, while
+                'bad-test-name', out of the same jar, requires a positive test
+                to start with 'can-' or 'accepts-'. A modal is not a verb to
+                the tagger, so the two rules contradict each other and all
+                1972 positive tests here fail the second one
+                (objectionary/lints#1441).
                 -->
                 <lint>unit-test-is-not-verb</lint>
                 <!--
