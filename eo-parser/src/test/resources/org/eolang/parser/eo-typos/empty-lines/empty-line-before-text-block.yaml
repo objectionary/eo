@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 6
+message: |-
+  [6:2] error: 'blank line not allowed between non-master siblings'
+    """ > b
+    ^
+input: |
+  [] > main
+    42 > a
+
+    """
+    hi
+    """ > b
