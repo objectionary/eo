@@ -19,11 +19,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * An object that records a coverage hit of its source location when
  * it is touched, and delegates everything to the origin.
  *
- * <p>The transpiler emits it around every located object. Recording is
- * enabled by the {@code eo.coverageFile} system property: on the first
- * touch, one {@code loc:line:pos} line is appended, at most once per
- * wrapper per configured destination; without the property every hit is
- * a silent no-op. The property
+ * <p>The transpiler emits it around every located object and hands all
+ * the wrappers of one generated class the same set of hits, since a
+ * wrapper is built anew each time the attribute holding it is composed,
+ * and a set of its own would let one location reach the file once per
+ * instance of the object. Recording is enabled by the
+ * {@code eo.coverageFile} system property: on the first touch, one
+ * {@code loc:line:pos} line is appended, at most once per set per
+ * configured destination; without the property every hit is a silent
+ * no-op. The property
  * is re-read on every touch (not cached at class load), since this
  * class is now instantiated around every located object in every EO
  * program: the very first one touched anywhere in the JVM would
@@ -37,26 +41,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * program).</p>
  *
  * @since 0.58
- * @todo #6508:30min Let one set of hits span the whole program. Every wrapper
- *  the transpiler builds starts with an empty set of its own, so a location
- *  touched through many instances of the same object is appended to the file
- *  once per instance, the file fills up with duplicates, and every wrapper
- *  pays for a set it shares with nobody. The generated code should hand the
- *  same set to every wrapper it builds.
  */
 public final class PhCoverage implements Phi {
 
     /** The origin. */
     private final Phi origin;
 
-    /** Locations written by this object and its copies, per destination. */
+    /** Locations written by every wrapper sharing this set, per destination. */
     private final Set<String> hits;
 
     /** The location to write, as {@code loc:line:pos}. */
     private final String record;
 
     /**
-     * Ctor.
+     * Ctor, with a set of hits of its own.
      *
      * @param phi The origin
      * @param mark The location to write, as {@code loc:line:pos}
@@ -66,7 +64,7 @@ public final class PhCoverage implements Phi {
     }
 
     /**
-     * Ctor.
+     * Ctor, with a set of hits shared with other wrappers.
      *
      * @param phi The origin
      * @param seen Locations written already, per destination
