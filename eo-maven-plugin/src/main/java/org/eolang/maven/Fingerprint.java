@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -102,7 +103,7 @@ final class Fingerprint implements Supplier<String> {
             }
             for (final Path base : this.dirs) {
                 if (Files.isDirectory(base)) {
-                    try (Stream<Path> found = Files.walk(base)) {
+                    try (Stream<Path> found = Files.walk(base, FileVisitOption.FOLLOW_LINKS)) {
                         for (final Path file : found.filter(Files::isRegularFile)
                             .sorted().collect(Collectors.toList())) {
                             final byte[] content = Files.readAllBytes(file);
