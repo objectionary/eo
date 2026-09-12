@@ -27,7 +27,7 @@ final class Value {
      * Kinds of value that may carry a {@code .method} chain behind them.
      */
     private static final Set<Kind> CHAINABLE = Set.of(
-        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM,
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM, Kind.IDENTITY,
         Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 

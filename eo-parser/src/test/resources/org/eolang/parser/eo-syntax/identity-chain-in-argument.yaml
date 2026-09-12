@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The identity glyph is a value wherever a value is expected and may
+# carry a method chain (R-3.16.1), in argument position as well as at the
+# head of a line. It is the receiver of the chain here, not the subject of
+# an application, which R-3.16.1 still forbids.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='first' and @base='Φ.foo']/o[@as='α0' and @base='.bar']
+  - //o[@name='first']/o[@as='α0']/o[not(@base)][o[@base='∅' and @name='x']]
+  - //o[@name='second' and @base='.bar']
+input: |
+  [] > app
+    foo I.bar > first
+    I.bar > second
