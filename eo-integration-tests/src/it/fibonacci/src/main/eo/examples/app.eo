@@ -10,12 +10,12 @@
 +architect yegor256@gmail.com
 
 [args] > app
-  number > n
-    at. > nn!
-      Q.string.sscanf
-        "%d"
-        args.at 0
-      0
+  number nn > n
+  at. > nn!
+    Q.string.sscanf
+      "%d"
+      args.at 0
+    0
   at. > e!
     Q.string.sscanf
       "%d"

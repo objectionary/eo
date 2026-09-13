@@ -43,8 +43,8 @@ input: |
         "Jeff"
       x > @
       second > hello
-        $.plus.@ 5 > i
-        third > x!
+        $.plus.@ 5 >> i
+        third >>! thd
           $
           z.
             z
@@ -52,7 +52,7 @@ input: |
             12:foo
             ((t r 8.54 "yes" "\t").print 88 0x1f):hey
             true:vtx
-            false:fle > a!
+            false:fle >>! fls
               []
                 Q.x.f.d Q Q > f
                 Q.y Q > s
@@ -63,7 +63,7 @@ input: |
               "家"
             q
             .w
-            .e:qwerty > qwe
+            .e:qwerty >> qwe
         f
           z
             (z 5):0
