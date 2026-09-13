@@ -1,0 +1,197 @@
+# Bounded view over a region of an existing chunk.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package chunk
++version 0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+[^ start length] > slot
+  get > @
+  [^ source target count] > copy
+    seq * > @
+      ^.read source count >> data!
+      ^.write target data
+  read > get
+    0
+    size
+  ^.id > id
+  if. > [^ object] > put
+    and.
+      ^.size.gt 0
+      object.size.gt ^.size
+    T
+      "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
+        * object.size ^.size
+    ^.write
+      0
+      object
+  if. > [^ offset count cant-read] > read
+    ^.valid.and
+      and.
+        0.lte offset
+        lte.
+          offset.plus count
+          ^.length
+    ^.^.read
+      ^.start.plus offset
+      count
+    cant-read
+      "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
+        *
+          count
+          offset
+          ^.length
+  printf. > [^ capacity] > resized
+    "Can't resize a chunk slot of length %f"
+    * ^.length
+  ^.valid.if > [^] > size
+    ^.length
+    "Can't get the size of an invalid chunk slot"
+  ^.slot > [^ begin width] > slot
+    ^.start.plus begin
+    width
+  and. > [^] > valid
+    and.
+      and.
+        ^.start.is-finite.and ^.start.is-integer
+        0.lte ^.start
+      and.
+        ^.length.is-finite.and ^.length.is-integer
+        0.lte ^.length
+    lte.
+      ^.start.plus ^.length
+      ^.^.size
+  if. > [^ offset data] > write
+    ^.valid.and
+      and.
+        0.lte offset
+        lte.
+          offset.plus data.size
+          ^.length
+    ^.^.write
+      ^.start.plus offset
+      data
+    "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
+      *
+        data.size
+        offset
+        ^.length
+
+  ++> can-create-a-slot
+    eq. > @
+      malloc.of
+        16
+        [mem]
+          seq > @
+            * head head.size
+          mem.slot 0 4 > head
+      4
+
+  ++> can-have-a-zero-length-slot
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          empty.size > @
+          mem.slot 8 0 > empty
+      0
+
+  ++> can-invalidate-a-stale-slot-after-parent-shrink
+    not. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            mem.resized 4
+            part.valid
+          mem.slot 0 8 > part
+
+  ++> can-isolate-neighbouring-slots
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            left
+            right
+            left.put 01-02-03-04
+            right.put 05-06-07-08
+            and.
+              left.get.eq 01-02-03-04
+              right.get.eq 05-06-07-08
+          mem.slot 0 4 > left
+          mem.slot 4 4 > right
+      true
+
+  ++> can-nest-slots-and-compose-offsets
+    eq. > @
+      malloc.of
+        16
+        [mem]
+          seq * > @
+            outer
+            inner
+            inner.put 0A-0B-0C-0D
+            mem.read 6 4
+          outer.slot 2 4 > inner
+          mem.slot 4 8 > outer
+      0A-0B-0C-0D
+
+  ++> can-read-and-write-at-slot-edges
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            part.write 0 01-02
+            part.write 2 03-04
+            part.read 0 4
+          mem.slot 2 4 > part
+      01-02-03-04
+
+  ++> can-reject-a-fractional-slot-length
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot 1 2.5 > invalid
+
+  ++> can-reject-a-negative-slot-start
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot -1 2 > invalid
+
+  ++> can-reject-a-non-finite-slot-start
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot pinf 2 > invalid
+
+  ++> can-reject-a-slot-that-exceeds-the-parent
+    not. > @
+      malloc.of
+        8
+        [mem]
+          invalid.valid > @
+          mem.slot 7 2 > invalid
+
+  ++> can-report-the-parent-id
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            part.id.eq mem.id
+          mem.slot 2 4 > part
+      true
