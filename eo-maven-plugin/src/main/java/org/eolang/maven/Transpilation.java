@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.eolang.lowering.Home;
 import org.eolang.parser.TrFull;
 
 /**
@@ -293,7 +294,7 @@ final class Transpilation {
         final boolean instrument = this.coverage;
         final String base = this.superclass;
         final Path tables = this.inference;
-        final Path atoms = this.target.resolve(Lowering.DIR).resolve(Lowering.ATOMS);
+        final Path atoms = new Home(this.target.resolve(Lowering.DIR)).atoms();
         return Transpilation.TRAINS.get().computeIfAbsent(
             String.format("%b|%b|%s|%s|%s", track, instrument, base, tables, atoms),
             ignored -> Transpilation.compiled(track, instrument, base, tables, atoms)

@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# D
+input: |
+  [] > foo
+    [x] > calc
+      (x.minus 3).plus 2 > @
+    calc 5 > @
+prelude:
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > x /Q.number
+      [^ x] > minus
+        ^.plus x.neg > @
+      [^] > neg
+        ^.times -1 > @
+  bytes.eo: |
+    [@] > bytes
+lowered: |
+  [] > foo
+    [x] > calc
+      (x.minus 3).plus 2 > @
+    calc 5 > @

@@ -15,25 +15,28 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.lowering.Phino;
 
 /**
- * Compute the constant fragments of a program at build time.
+ * Lower the fragments of a program into Java atoms at build time.
  *
- * <p>An expression decided by data alone, such as {@code 1.plus 1}, pays
- * the full object-graph cost at runtime for a value the compiler could
- * know. This goal computes such fragments through the external
- * {@code phino} binary and splices the values back as literals, so the
- * graphs are never built. A pure formation whose voids are witnessed as
- * data goes further: its body is reduced symbolically into a protocol,
- * the protocol becomes the Java body of a synthetic atom in a sidecar
- * file under {@link Lowering#ATOMS}, and the formation keeps only its
- * voids and a {@code λ} marker. The goal runs after {@link MjMerge} and
- * before {@link MjTranspile}, reading the XMIR of each object and
- * repointing it at the rewritten copy in {@link Lowering#DIR} — only when
- * something in it was actually folded or lowered.</p>
+ * <p>A formation that declares arguments, such as {@code [a b] > gap},
+ * pays the full object-graph cost at runtime for a body that is often
+ * arithmetic and comparisons alone. This goal hands every such fragment
+ * to the external {@code phino} binary, with each of its voids planted as
+ * a symbol and the rest of the program as it was parsed, and phino
+ * computes what it can through the atom engine of {@code eo-lowering},
+ * which records every operation as one row of a symbol table. Every
+ * marker phino leaves behind becomes an atom: the rows behind it are
+ * rendered into the Java body of a sidecar file under the {@code atoms}
+ * directory of {@link Lowering#DIR}, and the marker turns into a call of
+ * that atom, or the formation itself becomes the atom when the marker is
+ * its whole body. The goal runs after {@link MjMerge} and before
+ * {@link MjTranspile}, reading the XMIR of each object and repointing it
+ * at the rewritten copy in {@link Lowering#DIR} — only when something in
+ * it was actually lowered.</p>
  *
  * <p>The goal is part of the normal chain but soft by default: without a
  * {@code phino} of the pinned version on the PATH it warns once and does
  * nothing, so a machine without it builds fine, only without the
- * folding. Setting {@code eo.loweringRequired} turns that skip into a
+ * lowering. Setting {@code eo.loweringRequired} turns that skip into a
  * build failure, which is what our own CI does, so that a release is
  * never silently unlowered. Setting {@code eo.lowering} to false turns
  * the goal off entirely.</p>
@@ -45,9 +48,9 @@ import org.eolang.lowering.Phino;
  * then never share a slot. When the goal skips or is disabled, the
  * marker is removed.</p>
  *
- * <p>Every dataization runs under a step budget of ten thousand
+ * <p>Every run of phino works under a step budget of ten thousand
  * rewrites, enough for any fragment a human writes and little enough
- * that a diverging one is refused in milliseconds.</p>
+ * that a diverging one is refused in seconds.</p>
  *
  * @since 0.76.0
  */
@@ -87,10 +90,10 @@ public final class MjLower extends MjSafe {
 
     /**
      * The directory with the tables that {@link MjInference} writes, read
-     * to learn which formations are pure and what data forma every void
-     * of them was witnessed as. A build that skips {@code eo:inference}
-     * leaves the directory absent, and then no formation is lowered while
-     * the constants still fold.
+     * to learn what forma every void of every formation was witnessed as.
+     * A build that skips {@code eo:inference} leaves the directory absent,
+     * and then every void is planted bare and only what is passed along
+     * untouched can be lowered.
      */
     @Parameter(
         alias = "inferenceDir",
@@ -123,10 +126,7 @@ public final class MjLower extends MjSafe {
                     String.format(
                         "lower-%s-%s",
                         phino.pin(),
-                        new Fingerprint(
-                            "/org/eolang/lowering/universe.phi",
-                            "/org/eolang/lowering/ops.tsv"
-                        ).get()
+                        new Fingerprint("/org/eolang/lowering/ops.tsv").get()
                     ),
                     marker
                 ).value();

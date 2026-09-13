@@ -8,164 +8,139 @@ import com.github.lombrozo.xnav.Xnav;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import org.apache.log4j.Appender;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
+import java.util.Map;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.api.parallel.ResourceLock;
-import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.SubstituteLogger;
+import org.w3c.dom.Node;
 
 /**
  * Test case for {@link Lowered}.
  *
- * <p>The logger of {@link Lowered} is one object for the whole JVM, and
- * a capture of it is a level and an appender set on that object, so two
- * of these tests in flight at once read each other's messages, or none
- * at all. They run in one thread for that reason.</p>
+ * <p>The tests run the real binary and hold only when it is installed
+ * and of the pinned version, which is what CI arranges.</p>
  *
- * <p>A capture also has to wait for SLF4J to bind itself to the logging
- * back-end, which is what the loop below does. The binding starts with
- * the first logging call of the JVM, made by whichever test class
- * happens to run first, and while it is under way SLF4J answers every
- * other thread with a substitute logger: one that says debug is
- * enabled, records what it is given instead of passing it on, and
- * replays the records into the real logger once the binding is done. By
- * then the appender of the capture is gone, so what {@link Lowered} says
- * during the binding reaches nobody and the capture comes back
- * empty.</p>
- *
- * @since 0.76.0
+ * @since 0.77.0
  */
 @ExtendWith(MktmpResolver.class)
-@Execution(ExecutionMode.SAME_THREAD)
-@ResourceLock("org.eolang.lowering.Lowered.log")
+@DisabledOnOs(OS.WINDOWS)
 final class LoweredTest {
 
     @Test
-    void namesTheVoidNothingWitnesses(@Mktmp final Path temp) throws IOException {
+    void lowersNestedFragmentIntoAtom(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino", 500, temp.resolve("phino"));
+        Assumptions.assumeTrue(phino.suitable());
+        final Home home = new Home(temp.resolve("lower"));
+        final Formas formas = LoweredTest.formas();
+        final Node doc = LoweredTest.prepared(temp, home, formas);
+        new Lowered(phino, formas, home, "foo").rewrite(new Xnav(doc));
         MatcherAssert.assertThat(
-            "the void no table witnesses must be named in the log, but it isnt",
-            LoweredTest.spoken(
-                new Formas(
-                    Collections.singletonMap("Φ.foo.calc.φ", "Φ.number"),
-                    Collections.emptyMap()
-                ),
-                String.join(
-                    "",
-                    "<object><o name='foo'><o loc='Φ.foo.calc' name='calc'>",
-                    "<o base='∅' name='x'/><o base='Φ.number' name='φ'/>",
-                    "</o></o></object>"
-                ),
-                temp
-            ),
-            Matchers.hasItem(
-                Matchers.<String>allOf(
-                    Matchers.containsString("'x'"),
-                    Matchers.containsString("Φ.foo.calc")
-                )
+            "the nested fragment must come back as an atom over its void, but it didnt",
+            new Xml(doc).text(),
+            Matchers.allOf(
+                Matchers.matchesPattern("(?s).*lowered=\"[0-9a-f]{12}\" name=\"f\".*"),
+                Matchers.containsString("<o atom=\"Φ.number\" name=\"λ\"/>")
             )
         );
     }
 
     @Test
-    void countsTheAttributesOfAFormationItCannotShape(@Mktmp final Path temp) throws IOException {
+    void countsLoweredFragments(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino", 500, temp.resolve("phino"));
+        Assumptions.assumeTrue(phino.suitable());
+        final Home home = new Home(temp.resolve("lower"));
+        final Formas formas = LoweredTest.formas();
         MatcherAssert.assertThat(
-            "a formation of the wrong shape must be counted in the log, but it isnt",
-            LoweredTest.spoken(
-                new Formas(
-                    Collections.emptyMap(),
-                    Collections.singletonMap("Φ.foo.calc.x", "number")
-                ),
-                String.join(
-                    "",
-                    "<object><o name='foo'><o loc='Φ.foo.calc' name='calc'>",
-                    "<o base='∅' name='x'/><o base='Φ.number' name='φ'/>",
-                    "<o base='Φ.number' name='bar'/>",
-                    "</o></o></object>"
-                ),
-                temp
+            "the one fragment of the document must be counted, but it wasnt",
+            new Lowered(phino, formas, home, "foo").rewrite(
+                new Xnav(LoweredTest.prepared(temp, home, formas))
             ),
-            Matchers.hasItem(
-                Matchers.<String>allOf(
-                    Matchers.containsString("Φ.foo.calc"),
-                    Matchers.containsString("3 attribute(s)")
-                )
-            )
+            Matchers.equalTo(1)
         );
     }
 
     @Test
-    void tellsTheReasonAFragmentRefused(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "the reason a fragment did not lower must reach the log, but it doesnt",
-            LoweredTest.spoken(
-                new Formas(
-                    Collections.emptyMap(),
-                    Collections.singletonMap("Φ.foo.calc.x", "number")
-                ),
-                String.join(
-                    "",
-                    "<object><o name='foo'><o loc='Φ.foo.calc' name='calc'>",
-                    "<o base='∅' name='x'/>",
-                    "<o base='Φ.number' name='φ'><o as='α0' base='Φ.foo.calc.x'/></o>",
-                    "</o></o></object>"
-                ),
-                temp
-            ),
-            Matchers.hasItem(
-                Matchers.<String>allOf(
-                    Matchers.containsString("Φ.foo.calc"),
-                    Matchers.containsString("refused to lower")
-                )
-            )
+    void writesSidecarOfTheAtom(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino", 500, temp.resolve("phino"));
+        Assumptions.assumeTrue(phino.suitable());
+        final Home home = new Home(temp.resolve("lower"));
+        final Formas formas = LoweredTest.formas();
+        new Lowered(phino, formas, home, "foo").rewrite(
+            new Xnav(LoweredTest.prepared(temp, home, formas))
+        );
+        try (Stream<Path> files = Files.list(home.atoms())) {
+            MatcherAssert.assertThat(
+                "the sidecar must add the literal to the void in Java, but it doesnt",
+                Files.readString(files.findFirst().get(), StandardCharsets.UTF_8),
+                Matchers.containsString("v0 + Double.longBitsToDouble(0x4014000000000000L)")
+            );
+        }
+    }
+
+    private static Formas formas() {
+        return new Formas(
+            Collections.emptyMap(), Collections.singletonMap("Φ.foo.f.a", "number")
         );
     }
 
-    private static List<String> spoken(final Formas formas, final String xmir,
-        final Path temp) throws IOException {
-        while (LoggerFactory.getLogger(Lowered.class) instanceof SubstituteLogger) {
-            Thread.onSpinWait();
+    private static Node prepared(final Path temp, final Home home, final Formas formas)
+        throws IOException {
+        final Map<String, String> docs = new LinkedHashMap<>(3);
+        docs.put(
+            "number",
+            String.join(
+                "",
+                "<o loc='Φ.number' name='number'><o base='∅' loc='Φ.number.φ' name='φ'/>",
+                "<o loc='Φ.number.plus' name='plus'><o base='∅' loc='Φ.number.plus.ρ' name='ρ'/>",
+                "<o base='∅' loc='Φ.number.plus.x' name='x'/>",
+                "<o atom='Φ.number' loc='Φ.number.plus.λ' name='λ'/></o></o>"
+            )
+        );
+        docs.put(
+            "bytes", "<o loc='Φ.bytes' name='bytes'><o base='∅' loc='Φ.bytes.φ' name='φ'/></o>"
+        );
+        docs.put(
+            "foo",
+            String.join(
+                "",
+                "<o loc='Φ.foo' name='foo'>",
+                "<o loc='Φ.foo.f' name='f'><o base='∅' loc='Φ.foo.f.a' name='a'/>",
+                "<o base='ξ.a.plus' loc='Φ.foo.f.φ' name='φ'><o as='α0' base='Φ.number' loc='Φ.foo.f.φ.α0'>",
+                "<o as='α0' base='Φ.bytes' loc='Φ.foo.f.φ.α0.α0'><o as='α0' loc='Φ.foo.f.φ.α0.α0.α0'>",
+                "40-14-00-00-00-00-00-00</o></o></o></o></o></o>"
+            )
+        );
+        final List<Path> files = new ArrayList<>(docs.size());
+        for (final Map.Entry<String, String> doc : docs.entrySet()) {
+            final Path file = temp.resolve(String.format("%s.xmir", doc.getKey()));
+            Files.write(
+                file,
+                String.format("<object>%s</object>", doc.getValue())
+                    .getBytes(StandardCharsets.UTF_8)
+            );
+            files.add(file);
         }
-        final List<String> messages = new ArrayList<>(0);
-        final Appender appender = new AppenderSkeleton() {
-            @Override
-            protected void append(final LoggingEvent event) {
-                messages.add(String.valueOf(event.getRenderedMessage()));
-            }
-
-            @Override
-            public void close() {
-                // Nothing to release.
-            }
-
-            @Override
-            public boolean requiresLayout() {
-                return false;
-            }
-        };
-        final Logger logger = Logger.getLogger(Lowered.class);
-        final Level level = logger.getLevel();
-        logger.setLevel(Level.ALL);
-        logger.addAppender(appender);
-        try {
-            new Lowered(new Phino("phino-of-no-machine", 1, temp), formas, temp)
-                .rewrite(new Xnav(xmir));
-        } finally {
-            logger.removeAppender(appender);
-            logger.setLevel(level);
+        final Boxes boxes = new Boxes(home.boxes());
+        boxes.save(new Planted(files, formas).all());
+        Node out = null;
+        for (final Map.Entry<String, String> doc : docs.entrySet()) {
+            final Node node = new Xnav(temp.resolve(String.format("%s.xmir", doc.getKey())))
+                .element("object").node().getOwnerDocument();
+            new Xml(new Boxed(node, boxes, "").copy()).saved(home.boxed(doc.getKey()));
+            out = node;
         }
-        return messages;
+        return out;
     }
 }

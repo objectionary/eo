@@ -1,14 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# Depth decides nothing: a named formation becomes an atom wherever it
-# sits, so Heron's step, the cube, the quadratic sample and Horner's
-# cubic all lose their bodies to sidecars and keep just their voids,
-# under their own names. The objects that only hold them — `cubic` and
-# `horner` — declare no void of their own, so they refuse and hand their
-# attributes to the same walk. What calls a lowered formation reduces
-# nowhere and stays as written, so `sum` and `rest` print exactly as
-# they were parsed.
+# D
 input: |
   [] > foo
     [n g] > heron
@@ -26,52 +19,30 @@ input: |
     sum.plus rest > @
 prelude:
   number.eo: |
-    [as-bytes] > number
-      as-bytes > @
-unit: heron
-voids:
-  n: number
-  g: number
+    [@] > number
+      [] > div /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > x /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
 lowered: |
   [] > foo
-    sum.plus rest > @
+    [n g] > heron
+      (g.plus (n.div g)).div 2 > @
     [] > cubic
+      [t] > pow3
+        (t.times t).times t > @
       [] > horner
-        [] > poly /Q.number
-          ? > a /Q.number
-          ? > b /Q.number
-          ? > c /Q.number
-          ? > d /Q.number
-          ? > t /Q.number
-        [] > sample /Q.number
-          ? > t /Q.number
-      [] > pow3 /Q.number
-        ? > t /Q.number
-    [] > heron /Q.number
-      ? > n /Q.number
-      ? > g /Q.number
-    plus. > rest
-      cubic.pow3 3
-      cubic.horner.sample 4
-    plus. > sum
-      heron
-        2
-        1.5
-      cubic.horner.poly
-        1
-        2
-        3
-        4
-        5
-protocol: |
-  s1 ← L_number_div sym:v0 sym:v1
-  s2 ← L_number_plus sym:v1 sym:s1
-  s3 ← L_number_div sym:s2 number:40-00-00-00-00-00-00-00
-  answer sym:s3 number
-java: |
-  final double v0 = new Dataized(this.take("n")).asNumber();
-  final double v1 = new Dataized(this.take("g")).asNumber();
-  final double s1 = v0 / v1;
-  final double s2 = v1 + s1;
-  final double s3 = s2 / Double.longBitsToDouble(0x4000000000000000L);
-  return new Data.ToPhi(s3);
+        [a b c d t] > poly
+          (((((a.times t).plus b).times t).plus c).times t).plus d > @
+        [t] > sample
+          (t.times t).plus (t.times 6) > @
+    (heron 2 1.5).plus (cubic.horner.poly 1 2 3 4 5) > sum
+    (cubic.pow3 3).plus (cubic.horner.sample 4) > rest
+    sum.plus rest > @

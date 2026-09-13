@@ -39,6 +39,38 @@ final class FormasTest {
     }
 
     @Test
+    void knowsDataObjects() {
+        MatcherAssert.assertThat(
+            "the tuple must be known as a data object, but it isnt",
+            new Formas(Collections.emptyMap(), Collections.emptyMap()).data("Φ.tuple"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void knowsWitnessedFormaBeforeChasing() {
+        MatcherAssert.assertThat(
+            "the witnessed forma of a void must win over the chase, but it didnt",
+            new Formas(
+                Collections.singletonMap("Φ.foo.f.x", "Φ.foo.f.y"),
+                Collections.singletonMap("Φ.foo.f.x", "bool")
+            ).known("Φ.foo.f.x"),
+            Matchers.equalTo("bool")
+        );
+    }
+
+    @Test
+    void chasesWhenNothingIsWitnessed() {
+        MatcherAssert.assertThat(
+            "a void nobody witnessed must be chased along its reference, but it wasnt",
+            new Formas(
+                Collections.singletonMap("Φ.foo.f.x", "Φ.number"), Collections.emptyMap()
+            ).known("Φ.foo.f.x"),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
     void asksTheProvidesTableWhenTheRowIsAbsent() {
         MatcherAssert.assertThat(
             "a locator without a links row must answer from the witnessed voids, but it didnt",
@@ -179,6 +211,22 @@ final class FormasTest {
             "a void filled only with numbers must be witnessed as one, but it wasnt",
             new Formas(temp).given("Φ.foo.calc.x"),
             Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void witnessesHeldFormaOfVoid(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.foo.calc\">%s</type></provides>",
+                "<attr name=\"y\" void=\"true\" holds=\"Φ.bool?\"/>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void the inference holds to a forma must be witnessed as it, but it wasnt",
+            new Formas(temp).given("Φ.foo.calc.y"),
+            Matchers.equalTo("bool")
         );
     }
 
