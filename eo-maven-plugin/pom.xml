@@ -140,6 +140,17 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <!--
+      Provides SelectorUtils, which Globbed matches patterns with.
+      Maven puts it on the plugin classpath transitively today, but
+      Maven 4 is taking it out of the core, and nothing of ours depends
+      on it on purpose, so it is declared here.
+      -->
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>4.1.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
       <version>3.16.0</version>

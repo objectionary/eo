@@ -223,7 +223,7 @@ final class FakeMaven {
             this.params.putIfAbsent("lowering", true);
             this.params.putIfAbsent("binary", "phino");
             this.params.putIfAbsent("strict", true);
-            this.params.putIfAbsent("included", new SetOf<>("**.eo"));
+            this.params.putIfAbsent("included", new SetOf<>("**/*.eo"));
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {

@@ -57,14 +57,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk includes(final Collection<String> globs) {
-        final Collection<Globbed> patterns = globs.stream()
-            .map(glob -> new Globbed(glob, "includes files into the walk"))
+        final Collection<Globbed> matchers = globs.stream()
+            .map(Globbed::new)
             .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> patterns.stream().anyMatch(
-                    glob -> glob.matches(this.relative(file))
+                file -> matchers.stream().anyMatch(
+                    pattern -> pattern.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())
@@ -73,14 +73,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk excludes(final Collection<String> globs) {
-        final Collection<Globbed> patterns = globs.stream()
-            .map(glob -> new Globbed(glob, "excludes files from the walk"))
+        final Collection<Globbed> matchers = globs.stream()
+            .map(Globbed::new)
             .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> patterns.stream().noneMatch(
-                    glob -> glob.matches(this.relative(file))
+                file -> matchers.stream().noneMatch(
+                    pattern -> pattern.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())

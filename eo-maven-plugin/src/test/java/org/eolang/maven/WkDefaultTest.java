@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -28,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class WkDefaultTest {
 
     @Test
-    void findsFilesMatchingGlobPattern(@Mktmp final Path temp) throws Exception {
+    void findsFilesMatchingPattern(@Mktmp final Path temp) throws Exception {
         new Saved("", temp.resolve("foo/hello/0.1/EObar/x.bin")).value();
         new Saved("", temp.resolve("EOxxx/bar")).value();
         final String pattern = "EO**/*";
@@ -45,30 +44,12 @@ final class WkDefaultTest {
     }
 
     @Test
-    void namesTheGlobInsteadOfTheRegexItTranslatesTo(@Mktmp final Path temp) throws Exception {
-        new Saved("[] > foo", temp.resolve("foo.eo")).value();
+    void takesASourceFromAnyDepthBelowTheHome(@Mktmp final Path temp) throws Exception {
+        new Saved("[] > foo", temp.resolve("one/two/three/foo.eo")).value();
         MatcherAssert.assertThat(
-            "the error must quote the glob from the configuration, but it quoted the regex",
-            Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> new WkDefault(temp).includes(new ListOf<>("src/[]/*.eo")),
-                "a glob that cannot be compiled must be refused"
-            ).getMessage(),
-            Matchers.containsString("src/[]/*.eo")
-        );
-    }
-
-    @Test
-    void namesTheRoleOfAGlobThatDeselects(@Mktmp final Path temp) throws Exception {
-        new Saved("[] > foo", temp.resolve("foo.eo")).value();
-        MatcherAssert.assertThat(
-            "the error must say that the glob deselects files, but it said nothing about it",
-            Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> new WkDefault(temp).excludes(new ListOf<>("{foo")),
-                "a glob that cannot be compiled must be refused"
-            ).getMessage(),
-            Matchers.containsString("excludes")
+            "a pattern crossing directories must reach a source nested below the home, but it did not",
+            new WkDefault(temp).includes(new ListOf<>("**/*.eo")),
+            Matchers.iterableWithSize(1)
         );
     }
 

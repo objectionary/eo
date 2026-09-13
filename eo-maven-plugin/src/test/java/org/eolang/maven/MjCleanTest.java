@@ -86,7 +86,7 @@ final class MjCleanTest {
     void makesFullCompilingLifecycleSuccessfully(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
             .withHelloWorld()
-            .with("included", new SetOf<>("**.eo"))
+            .with("included", new SetOf<>("**/*.eo"))
             .with("classesDir", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())

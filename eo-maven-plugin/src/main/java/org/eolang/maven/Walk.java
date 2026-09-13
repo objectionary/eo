@@ -11,23 +11,26 @@ import java.util.List;
 /**
  * Walk through files in a directory.
  *
+ * <p>The patterns are Ant ones, the ones every other Maven plugin reads,
+ * where {@code **} stands for a run of directories.</p>
+ *
  * @since 0.1
  */
 interface Walk extends List<Path> {
 
     /**
-     * Includes this globs.
+     * Includes this patterns.
      *
-     * @param globs List of them
+     * @param patterns List of them
      * @return New Walk
      */
-    Walk includes(Collection<String> globs);
+    Walk includes(Collection<String> patterns);
 
     /**
-     * Excludes this globs.
+     * Excludes this patterns.
      *
-     * @param globs List of them
+     * @param patterns List of them
      * @return New Walk
      */
-    Walk excludes(Collection<String> globs);
+    Walk excludes(Collection<String> patterns);
 }

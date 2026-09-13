@@ -32,12 +32,17 @@ final class Unspiling implements Step {
     /**
      * Inner auto generated classes.
      *
-     * <p>These globs are used for inner classes which may look like:
+     * <p>These patterns are used for inner classes which may look like:
      * - EO_org/EO_eolang/EOnumber$1$2$4.class
      * - EO_org/EO_eolang/EO_sm/EOsocket$EOΦorgeolangsyssocketα0ρ.class</p>
+     *
+     * <p>An Ant pattern has no character class, so the digit of the first
+     * one is a {@code ?}. It names one character inside {@code EO*$...},
+     * which is an inner class of an object we generated ourselves, and
+     * those are exactly the ones this goal deletes.</p>
      */
     private static final Collection<String> INNER = List.of(
-        "**/EO*$[1-9]*.class", "**/*$EOΦ*.class"
+        "**/EO*$?*.class", "**/*$EOΦ*.class"
     );
 
     /**

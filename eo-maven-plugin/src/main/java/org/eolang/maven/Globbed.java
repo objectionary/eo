@@ -4,22 +4,17 @@
  */
 package org.eolang.maven;
 
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
-import java.util.regex.PatternSyntaxException;
-import org.cactoos.scalar.Sticky;
-import org.cactoos.scalar.Unchecked;
+import org.codehaus.plexus.util.SelectorUtils;
 
 /**
- * A glob pattern that decides whether a walk takes a file.
+ * A pattern that decides whether a walk takes a file.
  *
- * <p>The pattern arrives from a parameter in pom.xml, is compiled on the
- * first file it is asked about, and the compiled matcher is kept for the
- * files that follow. A pattern that cannot be compiled is reported with
- * its own text and with the role it plays, because the error the JDK
- * raises quotes the regular expression the glob was translated into and
- * names neither the glob nor what it was meant to select.</p>
+ * <p>The pattern arrives from a parameter in pom.xml and is matched the
+ * way Maven itself matches one, through {@link SelectorUtils}, so that a
+ * user writing {@code excludeSources} gets the rules every other plugin
+ * reads. They are Ant patterns, where {@code **} stands for a run of
+ * directories and a source at any depth is {@code **}{@code /*.eo}.</p>
  *
  * <p>The name is not {@code Glob} on purpose. Plexus resolves the name of
  * a configuration element to a class in this package, and {@code <glob>}
@@ -37,51 +32,21 @@ final class Globbed {
     private final String text;
 
     /**
-     * What this glob does to the files it matches.
-     */
-    private final String role;
-
-    /**
-     * The matcher, compiled once.
-     */
-    private final Unchecked<PathMatcher> matcher;
-
-    /**
      * Ctor.
      *
-     * @param pattern The glob pattern
-     * @param does What the glob does to the files it matches
+     * @param pattern The Ant pattern
      */
-    Globbed(final String pattern, final String does) {
+    Globbed(final String pattern) {
         this.text = pattern;
-        this.role = does;
-        this.matcher = new Unchecked<>(new Sticky<>(this::compiled));
     }
 
     /**
-     * Does this glob match the file?
+     * Does this pattern match the file?
      *
      * @param file The file, relative to the home of the walk
      * @return TRUE if it matches
      */
     boolean matches(final Path file) {
-        return this.matcher.value().matches(file);
-    }
-
-    private PathMatcher compiled() {
-        try {
-            return FileSystems.getDefault().getPathMatcher(
-                String.format("glob:%s", this.text)
-            );
-        } catch (final PatternSyntaxException ex) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "The glob '%s', which %s, is not a valid pattern",
-                    this.text,
-                    this.role
-                ),
-                ex
-            );
-        }
+        return SelectorUtils.matchPath(this.text, file.toString());
     }
 }

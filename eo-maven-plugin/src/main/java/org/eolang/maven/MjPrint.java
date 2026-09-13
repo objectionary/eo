@@ -73,7 +73,7 @@ public final class MjPrint extends MjPenalties {
     @Override
     void exec() throws IOException {
         final int total = new Threaded<>(
-            new WkDefault(this.sources.toPath()).includes(Set.of("**.xmir")),
+            new WkDefault(this.sources.toPath()).includes(Set.of("**/*.xmir")),
             this::print
         ).total();
         if (total == 0) {

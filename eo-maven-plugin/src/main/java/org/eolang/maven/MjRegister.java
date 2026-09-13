@@ -48,7 +48,7 @@ public final class MjRegister extends MjSafe {
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      */
-    @Parameter(alias = "includeSources", defaultValue = "**.eo")
+    @Parameter(alias = "includeSources", defaultValue = "**/*.eo")
     private Set<String> included;
 
     /**
