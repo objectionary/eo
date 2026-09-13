@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A demand is a contract: whoever fills this void owes these names. A void
+# filled with a formation that hands one of its arguments back can owe none,
+# since such a formation answers nothing of its own — the names read off a
+# call on it belong to the arguments. Where the arms agree the names follow
+# the agreement; where they agree on nothing, as `dial` and `clock` do here,
+# the names have nowhere to go and go nowhere, rather than piling up on a void
+# no filling could ever satisfy. The void next door keeps its demand, since
+# `yes` and `no` answer for themselves.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^] > face
+        tick > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+provides:
+  - "/provides/type[@id='Φ.choice']/attr[@name='pick' and @void='true' and not(demand)]"
+  - "/provides/type[@id='Φ.sock']/attr[@name='flag']/demand[@name='pick']"
