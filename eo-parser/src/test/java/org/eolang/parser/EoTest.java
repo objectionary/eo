@@ -831,10 +831,10 @@ final class EoTest {
     @Test
     void emitsAsForVerticalBindingWithSuffix() {
         MatcherAssert.assertThat(
-            "the binding may combine with `> name`, both attaching to the same <o>",
-            EoTest.render("foo > main", "  bar:tag > out"),
+            "the binding may combine with a `>>` handle, both attaching to the same <o>",
+            EoTest.render("foo > main", "  bar:tag >> out"),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@name='out' and @base='bar' and @as='tag']"
+                "/object/o[@name='main']/o[@local='out' and @base='bar' and @as='tag']"
             )
         );
     }
