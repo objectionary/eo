@@ -214,7 +214,7 @@
   eq. ++> can-print-an-index-past-the-long-range
     printed.
       "hello".slice 0 0
-      1e30
+      1.0e30
     "1.000000e30"
 
   eq. ++> can-slice-a-line-break-escape-sequence
@@ -327,7 +327,7 @@
 
   slice. --> stops-on-a-start-beyond-the-long-range
     "some string"
-    1e30
+    1.0e30
     1
 
   slice. --> stops-on-an-end-below-the-start
@@ -343,7 +343,7 @@
   slice. --> stops-on-an-end-beyond-the-long-range
     "some string"
     1
-    1e30
+    1.0e30
 
   slice. --> stops-on-an-infinite-length
     "some"
