@@ -335,10 +335,10 @@
                 <lint>sprintf-without-formatters</lint>
                 <lint>wrong-sprintf-arguments</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'invalid-name-notation' here.
-                The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no
-                room for the digit in 'bytes/as-u8.eo:12' or in its siblings
-                from 'as-i8' to 'as-u64'.
+                The rule requires '[a-z]+(-[a-z]+)*', but the standard library
+                exposes numeric names such as 'u8', 'i64', 'as-i8' through
+                'as-u64', 'win32', and 'stat64'. Keep this skip until the
+                digit-bearing names are handled in objectionary/lints#1440.
                 -->
                 <lint>invalid-name-notation</lint>
                 <!--
