@@ -11,18 +11,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The bodies one formation reduces to, the formation's own first.
+ * The bodies one formation reduces to, its own first.
  *
- * <p>A formation whose helpers apply themselves or each other in tail
- * positions is one loop with a state: which body runs next. Every body
- * is reduced once, over the symbols of its own voids, and every path of
- * it answers or resumes a body with the values that body's voids take
- * next, so the whole program is a state machine over the union of the
- * voids, and the Java of it is one {@code while (true)} that runs the
- * body the state names. A formation that never resumes anything is a
- * program of one body, the plain case. The program answers one forma,
- * whatever body the answer comes from, and a program whose bodies only
- * resume one another, or fail, answers nothing and is refused.</p>
+ * <p>It takes the bodies and the arguments they run over. It answers the
+ * bodies, the forma of every local, the body behind a name and its place,
+ * the forma of the answer, and whether the program repeats. A formation
+ * whose helpers call themselves in tail position is one loop over a state
+ * naming the body that runs next; one that never repeats is a program of a
+ * single body.</p>
  *
  * @since 0.76.0
  */

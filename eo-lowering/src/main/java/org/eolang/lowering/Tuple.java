@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.util.Arrays;
 
 /**
- * A symbolic tuple, spelled as a tuple whose parts are symbols of their own.
+ * A tuple phino can go on with, spelled from symbols.
  *
- * <p>A tuple is not data, so no marker inside a carrier can stand for it.
- * Instead it stands as {@code Φ.tuple} applied to a length, a head and a
- * tail, with one fresh symbol per part, each recorded as an {@code attr} row of
- * the tuple's symbol, so that a body reading {@code items.length} meets a
- * number marker and a body reading {@code items.head} meets a bare one,
- * and the table says where each came from.</p>
+ * <p>It takes a symbol standing for a tuple and the symbol table. It
+ * answers {@code Φ.tuple} applied to a length, a head and a tail, each a
+ * fresh symbol recorded against the tuple, so that a body reading
+ * {@code items.length} meets a number and the table still says where that
+ * number came from. A tuple is not data, so no marker in a carrier could
+ * stand for it.</p>
  *
  * @since 0.76.0
  */

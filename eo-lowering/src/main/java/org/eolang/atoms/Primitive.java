@@ -12,14 +12,14 @@ import org.eolang.lowering.Op;
 import org.eolang.lowering.Symbols;
 
 /**
- * A fire of a primitive operation, one of the rows of {@code ops.tsv}.
+ * A fire of one of the operations of {@code ops.tsv}.
  *
- * <p>The engine does not compute the operation; it records that it
- * happened, as one row of the table, and answers a fresh symbol in the
- * carrier of the result, so that phino goes on as if it had the value.
- * The one exception is an operation on literals alone, which is folded
- * here and answered as data, so that {@code 1.neg}, which the library
- * spells {@code 1.times -1}, mints no row.</p>
+ * <p>It takes the operation, the operands of the fire and the symbol
+ * table. It computes nothing: it records that the operation happened, as
+ * one row, and answers a fresh symbol in the carrier of the result, so
+ * that phino goes on as if it had the value. An operation on literals
+ * alone is folded and answered as data, so that {@code 1.neg}, which the
+ * library spells {@code 1.times -1}, mints no row.</p>
  *
  * @since 0.76.0
  */

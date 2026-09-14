@@ -21,14 +21,13 @@ import org.eolang.atoms.Engine;
 
 /**
  * The {@code atoms.json} registry of one run, and the launcher it points
- * at, which starts {@link Engine} over the tables of that run.
+ * at.
  *
- * <p>phino starts an {@code exec} program with no arguments and no
- * environment of its own, so the registry names a one-line shell script
- * that sets the paths of the tables and of the count of the trips, and
- * execs the same Java that runs the build, over the classpath the engine
- * needs. One entry serves every λ the engine knows: the operations of
- * {@code ops.tsv}, the dataization, the fork and every box.</p>
+ * <p>It takes the directory of the run and the paths of the symbol table,
+ * the boxes and the count of trips. It answers the path of a JSON file
+ * phino reads, written next to a one-line shell script that starts
+ * {@link Engine} in a JVM of its own with those paths in its environment.
+ * One entry serves every λ the engine knows.</p>
  *
  * @since 0.77.0
  */

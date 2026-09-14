@@ -14,9 +14,12 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
 /**
- * A DOM node spelled back as XML text, without a declaration and with
- * every character as it is, the emoji of the test attributes included,
- * which the transformers of the JDK would spell as character references.
+ * A DOM node spelled back as XML.
+ *
+ * <p>It takes a node and answers the text of it, without a declaration and
+ * with every character as it is, the emoji of the test attributes
+ * included, which the transformers of the JDK would turn into character
+ * references. It writes that text to a file too.</p>
  *
  * @since 0.77.0
  */

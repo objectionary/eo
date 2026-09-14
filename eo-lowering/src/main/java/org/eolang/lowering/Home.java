@@ -12,10 +12,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The layout of the directory one build lowers in: the table of boxes,
- * the boxed variant of every document, the sidecar bodies of the atoms,
- * the trips over the wire of every document, and a scratch directory per
- * run.
+ * The directory one build lowers in.
+ *
+ * <p>It takes the root and answers the paths inside it: the table of
+ * boxes, the boxed copy of each document, the sidecar bodies of the atoms,
+ * the file the trips of a document are counted in, and a fresh scratch
+ * directory for one run. Nothing else in the module decides where a file
+ * goes.</p>
  *
  * @since 0.77.0
  */

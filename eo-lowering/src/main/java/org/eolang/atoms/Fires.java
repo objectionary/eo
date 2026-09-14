@@ -9,12 +9,13 @@ import org.eolang.lowering.Op;
 import org.eolang.lowering.Symbols;
 
 /**
- * The fires the engine serves, chosen by the λ name phino reports.
+ * The fires the engine can serve.
  *
- * <p>The registry hands the engine four kinds of λ: the primitives of
- * {@code ops.tsv}, {@code L_dataized}, {@code L_fork} and the boxes
- * planted on the formations of the universe. Anything else is a name the
- * registry should not have matched, and the fire fails loudly.</p>
+ * <p>It takes the symbol table, the boxes of the build and the wire. Given
+ * the id of a fire and the λ name phino reports, it answers the fire that
+ * serves it: a primitive of {@code ops.tsv}, the dataization, the fork, or
+ * a box. Any other name is one the registry should never have matched, and
+ * the fire fails loudly.</p>
  *
  * @since 0.76.0
  */

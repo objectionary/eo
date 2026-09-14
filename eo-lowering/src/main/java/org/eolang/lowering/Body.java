@@ -8,16 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * One body of a program: the formation being lowered, or a recursive
- * helper of it, reduced over voids of its own.
+ * One body of a program: a formation, or a recursive helper of it.
  *
- * <p>The voids of every body are locals of one Java method, so they
- * stand in one list: the voids of the formation first, then those of
- * each helper body in the order the bodies were reached, and a body
- * knows the offset of its own. Its protocol is reduced once, over the
- * symbols of those voids, and each path of it either answers or resumes
- * a body, this one or another, with the values the voids of that body
- * take next.</p>
+ * <p>It takes the name of the body, the formas of the voids it runs over,
+ * where those voids start in the shared list of locals, and the protocol
+ * it computes. It answers all four. A program is a list of these, and the
+ * Java of it is one branch per body.</p>
  *
  * @since 0.76.0
  */

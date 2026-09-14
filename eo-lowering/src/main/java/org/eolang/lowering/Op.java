@@ -13,16 +13,14 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * One lowerable operation, looked up by the λ name phino reports.
+ * One operation the module knows how to lower, looked up by λ name.
  *
- * <p>This is the one table of atom knowledge this module keeps, and it is
- * the semantic definition of the lowering target: an operation absent
- * from the {@code ops.tsv} resource cannot become a step of a protocol,
- * however well phino evaluates it. Each row binds a λ name to the method
- * that dispatches it, the forma of its receiver, the forma of its value,
- * and the names of its arguments in their positional order, which is how
- * a record naming its bindings meets an XMIR application naming the same
- * bindings {@code α0}, {@code α1} and so on.</p>
+ * <p>It takes the λ name phino reports and answers what the
+ * {@code ops.tsv} resource says about it: whether it is listed at all, the
+ * method that dispatches it, the forma of its receiver and of its value,
+ * the names and formas of its arguments, and the Java that spells it. An
+ * operation missing from that file cannot become a step, however well
+ * phino evaluates it.</p>
  *
  * @since 0.76.0
  */

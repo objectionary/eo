@@ -12,9 +12,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * The {@code o} elements directly under a node of an XMIR document, in
- * order, read once when the iteration starts, so the caller may remove or
- * replace them while walking.
+ * The {@code o} elements directly under a node.
+ *
+ * <p>It takes a node and answers its children in order, read once when the
+ * walk starts, so the caller may remove or replace them while walking
+ * without losing its place.</p>
  *
  * @since 0.77.0
  */

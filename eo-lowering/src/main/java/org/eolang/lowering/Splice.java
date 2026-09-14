@@ -13,19 +13,13 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Element;
 
 /**
- * The residual of a run spliced back into the formation it came from: each
- * binding phino reduced to a marker stands in place of the one written,
- * while the voids, the λ, the shape of the nested formations and every
- * binding reduced only in part stay as written, with their locators,
- * lines, positions and local names.
+ * The residual of a run put back into the formation it came from.
  *
- * <p>phino prints the residual without ρ, without positions and with a
- * box on every nested formation, none of which belongs in the document,
- * and it spells afresh whatever it did not reduce, dropping the names and
- * places the printer lives on. So the walk
- * keeps the original and imports only a binding that reduced whole: one
- * spelled with markers, literals and their carriers alone, at every depth
- * of the nested formations.</p>
+ * <p>It takes the formation as written and the one phino printed. It
+ * copies over only the bindings phino reduced whole — those spelled with
+ * markers and literals alone — and leaves everything else exactly as
+ * written, with its locators, lines, positions and local names, since
+ * phino spells the rest afresh and drops what the printer lives on.</p>
  *
  * @since 0.77.0
  */

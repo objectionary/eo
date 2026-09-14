@@ -8,13 +8,12 @@ import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
 
 /**
- * One lowering pass over one XMIR document.
+ * One lowering pass over one document.
  *
- * <p>Every implementation walks the document, finds the fragments it
- * knows how to turn into values or synthetic atoms, and rewrites them in
- * place, leaving whatever refuses as written. The caller runs the passes
- * one after another over the same document, so an earlier pass shrinks
- * what a later one sees.</p>
+ * <p>It takes a document, rewrites in place whatever it knows how to turn
+ * into a value or an atom, and answers how many fragments changed.
+ * Whatever refuses is left as written. Passes run one after another over
+ * the same document, so an earlier one shrinks what a later one sees.</p>
  *
  * @since 0.76.0
  */

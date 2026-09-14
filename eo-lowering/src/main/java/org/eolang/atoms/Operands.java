@@ -15,22 +15,12 @@ import org.eolang.lowering.Symbols;
 /**
  * The operands of one fire, each asked of phino.
  *
- * <p>The engine reads no φ. Whatever it needs to know about an operand,
- * it asks phino for by the id of the fire and the name of the attribute,
- * and reads off the facts phino answers with: the λ a symbol is stuck on,
- * the Δ a datum carries, the global object a literal applies. An operand
- * whose forma the operation knows costs one question, reduced, and a
- * datum takes that forma, since bytes carry no type of their own, while a
- * symbol of no carrier takes it too, with the operation as the witness.
- * An operand of no known forma, such as an arm of an if, a void of a box
- * nobody typed or an operand of an operation on bytes, which any datum
- * is, is first asked for as written, since a symbol bound as it is must
- * not be dataized and a literal names its forma only in the global object
- * it is dispatched by, and is reduced after that. A bool is asked for as
- * written too, since a bool marker reduces to a fork over its own truth,
- * while the symbol it stands for sits under its {@code if}, where the
- * engine put it, and is read back from there by its path. Only an
- * operation on bytes takes the fork, since it is after the bytes.</p>
+ * <p>It takes the id of the fire, the wire and the symbol table. Given the
+ * name of an attribute, it asks phino about it and answers the key of its
+ * value: a symbol, or a literal with its forma and its bytes. The engine
+ * reads no φ of its own, so every fact about an operand comes off the
+ * wire, and an operand of no known forma is asked for as written first,
+ * since a symbol bound as it is must not be dataized.</p>
  *
  * @since 0.76.0
  */

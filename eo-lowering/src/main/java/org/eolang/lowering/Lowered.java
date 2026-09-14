@@ -19,24 +19,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Every fragment of one XMIR document lowered by a run of phino: the
- * document is copied with every boxed formation, the fragment included,
- * carrying its box, the copy is merged with the boxed variants of every
- * other document into a world, phino morphs each binding of the fragment
- * inside that world, entered from Φ through copies applied to markers,
- * and the residuals, gathered into one formation and printed as XMIR,
- * come back into the document with each marker turned into an atom.
+ * Every fragment of one document lowered by runs of phino.
  *
- * <p>The bindings are morphed one by one, since phino fires the λ of a
- * formation it is asked to morph whole once its voids are filled, while
- * a dispatch into a binding of it goes through, and a dispatch nested in
- * a formation stays as written, so a formation of one dispatch per
- * binding cannot be handed over in one call. A binding whose residual
- * reaches the terminator stays as written, and so does a fragment phino
- * cannot reduce, or whose program Java cannot render, and the next
- * fragment is tried, since each run is independent of the others: the
- * boxes it enters are served by the engine from the tables, not from
- * the results of earlier runs.</p>
+ * <p>It takes the phino binary, the formas of the build, the directory to
+ * work in and the name of the document. Given the document, it rewrites it
+ * in place — each fragment phino could reduce becomes a call of a
+ * generated atom — and answers how many fragments changed. A fragment
+ * phino refuses, or one Java cannot spell, is left as written and the next
+ * one is tried.</p>
  *
  * @since 0.77.0
  * @todo #8548:30min Lower a const handle that is the whole answer of the

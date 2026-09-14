@@ -12,24 +12,13 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 
 /**
- * The voids one protocol reads, and which of them its own block declares.
+ * The voids a protocol reads, and the ones its own block declares.
  *
- * <p>A void is dataized at the top of the innermost block that reaches
- * every use of it, so that an argument only one arm of a fork touches is
- * never forced when the other arm is taken. The block of a protocol
- * therefore declares the voids a step of its own reads or its answer
- * names, and the voids two or more arms of its forks read, since no
- * single arm dominates such a void; a void exactly one arm reads is
- * left to the protocol of that arm, which decides the same way. Whatever
- * an enclosing block declared already is in scope and is not declared
- * again. The keys a repeat hands the voids count as reads of the
- * protocol that repeats, the way its answer would, and so does the
- * reason of a protocol that fails.</p>
- *
- * <p>The operands of a {@link Dispatch} are no reads: a call takes the
- * object a void holds, not the datum of its bytes, so a void nothing but
- * a call reaches is never dataized here, the way EO leaves that to the
- * method.</p>
+ * <p>It takes a protocol and answers two sets of indexes: everything the
+ * protocol reaches, and the part of that this block declares rather than
+ * leaving to an arm below or taking from a block above. A void only one
+ * arm of a fork touches belongs to that arm, so an argument a guard
+ * protects is never forced when the guard sends the run the other way.</p>
  *
  * @since 0.76.0
  */

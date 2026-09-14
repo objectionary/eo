@@ -13,17 +13,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * The sites of the markers phino left in a fragment, each with the symbol
- * it stands for, the marker that is the whole {@code φ} of the fragment
- * first.
+ * The places in a fragment where phino left a marker.
  *
- * <p>A marker is a {@code λ} binding whose text is a symbol. Its site is
- * the formation holding it together with the carrier wrapped around that
- * formation: the {@code Φ.bytes} around the marker of bytes, the
- * {@code Φ.number} or {@code Φ.string} around that one, and the
- * {@code Φ.bool} around the guard of a bool. A marker of a part of a tuple
- * inside an application of {@code Φ.tuple} stands for the tuple, so the
- * application is the site and the tuple is the symbol.</p>
+ * <p>It takes the fragment and the symbol table. It answers one entry per
+ * marker: the element to replace — the formation holding the marker
+ * together with the carrier wrapped around it — and the symbol that marker
+ * stands for. A marker that is the whole {@code φ} of the fragment comes
+ * first, since lowering it swallows the rest.</p>
  *
  * @since 0.77.0
  */

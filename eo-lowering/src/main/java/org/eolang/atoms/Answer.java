@@ -7,13 +7,12 @@ package org.eolang.atoms;
 import javax.json.JsonObject;
 
 /**
- * One answer of phino to a question, as the facts it carries.
+ * One answer of phino to a question the engine asked.
  *
- * <p>phino answers a by-reference question with the node under 𝑛 and,
- * next to it, what the node carries: its bytes under Δ, the λ it is stuck
- * on, whether the attribute is void and, for a node as written, the
- * global object it is dispatched by under Φ. The engine reads those
- * facts and never the node, which is kept to name what went wrong.</p>
+ * <p>It takes the JSON line phino sent back and answers the facts in it:
+ * the bytes the node carries, the λ it is stuck on, whether the attribute
+ * is void, and the global object a literal is dispatched by. The node
+ * itself is kept only to name what went wrong.</p>
  *
  * @since 0.77.0
  */

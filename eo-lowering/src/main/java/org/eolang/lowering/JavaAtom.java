@@ -16,37 +16,12 @@ import java.util.stream.Collectors;
 /**
  * The Java body of one lowered fragment.
  *
- * <p>A protocol is a program of steps, so its Java is one statement per
- * step: one local per void any step reads, one local per application,
- * one blank final per fork, assigned at the end of each of its two
- * arms, whose own steps sit inside the arm's block and so compute only
- * when the arm is taken, and one return handing the answer to
- * {@code Data.ToPhi}; the {@link Rendering} spells every value. A void
- * is read at the top of the innermost block that reaches every use of
- * it: at the top of the body when a step outside every fork reads it, or
- * both arms of one fork do, and at the top of an arm when that arm alone
- * does, so that an argument a guard protects is never forced while the
- * guard holds it back. A program that repeats runs inside
- * {@code while (true)}: its voids are locals the loop rebinds rather than
- * finals, so every one of them is read before the loop, the answer of
- * the fork that ends the program is assigned and followed by
- * {@code break}, and a repeat assigns the voids their next values,
- * through temporaries wherever a value names a void the same repeat
- * rebinds, and continues. A path that fails throws an {@code ExFailure}
- * carrying the reason as its message, the way the terminator itself
- * does when dataized, so an arm that fails assigns nothing and the
- * statements after its fork run only when the other arm is taken. A
- * program of several bodies runs the same loop over a state naming the
- * body that runs next: the voids of every body are locals, the
- * formation's read before the loop and the helpers' blank until a repeat
- * hands them values, each body is one branch on the state, a body that
- * answers assigns the one answer and breaks, and a repeat assigns the
- * voids of the body it resumes, then the state, and continues. The
- * text is exactly what the {@code lambda()} of the generated atom class
- * holds, indented for that spot, and it is the content the sidecar file
- * is named after. A protocol the rendering refuses, or one whose answer
- * no {@code Data.ToPhi} argument names, is refused too, and the caller
- * treats the refusal as one fragment staying unlowered.</p>
+ * <p>It takes the program a fragment reduced to and answers the text that
+ * goes inside the {@code lambda()} of the generated class: one statement
+ * per step, a block under each arm of a fork, a loop around a program that
+ * repeats, and a throw where a path fails. A void is read as late as it
+ * can be, so an argument a guard protects is never forced while the guard
+ * holds it back. A program it cannot spell is refused.</p>
  *
  * @since 0.76.0
  */

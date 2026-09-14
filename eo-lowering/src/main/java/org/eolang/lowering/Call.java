@@ -9,27 +9,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The Java of one {@link Dispatch} or {@link Entry} step: a call back
- * into EO.
+ * The Java of one step that calls back into EO.
  *
- * <p>Every operand is the object it is: a void holds one already and
- * hands it over, read off the atom by the name {@link Rendering} knows
- * it under, while a step and a literal are the datum they are and are
- * wrapped back into an object — a number, a bool and bytes through
- * {@code Data.ToPhi}, a string through the same after the bytes are read
- * as text, since that is what the runtime makes a string of, and a tuple
- * or an object as the {@code Phi} it already is. A step that is itself
- * a call is no receiver, though: its value was dataized into the forma
- * the tables witness, and the object that answered — the one owning the
- * method the datum never had — is gone by then, so a call on it is
- * refused and the fragment stays as written. The method
- * is taken of the receiver with {@code PhDispatch} and applied to the
- * arguments by position with {@code PhApplication}, the way the
- * transpiler spells a call, and the value is dataized into the forma the step
- * carries — a number, a bool, or the bytes of bytes and a string — or
- * left as the object when the forma is {@code object}. An entry into a
- * formation binds its arguments by name instead, and applies the
- * formation itself when the atom holds it as an input.</p>
+ * <p>It takes a {@link Dispatch} or an {@link Entry} and the spelling of
+ * the values around it. It answers one Java expression: the operands
+ * wrapped back into objects, the method taken of the receiver and applied
+ * to the arguments, and the result dataized into the forma the step
+ * carries. A call it cannot spell faithfully is refused, and the fragment
+ * stays as written.</p>
  *
  * @since 0.76.0
  */

@@ -9,21 +9,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A choice between two nested protocols, as a step of a protocol.
+ * A choice between two protocols, as a step of a protocol.
  *
- * <p>It is what an {@code if} parked on a symbolic bool turns into: the
- * key of that bool, and one protocol per arm, each reduced on its own
- * from the argument the site held. The steps of an arm are computed only
- * when the arm is taken, and so are the reads of the voids that arm
- * alone touches, which is what keeps a guard guarding: an operation that
- * is partial, and an argument whose dataization may never end, both
- * stay behind the bool that protects them. The value of the fork is
- * whatever the taken arm answers, so the two arms must answer the same
- * forma, and a fork whose arms disagree refuses to name one. An arm may
- * also resume a body, or fail, instead of answering, and then the fork
- * answers what the other arm does; a fork resuming or failing in both
- * arms has no value and names no forma, since nothing after it ever
- * runs.</p>
+ * <p>It takes the key of a bool and one protocol per arm, and answers
+ * those and the forma both arms agree on. Only the arm that is taken runs,
+ * which is what keeps a guard guarding: the work an arm alone needs stays
+ * behind the bool that protects it. Arms that disagree on a forma, or that
+ * never answer at all, name none.</p>
  *
  * @since 0.76.0
  */

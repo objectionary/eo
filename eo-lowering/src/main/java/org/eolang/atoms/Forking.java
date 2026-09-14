@@ -13,20 +13,14 @@ import org.eolang.lowering.Symbols;
 import org.eolang.lowering.Tuple;
 
 /**
- * A fire of {@code L_fork}, the {@code if} of a bool the engine answered.
+ * A fire of {@code L_fork}, the {@code if} of a bool nobody could answer.
  *
- * <p>When a comparison sees a symbol it cannot answer true or false, so
- * it answers a bool whose {@code if} is this atom, carrying the guard.
- * When that {@code if} fires, phino hands over both arms unevaluated. The
- * fire records the fork, opens the left arm, asks phino for it dataized
- * and stays suspended while phino evaluates it under the same registry,
- * so the rows of the arm land between the row that opens it and the one
- * that closes it with the answer; then the same for the right arm. The
- * carrier of the fork is the carrier of its arms, learned from the
- * answers, and written back into the row that opened it. An arm of no
- * carrier, such as the answer of a box whose forma nobody witnessed,
- * takes the carrier of the other arm, since both arms answer the same
- * object: the fork is the witness.</p>
+ * <p>It takes the operands of the fire and the symbol table. It records
+ * the fork, then asks phino for each arm dataized and stays suspended
+ * while phino evaluates it, so that the rows of an arm land between the
+ * row that opens it and the one that closes it. It answers a marker in the
+ * carrier both arms agree on; an arm carrying nothing takes the carrier of
+ * the other, since the two answer the same object.</p>
  *
  * @since 0.76.0
  */

@@ -18,13 +18,13 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * The boxes of one build, a tab-separated file.
+ * The boxes of one build, kept in a tab-separated file.
  *
- * <p>One box is minted per formation of the universe that declares
- * arguments, and the same file serves every run of the build, so that a
- * formation carries the same λ name in every universe it is written into.
- * The build side writes it once, the engine reads it on every fire of a
- * box.</p>
+ * <p>It takes the path of the file. It answers the box of a λ name, the λ
+ * name at a locator and all the rows at once, and it writes a new set of
+ * rows back. One file serves the whole build, so a formation carries the
+ * same λ name in every universe it is written into, and both sides of the
+ * wire read it.</p>
  *
  * @since 0.76.0
  */

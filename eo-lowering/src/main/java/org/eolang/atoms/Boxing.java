@@ -14,16 +14,13 @@ import org.eolang.lowering.Symbols;
 import org.eolang.lowering.Tuple;
 
 /**
- * A fire of a box, the λ planted on a formation that declares arguments.
+ * A fire of a box: the λ of a formation that takes arguments.
  *
- * <p>Every entry into the body of another fragment is a boundary, since
- * that fragment is lowered by a run of its own: the fire records a
- * {@code box} row naming the formation and the operands bound at this
- * entry, and answers a marker in the carrier the formation is known to
- * answer. The body is never evaluated here. When the body reaches for its
- * ρ, the receiver is asked for as written and read as a value; a receiver
- * that turns out to be the formation the box was written in is the
- * lexical parent, which Java reaches by name and no row has to carry.</p>
+ * <p>It takes the box of that formation, the operands of the fire and the
+ * symbol table. It records one {@code box} row naming the formation and
+ * the arguments bound at this entry, and answers a marker in the carrier
+ * the formation is known to answer. The body is never evaluated here,
+ * since the fragment behind it is lowered by a run of its own.</p>
  *
  * @since 0.76.0
  * @todo #8548:30min Type the answer of a box nobody witnesses once

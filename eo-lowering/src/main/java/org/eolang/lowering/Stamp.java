@@ -7,11 +7,13 @@ package org.eolang.lowering;
 import org.w3c.dom.Element;
 
 /**
- * The marks of a lowered formation: the digest of its sidecar, its purity
- * and the {@code λ} binding naming the atom of its carrier.
+ * The marks a lowered formation carries.
  *
- * <p>A sibling atom appended to a fragment is named after the digest, so
- * that two markers whose programs render the same share one atom.</p>
+ * <p>It takes the digest of the sidecar, the forma the atom answers and
+ * whether it is pure. It answers the name of the atom, and stamps a
+ * formation with the digest, the purity and the {@code λ} binding that
+ * ties it to the generated class. Two atoms of the same digest share the
+ * name, so they share the class.</p>
  *
  * @since 0.77.0
  */

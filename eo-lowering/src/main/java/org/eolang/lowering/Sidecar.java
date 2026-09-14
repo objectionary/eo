@@ -13,20 +13,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * The sidecar file of one lowered fragment.
+ * The file holding the Java body of one lowered fragment.
  *
- * <p>The Java body of a lowered fragment lands in a file named by the
- * digest of that body, so fragments with the same Java share one file and
- * the name vouches for the content. The passes run in parallel across the
- * XMIRs of one build, which means two of them can produce the same digest
- * at once: writing straight into the final path would let one of them, or
- * any concurrent reader, observe a truncated file. The body therefore
- * goes into a sibling temporary file first and is renamed into place
- * atomically, so the digest path only ever holds a complete body, and a
- * path that already exists is left alone. On Windows the rename can be
- * refused while a rival holds a handle on the target; the rival is
- * writing the same bytes, so the refusal is forgiven once the target
- * exists.</p>
+ * <p>It takes the directory of the bodies and the body itself. It writes
+ * the file, named after the digest of the content, and answers that name.
+ * Two fragments with the same Java share one file. The write goes through
+ * a temporary neighbour and an atomic rename, so a reader never sees half
+ * a body while passes run in parallel.</p>
  *
  * @since 0.76.0
  */

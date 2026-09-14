@@ -11,14 +11,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * The way from a site inside a fragment to what an atom in its place reads.
+ * The way from a site inside a fragment to what an atom in its place
+ * reads.
  *
- * <p>A void of the fragment is reached up one {@code ρ} per formation
- * between the site and the fragment, and then along the path of the void.
- * A formation entered where it stands, keyed {@code box:<locator>}, is
- * reached from the nearest formation the fragment and it are both inside,
- * or by its full locator when that formation is outside the top-level
- * object, which is a copy the same everywhere.</p>
+ * <p>It takes the fragment and the site inside it where a marker stood.
+ * Given the key of an input, it answers the EO that reaches it from there:
+ * up one {@code ρ} per formation in between and then along the path of the
+ * void, or the locator of a formation the atom enters.</p>
  *
  * @since 0.77.0
  */

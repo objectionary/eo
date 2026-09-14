@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * One box, a row of {@code boxes.tsv}.
+ * One box: a row of the boxes table.
  *
- * <p>The row binds the λ name planted on a formation to the locator of
- * that formation, the carrier it is known to answer, the forma of its ρ
- * when the body reaches for it (a dash when it never does), and the names
- * and formas of its voids, {@code x:number y:object}.</p>
+ * <p>It takes the cells of the row and answers them one by one: the λ name
+ * planted on a formation, where that formation is, what it answers, what
+ * its receiver carries, and the name and forma of each of its arguments.
+ * This is the whole of what one side of the wire knows about a formation
+ * the other side may enter.</p>
  *
  * @since 0.76.0
  */

@@ -5,15 +5,12 @@
 package org.eolang.lowering;
 
 /**
- * A value phino goes on with, spelled as the carrier it stands in.
+ * A value phino goes on with, spelled in the carrier it stands in.
  *
- * <p>A symbol stands in its carrier as a marker, {@code ⟦ λ ⤍ S4 ⟧}: a
- * number is the marker under {@code Φ.bytes} under {@code Φ.number}, bytes
- * are the marker under {@code Φ.bytes} alone, and a bool is a {@code Φ.bool} whose
- * {@code if} is a fork on the symbol, so that every operation of the bool
- * reaches the engine through the one {@code L_fork} atom. A literal stands
- * the same way with a Δ payload, and a bool literal is {@code Φ.true} or
- * {@code Φ.false}. A value of no known carrier is a bare marker.</p>
+ * <p>It takes a symbol and the forma that symbol carries. It answers one
+ * φ-expression, {@code ⟦ λ ⤍ S4 ⟧} wrapped in the object that forma
+ * belongs to, so phino sees a number where a number was and keeps
+ * rewriting. A value of no known forma comes back as a bare marker.</p>
  *
  * @since 0.76.0
  */

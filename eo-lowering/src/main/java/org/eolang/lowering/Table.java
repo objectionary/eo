@@ -15,17 +15,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The table of symbols read as programs: the rows a symbol reaches are the
- * protocol of the atom that computes it, and the {@code void} rows among
- * them are its inputs.
+ * The symbol table read back as programs.
  *
- * <p>A frame of the program, the top or an arm of a fork, computes what
- * its own answer needs and nothing else, in the order of the dependencies,
- * skipping what an enclosing frame computed already. A symbol two arms
- * share is computed in both, since only one of them runs, and one an arm
- * shares with the code after the fork is computed twice, which is what the
- * program did before it was lowered, since the arm was reduced only when
- * its guard held.</p>
+ * <p>It takes the table of rows. Given a symbol, it answers the program
+ * that computes it — the rows it reaches, in dependency order, with a
+ * frame of its own under every arm of every fork — and the arguments that
+ * program runs over. A symbol that is nothing but a void answers the void
+ * it reads instead.</p>
  *
  * @since 0.77.0
  */

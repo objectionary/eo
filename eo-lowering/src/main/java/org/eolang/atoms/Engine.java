@@ -20,29 +20,16 @@ import org.eolang.lowering.Symbols;
 import org.eolang.lowering.Trips;
 
 /**
- * The lowering engine, the program phino fires our atoms through.
+ * The engine phino fires our atoms through.
  *
- * <p>phino starts it once per run, as an {@code exec} entry of the
- * registry with {@code serve} on, and talks to it over stdin and stdout,
- * one JSON object per line: the universe first under {@code 𝑒}, then
- * every fire as a request with an {@code id}, the λ name under {@code λ}
- * and the formation without its λ under {@code 𝑏}. Every fire is served
- * on a thread of its own, because a question suspends the fire that asked
- * it and not the engine: an answer arrives on the same reader that
- * delivers the next fire, so the loop does nothing but dispatch each line
- * on its shape. Nothing computes concurrently, since a suspended fire is
- * waiting on phino, which is why the rows of the table come out in the
- * order the fragment has them.</p>
- *
- * <p>A fire still waiting when stdin closes can never be answered, so the
- * engine says so and fails rather than waiting, and a fire that fails
- * takes the process down, so that phino sees a broken run and not a
- * silence.</p>
- *
- * <p>Every line phino sends is one trip over the wire, since a fire is
- * answered once and a question is asked once, and the engine records how
- * many it served, so that the build can say what a document cost even
- * though every run of it happened in a process of its own.</p>
+ * <p>It takes the wire, the fires it can serve and the file the trips are
+ * counted in. Given the lines phino sends — one fire, or one answer to a
+ * question a fire asked — it serves each fire on a thread of its own and
+ * records how many lines it took. Nothing computes at the same time, since
+ * a suspended fire is only waiting on phino, which is why the rows come
+ * out in the order the fragment has them. A fire left unanswered when the
+ * input ends, or one that fails, takes the process down, so that phino
+ * sees a broken run and not a silence.</p>
  *
  * @since 0.76.0
  */

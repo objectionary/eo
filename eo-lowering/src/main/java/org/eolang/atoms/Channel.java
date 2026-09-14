@@ -19,11 +19,11 @@ import javax.json.JsonObject;
 /**
  * The wire between phino and the engine, one JSON object per line.
  *
- * <p>Answers to fires go out as {@code {"id", "𝑛"}}; questions about an
- * operand go out as {@code {"id", "of", "attr", "reduce"}} and block the
- * fire that asked until phino answers with the same id. The ids of the
- * questions come from a counter of their own, far above the ids phino
- * gives to fires, so the two never collide on the line.</p>
+ * <p>It takes the stream to write on. It sends the answer of a fire, and
+ * it asks phino about an operand and answers what comes back, holding the
+ * fire that asked until the line with the same id arrives. The ids of
+ * questions come from a counter far above the ids phino gives to fires, so
+ * the two never collide.</p>
  *
  * @since 0.76.0
  */

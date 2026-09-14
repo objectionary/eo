@@ -20,22 +20,13 @@ import org.cactoos.text.UncheckedText;
 /**
  * The phino binary on this machine.
  *
- * <p>Everything this module knows about φ-calculus lives in the external
- * {@code phino} executable, and this is the only class that talks to it.
- * The binary is trusted only when its version equals the one pinned in
- * the {@code phino-version.txt} resource, since the dialect it reads and
- * the rewriting it does change between releases. A run is bounded by an
- * explicit step budget and by seconds of wall clock: a binary that spins
- * or eats the machine is killed rather than allowed to take the build
- * down with it, and the run that was killed fails the same way a run the
- * binary itself refuses does.</p>
- *
- * <p>The subprocess runs with both of its streams redirected to files:
- * hundreds of fragments are tried per build and some runs are expected to
- * fail, so nothing the binary prints may reach the build log, where a line
- * saying {@code ERROR} would alarm for no reason. The scratch files live
- * in a directory the caller names, such as the target directory of the
- * build, never in the world-shared temporary one.</p>
+ * <p>It takes the name of the executable, a budget of steps, a directory
+ * for scratch files and a limit in seconds. It answers the version of the
+ * binary, merges documents into one universe, and rewrites a φ-expression
+ * into XMIR. A run that outlives its budget is killed, and both streams of
+ * the subprocess go into files, so a failure nobody minds never reaches
+ * the build log. Everything this module knows about φ-calculus goes
+ * through here.</p>
  *
  * @since 0.76.0
  */

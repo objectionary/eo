@@ -8,12 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * One atom applied to values, as a step of a protocol.
+ * One operation applied to values, as a step of a protocol.
  *
- * <p>It is what a parked record turns into: the λ name of the atom, and
- * the keys of its operands — the receiver first, then the arguments in
- * their positional order. The forma of its value is the one the
- * {@link Op} table binds to the atom, and it nests nothing.</p>
+ * <p>It is made of the λ name of an atom and the keys of its operands, the
+ * receiver first and then the arguments in order. It answers those, and
+ * the forma the {@link Op} table binds to the atom. Nothing nests inside
+ * it, so one step of this kind is one Java expression.</p>
  *
  * @since 0.76.0
  */

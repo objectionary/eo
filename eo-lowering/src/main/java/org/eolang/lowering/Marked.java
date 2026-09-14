@@ -13,31 +13,17 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 /**
- * Every marker phino left in a fragment turned into what it stands for: a
- * reference, when the symbol reads a void as written, or a call of an
- * atom, whose body is the program of the symbol rendered into Java and
- * saved as a sidecar.
+ * Every marker phino left in a fragment turned into what it stands for.
  *
- * <p>The atom is a formation named {@code l🌵<digest>} appended to the
- * fragment, with one void per input, and the marker, together with the
- * carrier wrapping around it, becomes a call of that formation with the
- * inputs as arguments, each a reference from where the marker stood: up
- * one {@code ρ} per formation between the marker and the fragment, and
- * then along the path of the void. A formation entered where it stands
- * is reached from the nearest formation the fragment and it are both
- * inside, or by its full locator when that formation is outside the
- * top-level object, which is a copy the same everywhere. When the marker
- * is the whole {@code φ} of a nested fragment that binds nothing but its
- * voids and the handles of its consts, and the marker reads nothing but its
- * own voids, the fragment itself becomes the atom instead, since a
- * top-level one is a class of its own already. That site goes first, since
- * the handles it swallows would otherwise get atoms of their own, and once
- * it is lowered whole nothing else is left to lower.</p>
+ * <p>It takes the fragment, the symbol table behind the markers and the
+ * directory the sidecars live in. It rewrites the fragment in place — each
+ * marker becomes a reference to a void, or a call of a new atom whose Java
+ * body is saved as a sidecar — and answers how many markers it turned.</p>
  *
- * <p>A fragment absorbed whole keeps the ρ it declares when its
- * program reads it, since that void is the receiver its callers dispatch
- * onto: an object that drops it answers every {@code x.f y} with a
- * refusal to take a receiver it no longer declares.</p>
+ * <p>A fragment absorbed whole keeps the ρ it declares when its program
+ * reads it, since that void is the receiver its callers dispatch onto: an
+ * object that drops it answers every {@code x.f y} with a refusal to take
+ * a receiver it no longer declares.</p>
  *
  * @since 0.77.0
  */

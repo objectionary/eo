@@ -9,6 +9,10 @@ import java.io.IOException;
 /**
  * One fire of a λ function phino asked the engine to serve.
  *
+ * <p>It answers the φ-expression phino goes on rewriting with, and
+ * whatever it had to remember on the way is already a row of the symbol
+ * table.</p>
+ *
  * @since 0.76.0
  */
 @FunctionalInterface

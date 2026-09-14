@@ -20,34 +20,13 @@ import java.util.stream.Stream;
 import org.w3c.dom.Node;
 
 /**
- * The data formas of the locators of one build, read from the tables
- * of {@code eo:inference}.
+ * What the inference knows about the formas of one build.
  *
- * <p>The links table binds every locator to what fills it: a literal, a
- * void, or a reference to another locator. Chasing the references from a
- * locator lands on an endpoint, and when that endpoint names a carrier
- * forma, everything the locator may ever hold is data of that forma —
- * the same walk {@code purify.xsl} takes in {@code eo:decided}, answered
- * here with the forma instead of a verdict. A
- * void endpoint answers through the provides table, which witnesses what
- * every filling site actually passes in. The two bool states are one
- * forma between them, so a void the sites fill with both is witnessed as
- * a bool all the same. An endpoint naming a formation answers what the
- * body of that formation answers, since an instance of it is data of
- * whatever its {@code φ} is, so the chase steps into the {@code φ} row
- * and goes on; and an endpoint naming an atom answers the forma the
- * atom declares, read from the atoms table the inference writes next to
- * the other two. Anything else — a missing row, a cycle, a raw
- * literal — answers with the empty string, and the caller refuses.</p>
- *
- * <p>A filling is chased the same way, since a site passing a formation
- * or an atom passes data of the forma that formation or atom answers, and
- * most recovery voids are filled by nothing but such a site. The chase
- * itself asks the provides table, so the witnesses are read twice: once
- * with the bare carriers, which needs nothing but the filling locator,
- * and once with the whole chase over that first answer. A void whose
- * fillings still disagree, or one of them naming no data at all, stays
- * unwitnessed.</p>
+ * <p>It takes the directory of the tables {@code eo:inference} wrote, or
+ * the rows themselves. Given a locator, it answers the data forma
+ * everything at that locator must carry, by chasing the references until
+ * they land somewhere that names one. A locator it cannot settle answers
+ * with an empty string, and the caller leaves that fragment alone.</p>
  *
  * @since 0.76.0
  */

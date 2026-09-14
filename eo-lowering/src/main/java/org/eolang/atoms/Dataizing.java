@@ -10,11 +10,11 @@ import org.eolang.lowering.Marker;
 /**
  * A fire of {@code L_dataized}, the atom behind every {@code !} handle.
  *
- * <p>Pure EO reads its arguments through handles, and {@code x!} compiles
- * to {@code dataized(x).as-bytes}, so this atom is where a symbol would
- * otherwise turn into the terminator. It answers the bytes carrier of whatever its
- * target turned out to be: the marker of the symbol when the target is
- * symbolic, the datum when it is not.</p>
+ * <p>It takes the operands of the fire and answers the bytes of whatever
+ * the target turned out to be: the marker of a symbol when the target is
+ * symbolic, the datum when it is not. Without it {@code x!}, which
+ * compiles to {@code dataized(x).as-bytes}, would turn every symbol into
+ * the terminator.</p>
  *
  * @since 0.76.0
  */

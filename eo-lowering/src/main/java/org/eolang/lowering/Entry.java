@@ -8,17 +8,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A step that enters another fragment: the formation at a locator is
- * applied to computed values and asked for what it answers, which the
- * atom does through the object at run time, since the body behind the
- * boundary is lowered by a run of its own.
+ * One entry into another fragment, as a step of a protocol.
  *
- * <p>The atom of the step is the locator followed by the names of the
- * voids the step binds, in parentheses, such as
- * {@code Φ.demo.walk(i,acc)}. The first key is the receiver: the
- * formation itself when the fragment reaches it lexically, handed to the
- * atom as an input of forma {@code formation}, or the value the
- * formation is dispatched on when it stands on a carrier.</p>
+ * <p>It takes the name of the step, the locator of the formation being
+ * entered with the arguments it binds, the keys of those arguments with
+ * the receiver first, and the forma of the answer, and it answers those
+ * four. The body behind the boundary is lowered by a run of its own, so at
+ * run time this step goes through the object.</p>
  *
  * @since 0.77.0
  */

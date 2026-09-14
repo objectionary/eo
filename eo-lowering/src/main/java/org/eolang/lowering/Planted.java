@@ -14,19 +14,14 @@ import java.util.stream.Collectors;
 import org.w3c.dom.Element;
 
 /**
- * The boxes of a build: one per named formation that declares arguments
- * and stands under named formations only, read out of the XMIR documents.
+ * The boxes of a build, read out of its documents.
  *
- * <p>Such a formation is a fragment, the unit of lowering, and its box is
- * the λ the engine serves when another fragment enters it. An anonymous
- * formation is left to phino, which inlines it, and so is one without
- * arguments, a thunk, which folds into whatever enters it. An atom has a
- * λ of its own, which the engine serves through {@code ops.tsv} or phino
- * parks, and a data object such as {@code Φ.number} is the carrier its
- * markers are wrapped into, so neither is boxed. Each box
- * remembers what the formation answers, what its receiver carries when
- * the body reaches for it, and the forma of each of its voids, all read
- * from the tables of the inference.</p>
+ * <p>It takes every XMIR of the build and the formas of it. It answers one
+ * box per named formation that declares arguments and stands under named
+ * formations only, since that is the unit of lowering, each remembering
+ * the λ minted for it, what it answers, what its receiver carries and the
+ * forma of every argument. Anonymous formations, thunks, atoms and data
+ * objects get none.</p>
  *
  * @since 0.77.0
  */

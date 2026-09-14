@@ -7,7 +7,11 @@ package org.eolang.lowering;
 import org.w3c.dom.Element;
 
 /**
- * The element of an XMIR document at a locator.
+ * One element of a document, found by its locator.
+ *
+ * <p>It takes an element to look under and a locator such as
+ * {@code Φ.foo.f}. It answers the element that locator names, and fails
+ * loudly when the document holds no such place.</p>
  *
  * @since 0.77.0
  */

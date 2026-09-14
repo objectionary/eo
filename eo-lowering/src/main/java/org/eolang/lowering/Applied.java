@@ -13,22 +13,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * The way from Φ into one fragment, spelled as the dispatch phino makes
- * to get there, with every formation on the way applied to markers of
- * fresh symbols in place of its voids, each seeded into the table as a
- * {@code void} row naming the path of the void from the fragment.
+ * The φ-expression that walks from Φ down into one fragment.
  *
- * <p>A run morphs inside the bindings of the fragment through this
- * expression, so the fragment itself stays as written in the world: a
- * boxed callee like any other, which a recursive call enters through
- * the box, while the copy the expression makes is entered through its
- * bindings and never fired. The enclosing formations are applied on the
- * way in, since a void of theirs left open would read as the terminator from the
- * body; their paths carry a {@code ρ.} per level. The receiver void
- * {@code ρ} itself is left alone, since the dispatch binds it to the
- * real parent, which is how the body reaches its neighbours. When the
- * parent is a data forma, it stands as a marker of that forma, seeded as
- * the void {@code ρ} the body reaches through.</p>
+ * <p>It takes a document, the locator of the fragment in it, the formas of
+ * the build and the symbol table. It answers one line of φ-calculus for
+ * phino to morph inside, and on the way it seeds the table with one
+ * {@code void} row per argument, so that every argument enters the run as
+ * a symbol rather than an unknown.</p>
  *
  * @since 0.77.0
  */

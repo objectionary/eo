@@ -13,26 +13,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The Java spelling of the values one protocol computes.
+ * The Java spelling of the values one program computes.
  *
- * <p>Every operand key has one Java expression: a symbol is the local
- * named after it, a number literal is the double its eight bytes encode,
- * a bool is {@code true} or {@code false}, and bytes or a string are a
- * byte array. Every forma has one Java type, with a string carried as
- * bytes, since its Δ is the very UTF-8 sequence the byte atoms it
- * reaches through {@code φ} operate on, and a tuple or an object it
- * answers carried as the {@code Phi} itself, since neither is a datum
- * and every operation on either dispatches back into EO. The value of an
- * application comes from the format the {@link Op} table holds for its
- * atom, except a dispatch back into EO, which is a {@link Call}, and an
- * equality, which compares by the forma of its operands: two numbers by
- * their value, so that a not-a-number equals nothing and the two zeroes
- * equal each other, and anything else by its bytes; and a void is read
- * through the public runtime API. The forma of a key is looked up in the
- * voids of the program or in the steps of its bodies, nested arms
- * included. Whatever the table cannot spell — an operation with no Java
- * column, a void of a forma the runtime cannot hand over, an operand of
- * a forma the atom does not take — is refused.</p>
+ * <p>It takes a program and answers, for any key in it, the Java
+ * expression that holds the value, the Java type of it and the statement
+ * that reads a void into a local. A symbol is the local named after it, a
+ * literal is the constant it encodes, and a step is the format the
+ * {@link Op} table holds for its atom. Anything the table cannot spell is
+ * refused, and the fragment stays as written.</p>
  *
  * @since 0.76.0
  */

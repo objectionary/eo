@@ -11,13 +11,13 @@ import org.eolang.lowering.Marker;
 import org.eolang.lowering.Op;
 
 /**
- * A primitive operation on literals alone, computed by the engine itself.
+ * A primitive operation on literals alone, computed here and now.
  *
- * <p>The result is answered as data, in the carrier of the operation, so
- * that a body called on literals alone folds to a literal instead of
- * hiding behind a symbol. An operation the engine does not know how to
- * compute faithfully folds to nothing, and the fire mints a row for it
- * instead.</p>
+ * <p>It takes the operation and its operands. When every operand is a
+ * literal it answers the result as data, in the carrier of the operation,
+ * so that a body called on literals folds to a literal instead of hiding
+ * behind a symbol. An operation it cannot compute faithfully answers
+ * nothing, and the caller mints a row instead.</p>
  *
  * @since 0.76.0
  */

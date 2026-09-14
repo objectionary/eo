@@ -8,22 +8,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * One method dispatched back into EO, as a step of a protocol.
+ * One EO method called on values, as a step of a protocol.
  *
- * <p>It is what a parked dispatch marker turns into: the method, the
- * keys of its operands — the receiver first, then the arguments in
- * their positional order — and the forma of its value. Unlike an
- * {@link Application}, which is a Java operator over locals, this step
- * is a call, spelled the way a hand-written atom spells one: the
- * receiver and the arguments are wrapped back into objects, the method
- * is taken of the receiver and applied to the arguments, and the value
- * is dataized into the forma the tables of {@code eo:inference} witness
- * for it, or held as the object it is when they witness none. The EO
- * behind the method stays where it is, so a fragment leaning on
- * objects the universe does not model is still one atom, one class,
- * one body. The step is strict: every argument is a value computed
- * before it, the way every step of a protocol is, and the arms of an
- * {@code if} stay the one thing a protocol leaves lazy.</p>
+ * <p>It takes the name of the step, the method to call, the keys of the
+ * receiver and the arguments, and the forma of what comes back, and it
+ * answers those four. Where an {@link Application} is a Java operator over
+ * locals, this one leaves the EO where it is and calls it, so a fragment
+ * leaning on objects nobody lowered is still one atom.</p>
  *
  * @since 0.76.0
  */

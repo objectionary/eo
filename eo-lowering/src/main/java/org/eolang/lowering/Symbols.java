@@ -22,22 +22,15 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 
 /**
- * The symbol table of one run, a tab-separated file.
+ * The symbol table of one run, kept in a tab-separated file.
  *
- * <p>Every row starts with a symbol and, in most rows, the carrier of its
- * value and the kind of the row: {@code S1 number void a} is an input,
- * {@code S4 number L_number_plus sym:S1 sym:S3} an operation on two
- * operands, {@code S5 number fork sym:S4} a fork on a bool, and
- * {@code S9 bytes box Φ.demo.f x=sym:S1} an entry into another fragment.
- * The rows {@code S5 left}, {@code S5 left answer sym:S3} and
- * {@code S5 end} carry no carrier: they open and close the arms of a
- * fork. The build side seeds the table with the inputs, the engine
- * appends the rest, and the build side reads it all back as the program
- * of the fragment.</p>
- *
- * <p>A row minted for the second time answers the symbol it has already,
- * which is how common subexpressions are eliminated. A fork is never the
- * same row twice, since its arms are not in the row.</p>
+ * <p>It takes the path of the file. Given a row — an argument, an
+ * operation on operands, a fork, an entry into another fragment — it mints
+ * a symbol and answers it, and it answers the carrier and the cells of any
+ * symbol it holds. The build seeds the table with the arguments, the
+ * engine appends the rest from its own process, and the build reads it all
+ * back as the program of the fragment. A row asked for twice answers the
+ * symbol it has already, which is how repeated work is computed once.</p>
  *
  * @since 0.76.0
  */

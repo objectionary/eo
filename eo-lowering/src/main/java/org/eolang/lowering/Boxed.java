@@ -9,20 +9,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * A copy of an XMIR document with a box planted in every boxed formation,
- * and every test attribute trimmed unless the kept formation stands
- * inside it.
+ * A copy of a document with a box planted in every formation that takes
+ * arguments.
  *
- * <p>The box is one {@code <o name="λ">} element appended to the
- * formation, which phino reads as the λ of it, so entering the body
- * fires the engine. The kept formation is the one a run lowers: the run
- * dispatches into its bindings through a copy of it, which fires nothing,
- * while an entry into another copy of it, which is what a recursive call
- * makes, fires the box like any other. A formation lowered by an earlier
- * run carries the λ of its atom already,
- * and the box takes the place of that λ, since the engine serves boxes
- * and not atoms. A test is a thunk over literals and no fragment reaches
- * it, so it only weighs the universe down.</p>
+ * <p>It takes the document, the table of boxes and the locator of the one
+ * formation a run is lowering. It answers a fresh copy in which every
+ * boxed formation carries an {@code <o name="λ">} element, so that
+ * entering its body fires the engine, and in which the tests no fragment
+ * reaches are cut away, so the universe phino reads stays small.</p>
  *
  * @since 0.77.0
  */

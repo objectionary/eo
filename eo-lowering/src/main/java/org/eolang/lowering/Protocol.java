@@ -8,26 +8,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * What a fragment computes, as a program of steps.
+ * What a fragment computes, as a straight program of steps.
  *
- * <p>A reduction settles into this: the steps in their dependency order,
- * the key of the value the fragment answers with — the last step,
- * usually, though a fragment may also collapse into a literal or answer
- * one of its voids unchanged — and the forma of that value. A step is an
- * application or a {@link Fork}, and a fork holds one protocol of this
- * very kind per arm, so a program with choices in it is a tree of
- * protocols whose every path is straight. A path may also end by
- * repeating instead of answering: a fragment that calls itself, or a
- * recursive helper of the formation, in a tail position settles into
- * the name of the body it resumes and the keys the voids of that body
- * take next, one per void in declaration order, and that body runs
- * over them. Or a path may end by failing: a fragment whose tail is the
- * terminator {@code T} settles into the key of the reason it carries,
- * and dataizing the fragment there aborts with that reason as the
- * message. This is the whole input of code generation: rendering each step
- * as one Java statement, in order, with a block under each arm, a
- * loop around a program that repeats and a throw where a path fails,
- * is a faithful compilation of the fragment.</p>
+ * <p>It takes the steps in dependency order and how the program ends: with
+ * the key of an answer and its forma, by repeating a body with new values,
+ * or by failing with a reason. It answers all of that. Every step reads
+ * only keys minted before it, and a {@link Fork} holds one protocol of
+ * this kind per arm, so a program with choices is a tree whose every path
+ * is straight. This is the whole input of code generation.</p>
  *
  * @since 0.76.0
  */

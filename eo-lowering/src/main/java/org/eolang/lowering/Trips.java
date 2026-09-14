@@ -18,13 +18,10 @@ import org.cactoos.text.UncheckedText;
 /**
  * How many trips over the wire the runs of one document made.
  *
- * <p>The engine lives in a process of its own, started by phino once per
- * run, so the build cannot read the count out of its memory: the engine
- * appends the trips of its run as one line of the file the launcher names
- * in its environment, and the build sums the lines of every run the
- * document took. A document is counted from scratch on every build, since
- * the file of the last one is dropped before the first fragment goes
- * out.</p>
+ * <p>It takes the path of a file. The engine, which lives in a process of
+ * its own, appends the count of its run; the build sums the lines,
+ * answers the total, and clears the file before a document goes out again.
+ * This is the only way the build can say what a document cost.</p>
  *
  * @since 0.77.0
  */

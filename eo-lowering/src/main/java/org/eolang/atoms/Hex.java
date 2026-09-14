@@ -11,8 +11,10 @@ import java.util.List;
 /**
  * Bytes, as phino spells them: {@code 40-45-00-00-00-00-00-00}.
  *
- * <p>A single byte ends with a dash, {@code FF-}, and no bytes at all are
- * {@code --}, which is how a Δ formation with an empty payload prints.</p>
+ * <p>It takes that spelling, or a number, a bool, or the bytes themselves,
+ * and answers any of the four back. A single byte ends with a dash,
+ * {@code FF-}, and no bytes at all are {@code --}, which is how an empty
+ * payload prints.</p>
  *
  * @since 0.76.0
  */

@@ -8,11 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The data forma a locator names, when it names a data object at all.
+ * The data forma a locator names, if it names one at all.
  *
- * <p>The data objects are the carriers of the values: a number, a string,
- * bytes, a bool with its two states, and a tuple with its empty one. Every
- * other locator names no forma, whatever its formation may answer.</p>
+ * <p>It takes a locator, such as {@code Φ.number}. It answers whether that
+ * locator is one of the data objects — a number, a string, bytes, a bool
+ * or a tuple — and which forma it is. Every other locator answers nothing,
+ * whatever the formation behind it may compute.</p>
  *
  * @since 0.77.0
  */
