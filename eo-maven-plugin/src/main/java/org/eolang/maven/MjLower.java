@@ -50,7 +50,11 @@ import org.eolang.lowering.Phino;
  *
  * <p>Every run of phino works under a step budget of ten thousand
  * rewrites, enough for any fragment a human writes and little enough
- * that a diverging one is refused in seconds.</p>
+ * that a diverging one is refused in seconds. The goal as a whole works
+ * under {@code eo.timeBudget} seconds of wall clock, counted from the
+ * moment lowering starts and read before each document is taken, so a
+ * long build gives up on the documents it has no time for instead of
+ * running away.</p>
  *
  * @since 0.76.0
  */
@@ -89,6 +93,20 @@ public final class MjLower extends MjSafe {
         defaultValue = "false"
     )
     private boolean parallel;
+
+    /**
+     * How many seconds the goal may spend on lowering. Lowering one
+     * document takes minutes, and a program of many documents would keep a
+     * build running for hours, so once the seconds are over the goal takes
+     * no further document and leaves the rest as they were. Zero means no
+     * budget at all.
+     */
+    @Parameter(
+        alias = "timeBudget",
+        property = "eo.timeBudget",
+        defaultValue = "60"
+    )
+    private long budget;
 
     /**
      * The name or path of the phino executable.
@@ -132,7 +150,8 @@ public final class MjLower extends MjSafe {
                 try (TjsForeign tojos = this.tojos()) {
                     new Timed(
                         new Lowering(
-                            tojos.standalone(), home, phino, this.tables.toPath(), this.parallel
+                            tojos.standalone(), home, phino, this.tables.toPath(),
+                            this.parallel, this.budget
                         )
                     ).exec();
                 }

@@ -37,6 +37,10 @@ import org.eolang.lowering.Xml;
  * document with nothing rewritten is neither saved nor repointed, so a
  * build without lowerable fragments leaves only the boxes behind.</p>
  *
+ * <p>The whole run is bounded by a {@link Budget} of seconds. The budget
+ * is read before a document is taken, never in the middle of one, so a
+ * document is either lowered whole or left exactly as it was.</p>
+ *
  * @since 0.76.0
  * @todo #8548:60min The boxed variants of a build pile up under the
  *  {@code boxed} directory across builds, so a document deleted from the
@@ -83,6 +87,11 @@ final class Lowering implements Step {
     private final boolean parallel;
 
     /**
+     * How many seconds the whole run may spend, where zero means no limit.
+     */
+    private final long seconds;
+
+    /**
      * Ctor.
      *
      * @param srcs XMIR sources to lower
@@ -90,14 +99,16 @@ final class Lowering implements Step {
      * @param exe The binary that morphs
      * @param types The directory with the tables of {@link MjInference}
      * @param many Whether the documents are lowered in parallel
+     * @param span How many seconds to spend, where zero means no limit
      */
     Lowering(final Collection<TjForeign> srcs, final Path target,
-        final Phino exe, final Path types, final boolean many) {
+        final Phino exe, final Path types, final boolean many, final long span) {
         this.sources = srcs;
         this.home = target;
         this.phino = exe;
         this.tables = types;
         this.parallel = many;
+        this.seconds = span;
     }
 
     @Override
@@ -115,9 +126,10 @@ final class Lowering implements Step {
             this.threaded(tojo -> Lowering.boxed(tojo, dir, boxes)).total(),
             dir.boxes()
         );
+        final Budget budget = new Budget(this.seconds);
         Logger.info(
             this, "Lowered %d fragment(s) in %d XMIR(s), into %[file]s",
-            this.threaded(tojo -> this.lowered(tojo, formas, dir)).total(),
+            this.threaded(tojo -> this.lowered(tojo, formas, dir, budget)).total(),
             this.sources.size(), this.home
         );
     }
@@ -140,7 +152,22 @@ final class Lowering implements Step {
         return 1;
     }
 
-    private int lowered(final TjForeign tojo, final Formas formas, final Home dir)
+    private int lowered(final TjForeign tojo, final Formas formas, final Home dir,
+        final Budget budget) throws IOException {
+        final int count;
+        if (budget.spent()) {
+            Logger.info(
+                this, "Skipped %s, the time budget of lowering is spent",
+                tojo.identifier()
+            );
+            count = 0;
+        } else {
+            count = this.rewritten(tojo, formas, dir);
+        }
+        return count;
+    }
+
+    private int rewritten(final TjForeign tojo, final Formas formas, final Home dir)
         throws IOException {
         final long start = System.currentTimeMillis();
         final Path source = tojo.xmir();

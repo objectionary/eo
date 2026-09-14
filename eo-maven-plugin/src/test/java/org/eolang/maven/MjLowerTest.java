@@ -192,6 +192,31 @@ final class MjLowerTest {
     }
 
     @Test
+    void lowersEverythingWithoutATimeBudget(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a budget of zero seconds must leave the goal unbounded, but it didnt",
+            MjLowerTest.symbolic(temp)
+                .with("budget", 0L)
+                .execute(new PpLower())
+                .foreignTojos().find("foo").xmir().toString(),
+            Matchers.containsString(Lowering.DIR)
+        );
+    }
+
+    @Test
+    void takesNoDocumentOnceTheTimeBudgetIsSpent(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a spent budget must stop the goal from taking the next document, but it didnt",
+            MjLowerTest.logged(MjLowerTest.crowded(temp).with("budget", 1L)),
+            Matchers.hasItem(
+                Matchers.containsString("the time budget of lowering is spent")
+            )
+        );
+    }
+
+    @Test
     void generatesNoAtomClassWhenDisabled(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
@@ -348,6 +373,35 @@ final class MjLowerTest {
         return new FakeMaven(temp)
             .withProgram(MjLowerTest.thunk(), "foo", "foo.eo")
             .execute(new PpLower());
+    }
+
+    private static FakeMaven crowded(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            MjLowerTest.program(
+                "[] > foo",
+                "  [x] > one",
+                "    (x.times 2).plus 1 > @",
+                "  [x] > two",
+                "    (x.times 3).plus 2 > @",
+                "  [x] > three",
+                "    (x.times 4).plus 3 > @",
+                "  ((one 5).plus (two 6)).plus (three 7) > @"
+            ),
+            "foo", "foo.eo"
+        ).withProgram(
+            MjLowerTest.program(
+                "[] > bar",
+                "  [x] > four",
+                "    (x.times 7).plus 5 > @",
+                "  [x] > five",
+                "    (x.times 8).plus 6 > @",
+                "  [x] > six",
+                "    (x.times 9).plus 7 > @",
+                "  ((four 3).plus (five 4)).plus (six 5) > @"
+            ),
+            "bar", "bar.eo"
+        ).withProgram(MjLowerTest.number(), "number", "number.eo")
+            .withProgram("[@] > bytes", "bytes", "bytes.eo");
     }
 
     private static FakeMaven compound(final Path temp) throws IOException {
