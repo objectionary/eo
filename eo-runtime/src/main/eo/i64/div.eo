@@ -37,7 +37,6 @@
         "the smallest i64 divided by minus one is past the largest i64"
       quotiented
   00-00-00-00-00-00-00-01.left i > [i] >> bit
-  magnitude ^.as-bytes >> dividend
   [^ index remainder quot] >> looped
     if. > @
       index.lt 0
@@ -90,7 +89,7 @@
                 shifted.eq 00-00-00-00-00-00-00-00 > empty
                 m.right step > shifted!
               |
-                dividend
+                magnitude ^.as-bytes >> dividend
                 0
                 32
               00-00-00-00-00-00-00-00
