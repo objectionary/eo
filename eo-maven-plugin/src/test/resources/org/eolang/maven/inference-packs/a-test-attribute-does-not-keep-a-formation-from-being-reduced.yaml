@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A test attribute is not public: the syntax forbids a name that begins with a
+# `+`, so no source file can dispatch on one and nothing is lost by leaving it
+# out of the count.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  checked.eo: |
+    [] > checked
+      oak > @
+
+      oak ++> can-be-an-oak
+provides:
+  - "/provides/type[@id='Φ.checked' and @reduced='Φ.oak']"

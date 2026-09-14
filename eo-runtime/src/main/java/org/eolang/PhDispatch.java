@@ -7,12 +7,14 @@ package org.eolang;
 
 /**
  * A method-calling object.
+ *
  * @since 0.1
  */
 public final class PhDispatch extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param mtd The name of method
      */

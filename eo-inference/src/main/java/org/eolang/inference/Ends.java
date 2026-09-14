@@ -38,6 +38,7 @@ final class Ends {
 
     /**
      * Ctor.
+     *
      * @param pairs The pairs, each name against the one it is a copy of
      */
     Ends(final Map<String, String> pairs) {
@@ -46,6 +47,7 @@ final class Ends {
 
     /**
      * The name every type goes by.
+     *
      * @return The names, each type against the end of its chain of copies
      */
     Map<String, String> names() {
@@ -58,6 +60,7 @@ final class Ends {
 
     /**
      * The name one type goes by.
+     *
      * @param type The name of the type
      * @return The end of its chain of copies, or the type itself when it is a
      *  copy of nothing

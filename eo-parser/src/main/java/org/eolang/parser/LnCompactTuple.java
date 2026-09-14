@@ -51,6 +51,7 @@ final class LnCompactTuple implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnCompactTuple(final Span source) {

@@ -66,6 +66,7 @@ public final class Outlined implements Rewrite {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param tables The tables that decide the forma of a leaf
      * @param home The directory for the sidecar bodies

@@ -65,6 +65,7 @@ final class Provided {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, as {@link Provides} wrote it
      * @param aliases The name every type goes by, from {@link Same}
      * @param voids The locator of every void, from {@link Hollows}
@@ -82,6 +83,7 @@ final class Provided {
 
     /**
      * Ctor.
+     *
      * @param rows The rows of the provides table, by the name of their owner
      * @param aliases The name every type goes by, from {@link Same}
      * @param voids The locator of every void, from {@link Hollows}
@@ -101,6 +103,7 @@ final class Provided {
 
     /**
      * The type of the attribute this type keeps under the given name.
+     *
      * @param type The name the type goes by
      * @param name The name of the attribute
      * @return The type of the attribute, or an empty string when this type has
@@ -182,6 +185,7 @@ final class Provided {
 
     /**
      * The void this type keeps under the given name.
+     *
      * @param type The name the type goes by
      * @param name The name of the void
      * @return The locator of the void, or an empty string when this type keeps
@@ -200,6 +204,7 @@ final class Provided {
 
     /**
      * The type this one stands in front of.
+     *
      * @param type The name the type goes by
      * @return The locator of what it delegates to, or an empty string when it
      *  delegates to nothing
@@ -215,20 +220,15 @@ final class Provided {
         return this.names.getOrDefault(next, next);
     }
 
-    private boolean hollow(final String type) {
-        boolean found = false;
-        String walked = type;
-        while (!walked.isEmpty()) {
-            if (this.hollows.contains(walked)) {
-                found = true;
-                break;
-            }
-            if (!walked.contains(".")) {
-                break;
-            }
-            walked = walked.substring(0, walked.lastIndexOf('.'));
-        }
-        return found;
+    /**
+     * Whether this name is one of the voids, or a name taken off one.
+     *
+     * @param type The name the type goes by
+     * @return True when nothing certain is said about it here, because what it
+     *  is stands where a caller has yet to put anything
+     */
+    boolean hollow(final String type) {
+        return new Rooted(this.hollows).covers(type);
     }
 
     private String kept(final String type, final String name, final Collection<String> walked) {

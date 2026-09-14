@@ -79,6 +79,7 @@ final class Parsing implements Step {
 
     /**
      * Constructor.
+     *
      * @param srcs Foreign tojos catalog
      * @param target Target directory
      * @param sources EO sources directory

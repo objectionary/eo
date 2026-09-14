@@ -36,6 +36,7 @@ public final class Application implements Step {
 
     /**
      * Ctor.
+     *
      * @param label The name of the step, such as {@code s1}
      * @param atom The λ name of the atom, such as {@code L_number_plus}
      * @param keys The keys of the operands, the receiver first

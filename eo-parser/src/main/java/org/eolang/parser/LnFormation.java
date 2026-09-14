@@ -39,6 +39,7 @@ final class LnFormation implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnFormation(final Span source) {

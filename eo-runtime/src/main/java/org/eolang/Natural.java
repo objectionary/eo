@@ -8,6 +8,7 @@ package org.eolang;
 /**
  * Transform {@link Expect} to Natural number.
  * Natural number is integer greater or equal to zero.
+ *
  * @since 0.51
  */
 public final class Natural {
@@ -19,6 +20,7 @@ public final class Natural {
 
     /**
      * Ctor.
+     *
      * @param expect Expect
      */
     public Natural(final Expect<Phi> expect) {
@@ -27,6 +29,7 @@ public final class Natural {
 
     /**
      * Return it.
+     *
      * @return The token
      */
     public Integer it() {

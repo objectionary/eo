@@ -29,6 +29,7 @@ public final class Binding {
 
     /**
      * Ctor.
+     *
      * @param label The name of the binding
      * @param value The term bound to it
      */
@@ -39,6 +40,7 @@ public final class Binding {
 
     /**
      * The name of the binding.
+     *
      * @return The name, such as {@code α0} or {@code x}
      */
     public String label() {
@@ -47,6 +49,7 @@ public final class Binding {
 
     /**
      * The term bound to it.
+     *
      * @return The term
      */
     public Term value() {

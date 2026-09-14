@@ -44,6 +44,7 @@ public final class Evaluation {
 
     /**
      * Ctor.
+     *
      * @param text One line of the protocol file
      */
     public Evaluation(final String text) {
@@ -52,6 +53,7 @@ public final class Evaluation {
 
     /**
      * The λ name of the atom.
+     *
      * @return The name, such as {@code L_number_plus} or {@code Sym_v0}
      */
     public String name() {
@@ -60,6 +62,7 @@ public final class Evaluation {
 
     /**
      * Whether the atom parked instead of firing.
+     *
      * @return True if the record has no result term
      */
     public boolean parked() {
@@ -68,6 +71,7 @@ public final class Evaluation {
 
     /**
      * The result term of the fired atom.
+     *
      * @return The term, such as a {@code Φ.number} application
      */
     public String result() {
@@ -81,6 +85,7 @@ public final class Evaluation {
 
     /**
      * The named bindings of the input formation, in their written order.
+     *
      * @return Binding names mapped to their terms, without {@code ρ} and unset ones
      */
     public Map<String, String> bindings() {
@@ -101,6 +106,7 @@ public final class Evaluation {
 
     /**
      * The identity of the receiver.
+     *
      * @return Either {@code sym:<name>} or {@code Δ:<hex>}
      */
     public String receiver() {

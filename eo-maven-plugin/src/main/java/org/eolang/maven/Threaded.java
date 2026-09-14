@@ -42,6 +42,7 @@ final class Threaded<T> {
 
     /**
      * Ctor.
+     *
      * @param src The sources
      * @param fun The function to run
      */
@@ -51,6 +52,7 @@ final class Threaded<T> {
 
     /**
      * Ctor.
+     *
      * @param src The sources
      * @param fun The function to run
      * @param log The logger
@@ -65,6 +67,7 @@ final class Threaded<T> {
 
     /**
      * Exec them all and count.
+     *
      * @return How many succeeded
      */
     int total() {

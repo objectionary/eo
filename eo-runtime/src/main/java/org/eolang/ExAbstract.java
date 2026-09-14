@@ -24,6 +24,7 @@ public abstract class ExAbstract extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      */
     public ExAbstract(final String cause) {
@@ -32,6 +33,7 @@ public abstract class ExAbstract extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param root Root cause exception
      */
     public ExAbstract(final Throwable root) {
@@ -40,10 +42,23 @@ public abstract class ExAbstract extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      * @param root Root cause exception
      */
     public ExAbstract(final String cause, final Throwable root) {
-        super(cause, root);
+        this(cause, root, true);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param cause Exception cause
+     * @param root Root cause exception
+     * @param stack Whether the Java stack trace is worth recording, which it
+     *  is not for an exception thrown as control flow
+     */
+    protected ExAbstract(final String cause, final Throwable root, final boolean stack) {
+        super(cause, root, true, stack);
     }
 }

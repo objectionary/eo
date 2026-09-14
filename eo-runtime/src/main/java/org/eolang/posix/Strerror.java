@@ -38,6 +38,7 @@ final class Strerror {
 
     /**
      * Ctor.
+     *
      * @param code The code to translate
      */
     Strerror(final int code) {
@@ -46,6 +47,7 @@ final class Strerror {
 
     /**
      * Ctor.
+     *
      * @param source Where a message comes from, by error code
      * @param code The code to translate
      */
@@ -56,6 +58,7 @@ final class Strerror {
 
     /**
      * The message.
+     *
      * @return The error as a human-readable string
      */
     String it() {

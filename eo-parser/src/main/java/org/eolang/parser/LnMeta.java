@@ -49,6 +49,7 @@ final class LnMeta implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The meta span
      */
     LnMeta(final Span source) {

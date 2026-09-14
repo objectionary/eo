@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 /**
  * Footprint that does not update target path.
+ *
  * @since 0.41
  */
 final class FpIgnore extends FpEnvelope {

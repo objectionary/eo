@@ -225,8 +225,6 @@
     eq. > @
       drain 300
       true
-      drain
-      tmp
     if. > [^ n] > drain
       n.lte 0
       true

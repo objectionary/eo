@@ -4,13 +4,14 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * Rename syscall.
+ *
  * @since 0.74.0
  */
 public final class RenameSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class RenameSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public RenameSyscall(final Phi posix) {

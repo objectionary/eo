@@ -142,6 +142,7 @@ public final class Reduction {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
@@ -154,6 +155,7 @@ public final class Reduction {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
@@ -168,6 +170,7 @@ public final class Reduction {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
@@ -188,6 +191,7 @@ public final class Reduction {
 
     /**
      * Ctor.
+     *
      * @param exe The binary that dataizes
      * @param xmir The XMIR fragment to reduce, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
@@ -213,6 +217,7 @@ public final class Reduction {
 
     /**
      * The protocol the fragment reduces to, when it is one body.
+     *
      * @return The steps, the answer, and its forma
      * @throws IOException If the binary cannot be run
      */
@@ -229,6 +234,7 @@ public final class Reduction {
     /**
      * The program the fragment reduces to: its own body, and the body of
      * every recursive helper it resumes.
+     *
      * @return The bodies, the fragment's own first
      * @throws IOException If the binary cannot be run
      */
@@ -240,6 +246,7 @@ public final class Reduction {
 
     /**
      * The protocol one tree settles into.
+     *
      * @param start The tree
      * @param minted The ledger this reduction shares
      * @return The protocol
@@ -261,6 +268,7 @@ public final class Reduction {
 
     /**
      * The value one tree settles into, over the steps it adds.
+     *
      * @param start The tree
      * @param steps The steps of the protocol being built
      * @param minted The ledger this reduction shares

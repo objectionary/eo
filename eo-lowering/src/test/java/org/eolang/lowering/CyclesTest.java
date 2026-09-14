@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Cycles}.
+ *
  * @since 0.76.0
  */
 final class CyclesTest {

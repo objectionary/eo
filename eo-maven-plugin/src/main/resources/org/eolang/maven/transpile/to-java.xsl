@@ -214,14 +214,28 @@
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="ctors"/>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
+  <!--
+  The set of hits every PhCoverage wrapper of the class shares. A wrapper
+  is built anew each time the attribute holding it is composed, so a set
+  of its own would let the same location reach the file once per instance
+  of the object (#6508). One static set per class outlives them all, and
+  the nested classes read it as well.
+  -->
+  <xsl:template name="hits">
+    <xsl:if test="$coverage='true'">
+      <xsl:text>private static final java.util.Set&lt;String&gt; HITS = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+    </xsl:if>
+  </xsl:template>
   <!-- Nested classes for anonymous abstract objects -->
   <xsl:template match="nested">
-    <xsl:variable name="name" select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+    <xsl:variable name="name" select="eo:loc-to-class(eo:unmarked(@loc))"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>private static class </xsl:text>
     <xsl:value-of select="$name"/>
@@ -546,7 +560,7 @@
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+        <xsl:value-of select="eo:loc-to-class(eo:unmarked(@loc))"/>
         <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -657,7 +671,7 @@
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:if test="$trackLocations='true' and @line and @pos and not(contains(@loc, '+'))">
+    <xsl:if test="$trackLocations='true' and @line and @pos and not(contains(@loc, concat('.', $eo:positive)))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhSafe(</xsl:text>
@@ -673,15 +687,15 @@
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="eo:literal(eo:escape-plus(@original-name))"/>
+      <xsl:value-of select="eo:literal(eo:unmarked(@original-name))"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
-    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+')) and not(contains(@loc, '.-'))">
+    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, concat('.', $eo:positive))) and not(contains(@loc, concat('.', $eo:negative)))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>, "</xsl:text>
+      <xsl:text>, HITS, "</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>
@@ -795,6 +809,7 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="testing-ctors"/>
     <xsl:apply-templates select="." mode="tests"/>
     <xsl:apply-templates select="nested"/>
@@ -864,7 +879,7 @@
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>.add("</xsl:text>
-      <xsl:value-of select="eo:literal(eo:escape-plus($name))"/>
+      <xsl:value-of select="eo:literal(eo:unmarked($name))"/>
       <xsl:text>", </xsl:text>
       <xsl:apply-templates select="void|bound|atom|abstract">
         <xsl:with-param name="indent" select="$indent"/>
@@ -886,11 +901,11 @@
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="eo:identifier(replace(eo:escape-plus(@name), '-', '_'))"/>
+        <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
-          <xsl:when test="starts-with(@name, '-')">
+          <xsl:when test="starts-with(@name, $eo:negative)">
             <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
             <xsl:apply-templates select="." mode="dataized">
               <xsl:with-param name="indent" select="3"/>
@@ -919,7 +934,7 @@
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(this.take(</xsl:text>
-    <xsl:value-of select="eo:attr-name(eo:escape-plus(@name), true())"/>
+    <xsl:value-of select="eo:attr-name(eo:unmarked(@name), true())"/>
     <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->

@@ -68,6 +68,7 @@ public final class Protocol {
 
     /**
      * Ctor.
+     *
      * @param moves The steps, in their dependency order
      * @param answer The key of the value the fragment answers with
      * @param carrier The forma of that value
@@ -78,6 +79,7 @@ public final class Protocol {
 
     /**
      * Ctor, for a program that fails.
+     *
      * @param moves The steps, in their dependency order
      * @param reason The key of the reason the fragment fails with
      */
@@ -87,6 +89,7 @@ public final class Protocol {
 
     /**
      * Ctor, for a program that repeats the formation itself.
+     *
      * @param moves The steps, in their dependency order
      * @param again The keys of the values the voids take next, in
      *  declaration order
@@ -97,6 +100,7 @@ public final class Protocol {
 
     /**
      * Ctor, for a program that resumes a body.
+     *
      * @param moves The steps, in their dependency order
      * @param target The name of the body resumed, empty for the formation
      * @param again The keys of the values the voids of that body take
@@ -108,6 +112,7 @@ public final class Protocol {
 
     /**
      * Ctor.
+     *
      * @param moves The steps, in their dependency order
      * @param answer The key of the value the fragment answers with
      * @param carrier The forma of that value
@@ -128,6 +133,7 @@ public final class Protocol {
 
     /**
      * The steps.
+     *
      * @return The steps, in their dependency order
      */
     public List<Step> moves() {
@@ -136,6 +142,7 @@ public final class Protocol {
 
     /**
      * The key of the value the fragment answers with.
+     *
      * @return A key such as {@code sym:s2} or {@code number:40-14-...},
      *  empty when the program repeats or fails
      */
@@ -145,6 +152,7 @@ public final class Protocol {
 
     /**
      * The forma of the value.
+     *
      * @return One of {@code number}, {@code bool}, {@code bytes}, empty
      *  when the program repeats or fails
      */
@@ -154,6 +162,7 @@ public final class Protocol {
 
     /**
      * The name of the body the program resumes.
+     *
      * @return The name of the helper, empty for the formation itself or
      *  when the program answers
      */
@@ -163,6 +172,7 @@ public final class Protocol {
 
     /**
      * The keys of the values the voids of the resumed body take next.
+     *
      * @return One key per void of that body, in declaration order, or
      *  none when the program answers
      */
@@ -172,6 +182,7 @@ public final class Protocol {
 
     /**
      * The key of the reason the program fails with.
+     *
      * @return A key such as {@code sym:s3} or {@code string:68-69-},
      *  empty when the program answers or repeats
      */
@@ -182,6 +193,7 @@ public final class Protocol {
     /**
      * Whether this program, or an arm nested anywhere in it, ends by
      * repeating.
+     *
      * @return True if the Java of it needs a loop
      */
     public boolean repeats() {

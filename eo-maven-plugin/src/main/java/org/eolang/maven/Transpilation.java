@@ -143,6 +143,7 @@ final class Transpilation {
 
     /**
      * Ctor.
+     *
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
@@ -192,6 +193,7 @@ final class Transpilation {
      * was folded through phino and a build whose XMIR was not never share
      * a slot, since the same git hash then means different Java.
      * The tables belong to {@link #version(Collection)} instead.
+     *
      * @return The version segment shared by every source
      */
     String version() {
@@ -242,6 +244,7 @@ final class Transpilation {
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
+     *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
      */

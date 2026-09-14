@@ -15,6 +15,7 @@ import org.eolang.Syscall;
  * A Winsock function call known by its name, split out of {@link NamedFuncCall}
  * to keep that class's fan-out down: sockets stay on Winsock (ws2_32), unlike
  * every other Win32 call this package makes, which goes through the C runtime.
+ *
  * @since 0.75.0
  */
 final class NamedSocketFuncCall implements Syscall {
@@ -51,6 +52,7 @@ final class NamedSocketFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param call The Winsock name of the function
      * @param obj The object the function call belongs to
      */

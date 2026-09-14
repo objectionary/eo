@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * Test case verifying {@link Expect}-based error messages
  * raised by {@link EObytes$EOright} when the {@code x} attribute
  * is not an integer.
+ *
  * @since 0.51
  */
 final class EObytesEOrightTest {

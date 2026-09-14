@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -69,6 +70,7 @@ public final class Resolved implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the links are closed
      */
     public Resolved(final Clue clues) {
@@ -82,21 +84,23 @@ public final class Resolved implements Clue {
         final Xmirs world = new Xmirs(xmirs);
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
         final Collection<Site> dispatches = world.dispatches();
+        final Collection<Site> asked = new ArrayList<>(dispatches);
+        asked.addAll(world.reads());
         final Given applied = new Given(world.applications());
         final Map<String, List<String>> args = applied.arguments();
         final Map<String, Map<String, String>> named = applied.named();
         final Pairs written = new Pairs(new XMLDocument(links));
         final Map<String, String> receivers = new Taken(world, written).all();
-        final List<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Collection<String> voids = new Hollows(given).all();
         final Map<String, Type> kept = written.others();
-        final Woven woven = new Woven(given, applied, receivers, voids);
-        final Promoted promoted = new Promoted(woven, given, kept, voids);
+        final Woven woven = new Woven(given, applied, receivers, voids, asked);
+        final Promoted promoted = new Promoted(woven, given, new Said(written), voids, args);
         final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, named, receivers, voids), promoted
+            new Dispatched(given, asked, args, named, receivers, voids), promoted
         ).from(
             new Settled(
                 new Dispatched(
-                    given, dispatches, args, named, receivers, Collections.emptyList()
+                    given, asked, args, named, receivers, Collections.emptyList()
                 ),
                 promoted
             ).from(written.all())

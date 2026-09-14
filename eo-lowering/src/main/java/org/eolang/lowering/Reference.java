@@ -58,6 +58,7 @@ public final class Reference {
 
     /**
      * Ctor.
+     *
      * @param where The scope the name is reached in
      * @param above The helpers being read at the moment, outermost first
      * @param label The name
@@ -76,6 +77,7 @@ public final class Reference {
 
     /**
      * The term the name stands for.
+     *
      * @return The term
      */
     public Term term() {

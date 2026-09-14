@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.w3c.dom.Node;
@@ -38,6 +39,15 @@ import org.w3c.dom.Node;
  * atom declares, read from the atoms table the inference writes next to
  * the other two. Anything else — a missing row, a cycle, a raw
  * literal — answers with the empty string, and the caller refuses.</p>
+ *
+ * <p>A filling is chased the same way, since a site passing a formation
+ * or an atom passes data of the forma that formation or atom answers, and
+ * most recovery voids are filled by nothing but such a site. The chase
+ * itself asks the provides table, so the witnesses are read twice: once
+ * with the bare carriers, which needs nothing but the filling locator,
+ * and once with the whole chase over that first answer. A void whose
+ * fillings still disagree, or one of them naming no data at all, stays
+ * unwitnessed.</p>
  *
  * @since 0.76.0
  */
@@ -67,19 +77,37 @@ public final class Formas {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@code eo:inference},
      *  which does not have to exist
      */
     public Formas(final Path tables) {
         this(
+            tables,
             Formas.chained(tables.resolve("links.xml")),
-            Formas.witnessed(tables.resolve("provides.xml")),
             Formas.declared(tables.resolve("atoms.xml"))
         );
     }
 
     /**
+     * Ctor.
+     *
+     * @param tables The directory with the tables of {@code eo:inference}
+     * @param rows The single filling of each locator
+     * @param lambdas The declared data formas, by the locator of each atom
+     */
+    private Formas(final Path tables, final Map<String, String> rows,
+        final Map<String, String> lambdas) {
+        this(
+            rows,
+            Formas.witnessed(tables.resolve("provides.xml"), rows, lambdas),
+            lambdas
+        );
+    }
+
+    /**
      * Ctor, without atoms.
+     *
      * @param rows The single filling of each locator
      * @param given The witnessed data formas, by the locator of each void
      */
@@ -89,6 +117,7 @@ public final class Formas {
 
     /**
      * Ctor.
+     *
      * @param rows The single filling of each locator
      * @param given The witnessed data formas, by the locator of each void
      * @param lambdas The declared data formas, by the locator of each atom
@@ -102,6 +131,7 @@ public final class Formas {
 
     /**
      * Whether the tables are absent or empty.
+     *
      * @return TRUE when there is nothing to answer from
      */
     public boolean blank() {
@@ -110,6 +140,7 @@ public final class Formas {
 
     /**
      * The witnessed forma of one void.
+     *
      * @param place The locator of the void
      * @return The forma, or the empty string when it is not witnessed
      *  as a single data forma
@@ -120,6 +151,7 @@ public final class Formas {
 
     /**
      * The forma at the end of the reference chase from one locator.
+     *
      * @param start The locator to chase from
      * @return The forma, or the empty string when the chase refuses
      */
@@ -173,8 +205,17 @@ public final class Formas {
         }
     }
 
-    private static Map<String, String> witnessed(final Path table) {
-        final Map<String, String> out = new HashMap<>(0);
+    private static Map<String, String> witnessed(final Path table,
+        final Map<String, String> rows, final Map<String, String> lambdas) {
+        final Map<String, Set<String>> fillings = Formas.fillings(table);
+        return Formas.collapsed(
+            fillings,
+            new Formas(rows, Formas.collapsed(fillings, Formas::carrier), lambdas)::at
+        );
+    }
+
+    private static Map<String, Set<String>> fillings(final Path table) {
+        final Map<String, Set<String>> out = new HashMap<>(0);
         if (Files.exists(table)) {
             new Xnav(table)
                 .element("provides")
@@ -184,7 +225,7 @@ public final class Formas {
         return out;
     }
 
-    private static void provided(final Xnav row, final Map<String, String> out) {
+    private static void provided(final Xnav row, final Map<String, Set<String>> out) {
         final String place = row.attribute("id").text().orElse("");
         if (!place.isEmpty()) {
             row.elements(Filter.withName("attr"))
@@ -194,18 +235,31 @@ public final class Formas {
     }
 
     private static void admitted(final Xnav attr, final String place,
-        final Map<String, String> out) {
-        final Set<String> kinds = attr.elements(Filter.withName("witnessed"))
+        final Map<String, Set<String>> out) {
+        final Set<String> locators = attr.elements(Filter.withName("witnessed"))
             .flatMap(Formas::refs)
-            .map(loc -> Formas.CARRIERS.getOrDefault(loc, ""))
             .collect(Collectors.toSet());
-        if (kinds.size() == 1 && !kinds.contains("")) {
-            attr.attribute("name").text().ifPresent(
-                name -> out.put(
-                    String.format("%s.%s", place, name), kinds.iterator().next()
-                )
-            );
+        attr.attribute("name").text().ifPresent(
+            name -> out.put(String.format("%s.%s", place, name), locators)
+        );
+    }
+
+    private static Map<String, String> collapsed(final Map<String, Set<String>> fillings,
+        final Function<String, String> chase) {
+        final Map<String, String> out = new HashMap<>(0);
+        for (final Map.Entry<String, Set<String>> entry : fillings.entrySet()) {
+            final Set<String> kinds = entry.getValue().stream()
+                .map(chase)
+                .collect(Collectors.toSet());
+            if (kinds.size() == 1 && !kinds.contains("")) {
+                out.put(entry.getKey(), kinds.iterator().next());
+            }
         }
+        return out;
+    }
+
+    private static String carrier(final String locator) {
+        return Formas.CARRIERS.getOrDefault(locator, "");
     }
 
     private static Map<String, String> declared(final Path table) {

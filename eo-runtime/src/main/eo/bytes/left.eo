@@ -2,6 +2,9 @@
 # right shift by the negated amount. The smallest count has no negation
 # that fits into an `int`, and a shift by that many bits leaves nothing
 # of any chain, so it is answered by the largest right shift instead.
+# That count is recognised by its bytes, because this shift sits in the
+# innermost loop of every `i64` addition and a number comparison would
+# cost it dozens of dispatches per bit.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -12,7 +15,7 @@
 
 [^ x] > left
   if. > @
-    x.eq -2147483648
+    x.as-bytes.eq C1-E0-00-00-00-00-00-00
     ^.right 2147483647
     ^.right x.neg
 

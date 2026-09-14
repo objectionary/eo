@@ -3,7 +3,10 @@
 #
 # The lengths are compared here first, ahead of the derivation, because
 # `and` requires operands of the same length and would otherwise report a
-# mismatched `xor` under the name of an atom the caller never called.
+# mismatched `xor` under the name of an atom the caller never called. The
+# lengths are compared as bytes, since this operation sits in the innermost
+# loop of every `i64` addition and a number comparison would cost it dozens
+# of dispatches per bit.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -14,7 +17,7 @@
 
 [^ x] > xor
   if. > @
-    ^.size.eq x.size
+    ^.size.as-bytes.eq x.size.as-bytes
     or.
       ^.and x.not
       ^.not.and x

@@ -35,6 +35,7 @@ public final class WSAGetLastErrorFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public WSAGetLastErrorFuncCall(final Phi win) {

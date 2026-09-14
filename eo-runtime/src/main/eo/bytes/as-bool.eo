@@ -1,5 +1,4 @@
-# Bytes as a boolean: TRUE for `FF-` and FALSE for `00-`. Any other bytes
-# terminate, since only those two are booleans.
+# Bytes as a boolean: TRUE when the single byte equals `FF-`, FALSE otherwise.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,17 +8,7 @@
 +spdx SPDX-License-Identifier: MIT
 
 [^] > as-bool
-  if. > @
-    ^.eq 00-
-    false
-    if.
-      ^.eq FF-
-      true
-      T
-        "Can't convert %x to bool, only 00- and FF- are booleans".printf
-          * ^
+  ^.eq FF- > @
 
   not. ++> can-convert-bytes-to-a-bool
     FF-.as-bool.eq 00-.as-bool
-
-  01-.as-bool --> stops-on-bytes-that-are-not-a-boolean

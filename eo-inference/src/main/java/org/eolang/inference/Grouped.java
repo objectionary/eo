@@ -58,6 +58,7 @@ final class Grouped {
 
     /**
      * Ctor.
+     *
      * @param rows The rows to render
      * @param name The name of the table, which the document is named after
      */
@@ -68,6 +69,7 @@ final class Grouped {
 
     /**
      * This table as an XML document.
+     *
      * @return The document
      */
     XML asXml() {

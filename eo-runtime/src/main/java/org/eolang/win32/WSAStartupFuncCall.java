@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * WSAStartup WS2_32 function call.
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsastartup">here for details</a>
  * @since 0.40.0
  * @checkstyle AbbreviationAsWordInNameCheck (100 lines)
@@ -25,6 +26,7 @@ public final class WSAStartupFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public WSAStartupFuncCall(final Phi win) {

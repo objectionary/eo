@@ -11,9 +11,11 @@ import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Buffer;
 
 /**
  * Read syscall.
+ *
  * @since 0.40
  */
 public final class ReadSyscall implements Syscall {
@@ -25,6 +27,7 @@ public final class ReadSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ReadSyscall(final Phi posix) {

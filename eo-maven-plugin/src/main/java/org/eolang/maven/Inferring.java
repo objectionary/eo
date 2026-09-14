@@ -22,6 +22,7 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
+import org.eolang.inference.Reduced;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
@@ -54,6 +55,14 @@ import org.xembly.Xembler;
  * created have none. That is what the prepared files hold, and they are worth
  * keeping: every row of every table points into them.</p>
  *
+ * <p>How much of the program the rules turned out to say is measured when they
+ * are done and written down in {@code ladder.txt}, beside the tables rather
+ * than among them: it is a number about us and not about the program. Saying
+ * it in the log is not enough, because the line scrolls past and a branch has
+ * then nothing to be measured against — the file is what a workflow reads for
+ * the base and for the branch, to say on the pull request which way we
+ * moved.</p>
+ *
  * @since 0.67.0
  */
 final class Inferring implements Step {
@@ -78,6 +87,7 @@ final class Inferring implements Step {
 
     /**
      * Ctor.
+     *
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
      * @param pre The directory for the prepared XMIR files
@@ -103,7 +113,7 @@ final class Inferring implements Step {
             }
             final int ready = this.ready();
             final long start = System.currentTimeMillis();
-            new Witnessed(new Demanded(new Resolved(new Clues())))
+            new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
                 .follow(this.prepared, this.tables);
             this.declared();
             Logger.info(
@@ -125,6 +135,8 @@ final class Inferring implements Step {
 
     private void measured() throws IOException {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
+        final Path numbers = this.tables.resolveSibling("ladder.txt");
+        Files.write(numbers, ladder.lines(), StandardCharsets.UTF_8);
         Logger.info(
             this,
             "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
@@ -133,6 +145,7 @@ final class Inferring implements Step {
         for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
             Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
         }
+        Logger.info(this, "The same numbers are written down in %[file]s", numbers);
     }
 
     private void declared() throws IOException {

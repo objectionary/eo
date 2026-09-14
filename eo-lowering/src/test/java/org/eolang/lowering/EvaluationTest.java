@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Evaluation}.
+ *
  * @since 0.76.0
  */
 final class EvaluationTest {

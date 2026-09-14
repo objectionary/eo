@@ -19,6 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link Sidecar}.
+ *
  * @since 0.76.0
  */
 final class SidecarTest {

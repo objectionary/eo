@@ -49,7 +49,7 @@
             as-number.
               func >> cached!
             cached.as-bytes
-            cached.as-bool
+            cached.size
             m
           ^.m.put > [^] > func
             ^.m.as-number.plus 1

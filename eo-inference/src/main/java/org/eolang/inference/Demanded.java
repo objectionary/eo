@@ -53,6 +53,7 @@ public final class Demanded implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are asked of
      */
     public Demanded(final Clue clues) {
@@ -64,9 +65,9 @@ public final class Demanded implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final Pairs links = new Pairs(new XMLDocument(tables.resolve("links.xml")));
+        final Said links = new Said(new Pairs(new XMLDocument(tables.resolve("links.xml"))));
         final Map<String, String> names = new Ends(links.all()).names();
-        final Collection<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Collection<String> voids = new Hollows(given).all();
         final Map<String, Collection<String>> into = Demanded.into(links.puts(), names, voids);
         final Map<String, Map<String, String>> asked = new Asked(
             new XMLDocument(tables.resolve("needs.xml")),

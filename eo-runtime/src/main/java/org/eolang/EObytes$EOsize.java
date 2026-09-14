@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * BYTES.SIZE.
+ *
  * @since 0.1.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)

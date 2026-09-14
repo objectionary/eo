@@ -16,6 +16,7 @@ import org.eolang.Syscall;
 
 /**
  * The msvcrt _write function call.
+ *
  * @since 0.74.0
  */
 public final class WriteFuncCall implements Syscall {
@@ -27,6 +28,7 @@ public final class WriteFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public WriteFuncCall(final Phi win) {

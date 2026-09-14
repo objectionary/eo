@@ -53,6 +53,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Ctor.
+     *
      * @param text The EO program text
      */
     Eo(final String text) {
@@ -66,6 +67,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Walk the source and accumulate directives.
+     *
      * @return Directives in source order
      */
     Iterable<Directive> directives() {
@@ -92,7 +94,7 @@ final class Eo implements Iterable<Directive> {
                 );
                 idx = recovery.after(idx);
             } else if (!globals.inTextBlock() && !span.trailing()
-                && Eo.isBytesContinuation(span.body())) {
+                && Eo.opensBytes(spans, idx)) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, idx >= tail, stack, globals, emit)) {
                 idx = recovery.after(idx);
@@ -111,6 +113,7 @@ final class Eo implements Iterable<Directive> {
      * none exists. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where an only-phi formation
      * splits.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -133,6 +136,7 @@ final class Eo implements Iterable<Directive> {
      * formation. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where a compact test
      * shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -150,6 +154,7 @@ final class Eo implements Iterable<Directive> {
      * routes to a bare formation. Shared by the {@link Eo#onlyPhi}
      * classifier and {@link LnOnlyPhi}, so both agree on where a
      * compact throwing-test shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -208,16 +213,17 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
             above = next.indent();
-            if (!Eo.isBytesOnly(trimmed)) {
+            final String chunk = Eo.bare(trimmed);
+            if (!Eo.isBytesOnly(chunk)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
                 );
                 broken = true;
                 break;
             }
-            body.append(trimmed);
+            body.append(chunk);
             idx = idx + 1;
-            if (!Eo.isBytesContinuation(trimmed)) {
+            if (!Eo.carriesMore(trimmed)) {
                 break;
             }
         }
@@ -235,9 +241,43 @@ final class Eo implements Iterable<Directive> {
         return resumption;
     }
 
+    private static boolean opensBytes(final List<Span> spans, final int start) {
+        final String body = spans.get(start).body();
+        return Eo.isBytesContinuation(body) || Eo.isByte(body) && Eo.joinedBelow(spans, start);
+    }
+
+    private static boolean joinedBelow(final List<Span> spans, final int start) {
+        return start + 1 < spans.size()
+            && spans.get(start + 1).indent() >= spans.get(start).indent()
+            && Eo.isJoined(spans.get(start + 1).body().stripTrailing());
+    }
+
     private static boolean isBytesContinuation(final String body) {
         final String trimmed = body.stripTrailing();
         return trimmed.length() >= 6 && trimmed.endsWith("-") && Eo.isBytesOnly(trimmed);
+    }
+
+    private static boolean carriesMore(final String body) {
+        return Eo.isBytesContinuation(body) || Eo.isJoined(body) && body.endsWith("-");
+    }
+
+    private static boolean isJoined(final String body) {
+        return body.length() > 2 && body.charAt(0) == '-' && Eo.isBytesOnly(body.substring(1));
+    }
+
+    private static String bare(final String body) {
+        final String stripped;
+        if (Eo.isJoined(body)) {
+            stripped = body.substring(1);
+        } else {
+            stripped = body;
+        }
+        return stripped;
+    }
+
+    private static boolean isByte(final String body) {
+        final String trimmed = body.stripTrailing();
+        return trimmed.length() == 3 && Eo.isBytesOnly(trimmed);
     }
 
     private static boolean isBytesOnly(final String body) {
@@ -308,7 +348,7 @@ final class Eo implements Iterable<Directive> {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
                 point.apply();
-                emit.error(err.line(), err.pos(), err.getMessage());
+                emit.error(err.line(), err.pos(), err.getMessage(), true);
                 globals.closeTextBlock();
             }
         } else {

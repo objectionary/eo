@@ -9,11 +9,12 @@ import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Sockaddr;
 import org.eolang.Syscall;
+import org.eolang.sys.Sockaddr;
 
 /**
  * Accept syscall.
+ *
  * @since 0.40
  */
 public final class AcceptSyscall implements Syscall {
@@ -25,6 +26,7 @@ public final class AcceptSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public AcceptSyscall(final Phi posix) {

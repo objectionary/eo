@@ -45,6 +45,7 @@ public final class Rendering {
 
     /**
      * Ctor, for a program of one body.
+     *
      * @param proto The protocol
      * @param inputs The voids of the fragment: names to formas, in order
      */
@@ -61,6 +62,7 @@ public final class Rendering {
 
     /**
      * Ctor.
+     *
      * @param plan The program
      */
     public Rendering(final Program plan) {
@@ -69,6 +71,7 @@ public final class Rendering {
 
     /**
      * The declaration reading one void of the formation, without {@code final}.
+     *
      * @param index The index of the void
      * @return A statement such as {@code double v0 = new Dataized(this.take("x")).asNumber();}
      */
@@ -107,6 +110,7 @@ public final class Rendering {
     /**
      * The declaration of one void of a resumed body, blank until a repeat
      * hands it a value, without {@code final}.
+     *
      * @param index The index of the void
      * @return A statement such as {@code double v3 = 0.0;}
      */
@@ -127,6 +131,7 @@ public final class Rendering {
 
     /**
      * The value of one application.
+     *
      * @param step The application
      * @return A Java expression over the locals of its operands
      */
@@ -144,6 +149,7 @@ public final class Rendering {
 
     /**
      * The Java type of the value a key names.
+     *
      * @param key The key, such as {@code sym:v0} or {@code sym:s2}
      * @return The type, such as {@code double} or {@code byte[]}
      */
@@ -153,6 +159,7 @@ public final class Rendering {
 
     /**
      * The forma a key carries in Java, with a string carried as bytes.
+     *
      * @param key The key, such as {@code sym:v0} or {@code number:40-...}
      * @return The forma, one of {@code number}, {@code bool}, {@code bytes}
      */
@@ -162,6 +169,7 @@ public final class Rendering {
 
     /**
      * The forma a key names, before Java carries it.
+     *
      * @param key The key, such as {@code sym:v0} or {@code string:68-69-}
      * @return The forma, such as {@code string} or {@code object}
      */
@@ -182,6 +190,7 @@ public final class Rendering {
 
     /**
      * The step with the label, wherever it stands in the protocol.
+     *
      * @param label The label, such as {@code s3}
      * @return The step
      */
@@ -202,6 +211,7 @@ public final class Rendering {
 
     /**
      * The Java expression of a key.
+     *
      * @param key The key, such as {@code sym:s1} or {@code bool:FF-}
      * @return The expression, such as {@code s1} or {@code true}
      */
@@ -237,6 +247,37 @@ public final class Rendering {
             );
         }
         return out;
+    }
+
+    /**
+     * The name of the void a key names, under which the atom holds the
+     * object it was given.
+     *
+     * <p>A {@link Call} needs that object, not the datum of its bytes:
+     * the tables witness the forma a void dataizes to, and an object
+     * decorating a datum — a chunk of memory, an input of bytes —
+     * answers there as well as the datum itself while owning methods the
+     * datum never heard of. A program that repeats has no such object to
+     * name, since its voids are locals the loop rebinds, so a call in
+     * one is refused.</p>
+     *
+     * @param key The key of a void, such as {@code sym:v0}
+     * @return The name, such as {@code x}
+     */
+    public String named(final String key) {
+        if (this.program.repeats()) {
+            throw new IllegalStateException(
+                String.format("The void '%s' is rebound by a repeat, so no call can reach it", key)
+            );
+        }
+        final List<String> names = new ArrayList<>(this.program.inputs().keySet());
+        final int index = Integer.parseInt(key.split(":", 2)[1].substring(1));
+        if (index >= names.size()) {
+            throw new IllegalStateException(
+                String.format("A call reads void #%d, which the fragment lacks", index)
+            );
+        }
+        return names.get(index);
     }
 
     /**

@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8489: inside a paren group, Emissions.reversedDispatch let a Q-rooted
+# head open a reversed dispatch and Emissions.reversedHead then mapped it
+# through a partial glyph table that has no Q case, so "(Q. a b)" silently
+# emitted ".ξ" instead of failing the way "Q. a b" does on a line.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'expected identifier')]
+input: |
+  [] > main
+    q.f (Q. a b) > z

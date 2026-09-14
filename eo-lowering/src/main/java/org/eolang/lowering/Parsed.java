@@ -71,6 +71,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      */
@@ -80,6 +81,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -91,6 +93,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -108,6 +111,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param inputs The voids of the fragment: names to formas, in order
      * @param name The name of the formation the fragment is the body of,
@@ -125,6 +129,7 @@ public final class Parsed {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR fragment to read, an {@code <o/>} element
      * @param where What the names of the fragment mean
      * @param above The helpers being read at the moment, outermost first
@@ -141,6 +146,7 @@ public final class Parsed {
 
     /**
      * The tree of the fragment.
+     *
      * @return The root term
      */
     public Term term() {
@@ -186,7 +192,7 @@ public final class Parsed {
         Term out;
         int next = hops + 1;
         if ("ρ".equals(parts[hops])) {
-            out = Parsed.again(where, path, parts, args);
+            out = Parsed.again(where, path, parts, hops, args);
             next = parts.length;
         } else if (hops == last) {
             out = new Reference(where, this.trail, parts[hops], args, this.tables).term();
@@ -213,8 +219,9 @@ public final class Parsed {
     }
 
     private static Term again(final Scope where, final String path,
-        final String[] parts, final List<Binding> args) {
-        if (where.name().isEmpty() || parts.length != 2 || !parts[1].equals(where.name())) {
+        final String[] parts, final int hops, final List<Binding> args) {
+        if (where.name().isEmpty() || parts.length != hops + 2
+            || !parts[hops + 1].equals(where.name())) {
             throw new IllegalStateException(
                 String.format(
                     "The reference 'ξ.%s' reaches through ρ beyond the formation being lowered",

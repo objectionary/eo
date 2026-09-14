@@ -29,6 +29,7 @@ public final class Offered {
 
     /**
      * Ctor.
+     *
      * @param carrier The forma of the receiver, such as {@code number}
      */
     public Offered(final String carrier) {
@@ -37,6 +38,7 @@ public final class Offered {
 
     /**
      * Whether the universe answers the method for the forma.
+     *
      * @param method The method, such as {@code plus}
      * @return True if phino resolves the method on a carrier of the forma
      */

@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * BYTES.CONCAT.
+ *
  * @since 0.23
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)

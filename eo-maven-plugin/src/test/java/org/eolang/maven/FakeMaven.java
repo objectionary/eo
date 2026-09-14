@@ -35,6 +35,7 @@ import org.cactoos.text.UncheckedText;
  * Fake maven workspace that executes Mojos in order to test
  * their behaviour and results.
  * NOT thread-safe.
+ *
  * @since 0.28.12
  */
 @SuppressWarnings({
@@ -68,6 +69,7 @@ final class FakeMaven {
 
     /**
      * Constructor.
+     *
      * @param workspace Test temporary directory
      */
     FakeMaven(final Path workspace) {
@@ -76,6 +78,7 @@ final class FakeMaven {
 
     /**
      * Constructor.
+     *
      * @param workspace Test temporary directory
      * @param defaults Use default attributes if they are not set
      */
@@ -90,6 +93,7 @@ final class FakeMaven {
 
     /**
      * The main constructor.
+     *
      * @param workspace Test temporary directory
      * @param params Mojos params
      * @param current Current program number
@@ -109,6 +113,7 @@ final class FakeMaven {
 
     /**
      * Sets parameter for execution.
+     *
      * @param param Parameter name
      * @param value Parameter value
      * @return The same maven instance
@@ -132,6 +137,7 @@ final class FakeMaven {
      * You can use utility classes to run predefined maven pipelines:
      * - {@link org.eolang.maven.PpParse} to parse eo code
      * - see other inner classes below.
+     *
      * @param mojo Several mojos to execute
      * @return Workspace after executing Mojo
      * @throws IOException If some problem with filesystem is happened.
@@ -146,6 +152,7 @@ final class FakeMaven {
 
     /**
      * Tojo for eo-foreign.* file.
+     *
      * @return TjSmart of the current eo-foreign.file
      */
     TjSmart foreign() {
@@ -156,6 +163,7 @@ final class FakeMaven {
 
     /**
      * Executes Mojo in the workspace.
+     *
      * @param mojo Mojo to execute
      * @param <T> Template for descendants of Mojo
      * @return Workspace after executing Mojo
@@ -227,6 +235,7 @@ final class FakeMaven {
 
     /**
      * Path to compilation target directory.
+     *
      * @return Path to target dir
      */
     Path targetPath() {
@@ -235,6 +244,7 @@ final class FakeMaven {
 
     /**
      * Path to generated directory.
+     *
      * @return Path to generated dir
      */
     Path generatedPath() {
@@ -243,6 +253,7 @@ final class FakeMaven {
 
     /**
      * Path to classes directory.
+     *
      * @return Path to classes directory
      */
     Path classesPath() {
@@ -251,6 +262,7 @@ final class FakeMaven {
 
     /**
      * Foreign tojos for eo-foreign.* file.
+     *
      * @return Foreign tojos
      */
     TjsForeign foreignTojos() {
@@ -262,6 +274,7 @@ final class FakeMaven {
 
     /**
      * Sets placed tojo attribute.
+     *
      * @param binary Binary as class file or jar
      * @return The same maven instance
      */
@@ -272,6 +285,7 @@ final class FakeMaven {
 
     /**
      * Adds correct 'Hello world' program to workspace.
+     *
      * @return The same maven instance
      * @throws IOException If method can't save eo program to the workspace.
      */
@@ -281,6 +295,7 @@ final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param program Program as a raw string
      * @return The same maven instance
      * @throws IOException If method can't save eo program to the workspace.
@@ -294,6 +309,7 @@ final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param path Path to the program
      * @return The same maven instance
      * @throws IOException If fails
@@ -304,6 +320,7 @@ final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param content EO program content
      * @param object Object name to save in tojos
      * @return The same maven instance
@@ -321,6 +338,7 @@ final class FakeMaven {
 
     /**
      * Adds eo program to a workspace.
+     *
      * @param content EO program content
      * @param object Object name to save in tojos
      * @param source Source file name
@@ -343,6 +361,7 @@ final class FakeMaven {
 
     /**
      * Specify hash for all foreign tojos.
+     *
      * @param hash Commit hash
      * @return The same maven instance
      */
@@ -353,6 +372,7 @@ final class FakeMaven {
 
     /**
      * Should we use defaults or not?
+     *
      * @return The same maven instance
      */
     FakeMaven withoutDefaults() {
@@ -361,6 +381,7 @@ final class FakeMaven {
 
     /**
      * Path to eo-foreign.* file after all changes.
+     *
      * @return Path to eo-foreign.* file
      */
     Path foreignPath() {
@@ -369,6 +390,7 @@ final class FakeMaven {
 
     /**
      * Tojo for placed.json file.
+     *
      * @return TjSmart of the current placed.json file
      */
     TjsPlaced placed() {
@@ -378,6 +400,7 @@ final class FakeMaven {
     /**
      * Creates of the result map with all files and folders that was created
      * or compiled during mojo execution.
+     *
      * @return Map of "relative UNIX path" (key) - "absolute path" (value)
      * @throws IOException If some problem with filesystem have happened.
      */
@@ -398,6 +421,7 @@ final class FakeMaven {
 
     /**
      * Retrieve the entry of the last program in the eo-foreign.csv file.
+     *
      * @return Tojo entry
      */
     TjForeign programTojo() {
@@ -406,6 +430,7 @@ final class FakeMaven {
 
     /**
      * The version of eo-maven-plugin for tests.
+     *
      * @return Version
      */
     static String pluginVersion() {
@@ -417,6 +442,7 @@ final class FakeMaven {
      * - main_1.eo
      * - foo.x.main100
      * - main.eo
+     *
      * @param index Number of the program
      * @return String suffix
      */

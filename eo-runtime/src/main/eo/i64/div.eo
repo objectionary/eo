@@ -3,7 +3,9 @@
 # magnitudes of both operands, with the sign applied afterwards. When `x` is
 # zero, the caller-supplied `cant-divide` fallback is returned, and so it is
 # when the smallest `i64` is divided by minus one, since that quotient is one
-# past the largest `i64` and has no answer here.
+# past the largest `i64` and has no answer here. The magnitude of the
+# dividend is taken once, since the restoring loop reads one bit of it
+# per step and negating a negative dividend costs a full carry chain.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -25,6 +27,7 @@
         "the smallest i64 divided by minus one is past the largest i64"
       quotiented
   00-00-00-00-00-00-00-01.left i > [i] >> bit
+  magnitude ^.as-bytes >> dividend
   [^ index remainder quot] >> looped
     if. > @
       index.lt 0
@@ -52,9 +55,7 @@
           or. >> shifted!
             remainder.left 1
             and.
-              right.
-                magnitude ^.^.as-bytes
-                index
+              dividend.right index
               00-00-00-00-00-00-00-01
           quot
   if. > quotiented

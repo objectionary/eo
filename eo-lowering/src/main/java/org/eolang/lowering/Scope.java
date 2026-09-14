@@ -66,6 +66,7 @@ public final class Scope {
 
     /**
      * Ctor, for the root.
+     *
      * @param voids The voids of the formation: names to formas, in order
      * @param name The name of the formation, or empty when the fragment
      *  is not the body of one
@@ -78,6 +79,7 @@ public final class Scope {
 
     /**
      * Ctor, for the root.
+     *
      * @param voids The voids of the formation: names to formas, in order
      * @param name The name of the formation, or empty when the fragment
      *  is not the body of one
@@ -100,6 +102,7 @@ public final class Scope {
 
     /**
      * The term a name is bound to here.
+     *
      * @param name The name
      * @return The term, or empty when the name is not a bound void here
      */
@@ -109,6 +112,7 @@ public final class Scope {
 
     /**
      * The helper a name reaches here.
+     *
      * @param name The name
      * @return Its element, or empty when the name is not a helper here
      */
@@ -118,6 +122,7 @@ public final class Scope {
 
     /**
      * Whether this is the root, the scope of the formation being lowered.
+     *
      * @return True at the root
      */
     public boolean root() {
@@ -127,6 +132,7 @@ public final class Scope {
     /**
      * Whether a helper of this scope is a body of its own, to be resumed
      * where it is named rather than read there.
+     *
      * @param name The name of the helper
      * @return True if naming it is a repeat
      */
@@ -136,6 +142,7 @@ public final class Scope {
 
     /**
      * The name of the formation being lowered.
+     *
      * @return The name, empty when the fragment is not the body of one
      */
     public String name() {
@@ -144,6 +151,7 @@ public final class Scope {
 
     /**
      * The scope this one was opened from.
+     *
      * @return The scope {@code ρ} leads to
      */
     public Scope above() {
@@ -157,6 +165,7 @@ public final class Scope {
 
     /**
      * The scope of a helper formation applied to arguments, inside this one.
+     *
      * @param formation The helper, an {@code <o/>} with no base
      * @param args The arguments of the application
      * @return The scope its body is read in
@@ -192,6 +201,7 @@ public final class Scope {
     /**
      * The scope of a helper formation that is a body of its own, inside
      * this one: its voids are the symbols at the given positions.
+     *
      * @param formation The helper, an {@code <o/>} with no base
      * @param offset The position of its first void among all voids
      * @param formas The formas of its voids, in declaration order

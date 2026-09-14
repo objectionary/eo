@@ -30,6 +30,7 @@ public final class Carrier {
 
     /**
      * Ctor.
+     *
      * @param xmir The XMIR element to read, an {@code <o/>} based on {@code Φ}
      */
     public Carrier(final Xnav xmir) {
@@ -38,6 +39,7 @@ public final class Carrier {
 
     /**
      * The literal the element carries.
+     *
      * @return The literal, with its forma and its bytes
      */
     public Term literal() {

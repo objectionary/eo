@@ -42,6 +42,7 @@ public final class Again implements Term {
 
     /**
      * Ctor, for the call of the formation to itself.
+     *
      * @param arguments The arguments of the call, in their positional order
      */
     public Again(final List<Term> arguments) {
@@ -50,6 +51,7 @@ public final class Again implements Term {
 
     /**
      * Ctor.
+     *
      * @param name The name of the body the call resumes, empty for the
      *  formation itself
      * @param arguments The arguments of the call, in their positional order
@@ -61,6 +63,7 @@ public final class Again implements Term {
 
     /**
      * The name of the body the call resumes.
+     *
      * @return The name of the helper, empty for the formation itself
      */
     public String name() {
@@ -69,6 +72,7 @@ public final class Again implements Term {
 
     /**
      * The arguments of the call.
+     *
      * @return The arguments, in their positional order
      */
     public List<Term> arguments() {

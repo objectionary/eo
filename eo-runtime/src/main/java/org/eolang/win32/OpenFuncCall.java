@@ -5,14 +5,15 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * The msvcrt _open function call.
+ *
  * @since 0.74.0
  */
 public final class OpenFuncCall implements Syscall {
@@ -24,6 +25,7 @@ public final class OpenFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public OpenFuncCall(final Phi win) {

@@ -74,6 +74,7 @@ final class Lowering implements Step {
 
     /**
      * Ctor.
+     *
      * @param srcs XMIR sources to fold
      * @param target The directory for the folded XMIR
      * @param exe The binary that dataizes

@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link Expect}.
+ *
  * @since 0.1.0
  */
 final class ExpectTest {

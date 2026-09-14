@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Formas}.
+ *
  * @since 0.76.0
  */
 @ExtendWith(MktmpResolver.class)
@@ -227,6 +228,73 @@ final class FormasTest {
             "a void filled with both bool states must be witnessed as one bool, but it wasnt",
             new Formas(temp).given("Φ.foo.calc.f"),
             Matchers.equalTo("bool")
+        );
+    }
+
+    @Test
+    void witnessesVoidFilledByAtom(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.bytes.left\"><attr name=\"x\" void=\"true\">%s%s</attr></type></provides>",
+                "<witnessed><ref loc=\"Φ.number\"/></witnessed>",
+                "<witnessed><ref loc=\"Φ.number.minus\"/></witnessed>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            temp.resolve("atoms.xml"),
+            "<atoms><atom loc='Φ.number.minus' forma='Φ.number'/></atoms>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled by an atom answering a number must be witnessed as one, but it wasnt",
+            new Formas(temp).given("Φ.bytes.left.x"),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void witnessesVoidFilledByFormation(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.string.split\">%s</type></provides>",
+                "<attr name=\"cant-split\" void=\"true\"><witnessed><ref loc=\"Φ.foo.test.msg\"/></witnessed></attr>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            temp.resolve("links.xml"),
+            "<links><type id=\"Φ.foo.test.msg\"><ref loc=\"Φ.string\"/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled by an object the links chase to a string must be witnessed, but it wasnt",
+            new Formas(temp).given("Φ.string.split.cant-split"),
+            Matchers.equalTo("string")
+        );
+    }
+
+    @Test
+    void witnessesVoidFilledByBodyOfFormation(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("provides.xml"),
+            String.format(
+                "<provides><type id=\"Φ.tuple.at\">%s</type></provides>",
+                "<attr name=\"fallback\" void=\"true\"><witnessed><ref loc=\"Φ.foo.msg\"/></witnessed></attr>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            temp.resolve("links.xml"),
+            String.join(
+                "",
+                "<links><type id=\"Φ.foo.msg\"><ref loc=\"Φ.foo.text\"/></type>",
+                "<type id=\"Φ.foo.text.φ\"><ref loc=\"Φ.string\"/></type></links>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "a void filled by a formation must be witnessed as what its body answers, but it isnt",
+            new Formas(temp).given("Φ.tuple.at.fallback"),
+            Matchers.equalTo("string")
         );
     }
 

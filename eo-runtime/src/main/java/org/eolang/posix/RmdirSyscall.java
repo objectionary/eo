@@ -4,13 +4,14 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * Rmdir syscall.
+ *
  * @since 0.74.0
  */
 public final class RmdirSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class RmdirSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public RmdirSyscall(final Phi posix) {

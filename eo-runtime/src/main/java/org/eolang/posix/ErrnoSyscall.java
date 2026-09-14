@@ -12,6 +12,7 @@ import org.eolang.Syscall;
 
 /**
  * The 'errno' syscall.
+ *
  * @since 0.40
  */
 public final class ErrnoSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class ErrnoSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ErrnoSyscall(final Phi posix) {

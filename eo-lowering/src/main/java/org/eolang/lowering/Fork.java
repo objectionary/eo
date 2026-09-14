@@ -56,6 +56,7 @@ public final class Fork implements Step {
 
     /**
      * Ctor.
+     *
      * @param label The name of the step, such as {@code s2}
      * @param atom The λ name of the atom that parked
      * @param test The key of the bool that decides

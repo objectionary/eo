@@ -326,6 +326,29 @@ final class ParsedTest {
     }
 
     @Test
+    void repeatsTheFormationNamedFromAHelper() {
+        MatcherAssert.assertThat(
+            "a helper naming the formation it belongs to must repeat it, but it didnt",
+            new Parsed(
+                new Xnav("<o base='ξ.a🌵7-4'><o as='α0' base='ξ.x'/></o>").element("o"),
+                Collections.singletonMap("x", "number"),
+                "f",
+                Collections.singletonMap(
+                    "a🌵7-4",
+                    new Xnav(
+                        String.join(
+                            "",
+                            "<o name='a🌵7-4'><o base='∅' name='ρ'/><o base='∅' name='j'/>",
+                            "<o base='ξ.ρ.ρ.f' name='φ'><o as='α0' base='ξ.j'/></o></o>"
+                        )
+                    ).element("o")
+                )
+            ).term().again().get().arguments(),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
     void refusesReachBeyondTheFormation() {
         MatcherAssert.assertThat(
             "a reference past the root through ρ depends on a context the fragment lacks",

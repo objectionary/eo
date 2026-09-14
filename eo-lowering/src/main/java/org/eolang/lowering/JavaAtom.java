@@ -64,6 +64,7 @@ public final class JavaAtom {
 
     /**
      * Ctor, for a program of one body.
+     *
      * @param proto The protocol to render
      * @param inputs The voids of the fragment: names to formas, in order
      */
@@ -80,6 +81,7 @@ public final class JavaAtom {
 
     /**
      * Ctor.
+     *
      * @param plan The program to render
      */
     public JavaAtom(final Program plan) {
@@ -89,6 +91,7 @@ public final class JavaAtom {
 
     /**
      * The body of the {@code lambda()} method.
+     *
      * @return Java statements, one per line, without a trailing newline
      */
     public String text() {

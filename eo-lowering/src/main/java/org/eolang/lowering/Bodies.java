@@ -66,6 +66,7 @@ public final class Bodies {
 
     /**
      * Ctor.
+     *
      * @param reduction The reduction settling each tree
      * @param xmir The XMIR fragment that is the formation's own body
      * @param inputs The voids of the formation: names to formas, in order
@@ -87,6 +88,7 @@ public final class Bodies {
 
     /**
      * The program.
+     *
      * @return The bodies, the formation's own first
      * @throws IOException If the binary cannot be run
      */

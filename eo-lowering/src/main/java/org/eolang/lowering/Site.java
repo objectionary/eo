@@ -57,6 +57,7 @@ public final class Site implements Term {
 
     /**
      * Ctor, for a site whose value the tables say nothing about.
+     *
      * @param verb The method to dispatch
      * @param self The receiver of the dispatch
      * @param arguments The arguments of the application
@@ -67,6 +68,7 @@ public final class Site implements Term {
 
     /**
      * Ctor.
+     *
      * @param verb The method to dispatch
      * @param self The receiver of the dispatch
      * @param arguments The arguments of the application

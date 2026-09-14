@@ -10,10 +10,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Call}.
+ *
  * @since 0.76.0
  */
 final class CallTest {
@@ -21,7 +23,7 @@ final class CallTest {
     @Test
     void wrapsNumberAndDataizesNumber() {
         MatcherAssert.assertThat(
-            "a number receiver must be wrapped and the number answer dataized, but it isnt",
+            "a number receiver must be the object the void holds, and the answer dataized, but it isnt",
             CallTest.call(
                 new Dispatch(
                     "s1", "minus", Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00"),
@@ -32,7 +34,7 @@ final class CallTest {
             Matchers.equalTo(
                 String.join(
                     "",
-                    "new Dataized(new PhApplication(new PhDispatch(new Data.ToPhi(v0), ",
+                    "new Dataized(new PhApplication(new PhDispatch(this.take(\"x\"), ",
                     "\"minus\"), new Bind(0, new Data.ToPhi(",
                     "Double.longBitsToDouble(0x3FF0000000000000L))))).asNumber()"
                 )
@@ -49,7 +51,7 @@ final class CallTest {
                 Collections.singletonMap("x", "number")
             ),
             Matchers.equalTo(
-                "new Dataized(new PhDispatch(new Data.ToPhi(v0), \"is-nan\")).asBool()"
+                "new Dataized(new PhDispatch(this.take(\"x\"), \"is-nan\")).asBool()"
             )
         );
     }
@@ -57,7 +59,7 @@ final class CallTest {
     @Test
     void readsStringReceiverAsText() {
         MatcherAssert.assertThat(
-            "a string receiver must be made a string again, and bytes taken, but it isnt",
+            "a string receiver must be the object the void holds, and bytes taken, but it isnt",
             CallTest.call(
                 new Dispatch("s1", "trimmed", Collections.singletonList("sym:v0"), "string"),
                 Collections.singletonMap("t", "string")
@@ -65,8 +67,8 @@ final class CallTest {
             Matchers.equalTo(
                 String.join(
                     "",
-                    "new Dataized(new PhDispatch(new Data.ToPhi(",
-                    "new String(v0, java.nio.charset.StandardCharsets.UTF_8)), \"trimmed\")).take()"
+                    "new Dataized(new PhDispatch(",
+                    "this.take(\"t\"), \"trimmed\")).take()"
                 )
             )
         );
@@ -83,7 +85,11 @@ final class CallTest {
                 Collections.singletonMap("items", "tuple")
             ),
             Matchers.equalTo(
-                "new PhApplication(new PhDispatch(v0, \"with\"), new Bind(0, new Data.ToPhi(true)))"
+                String.join(
+                    "",
+                    "new PhApplication(new PhDispatch(this.take(\"items\"), \"with\"), ",
+                    "new Bind(0, new Data.ToPhi(true)))"
+                )
             )
         );
     }
@@ -100,7 +106,145 @@ final class CallTest {
                 new Dispatch("s1", "slice", Arrays.asList("sym:v0", "sym:v1", "sym:v2"), "object"),
                 voids
             ),
-            Matchers.endsWith(", new Bind(0, new Data.ToPhi(v1)), new Bind(1, new Data.ToPhi(v2)))")
+            Matchers.endsWith(
+                ", new Bind(0, this.take(\"a\")), new Bind(1, this.take(\"b\")))"
+            )
+        );
+    }
+
+    @Test
+    void refusesReceiverRebuiltFromEarlierCall() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.chained(
+                new Dispatch(
+                    "s1", "read",
+                    Arrays.asList("sym:v0", "number:40-24-00-00-00-00-00-00"), "bytes"
+                ),
+                new Dispatch("s2", "size", Collections.singletonList("sym:s1"), "number"),
+                Collections.singletonMap("i", "object")
+            ).text(),
+            "the bytes an earlier call was dataized into are no object to dispatch on, but they are"
+        );
+    }
+
+    @Test
+    void wrapsDatumOfOperationAsReceiver() {
+        MatcherAssert.assertThat(
+            "the value of a Java operation is the whole of the number it is, but it was refused",
+            CallTest.chained(
+                new Application(
+                    "s1", "L_number_plus",
+                    Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                ),
+                new Dispatch("s2", "is-nan", Collections.singletonList("sym:s1"), "bool"),
+                Collections.singletonMap("x", "number")
+            ).text(),
+            Matchers.equalTo(
+                "new Dataized(new PhDispatch(new Data.ToPhi(s1), \"is-nan\")).asBool()"
+            )
+        );
+    }
+
+    @Test
+    void holdsObjectOfEarlierCallAsReceiver() {
+        MatcherAssert.assertThat(
+            "an object an earlier call answered must stay the Phi it is, but it was rebuilt",
+            CallTest.chained(
+                new Dispatch("s1", "head", Collections.singletonList("sym:v0"), "object"),
+                new Dispatch("s2", "next", Collections.singletonList("sym:s1"), "object"),
+                Collections.singletonMap("q", "tuple")
+            ).text(),
+            Matchers.equalTo("new PhDispatch(s1, \"next\")")
+        );
+    }
+
+    @Test
+    void refusesReceiverRebuiltUnderFork() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.forked(
+                new Dispatch("s1", "size", Collections.singletonList("sym:v0"), "number"),
+                new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            "the number an arm of a fork was dataized into is no object to dispatch on, but it is"
+        );
+    }
+
+    @Test
+    void refusesReceiverRebuiltUnderNestedFork() {
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> CallTest.forked(
+                new Dispatch("s1", "size", Collections.singletonList("sym:v0"), "number"),
+                new Protocol(
+                    Collections.singletonList(
+                        new Fork(
+                            "s4", "L_bool_if", "sym:v1",
+                            new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                            new Protocol(
+                                Collections.emptyList(), "number:40-08-00-00-00-00-00-00", "number"
+                            )
+                        )
+                    ),
+                    "sym:s4", "number"
+                ),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            "the number an arm of an arm was dataized into is no object to dispatch on, but it is"
+        );
+    }
+
+    @Test
+    void wrapsDatumOfForkOverOperationsAsReceiver() {
+        MatcherAssert.assertThat(
+            "the value of a fork over operations is the number it is, but it was refused",
+            CallTest.forked(
+                new Application(
+                    "s1", "L_number_plus",
+                    Arrays.asList("sym:v0", "number:3F-F0-00-00-00-00-00-00")
+                ),
+                new Protocol(Collections.emptyList(), "sym:s1", "number"),
+                new Protocol(
+                    Collections.emptyList(), "number:40-00-00-00-00-00-00-00", "number"
+                )
+            ).text(),
+            Matchers.equalTo(
+                "new Dataized(new PhDispatch(new Data.ToPhi(s2), \"further\")).asBool()"
+            )
+        );
+    }
+
+    private static Call forked(final Step first, final Protocol taken, final Protocol other) {
+        final Step fork = new Fork("s2", "L_bool_if", "sym:v1", taken, other);
+        final Step further = new Dispatch(
+            "s3", "further", Collections.singletonList("sym:s2"), "bool"
+        );
+        final Map<String, String> voids = new LinkedHashMap<>(2);
+        voids.put("x", "number");
+        voids.put("f", "bool");
+        return new Call(
+            further,
+            new Rendering(
+                new Protocol(Arrays.asList(first, fork, further), "sym:s3", "bool"),
+                voids
+            )
+        );
+    }
+
+    private static Call chained(final Step first, final Step second,
+        final Map<String, String> voids) {
+        return new Call(
+            second,
+            new Rendering(
+                new Protocol(Arrays.asList(first, second), "sym:s2", second.forma()),
+                voids
+            )
         );
     }
 

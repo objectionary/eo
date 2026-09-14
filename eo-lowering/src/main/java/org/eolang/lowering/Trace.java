@@ -33,6 +33,7 @@ public final class Trace {
 
     /**
      * Ctor.
+     *
      * @param total Whether the run dataized everything
      * @param records The evaluation records, in the order phino wrote them
      */
@@ -43,6 +44,7 @@ public final class Trace {
 
     /**
      * Whether the run dataized everything.
+     *
      * @return True if the output was data, not a residual expression
      */
     public boolean total() {
@@ -51,6 +53,7 @@ public final class Trace {
 
     /**
      * The evaluation records.
+     *
      * @return The records, in the order phino wrote them
      */
     public List<Evaluation> records() {

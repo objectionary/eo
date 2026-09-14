@@ -50,6 +50,7 @@ public final class Cycles {
 
     /**
      * Ctor.
+     *
      * @param bound The helpers: names to their {@code <o/>} elements
      */
     public Cycles(final Map<String, Xnav> bound) {
@@ -58,6 +59,7 @@ public final class Cycles {
 
     /**
      * The names of the helpers in a cycle.
+     *
      * @return The names, in the order the helpers are bound
      */
     public Collection<String> names() {

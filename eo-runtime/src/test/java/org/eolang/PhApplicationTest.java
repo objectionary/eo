@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhApplication}.
+ *
  * @since 0.16
  */
 final class PhApplicationTest {
@@ -50,6 +51,23 @@ final class PhApplicationTest {
                 )
             ).φTerm(),
             Matchers.startsWith("Φ.number(wrong->")
+        );
+    }
+
+    @Test
+    void keepsANumberOfTheWrongWidthStructural() {
+        MatcherAssert.assertThat(
+            "one byte spells no number and must render as the application it is, but the renderer threw",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(new byte[] {(byte) 0x01})
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.number(0->Φ.bytes(0->[D> 01-]))")
         );
     }
 
@@ -335,12 +353,14 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi with free attribute.
+     *
      * @since 0.1.0
      */
     private static final class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.
+         *
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
@@ -350,6 +370,7 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi.
+     *
      * @since 0.1.0
      */
     static final class Dummy extends PhDefault {

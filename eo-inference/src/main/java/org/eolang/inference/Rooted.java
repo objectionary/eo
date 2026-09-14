@@ -33,6 +33,7 @@ final class Rooted {
 
     /**
      * Ctor.
+     *
      * @param objects The voids a fact may be about: the void itself, and every
      *  void it is handed into
      */
@@ -42,6 +43,7 @@ final class Rooted {
 
     /**
      * Whether a fact about this object is a fact about one of these voids.
+     *
      * @param object The locator of the object the fact is written against
      * @return True when it is one of the voids, or a name rooted at one
      */
@@ -51,6 +53,7 @@ final class Rooted {
 
     /**
      * The void this object is rooted at.
+     *
      * @param object The locator of the object the fact is written against
      * @return The locator of the nearest of these voids the name is taken off,
      *  empty when the name is rooted at none of them

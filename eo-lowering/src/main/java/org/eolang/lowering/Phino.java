@@ -66,6 +66,7 @@ public final class Phino {
 
     /**
      * Ctor.
+     *
      * @param exe The name or path of the executable
      * @param budget The most rewriting steps one dataization may take
      * @param dir The directory for the scratch files of the subprocess
@@ -78,6 +79,7 @@ public final class Phino {
 
     /**
      * The version the executable reports.
+     *
      * @return The trimmed output of {@code phino --version}
      * @throws IOException If the executable cannot be run
      */
@@ -87,6 +89,7 @@ public final class Phino {
 
     /**
      * Whether the executable is present and of the pinned version.
+     *
      * @return True if every answer of this binary can be trusted
      */
     public boolean suitable() {
@@ -101,6 +104,7 @@ public final class Phino {
 
     /**
      * The version this module is pinned to.
+     *
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
     public String pin() {

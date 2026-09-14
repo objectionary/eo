@@ -65,6 +65,7 @@ final class LnVoid implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnVoid(final Span source) {
@@ -95,12 +96,11 @@ final class LnVoid implements Line {
             );
         }
         globals.seal(emit, this.span);
-        this.checkTyped(
-            new Transition(stack, this.span).apply(
-                Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
-            ),
-            slash
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
+        this.checkPlaced(level);
+        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(this.name(suffix), "∅", this.span.line(), this.span.indent());
@@ -117,6 +117,15 @@ final class LnVoid implements Line {
             result = suffix.attribute(this.span.line(), this.span.indent());
         }
         return result;
+    }
+
+    private void checkPlaced(final Level level) {
+        if (!level.parent().formation()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void attribute is legal only as a direct child of a formation"
+            );
+        }
     }
 
     private void checkTyped(final Level level, final int slash) {

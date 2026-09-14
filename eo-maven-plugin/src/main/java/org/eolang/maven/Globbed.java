@@ -48,6 +48,7 @@ final class Globbed {
 
     /**
      * Ctor.
+     *
      * @param pattern The glob pattern
      * @param does What the glob does to the files it matches
      */
@@ -59,6 +60,7 @@ final class Globbed {
 
     /**
      * Does this glob match the file?
+     *
      * @param file The file, relative to the home of the walk
      * @return TRUE if it matches
      */

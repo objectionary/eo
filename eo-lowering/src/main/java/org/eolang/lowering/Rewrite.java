@@ -23,6 +23,7 @@ public interface Rewrite {
 
     /**
      * Rewrite the qualifying fragments of the document, in place.
+     *
      * @param doc The XMIR document to rewrite
      * @return How many fragments were rewritten
      * @throws IOException If the pass cannot run

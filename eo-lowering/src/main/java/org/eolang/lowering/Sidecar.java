@@ -44,6 +44,7 @@ public final class Sidecar {
 
     /**
      * Ctor.
+     *
      * @param dir The directory for the sidecar bodies
      * @param text The body to save
      */
@@ -54,6 +55,7 @@ public final class Sidecar {
 
     /**
      * Save the body under its digest name.
+     *
      * @return The digest the file is named by
      * @throws IOException If saving fails
      */

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhLogged}.
+ *
  * @since 0.29.0
  */
 final class PhLoggedTest {

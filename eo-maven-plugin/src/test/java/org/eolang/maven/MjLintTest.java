@@ -37,6 +37,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjLint}.
+ *
  * @since 0.31.0
  */
 @ExtendWith(MktmpResolver.class)

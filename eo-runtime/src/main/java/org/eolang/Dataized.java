@@ -32,6 +32,7 @@ public final class Dataized {
 
     /**
      * Ctor.
+     *
      * @param src The object
      */
     public Dataized(final Phi src) {
@@ -62,6 +63,7 @@ public final class Dataized {
 
     /**
      * Take the data with a type.
+     *
      * @param type The type
      * @param <T> The type
      * @return The data
@@ -94,6 +96,7 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to string.
+     *
      * @return Data as string
      */
     public String asString() {
@@ -117,6 +120,7 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to number.
+     *
      * @return Data as number
      */
     public Double asNumber() {
@@ -125,6 +129,7 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to boolean.
+     *
      * @return Data as boolean
      */
     public Boolean asBool() {
@@ -146,6 +151,7 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to {@link Bytes}.
+     *
      * @return Data as {@link Bytes}
      */
     public Bytes asBytes() {

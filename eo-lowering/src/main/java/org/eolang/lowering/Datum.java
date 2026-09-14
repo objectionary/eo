@@ -44,6 +44,7 @@ public final class Datum {
 
     /**
      * Ctor.
+     *
      * @param bytes The dataized bytes, as dash-joined hex pairs
      * @param answer The term the last atom evaluation returned, or empty
      */
@@ -72,6 +73,7 @@ public final class Datum {
 
     /**
      * The forma of the value.
+     *
      * @return One of {@code number}, {@code bool}, {@code bytes}
      */
     public String forma() {

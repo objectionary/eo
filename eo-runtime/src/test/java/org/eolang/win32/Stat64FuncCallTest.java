@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Stat64FuncCall}.
+ *
  * @since 0.74.1
  */
 @ExtendWith(MktmpResolver.class)

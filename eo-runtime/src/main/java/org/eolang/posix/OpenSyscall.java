@@ -4,14 +4,15 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.Phi;
 import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
 
 /**
  * Open syscall.
+ *
  * @since 0.74.0
  */
 public final class OpenSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class OpenSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public OpenSyscall(final Phi posix) {

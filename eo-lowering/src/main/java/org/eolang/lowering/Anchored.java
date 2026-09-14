@@ -42,6 +42,7 @@ public final class Anchored {
 
     /**
      * Ctor.
+     *
      * @param atom The operation the record names
      * @param rec The record
      */
@@ -52,6 +53,7 @@ public final class Anchored {
 
     /**
      * The key of the receiver.
+     *
      * @return A key such as {@code sym:v0} or {@code number:40-...}
      */
     public String receiver() {
@@ -67,6 +69,7 @@ public final class Anchored {
 
     /**
      * The keys of the arguments, in their positional order.
+     *
      * @return The keys, or empty when any argument is not anchored yet
      */
     public Optional<List<String>> arguments() {
@@ -100,6 +103,7 @@ public final class Anchored {
      * The tree with the site of the record replaced by what the record
      * proves: the literal a fired atom computed, or the symbol of the
      * step a parked atom is minted into.
+     *
      * @param tree The tree
      * @param steps The steps of the protocol so far, to add to
      * @param minted The ledger the reduction shares
@@ -131,6 +135,7 @@ public final class Anchored {
 
     /**
      * The shape of the site the atom fired or parked at.
+     *
      * @return The shape, or empty when the record is not anchored yet
      */
     public Optional<Shape> shape() {

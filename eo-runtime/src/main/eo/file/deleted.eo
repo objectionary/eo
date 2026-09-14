@@ -44,7 +44,7 @@
         link.as-file.deleted
         link.as-file.exists.not
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
-    d.resolved "broken-link" > link
+    mktemp.tmpfile.deleted.as-path > link
 
   ++> can-delete-a-directory
     d.as-file.deleted.exists.not > @

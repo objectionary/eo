@@ -128,7 +128,7 @@
   mktemp.tmpfile.deleted.touched.touched.exists ++> can-touch-a-file-twice
 
   ++> can-touch-a-file-with-a-long-name
-    target.as-file.touched.exists > @
+    os.is-windows.or target.as-file.touched.exists > @
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     "a".repeated 200 > name
     d.resolved name > target

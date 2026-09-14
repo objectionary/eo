@@ -35,6 +35,7 @@ public final class Fail implements Term {
 
     /**
      * Ctor.
+     *
      * @param reason The reason of the failure
      */
     public Fail(final Term reason) {
@@ -43,6 +44,7 @@ public final class Fail implements Term {
 
     /**
      * The reason of the failure.
+     *
      * @return The term the message is dataized from
      */
     public Term reason() {

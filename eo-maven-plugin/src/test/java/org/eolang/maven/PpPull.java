@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Pull a full pipeline.
+ *
  * @since 0.31
  */
 final class PpPull implements Iterable<Class<? extends AbstractMojo>> {

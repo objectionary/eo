@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.eolang.posix.CStdLib;
+import org.eolang.sys.SockaddrIn;
 import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 /**
  * Test case for the {@link Syscall} implementations behind the
  * {@code socket} object, both the POSIX and the Windows ones.
+ *
  * @since 0.40
  */
 @ExtendWith(EphemeralResolver.class)
@@ -187,6 +189,7 @@ final class SyscallTest {
 
     /**
      * Winsock tests.
+     *
      * @since 0.40.0
      */
     @Nested
@@ -498,6 +501,7 @@ final class SyscallTest {
 
     /**
      * Posix socket test.
+     *
      * @since 0.40.0
      */
     @Nested
@@ -751,6 +755,7 @@ final class SyscallTest {
 
     /**
      * Server on a given port.
+     *
      * @since 0.40.0
      */
     private static final class RandomServer {
@@ -767,6 +772,7 @@ final class SyscallTest {
 
         /**
          * Ctor.
+         *
          * @param port Port to bind to
          */
         RandomServer(final int port) {
@@ -775,6 +781,7 @@ final class SyscallTest {
 
         /**
          * Port the server is bound to.
+         *
          * @return Port number
          */
         int port() {
@@ -783,8 +790,13 @@ final class SyscallTest {
 
         /**
          * Start server on the given port.
+         *
+         * <p>The socket is kept in a field and closed by {@link #stop()},
+         * so it cannot be wrapped into try-with-resources here.</p>
+         *
          * @return Self
          */
+        @SuppressWarnings("PMD.CloseInlineResourceRule")
         RandomServer started() throws IOException {
             this.socket = new ServerSocket();
             this.socket.setReuseAddress(true);
@@ -806,6 +818,7 @@ final class SyscallTest {
     /**
      * Simple scoped object.
      * true > [s]
+     *
      * @since 0.40.0
      */
     private static final class Simple extends PhDefault implements Atom {
@@ -829,6 +842,7 @@ final class SyscallTest {
      * s.accept > @
      * [client]
      * client.recv 14 > @
+     *
      * @since 0.40.0
      */
     private static final class Server extends PhDefault implements Atom {
@@ -840,6 +854,7 @@ final class SyscallTest {
 
         /**
          * Ctor.
+         *
          * @param received Reseived message size
          */
         Server(final int received) {
@@ -858,6 +873,7 @@ final class SyscallTest {
     /**
      * Client socket that receives message.
      * s.recv 14 > [s]
+     *
      * @since 0.40.0
      */
     private static final class Receiver extends PhDefault implements Atom {
@@ -869,6 +885,7 @@ final class SyscallTest {
 
         /**
          * Ctor.
+         *
          * @param received Reseived message size
          */
         Receiver(final int received) {
@@ -887,6 +904,7 @@ final class SyscallTest {
     /**
      * Scoped client socket.
      * s.send "Hello, Socket!" > [s]
+     *
      * @since 0.40.0
      */
     private static final class Client extends PhDefault implements Atom {
@@ -898,6 +916,7 @@ final class SyscallTest {
 
         /**
          * Ctor.
+         *
          * @param msg Message to send
          */
         Client(final String msg) {

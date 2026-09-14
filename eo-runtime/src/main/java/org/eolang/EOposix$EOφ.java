@@ -5,9 +5,11 @@
 package org.eolang;
 
 import org.eolang.posix.NamedSyscall;
+import org.eolang.sys.TupleToArray;
 
 /**
  * Posix syscall.
+ *
  * @since 0.40
  * @checkstyle IllegalIdentifierNameCheck (20 lines)
  * @checkstyle TypeNameCheck (19 lines)
