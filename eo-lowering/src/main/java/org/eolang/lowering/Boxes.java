@@ -5,7 +5,6 @@
 package org.eolang.lowering;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.cactoos.Text;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The boxes of one build, a tab-separated file.
@@ -77,20 +80,16 @@ public final class Boxes {
      * @return The boxes, in the order planted
      */
     public List<Box> all() {
-        try {
-            final List<Box> out;
-            if (Files.exists(this.file)) {
-                out = Files.readAllLines(this.file, StandardCharsets.UTF_8).stream()
-                    .filter(line -> !line.isEmpty())
-                    .map(line -> new Box(Arrays.asList(line.split("\t", -1))))
-                    .collect(Collectors.toList());
-            } else {
-                out = new ArrayList<>(0);
+        final List<Box> out = new ArrayList<>(0);
+        if (Files.exists(this.file)) {
+            for (final Text line : this.lines()) {
+                final String row = new UncheckedText(line).asString();
+                if (!row.isEmpty()) {
+                    out.add(new Box(Arrays.asList(row.split("\t", -1))));
+                }
             }
-            return out;
-        } catch (final IOException ex) {
-            throw new UncheckedIOException(ex);
         }
+        return out;
     }
 
     /**
@@ -107,5 +106,9 @@ public final class Boxes {
                 Collectors.joining(System.lineSeparator(), "", System.lineSeparator())
             ).getBytes(StandardCharsets.UTF_8)
         );
+    }
+
+    private Iterable<Text> lines() {
+        return new Split(new TextOf(this.file), "\\R");
     }
 }

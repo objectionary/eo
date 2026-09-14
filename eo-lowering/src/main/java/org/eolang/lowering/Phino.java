@@ -6,7 +6,6 @@ package org.eolang.lowering;
 
 import com.yegor256.Jaxec;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -196,11 +195,11 @@ public final class Phino {
                         "The binary '%s' exited with code %d: %s",
                         this.binary,
                         code,
-                        Files.readString(err, StandardCharsets.UTF_8).trim()
+                        new UncheckedText(new Trimmed(new TextOf(err))).asString()
                     )
                 );
             }
-            return Files.readString(out, StandardCharsets.UTF_8).trim();
+            return new UncheckedText(new Trimmed(new TextOf(out))).asString();
         } finally {
             Files.deleteIfExists(out);
             Files.deleteIfExists(err);

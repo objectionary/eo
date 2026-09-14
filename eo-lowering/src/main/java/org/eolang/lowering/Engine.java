@@ -6,7 +6,6 @@ package org.eolang.lowering;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.json.Json;
 import javax.json.JsonObject;
+import org.cactoos.io.ReaderOf;
 
 /**
  * The lowering engine, the program phino fires our atoms through.
@@ -91,11 +91,7 @@ final class Engine {
         final Channel channel = new Channel(
             new OutputStreamWriter(System.out, StandardCharsets.UTF_8)
         );
-        try (
-            BufferedReader input = new BufferedReader(
-                new InputStreamReader(System.in, StandardCharsets.UTF_8)
-            )
-        ) {
+        try (BufferedReader input = new BufferedReader(new ReaderOf(System.in))) {
             new Engine(
                 channel,
                 new Fires(

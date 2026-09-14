@@ -9,6 +9,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import org.cactoos.Text;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 
 /**
  * How many trips over the wire the runs of one document made.
@@ -58,14 +63,14 @@ public final class Trips {
      * The trips of every run together.
      *
      * @return How many trips the document made
-     * @throws IOException If the file cannot be read
      */
-    public long total() throws IOException {
+    public long total() {
         long out = 0L;
         if (Files.exists(this.file)) {
-            for (final String line : Files.readAllLines(this.file, StandardCharsets.UTF_8)) {
-                if (!line.isEmpty()) {
-                    out += Long.parseLong(line.trim());
+            for (final Text line : new Split(new TextOf(this.file), "\\R")) {
+                final String count = new UncheckedText(new Trimmed(line)).asString();
+                if (!count.isEmpty()) {
+                    out += Long.parseLong(count);
                 }
             }
         }

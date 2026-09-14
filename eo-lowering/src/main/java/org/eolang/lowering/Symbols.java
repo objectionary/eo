@@ -5,7 +5,6 @@
 package org.eolang.lowering;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +16,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
+import org.cactoos.Text;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The symbol table of one run, a tab-separated file.
@@ -240,20 +242,22 @@ final class Symbols {
     List<List<String>> rows() {
         this.lock.lock();
         try {
-            final List<List<String>> out;
+            final List<List<String>> out = new ArrayList<>(0);
             if (Files.exists(this.file)) {
-                out = Files.readAllLines(this.file, StandardCharsets.UTF_8).stream()
-                    .filter(line -> !line.isEmpty())
-                    .map(line -> Arrays.asList(line.split("\t", -1)))
-                    .collect(Collectors.toList());
-            } else {
-                out = new ArrayList<>(0);
+                for (final Text line : this.lines()) {
+                    final String row = new UncheckedText(line).asString();
+                    if (!row.isEmpty()) {
+                        out.add(Arrays.asList(row.split("\t", -1)));
+                    }
+                }
             }
             return out;
-        } catch (final IOException ex) {
-            throw new UncheckedIOException(ex);
         } finally {
             this.lock.unlock();
         }
+    }
+
+    private Iterable<Text> lines() {
+        return new Split(new TextOf(this.file), "\\R");
     }
 }
