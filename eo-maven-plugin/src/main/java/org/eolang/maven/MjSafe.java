@@ -183,7 +183,8 @@ abstract class MjSafe extends AbstractMojo {
      * sixty eight years, which meant the deadline never fired and the
      * thread and the {@link java.util.concurrent.FutureTask} behind it were
      * started for nothing. A build whose goals legitimately take longer
-     * raises it through {@code eo.timeout}.</p>
+     * raises it through {@code eo.timeout}, and one that wants no deadline
+     * at all sets it to zero.</p>
      *
      * @since 0.28.12
      */
