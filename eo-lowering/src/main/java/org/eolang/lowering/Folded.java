@@ -7,8 +7,6 @@ package org.eolang.lowering;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.w3c.dom.Document;
@@ -27,7 +25,9 @@ import org.w3c.dom.Element;
  * receiver dispatches into the standard library and nowhere else — so no
  * purity analysis is consulted. The walk is top-down and the outermost
  * qualifying fragment wins, since folding it folds everything inside
- * it.</p>
+ * it. A fragment phino refuses is not the end of the walk: the parts
+ * under it are tried in turn, so that an equality it declines to run
+ * still lets the sum beneath it fold.</p>
  *
  * <p>Folding is best-effort per fragment: whatever phino refuses — an
  * error-path expression, a method outside its tables, an exhausted
@@ -53,12 +53,16 @@ public final class Folded implements Rewrite {
 
     @Override
     public int rewrite(final Xnav doc) throws IOException {
-        final Collection<Xnav> found = new ArrayList<>(0);
-        Folded.selected(doc.element("object").element("o"), found);
+        return this.folded(doc.element("object").element("o"));
+    }
+
+    private int folded(final Xnav node) {
         int count = 0;
-        for (final Xnav node : found) {
-            if (this.spliced(node)) {
-                ++count;
+        if (Folded.foldable(node) && this.spliced(node)) {
+            count = 1;
+        } else {
+            for (final Xnav kid : Folded.kids(node)) {
+                count += this.folded(kid);
             }
         }
         return count;
@@ -123,16 +127,6 @@ public final class Folded implements Rewrite {
     private static void cleared(final Element element) {
         while (element.getFirstChild() != null) {
             element.removeChild(element.getFirstChild());
-        }
-    }
-
-    private static void selected(final Xnav node, final Collection<Xnav> out) {
-        if (Folded.foldable(node)) {
-            out.add(node);
-        } else {
-            for (final Xnav kid : Folded.kids(node)) {
-                Folded.selected(kid, out);
-            }
         }
     }
 
