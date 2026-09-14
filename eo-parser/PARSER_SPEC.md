@@ -1008,6 +1008,11 @@ Illegal:
 
   x > a
     42 > b                            ← rejected: an argument cannot carry a name (R-6.2.4)
+
+  if. > c
+    cond
+    then
+    .baz > z                          ← rejected: the continuation names an argument (R-6.2.4)
 ```
 
 ### 6.3 Atoms and test attributes

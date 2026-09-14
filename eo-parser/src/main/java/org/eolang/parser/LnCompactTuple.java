@@ -94,6 +94,7 @@ final class LnCompactTuple implements Line {
         }
         globals.seal(emit, this.span);
         final Level level = this.transition(stack, suffix);
+        suffix.rejectNameInArguments(level, this.span);
         level.compact(count);
         globals.clearBlanks();
         globals.markEmitted();
