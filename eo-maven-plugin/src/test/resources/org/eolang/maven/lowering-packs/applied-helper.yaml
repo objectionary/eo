@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # A private formation applied twice in the body is entered as a box: the
-# atom applies it through PhApplication and adds the answers. Its nested
-# formations stay as written until objectionary/phino#1196 is fixed:
-# the deep walk enters the unapplied nested formation and fires its box
-# with a bottom in place of the missing argument.
+# atom applies it through PhApplication and adds the answers. Each nested
+# formation is lowered on its own into an atom over the formation it
+# applies and the values it reads.
 input: |
   [] > foo
     [x] > bump
@@ -32,9 +31,18 @@ lowered: |
     [x] > bump
       l🌵9a0bafa89fae > @
         [^ i] >>
-          k.plus ^.^.x > [^ k] >>
-          | > @
-            ^.x.times i
+          l🌵707e027b92b1 > @
+            [^ k] >>
+              l🌵3eeff0d5c6c9 k ^.^.x > @
+              [] > l🌵3eeff0d5c6c9 /Q.number
+                ? > v0 /Q.number
+                ? > v1 /Q.number
+            ^.x
+            i
+          [] > l🌵707e027b92b1 /Q.number
+            ? > v0
+            ? > v1 /Q.number
+            ? > v2 /Q.number
       [] > l🌵9a0bafa89fae /Q.number
         ? > v0
 java: |
