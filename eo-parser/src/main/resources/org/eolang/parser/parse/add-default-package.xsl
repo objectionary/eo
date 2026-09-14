@@ -10,19 +10,8 @@
   Here we go through all objects that are not:
   1. methods (starts with .)
   2. @, Q, ^ or $
-  3. mentioned in aliases
 
   and add default package to them.
-
-  We ignore objects that are present in aliases with their exact
-  names. For example, this object 'hello' won't be touched, we
-  won't think that it belongs to org.eolang package:
-
-  +alias hello
-
-  # No comment.
-  [] > app
-  hello > @
 
   The default package is the root "Φ", unless the program has a
   "+package" meta AND the bare name belongs to an object of the
@@ -80,13 +69,13 @@
   </xsl:template>
   <xsl:template match="@args">
     <xsl:attribute name="args">
-      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
+      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom) then $t else concat('Φ.', $t)"/>
     </xsl:attribute>
   </xsl:template>
   <xsl:template match="@type">
     <xsl:variable name="opt" select="ends-with(., '?')"/>
     <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:variable name="homed" select="if (matches($type, '^[A-F]$') or contains($type, '.') or $type=$eo:phi or $type=$eo:program or $type=$eo:rho or $type=$eo:empty or $type=$eo:xi or $type=$eo:bottom or $type=/object/metas/meta[head='alias']/part[1]) then $type else concat('Φ.', $type)"/>
+    <xsl:variable name="homed" select="if (matches($type, '^[A-F]$') or contains($type, '.') or $type=$eo:phi or $type=$eo:program or $type=$eo:rho or $type=$eo:empty or $type=$eo:xi or $type=$eo:bottom) then $type else concat('Φ.', $type)"/>
     <xsl:attribute name="type" select="if ($opt) then concat($homed, '?') else $homed"/>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
@@ -111,7 +100,7 @@
   <xsl:template match="o[@base!=$eo:phi and @base!=$eo:program and @base!=$eo:rho and @base!=$eo:empty and @base!=$eo:xi and @base!=$eo:bottom]" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
-  <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
+  <xsl:template match="o" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base" select="eo:homed(@base)"/>
       <xsl:apply-templates select="node()|@* except @base"/>
@@ -123,7 +112,7 @@
   <xsl:template match="o[@atom!=$eo:phi and @atom!=$eo:program and @atom!=$eo:rho and @atom!=$eo:empty and @atom!=$eo:xi and @atom!=$eo:bottom]" mode="atom-no-dots">
     <xsl:apply-templates select="." mode="atom-no-specials"/>
   </xsl:template>
-  <xsl:template match="o[not(@atom=/object/metas/meta[head='alias']/part[1])]" mode="atom-no-specials">
+  <xsl:template match="o" mode="atom-no-specials">
     <xsl:copy>
       <xsl:attribute name="atom" select="eo:homed(@atom)"/>
       <xsl:apply-templates select="node()|@* except @atom"/>
