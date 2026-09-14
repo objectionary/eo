@@ -17,8 +17,9 @@ import org.junit.jupiter.api.Test;
  * to reach the same message instead of dying inside the conversion that
  * writes it.</p>
  *
- * @since 0.64.0
+ * @since 0.64
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOsocketTest {
 
     @Test
