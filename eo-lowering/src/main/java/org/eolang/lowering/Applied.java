@@ -32,7 +32,7 @@ import org.w3c.dom.Node;
  *
  * @since 0.77.0
  */
-public final class Applied {
+final class Applied {
 
     /**
      * The document the fragment stands in.
@@ -62,7 +62,7 @@ public final class Applied {
      * @param tables The formas of the build
      * @param symbols The table of symbols
      */
-    public Applied(final Document xmir, final String place,
+    Applied(final Document xmir, final String place,
         final Formas tables, final Symbols symbols) {
         this.doc = xmir;
         this.locator = place;
@@ -76,7 +76,7 @@ public final class Applied {
      * @return The text
      * @throws IOException If the table cannot be written
      */
-    public String phi() throws IOException {
+    String phi() throws IOException {
         final List<String> segments = new ArrayList<>(0);
         Node cursor = new Located(this.doc.getDocumentElement(), this.locator).element();
         String prefix = "";

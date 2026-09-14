@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Folded {
+final class Folded {
 
     /**
      * The operation.
@@ -37,7 +37,7 @@ public final class Folded {
      * @param lambda The operation
      * @param operands The keys of the operands, the receiver first
      */
-    public Folded(final Op lambda, final List<String> operands) {
+    Folded(final Op lambda, final List<String> operands) {
         this.operation = lambda;
         this.keys = operands;
     }
@@ -47,7 +47,7 @@ public final class Folded {
      *
      * @return The text, or an empty string when the operation is not folded
      */
-    public String phi() {
+    String phi() {
         final String method = this.operation.method();
         final String out;
         if ("number".equals(this.operation.carrier())) {

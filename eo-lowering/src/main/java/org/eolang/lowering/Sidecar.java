@@ -30,7 +30,7 @@ import java.nio.file.StandardCopyOption;
  *
  * @since 0.76.0
  */
-public final class Sidecar {
+final class Sidecar {
 
     /**
      * The directory for the sidecar bodies.
@@ -48,7 +48,7 @@ public final class Sidecar {
      * @param dir The directory for the sidecar bodies
      * @param text The body to save
      */
-    public Sidecar(final Path dir, final String text) {
+    Sidecar(final Path dir, final String text) {
         this.home = dir;
         this.body = text;
     }
@@ -59,7 +59,7 @@ public final class Sidecar {
      * @return The digest the file is named by
      * @throws IOException If saving fails
      */
-    public String save() throws IOException {
+    String save() throws IOException {
         final String digest = new Digest(this.body).hex();
         final Path target = this.home.resolve(String.format("%s.java", digest));
         if (!Files.exists(target)) {

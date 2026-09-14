@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @since 0.77.0
  */
-public final class Entry implements Step {
+final class Entry implements Step {
 
     /**
      * The label.
@@ -52,7 +52,7 @@ public final class Entry implements Step {
      * @param keys The receiver and the operands
      * @param forma What the formation answers
      */
-    public Entry(final String label, final String atom, final List<String> keys,
+    Entry(final String label, final String atom, final List<String> keys,
         final String forma) {
         this.name = label;
         this.site = atom;

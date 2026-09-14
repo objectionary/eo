@@ -31,7 +31,7 @@ import org.cactoos.Text;
  *
  * @since 0.77.0
  */
-public final class Registry {
+final class Registry {
 
     /**
      * Where the registry and the launcher go.
@@ -61,7 +61,7 @@ public final class Registry {
      * @param planted The table of boxes of the build
      * @param counted The file the trips over the wire are counted in
      */
-    public Registry(final Path home, final Path table, final Path planted,
+    Registry(final Path home, final Path table, final Path planted,
         final Path counted) {
         this.dir = home;
         this.symbols = table;
@@ -75,7 +75,7 @@ public final class Registry {
      * @return The registry file
      * @throws IOException If they cannot be written
      */
-    public Path saved() throws IOException {
+    Path saved() throws IOException {
         final Path launcher = this.dir.resolve("engine");
         Files.write(
             launcher,

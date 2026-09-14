@@ -19,7 +19,7 @@ import java.io.IOException;
  * @since 0.76.0
  */
 @FunctionalInterface
-public interface Rewrite {
+interface Rewrite {
 
     /**
      * Rewrite the qualifying fragments of the document, in place.

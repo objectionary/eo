@@ -27,7 +27,7 @@ import javax.json.JsonObject;
  *
  * @since 0.76.0
  */
-public final class Channel {
+final class Channel {
 
     /**
      * Where the lines go.
@@ -54,7 +54,7 @@ public final class Channel {
      *
      * @param output Where the lines go
      */
-    public Channel(final Writer output) {
+    Channel(final Writer output) {
         this(
             output, new ConcurrentHashMap<>(0), new AtomicInteger(1_000_000),
             new ReentrantLock()
@@ -84,7 +84,7 @@ public final class Channel {
      * @param phi The φ-expression phino takes as the answer
      * @throws IOException If the line cannot be written
      */
-    public void answer(final int fire, final String phi) throws IOException {
+    void answer(final int fire, final String phi) throws IOException {
         this.said(
             Json.createObjectBuilder().add("id", fire).add("𝑛", phi).build()
         );
@@ -100,7 +100,7 @@ public final class Channel {
      * @throws IOException If the line cannot be written
      * @throws InterruptedException If the wait is interrupted
      */
-    public String ask(final int fire, final String attr, final boolean reduce)
+    String ask(final int fire, final String attr, final boolean reduce)
         throws IOException, InterruptedException {
         final int id = this.next.incrementAndGet();
         final BlockingQueue<String> slot = new LinkedBlockingQueue<>(1);
@@ -123,7 +123,7 @@ public final class Channel {
      * @param phi The φ-expression phino answered with
      * @throws InterruptedException If the hand-over is interrupted
      */
-    public void answered(final int id, final String phi) throws InterruptedException {
+    void answered(final int id, final String phi) throws InterruptedException {
         final BlockingQueue<String> slot = this.open.remove(id);
         if (slot == null) {
             throw new IllegalStateException(
@@ -138,7 +138,7 @@ public final class Channel {
      *
      * @return True if a fire is blocked on a question
      */
-    public boolean waiting() {
+    boolean waiting() {
         return !this.open.isEmpty();
     }
 

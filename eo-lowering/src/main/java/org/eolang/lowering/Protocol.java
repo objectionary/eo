@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Protocol {
+final class Protocol {
 
     /**
      * The steps, in their dependency order.
@@ -73,7 +73,7 @@ public final class Protocol {
      * @param answer The key of the value the fragment answers with
      * @param carrier The forma of that value
      */
-    public Protocol(final List<Step> moves, final String answer, final String carrier) {
+    Protocol(final List<Step> moves, final String answer, final String carrier) {
         this(moves, answer, carrier, "", Collections.emptyList(), "");
     }
 
@@ -83,7 +83,7 @@ public final class Protocol {
      * @param moves The steps, in their dependency order
      * @param reason The key of the reason the fragment fails with
      */
-    public Protocol(final List<Step> moves, final String reason) {
+    Protocol(final List<Step> moves, final String reason) {
         this(moves, "", "", "", Collections.emptyList(), reason);
     }
 
@@ -94,7 +94,7 @@ public final class Protocol {
      * @param again The keys of the values the voids take next, in
      *  declaration order
      */
-    public Protocol(final List<Step> moves, final List<String> again) {
+    Protocol(final List<Step> moves, final List<String> again) {
         this(moves, "", again);
     }
 
@@ -106,7 +106,7 @@ public final class Protocol {
      * @param again The keys of the values the voids of that body take
      *  next, in declaration order
      */
-    public Protocol(final List<Step> moves, final String target, final List<String> again) {
+    Protocol(final List<Step> moves, final String target, final List<String> again) {
         this(moves, "", "", target, again, "");
     }
 
@@ -136,7 +136,7 @@ public final class Protocol {
      *
      * @return The steps, in their dependency order
      */
-    public List<Step> moves() {
+    List<Step> moves() {
         return Collections.unmodifiableList(this.steps);
     }
 
@@ -146,7 +146,7 @@ public final class Protocol {
      * @return A key such as {@code sym:s2} or {@code number:40-14-...},
      *  empty when the program repeats or fails
      */
-    public String answer() {
+    String answer() {
         return this.root;
     }
 
@@ -156,7 +156,7 @@ public final class Protocol {
      * @return One of {@code number}, {@code bool}, {@code bytes}, empty
      *  when the program repeats or fails
      */
-    public String carrier() {
+    String carrier() {
         return this.forma;
     }
 
@@ -166,7 +166,7 @@ public final class Protocol {
      * @return The name of the helper, empty for the formation itself or
      *  when the program answers
      */
-    public String target() {
+    String target() {
         return this.body;
     }
 
@@ -176,7 +176,7 @@ public final class Protocol {
      * @return One key per void of that body, in declaration order, or
      *  none when the program answers
      */
-    public List<String> again() {
+    List<String> again() {
         return Collections.unmodifiableList(this.next);
     }
 
@@ -186,7 +186,7 @@ public final class Protocol {
      * @return A key such as {@code sym:s3} or {@code string:68-69-},
      *  empty when the program answers or repeats
      */
-    public String reason() {
+    String reason() {
         return this.cause;
     }
 
@@ -196,7 +196,7 @@ public final class Protocol {
      *
      * @return True if the Java of it needs a loop
      */
-    public boolean repeats() {
+    boolean repeats() {
         return !this.next.isEmpty()
             || this.steps.stream()
                 .flatMap(step -> step.branches().stream())

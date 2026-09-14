@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Primitive implements Fire {
+final class Primitive implements Fire {
 
     /**
      * The operation.
@@ -44,7 +44,7 @@ public final class Primitive implements Fire {
      * @param operands The operands of the fire
      * @param symbols The table
      */
-    public Primitive(final Op lambda, final Operands operands, final Symbols symbols) {
+    Primitive(final Op lambda, final Operands operands, final Symbols symbols) {
         this.operation = lambda;
         this.args = operands;
         this.table = symbols;

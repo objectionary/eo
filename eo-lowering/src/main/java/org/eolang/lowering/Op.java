@@ -26,7 +26,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.76.0
  */
-public final class Op {
+final class Op {
 
     /**
      * The λ name, such as {@code L_number_plus}.
@@ -38,7 +38,7 @@ public final class Op {
      *
      * @param name The λ name, such as {@code L_number_plus}
      */
-    public Op(final String name) {
+    Op(final String name) {
         this.lambda = name;
     }
 
@@ -47,7 +47,7 @@ public final class Op {
      *
      * @return The name, such as {@code L_number_plus}
      */
-    public String lambda() {
+    String lambda() {
         return this.lambda;
     }
 
@@ -56,7 +56,7 @@ public final class Op {
      *
      * @return True if the table has a row for the λ name
      */
-    public boolean listed() {
+    boolean listed() {
         return Op.table().stream().anyMatch(row -> row[0].equals(this.lambda));
     }
 
@@ -65,7 +65,7 @@ public final class Op {
      *
      * @return The name, such as {@code plus}
      */
-    public String method() {
+    String method() {
         return this.row()[1];
     }
 
@@ -75,7 +75,7 @@ public final class Op {
      * @return One of {@code number}, {@code string}, {@code bytes},
      *  {@code bool}, {@code tuple} or {@code object}
      */
-    public String carrier() {
+    String carrier() {
         return this.row()[2];
     }
 
@@ -86,7 +86,7 @@ public final class Op {
      *
      * @return One of {@code number}, {@code bool}, {@code bytes}, or empty
      */
-    public String forma() {
+    String forma() {
         return this.row()[3];
     }
 
@@ -101,7 +101,7 @@ public final class Op {
      *
      * @return A format, such as {@code %1$s + %2$s}
      */
-    public String java() {
+    String java() {
         final String[] row = this.row();
         if (row.length < 6 || row[5].isEmpty()) {
             throw new IllegalStateException(
@@ -119,7 +119,7 @@ public final class Op {
      *
      * @return The names, such as {@code start} and {@code len}
      */
-    public List<String> args() {
+    List<String> args() {
         return this.columns().stream()
             .map(cell -> cell.split(":", 2)[0])
             .collect(Collectors.toList());
@@ -132,7 +132,7 @@ public final class Op {
      *
      * @return The formas, one per argument
      */
-    public List<String> formas() {
+    List<String> formas() {
         final String carrier = this.carrier();
         return this.columns().stream()
             .map(cell -> Op.forma(cell, carrier))

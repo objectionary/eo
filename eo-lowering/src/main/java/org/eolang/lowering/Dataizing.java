@@ -17,7 +17,7 @@ import java.io.IOException;
  *
  * @since 0.76.0
  */
-public final class Dataizing implements Fire {
+final class Dataizing implements Fire {
 
     /**
      * The operands of the fire.
@@ -29,7 +29,7 @@ public final class Dataizing implements Fire {
      *
      * @param operands The operands of the fire
      */
-    public Dataizing(final Operands operands) {
+    Dataizing(final Operands operands) {
         this.args = operands;
     }
 

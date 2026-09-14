@@ -14,7 +14,7 @@ package org.eolang.lowering;
  *
  * @since 0.76.0
  */
-public final class Fires {
+final class Fires {
 
     /**
      * The table.
@@ -38,7 +38,7 @@ public final class Fires {
      * @param planted The boxes
      * @param wire The wire
      */
-    public Fires(final Symbols symbols, final Boxes planted, final Channel wire) {
+    Fires(final Symbols symbols, final Boxes planted, final Channel wire) {
         this.table = symbols;
         this.boxes = planted;
         this.channel = wire;
@@ -52,7 +52,7 @@ public final class Fires {
      * @param body The bindings of the formation, as phino spelled them
      * @return The fire
      */
-    public Fire at(final int id, final String lambda, final String body) {
+    Fire at(final int id, final String lambda, final String body) {
         final Operands args = new Operands(id, new Bindings(body), this.channel, this.table);
         final Fire out;
         if ("L_dataized".equals(lambda)) {

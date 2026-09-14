@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Dispatch implements Step {
+final class Dispatch implements Step {
 
     /**
      * The name of the step, such as {@code s1}.
@@ -57,7 +57,7 @@ public final class Dispatch implements Step {
      * @param keys The keys of the operands, the receiver first
      * @param forma The forma of the value, {@code object} when unwitnessed
      */
-    public Dispatch(final String label, final String verb,
+    Dispatch(final String label, final String verb,
         final List<String> keys, final String forma) {
         this.name = label;
         this.method = verb;

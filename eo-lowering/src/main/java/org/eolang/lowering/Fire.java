@@ -12,7 +12,7 @@ import java.io.IOException;
  * @since 0.76.0
  */
 @FunctionalInterface
-public interface Fire {
+interface Fire {
 
     /**
      * The answer phino goes on with.

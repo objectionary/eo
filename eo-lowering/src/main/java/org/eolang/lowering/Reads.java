@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  *
  * @since 0.76.0
  */
-public final class Reads {
+final class Reads {
 
     /**
      * The protocol.
@@ -45,7 +45,7 @@ public final class Reads {
      *
      * @param proto The protocol
      */
-    public Reads(final Protocol proto) {
+    Reads(final Protocol proto) {
         this.protocol = proto;
     }
 
@@ -54,7 +54,7 @@ public final class Reads {
      *
      * @return The indices of the voids, ascending
      */
-    public SortedSet<Integer> all() {
+    SortedSet<Integer> all() {
         final SortedSet<Integer> out = this.direct();
         this.protocol.moves().stream()
             .flatMap(step -> step.branches().stream())
@@ -68,7 +68,7 @@ public final class Reads {
      * @param above The indices of the voids the enclosing blocks declared
      * @return The indices of the voids, ascending
      */
-    public SortedSet<Integer> own(final Set<Integer> above) {
+    SortedSet<Integer> own(final Set<Integer> above) {
         final Map<Integer, Integer> count = new HashMap<>(0);
         final Stream<Protocol> arms = this.protocol.moves().stream()
             .flatMap(step -> step.branches().stream());

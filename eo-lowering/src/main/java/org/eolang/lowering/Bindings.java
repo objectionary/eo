@@ -17,7 +17,7 @@ import java.util.Map;
  *
  * @since 0.76.0
  */
-public final class Bindings {
+final class Bindings {
 
     /**
      * The text of the formation.
@@ -29,7 +29,7 @@ public final class Bindings {
      *
      * @param body The text of the formation
      */
-    public Bindings(final String body) {
+    Bindings(final String body) {
         this.text = body;
     }
 
@@ -39,7 +39,7 @@ public final class Bindings {
      * @param name The name
      * @return The value as written, or an empty string when unbound
      */
-    public String of(final String name) {
+    String of(final String name) {
         return this.all().getOrDefault(name, "");
     }
 
@@ -48,7 +48,7 @@ public final class Bindings {
      *
      * @return The map from names to values as written
      */
-    public Map<String, String> all() {
+    Map<String, String> all() {
         final Map<String, String> out = new HashMap<>(0);
         final String body = this.text.replaceAll("\\s+", " ").trim();
         final StringBuilder piece = new StringBuilder(0);

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.76.0
  */
-public final class Operand {
+final class Operand {
 
     /**
      * A marker or a datum inside a formation.
@@ -82,7 +82,7 @@ public final class Operand {
      *
      * @param phi The φ-expression
      */
-    public Operand(final String phi) {
+    Operand(final String phi) {
         this.text = phi;
     }
 
@@ -91,7 +91,7 @@ public final class Operand {
      *
      * @return The key, or an empty string when the text is not an operand yet
      */
-    public String key() {
+    String key() {
         final String value = this.text.replaceAll("\\s+", " ").trim();
         String out = Operand.wrapped(value);
         if (out.isEmpty()) {

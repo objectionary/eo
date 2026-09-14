@@ -36,7 +36,7 @@ import java.util.stream.Stream;
  *
  * @since 0.76.0
  */
-public final class Rendering {
+final class Rendering {
 
     /**
      * The program.
@@ -49,7 +49,7 @@ public final class Rendering {
      * @param proto The protocol
      * @param inputs The voids of the fragment: names to formas, in order
      */
-    public Rendering(final Protocol proto, final Map<String, String> inputs) {
+    Rendering(final Protocol proto, final Map<String, String> inputs) {
         this(
             new Program(
                 Collections.singletonList(
@@ -65,7 +65,7 @@ public final class Rendering {
      *
      * @param plan The program
      */
-    public Rendering(final Program plan) {
+    Rendering(final Program plan) {
         this.program = plan;
     }
 
@@ -75,7 +75,7 @@ public final class Rendering {
      * @param index The index of the void
      * @return A statement such as {@code double v0 = new Dataized(this.take("x")).asNumber();}
      */
-    public String reading(final int index) {
+    String reading(final int index) {
         final List<String> names = new ArrayList<>(this.program.inputs().keySet());
         if (index >= names.size()) {
             throw new IllegalStateException(
@@ -115,7 +115,7 @@ public final class Rendering {
      * @param index The index of the void
      * @return A statement such as {@code double v3 = 0.0;}
      */
-    public String blank(final int index) {
+    String blank(final int index) {
         final String type = this.type(String.format("sym:v%d", index));
         final String out;
         if ("double".equals(type)) {
@@ -136,7 +136,7 @@ public final class Rendering {
      * @param step The application
      * @return A Java expression over the locals of its operands
      */
-    public String applied(final Step step) {
+    String applied(final Step step) {
         final String out;
         if (step.atom().charAt(0) == '.' || step.atom().startsWith("Φ.")) {
             out = new Call(step, this).text();
@@ -154,7 +154,7 @@ public final class Rendering {
      * @param key The key, such as {@code sym:v0} or {@code sym:s2}
      * @return The type, such as {@code double} or {@code byte[]}
      */
-    public String type(final String key) {
+    String type(final String key) {
         return Rendering.typed(this.forma(key), key);
     }
 
@@ -164,7 +164,7 @@ public final class Rendering {
      * @param key The key, such as {@code sym:v0} or {@code number:40-...}
      * @return The forma, one of {@code number}, {@code bool}, {@code bytes}
      */
-    public String forma(final String key) {
+    String forma(final String key) {
         return Rendering.carried(this.kind(key));
     }
 
@@ -174,7 +174,7 @@ public final class Rendering {
      * @param key The key, such as {@code sym:v0} or {@code string:68-69-}
      * @return The forma, such as {@code string} or {@code object}
      */
-    public String kind(final String key) {
+    String kind(final String key) {
         final String[] parts = key.split(":", 2);
         final String out;
         if ("sym".equals(parts[0])) {
@@ -195,7 +195,7 @@ public final class Rendering {
      * @param label The label, such as {@code s3}
      * @return The step
      */
-    public Step step(final String label) {
+    Step step(final String label) {
         final Optional<Step> found = this.program.bodies().stream()
             .map(Body::protocol)
             .flatMap(Rendering::unfolded)
@@ -216,7 +216,7 @@ public final class Rendering {
      * @param key The key, such as {@code sym:s1} or {@code bool:FF-}
      * @return The expression, such as {@code s1} or {@code true}
      */
-    public String expression(final String key) {
+    String expression(final String key) {
         final String out;
         final String[] parts = key.split(":", 2);
         if ("sym".equals(parts[0])) {
@@ -265,7 +265,7 @@ public final class Rendering {
      * @param key The key of a void, such as {@code sym:v0}
      * @return The name, such as {@code x}
      */
-    public String named(final String key) {
+    String named(final String key) {
         if (this.program.repeats()) {
             throw new IllegalStateException(
                 String.format("The void '%s' is rebound by a repeat, so no call can reach it", key)
@@ -292,7 +292,7 @@ public final class Rendering {
      * @param key The key that value stands under, such as {@code sym:s1}
      * @return The expression to hand over, wrapped when the formas part
      */
-    public String handed(final String local, final String key) {
+    String handed(final String local, final String key) {
         final String carrier = Rendering.carried(this.program.carrier());
         final String own = this.forma(key);
         final String out;

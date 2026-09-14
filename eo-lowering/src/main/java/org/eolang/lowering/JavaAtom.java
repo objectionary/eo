@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.76.0
  */
-public final class JavaAtom {
+final class JavaAtom {
 
     /**
      * The program to render.
@@ -68,7 +68,7 @@ public final class JavaAtom {
      * @param proto The protocol to render
      * @param inputs The voids of the fragment: names to formas, in order
      */
-    public JavaAtom(final Protocol proto, final Map<String, String> inputs) {
+    JavaAtom(final Protocol proto, final Map<String, String> inputs) {
         this(
             new Program(
                 Collections.singletonList(
@@ -84,7 +84,7 @@ public final class JavaAtom {
      *
      * @param plan The program to render
      */
-    public JavaAtom(final Program plan) {
+    JavaAtom(final Program plan) {
         this.program = plan;
         this.values = new Rendering(plan);
     }
@@ -94,7 +94,7 @@ public final class JavaAtom {
      *
      * @return Java statements, one per line, without a trailing newline
      */
-    public String text() {
+    String text() {
         final String carrier = this.program.carrier();
         if ("string".equals(carrier)) {
             throw new IllegalStateException(

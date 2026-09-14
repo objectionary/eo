@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since 0.76.0
  */
-public final class Box {
+final class Box {
 
     /**
      * The cells of the row.
@@ -30,7 +30,7 @@ public final class Box {
      *
      * @param row The cells of the row
      */
-    public Box(final List<String> row) {
+    Box(final List<String> row) {
         this.cells = row;
     }
 
@@ -39,7 +39,7 @@ public final class Box {
      *
      * @return The name, such as {@code L_box_7}
      */
-    public String lambda() {
+    String lambda() {
         return this.cells.get(0);
     }
 
@@ -48,7 +48,7 @@ public final class Box {
      *
      * @return The locator, such as {@code Φ.demo.helper}
      */
-    public String locator() {
+    String locator() {
         return this.cells.get(1);
     }
 
@@ -57,7 +57,7 @@ public final class Box {
      *
      * @return The carrier, or {@code object} when unknown
      */
-    public String carrier() {
+    String carrier() {
         return this.cells.get(2);
     }
 
@@ -66,7 +66,7 @@ public final class Box {
      *
      * @return True if the receiver matters to the body
      */
-    public boolean reaches() {
+    boolean reaches() {
         return !"-".equals(this.cells.get(3));
     }
 
@@ -75,7 +75,7 @@ public final class Box {
      *
      * @return The forma, or {@code object} when unknown
      */
-    public String parent() {
+    String parent() {
         return this.cells.get(3);
     }
 
@@ -84,7 +84,7 @@ public final class Box {
      *
      * @return The names and their formas, in the order declared
      */
-    public Map<String, String> voids() {
+    Map<String, String> voids() {
         final Map<String, String> out = new LinkedHashMap<>(0);
         if (this.cells.size() > 4) {
             for (final String cell : this.cells.get(4).split(" ", -1)) {
@@ -102,7 +102,7 @@ public final class Box {
      *
      * @return The tab-separated line
      */
-    public String line() {
+    String line() {
         return String.join("\t", this.cells);
     }
 }

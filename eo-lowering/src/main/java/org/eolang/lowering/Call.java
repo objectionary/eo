@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Call {
+final class Call {
 
     /**
      * The step to render.
@@ -51,7 +51,7 @@ public final class Call {
      * @param dispatch The step to render
      * @param spelling The spelling of the values
      */
-    public Call(final Step dispatch, final Rendering spelling) {
+    Call(final Step dispatch, final Rendering spelling) {
         this.step = dispatch;
         this.values = spelling;
     }
@@ -61,7 +61,7 @@ public final class Call {
      *
      * @return An expression over the locals of the operands
      */
-    public String text() {
+    String text() {
         final List<String> keys = this.step.keys();
         final String atom = this.step.atom();
         final Collection<String> binds = new ArrayList<>(keys.size());

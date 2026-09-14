@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  *
  * @since 0.76.0
  */
-public final class Operands {
+final class Operands {
 
     /**
      * A tuple whose length is a marker.
@@ -59,7 +59,7 @@ public final class Operands {
      * @param wire The wire
      * @param symbols The table
      */
-    public Operands(final int id, final Bindings bindings, final Channel wire,
+    Operands(final int id, final Bindings bindings, final Channel wire,
         final Symbols symbols) {
         this.fire = id;
         this.body = bindings;
@@ -73,7 +73,7 @@ public final class Operands {
      * @param name The name of the attribute
      * @return True if the fire binds it to something other than a void
      */
-    public boolean bound(final String name) {
+    boolean bound(final String name) {
         final String value = this.body.of(name);
         return !value.isEmpty() && !"∅".equals(value);
     }
@@ -87,7 +87,7 @@ public final class Operands {
      * @throws IOException If the wire fails
      * @throws InterruptedException If the wait is interrupted
      */
-    public String of(final String name, final String forma)
+    String of(final String name, final String forma)
         throws IOException, InterruptedException {
         String key = new Operand(this.body.of(name)).key();
         if (key.isEmpty()) {
@@ -119,7 +119,7 @@ public final class Operands {
      * @throws IOException If the wire fails
      * @throws InterruptedException If the wait is interrupted
      */
-    public String receiver(final String lambda) throws IOException, InterruptedException {
+    String receiver(final String lambda) throws IOException, InterruptedException {
         final String reply = this.channel.ask(this.fire, "ρ", false)
             .replaceAll("\\s+", " ");
         String key = new Operand(reply).key();

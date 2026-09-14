@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Fork implements Step {
+final class Fork implements Step {
 
     /**
      * The name of the step, such as {@code s2}.
@@ -63,7 +63,7 @@ public final class Fork implements Step {
      * @param yes The arm taken when the bool holds
      * @param not The arm taken otherwise
      */
-    public Fork(final String label, final String atom, final String test,
+    Fork(final String label, final String atom, final String test,
         final Protocol yes, final Protocol not) {
         this.name = label;
         this.lambda = atom;

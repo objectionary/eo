@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Application implements Step {
+final class Application implements Step {
 
     /**
      * The name of the step, such as {@code s1}.
@@ -41,7 +41,7 @@ public final class Application implements Step {
      * @param atom The λ name of the atom, such as {@code L_number_plus}
      * @param keys The keys of the operands, the receiver first
      */
-    public Application(final String label, final String atom, final List<String> keys) {
+    Application(final String label, final String atom, final List<String> keys) {
         this.name = label;
         this.lambda = atom;
         this.operands = keys;

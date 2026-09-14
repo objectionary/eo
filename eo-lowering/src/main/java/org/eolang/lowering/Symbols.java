@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.76.0
  */
-public final class Symbols {
+final class Symbols {
 
     /**
      * The formas a value of the engine carries as data.
@@ -61,7 +61,7 @@ public final class Symbols {
      *
      * @param table The file
      */
-    public Symbols(final Path table) {
+    Symbols(final Path table) {
         this(table, new ReentrantLock());
     }
 
@@ -84,7 +84,7 @@ public final class Symbols {
      * @return The symbol
      * @throws IOException If the file cannot be read or written
      */
-    public String minted(final String carrier, final List<String> cells) throws IOException {
+    String minted(final String carrier, final List<String> cells) throws IOException {
         this.lock.lock();
         try {
             final List<String> tail = new ArrayList<>(cells.size() + 1);
@@ -114,7 +114,7 @@ public final class Symbols {
      * @return The symbol
      * @throws IOException If the file cannot be read or written
      */
-    public String fresh(final String carrier, final List<String> cells) throws IOException {
+    String fresh(final String carrier, final List<String> cells) throws IOException {
         this.lock.lock();
         try {
             final Set<String> seen = new LinkedHashSet<>(0);
@@ -139,7 +139,7 @@ public final class Symbols {
      * @param cells The rest of the row
      * @throws IOException If the file cannot be written
      */
-    public void record(final String sym, final String... cells) throws IOException {
+    void record(final String sym, final String... cells) throws IOException {
         this.lock.lock();
         try {
             final List<String> row = new ArrayList<>(cells.length + 1);
@@ -164,7 +164,7 @@ public final class Symbols {
      * @param carrier The carrier
      * @throws IOException If the file cannot be read or written
      */
-    public void retyped(final String sym, final String carrier) throws IOException {
+    void retyped(final String sym, final String carrier) throws IOException {
         this.lock.lock();
         try {
             final List<String> lines = new ArrayList<>(0);
@@ -194,7 +194,7 @@ public final class Symbols {
      * @param sym The symbol
      * @return The carrier
      */
-    public String carrier(final String sym) {
+    String carrier(final String sym) {
         return this.row(sym).get(1);
     }
 
@@ -207,7 +207,7 @@ public final class Symbols {
      * @param forma The forma witnessed
      * @throws IOException If the file cannot be read or written
      */
-    public void witnessed(final String sym, final String forma) throws IOException {
+    void witnessed(final String sym, final String forma) throws IOException {
         if (Symbols.DATA.contains(forma)
             && this.rows().stream().anyMatch(
                 row -> row.get(0).equals(sym) && "object".equals(row.get(1))
@@ -222,7 +222,7 @@ public final class Symbols {
      * @param sym The symbol
      * @return The cells of the row
      */
-    public List<String> row(final String sym) {
+    List<String> row(final String sym) {
         return this.rows().stream()
             .filter(row -> row.get(0).equals(sym) && row.size() > 2)
             .findFirst().orElseThrow(
@@ -237,7 +237,7 @@ public final class Symbols {
      *
      * @return The rows, each as its cells
      */
-    public List<List<String>> rows() {
+    List<List<String>> rows() {
         this.lock.lock();
         try {
             final List<List<String>> out;

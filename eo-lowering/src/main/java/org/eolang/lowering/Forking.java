@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Forking implements Fire {
+final class Forking implements Fire {
 
     /**
      * The operands of the fire.
@@ -45,7 +45,7 @@ public final class Forking implements Fire {
      * @param operands The operands of the fire
      * @param symbols The table
      */
-    public Forking(final Operands operands, final Symbols symbols) {
+    Forking(final Operands operands, final Symbols symbols) {
         this.args = operands;
         this.table = symbols;
     }

@@ -19,7 +19,7 @@ import java.util.Arrays;
  *
  * @since 0.76.0
  */
-public final class Tuple {
+final class Tuple {
 
     /**
      * The symbol of the tuple.
@@ -37,7 +37,7 @@ public final class Tuple {
      * @param sym The symbol of the tuple
      * @param symbols The table
      */
-    public Tuple(final String sym, final Symbols symbols) {
+    Tuple(final String sym, final Symbols symbols) {
         this.symbol = sym;
         this.table = symbols;
     }
@@ -48,7 +48,7 @@ public final class Tuple {
      * @return The text
      * @throws IOException If the table cannot be written
      */
-    public String phi() throws IOException {
+    String phi() throws IOException {
         return String.format(
             "Φ.tuple( length ↦ %s, head ↦ %s, tail ↦ %s )",
             new Marker(this.part("length", "number"), "number").phi(),

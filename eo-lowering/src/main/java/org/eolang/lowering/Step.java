@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public interface Step {
+interface Step {
 
     /**
      * The name of the step.

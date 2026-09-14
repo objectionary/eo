@@ -21,7 +21,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Body {
+final class Body {
 
     /**
      * The name of the helper, empty for the formation itself.
@@ -51,7 +51,7 @@ public final class Body {
      * @param formas The formas of the voids, in declaration order
      * @param protocol The protocol of the body
      */
-    public Body(final String name, final int offset, final List<String> formas,
+    Body(final String name, final int offset, final List<String> formas,
         final Protocol protocol) {
         this.label = name;
         this.start = offset;
@@ -64,7 +64,7 @@ public final class Body {
      *
      * @return The name, empty for the formation itself
      */
-    public String name() {
+    String name() {
         return this.label;
     }
 
@@ -73,7 +73,7 @@ public final class Body {
      *
      * @return The offset
      */
-    public int offset() {
+    int offset() {
         return this.start;
     }
 
@@ -82,7 +82,7 @@ public final class Body {
      *
      * @return The formas, in declaration order
      */
-    public List<String> formas() {
+    List<String> formas() {
         return Collections.unmodifiableList(this.voids);
     }
 
@@ -91,7 +91,7 @@ public final class Body {
      *
      * @return The protocol
      */
-    public Protocol protocol() {
+    Protocol protocol() {
         return this.steps;
     }
 }

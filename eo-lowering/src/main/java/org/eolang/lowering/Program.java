@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.76.0
  */
-public final class Program {
+final class Program {
 
     /**
      * The bodies, the formation's own first.
@@ -44,7 +44,7 @@ public final class Program {
      * @param bodies The bodies, the formation's own first
      * @param inputs The voids of the formation: names to formas, in order
      */
-    public Program(final List<Body> bodies, final Map<String, String> inputs) {
+    Program(final List<Body> bodies, final Map<String, String> inputs) {
         this.parts = bodies;
         this.voids = inputs;
     }
@@ -54,7 +54,7 @@ public final class Program {
      *
      * @return The bodies, the formation's own first
      */
-    public List<Body> bodies() {
+    List<Body> bodies() {
         return Collections.unmodifiableList(this.parts);
     }
 
@@ -63,7 +63,7 @@ public final class Program {
      *
      * @return Names to formas, in declaration order
      */
-    public Map<String, String> inputs() {
+    Map<String, String> inputs() {
         return Collections.unmodifiableMap(this.voids);
     }
 
@@ -72,7 +72,7 @@ public final class Program {
      *
      * @return The formas, by the positions the bodies know
      */
-    public List<String> formas() {
+    List<String> formas() {
         final List<String> out = new ArrayList<>(
             Collections.nCopies(
                 this.parts.stream()
@@ -95,7 +95,7 @@ public final class Program {
      * @param name The name of the helper, empty for the formation itself
      * @return The body
      */
-    public Body body(final String name) {
+    Body body(final String name) {
         return this.parts.get(this.index(name));
     }
 
@@ -105,7 +105,7 @@ public final class Program {
      * @param name The name of the helper, empty for the formation itself
      * @return The position, zero for the formation itself
      */
-    public int index(final String name) {
+    int index(final String name) {
         for (int idx = 0; idx < this.parts.size(); ++idx) {
             if (this.parts.get(idx).name().equals(name)) {
                 return idx;
@@ -121,7 +121,7 @@ public final class Program {
      *
      * @return The forma, the same from every body that answers
      */
-    public String carrier() {
+    String carrier() {
         final List<String> formas = this.parts.stream()
             .map(body -> body.protocol().carrier())
             .filter(forma -> !forma.isEmpty())
@@ -148,7 +148,7 @@ public final class Program {
      *
      * @return True if a body resumes any body
      */
-    public boolean repeats() {
+    boolean repeats() {
         return this.parts.size() > 1 || this.parts.get(0).protocol().repeats();
     }
 }

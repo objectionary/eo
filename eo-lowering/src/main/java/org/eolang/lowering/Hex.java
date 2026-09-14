@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-public final class Hex {
+final class Hex {
 
     /**
      * The bytes.
@@ -28,7 +28,7 @@ public final class Hex {
      *
      * @param dashed The text, such as {@code FF-} or {@code 40-45}
      */
-    public Hex(final String dashed) {
+    Hex(final String dashed) {
         this(Hex.parsed(dashed));
     }
 
@@ -37,7 +37,7 @@ public final class Hex {
      *
      * @param value The number
      */
-    public Hex(final double value) {
+    Hex(final double value) {
         this(ByteBuffer.allocate(Double.BYTES).putDouble(value).array());
     }
 
@@ -46,7 +46,7 @@ public final class Hex {
      *
      * @param value The truth
      */
-    public Hex(final boolean value) {
+    Hex(final boolean value) {
         this(Hex.truth(value));
     }
 
@@ -55,7 +55,7 @@ public final class Hex {
      *
      * @param bytes The bytes
      */
-    public Hex(final byte[] bytes) {
+    Hex(final byte[] bytes) {
         this.data = bytes.clone();
     }
 
@@ -64,7 +64,7 @@ public final class Hex {
      *
      * @return A copy of the bytes
      */
-    public byte[] bytes() {
+    byte[] bytes() {
         return this.data.clone();
     }
 
@@ -73,7 +73,7 @@ public final class Hex {
      *
      * @return The number
      */
-    public double number() {
+    double number() {
         if (this.data.length != Double.BYTES) {
             throw new IllegalStateException(
                 String.format(
@@ -89,7 +89,7 @@ public final class Hex {
      *
      * @return The dashed text
      */
-    public String text() {
+    String text() {
         final String out;
         if (this.data.length == 0) {
             out = "--";

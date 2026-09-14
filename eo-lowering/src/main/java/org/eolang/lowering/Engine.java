@@ -43,7 +43,7 @@ import javax.json.JsonObject;
  *
  * @since 0.76.0
  */
-public final class Engine {
+final class Engine {
 
     /**
      * The wire.
@@ -73,7 +73,7 @@ public final class Engine {
      * @param counted The trips over the wire
      * @param handler What to do when a fire fails
      */
-    public Engine(final Channel wire, final Fires served, final Trips counted,
+    Engine(final Channel wire, final Fires served, final Trips counted,
         final Thread.UncaughtExceptionHandler handler) {
         this.channel = wire;
         this.fires = served;
@@ -119,7 +119,7 @@ public final class Engine {
      * @throws IOException If the wire fails
      * @throws InterruptedException If a wait is interrupted
      */
-    public void serve(final BufferedReader input) throws IOException, InterruptedException {
+    void serve(final BufferedReader input) throws IOException, InterruptedException {
         final Collection<Thread> live = new ArrayList<>(0);
         long made = 0L;
         try {

@@ -30,7 +30,7 @@ import java.util.Map;
  *  as written. When the box knows its carrier, the classic-fibonacci pack
  *  must lower; adjust its expectations then.
  */
-public final class Boxing implements Fire {
+final class Boxing implements Fire {
 
     /**
      * The box.
@@ -54,7 +54,7 @@ public final class Boxing implements Fire {
      * @param operands The operands of the fire
      * @param symbols The table
      */
-    public Boxing(final Box planted, final Operands operands, final Symbols symbols) {
+    Boxing(final Box planted, final Operands operands, final Symbols symbols) {
         this.box = planted;
         this.args = operands;
         this.table = symbols;
