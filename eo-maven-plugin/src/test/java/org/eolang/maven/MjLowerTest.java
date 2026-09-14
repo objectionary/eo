@@ -171,6 +171,19 @@ final class MjLowerTest {
     }
 
     @Test
+    void lowersInParallelWhenAsked(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a run asked to lower in parallel must repoint the object at the lowered XMIR too, but it didnt",
+            MjLowerTest.symbolic(temp)
+                .with("parallel", true)
+                .execute(new PpLower())
+                .foreignTojos().find("foo").xmir().toString(),
+            Matchers.containsString(Lowering.DIR)
+        );
+    }
+
+    @Test
     void generatesNoAtomClassWhenDisabled(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(

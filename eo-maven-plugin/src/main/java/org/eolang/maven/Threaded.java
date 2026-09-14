@@ -41,6 +41,11 @@ final class Threaded<T> {
     private final Consumer<? super String> logger;
 
     /**
+     * How many threads run at once.
+     */
+    private final int threads;
+
+    /**
      * Ctor.
      *
      * @param src The sources
@@ -55,14 +60,41 @@ final class Threaded<T> {
      *
      * @param src The sources
      * @param fun The function to run
+     * @param total How many threads run at once
+     */
+    Threaded(final Iterable<T> src, final Func<T, Integer> fun, final int total) {
+        this(src, fun, message -> Logger.error(Threaded.class, message), total);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param src The sources
+     * @param fun The function to run
      * @param log The logger
      */
     Threaded(
         final Iterable<T> src, final Func<T, Integer> fun, final Consumer<? super String> log
     ) {
+        this(src, fun, log, Runtime.getRuntime().availableProcessors() * 2);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param src The sources
+     * @param fun The function to run
+     * @param log The logger
+     * @param total How many threads run at once
+     */
+    Threaded(
+        final Iterable<T> src, final Func<T, Integer> fun,
+        final Consumer<? super String> log, final int total
+    ) {
         this.sources = src;
         this.scalar = fun;
         this.logger = log;
+        this.threads = total;
     }
 
     /**
@@ -73,7 +105,7 @@ final class Threaded<T> {
     int total() {
         return new SumOf(
             new Threads<>(
-                Runtime.getRuntime().availableProcessors() * 2,
+                this.threads,
                 new Mapped<>(
                     tojo -> new ScalarWithFallback<>(
                         () -> this.scalar.apply(tojo),

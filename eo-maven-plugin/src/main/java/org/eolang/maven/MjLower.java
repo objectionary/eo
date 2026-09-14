@@ -79,6 +79,18 @@ public final class MjLower extends MjSafe {
     private boolean demanded;
 
     /**
+     * Whether the documents are lowered in parallel. Every run of phino is
+     * heavy, and a run per processor brings a machine down, so the goal
+     * lowers one document at a time unless told otherwise.
+     */
+    @Parameter(
+        alias = "loweringParallel",
+        property = "eo.loweringParallel",
+        defaultValue = "false"
+    )
+    private boolean parallel;
+
+    /**
      * The name or path of the phino executable.
      */
     @Parameter(
@@ -119,7 +131,9 @@ public final class MjLower extends MjSafe {
             if (phino.suitable()) {
                 try (TjsForeign tojos = this.tojos()) {
                     new Timed(
-                        new Lowering(tojos.standalone(), home, phino, this.tables.toPath())
+                        new Lowering(
+                            tojos.standalone(), home, phino, this.tables.toPath(), this.parallel
+                        )
                     ).exec();
                 }
                 new Saved(

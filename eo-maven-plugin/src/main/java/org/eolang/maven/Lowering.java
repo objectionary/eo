@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.cactoos.Func;
 import org.eolang.lowering.Boxed;
 import org.eolang.lowering.Boxes;
 import org.eolang.lowering.Formas;
@@ -29,8 +30,9 @@ import org.eolang.lowering.Xml;
  * tables of {@link MjInference} once, plants a box on every formation of
  * every document that declares arguments, writes the boxed variant of
  * each document for the runs of the other documents to merge into their
- * world, and then lowers the documents in parallel: {@link Lowered}
- * rewrites each of them in place, one run of phino per fragment. A
+ * world, and then lowers the documents one at a time, or in parallel when
+ * asked to: {@link Lowered} rewrites each of them in place, one run of
+ * phino per fragment. A
  * document with nothing rewritten is neither saved nor repointed, so a
  * build without lowerable fragments leaves only the boxes behind.</p>
  *
@@ -75,19 +77,26 @@ final class Lowering implements Step {
     private final Path tables;
 
     /**
+     * Whether the documents are lowered in parallel.
+     */
+    private final boolean parallel;
+
+    /**
      * Ctor.
      *
      * @param srcs XMIR sources to lower
      * @param target The directory for the lowered XMIR
      * @param exe The binary that morphs
      * @param types The directory with the tables of {@link MjInference}
+     * @param many Whether the documents are lowered in parallel
      */
     Lowering(final Collection<TjForeign> srcs, final Path target,
-        final Phino exe, final Path types) {
+        final Phino exe, final Path types, final boolean many) {
         this.sources = srcs;
         this.home = target;
         this.phino = exe;
         this.tables = types;
+        this.parallel = many;
     }
 
     @Override
@@ -102,14 +111,24 @@ final class Lowering implements Step {
         boxes.save(new Planted(docs, formas).all());
         Logger.debug(
             this, "Boxed %d XMIR(s) into %[file]s",
-            new Threaded<>(this.sources, tojo -> Lowering.boxed(tojo, dir, boxes)).total(),
+            this.threaded(tojo -> Lowering.boxed(tojo, dir, boxes)).total(),
             dir.boxes()
         );
         Logger.info(
             this, "Lowered %d fragment(s) in %d XMIR(s), into %[file]s",
-            new Threaded<>(this.sources, tojo -> this.lowered(tojo, formas, dir)).total(),
+            this.threaded(tojo -> this.lowered(tojo, formas, dir)).total(),
             this.sources.size(), this.home
         );
+    }
+
+    private Threaded<TjForeign> threaded(final Func<TjForeign, Integer> fun) {
+        final Threaded<TjForeign> out;
+        if (this.parallel) {
+            out = new Threaded<>(this.sources, fun);
+        } else {
+            out = new Threaded<>(this.sources, fun, 1);
+        }
+        return out;
     }
 
     private static int boxed(final TjForeign tojo, final Home dir, final Boxes boxes)

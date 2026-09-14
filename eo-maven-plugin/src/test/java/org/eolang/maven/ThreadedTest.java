@@ -6,6 +6,8 @@ package org.eolang.maven;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Fallback;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.ScalarWithFallback;
@@ -20,6 +22,24 @@ import org.junit.jupiter.api.Test;
  * @since 0.56.5
  */
 final class ThreadedTest {
+
+    @Test
+    void runsEverythingInOneThreadWhenAsked() {
+        final Set<String> names = ConcurrentHashMap.newKeySet();
+        new Threaded<>(
+            new ListOf<>(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13),
+            input -> {
+                names.add(Thread.currentThread().getName());
+                return input;
+            },
+            1
+        ).total();
+        MatcherAssert.assertThat(
+            "a single-threaded run must touch every element from one thread, but it didnt",
+            names,
+            Matchers.hasSize(1)
+        );
+    }
 
     @Test
     void logsAllExceptionsInTheLogsOnFailure() {
