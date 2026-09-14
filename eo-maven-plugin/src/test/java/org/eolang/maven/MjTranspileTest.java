@@ -320,6 +320,30 @@ final class MjTranspileTest {
     }
 
     @Test
+    void handsOneSetOfHitsToEveryPhCoverageWrapperOfAClass(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the class must declare one static set of hits and hand it to every PhCoverage wrapper, but it didnt",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.program())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.allOf(
+                Matchers.stringContainsInOrder(
+                    "public final class EOmain",
+                    "private static final java.util.Set<String> HITS",
+                    "new PhCoverage("
+                ),
+                Matchers.not(Matchers.matchesRegex("(?s).*new PhCoverage\\(\\w+, \".*"))
+            )
+        );
+    }
+
+    @Test
     void excludesThrowingCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
