@@ -49,8 +49,9 @@
           0
           0
           nstart
-          "Start index (%d) is out of string bounds".printf
-            * nstart
+          "Start index (%s) is out of string bounds".printf
+            *
+              printed nstart
         blen
         if.
           nlen.eq 0
@@ -165,9 +166,10 @@
       number bstart
       0
       nlen
-      "Start index + length to slice (%d) is out of string bounds".printf
+      "Start index + length to slice (%s) is out of string bounds".printf
         *
-          nstart.plus nlen
+          printed
+            nstart.plus nlen
     bstart
   if. > [^ index csize valid] > increase
     gt.
@@ -186,6 +188,11 @@
           *
             ^.^.as-bytes.slice index csize
             index
+  if. > [num] > printed
+    9.223372036854776e18.gt num
+    "%d".printf
+      * num
+    string num.as-scientific
   number len! > nlen
   number start! > nstart
   80- > p1
@@ -197,6 +204,18 @@
   E0- > r3
   F0- > r4
   ^.as-bytes.size >> size!
+
+  eq. ++> can-print-an-index-inside-the-long-range
+    printed.
+      "hello".slice 0 0
+      42
+    "42"
+
+  eq. ++> can-print-an-index-past-the-long-range
+    printed.
+      "hello".slice 0 0
+      1e30
+    "1.000000e30"
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
@@ -306,6 +325,11 @@
     -1
     1
 
+  slice. --> stops-on-a-start-beyond-the-long-range
+    "some string"
+    1e30
+    1
+
   slice. --> stops-on-an-end-below-the-start
     "some string"
     2
@@ -315,6 +339,11 @@
     "some string"
     7
     5
+
+  slice. --> stops-on-an-end-beyond-the-long-range
+    "some string"
+    1
+    1e30
 
   slice. --> stops-on-an-infinite-length
     "some"
