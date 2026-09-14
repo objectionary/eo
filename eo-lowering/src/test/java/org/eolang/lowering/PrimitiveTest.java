@@ -25,18 +25,19 @@ final class PrimitiveTest {
 
     @Test
     void foldsLiteralOperandsWithoutMinting(@Mktmp final Path temp) throws Exception {
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"Δ\":\"40-00-00-00-00-00-00-00\"}",
+                "{\"Δ\":\"40-08-00-00-00-00-00-00\"}"
+            )
+        ).start();
         MatcherAssert.assertThat(
             "two literals must fold to data instead of a symbol, but they didnt",
             new Primitive(
                 new Op("L_number_plus"),
-                new Operands(
-                    1,
-                    new Bindings(
-                        "⟦ ρ ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧ ) ), x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧"
-                    ),
-                    new Channel(new StringWriter()),
-                    new Symbols(temp.resolve("s.tsv"))
-                ),
+                new Operands(1, channel, new Symbols(temp.resolve("s.tsv"))),
                 new Symbols(temp.resolve("s.tsv"))
             ).answer(),
             Matchers.equalTo("Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-14-00-00-00-00-00-00 ⟧ ) )")
@@ -48,18 +49,11 @@ final class PrimitiveTest {
         final Path file = temp.resolve("s.tsv");
         final Symbols table = new Symbols(file);
         table.record("S1", "number", "void", "a");
-        new Primitive(
-            new Op("L_number_gt"),
-            new Operands(
-                1,
-                new Bindings(
-                    "⟦ ρ ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S1 ⟧ ) ), x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧"
-                ),
-                new Channel(new StringWriter()),
-                table
-            ),
-            table
-        ).answer();
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(channel, "{\"λ\":\"S1\"}", "{\"Δ\":\"40-08-00-00-00-00-00-00\"}")
+        ).start();
+        new Primitive(new Op("L_number_gt"), new Operands(1, channel, table), table).answer();
         MatcherAssert.assertThat(
             "the operation over a symbol must land as a row of its forma, but it didnt",
             new String(Files.readAllBytes(file), StandardCharsets.UTF_8),
@@ -74,16 +68,11 @@ final class PrimitiveTest {
     void answersMarkerOfMintedSymbol(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         table.record("S1", "bytes", "void", "b");
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(new Oracle(channel, "{\"λ\":\"S1\"}")).start();
         MatcherAssert.assertThat(
             "the answer must be the marker of the minted symbol in the forma of the operation, but it wasnt",
-            new Primitive(
-                new Op("L_bytes_size"),
-                new Operands(
-                    1, new Bindings("⟦ ρ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S1 ⟧ ) ⟧"),
-                    new Channel(new StringWriter()), table
-                ),
-                table
-            ).answer(),
+            new Primitive(new Op("L_bytes_size"), new Operands(1, channel, table), table).answer(),
             Matchers.equalTo("Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) )")
         );
     }

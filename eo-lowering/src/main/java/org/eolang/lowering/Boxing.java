@@ -66,9 +66,9 @@ final class Boxing implements Fire {
         cells.add("box");
         cells.add(this.box.locator());
         if (this.box.reaches()) {
-            final String key = this.args.receiver(this.box.lambda());
+            final String key = this.args.receiver(this.box);
             if (!key.isEmpty()) {
-                cells.add(String.format("ρ=%s", Boxing.typed(key, this.box.parent())));
+                cells.add(String.format("ρ=%s", key));
             }
         }
         for (final Map.Entry<String, String> entry : this.box.voids().entrySet()) {
@@ -86,16 +86,6 @@ final class Boxing implements Fire {
             out = new Tuple(sym, this.table).phi();
         } else {
             out = new Marker(String.format("sym:%s", sym), this.box.carrier()).phi();
-        }
-        return out;
-    }
-
-    private static String typed(final String key, final String forma) {
-        final String out;
-        if (key.startsWith("bytes:") && !"object".equals(forma)) {
-            out = String.format("%s:%s", forma, key.substring(6));
-        } else {
-            out = key;
         }
         return out;
     }

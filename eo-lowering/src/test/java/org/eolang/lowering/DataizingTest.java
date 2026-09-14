@@ -23,13 +23,18 @@ final class DataizingTest {
 
     @Test
     void answersBytesMarkerOfTarget(@Mktmp final Path temp) throws Exception {
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S5 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"λ\":\"S5\"}"
+            )
+        ).start();
         MatcherAssert.assertThat(
             "the dataized target must come back as bytes under the same symbol, but it didnt",
             new Dataizing(
-                new Operands(
-                    1, new Bindings("⟦ target ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S5 ⟧ ) ) ⟧"),
-                    new Channel(new StringWriter()), new Symbols(temp.resolve("s.tsv"))
-                )
+                new Operands(1, channel, new Symbols(temp.resolve("s.tsv")))
             ).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ λ ⤍ S5 ⟧ )")
         );
@@ -38,14 +43,11 @@ final class DataizingTest {
     @Test
     void asksForTargetThatIsNotData(@Mktmp final Path temp) throws Exception {
         final Channel channel = new Channel(new StringWriter());
-        new Thread(new Oracle(channel, "⟦ Δ ⤍ 2A- ⟧")).start();
+        new Thread(new Oracle(channel, "{\"𝑛\":\"ξ.ρ.x\"}", "{\"Δ\":\"2A-\"}")).start();
         MatcherAssert.assertThat(
-            "a target that is not yet data must be asked for and answered as bytes, but it wasnt",
+            "a target that is not yet data must be reduced and answered as bytes, but it wasnt",
             new Dataizing(
-                new Operands(
-                    1, new Bindings("⟦ target ↦ ξ.ρ.x ⟧"), channel,
-                    new Symbols(temp.resolve("s.tsv"))
-                )
+                new Operands(1, channel, new Symbols(temp.resolve("s.tsv")))
             ).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )")
         );

@@ -30,32 +30,20 @@ final class EngineTest {
     @Test
     void answersFireWithBoundOperands(@Mktmp final Path temp) throws Exception {
         final StringWriter out = new StringWriter();
-        final Channel channel = new Channel(out);
-        try (
-            BufferedReader input = new BufferedReader(
-                new StringReader(
-                    String.join(
-                        System.lineSeparator(),
-                        "{\"𝑒\":\"⟦ ⟧\"}",
-                        "{\"id\":7,\"λ\":\"L_number_times\",\"𝑏\":\"⟦ ρ ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧ ) ), x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧\"}"
-                    )
-                )
-            )
-        ) {
-            new Engine(
-                channel,
-                new Fires(
-                    new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
-                ),
-                new Trips(temp.resolve("t.txt")),
-                (thread, error) -> {
-                }
-            ).serve(input);
-        }
         MatcherAssert.assertThat(
             "the fire must be answered on its own id with the folded node, but it wasnt",
-            out.toString(),
-            Matchers.equalTo(
+            EngineTest.talked(
+                EngineTest.engine(new Channel(out), temp),
+                out,
+                String.join(
+                    System.lineSeparator(),
+                    "{\"𝑒\":\"⟦ ⟧\"}",
+                    "{\"id\":7,\"λ\":\"L_number_times\",\"𝑏\":\"⟦ ρ ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧ ) ), x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧\"}"
+                ),
+                "{\"id\":1000001,\"𝑛\":\"⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧\",\"Δ\":\"40-00-00-00-00-00-00-00\"}",
+                "{\"id\":1000002,\"𝑛\":\"⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧\",\"Δ\":\"40-08-00-00-00-00-00-00\"}"
+            ),
+            Matchers.endsWith(
                 """
                 {"id":7,"𝑛":"Φ.number( φ ↦ Φ.bytes( φ ↦ \
                 ⟦ Δ ⤍ 40-18-00-00-00-00-00-00 ⟧ ) )"}
@@ -67,60 +55,40 @@ final class EngineTest {
     @Test
     void routesAnswerToAskingFire(@Mktmp final Path temp) throws Exception {
         final StringWriter out = new StringWriter();
-        final Channel channel = new Channel(out);
-        final Engine engine = new Engine(
-            channel,
-            new Fires(
-                new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+        MatcherAssert.assertThat(
+            "the reply to the question must reach the fire and shape its answer, but it didnt",
+            EngineTest.talked(
+                EngineTest.engine(new Channel(out), temp),
+                out,
+                "{\"id\":3,\"λ\":\"L_dataized\",\"𝑏\":\"⟦ target ↦ ξ.ρ.x ⟧\"}",
+                "{\"id\":1000001,\"𝑛\":\"ξ.ρ.x\"}",
+                "{\"id\":1000002,\"𝑛\":\"⟦ Δ ⤍ 2A- ⟧\",\"Δ\":\"2A-\"}"
             ),
-            new Trips(temp.resolve("t.txt")),
-            (thread, error) -> {
-            }
+            Matchers.endsWith(
+                """
+                {"id":3,"𝑛":"Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )"}
+                """
+            )
         );
-        try (
-            PipedWriter feed = new PipedWriter();
-            BufferedReader input = new BufferedReader(new PipedReader(feed))
-        ) {
-            final Thread serving = new Thread(
-                () -> {
-                    try {
-                        engine.serve(input);
-                    } catch (final IOException ex) {
-                        throw new IllegalStateException(ex);
-                    } catch (final InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-            );
-            serving.start();
-            feed.write(
+    }
+
+    @Test
+    void takesLineWithoutBodyForAnAnswer(@Mktmp final Path temp) throws Exception {
+        final StringWriter out = new StringWriter();
+        MatcherAssert.assertThat(
+            "an answer stuck on a λ is an answer, not a fire, but it was fired",
+            EngineTest.talked(
+                EngineTest.engine(new Channel(out), temp),
+                out,
+                "{\"id\":3,\"λ\":\"L_dataized\",\"𝑏\":\"⟦ target ↦ ξ.ρ.x ⟧\"}",
+                "{\"id\":1000001,\"𝑛\":\"⟦ λ ⤍ S7 ⟧\",\"λ\":\"S7\"}"
+            ),
+            Matchers.endsWith(
                 """
-                {"id":3,"λ":"L_dataized","𝑏":"⟦ target ↦ ξ.ρ.x ⟧"}
+                {"id":3,"𝑛":"Φ.bytes( φ ↦ ⟦ λ ⤍ S7 ⟧ )"}
                 """
-            );
-            feed.flush();
-            final long deadline = System.currentTimeMillis() + 5_000L;
-            while (!out.toString().contains("\"of\":3") && System.currentTimeMillis() < deadline) {
-                Thread.sleep(10L);
-            }
-            feed.write(
-                """
-                {"id":1000001,"𝑛":"⟦ Δ ⤍ 2A- ⟧"}
-                """
-            );
-            feed.flush();
-            feed.close();
-            serving.join(5_000L);
-            MatcherAssert.assertThat(
-                "the reply to the question must reach the fire and shape its answer, but it didnt",
-                out.toString(),
-                Matchers.endsWith(
-                    """
-                    {"id":3,"𝑛":"Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )"}
-                    """
-                )
-            );
-        }
+            )
+        );
     }
 
     @Test
@@ -179,5 +147,52 @@ final class EngineTest {
             trips.total(),
             Matchers.equalTo(2L)
         );
+    }
+
+    private static Engine engine(final Channel channel, final Path temp) {
+        return new Engine(
+            channel,
+            new Fires(
+                new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+            ),
+            new Trips(temp.resolve("t.txt")),
+            (thread, error) -> {
+            }
+        );
+    }
+
+    private static String talked(final Engine engine, final StringWriter out,
+        final String... lines) throws Exception {
+        try (
+            PipedWriter feed = new PipedWriter();
+            BufferedReader input = new BufferedReader(new PipedReader(feed))
+        ) {
+            final Thread serving = new Thread(
+                () -> {
+                    try {
+                        engine.serve(input);
+                    } catch (final IOException ex) {
+                        throw new IllegalStateException(ex);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            );
+            serving.start();
+            for (int idx = 0; idx < lines.length; ++idx) {
+                final String asked = String.format("\"id\":%d", 1_000_000 + idx);
+                final long deadline = System.currentTimeMillis() + 5_000L;
+                while (idx > 0 && !out.toString().contains(asked)
+                    && System.currentTimeMillis() < deadline) {
+                    Thread.sleep(10L);
+                }
+                feed.write(lines[idx]);
+                feed.write('\n');
+                feed.flush();
+            }
+            feed.close();
+            serving.join(5_000L);
+        }
+        return out.toString();
     }
 }

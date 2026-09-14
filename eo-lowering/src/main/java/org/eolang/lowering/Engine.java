@@ -125,15 +125,15 @@ final class Engine {
                     break;
                 }
                 final JsonObject message = Json.createReader(new StringReader(line)).readObject();
-                if (message.containsKey("λ")) {
+                if (message.containsKey("𝑏")) {
                     final Thread fire = new Thread(() -> this.fired(message));
                     fire.setDaemon(true);
                     fire.setUncaughtExceptionHandler(this.crash);
                     live.add(fire);
                     fire.start();
                     ++made;
-                } else if (message.containsKey("𝑛")) {
-                    this.channel.answered(message.getInt("id"), message.getString("𝑛"));
+                } else if (message.containsKey("id")) {
+                    this.channel.answered(message.getInt("id"), new Answer(message));
                     ++made;
                 }
             }
@@ -154,9 +154,7 @@ final class Engine {
         final int id = message.getInt("id");
         final String lambda = message.getString("λ");
         try {
-            this.channel.answer(
-                id, this.fires.at(id, lambda, message.getString("𝑏")).answer()
-            );
+            this.channel.answer(id, this.fires.at(id, lambda).answer());
         } catch (final IOException | IllegalStateException | IllegalArgumentException ex) {
             throw new IllegalStateException(
                 String.format("The fire #%d of '%s' failed", id, lambda), ex

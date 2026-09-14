@@ -127,12 +127,12 @@ final class PlantedTest {
     }
 
     @Test
-    void recordsFormaOfReceiverWhenBodyReaches(@Mktmp final Path temp) throws IOException {
+    void leavesReceiverOfAFormationUntyped(@Mktmp final Path temp) throws IOException {
         final Map<String, String> given = new HashMap<>(2);
         given.put("Φ.foo.f.ρ", "bool");
         given.put("Φ.foo.f.x", "number");
         MatcherAssert.assertThat(
-            "the forma of ρ must be recorded when the body reaches for it, but it wasnt",
+            "the ρ of a member of a formation is that formation, whatever it answers, but it was typed",
             new Planted(
                 Collections.singletonList(
                     PlantedTest.doc(
@@ -146,7 +146,29 @@ final class PlantedTest {
                 ),
                 new Formas(Collections.emptyMap(), given)
             ).all().get(0).parent(),
-            Matchers.equalTo("bool")
+            Matchers.equalTo("object")
+        );
+    }
+
+    @Test
+    void typesReceiverByTheFormationAround(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the ρ of a member of a data object is that object, but it was left untyped",
+            new Planted(
+                Collections.singletonList(
+                    PlantedTest.doc(
+                        temp,
+                        String.join(
+                            "",
+                            "<o loc='Φ.number' name='number'><o loc='Φ.number.lt' name='lt'>",
+                            "<o base='∅' name='ρ'/><o base='∅' name='x'/>",
+                            "<o base='ξ.ρ.y' name='φ'/></o></o>"
+                        )
+                    )
+                ),
+                new Formas(Collections.emptyMap(), Collections.emptyMap())
+            ).all().get(0).parent(),
+            Matchers.equalTo("number")
         );
     }
 

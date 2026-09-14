@@ -89,7 +89,7 @@ public final class Planted {
         final String place = node.getAttribute("loc");
         final String parent;
         if (Planted.reaches(node)) {
-            parent = this.typed(String.format("%s.ρ", place));
+            parent = Planted.receiver(place);
         } else {
             parent = "-";
         }
@@ -110,6 +110,14 @@ public final class Planted {
                 ).collect(Collectors.joining(" "))
             )
         );
+    }
+
+    private static String receiver(final String place) {
+        String out = new Carrier(place.substring(0, place.lastIndexOf('.'))).forma();
+        if (out.isEmpty()) {
+            out = "object";
+        }
+        return out;
     }
 
     private String typed(final String place) {

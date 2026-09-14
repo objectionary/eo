@@ -30,7 +30,7 @@ final class FiresTest {
                 new Symbols(temp.resolve("s.tsv")),
                 new Boxes(temp.resolve("b.tsv")),
                 new Channel(new StringWriter())
-            ).at(1, "L_fork", "⟦ ⟧"),
+            ).at(1, "L_fork"),
             Matchers.instanceOf(Forking.class)
         );
     }
@@ -43,7 +43,7 @@ final class FiresTest {
                 new Symbols(temp.resolve("s.tsv")),
                 new Boxes(temp.resolve("b.tsv")),
                 new Channel(new StringWriter())
-            ).at(1, "L_bytes_concat", "⟦ ⟧"),
+            ).at(1, "L_bytes_concat"),
             Matchers.instanceOf(Primitive.class)
         );
     }
@@ -56,7 +56,7 @@ final class FiresTest {
                 new Symbols(temp.resolve("s.tsv")),
                 new Boxes(temp.resolve("b.tsv")),
                 new Channel(new StringWriter())
-            ).at(1, "L_miracle", "⟦ ⟧"),
+            ).at(1, "L_miracle"),
             "a λ outside the registry must be refused, but it wasnt"
         );
     }

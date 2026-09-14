@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -36,11 +37,11 @@ final class ChannelTest {
     @Test
     void asksAboutAttributeOfFire() throws Exception {
         final Channel channel = new Channel(new StringWriter());
-        new Thread(new Oracle(channel, "⟦ Δ ⤍ 01- ⟧")).start();
+        new Thread(new Oracle(channel, "{\"Δ\":\"01-\"}")).start();
         MatcherAssert.assertThat(
-            "the question must be answered by the routed node, but it wasnt",
-            channel.ask(5, "ρ", false),
-            Matchers.equalTo("⟦ Δ ⤍ 01- ⟧")
+            "the question must be answered by the routed facts, but it wasnt",
+            channel.ask(5, "ρ", false).data(),
+            Matchers.equalTo("01-")
         );
     }
 
@@ -48,7 +49,7 @@ final class ChannelTest {
     void spellsQuestionWithFreshId() throws Exception {
         final StringWriter out = new StringWriter();
         final Channel channel = new Channel(out);
-        new Thread(new Oracle(channel, "")).start();
+        new Thread(new Oracle(channel, "{\"𝑛\":\"⟦ ⟧\"}")).start();
         channel.ask(9, "x", true);
         MatcherAssert.assertThat(
             "the question must name the fire, the attribute and the mode, but it doesnt",
@@ -65,7 +66,9 @@ final class ChannelTest {
     void refusesAnswerToUnknownQuestion() {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Channel(new StringWriter()).answered(42, "⟦ ⟧"),
+            () -> new Channel(new StringWriter()).answered(
+                42, new Answer(Json.createObjectBuilder().build())
+            ),
             "an answer nobody asked for must be refused, but it wasnt"
         );
     }

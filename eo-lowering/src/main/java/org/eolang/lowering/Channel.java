@@ -37,7 +37,7 @@ final class Channel {
     /**
      * The questions waiting for an answer, by id.
      */
-    private final Map<Integer, BlockingQueue<String>> open;
+    private final Map<Integer, BlockingQueue<Answer>> open;
 
     /**
      * The id of the next question.
@@ -69,7 +69,7 @@ final class Channel {
      * @param counter The id of the next question
      * @param mutex The lock over the line
      */
-    Channel(final Writer output, final Map<Integer, BlockingQueue<String>> waiting,
+    Channel(final Writer output, final Map<Integer, BlockingQueue<Answer>> waiting,
         final AtomicInteger counter, final Lock mutex) {
         this.out = output;
         this.open = waiting;
@@ -94,16 +94,16 @@ final class Channel {
      * Ask phino about an attribute of the formation a fire holds.
      *
      * @param fire The id of the fire
-     * @param attr The name of the attribute
+     * @param attr The name of the attribute, or a dotted path down to it
      * @param reduce Whether phino must dataize it or hand it back as written
-     * @return The φ-expression phino answered with
+     * @return The facts phino answered with
      * @throws IOException If the line cannot be written
      * @throws InterruptedException If the wait is interrupted
      */
-    String ask(final int fire, final String attr, final boolean reduce)
+    Answer ask(final int fire, final String attr, final boolean reduce)
         throws IOException, InterruptedException {
         final int id = this.next.incrementAndGet();
-        final BlockingQueue<String> slot = new LinkedBlockingQueue<>(1);
+        final BlockingQueue<Answer> slot = new LinkedBlockingQueue<>(1);
         this.open.put(id, slot);
         this.said(
             Json.createObjectBuilder()
@@ -120,17 +120,17 @@ final class Channel {
      * Hand an answer of phino to the fire that asked.
      *
      * @param id The id of the question
-     * @param phi The φ-expression phino answered with
+     * @param answer The facts phino answered with
      * @throws InterruptedException If the hand-over is interrupted
      */
-    void answered(final int id, final String phi) throws InterruptedException {
-        final BlockingQueue<String> slot = this.open.remove(id);
+    void answered(final int id, final Answer answer) throws InterruptedException {
+        final BlockingQueue<Answer> slot = this.open.remove(id);
         if (slot == null) {
             throw new IllegalStateException(
                 String.format("The answer #%d arrived, but no question with this id is open", id)
             );
         }
-        slot.put(phi);
+        slot.put(answer);
     }
 
     /**

@@ -49,11 +49,10 @@ final class Fires {
      *
      * @param id The id of the fire
      * @param lambda The λ name
-     * @param body The bindings of the formation, as phino spelled them
      * @return The fire
      */
-    Fire at(final int id, final String lambda, final String body) {
-        final Operands args = new Operands(id, new Bindings(body), this.channel, this.table);
+    Fire at(final int id, final String lambda) {
+        final Operands args = new Operands(id, this.channel, this.table);
         final Fire out;
         if ("L_dataized".equals(lambda)) {
             out = new Dataizing(args);

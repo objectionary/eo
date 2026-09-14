@@ -53,6 +53,15 @@ final class Box {
     }
 
     /**
+     * The name the parent holds the formation by.
+     *
+     * @return The last segment of the locator, such as {@code helper}
+     */
+    String name() {
+        return this.cells.get(1).substring(this.cells.get(1).lastIndexOf('.') + 1);
+    }
+
+    /**
      * The carrier the formation answers.
      *
      * @return The carrier, or {@code object} when unknown

@@ -29,17 +29,18 @@ final class ForkingTest {
         final Symbols table = new Symbols(file);
         table.record("S1", "bool", "void", "c");
         table.record("S2", "number", "void", "n");
-        new Forking(
-            new Operands(
-                1,
-                new Bindings(
-                    "⟦ left ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ), right ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) ), guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
-                ),
-                new Channel(new StringWriter()),
-                table
-            ),
-            table
-        ).answer();
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"λ\":\"S1\"}",
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"Δ\":\"40-08-00-00-00-00-00-00\"}",
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"λ\":\"S2\"}"
+            )
+        ).start();
+        new Forking(new Operands(1, channel, table), table).answer();
         MatcherAssert.assertThat(
             "the fork must be spelled as its guard, both arms and the end, in order, but it wasnt",
             new String(Files.readAllBytes(file), StandardCharsets.UTF_8),
@@ -61,19 +62,13 @@ final class ForkingTest {
     void answersMarkerInCarrierOfArms(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         table.record("S1", "bool", "void", "c");
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(channel, "{\"λ\":\"S1\"}", "{\"Δ\":\"01-\"}", "{\"Δ\":\"02-\"}")
+        ).start();
         MatcherAssert.assertThat(
             "the fork must answer a marker of the forma its arms carry, but it didnt",
-            new Forking(
-                new Operands(
-                    1,
-                    new Bindings(
-                        "⟦ left ↦ ⟦ Δ ⤍ 01- ⟧, right ↦ ⟦ Δ ⤍ 02- ⟧, guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
-                    ),
-                    new Channel(new StringWriter()),
-                    table
-                ),
-                table
-            ).answer(),
+            new Forking(new Operands(1, channel, table), table).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ )")
         );
     }
@@ -82,16 +77,18 @@ final class ForkingTest {
     void mintsFreshSymbolForEveryFork(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         table.record("S1", "bool", "void", "c");
-        final String body =
-            "⟦ left ↦ ⟦ Δ ⤍ 01- ⟧, right ↦ ⟦ Δ ⤍ 02- ⟧, guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧";
-        new Forking(
-            new Operands(1, new Bindings(body), new Channel(new StringWriter()), table), table
-        ).answer();
+        final Channel first = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(first, "{\"λ\":\"S1\"}", "{\"Δ\":\"01-\"}", "{\"Δ\":\"02-\"}")
+        ).start();
+        new Forking(new Operands(1, first, table), table).answer();
+        final Channel second = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(second, "{\"λ\":\"S1\"}", "{\"Δ\":\"01-\"}", "{\"Δ\":\"02-\"}")
+        ).start();
         MatcherAssert.assertThat(
             "a second fork over the same guard cannot share the symbol of the first, but it did",
-            new Forking(
-                new Operands(2, new Bindings(body), new Channel(new StringWriter()), table), table
-            ).answer(),
+            new Forking(new Operands(2, second, table), table).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ λ ⤍ S3 ⟧ )")
         );
     }
@@ -102,17 +99,17 @@ final class ForkingTest {
         table.record("S1", "bool", "void", "c");
         table.record("S2", "number", "void", "acc");
         table.record("S3", "object", "box", "Φ.foo.down", "acc=sym:S2");
-        new Forking(
-            new Operands(
-                1,
-                new Bindings(
-                    "⟦ left ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) ), right ↦ ⟦ λ ⤍ S3 ⟧, guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
-                ),
-                new Channel(new StringWriter()),
-                table
-            ),
-            table
-        ).answer();
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"λ\":\"S1\"}",
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"λ\":\"S2\"}",
+                "{\"λ\":\"S3\"}"
+            )
+        ).start();
+        new Forking(new Operands(1, channel, table), table).answer();
         MatcherAssert.assertThat(
             "the arm of no carrier must take the carrier of the other arm, but it didnt",
             table.carrier("S3"),
@@ -127,19 +124,19 @@ final class ForkingTest {
         table.record("S1", "bool", "void", "c");
         table.record("S2", "string", "void", "txt");
         table.record("S3", "object", "box", "Φ.foo.echo", "txt=sym:S2");
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"λ\":\"S1\"}",
+                "{\"λ\":\"S3\"}",
+                "{\"𝑛\":\"Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) )\",\"Φ.\":\"string\"}",
+                "{\"λ\":\"S2\"}"
+            )
+        ).start();
         MatcherAssert.assertThat(
             "the fork must answer in the carrier of its typed arm, but it didnt",
-            new Forking(
-                new Operands(
-                    1,
-                    new Bindings(
-                        "⟦ left ↦ ⟦ λ ⤍ S3 ⟧, right ↦ Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) ), guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
-                    ),
-                    new Channel(new StringWriter()),
-                    table
-                ),
-                table
-            ).answer(),
+            new Forking(new Operands(1, channel, table), table).answer(),
             Matchers.equalTo("Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S4 ⟧ ) )")
         );
     }

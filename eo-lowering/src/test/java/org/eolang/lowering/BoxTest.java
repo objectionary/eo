@@ -35,6 +35,15 @@ final class BoxTest {
     }
 
     @Test
+    void namesItselfAfterTheLastSegmentOfTheLocator() {
+        MatcherAssert.assertThat(
+            "the box must know the name its parent holds it by, but it doesnt",
+            new Box(Arrays.asList("L_box_3", "Φ.foo.bar.f", "number", "-", "")).name(),
+            Matchers.equalTo("f")
+        );
+    }
+
+    @Test
     void spellsLineBackWithTabs() {
         MatcherAssert.assertThat(
             "the line must come back tab separated, but it didnt",

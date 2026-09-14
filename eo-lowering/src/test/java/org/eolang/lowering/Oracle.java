@@ -4,12 +4,16 @@
  */
 package org.eolang.lowering;
 
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
+import javax.json.Json;
+import javax.json.JsonReader;
 
 /**
  * A fake phino, answering the questions a fire asks over the channel, in
- * the order they open.
+ * the order they open, each answer a JSON object of the facts phino would
+ * spell, such as {@code {"Δ":"2A-"}} or {@code {"λ":"S7"}}.
  *
  * @since 0.77.0
  */
@@ -54,7 +58,13 @@ final class Oracle implements Runnable {
                 while (!this.channel.waiting() && System.currentTimeMillis() < deadline) {
                     Thread.sleep(10L);
                 }
-                this.channel.answered(1_000_001 + idx, this.replies.get(idx));
+                try (
+                    JsonReader reader = Json.createReader(
+                        new StringReader(this.replies.get(idx))
+                    )
+                ) {
+                    this.channel.answered(1_000_001 + idx, new Answer(reader.readObject()));
+                }
             }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();

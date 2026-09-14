@@ -26,14 +26,18 @@ final class BoxingTest {
     void recordsBoundVoidsWithoutParent(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         table.record("S1", "number", "void", "a");
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S1 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"λ\":\"S1\"}",
+                "{\"∅\":true}"
+            )
+        ).start();
         new Boxing(
             new Box(Arrays.asList("L_box_2", "Φ.foo.f", "number", "-", "x:number y:bool")),
-            new Operands(
-                1,
-                new Bindings("⟦ x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S1 ⟧ ) ), y ↦ ∅ ⟧"),
-                new Channel(new StringWriter()),
-                table
-            ),
+            new Operands(1, channel, table),
             table
         ).answer();
         MatcherAssert.assertThat(
@@ -47,10 +51,10 @@ final class BoxingTest {
     void recordsValueOfParentTypedByItsForma(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         final Channel channel = new Channel(new StringWriter());
-        new Thread(new Oracle(channel, "⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧")).start();
+        new Thread(new Oracle(channel, "{\"Δ\":\"40-08-00-00-00-00-00-00\"}")).start();
         new Boxing(
             new Box(Arrays.asList("L_box_1", "Φ.number.twice", "number", "number", "")),
-            new Operands(1, new Bindings("⟦ ⟧"), channel, table),
+            new Operands(1, channel, table),
             table
         ).answer();
         MatcherAssert.assertThat(
@@ -66,10 +70,16 @@ final class BoxingTest {
     void omitsLexicalParent(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
         final Channel channel = new Channel(new StringWriter());
-        new Thread(new Oracle(channel, "⟦ f ↦ ⟦ λ ⤍ L_box_3 ⟧, k ↦ ∅ ⟧")).start();
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_3 ⟧, k ↦ ∅ ⟧\"}",
+                "{\"𝑛\":\"⟦ λ ⤍ L_box_3 ⟧\",\"λ\":\"L_box_3\"}"
+            )
+        ).start();
         new Boxing(
             new Box(Arrays.asList("L_box_3", "Φ.foo.f", "bool", "object", "")),
-            new Operands(1, new Bindings("⟦ ⟧"), channel, table),
+            new Operands(1, channel, table),
             table
         ).answer();
         MatcherAssert.assertThat(
@@ -82,18 +92,19 @@ final class BoxingTest {
     @Test
     void answersMarkerOfBoxCarrier(@Mktmp final Path temp) throws Exception {
         final Symbols table = new Symbols(temp.resolve("s.tsv"));
+        final Channel channel = new Channel(new StringWriter());
+        new Thread(
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) )\",\"Φ.\":\"number\"}",
+                "{\"Δ\":\"40-08-00-00-00-00-00-00\"}"
+            )
+        ).start();
         MatcherAssert.assertThat(
             "the box must answer a marker of the carrier it declares, but it didnt",
             new Boxing(
                 new Box(Arrays.asList("L_box_2", "Φ.foo.f", "bool", "-", "x:number")),
-                new Operands(
-                    1,
-                    new Bindings(
-                        "⟦ x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧"
-                    ),
-                    new Channel(new StringWriter()),
-                    table
-                ),
+                new Operands(1, channel, table),
                 table
             ).answer(),
             Matchers.equalTo(
