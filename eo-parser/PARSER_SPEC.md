@@ -970,13 +970,21 @@ R-6.2.2. The naming line per outer kind:
 | `compact-tuple` | the head line carrying `*N` |
 | `text-block` | the closing-`"""` line |
 
-R-6.2.3. Intermediate lines within a multi-line expression **may** carry their own optional names (binding intermediate sub-expressions); these are independent of the outermost name and are not required.
+R-6.2.3. Intermediate lines within a multi-line expression **may** carry their own optional names (binding intermediate sub-expressions); these are independent of the outermost name and are not required. Inside an argument block the name has to be a `>>` handle (R-6.2.4).
+R-6.2.4. **No explicit name on an argument.** A line whose parent is not a formation body — a child of a `vapplication`, `vmethod`, `bare-reversed`, `compact-tuple`, vertical `pipe-application` or `identity-object` block, or a `.method` continuation of such a child — is an argument, and an argument cannot carry an explicit `> name` suffix. The name would float the argument up to the enclosing formation as an attribute of its own (`vars-float-up`, §9), so `x > foo` over `42 > bar` reads as `42 > bar` beside `x bar > foo`, which is not what the author meant. An argument that has to be reachable by name takes a `>>` handle (R-3.10.12), which stays anonymous; a formation line is exempt, since a named formation in an argument block floats up by design (R-3.14.8); and an argument of an only-phi formation is governed by §4.5 instead, whose message names the formation. The parser rejects the line (``an argument cannot carry a name, move it into the formation body or give it a `>>` handle``).
 
 Examples:
 
 ```
 [] > foo
   x.y.z > name                        ← single-line: name on its only line
+
+  bar > @
+    [] > hello                        ← argument: a named formation floats up (R-3.14.8)
+    | 5
+
+  x > a
+    42 >> b                           ← argument: a handle keeps it anonymous
 
   tmpdir                              ← intermediate, no name (optional)
   .tmpfile > file                     ← intermediate, named (optional)
@@ -997,6 +1005,9 @@ Illegal:
   tmpdir                              ← outer vmethod starts here
   .tmpfile
   .open                               ← rejected: vmethod's naming line carries no suffix
+
+  x > a
+    42 > b                            ← rejected: an argument cannot carry a name (R-6.2.4)
 ```
 
 ### 6.3 Atoms and test attributes
@@ -1356,6 +1367,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `.method` continuation on horizontally-completed previous | `method continuation not allowed after horizontal application, try vertical application instead` |
 | `.method` continuation on an only-phi formation | `method continuation not allowed after only-phi formation` |
 | Name suffix on an only-phi φ's argument | `<name> cannot be a named attribute of only-phi formation <formation>, which binds only its φ decoratee` (the formation is described generically as `an only-phi formation` when anonymous) |
+| Explicit `> name` on an argument (R-6.2.4) | ``an argument cannot carry a name, move it into the formation body or give it a `>>` handle`` |
 | `.method` line at top level, deeper than parent, or with no same-indent sibling | `method continuation has no expression to attach to` |
 | Chained inline-phi suffix `expr > [a] > [b] > name` | `chained inline-phi suffixes are not allowed` |
 | Inline-phi without a name on the right (`expr > [params]` alone) | `inline-phi formation must carry a name on the right` |
