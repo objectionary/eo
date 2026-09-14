@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # Tail recursion with an accumulator lowers into an atom that enters the
 # formation again through PhApplication; the accumulator arm witnesses
 # the carrier of the recursive answer.

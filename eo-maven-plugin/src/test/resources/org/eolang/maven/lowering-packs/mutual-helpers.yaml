@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # Two private formations calling each other lower one at a time: the
 # first enters the second as a box, and the second, morphed in a world
 # that already carries the atom of the first, enters the first the same

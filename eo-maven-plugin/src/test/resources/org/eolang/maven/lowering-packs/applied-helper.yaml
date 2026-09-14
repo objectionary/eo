@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A private formation applied twice in the body is entered as a box: the
 # atom applies it through PhApplication and adds the answers. Each nested
 # formation is lowered on its own into an atom over the formation it

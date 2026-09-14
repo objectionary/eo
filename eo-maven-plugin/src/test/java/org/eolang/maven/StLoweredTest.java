@@ -224,8 +224,8 @@ final class StLoweredTest {
     @Test
     void callsCappedClassAtCallSite(@Mktmp final Path temp) throws IOException {
         final XML transpiled = StLoweredTest.transpiled(
-            StLoweredTest.lowered(StLoweredTest.deep(24), "ba9876543210"),
-            StLoweredTest.sidecars(temp, "ba9876543210", "        return this.take(\"x\");")
+            StLoweredTest.lowered(StLoweredTest.deep(24), "fe9876543210"),
+            StLoweredTest.sidecars(temp, "fe9876543210", "        return this.take(\"x\");")
         );
         MatcherAssert.assertThat(
             "the call site must instantiate the capped class by the same name, but it doesnt",

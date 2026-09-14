@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # An element of a tuple void is taken by dispatching at on the tuple at
 # run time, and the atom adds to what it answers.
 input: |

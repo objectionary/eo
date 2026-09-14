@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A formation calling itself through its parent lowers into an atom that
 # receives the formation as a void and enters it through PhApplication,
 # reading the answer as a number since times witnesses it.

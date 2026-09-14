@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A private helper on the guard is folded into the body of the recursive
 # formation and lowered as its own bool atom too, since it stays
 # reachable by name.

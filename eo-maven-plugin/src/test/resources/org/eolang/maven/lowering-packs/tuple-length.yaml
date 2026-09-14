@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # The length of a tuple void is not an operation the engine computes, so
 # the atom dispatches length on the tuple at run time and adds to what
 # it answers; the tuple void stays untyped.

@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A const helper is read once: the handle dataizes its target to bytes
 # and the atom keeps that value for every later read, so the masked
 # bytes are computed once and compared once.

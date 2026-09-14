@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A guard through a method that is a formation, not an atom, is entered
 # as a box: the atom dispatches lt on the void at run time and branches
 # on the bool it answers, while lt and minus of the prelude lower on
