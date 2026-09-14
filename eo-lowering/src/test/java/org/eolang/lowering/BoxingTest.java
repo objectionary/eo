@@ -88,7 +88,9 @@ final class BoxingTest {
                 new Box(Arrays.asList("L_box_2", "Φ.foo.f", "bool", "-", "x:number")),
                 new Operands(
                     1,
-                    new Bindings("⟦ x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧"),
+                    new Bindings(
+                        "⟦ x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧"
+                    ),
                     new Channel(new StringWriter()),
                     table
                 ),

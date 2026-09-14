@@ -54,11 +54,6 @@ import org.w3c.dom.Node;
 public final class Formas {
 
     /**
-     * The forma a symbolic carrier stands for, by the locator naming it.
-     */
-    private static final Map<String, String> CARRIERS = Formas.carriers();
-
-    /**
      * The target locator of every locator whose single filling is a
      * reference; anything else — a void, a literal, an undecidable
      * row — is absent, and the chase asks the provides table instead.
@@ -150,16 +145,6 @@ public final class Formas {
     }
 
     /**
-     * Whether a locator names a data object, one of the carriers.
-     *
-     * @param place The locator
-     * @return TRUE for a data object
-     */
-    public boolean data(final String place) {
-        return Formas.CARRIERS.containsKey(place);
-    }
-
-    /**
      * The forma of a void as witnessed, or as chased from it.
      *
      * @param place The locator of the void
@@ -184,8 +169,9 @@ public final class Formas {
         String out = "";
         String cursor = start;
         while (seen.add(cursor)) {
-            if (Formas.CARRIERS.containsKey(cursor)) {
-                out = Formas.CARRIERS.get(cursor);
+            final Carrier carrier = new Carrier(cursor);
+            if (carrier.data()) {
+                out = carrier.forma();
                 break;
             }
             if (this.atoms.containsKey(cursor)) {
@@ -234,7 +220,9 @@ public final class Formas {
         final Map<String, Set<String>> fillings = Formas.fillings(table);
         return Formas.collapsed(
             fillings,
-            new Formas(rows, Formas.collapsed(fillings, Formas::carrier), lambdas)::at
+            new Formas(
+                rows, Formas.collapsed(fillings, place -> new Carrier(place).forma()), lambdas
+            )::at
         );
     }
 
@@ -285,10 +273,6 @@ public final class Formas {
         return out;
     }
 
-    private static String carrier(final String locator) {
-        return Formas.CARRIERS.getOrDefault(locator, "");
-    }
-
     private static Map<String, String> declared(final Path table) {
         final Map<String, String> out = new HashMap<>(0);
         if (Files.exists(table)) {
@@ -301,25 +285,10 @@ public final class Formas {
     }
 
     private static void announced(final Xnav row, final Map<String, String> out) {
-        final String forma = Formas.CARRIERS.getOrDefault(
-            row.attribute("forma").text().orElse(""), ""
-        );
+        final String forma = new Carrier(row.attribute("forma").text().orElse("")).forma();
         if (!forma.isEmpty()) {
             row.attribute("loc").text().ifPresent(loc -> out.put(loc, forma));
         }
-    }
-
-    private static Map<String, String> carriers() {
-        final Map<String, String> out = new HashMap<>(8);
-        out.put("Φ.number", "number");
-        out.put("Φ.string", "string");
-        out.put("Φ.bytes", "bytes");
-        out.put("Φ.bool", "bool");
-        out.put("Φ.true", "bool");
-        out.put("Φ.false", "bool");
-        out.put("Φ.tuple", "tuple");
-        out.put("Φ.tuple.empty", "tuple");
-        return out;
     }
 
     private static Stream<String> refs(final Xnav node) {

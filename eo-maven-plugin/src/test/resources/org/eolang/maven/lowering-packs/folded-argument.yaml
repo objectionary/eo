@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# An argument made of literals only is folded by phino before the engine
+# sees it, so the atom adds the folded constant.
 input: |
   [] > foo
     [x] > calc
@@ -20,6 +21,10 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > calc
-      x.plus (2.times 3) > @
     calc 5 > @
+    [] > calc /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 + Double.longBitsToDouble(0x4018000000000000L);
+  return new Data.ToPhi(s2);

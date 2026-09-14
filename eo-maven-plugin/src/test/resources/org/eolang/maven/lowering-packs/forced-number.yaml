@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A const number answered as the body stays as written for now: phino
+# reduces the handle to the as-bytes formation whose value sits in its
+# hidden rho, so the engine finds no data to splice; the printer folds
+# the single-use handle into the body.
 input: |
   [] > foo
     [x] > raw
@@ -16,12 +19,16 @@ prelude:
         ? > x /Q.number
   bytes.eo: |
     [@] > bytes
+  bytes/as-bytes.eo: |
+    +package bytes
+
+    [^] > as-bytes
+      ^ > @
   dataized.eo: |
     [] > dataized /Q.bytes
       ? > target
 lowered: |
   [] > foo
+    raw 2 > @
     [x] > raw
       x.plus 1 >> sum!
-      sum > @
-    raw 2 > @

@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A comparison on a number void lowers whole into an atom that answers a
+# bool.
 input: |
   [] > foo
     [x] > check
@@ -22,6 +23,10 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x] > check
-      x.gt 3 > @
     check 7 > @
+    [] > check /Q.bool
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final boolean s2 = v0 > Double.longBitsToDouble(0x4008000000000000L);
+  return new Data.ToPhi(s2);

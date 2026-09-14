@@ -63,7 +63,10 @@ final class PrimitiveTest {
         MatcherAssert.assertThat(
             "the operation over a symbol must land as a row of its forma, but it didnt",
             new String(Files.readAllBytes(file), StandardCharsets.UTF_8),
-            Matchers.endsWith("S2\tbool\tL_number_gt\tsym:S1\tnumber:40-08-00-00-00-00-00-00\n")
+            Matchers.endsWith(
+                "S2\tbool\tL_number_gt\tsym:S1\tnumber:40-08-00-00-00-00-00-00"
+                    .concat(System.lineSeparator())
+            )
         );
     }
 

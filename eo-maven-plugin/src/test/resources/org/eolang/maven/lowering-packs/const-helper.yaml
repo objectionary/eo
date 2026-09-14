@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A const helper is read once: the handle dataizes its target to bytes
+# and the atom keeps that value for every later read, so the masked
+# bytes are computed once and compared once.
 input: |
   [] > foo
     [m] > probe
@@ -22,12 +24,21 @@ prelude:
       if > @
         FF-
         00-
+  bytes/as-bytes.eo: |
+    +package bytes
+
+    [^] > as-bytes
+      ^ > @
   dataized.eo: |
     [] > dataized /Q.bytes
       ? > target
 lowered: |
   [] > foo
-    [m] > probe
-      m.and 0F-0F-0F-0F-0F-0F-0F-0F >> masked!
-      masked.eq 00-00-00-00-00-00-00-00 > @
     probe 43-30-00-00-00-00-00-00 > @
+    [] > probe /Q.bool
+      ? > m /Q.bytes
+java: |
+  final byte[] v0 = new Dataized(this.take("m")).take();
+  final byte[] s2 = new BytesOf(v0).and(new BytesOf(new byte[] {(byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F, (byte) 0x0F})).take();
+  final boolean s3 = java.util.Arrays.equals(s2, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+  return new Data.ToPhi(s3);

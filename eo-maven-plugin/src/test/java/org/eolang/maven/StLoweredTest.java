@@ -15,7 +15,9 @@ import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.parser.EoSyntax;
@@ -207,6 +209,37 @@ final class StLoweredTest {
         );
     }
 
+    @Test
+    void capsClassNameOfDeeplyNestedAtom(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the class name of an atom nested deep must fit a file name, but it doesnt",
+            StLoweredTest.transpiled(
+                StLoweredTest.lowered(StLoweredTest.deep(24), "0123456789ab"),
+                StLoweredTest.sidecars(temp, "0123456789ab", "        return this.take(\"x\");")
+            ).xpath("/object/class[@lowered='true']/@java-name").get(0).length(),
+            Matchers.lessThanOrEqualTo(211)
+        );
+    }
+
+    @Test
+    void callsCappedClassAtCallSite(@Mktmp final Path temp) throws IOException {
+        final XML transpiled = StLoweredTest.transpiled(
+            StLoweredTest.lowered(StLoweredTest.deep(24), "ba9876543210"),
+            StLoweredTest.sidecars(temp, "ba9876543210", "        return this.take(\"x\");")
+        );
+        MatcherAssert.assertThat(
+            "the call site must instantiate the capped class by the same name, but it doesnt",
+            transpiled.xpath("/object/class[@name='app']/java/text()").get(0),
+            Matchers.containsString(
+                String.format(
+                    "new %s()",
+                    transpiled.xpath("/object/class[@lowered='true']/@java-name").get(0)
+                        .replaceAll("^.*\\.", "")
+                )
+            )
+        );
+    }
+
     private static String generated(final Path temp, final String digest) throws IOException {
         return StLoweredTest.transpiled(
             StLoweredTest.lowered(StLoweredTest.program(), digest),
@@ -245,6 +278,24 @@ final class StLoweredTest {
         ).parsed();
     }
 
+    private static XML deep(final int levels) throws IOException {
+        final List<String> lines = new ArrayList<>(levels * 2 + 4);
+        lines.add("[args] > app");
+        for (int idx = 0; idx < levels; ++idx) {
+            lines.add(
+                String.format("%s[y%d] > formation%d", "  ".repeat(idx + 1), idx, idx)
+            );
+        }
+        lines.add(String.format("%s[x] > bump", "  ".repeat(levels + 1)));
+        lines.add(String.format("%sx > @", "  ".repeat(levels + 2)));
+        for (int idx = levels - 1; idx >= 0; --idx) {
+            lines.add(String.format("%sbump y%d > @", "  ".repeat(idx + 2), idx));
+        }
+        lines.add("  formation0 args > @");
+        lines.add("");
+        return new EoSyntax(String.join(System.lineSeparator(), lines)).parsed();
+    }
+
     private static XML lowered(final XML parsed, final String digest) {
         final XMLDocument doc = new XMLDocument(parsed.toString());
         new Xembler(
@@ -252,7 +303,7 @@ final class StLoweredTest {
                 .xpath("//o[@name='bump']")
                 .attr("pure", "true")
                 .attr("lowered", digest)
-                .xpath("//o[@name='bump']/o[@name='@']")
+                .xpath("//o[@name='bump']/o[@name='φ']")
                 .remove()
                 .xpath("//o[@name='bump']")
                 .add("o")

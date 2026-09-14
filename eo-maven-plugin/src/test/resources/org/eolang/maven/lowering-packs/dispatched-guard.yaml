@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A guard through a method that is a formation, not an atom, is entered
+# as a box: the atom dispatches lt on the void at run time and branches
+# on the bool it answers, while lt and minus of the prelude lower on
+# their own.
 input: |
   [] > foo
     [x] > sign
@@ -37,9 +40,15 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x] > sign
-      if. > @
-        x.lt 0
-        -1
-        1
     sign 5 > @
+    [] > sign /Q.number
+      ? > x /Q.number
+java: |
+  final boolean s2 = new Dataized(new PhApplication(new PhDispatch(this.take("x"), "lt"), new Bind("x", new Data.ToPhi(Double.longBitsToDouble(0x0000000000000000L))))).asBool();
+  final double s3;
+  if (s2) {
+      s3 = Double.longBitsToDouble(0xBFF0000000000000L);
+  } else {
+      s3 = Double.longBitsToDouble(0x3FF0000000000000L);
+  }
+  return new Data.ToPhi(s3);

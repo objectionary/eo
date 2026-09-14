@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Equality of two number voids goes through bytes, as in the runtime,
+# and lowers into a comparison of doubles.
 input: |
   [] > foo
     [x y] > same
@@ -10,11 +11,11 @@ input: |
 prelude:
   number.eo: |
     [@] > number
-      [] > eq /Q.bool
-        ? > ^
-        ? > x /Q.number
   bytes.eo: |
     [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
   bool.eo: |
     [if] > bool
       if > @
@@ -22,6 +23,14 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x y] > same
-      x.eq y > @
-    same 2 3 > @
+    same > @
+      2
+      3
+    [] > same /Q.bool
+      ? > x /Q.number
+      ? > y /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double v1 = new Dataized(this.take("y")).asNumber();
+  final boolean s4 = v0 == v1;
+  return new Data.ToPhi(s4);

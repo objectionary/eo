@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A public helper binding and the body that reads it lower into two
+# sibling atoms, since the helper stays reachable from outside and
+# cannot be folded into the body.
 input: |
   [] > foo
     [x] > bump
@@ -21,7 +23,16 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > bump
-      x.times x > square
-      square.plus 1 > @
     bump 5 > @
+    [x] > bump
+      l🌵4243cf7e9e60 x > @
+      [] > l🌵0de8126e7588 /Q.number
+        ? > v0 /Q.number
+      [] > l🌵4243cf7e9e60 /Q.number
+        ? > v0 /Q.number
+      l🌵0de8126e7588 x > square
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double s3 = v0 * v0;
+  final double s4 = s3 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s4);

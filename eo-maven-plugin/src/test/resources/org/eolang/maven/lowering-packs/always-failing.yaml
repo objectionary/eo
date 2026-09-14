@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A body that raises an error reaches the terminator, so the formation
+# stays as written.
 input: |
   [] > foo
     [x] > boom
@@ -20,6 +21,5 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > boom
-      T "boom" > @
     boom 5 > @
+    T "boom" > [x] > boom

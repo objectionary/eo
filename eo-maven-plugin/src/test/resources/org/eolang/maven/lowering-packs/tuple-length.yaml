@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# The length of a tuple void is not an operation the engine computes, so
+# the atom dispatches length on the tuple at run time and adds to what
+# it answers; the tuple void stays untyped.
 input: |
   [] > foo
     [items] > count
@@ -17,8 +19,17 @@ prelude:
     [@] > bytes
   tuple.eo: |
     [tail head length] > tuple
+      [^ i] > at
+        ^.head > @
 lowered: |
   [] > foo
-    [items] > count
-      items.length.plus 1 > @
-    count (* 7 8 9) > @
+    count * > @
+      7
+      8
+      9
+    [] > count /Q.number
+      ? > items
+java: |
+  final double s2 = new Dataized(new PhDispatch(this.take("items"), "length")).asNumber();
+  final double s5 = s2 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s5);

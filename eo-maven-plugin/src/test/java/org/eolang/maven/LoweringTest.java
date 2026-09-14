@@ -92,7 +92,7 @@ final class LoweringTest {
         for (final Map.Entry<?, ?> entry : ((Map<?, ?>) prelude).entrySet()) {
             maven.withProgram(
                 entry.getValue().toString(),
-                entry.getKey().toString().replace(".eo", ""),
+                entry.getKey().toString().replace(".eo", "").replace('/', '.'),
                 entry.getKey().toString()
             );
         }

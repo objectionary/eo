@@ -39,7 +39,9 @@ final class MarkedTest {
             Matchers.allOf(
                 Matchers.matchesPattern("(?s).* lowered=\"[0-9a-f]{12}\".*"),
                 Matchers.containsString("pure=\"true\""),
-                Matchers.containsString("<o base=\"∅\" loc=\"Φ.foo.f.a\" name=\"a\" type=\"Φ.number\"/>"),
+                Matchers.containsString(
+                    "<o base=\"∅\" loc=\"Φ.foo.f.a\" name=\"a\" type=\"Φ.number\"/>"
+                ),
                 Matchers.not(Matchers.containsString("name=\"φ\"")),
                 Matchers.endsWith("<o atom=\"Φ.number\" name=\"λ\"/></o>")
             )
@@ -295,18 +297,58 @@ final class MarkedTest {
 
     @Test
     void refusesProgramJavaCannotRender(@Mktmp final Path temp) throws IOException {
-        final Marked marked = new Marked(
-            MarkedTest.fragment("<o name='φ'><o name='λ'>S2</o></o>"),
-            MarkedTest.table(
-                temp, "S1\ttuple\tvoid\tt",
-                "S2\tobject\tL_tuple_at\tsym:S1\tnumber:00-00-00-00-00-00-00-00"
-            ),
-            temp
-        );
         Assertions.assertThrows(
             IllegalStateException.class,
-            marked::apply,
+            () -> new Marked(
+                MarkedTest.fragment("<o name='φ'><o name='λ'>S2</o></o>"),
+                MarkedTest.table(
+                    temp, "S1\ttuple\tvoid\tt",
+                    "S2\tobject\tL_tuple_at\tsym:S1\tnumber:00-00-00-00-00-00-00-00"
+                ),
+                temp
+            ).apply(),
             "a program answering an object cannot be an atom, but it became one"
+        );
+    }
+
+    @Test
+    void sharesOneAtomBetweenSitesOfOneProgram(@Mktmp final Path temp) throws IOException {
+        final Element fragment = MarkedTest.fragment(
+            String.format(
+                "%s%s", MarkedTest.number("name='h'", "S3"), MarkedTest.number("name='φ'", "S3")
+            )
+        );
+        new Marked(fragment, MarkedTest.sum(temp), temp).apply();
+        MatcherAssert.assertThat(
+            "two sites of one program must call one sibling atom, but two were made",
+            new Xnav(fragment).path("o[starts-with(@name, 'l🌵')]").count(),
+            Matchers.equalTo(1L)
+        );
+    }
+
+    @Test
+    void lowersWholeAheadOfPrivateBindings(@Mktmp final Path temp) throws IOException {
+        final Element fragment = MarkedTest.fragment(
+            String.format(
+                "%s%s",
+                MarkedTest.number("local='stop' name='a🌵3-4'", "S3"),
+                MarkedTest.number("name='φ'", "S4")
+            )
+        );
+        new Marked(
+            fragment,
+            MarkedTest.table(
+                temp,
+                "S1\tnumber\tvoid\ta", "S2\tnumber\tvoid\tb",
+                "S3\tnumber\tL_number_plus\tsym:S1\tsym:S2",
+                "S4\tnumber\tL_number_times\tsym:S3\tsym:S1"
+            ),
+            temp
+        ).apply();
+        MatcherAssert.assertThat(
+            "the body must be lowered whole whatever private binding precedes it, but it wasnt",
+            fragment.hasAttribute("lowered"),
+            Matchers.is(true)
         );
     }
 
@@ -345,7 +387,10 @@ final class MarkedTest {
     private static Table table(final Path temp, final String... rows) throws IOException {
         final Path file = temp.resolve("symbols.tsv");
         Files.write(
-            file, String.join("\n", rows).concat("\n").getBytes(StandardCharsets.UTF_8)
+            file,
+            String.join(System.lineSeparator(), rows)
+                .concat(System.lineSeparator())
+                .getBytes(StandardCharsets.UTF_8)
         );
         return new Table(new Symbols(file));
     }
@@ -357,21 +402,5 @@ final class MarkedTest {
                 StandardCharsets.UTF_8
             );
         }
-    }
-
-
-    @Test
-    void sharesOneAtomBetweenSitesOfOneProgram(@Mktmp final Path temp) throws IOException {
-        final Element fragment = MarkedTest.fragment(
-            String.format(
-                "%s%s", MarkedTest.number("name='h'", "S3"), MarkedTest.number("name='φ'", "S3")
-            )
-        );
-        new Marked(fragment, MarkedTest.sum(temp), temp).apply();
-        MatcherAssert.assertThat(
-            "two sites of one program must call one sibling atom, but two were made",
-            new Xnav(fragment).path("o[starts-with(@name, 'l🌵')]").count(),
-            Matchers.equalTo(1L)
-        );
     }
 }

@@ -31,27 +31,34 @@ final class EngineTest {
     void answersFireWithBoundOperands(@Mktmp final Path temp) throws Exception {
         final StringWriter out = new StringWriter();
         final Channel channel = new Channel(out);
-        new Engine(
-            channel,
-            new Fires(new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel),
-            (thread, error) -> {
-            }
-        ).serve(
-            new BufferedReader(
+        try (
+            BufferedReader input = new BufferedReader(
                 new StringReader(
                     String.join(
-                        "\n",
+                        System.lineSeparator(),
                         "{\"𝑒\":\"⟦ ⟧\"}",
                         "{\"id\":7,\"λ\":\"L_number_times\",\"𝑏\":\"⟦ ρ ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-00-00-00-00-00-00-00 ⟧ ) ), x ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-08-00-00-00-00-00-00 ⟧ ) ) ⟧\"}"
                     )
                 )
             )
-        );
+        ) {
+            new Engine(
+                channel,
+                new Fires(
+                    new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+                ),
+                (thread, error) -> {
+                }
+            ).serve(input);
+        }
         MatcherAssert.assertThat(
             "the fire must be answered on its own id with the folded node, but it wasnt",
             out.toString(),
             Matchers.equalTo(
-                "{\"id\":7,\"𝑛\":\"Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 40-18-00-00-00-00-00-00 ⟧ ) )\"}\n"
+                """
+                {"id":7,"𝑛":"Φ.number( φ ↦ Φ.bytes( φ ↦ \
+                ⟦ Δ ⤍ 40-18-00-00-00-00-00-00 ⟧ ) )"}
+                """
             )
         );
     }
@@ -62,54 +69,75 @@ final class EngineTest {
         final Channel channel = new Channel(out);
         final Engine engine = new Engine(
             channel,
-            new Fires(new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel),
+            new Fires(
+                new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+            ),
             (thread, error) -> {
             }
         );
-        final PipedWriter feed = new PipedWriter();
-        final BufferedReader input = new BufferedReader(new PipedReader(feed));
-        final Thread serving = new Thread(
-            () -> {
-                try {
-                    engine.serve(input);
-                } catch (final IOException ex) {
-                    throw new IllegalStateException(ex);
-                } catch (final InterruptedException ex) {
-                    Thread.currentThread().interrupt();
+        try (
+            PipedWriter feed = new PipedWriter();
+            BufferedReader input = new BufferedReader(new PipedReader(feed))
+        ) {
+            final Thread serving = new Thread(
+                () -> {
+                    try {
+                        engine.serve(input);
+                    } catch (final IOException ex) {
+                        throw new IllegalStateException(ex);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
                 }
+            );
+            serving.start();
+            feed.write(
+                """
+                {"id":3,"λ":"L_dataized","𝑏":"⟦ target ↦ ξ.ρ.x ⟧"}
+                """
+            );
+            feed.flush();
+            final long deadline = System.currentTimeMillis() + 5_000L;
+            while (!out.toString().contains("\"of\":3") && System.currentTimeMillis() < deadline) {
+                Thread.sleep(10L);
             }
-        );
-        serving.start();
-        feed.write("{\"id\":3,\"λ\":\"L_dataized\",\"𝑏\":\"⟦ target ↦ ξ.ρ.x ⟧\"}\n");
-        feed.flush();
-        final long deadline = System.currentTimeMillis() + 5_000L;
-        while (!out.toString().contains("\"of\":3") && System.currentTimeMillis() < deadline) {
-            Thread.yield();
+            feed.write(
+                """
+                {"id":1000001,"𝑛":"⟦ Δ ⤍ 2A- ⟧"}
+                """
+            );
+            feed.flush();
+            feed.close();
+            serving.join(5_000L);
+            MatcherAssert.assertThat(
+                "the reply to the question must reach the fire and shape its answer, but it didnt",
+                out.toString(),
+                Matchers.endsWith(
+                    """
+                    {"id":3,"𝑛":"Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )"}
+                    """
+                )
+            );
         }
-        feed.write("{\"id\":1000001,\"𝑛\":\"⟦ Δ ⤍ 2A- ⟧\"}\n");
-        feed.flush();
-        feed.close();
-        serving.join(5_000L);
-        MatcherAssert.assertThat(
-            "the reply to the question must reach the fire and shape its answer, but it didnt",
-            out.toString(),
-            Matchers.endsWith("{\"id\":3,\"𝑛\":\"Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )\"}\n")
-        );
     }
 
     @Test
     void handsFailedFireToHandler(@Mktmp final Path temp) throws Exception {
         final Channel channel = new Channel(new StringWriter());
         final AtomicReference<Throwable> seen = new AtomicReference<>();
-        new Engine(
-            channel,
-            new Fires(new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel),
-            (thread, error) -> seen.set(error)
-        ).serve(
-            new BufferedReader(
+        try (
+            BufferedReader input = new BufferedReader(
                 new StringReader("{\"id\":2,\"λ\":\"L_miracle\",\"𝑏\":\"⟦ ⟧\"}")
             )
-        );
+        ) {
+            new Engine(
+                channel,
+                new Fires(
+                    new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+                ),
+                (thread, error) -> seen.set(error)
+            ).serve(input);
+        }
         MatcherAssert.assertThat(
             "a fire nobody serves must fail through the handler, naming the fire, but it didnt",
             seen.get().getMessage(),

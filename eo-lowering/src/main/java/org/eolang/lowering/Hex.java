@@ -56,7 +56,7 @@ public final class Hex {
      * @param bytes The bytes
      */
     public Hex(final byte[] bytes) {
-        this.data = bytes;
+        this.data = bytes.clone();
     }
 
     /**
@@ -76,7 +76,9 @@ public final class Hex {
     public double number() {
         if (this.data.length != Double.BYTES) {
             throw new IllegalStateException(
-                String.format("The bytes '%s' are not a number, since they are not eight", this.text())
+                String.format(
+                    "The bytes '%s' are not a number, since they are not eight", this.text()
+                )
             );
         }
         return ByteBuffer.wrap(this.data).getDouble();
@@ -103,12 +105,6 @@ public final class Hex {
         return out;
     }
 
-    /**
-     * Parse the text.
-     *
-     * @param dashed The text
-     * @return The bytes
-     */
     private static byte[] parsed(final String dashed) {
         final List<Byte> out = new ArrayList<>(0);
         for (final String pair : dashed.split("-", -1)) {
@@ -123,12 +119,6 @@ public final class Hex {
         return bytes;
     }
 
-    /**
-     * The byte of a truth.
-     *
-     * @param value The truth
-     * @return One byte
-     */
     private static byte[] truth(final boolean value) {
         final byte[] out;
         if (value) {

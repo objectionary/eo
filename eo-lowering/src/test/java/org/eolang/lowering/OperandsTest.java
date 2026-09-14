@@ -145,7 +145,6 @@ final class OperandsTest {
         );
     }
 
-
     @Test
     void readsDataReceiverThatCarriesTheBox(@Mktmp final Path temp) throws Exception {
         final Channel channel = new Channel(new StringWriter());
@@ -161,6 +160,20 @@ final class OperandsTest {
                 3, new Bindings("⟦ x ↦ ∅ ⟧"), channel, new Symbols(temp.resolve("s.tsv"))
             ).receiver("L_box_2"),
             Matchers.equalTo("sym:S1")
+        );
+    }
+
+    @Test
+    void witnessesCarrierOfSymbolFromTheOperation(@Mktmp final Path temp) throws Exception {
+        final Symbols symbols = new Symbols(temp.resolve("s.tsv"));
+        symbols.record("S1", "object", "box", "Φ.foo.fact", "n=sym:S2");
+        new Operands(
+            4, new Bindings("⟦ x ↦ ⟦ λ ⤍ S1 ⟧ ⟧"), new Channel(new StringWriter()), symbols
+        ).of("x", "number");
+        MatcherAssert.assertThat(
+            "a symbol of no carrier fed to a typed operation must take its forma, but it didnt",
+            symbols.carrier("S1"),
+            Matchers.equalTo("number")
         );
     }
 }

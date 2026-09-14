@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A helper that reads itself never reduces, so the formation stays as
+# written.
 input: |
   [] > foo
     [x] > spin
@@ -21,7 +22,8 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > spin
-      more.plus x >> more
-      more.times 2 > @
     spin 5 > @
+    [x] > spin
+      times. > @
+        v3_4.plus x >> more
+        2

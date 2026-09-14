@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A formation without voids is not a box, so it is left alone.
 input: |
   [] > foo
     2.plus 3 > @
@@ -17,5 +17,4 @@ prelude:
   bytes.eo: |
     [@] > bytes
 lowered: |
-  [] > foo
-    2.plus 3 > @
+  2.plus 3 > [] > foo

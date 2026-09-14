@@ -35,7 +35,9 @@ final class MarkerTest {
     )
     void spellsMarkerOfCarrier(final String key, final String carrier, final String phi) {
         MatcherAssert.assertThat(
-            String.format("the %s marker of '%s' must be spelled right, but it wasnt", carrier, key),
+            String.format(
+                "the %s marker of '%s' must be spelled right, but it wasnt", carrier, key
+            ),
             new Marker(key, carrier).phi(),
             Matchers.equalTo(phi)
         );

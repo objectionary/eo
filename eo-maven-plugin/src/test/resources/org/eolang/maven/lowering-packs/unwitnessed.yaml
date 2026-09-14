@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A void of the outer object is applied to the inner one without a
+# literal in sight, so nothing witnesses its forma and the formation
+# stays as written.
 input: |
   [q] > foo
     [x] > bump
@@ -20,6 +22,5 @@ prelude:
     [@] > bytes
 lowered: |
   [q] > foo
-    [x] > bump
-      x.plus 2 > @
     bump q > @
+    x.plus 2 > [x] > bump

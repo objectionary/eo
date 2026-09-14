@@ -60,12 +60,6 @@ public final class Folded {
         return out;
     }
 
-    /**
-     * Fold an operation on numbers.
-     *
-     * @param method The method
-     * @return The text, or an empty string
-     */
     private String arithmetic(final String method) {
         final double left = this.hex(0).number();
         final String out;
@@ -85,12 +79,6 @@ public final class Folded {
         return out;
     }
 
-    /**
-     * Fold an operation on bytes.
-     *
-     * @param method The method
-     * @return The text, or an empty string
-     */
     private String bitwise(final String method) {
         final byte[] left = this.hex(0).bytes();
         final String out;
@@ -127,24 +115,11 @@ public final class Folded {
         return out;
     }
 
-    /**
-     * One operand as bytes.
-     *
-     * @param index The position of the operand
-     * @return The bytes
-     */
     private Hex hex(final int index) {
         final String key = this.keys.get(index);
         return new Hex(key.substring(key.indexOf(':') + 1));
     }
 
-    /**
-     * A byte of an array, zero past its end.
-     *
-     * @param bytes The array
-     * @param idx The position
-     * @return The byte
-     */
     private static byte at(final byte[] bytes, final int idx) {
         final byte out;
         if (idx < bytes.length) {
@@ -155,14 +130,6 @@ public final class Folded {
         return out;
     }
 
-    /**
-     * Combine two bytes.
-     *
-     * @param method The method, {@code and} or {@code or}
-     * @param left The left byte
-     * @param right The right byte
-     * @return The result
-     */
     private static byte combined(final String method, final byte left, final byte right) {
         final byte out;
         if ("and".equals(method)) {
@@ -173,22 +140,10 @@ public final class Folded {
         return out;
     }
 
-    /**
-     * A number as data.
-     *
-     * @param value The number
-     * @return The text
-     */
     private static String number(final double value) {
         return new Marker(String.format("number:%s", new Hex(value).text()), "number").phi();
     }
 
-    /**
-     * Bytes as data.
-     *
-     * @param value The bytes
-     * @return The text
-     */
     private static String bytes(final byte[] value) {
         return new Marker(String.format("bytes:%s", new Hex(value).text()), "bytes").phi();
     }

@@ -39,15 +39,6 @@ final class FormasTest {
     }
 
     @Test
-    void knowsDataObjects() {
-        MatcherAssert.assertThat(
-            "the tuple must be known as a data object, but it isnt",
-            new Formas(Collections.emptyMap(), Collections.emptyMap()).data("Φ.tuple"),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void knowsWitnessedFormaBeforeChasing() {
         MatcherAssert.assertThat(
             "the witnessed forma of a void must win over the chase, but it didnt",

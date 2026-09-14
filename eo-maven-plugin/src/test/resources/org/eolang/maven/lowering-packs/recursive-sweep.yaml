@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A recursive sweep entering two helper formations lowers into an atom
+# that receives all three formations as voids and enters them through
+# PhApplication; each helper, being arithmetic on its voids alone,
+# lowers whole into an atom of its own.
 input: |
   [] > foo
     [^ h k left acc] > sweep
@@ -67,42 +70,55 @@ prelude:
         00-
 lowered: |
   [] > foo
+    sweep > @
+      0.25
+      4
+      0
+      0
+    [] > curve /Q.number
+      ? > t /Q.number
+    [] > panel /Q.number
+      ? > w /Q.number
+      ? > a /Q.number
+      ? > b /Q.number
+      ? > c /Q.number
     [^ h k left acc] > sweep
-      if. > @
-        k.gt 0
+      l🌵d1f1002b24e7 > @
+        k
         ^.sweep
-          h
-          k.plus -1
-          left.plus h
-          plus.
-            acc
-            ^.panel
-              h
-              ^.curve left
-              ^.curve
-                left.plus
-                  h.div 2
-              ^.curve
-                left.plus h
+        h
+        left
         acc
-    [w a b c] > panel
-      times. > @
-        div.
-          w
-          6
-        plus.
-          plus.
-            a
-            times.
-              b
-              4
-          c
-    [t] > curve
-      div. > @
-        t
-        plus.
-          times.
-            t
-            t
-          1
-    sweep 0.25 4 0 0 > @
+        ^.panel
+        ^.curve
+      [] > l🌵d1f1002b24e7 /Q.number
+        ? > v0 /Q.number
+        ? > v1
+        ? > v2 /Q.number
+        ? > v3 /Q.number
+        ? > v4 /Q.number
+        ? > v5
+        ? > v6
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double v4 = new Dataized(this.take("v4")).asNumber();
+  final boolean s5 = v0 > Double.longBitsToDouble(0x0000000000000000L);
+  final double s41;
+  if (s5) {
+      final double v2 = new Dataized(this.take("v2")).asNumber();
+      final double v3 = new Dataized(this.take("v3")).asNumber();
+      final double s7 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+      final double s8 = v3 + v2;
+      final double s12 = new Dataized(new PhApplication(this.take("v6"), new Bind("t", this.take("v3")))).asNumber();
+      final double s13 = v2 / Double.longBitsToDouble(0x4000000000000000L);
+      final double s14 = v3 + s13;
+      final double s18 = new Dataized(new PhApplication(this.take("v6"), new Bind("t", new Data.ToPhi(s14)))).asNumber();
+      final double s22 = new Dataized(new PhApplication(this.take("v6"), new Bind("t", new Data.ToPhi(s8)))).asNumber();
+      final double s28 = new Dataized(new PhApplication(this.take("v5"), new Bind("w", this.take("v2")), new Bind("a", new Data.ToPhi(s12)), new Bind("b", new Data.ToPhi(s18)), new Bind("c", new Data.ToPhi(s22)))).asNumber();
+      final double s29 = v4 + s28;
+      final double s40 = new Dataized(new PhApplication(this.take("v1"), new Bind("h", this.take("v2")), new Bind("k", new Data.ToPhi(s7)), new Bind("left", new Data.ToPhi(s8)), new Bind("acc", new Data.ToPhi(s29)))).asNumber();
+      s41 = s40;
+  } else {
+      s41 = v4;
+  }
+  return new Data.ToPhi(s41);

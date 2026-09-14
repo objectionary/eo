@@ -53,10 +53,28 @@ final class OperandTest {
     }
 
     @Test
+    void refusesDispatchOnMarker() {
+        MatcherAssert.assertThat(
+            "a dispatch stuck on a marker cannot be read as the marker, but it was",
+            new Operand("⟦ λ ⤍ S5 ⟧.plus( α0 ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ Δ ⤍ 01- ⟧ ) ) )").key(),
+            Matchers.is(Matchers.emptyString())
+        );
+    }
+
+    @Test
+    void readsMarkerAheadOfSpelledParent() {
+        MatcherAssert.assertThat(
+            "a marker followed by its spelled parent must be read as the marker, but it wasnt",
+            new Operand("⟦ λ ⤍ S6, ρ ↦ ⟦ x ↦ ⟦ Δ ⤍ 02- ⟧, plus ↦ ⟦ λ ⤍ L_number_plus ⟧ ⟧ ⟧").key(),
+            Matchers.equalTo("sym:S6")
+        );
+    }
+
+    @Test
     void ignoresSurroundingWhitespace() {
         MatcherAssert.assertThat(
             "whitespace around and inside the operand cannot change its key, but it did",
-            new Operand("  Φ.bytes(  φ ↦ ⟦ Δ ⤍ 2A- ⟧ )\n").key(),
+            new Operand(String.format("  Φ.bytes(  φ ↦ ⟦ Δ ⤍ 2A- ⟧ )%n")).key(),
             Matchers.equalTo("bytes:2A-")
         );
     }

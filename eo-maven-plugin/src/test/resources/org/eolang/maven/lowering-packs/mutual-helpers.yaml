@@ -1,7 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Two private formations calling each other lower one at a time: the
+# first enters the second as a box, and the second, morphed in a world
+# that already carries the atom of the first, enters the first the same
+# way. The printer strands the reference of the second formation to the
+# first as a positional name.
 input: |
   [] > foo
     [x] > bounce
@@ -20,9 +24,6 @@ input: |
 prelude:
   number.eo: |
     [@] > number
-      [] > eq /Q.bool
-        ? > ^
-        ? > x /Q.number
       [] > plus /Q.number
         ? > ^
         ? > x /Q.number
@@ -31,6 +32,9 @@ prelude:
         ? > x /Q.number
   bytes.eo: |
     [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
   bool.eo: |
     [if] > bool
       if > @
@@ -38,16 +42,36 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x] > bounce
-      [^ n acc] >> ping
-        if. > @
-          n.eq 0
-          acc
-          pong (n.plus -1) (acc.plus 1)
-      [^ n acc] >> pong
-        if. > @
-          n.eq 0
-          acc
-          ping (n.plus -1) (acc.times 2)
-      ping x 1 > @
     bounce 5 > @
+    [x] > bounce
+      ping > @
+        x
+        1
+      [^ n acc] >> ping
+        l🌵492164a4630c > @
+          n
+          acc
+          [^ n acc] >> pong
+            l🌵3b26e214670f n acc ^.^.v3_4 > @
+            [] > l🌵3b26e214670f /Q.number
+              ? > v0 /Q.number
+              ? > v1 /Q.number
+              ? > v2
+        [] > l🌵492164a4630c /Q.number
+          ? > v0 /Q.number
+          ? > v1 /Q.number
+          ? > v2
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double v1 = new Dataized(this.take("v1")).asNumber();
+  final boolean s4 = v0 == Double.longBitsToDouble(0x0000000000000000L);
+  final double s14;
+  if (s4) {
+      s14 = v1;
+  } else {
+      final double s6 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+      final double s7 = v1 + Double.longBitsToDouble(0x3FF0000000000000L);
+      final double s13 = new Dataized(new PhApplication(this.take("v2"), new Bind("n", new Data.ToPhi(s6)), new Bind("acc", new Data.ToPhi(s7)))).asNumber();
+      s14 = s13;
+  }
+  return new Data.ToPhi(s14);

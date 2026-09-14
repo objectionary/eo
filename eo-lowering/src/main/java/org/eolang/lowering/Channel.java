@@ -11,6 +11,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.json.Json;
 import javax.json.JsonObject;
 
@@ -43,12 +45,20 @@ public final class Channel {
     private final AtomicInteger next;
 
     /**
+     * The lock over the line.
+     */
+    private final Lock lock;
+
+    /**
      * Ctor.
      *
      * @param output Where the lines go
      */
     public Channel(final Writer output) {
-        this(output, new ConcurrentHashMap<>(0), new AtomicInteger(1_000_000));
+        this(
+            output, new ConcurrentHashMap<>(0), new AtomicInteger(1_000_000),
+            new ReentrantLock()
+        );
     }
 
     /**
@@ -57,12 +67,14 @@ public final class Channel {
      * @param output Where the lines go
      * @param waiting The questions waiting for an answer
      * @param counter The id of the next question
+     * @param mutex The lock over the line
      */
     Channel(final Writer output, final Map<Integer, BlockingQueue<String>> waiting,
-        final AtomicInteger counter) {
+        final AtomicInteger counter, final Lock mutex) {
         this.out = output;
         this.open = waiting;
         this.next = counter;
+        this.lock = mutex;
     }
 
     /**
@@ -130,17 +142,14 @@ public final class Channel {
         return !this.open.isEmpty();
     }
 
-    /**
-     * Write one line.
-     *
-     * @param message The object
-     * @throws IOException If the line cannot be written
-     */
     private void said(final JsonObject message) throws IOException {
-        synchronized (this.out) {
+        this.lock.lock();
+        try {
             this.out.write(message.toString());
             this.out.write('\n');
             this.out.flush();
+        } finally {
+            this.lock.unlock();
         }
     }
 }

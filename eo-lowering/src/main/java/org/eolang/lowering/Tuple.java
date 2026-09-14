@@ -11,8 +11,8 @@ import java.util.Arrays;
  * A symbolic tuple, spelled as a tuple whose parts are symbols of their own.
  *
  * <p>A tuple is not data, so no marker inside a carrier can stand for it.
- * Instead it stands as {@code Φ.tuple( length ↦ …, head ↦ …, tail ↦ … )}
- * with one fresh symbol per part, each recorded as an {@code attr} row of
+ * Instead it stands as {@code Φ.tuple} applied to a length, a head and a
+ * tail, with one fresh symbol per part, each recorded as an {@code attr} row of
  * the tuple's symbol, so that a body reading {@code items.length} meets a
  * number marker and a body reading {@code items.head} meets a bare one,
  * and the table says where each came from.</p>
@@ -57,14 +57,6 @@ public final class Tuple {
         );
     }
 
-    /**
-     * The symbol of one part.
-     *
-     * @param name The name of the attribute
-     * @param carrier The carrier of the part
-     * @return The key of the part
-     * @throws IOException If the table cannot be written
-     */
     private String part(final String name, final String carrier) throws IOException {
         return String.format(
             "sym:%s",

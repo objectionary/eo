@@ -227,7 +227,10 @@ final class TableTest {
     private static Table table(final Path temp, final String... rows) throws IOException {
         final Path file = Files.createTempFile(temp, "s", ".tsv");
         Files.write(
-            file, String.join("\n", rows).concat("\n").getBytes(StandardCharsets.UTF_8)
+            file,
+            String.join(System.lineSeparator(), rows)
+                .concat(System.lineSeparator())
+                .getBytes(StandardCharsets.UTF_8)
         );
         return new Table(new Symbols(file));
     }

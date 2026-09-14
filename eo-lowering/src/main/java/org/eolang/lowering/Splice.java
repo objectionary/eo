@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * The residual of a run spliced back into the formation it came from: each
@@ -21,10 +19,10 @@ import org.w3c.dom.NodeList;
  * binding reduced only in part stay as written, with their locators,
  * lines, positions and local names.
  *
- * <p>phino prints the residual without ρ, without positions, with a
- * comment on every literal and a box on every nested formation, none of
- * which belongs in the document, and it spells afresh whatever it did not
- * reduce, dropping the names and places the printer lives on. So the walk
+ * <p>phino prints the residual without ρ, without positions and with a
+ * box on every nested formation, none of which belongs in the document,
+ * and it spells afresh whatever it did not reduce, dropping the names and
+ * places the printer lives on. So the walk
  * keeps the original and imports only a binding that reduced whole: one
  * spelled with markers, literals and their carriers alone, at every depth
  * of the nested formations.</p>
@@ -81,24 +79,30 @@ final class Splice {
             answers.put(kid.getAttribute("name"), kid);
         }
         for (final Element kid : new Kids(written)) {
-            final String name = kid.getAttribute("name");
-            final Element answer = answers.get(name);
-            if (answer == null || "λ".equals(name) || "∅".equals(kid.getAttribute("base"))) {
-                continue;
-            }
-            if (!kid.hasAttribute("base")) {
-                Splice.merged(kid, answer);
-            } else if (Splice.answered(answer) && Splice.marked(answer)) {
-                final Element imported = (Element) written.getOwnerDocument()
-                    .importNode(answer, true);
-                Splice.uncommented(imported);
-                for (final String attr : new String[] {"loc", "line", "pos", "local"}) {
-                    if (kid.hasAttribute(attr)) {
-                        imported.setAttribute(attr, kid.getAttribute(attr));
-                    }
+            final Element answer = answers.get(kid.getAttribute("name"));
+            if (answer != null && Splice.open(kid)) {
+                if (kid.hasAttribute("base")) {
+                    Splice.replaced(kid, answer);
+                } else {
+                    Splice.merged(kid, answer);
                 }
-                written.replaceChild(imported, kid);
             }
+        }
+    }
+
+    private static boolean open(final Element kid) {
+        return !"λ".equals(kid.getAttribute("name")) && !"∅".equals(kid.getAttribute("base"));
+    }
+
+    private static void replaced(final Element kid, final Element answer) {
+        if (Splice.answered(answer) && Splice.marked(answer)) {
+            final Element imported = (Element) kid.getOwnerDocument().importNode(answer, true);
+            for (final String attr : new String[] {"loc", "line", "pos", "local"}) {
+                if (kid.hasAttribute(attr)) {
+                    imported.setAttribute(attr, kid.getAttribute(attr));
+                }
+            }
+            kid.getParentNode().replaceChild(imported, kid);
         }
     }
 
@@ -122,17 +126,5 @@ final class Splice {
             }
         }
         return out;
-    }
-
-    private static void uncommented(final Element node) {
-        final NodeList nodes = node.getChildNodes();
-        for (int idx = nodes.getLength() - 1; idx >= 0; --idx) {
-            if (nodes.item(idx).getNodeType() == Node.COMMENT_NODE) {
-                node.removeChild(nodes.item(idx));
-            }
-        }
-        for (final Element kid : new Kids(node)) {
-            Splice.uncommented(kid);
-        }
     }
 }

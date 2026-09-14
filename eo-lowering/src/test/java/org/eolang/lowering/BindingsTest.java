@@ -46,7 +46,9 @@ final class BindingsTest {
     void collapsesWhitespaceAndNewlines() {
         MatcherAssert.assertThat(
             "a body spread over lines must still bind, but it didnt",
-            new Bindings("⟦\n  x ↦\n    ⟦ Δ ⤍ FF- ⟧\n⟧").of("x"),
+            new Bindings(
+                String.join(System.lineSeparator(), "⟦", "  x ↦", "    ⟦ Δ ⤍ FF- ⟧", "⟧")
+            ).of("x"),
             Matchers.equalTo("⟦ Δ ⤍ FF- ⟧")
         );
     }

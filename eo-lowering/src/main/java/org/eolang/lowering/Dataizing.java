@@ -11,7 +11,7 @@ import java.io.IOException;
  *
  * <p>Pure EO reads its arguments through handles, and {@code x!} compiles
  * to {@code dataized(x).as-bytes}, so this atom is where a symbol would
- * otherwise turn into ⊥. It answers the bytes carrier of whatever its
+ * otherwise turn into the terminator. It answers the bytes carrier of whatever its
  * target turned out to be: the marker of the symbol when the target is
  * symbolic, the datum when it is not.</p>
  *

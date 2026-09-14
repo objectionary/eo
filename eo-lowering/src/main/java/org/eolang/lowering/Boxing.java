@@ -22,6 +22,13 @@ import java.util.Map;
  * lexical parent, which Java reaches by name and no row has to carry.</p>
  *
  * @since 0.76.0
+ * @todo #8548:30min Type the answer of a box nobody witnesses once
+ *  eo-inference tells the forma of a formation whose φ forks between data
+ *  of one forma: today such a box answers a bare marker, and a dispatch on
+ *  that marker, the plus of classic-fibonacci over two recursive calls for
+ *  one, stays stuck since the marker carries no plus, so the fragment stays
+ *  as written. When the box knows its carrier, the classic-fibonacci pack
+ *  must lower; adjust its expectations then.
  */
 public final class Boxing implements Fire {
 
@@ -83,13 +90,6 @@ public final class Boxing implements Fire {
         return out;
     }
 
-    /**
-     * Give an untyped datum the forma it is known to carry.
-     *
-     * @param key The key
-     * @param forma The forma, or {@code object} when unknown
-     * @return The key, typed when it can be
-     */
     private static String typed(final String key, final String forma) {
         final String out;
         if (key.startsWith("bytes:") && !"object".equals(forma)) {

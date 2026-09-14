@@ -75,24 +75,6 @@ final class SpliceTest {
     }
 
     @Test
-    void stripsCommentsInsideImportedMarker() {
-        final Element written = SpliceTest.element(
-            "<o name='f'><o base='ξ.x.plus' name='φ'><o as='α0' base='Φ.number'/></o></o>"
-        );
-        new Splice(
-            written,
-            SpliceTest.element(
-                "<o><o base='Φ.number' name='φ'><!-- 5 --><o as='φ' base='Φ.bytes'><o as='φ'><o name='λ'>S2</o></o></o></o></o>"
-            )
-        ).apply();
-        MatcherAssert.assertThat(
-            "the marker must come without the comment phino puts on a literal, but it didnt",
-            new Xml(written).text(),
-            Matchers.not(Matchers.containsString("<!--"))
-        );
-    }
-
-    @Test
     void leavesBindingTheResidualLacks() {
         final Element written = SpliceTest.element(
             "<o name='f'><o base='Φ.q' name='z'/><o base='ξ.z' name='φ'/></o>"
@@ -104,12 +86,6 @@ final class SpliceTest {
             Matchers.containsString("<o base=\"Φ.q\" name=\"z\"/>")
         );
     }
-
-    private static Element element(final String xml) {
-        return (Element) new Xnav(String.format("<object>%s</object>", xml))
-            .element("object").element("o").node();
-    }
-
 
     @Test
     void keepsBindingReducedOnlyInPart() {
@@ -149,5 +125,10 @@ final class SpliceTest {
             new Xml(written).text(),
             Matchers.containsString("local=\"sum\"")
         );
+    }
+
+    private static Element element(final String xml) {
+        return (Element) new Xnav(String.format("<object>%s</object>", xml))
+            .element("object").element("o").node();
     }
 }

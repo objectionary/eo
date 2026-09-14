@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# An if on a bool void lowers into a Java branch: each arm is computed
+# inside its own branch and the answer is assigned once.
 input: |
   [] > foo
     [flag x] > pick
@@ -35,9 +36,21 @@ prelude:
           left > @
 lowered: |
   [] > foo
-    [flag x] > pick
-      if. > @
-        flag
-        x.plus 1
-        x.times 2
-    pick true 5 > @
+    pick > @
+      true
+      5
+    [] > pick /Q.number
+      ? > flag /Q.bool
+      ? > x /Q.number
+java: |
+  final boolean v0 = new Dataized(this.take("flag")).asBool();
+  final double v1 = new Dataized(this.take("x")).asNumber();
+  final double s6;
+  if (v0) {
+      final double s4 = v1 + Double.longBitsToDouble(0x3FF0000000000000L);
+      s6 = s4;
+  } else {
+      final double s5 = v1 * Double.longBitsToDouble(0x4000000000000000L);
+      s6 = s5;
+  }
+  return new Data.ToPhi(s6);

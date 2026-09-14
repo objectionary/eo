@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Chained arithmetic over the same void reads the void once and threads
+# the intermediate result through Java locals.
 input: |
   [] > foo
     [x] > calc
@@ -20,6 +21,11 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > calc
-      (x.plus 2).times x > @
     calc 5 > @
+    [] > calc /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 + Double.longBitsToDouble(0x4000000000000000L);
+  final double s4 = s2 * v0;
+  return new Data.ToPhi(s4);

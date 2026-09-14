@@ -25,7 +25,11 @@ final class ChannelTest {
         MatcherAssert.assertThat(
             "the answer must carry the fire id and the node under 𝑛, but it didnt",
             out.toString(),
-            Matchers.equalTo("{\"id\":17,\"𝑛\":\"⟦ Δ ⤍ 2A- ⟧\"}\n")
+            Matchers.equalTo(
+                """
+                {"id":17,"𝑛":"⟦ Δ ⤍ 2A- ⟧"}
+                """
+            )
         );
     }
 
@@ -49,7 +53,11 @@ final class ChannelTest {
         MatcherAssert.assertThat(
             "the question must name the fire, the attribute and the mode, but it doesnt",
             out.toString(),
-            Matchers.equalTo("{\"id\":1000001,\"of\":9,\"attr\":\"x\",\"reduce\":true}\n")
+            Matchers.equalTo(
+                """
+                {"id":1000001,"of":9,"attr":"x","reduce":true}
+                """
+            )
         );
     }
 

@@ -112,10 +112,10 @@
     </xsl:if>
     <!--
     The chain of names from the top-level class down to this formation,
-    joined with "$", exactly the way the atom template of "to-java.xsl"
-    builds the name it writes after "new" at the call site.
+    joined with "$" and capped, exactly the way the atom template of
+    "to-java.xsl" builds the name it writes after "new" at the call site.
     -->
-    <xsl:variable name="class" as="xs:string" select="string-join((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name(eo:attr-name(@name, false()))), '$')"/>
+    <xsl:variable name="class" as="xs:string" select="eo:chain-name((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name(eo:attr-name(@name, false()))))"/>
     <xsl:variable name="pkg" select="/object/metas/meta[head='package'][1]/part[1]"/>
     <xsl:variable name="voids" as="xs:string*" select="for $v in o[@base = $eo:empty] return concat('new Attr(&quot;', eo:literal(eo:attr-name($v/@name, false())), '&quot;, new AtVoid(&quot;', eo:literal(eo:attr-name($v/@name, false())), '&quot;))')"/>
     <xsl:variable name="header" as="xs:string*" select="(concat('/* ', $disclaimer, ' */'), '', concat('package org.eolang', if ($pkg) then concat('.', eo:package-name($pkg)) else '', ';'), '', 'import org.eolang.*;', '')"/>

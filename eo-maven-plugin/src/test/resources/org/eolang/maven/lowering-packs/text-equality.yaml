@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Equality of a string void with a string literal lowers into a
+# comparison of byte arrays.
 input: |
   [] > foo
     [t] > greets
@@ -22,6 +23,10 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [t] > greets
-      t.eq "h" > @
     greets "h" > @
+    [] > greets /Q.bool
+      ? > t /Q.string
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final boolean s2 = java.util.Arrays.equals(v0, new byte[] {(byte) 0x68});
+  return new Data.ToPhi(s2);

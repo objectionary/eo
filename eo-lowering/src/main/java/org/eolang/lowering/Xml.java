@@ -50,7 +50,7 @@ public final class Xml {
         }
         final LSSerializer serializer = ((DOMImplementationLS) doc.getImplementation()
             .getFeature("LS", "3.0")).createLSSerializer();
-        serializer.getDomConfig().setParameter("xml-declaration", Boolean.FALSE);
+        serializer.getDomConfig().setParameter("xml-declaration", false);
         return serializer.writeToString(this.node);
     }
 

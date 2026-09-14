@@ -8,8 +8,8 @@ package org.eolang.lowering;
  * A value phino goes on with, spelled as the carrier it stands in.
  *
  * <p>A symbol stands in its carrier as a marker, {@code ⟦ λ ⤍ S4 ⟧}: a
- * number is {@code Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S4 ⟧ ) )}, bytes are
- * {@code Φ.bytes( φ ↦ ⟦ λ ⤍ S4 ⟧ )}, and a bool is a {@code Φ.bool} whose
+ * number is the marker under {@code Φ.bytes} under {@code Φ.number}, bytes
+ * are the marker under {@code Φ.bytes} alone, and a bool is a {@code Φ.bool} whose
  * {@code if} is a fork on the symbol, so that every operation of the bool
  * reaches the engine through the one {@code L_fork} atom. A literal stands
  * the same way with a Δ payload, and a bool literal is {@code Φ.true} or
@@ -46,6 +46,13 @@ public final class Marker {
      * @return The text
      */
     public String phi() {
+        if ("tuple".equals(this.carrier)) {
+            throw new IllegalStateException(
+                String.format(
+                    "The tuple '%s' has parts, which a marker alone cannot spell", this.key
+                )
+            );
+        }
         final String out;
         if ("number".equals(this.carrier) || "string".equals(this.carrier)) {
             out = String.format(
@@ -55,21 +62,12 @@ public final class Marker {
             out = String.format("Φ.bytes( φ ↦ ⟦ %s ⟧ )", this.payload());
         } else if ("bool".equals(this.carrier)) {
             out = this.truth();
-        } else if ("tuple".equals(this.carrier)) {
-            throw new IllegalStateException(
-                String.format("The tuple '%s' has parts, which a marker alone cannot spell", this.key)
-            );
         } else {
             out = String.format("⟦ %s ⟧", this.payload());
         }
         return out;
     }
 
-    /**
-     * The bool.
-     *
-     * @return The text
-     */
     private String truth() {
         final String out;
         if (this.key.startsWith("sym:")) {
@@ -85,11 +83,6 @@ public final class Marker {
         return out;
     }
 
-    /**
-     * The payload of the formation.
-     *
-     * @return {@code λ ⤍ S4} or {@code Δ ⤍ HEX}
-     */
     private String payload() {
         final String out;
         if (this.key.startsWith("sym:")) {
@@ -100,11 +93,6 @@ public final class Marker {
         return out;
     }
 
-    /**
-     * The part of the key after the prefix.
-     *
-     * @return The symbol or the bytes
-     */
     private String value() {
         return this.key.substring(this.key.indexOf(':') + 1);
     }

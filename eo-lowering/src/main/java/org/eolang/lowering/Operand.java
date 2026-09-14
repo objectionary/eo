@@ -114,12 +114,6 @@ public final class Operand {
         return out;
     }
 
-    /**
-     * Read a payload inside a carrier.
-     *
-     * @param value The text
-     * @return The key, or an empty string
-     */
     private static String wrapped(final String value) {
         final Matcher typed = Operand.AS_TYPED.matcher(value);
         final String out;
@@ -136,17 +130,11 @@ public final class Operand {
         return out;
     }
 
-    /**
-     * Read a payload the way phino answers a question.
-     *
-     * @param value The text
-     * @return The key, or an empty string
-     */
     private static String witnessed(final String value) {
         String out = "";
         for (final Pattern shape : Operand.SHAPES) {
             final Matcher seen = shape.matcher(value);
-            if (seen.find()) {
+            if (seen.find() && Operand.closed(value)) {
                 out = Operand.keyed("bytes", seen.group(1), seen.group(2));
                 break;
             }
@@ -154,14 +142,24 @@ public final class Operand {
         return out;
     }
 
-    /**
-     * Make a key of a payload.
-     *
-     * @param carrier The carrier the literal would take
-     * @param symbol The symbol, or null
-     * @param hex The bytes, or null
-     * @return The key
-     */
+    private static boolean closed(final String value) {
+        int depth = 0;
+        int end = -1;
+        for (int idx = 0; idx < value.length(); ++idx) {
+            final char chr = value.charAt(idx);
+            if (chr == '⟦') {
+                ++depth;
+            } else if (chr == '⟧') {
+                --depth;
+                if (depth == 0) {
+                    end = idx;
+                    break;
+                }
+            }
+        }
+        return end < 0 || value.substring(end + 1).replace(")", "").isBlank();
+    }
+
     private static String keyed(final String carrier, final String symbol, final String hex) {
         final String out;
         if (symbol == null || symbol.isEmpty()) {

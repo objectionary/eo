@@ -84,17 +84,13 @@ public final class Registry {
         final Path out = this.dir.resolve("atoms.json");
         Files.write(
             out,
-            Json.createObjectBuilder()
-                .add(
-                    Registry.served(),
-                    Json.createObjectBuilder()
-                        .add("rt", "exec")
-                        .add("path", launcher.toAbsolutePath().toString())
-                        .add("serve", true)
-                )
-                .build()
-                .toString()
-                .getBytes(StandardCharsets.UTF_8)
+            Json.createObjectBuilder().add(
+                Registry.served(),
+                Json.createObjectBuilder()
+                    .add("rt", "exec")
+                    .add("path", launcher.toAbsolutePath().toString())
+                    .add("serve", true)
+            ).build().toString().getBytes(StandardCharsets.UTF_8)
         );
         return out;
     }
@@ -127,6 +123,8 @@ public final class Registry {
                 );
             }
         }
-        return out.stream().distinct().collect(Collectors.joining(System.getProperty("path.separator")));
+        return out.stream().distinct().collect(
+            Collectors.joining(System.getProperty("path.separator"))
+        );
     }
 }

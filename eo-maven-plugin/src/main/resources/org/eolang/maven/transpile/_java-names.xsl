@@ -129,6 +129,27 @@
     </xsl:choose>
   </xsl:function>
   <!--
+  Get the name of the class of an atom nested in formations, from the
+  top-level class down to the atom, joined with "$". Every segment fits on
+  its own, but a deep nest joins into a name longer than a file system
+  takes, so the chain is cut at 200 characters and fingerprinted the way a
+  single long name is; 200 leaves room for ".java" and the suffix the temp
+  file gets before it is renamed into place.
+  -->
+  <xsl:function name="eo:chain-name" as="xs:string">
+    <xsl:param name="parts" as="xs:string*"/>
+    <xsl:variable name="joined" select="string-join($parts, '$')"/>
+    <xsl:choose>
+      <xsl:when test="string-length($joined)&gt;200">
+        <xsl:variable name="fingerprint" select="eo:fingerprint($joined)"/>
+        <xsl:value-of select="concat(substring($joined, 1, 200 - string-length($fingerprint)), $fingerprint)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$joined"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
   Get the name of the JUnit class generated for the tests of an object. The
   mark goes in front of the class and not after it, because every name
   "eo:class-name" makes starts with "EO", so a name starting with "Test" is

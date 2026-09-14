@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# An arm that raises an error reaches the terminator, so the formation
+# stays as written.
 input: |
   [] > foo
     [x] > guard
@@ -28,9 +29,9 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x] > guard
-      if. > @
-        x.gt 0
-        x.plus 1
-        T "the number is not positive"
     guard 5 > @
+    if. > [x] > guard
+      x.gt 0
+      x.plus 1
+      T
+        "the number is not positive"

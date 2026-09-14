@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A chain of bytes operations ending in a comparison lowers whole into
+# an atom over a bytes void that answers a bool.
 input: |
   [] > foo
     [b] > wide
@@ -27,6 +28,12 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [b] > wide
-      (b.and 1F-).size.gt 2 > @
     wide 2A-2B > @
+    [] > wide /Q.bool
+      ? > b /Q.bytes
+java: |
+  final byte[] v0 = new Dataized(this.take("b")).take();
+  final byte[] s2 = new BytesOf(v0).and(new BytesOf(new byte[] {(byte) 0x1F})).take();
+  final double s3 = s2.length;
+  final boolean s4 = s3 > Double.longBitsToDouble(0x4000000000000000L);
+  return new Data.ToPhi(s4);

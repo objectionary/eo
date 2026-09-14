@@ -377,7 +377,7 @@
     a lowered atom under a test attribute must reach for that class, the
     way the test body already reaches for every other main-side class.
     -->
-    <xsl:variable name="class" select="string-join((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name($name)), '$')"/>
+    <xsl:variable name="class" select="eo:chain-name((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name($name)))"/>
     <xsl:variable name="variable">
       <xsl:if test="$context!='this'">
         <xsl:value-of select="$context"/>

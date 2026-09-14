@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A subexpression written twice is one row of the symbol table, so the
+# atom computes it once and adds it to itself.
 input: |
   [] > foo
     [x] > calc
@@ -20,6 +21,11 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > calc
-      (x.times x).plus (x.times x) > @
     calc 5 > @
+    [] > calc /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 * v0;
+  final double s4 = s2 + s2;
+  return new Data.ToPhi(s4);

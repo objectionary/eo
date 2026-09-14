@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A string void is bytes to the engine: its size is the length of the
+# bytes and the comparison on it answers a bool.
 input: |
   [] > foo
     [t] > wide
@@ -26,6 +27,11 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [t] > wide
-      t.size.gt 3 > @
     wide "hello" > @
+    [] > wide /Q.bool
+      ? > t /Q.string
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final double s2 = v0.length;
+  final boolean s3 = s2 > Double.longBitsToDouble(0x4008000000000000L);
+  return new Data.ToPhi(s3);

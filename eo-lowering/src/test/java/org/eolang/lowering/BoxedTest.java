@@ -128,12 +128,6 @@ final class BoxedTest {
         );
     }
 
-    private static Node doc(final String body) {
-        return new Xnav(String.format("<object>%s</object>", body))
-            .element("object").node().getOwnerDocument();
-    }
-
-
     @Test
     void replacesLambdaOfLoweredFormation(@Mktmp final Path temp) throws IOException {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
@@ -161,5 +155,10 @@ final class BoxedTest {
                 Matchers.not(Matchers.containsString("atom="))
             )
         );
+    }
+
+    private static Node doc(final String body) {
+        return new Xnav(String.format("<object>%s</object>", body))
+            .element("object").node().getOwnerDocument();
     }
 }

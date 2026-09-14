@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A private helper read twice by the body is folded into it, so the
+# formation lowers whole and the helper disappears.
 input: |
   [] > foo
     [x] > bump
@@ -21,7 +22,11 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > bump
-      x.times x >> square
-      square.plus square > @
     bump 5 > @
+    [] > bump /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s3 = v0 * v0;
+  final double s4 = s3 + s3;
+  return new Data.ToPhi(s4);

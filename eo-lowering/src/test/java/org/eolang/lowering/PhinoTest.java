@@ -95,22 +95,42 @@ final class PhinoTest {
     }
 
     @Test
-    void morphsInsideOneObjectToXmir(@Mktmp final Path temp) throws Exception {
+    void morphsInsideOneExpression(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
         final Path world = temp.resolve("world.phi");
         Files.write(
             world,
-            "⟦ foo ↦ ⟦ gap ↦ ⟦ x ↦ ∅, φ ↦ ξ.x ⟧, λ ⤍ Package ⟧ ⟧".getBytes(StandardCharsets.UTF_8)
+            String.join(
+                " ",
+                "⟦ number ↦ ⟦ ⟧, foo ↦ ⟦ gap ↦ ⟦ x ↦ ∅, φ ↦ ξ.x.plus( α0 ↦ Φ.number ) ⟧,",
+                "λ ⤍ Package ⟧ ⟧"
+            ).getBytes(StandardCharsets.UTF_8)
         );
         final Path registry = temp.resolve("atoms.json");
         Files.write(registry, "{}".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
-            "the residual of the object must come back as an XMIR object, but it didnt",
-            phino.morphed(world, "Φ.foo.gap", registry),
+            "the residual must come back as the φ-expression the entry reduced to, but it didnt",
+            phino.morphed(world, "Φ.foo.gap( x ↦ ⟦ λ ⤍ S1 ⟧ ).φ", registry),
+            Matchers.equalTo("⟦ λ ⤍ S1 ⟧.plus( α0 ↦ Φ.number )")
+        );
+    }
+
+    @Test
+    void printsExpressionAsXmir(@Mktmp final Path temp) throws Exception {
+        final Phino phino = new Phino("phino", 100, temp);
+        Assumptions.assumeTrue(phino.suitable());
+        final Path phi = temp.resolve("r.phi");
+        Files.write(
+            phi,
+            "⟦ r ↦ ⟦ φ ↦ Φ.number( φ ↦ ⟦ Δ ⤍ 01- ⟧ ) ⟧, ρ ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "the expression must come back as XMIR without a comment on the literal, but it didnt",
+            phino.xmir(phi),
             Matchers.allOf(
-                Matchers.containsString("<object "),
-                Matchers.containsString("base=\"ξ.x\"")
+                Matchers.containsString("<o as=\"φ\">01-</o>"),
+                Matchers.not(Matchers.containsString("<!--"))
             )
         );
     }

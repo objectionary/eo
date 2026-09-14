@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A recursive call whose answer is the receiver of a dispatch stays as
+# written: nobody witnesses the forma of the answer, so the dispatch on
+# it is stuck.
 input: |
   [] > foo
     [^ n] > fib
@@ -32,13 +34,12 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [^ n] > fib
-      if. > @
-        n.gt 1
-        plus.
-          ^.fib
-            n.plus -1
-          ^.fib
-            n.plus -2
-        n
     fib 10 > @
+    if. > [^ n] > fib
+      n.gt 1
+      plus.
+        ^.fib
+          n.plus -1
+        ^.fib
+          n.plus -2
+      n

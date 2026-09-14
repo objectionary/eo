@@ -15,10 +15,11 @@ import org.w3c.dom.Node;
  *
  * <p>The box is one {@code <o name="λ">} element appended to the
  * formation, which phino reads as the λ of it, so entering the body
- * fires the engine. The kept formation is the one a run lowers: phino
- * morphs inside it without firing its λ, while an entry into a copy of
- * it, which is what a recursive call makes, fires the box like any other.
- * A formation lowered by an earlier run carries the λ of its atom already,
+ * fires the engine. The kept formation is the one a run lowers: the run
+ * dispatches into its bindings through a copy of it, which fires nothing,
+ * while an entry into another copy of it, which is what a recursive call
+ * makes, fires the box like any other. A formation lowered by an earlier
+ * run carries the λ of its atom already,
  * and the box takes the place of that λ, since the engine serves boxes
  * and not atoms. A test is a thunk over literals and no fragment reaches
  * it, so it only weighs the universe down.</p>
@@ -69,29 +70,32 @@ public final class Boxed {
     }
 
     private void through(final Element node) {
-        if (!node.hasAttribute("base") && node.hasAttribute("name")) {
-            final String name = node.getAttribute("name");
-            final String place = node.getAttribute("loc");
-            if ((name.startsWith("p🌵") || name.startsWith("n🌵"))
-                && !this.kept.startsWith(String.format("%s.", place))) {
-                node.getParentNode().removeChild(node);
-            } else {
-                final String lambda = this.boxes.of(place);
-                if (!lambda.isEmpty()) {
-                    for (final Element kid : new Kids(node)) {
-                        if ("λ".equals(kid.getAttribute("name"))) {
-                            node.removeChild(kid);
-                        }
-                    }
-                    final Element box = node.getOwnerDocument().createElement("o");
-                    box.setAttribute("name", "λ");
-                    box.setTextContent(lambda);
-                    node.appendChild(box);
-                }
-                for (final Element kid : new Kids(node)) {
-                    this.through(kid);
-                }
+        final boolean formation = !node.hasAttribute("base") && node.hasAttribute("name");
+        if (formation && this.trimmed(node)) {
+            node.getParentNode().removeChild(node);
+        } else if (formation) {
+            Boxed.planted(node, this.boxes.of(node.getAttribute("loc")));
+            for (final Element kid : new Kids(node)) {
+                this.through(kid);
             }
+        }
+    }
+
+    private boolean trimmed(final Element node) {
+        final String name = node.getAttribute("name");
+        return (name.startsWith("p🌵") || name.startsWith("n🌵"))
+            && !this.kept.startsWith(String.format("%s.", node.getAttribute("loc")));
+    }
+
+    private static void planted(final Element node, final String lambda) {
+        if (!lambda.isEmpty()) {
+            new Kids(node).all().stream()
+                .filter(kid -> "λ".equals(kid.getAttribute("name")))
+                .forEach(node::removeChild);
+            final Element box = node.getOwnerDocument().createElement("o");
+            box.setAttribute("name", "λ");
+            box.setTextContent(lambda);
+            node.appendChild(box);
         }
     }
 

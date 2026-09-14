@@ -71,7 +71,7 @@ public final class Planted {
         if (!node.hasAttribute("base") && node.hasAttribute("name")
             && !"λ".equals(node.getAttribute("name"))) {
             if (!Planted.voids(node).isEmpty() && !Planted.atom(node)
-                && !this.formas.data(node.getAttribute("loc"))) {
+                && !new Carrier(node.getAttribute("loc")).data()) {
                 out.add(this.box(node, out.size() + 1));
             }
             for (final Element kid : new Kids(node)) {
@@ -103,13 +103,11 @@ public final class Planted {
                 place,
                 carrier,
                 parent,
-                Planted.voids(node).stream()
-                    .map(
-                        name -> String.format(
-                            "%s:%s", name, this.typed(String.format("%s.%s", place, name))
-                        )
+                Planted.voids(node).stream().map(
+                    name -> String.format(
+                        "%s:%s", name, this.typed(String.format("%s.%s", place, name))
                     )
-                    .collect(Collectors.joining(" "))
+                ).collect(Collectors.joining(" "))
             )
         );
     }

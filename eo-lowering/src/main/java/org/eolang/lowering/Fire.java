@@ -11,6 +11,7 @@ import java.io.IOException;
  *
  * @since 0.76.0
  */
+@FunctionalInterface
 public interface Fire {
 
     /**

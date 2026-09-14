@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A const number helper read by the body is computed once: the atom
+# dataizes the argument a single time and reuses the value for the
+# square and the sum.
 input: |
   [] > foo
     [x] > same
@@ -17,22 +19,32 @@ prelude:
       [] > times /Q.number
         ? > ^
         ? > x /Q.number
-      [] > eq /Q.bool
-        ? > ^
-        ? > x /Q.number
   bytes.eo: |
     [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
   bool.eo: |
     [if] > bool
       if > @
         FF-
         00-
+  bytes/as-bytes.eo: |
+    +package bytes
+
+    [^] > as-bytes
+      ^ > @
   dataized.eo: |
     [] > dataized /Q.bytes
       ? > target
 lowered: |
   [] > foo
-    [x] > same
-      x.times x >> square!
-      square.eq (x.plus x) > @
     same 2 > @
+    [] > same /Q.bool
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 * v0;
+  final double s4 = v0 + v0;
+  final boolean s5 = s2 == s4;
+  return new Data.ToPhi(s5);

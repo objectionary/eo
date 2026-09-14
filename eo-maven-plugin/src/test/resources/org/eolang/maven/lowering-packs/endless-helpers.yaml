@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Two private formations calling each other without a base case never
+# reduce: the body comes back as the bare answer of the box of the first
+# helper, an object no atom can hand over as data, so the formation
+# stays as written.
 input: |
   [] > foo
     [x] > bounce
@@ -24,10 +27,10 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > bounce
-      [^ i] >> ping
-        pong (i.plus 1) > @
-      [^ j] >> pong
-        ping (j.times 2) > @
-      ping x > @
     bounce 5 > @
+    [x] > bounce
+      ping x > @
+      pong > [^ i] >> ping
+        i.plus 1
+      ping > [^ j] >> pong
+        j.times 2

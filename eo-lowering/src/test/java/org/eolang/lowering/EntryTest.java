@@ -20,8 +20,9 @@ final class EntryTest {
     void namesLocatorWithBoundVoidsAsAtom() {
         MatcherAssert.assertThat(
             "the atom of an entry must be the locator with the bound voids, but it isnt",
-            new Entry("s4", "Φ.foo.walk(i,acc)", Arrays.asList("sym:v0", "sym:s2", "sym:v1"), "number")
-                .atom(),
+            new Entry(
+                "s4", "Φ.foo.walk(i,acc)", Arrays.asList("sym:v0", "sym:s2", "sym:v1"), "number"
+            ).atom(),
             Matchers.equalTo("Φ.foo.walk(i,acc)")
         );
     }

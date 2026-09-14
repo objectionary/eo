@@ -43,7 +43,8 @@ final class DataizingTest {
             "a target that is not yet data must be asked for and answered as bytes, but it wasnt",
             new Dataizing(
                 new Operands(
-                    1, new Bindings("⟦ target ↦ ξ.ρ.x ⟧"), channel, new Symbols(temp.resolve("s.tsv"))
+                    1, new Bindings("⟦ target ↦ ξ.ρ.x ⟧"), channel,
+                    new Symbols(temp.resolve("s.tsv"))
                 )
             ).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ Δ ⤍ 2A- ⟧ )")

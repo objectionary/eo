@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# An escape in a string literal reaches the atom as the byte it stands
+# for, not as the two characters written.
 input: |
   [] > foo
     [t] > lined
@@ -22,6 +23,10 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [t] > lined
-      t.eq "e\ne" > @
     lined "e" > @
+    [] > lined /Q.bool
+      ? > t /Q.string
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final boolean s2 = java.util.Arrays.equals(v0, new byte[] {(byte) 0x65, (byte) 0x0A, (byte) 0x65});
+  return new Data.ToPhi(s2);

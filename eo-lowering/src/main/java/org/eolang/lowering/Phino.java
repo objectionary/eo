@@ -129,12 +129,12 @@ public final class Phino {
     }
 
     /**
-     * Morph one object of a universe, deep and partial, through a registry of atoms.
+     * Morph one expression inside a universe, deep and partial, through a registry of atoms.
      *
      * @param world The universe, a φ-expression
-     * @param inside The locator of the object, such as {@code Φ.demo.gap}
+     * @param inside The expression, a dispatch from Φ into the fragment
      * @param registry The {@code atoms.json} file
-     * @return The residual of the object, as XMIR
+     * @return The residual of the expression, a φ-expression
      * @throws IOException If the binary fails
      */
     public String morphed(final Path world, final String inside, final Path registry)
@@ -145,18 +145,25 @@ public final class Phino {
             String.format("--atoms=%s", registry),
             String.format("--max-steps=%d", this.steps),
             String.format("--inside=%s", inside),
-            "--output=xmir", "--omit-listing",
             world.toString()
         );
     }
 
     /**
-     * Run the binary and read what it printed.
+     * Print a φ-expression as XMIR, without comments and without the listing.
      *
-     * @param command The command line
-     * @return The standard output, trimmed
+     * @param phi The file with the expression, a single binding at the top
+     * @return The XMIR
      * @throws IOException If the binary cannot be run or exits with an error
      */
+    public String xmir(final Path phi) throws IOException {
+        return this.executed(
+            this.binary, "rewrite",
+            "--output=xmir", "--omit-listing", "--omit-comments",
+            phi.toString()
+        );
+    }
+
     private String executed(final String... command) throws IOException {
         final Path place = Files.createDirectories(this.work);
         final Path out = Files.createTempFile(place, "phino", ".out");

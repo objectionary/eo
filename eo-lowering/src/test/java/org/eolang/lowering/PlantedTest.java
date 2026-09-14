@@ -159,11 +159,15 @@ final class PlantedTest {
                 Arrays.asList(
                     PlantedTest.doc(
                         temp,
-                        String.format("<o loc='Φ.a' name='a'><o loc='Φ.a.f' name='f'>%s</o></o>", body)
+                        String.format(
+                            "<o loc='Φ.a' name='a'><o loc='Φ.a.f' name='f'>%s</o></o>", body
+                        )
                     ),
                     PlantedTest.doc(
                         temp,
-                        String.format("<o loc='Φ.b' name='b'><o loc='Φ.b.g' name='g'>%s</o></o>", body)
+                        String.format(
+                            "<o loc='Φ.b' name='b'><o loc='Φ.b.g' name='g'>%s</o></o>", body
+                        )
                     )
                 ),
                 new Formas(Collections.emptyMap(), Collections.emptyMap())

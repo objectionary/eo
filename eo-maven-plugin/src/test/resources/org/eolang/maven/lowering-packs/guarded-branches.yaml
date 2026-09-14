@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Nested ifs lower into nested Java branches, and a void read only in
+# one arm is read inside that arm.
 input: |
   [] > foo
     [t k] > ease
@@ -59,37 +60,45 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [t k] > ease
-      if. > @
-        0.gt t
-        0
-        if.
-          t.gt 1
-          1
-          if.
-            k.gt 0
-            times.
-              times.
-                times.
-                  plus.
-                    times.
-                      plus.
-                        times.
-                          t
-                          6
-                        -15
-                      t
-                    10
-                  t
-                t
-              t
-            times.
-              times.
-                t
-                t
-              plus.
-                times.
-                  t
-                  -2
-                3
-    ease 0.3 1 > @
+    ease > @
+      0.3
+      1
+    [] > ease /Q.number
+      ? > t /Q.number
+      ? > k /Q.number
+java: |
+  final double v0 = new Dataized(this.take("t")).asNumber();
+  final boolean s3 = Double.longBitsToDouble(0x0000000000000000L) > v0;
+  final double s20;
+  if (s3) {
+      s20 = Double.longBitsToDouble(0x0000000000000000L);
+  } else {
+      final boolean s5 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+      final double s19;
+      if (s5) {
+          s19 = Double.longBitsToDouble(0x3FF0000000000000L);
+      } else {
+          final double v1 = new Dataized(this.take("k")).asNumber();
+          final boolean s6 = v1 > Double.longBitsToDouble(0x0000000000000000L);
+          final double s18;
+          if (s6) {
+              final double s7 = v0 * Double.longBitsToDouble(0x4018000000000000L);
+              final double s8 = s7 + Double.longBitsToDouble(0xC02E000000000000L);
+              final double s9 = s8 * v0;
+              final double s10 = s9 + Double.longBitsToDouble(0x4024000000000000L);
+              final double s11 = s10 * v0;
+              final double s12 = s11 * v0;
+              final double s13 = s12 * v0;
+              s18 = s13;
+          } else {
+              final double s14 = v0 * v0;
+              final double s15 = v0 * Double.longBitsToDouble(0xC000000000000000L);
+              final double s16 = s15 + Double.longBitsToDouble(0x4008000000000000L);
+              final double s17 = s14 * s16;
+              s18 = s17;
+          }
+          s19 = s18;
+      }
+      s20 = s19;
+  }
+  return new Data.ToPhi(s20);

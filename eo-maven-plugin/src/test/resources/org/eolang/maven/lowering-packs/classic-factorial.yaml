@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A formation calling itself through its parent lowers into an atom that
+# receives the formation as a void and enters it through PhApplication,
+# reading the answer as a number since times witnesses it.
 input: |
   [] > foo
     [^ n] > fact
@@ -33,11 +35,24 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [^ n] > fact
-      if. > @
-        n.gt 1
-        n.times
-          ^.fact
-            n.plus -1
-        1
     fact 5 > @
+    [^ n] > fact
+      l🌵a8b1768279e1 > @
+        n
+        ^.fact
+      [] > l🌵a8b1768279e1 /Q.number
+        ? > v0 /Q.number
+        ? > v1
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final boolean s2 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+  final double s12;
+  if (s2) {
+      final double s4 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+      final double s10 = new Dataized(new PhApplication(this.take("v1"), new Bind("n", new Data.ToPhi(s4)))).asNumber();
+      final double s11 = v0 * s10;
+      s12 = s11;
+  } else {
+      s12 = Double.longBitsToDouble(0x3FF0000000000000L);
+  }
+  return new Data.ToPhi(s12);

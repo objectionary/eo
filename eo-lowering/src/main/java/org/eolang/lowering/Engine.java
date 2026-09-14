@@ -79,18 +79,24 @@ public final class Engine {
         final Channel channel = new Channel(
             new OutputStreamWriter(System.out, StandardCharsets.UTF_8)
         );
-        new Engine(
-            channel,
-            new Fires(
-                new Symbols(Paths.get(System.getenv("SYMBOLS"))),
-                new Boxes(Paths.get(System.getenv("BOXES"))),
-                channel
-            ),
-            (thread, error) -> {
-                error.printStackTrace(System.err);
-                System.exit(1);
-            }
-        ).serve(new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8)));
+        try (
+            BufferedReader input = new BufferedReader(
+                new InputStreamReader(System.in, StandardCharsets.UTF_8)
+            )
+        ) {
+            new Engine(
+                channel,
+                new Fires(
+                    new Symbols(Paths.get(System.getenv("SYMBOLS"))),
+                    new Boxes(Paths.get(System.getenv("BOXES"))),
+                    channel
+                ),
+                (thread, error) -> {
+                    error.printStackTrace(System.err);
+                    System.exit(1);
+                }
+            ).serve(input);
+        }
     }
 
     /**
@@ -128,11 +134,6 @@ public final class Engine {
         }
     }
 
-    /**
-     * Serve one fire.
-     *
-     * @param message The request
-     */
     private void fired(final JsonObject message) {
         final int id = message.getInt("id");
         final String lambda = message.getString("λ");

@@ -1,7 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A formation that answers its void as is stays as written: its φ
+# reduces to the number formation the void stands for, with the marker
+# of the void as its own φ, and there is no computation in it for an
+# atom to carry. The printer spells the body as the identity.
 input: |
   [] > foo
     [x] > same
@@ -20,6 +23,5 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > same
-      x > @
     same 5 > @
+    I > same

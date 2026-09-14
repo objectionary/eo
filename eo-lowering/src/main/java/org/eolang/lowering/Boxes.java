@@ -50,8 +50,7 @@ public final class Boxes {
     public Box at(final String lambda) {
         return this.all().stream()
             .filter(box -> box.lambda().equals(lambda))
-            .findFirst()
-            .orElseThrow(
+            .findFirst().orElseThrow(
                 () -> new IllegalStateException(
                     String.format("No box is planted under the name '%s'", lambda)
                 )
@@ -104,8 +103,9 @@ public final class Boxes {
         Files.createDirectories(this.file.toAbsolutePath().getParent());
         Files.write(
             this.file,
-            boxes.stream().map(Box::line).collect(Collectors.joining("\n", "", "\n"))
-                .getBytes(StandardCharsets.UTF_8)
+            boxes.stream().map(Box::line).collect(
+                Collectors.joining(System.lineSeparator(), "", System.lineSeparator())
+            ).getBytes(StandardCharsets.UTF_8)
         );
     }
 }

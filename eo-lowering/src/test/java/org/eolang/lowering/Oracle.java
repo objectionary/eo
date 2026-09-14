@@ -52,7 +52,7 @@ final class Oracle implements Runnable {
             for (int idx = 0; idx < this.replies.size(); ++idx) {
                 final long deadline = System.currentTimeMillis() + 5_000L;
                 while (!this.channel.waiting() && System.currentTimeMillis() < deadline) {
-                    Thread.yield();
+                    Thread.sleep(10L);
                 }
                 this.channel.answered(1_000_001 + idx, this.replies.get(idx));
             }

@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A formation with one void whose body is arithmetic on it lowers whole
+# into an atom: the literal the caller applies witnesses the void as a
+# number, so the void is typed and the body becomes straight-line Java.
 input: |
   [] > foo
     [x] > bump
@@ -20,6 +22,11 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > bump
-      (x.times 2).plus 1 > @
     bump 5 > @
+    [] > bump /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 * Double.longBitsToDouble(0x4000000000000000L);
+  final double s3 = s2 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s3);

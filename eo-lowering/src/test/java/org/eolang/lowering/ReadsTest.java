@@ -120,20 +120,6 @@ final class ReadsTest {
         );
     }
 
-    private static Protocol forked(final String yes, final String not) {
-        return new Protocol(
-            Collections.singletonList(
-                new Fork(
-                    "s1", "L_bool_if", "sym:v0",
-                    new Protocol(Collections.emptyList(), yes, "number"),
-                    new Protocol(Collections.emptyList(), not, "number")
-                )
-            ),
-            "sym:s1",
-            "number"
-        );
-    }
-
     @Test
     void leavesOperandsOfEntryToTheCall() {
         MatcherAssert.assertThat(
@@ -147,6 +133,20 @@ final class ReadsTest {
                 )
             ).all(),
             Matchers.empty()
+        );
+    }
+
+    private static Protocol forked(final String yes, final String not) {
+        return new Protocol(
+            Collections.singletonList(
+                new Fork(
+                    "s1", "L_bool_if", "sym:v0",
+                    new Protocol(Collections.emptyList(), yes, "number"),
+                    new Protocol(Collections.emptyList(), not, "number")
+                )
+            ),
+            "sym:s1",
+            "number"
         );
     }
 }

@@ -86,7 +86,7 @@ public final class Call {
                 );
             }
             final String[] names = atom.substring(atom.indexOf('(') + 1, atom.length() - 1)
-                .split(",");
+                .split(",", -1);
             for (int idx = 1; idx < keys.size(); ++idx) {
                 binds.add(
                     String.format(
@@ -98,6 +98,10 @@ public final class Call {
         if (!binds.isEmpty()) {
             call = String.format("new PhApplication(%s, %s)", call, String.join(", ", binds));
         }
+        return this.dataized(call);
+    }
+
+    private String dataized(final String call) {
         final String forma = this.step.forma();
         final String out;
         if ("number".equals(forma)) {

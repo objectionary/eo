@@ -5,7 +5,9 @@
 package org.eolang.lowering;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fire of {@code L_fork}, the {@code if} of a bool the engine answered.
@@ -18,7 +20,10 @@ import java.util.Arrays;
  * so the rows of the arm land between the row that opens it and the one
  * that closes it with the answer; then the same for the right arm. The
  * carrier of the fork is the carrier of its arms, learned from the
- * answers, and written back into the row that opened it.</p>
+ * answers, and written back into the row that opened it. An arm of no
+ * carrier, such as the answer of a box whose forma nobody witnessed,
+ * takes the carrier of the other arm, since both arms answer the same
+ * object: the fork is the witness.</p>
  *
  * @since 0.76.0
  */
@@ -50,18 +55,23 @@ public final class Forking implements Fire {
         final String sym = this.table.fresh(
             "object", Arrays.asList("fork", this.args.of("guard", ""))
         );
-        String carrier = "";
+        final List<String> values = new ArrayList<>(2);
         for (final String arm : Arrays.asList("left", "right")) {
             this.table.record(sym, arm);
             final String value = this.args.of(arm, "");
             this.table.record(sym, arm, "answer", value);
-            if (carrier.isEmpty()) {
-                carrier = this.carried(value);
-            }
+            values.add(value);
         }
         this.table.record(sym, "end");
-        if (carrier.isEmpty()) {
-            carrier = "object";
+        final String carrier = values.stream()
+            .map(this::carried)
+            .filter(forma -> !forma.isEmpty() && !"object".equals(forma))
+            .findFirst()
+            .orElse("object");
+        for (final String value : values) {
+            if (value.startsWith("sym:")) {
+                this.table.witnessed(value.substring(4), carrier);
+            }
         }
         this.table.retyped(sym, carrier);
         final String out;
@@ -73,12 +83,6 @@ public final class Forking implements Fire {
         return out;
     }
 
-    /**
-     * The carrier of an arm.
-     *
-     * @param key The answer of the arm
-     * @return The carrier, or an empty string when the arm does not say
-     */
     private String carried(final String key) {
         final String out;
         if (key.startsWith("sym:")) {

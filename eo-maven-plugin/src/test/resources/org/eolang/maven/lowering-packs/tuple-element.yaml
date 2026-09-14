@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# An element of a tuple void is taken by dispatching at on the tuple at
+# run time, and the atom adds to what it answers.
 input: |
   [] > foo
     [items] > second
@@ -17,8 +18,17 @@ prelude:
     [@] > bytes
   tuple.eo: |
     [tail head length] > tuple
+      [^ i] > at
+        ^.head > @
 lowered: |
   [] > foo
-    [items] > second
-      (items.at 1).plus 1 > @
-    second (* 1 2 3) > @
+    second * > @
+      1
+      2
+      3
+    [] > second /Q.number
+      ? > items
+java: |
+  final double s5 = new Dataized(new PhApplication(new PhDispatch(this.take("items"), "at"), new Bind("i", new Data.ToPhi(Double.longBitsToDouble(0x3FF0000000000000L))))).asNumber();
+  final double s6 = s5 + Double.longBitsToDouble(0x3FF0000000000000L);
+  return new Data.ToPhi(s6);

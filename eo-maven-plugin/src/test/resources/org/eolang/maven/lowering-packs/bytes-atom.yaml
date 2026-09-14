@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Two bytes voids masked and measured lower whole into an atom that
+# answers the length as a number.
 input: |
   [] > foo
     [a b] > mask
@@ -19,6 +20,15 @@ prelude:
         ? > ^
 lowered: |
   [] > foo
-    [a b] > mask
-      (a.and b).size > @
-    mask 2A- 1F- > @
+    mask > @
+      2A-
+      1F-
+    [] > mask /Q.number
+      ? > a /Q.bytes
+      ? > b /Q.bytes
+java: |
+  final byte[] v0 = new Dataized(this.take("a")).take();
+  final byte[] v1 = new Dataized(this.take("b")).take();
+  final byte[] s3 = new BytesOf(v0).and(new BytesOf(v1)).take();
+  final double s4 = s3.length;
+  return new Data.ToPhi(s4);

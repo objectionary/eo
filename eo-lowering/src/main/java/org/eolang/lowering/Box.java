@@ -87,7 +87,7 @@ public final class Box {
     public Map<String, String> voids() {
         final Map<String, String> out = new LinkedHashMap<>(0);
         if (this.cells.size() > 4) {
-            for (final String cell : this.cells.get(4).split(" ")) {
+            for (final String cell : this.cells.get(4).split(" ", -1)) {
                 if (!cell.isEmpty()) {
                     final String[] parts = cell.split(":", 2);
                     out.put(parts[0], parts[1]);

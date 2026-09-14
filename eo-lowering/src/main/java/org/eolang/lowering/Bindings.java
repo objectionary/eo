@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * The bindings of the formation phino hands over under {@code 𝑏}.
  *
- * <p>The text is a formation, {@code ⟦ x ↦ …, y ↦ … ⟧}, split at depth
+ * <p>The text is a formation of named bindings, split at depth
  * zero on commas and arrows; a binding whose value is an application or a
  * nested formation is kept as one piece, brackets and all. This is the
  * whole of the φ syntax the engine parses.</p>
@@ -73,16 +73,10 @@ public final class Bindings {
         return out;
     }
 
-    /**
-     * Put one binding into the map.
-     *
-     * @param out The map
-     * @param piece The text of the binding
-     */
     private static void bound(final Map<String, String> out, final String piece) {
         final int arrow = piece.indexOf('↦');
         if (arrow < 0) {
-            if (!piece.trim().isEmpty()) {
+            if (!piece.isBlank()) {
                 out.put(piece.trim(), "");
             }
         } else {

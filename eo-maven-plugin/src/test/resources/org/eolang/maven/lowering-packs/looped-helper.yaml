@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A private helper on the guard is folded into the body of the recursive
+# formation and lowered as its own bool atom too, since it stays
+# reachable by name.
 input: |
   [] > foo
     [^ n acc] > down
@@ -16,9 +18,6 @@ input: |
 prelude:
   number.eo: |
     [@] > number
-      [] > eq /Q.bool
-        ? > ^
-        ? > x /Q.number
       [] > plus /Q.number
         ? > ^
         ? > x /Q.number
@@ -27,6 +26,9 @@ prelude:
         ? > x /Q.number
   bytes.eo: |
     [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
   bool.eo: |
     [if] > bool
       if > @
@@ -34,12 +36,32 @@ prelude:
         00-
 lowered: |
   [] > foo
+    down > @
+      5
+      1
     [^ n acc] > down
-      n.eq 0 >> stop
-      if. > @
-        stop
+      l🌵92bbd44b5add > @
+        n
         acc
         ^.down
-          n.plus -1
-          acc.times n
-    down 5 1 > @
+      [] > l🌵92bbd44b5add /Q.number
+        ? > v0 /Q.number
+        ? > v1 /Q.number
+        ? > v2
+      [] > l🌵a4841481cbcd /Q.bool
+        ? > v0 /Q.number
+      l🌵a4841481cbcd n >> stop
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double v1 = new Dataized(this.take("v1")).asNumber();
+  final boolean s3 = v0 == Double.longBitsToDouble(0x0000000000000000L);
+  final double s13;
+  if (s3) {
+      s13 = v1;
+  } else {
+      final double s5 = v0 + Double.longBitsToDouble(0xBFF0000000000000L);
+      final double s6 = v1 * v0;
+      final double s12 = new Dataized(new PhApplication(this.take("v2"), new Bind("n", new Data.ToPhi(s5)), new Bind("acc", new Data.ToPhi(s6)))).asNumber();
+      s13 = s12;
+  }
+  return new Data.ToPhi(s13);

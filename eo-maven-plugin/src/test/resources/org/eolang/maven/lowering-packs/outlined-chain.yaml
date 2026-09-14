@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# Two public bindings of one formation lower into two sibling atoms, one
+# per binding, each called at its site.
 input: |
   [] > foo
     [x] > calc
@@ -21,7 +22,16 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > calc
-      x.plus 1 > incr
-      (x.times x).plus 2 > @
     calc 5 > @
+    [x] > calc
+      l🌵9523a3863bfb x > @
+      l🌵4049d975e7b9 x > incr
+      [] > l🌵4049d975e7b9 /Q.number
+        ? > v0 /Q.number
+      [] > l🌵9523a3863bfb /Q.number
+        ? > v0 /Q.number
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final double s3 = v0 * v0;
+  final double s4 = s3 + Double.longBitsToDouble(0x4000000000000000L);
+  return new Data.ToPhi(s4);

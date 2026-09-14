@@ -45,14 +45,14 @@ final class ForkingTest {
             new String(Files.readAllBytes(file), StandardCharsets.UTF_8),
             Matchers.endsWith(
                 String.join(
-                    "\n",
+                    System.lineSeparator(),
                     "S3\tnumber\tfork\tsym:S1",
                     "S3\tleft",
                     "S3\tleft\tanswer\tnumber:40-08-00-00-00-00-00-00",
                     "S3\tright",
                     "S3\tright\tanswer\tsym:S2",
-                    "S3\tend\n"
-                )
+                    "S3\tend"
+                ).concat(System.lineSeparator())
             )
         );
     }
@@ -93,6 +93,54 @@ final class ForkingTest {
                 new Operands(2, new Bindings(body), new Channel(new StringWriter()), table), table
             ).answer(),
             Matchers.equalTo("Φ.bytes( φ ↦ ⟦ λ ⤍ S3 ⟧ )")
+        );
+    }
+
+    @Test
+    void retypesUntypedArmToCarrierOfTheOther(@Mktmp final Path temp) throws Exception {
+        final Symbols table = new Symbols(temp.resolve("s.tsv"));
+        table.record("S1", "bool", "void", "c");
+        table.record("S2", "number", "void", "acc");
+        table.record("S3", "object", "box", "Φ.foo.down", "acc=sym:S2");
+        new Forking(
+            new Operands(
+                1,
+                new Bindings(
+                    "⟦ left ↦ Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) ), right ↦ ⟦ λ ⤍ S3 ⟧, guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
+                ),
+                new Channel(new StringWriter()),
+                table
+            ),
+            table
+        ).answer();
+        MatcherAssert.assertThat(
+            "the arm of no carrier must take the carrier of the other arm, but it didnt",
+            table.carrier("S3"),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void answersCarrierOfTypedArmWhenUntypedArmComesFirst(@Mktmp final Path temp)
+        throws Exception {
+        final Symbols table = new Symbols(temp.resolve("s.tsv"));
+        table.record("S1", "bool", "void", "c");
+        table.record("S2", "string", "void", "txt");
+        table.record("S3", "object", "box", "Φ.foo.echo", "txt=sym:S2");
+        MatcherAssert.assertThat(
+            "the fork must answer in the carrier of its typed arm, but it didnt",
+            new Forking(
+                new Operands(
+                    1,
+                    new Bindings(
+                        "⟦ left ↦ ⟦ λ ⤍ S3 ⟧, right ↦ Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S2 ⟧ ) ), guard ↦ ⟦ λ ⤍ S1 ⟧ ⟧"
+                    ),
+                    new Channel(new StringWriter()),
+                    table
+                ),
+                table
+            ).answer(),
+            Matchers.equalTo("Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ S4 ⟧ ) )")
         );
     }
 }

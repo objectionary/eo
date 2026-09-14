@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A string literal as the receiver of concat lowers into a byte buffer
+# that puts the literal ahead of the void.
 input: |
   [] > foo
     [t] > greets
@@ -17,6 +18,10 @@ prelude:
     [@] > string
 lowered: |
   [] > foo
-    [t] > greets
-      "h".concat t > @
     greets "i" > @
+    [] > greets /Q.bytes
+      ? > t /Q.string
+java: |
+  final byte[] v0 = new Dataized(this.take("t")).take();
+  final byte[] s3 = java.nio.ByteBuffer.allocate(new byte[] {(byte) 0x68}.length + v0.length).put(new byte[] {(byte) 0x68}).put(v0).array();
+  return new Data.ToPhi(s3);

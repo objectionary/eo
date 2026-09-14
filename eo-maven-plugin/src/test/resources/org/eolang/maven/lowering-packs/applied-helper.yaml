@@ -1,7 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A private formation applied twice in the body is entered as a box: the
+# atom applies it through PhApplication and adds the answers. Its nested
+# formations stay as written until objectionary/phino#1196 is fixed:
+# the deep walk enters the unapplied nested formation and fires its box
+# with a bottom in place of the missing argument.
 input: |
   [] > foo
     [x] > bump
@@ -24,10 +28,17 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > bump
-      [^ i] >> scaled
-        [^ k] >> shifted
-          k.plus ^.^.x > @
-        shifted (^.x.times i) > @
-      (scaled 2).plus (scaled 3) > @
     bump 5 > @
+    [x] > bump
+      l🌵9a0bafa89fae > @
+        [^ i] >>
+          k.plus ^.^.x > [^ k] >>
+          | > @
+            ^.x.times i
+      [] > l🌵9a0bafa89fae /Q.number
+        ? > v0
+java: |
+  final double s2 = new Dataized(new PhApplication(this.take("v0"), new Bind("i", new Data.ToPhi(Double.longBitsToDouble(0x4000000000000000L))))).asNumber();
+  final double s5 = new Dataized(new PhApplication(this.take("v0"), new Bind("i", new Data.ToPhi(Double.longBitsToDouble(0x4008000000000000L))))).asNumber();
+  final double s6 = s2 + s5;
+  return new Data.ToPhi(s6);

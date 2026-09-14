@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A method that is a formation is entered as a box: the atom dispatches
+# minus on the void and adds to what it answers.
 input: |
   [] > foo
     [x] > calc
@@ -24,6 +25,10 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > calc
-      (x.minus 3).plus 2 > @
     calc 5 > @
+    [] > calc /Q.number
+      ? > x /Q.number
+java: |
+  final double s2 = new Dataized(new PhApplication(new PhDispatch(this.take("x"), "minus"), new Bind("x", new Data.ToPhi(Double.longBitsToDouble(0x4008000000000000L))))).asNumber();
+  final double s3 = s2 + Double.longBitsToDouble(0x4000000000000000L);
+  return new Data.ToPhi(s3);

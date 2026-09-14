@@ -32,7 +32,7 @@ final class SymbolsTest {
         MatcherAssert.assertThat(
             "the first symbol must land as a tab separated row, but it didnt",
             new String(Files.readAllBytes(table), StandardCharsets.UTF_8),
-            Matchers.equalTo("S1\tnumber\tvoid\ta\n")
+            Matchers.equalTo("S1\tnumber\tvoid\ta".concat(System.lineSeparator()))
         );
     }
 
@@ -101,6 +101,30 @@ final class SymbolsTest {
             IllegalStateException.class,
             () -> new Symbols(temp.resolve("s.tsv")).row("S8"),
             "a symbol without a row must be refused, but it wasnt"
+        );
+    }
+
+    @Test
+    void witnessesCarrierOfSymbolWithoutOne(@Mktmp final Path temp) throws IOException {
+        final Symbols table = new Symbols(temp.resolve("s.tsv"));
+        table.record("S1", "object", "box", "Φ.foo.bar", "x=number:01-");
+        table.witnessed("S1", "string");
+        MatcherAssert.assertThat(
+            "a symbol of no carrier must take the forma witnessed, but it didnt",
+            table.carrier("S1"),
+            Matchers.equalTo("string")
+        );
+    }
+
+    @Test
+    void keepsCarrierOfTypedSymbolDespiteWitness(@Mktmp final Path temp) throws IOException {
+        final Symbols table = new Symbols(temp.resolve("s.tsv"));
+        table.record("S1", "bytes", "void", "b");
+        table.witnessed("S1", "number");
+        MatcherAssert.assertThat(
+            "a symbol with a carrier cannot be retyped by a witness, but it was",
+            table.carrier("S1"),
+            Matchers.equalTo("bytes")
         );
     }
 }

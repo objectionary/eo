@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A deep arithmetic tree lowers into straight-line Java with one local
+# per operation.
 input: |
   [] > foo
     [x] > pade
@@ -37,20 +38,16 @@ prelude:
     [@] > bytes
 lowered: |
   [] > foo
-    [x] > pade
-      div. > @
-        plus.
-          times.
-            plus.
-              x
-              6
-            x
-          12
-        plus.
-          times.
-            plus.
-              x
-              -6
-            x
-          12
     pade 0.5 > @
+    [] > pade /Q.number
+      ? > x /Q.number
+java: |
+  final double v0 = new Dataized(this.take("x")).asNumber();
+  final double s2 = v0 + Double.longBitsToDouble(0x4018000000000000L);
+  final double s3 = s2 * v0;
+  final double s4 = s3 + Double.longBitsToDouble(0x4028000000000000L);
+  final double s6 = v0 + Double.longBitsToDouble(0xC018000000000000L);
+  final double s7 = s6 * v0;
+  final double s8 = s7 + Double.longBitsToDouble(0x4028000000000000L);
+  final double s9 = s4 / s8;
+  return new Data.ToPhi(s9);

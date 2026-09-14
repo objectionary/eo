@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +42,19 @@ import java.util.stream.Collectors;
 public final class Symbols {
 
     /**
+     * The formas a value of the engine carries as data.
+     */
+    private static final List<String> DATA = Arrays.asList("number", "bool", "bytes", "string");
+
+    /**
      * The file.
      */
     private final Path file;
+
+    /**
+     * The lock over the file.
+     */
+    private final Lock lock;
 
     /**
      * Ctor.
@@ -50,7 +62,18 @@ public final class Symbols {
      * @param table The file
      */
     public Symbols(final Path table) {
+        this(table, new ReentrantLock());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param table The file
+     * @param mutex The lock over the file
+     */
+    Symbols(final Path table, final Lock mutex) {
         this.file = table;
+        this.lock = mutex;
     }
 
     /**
@@ -62,7 +85,8 @@ public final class Symbols {
      * @throws IOException If the file cannot be read or written
      */
     public String minted(final String carrier, final List<String> cells) throws IOException {
-        synchronized (this.file) {
+        this.lock.lock();
+        try {
             final List<String> tail = new ArrayList<>(cells.size() + 1);
             tail.add(carrier);
             tail.addAll(cells);
@@ -77,6 +101,8 @@ public final class Symbols {
                 out = this.fresh(carrier, cells);
             }
             return out;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -89,7 +115,8 @@ public final class Symbols {
      * @throws IOException If the file cannot be read or written
      */
     public String fresh(final String carrier, final List<String> cells) throws IOException {
-        synchronized (this.file) {
+        this.lock.lock();
+        try {
             final Set<String> seen = new LinkedHashSet<>(0);
             for (final List<String> row : this.rows()) {
                 seen.add(row.get(0));
@@ -100,6 +127,8 @@ public final class Symbols {
             tail.addAll(cells);
             this.record(sym, tail.toArray(new String[0]));
             return sym;
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -111,15 +140,20 @@ public final class Symbols {
      * @throws IOException If the file cannot be written
      */
     public void record(final String sym, final String... cells) throws IOException {
-        synchronized (this.file) {
+        this.lock.lock();
+        try {
             final List<String> row = new ArrayList<>(cells.length + 1);
             row.add(sym);
             row.addAll(Arrays.asList(cells));
             Files.write(
                 this.file,
-                String.join("\t", row).concat("\n").getBytes(StandardCharsets.UTF_8),
+                String.join("\t", row)
+                    .concat(System.lineSeparator())
+                    .getBytes(StandardCharsets.UTF_8),
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND
             );
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -131,7 +165,8 @@ public final class Symbols {
      * @throws IOException If the file cannot be read or written
      */
     public void retyped(final String sym, final String carrier) throws IOException {
-        synchronized (this.file) {
+        this.lock.lock();
+        try {
             final List<String> lines = new ArrayList<>(0);
             boolean pending = true;
             for (final List<String> row : this.rows()) {
@@ -144,8 +179,12 @@ public final class Symbols {
             }
             Files.write(
                 this.file,
-                String.join("\n", lines).concat("\n").getBytes(StandardCharsets.UTF_8)
+                String.join(System.lineSeparator(), lines)
+                    .concat(System.lineSeparator())
+                    .getBytes(StandardCharsets.UTF_8)
             );
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -160,6 +199,24 @@ public final class Symbols {
     }
 
     /**
+     * Retype a symbol of no carrier to the data forma a witness saw it
+     * carry, such as the operation that consumes it or the fork whose
+     * other arm carries it, and leave every other symbol as it is.
+     *
+     * @param sym The symbol
+     * @param forma The forma witnessed
+     * @throws IOException If the file cannot be read or written
+     */
+    public void witnessed(final String sym, final String forma) throws IOException {
+        if (Symbols.DATA.contains(forma)
+            && this.rows().stream().anyMatch(
+                row -> row.get(0).equals(sym) && "object".equals(row.get(1))
+            )) {
+            this.retyped(sym, forma);
+        }
+    }
+
+    /**
      * The row of a symbol, the one with a carrier and a kind.
      *
      * @param sym The symbol
@@ -168,8 +225,7 @@ public final class Symbols {
     public List<String> row(final String sym) {
         return this.rows().stream()
             .filter(row -> row.get(0).equals(sym) && row.size() > 2)
-            .findFirst()
-            .orElseThrow(
+            .findFirst().orElseThrow(
                 () -> new IllegalStateException(
                     String.format("The table has no row for the symbol '%s'", sym)
                 )
@@ -182,21 +238,22 @@ public final class Symbols {
      * @return The rows, each as its cells
      */
     public List<List<String>> rows() {
-        synchronized (this.file) {
-            try {
-                final List<List<String>> out;
-                if (Files.exists(this.file)) {
-                    out = Files.readAllLines(this.file, StandardCharsets.UTF_8).stream()
-                        .filter(line -> !line.isEmpty())
-                        .map(line -> Arrays.asList(line.split("\t", -1)))
-                        .collect(Collectors.toList());
-                } else {
-                    out = new ArrayList<>(0);
-                }
-                return out;
-            } catch (final IOException ex) {
-                throw new UncheckedIOException(ex);
+        this.lock.lock();
+        try {
+            final List<List<String>> out;
+            if (Files.exists(this.file)) {
+                out = Files.readAllLines(this.file, StandardCharsets.UTF_8).stream()
+                    .filter(line -> !line.isEmpty())
+                    .map(line -> Arrays.asList(line.split("\t", -1)))
+                    .collect(Collectors.toList());
+            } else {
+                out = new ArrayList<>(0);
             }
+            return out;
+        } catch (final IOException ex) {
+            throw new UncheckedIOException(ex);
+        } finally {
+            this.lock.unlock();
         }
     }
 }

@@ -114,12 +114,14 @@ final class Table {
             }
             renamed.put(names.get(input.getKey()), input.getValue());
         }
-        final List<String> voids = new ArrayList<>(inputs.keySet());
         return new Program(
             Collections.singletonList(
                 new Body(
                     "", 0, new ArrayList<>(inputs.values()),
-                    this.protocol(String.format("sym:%s", sym), new HashSet<>(0), voids)
+                    this.protocol(
+                        String.format("sym:%s", sym), new HashSet<>(0),
+                        new ArrayList<>(inputs.keySet())
+                    )
                 )
             ),
             renamed
@@ -134,22 +136,32 @@ final class Table {
             if ("void".equals(kind)) {
                 out.put(row.get(3), row.get(1));
             } else if ("fork".equals(kind)) {
-                this.gathered(row.get(3), out, seen);
-                for (final String arm : Arrays.asList("left", "right")) {
-                    this.gathered(this.answered(row.get(0), arm), out, seen);
-                }
+                this.forked(row, out, seen);
             } else if ("box".equals(kind)) {
-                if (row.stream().noneMatch(cell -> cell.startsWith("ρ="))) {
-                    out.put(String.format("box:%s", row.get(3)), "formation");
-                }
-                for (final String cell : row.subList(4, row.size())) {
-                    this.gathered(cell.substring(cell.indexOf('=') + 1), out, seen);
-                }
+                this.boxed(row, out, seen);
             } else {
                 for (final String cell : row.subList(3, row.size())) {
                     this.gathered(cell, out, seen);
                 }
             }
+        }
+    }
+
+    private void forked(final List<String> row, final Map<String, String> out,
+        final Set<String> seen) {
+        this.gathered(row.get(3), out, seen);
+        for (final String arm : Arrays.asList("left", "right")) {
+            this.gathered(this.answered(row.get(0), arm), out, seen);
+        }
+    }
+
+    private void boxed(final List<String> row, final Map<String, String> out,
+        final Set<String> seen) {
+        if (row.stream().noneMatch(cell -> cell.startsWith("ρ="))) {
+            out.put(String.format("box:%s", row.get(3)), "formation");
+        }
+        for (final String cell : row.subList(4, row.size())) {
+            this.gathered(cell.substring(cell.indexOf('=') + 1), out, seen);
         }
     }
 
@@ -163,40 +175,43 @@ final class Table {
     private void stepped(final String key, final Set<String> defined,
         final List<String> voids, final List<Step> moves) {
         if (key.startsWith("sym:")) {
-            final String sym = key.substring(4);
-            final List<String> row = this.symbols.row(sym);
-            final String kind = row.get(2);
-            if (!"void".equals(kind) && defined.add(sym)) {
-                final String label = sym.toLowerCase(Locale.ENGLISH);
-                if ("attr".equals(kind)) {
-                    this.stepped(row.get(3), defined, voids, moves);
-                    moves.add(
-                        new Dispatch(
-                            label, row.get(4),
-                            Collections.singletonList(this.key(row.get(3), voids)), row.get(1)
-                        )
-                    );
-                } else if ("fork".equals(kind)) {
-                    this.stepped(row.get(3), defined, voids, moves);
-                    moves.add(
-                        new Fork(
-                            label, "L_fork", this.key(row.get(3), voids),
-                            this.protocol(this.answered(sym, "left"), new HashSet<>(defined), voids),
-                            this.protocol(this.answered(sym, "right"), new HashSet<>(defined), voids)
-                        )
-                    );
-                } else if ("box".equals(kind)) {
-                    moves.add(this.entered(label, row, defined, voids, moves));
-                } else {
-                    final List<String> keys = new ArrayList<>(row.size() - 3);
-                    for (final String cell : row.subList(3, row.size())) {
-                        this.stepped(cell, defined, voids, moves);
-                        keys.add(this.key(cell, voids));
-                    }
-                    moves.add(new Application(label, kind, keys));
-                }
+            final List<String> row = this.symbols.row(key.substring(4));
+            if (!"void".equals(row.get(2)) && defined.add(row.get(0))) {
+                moves.add(this.moved(row, defined, voids, moves));
             }
         }
+    }
+
+    private Step moved(final List<String> row, final Set<String> defined,
+        final List<String> voids, final List<Step> moves) {
+        final String sym = row.get(0);
+        final String label = sym.toLowerCase(Locale.ENGLISH);
+        final String kind = row.get(2);
+        final Step out;
+        if ("attr".equals(kind)) {
+            this.stepped(row.get(3), defined, voids, moves);
+            out = new Dispatch(
+                label, row.get(4),
+                Collections.singletonList(this.key(row.get(3), voids)), row.get(1)
+            );
+        } else if ("fork".equals(kind)) {
+            this.stepped(row.get(3), defined, voids, moves);
+            out = new Fork(
+                label, "L_fork", this.key(row.get(3), voids),
+                this.protocol(this.answered(sym, "left"), new HashSet<>(defined), voids),
+                this.protocol(this.answered(sym, "right"), new HashSet<>(defined), voids)
+            );
+        } else if ("box".equals(kind)) {
+            out = this.entered(label, row, defined, voids, moves);
+        } else {
+            final List<String> keys = new ArrayList<>(row.size() - 3);
+            for (final String cell : row.subList(3, row.size())) {
+                this.stepped(cell, defined, voids, moves);
+                keys.add(this.key(cell, voids));
+            }
+            out = new Application(label, kind, keys);
+        }
+        return out;
     }
 
     private Step entered(final String label, final List<String> row,
@@ -223,13 +238,10 @@ final class Table {
 
     private String answered(final String sym, final String arm) {
         return this.symbols.rows().stream()
-            .filter(
-                row -> row.size() == 4 && row.get(0).equals(sym)
-                    && row.get(1).equals(arm) && "answer".equals(row.get(2))
-            )
+            .filter(row -> row.size() == 4 && row.get(0).equals(sym))
+            .filter(row -> row.get(1).equals(arm) && "answer".equals(row.get(2)))
             .map(row -> row.get(3))
-            .findFirst()
-            .orElseThrow(
+            .findFirst().orElseThrow(
                 () -> new IllegalStateException(
                     String.format("The fork '%s' has no answer in its %s arm", sym, arm)
                 )

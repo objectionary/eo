@@ -1,7 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A bool computed in the middle of the body and compared with false
+# lowers into a branch that picks the bytes of the bool, then an
+# equality of byte arrays.
 input: |
   [] > foo
     [n] > cool
@@ -34,8 +36,17 @@ prelude:
           right > @
 lowered: |
   [] > foo
-    [n] > cool
-      eq. > @
-        n.gt 10
-        false
     cool 42 > @
+    [] > cool /Q.bool
+      ? > n /Q.number
+java: |
+  final double v0 = new Dataized(this.take("n")).asNumber();
+  final boolean s2 = v0 > Double.longBitsToDouble(0x4024000000000000L);
+  final byte[] s3;
+  if (s2) {
+      s3 = new byte[] {(byte) 0xFF};
+  } else {
+      s3 = new byte[] {(byte) 0x00};
+  }
+  final boolean s4 = java.util.Arrays.equals(s3, new byte[] {(byte) 0x00});
+  return new Data.ToPhi(s4);

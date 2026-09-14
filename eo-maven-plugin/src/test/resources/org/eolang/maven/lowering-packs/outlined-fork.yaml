@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# D
+# A body that branches and a public helper beside it lower into two
+# sibling atoms; the branch stays a Java if.
 input: |
   [] > foo
     [x] > clamp
@@ -29,10 +30,21 @@ prelude:
         00-
 lowered: |
   [] > foo
-    [x] > clamp
-      if. > @
-        x.gt 1
-        1
-        x
-      x.plus 1 > incr
     clamp 5 > @
+    [x] > clamp
+      l🌵ff2dc05f1197 x > @
+      l🌵acfe97614a08 x > incr
+      [] > l🌵acfe97614a08 /Q.number
+        ? > v0 /Q.number
+      [] > l🌵ff2dc05f1197 /Q.number
+        ? > v0 /Q.number
+java: |
+  final double v0 = new Dataized(this.take("v0")).asNumber();
+  final boolean s2 = v0 > Double.longBitsToDouble(0x3FF0000000000000L);
+  final double s5;
+  if (s2) {
+      s5 = Double.longBitsToDouble(0x3FF0000000000000L);
+  } else {
+      s5 = v0;
+  }
+  return new Data.ToPhi(s5);

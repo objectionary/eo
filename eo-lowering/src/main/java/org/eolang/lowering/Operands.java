@@ -16,7 +16,9 @@ import java.util.regex.Pattern;
  * marker or a datum and costs a regex. When that fails the fire asks, and
  * blocks until phino answers with the reduced node itself. A datum that
  * came back untyped takes the forma the operation expects of it, since a
- * Δ formation carries no type of its own.</p>
+ * Δ formation carries no type of its own, and so does a symbol of no
+ * carrier, such as the answer of a box whose forma nobody witnessed: the
+ * operation is the witness.</p>
  *
  * @since 0.76.0
  */
@@ -56,7 +58,6 @@ public final class Operands {
      * @param bindings The bindings of the fire
      * @param wire The wire
      * @param symbols The table
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public Operands(final int id, final Bindings bindings, final Channel wire,
         final Symbols symbols) {
@@ -103,6 +104,9 @@ public final class Operands {
         }
         if (key.startsWith("bytes:") && !forma.isEmpty() && !"object".equals(forma)) {
             key = String.format("%s:%s", forma, key.substring(6));
+        }
+        if (key.startsWith("sym:")) {
+            this.table.witnessed(key.substring(4), forma);
         }
         return key;
     }
