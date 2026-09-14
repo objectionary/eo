@@ -10,8 +10,16 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.eolang.lowering.Phino;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -282,8 +290,54 @@ final class MjLowerTest {
         );
     }
 
+    @Test
+    void reportsTheDocumentWhenDone(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a finished document must be reported with its fragments and sizes, but it wasnt",
+            MjLowerTest.logged(MjLowerTest.symbolic(temp)),
+            Matchers.hasItem(
+                Matchers.<String>allOf(
+                    Matchers.startsWith("Lowered 1 fragment(s) in foo,"),
+                    Matchers.containsString("grew to")
+                )
+            )
+        );
+    }
+
     private static void assumePhino(final Path temp) {
         Assumptions.assumeTrue(new Phino("phino", 7, temp).suitable());
+    }
+
+    private static List<String> logged(final FakeMaven maven) throws IOException {
+        final List<String> messages = Collections.synchronizedList(new ArrayList<>(0));
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                messages.add(String.valueOf(event.getRenderedMessage()));
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Lowering.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.ALL);
+        logger.addAppender(appender);
+        try {
+            maven.execute(new PpLower());
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        return messages;
     }
 
     private static Path marker(final FakeMaven maven) {

@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -141,7 +142,9 @@ final class Lowering implements Step {
 
     private int lowered(final TjForeign tojo, final Formas formas, final Home dir)
         throws IOException {
-        final XMLDocument doc = new XMLDocument(tojo.xmir());
+        final long start = System.currentTimeMillis();
+        final Path source = tojo.xmir();
+        final XMLDocument doc = new XMLDocument(source);
         final int count = new Lowered(this.phino, formas, dir, tojo.identifier())
             .rewrite(new Xnav(doc.inner()));
         if (count > 0) {
@@ -149,6 +152,16 @@ final class Lowering implements Step {
                 .make(this.home, MjAssemble.XMIR);
             new Saved(doc.toString(), target).value();
             tojo.withXmir(target);
+            Logger.info(
+                this, "Lowered %d fragment(s) in %s, %[size]s grew to %[size]s, in %[ms]s",
+                count, tojo.identifier(), Files.size(source), Files.size(target),
+                System.currentTimeMillis() - start
+            );
+        } else {
+            Logger.info(
+                this, "Nothing to lower in %s (%[size]s), checked in %[ms]s",
+                tojo.identifier(), Files.size(source), System.currentTimeMillis() - start
+            );
         }
         return count;
     }
