@@ -21,8 +21,10 @@ import java.util.List;
  * a call is no receiver, though: its value was dataized into the forma
  * the tables witness, and the object that answered — the one owning the
  * method the datum never had — is gone by then, so a call on it is
- * refused and the fragment stays as written. The method
- * is taken of the receiver with {@code PhDispatch} and applied to the
+ * refused and the fragment stays as written. A fork is no receiver
+ * either when an arm of it, or an arm of an arm, answers with such a
+ * call, since the value of the fork is whatever the taken arm answers.
+ * The method is taken of the receiver with {@code PhDispatch} and applied to the
  * arguments by position with {@code PhApplication}, the way the
  * transpiler spells a call, and the value is dataized into the forma the step
  * carries — a number, a bool, or the bytes of bytes and a string — or
@@ -106,9 +108,17 @@ public final class Call {
         if (key.startsWith("sym:s")) {
             final String kind = this.values.kind(key);
             out = !"tuple".equals(kind) && !"object".equals(kind)
-                && this.values.step(key.substring(4)).atom().charAt(0) == '.';
+                && this.dataized(this.values.step(key.substring(4)));
         }
         return out;
+    }
+
+    private boolean dataized(final Step producer) {
+        return producer.atom().charAt(0) == '.'
+            || producer.branches().stream()
+                .map(Protocol::answer)
+                .filter(answer -> !answer.isEmpty())
+                .anyMatch(this::rebuilt);
     }
 
     private String wrapped(final String key) {
