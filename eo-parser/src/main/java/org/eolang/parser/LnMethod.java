@@ -95,6 +95,7 @@ final class LnMethod implements Line {
             Bindings.checkReceiverUpgrade(under, this.span);
             under.upgradeArgBinding();
         }
+        suffix.rejectNameInArguments(top, this.span);
         stack.seal();
         emit.object(
             suffix.attribute(this.span.line(), this.span.indent()),

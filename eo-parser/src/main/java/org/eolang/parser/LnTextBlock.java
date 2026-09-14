@@ -69,7 +69,7 @@ final class LnTextBlock implements Line {
             String.join(String.valueOf('\n'), globals.tbody()),
             this.span.line(), this.span.indent()
         ).bytes();
-        this.transition(stack, suffix);
+        suffix.rejectNameInArguments(this.transition(stack, suffix), this.span);
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (!outer.isEmpty()) {
@@ -80,8 +80,8 @@ final class LnTextBlock implements Line {
         globals.markEmitted();
     }
 
-    private void transition(final Stack stack, final Suffix suffix) {
-        new Transition(stack, this.span).apply(
+    private Level transition(final Stack stack, final Suffix suffix) {
+        return new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
             new Admission(suffix.named(), suffix.test(), suffix.test())

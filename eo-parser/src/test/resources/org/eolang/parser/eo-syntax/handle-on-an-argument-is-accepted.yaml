@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='foo' and @base='Φ.x']/o[@as='α0' and starts-with(@base, 'ξ.a🌵')]
+  - //o[@local='bar' and @base='Φ.number']
+  - //o[@name='again' and starts-with(@base, 'ξ.a🌵')]
+input: |
+  [] > app
+    x > foo
+      42 >> bar
+    bar > again
