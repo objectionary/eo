@@ -4,14 +4,15 @@
  */
 package org.eolang.lowering;
 
+import com.yegor256.Jaxec;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
@@ -188,13 +189,7 @@ public final class Phino {
         final Path out = Files.createTempFile(place, "phino", ".out");
         final Path err = Files.createTempFile(place, "phino", ".err");
         try {
-            final int code = this.waited(
-                new ProcessBuilder(command)
-                    .redirectOutput(out.toFile())
-                    .redirectError(err.toFile())
-                    .start(),
-                command
-            );
+            final int code = this.ran(command, out, err);
             if (code != 0) {
                 throw new IllegalStateException(
                     String.format(
@@ -212,31 +207,32 @@ public final class Phino {
         }
     }
 
-    private int waited(final Process proc, final String... command) throws IOException {
+    private int ran(final String[] command, final Path out, final Path err) throws IOException {
         try {
-            final boolean done;
-            if (this.seconds > 0L) {
-                done = proc.waitFor(this.seconds, TimeUnit.SECONDS);
-            } else {
-                proc.waitFor();
-                done = true;
-            }
-            if (!done) {
-                proc.destroyForcibly().waitFor();
-                throw new IllegalStateException(
-                    String.format(
-                        "The binary '%s' took longer than %d second(s) and was killed: %s",
-                        this.binary, this.seconds, String.join(" ", command)
-                    )
-                );
-            }
-            return proc.exitValue();
-        } catch (final InterruptedException ex) {
-            proc.destroyForcibly();
-            Thread.currentThread().interrupt();
-            throw new IOException(
-                String.format("Interrupted while waiting for '%s'", this.binary), ex
+            return this.bounded(
+                new Jaxec(command)
+                    .withCheck(false)
+                    .withStdout(ProcessBuilder.Redirect.to(out.toFile()))
+                    .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
+            ).execUnsafe().code();
+        } catch (final IllegalArgumentException ex) {
+            throw new IllegalStateException(
+                String.format(
+                    "The binary '%s' took longer than %d second(s) and was killed: %s",
+                    this.binary, this.seconds, String.join(" ", command)
+                ),
+                ex
             );
         }
+    }
+
+    private Jaxec bounded(final Jaxec origin) {
+        final Jaxec out;
+        if (this.seconds > 0L) {
+            out = origin.withTimeout(Duration.ofSeconds(this.seconds));
+        } else {
+            out = origin;
+        }
+        return out;
     }
 }
