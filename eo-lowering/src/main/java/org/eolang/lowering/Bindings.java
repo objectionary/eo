@@ -16,6 +16,13 @@ import java.util.Map;
  * whole of the φ syntax the engine parses.</p>
  *
  * @since 0.76.0
+ * @todo #8548:90min Stop reading φ in Java once phino answers a question by
+ *  reference with what the node carries, the data, the name of its λ or the
+ *  fact that the attribute is void (objectionary/phino#1206), and lets such
+ *  a question reach one attribute deeper, as {@code ρ.length} needs
+ *  (objectionary/phino#1207). Then ask phino for every operand an operation
+ *  needs and for its ρ, read the facts off the JSON in {@link Operands}, and
+ *  delete this class together with {@link Operand}.
  */
 final class Bindings {
 
