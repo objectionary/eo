@@ -352,6 +352,21 @@ final class MarkedTest {
         );
     }
 
+    @Test
+    void keepsReceiverVoidTheAtomReads(@Mktmp final Path temp) throws IOException {
+        final Element fragment = MarkedTest.receiving(
+            MarkedTest.number("name='φ'", "S3")
+        );
+        new Marked(fragment, MarkedTest.difference(temp), temp).apply();
+        MatcherAssert.assertThat(
+            "the receiver the atom reads must stay a void of the fragment, but it was dropped",
+            new Xml(fragment).text(),
+            Matchers.containsString(
+                "<o base=\"∅\" loc=\"Φ.foo.f.ρ\" name=\"ρ\""
+            )
+        );
+    }
+
     private static String number(final String attr, final String sym) {
         return String.format(
             "<o %s base='Φ.number'><o as='φ' base='Φ.bytes'><o as='φ'><o name='λ'>%s</o></o></o></o>",
@@ -365,6 +380,32 @@ final class MarkedTest {
             "S1\tnumber\tvoid\ta", "S2\tnumber\tvoid\tb",
             "S3\tnumber\tL_number_plus\tsym:S1\tsym:S2"
         );
+    }
+
+    private static Table difference(final Path temp) throws IOException {
+        return MarkedTest.table(
+            temp,
+            "S1\tnumber\tvoid\tρ", "S2\tnumber\tvoid\tx",
+            "S3\tnumber\tL_number_plus\tsym:S1\tsym:S2"
+        );
+    }
+
+    private static Element receiving(final String body) {
+        return new Located(
+            (Element) new Xnav(
+                String.format(
+                    String.join(
+                        "",
+                        "<object><o loc='Φ.foo' name='foo'>",
+                        "<o loc='Φ.foo.f' name='f'>",
+                        "<o base='∅' loc='Φ.foo.f.ρ' name='ρ'/>",
+                        "<o base='∅' loc='Φ.foo.f.x' name='x'/>%s</o></o></object>"
+                    ),
+                    body
+                )
+            ).element("object").node(),
+            "Φ.foo.f"
+        ).element();
     }
 
     private static Element fragment(final String body) {

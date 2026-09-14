@@ -34,6 +34,11 @@ import org.w3c.dom.Element;
  * the handles it swallows would otherwise get atoms of their own, and once
  * it is lowered whole nothing else is left to lower.</p>
  *
+ * <p>A fragment absorbed whole keeps the ρ it declares when its
+ * program reads it, since that void is the receiver its callers dispatch
+ * onto: an object that drops it answers every {@code x.f y} with a
+ * refusal to take a receiver it no longer declares.</p>
+ *
  * @since 0.77.0
  */
 final class Marked {
@@ -142,6 +147,7 @@ final class Marked {
         for (final Element kid : new Kids(this.fragment)) {
             final String name = kid.getAttribute("name");
             if ("ρ".equals(name) && "∅".equals(kid.getAttribute("base"))
+                && !inputs.containsKey(name)
                 || name.startsWith("a🌵")) {
                 this.fragment.removeChild(kid);
             } else if (inputs.containsKey(name) && Marked.DATA.contains(inputs.get(name))) {
