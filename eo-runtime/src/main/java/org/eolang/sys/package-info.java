@@ -10,9 +10,10 @@
  * another way by macOS, and both families of adapters, posix and win32,
  * hand that layout to the kernel. It is theirs, not the runtime's, so it
  * lives here rather than in the root package next to {@code Phi} and
- * {@code Bytes}. The same goes for {@code Handles}, {@code Cstring} and
- * {@code TupleToArray}, which carry a pointer, a text and a tuple of
- * arguments across to C on their behalf.</p>
+ * {@code Bytes}. The same goes for {@code Buffer}, {@code Handles},
+ * {@code Cstring} and {@code TupleToArray}, which size a read and carry
+ * a pointer, a text and a tuple of arguments across to C on their
+ * behalf.</p>
  *
  * @since 0.77.0
  * @todo #8618:30min Move Syscall here too, together with SyscallTest,
