@@ -10,12 +10,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for the diagnostics of {@link EOsocket}.
+ * Test case for the diagnostics of {@code socket}.
  *
  * <p>A port that is not an integer is refused by {@code checked-port} with a
  * message of its own. A non-finite port is not an integer either, so it has
  * to reach the same message instead of dying inside the conversion that
  * writes it.</p>
+ *
+ * <p>The object is taken off {@code Φ} rather than built from its
+ * transpiled class, because {@code socket} is written in EO and its class
+ * is not there while the sources are being checked.</p>
  *
  * @since 0.64
  */
@@ -31,7 +35,7 @@ final class EOsocketTest {
                 () -> new Dataized(
                     new PhApplication(
                         new PhApplication(
-                            new EOsocket(),
+                            Phi.Φ.take("socket"),
                             "address", new Data.ToPhi("127.0.0.1")
                         ),
                         "port", new Data.ToPhi(Double.NaN)
