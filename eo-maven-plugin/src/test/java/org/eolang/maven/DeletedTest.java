@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Deleted}.
+ *
  * @since 0.52
  */
 @ExtendWith(MktmpResolver.class)
