@@ -567,11 +567,13 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "the message explains what's going on",
             Assertions.assertThrows(
-                ExAbstract.class,
+                ExReadOnly.class,
                 () -> new PhCached().put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
-            Matchers.containsString("Can't overwrite the cached attribute ")
+            Matchers.equalTo(
+                "Φ.PhCached has just 1 void attribute(s), can't put the 1-th one"
+            )
         );
     }
 
