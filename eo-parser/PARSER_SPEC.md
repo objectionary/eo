@@ -582,8 +582,10 @@ A BYTES literal that ends a line with a trailing `-` continues on the next line.
 
 R-3.13.1. A BYTES token has one of three forms:
 - `--` — empty bytes.
-- `BB-` — a single byte (two hex digits) followed by `-`. **Always complete on its own line** — the multi-line continuation rule (R-3.13.3) applies only to chunks of two or more bytes, matching the grammar's `LINE_BYTES : BYTE (MINUS BYTE)+`. A bare `CA-` on a line by itself is therefore a single-byte literal, never the opening chunk of a multi-line BYTES.
-- `BB-BB(-BB)*` — two or more bytes joined by `-`, optionally followed by `-` and a newline, then another `BB(-BB)*` chunk. Continuation may repeat. The trailing `-` signalling continuation requires a chunk of ≥2 bytes; a one-byte chunk cannot trigger continuation.
+- `BB-` — a single byte (two hex digits) followed by `-`. **Complete on its own line**, unless the line below it opens with `-` (R-3.13.1a). A bare `CA-` followed by anything else is a single-byte literal, never the opening chunk of a multi-line BYTES.
+- `BB-BB(-BB)*` — two or more bytes joined by `-`, optionally followed by `-` and a newline, then another `BB(-BB)*` chunk. Continuation may repeat. An undashed continuation chunk of one byte does not carry the literal further; a dashed one does (R-3.13.1a).
+
+R-3.13.1a. A continuation chunk may lead with `-`, written `-BB(-BB)*`, and that dash joins it to the chunk above instead of doubling the separator: `44-` over `-43-FE` is the literal `44-43-FE`. Only the dashed form lets a one-byte chunk open or carry a multi-line literal, so a one-byte line stands alone whenever the line under it does not lead with `-`, and the two forms may be mixed within one literal.
 
 R-3.13.2. The continuation indent of the second and subsequent chunks must be at least as deep as the indent of *the line that began the BYTES token* (the first chunk's line, not the enclosing expression). Lower indent terminates the literal and is an error.
 
@@ -603,6 +605,15 @@ size.
 
 The two indented lines under `size.` form **one** BYTES literal `CA-FE-BE-BE`, occupying one argument slot of the reversed dispatch `size.`.
 
+```
+foo
+  44-                                  ← one-byte first chunk, opened by the dash below
+  -43-FE-A8-                           ← dashed continuation chunk
+  -CD-C3-67-FE-8D                      ← last chunk, no trailing `-`
+```
+
+Those three lines are the literal `44-43-FE-A8-CD-C3-67-FE-8D`.
+
 Illegal:
 
 ```
@@ -617,7 +628,7 @@ size.
   BE-BE
 ```
 
-**Implication for the classifier.** Before §3.1 runs, the lexer must scan ahead: if a line's last non-whitespace character is `-` and that line contains a partial BYTES token, the lexer consumes additional lines until the BYTES token is complete, then emits a single virtual line for classification. The indent stack (§5) is unaffected — the multi-line BYTES is one expression at one indent.
+**Implication for the classifier.** Before §3.1 runs, the lexer must scan ahead: if a line's last non-whitespace character is `-` and that line contains a partial BYTES token, or holds one byte with a dashed BYTES line under it, the lexer consumes additional lines until the BYTES token is complete, then emits a single virtual line for classification. The indent stack (§5) is unaffected — the multi-line BYTES is one expression at one indent.
 
 ### 3.14 Pipe application — `| [arg…] [> name]`
 
