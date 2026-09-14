@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 3
-message: |-
-  backslash at the end of the text has nothing to escape
+sheets: []
+asserts:
+  - /object/errors/error[@line='4' and contains(text(),'\p')]
 input: |
-  [] > example
+  [] > main
     """
-    x\
+    ok line
+    bad escape here: \p
+    filler
     """ > @
