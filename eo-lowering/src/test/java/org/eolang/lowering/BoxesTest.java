@@ -6,10 +6,9 @@ package org.eolang.lowering;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -25,11 +24,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class BoxesTest {
 
     @Test
-    void findsSavedBoxByLambda(@Mktmp final Path temp) throws IOException {
+    void findsSavedBoxByLambda(@Mktmp final Path temp) {
         final Boxes boxes = new Boxes(temp.resolve("b").resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_2", "Φ.foo.f", "number", "-", "x:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                        "voids", "x:number"
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(
@@ -40,11 +44,36 @@ final class BoxesTest {
     }
 
     @Test
-    void findsLambdaByLocator(@Mktmp final Path temp) throws IOException {
+    void keepsVoidsThroughTheFile(@Mktmp final Path temp) {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_5", "Φ.foo.g", "bool", "bytes", ""))
+                new Box(
+                    Map.of(
+                        "id", "L_box_7", "locator", "Φ.foo.f", "carrier", "number",
+                        "parent", "-", "voids", "x:number y:object"
+                    )
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "the voids must survive the trip through the file, but they didnt",
+            boxes.at("L_box_7").voids(),
+            Matchers.hasEntry("y", "object")
+        );
+    }
+
+    @Test
+    void findsLambdaByLocator(@Mktmp final Path temp) {
+        final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
+        boxes.save(
+            Collections.singletonList(
+                new Box(
+                    Map.of(
+                        "id", "L_box_5", "locator", "Φ.foo.g", "carrier", "bool", "parent", "bytes",
+                        "voids", ""
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(

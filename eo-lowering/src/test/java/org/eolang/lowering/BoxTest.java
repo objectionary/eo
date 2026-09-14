@@ -4,7 +4,7 @@
  */
 package org.eolang.lowering;
 
-import java.util.Arrays;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,12 @@ final class BoxTest {
     void readsVoidsWithFormas() {
         MatcherAssert.assertThat(
             "the voids must be read in order with their formas, but they werent",
-            new Box(Arrays.asList("L_box_3", "Φ.foo.f", "number", "-", "a:number b:bool")).voids(),
+            new Box(
+                Map.of(
+                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "voids", "a:number b:bool"
+                )
+            ).voids(),
             Matchers.hasEntry("b", "bool")
         );
     }
@@ -29,7 +34,12 @@ final class BoxTest {
     void knowsWhenBodyNeverTouchesParent() {
         MatcherAssert.assertThat(
             "a dash in the parent column means the body never reaches ρ, but it reached",
-            new Box(Arrays.asList("L_box_3", "Φ.foo.f", "number", "-", "")).reaches(),
+            new Box(
+                Map.of(
+                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "voids", ""
+                )
+            ).reaches(),
             Matchers.is(false)
         );
     }
@@ -38,17 +48,13 @@ final class BoxTest {
     void namesItselfAfterTheLastSegmentOfTheLocator() {
         MatcherAssert.assertThat(
             "the box must know the name its parent holds it by, but it doesnt",
-            new Box(Arrays.asList("L_box_3", "Φ.foo.bar.f", "number", "-", "")).name(),
+            new Box(
+                Map.of(
+                    "id", "L_box_3", "locator", "Φ.foo.bar.f", "carrier", "number", "parent", "-",
+                    "voids", ""
+                )
+            ).name(),
             Matchers.equalTo("f")
-        );
-    }
-
-    @Test
-    void spellsLineBackWithTabs() {
-        MatcherAssert.assertThat(
-            "the line must come back tab separated, but it didnt",
-            new Box(Arrays.asList("L_box_1", "Φ.foo.g", "bool", "number", "x:number")).line(),
-            Matchers.equalTo("L_box_1\tΦ.foo.g\tbool\tnumber\tx:number")
         );
     }
 }

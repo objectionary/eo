@@ -8,8 +8,9 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.w3c.dom.Element;
 
@@ -92,19 +93,20 @@ public final class Planted {
         if (carrier.isEmpty()) {
             carrier = "object";
         }
-        return new Box(
-            Arrays.asList(
-                String.format("L_box_%d", index),
-                place,
-                carrier,
-                parent,
-                Planted.voids(node).stream().map(
-                    name -> String.format(
-                        "%s:%s", name, this.typed(String.format("%s.%s", place, name))
-                    )
-                ).collect(Collectors.joining(" "))
-            )
+        final Map<String, String> row = new LinkedHashMap<>(0);
+        row.put("id", String.format("L_box_%d", index));
+        row.put("locator", place);
+        row.put("carrier", carrier);
+        row.put("parent", parent);
+        row.put(
+            "voids",
+            Planted.voids(node).stream().map(
+                name -> String.format(
+                    "%s:%s", name, this.typed(String.format("%s.%s", place, name))
+                )
+            ).collect(Collectors.joining(" "))
         );
+        return new Box(row);
     }
 
     private static String receiver(final String place) {

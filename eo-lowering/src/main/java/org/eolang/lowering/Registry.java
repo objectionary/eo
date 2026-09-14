@@ -4,6 +4,7 @@
  */
 package org.eolang.lowering;
 
+import com.yegor256.tojos.Mono;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -115,10 +116,11 @@ final class Registry {
     }
 
     private static String classpath() {
-        final List<String> out = new ArrayList<>(4);
+        final List<String> out = new ArrayList<>(5);
         for (final Class<?> type
             : new Class<?>[] {
                 Engine.class, Json.class, JsonProvider.provider().getClass(), Text.class,
+                Mono.class,
             }) {
             try {
                 out.add(

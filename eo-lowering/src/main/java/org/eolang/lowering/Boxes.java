@@ -4,21 +4,14 @@
  */
 package org.eolang.lowering;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import com.yegor256.tojos.MnTabs;
+import com.yegor256.tojos.Mono;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.cactoos.Text;
-import org.cactoos.text.Split;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.UncheckedText;
 
 /**
- * The boxes of one build, kept in a tab-separated file.
+ * The boxes of one build, kept in a file of tojos.
  *
  * <p>It takes the path of the file. It answers the box of a λ name, the λ
  * name at a locator and all the rows at once, and it writes a new set of
@@ -31,9 +24,9 @@ import org.cactoos.text.UncheckedText;
 public final class Boxes {
 
     /**
-     * The file.
+     * The rows.
      */
-    private final Path file;
+    private final Mono rows;
 
     /**
      * Ctor.
@@ -41,7 +34,16 @@ public final class Boxes {
      * @param table The file
      */
     public Boxes(final Path table) {
-        this.file = table;
+        this(new MnTabs(table));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param storage The rows
+     */
+    Boxes(final Mono storage) {
+        this.rows = storage;
     }
 
     /**
@@ -80,35 +82,15 @@ public final class Boxes {
      * @return The boxes, in the order planted
      */
     public List<Box> all() {
-        final List<Box> out = new ArrayList<>(0);
-        if (Files.exists(this.file)) {
-            for (final Text line : this.lines()) {
-                final String row = new UncheckedText(line).asString();
-                if (!row.isEmpty()) {
-                    out.add(new Box(Arrays.asList(row.split("\t", -1))));
-                }
-            }
-        }
-        return out;
+        return this.rows.read().stream().map(Box::new).collect(Collectors.toList());
     }
 
     /**
      * Write all boxes.
      *
      * @param boxes The boxes
-     * @throws IOException If the file cannot be written
      */
-    public void save(final List<Box> boxes) throws IOException {
-        Files.createDirectories(this.file.toAbsolutePath().getParent());
-        Files.write(
-            this.file,
-            boxes.stream().map(Box::line).collect(
-                Collectors.joining(System.lineSeparator(), "", System.lineSeparator())
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-    }
-
-    private Iterable<Text> lines() {
-        return new Split(new TextOf(this.file), "\\R");
+    public void save(final List<Box> boxes) {
+        this.rows.write(boxes.stream().map(Box::row).collect(Collectors.toList()));
     }
 }

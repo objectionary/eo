@@ -8,7 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Map;
 import org.eolang.lowering.Box;
 import org.eolang.lowering.Symbols;
 import org.hamcrest.MatcherAssert;
@@ -279,7 +279,12 @@ final class OperandsTest {
         MatcherAssert.assertThat(
             "a receiver holding the box itself is its lexical parent, not a value, but it was read as one",
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-                new Box(Arrays.asList("L_box_4", "Φ.foo.f", "number", "object", "x:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_4", "locator", "Φ.foo.f", "carrier", "number",
+                        "parent", "object", "voids", "x:number"
+                    )
+                )
             ),
             Matchers.is(Matchers.emptyString())
         );
@@ -293,7 +298,12 @@ final class OperandsTest {
             new Oracle(channel, "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_4 ⟧ ⟧\"}", "{\"λ\":\"L_box_4\"}")
         ).start();
         new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-            new Box(Arrays.asList("L_box_4", "Φ.foo.f", "number", "object", ""))
+            new Box(
+                Map.of(
+                    "id", "L_box_4", "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
+                    "voids", ""
+                )
+            )
         );
         MatcherAssert.assertThat(
             "the parent must be asked for the box under the name it holds it by, but it wasnt",
@@ -311,7 +321,12 @@ final class OperandsTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-                new Box(Arrays.asList("L_box_1", "Φ.foo.f", "number", "object", ""))
+                new Box(
+                    Map.of(
+                        "id", "L_box_1", "locator", "Φ.foo.f", "carrier", "number",
+                        "parent", "object", "voids", ""
+                    )
+                )
             ),
             "a receiver holding another box under the name must be refused, but it wasnt"
         );
@@ -324,7 +339,12 @@ final class OperandsTest {
         MatcherAssert.assertThat(
             "a receiver that is a marker must be read as its symbol, but it wasnt",
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-                new Box(Arrays.asList("L_box_2", "Φ.foo.f", "number", "object", ""))
+                new Box(
+                    Map.of(
+                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number",
+                        "parent", "object", "voids", ""
+                    )
+                )
             ),
             Matchers.equalTo("sym:S7")
         );
@@ -340,7 +360,12 @@ final class OperandsTest {
         MatcherAssert.assertThat(
             "a tuple receiver must be read back as the symbol its length belongs to, but it wasnt",
             new Operands(3, channel, table).receiver(
-                new Box(Arrays.asList("L_box_9", "Φ.tuple.at", "object", "tuple", "i:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_9", "locator", "Φ.tuple.at", "carrier", "object",
+                        "parent", "tuple", "voids", "i:number"
+                    )
+                )
             ),
             Matchers.equalTo("sym:S1")
         );
@@ -355,7 +380,12 @@ final class OperandsTest {
         final Channel channel = new Channel(out);
         new Thread(new Oracle(channel, "{\"λ\":\"S2\"}")).start();
         new Operands(3, channel, table).receiver(
-            new Box(Arrays.asList("L_box_9", "Φ.tuple.at", "object", "tuple", "i:number"))
+            new Box(
+                Map.of(
+                    "id", "L_box_9", "locator", "Φ.tuple.at", "carrier", "object",
+                    "parent", "tuple", "voids", "i:number"
+                )
+            )
         );
         MatcherAssert.assertThat(
             "the length of a tuple receiver must be asked for one attribute deep, but it wasnt",
@@ -371,7 +401,12 @@ final class OperandsTest {
         MatcherAssert.assertThat(
             "a receiver the box declares as data is a value, but it was taken for the parent",
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-                new Box(Arrays.asList("L_box_2", "Φ.number.lt", "bool", "number", "x:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_2", "locator", "Φ.number.lt", "carrier", "bool",
+                        "parent", "number", "voids", "x:number"
+                    )
+                )
             ),
             Matchers.equalTo("sym:S1")
         );
@@ -384,7 +419,12 @@ final class OperandsTest {
         MatcherAssert.assertThat(
             "the parent read as bare bytes must take the forma the box declares for it, but it didnt",
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
-                new Box(Arrays.asList("L_box_1", "Φ.number.twice", "number", "number", ""))
+                new Box(
+                    Map.of(
+                        "id", "L_box_1", "locator", "Φ.number.twice", "carrier", "number",
+                        "parent", "number", "voids", ""
+                    )
+                )
             ),
             Matchers.equalTo("number:40-08-00-00-00-00-00-00")
         );

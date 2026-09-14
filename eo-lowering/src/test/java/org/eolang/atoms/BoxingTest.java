@@ -8,7 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Map;
 import org.eolang.lowering.Box;
 import org.eolang.lowering.Symbols;
 import org.hamcrest.MatcherAssert;
@@ -38,7 +38,12 @@ final class BoxingTest {
             )
         ).start();
         new Boxing(
-            new Box(Arrays.asList("L_box_2", "Φ.foo.f", "number", "-", "x:number y:bool")),
+            new Box(
+                Map.of(
+                    "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "voids", "x:number y:bool"
+                )
+            ),
             new Operands(1, channel, table),
             table
         ).answer();
@@ -55,7 +60,12 @@ final class BoxingTest {
         final Channel channel = new Channel(new StringWriter());
         new Thread(new Oracle(channel, "{\"Δ\":\"40-08-00-00-00-00-00-00\"}")).start();
         new Boxing(
-            new Box(Arrays.asList("L_box_1", "Φ.number.twice", "number", "number", "")),
+            new Box(
+                Map.of(
+                    "id", "L_box_1", "locator", "Φ.number.twice", "carrier", "number",
+                    "parent", "number", "voids", ""
+                )
+            ),
             new Operands(1, channel, table),
             table
         ).answer();
@@ -80,7 +90,12 @@ final class BoxingTest {
             )
         ).start();
         new Boxing(
-            new Box(Arrays.asList("L_box_3", "Φ.foo.f", "bool", "object", "")),
+            new Box(
+                Map.of(
+                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "bool", "parent", "object",
+                    "voids", ""
+                )
+            ),
             new Operands(1, channel, table),
             table
         ).answer();
@@ -105,7 +120,12 @@ final class BoxingTest {
         MatcherAssert.assertThat(
             "the box must answer a marker of the carrier it declares, but it didnt",
             new Boxing(
-                new Box(Arrays.asList("L_box_2", "Φ.foo.f", "bool", "-", "x:number")),
+                new Box(
+                    Map.of(
+                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "bool", "parent", "-",
+                        "voids", "x:number"
+                    )
+                ),
                 new Operands(1, channel, table),
                 table
             ).answer(),

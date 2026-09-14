@@ -9,8 +9,8 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,12 @@ final class BoxedTest {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_3", "Φ.foo.g", "number", "-", "y:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_3", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "voids", "y:number"
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(
@@ -52,7 +57,12 @@ final class BoxedTest {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_3", "Φ.foo.g", "number", "-", "y:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_3", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "voids", "y:number"
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(
@@ -114,7 +124,12 @@ final class BoxedTest {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_1", "Φ.foo.g", "number", "-", "y:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_1", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "voids", "y:number"
+                    )
+                )
             )
         );
         final Node doc = BoxedTest.doc(
@@ -133,7 +148,12 @@ final class BoxedTest {
         final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
         boxes.save(
             Collections.singletonList(
-                new Box(Arrays.asList("L_box_2", "Φ.foo.f", "number", "-", "x:number"))
+                new Box(
+                    Map.of(
+                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                        "voids", "x:number"
+                    )
+                )
             )
         );
         MatcherAssert.assertThat(

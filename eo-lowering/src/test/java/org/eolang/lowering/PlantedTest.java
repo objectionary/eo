@@ -44,8 +44,13 @@ final class PlantedTest {
                     )
                 ),
                 new Formas(Collections.emptyMap(), Collections.singletonMap("Φ.foo.f.x", "number"))
-            ).all().get(0).line(),
-            Matchers.equalTo("L_box_1\tΦ.foo.f\tobject\t-\tx:number")
+            ).all().get(0).row(),
+            Matchers.equalTo(
+                Map.of(
+                    "id", "L_box_1", "locator", "Φ.foo.f", "carrier", "object", "parent", "-",
+                    "voids", "x:number"
+                )
+            )
         );
     }
 
