@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import javax.json.Json;
 import javax.json.spi.JsonProvider;
 import org.cactoos.Text;
+import org.eolang.atoms.Engine;
 
 /**
  * The {@code atoms.json} registry of one run, and the launcher it points

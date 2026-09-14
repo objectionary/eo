@@ -2,11 +2,14 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.eolang.lowering.Marker;
+import org.eolang.lowering.Op;
+import org.eolang.lowering.Symbols;
 
 /**
  * A fire of a primitive operation, one of the rows of {@code ops.tsv}.

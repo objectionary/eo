@@ -26,7 +26,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.76.0
  */
-final class Op {
+public final class Op {
 
     /**
      * The λ name, such as {@code L_number_plus}.
@@ -38,7 +38,7 @@ final class Op {
      *
      * @param name The λ name, such as {@code L_number_plus}
      */
-    Op(final String name) {
+    public Op(final String name) {
         this.lambda = name;
     }
 
@@ -47,7 +47,7 @@ final class Op {
      *
      * @return The name, such as {@code L_number_plus}
      */
-    String lambda() {
+    public String lambda() {
         return this.lambda;
     }
 
@@ -56,7 +56,7 @@ final class Op {
      *
      * @return True if the table has a row for the λ name
      */
-    boolean listed() {
+    public boolean listed() {
         return Op.table().stream().anyMatch(row -> row[0].equals(this.lambda));
     }
 
@@ -65,7 +65,7 @@ final class Op {
      *
      * @return The name, such as {@code plus}
      */
-    String method() {
+    public String method() {
         return this.row()[1];
     }
 
@@ -75,7 +75,7 @@ final class Op {
      * @return One of {@code number}, {@code string}, {@code bytes},
      *  {@code bool}, {@code tuple} or {@code object}
      */
-    String carrier() {
+    public String carrier() {
         return this.row()[2];
     }
 
@@ -86,8 +86,33 @@ final class Op {
      *
      * @return One of {@code number}, {@code bool}, {@code bytes}, or empty
      */
-    String forma() {
+    public String forma() {
         return this.row()[3];
+    }
+
+    /**
+     * The names of the arguments, in their positional order.
+     *
+     * @return The names, such as {@code start} and {@code len}
+     */
+    public List<String> args() {
+        return this.columns().stream()
+            .map(cell -> cell.split(":", 2)[0])
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * The formas of the arguments, in their positional order. An argument
+     * carries the forma of the receiver unless its cell says otherwise,
+     * as {@code i:number} does for the index of a tuple.
+     *
+     * @return The formas, one per argument
+     */
+    public List<String> formas() {
+        final String carrier = this.carrier();
+        return this.columns().stream()
+            .map(cell -> Op.forma(cell, carrier))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -112,31 +137,6 @@ final class Op {
             );
         }
         return row[5];
-    }
-
-    /**
-     * The names of the arguments, in their positional order.
-     *
-     * @return The names, such as {@code start} and {@code len}
-     */
-    List<String> args() {
-        return this.columns().stream()
-            .map(cell -> cell.split(":", 2)[0])
-            .collect(Collectors.toList());
-    }
-
-    /**
-     * The formas of the arguments, in their positional order. An argument
-     * carries the forma of the receiver unless its cell says otherwise,
-     * as {@code i:number} does for the index of a tuple.
-     *
-     * @return The formas, one per argument
-     */
-    List<String> formas() {
-        final String carrier = this.carrier();
-        return this.columns().stream()
-            .map(cell -> Op.forma(cell, carrier))
-            .collect(Collectors.toList());
     }
 
     /**

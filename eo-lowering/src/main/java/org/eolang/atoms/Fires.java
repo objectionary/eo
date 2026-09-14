@@ -2,7 +2,11 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
+
+import org.eolang.lowering.Boxes;
+import org.eolang.lowering.Op;
+import org.eolang.lowering.Symbols;
 
 /**
  * The fires the engine serves, chosen by the λ name phino reports.

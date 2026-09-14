@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -14,6 +14,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
+import org.eolang.lowering.Boxes;
+import org.eolang.lowering.Symbols;
+import org.eolang.lowering.Trips;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

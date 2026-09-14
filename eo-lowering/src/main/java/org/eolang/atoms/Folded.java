@@ -2,11 +2,13 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
+import org.eolang.lowering.Marker;
+import org.eolang.lowering.Op;
 
 /**
  * A primitive operation on literals alone, computed by the engine itself.

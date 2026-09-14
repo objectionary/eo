@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @since 0.76.0
  */
-final class Box {
+public final class Box {
 
     /**
      * The cells of the row.
@@ -30,7 +30,7 @@ final class Box {
      *
      * @param row The cells of the row
      */
-    Box(final List<String> row) {
+    public Box(final List<String> row) {
         this.cells = row;
     }
 
@@ -39,7 +39,7 @@ final class Box {
      *
      * @return The name, such as {@code L_box_7}
      */
-    String lambda() {
+    public String lambda() {
         return this.cells.get(0);
     }
 
@@ -48,7 +48,7 @@ final class Box {
      *
      * @return The locator, such as {@code Φ.demo.helper}
      */
-    String locator() {
+    public String locator() {
         return this.cells.get(1);
     }
 
@@ -57,7 +57,7 @@ final class Box {
      *
      * @return The last segment of the locator, such as {@code helper}
      */
-    String name() {
+    public String name() {
         return this.cells.get(1).substring(this.cells.get(1).lastIndexOf('.') + 1);
     }
 
@@ -66,7 +66,7 @@ final class Box {
      *
      * @return The carrier, or {@code object} when unknown
      */
-    String carrier() {
+    public String carrier() {
         return this.cells.get(2);
     }
 
@@ -75,7 +75,7 @@ final class Box {
      *
      * @return True if the receiver matters to the body
      */
-    boolean reaches() {
+    public boolean reaches() {
         return !"-".equals(this.cells.get(3));
     }
 
@@ -84,7 +84,7 @@ final class Box {
      *
      * @return The forma, or {@code object} when unknown
      */
-    String parent() {
+    public String parent() {
         return this.cells.get(3);
     }
 
@@ -93,7 +93,7 @@ final class Box {
      *
      * @return The names and their formas, in the order declared
      */
-    Map<String, String> voids() {
+    public Map<String, String> voids() {
         final Map<String, String> out = new LinkedHashMap<>(0);
         if (this.cells.size() > 4) {
             for (final String cell : this.cells.get(4).split(" ", -1)) {

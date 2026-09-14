@@ -2,12 +2,15 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.eolang.lowering.Marker;
+import org.eolang.lowering.Symbols;
+import org.eolang.lowering.Tuple;
 
 /**
  * A fire of {@code L_fork}, the {@code if} of a bool the engine answered.

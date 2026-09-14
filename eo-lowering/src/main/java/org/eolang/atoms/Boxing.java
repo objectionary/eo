@@ -2,12 +2,16 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.eolang.lowering.Box;
+import org.eolang.lowering.Marker;
+import org.eolang.lowering.Symbols;
+import org.eolang.lowering.Tuple;
 
 /**
  * A fire of a box, the λ planted on a formation that declares arguments.

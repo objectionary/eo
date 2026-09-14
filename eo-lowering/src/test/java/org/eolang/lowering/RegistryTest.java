@@ -49,7 +49,7 @@ final class RegistryTest {
             Matchers.allOf(
                 Matchers.startsWith("#!/bin/sh"),
                 Matchers.containsString(String.format("SYMBOLS='%s'", temp.resolve("s.tsv"))),
-                Matchers.containsString("org.eolang.lowering.Engine")
+                Matchers.containsString("org.eolang.atoms.Engine")
             )
         );
     }

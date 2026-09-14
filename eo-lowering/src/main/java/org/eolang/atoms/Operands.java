@@ -2,12 +2,15 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.eolang.lowering.Box;
+import org.eolang.lowering.Carrier;
+import org.eolang.lowering.Symbols;
 
 /**
  * The operands of one fire, each asked of phino.

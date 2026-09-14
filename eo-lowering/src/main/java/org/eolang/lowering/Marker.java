@@ -17,7 +17,7 @@ package org.eolang.lowering;
  *
  * @since 0.76.0
  */
-final class Marker {
+public final class Marker {
 
     /**
      * The key, {@code sym:S4} or {@code number:HEX}.
@@ -35,7 +35,7 @@ final class Marker {
      * @param operand The key, {@code sym:S4} or {@code number:HEX}
      * @param forma The carrier
      */
-    Marker(final String operand, final String forma) {
+    public Marker(final String operand, final String forma) {
         this.key = operand;
         this.carrier = forma;
     }
@@ -45,7 +45,7 @@ final class Marker {
      *
      * @return The text
      */
-    String phi() {
+    public String phi() {
         if ("tuple".equals(this.carrier)) {
             throw new IllegalStateException(
                 String.format(

@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +15,9 @@ import java.util.Collection;
 import javax.json.Json;
 import javax.json.JsonObject;
 import org.cactoos.io.ReaderOf;
+import org.eolang.lowering.Boxes;
+import org.eolang.lowering.Symbols;
+import org.eolang.lowering.Trips;
 
 /**
  * The lowering engine, the program phino fires our atoms through.
@@ -43,7 +46,7 @@ import org.cactoos.io.ReaderOf;
  *
  * @since 0.76.0
  */
-final class Engine {
+public final class Engine {
 
     /**
      * The wire.

@@ -41,7 +41,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.76.0
  */
-final class Symbols {
+public final class Symbols {
 
     /**
      * The formas a value of the engine carries as data.
@@ -63,7 +63,7 @@ final class Symbols {
      *
      * @param table The file
      */
-    Symbols(final Path table) {
+    public Symbols(final Path table) {
         this(table, new ReentrantLock());
     }
 
@@ -86,7 +86,7 @@ final class Symbols {
      * @return The symbol
      * @throws IOException If the file cannot be read or written
      */
-    String minted(final String carrier, final List<String> cells) throws IOException {
+    public String minted(final String carrier, final List<String> cells) throws IOException {
         this.lock.lock();
         try {
             final List<String> tail = new ArrayList<>(cells.size() + 1);
@@ -116,7 +116,7 @@ final class Symbols {
      * @return The symbol
      * @throws IOException If the file cannot be read or written
      */
-    String fresh(final String carrier, final List<String> cells) throws IOException {
+    public String fresh(final String carrier, final List<String> cells) throws IOException {
         this.lock.lock();
         try {
             final Set<String> seen = new LinkedHashSet<>(0);
@@ -141,7 +141,7 @@ final class Symbols {
      * @param cells The rest of the row
      * @throws IOException If the file cannot be written
      */
-    void record(final String sym, final String... cells) throws IOException {
+    public void record(final String sym, final String... cells) throws IOException {
         this.lock.lock();
         try {
             final List<String> row = new ArrayList<>(cells.length + 1);
@@ -166,7 +166,7 @@ final class Symbols {
      * @param carrier The carrier
      * @throws IOException If the file cannot be read or written
      */
-    void retyped(final String sym, final String carrier) throws IOException {
+    public void retyped(final String sym, final String carrier) throws IOException {
         this.lock.lock();
         try {
             final List<String> lines = new ArrayList<>(0);
@@ -196,7 +196,7 @@ final class Symbols {
      * @param sym The symbol
      * @return The carrier
      */
-    String carrier(final String sym) {
+    public String carrier(final String sym) {
         return this.row(sym).get(1);
     }
 
@@ -209,7 +209,7 @@ final class Symbols {
      * @param forma The forma witnessed
      * @throws IOException If the file cannot be read or written
      */
-    void witnessed(final String sym, final String forma) throws IOException {
+    public void witnessed(final String sym, final String forma) throws IOException {
         if (Symbols.DATA.contains(forma)
             && this.rows().stream().anyMatch(
                 row -> row.get(0).equals(sym) && "object".equals(row.get(1))
@@ -224,7 +224,7 @@ final class Symbols {
      * @param sym The symbol
      * @return The cells of the row
      */
-    List<String> row(final String sym) {
+    public List<String> row(final String sym) {
         return this.rows().stream()
             .filter(row -> row.get(0).equals(sym) && row.size() > 2)
             .findFirst().orElseThrow(

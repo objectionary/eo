@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @since 0.77.0
  */
-final class Carrier {
+public final class Carrier {
 
     /**
      * The forma by the locator of each data object.
@@ -33,7 +33,7 @@ final class Carrier {
      *
      * @param place The locator
      */
-    Carrier(final String place) {
+    public Carrier(final String place) {
         this.locator = place;
     }
 
@@ -42,7 +42,7 @@ final class Carrier {
      *
      * @return TRUE for a data object
      */
-    boolean data() {
+    public boolean data() {
         return Carrier.FORMAS.containsKey(this.locator);
     }
 

@@ -2,9 +2,10 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.lowering;
+package org.eolang.atoms;
 
 import java.io.IOException;
+import org.eolang.lowering.Marker;
 
 /**
  * A fire of {@code L_dataized}, the atom behind every {@code !} handle.

@@ -28,17 +28,15 @@
  * symbol. {@link org.eolang.lowering.Phino} is the only class that runs
  * the binary, under a budget of steps and of seconds.</p>
  *
- * <p>phino serves the λ it fires through a process of its own:
- * {@link org.eolang.lowering.Engine}, which
- * {@link org.eolang.lowering.Registry} starts and talks to over the
- * {@link org.eolang.lowering.Channel}, one JSON object per line. A fire
- * computes nothing: {@link org.eolang.lowering.Fires} picks the
- * {@link org.eolang.lowering.Fire} of the λ, the fire appends one row to
- * {@link org.eolang.lowering.Symbols} and answers with a
- * {@link org.eolang.lowering.Marker} standing for that row, so phino goes
- * on rewriting over symbols. An operand that is not a value yet is asked
- * back of phino over the same wire, which suspends the fire until the
- * answer arrives.</p>
+ * <p>phino serves the λ it fires through a process of its own, and
+ * that process is not this package: {@link org.eolang.lowering.Registry}
+ * writes a script that starts {@link org.eolang.atoms.Engine} in another
+ * JVM, and everything the engine does lives in
+ * {@code org.eolang.atoms}. What the two sides share are the files they
+ * both read: {@link org.eolang.lowering.Symbols} holds the rows a fire
+ * appends, {@link org.eolang.lowering.Boxes} the λ name of every
+ * fragment, and {@link org.eolang.lowering.Marker} is the shape of the
+ * answer a fire gives back.</p>
  *
  * <p>What comes back is a residual φ-expression full of markers, and the
  * table of symbols behind them is the straight-line program the fragment
