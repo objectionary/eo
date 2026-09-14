@@ -34,7 +34,7 @@ final class BudgetTest {
     }
 
     @Test
-    void neverSpendsItselfWithoutSeconds() {
+    void ignoresTheClockWithoutSeconds() {
         MatcherAssert.assertThat(
             "a budget of zero seconds cannot be spent however long it waits, but it is",
             new Budget(0L, System.currentTimeMillis() - 900_000L).spent(),
