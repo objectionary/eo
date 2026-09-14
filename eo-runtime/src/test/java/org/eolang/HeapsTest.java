@@ -7,6 +7,7 @@ package org.eolang;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -26,6 +27,28 @@ final class HeapsTest {
                 10, idx -> Heaps.INSTANCE.read(idx, 0, 10)
             ),
             "Heaps should successfully read from allocated memory, but it didn't"
+        );
+    }
+
+    @Test
+    void fetchesNothingWhenTheRangeExceedsTheBlock() {
+        MatcherAssert.assertThat(
+            "a range outside the block must be answered as nothing, so the caller can fall back",
+            Heaps.INSTANCE.malloc(
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512)
+            ),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void fetchesTheBytesOfARangeThatFits() {
+        MatcherAssert.assertThat(
+            "a range inside the block must be answered with its bytes, but it wasnt",
+            Heaps.INSTANCE.malloc(
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).get().length
+            ),
+            Matchers.equalTo(3)
         );
     }
 

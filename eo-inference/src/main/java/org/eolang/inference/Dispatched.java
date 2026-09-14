@@ -110,7 +110,7 @@ final class Dispatched {
         final Map<String, Map<String, String>> bound = new Copied(
             new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
             pairs,
-            new Lent(owned, this.all, this.args, this.hollows).sites(names)
+            new Lent(owned, this.all, this.args, this.receivers).sites(names)
         ).all();
         final Filled filled = new Filled(
             pairs,
@@ -135,6 +135,42 @@ final class Dispatched {
                     );
                 }
                 if (this.better(kept, known, made)) {
+                    found.put(made, kept);
+                }
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The dispatches nothing else can answer, said as the tables say them.
+     *
+     * <p>A rewrite into what fills a void dies where the filling is not
+     * settled yet, and {@link Filled} answers nothing rather than hand back
+     * the name it was asked about (#8351). Where the passes have stopped
+     * learning, no filling is going to settle either, and the name the tables
+     * give is all there is to say: the {@code leaf} of whatever fills
+     * {@code x}, rooted at the void and true of every caller. Asked last so
+     * that a site is given up on only once, and only about a site no pair
+     * covers, since a name already worked out is not worth replacing with the
+     * one it was worked out from.</p>
+     *
+     * @param pairs The pairs, each name against the one it is a copy of
+     * @return The dispatches nothing rewrote, each against the name the tables
+     *  give it, empty when every one of them is answered already
+     */
+    Map<String, String> guesses(final Map<String, String> pairs) {
+        final Map<String, String> names = new Ends(pairs).names();
+        final Provided owned = new Provided(this.given, names, this.hollows);
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Site dispatch : this.all) {
+            final String made = dispatch.made();
+            final String bearer = dispatch.bearer();
+            if (!bearer.isEmpty() && !pairs.containsKey(made)) {
+                final String kept = owned.attribute(
+                    names.getOrDefault(bearer, bearer), dispatch.name()
+                );
+                if (this.better(kept, "", made)) {
                     found.put(made, kept);
                 }
             }

@@ -209,9 +209,9 @@ final class Suffix {
         if (this.form == Form.NAME) {
             name = Suffix.phi(this.label);
         } else if (this.form == Form.TEST) {
-            name = "+".concat(this.label);
+            name = "p🌵".concat(this.label);
         } else if (this.form == Form.THROWS) {
-            name = "-".concat(this.label);
+            name = "n🌵".concat(this.label);
         } else if (this.form == Form.AUTO) {
             name = new AutoName(line, indent).asString();
         } else {

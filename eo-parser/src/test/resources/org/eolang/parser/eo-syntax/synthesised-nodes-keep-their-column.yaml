@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.tuple' and @line and @pos]
+  - //o[@base='Φ.number' and @line and @pos]
+  - //o[@base='Φ.dataized' and @line and @pos]
+  - /object[not(descendant::o[@line and not(@pos)])]
+input: |
+  [] > foo
+    * one > @
+    42 > big!
+    big > one

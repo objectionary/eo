@@ -51,7 +51,7 @@ final class Woven {
     private final Collection<String> hollows;
 
     /**
-     * Every dispatch of the program.
+     * Every dispatch and read of the program.
      */
     private final Collection<Site> all;
 
@@ -62,7 +62,7 @@ final class Woven {
      * @param applications What every application of the program gives
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void
-     * @param dispatches Every dispatch of the program
+     * @param dispatches Every dispatch and read of the program
      */
     Woven(
         final XML provides,
@@ -114,7 +114,7 @@ final class Woven {
                 owned
             ).all(),
             pairs,
-            new Lent(owned, this.all, this.applied.arguments(), this.hollows).sites(names)
+            new Lent(owned, this.all, this.applied.arguments(), this.receivers).sites(names)
         ).all();
     }
 }

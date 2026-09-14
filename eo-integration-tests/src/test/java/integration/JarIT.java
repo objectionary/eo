@@ -19,19 +19,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test that runs simple EO program from packaged jar.
  *
+ * <p>The sandbox compiles the {@code .eo} sources of the runtime that live
+ * in this repository, with the plugin kept offline, and does not pull them
+ * from the remote objectionary. What that remote serves is the lowered
+ * output of the last release: every formation the {@code lower} goal folded
+ * there stands in it as an atom naming a Java class that only the jar of
+ * that release carries, {@code string.regex.compile} among them. The
+ * runtime built here folds a set of its own, so a pulled object asking for
+ * an atom this build does not carry stopped javac in the sandbox, and the
+ * three tests below broke on it every time the two sets diverged.</p>
+ *
  * @since 0.54
- * @todo #5047:30min Re-enable runsProgramWithTwoObjects after next release.
- *  The released string.printf carries a stale "+rt jvm org.eolang:eo-runtime"
- *  meta, so the sandbox skips transpiling it and no EOprintf lands on the
- *  classpath, while eo-runtime ships Java atoms only. Master already dropped
- *  that meta, so drop this annotation once the remote objectionary catches up.
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @ExtendWith(MktmpResolver.class)
@@ -91,7 +95,6 @@ final class JarIT {
     }
 
     @Test
-    @Disabled
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void runsProgramWithTwoObjects(final @Mktmp Path temp) throws IOException {
@@ -151,20 +154,17 @@ final class JarIT {
             "[args] > app",
             "  number > n",
             "    at. > nn!",
-            "      Q.string.scanf",
-            "        \"%d\"",
+            "      \"%d\".scanf",
             "        args.at 0",
             "      0",
             "  at. > e!",
-            "    Q.string.scanf",
-            "      \"%d\"",
+            "    \"%d\".scanf",
             "      args.at 1",
             "    0",
             "  Q.examples.fibonacci n > f!",
             "  and. > @",
             "    Q.stdout",
-            "      Q.string.printf",
-            "        \"%dth Fibonacci number is %d\\n\"",
+            "      \"%dth Fibonacci number is %d\\n\".printf",
             "        * n f",
             "    e.eq f",
         };
@@ -175,7 +175,7 @@ final class JarIT {
             "+package examples",
             "+architect yegor256@gmail.com",
             "",
-            "[n] > fibonacci",
+            "[^ n] > fibonacci",
             "  if. > @",
             "    lt.",
             "      n",
@@ -202,6 +202,7 @@ final class JarIT {
         for (final ElegantObject object : objects) {
             object.write(farea);
         }
+        new RuntimeSources().exec(farea);
         farea.dependencies().append(
             "org.eolang",
             "eo-runtime",
@@ -216,6 +217,7 @@ final class JarIT {
             .goals("register", "compile", "merge", "transpile")
             .configuration()
             .set("ignoreRuntime", "true")
+            .set("offline", "true")
             .set("failOnWarning", "false")
             .set("skipLinting", "true");
         farea.exec("clean", "compile", "jar:jar");

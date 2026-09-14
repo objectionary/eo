@@ -11,9 +11,9 @@
  * hand that layout to the kernel. It is theirs, not the runtime's, so it
  * lives here rather than in the root package next to {@code Phi} and
  * {@code Bytes}. The same goes for {@code Syscall}, the shape every
- * adapter takes, and for {@code Handles}, {@code Cstring} and
- * {@code TupleToArray}, which carry a pointer, a text and a tuple of
- * arguments across to C on their behalf.</p>
+ * adapter takes, and for {@code Buffer}, {@code Handles}, {@code Cstring}
+ * and {@code TupleToArray}, which size a read and carry a pointer, a text
+ * and a tuple of arguments across to C on their behalf.</p>
  *
  * @since 0.77.0
  * @todo #8533:30min Re-parent org.eolang.posix and org.eolang.win32 as

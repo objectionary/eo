@@ -220,20 +220,15 @@ final class Provided {
         return this.names.getOrDefault(next, next);
     }
 
-    private boolean hollow(final String type) {
-        boolean found = false;
-        String walked = type;
-        while (!walked.isEmpty()) {
-            if (this.hollows.contains(walked)) {
-                found = true;
-                break;
-            }
-            if (!walked.contains(".")) {
-                break;
-            }
-            walked = walked.substring(0, walked.lastIndexOf('.'));
-        }
-        return found;
+    /**
+     * Whether this name is one of the voids, or a name taken off one.
+     *
+     * @param type The name the type goes by
+     * @return True when nothing certain is said about it here, because what it
+     *  is stands where a caller has yet to put anything
+     */
+    boolean hollow(final String type) {
+        return new Rooted(this.hollows).covers(type);
     }
 
     private String kept(final String type, final String name, final Collection<String> walked) {

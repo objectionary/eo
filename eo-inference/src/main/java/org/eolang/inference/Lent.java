@@ -32,6 +32,14 @@ import java.util.Map;
  * both halves are asked of the tables as they stand, and neither of them is
  * what the refinement wrote (#8508).</p>
  *
+ * <p>A name read without a dot before it is such a call too. The {@code if} of
+ * {@code if > not} is the void of the {@code bool} the line is written in, and
+ * the {@code false} and {@code true} beside it go into whatever fills that
+ * void, never into the void itself. Nothing stands beside the name to say what
+ * it is read off, so {@link Taken} is asked, which is the one answer that
+ * covers a name written after a dot and a name written by itself alike
+ * (#8469).</p>
+ *
  * @since 0.71.0
  */
 final class Lent {
@@ -42,7 +50,7 @@ final class Lent {
     private final Provided owned;
 
     /**
-     * Every dispatch of the program.
+     * Every dispatch and read of the program.
      */
     private final Collection<Site> all;
 
@@ -52,50 +60,58 @@ final class Lent {
     private final Map<String, List<String>> args;
 
     /**
-     * The locator of every void.
+     * What every call takes its attribute from, from {@link Taken}.
      */
-    private final Collection<String> hollows;
+    private final Map<String, String> receivers;
 
     /**
      * Ctor.
      *
      * @param provided What the types certainly have
-     * @param dispatches Every dispatch of the program
+     * @param dispatches Every dispatch and read of the program
      * @param arguments The arguments of every application, from {@link Given}
-     * @param voids The locator of every void, from {@link Hollows}
+     * @param taken What every call takes its attribute from, from {@link Taken}
      */
     Lent(
         final Provided provided,
         final Collection<Site> dispatches,
         final Map<String, List<String>> arguments,
-        final Collection<String> voids
+        final Map<String, String> taken
     ) {
         this.owned = provided;
         this.all = dispatches;
         this.args = arguments;
-        this.hollows = voids;
+        this.receivers = taken;
     }
 
     /**
      * The calls whose answer is one of their own arguments.
      *
      * @param names The name every locator goes by, from {@link Ends}
-     * @return The locator of every dispatch that lands on a void and comes
-     *  back as what it was given, empty when this pass looks into no void
+     * @return The locator of every call that lands on a void and comes back as
+     *  what it was given, empty when this pass looks into no void
      */
     Collection<String> sites(final Map<String, String> names) {
         final Collection<String> found = new HashSet<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
-            final String bearer = dispatch.bearer();
+            final String bearer = this.bearer(dispatch);
             final String given = this.joined(made, names);
             if (!given.isEmpty()
                 && given.equals(names.getOrDefault(made, made))
-                && new Rooted(this.hollows).covers(
+                && this.owned.hollow(
                     this.owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name())
                 )) {
                 found.add(made);
             }
+        }
+        return found;
+    }
+
+    private String bearer(final Site dispatch) {
+        String found = dispatch.bearer();
+        if (found.isEmpty()) {
+            found = this.receivers.getOrDefault(dispatch.made(), "");
         }
         return found;
     }

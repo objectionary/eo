@@ -188,7 +188,7 @@ final class MjLowerTest {
                     .resolve("eolang")
                     .resolve("TestEOfoo.java")
             ),
-            Matchers.containsString("new EOfoo$EO$u002Bcan_square$EOl$uF335")
+            Matchers.containsString("new EOfoo$EOp$uF335can_square$EOl$uF335")
         );
     }
 

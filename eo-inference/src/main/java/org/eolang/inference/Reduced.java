@@ -39,7 +39,7 @@ import org.xembly.Xembler;
  * name travels. What is left to fill in stays as it was: the reduced name is
  * the formation the body arrived at, and the body filled that formation's
  * voids itself, inside itself, so counting them again against the new name
- * would leave a {@code Φ.true.+can-conjoin-true-with-true} that has nothing
+ * would leave a {@code Φ.true.p🌵can-conjoin-true-with-true} that has nothing
  * left to fill described as still wanting an argument — 2,054 of the 4,469
  * renamed objects of eo-runtime report a different number if it is asked of
  * the new name.</p>

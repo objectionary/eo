@@ -67,7 +67,7 @@ final class Blanks {
      * the file's top-level object is an application — {@code bool >
      * true}, {@code number > nan}, {@code string > eol} — indent 2 is
      * an argument position, and a test attribute landing there would
-     * silently become an argument named {@code Φ.+can-…} while its body
+     * silently become an argument named {@code Φ.p🌵can-…} while its body
      * vanished from the XMIR. The outermost entry of {@code stack} is
      * therefore read as well, and anything but a formation is rejected
      * with the same error.</p>

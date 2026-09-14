@@ -58,7 +58,7 @@
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
-      <xsl:apply-templates select="@line"/>
+      <xsl:apply-templates select="@line | @pos"/>
       <xsl:apply-templates select="@as"/>
     </o>
   </xsl:template>

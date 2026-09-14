@@ -124,7 +124,7 @@ final class StrictXmirTest {
     @ParameterizedTest
     @CsvSource({
         "'Φ.chunk.read.λ', true",
-        "'Φ.set.+can-append-a-new-item.φ.ρ.ρ.α0', true",
+        "'Φ.set.p🌵can-append-a-new-item.φ.ρ.ρ.α0', true",
         "'Φ.foo.bar', true",
         "'Φ', true",
         "'Φ.a.WRONG', false",

@@ -86,6 +86,17 @@ final class PhDefaultTest {
     }
 
     @Test
+    void printsNumberOfTheWrongWidthStructurally() {
+        final Phi phi = Phi.Φ.take("number").copy();
+        phi.put(0, new PhDefault(new byte[] {(byte) 0x01}));
+        MatcherAssert.assertThat(
+            "Number carrying bytes that are not eight must fall back to its structural φ-term, but it didnt",
+            phi.φTerm(),
+            Matchers.containsString("D> 01-")
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi phi = PhDefaultTest.Int.made();
         MatcherAssert.assertThat(

@@ -8,6 +8,7 @@ import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +31,25 @@ final class RuntimeSources implements Proc<Farea> {
      * Directory with local {@code .eo} sources of the eo-runtime.
      */
     private final Path dir;
+
+    /**
+     * Ctor, taking the sources of the {@code eo-runtime} of this reactor.
+     *
+     * <p>The module the tests run in sits next to {@code eo-runtime}, so the
+     * sources are found one directory up. Every test that compiles the
+     * runtime reaches for them the same way, which is why the path is
+     * spelled here and not at the call sites.</p>
+     */
+    RuntimeSources() {
+        this(
+            Paths.get(System.getProperty("basedir", System.getProperty("user.dir")))
+                .getParent()
+                .resolve("eo-runtime")
+                .resolve("src")
+                .resolve("main")
+                .resolve("eo")
+        );
+    }
 
     /**
      * Ctor.
