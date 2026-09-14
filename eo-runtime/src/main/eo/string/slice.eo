@@ -188,17 +188,17 @@
           *
             ^.^.as-bytes.slice index csize
             index
-  if. > [num] > printed
-    9.223372036854776e18.gt num
-    "%d".printf
-      * num
-    string num.as-scientific
   number len! > nlen
   number start! > nstart
   80- > p1
   E0- > p2
   F0- > p3
   F8- > p4
+  if. > [num] > printed
+    9.223372036854776e18.gt num
+    "%d".printf
+      * num
+    string num.as-scientific
   00- > r1
   C0- > r2
   E0- > r3
