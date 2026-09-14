@@ -4,29 +4,53 @@
  */
 
 /**
- * Lowering of pure EO fragments through phino.
+ * Lowering of EO fragments into Java atoms through phino.
  *
- * <p>This module computes pure fragments of an EO program at build time,
+ * <p>This module computes the fragments of an EO program at build time,
  * so that the object graph they describe is never built at runtime. The
  * work of φ-calculus — normalization and dataization — is delegated to
- * the external {@code phino} binary, pinned to one exact version; this
- * module only prepares what phino reads and interprets what it prints.</p>
+ * the external {@code phino} binary, pinned to one exact version; nothing
+ * here decides what may be lowered, and nothing here rewrites: the module
+ * prepares what phino reads, serves the λ functions phino fires, and
+ * renders what comes back.</p>
  *
- * <p>A fragment arrives as XMIR: an application whose every leaf is a
- * literal, such as {@code 1.plus 1}. {@link org.eolang.lowering.Expression}
- * hands it to {@code phino rewrite --input=xmir}, which is where XMIR
- * becomes a φ-calculus expression, and
- * {@link org.eolang.lowering.Universe} carries the method tables of the
- * primitive λ-atoms — {@code number.plus}, {@code bytes.slice} and the
- * rest — under the short names phino registers for them.
- * {@link org.eolang.lowering.Phino} merges the two through
- * {@code phino merge}, feeds the result to {@code phino dataize} under a
- * step budget, and validates that what came back is data.
- * {@link org.eolang.lowering.Constant} puts it all together and names the
- * forma of the result, so that the caller can splice a literal of the
- * right shape where the fragment stood. A fragment phino refuses — an
- * unknown method, an error path, an exhausted budget — is simply not
- * folded, and the caller keeps the original.</p>
+ * <p>A fragment is a named formation that declares arguments.
+ * {@link org.eolang.lowering.Planted} finds them all and mints one λ name
+ * per fragment into {@link org.eolang.lowering.Boxes}, and
+ * {@link org.eolang.lowering.Boxed} writes a copy of every document with
+ * that λ planted, so that entering a fragment fires the engine.
+ * {@link org.eolang.lowering.Lowered} takes one document and runs phino
+ * once per fragment of it: the boxed copies are merged into one universe,
+ * {@link org.eolang.lowering.Registry} writes the {@code atoms.json} that
+ * hands our λ functions to phino, and
+ * {@link org.eolang.lowering.Applied} spells the way from {@code Φ} into
+ * the fragment, with every void on the way applied to a marker of a fresh
+ * symbol. {@link org.eolang.lowering.Phino} is the only class that runs
+ * the binary, under a budget of steps and of seconds.</p>
+ *
+ * <p>phino serves the λ it fires through a process of its own:
+ * {@link org.eolang.lowering.Engine}, which
+ * {@link org.eolang.lowering.Registry} starts and talks to over the
+ * {@link org.eolang.lowering.Channel}, one JSON object per line. A fire
+ * computes nothing: {@link org.eolang.lowering.Fires} picks the
+ * {@link org.eolang.lowering.Fire} of the λ, the fire appends one row to
+ * {@link org.eolang.lowering.Symbols} and answers with a
+ * {@link org.eolang.lowering.Marker} standing for that row, so phino goes
+ * on rewriting over symbols. An operand that is not a value yet is asked
+ * back of phino over the same wire, which suspends the fire until the
+ * answer arrives.</p>
+ *
+ * <p>What comes back is a residual φ-expression full of markers, and the
+ * table of symbols behind them is the straight-line program the fragment
+ * really is. {@link org.eolang.lowering.Splice} puts the residual back
+ * into the document it came from, keeping the names and places the
+ * printer lives on, and {@link org.eolang.lowering.Marked} turns every
+ * marker into a call of an atom whose body
+ * {@link org.eolang.lowering.Table} reads out of the symbols and
+ * {@link org.eolang.lowering.JavaAtom} renders into Java, saved as a
+ * {@link org.eolang.lowering.Sidecar}. A fragment phino refuses — an
+ * unknown λ, an error path, an exhausted budget — is simply left as
+ * written, and the next one is tried.</p>
  *
  * @since 0.76.0
  * @see <a href="https://github.com/objectionary/phino">phino</a>
