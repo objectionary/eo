@@ -36,6 +36,11 @@ import javax.json.JsonObject;
  * takes the process down, so that phino sees a broken run and not a
  * silence.</p>
  *
+ * <p>Every line phino sends is one trip over the wire, since a fire is
+ * answered once and a question is asked once, and the engine records how
+ * many it served, so that the build can say what a document cost even
+ * though every run of it happened in a process of its own.</p>
+ *
  * @since 0.76.0
  */
 public final class Engine {
@@ -51,6 +56,11 @@ public final class Engine {
     private final Fires fires;
 
     /**
+     * The trips over the wire.
+     */
+    private final Trips trips;
+
+    /**
      * What to do when a fire fails.
      */
     private final Thread.UncaughtExceptionHandler crash;
@@ -60,12 +70,14 @@ public final class Engine {
      *
      * @param wire The wire
      * @param served The fires
+     * @param counted The trips over the wire
      * @param handler What to do when a fire fails
      */
-    public Engine(final Channel wire, final Fires served,
+    public Engine(final Channel wire, final Fires served, final Trips counted,
         final Thread.UncaughtExceptionHandler handler) {
         this.channel = wire;
         this.fires = served;
+        this.trips = counted;
         this.crash = handler;
     }
 
@@ -91,6 +103,7 @@ public final class Engine {
                     new Boxes(Paths.get(System.getenv("BOXES"))),
                     channel
                 ),
+                new Trips(Paths.get(System.getenv("TRIPS"))),
                 (thread, error) -> {
                     error.printStackTrace(System.err);
                     System.exit(1);
@@ -108,21 +121,28 @@ public final class Engine {
      */
     public void serve(final BufferedReader input) throws IOException, InterruptedException {
         final Collection<Thread> live = new ArrayList<>(0);
-        while (true) {
-            final String line = input.readLine();
-            if (line == null) {
-                break;
+        long made = 0L;
+        try {
+            while (true) {
+                final String line = input.readLine();
+                if (line == null) {
+                    break;
+                }
+                final JsonObject message = Json.createReader(new StringReader(line)).readObject();
+                if (message.containsKey("λ")) {
+                    final Thread fire = new Thread(() -> this.fired(message));
+                    fire.setDaemon(true);
+                    fire.setUncaughtExceptionHandler(this.crash);
+                    live.add(fire);
+                    fire.start();
+                    ++made;
+                } else if (message.containsKey("𝑛")) {
+                    this.channel.answered(message.getInt("id"), message.getString("𝑛"));
+                    ++made;
+                }
             }
-            final JsonObject message = Json.createReader(new StringReader(line)).readObject();
-            if (message.containsKey("λ")) {
-                final Thread fire = new Thread(() -> this.fired(message));
-                fire.setDaemon(true);
-                fire.setUncaughtExceptionHandler(this.crash);
-                live.add(fire);
-                fire.start();
-            } else if (message.containsKey("𝑛")) {
-                this.channel.answered(message.getInt("id"), message.getString("𝑛"));
-            }
+        } finally {
+            this.trips.record(made);
         }
         for (final Thread fire : live) {
             fire.join(1000L);

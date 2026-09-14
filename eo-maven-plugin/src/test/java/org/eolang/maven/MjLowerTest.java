@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * Test case for {@link MjLower}.
@@ -205,6 +206,7 @@ final class MjLowerTest {
     }
 
     @Test
+    @ResourceLock("lowering-log")
     void takesNoDocumentOnceTheTimeBudgetIsSpent(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
@@ -316,6 +318,7 @@ final class MjLowerTest {
     }
 
     @Test
+    @ResourceLock("lowering-log")
     void reportsTheDocumentWhenDone(@Mktmp final Path temp) throws IOException {
         MjLowerTest.assumePhino(temp);
         MatcherAssert.assertThat(
@@ -324,9 +327,20 @@ final class MjLowerTest {
             Matchers.hasItem(
                 Matchers.<String>allOf(
                     Matchers.startsWith("Lowered 1 fragment(s) in foo,"),
-                    Matchers.containsString("grew to")
+                    Matchers.containsString("b to ")
                 )
             )
+        );
+    }
+
+    @Test
+    @ResourceLock("lowering-log")
+    void countsTheTripsOverTheWire(@Mktmp final Path temp) throws IOException {
+        MjLowerTest.assumePhino(temp);
+        MatcherAssert.assertThat(
+            "a lowered document must be reported with the trips its runs made, but it wasnt",
+            MjLowerTest.logged(MjLowerTest.symbolic(temp)),
+            Matchers.hasItem(Matchers.matchesPattern("Lowered 1 fragment.+, [1-9]\\d* trips"))
         );
     }
 

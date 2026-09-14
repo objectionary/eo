@@ -14,7 +14,8 @@ import java.util.stream.Stream;
 /**
  * The layout of the directory one build lowers in: the table of boxes,
  * the boxed variant of every document, the sidecar bodies of the atoms,
- * and a scratch directory per run.
+ * the trips over the wire of every document, and a scratch directory per
+ * run.
  *
  * @since 0.77.0
  */
@@ -68,6 +69,16 @@ public final class Home {
                 .sorted()
                 .collect(Collectors.toList());
         }
+    }
+
+    /**
+     * The trips over the wire the runs of a document made.
+     *
+     * @param name The identifier of the document
+     * @return The file
+     */
+    public Path trips(final String name) {
+        return this.dir.resolve("trips").resolve(String.format("%s.txt", name));
     }
 
     /**

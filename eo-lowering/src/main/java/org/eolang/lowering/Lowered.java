@@ -89,6 +89,7 @@ public final class Lowered implements Rewrite {
     public int rewrite(final Xnav doc) throws IOException {
         final Document document = Lowered.owner(doc.node());
         final Boxes boxes = new Boxes(this.home.boxes());
+        new Trips(this.home.trips(this.name)).reset();
         int done = 0;
         for (final Box box : boxes.all()) {
             if (!Lowered.owns(document, box.locator())) {
@@ -129,7 +130,8 @@ public final class Lowered implements Rewrite {
             final Path world = run.resolve("world.phi");
             this.phino.merged(docs, world);
             final Path registry = new Registry(
-                run, run.resolve("symbols.tsv"), this.home.boxes()
+                run, run.resolve("symbols.tsv"), this.home.boxes(),
+                this.home.trips(this.name)
             ).saved();
             final String entry = new Applied(document, locator, this.formas, symbols).phi();
             final List<String> residuals = new ArrayList<>(0);

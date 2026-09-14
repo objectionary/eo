@@ -31,10 +31,7 @@ final class RegistryTest {
     void servesEveryLambdaFromOneEntry(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the operations, the fork and the boxes must be served by one entry, but they arent",
-            Files.readString(
-                new Registry(temp, temp.resolve("s.tsv"), temp.resolve("b.tsv")).saved(),
-                StandardCharsets.UTF_8
-            ),
+            Files.readString(RegistryTest.saved(temp), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("L_number_plus|"),
                 Matchers.containsString("|L_fork|L_box_\\\\d+\":{\"rt\":\"exec\""),
@@ -45,7 +42,7 @@ final class RegistryTest {
 
     @Test
     void writesExecutableLauncherNamingTheTables(@Mktmp final Path temp) throws IOException {
-        new Registry(temp, temp.resolve("s.tsv"), temp.resolve("b.tsv")).saved();
+        RegistryTest.saved(temp);
         MatcherAssert.assertThat(
             "the launcher must hand the tables to the engine, but it doesnt",
             Files.readString(temp.resolve("engine"), StandardCharsets.UTF_8),
@@ -58,12 +55,28 @@ final class RegistryTest {
     }
 
     @Test
+    void namesTheFileTheTripsAreCountedIn(@Mktmp final Path temp) throws IOException {
+        RegistryTest.saved(temp);
+        MatcherAssert.assertThat(
+            "the launcher must tell the engine where to count its trips, but it doesnt",
+            Files.readString(temp.resolve("engine"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("TRIPS='%s'", temp.resolve("t.txt")))
+        );
+    }
+
+    @Test
     void makesLauncherExecutable(@Mktmp final Path temp) throws IOException {
-        new Registry(temp, temp.resolve("s.tsv"), temp.resolve("b.tsv")).saved();
+        RegistryTest.saved(temp);
         MatcherAssert.assertThat(
             "the launcher must be executable, but it isnt",
             Files.getPosixFilePermissions(temp.resolve("engine")),
             Matchers.hasItem(PosixFilePermission.OWNER_EXECUTE)
         );
+    }
+
+    private static Path saved(final Path temp) throws IOException {
+        return new Registry(
+            temp, temp.resolve("s.tsv"), temp.resolve("b.tsv"), temp.resolve("t.txt")
+        ).saved();
     }
 }

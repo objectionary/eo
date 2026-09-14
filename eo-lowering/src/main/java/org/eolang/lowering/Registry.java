@@ -24,10 +24,10 @@ import org.cactoos.Text;
  *
  * <p>phino starts an {@code exec} program with no arguments and no
  * environment of its own, so the registry names a one-line shell script
- * that sets the paths of the tables and execs the same Java that runs the
- * build, over the classpath the engine needs. One entry serves every λ
- * the engine knows: the operations of {@code ops.tsv}, the dataization,
- * the fork and every box.</p>
+ * that sets the paths of the tables and of the count of the trips, and
+ * execs the same Java that runs the build, over the classpath the engine
+ * needs. One entry serves every λ the engine knows: the operations of
+ * {@code ops.tsv}, the dataization, the fork and every box.</p>
  *
  * @since 0.77.0
  */
@@ -49,16 +49,24 @@ public final class Registry {
     private final Path boxes;
 
     /**
+     * The file the trips over the wire are counted in.
+     */
+    private final Path wire;
+
+    /**
      * Ctor.
      *
      * @param home Where the registry and the launcher go
      * @param table The table of symbols of the run
      * @param planted The table of boxes of the build
+     * @param counted The file the trips over the wire are counted in
      */
-    public Registry(final Path home, final Path table, final Path planted) {
+    public Registry(final Path home, final Path table, final Path planted,
+        final Path counted) {
         this.dir = home;
         this.symbols = table;
         this.boxes = planted;
+        this.wire = counted;
     }
 
     /**
@@ -72,9 +80,10 @@ public final class Registry {
         Files.write(
             launcher,
             String.format(
-                "#!/bin/sh%nSYMBOLS='%s' BOXES='%s' exec '%s' -cp '%s' %s%n",
+                "#!/bin/sh%nSYMBOLS='%s' BOXES='%s' TRIPS='%s' exec '%s' -cp '%s' %s%n",
                 this.symbols.toAbsolutePath(),
                 this.boxes.toAbsolutePath(),
+                this.wire.toAbsolutePath(),
                 Paths.get(System.getProperty("java.home"), "bin", "java"),
                 Registry.classpath(),
                 Engine.class.getName()

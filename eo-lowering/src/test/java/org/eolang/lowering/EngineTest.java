@@ -47,6 +47,7 @@ final class EngineTest {
                 new Fires(
                     new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
                 ),
+                new Trips(temp.resolve("t.txt")),
                 (thread, error) -> {
                 }
             ).serve(input);
@@ -72,6 +73,7 @@ final class EngineTest {
             new Fires(
                 new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
             ),
+            new Trips(temp.resolve("t.txt")),
             (thread, error) -> {
             }
         );
@@ -135,6 +137,7 @@ final class EngineTest {
                 new Fires(
                     new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
                 ),
+                new Trips(temp.resolve("t.txt")),
                 (thread, error) -> seen.set(error)
             ).serve(input);
         }
@@ -142,6 +145,39 @@ final class EngineTest {
             "a fire nobody serves must fail through the handler, naming the fire, but it didnt",
             seen.get().getMessage(),
             Matchers.equalTo("The fire #2 of 'L_miracle' failed")
+        );
+    }
+
+    @Test
+    void countsEveryServedLineAsATrip(@Mktmp final Path temp) throws Exception {
+        final Channel channel = new Channel(new StringWriter());
+        final Trips trips = new Trips(temp.resolve("t.txt"));
+        try (
+            BufferedReader input = new BufferedReader(
+                new StringReader(
+                    String.join(
+                        System.lineSeparator(),
+                        "{\"𝑒\":\"⟦ ⟧\"}",
+                        "{\"id\":2,\"λ\":\"L_miracle\",\"𝑏\":\"⟦ ⟧\"}",
+                        "{\"id\":3,\"λ\":\"L_miracle\",\"𝑏\":\"⟦ ⟧\"}"
+                    )
+                )
+            )
+        ) {
+            new Engine(
+                channel,
+                new Fires(
+                    new Symbols(temp.resolve("s.tsv")), new Boxes(temp.resolve("b.tsv")), channel
+                ),
+                trips,
+                (thread, error) -> {
+                }
+            ).serve(input);
+        }
+        MatcherAssert.assertThat(
+            "the two fires must count as two trips and the universe as none, but they dont",
+            trips.total(),
+            Matchers.equalTo(2L)
         );
     }
 }

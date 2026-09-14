@@ -21,6 +21,7 @@ import org.eolang.lowering.Home;
 import org.eolang.lowering.Lowered;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Planted;
+import org.eolang.lowering.Trips;
 import org.eolang.lowering.Xml;
 
 /**
@@ -40,6 +41,11 @@ import org.eolang.lowering.Xml;
  * <p>The whole run is bounded by a {@link Budget} of seconds. The budget
  * is read before a document is taken, never in the middle of one, so a
  * document is either lowered whole or left exactly as it was.</p>
+ *
+ * <p>Every document is reported with the trips its runs made over the
+ * wire between phino and the engine, which is what a document really
+ * costs: the fragments and the seconds say little, while a trip is one
+ * question phino asked us and one answer we gave back.</p>
  *
  * @since 0.76.0
  * @todo #8548:60min The boxed variants of a build pile up under the
@@ -174,20 +180,23 @@ final class Lowering implements Step {
         final XMLDocument doc = new XMLDocument(source);
         final int count = new Lowered(this.phino, formas, dir, tojo.identifier())
             .rewrite(new Xnav(doc.inner()));
+        final long trips = new Trips(dir.trips(tojo.identifier())).total();
         if (count > 0) {
             final Path target = new Place(tojo.identifier())
                 .make(this.home, MjAssemble.XMIR);
             new Saved(doc.toString(), target).value();
             tojo.withXmir(target);
             Logger.info(
-                this, "Lowered %d fragment(s) in %s, %[size]s grew to %[size]s, in %[ms]s",
+                this,
+                "Lowered %d fragment(s) in %s, %[size]s to %[size]s, in %[ms]s, %d trips",
                 count, tojo.identifier(), Files.size(source), Files.size(target),
-                System.currentTimeMillis() - start
+                System.currentTimeMillis() - start, trips
             );
         } else {
             Logger.info(
-                this, "Nothing to lower in %s (%[size]s), checked in %[ms]s",
-                tojo.identifier(), Files.size(source), System.currentTimeMillis() - start
+                this, "Nothing to lower in %s (%[size]s), checked in %[ms]s, %d trips",
+                tojo.identifier(), Files.size(source), System.currentTimeMillis() - start,
+                trips
             );
         }
         return count;

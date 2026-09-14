@@ -37,6 +37,16 @@ final class HomeTest {
     }
 
     @Test
+    void countsTheTripsOfEachDocumentApart(@Mktmp final Path temp) {
+        final Home home = new Home(temp);
+        MatcherAssert.assertThat(
+            "two documents cannot share the file their trips are counted in, but they do",
+            home.trips("foo"),
+            Matchers.not(Matchers.equalTo(home.trips("bar")))
+        );
+    }
+
+    @Test
     void makesFreshRunDirectories(@Mktmp final Path temp) throws IOException {
         final Home home = new Home(temp);
         MatcherAssert.assertThat(
