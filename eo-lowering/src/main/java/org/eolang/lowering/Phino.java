@@ -4,8 +4,6 @@
  */
 package org.eolang.lowering;
 
-import com.yegor256.Jaxec;
-import com.yegor256.Result;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
@@ -26,15 +25,17 @@ import org.cactoos.text.UncheckedText;
  * The binary is trusted only when its version equals the one pinned in
  * the {@code phino-version.txt} resource, since the dialect it reads and
  * the rewriting it does change between releases. A run is bounded by an
- * explicit step budget.</p>
+ * explicit step budget and by seconds of wall clock: a binary that spins
+ * or eats the machine is killed rather than allowed to take the build
+ * down with it, and the run that was killed fails the same way a run the
+ * binary itself refuses does.</p>
  *
- * <p>The subprocess runs through {@link Jaxec}, with both of its streams
- * redirected to files: hundreds of fragments are tried per build and some
- * runs are expected to fail, so nothing the binary prints may reach the
- * build log, where a line saying {@code ERROR} would alarm for no reason.
- * The scratch files live in a directory the caller names, such as the
- * target directory of the build, never in the world-shared temporary
- * one.</p>
+ * <p>The subprocess runs with both of its streams redirected to files:
+ * hundreds of fragments are tried per build and some runs are expected to
+ * fail, so nothing the binary prints may reach the build log, where a line
+ * saying {@code ERROR} would alarm for no reason. The scratch files live
+ * in a directory the caller names, such as the target directory of the
+ * build, never in the world-shared temporary one.</p>
  *
  * @since 0.76.0
  */
@@ -56,6 +57,11 @@ public final class Phino {
     private final Path work;
 
     /**
+     * How many seconds one run may take, where zero means no limit.
+     */
+    private final long seconds;
+
+    /**
      * Ctor.
      *
      * @param exe The name or path of the executable
@@ -63,9 +69,22 @@ public final class Phino {
      * @param dir Where the scratch files go
      */
     public Phino(final String exe, final int budget, final Path dir) {
+        this(exe, budget, dir, 0L);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param exe The name or path of the executable
+     * @param budget The most rewriting steps one run may take
+     * @param dir Where the scratch files go
+     * @param span How many seconds one run may take, where zero means no limit
+     */
+    public Phino(final String exe, final int budget, final Path dir, final long span) {
         this.binary = exe;
         this.steps = budget;
         this.work = dir;
+        this.seconds = span;
     }
 
     /**
@@ -169,17 +188,19 @@ public final class Phino {
         final Path out = Files.createTempFile(place, "phino", ".out");
         final Path err = Files.createTempFile(place, "phino", ".err");
         try {
-            final Result result = new Jaxec(command)
-                .withCheck(false)
-                .withStdout(ProcessBuilder.Redirect.to(out.toFile()))
-                .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
-                .execUnsafe();
-            if (result.code() != 0) {
+            final int code = this.waited(
+                new ProcessBuilder(command)
+                    .redirectOutput(out.toFile())
+                    .redirectError(err.toFile())
+                    .start(),
+                command
+            );
+            if (code != 0) {
                 throw new IllegalStateException(
                     String.format(
                         "The binary '%s' exited with code %d: %s",
                         this.binary,
-                        result.code(),
+                        code,
                         Files.readString(err, StandardCharsets.UTF_8).trim()
                     )
                 );
@@ -188,6 +209,34 @@ public final class Phino {
         } finally {
             Files.deleteIfExists(out);
             Files.deleteIfExists(err);
+        }
+    }
+
+    private int waited(final Process proc, final String... command) throws IOException {
+        try {
+            final boolean done;
+            if (this.seconds > 0L) {
+                done = proc.waitFor(this.seconds, TimeUnit.SECONDS);
+            } else {
+                proc.waitFor();
+                done = true;
+            }
+            if (!done) {
+                proc.destroyForcibly().waitFor();
+                throw new IllegalStateException(
+                    String.format(
+                        "The binary '%s' took longer than %d second(s) and was killed: %s",
+                        this.binary, this.seconds, String.join(" ", command)
+                    )
+                );
+            }
+            return proc.exitValue();
+        } catch (final InterruptedException ex) {
+            proc.destroyForcibly();
+            Thread.currentThread().interrupt();
+            throw new IOException(
+                String.format("Interrupted while waiting for '%s'", this.binary), ex
+            );
         }
     }
 }

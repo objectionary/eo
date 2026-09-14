@@ -50,11 +50,12 @@ import org.eolang.lowering.Phino;
  *
  * <p>Every run of phino works under a step budget of ten thousand
  * rewrites, enough for any fragment a human writes and little enough
- * that a diverging one is refused in seconds. The goal as a whole works
- * under {@code eo.timeBudget} seconds of wall clock, counted from the
- * moment lowering starts and read before each document is taken, so a
- * long build gives up on the documents it has no time for instead of
- * running away.</p>
+ * that a diverging one is refused in seconds, and under
+ * {@code eo.phinoTimeout} seconds of wall clock, after which the run is
+ * killed and its fragment stays as written. The goal as a whole works
+ * under {@code eo.timeBudget} seconds, counted from the moment lowering
+ * starts and read before each document is taken, so a long build gives up
+ * on the documents it has no time for instead of running away.</p>
  *
  * @since 0.76.0
  */
@@ -109,6 +110,20 @@ public final class MjLower extends MjSafe {
     private long budget;
 
     /**
+     * How many seconds one run of phino may take. A single run that spins
+     * or eats the machine would otherwise take the whole build down with
+     * it, and no budget counted between documents can interrupt it, so a
+     * run that outlives its seconds is killed and the fragment it was
+     * working on stays as written. Zero means no limit.
+     */
+    @Parameter(
+        alias = "phinoTimeout",
+        property = "eo.phinoTimeout",
+        defaultValue = "60"
+    )
+    private long span;
+
+    /**
      * The name or path of the phino executable.
      */
     @Parameter(
@@ -145,7 +160,9 @@ public final class MjLower extends MjSafe {
         final Path home = this.targetDir.toPath().resolve(Lowering.DIR);
         final Path marker = home.resolve(Lowering.MARKER);
         if (this.lowering) {
-            final Phino phino = new Phino(this.binary, 10_000, home.resolve("phino"));
+            final Phino phino = new Phino(
+                this.binary, 10_000, home.resolve("phino"), this.span
+            );
             if (phino.suitable()) {
                 try (TjsForeign tojos = this.tojos()) {
                     new Timed(

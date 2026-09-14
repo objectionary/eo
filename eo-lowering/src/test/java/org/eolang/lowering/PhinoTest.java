@@ -70,6 +70,42 @@ final class PhinoTest {
     }
 
     @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void killsRunThatOutlivesItsSeconds(@Mktmp final Path temp) throws Exception {
+        final Path fake = temp.resolve("phino");
+        Files.write(
+            fake,
+            String.format("#!/bin/sh%nsleep 30%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.setPosixFilePermissions(
+            fake, PosixFilePermissions.fromString("rwxr-xr-x")
+        );
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> new Phino(fake.toString(), 7, temp, 1L).version(),
+            "a run that outlives its seconds cannot be waited for forever, but it was"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void letsRunFinishWithinItsSeconds(@Mktmp final Path temp) throws Exception {
+        final Path fake = temp.resolve("phino");
+        Files.write(
+            fake,
+            String.format("#!/bin/sh%necho 4.5.6%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.setPosixFilePermissions(
+            fake, PosixFilePermissions.fromString("rwxr-xr-x")
+        );
+        MatcherAssert.assertThat(
+            "a run that ends well within its seconds must answer as it always did, but it didnt",
+            new Phino(fake.toString(), 7, temp, 30L).version(),
+            Matchers.equalTo("4.5.6")
+        );
+    }
+
+    @Test
     void mergesXmirDocumentsIntoOneExpression(@Mktmp final Path temp) throws Exception {
         final Phino phino = new Phino("phino", 100, temp);
         Assumptions.assumeTrue(phino.suitable());
