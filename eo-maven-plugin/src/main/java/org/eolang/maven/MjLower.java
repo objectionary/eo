@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.eolang.lowering.Lowering;
 
 /**
@@ -58,6 +60,17 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The directory with the tables of {@code eo:inference}.
+     */
+    @Parameter(
+        alias = "inferenceDir",
+        property = "eo.inferenceDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/6-inference"
+    )
+    private File tables;
+
+    /**
      * The directory where the lowering keeps what it makes.
      */
     @Parameter(
@@ -78,7 +91,14 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            new Lowering(this.home.toPath(), this.binary).exec();
+            try (TjsForeign tojos = this.tojos()) {
+                new Lowering(
+                    new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
+                    this.tables.toPath(),
+                    this.home.toPath(),
+                    this.binary
+                ).exec();
+            }
         } else {
             Logger.info(
                 this,

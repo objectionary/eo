@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The box is appended after every binding the formation was written with, and
+# not one of those bindings is touched. That is what lets the patch at the far
+# end of the pipeline take the boxes away again and arrive back at the source
+# the author wrote, down to the order of what is in it.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+xmir:
+  gap.xmir:
+    - "/object/o[@name='gap']/o[1][@name='a' and @base='∅']"
+    - "/object/o[@name='gap']/o[2][@name='b' and @base='∅']"
+    - "/object/o[@name='gap']/o[3][@name='φ' and @base='ξ.a.plus']"
+    - "/object/o[@name='gap']/o[last()][@name='λ' and text()='L_box_1_object']"
+    - "/object/o[@name='gap'][count(o) = 4]"

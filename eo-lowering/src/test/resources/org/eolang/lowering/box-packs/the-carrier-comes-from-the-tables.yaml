@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The carrier is read off the tables of `eo:inference` and never worked out
+# here. The row whose id is the locator of the formation says what the type of
+# it reduces to, and `Φ.number` is the number carrier, which is what the
+# renderer will declare in Java at the end of the pipeline.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+provides: |
+  <provides>
+    <type id="Φ.gap" reduced="Φ.number"/>
+  </provides>
+xmir:
+  gap.xmir:
+    - "/object/o[@name='gap']/o[@name='λ' and text()='L_box_1_number']"

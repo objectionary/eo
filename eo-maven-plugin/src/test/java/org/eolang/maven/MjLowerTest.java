@@ -4,9 +4,11 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -69,16 +71,48 @@ final class MjLowerTest {
         Files.setPosixFilePermissions(
             binary, PosixFilePermissions.fromString("rwxr-xr-x")
         );
+        final Path tables = temp.resolve("tables");
+        Files.createDirectories(tables);
+        Files.write(
+            tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
+        );
         final Path home = temp.resolve("target/eo/7-lower");
         new FakeMaven(temp)
             .with("lowering", true)
             .with("binary", binary.toString())
+            .with("tables", tables.toFile())
             .with("home", home.toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must make the folder it was given, but it didnt",
             home.toFile(),
             FileMatchers.anExistingDirectory()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void boxesTheFormationsOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
+        final Path binary = temp.resolve("phino");
+        Files.write(
+            binary, new ListOf<>("#!/bin/sh", "echo 0.0.133")
+        );
+        Files.setPosixFilePermissions(
+            binary, PosixFilePermissions.fromString("rwxr-xr-x")
+        );
+        final Path home = temp.resolve("target/eo/7-lower");
+        new FakeMaven(temp)
+            .withProgram(MjLowerTest.program("[a b] > gap", "  a.plus b > @", ""))
+            .execute(MjParse.class)
+            .execute(MjInference.class)
+            .with("lowering", true)
+            .with("binary", binary.toString())
+            .with("home", home.toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must box the formations of the program it compiled, but it didnt",
+            new XMLDocument(home.resolve("boxed/gap.xmir")).xpath("//o[@name='λ']/text()"),
+            Matchers.contains(Matchers.startsWith("L_box_1_"))
         );
     }
 
@@ -105,5 +139,9 @@ final class MjLowerTest {
             ).getCause().getCause().getMessage(),
             Matchers.stringContainsInOrder("0.0.1", "0.0.133")
         );
+    }
+
+    private static String program(final String... lines) {
+        return String.join(System.lineSeparator(), lines);
     }
 }
