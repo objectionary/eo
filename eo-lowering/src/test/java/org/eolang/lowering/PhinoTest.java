@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.lowering;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;

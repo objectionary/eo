@@ -7,10 +7,11 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.lowering.Lowering;
+import org.eolang.lowering.Phino;
 
 /**
  * Fold the formations of a program into Java atoms.
@@ -33,11 +34,6 @@ import org.apache.maven.plugins.annotations.Parameter;
  * version cannot be trusted.</p>
  *
  * @since 0.74.0
- * @todo #8548:60min Move the phino version check and its pin into a new
- *  eo-lowering Maven module, and make this goal call one Lowering step of
- *  that module, which composes the stages of the pipeline: boxes, entries,
- *  world, run, patch, and render. Until then this goal only verifies phino
- *  and creates its folder.
  */
 @Mojo(
     name = "lower",
@@ -83,46 +79,19 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            this.verify(new Phino(this.binary));
+            final Phino phino = new Phino(this.binary);
+            new Lowering(this.home.toPath(), phino).exec();
+            Logger.info(
+                this,
+                "Phino %s is found at '%s', though nothing is lowered yet",
+                phino.pin(),
+                this.binary
+            );
         } else {
             Logger.info(
                 this,
                 "Lowering is disabled, turn it on with -Deo.lowering=true"
             );
         }
-    }
-
-    private void verify(final Phino phino) throws IOException {
-        final String pinned = phino.pin();
-        final String found;
-        try {
-            found = phino.version();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                String.format(
-                    "The binary '%s' cannot run, while lowering needs phino %s",
-                    this.binary,
-                    pinned
-                ),
-                ex
-            );
-        }
-        if (!found.equals(pinned)) {
-            throw new IllegalStateException(
-                String.format(
-                    "The binary '%s' is of version %s, while lowering needs phino %s",
-                    this.binary,
-                    found,
-                    pinned
-                )
-            );
-        }
-        Files.createDirectories(this.home.toPath());
-        Logger.info(
-            this,
-            "Phino %s is found at '%s', though nothing is lowered yet",
-            pinned,
-            this.binary
-        );
     }
 }

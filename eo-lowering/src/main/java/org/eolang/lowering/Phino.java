@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.lowering;
 
 import com.yegor256.Jaxec;
 import com.yegor256.Result;
@@ -30,7 +30,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.74.0
  */
-final class Phino {
+public final class Phino {
 
     /**
      * The name or path of the executable.
@@ -42,8 +42,13 @@ final class Phino {
      *
      * @param exe The name or path of the executable
      */
-    Phino(final String exe) {
+    public Phino(final String exe) {
         this.binary = exe;
+    }
+
+    @Override
+    public String toString() {
+        return this.binary;
     }
 
     /**
@@ -52,7 +57,7 @@ final class Phino {
      * @return The trimmed output of {@code phino --version}
      * @throws IOException If the executable cannot be run
      */
-    String version() throws IOException {
+    public String version() throws IOException {
         final Path out = Files.createTempFile("phino", ".txt");
         try {
             this.run(out);
@@ -67,11 +72,11 @@ final class Phino {
      *
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
-    String pin() {
+    public String pin() {
         return new UncheckedText(
             new Trimmed(
                 new TextOf(
-                    new ResourceOf("org/eolang/maven/phino-version.txt", this.getClass())
+                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
                 )
             )
         ).asString();

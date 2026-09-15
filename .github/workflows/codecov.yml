@@ -33,9 +33,9 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ~/.cabal
-          key: phino-${{ hashFiles('eo-maven-plugin/src/main/resources/org/eolang/maven/phino-version.txt') }}
+          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
       - run: |
-          ver=$(tr -d '[:space:]' < eo-maven-plugin/src/main/resources/org/eolang/maven/phino-version.txt)
+          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
           if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
             cabal update
             cabal install "phino-${ver}" --overwrite-policy=always
