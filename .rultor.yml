@@ -14,6 +14,11 @@ assets:
   secring.gpg: yegor256/objectionary-secrets#secring.gpg
 install: |
   pdd --file=/dev/null
+# @todo #8548:30min Build here with lowering turned on. Rultor builds without
+#  it, because no binary of the pinned phino version is published for this
+#  image and the image carries no Haskell toolchain to build one with. Once a
+#  binary of the pinned version is published, download it in the install
+#  script above and pass -Deo.lowering=true to every mvn call below.
 merge:
   script: |
     mvn clean install -ntp -DskipTests -Pqulice --errors -Dstyle.color=never

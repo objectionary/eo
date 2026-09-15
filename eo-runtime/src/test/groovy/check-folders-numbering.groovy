@@ -18,6 +18,7 @@ List<String> allowed = [
     '5-transpile',
     '6-pre-inference',
     '6-inference',
+    '7-lower',
 ]
 List<File> allowedDirs = allowed.stream()
     .map { dirName -> target.resolve(dirName).toFile() }

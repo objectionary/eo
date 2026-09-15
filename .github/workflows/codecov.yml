@@ -12,7 +12,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    timeout-minutes: 25
+    # Forty-five minutes and not twenty-five: the first run after a bump of
+    # the pinned phino version builds it from source, and only that run.
+    timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -26,7 +28,23 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install '-Deo.coverageTracking=true'
+      # The `lower` goal needs the exact phino version pinned in the plugin,
+      # and this job is the one that always builds with lowering on.
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cabal
+          key: phino-${{ hashFiles('eo-maven-plugin/src/main/resources/org/eolang/maven/phino-version.txt') }}
+      - run: |
+          ver=$(tr -d '[:space:]' < eo-maven-plugin/src/main/resources/org/eolang/maven/phino-version.txt)
+          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+            cabal update
+            cabal install "phino-${ver}" --overwrite-policy=always
+          fi
+          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+      - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+      # The goal must have run, and a missing folder is how a silently
+      # disabled lowering would look.
+      - run: test -d eo-runtime/target/eo/7-lower
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

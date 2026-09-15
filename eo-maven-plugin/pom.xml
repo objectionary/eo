@@ -215,6 +215,11 @@
       <artifactId>mktmp</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>jaxec</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.github.volodya-lombrozo</groupId>
       <artifactId>xnav</artifactId>
       <!-- version from parent POM -->
