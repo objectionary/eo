@@ -64,6 +64,9 @@
 +version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint sprintf-constant-args
++unlint sprintf-without-formatters
++unlint wrong-sprintf-arguments
 
 [^ args] > printf
   string > @
@@ -159,7 +162,7 @@
             auto
             acc.concat 25-
           T
-            "The escaped %% conversion does not take flags, width or precision".printf
+            "The escaped %% conversion in the format %s does not take flags, width or precision".printf
               * ^.^
         walk
           plus.
@@ -639,12 +642,24 @@
     "%(s"
     * "Jeff"
 
+  printf. --> stops-on-a-positional-index-before-an-escaped-percent
+    "%1$%s"
+    * "x"
+
+  printf. --> stops-on-a-precision-before-an-escaped-percent
+    "%.2%s"
+    * "x"
+
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
 
   printf. --> stops-on-a-width-before-an-escaped-percent
     "%5%s"
+    * "x"
+
+  printf. --> stops-on-a-zero-flag-before-an-escaped-percent
+    "%0%s"
     * "x"
 
   printf. --> stops-on-a-zero-flag-with-x
