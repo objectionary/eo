@@ -328,7 +328,6 @@ final class Eo implements Iterable<Directive> {
             Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
-            globals.clearBlanks();
         } else {
             failed = Eo.dispatch(span, tail, stack, globals, emit);
         }
@@ -350,6 +349,7 @@ final class Eo implements Iterable<Directive> {
                 point.apply();
                 emit.error(err.line(), err.pos(), err.getMessage(), true);
                 globals.closeTextBlock();
+                globals.clearBlanks();
             }
         } else {
             final String raw = span.text();
