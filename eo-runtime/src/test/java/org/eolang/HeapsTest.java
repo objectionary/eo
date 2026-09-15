@@ -205,17 +205,26 @@ final class HeapsTest {
     }
 
     @Test
-    void fetchesNothingForNegativeRange() {
-        MatcherAssert.assertThat(
-            "negative ranges must be answered as nothing",
+    void fetchesNothingForNegativeOffset() {
+        Assertions.assertEquals(
+            Optional.empty(),
             Heaps.INSTANCE.malloc(
                 10,
-                idx -> Arrays.asList(
-                    Heaps.INSTANCE.fetched(idx, -5, 3),
-                    Heaps.INSTANCE.fetched(idx, 2, -3)
-                )
+                idx -> Heaps.INSTANCE.fetched(idx, -5, 3)
             ),
-            Matchers.everyItem(Matchers.equalTo(Optional.empty()))
+            "a negative offset must be answered as nothing"
+        );
+    }
+
+    @Test
+    void fetchesNothingForNegativeLength() {
+        Assertions.assertEquals(
+            Optional.empty(),
+            Heaps.INSTANCE.malloc(
+                10,
+                idx -> Heaps.INSTANCE.fetched(idx, 2, -3)
+            ),
+            "a negative length must be answered as nothing"
         );
     }
 
