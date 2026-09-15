@@ -4,15 +4,20 @@
  */
 package org.eolang.lowering;
 
-import com.github.lombrozo.xnav.Filter;
-import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.w3c.dom.Element;
+import org.cactoos.Text;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 
 /**
  * The boxes of a build, read out of its documents.
@@ -21,8 +26,8 @@ import org.w3c.dom.Element;
  * box per named formation that declares arguments and stands under named
  * formations only, since that is the unit of lowering, each remembering
  * what it answers, what its receiver carries and the forma of every
- * argument. Anonymous formations, thunks, atoms and data objects get
- * none.</p>
+ * argument. A stylesheet finds the formations, and the formas come from
+ * the inference, so no Java here reads a document.</p>
  *
  * @since 0.77.0
  */
@@ -53,53 +58,35 @@ public final class Planted {
      * All the boxes, in document order.
      *
      * @return The boxes
+     * @throws IOException If a document cannot be read
      */
-    public List<Box> all() {
+    public List<Box> all() throws IOException {
         final List<Box> out = new ArrayList<>(0);
         for (final Path doc : this.docs) {
-            new Xnav(doc).element("object").elements(Filter.withName("o"))
-                .forEach(top -> this.through((Element) top.node(), out));
+            for (final Text line : new Split(new TextOf(Planted.planted(doc)), "\\R")) {
+                final String row = new UncheckedText(line).asString();
+                if (!row.isEmpty()) {
+                    this.admitted(row.split("\t", -1), out);
+                }
+            }
         }
         return out;
     }
 
-    private void through(final Element node, final List<Box> out) {
-        if (!node.hasAttribute("base") && node.hasAttribute("name")
-            && !"λ".equals(node.getAttribute("name"))) {
-            if (!Planted.voids(node).isEmpty() && !Planted.atom(node)
-                && !new Carrier(node.getAttribute("loc")).data()) {
-                out.add(this.box(node));
-            }
-            for (final Element kid : new Kids(node)) {
-                this.through(kid, out);
-            }
+    private void admitted(final String[] cells, final List<Box> out) {
+        if (!new Carrier(cells[0]).data()) {
+            out.add(this.box(cells[0], !"0".equals(cells[1]), cells[2]));
         }
     }
 
-    private static boolean atom(final Element node) {
-        return new Kids(node).all().stream()
-            .anyMatch(kid -> "λ".equals(kid.getAttribute("name")));
-    }
-
-    private Box box(final Element node) {
-        final String place = node.getAttribute("loc");
-        final String parent;
-        if (Planted.reaches(node)) {
-            parent = Planted.receiver(place);
-        } else {
-            parent = "-";
-        }
-        String carrier = this.formas.at(place);
-        if (carrier.isEmpty()) {
-            carrier = "object";
-        }
+    private Box box(final String place, final boolean reaches, final String voids) {
         final Map<String, String> row = new LinkedHashMap<>(0);
         row.put("locator", place);
-        row.put("carrier", carrier);
-        row.put("parent", parent);
+        row.put("carrier", Planted.named(this.formas.at(place)));
+        row.put("parent", Planted.receiver(place, reaches));
         row.put(
             "voids",
-            Planted.voids(node).stream().map(
+            Arrays.stream(voids.split(" ", -1)).filter(name -> !name.isEmpty()).map(
                 name -> String.format(
                     "%s:%s", name, this.typed(String.format("%s.%s", place, name))
                 )
@@ -108,40 +95,31 @@ public final class Planted {
         return new Box(row);
     }
 
-    private static String receiver(final String place) {
-        String out = new Carrier(place.substring(0, place.lastIndexOf('.'))).forma();
-        if (out.isEmpty()) {
-            out = "object";
-        }
-        return out;
-    }
-
     private String typed(final String place) {
-        String out = this.formas.known(place);
+        return Planted.named(this.formas.known(place));
+    }
+
+    private static String receiver(final String place, final boolean reaches) {
+        String out = "-";
+        if (reaches) {
+            out = Planted.named(
+                new Carrier(place.substring(0, place.lastIndexOf('.'))).forma()
+            );
+        }
+        return out;
+    }
+
+    private static String named(final String forma) {
+        String out = forma;
         if (out.isEmpty()) {
             out = "object";
         }
         return out;
     }
 
-    private static List<String> voids(final Element node) {
-        return new Kids(node).all().stream()
-            .filter(kid -> "∅".equals(kid.getAttribute("base")))
-            .map(kid -> kid.getAttribute("name"))
-            .filter(name -> !"ρ".equals(name))
-            .collect(Collectors.toList());
-    }
-
-    private static boolean reaches(final Element node) {
-        boolean out = false;
-        for (final Element kid : new Kids(node)) {
-            final String base = kid.getAttribute("base");
-            if ("∅".equals(base) && "ρ".equals(kid.getAttribute("name"))
-                || base.startsWith("ξ.ρ") || Planted.reaches(kid)) {
-                out = true;
-                break;
-            }
-        }
-        return out;
+    private static String planted(final Path doc) throws IOException {
+        return new XSLDocument(
+            Planted.class.getResource("/org/eolang/lowering/planting.xsl"), "planting.xsl"
+        ).applyTo(new XMLDocument(doc));
     }
 }
