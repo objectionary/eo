@@ -11,6 +11,10 @@
   3. 42.plus a! => a nameless const argument; the wrapper gets a cactus
   auto-name (as AutoName does in Java) so vars-float-up floats it up and
   leaves a proper reference, not an empty name that fails to round-trip.
+  4. a >> b! => the wrapper keeps "@local" beside "@name" (#8738). The
+  marker says that the name it qualifies is file-local, so the two travel
+  together; leaving "@local" on the wrapped value would publish the
+  wrapper as a surface attribute and mark an unnamed node as private.
   -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -64,12 +68,15 @@
       <xsl:if test="@as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
+      <xsl:if test="@local">
+        <xsl:attribute name="local" select="@local"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos"/>
         <o>
-          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as' and name()!='local']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>

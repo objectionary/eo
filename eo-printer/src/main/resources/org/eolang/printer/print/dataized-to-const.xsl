@@ -29,6 +29,13 @@
           <xsl:if test="@as">
             <xsl:attribute name="as" select="@as"/>
           </xsl:if>
+          <!--
+          Carry the wrapper's file-local marker (#8738), which sits beside
+          the name it qualifies rather than on the wrapped value.
+          -->
+          <xsl:if test="@local">
+            <xsl:attribute name="local" select="@local"/>
+          </xsl:if>
           <xsl:attribute name="const"/>
           <xsl:for-each select="$argument/o">
             <xsl:apply-templates select="."/>

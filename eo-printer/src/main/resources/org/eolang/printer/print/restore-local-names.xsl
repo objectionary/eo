@@ -35,8 +35,9 @@
   more than once must stay one shared object rather than be inlined per use
   (which would mint an independent const at each site and drop the shared name,
   #5828). Such a handle keeps its "@local" marker here — the parser leaves it on
-  the wrapped value inside the "const-to-dataized" `.as-bytes`/`Φ.dataized`
-  shell — so the handle survives to "to-eo-tree" and prints as `a &gt;&gt; b!`.
+  the "const-to-dataized" `.as-bytes` wrapper, beside the cactus "@name" it
+  qualifies (#8738) — so the handle survives to "to-eo-tree" and prints as
+  `a &gt;&gt; b!`.
   Unlike a void, its cactus "@name" is NOT promoted and its references are NOT
   rewritten: the binding stays obfuscated so "inline-cactoos" leaves it whole
   and "merge-monikers" folds it onto its first reference as a moniker, the other
@@ -236,7 +237,8 @@
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
   R-3.10.12) that is referenced more than once. "const-to-dataized" wraps such
   a const in a `.as-bytes` over `Φ.dataized` node carrying the obfuscated
-  cactus @name, with the readable handle kept as "@local" on the wrapped value.
+  cactus @name together with the readable "@local" handle that qualifies it
+  (#8738).
   A const is dataized once and cached in that single binding, so every
   reference shares one const object; inlining it per use (as "inline-cactoos"
   does for a single-use const, #5821, or a referentially-transparent non-const
@@ -253,8 +255,7 @@
   -->
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
-    <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
-    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
+    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($wrapper/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
   </xsl:function>
   <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
@@ -319,13 +320,13 @@
   the handle by name (#5995) — on a based application
   handle reached by a further application (see "eo:reapplied") — left standing
   by "inline-cactoos", having no inline spelling as the head of another
-  application (#5952) — and on the value of a
+  application (#5952) — and on the wrapper of a
   multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(.))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

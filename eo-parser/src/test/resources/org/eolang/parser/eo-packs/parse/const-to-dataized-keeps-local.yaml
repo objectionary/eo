@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8738: const-to-dataized.xsl built the floated ".as-bytes" wrapper from a
+# fixed set of attributes that left "@local" out, while the object nested
+# inside the "Φ.dataized" wrapper copied everything except "const", "name"
+# and "as". The file-local marker therefore sank one level below the name it
+# qualifies: the attribute the formation published carried "@name" and no
+# "@local", so every reader of the XMIR took it for a public method, and the
+# only node marked file-local had no name at all. The marker belongs beside
+# the name, on the wrapper.
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+asserts:
+  - //o[@base='.as-bytes' and @local='b' and @name='a🌵2-2']
+  - //o[@base='.as-bytes']/o[@base='Φ.dataized']/o[not(@local)]
+input: |
+  [^] > obj
+    ^.as-bytes >> b!
