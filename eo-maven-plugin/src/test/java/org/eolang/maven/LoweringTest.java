@@ -49,7 +49,7 @@ final class LoweringTest {
     private Path temp;
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/lowering/lowering-packs/", glob = "**.yaml")
     void printsLoweredEo(final String yaml) throws IOException {
         Assumptions.assumeTrue(new Phino("phino", 1000, this.temp).suitable());
         final Xtory story = new XtSticky(new XtYaml(yaml));
@@ -66,7 +66,7 @@ final class LoweringTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/lowering/lowering-packs/", glob = "**.yaml")
     void takesEveryBoxOutOfTheLoweredXmir(final String yaml) throws IOException {
         Assumptions.assumeTrue(new Phino("phino", 1000, this.temp).suitable());
         MatcherAssert.assertThat(
@@ -80,7 +80,7 @@ final class LoweringTest {
     }
 
     @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
+    @ClasspathSource(value = "org/eolang/lowering/lowering-packs/", glob = "**.yaml")
     void writesSidecarBody(final String yaml) throws IOException {
         final Xtory story = new XtSticky(new XtYaml(yaml));
         Assumptions.assumeTrue(story.map().containsKey("java"));

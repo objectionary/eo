@@ -31,6 +31,13 @@
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
+      <artifactId>eo-lowering</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
       <artifactId>eo-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -360,6 +367,27 @@
             <goals>
               <goal>properties</goal>
             </goals>
+          </execution>
+          <execution>
+            <!--
+            The YAML packs of lowering belong to eo-lowering, which
+            ships them in its test-jar. They are read from the classpath
+            by name, and a name inside a JAR cannot be listed, so they
+            are unpacked into the test classes of this module first.
+            -->
+            <id>packs</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>eo-lowering</includeArtifactIds>
+              <includeClassifiers>tests</includeClassifiers>
+              <includes>org/eolang/lowering/lowering-packs/**</includes>
+              <outputDirectory>${project.build.directory}/test-classes</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
           </execution>
         </executions>
       </plugin>
