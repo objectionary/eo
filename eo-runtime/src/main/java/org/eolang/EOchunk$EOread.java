@@ -5,8 +5,6 @@
 
 package org.eolang;
 
-import java.util.Optional;
-
 /**
  * Chunk.read object.
  *
@@ -48,24 +46,30 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     }
 
     private Phi bytes(final int id, final int offset, final int length) {
-        final Phi result;
-        final Optional<byte[]> data = Heaps.INSTANCE.fetched(id, offset, length);
-        if (data.isPresent()) {
-            result = new Data.ToPhi(data.get());
-        } else {
-            result = this.take(EOchunk$EOread.FALLBACK);
-            result.put(
-                0,
-                new Data.ToPhi(
-                    String.format(
-                        "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                        length,
-                        offset,
-                        Heaps.INSTANCE.size(id)
+        return Heaps.INSTANCE.atomic(
+            () -> Heaps.INSTANCE.fetched(id, offset, length)
+                .<Phi>map(Data.ToPhi::new)
+                .orElseGet(() -> this.fallback(offset, length, Heaps.INSTANCE.size(id)))
+        );
+    }
+
+    private Phi fallback(final int offset, final int length, final int size) {
+        return new PhOnce(
+            () -> {
+                final Phi result = this.take(EOchunk$EOread.FALLBACK);
+                result.put(
+                    0,
+                    new Data.ToPhi(
+                        String.format(
+                            "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
+                            length,
+                            offset,
+                            size
+                        )
                     )
-                )
-            );
-        }
-        return result;
+                );
+                return result;
+            }
+        );
     }
 }

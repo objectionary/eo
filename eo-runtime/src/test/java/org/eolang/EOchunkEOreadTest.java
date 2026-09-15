@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
  * are invalid.
  *
  * @since 0.51
+ * @todo #8751:30min Prove that chunk.read falls back when its block is freed
+ *  right after the bounds check. Such a test needs an Attribute double that
+ *  frees the block inside that window, and it was left out to keep the fix small.
  */
 final class EOchunkEOreadTest {
 

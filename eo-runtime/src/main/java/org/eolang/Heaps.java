@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 /**
  * Dynamic memory.
@@ -64,6 +65,26 @@ final class Heaps {
             return scope.apply(identifier);
         } finally {
             this.free(identifier);
+        }
+    }
+
+    /**
+     * Let the scope use the memory while nobody else can change it.
+     *
+     * <p>The lock is reentrant, so every call the scope makes back into the
+     * memory runs under the same hold: a range checked by one call cannot be
+     * resized or freed before the next call reads its size.</p>
+     *
+     * @param scope What to do with the memory
+     * @param <T> Type of what the scope returns
+     * @return What the scope returns
+     */
+    <T> T atomic(final Supplier<T> scope) {
+        this.lock.lock();
+        try {
+            return scope.get();
+        } finally {
+            this.lock.unlock();
         }
     }
 
