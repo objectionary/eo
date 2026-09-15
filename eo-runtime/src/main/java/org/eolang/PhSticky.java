@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
@@ -80,10 +79,15 @@ public final class PhSticky implements Phi {
     /**
      * What a caller holds while it computes an answer, by key, shared with
      * every copy, so that two callers asking for the same answer wait for
-     * one computation instead of running two. An entry lives no longer than
-     * the computation it guards.
+     * one computation instead of running two. An entry outlives the
+     * computation it guards while anybody is still waiting on it: a lock
+     * taken out of the map while it is still held hands the next caller a
+     * different one and lets it in (#8050). A guard nobody waits on goes
+     * out with the computation, so that a long-lived object dataized over
+     * many distinct inputs does not keep a lock for every key it has ever
+     * seen.
      */
-    private final Map<String, Lock> guards;
+    private final Map<String, ReentrantLock> guards;
 
     /**
      * Ctor.
@@ -121,7 +125,7 @@ public final class PhSticky implements Phi {
         final Phi obj,
         final Map<String, byte[]> map,
         final List<Map.Entry<String, Phi>> puts,
-        final Map<String, Lock> busy
+        final Map<String, ReentrantLock> busy
     ) {
         this.origin = obj;
         this.cache = map;
@@ -209,7 +213,9 @@ public final class PhSticky implements Phi {
 
     private byte[] remembered(final String key) {
         final byte[] result;
-        final Lock guard = this.guards.computeIfAbsent(key, ignored -> new ReentrantLock());
+        final ReentrantLock guard = this.guards.computeIfAbsent(
+            key, ignored -> new ReentrantLock()
+        );
         guard.lock();
         try {
             final byte[] found = this.cache.get(key);
@@ -220,7 +226,18 @@ public final class PhSticky implements Phi {
                 result = found;
             }
         } finally {
-            this.guards.remove(key, guard);
+            this.guards.computeIfPresent(
+                key,
+                (ignored, existing) -> {
+                    final ReentrantLock left;
+                    if (guard.equals(existing) && !guard.hasQueuedThreads()) {
+                        left = null;
+                    } else {
+                        left = existing;
+                    }
+                    return left;
+                }
+            );
             guard.unlock();
         }
         return result.clone();
