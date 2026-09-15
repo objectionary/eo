@@ -84,12 +84,12 @@ public final class Lowering {
         }
         Files.createDirectories(this.home);
         for (final Stage stage : new ListOf<Stage>(
-            new Boxed(this.home),
-            new Entries(this.home),
-            new World(this.home),
-            new Run(this.home),
-            new Patched(this.home),
-            new Rendered(this.home)
+            new Boxing(this.home),
+            new Planting(this.home),
+            new Merging(this.home),
+            new Running(this.home),
+            new Patching(this.home),
+            new Rendering(this.home)
         )) {
             stage.exec();
         }

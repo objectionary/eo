@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The Java the folded formations became.
+ * The writing of the Java the folded formations became.
  *
  * <p>This is where the work of the pipeline is paid back. A body that was
  * an object graph built and dataized at runtime is a handful of Java
@@ -27,7 +27,7 @@ import java.nio.file.Path;
  *  rows, the fork rows, the box rows, and the fail rows of the table as
  *  the Java statements of the body.
  */
-public final class Rendered implements Stage {
+public final class Rendering implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -39,7 +39,7 @@ public final class Rendered implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Rendered(final Path dir) {
+    public Rendering(final Path dir) {
         this.home = dir;
     }
 

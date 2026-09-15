@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The entries, one application of every boxed formation.
+ * The planting of a marker in every void of every boxed formation.
  *
  * <p>A formation is folded by being evaluated, and evaluating it means
  * applying it to something. Its voids are not known at compile time, so
@@ -28,7 +28,7 @@ import java.nio.file.Path;
  *  marker, the path by which it is reached from the formation, and the
  *  carrier it was planted in.
  */
-public final class Entries implements Stage {
+public final class Planting implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -40,7 +40,7 @@ public final class Entries implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Entries(final Path dir) {
+    public Planting(final Path dir) {
         this.home = dir;
     }
 

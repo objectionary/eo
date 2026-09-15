@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The one run of phino over the world.
+ * The one running of phino over the world.
  *
  * <p>Every formation of the build is folded by a single call of the
  * binary, which walks the entries one application after another and asks
@@ -28,7 +28,7 @@ import java.nio.file.Path;
  *  box ends the run with neither a {@code root} row nor a {@code taint}
  *  row of its own in {@code symbols.tsv}.
  */
-public final class Run implements Stage {
+public final class Running implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -40,7 +40,7 @@ public final class Run implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Run(final Path dir) {
+    public Running(final Path dir) {
         this.home = dir;
     }
 

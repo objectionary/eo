@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The XMIR of the build, with a box on every formation.
+ * The boxing of every formation of the build.
  *
  * <p>A box is a lambda planted next to the body of a formation, so that
  * entering that body is a fire the atom engine is asked to serve, and the
@@ -30,7 +30,7 @@ import java.nio.file.Path;
  *  when they give none. Until then neither the XMIR files of the build nor
  *  the directory of those tables are even passed in.
  */
-public final class Boxed implements Stage {
+public final class Boxing implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -42,7 +42,7 @@ public final class Boxed implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Boxed(final Path dir) {
+    public Boxing(final Path dir) {
         this.home = dir;
     }
 

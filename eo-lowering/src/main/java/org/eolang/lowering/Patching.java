@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The XMIR of the build again, with the folded bodies replaced by atoms.
+ * The putting of an atom in the place of every folded body.
  *
  * <p>What the binary printed is never read. The patch is made from the
  * boxed files and the table of symbols alone, so that a formation nothing
@@ -27,7 +27,7 @@ import java.nio.file.Path;
  *  to it, while every other binding of it, the voids and the nested
  *  formations and the tests, stays where it was.
  */
-public final class Patched implements Stage {
+public final class Patching implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -39,7 +39,7 @@ public final class Patched implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Patched(final Path dir) {
+    public Patching(final Path dir) {
         this.home = dir;
     }
 

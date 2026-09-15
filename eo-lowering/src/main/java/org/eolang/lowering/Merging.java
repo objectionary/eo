@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The world, every object of the build in one phi-expression.
+ * The merging of every object of the build into one phi-expression.
  *
  * <p>The calculus knows nothing of files. A formation that copies an
  * object of another file has to find that object where it stands, so the
@@ -25,7 +25,7 @@ import java.nio.file.Path;
  *  printed, since a world that was not merged cannot be evaluated and
  *  there is nothing sensible for a later stage to do about it.
  */
-public final class World implements Stage {
+public final class Merging implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -37,7 +37,7 @@ public final class World implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public World(final Path dir) {
+    public Merging(final Path dir) {
         this.home = dir;
     }
 
