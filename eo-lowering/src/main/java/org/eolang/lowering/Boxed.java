@@ -4,6 +4,8 @@
  */
 package org.eolang.lowering;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,11 +14,12 @@ import org.w3c.dom.Node;
  * A copy of a document with a box planted in every formation that takes
  * arguments.
  *
- * <p>It takes the document, the table of boxes and the locator of the one
- * formation a run is lowering. It answers a fresh copy in which every
- * boxed formation carries an {@code <o name="λ">} element, so that
- * entering its body fires the engine, and in which the tests no fragment
- * reaches are cut away, so the universe phino reads stays small.</p>
+ * <p>It takes the document, the locators of the boxed formations and the
+ * locator of the one formation a run is lowering. It answers a fresh copy
+ * in which every boxed formation carries an {@code <o name="λ">} element,
+ * so that entering its body fires the engine, and in which the tests no
+ * fragment reaches are cut away, so the universe phino reads stays
+ * small.</p>
  *
  * @since 0.77.0
  */
@@ -28,9 +31,9 @@ public final class Boxed {
     private final Node doc;
 
     /**
-     * The boxes of the build.
+     * The locators of the boxed formations.
      */
-    private final Boxes boxes;
+    private final Set<String> planted;
 
     /**
      * The locator of the formation left unboxed, or blank.
@@ -41,12 +44,27 @@ public final class Boxed {
      * Ctor.
      *
      * @param xmir The document
-     * @param planted The boxes of the build
+     * @param boxes The boxes of the build
      * @param locator The locator of the formation left unboxed, or blank
      */
-    public Boxed(final Node xmir, final Boxes planted, final String locator) {
+    public Boxed(final Node xmir, final Boxes boxes, final String locator) {
+        this(
+            xmir,
+            boxes.all().stream().map(Box::locator).collect(Collectors.toSet()),
+            locator
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param xmir The document
+     * @param places The locators of the boxed formations
+     * @param locator The locator of the formation left unboxed, or blank
+     */
+    Boxed(final Node xmir, final Set<String> places, final String locator) {
         this.doc = xmir;
-        this.boxes = planted;
+        this.planted = places;
         this.kept = locator;
     }
 
@@ -68,7 +86,10 @@ public final class Boxed {
         if (formation && this.trimmed(node)) {
             node.getParentNode().removeChild(node);
         } else if (formation) {
-            Boxed.planted(node, this.boxes.of(node.getAttribute("loc")));
+            final String place = node.getAttribute("loc");
+            if (this.planted.contains(place)) {
+                Boxed.boxed(node, new Lambda(place).name());
+            }
             for (final Element kid : new Kids(node)) {
                 this.through(kid);
             }
@@ -81,16 +102,14 @@ public final class Boxed {
             && !this.kept.startsWith(String.format("%s.", node.getAttribute("loc")));
     }
 
-    private static void planted(final Element node, final String lambda) {
-        if (!lambda.isEmpty()) {
-            new Kids(node).all().stream()
-                .filter(kid -> "λ".equals(kid.getAttribute("name")))
-                .forEach(node::removeChild);
-            final Element box = node.getOwnerDocument().createElement("o");
-            box.setAttribute("name", "λ");
-            box.setTextContent(lambda);
-            node.appendChild(box);
-        }
+    private static void boxed(final Element node, final String lambda) {
+        new Kids(node).all().stream()
+            .filter(kid -> "λ".equals(kid.getAttribute("name")))
+            .forEach(node::removeChild);
+        final Element box = node.getOwnerDocument().createElement("o");
+        box.setAttribute("name", "λ");
+        box.setTextContent(lambda);
+        node.appendChild(box);
     }
 
     private static Node owner(final Node node) {

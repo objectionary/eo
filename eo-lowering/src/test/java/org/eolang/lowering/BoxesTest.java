@@ -30,7 +30,7 @@ final class BoxesTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                        "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
                         "voids", "x:number"
                     )
                 )
@@ -38,7 +38,7 @@ final class BoxesTest {
         );
         MatcherAssert.assertThat(
             "the saved box must be found by its λ, but it wasnt",
-            boxes.at("L_box_2").locator(),
+            boxes.at("L_box_p__foo__f").locator(),
             Matchers.equalTo("Φ.foo.f")
         );
     }
@@ -50,7 +50,7 @@ final class BoxesTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_7", "locator", "Φ.foo.f", "carrier", "number",
+                        "locator", "Φ.foo.f", "carrier", "number",
                         "parent", "-", "voids", "x:number y:object"
                     )
                 )
@@ -58,37 +58,8 @@ final class BoxesTest {
         );
         MatcherAssert.assertThat(
             "the voids must survive the trip through the file, but they didnt",
-            boxes.at("L_box_7").voids(),
+            boxes.at("L_box_p__foo__f").voids(),
             Matchers.hasEntry("y", "object")
-        );
-    }
-
-    @Test
-    void findsLambdaByLocator(@Mktmp final Path temp) {
-        final Boxes boxes = new Boxes(temp.resolve("boxes.tsv"));
-        boxes.save(
-            Collections.singletonList(
-                new Box(
-                    Map.of(
-                        "id", "L_box_5", "locator", "Φ.foo.g", "carrier", "bool", "parent", "bytes",
-                        "voids", ""
-                    )
-                )
-            )
-        );
-        MatcherAssert.assertThat(
-            "the λ of a boxed locator must be found, but it wasnt",
-            boxes.of("Φ.foo.g"),
-            Matchers.equalTo("L_box_5")
-        );
-    }
-
-    @Test
-    void answersBlankForUnboxedLocator(@Mktmp final Path temp) {
-        MatcherAssert.assertThat(
-            "a locator nobody boxed cannot name a λ, but it did",
-            new Boxes(temp.resolve("none.tsv")).of("Φ.foo.h"),
-            Matchers.is(Matchers.emptyString())
         );
     }
 
@@ -96,7 +67,7 @@ final class BoxesTest {
     void refusesUnknownLambda(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> new Boxes(temp.resolve("none.tsv")).at("L_box_9"),
+            () -> new Boxes(temp.resolve("none.tsv")).at("L_box_p__foo__h"),
             "a λ without a box must be refused, but it wasnt"
         );
     }

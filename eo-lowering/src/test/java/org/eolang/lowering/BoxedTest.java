@@ -32,7 +32,7 @@ final class BoxedTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_3", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
                         "voids", "y:number"
                     )
                 )
@@ -48,7 +48,9 @@ final class BoxedTest {
                     boxes, "Φ.foo.f"
                 ).copy()
             ).text(),
-            Matchers.containsString("<o base=\"∅\" name=\"y\"/><o name=\"λ\">L_box_3</o></o>")
+            Matchers.containsString(
+                "<o base=\"∅\" name=\"y\"/><o name=\"λ\">L_box_p__foo__g</o></o>"
+            )
         );
     }
 
@@ -59,7 +61,7 @@ final class BoxedTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_3", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
                         "voids", "y:number"
                     )
                 )
@@ -75,7 +77,7 @@ final class BoxedTest {
                     boxes, "Φ.foo.g"
                 ).copy()
             ).text(),
-            Matchers.containsString("L_box_3")
+            Matchers.containsString("L_box_p__foo__g")
         );
     }
 
@@ -126,7 +128,7 @@ final class BoxedTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_1", "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
+                        "locator", "Φ.foo.g", "carrier", "number", "parent", "-",
                         "voids", "y:number"
                     )
                 )
@@ -139,7 +141,7 @@ final class BoxedTest {
         MatcherAssert.assertThat(
             "the original document must not be touched, but it was",
             new Xml(doc).text(),
-            Matchers.not(Matchers.containsString("L_box_1"))
+            Matchers.not(Matchers.containsString("L_box_p__foo__g"))
         );
     }
 
@@ -150,7 +152,7 @@ final class BoxedTest {
             Collections.singletonList(
                 new Box(
                     Map.of(
-                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                        "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
                         "voids", "x:number"
                     )
                 )
@@ -171,7 +173,7 @@ final class BoxedTest {
                 ).copy()
             ).text(),
             Matchers.allOf(
-                Matchers.containsString("<o name=\"λ\">L_box_2</o>"),
+                Matchers.containsString("<o name=\"λ\">L_box_p__foo__f</o>"),
                 Matchers.not(Matchers.containsString("atom="))
             )
         );

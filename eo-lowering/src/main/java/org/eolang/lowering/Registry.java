@@ -111,7 +111,7 @@ final class Registry {
             .collect(Collectors.toList());
         names.add("L_dataized");
         names.add("L_fork");
-        names.add("L_box_\\d+");
+        names.add("L_box[a-z0-9_]+");
         return String.join("|", names);
     }
 

@@ -20,9 +20,9 @@ import org.w3c.dom.Element;
  * <p>It takes every XMIR of the build and the formas of it. It answers one
  * box per named formation that declares arguments and stands under named
  * formations only, since that is the unit of lowering, each remembering
- * the λ minted for it, what it answers, what its receiver carries and the
- * forma of every argument. Anonymous formations, thunks, atoms and data
- * objects get none.</p>
+ * what it answers, what its receiver carries and the forma of every
+ * argument. Anonymous formations, thunks, atoms and data objects get
+ * none.</p>
  *
  * @since 0.77.0
  */
@@ -68,7 +68,7 @@ public final class Planted {
             && !"λ".equals(node.getAttribute("name"))) {
             if (!Planted.voids(node).isEmpty() && !Planted.atom(node)
                 && !new Carrier(node.getAttribute("loc")).data()) {
-                out.add(this.box(node, out.size() + 1));
+                out.add(this.box(node));
             }
             for (final Element kid : new Kids(node)) {
                 this.through(kid, out);
@@ -81,7 +81,7 @@ public final class Planted {
             .anyMatch(kid -> "λ".equals(kid.getAttribute("name")));
     }
 
-    private Box box(final Element node, final int index) {
+    private Box box(final Element node) {
         final String place = node.getAttribute("loc");
         final String parent;
         if (Planted.reaches(node)) {
@@ -94,7 +94,6 @@ public final class Planted {
             carrier = "object";
         }
         final Map<String, String> row = new LinkedHashMap<>(0);
-        row.put("id", String.format("L_box_%d", index));
         row.put("locator", place);
         row.put("carrier", carrier);
         row.put("parent", parent);

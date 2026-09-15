@@ -47,7 +47,7 @@ final class PlantedTest {
             ).all().get(0).row(),
             Matchers.equalTo(
                 Map.of(
-                    "id", "L_box_1", "locator", "Φ.foo.f", "carrier", "object", "parent", "-",
+                    "locator", "Φ.foo.f", "carrier", "object", "parent", "-",
                     "voids", "x:number"
                 )
             )
@@ -178,10 +178,10 @@ final class PlantedTest {
     }
 
     @Test
-    void numbersBoxesAcrossDocuments(@Mktmp final Path temp) throws IOException {
+    void namesBoxesAfterTheirLocators(@Mktmp final Path temp) throws IOException {
         final String body = "<o base='∅' name='x'/><o base='ξ.x' name='φ'/>";
         MatcherAssert.assertThat(
-            "the boxes of all documents must be numbered in one sequence, but they arent",
+            "the box of a formation must be named after its locator, but it wasnt",
             new Planted(
                 Arrays.asList(
                     PlantedTest.doc(
@@ -199,7 +199,7 @@ final class PlantedTest {
                 ),
                 new Formas(Collections.emptyMap(), Collections.emptyMap())
             ).all().stream().map(Box::lambda).collect(Collectors.toList()),
-            Matchers.contains("L_box_1", "L_box_2")
+            Matchers.contains("L_box_p__a__f", "L_box_p__b__g")
         );
     }
 

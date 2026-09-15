@@ -272,8 +272,8 @@ final class OperandsTest {
         new Thread(
             new Oracle(
                 channel,
-                "{\"𝑛\":\"⟦ f ↦ ⟦ x ↦ ∅, λ ⤍ L_box_4 ⟧, y ↦ ∅ ⟧\"}",
-                "{\"𝑛\":\"⟦ x ↦ ∅, λ ⤍ L_box_4 ⟧\",\"λ\":\"L_box_4\"}"
+                "{\"𝑛\":\"⟦ f ↦ ⟦ x ↦ ∅, λ ⤍ L_box_p__foo__f ⟧, y ↦ ∅ ⟧\"}",
+                "{\"𝑛\":\"⟦ x ↦ ∅, λ ⤍ L_box_p__foo__f ⟧\",\"λ\":\"L_box_p__foo__f\"}"
             )
         ).start();
         MatcherAssert.assertThat(
@@ -281,8 +281,8 @@ final class OperandsTest {
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_4", "locator", "Φ.foo.f", "carrier", "number",
-                        "parent", "object", "voids", "x:number"
+                        "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
+                        "voids", "x:number"
                     )
                 )
             ),
@@ -295,12 +295,16 @@ final class OperandsTest {
         final StringWriter out = new StringWriter();
         final Channel channel = new Channel(out);
         new Thread(
-            new Oracle(channel, "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_4 ⟧ ⟧\"}", "{\"λ\":\"L_box_4\"}")
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_p__foo__f ⟧ ⟧\"}",
+                "{\"λ\":\"L_box_p__foo__f\"}"
+            )
         ).start();
         new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
             new Box(
                 Map.of(
-                    "id", "L_box_4", "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
+                    "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
                     "voids", ""
                 )
             )
@@ -316,15 +320,19 @@ final class OperandsTest {
     void refusesReceiverThatIsNotTheParent(@Mktmp final Path temp) {
         final Channel channel = new Channel(new StringWriter());
         new Thread(
-            new Oracle(channel, "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_9 ⟧ ⟧\"}", "{\"λ\":\"L_box_9\"}")
+            new Oracle(
+                channel,
+                "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_p__foo__other ⟧ ⟧\"}",
+                "{\"λ\":\"L_box_p__foo__other\"}"
+            )
         ).start();
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_1", "locator", "Φ.foo.f", "carrier", "number",
-                        "parent", "object", "voids", ""
+                        "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
+                        "voids", ""
                     )
                 )
             ),
@@ -341,8 +349,8 @@ final class OperandsTest {
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number",
-                        "parent", "object", "voids", ""
+                        "locator", "Φ.foo.f", "carrier", "number", "parent", "object",
+                        "voids", ""
                     )
                 )
             ),
@@ -362,7 +370,7 @@ final class OperandsTest {
             new Operands(3, channel, table).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_9", "locator", "Φ.tuple.at", "carrier", "object",
+                        "locator", "Φ.tuple.at", "carrier", "object",
                         "parent", "tuple", "voids", "i:number"
                     )
                 )
@@ -382,7 +390,7 @@ final class OperandsTest {
         new Operands(3, channel, table).receiver(
             new Box(
                 Map.of(
-                    "id", "L_box_9", "locator", "Φ.tuple.at", "carrier", "object",
+                    "locator", "Φ.tuple.at", "carrier", "object",
                     "parent", "tuple", "voids", "i:number"
                 )
             )
@@ -403,7 +411,7 @@ final class OperandsTest {
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_2", "locator", "Φ.number.lt", "carrier", "bool",
+                        "locator", "Φ.number.lt", "carrier", "bool",
                         "parent", "number", "voids", "x:number"
                     )
                 )
@@ -421,7 +429,7 @@ final class OperandsTest {
             new Operands(3, channel, new Symbols(temp.resolve("s.tsv"))).receiver(
                 new Box(
                     Map.of(
-                        "id", "L_box_1", "locator", "Φ.number.twice", "carrier", "number",
+                        "locator", "Φ.number.twice", "carrier", "number",
                         "parent", "number", "voids", ""
                     )
                 )

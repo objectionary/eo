@@ -37,10 +37,10 @@ public final class Box {
     /**
      * The λ name.
      *
-     * @return The name, such as {@code L_box_7}
+     * @return The name, such as {@code L_box_p__foo__f}
      */
     public String lambda() {
-        return this.cell("id");
+        return new Lambda(this.locator()).name();
     }
 
     /**

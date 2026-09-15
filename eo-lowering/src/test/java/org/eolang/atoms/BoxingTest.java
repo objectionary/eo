@@ -40,7 +40,7 @@ final class BoxingTest {
         new Boxing(
             new Box(
                 Map.of(
-                    "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
                     "voids", "x:number y:bool"
                 )
             ),
@@ -62,7 +62,7 @@ final class BoxingTest {
         new Boxing(
             new Box(
                 Map.of(
-                    "id", "L_box_1", "locator", "Φ.number.twice", "carrier", "number",
+                    "locator", "Φ.number.twice", "carrier", "number",
                     "parent", "number", "voids", ""
                 )
             ),
@@ -85,14 +85,14 @@ final class BoxingTest {
         new Thread(
             new Oracle(
                 channel,
-                "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_3 ⟧, k ↦ ∅ ⟧\"}",
-                "{\"𝑛\":\"⟦ λ ⤍ L_box_3 ⟧\",\"λ\":\"L_box_3\"}"
+                "{\"𝑛\":\"⟦ f ↦ ⟦ λ ⤍ L_box_p__foo__f ⟧, k ↦ ∅ ⟧\"}",
+                "{\"𝑛\":\"⟦ λ ⤍ L_box_p__foo__f ⟧\",\"λ\":\"L_box_p__foo__f\"}"
             )
         ).start();
         new Boxing(
             new Box(
                 Map.of(
-                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "bool", "parent", "object",
+                    "locator", "Φ.foo.f", "carrier", "bool", "parent", "object",
                     "voids", ""
                 )
             ),
@@ -122,7 +122,7 @@ final class BoxingTest {
             new Boxing(
                 new Box(
                     Map.of(
-                        "id", "L_box_2", "locator", "Φ.foo.f", "carrier", "bool", "parent", "-",
+                        "locator", "Φ.foo.f", "carrier", "bool", "parent", "-",
                         "voids", "x:number"
                     )
                 ),

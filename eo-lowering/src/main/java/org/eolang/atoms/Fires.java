@@ -63,7 +63,7 @@ final class Fires {
             out = new Dataizing(args);
         } else if ("L_fork".equals(lambda)) {
             out = new Forking(args, this.table);
-        } else if (lambda.startsWith("L_box_")) {
+        } else if (lambda.startsWith("L_box")) {
             out = new Boxing(this.boxes.at(lambda), args, this.table);
         } else if (new Op(lambda).listed()) {
             out = new Primitive(new Op(lambda), args, this.table);

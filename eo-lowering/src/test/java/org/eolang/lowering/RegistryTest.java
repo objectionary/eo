@@ -34,7 +34,7 @@ final class RegistryTest {
             Files.readString(RegistryTest.saved(temp), StandardCharsets.UTF_8),
             Matchers.allOf(
                 Matchers.containsString("L_number_plus|"),
-                Matchers.containsString("|L_fork|L_box_\\\\d+\":{\"rt\":\"exec\""),
+                Matchers.containsString("|L_fork|L_box[a-z0-9_]+\":{\"rt\":\"exec\""),
                 Matchers.containsString("\"serve\":true")
             )
         );

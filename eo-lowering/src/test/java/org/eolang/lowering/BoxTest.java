@@ -22,7 +22,7 @@ final class BoxTest {
             "the voids must be read in order with their formas, but they werent",
             new Box(
                 Map.of(
-                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
                     "voids", "a:number b:bool"
                 )
             ).voids(),
@@ -36,7 +36,7 @@ final class BoxTest {
             "a dash in the parent column means the body never reaches ρ, but it reached",
             new Box(
                 Map.of(
-                    "id", "L_box_3", "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
+                    "locator", "Φ.foo.f", "carrier", "number", "parent", "-",
                     "voids", ""
                 )
             ).reaches(),
@@ -50,7 +50,7 @@ final class BoxTest {
             "the box must know the name its parent holds it by, but it doesnt",
             new Box(
                 Map.of(
-                    "id", "L_box_3", "locator", "Φ.foo.bar.f", "carrier", "number", "parent", "-",
+                    "locator", "Φ.foo.bar.f", "carrier", "number", "parent", "-",
                     "voids", ""
                 )
             ).name(),

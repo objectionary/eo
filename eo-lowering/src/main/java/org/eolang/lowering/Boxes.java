@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 /**
  * The boxes of one build, kept in a file of tojos.
  *
- * <p>It takes the path of the file. It answers the box of a λ name, the λ
- * name at a locator and all the rows at once, and it writes a new set of
- * rows back. One file serves the whole build, so a formation carries the
- * same λ name in every universe it is written into, and both sides of the
- * wire read it.</p>
+ * <p>It takes the path of the file. It answers the box of a λ name and
+ * all the rows at once, and it writes a new set of rows back. A row says
+ * what a formation answers, what its receiver carries and the forma of
+ * every argument — the facts the build learns once and the engine, in its
+ * own process, cannot work out again.</p>
  *
  * @since 0.76.0
  */
@@ -49,31 +49,18 @@ public final class Boxes {
     /**
      * The box of a λ name.
      *
-     * @param lambda The name, such as {@code L_box_7}
+     * @param lambda The name, such as {@code L_box_p__foo__f}
      * @return The box
      */
     public Box at(final String lambda) {
+        final String place = new Place(lambda).name();
         return this.all().stream()
-            .filter(box -> box.lambda().equals(lambda))
+            .filter(box -> box.locator().equals(place))
             .findFirst().orElseThrow(
                 () -> new IllegalStateException(
                     String.format("No box is planted under the name '%s'", lambda)
                 )
             );
-    }
-
-    /**
-     * The box of a formation.
-     *
-     * @param locator The locator of the formation
-     * @return The λ name, or an empty string when the formation has no box
-     */
-    public String of(final String locator) {
-        return this.all().stream()
-            .filter(box -> box.locator().equals(locator))
-            .map(Box::lambda)
-            .findFirst()
-            .orElse("");
     }
 
     /**
