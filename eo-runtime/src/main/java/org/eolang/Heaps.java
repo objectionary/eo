@@ -12,8 +12,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 /**
  * Dynamic memory.
@@ -69,6 +69,26 @@ final class Heaps {
     }
 
     /**
+     * Let the scope use the memory while nobody else can change it.
+     *
+     * <p>The lock is reentrant, so every call the scope makes back into the
+     * memory runs under the same hold: a range checked by one call cannot be
+     * resized or freed before the next call reads its size.</p>
+     *
+     * @param scope What to do with the memory
+     * @param <T> Type of what the scope returns
+     * @return What the scope returns
+     */
+    <T> T atomic(final Supplier<T> scope) {
+        this.lock.lock();
+        try {
+            return scope.get();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
      * Get size of allocated block in memory by provided identifier.
      *
      * @param identifier Identifier of block in memory
@@ -120,33 +140,23 @@ final class Heaps {
     }
 
     /**
-     * The bytes of the given range, if it fits inside the allocated block,
-     * or the size of the block otherwise —
+     * The bytes of the given range, if it fits inside the allocated block —
      * the single source of truth for the read-bounds rule.
      *
      * <p>If the block is not allocated, the request is a structural
      * (unpredictable) failure and aborts with {@link ExFailure}, which
      * EO cannot catch. A range that exceeds an allocated block is a
-     * predictable failure, reported with the size of the block so the caller can
-     * fall back rather than read garbage. The range is checked and copied or measured
-     * under one hold of the lock, so neither a resize nor a free can change the block
+     * predictable failure, reported as an empty answer so the caller can
+     * fall back rather than read garbage. The range is checked and copied
+     * under one hold of the lock, so a resize cannot shrink the block
      * between the two and take the fallback away from the caller.</p>
      *
      * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @param found What to make of the bytes of a range that fits
-     * @param missing What to make of the size of a block the range exceeds
-     * @param <T> Type of what is made
-     * @return What is made of the bytes, or of the size if the range lies outside the block
+     * @return The bytes, or nothing if the range lies outside the block
      */
-    <T> T fetched(
-        final int identifier,
-        final int offset,
-        final int length,
-        final Function<byte[], T> found,
-        final IntFunction<T> missing
-    ) {
+    Optional<byte[]> fetched(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -156,11 +166,11 @@ final class Heaps {
                 );
             }
             final byte[] block = this.blocks.get(identifier);
-            final T out;
+            final Optional<byte[]> out;
             if (offset >= 0 && length >= 0 && (long) offset + length <= block.length) {
-                out = found.apply(Arrays.copyOfRange(block, offset, offset + length));
+                out = Optional.of(Arrays.copyOfRange(block, offset, offset + length));
             } else {
-                out = missing.apply(block.length);
+                out = Optional.empty();
             }
             return out;
         } finally {
@@ -191,9 +201,7 @@ final class Heaps {
                     identifier, length
                 );
             }
-            return this.fetched(
-                identifier, offset, length, Optional::of, size -> Optional.<byte[]>empty()
-            ).orElseThrow(
+            return this.fetched(identifier, offset, length).orElseThrow(
                 () -> new ExFailure(
                     "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                     length,

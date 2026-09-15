@@ -46,28 +46,30 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     }
 
     private Phi bytes(final int id, final int offset, final int length) {
-        return Heaps.INSTANCE.fetched(
-            id,
-            offset,
-            length,
-            Data.ToPhi::new,
-            size -> new PhOnce(() -> this.fallback(offset, length, size))
+        return Heaps.INSTANCE.atomic(
+            () -> Heaps.INSTANCE.fetched(id, offset, length)
+                .<Phi>map(Data.ToPhi::new)
+                .orElseGet(() -> this.fallback(offset, length, Heaps.INSTANCE.size(id)))
         );
     }
 
     private Phi fallback(final int offset, final int length, final int size) {
-        final Phi result = this.take(EOchunk$EOread.FALLBACK);
-        result.put(
-            0,
-            new Data.ToPhi(
-                String.format(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    size
-                )
-            )
+        return new PhOnce(
+            () -> {
+                final Phi result = this.take(EOchunk$EOread.FALLBACK);
+                result.put(
+                    0,
+                    new Data.ToPhi(
+                        String.format(
+                            "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
+                            length,
+                            offset,
+                            size
+                        )
+                    )
+                );
+                return result;
+            }
         );
-        return result;
     }
 }
