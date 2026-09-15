@@ -73,7 +73,7 @@ import java.util.Map;
  * well.</p>
  *
  * @since 0.69.0
- * @todo #8744:180min Answer a read of a choice with a choice of the reads.
+ * @todo #8744:90min Answer a read of a choice with a choice of the reads.
  *  A call is settled to its arms here only where it is on the void itself. Of
  *  the 885 rows eo-runtime leaves rooted at {@code Φ.bool.if}, 211 name their
  *  arms now; of the 674 left, 141 ask {@code eq} of such a call, 62 ask
