@@ -82,7 +82,7 @@ final class BoxedTest {
     }
 
     @Test
-    void trimsProbesAwayFromKeptFormation(@Mktmp final Path temp) {
+    void trimsProbesAwayFromKeptFormation(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a test the kept formation is not inside must be trimmed, but it wasnt",
             new Xml(
@@ -102,7 +102,7 @@ final class BoxedTest {
     }
 
     @Test
-    void keepsProbeAroundKeptFormation(@Mktmp final Path temp) {
+    void keepsProbeAroundKeptFormation(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the test the kept formation stands in must stay, but it was trimmed",
             new Xml(
