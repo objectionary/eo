@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Folded}.
+ *
  * @since 0.76.0
  */
 @ExtendWith(MktmpResolver.class)
