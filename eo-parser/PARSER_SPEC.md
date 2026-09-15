@@ -164,7 +164,7 @@ The parser recognises the following lexical tokens:
 | --- | --- |
 | `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
-| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. |
+| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. |
 | `PHI` | `@` |
 | `RHO` | `^` |
 | `ROOT` | `Q` |
