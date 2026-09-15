@@ -18,8 +18,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  * the need to call each goal separately.</p>
  *
  * <p>The merge happens right after the lint, so that every goal between this
- * one and {@link MjTranspile}, such as {@link MjInference} or {@link MjLower},
- * reads the object in the shape it will be compiled in and not in the shape
+ * one and {@link MjTranspile}, such as {@link MjInference}, reads the object
+ * in the shape it will be compiled in and not in the shape
  * the parser left. A project therefore never has to name {@code merge}
  * between them, and naming it changes nothing: a member already inside its
  * object is not moved again.</p>
