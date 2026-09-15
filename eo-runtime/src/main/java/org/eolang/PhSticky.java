@@ -230,7 +230,7 @@ public final class PhSticky implements Phi {
                 key,
                 (ignored, existing) -> {
                     final ReentrantLock left;
-                    if (existing == guard && !guard.hasQueuedThreads()) {
+                    if (guard.equals(existing) && !guard.hasQueuedThreads()) {
                         left = null;
                     } else {
                         left = existing;
