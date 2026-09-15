@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 
 /**
@@ -119,23 +120,33 @@ final class Heaps {
     }
 
     /**
-     * The bytes of the given range, if it fits inside the allocated block —
+     * The bytes of the given range, if it fits inside the allocated block,
+     * or the size of the block otherwise —
      * the single source of truth for the read-bounds rule.
      *
      * <p>If the block is not allocated, the request is a structural
      * (unpredictable) failure and aborts with {@link ExFailure}, which
      * EO cannot catch. A range that exceeds an allocated block is a
-     * predictable failure, reported as an empty answer so the caller can
-     * fall back rather than read garbage. The range is checked and copied
-     * under one hold of the lock, so a resize cannot shrink the block
+     * predictable failure, reported with the size of the block so the caller can
+     * fall back rather than read garbage. The range is checked and copied or measured
+     * under one hold of the lock, so neither a resize nor a free can change the block
      * between the two and take the fallback away from the caller.</p>
      *
      * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @return The bytes, or nothing if the range lies outside the block
+     * @param found What to make of the bytes of a range that fits
+     * @param missing What to make of the size of a block the range exceeds
+     * @param <T> Type of what is made
+     * @return What is made of the bytes, or of the size if the range lies outside the block
      */
-    Optional<byte[]> fetched(final int identifier, final int offset, final int length) {
+    <T> T fetched(
+        final int identifier,
+        final int offset,
+        final int length,
+        final Function<byte[], T> found,
+        final IntFunction<T> missing
+    ) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -145,11 +156,11 @@ final class Heaps {
                 );
             }
             final byte[] block = this.blocks.get(identifier);
-            final Optional<byte[]> out;
+            final T out;
             if (offset >= 0 && length >= 0 && (long) offset + length <= block.length) {
-                out = Optional.of(Arrays.copyOfRange(block, offset, offset + length));
+                out = found.apply(Arrays.copyOfRange(block, offset, offset + length));
             } else {
-                out = Optional.empty();
+                out = missing.apply(block.length);
             }
             return out;
         } finally {
@@ -180,7 +191,9 @@ final class Heaps {
                     identifier, length
                 );
             }
-            return this.fetched(identifier, offset, length).orElseThrow(
+            return this.fetched(
+                identifier, offset, length, Optional::of, size -> Optional.<byte[]>empty()
+            ).orElseThrow(
                 () -> new ExFailure(
                     "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                     length,

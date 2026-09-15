@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
  * are invalid.
  *
  * @since 0.51
+ * @todo #8751:30min Prove chunk.read falls back when its block is freed after the bounds check
  */
 final class EOchunkEOreadTest {
 
