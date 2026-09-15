@@ -82,11 +82,15 @@ final class Woven {
      * These pairs as the rows of the links table.
      *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param chosen What every call on a void may come back with, from
+     *  {@link Dispatched}
      * @return The types, by the locator of the object they are about, in the
      *  order the pairs came in
      */
-    Map<String, Type> rows(final Map<String, String> pairs) {
-        return new Refs(pairs, this.binds(pairs)).all();
+    Map<String, Type> rows(
+        final Map<String, String> pairs, final Map<String, Collection<String>> chosen
+    ) {
+        return new Refs(pairs, this.binds(pairs), chosen).all();
     }
 
     /**

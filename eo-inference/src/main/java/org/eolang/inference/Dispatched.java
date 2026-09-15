@@ -107,17 +107,7 @@ final class Dispatched {
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Map<String, Map<String, String>> bound = new Copied(
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
-            pairs,
-            new Lent(owned, this.all, this.args, this.receivers).sites(names)
-        ).all();
-        final Filled filled = new Filled(
-            pairs,
-            owned,
-            new Puts(bound, new Holders(bound, pairs).all()),
-            this.hollows
-        );
+        final Filled filled = this.filled(pairs, names, owned);
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -176,6 +166,64 @@ final class Dispatched {
             }
         }
         return found;
+    }
+
+    /**
+     * The dispatches that come back with one of several objects.
+     *
+     * <p>A dispatch on a void that holds a picker is answered by whatever the
+     * call put there, and where the arms agree on nothing {@link Filled} has
+     * an answer all the same: one of them, and no third thing. There is
+     * nowhere to keep that while an answer is a locator, so it is asked for
+     * here rather than inside {@link #answers(Map)}, once, by whoever writes
+     * the rows and can hold two of them (#8744).</p>
+     *
+     * <p>Only a site left rooted at a void is asked. A site that settled on an
+     * object settled on it because the arms agreed or because no void stood in
+     * the way, and a choice is the poorer of the two answers wherever both are
+     * to be had.</p>
+     *
+     * @param pairs The pairs, each name against the one it is a copy of
+     * @return The arms, by the locator of the dispatch, without the dispatches
+     *  that come back with one object or none
+     */
+    Map<String, Collection<String>> choices(final Map<String, String> pairs) {
+        final Map<String, String> names = new Ends(pairs).names();
+        final Provided owned = new Provided(this.given, names, this.hollows);
+        final Filled filled = this.filled(pairs, names, owned);
+        final Map<String, Collection<String>> found = new HashMap<>(0);
+        for (final Site dispatch : this.all) {
+            final String made = dispatch.made();
+            final String bearer = dispatch.bearer();
+            if (!bearer.isEmpty() && this.rooted(pairs.getOrDefault(made, ""))) {
+                final Collection<String> arms = filled.choice(
+                    owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
+                    bearer,
+                    made
+                );
+                if (!arms.isEmpty()) {
+                    found.put(made, arms);
+                }
+            }
+        }
+        return found;
+    }
+
+    private Filled filled(
+        final Map<String, String> pairs, final Map<String, String> names,
+        final Provided owned
+    ) {
+        final Map<String, Map<String, String>> bound = new Copied(
+            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
+            pairs,
+            new Lent(owned, this.all, this.args, this.receivers).sites(names)
+        ).all();
+        return new Filled(
+            pairs,
+            owned,
+            new Puts(bound, new Holders(bound, pairs).all()),
+            this.hollows
+        );
     }
 
     private boolean rooted(final String type) {

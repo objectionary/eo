@@ -6,6 +6,7 @@ package org.eolang.inference;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -56,12 +57,29 @@ final class Puts {
     }
 
     /**
-     * What this void holds.
+     * Which of these fillings went into a formation this void holds.
      *
+     * <p>A call fills the voids of whatever it copies, and only the arms of a
+     * formation the void holds say what a call on the void hands back. An
+     * argument is relayed to every formation the void might hold, so the rest
+     * of what the same call filled belongs to somebody else and would read as
+     * an arm it never was.</p>
+     *
+     * @param arms What a call filled, by the locator of the void it filled
      * @param hollow The locator of the void
-     * @return The objects any call put into it, empty when nobody fills it
+     * @return The fillings, by the locator of the void, empty when the call
+     *  filled nothing of what this void holds
      */
-    Collection<String> holders(final String hollow) {
-        return this.holds.getOrDefault(hollow, Collections.emptySet());
+    Map<String, String> armed(final Map<String, String> arms, final String hollow) {
+        final Collection<String> holders =
+            this.holds.getOrDefault(hollow, Collections.emptySet());
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Map.Entry<String, String> arm : arms.entrySet()) {
+            final int dot = arm.getKey().lastIndexOf('.');
+            if (dot > 0 && holders.contains(arm.getKey().substring(0, dot))) {
+                found.put(arm.getKey(), arm.getValue());
+            }
+        }
+        return found;
     }
 }
