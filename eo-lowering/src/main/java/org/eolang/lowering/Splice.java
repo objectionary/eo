@@ -22,6 +22,21 @@ import org.w3c.dom.Element;
  * phino spells the rest afresh and drops what the printer lives on.</p>
  *
  * @since 0.77.0
+ * @todo #8548:90min Merge the residual without reading XMIR from Java.
+ *  This class, together with Sites, Route and Marked, is all that still
+ *  reads and writes XMIR from Java: boxing, unboxing, planting and the
+ *  way into a fragment are stylesheets already. Taking the output of
+ *  phino verbatim instead was probed on 0.0.132 and refused twice. A
+ *  morph of the whole boxed world reduces nothing, because a formation
+ *  with a free void is already a normal form and nothing in a library
+ *  applies it, so only the symbolic application Applied builds makes the
+ *  engine fire at all. A morph of that whole application answers only
+ *  the value of its φ, dropping every binding the engine cannot reduce,
+ *  which would delete code from the program. So the residual comes back
+ *  one binding at a time and somebody has to merge it. Turn that merge
+ *  and the marking into stylesheets, leaving Java only the sidecars it
+ *  writes by digest, or ask phino for a morph that answers a formation
+ *  with its irreducible bindings kept.
  */
 final class Splice {
 
