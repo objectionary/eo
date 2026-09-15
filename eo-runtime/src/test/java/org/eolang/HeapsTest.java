@@ -24,7 +24,7 @@ final class HeapsTest {
     void allocatesMemory() {
         Assertions.assertDoesNotThrow(
             () -> Heaps.INSTANCE.malloc(
-                10, idx -> Heaps.INSTANCE.read(idx, 0, 10)
+                10, idx -> Heaps.INSTANCE.fetched(idx, 0, 10).orElseThrow()
             ),
             "Heaps should successfully read from allocated memory, but it didn't"
         );
@@ -46,7 +46,7 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "a range inside the block must be answered with its bytes, but it wasnt",
             Heaps.INSTANCE.malloc(
-                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).get().length
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow().length
             ),
             Matchers.equalTo(3)
         );
@@ -78,7 +78,7 @@ final class HeapsTest {
                     inner -> {
                         Heaps.INSTANCE.write(outer, 0, new byte[] {1});
                         Heaps.INSTANCE.write(inner, 0, new byte[] {2});
-                        return Heaps.INSTANCE.read(outer, 0, 1);
+                        return Heaps.INSTANCE.fetched(outer, 0, 1).orElseThrow();
                     }
                 )
             ),
@@ -100,7 +100,7 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "Heaps should return empty bytes after memory allocation, but it didn't",
             Heaps.INSTANCE.malloc(
-                5, idx -> Heaps.INSTANCE.read(idx, 0, 5)
+                5, idx -> Heaps.INSTANCE.fetched(idx, 0, 5).orElseThrow()
             ),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
@@ -115,7 +115,7 @@ final class HeapsTest {
                 5,
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, bytes);
-                    return Heaps.INSTANCE.read(idx, 0, bytes.length);
+                    return Heaps.INSTANCE.fetched(idx, 0, bytes.length).orElseThrow();
                 }
             ),
             Matchers.equalTo(bytes)
@@ -174,7 +174,7 @@ final class HeapsTest {
                         () -> Heaps.INSTANCE.write(idx, -2, new byte[] {1, 2}),
                         "Heaps must reject a negative write offset before touching the block, but it didn't"
                     );
-                    return Heaps.INSTANCE.read(idx, 0, 3);
+                    return Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {7, 8, 9})
@@ -182,52 +182,44 @@ final class HeapsTest {
     }
 
     @Test
-    void failsOnReadFromEmptyBlock() {
+    void failsOnFetchFromEmptyBlock() {
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(Integer.MAX_VALUE, 0, 1),
+            () -> Heaps.INSTANCE.fetched(Integer.MAX_VALUE, 0, 1),
             "Heaps should throw an exception on reading from an unallocated block, but it didn't"
         );
     }
 
     @Test
-    void failsOnReadIfOutOfBounds() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.malloc(
-                2, idx -> Heaps.INSTANCE.read(idx, 1, 3)
-            ),
-            "Heaps should throw an exception on out-of-bounds read, but it didn't"
-        );
-    }
-
-    @Test
-    void failsOnReadIfOffsetPlusLengthOverflows() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> Heaps.INSTANCE.malloc(
+    void fetchesNothingIfOffsetPlusLengthOverflows() {
+        MatcherAssert.assertThat(
+            "an overflowing range must be answered as nothing",
+            Heaps.INSTANCE.malloc(
                 10,
-                idx -> Heaps.INSTANCE.read(idx, Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1)
+                idx -> Heaps.INSTANCE.fetched(
+                    idx, Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1
+                )
             ),
-            "Heaps must fail on out-of-bounds read when offset + length overflows int"
+            Matchers.equalTo(Optional.empty())
         );
     }
 
     @Test
-    void failsCleanlyOnNegativeReadArguments() {
+    void fetchesNothingForNegativeRange() {
         Heaps.INSTANCE.malloc(
             10,
             idx -> {
-                Assertions.assertThrows(
-                    ExFailure.class,
-                    () -> Heaps.INSTANCE.read(idx, -5, 3),
-                    "Heaps must reject a negative offset with a clean ExFailure, not a raw JVM exception"
+                MatcherAssert.assertThat(
+                    "a negative offset must be answered as nothing",
+                    Heaps.INSTANCE.fetched(idx, -5, 3),
+                    Matchers.equalTo(Optional.empty())
                 );
-                return Assertions.assertThrows(
-                    ExFailure.class,
-                    () -> Heaps.INSTANCE.read(idx, 2, -3),
-                    "Heaps must reject a negative length with a clean ExFailure, not a raw JVM exception"
+                MatcherAssert.assertThat(
+                    "a negative length must be answered as nothing",
+                    Heaps.INSTANCE.fetched(idx, 2, -3),
+                    Matchers.equalTo(Optional.empty())
                 );
+                return idx;
             }
         );
     }
@@ -242,42 +234,10 @@ final class HeapsTest {
                     for (int offset = 0; offset < 4; offset += 1) {
                         Heaps.INSTANCE.write(idx, offset, new byte[] {(byte) (offset + 1)});
                     }
-                    return Heaps.INSTANCE.read(idx, 0, 4);
+                    return Heaps.INSTANCE.fetched(idx, 0, 4).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4})
-        );
-    }
-
-    @Test
-    void blamesTheOffsetWhenItIsNegative() {
-        MatcherAssert.assertThat(
-            "a negative read offset must be named as the reason, not the allocated size",
-            Heaps.INSTANCE.malloc(
-                8,
-                idx -> Assertions.assertThrows(
-                    ExFailure.class,
-                    () -> Heaps.INSTANCE.read(idx, -1, 4),
-                    "a negative read offset must be refused"
-                ).getMessage()
-            ),
-            Matchers.containsString("negative offset '-1'")
-        );
-    }
-
-    @Test
-    void blamesTheLengthWhenItIsNegative() {
-        MatcherAssert.assertThat(
-            "a negative read length must be named as the reason, not the allocated size",
-            Heaps.INSTANCE.malloc(
-                8,
-                idx -> Assertions.assertThrows(
-                    ExFailure.class,
-                    () -> Heaps.INSTANCE.read(idx, 2, -3),
-                    "a negative read length must be refused"
-                ).getMessage()
-            ),
-            Matchers.containsString("negative number of bytes '-3'")
         );
     }
 
@@ -289,7 +249,7 @@ final class HeapsTest {
                 5,
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
-                    return Heaps.INSTANCE.read(idx, 1, 3);
+                    return Heaps.INSTANCE.fetched(idx, 1, 3).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {2, 3, 4})
@@ -305,7 +265,7 @@ final class HeapsTest {
                 10,
                 idx -> {
                     captured[0] = idx;
-                    return Heaps.INSTANCE.read(idx, 0, 20);
+                    throw new ExFailure("scope failure");
                 }
             ),
             "Heaps should propagate the failure raised inside the scope, but it didn't"
@@ -354,7 +314,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
                     Heaps.INSTANCE.write(idx, 2, new byte[] {2, 2});
-                    return Heaps.INSTANCE.read(idx, 0, 5);
+                    return Heaps.INSTANCE.fetched(idx, 0, 5).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
@@ -366,7 +326,7 @@ final class HeapsTest {
         final int idx = Heaps.INSTANCE.malloc(5, ident -> ident);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> Heaps.INSTANCE.read(idx, 0, 5),
+            () -> Heaps.INSTANCE.fetched(idx, 0, 5),
             "Heaps should throw an exception on reading from a freed block, but it didn't"
         );
     }
@@ -422,7 +382,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
                     Heaps.INSTANCE.resize(idx, 7);
-                    return Heaps.INSTANCE.read(idx, 0, 7);
+                    return Heaps.INSTANCE.fetched(idx, 0, 7).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4, 5, 0, 0})
@@ -438,7 +398,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
                     Heaps.INSTANCE.resize(idx, 3);
-                    return Heaps.INSTANCE.read(idx, 0, 3);
+                    return Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3})
@@ -481,6 +441,6 @@ final class HeapsTest {
             Heaps.INSTANCE.size(identifier),
             Matchers.equalTo(original.length)
         );
-        return Heaps.INSTANCE.read(identifier, 0, original.length);
+        return Heaps.INSTANCE.fetched(identifier, 0, original.length).orElseThrow();
     }
 }
