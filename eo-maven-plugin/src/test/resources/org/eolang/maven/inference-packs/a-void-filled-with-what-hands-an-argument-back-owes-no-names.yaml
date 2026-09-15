@@ -52,5 +52,6 @@ eo:
         held
         05-
 provides:
-  - "/provides/type[@id='Φ.choice']/attr[@name='pick' and @void='true' and not(demand)]"
+  - "/provides/type[@id='Φ.choice']/attr[@name='pick' and @void='true']"
+  - "/provides/type[@id='Φ.choice']/attr[@name='pick' and not(demand)]"
   - "/provides/type[@id='Φ.sock']/attr[@name='flag']/demand[@name='pick']"
