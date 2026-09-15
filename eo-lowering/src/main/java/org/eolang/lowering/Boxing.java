@@ -22,7 +22,7 @@ import org.cactoos.iterable.Sorted;
  * The boxing of every formation of the build.
  *
  * <p>Every XMIR file of the build is copied into the {@code boxed/}
- * directory with {@code box.xsl}, which plants a box on each formation that
+ * directory with {@code boxing.xsl}, which plants a box on each formation that
  * has a body: a lambda next to that body, so that entering it is a fire the
  * atom engine is asked to serve, and the name of the box is how every stage
  * after this one knows which formation it is looking at. Nothing else of a
@@ -81,8 +81,8 @@ final class Boxing implements Stage {
         final Path boxed = this.home.resolve("boxed");
         Files.createDirectories(boxed);
         final XSL sheet = new XSLDocument(
-            Boxing.class.getResource("/org/eolang/lowering/box.xsl"),
-            "/org/eolang/lowering/box.xsl"
+            Boxing.class.getResource("/org/eolang/lowering/boxing.xsl"),
+            "/org/eolang/lowering/boxing.xsl"
         ).with((href, base) -> new StreamSource(href))
             .with("inference", this.tables.toUri().toString());
         final Collection<String> names = new HashSet<>(0);
