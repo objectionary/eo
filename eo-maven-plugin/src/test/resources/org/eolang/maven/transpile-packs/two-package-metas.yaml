@@ -11,7 +11,7 @@ sheets:
   - /org/eolang/maven/transpile/data.xsl
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
-  - /object[not(errors)]
+  - /object/errors/error[@check='validate-package' and @line='2']
   - //class[@java-name='org.eolang.EO_a.EOmain']
   - //java[contains(text(), 'package org.eolang.EO_a;')]
 input: |
