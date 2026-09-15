@@ -192,8 +192,8 @@ final class Suffix {
 
     /**
      * Resolve the {@code @name} attribute value for the line carrying
-     * this suffix, applying R-9.3 source-token mapping: {@code @} becomes
-     * {@code φ} for an explicit name.
+     * this suffix, asking {@link VoidName} for the R-9.3 source-token
+     * promotion of an explicit name.
      *
      * <p>This is the single source of truth for naming any line shape
      * — formations, applications, method chains, reversed dispatches,
@@ -207,7 +207,7 @@ final class Suffix {
     String attribute(final int line, final int indent) {
         final String name;
         if (this.form == Form.NAME) {
-            name = Suffix.phi(this.label);
+            name = new VoidName(this.label).asString();
         } else if (this.form == Form.TEST) {
             name = "p🌵".concat(this.label);
         } else if (this.form == Form.THROWS) {
@@ -378,16 +378,6 @@ final class Suffix {
 
     private static int clamped(final int pos, final Span span) {
         return Math.min(pos, span.text().length() - 1);
-    }
-
-    private static String phi(final String raw) {
-        final String mapped;
-        if ("@".equals(raw)) {
-            mapped = "φ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
     }
 
     private static Suffix parse(final String tail, final Span span, final int home) {

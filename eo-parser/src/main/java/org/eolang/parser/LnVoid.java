@@ -103,7 +103,9 @@ final class LnVoid implements Line {
         this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object("ρ", "∅", this.span.line(), this.span.indent());
+        emit.object(
+            new VoidName("^").asString(), "∅", this.span.line(), this.span.indent()
+        );
     }
 
     private void attribute(
