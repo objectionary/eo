@@ -22,6 +22,7 @@ import org.eolang.lowering.Lowered;
 import org.eolang.lowering.Phino;
 import org.eolang.lowering.Planted;
 import org.eolang.lowering.Trips;
+import org.eolang.lowering.Unboxed;
 import org.eolang.lowering.Xml;
 
 /**
@@ -34,7 +35,8 @@ import org.eolang.lowering.Xml;
  * each document for the runs of the other documents to merge into their
  * world, and then lowers the documents one at a time, or in parallel when
  * asked to: {@link Lowered} rewrites each of them in place, one run of
- * phino per fragment. A
+ * phino per fragment, and {@link Unboxed} takes the boxes back out of
+ * whatever phino left behind before the document is saved. A
  * document with nothing rewritten is neither saved nor repointed, so a
  * build without lowerable fragments leaves only the boxes behind.</p>
  *
@@ -184,7 +186,9 @@ final class Lowering implements Step {
         if (count > 0) {
             final Path target = new Place(tojo.identifier())
                 .make(this.home, MjAssemble.XMIR);
-            new Saved(doc.toString(), target).value();
+            new Saved(
+                new XMLDocument(new Unboxed(doc.inner()).copy()).toString(), target
+            ).value();
             tojo.withXmir(target);
             Logger.info(
                 this,

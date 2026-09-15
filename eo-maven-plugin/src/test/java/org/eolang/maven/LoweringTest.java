@@ -67,6 +67,20 @@ final class LoweringTest {
 
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
+    void takesEveryBoxOutOfTheLoweredXmir(final String yaml) throws IOException {
+        Assumptions.assumeTrue(new Phino("phino", 1000, this.temp).suitable());
+        MatcherAssert.assertThat(
+            "a box is ours alone and must not reach the lowered XMIR, but one did",
+            Files.readString(
+                LoweringTest.maven(this.temp, new XtSticky(new XtYaml(yaml)))
+                    .execute(new PpLower()).foreignTojos().find("foo").xmir()
+            ),
+            Matchers.not(Matchers.containsString("L_box"))
+        );
+    }
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/maven/lowering-packs/", glob = "**.yaml")
     void writesSidecarBody(final String yaml) throws IOException {
         final Xtory story = new XtSticky(new XtYaml(yaml));
         Assumptions.assumeTrue(story.map().containsKey("java"));

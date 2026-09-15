@@ -46,7 +46,9 @@
  * marker into a call of an atom whose body
  * {@link org.eolang.lowering.Table} reads out of the symbols and
  * {@link org.eolang.lowering.JavaAtom} renders into Java, saved as a
- * {@link org.eolang.lowering.Sidecar}. A fragment phino refuses — an
+ * {@link org.eolang.lowering.Sidecar}. {@link org.eolang.lowering.Unboxed}
+ * then takes the boxes back out, since a λ of ours means nothing
+ * downstream. A fragment phino refuses — an
  * unknown λ, an error path, an exhausted budget — is simply left as
  * written, and the next one is tried.</p>
  *
