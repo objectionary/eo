@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-package org.eolang;
+package org.eolang.sys;
+
+import org.eolang.Phi;
 
 /**
  * System call that can be made with EO objects ({@link Phi}) as arguments.

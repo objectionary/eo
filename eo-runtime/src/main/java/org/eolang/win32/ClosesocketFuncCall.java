@@ -9,7 +9,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * The closesocket WS2_32 function call.
