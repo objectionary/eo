@@ -11,7 +11,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.eolang.lowering.Lowering;
-import org.eolang.lowering.Phino;
 
 /**
  * Fold the formations of a program into Java atoms.
@@ -79,14 +78,7 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            final Phino phino = new Phino(this.binary);
-            new Lowering(this.home.toPath(), phino).exec();
-            Logger.info(
-                this,
-                "Phino %s is found at '%s', though nothing is lowered yet",
-                phino.pin(),
-                this.binary
-            );
+            new Lowering(this.home.toPath(), this.binary).exec();
         } else {
             Logger.info(
                 this,

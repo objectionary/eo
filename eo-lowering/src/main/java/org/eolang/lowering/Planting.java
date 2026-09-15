@@ -28,7 +28,7 @@ import java.nio.file.Path;
  *  marker, the path by which it is reached from the formation, and the
  *  carrier it was planted in.
  */
-public final class Planting implements Stage {
+final class Planting implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -40,7 +40,7 @@ public final class Planting implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Planting(final Path dir) {
+    Planting(final Path dir) {
         this.home = dir;
     }
 

@@ -30,7 +30,7 @@ import org.cactoos.text.UncheckedText;
  *
  * @since 0.74.0
  */
-public final class Phino {
+final class Phino {
 
     /**
      * The name or path of the executable.
@@ -42,7 +42,7 @@ public final class Phino {
      *
      * @param exe The name or path of the executable
      */
-    public Phino(final String exe) {
+    Phino(final String exe) {
         this.binary = exe;
     }
 
@@ -57,7 +57,7 @@ public final class Phino {
      * @return The trimmed output of {@code phino --version}
      * @throws IOException If the executable cannot be run
      */
-    public String version() throws IOException {
+    String version() throws IOException {
         final Path out = Files.createTempFile("phino", ".txt");
         try {
             this.run(out);
@@ -72,7 +72,7 @@ public final class Phino {
      *
      * @return The trimmed content of the {@code phino-version.txt} resource
      */
-    public String pin() {
+    String pin() {
         return new UncheckedText(
             new Trimmed(
                 new TextOf(

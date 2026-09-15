@@ -30,7 +30,7 @@ import java.nio.file.Path;
  *  when they give none. Until then neither the XMIR files of the build nor
  *  the directory of those tables are even passed in.
  */
-public final class Boxing implements Stage {
+final class Boxing implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -42,7 +42,7 @@ public final class Boxing implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Boxing(final Path dir) {
+    Boxing(final Path dir) {
         this.home = dir;
     }
 

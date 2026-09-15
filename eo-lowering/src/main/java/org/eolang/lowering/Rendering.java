@@ -27,7 +27,7 @@ import java.nio.file.Path;
  *  rows, the fork rows, the box rows, and the fail rows of the table as
  *  the Java statements of the body.
  */
-public final class Rendering implements Stage {
+final class Rendering implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -39,7 +39,7 @@ public final class Rendering implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Rendering(final Path dir) {
+    Rendering(final Path dir) {
         this.home = dir;
     }
 

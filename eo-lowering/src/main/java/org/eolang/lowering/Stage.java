@@ -19,7 +19,7 @@ import java.io.IOException;
  * @since 0.74.0
  */
 @FunctionalInterface
-public interface Stage {
+interface Stage {
 
     /**
      * Do the work of this stage.

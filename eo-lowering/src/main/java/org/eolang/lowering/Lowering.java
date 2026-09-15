@@ -4,6 +4,7 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,9 +45,19 @@ public final class Lowering {
      * Ctor.
      *
      * @param dir The directory where the lowering keeps what it makes
+     * @param exe The name or path of the phino executable
+     */
+    public Lowering(final Path dir, final String exe) {
+        this(dir, new Phino(exe));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param dir The directory where the lowering keeps what it makes
      * @param exe The phino binary on this machine
      */
-    public Lowering(final Path dir, final Phino exe) {
+    Lowering(final Path dir, final Phino exe) {
         this.home = dir;
         this.phino = exe;
     }
@@ -82,6 +93,12 @@ public final class Lowering {
                 )
             );
         }
+        Logger.info(
+            this,
+            "Phino %s is found at '%s', though nothing is lowered yet",
+            pinned,
+            this.phino
+        );
         Files.createDirectories(this.home);
         for (final Stage stage : new ListOf<Stage>(
             new Boxing(this.home),

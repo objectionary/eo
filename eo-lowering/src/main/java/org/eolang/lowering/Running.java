@@ -28,7 +28,7 @@ import java.nio.file.Path;
  *  box ends the run with neither a {@code root} row nor a {@code taint}
  *  row of its own in {@code symbols.tsv}.
  */
-public final class Running implements Stage {
+final class Running implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -40,7 +40,7 @@ public final class Running implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Running(final Path dir) {
+    Running(final Path dir) {
         this.home = dir;
     }
 

@@ -37,7 +37,7 @@ final class LoweringTest {
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.133"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(home, new Phino(binary.toString())).exec();
+        new Lowering(home, binary.toString()).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory it was given, but it didnt",
             home.toFile(),
@@ -53,7 +53,7 @@ final class LoweringTest {
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.133"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(home, new Phino(binary.toString())).exec();
+        new Lowering(home, binary.toString()).exec();
         try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
                 "stages that fold nothing must leave nothing behind, but they wrote something",
@@ -74,7 +74,7 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    temp.resolve("target/eo/7-lower"), new Phino(binary.toString())
+                    temp.resolve("target/eo/7-lower"), binary.toString()
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -90,7 +90,7 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    temp.resolve("target/eo/7-lower"), new Phino(binary.toString())
+                    temp.resolve("target/eo/7-lower"), binary.toString()
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),

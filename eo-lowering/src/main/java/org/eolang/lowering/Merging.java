@@ -25,7 +25,7 @@ import java.nio.file.Path;
  *  printed, since a world that was not merged cannot be evaluated and
  *  there is nothing sensible for a later stage to do about it.
  */
-public final class Merging implements Stage {
+final class Merging implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -37,7 +37,7 @@ public final class Merging implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Merging(final Path dir) {
+    Merging(final Path dir) {
         this.home = dir;
     }
 

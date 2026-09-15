@@ -27,7 +27,7 @@ import java.nio.file.Path;
  *  to it, while every other binding of it, the voids and the nested
  *  formations and the tests, stays where it was.
  */
-public final class Patching implements Stage {
+final class Patching implements Stage {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -39,7 +39,7 @@ public final class Patching implements Stage {
      *
      * @param dir The directory where the lowering keeps what it makes
      */
-    public Patching(final Path dir) {
+    Patching(final Path dir) {
         this.home = dir;
     }
 
