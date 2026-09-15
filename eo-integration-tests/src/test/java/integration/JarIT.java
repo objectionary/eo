@@ -27,13 +27,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * <p>The sandbox compiles the {@code .eo} sources of the runtime that live
  * in this repository, with the plugin kept offline, and does not pull them
- * from the remote objectionary. What that remote serves is the lowered
- * output of the last release: every formation the {@code lower} goal folded
- * there stands in it as an atom naming a Java class that only the jar of
- * that release carries, {@code string.regex.compile} among them. The
- * runtime built here folds a set of its own, so a pulled object asking for
- * an atom this build does not carry stopped javac in the sandbox, and the
- * three tests below broke on it every time the two sets diverged.</p>
+ * from the remote objectionary. What that remote serves is the output of
+ * the last release, and a release made while the compiler still lowered
+ * fragments carries formations folded into atoms that name Java classes
+ * only the jar of that release holds, {@code string.regex.compile} among
+ * them. A pulled object asking for an atom this build does not carry
+ * stopped javac in the sandbox, and the three tests below broke on it.</p>
  *
  * @since 0.54
  */

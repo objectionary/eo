@@ -37,11 +37,10 @@ final class Transpilation {
 
     /**
      * The XSL steps of the transpile train, in order, ending with
-     * {@code purify.xsl}, {@code lowered.xsl} and {@code to-java.xsl},
-     * the three that take parameters. Kept as a single list so both the
-     * train in {@link #compiled(boolean, boolean, String, Path, Path)} and
-     * the cache-key fingerprint in {@link #version()} are derived from the
-     * same source.
+     * {@code purify.xsl} and {@code to-java.xsl}, the two that take
+     * parameters. Kept as a single list so both the train in
+     * {@link #compiled(boolean, boolean, String, Path)} and the cache-key
+     * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
         "/org/eolang/maven/transpile/recursion-to-cps.xsl",
@@ -55,7 +54,6 @@ final class Transpilation {
         "/org/eolang/maven/transpile/data.xsl",
         "/org/eolang/maven/transpile/recursion-to-loop.xsl",
         "/org/eolang/maven/transpile/purify.xsl",
-        "/org/eolang/maven/transpile/lowered.xsl",
         "/org/eolang/maven/transpile/to-java.xsl",
     };
 
@@ -67,9 +65,9 @@ final class Transpilation {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean, String, Path, Path)},
-     * where its last three elements are special-cased as
-     * {@code purify.xsl}, {@code lowered.xsl} and {@code to-java.xsl}.
+     * train in {@link #compiled(boolean, boolean, String, Path)}, where its
+     * last two elements are special-cased as {@code purify.xsl} and
+     * {@code to-java.xsl}.
      */
     static final String[] IMPORTS = {
         "/org/eolang/parser/_funcs.xsl",
@@ -135,13 +133,6 @@ final class Transpilation {
     private final Rows rows;
 
     /**
-     * What {@link MjLower} left in its marker file, or the empty string
-     * when it skipped or was disabled, so that a build whose XMIR was
-     * folded never shares a cache slot with one whose XMIR was not.
-     */
-    private final String lowering;
-
-    /**
      * Ctor.
      *
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
@@ -150,7 +141,6 @@ final class Transpilation {
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
      * @param tables The directory with the tables of {@link MjInference}
-     * @param lowered What {@link MjLower} left in its marker file, or the empty string
      */
     Transpilation(
         final Tracking diagnostics,
@@ -158,8 +148,7 @@ final class Transpilation {
         final String base,
         final Path measures,
         final Path dir,
-        final Path tables,
-        final String lowered
+        final Path tables
     ) {
         this.tracking = diagnostics;
         this.coverage = cvrg;
@@ -168,7 +157,6 @@ final class Transpilation {
         this.target = dir;
         this.inference = tables;
         this.rows = new Rows(tables);
-        this.lowering = lowered;
     }
 
     /**
@@ -189,23 +177,19 @@ final class Transpilation {
      * {@code to-java.xsl} emits (see #6031 and #5955), and
      * {@code trackSteps} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
-     * Folding the marker of {@link MjLower} in means a build whose XMIR
-     * was folded through phino and a build whose XMIR was not never share
-     * a slot, since the same git hash then means different Java.
      * The tables belong to {@link #version(Collection)} instead.
      *
      * @return The version segment shared by every source
      */
     String version() {
         return String.format(
-            "%s-%b-%b-%b-%s-%s",
+            "%s-%b-%b-%b-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass,
-            this.lowering
+            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
         );
     }
 
@@ -293,30 +277,26 @@ final class Transpilation {
         final boolean instrument = this.coverage;
         final String base = this.superclass;
         final Path tables = this.inference;
-        final Path atoms = this.target.resolve(Lowering.DIR).resolve(Lowering.ATOMS);
         return Transpilation.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b|%s|%s|%s", track, instrument, base, tables, atoms),
-            ignored -> Transpilation.compiled(track, instrument, base, tables, atoms)
+            String.format("%b|%b|%s|%s", track, instrument, base, tables),
+            ignored -> Transpilation.compiled(track, instrument, base, tables)
         );
     }
 
     private static Train<Shift> compiled(
-        final boolean track, final boolean instrument, final String base,
-        final Path tables, final Path atoms
+        final boolean track, final boolean instrument, final String base, final Path tables
     ) {
         final int last = Transpilation.XSLS.length - 1;
-        final String disclaimer = new Disclaimer().toString();
         return new TrFull(
             new TrJoined<>(
                 new TrClasspath<>(
-                    Arrays.copyOf(Transpilation.XSLS, last - 2)
+                    Arrays.copyOf(Transpilation.XSLS, last - 1)
                 ).back(),
                 new TrDefault<>(
-                    new StPure(Transpilation.XSLS[last - 2], tables),
-                    new StLowered(Transpilation.XSLS[last - 1], disclaimer, atoms),
+                    new StPure(Transpilation.XSLS[last - 1], tables),
                     new StClasspath(
                         Transpilation.XSLS[last],
-                        String.format("disclaimer %s", disclaimer),
+                        String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track),
                         String.format("coverage %b", instrument),
                         String.format("phiDefaultClass %s", base)
