@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import org.xembly.Directives;
@@ -16,6 +18,13 @@ import org.xembly.Directives;
  * what. A copy that has filled none is written the same way with nothing
  * inside it, which is how a reader tells a saturated copy from one that is
  * still waiting for arguments.</p>
+ *
+ * <p>A copy of somebody else's void carries the arms of the call as well,
+ * where the call reaches formations that hand back what they were given and
+ * those hand back different things. The locator is then true of every caller
+ * and concrete for none, and the arms are the whole of what this one caller
+ * may come back with, so the two belong in one row and the choice goes inside
+ * the copy it refines (#8744).</p>
  *
  * @since 0.69.0
  */
@@ -30,6 +39,11 @@ final class Ref implements Type {
      * What this copy has put into the voids, by the locator of the void.
      */
     private final Map<String, String> filled;
+
+    /**
+     * The objects the call may come back with, where the locator is a void.
+     */
+    private final Collection<String> arms;
 
     /**
      * Ctor.
@@ -48,8 +62,26 @@ final class Ref implements Type {
      *  the void, in the order the voids were declared
      */
     Ref(final String target, final Map<String, String> binds) {
+        this(target, binds, Collections.emptyList());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param target The locator of what this object is a copy of
+     * @param binds What this copy has put into the voids, by the locator of
+     *  the void, in the order the voids were declared
+     * @param chosen The objects the call may come back with, empty where it
+     *  comes back with one of them or with none
+     */
+    Ref(
+        final String target,
+        final Map<String, String> binds,
+        final Collection<String> chosen
+    ) {
         this.loc = target;
         this.filled = binds;
+        this.arms = chosen;
     }
 
     @Override
@@ -67,6 +99,13 @@ final class Ref implements Type {
                 .attr("loc", bind.getValue())
                 .up()
                 .up();
+        }
+        if (!this.arms.isEmpty()) {
+            final Collection<Type> members = new ArrayList<>(this.arms.size());
+            for (final String arm : this.arms) {
+                members.add(new Ref(arm));
+            }
+            dirs.append(new Union(members).directives());
         }
         return dirs.up();
     }
