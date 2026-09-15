@@ -28,7 +28,7 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.74.0
  */
-public final class Lowering implements Stage {
+public final class Lowering {
 
     /**
      * The directory where the lowering keeps what it makes.
@@ -51,7 +51,12 @@ public final class Lowering implements Stage {
         this.phino = exe;
     }
 
-    @Override
+    /**
+     * Fold the formations of the whole build.
+     *
+     * @throws IOException If anything the lowering needs cannot be read
+     *  or written
+     */
     public void exec() throws IOException {
         final String pinned = this.phino.pin();
         final String found;
