@@ -5,9 +5,10 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="resolve-aliases" version="2.0">
   <!--
-  Here we go through all objects that are not methods or have
-  composite FQN and try to find their references in aliases.
-  If we find them, we change their @base attributes.
+  Alias targets are expanded to Φ-rooted FQNs before this stage.
+  Here we replace exact alias names in @base, @atom, each @args
+  token, @type (preserving the optional '?'), and +also. This stage
+  runs before add-default-package.xsl, which only homes what remains.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base and not(contains(@base, '.'))]">
