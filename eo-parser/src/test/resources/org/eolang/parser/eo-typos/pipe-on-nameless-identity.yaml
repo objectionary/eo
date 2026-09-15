@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 5
+line: 3
 message: |-
-  [5:2] error: 'a pipe must follow a named formation or another pipe'
-    | 6 > n
+  [3:2] error: 'a pipe must follow a named formation or another pipe'
+    | 5 > n
     ^
 input: |
   [] > app
-    [x] > foo
-      x > @
-    .x
-    | 6 > n
+    I
+    | 5 > n
