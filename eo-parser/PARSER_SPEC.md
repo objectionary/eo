@@ -595,6 +595,8 @@ R-3.13.3. The continuation chunks are part of the **same token** — they do not
 
 R-3.13.4. A comment, blank line, or any non-byte content inside the continuation is an error.
 
+R-3.13.5. The last chunk may close the literal with a name suffix, written `BB(-BB)* > name` or `BB(-BB)* >> name`, and the dash-joined form of R-3.13.1a may carry one too. The name belongs to the merged token rather than to the chunk it is written on, so `CA-FE-` over `BE-BE > ml` is one BYTES literal of four bytes named `ml`. The suffix ends the literal: no chunk follows it, and it is part of the token rather than the non-byte content R-3.13.4 refuses.
+
 Example:
 
 ```
