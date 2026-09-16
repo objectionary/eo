@@ -112,9 +112,11 @@ final class Saved implements Scalar<Path> {
             if (dir.toFile().mkdirs()) {
                 Logger.debug(this, "Directory created: %[file]s", dir);
             }
+            final String filename = this.target.getFileName().toString();
+            final String prefix = String.format("%-3s", filename);
             final Path tmp = Files.createTempFile(
                 dir,
-                this.target.getFileName().toString(),
+                prefix,
                 ".tmp"
             );
             try {
