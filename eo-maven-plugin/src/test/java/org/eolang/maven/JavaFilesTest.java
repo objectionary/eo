@@ -30,6 +30,7 @@ final class JavaFilesTest {
         final String name = String.format(
             "bär%d.Ωne%d", Math.abs(seed % 97), Math.abs(seed % 13)
         );
+        new Naming(temp.getFileSystem(), name).exec();
         final Path xmir = temp.resolve("main.xmir");
         new Saved(
             String.format(
