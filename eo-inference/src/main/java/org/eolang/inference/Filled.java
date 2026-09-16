@@ -72,15 +72,13 @@ import java.util.Map;
  * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
  * well.</p>
  *
- * <p>A name taken off such a call is a read on top of a choice, and it is
- * answered by the same read asked of every arm: the {@code eq} of a call that
- * hands back a string or a number is the {@code eq} of the string and the
- * {@code eq} of the number, which are one and the same object. So where the
- * arms themselves share nothing the reads on top of them are joined instead,
- * and a row that stayed rooted at {@code Φ.bool.if} because its arms disagreed
- * settles all the same (#8744). An arm with no such attribute ends it, since a
- * read that arrives nowhere from one of them says nothing about the one they
- * stand for.</p>
+ * <p>A name taken off such a call is a read on top of a choice, answered by
+ * that read asked of every arm: the {@code eq} of a call handing back a string
+ * or a number is a {@code Φ.bool} whichever arm arrives. So where the arms
+ * share nothing the reads on top of them are joined instead, and a row left
+ * rooted at {@code Φ.bool.if} settles all the same. An arm without the
+ * attribute ends it, since a read arriving nowhere from one of them says
+ * nothing about the one they stand for (#8744).</p>
  *
  * @since 0.69.0
  */
