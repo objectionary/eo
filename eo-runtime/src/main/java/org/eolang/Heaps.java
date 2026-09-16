@@ -130,12 +130,18 @@ final class Heaps {
      * under one hold of the lock, so a resize cannot shrink the block
      * between the two and take the fallback away from the caller.</p>
      *
+     * <p>The answer carries the size of the block as well, because a caller
+     * that falls back has to say how many bytes were allocated. Asking for
+     * that size afterwards would be a second, separately locked question,
+     * and a free arriving between the two would abort it.</p>
+     *
      * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @return The bytes, or nothing if the range lies outside the block
+     * @return The bytes, or nothing if the range lies outside the block,
+     *  together with the size of the block
      */
-    Optional<byte[]> fetched(final int identifier, final int offset, final int length) {
+    Fetched fetched(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -151,7 +157,7 @@ final class Heaps {
             } else {
                 out = Optional.empty();
             }
-            return out;
+            return new Fetched(out, block.length);
         } finally {
             this.lock.unlock();
         }
@@ -180,12 +186,13 @@ final class Heaps {
                     identifier, length
                 );
             }
-            return this.fetched(identifier, offset, length).orElseThrow(
+            final Fetched data = this.fetched(identifier, offset, length);
+            return data.bytes().orElseThrow(
                 () -> new ExFailure(
                     "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                     length,
                     offset,
-                    this.blocks.get(identifier).length
+                    data.size()
                 )
             );
         } finally {
