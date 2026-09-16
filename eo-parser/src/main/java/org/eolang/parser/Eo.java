@@ -213,7 +213,8 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
             above = next.indent();
-            final String chunk = Eo.bare(trimmed);
+            final int mark = Eo.mark(trimmed);
+            final String chunk = Eo.bare(Eo.run(trimmed));
             if (!Eo.isBytesOnly(chunk)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
@@ -221,9 +222,9 @@ final class Eo implements Iterable<Directive> {
                 broken = true;
                 break;
             }
-            body.append(chunk);
+            body.append(chunk).append(trimmed.substring(mark));
             idx = idx + 1;
-            if (!Eo.carriesMore(trimmed)) {
+            if (mark < trimmed.length() || !Eo.carriesMore(trimmed)) {
                 break;
             }
         }
@@ -249,7 +250,11 @@ final class Eo implements Iterable<Directive> {
     private static boolean joinedBelow(final List<Span> spans, final int start) {
         return start + 1 < spans.size()
             && spans.get(start + 1).indent() >= spans.get(start).indent()
-            && Eo.isJoined(spans.get(start + 1).body().stripTrailing());
+            && Eo.isJoined(Eo.run(spans.get(start + 1).body().stripTrailing()));
+    }
+
+    private static String run(final String body) {
+        return body.substring(0, Eo.mark(body));
     }
 
     private static boolean isBytesContinuation(final String body) {
@@ -273,6 +278,17 @@ final class Eo implements Iterable<Directive> {
             stripped = body;
         }
         return stripped;
+    }
+
+    private static int mark(final String body) {
+        final int arrow = body.indexOf(" >");
+        final int found;
+        if (arrow < 0) {
+            found = body.length();
+        } else {
+            found = arrow;
+        }
+        return found;
     }
 
     private static boolean isByte(final String body) {
