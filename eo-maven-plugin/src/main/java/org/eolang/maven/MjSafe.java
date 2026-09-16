@@ -442,12 +442,16 @@ abstract class MjSafe extends AbstractMojo {
     protected boolean resolveInCentral = true;
 
     /**
-     * Objectionary.
+     * The Objectionary this Mojo pulls from.
+     *
+     * <p>It is a {@link Scalar} because the hash and the settings it is
+     * built from are injected after the Mojo is made, so the chain behind it
+     * waits for the first request. A test hands over a fake one instead, the
+     * way {@code Moja} hands over every other attribute here.</p>
      *
      * @since 0.50
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new OyConfigured(
+    private final Scalar<Objectionary> objectionary = new OyConfigured(
         () -> this.hash,
         () -> this.settings
     );
