@@ -72,18 +72,17 @@ import java.util.Map;
  * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
  * well.</p>
  *
+ * <p>A name taken off such a call is a read on top of a choice, and it is
+ * answered by the same read asked of every arm: the {@code eq} of a call that
+ * hands back a string or a number is the {@code eq} of the string and the
+ * {@code eq} of the number, which are one and the same object. So where the
+ * arms themselves share nothing the reads on top of them are joined instead,
+ * and a row that stayed rooted at {@code Φ.bool.if} because its arms disagreed
+ * settles all the same (#8744). An arm with no such attribute ends it, since a
+ * read that arrives nowhere from one of them says nothing about the one they
+ * stand for.</p>
+ *
  * @since 0.69.0
- * @todo #8744:90min Answer a read of a choice with a choice of the reads.
- *  A call is settled to its arms here only where it is on the void itself. Of
- *  the 885 rows eo-runtime leaves rooted at {@code Φ.bool.if}, 211 name their
- *  arms now; of the 674 left, 141 ask {@code eq} of such a call, 62 ask
- *  {@code if.eq} and 32 ask {@code if.plus}. Those are reads on top of a
- *  choice, and {@link Arrived} asks every arm for the whole of what is left
- *  over at once, so one arm without the attribute ends the lot. What such a
- *  read comes back with is the arms underneath it asked one by one, which
- *  wants the choice in hand where the read is answered, and a pass hands its
- *  answers round as locators. So it waits on the links side speaking in
- *  {@link Type} rather than in a name.
  */
 final class Filled {
 
@@ -168,10 +167,7 @@ final class Filled {
         final String root = new Rooted(this.hollows).names(answer);
         Collection<String> found = Collections.emptyList();
         if (!root.isEmpty()) {
-            found = new Arrived(this.owned).names(
-                this.chosen(root, bearer, site),
-                answer.substring(Math.min(root.length() + 1, answer.length()))
-            );
+            found = this.reads(answer, root, bearer, site);
         }
         if (found.size() < 2) {
             found = Collections.emptyList();
@@ -214,11 +210,32 @@ final class Filled {
         String found = answer;
         if (!root.isEmpty()) {
             final String handed = this.handed(root, fillings, bearer, site);
-            if (!handed.isEmpty() && seen.add(handed)) {
+            if (handed.isEmpty()) {
+                found = this.agreed(answer, root, bearer, site);
+            } else if (seen.add(handed)) {
                 found = this.through(answer, root, handed, site, seen);
             }
         }
         return found;
+    }
+
+    private String agreed(
+        final String answer, final String root, final String bearer, final String site
+    ) {
+        String found = new Joined(this.reads(answer, root, bearer, site), this.owned).names();
+        if (found.isEmpty()) {
+            found = answer;
+        }
+        return found;
+    }
+
+    private Collection<String> reads(
+        final String answer, final String root, final String bearer, final String site
+    ) {
+        return new Arrived(this.owned).names(
+            this.chosen(root, bearer, site),
+            answer.substring(Math.min(root.length() + 1, answer.length()))
+        );
     }
 
     private String handed(
