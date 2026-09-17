@@ -17,6 +17,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;
 
@@ -42,14 +43,6 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6627:30min Read this goal's first tree through {@link Raws}.
- *  The {@code parse} goal keeps the tree it makes before any XSL under the
- *  hash of the text, so a second reader of that text is given it instead of
- *  running the grammar again. This goal is that second reader and still
- *  parses on its own, so a clean build of {@code eo-runtime} runs the
- *  grammar over its 170 sources twice. Take the first pass of
- *  {@link #canonical(Path, String)} from {@link Raws}, canonical train on
- *  top, the way {@code EoSource} puts it.
  * @todo #6627:30min Bound the store of raw trees.
  *  {@link Raws} writes a tree for every distinct source text it is asked
  *  about and never takes one out again, so the machine-wide cache grows
@@ -90,15 +83,16 @@ public final class MjFormat extends MjPenalties {
             final Collection<TjForeign> sources = tojos.withSources();
             this.report(
                 sources.size(),
-                new Threaded<>(sources, tojo -> this.reformat(tojo.source())).total(),
+                new Threaded<>(sources, this::reformat).total(),
                 System.currentTimeMillis() - start
             );
         }
     }
 
-    private int reformat(final Path source) throws IOException {
+    private int reformat(final TjForeign tojo) throws IOException {
+        final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(source, actual);
+        final String canonical = this.canonical(tojo.identifier(), source, actual);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -120,9 +114,11 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(final Path path, final String source) throws IOException {
+    private String canonical(
+        final String name, final Path path, final String source
+    ) throws IOException {
         String structure = source;
-        XML tree = MjFormat.parsed(path, structure);
+        XML tree = MjFormat.checked(path, structure, this.stored(name, path));
         Optional<String> settled = Optional.empty();
         final int settle = 8;
         for (int pass = 0; pass < settle; ++pass) {
@@ -132,7 +128,7 @@ public final class MjFormat extends MjPenalties {
                 break;
             }
             structure = printed;
-            tree = MjFormat.parsed(path, structure);
+            tree = MjFormat.checked(path, structure, new EoSyntax(structure).parsed());
         }
         final String canon;
         if (settled.isPresent() && this.weights().isEmpty()) {
@@ -143,8 +139,16 @@ public final class MjFormat extends MjPenalties {
         return canon;
     }
 
-    private static XML parsed(final Path source, final String structure) throws IOException {
-        final XML xmir = new EoSyntax(structure).parsed();
+    private XML stored(final String name, final Path source) throws IOException {
+        return new Canonical().apply(
+            new Raws(
+                this.caching(Parsing.CACHE).with("raws"),
+                this.targetDir.toPath().resolve("0-raw")
+            ).of(name, source)
+        );
+    }
+
+    private static XML checked(final Path source, final String structure, final XML xmir) {
         final long errors = new Xnav(xmir.inner())
             .element("object")
             .element("errors")
