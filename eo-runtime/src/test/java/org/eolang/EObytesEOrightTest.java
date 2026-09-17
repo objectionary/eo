@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case verifying {@link Expect}-based error messages
- * raised by {@link EObytes$EOright} when the {@code x} attribute
+ * raised by {@link EObytes$EOright} when the {@code b} attribute
  * is not an integer.
  *
  * @since 0.51
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 final class EObytesEOrightTest {
 
     @Test
-    void throwsCorrectErrorForNonNumericX() {
+    void throwsCorrectErrorForNonNumericB() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
@@ -32,18 +32,18 @@ final class EObytesEOrightTest {
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
-                        "x",
+                        "b",
                         new Data.ToPhi(true)
                     )
                 ).take(),
-                "right with non-numeric x must fail with a proper message"
+                "right with non-numeric b must fail with a proper message"
             ).getMessage(),
-            Matchers.equalTo("the 'x' attribute must be a number")
+            Matchers.equalTo("the 'b' attribute must be a number")
         );
     }
 
     @Test
-    void throwsCorrectErrorForFractionalX() {
+    void throwsCorrectErrorForFractionalB() {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
@@ -55,13 +55,13 @@ final class EObytesEOrightTest {
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
-                        "x",
+                        "b",
                         new Data.ToPhi(1.5)
                     )
                 ).take(),
-                "right with fractional x must fail with a proper message"
+                "right with fractional b must fail with a proper message"
             ).getMessage(),
-            Matchers.equalTo("the 'x' attribute (1.5) must be an integer")
+            Matchers.equalTo("the 'b' attribute (1.5) must be an integer")
         );
     }
 }

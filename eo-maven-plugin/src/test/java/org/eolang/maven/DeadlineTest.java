@@ -28,6 +28,20 @@ final class DeadlineTest {
     }
 
     @Test
+    @Timeout(30)
+    void letsASlowBodyFinishWhenTheDeadlineIsZero() {
+        Assertions.assertDoesNotThrow(
+            () -> new Deadline(this, 0L, false).spent(
+                () -> {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
+                    return "slow";
+                }
+            ),
+            "A timeout of zero must take the deadline away, not fail the goal at once"
+        );
+    }
+
+    @Test
     void refusesANegativeDeadline() {
         MatcherAssert.assertThat(
             "a negative timeout must be reported as a configuration mistake, not as a timeout",

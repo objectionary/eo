@@ -126,6 +126,42 @@ final class LadderTest {
     }
 
     @Test
+    void namesEveryShareInTheLinesItHandsOver() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        rungs.put("a void", 1);
+        rungs.put("a forma", 2);
+        MatcherAssert.assertThat(
+            "half the objects know their forma and a line must say so by name, but none did",
+            new Ladder(rungs).lines(),
+            Matchers.hasItem("50.0 named")
+        );
+    }
+
+    @Test
+    void handsOverEveryRungUnderTheNameItGoesBy() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 3);
+        rungs.put("a forma", 7);
+        MatcherAssert.assertThat(
+            "a share is a number to game, so the rungs must come along beside it, but they didnt",
+            new Ladder(rungs).lines(),
+            Matchers.hasItem("7 a forma")
+        );
+    }
+
+    @Test
+    void putsTheValueOfEveryLineAheadOfItsName() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 5);
+        MatcherAssert.assertThat(
+            "a shell reads the value first and the name after, but the line came the other way round",
+            new Ladder(rungs).lines(),
+            Matchers.hasItem("5 objects")
+        );
+    }
+
+    @Test
     void keepsTheRungsUnaffectedByLaterChangesToTheSourceMap() {
         final Map<String, Integer> rungs = new LinkedHashMap<>(0);
         rungs.put("nothing", 1);

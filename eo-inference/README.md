@@ -13,9 +13,9 @@ FQN is the whole of what this module means by a type:
 
 ```eo
 [@] > number             # Φ.number.φ is a Φ.bytes
-  [x] > plus             # Φ.number.plus.x is a Φ.number
-  [x] > minus
-    $.^.plus ($.x.times -1) > @      # Φ.number.minus.@ is a Φ.number
+  [b] > plus             # Φ.number.plus.b is a Φ.number
+  [b] > minus
+    $.^.plus ($.b.times -1) > @      # Φ.number.minus.@ is a Φ.number
 ```
 
 Where the chain arrives is not always where it stops. A formation that binds
@@ -96,6 +96,35 @@ empty row for every object would leave all four exactly where they are:
  22293  a formation, nothing left free
   9728  nothing left to find out
 ```
+
+### written down
+
+The line scrolls past, so the same numbers also go into `target/eo/ladder.txt`,
+beside the tables rather than among them, because they measure us and not the
+program:
+
+```text
+46896 objects
+81.0 named
+17.9 rooted at a void
+1.2 nothing known
+67.2 depth
+548 nothing at all
+8374 a name rooted at a void
+5953 a formation, voids still free
+22293 a formation, nothing left free
+9728 nothing left to find out
+```
+
+One number a line, the value first and the name of it after, so that a shell
+can read it with one `read` and know nothing about what any of it means. The
+rungs go down with the shares and not instead of them, for the reason above.
+
+A pull request that touches the rules, the parser, the plugin or the program
+they are read from is built twice by `.github/workflows/ladder.yml` — once at
+the branch and once at the commit it sits on — and every line that differs
+between the two files is posted on it as a table. A branch that moved nothing
+is told nothing.
 
 ## What it draws
 

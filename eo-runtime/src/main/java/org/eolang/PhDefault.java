@@ -357,7 +357,7 @@ public class PhDefault implements Phi, Cloneable {
             if ("string".equals(name)) {
                 result = new Quoted(raw).get().orElseGet(this::structural);
             } else {
-                result = new Numeral(new BytesOf(raw).asNumber()).get();
+                result = new Numbered(raw).get().orElseGet(this::structural);
             }
         } else {
             result = this.structural();

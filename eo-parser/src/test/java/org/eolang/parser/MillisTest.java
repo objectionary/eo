@@ -16,6 +16,15 @@ import org.junit.jupiter.api.Test;
 final class MillisTest {
 
     @Test
+    void roundsZeroSpanUpToOne() {
+        MatcherAssert.assertThat(
+            "a zero span is not printed as one millisecond",
+            new Millis(0L).asString(),
+            Matchers.equalTo("1")
+        );
+    }
+
+    @Test
     void roundsSubMillisecondSpanUpToOne() {
         MatcherAssert.assertThat(
             "a span of a single nanosecond is not printed as one millisecond",

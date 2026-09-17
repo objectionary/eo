@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A named "&gt;&gt;" handle over an anonymous formation, read once through a
+# dispatch that sits inside an argument block rather than beside the binding.
+# "merge-monikers" folds the handle onto that single reference, which spends the
+# name: nothing refers to it any more, and "restore-local-names" has already
+# dropped the readable "@local". Carrying the cactus "@name" to the use site
+# printed the merged formation as a nameless "&gt;&gt;", which
+# "redundant-attachment" refuses, so no spelling of the handle was both
+# canonical and lint-clean (#8655). It is unnamed now.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package foo
+
+  [] > bar
+    Q.stdout > @
+      as-bytes.
+        42.plus 1 > [^] >> shifted
+
+printed: |
+  +package foo
+
+  stdout > [] > bar
+    as-bytes.
+      42.plus 1 > [^]

@@ -114,7 +114,7 @@ final class Saved implements Scalar<Path> {
             }
             final Path tmp = Files.createTempFile(
                 dir,
-                this.target.getFileName().toString(),
+                String.format("%-3s", this.target.getFileName().toString()),
                 ".tmp"
             );
             try {

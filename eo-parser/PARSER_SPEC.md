@@ -164,7 +164,7 @@ The parser recognises the following lexical tokens:
 | --- | --- |
 | `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
-| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. |
+| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. |
 | `PHI` | `@` |
 | `RHO` | `^` |
 | `ROOT` | `Q` |
@@ -310,7 +310,7 @@ R-3.4.9. Vertical voids must stay **on top**: every `? > name` line must precede
 ```
 
 is rejected, whereas `? > x` above `6 > six` is accepted. (Bracket-head voids are always above the body, so the rule constrains only the relative order of body lines.)
-R-3.4.11. **The receiver is a void named `^`.** A formation may declare the object it is dispatched off as an ordinary void named `^`, written either as a bracket parameter (`[^ x] > lt`) or as a body line (`? > ^`); both emit `<o name='ρ' base='∅'/>` (§9.4). Its position among the voids is free — `[x ^] > foo` and a `? > ^` written after another void are both legal — because a dispatch looks the receiver up by *name*, not by position. Being a void, it obeys R-3.4.9 like every other one: it may not stand below a bound attribute (`a void attribute must be declared above all other attributes`). Writing it first is good practice and a lint may one day say so, but the parser does not require it. Inside an atom the receiver takes a type annotation like any other void (R-3.4.8, `? > ^ /Q.bytes`), and outside one it takes none.
+R-3.4.11. **The receiver is a void named `^`.** A formation may declare the object it is dispatched off as an ordinary void named `^`, written either as a bracket parameter (`[^ x] > lt`) or as a body line (`? > ^`); both emit `<o name='ρ' base='∅'/>` (§9.4). As a body line the `^` is an ordinary name suffix (§3.10), so it admits the spacing every other name admits (`?  >   ^` binds the receiver), and `> ^` written on any line that is not a void attribute is an error (§9.9). Its position among the voids is free — `[x ^] > foo` and a `? > ^` written after another void are both legal — because a dispatch looks the receiver up by *name*, not by position. Being a void, it obeys R-3.4.9 like every other one: it may not stand below a bound attribute (`a void attribute must be declared above all other attributes`). Writing it first is good practice and a lint may one day say so, but the parser does not require it. Inside an atom the receiver takes a type annotation like any other void (R-3.4.8, `? > ^ /Q.bytes`), and outside one it takes none.
 
 R-3.4.10. **Atom voids are vertical-only.** An **atom** must declare every void as a `? > name` body line; a non-empty bracket head on a `/sig` line is an error (`an atom must declare its void attributes vertically, as ? > name lines`). Only a vertical void can carry the type annotation a native contract needs (R-3.4.8), and a head that also held untyped voids would put them ahead of the typed ones wherever the source wrote them, since head voids come out before body ones. With the head empty, source order *is* void order, so an annotated void may be followed by an unannotated one without the two swapping places. A non-atom formation is untouched: it keeps both forms and may mix them freely.
 
@@ -582,8 +582,10 @@ A BYTES literal that ends a line with a trailing `-` continues on the next line.
 
 R-3.13.1. A BYTES token has one of three forms:
 - `--` — empty bytes.
-- `BB-` — a single byte (two hex digits) followed by `-`. **Always complete on its own line** — the multi-line continuation rule (R-3.13.3) applies only to chunks of two or more bytes, matching the grammar's `LINE_BYTES : BYTE (MINUS BYTE)+`. A bare `CA-` on a line by itself is therefore a single-byte literal, never the opening chunk of a multi-line BYTES.
-- `BB-BB(-BB)*` — two or more bytes joined by `-`, optionally followed by `-` and a newline, then another `BB(-BB)*` chunk. Continuation may repeat. The trailing `-` signalling continuation requires a chunk of ≥2 bytes; a one-byte chunk cannot trigger continuation.
+- `BB-` — a single byte (two hex digits) followed by `-`. **Complete on its own line**, unless the line below it opens with `-` (R-3.13.1a). A bare `CA-` followed by anything else is a single-byte literal, never the opening chunk of a multi-line BYTES.
+- `BB-BB(-BB)*` — two or more bytes joined by `-`, optionally followed by `-` and a newline, then another `BB(-BB)*` chunk. Continuation may repeat. An undashed continuation chunk of one byte does not carry the literal further; a dashed one does (R-3.13.1a).
+
+R-3.13.1a. A continuation chunk may lead with `-`, written `-BB(-BB)*`, and that dash joins it to the chunk above instead of doubling the separator: `44-` over `-43-FE` is the literal `44-43-FE`. Only the dashed form lets a one-byte chunk open or carry a multi-line literal, so a one-byte line stands alone whenever the line under it does not lead with `-`, and the two forms may be mixed within one literal.
 
 R-3.13.2. The continuation indent of the second and subsequent chunks must be at least as deep as the indent of *the line that began the BYTES token* (the first chunk's line, not the enclosing expression). Lower indent terminates the literal and is an error.
 
@@ -592,6 +594,8 @@ R-3.13.2a. **Position attribute for multi-line BYTES.** The emitted `<o>` for a 
 R-3.13.3. The continuation chunks are part of the **same token** — they do not produce separate LineShape records. The classifier sees one line containing the whole multi-line literal, with its source span covering all the affected source lines.
 
 R-3.13.4. A comment, blank line, or any non-byte content inside the continuation is an error.
+
+R-3.13.5. The last chunk may close the literal with a name suffix, written `BB(-BB)* > name` or `BB(-BB)* >> name`, and the dash-joined form of R-3.13.1a may carry one too. The name belongs to the merged token rather than to the chunk it is written on, so `CA-FE-` over `BE-BE > ml` is one BYTES literal of four bytes named `ml`. The suffix ends the literal: no chunk follows it, and it is part of the token rather than the non-byte content R-3.13.4 refuses.
 
 Example:
 
@@ -602,6 +606,15 @@ size.
 ```
 
 The two indented lines under `size.` form **one** BYTES literal `CA-FE-BE-BE`, occupying one argument slot of the reversed dispatch `size.`.
+
+```
+foo
+  44-                                  ← one-byte first chunk, opened by the dash below
+  -43-FE-A8-                           ← dashed continuation chunk
+  -CD-C3-67-FE-8D                      ← last chunk, no trailing `-`
+```
+
+Those three lines are the literal `44-43-FE-A8-CD-C3-67-FE-8D`.
 
 Illegal:
 
@@ -617,7 +630,7 @@ size.
   BE-BE
 ```
 
-**Implication for the classifier.** Before §3.1 runs, the lexer must scan ahead: if a line's last non-whitespace character is `-` and that line contains a partial BYTES token, the lexer consumes additional lines until the BYTES token is complete, then emits a single virtual line for classification. The indent stack (§5) is unaffected — the multi-line BYTES is one expression at one indent.
+**Implication for the classifier.** Before §3.1 runs, the lexer must scan ahead: if a line's last non-whitespace character is `-` and that line contains a partial BYTES token, or holds one byte with a dashed BYTES line under it, the lexer consumes additional lines until the BYTES token is complete, then emits a single virtual line for classification. The indent stack (§5) is unaffected — the multi-line BYTES is one expression at one indent.
 
 ### 3.14 Pipe application — `| [arg…] [> name]`
 
@@ -1442,6 +1455,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+alias` target that is a scope token rather than an object name (R-3.2.3) | `'+alias' target must be an object name, not a scope token` |
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
 | `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
+| `> ^` written on a line that is not a `?` void attribute (R-3.4.11) | `only a void attribute can declare the receiver ^` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
@@ -1458,6 +1472,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Reversed dispatch whose receiver is not followed by a dot (§3.8) | `reversed dispatch must end with a dot` |
 | Pipe line whose `\|` is glued to the argument list or suffix that follows it (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
+| Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
 | Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * A Winsock function call known by its name, split out of {@link NamedFuncCall}

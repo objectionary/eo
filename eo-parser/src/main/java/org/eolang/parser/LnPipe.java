@@ -16,8 +16,9 @@ import java.util.List;
  * predecessor is formed, then the pipe supplies its arguments.</p>
  *
  * <p>The predecessor (stack top at the pipe's indent) must be a formation
- * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}) or
- * another {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
+ * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}), the identity
+ * object {@link Kind#IDENTITY_OBJECT} of §3.16, or another
+ * {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
  * to it by name, so an unnamed formation is not a valid target (R-3.14.2).
  * A pipe after a {@code .method} dispatch is rejected (R-3.14.4): the
  * attribute has already been taken, so the formation is no longer in
