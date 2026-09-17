@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Handle}.
+ *
  * @since 0.76
  */
 final class HandleTest {

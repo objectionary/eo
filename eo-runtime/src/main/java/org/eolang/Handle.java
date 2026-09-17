@@ -32,6 +32,7 @@ public final class Handle {
 
     /**
      * Ctor.
+     *
      * @param subject What the number is, for the failure message
      * @param phi The object holding the number
      */
@@ -41,6 +42,7 @@ public final class Handle {
 
     /**
      * Ctor.
+     *
      * @param expect Expect
      */
     public Handle(final Expect<Phi> expect) {
@@ -49,6 +51,7 @@ public final class Handle {
 
     /**
      * Return it.
+     *
      * @return The handle
      */
     public Long it() {
