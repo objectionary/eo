@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Applies}.
+ *
  * @since 0.72.0
  */
 final class AppliesTest {

@@ -18,6 +18,7 @@ import org.xembly.Xembler;
 
 /**
  * Large XMIR document.
+ *
  * @since 0.51
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
@@ -42,6 +43,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
+     *
      * @param nme Program name
      */
     public LargeXmir(final String nme) {
@@ -50,6 +52,7 @@ public final class LargeXmir {
 
     /**
      * Constructor.
+     *
      * @param nme Program name
      * @param path The path to the file
      */
@@ -60,6 +63,7 @@ public final class LargeXmir {
 
     /**
      * Build xml.
+     *
      * @return XML
      */
     public XML xml() {

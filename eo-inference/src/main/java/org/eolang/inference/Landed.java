@@ -39,7 +39,7 @@ final class Landed {
     /**
      * What the links table says.
      */
-    private final Pairs links;
+    private final Said links;
 
     /**
      * The provides table.
@@ -48,17 +48,19 @@ final class Landed {
 
     /**
      * Ctor.
+     *
      * @param table What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says what an atom comes back
      *  with and which objects are formations
      */
-    Landed(final Pairs table, final XML provides) {
+    Landed(final Said table, final XML provides) {
         this.links = table;
         this.given = provides;
     }
 
     /**
      * Where every object the table can place ends up.
+     *
      * @return The landings, by the locator of the object, without the objects
      *  whose walk runs into a void
      */

@@ -12,10 +12,11 @@ import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * Send syscall.
+ *
  * @since 0.40
  */
 public final class SendSyscall implements Syscall {
@@ -27,6 +28,7 @@ public final class SendSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public SendSyscall(final Phi posix) {

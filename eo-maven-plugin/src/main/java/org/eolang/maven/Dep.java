@@ -10,6 +10,7 @@ import org.apache.maven.model.Dependency;
 
 /**
  * Wrapped for maven model {@link Dependency}.
+ *
  * @since 0.54
  */
 final class Dep implements Comparable<Dep>, Supplier<Dependency> {
@@ -28,6 +29,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Ctor.
+     *
      * @param dep The dependency
      */
     Dep(final Dependency dep) {
@@ -78,6 +80,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Set group id.
+     *
      * @param group Group id
      * @return Self
      */
@@ -88,6 +91,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Set artifact id.
+     *
      * @param artifact Artifact id
      * @return Self
      */
@@ -98,6 +102,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Set version.
+     *
      * @param version Version
      * @return Self
      */
@@ -108,6 +113,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Set scope.
+     *
      * @param scope Scope
      * @return Self
      */
@@ -118,6 +124,7 @@ final class Dep implements Comparable<Dep>, Supplier<Dependency> {
 
     /**
      * Set classifier id.
+     *
      * @param classifier Classifier
      * @return Self
      */

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@code EOposix$EOφ}.
+ *
  * @since 0.40
  */
 final class EOposixEOφTest {

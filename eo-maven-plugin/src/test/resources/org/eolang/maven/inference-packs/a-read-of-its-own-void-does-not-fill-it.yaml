@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that reads its own void and applies it puts nothing into that
+# void: `choose yes no` inside `[choose] > pick` hands the two arms to
+# whatever a caller has put there, and the callers are the only ones who fill
+# it. The read is answered with a `pick`, since both arms are, and answering
+# it that way is what made it look like a copy of `pick` filling the first
+# void of one, so the arms were written down twice over — once against the
+# void the callers fill, where they never went.
+eo:
+  pick.eo: |
+    [choose] > pick
+      choose > taken
+        yes
+        no
+  yes.eo: |
+    [^] > yes
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+links:
+  - "/links/type[@id='Φ.pick.taken']/ref[@loc='Φ.pick'][not(bind)]"
+  - "/links[count(//bind[@void='Φ.pick.choose'])=2]"
+  - "/links/type[@id='Φ.yes.φ']/ref/bind[@void='Φ.pick.choose']/ref[@loc='Φ.yes.φ.α0']"
+  - "/links/type[@id='Φ.no.φ']/ref/bind[@void='Φ.pick.choose']/ref[@loc='Φ.no.φ.α0']"

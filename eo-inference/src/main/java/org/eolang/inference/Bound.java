@@ -87,6 +87,7 @@ final class Bound {
 
     /**
      * Ctor.
+     *
      * @param arguments The arguments of every application, from {@link Given}
      * @param bindings The arguments of every application bound by name
      * @param taken What every dispatch takes its attribute from
@@ -109,6 +110,7 @@ final class Bound {
 
     /**
      * What every application fills, by the locator of the application.
+     *
      * @return The objects the voids hold, by the locator of the void, in the
      *  order the voids were declared, without the applications that fill
      *  nothing we can name

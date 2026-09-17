@@ -5,12 +5,14 @@
 
 package org.eolang;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * A attr-putting object.
+ *
  * @since 0.1
  */
 public final class PhApplication extends PhOnce {
@@ -37,6 +39,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param binds The bindings to apply, in order
      */
@@ -55,6 +58,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param pos The position
      * @param attr The value
@@ -65,6 +69,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param name The name of attr
      * @param attr The value
@@ -75,6 +80,7 @@ public final class PhApplication extends PhOnce {
 
     /**
      * Ctor.
+     *
      * @param sup Supplier of the wrapped object
      * @param term Supplier of the φ-term
      */
@@ -87,27 +93,15 @@ public final class PhApplication extends PhOnce {
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
         final boolean literal = binds.length == 1 && binds[0].first() && data.matches();
-        final String string;
+        final Optional<String> printed;
         if (literal && "Φ.string".equals(head)) {
-            string = PhApplication.string(PhApplication.bytes(data.group(1)));
-        } else {
-            string = null;
-        }
-        final String result;
-        if (string != null) {
-            result = string;
+            printed = new Quoted(PhApplication.bytes(data.group(1))).get();
         } else if (literal && "Φ.number".equals(head)) {
-            result = new Numeral(
-                new BytesOf(PhApplication.bytes(data.group(1))).asNumber()
-            ).get();
+            printed = new Numbered(PhApplication.bytes(data.group(1))).get();
         } else {
-            result = String.format("%s(%s)", head, body);
+            printed = Optional.empty();
         }
-        return result;
-    }
-
-    private static String string(final byte[] bytes) {
-        return new Quoted(bytes).get().orElse(null);
+        return printed.orElseGet(() -> String.format("%s(%s)", head, body));
     }
 
     private static String body(final Bind... binds) {

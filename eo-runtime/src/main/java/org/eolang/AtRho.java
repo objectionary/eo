@@ -33,6 +33,7 @@ public final class AtRho implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param rho Rho
      */
     private AtRho(final Phi rho) {

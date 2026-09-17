@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link AtOnce}.
+ *
  * @since 0.59.0
  */
 final class AtOnceTest {

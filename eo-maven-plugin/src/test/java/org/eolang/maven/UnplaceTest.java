@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Unplace}.
+ *
  * @since 0.11
  */
 final class UnplaceTest {

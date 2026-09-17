@@ -28,6 +28,7 @@ public final class Attr extends AbstractMap.SimpleImmutableEntry<String, Attribu
 
     /**
      * Ctor.
+     *
      * @param name Attribute name
      * @param attr Attribute
      */

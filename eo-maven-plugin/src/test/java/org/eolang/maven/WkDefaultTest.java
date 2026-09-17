@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link WkDefault}.
+ *
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)

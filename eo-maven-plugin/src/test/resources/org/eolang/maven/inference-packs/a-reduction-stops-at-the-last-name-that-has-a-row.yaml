@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The reduction chains, since a name with no behaviour of its own is no better
+# an answer at the second hop than at the first. A `second` is an `alias` and
+# an `alias` is an `oak`, so a `second` is an `oak`, and the walk stops there
+# because an `oak` has a `leaf` to lose.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+  second.eo: |
+    [] > second
+      alias > @
+provides:
+  - "/provides/type[@id='Φ.second' and @reduced='Φ.oak']"
+  - "/provides/type[@id='Φ.oak' and not(@reduced)]"

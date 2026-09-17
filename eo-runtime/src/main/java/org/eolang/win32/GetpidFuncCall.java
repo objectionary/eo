@@ -7,10 +7,11 @@ package org.eolang.win32;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt _getpid function call.
+ *
  * @since 0.74.0
  */
 public final class GetpidFuncCall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetpidFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public GetpidFuncCall(final Phi win) {

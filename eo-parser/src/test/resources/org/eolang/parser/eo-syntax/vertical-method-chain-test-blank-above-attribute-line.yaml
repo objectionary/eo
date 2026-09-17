@@ -9,7 +9,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='main']/o[@base='Φ.foo.bar' and @name='+t']
+  - /object/o[@name='main']/o[@base='Φ.foo.bar' and @name='p🌵t']
 input: |
   [] > main
     foo

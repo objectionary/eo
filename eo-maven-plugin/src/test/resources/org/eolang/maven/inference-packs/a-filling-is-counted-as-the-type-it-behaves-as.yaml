@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An `alias` has no behaviour of its own and the row says so: it is an `oak`.
+# So a void filled with an `oak` at one call site and with an `alias` at
+# another is filled one way twice, and counting the two apart leaves it holding
+# a choice between two names for one thing, which nobody can answer. What goes
+# into a void is counted as the type it behaves as, the way a literal is
+# counted as a datum rather than as the locator it was written at, and the
+# object that stays is the one the first caller wrote, since a name is all that
+# is folded here.
+eo:
+  app.eo: |
+    [] > app
+      inc oak > first
+      inc alias > second
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+provides:
+  - "/provides/type[@id='Φ.alias' and @reduced='Φ.oak']"
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed[not(union)]/ref[@loc='Φ.oak']"

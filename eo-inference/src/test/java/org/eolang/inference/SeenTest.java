@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Seen}.
+ *
  * @since 0.70.0
  */
 final class SeenTest {

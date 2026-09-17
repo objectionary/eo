@@ -42,6 +42,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link Xmir}.
+ *
  * @since 0.5
  */
 final class XmirTest {
@@ -61,6 +62,28 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(this.printed(xtory))
+        );
+    }
+
+    @Test
+    void printsATreeThatCarriesTwoPackageMetas() {
+        MatcherAssert.assertThat(
+            "a tree with a second package meta comes from outside the parser, and the first meta alone must build the prefix of a self-reference (#7448)",
+            new Xmir(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas>",
+                        "<meta line='1'><head>package</head><tail>a</tail><part>a</part></meta>",
+                        "<meta line='2'><head>package</head><tail>b</tail><part>b</part></meta>",
+                        "</metas><o name='main'><o base='Φ.a.main.x' name='y'/></o></object>"
+                    )
+                )
+            ).toEO(),
+            Matchers.allOf(
+                Matchers.containsString("+package a"),
+                Matchers.containsString("main.x > y")
+            )
         );
     }
 

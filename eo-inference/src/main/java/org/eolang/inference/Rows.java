@@ -30,6 +30,7 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param document The table, as a clue wrote it
      */
     Rows(final XML document) {
@@ -38,6 +39,7 @@ final class Rows {
 
     /**
      * Every row of the table.
+     *
      * @return The rows, in the order the document holds them
      */
     List<Xnav> all() {

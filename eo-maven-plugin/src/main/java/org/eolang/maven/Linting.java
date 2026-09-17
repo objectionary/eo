@@ -137,6 +137,7 @@ final class Linting implements Step {
 
     /**
      * Constructor.
+     *
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
      * @param target Target directory
@@ -190,6 +191,7 @@ final class Linting implements Step {
 
     /**
      * Summarize the counts.
+     *
      * @param counts Counts of errors, warnings, and critical
      * @return Summary text
      */

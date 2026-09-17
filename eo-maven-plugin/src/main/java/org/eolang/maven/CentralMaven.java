@@ -78,6 +78,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
 
     /**
      * Standalone constructor with a custom local repository.
+     *
      * @param local Path to the local Maven repository
      */
     CentralMaven(final Path local) {
@@ -88,6 +89,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
      * Constructor that accepts an optional repository system.
      * Falls back to a fresh standalone system when {@code sys} is {@code null},
      * which happens in tests that run without Maven injection.
+     *
      * @param sys Repository system, or {@code null} to build one automatically
      */
     CentralMaven(final RepositorySystem sys) {
@@ -96,6 +98,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
 
     /**
      * Private standalone constructor that builds the session from an already-created system.
+     *
      * @param sys Repository system
      * @param local Local repository path
      */
@@ -105,6 +108,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
 
     /**
      * Private constructor that wires the standalone remotes.
+     *
      * @param sys Repository system
      * @param sess Repository session
      */
@@ -123,6 +127,7 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
     /**
      * Maven-plugin constructor. Reuses the already-configured components
      * provided by Maven's dependency-injection, avoiding classloader issues.
+     *
      * @param sys Repository system injected by Maven
      * @param sess Repository session injected by Maven
      * @param repos Remote repositories injected by Maven

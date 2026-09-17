@@ -40,6 +40,7 @@ final class ParseError extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param row Source line
      * @param col Column position
      * @param message Canonical message text from §9.9
@@ -52,6 +53,7 @@ final class ParseError extends RuntimeException {
 
     /**
      * Source line of the failure.
+     *
      * @return Line
      */
     int line() {
@@ -60,6 +62,7 @@ final class ParseError extends RuntimeException {
 
     /**
      * Column position of the failure.
+     *
      * @return Position
      */
     int pos() {

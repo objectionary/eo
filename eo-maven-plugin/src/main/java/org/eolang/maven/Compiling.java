@@ -45,6 +45,7 @@ final class Compiling implements Step {
 
     /**
      * Constructor.
+     *
      * @param asmbl Assembling step
      * @param lnt Linting step
      * @param mrg Merging step

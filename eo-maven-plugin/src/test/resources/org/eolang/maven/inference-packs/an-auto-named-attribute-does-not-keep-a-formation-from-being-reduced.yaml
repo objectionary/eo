@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An auto-named attribute is not public either. R-9.2.2 of the parser spec
+# keeps the cactus out of the `NAME` token, so a name the parser made up is
+# one no source file can write down, and it cannot be the name a reader was
+# going to ask about.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  handled.eo: |
+    [] > handled
+      oak >> held
+      held > @
+provides:
+  - "/provides/type[@id='Φ.handled' and @reduced='Φ.oak']"

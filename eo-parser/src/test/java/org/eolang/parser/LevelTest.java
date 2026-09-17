@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Level}.
+ *
  * @since 0.1
  */
 final class LevelTest {

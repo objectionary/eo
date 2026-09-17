@@ -10,11 +10,12 @@ import org.eolang.Dataized;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.SockaddrIn;
-import org.eolang.Syscall;
+import org.eolang.sys.SockaddrIn;
+import org.eolang.sys.Syscall;
 
 /**
  * The 'connect' WS2_32 function call.
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-connect">here for details</a>
  * @since 0.40.0
  */
@@ -27,6 +28,7 @@ public final class ConnectFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public ConnectFuncCall(final Phi win) {

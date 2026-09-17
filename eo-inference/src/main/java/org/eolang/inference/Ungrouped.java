@@ -44,6 +44,7 @@ final class Ungrouped {
 
     /**
      * Ctor.
+     *
      * @param document The table, as a clue wrote it
      * @param aliases The name every type goes by, from {@link Same}
      */
@@ -54,6 +55,7 @@ final class Ungrouped {
 
     /**
      * The rows of the table, by the name their owner goes by.
+     *
      * @return The rows, in the order the table keeps them, since the place of
      *  a row is what says which void an argument fills
      */

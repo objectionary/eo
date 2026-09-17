@@ -9,6 +9,7 @@ import org.cactoos.Text;
 /**
  * Elapsed nanoseconds printed as milliseconds, rounded up, so that
  * a span shorter than a millisecond reads as one instead of zero.
+ *
  * @since 0.73.4
  */
 final class Millis implements Text {
@@ -20,6 +21,7 @@ final class Millis implements Text {
 
     /**
      * Ctor.
+     *
      * @param span Nanoseconds elapsed
      */
     Millis(final long span) {
@@ -28,6 +30,6 @@ final class Millis implements Text {
 
     @Override
     public String asString() {
-        return String.valueOf((this.nanos + 999_999L) / 1_000_000L);
+        return String.valueOf(Math.max(1L, (this.nanos + 999_999L) / 1_000_000L));
     }
 }

@@ -13,12 +13,14 @@ import org.cactoos.Func;
 /**
  * Footprint that behaves like one of the given wrapped footprints depending on
  * the result of comparison target and source in terms of last modified date.
+ *
  * @since 0.41
  */
 public final class FpIfTargetOlder extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param destination Function that modifies result target path
      * @param first First wrapped footprint
      * @param second Second wrapped footprint

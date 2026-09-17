@@ -11,6 +11,7 @@ import org.cactoos.iterable.IterableOf;
 /**
  * An objectionary whose {@code get()}, {@code contains()} and
  * {@code isDirectory()} always fail with a given {@link IOException}.
+ *
  * @since 0.74.0
  */
 final class FailingObjectionary implements Objectionary {
@@ -22,6 +23,7 @@ final class FailingObjectionary implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param cause The failure to throw
      */
     FailingObjectionary(final IOException cause) {

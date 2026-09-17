@@ -31,6 +31,7 @@ public final class MvnCredentials extends Authenticator {
 
     /**
      * Ctor.
+     *
      * @param name The user name
      * @param password The password
      */

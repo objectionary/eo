@@ -29,6 +29,7 @@ import java.util.stream.Stream;
  * and a file with {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)}, and both look
  * through a link. Without that, a link to a directory was walked but never entered, so the digest
  * was the one of empty input, the same for every such link and unchanged by anything behind it.
+ *
  * @since 0.62.0
  */
 final class Sha {
@@ -45,6 +46,7 @@ final class Sha {
 
     /**
      * Ctor.
+     *
      * @param path File or directory to hash
      */
     Sha(final Path path) {
@@ -53,6 +55,7 @@ final class Sha {
 
     /**
      * Ctor.
+     *
      * @param path File or directory to hash
      * @param filter Files filter, applied only when hashing a directory
      */
