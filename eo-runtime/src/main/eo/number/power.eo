@@ -1,7 +1,7 @@
-# Raises the number to the power of `x` as `org.eolang.number`. A zero exponent
+# Raises the number to the power of `b` as `org.eolang.number`. A zero exponent
 # gives one, an integer exponent is expanded by exponentiation-by-squaring so
 # integer results stay exact, and a fractional exponent of a positive base is
-# taken as e raised to `x` times the natural logarithm of the base. Zeros,
+# taken as e raised to `b` times the natural logarithm of the base. Zeros,
 # infinities and nan follow the same IEEE rules that Math.pow obeys.
 
 +architect yegor256@gmail.com
@@ -11,10 +11,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > power
+[^ b] > power
   if. > @
     eq.
-      number x.as-bytes >> expo
+      number b.as-bytes >> expo
       0
     1
     base.is-nan.if
@@ -42,7 +42,7 @@
               expo.is-integer.if
                 if.
                   expo.lt 0
-                  [^ b n] >> ipow
+                  [^ factor n] >> ipow
                     if. > @
                       n.eq 0
                       1
@@ -51,9 +51,9 @@
                         times.
                           number half
                           number half
-                        b.times
-                          ^.ipow b (n.minus 1)
-                    ^.ipow b (n.div 2) > half!
+                        factor.times
+                          ^.ipow factor (n.minus 1)
+                    ^.ipow factor (n.div 2) > half!
                   | (1.div base) expo.abs
                   ipow base expo.abs
                 if.

@@ -13,9 +13,9 @@ FQN is the whole of what this module means by a type:
 
 ```eo
 [@] > number             # Φ.number.φ is a Φ.bytes
-  [x] > plus             # Φ.number.plus.x is a Φ.number
-  [x] > minus
-    $.^.plus ($.x.times -1) > @      # Φ.number.minus.@ is a Φ.number
+  [b] > plus             # Φ.number.plus.b is a Φ.number
+  [b] > minus
+    $.^.plus ($.b.times -1) > @      # Φ.number.minus.@ is a Φ.number
 ```
 
 Where the chain arrives is not always where it stops. A formation that binds

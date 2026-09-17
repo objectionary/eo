@@ -1,4 +1,4 @@
-# TRUE when the number equals `x`, FALSE otherwise. The comparison follows
+# TRUE when the number equals `b`, FALSE otherwise. The comparison follows
 # IEEE 754: a not-a-number value is equal to nothing, not even to itself, while
 # positive and negative zero are equal to each other. Everything else is
 # compared byte by byte, so a value of any other type is simply not equal.
@@ -12,21 +12,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > eq
+[^ b] > eq
   if. > @
     eq.
-      ^.as-bytes >> b!
-      x >> xbts!
+      ^.as-bytes >> mine!
+      b >> other!
     ^.is-nan.not
     and.
       or.
-        b.eq
+        mine.eq
           0.as-bytes >> pzero
-        b.eq
+        mine.eq
           -0.as-bytes >> nzero
       or.
-        xbts.eq pzero
-        xbts.eq nzero
+        other.eq pzero
+        other.eq nzero
 
   eq. ++> can-compare-two-different-number-types
     68.eq "12345678"

@@ -1,4 +1,4 @@
-# Bitwise exclusive OR of the byte chain with another chain `x`,
+# Bitwise exclusive OR of the byte chain with another chain `b`,
 # derived from the `and`, `or`, and `not` atoms.
 #
 # The lengths are compared here first, ahead of the derivation, because
@@ -15,15 +15,15 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > xor
+[^ b] > xor
   if. > @
-    ^.size.as-bytes.eq x.size.as-bytes
+    ^.size.as-bytes.eq b.size.as-bytes
     or.
-      ^.and x.not
-      ^.not.and x
+      ^.and b.not
+      ^.not.and b
     T
       "bytes.xor requires operands of the same length, got %d and %d".printf
-        * ^.size x.size
+        * ^.size b.size
 
   eq. ++> can-xor-negative-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00
