@@ -10,8 +10,8 @@ import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.Handles;
+import org.eolang.sys.Syscall;
 
 /**
  * Readdir syscall.

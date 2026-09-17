@@ -201,7 +201,12 @@ final class Parsing implements Step {
     private Node parsed(
         final Path source, final String identifier, final UnaryOperator<XML> pipeline
     ) throws IOException {
-        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed();
+        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed(
+            pipeline.apply(
+                new Raws(this.cache.with("raws"), this.target.resolve("0-raw"))
+                    .of(identifier, source)
+            )
+        );
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",

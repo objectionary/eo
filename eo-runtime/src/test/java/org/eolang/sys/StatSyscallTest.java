@@ -2,13 +2,16 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang;
+package org.eolang.sys;
 
 import com.sun.jna.Structure;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.ToIntBiFunction;
+import org.eolang.Data;
+import org.eolang.Dataized;
+import org.eolang.Phi;
 import org.eolang.posix.CStdLib;
 import org.eolang.posix.StatSyscall;
 import org.hamcrest.MatcherAssert;

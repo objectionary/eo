@@ -6,7 +6,7 @@ package org.eolang.win32;
 
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt _ftime64_s function call.
