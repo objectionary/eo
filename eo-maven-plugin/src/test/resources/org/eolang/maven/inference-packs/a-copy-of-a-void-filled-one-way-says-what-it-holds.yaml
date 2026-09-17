@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A body that hands back the void it was given is a copy of that void, and the
+# void is whatever a caller puts there. Where the whole program puts one thing
+# there, the body is that thing: `box` is only ever handed a `bell`, so the
+# body of `box` is a `bell` and a reader of the table can go and look at what a
+# `bell` has. Where two callers disagree the void stays a void, since naming
+# either one of them would be picking a favourite among facts: `crate` is
+# handed a `bell` by one caller and a `chime` by another, and its body is
+# neither.
+eo:
+  bell.eo: |
+    [] > bell
+      [^] > ring
+        01- > @
+  chime.eo: |
+    [] > chime
+      [^] > ring
+        02- > @
+  box.eo: |
+    [item] > box
+      item > @
+  crate.eo: |
+    [thing] > crate
+      thing > @
+  one.eo: |
+    [] > one
+      box bell > @
+  two.eo: |
+    [] > two
+      crate bell > @
+  three.eo: |
+    [] > three
+      crate chime > @
+provides:
+  - "/provides/type[@id='Φ.box']/attr[@name='item' and @void='true']/witnessed/ref[@loc='Φ.bell']"
+  - "/provides/type[@id='Φ.crate']/attr[@name='thing' and @void='true']/witnessed/union[ref[@loc='Φ.bell'] and ref[@loc='Φ.chime']]"
+links:
+  - "/links/type[@id='Φ.box.φ']/ref[@loc='Φ.bell']"
+  - "/links/type[@id='Φ.box.item']/var"
+  - "/links/type[@id='Φ.crate.φ']/ref[@loc='Φ.crate.thing']"
