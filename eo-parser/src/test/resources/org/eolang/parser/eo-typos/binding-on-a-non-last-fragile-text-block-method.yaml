@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 6
+message: |-
+  [6:11] error: 'inline binding allowed only on the last method in a chain'
+    """.first:slot?.second > x
+             ^
+input: |
+  # D.
+
+  [] > app
+    """
+    hello
+    """.first:slot?.second > x
