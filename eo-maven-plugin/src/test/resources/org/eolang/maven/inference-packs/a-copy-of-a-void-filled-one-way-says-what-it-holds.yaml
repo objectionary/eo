@@ -34,8 +34,9 @@ eo:
     [] > three
       crate chime > @
 provides:
-  - "/provides/type[@id='Φ.box']/attr[@name='item' and @void='true']/witnessed/ref[@loc='Φ.bell']"
-  - "/provides/type[@id='Φ.crate']/attr[@name='thing' and @void='true']/witnessed/union[ref[@loc='Φ.bell'] and ref[@loc='Φ.chime']]"
+  - "/provides/type[@id='Φ.box']/attr[@name='item']/witnessed/ref[@loc='Φ.bell']"
+  - "/provides/type[@id='Φ.crate']/attr[@name='thing']/witnessed/union/ref[@loc='Φ.bell']"
+  - "/provides/type[@id='Φ.crate']/attr[@name='thing']/witnessed/union/ref[@loc='Φ.chime']"
 links:
   - "/links/type[@id='Φ.box.φ']/ref[@loc='Φ.bell']"
   - "/links/type[@id='Φ.box.item']/var"
