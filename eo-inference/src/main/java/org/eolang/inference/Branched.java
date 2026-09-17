@@ -80,6 +80,21 @@ final class Branched {
      *  given or they share nothing
      */
     String names() {
+        return new Joined(this.arms(), this.owned).names();
+    }
+
+    /**
+     * What the formations this call reaches hand back, one apiece.
+     *
+     * <p>Where they agree this is the agreement said the long way round, and
+     * where they do not it is the whole of what the call may come back with:
+     * a choice between the arms, which is an answer of its own for whoever can
+     * hold two of them (#8744).</p>
+     *
+     * @return The locators, empty when a formation this call reaches binds a
+     *  body of its own
+     */
+    Collection<String> arms() {
         final Collection<String> handed = new LinkedHashSet<>(0);
         for (final Map.Entry<String, Map<String, String>> owner : this.owners().entrySet()) {
             final Collection<String> given = this.given(owner.getKey(), owner.getValue());
@@ -90,7 +105,7 @@ final class Branched {
             given.removeIf(arm -> !this.stands(arm));
             handed.addAll(given);
         }
-        return new Joined(handed, this.owned).names();
+        return handed;
     }
 
     private Map<String, Map<String, String>> owners() {

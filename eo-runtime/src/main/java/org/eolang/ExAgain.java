@@ -10,7 +10,8 @@ package org.eolang;
  * <p>{@link PhAgain} throws it when the call it wraps is forced, and the
  * nearest {@link PhLoop} catches it and carries on with the object it holds,
  * instead of letting the Java stack grow by one more level per iteration.
- * It is control flow rather than an error, so it records no stack trace.
+ * It is control flow rather than an error, so it asks {@link Throwable} for
+ * no stack trace at all, rather than throwing the recorded one away after.
  * One that escapes every loop is a defect of the transpiler, and
  * {@link Main} reports it with the message set here.</p>
  *
@@ -34,7 +35,7 @@ public final class ExAgain extends ExAbstract {
      * @param phi The next copy of the formation
      */
     public ExAgain(final Phi phi) {
-        super("A tail call was forced outside of its loop");
+        super("A tail call was forced outside of its loop", null, false);
         this.next = phi;
     }
 
@@ -45,10 +46,5 @@ public final class ExAgain extends ExAbstract {
      */
     public Phi next() {
         return this.next;
-    }
-
-    @Override
-    public Throwable fillInStackTrace() {
-        return this;
     }
 }

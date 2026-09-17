@@ -47,6 +47,30 @@ final class RowsTest {
     }
 
     @Test
+    void readsPastAHyphenatedSibling(@Mktmp final Path temp) throws IOException {
+        final String neighbours = "<type id=\"Q.foo\"/><type id=\"Q.foo-bar\"/>";
+        MatcherAssert.assertThat(
+            "a change in a descendant row must reach the digest, a hyphenated sibling hid it",
+            this.digest(
+                temp.resolve("one"),
+                String.format(
+                    "%s<type id=\"Q.foo.inner\"><attr name=\"x\"/></type>", neighbours
+                )
+            ),
+            Matchers.not(
+                Matchers.equalTo(
+                    this.digest(
+                        temp.resolve("two"),
+                        String.format(
+                            "%s<type id=\"Q.foo.inner\"><attr name=\"y\"/></type>", neighbours
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    @Test
     void framesEveryDigestField(@Mktmp final Path temp) throws IOException {
         final String locator = "Q.φ";
         final Path dir = temp.resolve("framed");

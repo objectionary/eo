@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'Package is declared more than once')]
+input: |
+  +package foo
+  +package bar
+
+  [] > app
+    1 > a

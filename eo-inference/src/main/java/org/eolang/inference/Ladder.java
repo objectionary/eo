@@ -4,8 +4,11 @@
  */
 package org.eolang.inference;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -125,6 +128,35 @@ public final class Ladder {
             result = this.share(climbed) / (rung - 1);
         }
         return result;
+    }
+
+    /**
+     * The numbers, written down for somebody to compare them with.
+     *
+     * <p>A build that only says them out loud leaves nothing behind: the line
+     * scrolls past and the next branch has nothing to be measured against. So
+     * they are handed over a line at a time as well, the value first and the
+     * name of it after — a shape a shell can read with one {@code read} and
+     * no knowledge of what any of it means. What ends a line is left to
+     * whoever writes them down.</p>
+     *
+     * <p>The rungs come with the shares and not instead of them. A share on
+     * its own is a number to game, and the rungs are what makes the gaming
+     * visible, so whoever is handed one of them is handed both.</p>
+     *
+     * @return The lines, four shares and a depth ahead of a rung apiece
+     */
+    public Collection<String> lines() {
+        final Collection<String> lines = new ArrayList<>(0);
+        lines.add(String.format(Locale.ROOT, "%d objects", this.total()));
+        lines.add(String.format(Locale.ROOT, "%.1f named", this.named()));
+        lines.add(String.format(Locale.ROOT, "%.1f rooted at a void", this.rooted()));
+        lines.add(String.format(Locale.ROOT, "%.1f nothing known", this.blank()));
+        lines.add(String.format(Locale.ROOT, "%.1f depth", this.percent()));
+        for (final Map.Entry<String, Integer> rung : this.counts.entrySet()) {
+            lines.add(String.format(Locale.ROOT, "%d %s", rung.getValue(), rung.getKey()));
+        }
+        return lines;
     }
 
     private int upto(final int rungs) {

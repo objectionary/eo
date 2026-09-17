@@ -183,7 +183,8 @@ abstract class MjSafe extends AbstractMojo {
      * sixty eight years, which meant the deadline never fired and the
      * thread and the {@link java.util.concurrent.FutureTask} behind it were
      * started for nothing. A build whose goals legitimately take longer
-     * raises it through {@code eo.timeout}.</p>
+     * raises it through {@code eo.timeout}, and one that wants no deadline
+     * at all sets it to zero.</p>
      *
      * @since 0.28.12
      */
@@ -441,12 +442,16 @@ abstract class MjSafe extends AbstractMojo {
     protected boolean resolveInCentral = true;
 
     /**
-     * Objectionary.
+     * The Objectionary this Mojo pulls from.
+     *
+     * <p>It is a {@link Scalar} because the hash and the settings it is
+     * built from are injected after the Mojo is made, so the chain behind it
+     * waits for the first request. A test hands over a fake one instead, the
+     * way {@code Moja} hands over every other attribute here.</p>
      *
      * @since 0.50
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new OyConfigured(
+    private final Scalar<Objectionary> objectionary = new OyConfigured(
         () -> this.hash,
         () -> this.settings
     );

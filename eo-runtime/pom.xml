@@ -282,7 +282,6 @@
               <goal>compile</goal>
               <goal>inference</goal>
               <goal>inference-report</goal>
-              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
@@ -318,13 +317,6 @@
                 which no 'can-...' name in this module does.
                 -->
                 <lint>unit-test-is-not-verb</lint>
-                <!--
-                @todo #8654:30min Stop skipping 'unsorted-metas' here. It reads
-                the nearest preceding meta now instead of the first one in the
-                file, and on that reading the '+spdx' meta sits out of order in
-                174 sources, 'string/turkish.eo:19' among them.
-                -->
-                <lint>unsorted-metas</lint>
                 <!--
                 @todo #8654:30min Stop skipping 'invalid-name-notation' here.
                 The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no

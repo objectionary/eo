@@ -6,6 +6,7 @@
 package org.eolang;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -118,21 +119,29 @@ final class Heaps {
     }
 
     /**
-     * Whether the given range fits inside the allocated block — the
-     * single source of truth for the read-bounds rule.
+     * The bytes of the given range, if it fits inside the allocated block —
+     * the single source of truth for the read-bounds rule.
      *
      * <p>If the block is not allocated, the request is a structural
      * (unpredictable) failure and aborts with {@link ExFailure}, which
      * EO cannot catch. A range that exceeds an allocated block is a
-     * predictable failure, reported as {@code false} so the caller can
-     * fall back rather than read garbage.</p>
+     * predictable failure, reported as an empty answer so the caller can
+     * fall back rather than read garbage. The range is checked and copied
+     * under one hold of the lock, so a resize cannot shrink the block
+     * between the two and take the fallback away from the caller.</p>
+     *
+     * <p>The answer carries the size of the block as well, because a caller
+     * that falls back has to say how many bytes were allocated. Asking for
+     * that size afterwards would be a second, separately locked question,
+     * and a free arriving between the two would abort it.</p>
      *
      * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @return True if the range lies within the allocated block
+     * @return The bytes, or nothing if the range lies outside the block,
+     *  together with the size of the block
      */
-    boolean fits(final int identifier, final int offset, final int length) {
+    Fetched fetched(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -141,9 +150,14 @@ final class Heaps {
                     identifier
                 );
             }
-            return offset >= 0
-                && length >= 0
-                && (long) offset + length <= this.blocks.get(identifier).length;
+            final byte[] block = this.blocks.get(identifier);
+            final Optional<byte[]> out;
+            if (offset >= 0 && length >= 0 && (long) offset + length <= block.length) {
+                out = Optional.of(Arrays.copyOfRange(block, offset, offset + length));
+            } else {
+                out = Optional.empty();
+            }
+            return new Fetched(out, block.length);
         } finally {
             this.lock.unlock();
         }
@@ -172,15 +186,15 @@ final class Heaps {
                     identifier, length
                 );
             }
-            if (!this.fits(identifier, offset, length)) {
-                throw new ExFailure(
+            final Fetched data = this.fetched(identifier, offset, length);
+            return data.bytes().orElseThrow(
+                () -> new ExFailure(
                     "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                     length,
                     offset,
-                    this.blocks.get(identifier).length
-                );
-            }
-            return Arrays.copyOfRange(this.blocks.get(identifier), offset, offset + length);
+                    data.size()
+                )
+            );
         } finally {
             this.lock.unlock();
         }
