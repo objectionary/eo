@@ -73,17 +73,6 @@ import java.util.Map;
  * well.</p>
  *
  * @since 0.69.0
- * @todo #8744:90min Answer a read of a choice with a choice of the reads.
- *  A call is settled to its arms here only where it is on the void itself. Of
- *  the 885 rows eo-runtime leaves rooted at {@code Φ.bool.if}, 211 name their
- *  arms now; of the 674 left, 141 ask {@code eq} of such a call, 62 ask
- *  {@code if.eq} and 32 ask {@code if.plus}. Those are reads on top of a
- *  choice, and {@link Arrived} asks every arm for the whole of what is left
- *  over at once, so one arm without the attribute ends the lot. What such a
- *  read comes back with is the arms underneath it asked one by one, which
- *  wants the choice in hand where the read is answered, and a pass hands its
- *  answers round as locators. So it waits on the links side speaking in
- *  {@link Type} rather than in a name.
  */
 final class Filled {
 
