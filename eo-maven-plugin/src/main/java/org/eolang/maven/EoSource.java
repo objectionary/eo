@@ -96,7 +96,16 @@ final class EoSource {
      * @throws IOException If fails
      */
     Xmir parsed() throws IOException {
-        final XML xmir = new EoSyntax(this.input, this.transform).parsed();
+        return this.parsed(new EoSyntax(this.input, this.transform).parsed());
+    }
+
+    /**
+     * Check the XMIR already made of this source.
+     *
+     * @param xmir The XMIR of this source
+     * @return The same XMIR, with the naming errors it earned
+     */
+    Xmir parsed(final XML xmir) {
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();
         final String name = new OnDetailed(
