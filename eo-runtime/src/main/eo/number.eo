@@ -14,16 +14,16 @@
   $.as-i64.as-i32 > as-i32
   [] > div /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > gt /Q.bool
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > plus /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > times /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
 
   eq. ++> can-add-a-negative-float-to-negative-infinity
     ninf.plus -42.5

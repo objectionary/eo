@@ -27,6 +27,12 @@
 # into the high one with a single comparison, so an addition costs the
 # same few dispatches whatever the length of its carry chain; the bytes of
 # each sum below `2^32` are the low four bytes of its `2^52` pattern.
+#
+# @todo #8794:60min Name the second operand `b` here too, the way `bytes`
+#  and `number` already name it, and do the same in `i8`, `i16`, `i32`, `u8`,
+#  `u16`, `u32`, `u64` and in the `div` member of each of them. It did not
+#  travel together with `bytes` and `number` because the whole rename is
+#  twice the size a pull request of this repository is allowed to be.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

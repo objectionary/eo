@@ -1,4 +1,4 @@
-# TRUE when the number is less than or equal to `x`.
+# TRUE when the number is less than or equal to `b`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,10 +7,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > lte
+[^ b] > lte
   or. > @
     ^.lt
-      x >> value!
+      b >> value!
     ^.eq value
 
   eq. ++> can-be-less-than-or-equal-to-a-float-when-negative-infinity

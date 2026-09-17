@@ -1,4 +1,4 @@
-# TRUE when `n` is strictly less than `x`.
+# TRUE when `n` is strictly less than `b`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -7,10 +7,10 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 
-[^ x] > lt
+[^ b] > lt
   0.gt > @
     ^.minus
-      number x!
+      number b!
 
   ninf.lt 42.5 ++> can-be-less-than-a-float-when-negative-infinity
 

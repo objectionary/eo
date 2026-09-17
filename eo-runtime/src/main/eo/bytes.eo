@@ -37,7 +37,7 @@
     ? > b /Q.bytes
   [] > right /Q.bytes
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > size /Q.number
     ? > ^
   [] > slice /Q.bytes
