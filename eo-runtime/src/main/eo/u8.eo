@@ -13,10 +13,10 @@
   i16 > [^] > as-i16
     00-.concat ^.as-bytes
   as-i16.as-number > as-number
-  [^ x cant-divide] > div
+  [^ b cant-divide] > div
     if. > @
       eq.
-        x.as-u8 >> other
+        b.as-u8 >> other
         00-
       cant-divide
         "Can't divide %d by u8 zero".printf
@@ -27,26 +27,26 @@
             ^.as-i16.div other.as-i16
           1
           1
-  ^.as-i16.gt x.as-u8.as-i16 > [^ x] > gt
-  ^.as-i16.gte x.as-u8.as-i16 > [^ x] > gte
-  ^.as-i16.lt x.as-u8.as-i16 > [^ x] > lt
-  ^.as-i16.lte x.as-u8.as-i16 > [^ x] > lte
-  u8 > [^ x] > minus
+  ^.as-i16.gt b.as-u8.as-i16 > [^ b] > gt
+  ^.as-i16.gte b.as-u8.as-i16 > [^ b] > gte
+  ^.as-i16.lt b.as-u8.as-i16 > [^ b] > lt
+  ^.as-i16.lte b.as-u8.as-i16 > [^ b] > lte
+  u8 > [^ b] > minus
     slice.
       as-bytes.
-        ^.as-i16.minus x.as-u8.as-i16
+        ^.as-i16.minus b.as-u8.as-i16
       1
       1
-  u8 > [^ x] > plus
+  u8 > [^ b] > plus
     slice.
       as-bytes.
-        ^.as-i16.plus x.as-u8.as-i16
+        ^.as-i16.plus b.as-u8.as-i16
       1
       1
-  u8 > [^ x] > times
+  u8 > [^ b] > times
     slice.
       as-bytes.
-        ^.as-i16.times x.as-u8.as-i16
+        ^.as-i16.times b.as-u8.as-i16
       1
       1
 
