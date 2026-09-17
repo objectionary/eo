@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An `alias` has no behaviour of its own and the row says so: it is an `oak`.
+# Where it is the only thing a void is ever filled with, the census still names
+# the `alias`, because the census says which object went in and the row beside
+# it already says what that object behaves as. Writing the name it behaves as
+# into the census instead costs the reader the very fact a census is for: the
+# voids of an `alias` are the ones a caller filled, and the voids of an `oak`
+# are not, so a copy with nothing left to fill comes out still wanting an
+# argument.
+eo:
+  app.eo: |
+    [] > app
+      inc alias > first
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+provides:
+  - "/provides/type[@id='Φ.alias' and @reduced='Φ.oak']"
+  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed[not(union)]/ref[@loc='Φ.alias']"
