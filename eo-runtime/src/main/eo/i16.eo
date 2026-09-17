@@ -20,10 +20,10 @@
       ^.as-bytes
   as-i32.as-i64 > as-i64
   as-i64.as-number > as-number
-  [^ x cant-divide] > div
+  [^ b cant-divide] > div
     if. > @
       eq.
-        x.as-i16 >> other
+        b.as-i16 >> other
         00-00
       cant-divide
         "Can't divide %d by i16 zero".printf
@@ -34,22 +34,22 @@
             ^.as-i32.div other.as-i32
           2
           2
-  ^.as-i32.gt x.as-i16.as-i32 > [^ x] > gt
-  ^.as-i32.gte x.as-i16.as-i32 > [^ x] > gte
-  ^.as-i32.lt x.as-i16.as-i32 > [^ x] > lt
-  ^.as-i32.lte x.as-i16.as-i32 > [^ x] > lte
-  ^.plus x.as-i16.neg > [^ x] > minus
+  ^.as-i32.gt b.as-i16.as-i32 > [^ b] > gt
+  ^.as-i32.gte b.as-i16.as-i32 > [^ b] > gte
+  ^.as-i32.lt b.as-i16.as-i32 > [^ b] > lt
+  ^.as-i32.lte b.as-i16.as-i32 > [^ b] > lte
+  ^.plus b.as-i16.neg > [^ b] > minus
   times -1.as-i64.as-i32.as-i16 > neg
-  i16 > [^ x] > plus
+  i16 > [^ b] > plus
     slice.
       as-bytes.
-        ^.as-i32.plus x.as-i16.as-i32
+        ^.as-i32.plus b.as-i16.as-i32
       2
       2
-  i16 > [^ x] > times
+  i16 > [^ b] > times
     slice.
       as-bytes.
-        ^.as-i32.times x.as-i16.as-i32
+        ^.as-i32.times b.as-i16.as-i32
       2
       2
 

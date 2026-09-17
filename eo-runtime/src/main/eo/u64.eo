@@ -8,6 +8,12 @@
 # lowest bit of the shifted value, and the result is doubled. That
 # lowest bit keeps the shifted value odd whenever something was
 # discarded, so it can never sit on a tie and be rounded the wrong way.
+#
+# @todo #8798:30min Name the second operand `b` here too, the way `bytes`,
+#  `number` and the signed integers already name it, and do the same in `u8`,
+#  `u16`, `u32` and in the `div` member of each of them. It did not travel
+#  together with the signed integers because the two halves together are
+#  larger than a pull request of this repository is allowed to be.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
