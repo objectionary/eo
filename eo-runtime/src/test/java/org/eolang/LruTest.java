@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Lru}.
+ *
  * @since 0.75
  */
 final class LruTest {

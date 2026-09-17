@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Rooted}.
+ *
  * @since 0.72.0
  */
 final class RootedTest {

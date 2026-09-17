@@ -43,6 +43,7 @@ final class Applies {
 
     /**
      * Ctor.
+     *
      * @param calls Every call the program makes, from {@link Calls}
      * @param voids The voids these calls are made on: the void itself, and
      *  every void it is handed into
@@ -54,6 +55,7 @@ final class Applies {
 
     /**
      * These calls, to be put inside the row of the void.
+     *
      * @return The directives, empty when the void is never applied
      */
     Directives directives() {
@@ -68,6 +70,7 @@ final class Applies {
 
     /**
      * Whether the void is ever applied, or a name rooted at it is.
+     *
      * @return True when at least one call is made on it
      */
     boolean any() {

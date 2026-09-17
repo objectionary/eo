@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Agreed}.
+ *
  * @since 0.72.0
  */
 final class AgreedTest {

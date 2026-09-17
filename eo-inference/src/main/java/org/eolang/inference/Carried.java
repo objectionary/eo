@@ -48,6 +48,7 @@ final class Carried {
 
     /**
      * Ctor.
+     *
      * @param named What every void is filled with where the filling has a type
      * @param hops The voids handed on to every void
      */
@@ -61,6 +62,7 @@ final class Carried {
 
     /**
      * What every void is filled with, the hops walked through.
+     *
      * @return The types, by name, by the locator of the void
      */
     Map<String, Map<String, Type>> all() {

@@ -24,6 +24,7 @@ interface GlobalCache {
 
     /**
      * How one file is to be written.
+     *
      * @param tail Path of that file inside the cache
      * @param hash Hash segment of the cache path
      * @param compile How the content of the file is produced
@@ -52,6 +53,7 @@ interface GlobalCache {
 
     /**
      * The same cache, with one more segment folded into its key.
+     *
      * @param segment The segment to fold in
      * @return The derived cache
      */

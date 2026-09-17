@@ -68,6 +68,7 @@ final class StPure extends StEnvelope {
 
     /**
      * Ctor.
+     *
      * @param sheet The classpath path of the stylesheet to run
      * @param tables The directory with the tables of {@link MjInference},
      *  which does not have to exist

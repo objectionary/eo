@@ -5,6 +5,7 @@
 
 /**
  * Tests for win32 socket function calls.
+ *
  * @since 0.57.0
  */
 package org.eolang.win32;

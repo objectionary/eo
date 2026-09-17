@@ -10,10 +10,12 @@ import org.eolang.Expect;
 import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Buffer;
+import org.eolang.sys.Syscall;
 
 /**
  * Recv syscall.
+ *
  * @since 0.40
  */
 public final class RecvSyscall implements Syscall {
@@ -25,6 +27,7 @@ public final class RecvSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public RecvSyscall(final Phi posix) {

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Consumed}.
+ *
  * @since 0.75.0
  */
 @SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidThreadGroup"})

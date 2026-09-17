@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * A Win32 function call known by its name.
@@ -32,6 +32,9 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_access", AccessFuncCall::new);
         NamedFuncCall.ALL.put("_stat64", Stat64FuncCall::new);
         NamedFuncCall.ALL.put("GetFileAttributesW", GetFileAttributesFuncCall::new);
+        NamedFuncCall.ALL.put("FindFirstFileW", FindFirstFileFuncCall::new);
+        NamedFuncCall.ALL.put("FindNextFileW", FindNextFileFuncCall::new);
+        NamedFuncCall.ALL.put("FindClose", FindCloseFuncCall::new);
         NamedFuncCall.ALL.put("_creat", CreatFuncCall::new);
         NamedFuncCall.ALL.put("_unlink", UnlinkFuncCall::new);
         NamedFuncCall.ALL.put("_rmdir", RmdirFuncCall::new);
@@ -56,6 +59,7 @@ public final class NamedFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param name The Win32 name of the function
      * @param rho The object the function call belongs to
      */

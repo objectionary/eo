@@ -19,6 +19,7 @@ import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link InetAddrSyscall}.
+ *
  * @since 0.74.1
  */
 final class InetAddrSyscallTest {

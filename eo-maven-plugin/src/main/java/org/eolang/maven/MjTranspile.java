@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -38,11 +37,11 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * {@link Merging} leaves a merged member alone; it is done here as well
  * because the shape of an object decides the name of the Java class of every
  * atom it holds, and a build that skipped the goal would name classes that
- * the library it compiles against does not carry. {@code Φ.string.regex} is
- * such an object: its atoms ship as {@code EOstring$EOregex$EOpattern$EOchecked} and
- * friends, which is where they land once {@code regex} is an attribute of
- * {@code string}, and nowhere near the {@code org.eolang.EO_string} package
- * an unmerged {@code +package string} would compile it into (#8295).</p>
+ * the library it compiles against does not carry. An atom
+ * {@code string.foo.bar} ships as {@code EOstring$EOfoo$EObar}, which is
+ * where it lands once {@code foo} is an attribute of {@code string}, and
+ * nowhere near the {@code org.eolang.EO_string} package an unmerged
+ * {@code +package string} would compile it into (#8295).</p>
  *
  * @since 0.1
  */
@@ -185,8 +184,7 @@ public final class MjTranspile extends MjSafe {
                         this.base(),
                         this.xslMeasures.toPath(),
                         this.targetDir.toPath(),
-                        this.tables.toPath(),
-                        this.lowered()
+                        this.tables.toPath()
                     ),
                     this.stored()
                 )
@@ -217,21 +215,6 @@ public final class MjTranspile extends MjSafe {
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
             .collect(Collectors.toList());
-    }
-
-    // What MjLower left in its marker file, or the empty string when it
-    // skipped or was disabled: whether the XMIR of this build was folded
-    // through phino changes the generated Java, so it belongs in the
-    // cache key that Transpilation.version() makes.
-    private String lowered() throws IOException {
-        final Path marker = this.targetDir.toPath()
-            .resolve(Lowering.DIR)
-            .resolve(Lowering.MARKER);
-        String content = "";
-        if (Files.exists(marker)) {
-            content = Files.readString(marker).trim();
-        }
-        return content;
     }
 
     private String base() {

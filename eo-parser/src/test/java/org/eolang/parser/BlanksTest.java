@@ -12,6 +12,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Blanks}.
+ *
  * @since 0.1
  */
 final class BlanksTest {

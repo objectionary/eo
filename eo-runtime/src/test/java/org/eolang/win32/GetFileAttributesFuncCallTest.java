@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link GetFileAttributesFuncCall}.
+ *
  * @since 0.57.0
  */
 final class GetFileAttributesFuncCallTest {

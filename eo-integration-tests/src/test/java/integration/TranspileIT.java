@@ -30,9 +30,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * on, so it runs the merge the runtime's own build runs. A member of a
  * package is an attribute of the object the package names only after the
  * merge, and the name of the class an atom of such a member transpiles to
- * follows: unmerged, {@code string.regex.pattern.checked} asks for a
- * {@code org.eolang.EO_string.EOregex$EOpattern$EOchecked} that the runtime jar,
- * merged when it was built, does not carry.</p>
+ * follows: unmerged, an atom {@code string.foo.bar} asks for a
+ * {@code org.eolang.EO_string.EOfoo$EObar} that the runtime jar, merged when
+ * it was built, does not carry.</p>
  *
  * @since 0.62
  */

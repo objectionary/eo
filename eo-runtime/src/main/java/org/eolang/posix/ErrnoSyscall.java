@@ -8,10 +8,11 @@ import com.sun.jna.Native;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * The 'errno' syscall.
+ *
  * @since 0.40
  */
 public final class ErrnoSyscall implements Syscall {
@@ -23,6 +24,7 @@ public final class ErrnoSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ErrnoSyscall(final Phi posix) {

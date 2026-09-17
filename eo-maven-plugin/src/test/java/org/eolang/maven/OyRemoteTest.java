@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link OyRemote}.
+ *
  * @since 0.1.0
  */
 final class OyRemoteTest {

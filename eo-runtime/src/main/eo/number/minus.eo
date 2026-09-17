@@ -1,16 +1,16 @@
-# Difference of `n` and `x`, defined as `n` plus the negation of `x`.
+# Difference of `n` and `b`, defined as `n` plus the negation of `b`.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ x] > minus
+[^ b] > minus
   ^.plus > @
     neg.
-      number x!
+      number b!
 
   eq. ++> can-subtract-a-negative-float-from-negative-infinity
     ninf.minus -42.5

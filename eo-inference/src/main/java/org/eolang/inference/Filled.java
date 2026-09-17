@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -36,17 +37,60 @@ import java.util.Map;
  *
  * <p>An answer rooted at a void nothing here fills is not the end of it
  * either. The void may hold a formation that hands back what it is given, in
- * which case the answer is one of the things this call put in, and
- * {@link Branched} says which.</p>
+ * which case the answer is one of the things a call put in, and
+ * {@link Branched} says which. Which call is the question, since the chain a
+ * receiver resolves through reaches other applications of the same object and
+ * their arguments went into their own copies of the void. The call that landed
+ * here is asked first — the one that filled a void of a formation this void
+ * holds — so that a reader further along the chain learns what that call was
+ * handed (#8508). Where its arms agree on nothing the next call up the chain
+ * is asked, and then the next, and when no call of its own agrees the fillings
+ * gathered along the whole chain are joined instead.</p>
+ *
+ * <p>Those later calls are strangers, and an answer taken from one of them is
+ * a guess: their arguments went into copies of the void this question is not
+ * about. The guess holds because an argument relayed into a copy of the same
+ * void is written for the same shape, and it is worth keeping because giving
+ * it up leaves hundreds of names rooted at a void again while settling almost
+ * nothing (#8571).</p>
+ *
+ * <p>A walk that dies answers nothing at all, rather than handing back the
+ * name it was asked about. The two are not the same question: a void nobody
+ * fills is the answer, while a void this call fills with something the passes
+ * have not settled yet is an answer nobody has worked out. Writing the second
+ * one down as if it were the first froze it, since {@link Dispatched} asks
+ * again only about a name rooted at a void and takes one rooted answer for
+ * another only when the second stands under the first. The {@code if} of a
+ * {@code recovered} is a {@code Φ.bool.if}, which is rooted at a void as well,
+ * so the site kept the name of a void the line above it fills (#8351).</p>
+ *
+ * <p>Only the arms of those formations are counted. An argument is relayed to
+ * every formation the void might hold, because which one it turns out to be is
+ * not known where the argument is written, and a single stray relay among the
+ * arms is enough to make {@link Branched} give up on all of them: the
+ * {@code if} of an {@code abs} puts its {@code 0.plus value} into the two
+ * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
+ * well.</p>
  *
  * @since 0.69.0
+ * @todo #8744:90min Answer a read of a choice with a choice of the reads.
+ *  A call is settled to its arms here only where it is on the void itself. Of
+ *  the 885 rows eo-runtime leaves rooted at {@code Φ.bool.if}, 211 name their
+ *  arms now; of the 674 left, 141 ask {@code eq} of such a call, 62 ask
+ *  {@code if.eq} and 32 ask {@code if.plus}. Those are reads on top of a
+ *  choice, and {@link Arrived} asks every arm for the whole of what is left
+ *  over at once, so one arm without the attribute ends the lot. What such a
+ *  read comes back with is the arms underneath it asked one by one, which
+ *  wants the choice in hand where the read is answered, and a pass hands its
+ *  answers round as locators. So it waits on the links side speaking in
+ *  {@link Type} rather than in a name.
  */
 final class Filled {
 
     /**
-     * What every application fills, from {@link Bound}.
+     * What the calls of the program put into its voids.
      */
-    private final Map<String, Map<String, String>> fills;
+    private final Puts puts;
 
     /**
      * The pairs, each name against the one it is a copy of.
@@ -65,19 +109,19 @@ final class Filled {
 
     /**
      * Ctor.
+     *
      * @param links The pairs, each name against the one it is a copy of
      * @param provided The provides table, by the name a type goes by
-     * @param bound What every application and every dispatch fills, from
-     *  {@link Bound}
+     * @param bound What the calls of the program put into its voids
      * @param voids The locator of every void, from {@link Hollows}
      */
     Filled(
         final Map<String, String> links,
         final Provided provided,
-        final Map<String, Map<String, String>> bound,
+        final Puts bound,
         final Collection<String> voids
     ) {
-        this.fills = bound;
+        this.puts = bound;
         this.pairs = links;
         this.owned = provided;
         this.hollows = voids;
@@ -85,17 +129,59 @@ final class Filled {
 
     /**
      * What this answer turns out to be for this receiver.
+     *
      * @param answer The type of the attribute, as the table gave it
      * @param bearer The locator of the receiver the question was asked of
-     * @return The type the answer stands for here, or the answer itself when
-     *  no caller says what the void holds
+     * @param site The locator of the call the question is asked at
+     * @return The type the answer stands for here, the answer itself when no
+     *  caller says what the void holds, or an empty string when a caller says
+     *  and the walk into what it put there has nowhere to go yet
      */
-    String instead(final String answer, final String bearer) {
-        return this.instead(answer, bearer, new HashSet<>(0));
+    String instead(final String answer, final String bearer, final String site) {
+        return this.instead(answer, bearer, site, new HashSet<>(0));
+    }
+
+    /**
+     * The objects this answer may be, where it may be more than one.
+     *
+     * <p>A call on a void that holds a picker comes back with what the call
+     * put there, and where the arms agree on nothing there is still this to
+     * say: it is one of them and no third thing. Asked apart from
+     * {@link #instead(String, String, String)} because the two want different
+     * halves of the same walk — one the agreement, the other the arms it was
+     * looked for in — and because only a row that can hold two answers has
+     * anywhere to put this (#8744).</p>
+     *
+     * <p>Whatever the answer asked of the void asks beyond it is asked of every
+     * arm in turn, so that the {@code listen} of a call that hands back a dial
+     * or a clock is a choice between two {@code listen}s rather than a choice
+     * between two objects a reader has to finish the question on. An arm with
+     * no such attribute ends it: a choice is worth having only while every
+     * member of it is an answer.</p>
+     *
+     * @param answer The type of the attribute, as the table gave it
+     * @param bearer The locator of the receiver the question was asked of
+     * @param site The locator of the call the question is asked at
+     * @return The locators, empty when the answer is one object or none
+     */
+    Collection<String> choice(final String answer, final String bearer, final String site) {
+        final String root = new Rooted(this.hollows).names(answer);
+        Collection<String> found = Collections.emptyList();
+        if (!root.isEmpty()) {
+            found = new Arrived(this.owned).names(
+                this.chosen(root, bearer, site),
+                answer.substring(Math.min(root.length() + 1, answer.length()))
+            );
+        }
+        if (found.size() < 2) {
+            found = Collections.emptyList();
+        }
+        return found;
     }
 
     private String instead(
-        final String answer, final String bearer, final Collection<String> seen
+        final String answer, final String bearer, final String site,
+        final Collection<String> seen
     ) {
         final Map<String, String> fillings = this.fillings(bearer);
         final String found;
@@ -110,10 +196,10 @@ final class Filled {
                 }
             }
             if (longest.isEmpty()) {
-                found = this.branch(answer, fillings, seen);
+                found = this.branch(answer, fillings, bearer, site, seen);
             } else {
-                found = this.asked(
-                    fillings.get(longest), answer.substring(longest.length() + 1), answer
+                found = new Arrived(this.owned).names(
+                    fillings.get(longest), answer.substring(longest.length() + 1)
                 );
             }
         }
@@ -121,28 +207,99 @@ final class Filled {
     }
 
     private String branch(
-        final String answer, final Map<String, String> fillings, final Collection<String> seen
+        final String answer, final Map<String, String> fillings, final String bearer,
+        final String site, final Collection<String> seen
     ) {
         final String root = new Rooted(this.hollows).names(answer);
         String found = answer;
         if (!root.isEmpty()) {
-            final String handed = new Branched(this.owned, fillings, this.hollows).names();
+            final String handed = this.handed(root, fillings, bearer, site);
             if (!handed.isEmpty() && seen.add(handed)) {
-                found = this.through(answer, root, handed, seen);
+                found = this.through(answer, root, handed, site, seen);
+            }
+        }
+        return found;
+    }
+
+    private String handed(
+        final String root, final Map<String, String> fillings, final String bearer,
+        final String site
+    ) {
+        String found = "";
+        for (final String call : this.calls(bearer, site)) {
+            final Map<String, String> arms = this.puts.armed(this.arms(call), root);
+            if (!arms.isEmpty()) {
+                found = new Branched(this.owned, arms, this.hollows).names();
+                if (!found.isEmpty()) {
+                    break;
+                }
+            }
+        }
+        if (found.isEmpty()) {
+            found = new Branched(
+                this.owned, this.puts.armed(fillings, root), this.hollows
+            ).names();
+        }
+        return found;
+    }
+
+    private Collection<String> chosen(
+        final String root, final String bearer, final String site
+    ) {
+        Collection<String> found = Collections.emptyList();
+        for (final String call : this.calls(bearer, site)) {
+            final Map<String, String> arms = this.puts.armed(this.arms(call), root);
+            if (!arms.isEmpty()) {
+                final Collection<String> given =
+                    new Branched(this.owned, arms, this.hollows).arms();
+                if (given.size() > 1) {
+                    found = given;
+                    break;
+                }
+            }
+        }
+        if (found.isEmpty()) {
+            found = new Branched(
+                this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows
+            ).arms();
+        }
+        return found;
+    }
+
+    private Collection<String> calls(final String bearer, final String site) {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        found.add(site);
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = bearer;
+        while (!walked.isEmpty() && seen.add(walked)) {
+            found.add(walked);
+            if (this.pairs.containsKey(walked)) {
+                walked = this.pairs.get(walked);
+            } else {
+                walked = this.owned.body(walked);
             }
         }
         return found;
     }
 
     private String through(
-        final String answer, final String root, final String handed,
+        final String answer, final String root, final String handed, final String site,
         final Collection<String> seen
     ) {
-        String found = this.asked(
-            handed, answer.substring(Math.min(root.length() + 1, answer.length())), answer
+        String found = new Arrived(this.owned).names(
+            handed, answer.substring(Math.min(root.length() + 1, answer.length()))
         );
-        if (found.equals(answer)) {
-            found = this.instead(answer, handed, seen);
+        if (found.isEmpty()) {
+            found = this.instead(answer, handed, site, seen);
+        }
+        return found;
+    }
+
+    private Map<String, String> arms(final String site) {
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Map.Entry<String, String> fill
+            : this.puts.at(site).entrySet()) {
+            found.put(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
         }
         return found;
     }
@@ -175,7 +332,7 @@ final class Filled {
         String walked = type;
         while (!walked.isEmpty() && seen.add(walked)) {
             for (final Map.Entry<String, String> fill
-                : this.fills.getOrDefault(walked, Collections.emptyMap()).entrySet()) {
+                : this.puts.at(walked).entrySet()) {
                 found.putIfAbsent(fill.getKey(), new Ends(this.pairs).name(fill.getValue()));
             }
             if (this.pairs.containsKey(walked)) {
@@ -184,22 +341,5 @@ final class Filled {
                 walked = this.owned.body(walked);
             }
         }
-    }
-
-    private String asked(final String start, final String names, final String back) {
-        String walked = start;
-        int from = 0;
-        while (from < names.length() && !walked.isEmpty()) {
-            int next = names.indexOf('.', from);
-            if (next < 0) {
-                next = names.length();
-            }
-            walked = this.owned.attribute(walked, names.substring(from, next));
-            from = next + 1;
-        }
-        if (walked.isEmpty()) {
-            walked = back;
-        }
-        return walked;
     }
 }

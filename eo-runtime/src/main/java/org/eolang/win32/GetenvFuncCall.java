@@ -4,13 +4,14 @@
  */
 package org.eolang.win32;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt getenv function call.
+ *
  * @since 0.74.0
  */
 public final class GetenvFuncCall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetenvFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public GetenvFuncCall(final Phi win) {

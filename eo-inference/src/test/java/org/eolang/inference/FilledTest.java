@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Filled}.
+ *
  * @since 0.69.0
  */
 final class FilledTest {
@@ -32,18 +33,19 @@ final class FilledTest {
         final Provided owned = new Provided(
             rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
         );
+        final Map<String, String> pairs = Map.of("app", "form");
+        final Map<String, Map<String, String>> bound = new Bound(
+            Map.of("app", List.of("value-x", "value-foo")),
+            Collections.emptyMap(), Collections.emptyMap(), pairs, owned
+        ).all();
         MatcherAssert.assertThat(
             "an exact fill of the whole answer must win over a fill of one of its prefixes",
             new Filled(
-                Map.of("app", "form"),
+                pairs,
                 owned,
-                new Bound(
-                    Map.of("app", List.of("value-x", "value-foo")),
-                    Collections.emptyMap(), Collections.emptyMap(),
-                    Map.of("app", "form"), owned
-                ).all(),
+                new Puts(bound, new Holders(bound, pairs).all()),
                 Collections.emptyList()
-            ).instead("Φ.node.x", "app"),
+            ).instead("Φ.node.x", "app", "app"),
             Matchers.equalTo("value-x")
         );
     }
@@ -62,18 +64,19 @@ final class FilledTest {
         final Provided owned = new Provided(
             rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
         );
+        final Map<String, String> pairs = Map.of("app", "form");
+        final Map<String, Map<String, String>> bound = new Bound(
+            Map.of("app", List.of("short-fill", "long-fill")),
+            Collections.emptyMap(), Collections.emptyMap(), pairs, owned
+        ).all();
         MatcherAssert.assertThat(
             "the more specific (longer) filled prefix must win, not whichever the map yields first",
             new Filled(
-                Map.of("app", "form"),
+                pairs,
                 owned,
-                new Bound(
-                    Map.of("app", List.of("short-fill", "long-fill")),
-                    Collections.emptyMap(), Collections.emptyMap(),
-                    Map.of("app", "form"), owned
-                ).all(),
+                new Puts(bound, new Holders(bound, pairs).all()),
                 Collections.emptyList()
-            ).instead("Φ.node.x.y", "app"),
+            ).instead("Φ.node.x.y", "app", "app"),
             Matchers.equalTo("Φ.result")
         );
     }
@@ -89,18 +92,18 @@ final class FilledTest {
         final Provided owned = new Provided(
             rows, Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
         );
+        final Map<String, Map<String, String>> bound = new Bound(
+            Map.of("app", List.of("zebra")),
+            Collections.emptyMap(), Collections.emptyMap(), pairs, owned
+        ).all();
         MatcherAssert.assertThat(
             "a filling that sits on a ring must come back under the name the ring goes by, but it didnt",
             new Filled(
                 pairs,
                 owned,
-                new Bound(
-                    Map.of("app", List.of("zebra")),
-                    Collections.emptyMap(), Collections.emptyMap(),
-                    pairs, owned
-                ).all(),
+                new Puts(bound, new Holders(bound, pairs).all()),
                 Collections.emptyList()
-            ).instead("Φ.node.x", "app"),
+            ).instead("Φ.node.x", "app", "app"),
             Matchers.equalTo("alpha")
         );
     }

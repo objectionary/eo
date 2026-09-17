@@ -40,6 +40,7 @@ final class Lru<T> implements Map<String, T> {
 
     /**
      * Ctor.
+     *
      * @param cap How many entries to keep, zero for a map that keeps nothing
      */
     Lru(final int cap) {

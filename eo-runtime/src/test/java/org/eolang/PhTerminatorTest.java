@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhTerminator}.
+ *
  * @since 0.73.1
  */
 final class PhTerminatorTest {

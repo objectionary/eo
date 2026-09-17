@@ -5,15 +5,16 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt _access function call.
+ *
  * @since 0.74.0
  */
 public final class AccessFuncCall implements Syscall {
@@ -25,6 +26,7 @@ public final class AccessFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public AccessFuncCall(final Phi win) {

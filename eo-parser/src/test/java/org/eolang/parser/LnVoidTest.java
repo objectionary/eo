@@ -18,37 +18,29 @@ final class LnVoidTest {
 
     @Test
     void emitsRhoForReceiverVoid() {
-        final Emit emit = new Emit();
-        new LnVoid(new Span("? > ^", 1)).into(new Stack(), new Globals(), emit);
-        emit.close();
         MatcherAssert.assertThat(
-            "a `? > ^` receiver void must emit the same name `VoidName` promotes `^` to",
-            LnVoidTest.render(emit),
-            XhtmlMatchers.hasXPath(
-                String.format(
-                    "/object/o[@name='%s' and @base='∅']", new VoidName("^").asString()
-                )
-            )
+            "a `? > ^` receiver void must be emitted as ρ",
+            LnVoidTest.parsed("  ? > ^ /Q.bytes"),
+            XhtmlMatchers.hasXPath("/object/o[@name='atom']/o[@name='ρ' and @base='∅']")
         );
     }
 
     @Test
-    void emitsPhiForAtVoidAttribute() {
-        final Emit emit = new Emit();
-        new LnVoid(new Span("? > @", 1)).into(new Stack(), new Globals(), emit);
-        emit.close();
+    void emitsPhiForAtVoid() {
         MatcherAssert.assertThat(
-            "a `? > @` void attribute must emit the same name `VoidName` promotes `@` to",
-            LnVoidTest.render(emit),
-            XhtmlMatchers.hasXPath(
-                String.format(
-                    "/object/o[@name='%s' and @base='∅']", new VoidName("@").asString()
-                )
-            )
+            "a `? > @` void inside an atom must be emitted as φ",
+            LnVoidTest.parsed("  ? > @ /Q.bytes"),
+            XhtmlMatchers.hasXPath("/object/o[@name='atom']/o[@name='φ' and @base='∅']")
         );
     }
 
-    private static String render(final Emit emit) {
+    private static String parsed(final String line) {
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[] > atom /Q.number", 1)).into(stack, globals, emit);
+        new LnVoid(new Span(line, 2)).into(stack, globals, emit);
+        emit.close();
         return new Xembler(
             new Directives().add("object").append(emit.directives())
         ).xmlQuietly();
