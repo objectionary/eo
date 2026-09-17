@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='foo']/o[@base='Φ.string' and @name='+tests-foo-works']
+  - /object/o[@name='foo']/o[@base='Φ.string' and @name='p🌵tests-foo-works']
 input: |
   [] > foo
     42 > @
