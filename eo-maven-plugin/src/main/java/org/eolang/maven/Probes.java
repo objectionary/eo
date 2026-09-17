@@ -22,6 +22,7 @@ import org.cactoos.iterable.Mapped;
  * Possible objects.
  * This class represent a list of possible objects that were detected in
  * a XMIR file.
+ *
  * @since 0.53
  */
 final class Probes implements Iterable<String> {
@@ -40,6 +41,7 @@ final class Probes implements Iterable<String> {
 
     /**
      * Constructor.
+     *
      * @param path Path to XMIR file
      * @throws FileNotFoundException If the file is not found
      */
@@ -49,6 +51,7 @@ final class Probes implements Iterable<String> {
 
     /**
      * Constructor.
+     *
      * @param xmir XMIR file where probes are searched
      */
     Probes(final XML xmir) {

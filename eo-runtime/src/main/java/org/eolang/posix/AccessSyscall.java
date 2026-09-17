@@ -4,15 +4,16 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * Access syscall.
+ *
  * @since 0.74.0
  */
 public final class AccessSyscall implements Syscall {
@@ -24,6 +25,7 @@ public final class AccessSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public AccessSyscall(final Phi posix) {

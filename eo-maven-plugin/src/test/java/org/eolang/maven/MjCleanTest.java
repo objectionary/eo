@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjClean}.
+ *
  * @since 0.28.6
  */
 @ExtendWith(MktmpResolver.class)

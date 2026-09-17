@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * The eo-maven-plugin appended to {@link Farea}.
+ *
  * @since 0.54
  */
 final class EoMavenPlugin {
@@ -22,6 +23,7 @@ final class EoMavenPlugin {
 
     /**
      * Ctor.
+     *
      * @param farea Farea
      */
     EoMavenPlugin(final Farea farea) {
@@ -30,6 +32,7 @@ final class EoMavenPlugin {
 
     /**
      * Append eo-maven-plugin to farea build.
+     *
      * @return Appended eo-maven-plugin
      * @throws IOException If fails to append
      */

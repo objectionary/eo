@@ -10,10 +10,12 @@ import org.eolang.Expect;
 import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Buffer;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt _read function call.
+ *
  * @since 0.74.0
  */
 public final class ReadFuncCall implements Syscall {
@@ -25,6 +27,7 @@ public final class ReadFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public ReadFuncCall(final Phi win) {
@@ -39,7 +42,9 @@ public final class ReadFuncCall implements Syscall {
         final int size = new Natural(
             new Expect<>("the 'size' argument of read", () -> params[1])
         ).it();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer(
+            "the 'size' argument of read", size
+        ).it();
         final int count = Msvcrt.INSTANCE._read(
             descriptor, buf, size
         );

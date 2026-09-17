@@ -8,12 +8,14 @@ package org.eolang;
 /**
  * This exception is used to enhance the error message
  * in the {@link Expect#it()} method.
+ *
  * @since 0.51
  */
 final class ExOtherwise extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param message Error message
      * @param root The exception that caused this one
      */

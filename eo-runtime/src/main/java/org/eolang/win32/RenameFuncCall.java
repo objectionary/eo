@@ -5,13 +5,14 @@
 package org.eolang.win32;
 
 import com.sun.jna.WString;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * The msvcrt rename function call.
+ *
  * @since 0.74.0
  */
 public final class RenameFuncCall implements Syscall {
@@ -23,6 +24,7 @@ public final class RenameFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public RenameFuncCall(final Phi win) {

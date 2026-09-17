@@ -38,6 +38,7 @@ final class Var implements Type {
 
     /**
      * Ctor.
+     *
      * @param id The locator of the void
      */
     Var(final String id) {

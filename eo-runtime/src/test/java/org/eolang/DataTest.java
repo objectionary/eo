@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link Data}.
+ *
  * @since 0.1
  */
 final class DataTest {

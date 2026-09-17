@@ -4,6 +4,8 @@
  */
 package org.eolang.parser;
 
+import java.util.Optional;
+
 /**
  * One entry of the indent stack — §5.1 of the spec.
  *
@@ -24,6 +26,11 @@ package org.eolang.parser;
  * @since 0.1
  */
 final class Level {
+
+    /**
+     * The label an entry carries while no naming line has claimed it.
+     */
+    private static final Optional<String> NO_NAME = Optional.empty();
 
     /**
      * Indent (spaces) at which this entry's expression starts.
@@ -60,12 +67,16 @@ final class Level {
     private Openness openness;
 
     /**
-     * The source name on this entry's naming line ({@code foo} for
-     * {@code > foo}, the handle for {@code >> foo}, empty for a bare
-     * {@code >>}), or {@code null} when unnamed. Doubles as the named
-     * flag ({@link #named()}) and names the offender in §4.5 errors.
+     * The source name on the line that currently owns this entry
+     * ({@code foo} for {@code > foo}, the handle for {@code >> foo},
+     * empty for a bare {@code >>}), or absent when that line carried
+     * no suffix. Doubles as the named flag ({@link #named()}) and
+     * names the offender in §4.5 errors. A same-indent {@code .method}
+     * continuation takes the entry over and drops what the previous
+     * link left here ({@link #sealed()}), since R-6.2.2 puts the
+     * chain's naming line on the last link.
      */
-    private String label;
+    private Optional<String> label;
 
     /**
      * The source name of the only-phi formation this entry argues
@@ -82,8 +93,11 @@ final class Level {
     private boolean atom;
 
     /**
-     * For {@link Kind#BARE_REVERSED}: whether the receiver child has been
-     * consumed yet.
+     * For {@link Kind#BARE_REVERSED}, and for {@link Kind#ONLY_PHI}
+     * whose φ is a bare reversed dispatch: whether the receiver child
+     * has been consumed yet. Every other {@link Kind#ONLY_PHI} starts
+     * with this already true — {@link LnOnlyPhi} sets it right after
+     * construction — since it needs no receiver.
      */
     private boolean taken;
 
@@ -138,11 +152,13 @@ final class Level {
     private int arg;
 
     /**
-     * True when the chain link this entry currently ends with carries an
-     * inline binding, read by {@link LnMethod} to refuse a continuation
-     * that would leave it on a link the chain no longer ends with.
+     * Why a same-indent {@code .method} continuation must be refused on
+     * this entry, empty while one is still allowed. Read by
+     * {@link LnMethod} — a chain link carrying an inline binding
+     * (R-6.6.4) and a naming line declaring a test attribute (R-6.3.3)
+     * both close the chain, each with its own diagnostic.
      */
-    private boolean tied;
+    private String refusal;
 
     /**
      * Source span recorded with the in-progress arg, used for error
@@ -154,6 +170,7 @@ final class Level {
     /**
      * Ctor — fresh level pushed at {@code indent} on {@code line} under
      * {@code parent}.
+     *
      * @param ind Indent
      * @param line Start line (1-indexed)
      * @param outer Initial outer kind
@@ -171,16 +188,19 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
+        this.label = Level.NO_NAME;
         this.atom = false;
         this.taken = false;
         this.count = 0;
         this.children = 0;
         this.tupled = false;
         this.star = false;
+        this.refusal = "";
     }
 
     /**
      * Indent of this entry.
+     *
      * @return Indent
      */
     int indent() {
@@ -189,6 +209,7 @@ final class Level {
 
     /**
      * Source line on which the entry was first pushed.
+     *
      * @return Start line
      */
     int start() {
@@ -197,6 +218,7 @@ final class Level {
 
     /**
      * Current outer kind.
+     *
      * @return Kind
      */
     Kind kind() {
@@ -205,6 +227,7 @@ final class Level {
 
     /**
      * Current openness.
+     *
      * @return Openness
      */
     Openness openness() {
@@ -213,6 +236,7 @@ final class Level {
 
     /**
      * Parent kind (or {@link Kind#TOP_LEVEL}).
+     *
      * @return Parent kind
      */
     Kind parent() {
@@ -221,6 +245,7 @@ final class Level {
 
     /**
      * Whether the parent entry is an atom.
+     *
      * @return Parent-atom flag
      */
     boolean patom() {
@@ -229,10 +254,11 @@ final class Level {
 
     /**
      * Whether this entry has been given a name on its naming line.
+     *
      * @return Named flag
      */
     boolean named() {
-        return this.label != null;
+        return this.label.isPresent();
     }
 
     /**
@@ -241,12 +267,13 @@ final class Level {
      * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
+     *
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
         final String owner;
         if (this.kind == Kind.ONLY_PHI) {
-            owner = this.label;
+            owner = this.label.orElse("");
         } else {
             owner = this.formation;
         }
@@ -262,6 +289,7 @@ final class Level {
     /**
      * The §4.5 diagnostic naming the offending attribute and the
      * formation (generic when auto-named / anonymous).
+     *
      * @return The error message
      */
     String onlyPhiNamingError() {
@@ -271,20 +299,16 @@ final class Level {
         } else {
             owner = String.format("only-phi formation %s", this.formation);
         }
-        final String attribute;
-        if (this.label == null || this.label.isEmpty()) {
-            attribute = "an auto-named attribute";
-        } else {
-            attribute = this.label;
-        }
         return String.format(
             "%s cannot be a named attribute of %s, which binds only its φ decoratee",
-            attribute, owner
+            this.label.filter(text -> !text.isEmpty()).orElse("an auto-named attribute"),
+            owner
         );
     }
 
     /**
      * Whether this entry's expression is itself an atom.
+     *
      * @return Atom flag
      */
     boolean atom() {
@@ -293,6 +317,7 @@ final class Level {
 
     /**
      * Whether the bare-reversed receiver child has been seen.
+     *
      * @return Receiver-consumed flag
      */
     boolean taken() {
@@ -301,6 +326,7 @@ final class Level {
 
     /**
      * Whether this entry is an argument of an only-phi formation's φ.
+     *
      * @return Argument-position flag
      */
     boolean argument() {
@@ -313,6 +339,7 @@ final class Level {
      * the only-phi entry, and for a deeper child that stays in argument
      * position — the flag propagates down through nested applications
      * but resets at a formation boundary, where naming resumes.
+     *
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
@@ -323,6 +350,7 @@ final class Level {
     /**
      * Flag this entry as an argument of an only-phi formation's φ,
      * recording the formation's name for the §4.5 diagnostic.
+     *
      * @param owner The formation's name (empty if anonymous, non-null)
      */
     void argues(final String owner) {
@@ -331,6 +359,7 @@ final class Level {
 
     /**
      * Compact-tuple {@code N} count.
+     *
      * @return Compact N
      */
     int count() {
@@ -339,6 +368,7 @@ final class Level {
 
     /**
      * Deeper-indent child count (for compact-tuple validation).
+     *
      * @return Child count
      */
     int children() {
@@ -348,6 +378,7 @@ final class Level {
     /**
      * Mutate the outer kind (e.g., promote {@link Kind#HEAD} to
      * {@link Kind#VAPPLICATION}).
+     *
      * @param next New kind
      */
     void become(final Kind next) {
@@ -356,6 +387,7 @@ final class Level {
 
     /**
      * Mutate the openness state.
+     *
      * @param next New openness
      */
     void close(final Openness next) {
@@ -365,11 +397,17 @@ final class Level {
     /**
      * Record the suffix's source name, which also marks the entry named
      * ({@link #named()}).
+     *
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
+     * @param form Whether the suffix that set this name was a
+     *  {@code TEST} or {@code THROWS} form
      */
-    void name(final String text) {
-        this.label = text;
+    void name(final String text, final boolean form) {
+        this.label = Optional.of(text);
+        if (form) {
+            this.refusal = "method continuation not allowed on a test attribute";
+        }
     }
 
     /**
@@ -391,6 +429,7 @@ final class Level {
      * entry, enforcing the void-ordering rule (R-3.4.9): a
      * {@link Kind#VOID} child is rejected once a non-void child has
      * appeared, and every non-void child records that fact.
+     *
      * @param shape Kind of the child being added
      * @param line Source line of the child (for the error)
      * @param column Source indent of the child (for the error)
@@ -409,6 +448,7 @@ final class Level {
 
     /**
      * Set the compact-tuple {@code N} count.
+     *
      * @param value N
      */
     void compact(final int value) {
@@ -424,6 +464,7 @@ final class Level {
 
     /**
      * Whether the compact-tuple wrapper has been opened.
+     *
      * @return Flag
      */
     boolean tupled() {
@@ -434,6 +475,7 @@ final class Level {
      * Whether this only-phi formation's φ is a compact tuple that
      * absorbs deeper-indent lines as {@code Φ.tuple} elements (R-3.9.1
      * + R-3.10.6).
+     *
      * @return Compact-φ flag
      */
     boolean star() {
@@ -450,10 +492,12 @@ final class Level {
     }
 
     /**
-     * Forget the compact-tuple state, after the closer has already
-     * accounted for it - the entry stays on the stack as the wrapper a
-     * same-indent {@code .method} continuation put around it, and the
-     * wrapper is no tuple of its own.
+     * Forget the compact-tuple state and the name the sealed line
+     * carried, after the closer has already accounted for them - the
+     * entry stays on the stack as the wrapper a same-indent
+     * {@code .method} continuation put around it, and the wrapper is
+     * neither a tuple of its own nor named by the link it replaced
+     * (R-6.2.2).
      */
     void sealed() {
         this.star = false;
@@ -462,6 +506,7 @@ final class Level {
         this.count = 0;
         this.bindings = 0;
         this.arg = 0;
+        this.label = Level.NO_NAME;
     }
 
     /**
@@ -530,12 +575,12 @@ final class Level {
     }
 
     /**
-     * Whether the link this chain currently ends with carries an inline
-     * binding.
-     * @return Tied flag
+     * Why a {@code .method} continuation is refused on this entry.
+     *
+     * @return The diagnostic, empty when a continuation is allowed
      */
-    boolean tied() {
-        return this.tied;
+    String refusal() {
+        return this.refusal;
     }
 
     /**
@@ -545,13 +590,14 @@ final class Level {
      * (R-6.6.4).
      */
     void tie() {
-        this.tied = true;
+        this.refusal = "inline binding allowed only on the last method in a chain";
     }
 
     /**
      * A detached twin of this entry, carrying the same mutable state at
      * the moment of copying. Lets {@link Stack} take a savepoint that
      * later mutation of this entry cannot reach (R-7.3).
+     *
      * @return A copy of this entry
      */
     Level twin() {
@@ -575,6 +621,6 @@ final class Level {
         this.bindings = other.bindings;
         this.arg = other.arg;
         this.argspan = other.argspan;
-        this.tied = other.tied;
+        this.refusal = other.refusal;
     }
 }

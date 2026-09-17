@@ -49,6 +49,7 @@ final class LnApplication implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnApplication(final Span source) {
@@ -181,7 +182,7 @@ final class LnApplication implements Line {
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
         new Transition(stack, this.span).apply(
-            kind, openness, new Admission(suffix.named(), suffix.test())
+            kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

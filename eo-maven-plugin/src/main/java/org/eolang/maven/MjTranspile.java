@@ -31,6 +31,18 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * The resulting Java files are stored in the {@link Transpiling#DIR} directory.
  * The intermediate optimized XMIRs are stored in the {@link Transpiling#PRE} directory.</p>
  *
+ * <p>Before anything is written, the members of every package this build
+ * compiles an object for are put inside that object, the way {@link MjMerge}
+ * does it. The two are the same step and running both changes nothing, since
+ * {@link Merging} leaves a merged member alone; it is done here as well
+ * because the shape of an object decides the name of the Java class of every
+ * atom it holds, and a build that skipped the goal would name classes that
+ * the library it compiles against does not carry. An atom
+ * {@code string.foo.bar} ships as {@code EOstring$EOfoo$EObar}, which is
+ * where it lands once {@code foo} is an attribute of {@code string}, and
+ * nowhere near the {@code org.eolang.EO_string} package an unmerged
+ * {@code +package string} would compile it into (#8295).</p>
+ *
  * @since 0.1
  */
 @Mojo(
@@ -158,6 +170,9 @@ public final class MjTranspile extends MjSafe {
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
+            new Timed(
+                new Merging(tojos, this.targetDir.toPath().resolve(Merging.DIR))
+            ).exec();
             new Timed(
                 new Transpiling(
                     tojos.standalone(),

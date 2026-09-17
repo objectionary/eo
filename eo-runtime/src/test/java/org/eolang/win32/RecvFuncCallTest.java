@@ -19,6 +19,7 @@ import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link RecvFuncCall}.
+ *
  * @since 0.57.0
  */
 final class RecvFuncCallTest {

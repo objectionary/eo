@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * This class is used in test suites to indicate the progress of parameterized tests.
  * This class was created to mitigate the following issue:
  * <a href="https://github.com/objectionary/eo/issues/4833">4833</a>
+ *
  * @since 0.60
  */
 final class LogProgress implements AfterEachCallback {

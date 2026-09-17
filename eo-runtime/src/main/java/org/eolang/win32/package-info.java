@@ -5,6 +5,7 @@
 
 /**
  * EO runtime, windows.
+ *
  * @since 0.40
  */
 package org.eolang.win32;

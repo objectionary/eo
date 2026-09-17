@@ -4,9 +4,12 @@
  */
 package org.eolang.maven;
 
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Rows}.
+ *
  * @since 0.75.0
  */
 @ExtendWith(MktmpResolver.class)
@@ -39,6 +43,80 @@ final class RowsTest {
             "an object whose locator merely starts with the same letters is somebody else",
             this.digest(temp.resolve("with"), "<type id=\"Q.foobar\"><attr name=\"x\"/></type>"),
             Matchers.equalTo(this.digest(temp.resolve("without"), ""))
+        );
+    }
+
+    @Test
+    void readsPastAHyphenatedSibling(@Mktmp final Path temp) throws IOException {
+        final String neighbours = "<type id=\"Q.foo\"/><type id=\"Q.foo-bar\"/>";
+        MatcherAssert.assertThat(
+            "a change in a descendant row must reach the digest, a hyphenated sibling hid it",
+            this.digest(
+                temp.resolve("one"),
+                String.format(
+                    "%s<type id=\"Q.foo.inner\"><attr name=\"x\"/></type>", neighbours
+                )
+            ),
+            Matchers.not(
+                Matchers.equalTo(
+                    this.digest(
+                        temp.resolve("two"),
+                        String.format(
+                            "%s<type id=\"Q.foo.inner\"><attr name=\"y\"/></type>", neighbours
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    @Test
+    void framesEveryDigestField(@Mktmp final Path temp) throws IOException {
+        final String locator = "Q.φ";
+        final Path dir = temp.resolve("framed");
+        Files.createDirectories(dir);
+        final Path table = dir.resolve("provides.xml");
+        Files.writeString(
+            table,
+            String.format(
+                "<provides><type id=\"%s\"><attr name=\"x\"/></type></provides>",
+                locator
+            )
+        );
+        final String value = String.format(
+            "provides.xml:%s",
+            new XMLDocument(table).nodes("/*/type[@id]").get(0)
+        );
+        MatcherAssert.assertThat(
+            "each locator and row value must carry its UTF-8 byte length into the digest",
+            new Rows(dir).digest(Collections.singletonList(locator)),
+            Matchers.equalTo(
+                new Hashed(
+                    String.format(
+                        "%d\0%s%d\0%s",
+                        locator.getBytes(StandardCharsets.UTF_8).length,
+                        locator,
+                        value.getBytes(StandardCharsets.UTF_8).length,
+                        value
+                    )
+                ).get()
+            )
+        );
+    }
+
+    @Test
+    void answersEveryThreadThatAsksAtOnce(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            temp.resolve("provides.xml"),
+            "<provides><type id=\"Q.foo\"><attr name=\"x\"/></type></provides>"
+        );
+        final Rows rows = new Rows(temp);
+        MatcherAssert.assertThat(
+            "threads that ask for a digest at the same moment must all be answered, one wasnt",
+            new Together<>(30, thread -> rows.digest(Collections.singletonList("Q.foo"))).asList(),
+            Matchers.everyItem(
+                Matchers.equalTo(new Rows(temp).digest(Collections.singletonList("Q.foo")))
+            )
         );
     }
 

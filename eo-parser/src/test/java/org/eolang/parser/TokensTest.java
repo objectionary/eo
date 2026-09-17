@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Tokens}.
+ *
  * @since 0.1
  */
 final class TokensTest {
@@ -504,6 +505,36 @@ final class TokensTest {
             "an arg followed by `:N` must record the digit string on the Value",
             tokens.readArgs().get(0).binding(),
             Matchers.equalTo("0")
+        );
+    }
+
+    @Test
+    void clampsColumnWhenBindingLabelIsMissingAtLineEnd() {
+        final Tokens tokens = new Tokens("foo a:", new Span("foo a:", 1));
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                tokens::readArgs,
+                "a `:` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(5)
+        );
+    }
+
+    @Test
+    void clampsColumnWhenMethodNameIsMissingAtLineEnd() {
+        final Tokens tokens = new Tokens("foo.", new Span("foo.", 1));
+        tokens.readName();
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                tokens::readChain,
+                "a trailing `.` with no method name after it must be rejected"
+            ).pos(),
+            Matchers.equalTo(3)
         );
     }
 

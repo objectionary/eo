@@ -8,10 +8,10 @@ import com.sun.jna.Native;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import org.eolang.Data;
-import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * The 'inet_addr' WS2_32 function call.
@@ -48,6 +48,7 @@ public final class InetAddrFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public InetAddrFuncCall(final Phi win) {
@@ -57,7 +58,9 @@ public final class InetAddrFuncCall implements Syscall {
     @Override
     public Phi make(final Phi... params) {
         final Phi result = this.win.take("return").copy();
-        final String address = new Dataized(params[0]).asString();
+        final String address = new Cstring(
+            "the 'address' argument of inet_addr", params[0]
+        ).it();
         final int converted = Winsock.INSTANCE.inet_addr(
             Native.toByteArray(address, StandardCharsets.UTF_8)
         );

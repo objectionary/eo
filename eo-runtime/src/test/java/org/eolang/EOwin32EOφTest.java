@@ -22,6 +22,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * Test case for {@code EOwin32$EOφ}.
+ *
  * @since 0.40
  */
 final class EOwin32EOφTest {
@@ -105,6 +106,7 @@ final class EOwin32EOφTest {
 
     /**
      * Test case for {@link Winsock}.
+     *
      * @since 0.40
      */
     @Nested

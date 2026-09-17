@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 1
 message: |-
-  [1:11] error: 'meta parts must be separated by exactly one space'
+  [1:11] error: 'meta parts must be separated by a single ASCII space'
   +meta with  spaces
              ^
 input: |

@@ -14,6 +14,7 @@ import org.cactoos.func.UncheckedFunc;
 /**
  * Simple cache mechanism.
  * This class isn't thread-safe, use {@link ConcurrentCache} for concurrent scenarios.
+ *
  * @since 0.60
  */
 final class Cache {
@@ -35,6 +36,7 @@ final class Cache {
 
     /**
      * Constructor.
+     *
      * @param path Cache path
      * @param compilation Compilation function
      */
@@ -44,6 +46,7 @@ final class Cache {
 
     /**
      * Ctor.
+     *
      * @param base Base cache directory
      * @param compilation Compilation function
      */
@@ -53,6 +56,7 @@ final class Cache {
 
     /**
      * Constructor.
+     *
      * @param base Base cache directory
      * @param compilation Compilation function
      * @param filter Filter for files
@@ -69,6 +73,7 @@ final class Cache {
 
     /**
      * Check cache and apply compilation if needed.
+     *
      * @param source From file
      * @param target To file
      * @param tail Tail path in cache

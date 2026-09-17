@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Probing}.
+ *
  * @since 0.67.0
  */
 final class ProbingTest {

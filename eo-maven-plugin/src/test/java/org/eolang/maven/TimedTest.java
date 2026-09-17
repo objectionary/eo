@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link Timed}.
+ *
  * @since 0.61.0
  */
 final class TimedTest {

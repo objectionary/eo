@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #8188: a blank line placed above a plain (non-master) chain head is
+# rejected as a stray sibling blank, even though the chain it opens
+# goes on to carry a `+>` test attribute two lines later. The mandatory
+# blank belongs directly above the `.method` line instead — see
+# vertical-method-chain-test-blank-above-attribute-line.yaml.
+line: 3
+message: |-
+  [3:2] error: 'blank line not allowed between non-master siblings'
+    foo
+    ^
+input: |
+  [] > main
+
+    foo
+    .bar +> t

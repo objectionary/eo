@@ -11,6 +11,7 @@ import org.cactoos.BiFunc;
 /**
  * Footprint is a function that accepts path to source and
  * target files, updates target file and returns it.
+ *
  * @since 0.41.0
  */
 @FunctionalInterface

@@ -5,6 +5,7 @@
 package org.eolang;
 
 import com.yegor256.Together;
+import java.nio.charset.StandardCharsets;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link PhApplication}.
+ *
  * @since 0.16
  */
 final class PhApplicationTest {
@@ -49,6 +51,23 @@ final class PhApplicationTest {
                 )
             ).φTerm(),
             Matchers.startsWith("Φ.number(wrong->")
+        );
+    }
+
+    @Test
+    void keepsANumberOfTheWrongWidthStructural() {
+        MatcherAssert.assertThat(
+            "one byte spells no number and must render as the application it is, but the renderer threw",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(new byte[] {(byte) 0x01})
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.number(0->Φ.bytes(0->[D> 01-]))")
         );
     }
 
@@ -185,6 +204,62 @@ final class PhApplicationTest {
     }
 
     @Test
+    void keepsAStringSpellingADataBlockStructural() {
+        MatcherAssert.assertThat(
+            "a string whose text spells a data block must render as its text, but it read as bytes",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "string"), 0,
+                    new PhApplication(
+                        new PhDispatch(Phi.Φ, "bytes"), 0,
+                        new PhDefault("[D> 41-42]".getBytes(StandardCharsets.UTF_8))
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.string(0->\"[D> 41-42]\")")
+        );
+    }
+
+    @Test
+    void keepsAStringSpellingAMalformedDataBlockStructural() {
+        MatcherAssert.assertThat(
+            "a string whose text spells a malformed data block must render, but it died",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "string"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "string"), 0,
+                    new PhApplication(
+                        new PhDispatch(Phi.Φ, "bytes"), 0,
+                        new PhDefault("[D> A--B]".getBytes(StandardCharsets.UTF_8))
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.string(0->\"[D> A--B]\")")
+        );
+    }
+
+    @Test
+    void keepsANumberSpellingADataBlockStructural() {
+        MatcherAssert.assertThat(
+            "a number applied to such a string must render as the application, but it didnt",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "string"), 0,
+                    new PhApplication(
+                        new PhDispatch(Phi.Φ, "bytes"), 0,
+                        new PhDefault(
+                            "[D> 40-45-00-00-00-00-00-00]".getBytes(StandardCharsets.UTF_8)
+                        )
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.number(0->\"[D> 40-45-00-00-00-00-00-00]\")")
+        );
+    }
+
+    @Test
     void rendersPositionalBindingAsTerm() {
         MatcherAssert.assertThat(
             "PhApplication must render positional binding in φ-term, but it didnt",
@@ -278,12 +353,14 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi with free attribute.
+     *
      * @since 0.1.0
      */
     private static final class DummyWithAtFree extends PhDefault {
 
         /**
          * Ctor.
+         *
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
@@ -293,6 +370,7 @@ final class PhApplicationTest {
 
     /**
      * Dummy Phi.
+     *
      * @since 0.1.0
      */
     static final class Dummy extends PhDefault {

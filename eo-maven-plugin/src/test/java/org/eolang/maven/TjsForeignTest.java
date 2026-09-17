@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests from {@link TjsForeign}.
+ *
  * @since 0.29.5
  */
 final class TjsForeignTest {

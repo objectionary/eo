@@ -46,6 +46,7 @@ final class OyRemote implements Objectionary {
 
     /**
      * Constructor.
+     *
      * @param hash Commit hash
      * @param proxies Proxies to use
      */
@@ -65,6 +66,7 @@ final class OyRemote implements Objectionary {
 
     /**
      * Ctor for testing.
+     *
      * @param program Address template to program
      * @param directory Address template to directory
      * @param proxies Proxies to use

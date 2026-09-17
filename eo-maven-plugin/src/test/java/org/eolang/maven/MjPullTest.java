@@ -25,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjPull}.
+ *
  * @since 0.1
  */
 @ExtendWith(WeAreOnline.class)

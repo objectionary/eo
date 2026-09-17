@@ -8,6 +8,7 @@ import com.yegor256.tojos.Tojo;
 
 /**
  * Placed tojo.
+ *
  * @since 0.30
  */
 final class TjPlaced {
@@ -19,6 +20,7 @@ final class TjPlaced {
 
     /**
      * Ctor.
+     *
      * @param tojo The delegate
      */
     TjPlaced(final Tojo tojo) {
@@ -27,6 +29,7 @@ final class TjPlaced {
 
     /**
      * The tojo id.
+     *
      * @return The id
      */
     String identifier() {
@@ -35,6 +38,7 @@ final class TjPlaced {
 
     /**
      * The placed tojo dependency.
+     *
      * @return The dependency
      */
     String dependency() {
@@ -43,6 +47,7 @@ final class TjPlaced {
 
     /**
      * The placed tojo related file path.
+     *
      * @return The related file path
      */
     String related() {
@@ -51,6 +56,7 @@ final class TjPlaced {
 
     /**
      * Check if the tojo has the same hash.
+     *
      * @param hash The hash to check
      * @return True if the hash is the same
      */
@@ -67,6 +73,7 @@ final class TjPlaced {
 
     /**
      * Check if the tojo is a class.
+     *
      * @return True if the tojo is a class
      */
     boolean isClass() {
@@ -75,6 +82,7 @@ final class TjPlaced {
 
     /**
      * Check if the tojo is a jar.
+     *
      * @return True if the tojo is a jar
      */
     boolean isJar() {
@@ -83,6 +91,7 @@ final class TjPlaced {
 
     /**
      * Check if the tojo is placed.
+     *
      * @return True if the tojo is placed
      */
     boolean placed() {
@@ -91,6 +100,7 @@ final class TjPlaced {
 
     /**
      * Check if the tojo is unplaced.
+     *
      * @return True if the tojo is unplaced
      */
     boolean unplaced() {

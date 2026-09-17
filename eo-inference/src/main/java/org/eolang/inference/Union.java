@@ -27,6 +27,7 @@ final class Union implements Type {
 
     /**
      * Ctor.
+     *
      * @param types The types this one is a choice between
      */
     Union(final Collection<Type> types) {

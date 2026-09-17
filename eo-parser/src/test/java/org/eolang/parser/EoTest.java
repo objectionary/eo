@@ -699,7 +699,7 @@ final class EoTest {
             EoTest.render(
                 "[] > main",
                 "  obj > x",
-                "  .method y"
+                "  .method y > z"
             ),
             XhtmlMatchers.hasXPath("/object[not(errors)]")
         );

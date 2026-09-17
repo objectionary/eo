@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name taken from a void is a different object at every call site, and stays
+# rooted at the void for want of anything truer to say. Where the program fills
+# that void one way and no other there is something truer: every copy of `inc`
+# hands it an `oak`, so `x.leaf` is the `leaf` of an `oak`. The void keeps
+# itself all the same, and no row says a void is a copy of anything, since what
+# goes into one is gathered from the callers and is not what the void is.
+eo:
+  app.eo: |
+    [] > app
+      inc oak > @
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+links:
+  - "/links/type[@id='Φ.inc.φ']/ref[@loc='Φ.oak.leaf']"
+  - "/links[not(type[@id='Φ.inc.x']/ref)]"

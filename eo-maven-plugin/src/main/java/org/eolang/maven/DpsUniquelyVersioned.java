@@ -14,6 +14,7 @@ import org.cactoos.list.ListOf;
 /**
  * A decorator of a list of dependencies that throws an exception
  * if any dependency has a duplicate with a different version.
+ *
  * @since 0.28.11
  */
 final class DpsUniquelyVersioned implements Dependencies {
@@ -25,6 +26,7 @@ final class DpsUniquelyVersioned implements Dependencies {
 
     /**
      * The main constructor.
+     *
      * @param dlg Source of dependencies
      */
     DpsUniquelyVersioned(final Dependencies dlg) {

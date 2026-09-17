@@ -53,6 +53,7 @@ final class ChText implements CommitHash {
 
     /**
      * Production constructor.
+     *
      * @param file Path to offline file with hashes and tags
      * @param tag Lookup tag
      */
@@ -62,6 +63,7 @@ final class ChText implements CommitHash {
 
     /**
      * Constructs an object that retries source invocations on failure.
+     *
      * @param source Text source
      * @param tag Lookup tag
      * @param retries Number of retries (max attempts)
@@ -72,6 +74,7 @@ final class ChText implements CommitHash {
 
     /**
      * The main constructor.
+     *
      * @param source Text source
      * @param tag Lookup tag
      */

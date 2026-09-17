@@ -40,6 +40,7 @@ final class MsgUnderlined {
 
     /**
      * Ctor.
+     *
      * @param origin The message
      * @param from The position from which to start underlining
      * @param length The length of the underline
@@ -52,6 +53,7 @@ final class MsgUnderlined {
 
     /**
      * Formatted message.
+     *
      * @return The formatted message
      */
     String formatted() {

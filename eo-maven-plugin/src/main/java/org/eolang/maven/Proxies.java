@@ -29,6 +29,7 @@ final class Proxies implements Scalar<MvnProxy[]> {
 
     /**
      * Ctor.
+     *
      * @param settings Maven settings
      */
     Proxies(final Settings settings) {
