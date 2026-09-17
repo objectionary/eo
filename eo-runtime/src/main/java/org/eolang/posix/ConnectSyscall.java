@@ -8,8 +8,8 @@ import org.eolang.Data;
 import org.eolang.Int;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
 import org.eolang.sys.Sockaddr;
+import org.eolang.sys.Syscall;
 
 /**
  * Connect syscall.

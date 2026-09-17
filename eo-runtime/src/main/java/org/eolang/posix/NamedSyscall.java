@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * A POSIX syscall known by its name.
