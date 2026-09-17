@@ -30,6 +30,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 abstract class MjSafe extends AbstractMojo {
 

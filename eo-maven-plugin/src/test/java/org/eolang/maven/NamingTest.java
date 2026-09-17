@@ -27,9 +27,11 @@ final class NamingTest {
     @Test
     void rejectsFileSystemThatCannotCarryObjectNames(@Mktmp final Path temp) throws IOException {
         final long seed = new Random().nextLong();
-        try (FileSystem ascii = FileSystems.newFileSystem(
-            temp.resolve("ascii.zip"), Map.of("create", "true", "encoding", "US-ASCII")
-        )) {
+        try (
+            FileSystem ascii = FileSystems.newFileSystem(
+                temp.resolve("ascii.zip"), Map.of("create", "true", "encoding", "US-ASCII")
+            )
+        ) {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 new Naming(ascii, String.format("EOΦ%dпривет", seed))::exec,
