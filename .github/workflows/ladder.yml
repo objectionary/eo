@@ -27,7 +27,7 @@ concurrency:
 jobs:
   ladder:
     timeout-minutes: 60
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # The depth is two, not zero: nothing is read here but the merge commit
       # and its first parent. A full clone drags in `gh-pages`, which is about
