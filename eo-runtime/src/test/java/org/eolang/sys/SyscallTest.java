@@ -29,7 +29,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.posix.CStdLib;
+import org.eolang.sys.posix.CStdLib;
 import org.eolang.win32.WSAData;
 import org.eolang.win32.Winsock;
 import org.hamcrest.MatcherAssert;

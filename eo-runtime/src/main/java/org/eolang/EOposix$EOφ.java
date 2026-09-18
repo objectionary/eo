@@ -4,8 +4,8 @@
  */
 package org.eolang;
 
-import org.eolang.posix.NamedSyscall;
 import org.eolang.sys.TupleToArray;
+import org.eolang.sys.posix.NamedSyscall;
 
 /**
  * Posix syscall.
