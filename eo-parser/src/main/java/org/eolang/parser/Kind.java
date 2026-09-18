@@ -142,6 +142,18 @@ enum Kind {
     }
 
     /**
+     * Whether the children of this kind sit in a formation body — the
+     * file itself or a bare formation — where a child is an attribute
+     * that must carry a name (R-6.2.1) and may carry an explicit one
+     * (R-6.2.4). Under every other kind a child is an argument.
+     *
+     * @return True iff a child of this kind is an attribute
+     */
+    boolean body() {
+        return this == TOP_LEVEL || this == BARE_FORMATION;
+    }
+
+    /**
      * Whether a pipe application (§3.14) may attach to a predecessor of
      * this kind — a formation, an identity object, or another pipe.
      * Read by {@link LnPipe} to enforce R-3.14.2 / R-5.2.4a.
