@@ -15,7 +15,7 @@ concurrency:
 jobs:
   counts:
     timeout-minutes: 3
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # The branch is checked out only to be read by `grep`, nothing from
       # it is executed and the token is not left in the workspace, thus

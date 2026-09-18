@@ -12,13 +12,13 @@ concurrency:
   cancel-in-progress: true
 jobs:
   wait:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 70
     steps:
       - run: sleep 3600
   start-instance:
     needs: wait
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       label: ${{ steps.start.outputs.label }}
       ec2-instance-id: ${{ steps.start.outputs.ec2-instance-id }}
@@ -72,7 +72,7 @@ jobs:
     needs:
       - start-instance
       - runtime
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() && needs.start-instance.outputs.ec2-instance-id != '' }}
     steps:
       - uses: aws-actions/configure-aws-credentials@v6
@@ -90,7 +90,7 @@ jobs:
     needs:
       - start-instance
       - runtime
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ failure() }}
     permissions:
       actions: read
@@ -117,7 +117,7 @@ jobs:
     needs:
       - start-instance
       - runtime
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ success() }}
     permissions:
       actions: read
