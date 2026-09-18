@@ -5,11 +5,12 @@
 # `t` does have `next`, but the object attached to `next` has nothing, so
 # `x.next.foo` asks for something that will never be there. Most of what is
 # needed to see that now stands in one row: `inc` is handed a `t` by the only
-# caller it has, so `x.next` is the `next` of a `t` and not a name rooted at
-# `x`, and `foo` asked of that complete and empty object is a dispatch nothing
-# answers at all. Calling the last row a complaint rather than an admission is
-# what was parked in #6661. The void keeps itself either way, since a `t`
-# arriving in it is a fact about the caller.
+# caller it has, so the `x` written inside it is a `t`, `x.next` is the `next`
+# of a `t` and not a name rooted at `x`, and `foo` asked of that complete and
+# empty object is a dispatch nothing answers at all. Calling the last row a
+# complaint rather than an admission is what was parked in #6661. The void
+# itself keeps its own row all the same, since a `t` arriving in it is a fact
+# about the caller and the next caller is free to bring something else.
 eo:
   app.eo: |
     [] > app
@@ -33,7 +34,7 @@ needs:
 links:
   - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.app.inc']"
   - "/links/type[@id='Φ.app.φ.α0']/ref[@loc='Φ.app.t']"
-  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ']/ref[@loc='Φ.app.inc.x']"
+  - "/links/type[@id='Φ.app.inc.φ.ρ.ρ']/ref[@loc='Φ.app.t']"
   - "/links/type[@id='Φ.app.inc.φ.ρ']/ref[@loc='Φ.app.t.next']"
   - "/links/type[@id='Φ.app.inc.φ']/unknown"
   - "/links/type[@id='Φ.app.inc.x']/var"
