@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `box` of a `relay` is one object whose body comes back with a `dial` or a
+# `clock`, so the `ring` read off it is the `ring` of either, found behind it.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^] > dial
+      [^] > listen
+        [^] > ring
+  clock.eo: |
+    [^] > clock
+      [^] > listen
+        [^] > ring
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial
+        clock
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  relay.eo: |
+    [^] > relay
+      [^] > box
+        held.listen > @
+  app.eo: |
+    [] > app
+      ring. > @
+        box.
+          relay
+links:
+  - "/links/type[@id='Φ.app.φ.ρ']/ref[@loc='Φ.relay.box']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.dial.listen.ring']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.clock.listen.ring']"
