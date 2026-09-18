@@ -5,8 +5,11 @@
 
 package org.eolang;
 
+import java.util.Optional;
+
 /**
  * Chunk.read object.
+ *
  * @since 0.36.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -46,8 +49,10 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
 
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;
-        if (Heaps.INSTANCE.fits(id, offset, length)) {
-            result = new Data.ToPhi(Heaps.INSTANCE.read(id, offset, length));
+        final Fetched fetched = Heaps.INSTANCE.fetched(id, offset, length);
+        final Optional<byte[]> data = fetched.bytes();
+        if (data.isPresent()) {
+            result = new Data.ToPhi(data.get());
         } else {
             result = this.take(EOchunk$EOread.FALLBACK);
             result.put(
@@ -57,7 +62,7 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
                         "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                         length,
                         offset,
-                        Heaps.INSTANCE.size(id)
+                        fetched.size()
                     )
                 )
             );

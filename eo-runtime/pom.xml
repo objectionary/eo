@@ -27,10 +27,15 @@
     How much memory a single test may allocate before Maxmem terminates it
     and reports it as skipped. The suffixes of -Xmx are understood: "2G",
     "512M", "65536K", or plain bytes. Empty, or zero, means no limit at all
-    and no watching either, which is the default: a box with memory to
-    spare should run every test to its end.
+    and no watching either: a box with memory to spare should run every
+    test to its end. The value here sits above the band an ordinary test
+    occupies — a directory walk passes about 300M through the allocator
+    without ever holding much — so that the guard fires on a runaway test
+    rather than on the population (#8341). It binds one test, while tests
+    run as wide as the box has cores, so a job raising it from the command
+    line must keep the value times the workers under -Xmx.
     -->
-    <eo.maxmem>256M</eo.maxmem>
+    <eo.maxmem>1G</eo.maxmem>
   </properties>
   <dependencies>
     <dependency>
@@ -60,13 +65,13 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.18</version>
+      <version>2.0.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.18</version>
+      <version>2.0.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -277,8 +282,6 @@
               <goal>compile</goal>
               <goal>inference</goal>
               <goal>inference-report</goal>
-              <goal>merge</goal>
-              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
@@ -298,26 +301,37 @@
                 -->
                 <lint>redundant-object</lint>
                 <!--
-                @todo #6985:30min Stop skipping 'redundant-attachment' here. A
-                declared 'ρ' counts as one of the object's own voids, so
-                'outer-refs' comes back empty for formations that do reach into
-                the enclosing scope, and their '&gt;&gt;' names look
-                unreferenced. Dropping those names made the formatter reshape
-                the call sites and broke 'map', 'while', 'range' and 'input'.
-                Remove this entry once objectionary/lints#1301 treats the
-                receiver as reaching outward even when the head declares it.
-                -->
-                <lint>redundant-attachment</lint>
-                <!--
                 @todo #6985:30min Stop skipping 'many-void-attributes' here.
                 The rule caps a formation at five voids to keep it callable,
-                but it counts 'ρ' among them, and 'string.regex.matched' has
-                five real ones. Writing the receiver down did not add an
+                but it counts 'ρ' among them, and 'string.regex.pattern.yes'
+                has five real ones. Writing the receiver down did not add an
                 argument, so the cap now bites any head honest enough to
                 declare what it already had. Remove this entry once
                 objectionary/lints#1299 leaves the receiver out of the count.
                 -->
                 <lint>many-void-attributes</lint>
+                <!--
+                @todo #8654:30min Stop skipping 'unit-test-is-not-verb' here.
+                Lints 0.4.9 registers a lint that 0.4.8 shipped but never ran,
+                and it wants a test name to open with a verb in singular form,
+                which no 'can-...' name in this module does.
+                -->
+                <lint>unit-test-is-not-verb</lint>
+                <!--
+                @todo #8654:30min Stop skipping 'invalid-name-notation' here.
+                The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no
+                room for the digit in 'bytes/as-u8.eo:12' or in its siblings
+                from 'as-i8' to 'as-u64'.
+                -->
+                <lint>invalid-name-notation</lint>
+                <!--
+                @todo #8654:30min Stop skipping 'too-deep-object' and
+                'broad-scope' here. 'number.eq' nests sixteen levels against a
+                maximum of twelve, and 'number.integral:46' keeps 'subsection'
+                wider than the single object that reads it.
+                -->
+                <lint>too-deep-object</lint>
+                <lint>broad-scope</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
@@ -513,7 +527,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.1.1</version>
+                <version>5.1.2</version>
               </dependency>
             </dependencies>
           </plugin>

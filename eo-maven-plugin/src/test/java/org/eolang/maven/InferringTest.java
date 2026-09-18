@@ -105,6 +105,43 @@ final class InferringTest {
     }
 
     @Test
+    void writesDeclaredFormasOfAtoms(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("stove"));
+        Files.writeString(
+            sources.resolve("kettle.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > kettle", "  [] > heat /Q.number", "    ? > ^", ""
+                )
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "the forma an atom declares must be written next to the other tables, but it isnt",
+            new XMLDocument(temp.resolve("rows").resolve("atoms.xml")),
+            XhtmlMatchers.hasXPath("/atoms/atom[@loc='Φ.kettle.heat' and @forma='Φ.number']")
+        );
+    }
+
+    @Test
+    void writesDownHowMuchOfTheProgramWasUnderstood(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("yard"));
+        Files.writeString(
+            sources.resolve("oak.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > oak", "  [] > leaf", "")
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a share read without its rungs is a number to game, so both must be written, but werent",
+            Files.readString(temp.resolve("ladder.txt")),
+            Matchers.containsString("nothing left to find out")
+        );
+    }
+
+    @Test
     void forgetsSourceThatIsGone(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("shed"));
         Files.writeString(

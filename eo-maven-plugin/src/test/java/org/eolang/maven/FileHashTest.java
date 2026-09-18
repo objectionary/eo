@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link FileHash}.
+ *
  * @since 0.26
  */
 @ExtendWith(MktmpResolver.class)

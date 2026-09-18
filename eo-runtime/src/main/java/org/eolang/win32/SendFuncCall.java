@@ -13,10 +13,11 @@ import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * WriteFile kernel32 function call.
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile">here for details</a>
  * @since 0.40.0
  */
@@ -29,6 +30,7 @@ public final class SendFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public SendFuncCall(final Phi win) {

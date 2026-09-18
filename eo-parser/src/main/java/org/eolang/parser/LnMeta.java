@@ -49,6 +49,7 @@ final class LnMeta implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The meta span
      */
     LnMeta(final Span source) {
@@ -76,7 +77,7 @@ final class LnMeta implements Line {
         if (globals.inMetaHeader() && globals.pendingBlanks() > 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "blank line between meta directives is forbidden (R-6.5.5); the meta header is a single contiguous block"
+                "blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block"
             );
         }
         if (!globals.inMetaHeader() && globals.pendingBlanks() > 0
@@ -179,10 +180,18 @@ final class LnMeta implements Line {
             if (end == idx || end < tail.length() && tail.charAt(end) != ' ') {
                 throw new ParseError(
                     this.span.line(), this.span.indent() + base + end,
-                    "meta parts must be separated by exactly one space"
+                    "meta parts must be separated by a single ASCII space"
                 );
             }
-            out.add(LnMeta.promoteQ(tail.substring(idx, end)));
+            final String part = tail.substring(idx, end);
+            final int control = new Scrubbed(part).found();
+            if (control >= 0) {
+                throw new ParseError(
+                    this.span.line(), this.span.indent() + base + idx + control,
+                    "control character is not allowed in a meta"
+                );
+            }
+            out.add(LnMeta.promoteQ(part));
             idx = end;
             if (idx < tail.length()) {
                 idx = idx + 1;

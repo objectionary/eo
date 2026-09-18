@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link WkDefault}.
+ *
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
@@ -39,6 +41,34 @@ final class WkDefaultTest {
             ),
             new WkDefault(temp).includes(new ListOf<>(pattern)),
             Matchers.iterableWithSize(count)
+        );
+    }
+
+    @Test
+    void namesTheGlobInsteadOfTheRegexItTranslatesTo(@Mktmp final Path temp) throws Exception {
+        new Saved("[] > foo", temp.resolve("foo.eo")).value();
+        MatcherAssert.assertThat(
+            "the error must quote the glob from the configuration, but it quoted the regex",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new WkDefault(temp).includes(new ListOf<>("src/[]/*.eo")),
+                "a glob that cannot be compiled must be refused"
+            ).getMessage(),
+            Matchers.containsString("src/[]/*.eo")
+        );
+    }
+
+    @Test
+    void namesTheRoleOfAGlobThatDeselects(@Mktmp final Path temp) throws Exception {
+        new Saved("[] > foo", temp.resolve("foo.eo")).value();
+        MatcherAssert.assertThat(
+            "the error must say that the glob deselects files, but it said nothing about it",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new WkDefault(temp).excludes(new ListOf<>("{foo")),
+                "a glob that cannot be compiled must be refused"
+            ).getMessage(),
+            Matchers.containsString("excludes")
         );
     }
 

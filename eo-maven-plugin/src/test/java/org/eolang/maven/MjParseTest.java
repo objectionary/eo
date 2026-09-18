@@ -36,6 +36,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjParse}.
+ *
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
@@ -286,6 +287,7 @@ final class MjParseTest {
     /**
      * The test with high number of eo programs reveals concurrency problems of the ParseMojo.
      * Since other tests works only with single program - it's hard to find concurrency mistakes.
+     *
      * @param temp Test directory
      * @throws IOException If problem with filesystem happened.
      */
@@ -403,6 +405,7 @@ final class MjParseTest {
 
     /**
      * The mojo that does nothing, but executes infinitely.
+     *
      * @since 0.29
      */
     @Mojo(name = "infinite", defaultPhase = LifecyclePhase.VALIDATE)

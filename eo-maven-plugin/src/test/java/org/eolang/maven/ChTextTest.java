@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ChText}.
+ *
  * @since 0.28.11
  */
 @ExtendWith(MktmpResolver.class)

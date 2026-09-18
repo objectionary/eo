@@ -45,6 +45,11 @@ import org.xembly.Xembler;
  * {@code Φ.true}, with a {@code Φ.false} and with five other things, and
  * naming any one of them would be picking a favourite among facts.</p>
  *
+ * <p>Not every filling is an application. An atom calls what it is handed, and
+ * a formation only Java ever copies is filled where no source can be read, so
+ * the voids of one are answered by the annotation the atom carries and by
+ * {@link Handed}, which reads it (#8380).</p>
+ *
  * <p>A choice longer than the cap is written as {@code unknown} instead of its
  * members. {@code Φ.tuple.head} is filled with 56 different types, and a
  * choice of 56 tells a reader nothing except that nobody has thought about
@@ -69,6 +74,7 @@ public final class Witnessed implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are looked into
      */
     public Witnessed(final Clue clues) {
@@ -77,6 +83,7 @@ public final class Witnessed implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are looked into
      * @param members How many members a choice may have before it says
      *  nothing, measured at eight in the state document

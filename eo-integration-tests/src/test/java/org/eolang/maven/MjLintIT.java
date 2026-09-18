@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:lint goal.
+ *
  * @since 0.52
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

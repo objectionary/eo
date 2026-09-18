@@ -7,8 +7,10 @@ package org.eolang.inference;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +27,18 @@ import java.util.Map;
  * carries no further facts.</p>
  *
  * <p>{@link Sole} decides what a void is worth and this asks it, of every void
- * at once, off the table {@link Woven} builds from the pairs settled so far.
+ * at once, off what {@link Woven} works out the pairs settled so far to have
+ * put where. That is the table the build goes on to publish, said as
+ * {@link Said} rather than written as a document, since a pass that rendered
+ * it only to read it back would spend most of itself doing so.
+ * {@link Shared} is asked where the fillings share an ancestor and {@link
+ * Agreed} where they share nothing but their answers, so a void nothing can be
+ * called as a whole still carries the dispatches its fillings agree on. Which
+ * names those are is read back off the answers themselves, since a dispatch a
+ * void leaves unanswered is answered with a name rooted at the void. Only the
+ * first hop is read: what a further hop asks is asked of an answer nobody has
+ * settled yet, and once this settles the first the next pass reaches the
+ * second.
  * Being asked off a table is what makes the answer improve as the passes go on:
  * an argument whose own type was worked out this pass is a filling with a type
  * next pass, and a void nothing could be said about becomes a void filled one
@@ -46,16 +59,11 @@ import java.util.Map;
  * a void has, what comes back is a {@link Var}, which names nothing a reader
  * could go and look at, and {@link Sole} refuses it.</p>
  *
+ * <p>A filling that waits on the very void it fills is settled first, by
+ * {@link Freed}, so that the two are not left waiting on each other for as
+ * long as the passes run.</p>
+ *
  * @since 0.71.0
- * @todo #8231:90min Settle the voids without the XML in the middle.
- *  Every pass renders the whole table through {@link Types#asXml()} and
- *  {@link Fillings} reads it straight back out with {@link Pairs}, which
- *  costs about 320ms of a pass on {@code eo-runtime}, and it takes 45
- *  passes there to name 510 voids. Then every void named asks all 11,314
- *  dispatches again from scratch, where only the ones rooted at that void
- *  can have changed. Between them the two turn 7s of inference into 28s.
- *  Let {@link Fillings} take the rows themselves, and ask again only the
- *  dispatches the new name reaches.
  */
 final class Promoted {
 
@@ -70,47 +78,97 @@ final class Promoted {
     private final XML given;
 
     /**
-     * The rows of the links table that are not pairs, from {@link Pairs}.
+     * What the links table says, as the rules left it.
      */
-    private final Map<String, Type> others;
+    private final Said written;
+
+    /**
+     * The locator of every void.
+     */
+    private final Collection<String> hollows;
+
+    /**
+     * The arguments of every application, from {@link Given}.
+     */
+    private final Map<String, List<String>> arms;
 
     /**
      * Ctor.
+     *
      * @param woven The rows that follow from a set of pairs
      * @param provides The provides table, which says where a filling can land
-     * @param kept The rows of the links table that are not pairs, without which
-     *  a filling that arrives at a literal is not seen to be one
+     * @param said What the links table says, as the rules left it, without
+     *  which a filling that arrives at a literal is not seen to be one
+     * @param voids The locator of every void, from {@link Hollows}
+     * @param arguments The arguments of every application, without which a
+     *  filling that waits on the void it fills is not seen to be a choice
      */
-    Promoted(final Woven woven, final XML provides, final Map<String, Type> kept) {
+    Promoted(
+        final Woven woven,
+        final XML provides,
+        final Said said,
+        final Collection<String> voids,
+        final Map<String, List<String>> arguments
+    ) {
         this.table = woven;
         this.given = provides;
-        this.others = kept;
+        this.written = said;
+        this.hollows = voids;
+        this.arms = arguments;
     }
 
     /**
      * The voids these pairs turn out to have named, beyond the ones named
      * already.
+     *
      * @param pairs The pairs, each object against the one it is a copy of
      * @return The voids answered this time, each against the one object the
      *  program puts into it, empty when no void is worth anything further
      */
     Map<String, String> from(final Map<String, String> pairs) {
         final Collection<String> known = this.known();
+        final Provided owned = new Provided(
+            this.given, new Ends(pairs).names(), this.hollows
+        );
+        final Map<String, Collection<String>> asked = this.asked(pairs);
+        final Said said = this.written.with(pairs, this.table.binds(pairs));
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
-            : new Fillings(this.links(pairs), this.given).all().entrySet()) {
-            final String sole = new Sole(hollow.getValue(), known).names();
-            if (!sole.isEmpty() && !pairs.containsKey(hollow.getKey())) {
+            : new Freed(
+                new Fillings(said, this.given, this.hollows).all(), said, owned, this.arms
+            ).all().entrySet()) {
+            String sole = new Sole(hollow.getValue(), known).names();
+            if (sole.isEmpty()) {
+                sole = new Shared(hollow.getValue(), known, owned).names();
+            }
+            if (sole.isEmpty()) {
+                found.putAll(
+                    new Agreed(hollow.getValue(), known, owned).members(
+                        hollow.getKey(),
+                        asked.getOrDefault(hollow.getKey(), Collections.emptyList())
+                    )
+                );
+            } else {
                 found.put(hollow.getKey(), sole);
             }
         }
+        found.keySet().removeAll(pairs.keySet());
         return found;
     }
 
-    private XML links(final Map<String, String> pairs) {
-        final Map<String, Type> rows = this.table.rows(pairs);
-        rows.putAll(this.others);
-        return new Types(rows).asXml();
+    private Map<String, Collection<String>> asked(final Map<String, String> pairs) {
+        final Rooted rooted = new Rooted(this.hollows);
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final String answer : pairs.values()) {
+            final String hollow = rooted.names(answer);
+            if (!hollow.isEmpty() && answer.length() > hollow.length()) {
+                final String name = answer.substring(hollow.length() + 1);
+                if (!name.contains(".")) {
+                    found.computeIfAbsent(hollow, key -> new HashSet<>(0)).add(name);
+                }
+            }
+        }
+        return found;
     }
 
     private Collection<String> known() {

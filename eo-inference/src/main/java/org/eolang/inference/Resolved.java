@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +53,13 @@ import java.util.Map;
  * void is gathered from its callers and is a fact about them, so the voids are
  * written down exactly as the rules wrote them.</p>
  *
+ * <p>The arms of a dispatch that could not be settled to one object are
+ * written here as well, and here only. They are asked for once the passes have
+ * stopped, since a site answered by a pass has a better answer than a choice
+ * and there is no point in offering both; and they are asked for by whoever
+ * writes the rows, since a pass hands its answers round as locators and a
+ * choice is not one (#8744).</p>
+ *
  * <p>So is the admission that a dispatch could not be worked out, for the same
  * reason in reverse: only here, when the passes have stopped adding pairs, is
  * it known that no pass will answer it. A row saying nothing is known is worth
@@ -69,6 +77,7 @@ public final class Resolved implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the links are closed
      */
     public Resolved(final Clue clues) {
@@ -82,27 +91,28 @@ public final class Resolved implements Clue {
         final Xmirs world = new Xmirs(xmirs);
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
         final Collection<Site> dispatches = world.dispatches();
+        final Collection<Site> asked = new ArrayList<>(dispatches);
+        asked.addAll(world.reads());
         final Given applied = new Given(world.applications());
         final Map<String, List<String>> args = applied.arguments();
         final Map<String, Map<String, String>> named = applied.named();
         final Pairs written = new Pairs(new XMLDocument(links));
         final Map<String, String> receivers = new Taken(world, written).all();
-        final List<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Collection<String> voids = new Hollows(given).all();
         final Map<String, Type> kept = written.others();
-        final Woven woven = new Woven(given, applied, receivers, voids);
-        final Promoted promoted = new Promoted(woven, given, kept);
-        final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, named, receivers, voids), promoted
-        ).from(
+        final Woven woven = new Woven(given, applied, receivers, voids, asked);
+        final Promoted promoted = new Promoted(woven, given, new Said(written), voids, args);
+        final Dispatched into = new Dispatched(given, asked, args, named, receivers, voids);
+        final Map<String, String> pairs = new Settled(into, promoted).from(
             new Settled(
                 new Dispatched(
-                    given, dispatches, args, named, receivers, Collections.emptyList()
+                    given, asked, args, named, receivers, Collections.emptyList()
                 ),
                 promoted
             ).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
-        final Map<String, Type> rows = woven.rows(pairs);
+        final Map<String, Type> rows = woven.rows(pairs, into.choices(pairs));
         rows.keySet().removeAll(voids);
         rows.putAll(kept);
         final Collection<String> dead = new Dead(written, dispatches, names).all();

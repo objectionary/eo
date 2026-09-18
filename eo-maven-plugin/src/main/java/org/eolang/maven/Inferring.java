@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
@@ -21,10 +22,13 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
-import org.eolang.inference.Relayed;
+import org.eolang.inference.Named;
+import org.eolang.inference.Reduced;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
 import org.eolang.parser.TrFull;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Work out the types of the objects of a program and write down what is known.
@@ -52,6 +56,14 @@ import org.eolang.parser.TrFull;
  * created have none. That is what the prepared files hold, and they are worth
  * keeping: every row of every table points into them.</p>
  *
+ * <p>How much of the program the rules turned out to say is measured when they
+ * are done and written down in {@code ladder.txt}, beside the tables rather
+ * than among them: it is a number about us and not about the program. Saying
+ * it in the log is not enough, because the line scrolls past and a branch has
+ * then nothing to be measured against — the file is what a workflow reads for
+ * the base and for the branch, to say on the pull request which way we
+ * moved.</p>
+ *
  * @since 0.67.0
  */
 final class Inferring implements Step {
@@ -76,6 +88,7 @@ final class Inferring implements Step {
 
     /**
      * Ctor.
+     *
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
      * @param pre The directory for the prepared XMIR files
@@ -101,8 +114,9 @@ final class Inferring implements Step {
             }
             final int ready = this.ready();
             final long start = System.currentTimeMillis();
-            new Witnessed(new Relayed(new Demanded(new Resolved(new Clues()))))
+            new Named(new Witnessed(new Demanded(new Reduced(new Resolved(new Clues())))))
                 .follow(this.prepared, this.tables);
+            this.declared();
             Logger.info(
                 this, "Inferred the types of %d XMIR(s) in %[ms]s",
                 ready, System.currentTimeMillis() - start
@@ -122,6 +136,8 @@ final class Inferring implements Step {
 
     private void measured() throws IOException {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
+        final Path numbers = this.tables.resolveSibling("ladder.txt");
+        Files.write(numbers, ladder.lines(), StandardCharsets.UTF_8);
         Logger.info(
             this,
             "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
@@ -130,6 +146,32 @@ final class Inferring implements Step {
         for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
             Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
         }
+        Logger.info(this, "The same numbers are written down in %[file]s", numbers);
+    }
+
+    private void declared() throws IOException {
+        final Directives dirs = new Directives().add("atoms");
+        try (Stream<Path> found = Files.walk(this.prepared)) {
+            for (final Path source : found
+                .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
+                .sorted()
+                .collect(Collectors.toList())) {
+                final XML xmir = new XMLDocument(source);
+                for (final XML lambda
+                    : xmir.nodes("//o[@name='λ' and string-length(@atom) > 0]")) {
+                    dirs.add("atom")
+                        .attr("loc", lambda.xpath("../@loc").get(0))
+                        .attr("forma", lambda.xpath("@atom").get(0))
+                        .up();
+                }
+            }
+        }
+        Files.createDirectories(this.tables);
+        Files.write(
+            this.tables.resolve("atoms.xml"),
+            new Xembler(dirs).xmlQuietly().getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     private int ready() throws IOException {

@@ -13,6 +13,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Globals}.
+ *
  * @since 0.1
  */
 final class GlobalsTest {
@@ -88,7 +89,7 @@ final class GlobalsTest {
     @Test
     void recordsTextBlockOpenLine() {
         final Globals globals = new Globals();
-        globals.openTextBlock(17);
+        globals.openTextBlock(17, 0);
         MatcherAssert.assertThat(
             "textBlockOpenLine must round-trip the opener line for the unclosed-text-block error",
             globals.textBlockOpenLine(),
@@ -197,7 +198,7 @@ final class GlobalsTest {
     @Test
     void closesTextBlockState() {
         final Globals globals = new Globals();
-        globals.openTextBlock(3);
+        globals.openTextBlock(3, 0);
         globals.closeTextBlock();
         MatcherAssert.assertThat(
             "closeTextBlock must drop the in-text flag back to false",

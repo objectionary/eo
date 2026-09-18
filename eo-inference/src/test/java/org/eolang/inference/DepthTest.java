@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Depth}.
+ *
  * @since 0.69.0
  */
 @ExtendWith(MktmpResolver.class)

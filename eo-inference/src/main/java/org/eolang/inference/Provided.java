@@ -65,6 +65,7 @@ final class Provided {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, as {@link Provides} wrote it
      * @param aliases The name every type goes by, from {@link Same}
      * @param voids The locator of every void, from {@link Hollows}
@@ -82,6 +83,7 @@ final class Provided {
 
     /**
      * Ctor.
+     *
      * @param rows The rows of the provides table, by the name of their owner
      * @param aliases The name every type goes by, from {@link Same}
      * @param voids The locator of every void, from {@link Hollows}
@@ -101,6 +103,7 @@ final class Provided {
 
     /**
      * The type of the attribute this type keeps under the given name.
+     *
      * @param type The name the type goes by
      * @param name The name of the attribute
      * @return The type of the attribute, or an empty string when this type has
@@ -182,6 +185,7 @@ final class Provided {
 
     /**
      * The void this type keeps under the given name.
+     *
      * @param type The name the type goes by
      * @param name The name of the void
      * @return The locator of the void, or an empty string when this type keeps
@@ -198,20 +202,59 @@ final class Provided {
         return found;
     }
 
-    private boolean hollow(final String type) {
-        boolean found = false;
-        String walked = type;
-        while (!walked.isEmpty()) {
-            if (this.hollows.contains(walked)) {
-                found = true;
+    /**
+     * The type this one stands in front of.
+     *
+     * @param type The name the type goes by
+     * @return The locator of what it delegates to, or an empty string when it
+     *  delegates to nothing
+     */
+    String behind(final String type) {
+        String next = this.bound(type, "φ");
+        if (next.isEmpty()) {
+            next = this.cell(type, "returns");
+        }
+        if (next.isEmpty()) {
+            next = this.held.getOrDefault(type, "");
+        }
+        return this.names.getOrDefault(next, next);
+    }
+
+    /**
+     * Whether this type keeps no name of its own.
+     *
+     * <p>Everything it keeps is either a void a caller fills or the
+     * {@code φ} it hands its answers to, so there is nothing anyone could ask
+     * it for and get an answer from it rather than from what it was given.
+     * The row of the type itself is not one of its attributes and is stepped
+     * over.</p>
+     *
+     * @param type The name the type goes by
+     * @return True when it binds no attribute besides its voids and its
+     *  {@code φ}
+     */
+    boolean bare(final String type) {
+        boolean found = true;
+        for (final Map<String, String> row : this.own(type)) {
+            if (!row.containsKey("id")
+                && !"true".equals(row.get("void"))
+                && !"φ".equals(row.getOrDefault("name", ""))) {
+                found = false;
                 break;
             }
-            if (!walked.contains(".")) {
-                break;
-            }
-            walked = walked.substring(0, walked.lastIndexOf('.'));
         }
         return found;
+    }
+
+    /**
+     * Whether this name is one of the voids, or a name taken off one.
+     *
+     * @param type The name the type goes by
+     * @return True when nothing certain is said about it here, because what it
+     *  is stands where a caller has yet to put anything
+     */
+    boolean hollow(final String type) {
+        return new Rooted(this.hollows).covers(type);
     }
 
     private String kept(final String type, final String name, final Collection<String> walked) {
@@ -225,17 +268,6 @@ final class Provided {
             found = this.kept(behind, name, walked);
         }
         return found;
-    }
-
-    private String behind(final String type) {
-        String next = this.bound(type, "φ");
-        if (next.isEmpty()) {
-            next = this.cell(type, "returns");
-        }
-        if (next.isEmpty()) {
-            next = this.held.getOrDefault(type, "");
-        }
-        return this.names.getOrDefault(next, next);
     }
 
     private boolean blank(final String type) {

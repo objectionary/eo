@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Saved}.
+ *
  * @since 0.74
  */
 @ExtendWith(MktmpResolver.class)
@@ -37,6 +38,17 @@ final class SavedTest {
             "the saved file must contain exactly what was written",
             Files.readString(target, StandardCharsets.UTF_8),
             Matchers.equalTo("hello")
+        );
+    }
+
+    @Test
+    void savesContentToFileWithShortName(@Mktmp final Path temp) throws IOException {
+        final Path target = temp.resolve("x");
+        new Saved("hi", target).value();
+        MatcherAssert.assertThat(
+            "a one-character file name must be saved, not refused by the temporary prefix",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("hi")
         );
     }
 

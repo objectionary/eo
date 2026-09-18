@@ -53,6 +53,7 @@ final class Pairs {
 
     /**
      * Ctor.
+     *
      * @param links The links table
      */
     Pairs(final XML links) {

@@ -4,85 +4,101 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import org.w3c.dom.Node;
-import org.xembly.Xembler;
 
 /**
- * What an application through a void puts into the formation that fills it.
+ * The voids that hand an argument back instead of answering for themselves.
  *
- * <p>An application whose base is a void fills nothing on its own: the void
- * is not a formation and declares no places for an argument to land in. So
- * {@code cant-read "foo"}, written inside the {@code [^ cant-read] > as-ascii}
- * that takes it, was passed over and the {@code "foo"} went nowhere.</p>
+ * <p>A formation whose whole body is one of its own voids owns nothing: the
+ * {@code [? >> left ? >> right]} that {@code Φ.true} puts into
+ * {@code Φ.bool.if} answers with its {@code left} and the one {@code Φ.false}
+ * puts there answers with its {@code right}, and neither has a name of its own
+ * to offer. A void filled with nothing but formations of that shape therefore
+ * owes nothing either, however much the program reads off a call on it, since
+ * every one of those names belongs to an argument and {@link Branched} is what
+ * says which. Where the arguments agree on nothing the names have nowhere to
+ * go, and nowhere is where they go.</p>
  *
- * <p>A caller says what the void holds, though, and once it does the argument
- * has somewhere to go. An {@code as-ascii} given the formation
- * {@code "bar" > [message]} puts one void into {@code cant-read}, so the
- * {@code "foo"} above lands in that {@code message}, and nothing else in the
- * program ever says a word about it.</p>
+ * <p>Every filling has to be of that shape for the void to be one of these. One
+ * formation that binds a body of its own answers names like any other object,
+ * and a caller that lands on it is owed them.</p>
  *
- * <p>The fact is written where {@link Bound} writes the same kind of fact, as
- * a {@code bind} in the row of the application, so everything downstream —
- * {@link Witnessed} above all — reads it without knowing it came from here.</p>
+ * <p>Standing in front of a void is not enough either: the formation must keep
+ * nothing else. {@code Φ.directory} hands its answers to the {@code file} it
+ * was built from, yet it binds {@code made} and {@code deleted} and a dozen
+ * more names of its own, so a caller that reads a name off a directory is owed
+ * it by the directory, and the demand belongs where it is written. What a
+ * picker has instead is two voids, a {@code φ} pointing at one of them, and
+ * nothing anybody could ask it for.</p>
  *
- * <p>It is evidence and not a contract, as everything gathered from callers
- * is: the caller written tomorrow may put a formation of another shape
- * there.</p>
+ * <p>A body nobody bound is not one of those voids, however much it looks like
+ * one. {@code Φ.number} keeps a {@code φ} the table writes down as a void,
+ * since what a number stands in front of is nowhere in the source, and a
+ * number still answers every name a number answers. What makes a formation
+ * hand an argument back is that its body is a void a caller <em>fills</em>,
+ * and nobody fills a {@code φ}.</p>
  *
- * @since 0.70.0
+ * @since 0.73.0
  */
-public final class Relayed implements Clue {
+final class Relayed {
 
     /**
-     * The clues to follow first.
+     * What the types certainly have.
      */
-    private final Clue origin;
+    private final Provided owned;
+
+    /**
+     * What went into every void, by the locator of the void, from
+     * {@link Said#puts()}.
+     */
+    private final Map<String, Collection<String>> given;
+
+    /**
+     * The name every type goes by.
+     */
+    private final Map<String, String> names;
 
     /**
      * Ctor.
-     * @param clues The clues to follow before the arguments are passed on
+     *
+     * @param provided What the types certainly have
+     * @param puts What went into every void, from {@link Said#puts()}
+     * @param aliases The name every type goes by, from {@link Ends}
      */
-    public Relayed(final Clue clues) {
-        this.origin = clues;
+    Relayed(
+        final Provided provided,
+        final Map<String, Collection<String>> puts,
+        final Map<String, String> aliases
+    ) {
+        this.owned = provided;
+        this.given = puts;
+        this.names = aliases;
     }
 
-    @Override
-    public void follow(final Path xmirs, final Path tables) throws IOException {
-        this.origin.follow(xmirs, tables);
-        final Path table = tables.resolve("links.xml");
-        final XML links = new XMLDocument(table);
-        final XML given = new XMLDocument(tables.resolve("provides.xml"));
-        final Pairs written = new Pairs(links);
-        final Map<String, String> pairs = written.all();
-        final List<String> voids = given.xpath("//attr[@void='true']/@type");
-        final Provided owned = new Provided(given, new Ends(pairs).names(), voids);
-        final Collection<String> hollows = new HashSet<>(voids);
-        final Map<String, Collection<String>> fillers = written.puts();
-        final Map<String, Node> rows = written.refs();
-        for (final Map.Entry<String, List<String>> application
-            : new Given(new Xmirs(xmirs).applications()).arguments().entrySet()) {
-            final String hollow = pairs.getOrDefault(application.getKey(), "");
-            if (hollows.contains(hollow) && rows.containsKey(application.getKey())) {
-                new Xembler(
-                    new Passed(
-                        owned,
-                        fillers.getOrDefault(hollow, Collections.emptyList()),
-                        application.getValue()
-                    ).directives()
-                ).applyQuietly(rows.get(application.getKey()));
+    /**
+     * The voids nothing can be asked of.
+     *
+     * @return The locators of the voids every filling of which hands back one
+     *  of the arguments it was called with
+     */
+    Collection<String> all() {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final Map.Entry<String, Collection<String>> hollow : this.given.entrySet()) {
+            if (!hollow.getValue().isEmpty() && hollow.getValue().stream().allMatch(this::hands)) {
+                found.add(hollow.getKey());
             }
         }
-        Files.write(table, links.toString().getBytes(StandardCharsets.UTF_8));
+        return found;
+    }
+
+    private boolean hands(final String filling) {
+        final String type = this.names.getOrDefault(filling, filling);
+        final String body = this.owned.behind(type);
+        final String name = body.substring(body.lastIndexOf('.') + 1);
+        return !body.isEmpty() && !"φ".equals(name)
+            && body.equals(this.owned.named(type, name))
+            && this.owned.bare(type);
     }
 }

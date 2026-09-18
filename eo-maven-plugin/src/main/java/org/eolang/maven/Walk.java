@@ -10,12 +10,14 @@ import java.util.List;
 
 /**
  * Walk through files in a directory.
+ *
  * @since 0.1
  */
 interface Walk extends List<Path> {
 
     /**
      * Includes this globs.
+     *
      * @param globs List of them
      * @return New Walk
      */
@@ -23,6 +25,7 @@ interface Walk extends List<Path> {
 
     /**
      * Excludes this globs.
+     *
      * @param globs List of them
      * @return New Walk
      */

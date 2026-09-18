@@ -28,12 +28,11 @@ import org.apache.maven.plugins.annotations.Mojo;
  * whose name no object carries keeps its members as objects of their own,
  * reached through the package namespace as before.</p>
  *
- * <p>{@link MjTranspile} runs the same step itself, so a build that never
- * names this goal still compiles merged objects. The goal is worth naming
- * when a goal between {@link MjLint} and {@link MjTranspile}, such as
- * {@link MjInference} or {@link MjLower}, has to read the object in the
- * shape it will be compiled in. Naming it twice costs nothing: a member
- * already inside its object is not moved again.</p>
+ * <p>{@link MjCompile} runs the same step right after its lint, and
+ * {@link MjTranspile} runs it again before it writes anything, so a build
+ * that never names this goal still compiles merged objects, and every goal
+ * between the two reads them merged. Naming it anyway costs nothing: a
+ * member already inside its object is not moved again.</p>
  *
  * @since 0.68.0
  */

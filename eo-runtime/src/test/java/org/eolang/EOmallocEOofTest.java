@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOmalloc$EOof}.
+ *
  * @since 0.1
  */
 final class EOmallocEOofTest {
@@ -109,6 +110,7 @@ final class EOmallocEOofTest {
 
     /**
      * Dummy.
+     *
      * @since 0.37.0
      */
     private static final class Dummy extends PhDefault {
@@ -120,6 +122,7 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
+         *
          * @checkstyle ConstructorsCodeFreeCheck (21 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
@@ -143,6 +146,7 @@ final class EOmallocEOofTest {
 
     /**
      * Dummy that throws an exception.
+     *
      * @since 0.36.0
      */
     private static final class ErrorDummy extends PhDefault {
@@ -154,6 +158,7 @@ final class EOmallocEOofTest {
 
         /**
          * Ctor.
+         *
          * @checkstyle ConstructorsCodeFreeCheck (26 lines)
          */
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")

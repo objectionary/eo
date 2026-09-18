@@ -29,6 +29,14 @@ SPDX-License-Identifier: MIT
             <xsl:value-of select="@rooted"/>
             <xsl:text> rooted at a void</xsl:text>
           </span>
+          <span class="atom">
+            <xsl:value-of select="@atom"/>
+            <xsl:text> filled by an atom</xsl:text>
+          </span>
+          <span class="unfilled">
+            <xsl:value-of select="@unfilled"/>
+            <xsl:text> filled by nobody</xsl:text>
+          </span>
           <span class="blank">
             <xsl:value-of select="@blank"/>
             <xsl:text> nothing known</xsl:text>
@@ -80,6 +88,12 @@ SPDX-License-Identifier: MIT
           </code>
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:if test="@band = 'atom'">
+        <xsl:text>, filled by an atom</xsl:text>
+      </xsl:if>
+      <xsl:if test="@band = 'unfilled'">
+        <xsl:text>, filled by nobody</xsl:text>
+      </xsl:if>
       <xsl:apply-templates select="seen"/>
     </span>
   </xsl:template>
@@ -117,6 +131,8 @@ SPDX-License-Identifier: MIT
       .tally span { margin-right: 1.4em; padding: .1em .4em; border-radius: 3px; }
       .tally .named { background: #d7f0d7; }
       .tally .rooted { background: #fbeecc; }
+      .tally .atom { background: #e6dcf5; }
+      .tally .unfilled { background: #dfe6e9; }
       .tally .blank { background: #f7d4d4; }
       table.src { border-collapse: collapse; }
       td.no { text-align: right; padding-right: 1em; color: #999; user-select: none; vertical-align: top; }
@@ -124,6 +140,8 @@ SPDX-License-Identifier: MIT
       .mark { position: relative; box-shadow: inset 0 -2px 0 currentColor; cursor: help; }
       .mark.named { color: #2e7d32; }
       .mark.rooted { color: #b26a00; }
+      .mark.atom { color: #6a3fb5; }
+      .mark.unfilled { color: #546e7a; }
       .mark.blank { color: #c62828; }
       .pop { display: none; position: absolute; left: 0; top: 1.6em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
       .mark:hover .pop { display: block; }

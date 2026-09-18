@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Carried}.
+ *
  * @since 0.70.0
  */
 final class CarriedTest {

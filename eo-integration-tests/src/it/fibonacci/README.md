@@ -13,7 +13,7 @@ The only change you will have to do is setting
 the right versions the `pom.xml`. Use the latest version
 visible in this badge:
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://central.sonatype.com/artifact/org.eolang/eo-maven-plugin)
 
 Just copy these files to your local directory, change the
 version in `pom.xml` and run `mvn test` (it is assumed that

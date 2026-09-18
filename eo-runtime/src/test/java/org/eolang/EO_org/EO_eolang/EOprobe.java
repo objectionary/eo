@@ -31,6 +31,7 @@ public final class EOprobe extends PhDefault {
 
     /**
      * Ctor.
+     *
      * @checkstyle ConstructorsCodeFreeCheck (12 lines)
      */
     @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")

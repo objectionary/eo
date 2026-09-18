@@ -7,10 +7,10 @@ package org.eolang.posix;
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * Stat syscall.
@@ -38,6 +38,7 @@ public final class StatSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      * @param call The C function filling the struct
      */
@@ -76,18 +77,21 @@ public final class StatSyscall implements Syscall {
     /**
      * A file's status, exposing the two fields EO reads no matter how the
      * platform's {@code struct stat} is laid out.
+     *
      * @since 0.74.0
      */
     public interface FileStat {
 
         /**
          * File mode bits, carrying the type and permissions.
+         *
          * @return Mode bits, masked to sixteen bits
          */
         long mode();
 
         /**
          * File size.
+         *
          * @return Size in bytes
          */
         long length();

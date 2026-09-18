@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One more public attribute is one more thing a reader loses by being told
+# something else. A `trunk` hands its answers to an `oak` and has a `bark`
+# besides, which no `oak` has, so it is not one and keeps its own name.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  trunk.eo: |
+    [] > trunk
+      oak > @
+      [] > bark
+provides:
+  - "/provides/type[@id='Φ.trunk' and not(@reduced)]"

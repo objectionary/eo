@@ -44,6 +44,7 @@ final class Tokens {
 
     /**
      * Ctor.
+     *
      * @param text Line body
      * @param source Source span
      */
@@ -55,6 +56,7 @@ final class Tokens {
 
     /**
      * Current cursor position.
+     *
      * @return Cursor
      */
     int cursor() {
@@ -63,6 +65,7 @@ final class Tokens {
 
     /**
      * Move the cursor.
+     *
      * @param idx New position
      */
     void seek(final int idx) {
@@ -71,6 +74,7 @@ final class Tokens {
 
     /**
      * Whether the cursor is past the end of the body.
+     *
      * @return End flag
      */
     boolean atEnd() {
@@ -79,6 +83,7 @@ final class Tokens {
 
     /**
      * Peek the current character (must not be {@link #atEnd()}).
+     *
      * @return Current character
      */
     char current() {
@@ -88,6 +93,7 @@ final class Tokens {
     /**
      * Read one value at the cursor — identifier, INT, FLOAT, STRING,
      * STAR, or ROOT. Advances the cursor past the value.
+     *
      * @return Parsed value
      */
     Value readValue() {
@@ -119,6 +125,7 @@ final class Tokens {
      * Read a BYTES literal at the cursor — {@code --}, {@code BB-}, or
      * {@code BB-BB(-BB)*} per §3.13.1. Multi-line continuation
      * (R-3.13.2/R-3.13.3) is not yet supported here.
+     *
      * @return BYTES value
      */
     Value readBytes() {
@@ -140,6 +147,7 @@ final class Tokens {
      * matching {@code )} with nested-paren and string awareness.
      * Returns a {@link Value.Kind#GROUP} carrying the literal bracketed
      * text (parens included). Used both as a head and as an arg.
+     *
      * @return GROUP value
      */
     Value readGroup() {
@@ -169,6 +177,7 @@ final class Tokens {
     /**
      * Read a {@code NAME} identifier starting at the cursor. Advances
      * past the name.
+     *
      * @return Identifier value
      */
     Value readName() {
@@ -215,6 +224,7 @@ final class Tokens {
      * decided by lookahead: a dot followed by a digit continues as
      * FLOAT; otherwise the digits stop and the dot belongs to a
      * subsequent chain link.
+     *
      * @return INT or FLOAT value
      */
     Value readNumber() {
@@ -242,6 +252,7 @@ final class Tokens {
     /**
      * Read an INT literal at the cursor — optional sign then digits,
      * per R-9.8.1 (no leading zeros). Advances past it.
+     *
      * @return INT value
      */
     Value readInt() {
@@ -284,6 +295,7 @@ final class Tokens {
     /**
      * Read a HEX literal at the cursor ({@code 0x} followed by hex
      * digits, per R-9.8.3). Advances past it.
+     *
      * @return HEX value
      */
     Value readHex() {
@@ -319,6 +331,7 @@ final class Tokens {
      * or a digit — the legacy {@code QQ} above all — is rejected here,
      * so that the offending token names itself instead of surfacing as
      * trailing garbage after a one-character expression.
+     *
      * @return Root value
      */
     Value readRoot() {
@@ -349,6 +362,7 @@ final class Tokens {
      * escape sequences (R-9.7). The returned {@link Value#raw()}
      * preserves the literal text <em>including the surrounding double
      * quotes</em>, so the emitter can strip and unescape consistently.
+     *
      * @return STRING value
      */
     Value readString() {
@@ -395,6 +409,7 @@ final class Tokens {
     /**
      * Read zero or more {@code .NAME} chain links following the
      * cursor.
+     *
      * @return Chain links in source order
      */
     List<MethodChain> readChain() {
@@ -416,6 +431,7 @@ final class Tokens {
      * Whether a dispatch operator begins at the cursor — a plain
      * {@code .} or the fragile {@code ?.} (R-3.5). The {@code ?} alone,
      * not followed by {@code .}, is not a dispatch.
+     *
      * @return True if a {@code .} or {@code ?.} dispatch starts here
      */
     boolean dispatchAhead() {
@@ -423,9 +439,37 @@ final class Tokens {
     }
 
     /**
+     * Whether a reversed dispatch stands at the cursor — a dispatch
+     * operator that nothing follows on the token, the way {@code if.}
+     * reads (R-3.6). A name after the operator makes it an ordinary
+     * chain link instead, and only a head that may be reversed at all
+     * can start one.
+     *
+     * @param head The value read right before the cursor
+     * @return True if the head is the name of a reversed dispatch
+     */
+    boolean reversedAhead(final Value head) {
+        final boolean result;
+        if (head.reversible() && !this.atEnd() && this.dispatchAhead()) {
+            final int skip;
+            if (this.current() == '?') {
+                skip = 2;
+            } else {
+                skip = 1;
+            }
+            final int probe = this.cursor + skip;
+            result = probe >= this.body.length() || this.body.charAt(probe) == ' ';
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    /**
      * Consume a dispatch operator at the cursor — a plain {@code .} or
      * the fragile {@code ?.} (R-3.5) — and report which it was. The
      * cursor must sit on a {@link #dispatchAhead()} position.
+     *
      * @return True if the consumed operator was the fragile {@code ?.}
      */
     boolean consumeDispatch() {
@@ -441,6 +485,7 @@ final class Tokens {
      * Read a method-dispatch name — either a regular {@code NAME}, or
      * the {@code @}/{@code ^} root tokens which map to {@code φ} /
      * {@code ρ} per R-3.5.2 / R-9.3.
+     *
      * @return Method name value
      */
     Value readMethodName() {
@@ -464,6 +509,7 @@ final class Tokens {
      * Read zero or more space-separated horizontal arguments. Stops at
      * a suffix marker ({@code >}, {@code >>}, {@code +>}, {@code ->}) or
      * end of body.
+     *
      * @return Arguments in source order
      */
     List<Value> readArgs() {
@@ -487,6 +533,7 @@ final class Tokens {
      * Read an inline-binding label or numeric slot — characters up to
      * the next whitespace or NAME terminator. Used for {@code :label}
      * and {@code :N} per §3.12.
+     *
      * @return Binding text
      */
     String readBinding() {
@@ -510,17 +557,16 @@ final class Tokens {
      * reject anything that is neither a NAME-initial label nor a plain
      * slot number. Shared by {@link Tokens#readBinding()} and the outer
      * binding of a vertical formation, so both spell the same grammar.
+     * The glyph gate of {@link Suffix#checkGlyphs(String, int, int)} runs
+     * first, since a label is an identifier and a control character in one
+     * reaches xembly and breaks the parse instead of being reported.
+     *
      * @param text Binding text, without the leading {@code :}
      * @param span Source span
      * @param pos Source column of the label (for errors)
      */
     static void checkBinding(final String text, final Span span, final int pos) {
-        if (Tokens.cactus(text)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkGlyphs(text, span.line(), pos);
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
@@ -534,6 +580,7 @@ final class Tokens {
 
     /**
      * Whether the cursor is positioned at a name suffix marker.
+     *
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
@@ -543,6 +590,7 @@ final class Tokens {
 
     /**
      * The remainder of the body from the cursor onwards.
+     *
      * @return Tail substring
      */
     String tail() {
@@ -554,6 +602,7 @@ final class Tokens {
      * owns the whole body it was handed — a parenthesised expression, for
      * one — says so once its reader is done, and the content the reader
      * could not place is reported rather than dropped.
+     *
      * @param message What to say about the leftovers
      */
     void checkEnd(final String message) {
@@ -569,6 +618,7 @@ final class Tokens {
 
     /**
      * The full source body the token stream operates on.
+     *
      * @return Body string
      */
     String body() {
@@ -582,6 +632,7 @@ final class Tokens {
      * leaves the literal open. Every scanner in this package walks a
      * literal through here, so quoted text stays opaque the same way
      * whether it is met by the lexer or by a top-level marker search.
+     *
      * @param text Text being scanned
      * @param start Index of the opening quote
      * @return Index of the closing quote

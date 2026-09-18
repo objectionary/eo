@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjPlace}.
+ *
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
@@ -153,6 +154,7 @@ final class MjPlaceTest {
      * Test case for {@link MjPlace#execute()}.
      * Since for tests we are using dummy maven central, then instead of unpacking
      * of classes from jar it just copies the just simple .class files to target/classes folder.
+     *
      * @param temp Temporary directory
      * @throws IOException If fails
      */

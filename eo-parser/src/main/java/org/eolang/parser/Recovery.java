@@ -39,6 +39,7 @@ final class Recovery {
 
     /**
      * Ctor.
+     *
      * @param lines All lines of the program, in source order
      */
     Recovery(final List<Span> lines) {
@@ -48,6 +49,7 @@ final class Recovery {
     /**
      * The index the walk resumes at, having failed on the line at
      * {@code failed}.
+     *
      * @param failed Index of the line that failed to parse
      * @return Index of the resumption point
      */
@@ -63,6 +65,7 @@ final class Recovery {
      * not carry its indent (e.g. a merged multi-line literal, where the
      * block belongs to the head line but scanning must start past every
      * already-merged continuation line).
+     *
      * @param from Index to start scanning from
      * @param indent Indent of the line whose block is being skipped
      * @return Index of the resumption point

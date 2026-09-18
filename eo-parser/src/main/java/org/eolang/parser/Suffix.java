@@ -64,7 +64,7 @@ final class Suffix {
      * but a token boundary.
      */
     private static final Pattern NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()]*"
     );
 
     /**
@@ -109,6 +109,7 @@ final class Suffix {
      * Ctor — copies the fields of an already parsed suffix, since a
      * constructor can't hand back an instance the parser has already
      * built.
+     *
      * @param result Parsed suffix
      */
     private Suffix(final Suffix result) {
@@ -117,6 +118,7 @@ final class Suffix {
 
     /**
      * Primary ctor.
+     *
      * @param sform Form
      * @param slabel Bound name
      * @param ssig Atom signature
@@ -132,8 +134,9 @@ final class Suffix {
     }
 
     /**
-     * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}, {@code THROWS}.
+     * The suffix form — one of {@code NONE}, {@code NAME},
+     * {@code RECEIVER}, {@code AUTO}, {@code TEST}, {@code THROWS}.
+     *
      * @return Form
      */
     Form form() {
@@ -144,6 +147,7 @@ final class Suffix {
      * Bound name. Empty for {@code NONE}; for {@code AUTO} it is the
      * file-local handle of a {@code >> name} suffix, empty only for a
      * bare {@code >>}.
+     *
      * @return Name
      */
     String label() {
@@ -155,6 +159,7 @@ final class Suffix {
      * present — distinguishing a bare {@code >>} (present, empty handle)
      * from no suffix, so a caller can mark a level named yet record an
      * empty display name.
+     *
      * @return Source name (possibly empty), or {@code null}
      */
     String named() {
@@ -169,6 +174,7 @@ final class Suffix {
 
     /**
      * Atom signature. Empty if no {@code /sig} was present.
+     *
      * @return Signature, with leading {@code Q} promoted to {@code Φ}
      */
     String sig() {
@@ -177,6 +183,7 @@ final class Suffix {
 
     /**
      * Whether the {@code !} const marker is present.
+     *
      * @return Const flag
      */
     boolean constant() {
@@ -191,20 +198,26 @@ final class Suffix {
      * <p>This is the single source of truth for naming any line shape
      * — formations, applications, method chains, reversed dispatches,
      * compact tuples, only-phi formations, text blocks. Returns
-     * {@code null} for {@link Form#NONE} (no name attribute).</p>
+     * {@code null} for {@link Form#NONE}, and refuses
+     * {@link Form#RECEIVER}, which only {@link LnVoid} may name.</p>
      *
      * @param line Source line (for {@link Form#AUTO} naming)
      * @param indent Source indent (for {@link Form#AUTO} naming)
      * @return The {@code @name} value, or {@code null}
      */
     String attribute(final int line, final int indent) {
+        if (this.form == Form.RECEIVER) {
+            throw new ParseError(
+                line, indent, "only a void attribute can declare the receiver ^"
+            );
+        }
         final String name;
         if (this.form == Form.NAME) {
             name = Suffix.phi(this.label);
         } else if (this.form == Form.TEST) {
-            name = "+".concat(this.label);
+            name = "p🌵".concat(this.label);
         } else if (this.form == Form.THROWS) {
-            name = "-".concat(this.label);
+            name = "n🌵".concat(this.label);
         } else if (this.form == Form.AUTO) {
             name = new AutoName(line, indent).asString();
         } else {
@@ -216,6 +229,7 @@ final class Suffix {
     /**
      * Whether this suffix declares an atom (carries a non-empty
      * {@code /sig}).
+     *
      * @return Atom flag
      */
     boolean atom() {
@@ -230,6 +244,7 @@ final class Suffix {
      * formation than a pipe is, so a {@code /sig} written on one of them
      * is the same user mistake, worth the same message regardless of
      * which line shape it was written on (#6230).
+     *
      * @param span The line's span (used for error position)
      */
     void rejectAtomOutsideFormation(final Span span) {
@@ -244,6 +259,7 @@ final class Suffix {
     /**
      * Whether this suffix is a test attribute — either a truthy
      * {@code +> name} or a throwing {@code -> name}.
+     *
      * @return Test flag
      */
     boolean test() {
@@ -252,6 +268,7 @@ final class Suffix {
 
     /**
      * Whether this suffix is an auto-generated name ({@code >>}).
+     *
      * @return Auto flag
      */
     boolean auto() {
@@ -261,6 +278,7 @@ final class Suffix {
     /**
      * The file-local handle carried by a {@code >> name} auto suffix
      * (§3.10). Empty for a bare {@code >>} and every non-auto form.
+     *
      * @return Handle name, or empty string
      */
     String handle() {
@@ -275,6 +293,7 @@ final class Suffix {
 
     /**
      * Whether any suffix is present (form is not {@code NONE}).
+     *
      * @return Present flag
      */
     boolean present() {
@@ -306,7 +325,7 @@ final class Suffix {
      * @return Emitted token — variable verbatim, forma promoted
      */
     static String typeAtom(final String raw, final Span span, final int pos) {
-        Suffix.checkGlyphs(raw, span, pos);
+        Suffix.checkGlyphs(raw, span.line(), pos);
         final char first = raw.charAt(0);
         if (first >= 'A' && first <= 'Z'
             && !Suffix.VARIABLE.matcher(raw).matches() && !raw.startsWith("Q.")) {
@@ -331,6 +350,36 @@ final class Suffix {
             promoted = raw;
         }
         return promoted;
+    }
+
+    /**
+     * Reject an identifier carrying a glyph no identifier may hold.
+     *
+     * <p>The cactus emoji is reserved for auto-names (§2.3). A control
+     * character is worse than reserved: an XML attribute cannot hold it,
+     * so a name that keeps one reaches xembly and breaks the parse with
+     * an exception that names neither the file nor the line. Every
+     * position that reads an identifier runs this, and reports the
+     * character at the column it sits in.</p>
+     *
+     * @param name The identifier, as written
+     * @param line Source line
+     * @param pos Source column of the identifier's first character
+     */
+    static void checkGlyphs(final String name, final int line, final int pos) {
+        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
+            throw new ParseError(
+                line, pos,
+                "cactus emoji is reserved for auto-names; not allowed in identifiers"
+            );
+        }
+        final int control = new Scrubbed(name).found();
+        if (control >= 0) {
+            throw new ParseError(
+                line, pos + control,
+                "control character is not allowed in an identifier"
+            );
+        }
     }
 
     private static int clamped(final int pos, final Span span) {
@@ -399,7 +448,7 @@ final class Suffix {
             );
         }
         final String name = tail.substring(start, idx);
-        Suffix.checkGlyphs(name, span, home + start);
+        Suffix.checkGlyphs(name, span.line(), home + start);
         Suffix.checkLowercaseStart(name, span, home, start);
         Suffix.endsClean(tail, idx, span, home);
         return new Suffix(form, name, "", false);
@@ -422,22 +471,6 @@ final class Suffix {
                 );
             }
             from = end + 1;
-        }
-    }
-
-    private static void checkGlyphs(final String name, final Span span, final int pos) {
-        if (name.codePoints().anyMatch(cp -> cp == 0x1F335)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
-        final int control = new Scrubbed(name).found();
-        if (control >= 0) {
-            throw new ParseError(
-                span.line(), pos + control,
-                "control character is not allowed in an identifier"
-            );
         }
     }
 
@@ -484,7 +517,7 @@ final class Suffix {
                 )
             );
         }
-        Suffix.checkGlyphs(handle, span, home + begin);
+        Suffix.checkGlyphs(handle, span.line(), home + begin);
         Suffix.checkLowercaseStart(handle, span, home, begin);
         if (!cnst && tail.startsWith("!", rest)) {
             cnst = true;
@@ -514,8 +547,14 @@ final class Suffix {
         int idx = Suffix.skipName(tail, begin);
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
-        Suffix.checkGlyphs(name, span, home + begin);
-        Suffix.checkLowercaseStart(name, span, home, begin);
+        Suffix.checkGlyphs(name, span.line(), home + begin);
+        final Form kind;
+        if ("^".equals(name)) {
+            kind = Form.RECEIVER;
+        } else {
+            Suffix.checkLowercaseStart(name, span, home, begin);
+            kind = Form.NAME;
+        }
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
             cnst = true;
@@ -538,7 +577,7 @@ final class Suffix {
             rest = idx;
         }
         Suffix.endsClean(tail, rest, span, home);
-        return new Suffix(Form.NAME, name, signature, cnst);
+        return new Suffix(kind, name, signature, cnst);
     }
 
     private static void endsClean(
@@ -625,6 +664,7 @@ final class Suffix {
 
     /**
      * Suffix form taxonomy.
+     *
      * @since 0.1
      */
     enum Form {
@@ -638,6 +678,12 @@ final class Suffix {
          * Explicit name binding ({@code > name}).
          */
         NAME,
+
+        /**
+         * The receiver ({@code > ^}) — a name only a void attribute may
+         * bind (R-3.4.11).
+         */
+        RECEIVER,
 
         /**
          * Auto-generated name ({@code >>}), optional handle (§3.10).

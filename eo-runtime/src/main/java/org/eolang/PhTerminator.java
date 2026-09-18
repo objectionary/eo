@@ -75,6 +75,7 @@ public final class PhTerminator implements Phi {
      * Make a terminator that explains, by default, why it was born without a
      * dispatch ever reaching it, while still letting a caller that takes it
      * and puts its own, more specific reason override that default.
+     *
      * @param reason The default reason for the termination
      */
     public PhTerminator(final String reason) {
@@ -95,6 +96,7 @@ public final class PhTerminator implements Phi {
 
     /**
      * Primary ctor.
+     *
      * @param cse The cause already carried, or {@code null} for none
      * @param reason The default reason for the termination
      */

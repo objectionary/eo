@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Merging}.
+ *
  * @since 0.68.0
  */
 final class MergingTest {

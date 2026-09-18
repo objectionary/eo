@@ -7,9 +7,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^ i fallback] > at
   if. > @
@@ -39,8 +39,12 @@
           number index
           ^.length >> len!
       fallback
-        "Given index %f is out of text bounds".printf
-          * i
+        i.is-finite.if
+          "Given index %f is out of text bounds".printf
+            * i
+          "Given index %s is out of text bounds".printf
+            *
+              string i.as-scientific
       ^.slice index 1
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
@@ -49,10 +53,22 @@
       1.5
       I
 
+  eq. ++> can-format-the-error-message-of-a-negatively-infinite-index
+    "Given index -infinity is out of text bounds"
+    "some".at
+      ninf
+      I
+
   eq. ++> can-format-the-error-message-of-a-non-finite-index
     "Index must be an integer, but was nan"
     "some".at
       nan
+      I
+
+  eq. ++> can-format-the-error-message-of-a-positively-infinite-index
+    "Given index infinity is out of text bounds"
+    "some".at
+      pinf
       I
 
   eq. ++> can-recover-from-a-fractional-index-in-bounds

@@ -7,10 +7,11 @@ package org.eolang.win32;
 import org.eolang.Data;
 import org.eolang.PhDefault;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * WSACleanup WS2_32 function call.
+ *
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-wsacleanup">here for details</a>
  * @since 0.40.0
  * @checkstyle AbbreviationAsWordInNameCheck (5 lines)
@@ -24,6 +25,7 @@ public final class WSACleanupFuncCall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param win Win32 object
      */
     public WSACleanupFuncCall(final Phi win) {
