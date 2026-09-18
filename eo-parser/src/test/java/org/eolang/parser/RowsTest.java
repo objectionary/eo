@@ -124,8 +124,8 @@ final class RowsTest {
         source.add(null);
         Assertions.assertThrows(
             NullPointerException.class,
-            () -> new Rows(source).underlined(2, 0, "дыра"),
-            "a null span at a valid number is not refused with an exception"
+            () -> new Rows(source),
+            "a null span is not refused when the source rows are copied"
         );
     }
 }
