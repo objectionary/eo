@@ -1473,7 +1473,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Pipe line whose `\|` is glued to the argument list or suffix that follows it (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
-| Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
