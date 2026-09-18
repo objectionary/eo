@@ -450,7 +450,7 @@ final class Tokens {
      */
     boolean reversedAhead(final Value head) {
         final boolean result;
-        if (head.reversible() && !this.atEnd() && this.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !this.atEnd() && this.dispatchAhead()) {
             final int skip;
             if (this.current() == '?') {
                 skip = 2;
