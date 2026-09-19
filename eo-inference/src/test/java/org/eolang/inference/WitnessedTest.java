@@ -39,16 +39,19 @@ final class WitnessedTest {
     }
 
     @Test
-    void saysNothingWhenTooManyThingsWentIn(@Mktmp final Path temp) throws IOException {
-        WitnessedTest.program(temp, "Φ.oak", "Φ.elm");
-        new Witnessed(new Demanded(new Resolved(new Clues())), 1).follow(
+    void writesAChoiceHoweverLongItGrows(@Mktmp final Path temp) throws IOException {
+        WitnessedTest.program(
+            temp, "Φ.oak", "Φ.elm", "Φ.ash", "Φ.fir", "Φ.yew",
+            "Φ.box", "Φ.bay", "Φ.gum", "Φ.ivy", "Φ.teak", "Φ.pine"
+        );
+        new Witnessed(new Demanded(new Resolved(new Clues()))).follow(
             temp.resolve("xmirs"), temp.resolve("tables")
         );
         MatcherAssert.assertThat(
-            "a choice too long to read must say so, but it was written out",
+            "a choice of eleven must be written out whole, but it was cut short",
             new XMLDocument(temp.resolve("tables").resolve("provides.xml"))
-                .nodes("//witnessed/unknown"),
-            Matchers.hasSize(1)
+                .nodes("//witnessed/union/ref"),
+            Matchers.hasSize(11)
         );
     }
 
@@ -102,15 +105,19 @@ final class WitnessedTest {
             String.join(
                 "",
                 "<object><o loc='Φ.inc' name='inc'>",
-                "<o base='∅' loc='Φ.inc.x' name='x'/></o>",
-                "<o loc='Φ.oak' name='oak'/><o loc='Φ.elm' name='elm'/>"
+                "<o base='∅' loc='Φ.inc.x' name='x'/></o>"
             )
         );
         for (int caller = 0; caller < fillers.length; caller += 1) {
             text.append(
                 String.format(
-                    "<o base='Φ.inc' loc='Φ.app%1$d' name='app%1$d'><o as='α0' base='%2$s' loc='Φ.app%1$d.α0'/></o>",
-                    caller, fillers[caller]
+                    String.join(
+                        "",
+                        "<o loc='%2$s' name='%3$s'/>",
+                        "<o base='Φ.inc' loc='Φ.app%1$d' name='app%1$d'>",
+                        "<o as='α0' base='%2$s' loc='Φ.app%1$d.α0'/></o>"
+                    ),
+                    caller, fillers[caller], fillers[caller].substring(2)
                 )
             );
         }
