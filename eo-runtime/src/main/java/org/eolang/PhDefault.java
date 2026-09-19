@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings("PMD.GodClass")
+@SuppressWarnings({"PMD.GodClass", "PMD.AvoidSynchronizedAtMethodLevel"})
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -84,7 +84,7 @@ public class PhDefault implements Phi, Cloneable {
     private final Map<String, Attribute> initial;
 
     /**
-     * Order of their names.
+     * Order of their names, guarded by this object's monitor.
      *
      * <p>Not final: {@link #copy()} gives the copy a list of its own, so an
      * attribute registered on either side afterwards is not seen by the
@@ -93,7 +93,7 @@ public class PhDefault implements Phi, Cloneable {
     private List<String> order;
 
     /**
-     * Attributes.
+     * Attributes, guarded by this object's monitor.
      */
     private Map<String, Attribute> attrs;
 
@@ -188,7 +188,6 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized void put(final int pos, final Phi object) {
         this.put(this.vacancy(pos), object);
     }
@@ -318,7 +317,6 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     public synchronized void add(final String name, final Attribute attr) {
         if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
             this.order.add(name);
@@ -440,7 +438,6 @@ public class PhDefault implements Phi, Cloneable {
         return txt;
     }
 
-    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
     private synchronized Map<String, Attribute> loaded() {
         if (this.attrs == null) {
             this.attrs = new Bindings();
