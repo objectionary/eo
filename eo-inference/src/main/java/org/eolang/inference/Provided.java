@@ -114,6 +114,24 @@ final class Provided {
     }
 
     /**
+     * The type of the attribute this type keeps under the given name itself,
+     * without going behind its {@code φ}.
+     *
+     * @param type The name the type goes by
+     * @param name The name of the attribute
+     * @return The type of the attribute, or an empty string when the name is
+     *  not this type's own
+     */
+    String here(final String type, final String name) {
+        String found = this.bound(type, name);
+        final String member = String.join(".", type, name);
+        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
+            found = member;
+        }
+        return found;
+    }
+
+    /**
      * The void this type keeps in the given place among the ones still empty.
      *
      * <p>The {@code ρ} a formation declares is not one of them. It is filled
@@ -258,11 +276,7 @@ final class Provided {
     }
 
     private String kept(final String type, final String name, final Collection<String> walked) {
-        String found = this.bound(type, name);
-        final String member = String.join(".", type, name);
-        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
-            found = member;
-        }
+        String found = this.here(type, name);
         final String behind = this.behind(type);
         if (found.isEmpty() && !behind.isEmpty() && walked.add(type)) {
             found = this.kept(behind, name, walked);
