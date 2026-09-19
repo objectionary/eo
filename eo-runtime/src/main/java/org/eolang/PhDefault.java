@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A simple object.
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 0.1
  * @checkstyle DesignForExtensionCheck (500 lines)
  */
-@SuppressWarnings({"PMD.GodClass", "PMD.AvoidSynchronizedAtMethodLevel"})
+@SuppressWarnings("PMD.GodClass")
 public class PhDefault implements Phi, Cloneable {
 
     /**
@@ -58,6 +60,16 @@ public class PhDefault implements Phi, Cloneable {
     private static final AtomTypes ATOMS = PhDefault.atoms();
 
     /**
+     * Locks shared by all objects, each object taking the one its identity
+     * hash points at, so no object carries a lock of its own. A lock is held
+     * only while the object loads or registers its attributes and never
+     * across a call into another object, since two objects may share one.
+     */
+    private static final ReentrantLock[] LOCKS = Stream.generate(ReentrantLock::new)
+        .limit(1024)
+        .toArray(ReentrantLock[]::new);
+
+    /**
      * From Java package name to forma.
      */
     private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO_?");
@@ -84,7 +96,7 @@ public class PhDefault implements Phi, Cloneable {
     private final Map<String, Attribute> initial;
 
     /**
-     * Order of their names, guarded by this object's monitor.
+     * Order of their names, guarded by {@link #lock()}.
      *
      * <p>Not final: {@link #copy()} gives the copy a list of its own, so an
      * attribute registered on either side afterwards is not seen by the
@@ -93,7 +105,7 @@ public class PhDefault implements Phi, Cloneable {
     private List<String> order;
 
     /**
-     * Attributes, guarded by this object's monitor.
+     * Attributes, guarded by {@link #lock()}.
      */
     private Map<String, Attribute> attrs;
 
@@ -188,8 +200,14 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public synchronized void put(final int pos, final Phi object) {
-        this.put(this.vacancy(pos), object);
+    public void put(final int pos, final Phi object) {
+        final ReentrantLock lock = this.lock();
+        lock.lock();
+        try {
+            this.put(this.vacancy(pos), object);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -317,14 +335,20 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    public synchronized void add(final String name, final Attribute attr) {
-        if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
-            this.order.add(name);
-        }
-        if (Phi.RHO.equals(name)) {
-            this.loaded().put(name, attr);
-        } else {
-            this.loaded().put(name, new AtWithRho(attr, this));
+    public void add(final String name, final Attribute attr) {
+        final ReentrantLock lock = this.lock();
+        lock.lock();
+        try {
+            if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
+                this.order.add(name);
+            }
+            if (Phi.RHO.equals(name)) {
+                this.loaded().put(name, attr);
+            } else {
+                this.loaded().put(name, new AtWithRho(attr, this));
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -438,14 +462,24 @@ public class PhDefault implements Phi, Cloneable {
         return txt;
     }
 
-    private synchronized Map<String, Attribute> loaded() {
-        if (this.attrs == null) {
-            this.attrs = new Bindings();
-            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                this.add(ent.getKey(), ent.getValue());
+    private Map<String, Attribute> loaded() {
+        final ReentrantLock lock = this.lock();
+        lock.lock();
+        try {
+            if (this.attrs == null) {
+                this.attrs = new Bindings();
+                for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                    this.add(ent.getKey(), ent.getValue());
+                }
             }
+            return this.attrs;
+        } finally {
+            lock.unlock();
         }
-        return this.attrs;
+    }
+
+    private ReentrantLock lock() {
+        return PhDefault.LOCKS[System.identityHashCode(this) & (PhDefault.LOCKS.length - 1)];
     }
 
     private boolean literal(final String name) {

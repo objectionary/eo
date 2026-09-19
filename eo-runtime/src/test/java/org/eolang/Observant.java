@@ -30,8 +30,7 @@ final class Observant extends PhDefault {
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
-    public synchronized void add(final String name, final Attribute attr) {
+    public void add(final String name, final Attribute attr) {
         this.names.add(name);
         super.add(name, attr);
     }
