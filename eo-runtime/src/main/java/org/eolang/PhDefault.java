@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -99,13 +98,6 @@ public class PhDefault implements Phi, Cloneable {
     private Map<String, Attribute> attrs;
 
     /**
-     * Guards {@link #attrs} and {@link #order} against concurrent lazy init.
-     * Not final: {@link #copy()} gives the copy its own, since a copy's
-     * lazy init is independent of the origin's.
-     */
-    private ReentrantLock lock;
-
-    /**
      * Default ctor.
      */
     public PhDefault() {
@@ -163,7 +155,6 @@ public class PhDefault implements Phi, Cloneable {
         this.data = new Snapshot(dta);
         this.initial = attributes;
         this.order = new ArrayList<>(0);
-        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -180,7 +171,6 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.lock = new ReentrantLock();
             final CopiedAttrs fresh = new CopiedAttrs(this.loaded(), copy);
             fresh.freeze();
             copy.attrs = fresh;
@@ -198,13 +188,9 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     @Override
-    public void put(final int pos, final Phi object) {
-        this.lock.lock();
-        try {
-            this.put(this.vacancy(pos), object);
-        } finally {
-            this.lock.unlock();
-        }
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
+    public synchronized void put(final int pos, final Phi object) {
+        this.put(this.vacancy(pos), object);
     }
 
     @Override
@@ -332,19 +318,15 @@ public class PhDefault implements Phi, Cloneable {
      * @param name The name
      * @param attr The attr
      */
-    public void add(final String name, final Attribute attr) {
-        this.lock.lock();
-        try {
-            if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
-                this.order.add(name);
-            }
-            if (Phi.RHO.equals(name)) {
-                this.loaded().put(name, attr);
-            } else {
-                this.loaded().put(name, new AtWithRho(attr, this));
-            }
-        } finally {
-            this.lock.unlock();
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
+    public synchronized void add(final String name, final Attribute attr) {
+        if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
+            this.order.add(name);
+        }
+        if (Phi.RHO.equals(name)) {
+            this.loaded().put(name, attr);
+        } else {
+            this.loaded().put(name, new AtWithRho(attr, this));
         }
     }
 
@@ -458,19 +440,15 @@ public class PhDefault implements Phi, Cloneable {
         return txt;
     }
 
-    private Map<String, Attribute> loaded() {
-        this.lock.lock();
-        try {
-            if (this.attrs == null) {
-                this.attrs = new Bindings();
-                for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
-                    this.add(ent.getKey(), ent.getValue());
-                }
+    @SuppressWarnings("PMD.AvoidSynchronizedAtMethodLevel")
+    private synchronized Map<String, Attribute> loaded() {
+        if (this.attrs == null) {
+            this.attrs = new Bindings();
+            for (final Map.Entry<String, Attribute> ent : this.initial.entrySet()) {
+                this.add(ent.getKey(), ent.getValue());
             }
-            return this.attrs;
-        } finally {
-            this.lock.unlock();
         }
+        return this.attrs;
     }
 
     private boolean literal(final String name) {
