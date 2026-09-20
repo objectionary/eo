@@ -106,6 +106,24 @@ final class XmirTest {
     }
 
     @Test
+    void printsPhiArgumentsWithoutAnInvalidAtSuffix() throws IOException {
+        final String eo = new Xmir(
+            new XMLDocument(
+                "<object><o base='Φ.foo' name='x'><o base='Φ.bar' as='φ'/></o></object>"
+            )
+        ).toEO();
+        final XML reparsed = new EoSyntax(
+            String.format("%s%n", eo), new TrDefault<>()
+        ).parsed();
+        MatcherAssert.assertThat(
+            "A φ-bound argument must be emitted as a positional argument, not '@'",
+            reparsed,
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+        MatcherAssert.assertThat(eo, Matchers.not(Matchers.containsString("bar:@")));
+    }
+
+    @Test
     void keepsArgumentsOfAnIdentityShapedFormation() {
         MatcherAssert.assertThat(
             "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
