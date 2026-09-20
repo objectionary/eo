@@ -44,7 +44,7 @@
   minus. > exponent!
     number raw
     number shift
-  as-fixed. > mantissa
+  as-fixed. > mantissa!
     scaled.div
       10.power
         number raw
