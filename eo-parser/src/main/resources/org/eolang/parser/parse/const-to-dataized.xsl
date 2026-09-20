@@ -64,12 +64,15 @@
       <xsl:if test="@as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
+      <xsl:if test="@local">
+        <xsl:attribute name="local" select="@local"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos"/>
         <o>
-          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as' and name()!='local']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>
