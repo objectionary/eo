@@ -43,12 +43,28 @@ public final class Ladder {
     private final Map<String, Integer> counts;
 
     /**
+     * How many of them came back with a choice of several objects.
+     */
+    private final int picked;
+
+    /**
      * Ctor.
      *
      * @param rungs How many objects stand on each rung, from the shallowest up
      */
     public Ladder(final Map<String, Integer> rungs) {
+        this(rungs, 0);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param rungs How many objects stand on each rung, from the shallowest up
+     * @param arms How many of them came back with a choice of several objects
+     */
+    public Ladder(final Map<String, Integer> rungs, final int arms) {
         this.counts = new LinkedHashMap<>(rungs);
+        this.picked = arms;
     }
 
     /**
@@ -144,7 +160,14 @@ public final class Ladder {
      * its own is a number to game, and the rungs are what makes the gaming
      * visible, so whoever is handed one of them is handed both.</p>
      *
-     * @return The lines, four shares and a depth ahead of a rung apiece
+     * <p>The count of the answers that came back with a choice goes last and
+     * on its own. It is neither a share nor a rung: a row naming both arms of
+     * a picker ended at the same void a row naming nothing ended at, so no
+     * rung can tell them apart, and a share that started counting arms would
+     * be a share nobody could compare against an older build (#8854).</p>
+     *
+     * @return The lines, four shares and a depth ahead of a rung apiece, and
+     *  the choices behind them
      */
     public Collection<String> lines() {
         final Collection<String> lines = new ArrayList<>(0);
@@ -156,6 +179,7 @@ public final class Ladder {
         for (final Map.Entry<String, Integer> rung : this.counts.entrySet()) {
             lines.add(String.format(Locale.ROOT, "%d %s", rung.getValue(), rung.getKey()));
         }
+        lines.add(String.format(Locale.ROOT, "%d answered with a choice", this.picked));
         return lines;
     }
 

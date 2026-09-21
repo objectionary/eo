@@ -64,10 +64,14 @@ public final class Depth {
         for (final String name : names) {
             counts.put(name, 0);
         }
+        int picked = 0;
         for (final Answer answer : new Answered(this.world, this.tables).all().values()) {
             final String name = names.get(answer.rung());
             counts.put(name, counts.get(name) + 1);
+            if (!answer.arms().isEmpty()) {
+                picked = picked + 1;
+            }
         }
-        return new Ladder(counts);
+        return new Ladder(counts, picked);
     }
 }
