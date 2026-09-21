@@ -70,7 +70,7 @@
           "closedir"
           opened.code
     0
-  sorted > entries
+  sorted > entries!
     gathered
       os.is-windows.if
         added
