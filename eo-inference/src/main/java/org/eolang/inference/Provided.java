@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -111,6 +112,19 @@ final class Provided {
      */
     String attribute(final String type, final String name) {
         return this.kept(type, name, new HashSet<>(0));
+    }
+
+    /**
+     * The types the walk for the attribute of the given name goes behind.
+     *
+     * @param type The name the type goes by
+     * @param name The name of the attribute
+     * @return The types, in the order the walk goes behind them
+     */
+    Collection<String> passed(final String type, final String name) {
+        final Collection<String> walked = new LinkedHashSet<>(0);
+        this.kept(type, name, walked);
+        return walked;
     }
 
     /**
