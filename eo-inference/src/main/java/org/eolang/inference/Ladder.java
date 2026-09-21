@@ -48,6 +48,11 @@ public final class Ladder {
     private final int picked;
 
     /**
+     * How many objects stand in each band of the rung of the voids.
+     */
+    private final Map<String, Integer> shades;
+
+    /**
      * Ctor.
      *
      * @param rungs How many objects stand on each rung, from the shallowest up
@@ -63,8 +68,24 @@ public final class Ladder {
      * @param arms How many of them came back with a choice of several objects
      */
     public Ladder(final Map<String, Integer> rungs, final int arms) {
+        this(rungs, arms, new LinkedHashMap<>(0));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param rungs How many objects stand on each rung, from the shallowest up
+     * @param arms How many of them came back with a choice of several objects
+     * @param bands How many of the ones rooted at a void stand in each band
+     */
+    public Ladder(
+        final Map<String, Integer> rungs,
+        final int arms,
+        final Map<String, Integer> bands
+    ) {
         this.counts = new LinkedHashMap<>(rungs);
         this.picked = arms;
+        this.shades = new LinkedHashMap<>(bands);
     }
 
     /**
@@ -74,6 +95,23 @@ public final class Ladder {
      */
     public Map<String, Integer> rungs() {
         return Collections.unmodifiableMap(this.counts);
+    }
+
+    /**
+     * How many of the ones rooted at a void stand in each band.
+     *
+     * <p>The rung of the voids is one number and three different situations,
+     * and the three are not equally ours. A void nobody fills and a void only
+     * Java fills are as far as anybody can go, so the name is a weak fact and
+     * a true one. A void the callers of the program fill is a gap we left: the
+     * program says what goes in there and we wrote it down, so a name still
+     * rooted at it means we did not use what we recorded. Added together they
+     * make a share that cannot get worse when we are wrong.</p>
+     *
+     * @return The bands, from the least known to the most
+     */
+    public Map<String, Integer> bands() {
+        return Collections.unmodifiableMap(this.shades);
     }
 
     /**
@@ -166,8 +204,8 @@ public final class Ladder {
      * rung can tell them apart, and a share that started counting arms would
      * be a share nobody could compare against an older build (#8854).</p>
      *
-     * @return The lines, four shares and a depth ahead of a rung apiece, and
-     *  the choices behind them
+     * @return The lines, four shares and a depth ahead of a rung apiece, the
+     *  bands of the rung of the voids after them, and the choices last
      */
     public Collection<String> lines() {
         final Collection<String> lines = new ArrayList<>(0);
@@ -178,6 +216,9 @@ public final class Ladder {
         lines.add(String.format(Locale.ROOT, "%.1f depth", this.percent()));
         for (final Map.Entry<String, Integer> rung : this.counts.entrySet()) {
             lines.add(String.format(Locale.ROOT, "%d %s", rung.getValue(), rung.getKey()));
+        }
+        for (final Map.Entry<String, Integer> band : this.shades.entrySet()) {
+            lines.add(String.format(Locale.ROOT, "%d %s", band.getValue(), band.getKey()));
         }
         lines.add(String.format(Locale.ROOT, "%d answered with a choice", this.picked));
         return lines;

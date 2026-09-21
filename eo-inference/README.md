@@ -114,12 +114,27 @@ program:
 5953 a formation, voids still free
 22293 a formation, nothing left free
 9728 nothing left to find out
+581 rooted at a void nobody fills
+7790 rooted at a void the callers fill
+3 rooted at a void only an atom fills
 745 answered with a choice
 ```
 
 One number a line, the value first and the name of it after, so that a shell
 can read it with one `read` and know nothing about what any of it means. The
 rungs go down with the shares and not instead of them, for the reason above.
+
+The three under the rung of the voids go down with them for a reason of their
+own. That rung is one number and three different situations, and only one of
+the three is ours. A void nobody fills and a void only Java fills are as far
+as anybody can go: the name is weak and it is true, and no amount of work will
+make it say more. A void the callers of the program fill is a gap we left,
+since the program says what goes in there and `Witnessed` wrote it down, so a
+name still rooted at it means we did not use what we recorded. Added together
+the three make a share that cannot get worse when we are wrong, which is the
+one thing a measurement of ourselves must never do. They are bands rather than
+rungs, so `Band` works them out and a page and a tally cannot disagree about
+them, and they sum to the rung above.
 
 The last line is neither a share nor a rung. A call on a void that holds a
 picker hands back one of the arguments it was given, and where those agree on
