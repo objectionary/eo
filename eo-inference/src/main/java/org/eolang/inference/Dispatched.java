@@ -37,16 +37,6 @@ import java.util.Map;
  * only ever asked for what the last one could not answer.</p>
  *
  * @since 0.68.0
- * @todo #8777:90min Carry the arms through a body a walk goes behind.
- *  A read takes its arms from the row of the call it is written on, which
- *  leaves out the read whose call settled on an object whose own body is the
- *  choice. Of the 622 rows eo-runtime still keeps rooted at {@code Φ.bool.if}
- *  without arms, 488 read such a receiver and 133 read one rooted at a void
- *  that names no arms of its own. {@link Provided} walks behind the body,
- *  arrives at a name rooted at the void and says nothing of what it passed on
- *  the way, so the arms sitting on the body are lost before the read is asked.
- *  Handing them up wants the walk to give back where it went as well as where
- *  it ended.
  */
 final class Dispatched {
 
@@ -203,7 +193,9 @@ final class Dispatched {
      * them, the way {@link Arrived} has it: an arm without the attribute leaves
      * the read rooted at the void it had, which is true of every caller and
      * says little, rather than with a choice that holds for some callers and
-     * lies about the rest.</p>
+     * lies about the rest. Which row carries them is {@link Borne}'s business,
+     * since a receiver that settled on an object of its own keeps the choice
+     * one step in, behind that object's body.</p>
      *
      * @param pairs The pairs, each name against the one it is a copy of
      * @return The arms, by the locator of the dispatch, without the dispatches
@@ -230,7 +222,7 @@ final class Dispatched {
         }
         boolean more = true;
         while (more) {
-            more = this.spread(found, pairs, owned);
+            more = this.spread(found, pairs, names, owned);
         }
         return found;
     }
@@ -238,16 +230,16 @@ final class Dispatched {
     private boolean spread(
         final Map<String, Collection<String>> found,
         final Map<String, String> pairs,
+        final Map<String, String> names,
         final Provided owned
     ) {
         boolean more = false;
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
-            final String bearer = dispatch.bearer();
-            if (!found.containsKey(made) && found.containsKey(bearer)
+            if (!found.containsKey(made) && !dispatch.bearer().isEmpty()
                 && this.rooted(pairs.getOrDefault(made, ""))) {
                 final Collection<String> arms = new Arrived(owned).names(
-                    found.get(bearer), dispatch.name()
+                    new Borne(found, names, owned).arms(dispatch), dispatch.name()
                 );
                 if (arms.size() > 1) {
                     found.put(made, arms);

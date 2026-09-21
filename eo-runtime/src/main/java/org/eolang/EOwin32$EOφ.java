@@ -5,7 +5,7 @@
 package org.eolang;
 
 import org.eolang.sys.TupleToArray;
-import org.eolang.win32.NamedFuncCall;
+import org.eolang.sys.win32.NamedFuncCall;
 
 /**
  * Win32 function call.

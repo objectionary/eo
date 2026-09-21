@@ -8,7 +8,7 @@ import org.eolang.Data;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.eolang.sys.posix.ReadSyscall;
-import org.eolang.win32.ReadFuncCall;
+import org.eolang.sys.win32.ReadFuncCall;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;

@@ -7,7 +7,7 @@ package org.eolang.parser;
 /**
  * The left-hand side of an only-phi shape — the {@code lhs} of
  * {@code lhs > [params] > name} (§3.10) and of a parenthesised
- * {@code (lhs > [params])} inline-phi (§3.10.7).
+ * {@code (lhs > [params])} inline-phi (R-3.10.10a).
  *
  * <p>That text becomes the {@code φ} slot of the formation, and everything
  * the shape has to settle before emitting it is a question about the text
