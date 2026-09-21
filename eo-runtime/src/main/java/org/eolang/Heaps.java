@@ -29,8 +29,6 @@ final class Heaps {
      */
     private final ConcurrentMap<Integer, byte[]> blocks;
 
-
-
     /**
      * Next identifier to hand out.
      */
