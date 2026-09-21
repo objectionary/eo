@@ -114,11 +114,20 @@ program:
 5953 a formation, voids still free
 22293 a formation, nothing left free
 9728 nothing left to find out
+745 answered with a choice
 ```
 
 One number a line, the value first and the name of it after, so that a shell
 can read it with one `read` and know nothing about what any of it means. The
 rungs go down with the shares and not instead of them, for the reason above.
+
+The last line is neither a share nor a rung. A call on a void that holds a
+picker hands back one of the arguments it was given, and where those agree on
+nothing the row names all of them rather than none. That is a real answer, and
+no rung can show it: the walk ended at the void either way, so an object told
+it is either a `Φ.dial` or a `Φ.clock` is counted beside an object told
+nothing. It goes last and on its own, because a share that started counting
+arms would be a share nobody could compare against an older build.
 
 A pull request that touches the rules, the parser, the plugin or the program
 they are read from is built twice by `.github/workflows/ladder.yml` — once at

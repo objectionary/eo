@@ -173,4 +173,29 @@ final class LadderTest {
             Matchers.not(Matchers.hasItem("something"))
         );
     }
+
+    @Test
+    void countsTheObjectsAnsweredWithAChoice() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        rungs.put("a void", 9);
+        MatcherAssert.assertThat(
+            "a row naming both arms is a gain no rung can show, so a line must count it, but none did",
+            new Ladder(rungs, 4).lines(),
+            Matchers.hasItem("4 answered with a choice")
+        );
+    }
+
+    @Test
+    void leavesTheRungsWhereTheyWereWhenAChoiceIsCounted() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("nothing", 1);
+        rungs.put("a void", 1);
+        rungs.put("a forma", 2);
+        MatcherAssert.assertThat(
+            "a share that starts counting arms is one nobody can compare against an older build, but it moved",
+            new Ladder(rungs, 2).named(),
+            Matchers.closeTo(new Ladder(rungs).named(), 0.001d)
+        );
+    }
 }
