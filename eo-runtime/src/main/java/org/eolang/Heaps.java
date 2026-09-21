@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
 
 /**
@@ -31,10 +29,7 @@ final class Heaps {
      */
     private final ConcurrentMap<Integer, byte[]> blocks;
 
-    /**
-     * Lock.
-     */
-    private final Lock lock;
+
 
     /**
      * Next identifier to hand out.
@@ -46,7 +41,6 @@ final class Heaps {
      */
     private Heaps() {
         this.blocks = new ConcurrentHashMap<>(0);
-        this.lock = new ReentrantLock();
         this.next = new AtomicInteger();
     }
 
@@ -74,18 +68,14 @@ final class Heaps {
      * @return Size
      */
     int size(final int identifier) {
-        this.lock.lock();
-        try {
-            if (!this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
+        final byte[] block = this.blocks.get(identifier);
+        if (block == null) {
+            throw new ExFailure(
                     "Block in memory by identifier '%d' is not allocated, can't get size",
                     identifier
-                );
-            }
-            return this.blocks.get(identifier).length;
-        } finally {
-            this.lock.unlock();
+            );
         }
+        return block.length;
     }
 
     /**
@@ -101,20 +91,12 @@ final class Heaps {
                 identifier, size
             );
         }
-        this.lock.lock();
-        try {
-            if (!this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
+        final byte[] modified = this.blocks.computeIfPresent(identifier, (id, bytes) -> Arrays.copyOf(bytes, size));
+        if (modified == null) {
+            throw new ExFailure(
                     "Block in memory by identifier '%d' is not allocated, can't get size",
                     identifier
-                );
-            }
-            final byte[] bytes = this.blocks.get(identifier);
-            final byte[] resized = new byte[size];
-            System.arraycopy(bytes, 0, resized, 0, Math.min(bytes.length, size));
-            this.blocks.put(identifier, resized);
-        } finally {
-            this.lock.unlock();
+            );
         }
     }
 
@@ -142,25 +124,20 @@ final class Heaps {
      *  together with the size of the block
      */
     Fetched fetched(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (!this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
+        final byte[] block = this.blocks.get(identifier);
+        if (block == null) {
+            throw new ExFailure(
                     "Block in memory by identifier '%d' is not allocated, can't read",
                     identifier
-                );
-            }
-            final byte[] block = this.blocks.get(identifier);
-            final Optional<byte[]> out;
-            if (offset >= 0 && length >= 0 && (long) offset + length <= block.length) {
-                out = Optional.of(Arrays.copyOfRange(block, offset, offset + length));
-            } else {
-                out = Optional.empty();
-            }
-            return new Fetched(out, block.length);
-        } finally {
-            this.lock.unlock();
+            );
         }
+        final Optional<byte[]> out;
+        if (offset >= 0 && length >= 0 && (long) offset + length <= block.length) {
+            out = Optional.of(Arrays.copyOfRange(block, offset, offset + length));
+        } else {
+            out = Optional.empty();
+        }
+        return new Fetched(out, block.length);
     }
 
     /**
@@ -172,32 +149,27 @@ final class Heaps {
      * @return Bytes from the block in memory
      */
     byte[] read(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (offset < 0) {
-                throw new ExFailure(
+        if (offset < 0) {
+            throw new ExFailure(
                     "Block '%d': can't read at negative offset '%d'",
                     identifier, offset
-                );
-            }
-            if (length < 0) {
-                throw new ExFailure(
+            );
+        }
+        if (length < 0) {
+            throw new ExFailure(
                     "Block '%d': can't read a negative number of bytes '%d'",
                     identifier, length
-                );
-            }
-            final Fetched data = this.fetched(identifier, offset, length);
-            return data.bytes().orElseThrow(
-                () -> new ExFailure(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    data.size()
-                )
             );
-        } finally {
-            this.lock.unlock();
         }
+        final Fetched data = this.fetched(identifier, offset, length);
+        return data.bytes().orElseThrow(
+                () -> new ExFailure(
+                        "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
+                        length,
+                        offset,
+                        data.size()
+                )
+        );
     }
 
     /**
@@ -208,42 +180,37 @@ final class Heaps {
      * @param data Data to write
      */
     void write(final int identifier, final int offset, final byte[] data) {
-        this.lock.lock();
-        try {
-            if (!this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
+        final byte[] source = this.blocks.get(identifier);
+        if (source == null) {
+            throw new ExFailure(
                     "Can't read a block in memory with identifier '%d' because it's not allocated",
                     identifier
-                );
-            }
-            if (offset < 0) {
-                throw new ExFailure(
+            );
+        }
+        if (offset < 0) {
+            throw new ExFailure(
                     "Block '%d': can't write at negative offset '%d'",
                     identifier, offset
-                );
-            }
-            final long end = (long) offset + data.length;
-            if (end > Integer.MAX_VALUE) {
-                throw new ExFailure(
+            );
+        }
+        final long end = (long) offset + data.length;
+        if (end > Integer.MAX_VALUE) {
+            throw new ExFailure(
                     "Block '%d': can't write at offset '%d', resulting size '%d' is too large for int",
                     identifier, offset, end
-                );
-            }
-            final byte[] source = this.blocks.get(identifier);
-            final int length = source.length;
-            if (length < end) {
-                throw new ExFailure(
+            );
+        }
+        final int length = source.length;
+        if (length < end) {
+            throw new ExFailure(
                     "Can't write '%d' bytes with offset '%d' to the block with identifier '%d', because only '%d' were allocated",
                     data.length,
                     offset,
                     identifier,
                     length
-                );
-            }
-            System.arraycopy(data, 0, source, offset, data.length);
-        } finally {
-            this.lock.unlock();
+            );
         }
+        System.arraycopy(data, 0, source, offset, data.length);
     }
 
     private int malloc(final int size) {
@@ -259,27 +226,16 @@ final class Heaps {
                 "Can't allocate a block in memory, ran out of identifiers"
             );
         }
-        this.lock.lock();
-        try {
-            this.blocks.put(identifier, new byte[size]);
-        } finally {
-            this.lock.unlock();
-        }
+        this.blocks.put(identifier, new byte[size]);
         return identifier;
     }
 
     private void free(final int identifier) {
-        this.lock.lock();
-        try {
-            if (!this.blocks.containsKey(identifier)) {
-                throw new ExFailure(
+        if (this.blocks.remove(identifier) == null) {
+            throw new ExFailure(
                     "Can't free a block in memory with identifier '%d' because it's not allocated",
                     identifier
-                );
-            }
-            this.blocks.remove(identifier);
-        } finally {
-            this.lock.unlock();
+            );
         }
     }
 }
