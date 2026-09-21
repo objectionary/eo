@@ -187,6 +187,20 @@ final class LadderTest {
     }
 
     @Test
+    void countsTheBandsUnderTheRungs() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("a void", 3);
+        rungs.put("a forma", 5);
+        final Map<String, Integer> bands = new LinkedHashMap<>(0);
+        bands.put("rooted at a void the callers fill", 2);
+        MatcherAssert.assertThat(
+            "a ladder handed a band must hand it on, but the line was nowhere in it",
+            new Ladder(rungs, 0, bands).lines(),
+            Matchers.hasItem("2 rooted at a void the callers fill")
+        );
+    }
+
+    @Test
     void leavesTheRungsWhereTheyWereWhenAChoiceIsCounted() {
         final Map<String, Integer> rungs = new LinkedHashMap<>(0);
         rungs.put("nothing", 1);
@@ -196,6 +210,20 @@ final class LadderTest {
             "a share that starts counting arms is one nobody can compare against an older build, but it moved",
             new Ladder(rungs, 2).named(),
             Matchers.closeTo(new Ladder(rungs).named(), 0.001d)
+        );
+    }
+
+    @Test
+    void leavesTheRungsWhereTheyWereWhenTheBandsAreCounted() {
+        final Map<String, Integer> rungs = new LinkedHashMap<>(0);
+        rungs.put("a void", 3);
+        rungs.put("a forma", 5);
+        final Map<String, Integer> bands = new LinkedHashMap<>(0);
+        bands.put("rooted at a void nobody fills", 1);
+        MatcherAssert.assertThat(
+            "counting a band must leave every rung line alone, but one of them moved",
+            new Ladder(rungs, 0, bands).lines(),
+            Matchers.hasItems("3 a void", "5 a forma")
         );
     }
 }
