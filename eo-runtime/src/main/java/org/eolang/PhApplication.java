@@ -88,6 +88,11 @@ public final class PhApplication extends PhOnce {
         super(sup, term);
     }
 
+    @Override
+    public Phi wrapped(final Supplier<Phi> sup, final Supplier<String> phrase) {
+        return new PhApplication(sup, phrase);
+    }
+
     private static String applied(final Phi phi, final Bind... binds) {
         final String head = phi.φTerm();
         final String body = PhApplication.body(binds);
