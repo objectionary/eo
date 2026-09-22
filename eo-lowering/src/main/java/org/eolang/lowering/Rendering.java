@@ -12,20 +12,25 @@ import java.nio.file.Path;
  *
  * <p>This is where the work of the pipeline is paid back. A body that was
  * an object graph built and dataized at runtime is a handful of Java
- * statements here, one per row of the table, and the atom the patch put
- * into the formation is the class those statements live in. The rows are
- * read in order and nothing is rearranged, since the table already holds
- * them in the order the calculus worked them out.</p>
+ * statements here, one per firing the protocol holds, and the atom the
+ * patch put into the formation is the class those statements live in. The
+ * firings are read in the order they opened and nothing is rearranged,
+ * since that order is the one the calculus worked them out in.</p>
+ *
+ * <p>The protocol is read and the program phino morphed is not, because
+ * the protocol already says what fired, in what order, and off which
+ * symbol, which is all a Java method is; reading the morphed program back
+ * would mean parsing a phi-expression, and this module parses none.</p>
  *
  * @since 0.74.0
- * @todo #8548:90min Render one Java class per {@code root} row of
- *  {@code symbols.tsv} into the directory of generated sources, naming it
- *  by the same rule {@code _java-names.xsl} uses for the atom attributes
- *  of the transpiler. Find the formation of a number through
- *  {@code entries.tsv}, read each void of it along the path
- *  {@code voids.tsv} gives that marker, and spell the operation rows, the
- *  fork rows, and the fail rows of the table as the Java statements of the
- *  body.
+ * @todo #8548:90min Render one Java class per rooted entry of
+ *  {@code protocol.xml} into the directory of generated sources, naming
+ *  it by the rule {@code _java-names.xsl} gives every atom attribute of
+ *  the transpiler. Find the formation of a number through
+ *  {@code entries.tsv}, read each void symbol as a chain of {@code take}
+ *  calls along the path {@code voids.tsv} gives it, spell every firing
+ *  reachable from the root as one statement under its lambda name, a fork
+ *  as an {@code if} that assigns a blank final, and return the root.
  */
 final class Rendering implements Stage {
 
