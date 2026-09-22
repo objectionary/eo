@@ -24,11 +24,10 @@
  * objects of another and the two cannot be evaluated apart.</p>
  *
  * <p>The work is a pipeline of {@link org.eolang.lowering.Stage} steps
- * composed by {@link org.eolang.lowering.Lowering}: the formations are
- * boxed, the entries are written, the world is merged, the run is made,
- * the sources are patched, and the Java is rendered. No stage skips and
- * no stage retries, so a build either folds what it says it folded or
- * fails.</p>
+ * composed by {@link org.eolang.lowering.Lowering}: the entries are
+ * written, the world is merged, the run is made, the sources are patched,
+ * and the Java is rendered. No stage skips and no stage retries, so a
+ * build either folds what it says it folded or fails.</p>
  *
  * @since 0.74.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>

@@ -24,8 +24,8 @@ import java.nio.file.Path;
  *  world.phi} with its stdout and its stderr sent to files under the
  *  lowering directory. Fail the build when the binary comes back with an
  *  exit code other than zero, when the run reaches the step limit, when a
- *  line arriving on the channel of the engine does not parse, or when a
- *  box ends the run with neither a {@code root} row nor a {@code taint}
+ *  line arriving on the channel of the engine does not parse, or when an
+ *  entry ends the run with neither a {@code root} row nor a {@code taint}
  *  row of its own in {@code symbols.tsv}.
  */
 final class Running implements Stage {

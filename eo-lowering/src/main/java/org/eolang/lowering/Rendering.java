@@ -21,11 +21,11 @@ import java.nio.file.Path;
  * @todo #8548:90min Render one Java class per {@code root} row of
  *  {@code symbols.tsv} into the directory of generated sources, naming it
  *  by the same rule {@code _java-names.xsl} uses for the atom attributes
- *  of the transpiler. Find the formation of a box number in the boxed
- *  files, where the box still sits inside it, read each void of it along
- *  the path {@code voids.tsv} gives that marker, and spell the operation
- *  rows, the fork rows, the box rows, and the fail rows of the table as
- *  the Java statements of the body.
+ *  of the transpiler. Find the formation of a number through
+ *  {@code entries.tsv}, read each void of it along the path
+ *  {@code voids.tsv} gives that marker, and spell the operation rows, the
+ *  fork rows, and the fail rows of the table as the Java statements of the
+ *  body.
  */
 final class Rendering implements Stage {
 

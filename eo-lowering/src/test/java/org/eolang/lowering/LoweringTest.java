@@ -7,11 +7,9 @@ package org.eolang.lowering;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -38,13 +36,8 @@ final class LoweringTest {
         final Path binary = temp.resolve("phino");
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.133"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
-        final Path tables = temp.resolve("tables");
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
-        );
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(new ListOf<>(), tables, home, binary.toString()).exec();
+        new Lowering(home, binary.toString()).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory it was given, but it didnt",
             home.toFile(),
@@ -54,23 +47,18 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void leavesOnlyTheBoxedDirectoryWhenThereIsNothingToLower(@Mktmp final Path temp)
+    void leavesTheHomeDirectoryEmptyWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
         final Path binary = temp.resolve("phino");
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.133"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
-        final Path tables = temp.resolve("tables");
-        Files.createDirectories(tables);
-        Files.write(
-            tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
-        );
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(new ListOf<>(), tables, home, binary.toString()).exec();
+        new Lowering(home, binary.toString()).exec();
         try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
-                "stages that fold nothing must leave the boxing behind and nothing else, but they didnt",
-                made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
-                Matchers.contains("boxed")
+                "stages that fold nothing must leave nothing behind, but they wrote something",
+                made.count(),
+                Matchers.equalTo(0L)
             );
         }
     }
@@ -86,10 +74,7 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    new ListOf<>(),
-                    temp.resolve("tables"),
-                    temp.resolve("target/eo/7-lower"),
-                    binary.toString()
+                    temp.resolve("target/eo/7-lower"), binary.toString()
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -105,10 +90,7 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    new ListOf<>(),
-                    temp.resolve("tables"),
-                    temp.resolve("target/eo/7-lower"),
-                    binary.toString()
+                    temp.resolve("target/eo/7-lower"), binary.toString()
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),

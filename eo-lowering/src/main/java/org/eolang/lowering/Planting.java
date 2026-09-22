@@ -8,7 +8,7 @@ import com.jcabi.log.Logger;
 import java.nio.file.Path;
 
 /**
- * The planting of a marker in every void of every boxed formation.
+ * The planting of a marker in every void of every formation with a body.
  *
  * <p>A formation is folded by being evaluated, and evaluating it means
  * applying it to something. Its voids are not known at compile time, so
@@ -18,15 +18,18 @@ import java.nio.file.Path;
  * what a Java method needs to say.</p>
  *
  * @since 0.74.0
- * @todo #8548:90min Read the boxed files with {@code entries.xsl}, the
- *  tables of {@code eo:inference} imported through {@code document()}, and
- *  write two files into the lowering directory. The first is
- *  {@code entries.xmir}, a single object named {@code l🌵} holding one
- *  application per boxed formation, over a marker {@code V_<n>_<k>} for
- *  each void of it, wrapped in the carrier the tables give that void. The
- *  second is {@code voids.tsv}, one row per marker, saying the name of the
- *  marker, the path by which it is reached from the formation, and the
- *  carrier it was planted in.
+ * @todo #8548:90min Read the XMIR files of the build with
+ *  {@code entries.xsl}, the tables of {@code eo:inference} imported through
+ *  {@code document()}, and write three files into the lowering directory.
+ *  The first is {@code entries.xmir}, a single object named {@code l🌵}
+ *  holding one application per formation with a body, numbered in document
+ *  order across the whole build, over a marker {@code V_<n>_<k>} for each
+ *  void of it, wrapped in the carrier the tables give that void. The second
+ *  is {@code voids.tsv}, one row per marker, saying the name of the marker,
+ *  the path by which it is reached from the formation, and the carrier it
+ *  was planted in. The third is {@code entries.tsv}, one row per formation,
+ *  saying its number and its locator, since nothing else ties a number to
+ *  the formation it stands for.
  */
 final class Planting implements Stage {
 
