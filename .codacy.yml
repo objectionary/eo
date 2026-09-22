@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Codacy configuration, described at
+# https://docs.codacy.com/repositories-configure/codacy-configuration-file
+# An atom nested in an EO object is spelled `EO<parent>$EO<name>`, because that
+# is the name the transpiler gives its class; the dollar is part of the
+# contract with `@XmirObject`, not a style slip. Codacy reads every one of them
+# as a broken class name, so it does not look at them at all. Qulice still
+# does, on every build, and it knows about the spelling.
+exclude_paths:
+  - 'eo-runtime/src/main/java/org/eolang/EO*$EO*.java'

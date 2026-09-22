@@ -19,7 +19,14 @@
 [name args] > win32
   [] > @ /Q.win32.return
     ? > ^
+  [] > access /Q.number
+    ? > ^
+    ? > path /Q.string
+    ? > mode /Q.number
   8 > append
+  [] > close /Q.number
+    ? > ^
+    ? > descriptor /Q.number
   256 > creat
   17 > eexist
   1024 > exclusive
@@ -83,10 +90,7 @@
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "_close"
-            fd
+        win32.close fd
         fd.gt -1
     code. > fd
       win32 *1
@@ -98,10 +102,7 @@
   ++> can-open-a-file-with-the-trunc-flag
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "_close"
-            fd
+        win32.close fd
         fd.gt -1
     code. > fd
       win32 *1
