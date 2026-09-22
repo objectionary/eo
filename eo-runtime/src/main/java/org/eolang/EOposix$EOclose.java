@@ -31,7 +31,8 @@ public final class EOposix$EOclose extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final int descriptor = new Int(Expect.at(this, "descriptor")).it();
-        return new Data.ToPhi(CStdLib.INSTANCE.close(descriptor));
+        return new Data.ToPhi(
+            CStdLib.INSTANCE.close(new Int(Expect.at(this, "descriptor")).it())
+        );
     }
 }

@@ -31,7 +31,8 @@ public final class EOwin32$EOclose extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final int descriptor = new Int(Expect.at(this, "descriptor")).it();
-        return new Data.ToPhi(Msvcrt.INSTANCE._close(descriptor));
+        return new Data.ToPhi(
+            Msvcrt.INSTANCE._close(new Int(Expect.at(this, "descriptor")).it())
+        );
     }
 }

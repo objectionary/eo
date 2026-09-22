@@ -18,7 +18,6 @@ import org.eolang.sys.Syscall;
  * the syscall that carries it out.</p>
  *
  * @since 0.62.0
- * @checkstyle ClassFanOutComplexityCheck (100 lines)
  */
 public final class NamedSyscall implements Syscall {
 

@@ -33,8 +33,11 @@ public final class EOposix$EOaccess extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final int mode = new Int(Expect.at(this, "mode")).it();
-        final String path = new Cstring(Expect.at(this, "path")).it();
-        return new Data.ToPhi(CStdLib.INSTANCE.access(path, mode));
+        return new Data.ToPhi(
+            CStdLib.INSTANCE.access(
+                new Cstring(Expect.at(this, "path")).it(),
+                new Int(Expect.at(this, "mode")).it()
+            )
+        );
     }
 }
