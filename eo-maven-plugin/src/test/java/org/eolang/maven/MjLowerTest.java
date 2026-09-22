@@ -54,7 +54,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.133")
+            Matchers.containsString("0.0.135")
         );
     }
 
@@ -64,7 +64,7 @@ final class MjLowerTest {
         throws IOException {
         final Path binary = temp.resolve("phino");
         Files.write(
-            binary, new ListOf<>("#!/bin/sh", "echo 0.0.133")
+            binary, new ListOf<>("#!/bin/sh", "echo 0.0.135")
         );
         Files.setPosixFilePermissions(
             binary, PosixFilePermissions.fromString("rwxr-xr-x")
@@ -103,7 +103,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.133")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.135")
         );
     }
 }
