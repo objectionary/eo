@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The entries and the symbols are numbered across the whole world and not
+# within a file, because by the time the calculus sees them the files are one
+# document. So the second file carries on from where the first one stopped, and
+# the order of the files is fixed by whoever hands them over.
+eo:
+  one.eo: |
+    [a] > one
+      a.plus 1 > @
+  two.eo: |
+    [c] > two
+      c.plus 3 > @
+provides: |
+  <provides>
+    <type id="Φ.one">
+      <attr name="a" type="Φ.one.a" void="true" holds="Φ.number"/>
+    </type>
+    <type id="Φ.two">
+      <attr name="c" type="Φ.two.c" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.one']/o[@as='a']//o[@name='λ' and text()='𝜎1']"
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.two']/o[@as='c']//o[@name='λ' and text()='𝜎2']"
+entries:
+  - "1\tΦ.one"
+  - "2\tΦ.two"
+voids:
+  - "𝜎1\t1\ta\tnumber"
+  - "𝜎2\t2\tc\tnumber"

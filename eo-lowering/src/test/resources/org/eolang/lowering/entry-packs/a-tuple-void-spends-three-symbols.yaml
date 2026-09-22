@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A tuple is three attributes, and each of them is worth a symbol of its own:
+# the length is a number, the head is whatever the tuple holds, and the tail is
+# another tuple. A renderer that knew only that "this is a tuple" could say
+# nothing in Java about what is inside it.
+eo:
+  first.eo: |
+    [t] > first
+      t.head > @
+provides: |
+  <provides>
+    <type id="Φ.first">
+      <attr name="t" type="Φ.first.t" void="true" holds="Φ.tuple"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@as='t' and @base='Φ.tuple']/o[@as='length' and @base='Φ.number']/o[@as='φ']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+  - "//o[@as='t' and @base='Φ.tuple']/o[@as='head']/o[@name='λ' and text()='𝜎2']"
+  - "//o[@as='t' and @base='Φ.tuple']/o[@as='tail']/o[@name='λ' and text()='𝜎3']"
+voids:
+  - "𝜎1\t1\tt.length\tnumber"
+  - "𝜎2\t1\tt.head\tobject"
+  - "𝜎3\t1\tt.tail\ttuple"

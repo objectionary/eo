@@ -7,9 +7,11 @@ package org.eolang.lowering;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -37,7 +39,9 @@ final class LoweringTest {
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.135"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(home, binary.toString()).exec();
+        new Lowering(
+            new ListOf<>(), LoweringTest.tables(temp), home, binary.toString()
+        ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory it was given, but it didnt",
             home.toFile(),
@@ -47,18 +51,20 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void leavesTheHomeDirectoryEmptyWhenThereIsNothingToLower(@Mktmp final Path temp)
+    void leavesOnlyTheEntriesWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
         final Path binary = temp.resolve("phino");
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.135"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
-        new Lowering(home, binary.toString()).exec();
+        new Lowering(
+            new ListOf<>(), LoweringTest.tables(temp), home, binary.toString()
+        ).exec();
         try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
-                "stages that fold nothing must leave nothing behind, but they wrote something",
-                made.count(),
-                Matchers.equalTo(0L)
+                "a build with nothing in it must be planted as an empty world, but it wasnt",
+                made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
+                Matchers.containsInAnyOrder("entries.xmir", "voids.tsv", "entries.tsv")
             );
         }
     }
@@ -74,7 +80,10 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    temp.resolve("target/eo/7-lower"), binary.toString()
+                    new ListOf<>(),
+                    temp.resolve("tables"),
+                    temp.resolve("target/eo/7-lower"),
+                    binary.toString()
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -90,11 +99,22 @@ final class LoweringTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
-                    temp.resolve("target/eo/7-lower"), binary.toString()
+                    new ListOf<>(),
+                    temp.resolve("tables"),
+                    temp.resolve("target/eo/7-lower"),
+                    binary.toString()
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),
             Matchers.containsString(binary.toString())
         );
+    }
+
+    private static Path tables(final Path temp) throws IOException {
+        final Path made = Files.createDirectories(temp.resolve("tables"));
+        Files.write(
+            made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
+        );
+        return made;
     }
 }

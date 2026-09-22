@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Only the `holds` attribute is read, and a void the tables say nothing about
+# is planted with nothing at all. The body then reaches the bottom where it
+# reads that void, the entry is a taint, and the formation stays in EO as its
+# author wrote it. Guessing a carrier would be a lie the whole pipeline stands
+# on.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+provides: |
+  <provides>
+    <type id="Φ.gap">
+      <attr name="a" type="Φ.gap.a" void="true" holds="Φ.number"/>
+      <attr name="b" type="Φ.gap.b" void="true"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v'][count(o) = 1]"
+  - "//o[@name='e1']/o[@as='v']/o[@as='a']"
+voids:
+  - "𝜎1\t1\ta\tnumber"

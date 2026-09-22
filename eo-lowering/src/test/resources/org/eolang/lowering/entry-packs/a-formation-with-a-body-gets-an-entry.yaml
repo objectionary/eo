@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation with a body is a computation the calculus can be asked about, so
+# it gets an entry: the formation applied to a symbol for each of its voids,
+# wrapped in the mark with the number the whole build knows it by. The tables
+# here say nothing about the voids, so nothing is planted in them and the
+# entry is a bare application.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+xmir:
+  - "/object/o[@name='l🌵']/o[@name='mark']/o[@name='λ' and text()='L_entry']"
+  - "/object/o[@name='l🌵']/o[@name='root']/o[@name='λ' and text()='L_root']"
+  - "/object/o[@name='l🌵']/o[@name='e1' and @base='Φ.l🌵.mark']"
+  - "//o[@name='e1']/o[@as='n' and @base='Φ.number']/o[@as='α0']/o[@as='α0' and text()='3F-F0-00-00-00-00-00-00']"
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.gap']"
+entries:
+  - "1\tΦ.gap"

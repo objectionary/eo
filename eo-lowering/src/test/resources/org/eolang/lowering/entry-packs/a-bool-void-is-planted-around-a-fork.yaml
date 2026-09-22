@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A bool is planted with its `if` filled by a fork, because `bool.eo` routes
+# `and`, `or`, `not` and dataization through that attribute. Both branches are
+# left void, so whoever takes the bool binds them, and the fork is what the run
+# sees when a branch is taken.
+eo:
+  both.eo: |
+    [a] > both
+      a.and a > @
+provides: |
+  <provides>
+    <type id="Φ.both">
+      <attr name="a" type="Φ.both.a" void="true" holds="Φ.bool"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='λ' and text()='L_fork']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='left' and @base='∅']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='right' and @base='∅']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='φ']/o[@name='λ' and text()='𝜎1']"
+voids:
+  - "𝜎1\t1\ta\tbool"

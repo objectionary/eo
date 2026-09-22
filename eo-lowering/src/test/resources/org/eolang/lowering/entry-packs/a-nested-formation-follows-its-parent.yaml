@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The numbers go in document order, so a formation written inside another one
+# is numbered after it. Every stage that comes later knows a formation by that
+# number and by nothing else, which is why the order has to be a rule and not
+# an accident of how the file happened to be walked.
+eo:
+  outer.eo: |
+    [a] > outer
+      a.plus 1 > @
+      [b] > inner
+        b.plus 2 > @
+xmir:
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.outer']"
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.outer.inner']"
+entries:
+  - "1\tΦ.outer"
+  - "2\tΦ.outer.inner"

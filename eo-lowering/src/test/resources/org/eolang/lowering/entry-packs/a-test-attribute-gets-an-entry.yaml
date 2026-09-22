@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A unit test is an attribute of the object it is written in, and a test with a
+# body is a formation like any other. An object and what is said about it are
+# one document in this compiler, so the tests go into the world with everything
+# else and are entered by the same rule.
+eo:
+  foo.eo: |
+    [] > foo
+      42 > @
+
+      ++> can-be-one
+        1.eq 1 > @
+xmir:
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.foo.p🌵can-be-one']"
+entries:
+  - "2\tΦ.foo.p🌵can-be-one"

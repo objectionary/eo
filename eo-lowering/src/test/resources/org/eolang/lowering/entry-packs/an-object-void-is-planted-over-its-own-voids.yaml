@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void the tables type as an object other than a carrier is planted as that
+# object applied to symbols for its own voids, by the same rules. That is what
+# makes the `ρ` of a nested formation usable: the body dispatches off a thing
+# that has the attributes it expects, and every one of them carries a symbol
+# the renderer can read off the formation later.
+eo:
+  uses.eo: |
+    [p] > uses
+      p.fmt > @
+provides: |
+  <provides>
+    <type id="Φ.uses">
+      <attr name="p" type="Φ.uses.p" void="true" holds="Φ.string.printf"/>
+    </type>
+    <type id="Φ.string.printf">
+      <attr name="fmt" type="Φ.string.printf.fmt" void="true" holds="Φ.string"/>
+      <attr name="args" type="Φ.string.printf.args" void="true" holds="Φ.tuple"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v']/o[@as='p' and @base='Φ.string.printf']"
+  - "//o[@as='p']/o[@as='fmt' and @base='Φ.string']/o[@as='φ']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+  - "//o[@as='p']/o[@as='args' and @base='Φ.tuple']/o[@as='head']/o[@name='λ' and text()='𝜎3']"
+voids:
+  - "𝜎1\t1\tp.fmt\tstring"
+  - "𝜎2\t1\tp.args.length\tnumber"
+  - "𝜎3\t1\tp.args.head\tobject"
+  - "𝜎4\t1\tp.args.tail\ttuple"

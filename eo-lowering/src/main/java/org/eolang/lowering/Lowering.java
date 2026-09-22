@@ -8,6 +8,7 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import org.cactoos.list.ListOf;
 
 /**
@@ -32,6 +33,16 @@ import org.cactoos.list.ListOf;
 public final class Lowering {
 
     /**
+     * The XMIR files of the build.
+     */
+    private final Collection<Path> sources;
+
+    /**
+     * The directory with the tables of {@code eo:inference}.
+     */
+    private final Path tables;
+
+    /**
      * The directory where the lowering keeps what it makes.
      */
     private final Path home;
@@ -44,20 +55,30 @@ public final class Lowering {
     /**
      * Ctor.
      *
+     * @param srcs The XMIR files of the build
+     * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The directory where the lowering keeps what it makes
      * @param exe The name or path of the phino executable
      */
-    public Lowering(final Path dir, final String exe) {
-        this(dir, new Phino(exe));
+    public Lowering(
+        final Collection<Path> srcs, final Path tbls, final Path dir, final String exe
+    ) {
+        this(srcs, tbls, dir, new Phino(exe));
     }
 
     /**
      * Ctor.
      *
+     * @param srcs The XMIR files of the build
+     * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The directory where the lowering keeps what it makes
      * @param exe The phino binary on this machine
      */
-    Lowering(final Path dir, final Phino exe) {
+    Lowering(
+        final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe
+    ) {
+        this.sources = srcs;
+        this.tables = tbls;
         this.home = dir;
         this.phino = exe;
     }
@@ -101,7 +122,7 @@ public final class Lowering {
         );
         Files.createDirectories(this.home);
         for (final Stage stage : new ListOf<Stage>(
-            new Planting(this.home),
+            new Planting(this.sources, this.tables, this.home),
             new Merging(this.home),
             new Running(this.home),
             new Patching(this.home),

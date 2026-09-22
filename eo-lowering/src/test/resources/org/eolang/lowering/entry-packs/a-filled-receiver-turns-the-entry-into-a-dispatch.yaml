@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `ρ` a formation declares is a void like the others, and the tables type
+# it like the others, but XMIR has no `as` of `ρ`. So a formation whose `ρ` is
+# filled is written as a dispatch off the planted object, which binds the same
+# thing the way the calculus itself does.
+eo:
+  twice.eo: |
+    +package holder
+
+    [^ x] > twice
+      ^.plus x > @
+provides: |
+  <provides>
+    <type id="Φ.holder.twice">
+      <attr name="ρ" type="Φ.holder.twice.ρ" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v' and @base='.twice']"
+  - "//o[@name='e1']/o[@as='v']/o[1][@base='Φ.number' and not(@as)]//o[@name='λ' and text()='𝜎1']"
+voids:
+  - "𝜎1\t1\tρ\tnumber"
+entries:
+  - "1\tΦ.holder.twice"

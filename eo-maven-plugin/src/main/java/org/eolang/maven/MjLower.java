@@ -10,6 +10,8 @@ import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.eolang.lowering.Lowering;
 
 /**
@@ -28,9 +30,12 @@ import org.eolang.lowering.Lowering;
  * last moment at which the Java of a program can still be changed.</p>
  *
  * <p>Nothing is folded yet. The goal is off unless {@code eo.lowering}
- * turns it on, and when it is on it only makes sure that the binary on
- * this machine is the one the pin names, since an answer of another
- * version cannot be trusted.</p>
+ * turns it on, and when it is on it makes sure that the binary on this
+ * machine is the one the pin names, since an answer of another version
+ * cannot be trusted, and then plants the entries of the build. It hands
+ * the lowering the XMIR of every standalone object and the directory
+ * where {@code eo:inference} left its tables, because an entry is a
+ * formation applied to what the tables say its voids hold.</p>
  *
  * @since 0.74.0
  */
@@ -58,6 +63,17 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The directory with the tables of {@code eo:inference}.
+     */
+    @Parameter(
+        alias = "inferenceDir",
+        property = "eo.inferenceDir",
+        required = true,
+        defaultValue = "${project.build.directory}/eo/6-inference"
+    )
+    private File tables;
+
+    /**
      * The directory where the lowering keeps what it makes.
      */
     @Parameter(
@@ -78,7 +94,14 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            new Lowering(this.home.toPath(), this.binary).exec();
+            try (TjsForeign tojos = this.tojos()) {
+                new Lowering(
+                    new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
+                    this.tables.toPath(),
+                    this.home.toPath(),
+                    this.binary
+                ).exec();
+            }
         } else {
             Logger.info(
                 this,

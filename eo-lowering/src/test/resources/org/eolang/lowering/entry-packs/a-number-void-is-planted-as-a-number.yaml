@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void the tables type as a number is planted as the formation of `number`
+# with the symbol where the bytes of a literal would be. The symbol is not
+# planted bare, because a formation holding nothing but a lambda carries no
+# attribute, and the body of this formation dispatches `plus` off its input.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+provides: |
+  <provides>
+    <type id="Φ.gap">
+      <attr name="a" type="Φ.gap.a" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v']/o[@as='a' and @base='Φ.number']/o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+voids:
+  - "𝜎1\t1\ta\tnumber"
