@@ -218,7 +218,7 @@ final class Filled {
         for (final String call : this.calls(bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
-                found = new Branched(this.owned, arms, this.hollows).names();
+                found = new Branched(this.owned, arms, this.hollows, this.puts).names();
                 if (!found.isEmpty()) {
                     break;
                 }
@@ -226,7 +226,7 @@ final class Filled {
         }
         if (found.isEmpty()) {
             found = new Branched(
-                this.owned, this.puts.armed(fillings, root), this.hollows
+                this.owned, this.puts.armed(fillings, root), this.hollows, this.puts
             ).names();
         }
         return found;
@@ -240,7 +240,7 @@ final class Filled {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
                 final Collection<String> given =
-                    new Branched(this.owned, arms, this.hollows).arms();
+                    new Branched(this.owned, arms, this.hollows, this.puts).whole();
                 if (given.size() > 1) {
                     found = given;
                     break;
@@ -249,8 +249,9 @@ final class Filled {
         }
         if (found.isEmpty()) {
             found = new Branched(
-                this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows
-            ).arms();
+                this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows,
+                this.puts
+            ).whole();
         }
         return found;
     }

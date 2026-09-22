@@ -1,0 +1,69 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two of the three arms of the choice are written where the choice is, and the
+# third is a read of `spare`, a void this call leaves empty and its callers
+# fill. An arm like that used to be dropped, on the grounds that a call handing
+# back a void nobody filled hands nothing back at all, and the row then said
+# the call comes back with a `dial` or a `clock`. It may come back with
+# neither: whoever wrote the call put something in `spare`, and half of them
+# put a thing of one kind there and half a thing of another, so nothing here
+# says what it is. The arm is kept, and the choice counts it among the rest.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          left > @
+  mid.eo: |
+    [^] > mid
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          middle > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        size > @
+  sock.eo: |
+    [^ flag spare] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+        spare
+  held.eo: |
+    [] > held
+      sock yes (dial 06-) > @
+  other.eo: |
+    [] > other
+      sock no (clock 07-) > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.choice.pick.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.dial.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.clock.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.sock.spare.listen']"
