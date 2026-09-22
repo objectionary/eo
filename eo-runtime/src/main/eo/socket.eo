@@ -68,10 +68,7 @@
             "Couldn't close the socket #%d because %s".printf
               * descriptor ^.sys.message
           true
-        code. > closed
-          ^.sys.raw *1
-            ^.sys.close
-            descriptor
+        ^.sys.close descriptor > closed
       [^ scope cant-connect] > connect
         ^.safe-socket > @
           [^] >>
@@ -210,7 +207,10 @@
           T
             "Couldn't clean up the sockets subsystem"
           true
-        "closesocket" > close
+        code. > [descriptor] > close
+          win32 *1
+            "closesocket"
+            descriptor
         "WSA error code %d".printf > message
           *
             code.
@@ -226,7 +226,7 @@
       []
         raw > @
         true > cleanup
-        "close" > close
+        posix.close > close
         code. > message
           posix *1
             "strerror"

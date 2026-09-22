@@ -14,9 +14,16 @@
 [name args] > posix
   [] > @ /Q.posix.return
     ? > ^
+  [] > access /Q.number
+    ? > ^
+    ? > path /Q.string
+    ? > mode /Q.number
   os.is-macos.if > append
     8
     1024
+  [] > close /Q.number
+    ? > ^
+    ? > descriptor /Q.number
   os.is-macos.if > creat
     512
     64
@@ -62,10 +69,7 @@
         sd
         not.
           eq.
-            code.
-              posix *1
-                "close"
-                sd
+            posix.close sd
             -1
     code. > sd
       posix *1
@@ -92,10 +96,7 @@
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.or > @
       seq *
-        code.
-          posix *1
-            "close"
-            fd
+        posix.close fd
         fd.gt -1
     code. > fd
       posix *1
@@ -107,10 +108,7 @@
   ++> can-open-a-file-with-the-trunc-flag
     os.is-windows.or > @
       seq *
-        code.
-          posix *1
-            "close"
-            fd
+        posix.close fd
         fd.gt -1
     code. > fd
       posix *1
@@ -122,10 +120,7 @@
   ++> can-open-a-tcp-socket
     os.is-windows.or > @
       seq *
-        code.
-          posix *1
-            "close"
-            sd
+        posix.close sd
         sd.gt 0
     code. > sd
       posix *1
@@ -137,10 +132,7 @@
   ++> can-open-and-close-a-file-through-a-syscall
     os.is-windows.or > @
       seq *
-        code.
-          posix *1
-            "close"
-            fd
+        posix.close fd
         fd.gt -1
     code. > fd
       posix *1
