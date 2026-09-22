@@ -30,7 +30,6 @@ public final class NamedSyscall implements Syscall {
     static {
         NamedSyscall.ALL.put("getpid", GetpidSyscall::new);
         NamedSyscall.ALL.put("open", OpenSyscall::new);
-        NamedSyscall.ALL.put("access", AccessSyscall::new);
         NamedSyscall.ALL.put(
             "stat",
             posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.stat(path, buf))
@@ -53,7 +52,6 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
         NamedSyscall.ALL.put("gettimeofday", GettimeofdaySyscall::new);
         NamedSyscall.ALL.put("socket", SocketSyscall::new);
-        NamedSyscall.ALL.put("close", CloseSyscall::new);
         NamedSyscall.ALL.put("connect", ConnectSyscall::new);
         NamedSyscall.ALL.put("bind", BindSyscall::new);
         NamedSyscall.ALL.put("listen", ListenSyscall::new);

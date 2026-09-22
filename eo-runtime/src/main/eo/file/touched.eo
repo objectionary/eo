@@ -28,29 +28,21 @@
       seq *
         if.
           descriptor.gte 0
-          code.
-            os.is-windows.if
-              win32 *1
-                "_close"
-                descriptor
-              posix *1
-                "close"
-                descriptor
+          os.is-windows.if
+            win32.close descriptor
+            posix.close descriptor
           0
         ^
       T
         "Cant touch the file '%s': %s".printf
           * ^.path opened.output
-  code. > accessible
-    os.is-windows.if
-      win32 *1
-        "_access"
-        ^.path
-        0
-      posix *1
-        "access"
-        ^.path
-        0
+  os.is-windows.if > accessible
+    win32.access
+      ^.path
+      0
+    posix.access
+      ^.path
+      0
   opened.code > descriptor
   os.is-windows.if > eexist
     win32.eexist
