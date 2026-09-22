@@ -21,7 +21,7 @@ public final class EOposix$EOgetpid extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOgetpid() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+        super(new Attrs());
     }
 
     @Override

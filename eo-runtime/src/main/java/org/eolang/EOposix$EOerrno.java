@@ -21,7 +21,7 @@ public final class EOposix$EOerrno extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOerrno() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+        super(new Attrs());
     }
 
     @Override

@@ -15,26 +15,22 @@
   [] > @ /Q.posix.return
     ? > ^
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   os.is-macos.if > append
     8
     1024
   [] > close /Q.number
-    ? > ^
     ? > descriptor /Q.number
   os.is-macos.if > creat
     512
     64
   17 > eexist
   [] > errno /Q.number
-    ? > ^
   os.is-macos.if > exclusive
     2048
     128
   [] > getpid /Q.number
-    ? > ^
   2 > inet
   420 > mode
   -1 > none
@@ -60,7 +56,6 @@
   1 > stdout
   1 > stream
   [] > strerror /Q.string
-    ? > ^
     ? > errno /Q.number
   6 > tcp
   [seconds micros] > timeval

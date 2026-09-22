@@ -21,7 +21,7 @@ public final class EOwin32$EOgetpid extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOgetpid() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+        super(new Attrs());
     }
 
     @Override

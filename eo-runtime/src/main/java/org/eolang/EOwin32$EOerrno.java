@@ -21,7 +21,7 @@ public final class EOwin32$EOerrno extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOerrno() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+        super(new Attrs());
     }
 
     @Override
