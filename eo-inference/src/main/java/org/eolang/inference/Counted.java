@@ -21,6 +21,15 @@ import java.util.Map;
  * that name and {@link Reduced} writes it on the row, so the fact is in the
  * table before anybody counts.</p>
  *
+ * <p>What stays is the object the walk arrived at, and not the name it was
+ * folded under. {@link Answers} takes the name from the {@code reduced} cell
+ * and asks the rung of the object, because that is the one whose voids were
+ * filled: a void filled only with an {@code alias} holds a formation with
+ * nothing left free, while the {@code oak} it behaves as declares a void
+ * nobody here filled. Write the name into the census instead and a hundred
+ * and fifty-seven formations of the runtime are described as still wanting
+ * an argument (#8788).</p>
+ *
  * <p>The counting waits until the walk is over. What is folded together here
  * is a name, and the objects behind it stay apart for as long as anybody has
  * business with them: {@link Handed} gives a chunk to the first void of every

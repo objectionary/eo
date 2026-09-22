@@ -66,9 +66,12 @@ final class Threaded<T> {
     }
 
     /**
-     * Exec them all and count.
+     * Execute the function for all elements and sum the returned values.
      *
-     * @return How many succeeded
+     * <p>If the function fails for any element, the whole operation fails with
+     * an {@link IllegalStateException}.</p>
+     *
+     * @return Sum of the values returned by the function
      */
     int total() {
         return new SumOf(

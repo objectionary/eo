@@ -514,7 +514,7 @@ final class PhDefaultTest {
                 Matchers.equalTo(
                     new PhApplication(
                         five.take(this.plus()).copy(),
-                        "x",
+                        "b",
                         new Data.ToPhi(5)
                     ).forma()
                 )
@@ -528,13 +528,13 @@ final class PhDefaultTest {
             "Similar Phis with different data should have the same forma, but they didn't",
             new PhApplication(
                 new Data.ToPhi(5L).take(this.plus()).copy(),
-                "x",
+                "b",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhApplication(
                     new Data.ToPhi(6L).take(this.plus()).copy(),
-                    "x",
+                    "b",
                     new Data.ToPhi(6L)
                 ).forma()
             )

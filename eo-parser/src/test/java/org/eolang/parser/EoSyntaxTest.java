@@ -129,6 +129,20 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void stampsMsBeforeTransformRuns() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not present when the transform receives the document",
+            new EoSyntax(
+                new InputOf(String.format("# Ünïcödé.%n[] > tiny%n")),
+                xml -> new XMLDocument(
+                    String.format("<seen>%d</seen>", xml.xpath("/object/@ms").size())
+                )
+            ).parsed().xpath("/seen/text()").get(0),
+            Matchers.equalTo("1")
+        );
+    }
+
+    @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
         final EoSyntax syntax = new EoSyntax(
             new LargeProgram(30), UnaryOperator.<XML>identity()

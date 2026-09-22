@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * What a call hands back, where every formation it reaches hands back what the
@@ -36,6 +37,14 @@ import java.util.Map;
  * fragile object is written this way, with the excuse in one arm and the
  * answer in the other, and the callers who want the answer fill nothing.</p>
  *
+ * <p>Left out of the agreement, though, and not out of the choice. A void this
+ * call leaves empty is one another call of the same object fills, and then the
+ * arm does hand a value to somebody. Dropping it left one arm standing and the
+ * agreement was that arm, which is a lie told about every caller who took the
+ * other one (#8875). So the whole of what the call may come back with counts
+ * an arm as long as anybody fills the void it reads, and only an arm nobody
+ * anywhere fills is gone for good.</p>
+ *
  * @since 0.71.0
  */
 final class Branched {
@@ -56,21 +65,29 @@ final class Branched {
     private final Collection<String> hollows;
 
     /**
+     * What the calls of the program put into its voids.
+     */
+    private final Puts every;
+
+    /**
      * Ctor.
      *
      * @param provided What the types certainly have
      * @param filled What the call put into the voids, by the locator of the
      *  void
      * @param voids The locator of every void, from {@link Hollows}
+     * @param puts What the calls of the program put into its voids
      */
     Branched(
         final Provided provided,
         final Map<String, String> filled,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Puts puts
     ) {
         this.owned = provided;
         this.binds = filled;
         this.hollows = voids;
+        this.every = puts;
     }
 
     /**
@@ -80,6 +97,40 @@ final class Branched {
      *  given or they share nothing
      */
     String names() {
+        return new Joined(this.arms(), this.owned).names();
+    }
+
+    /**
+     * What the formations this call reaches hand back, one apiece.
+     *
+     * <p>Where they agree this is the agreement said the long way round, and
+     * where they do not it is the whole of what the call may come back with:
+     * a choice between the arms, which is an answer of its own for whoever can
+     * hold two of them (#8744).</p>
+     *
+     * @return The locators, empty when a formation this call reaches binds a
+     *  body of its own
+     */
+    Collection<String> arms() {
+        return this.handed(arm -> false);
+    }
+
+    /**
+     * The whole of what the call may come back with, one arm apiece.
+     *
+     * <p>Unlike {@link #arms()}, an arm rooted at a void this call leaves empty
+     * is kept, as long as some call of the program fills it. Nothing about this
+     * call says which arm it comes back with, and an arm another caller gets a
+     * value out of is one this caller may get a value out of too (#8875).</p>
+     *
+     * @return The locators, empty when a formation this call reaches binds a
+     *  body of its own
+     */
+    Collection<String> whole() {
+        return this.handed(this::filled);
+    }
+
+    private Collection<String> handed(final Predicate<String> alive) {
         final Collection<String> handed = new LinkedHashSet<>(0);
         for (final Map.Entry<String, Map<String, String>> owner : this.owners().entrySet()) {
             final Collection<String> given = this.given(owner.getKey(), owner.getValue());
@@ -87,10 +138,14 @@ final class Branched {
                 handed.clear();
                 break;
             }
-            given.removeIf(arm -> !this.stands(arm));
+            given.removeIf(arm -> !this.stands(arm) && !alive.test(arm));
             handed.addAll(given);
         }
-        return new Joined(handed, this.owned).names();
+        return handed;
+    }
+
+    private boolean filled(final String arm) {
+        return this.every.fills(new Rooted(this.hollows).names(arm));
     }
 
     private Map<String, Map<String, String>> owners() {

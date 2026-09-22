@@ -12,14 +12,21 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [name args] > win32
   [] > @ /Q.win32.return
     ? > ^
+  [] > access /Q.number
+    ? > ^
+    ? > path /Q.string
+    ? > mode /Q.number
   8 > append
+  [] > close /Q.number
+    ? > ^
+    ? > descriptor /Q.number
   256 > creat
   17 > eexist
   1024 > exclusive
@@ -83,10 +90,7 @@
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "_close"
-            fd
+        win32.close fd
         fd.gt -1
     code. > fd
       win32 *1
@@ -98,10 +102,7 @@
   ++> can-open-a-file-with-the-trunc-flag
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "_close"
-            fd
+        win32.close fd
         fd.gt -1
     code. > fd
       win32 *1

@@ -87,7 +87,7 @@
     dispatchers, near-identical stat structs); exclude it from duplication
     detection
     -->
-    <sonar.cpd.exclusions>**/org/eolang/posix/**,**/org/eolang/win32/**</sonar.cpd.exclusions>
+    <sonar.cpd.exclusions>**/org/eolang/posix/**,**/org/eolang/sys/win32/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <maven.compiler.source>17</maven.compiler.source>
@@ -104,7 +104,7 @@
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.61.1</version>
+        <version>0.62.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
@@ -242,7 +242,7 @@
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>jaxec</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>

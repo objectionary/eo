@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  [3:2] error: 'a pipe must follow a named formation or another pipe'
+    | 5 > n
+    ^
+input: |
+  [] > app
+    I
+    | 5 > n

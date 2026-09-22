@@ -4,6 +4,9 @@
 # yamllint disable rule:line-length
 name: fast
 'on':
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
