@@ -47,14 +47,9 @@
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist
-  code. > errno
-    os.is-windows.if
-      win32
-        "_errno"
-        *
-      posix
-        "errno"
-        *
+  os.is-windows.if > errno
+    win32.errno
+    posix.errno
   linked.not.if > exclusive
     posix.exclusive
     0

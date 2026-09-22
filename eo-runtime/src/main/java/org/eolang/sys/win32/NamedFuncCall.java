@@ -26,8 +26,6 @@ public final class NamedFuncCall implements Syscall {
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
     static {
-        NamedFuncCall.ALL.put("_getpid", GetpidFuncCall::new);
-        NamedFuncCall.ALL.put("_errno", ErrnoFuncCall::new);
         NamedFuncCall.ALL.put("_open", OpenFuncCall::new);
         NamedFuncCall.ALL.put("_stat64", Stat64FuncCall::new);
         NamedFuncCall.ALL.put("GetFileAttributesW", GetFileAttributesFuncCall::new);
