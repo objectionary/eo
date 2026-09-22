@@ -171,9 +171,9 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+            this.params.putIfAbsent("target", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
+                "measures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
@@ -198,7 +198,7 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
-            this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+            this.params.putIfAbsent("generated", this.generatedPath().toFile());
             this.params.putIfAbsent(
                 "prepared", this.targetPath().resolve("6-pre-inference").toFile()
             );
@@ -216,7 +216,7 @@ final class FakeMaven {
             );
             this.params.putIfAbsent("rewriteBinaries", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("classesDir", this.classesPath().toFile());
+            this.params.putIfAbsent("classes", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);

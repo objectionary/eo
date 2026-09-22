@@ -787,14 +787,14 @@ final class MjTranspileTest {
         final Path tests = target.resolve("generated-test-sources");
         final FakeMaven maven = new FakeMaven(temp);
         maven
-            .with("generatedDir", sources.toFile())
-            .with("targetDir", target.resolve("eo-sources").toFile())
+            .with("generated", sources.toFile())
+            .with("target", target.resolve("eo-sources").toFile())
             .withHelloWorld()
             .execute(new PpTranspile());
         maven
             .with("scope", "test")
-            .with("generatedDir", tests.toFile())
-            .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
+            .with("generated", tests.toFile())
+            .with("target", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
             .execute(new PpTranspile());
