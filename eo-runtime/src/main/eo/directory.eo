@@ -55,14 +55,9 @@
           ^.process
           index
           ^.fraction
-    code. > [descriptor] > closed
-      os.is-windows.if
-        win32 *1
-          "_close"
-          descriptor
-        posix *1
-          "close"
-          descriptor
+    os.is-windows.if > [descriptor] > closed
+      win32.close descriptor
+      posix.close descriptor
     code. > [name] > opened
       os.is-windows.if
         win32 *1
