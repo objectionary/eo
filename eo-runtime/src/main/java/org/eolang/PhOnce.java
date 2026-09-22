@@ -26,12 +26,12 @@ import java.util.function.Supplier;
  * and {@code Object.equals} requires the two to agree.</p>
  *
  * @since 0.1
- * @todo #7062:30min Stop passing a null term through {@link PhOnce#wrapped}.
- *  The one-argument constructor passes {@code null} to mean "render the
- *  wrapped object instead", {@link PhOnce#term} branches on it, and now
- *  {@code copy()} and {@code normalized()} hand that same {@code null} to
- *  every subclass, so each of them has to tolerate it. An empty term
- *  object would remove the branch and the null alike.
+ * @todo #7062:30min Give the missing term an object instead of a {@code null}.
+ *  The one-argument constructor passes one to mean "render the wrapped
+ *  object instead", {@link PhOnce#term} branches on it, and now
+ *  {@code copy()} and {@code normalized()} hand it to every subclass, so
+ *  each of them has to tolerate it. An empty term would remove the branch
+ *  and the hole alike.
  */
 public abstract class PhOnce implements Phi {
 
@@ -60,7 +60,7 @@ public abstract class PhOnce implements Phi {
      *
      * @param obj The object
      */
-    public PhOnce(final Supplier<Phi> obj) {
+    protected PhOnce(final Supplier<Phi> obj) {
         this(obj, null);
     }
 
@@ -70,7 +70,7 @@ public abstract class PhOnce implements Phi {
      * @param obj The object
      * @param term Supplier of the φ-term
      */
-    public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
+    protected PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
         this.ref = new AtomicReference<>(null);
         this.term = term;
         this.lock = new ReentrantLock();
