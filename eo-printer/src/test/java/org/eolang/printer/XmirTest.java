@@ -120,7 +120,11 @@ final class XmirTest {
             reparsed,
             Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
         );
-        MatcherAssert.assertThat(eo, Matchers.not(Matchers.containsString("bar:@")));
+        MatcherAssert.assertThat(
+            "The printer must not add an '@' suffix to φ arguments",
+            eo,
+            Matchers.not(Matchers.containsString("bar:@"))
+        );
     }
 
     @Test
