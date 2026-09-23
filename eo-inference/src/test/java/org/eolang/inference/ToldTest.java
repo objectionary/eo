@@ -27,7 +27,7 @@ final class ToldTest {
     void writesWhatTheOneCallerSettlesTheVoidAt(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a void the program fills one way must be typed as that, but it wasnt",
-            ToldTest.program(temp, "<o base='∅' loc='Φ.inc.x' name='x'/>", "Φ.oak").nodes(
+            this.program(temp, "<o base='∅' loc='Φ.inc.x' name='x'/>", "Φ.oak").nodes(
                 "/provides/type[@id='Φ.inc']/attr[@name='x' and @settled='Φ.oak']"
             ),
             Matchers.hasSize(1)
@@ -38,7 +38,7 @@ final class ToldTest {
     void leavesAVoidFilledTwoWaysAlone(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a void filled two ways cannot be typed as either of them, but it was",
-            ToldTest.program(
+            this.program(
                 temp, "<o base='∅' loc='Φ.inc.x' name='x'/>", "Φ.oak", "Φ.elm"
             ).nodes("//attr[@settled]"),
             Matchers.empty()
@@ -49,14 +49,14 @@ final class ToldTest {
     void leavesAVoidTheSourceTypedAlone(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a sighting cannot be written next to what the source declared, but it was",
-            ToldTest.program(
+            this.program(
                 temp, "<o base='∅' loc='Φ.inc.x' name='x' type='Φ.elm'/>", "Φ.oak"
             ).nodes("//attr[@settled]"),
             Matchers.empty()
         );
     }
 
-    private static XMLDocument program(
+    private XMLDocument program(
         final Path temp, final String hollow, final String... fillers
     ) throws IOException {
         final StringBuilder text = new StringBuilder(
