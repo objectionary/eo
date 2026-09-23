@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   pr-size:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Check pull request size
         env:

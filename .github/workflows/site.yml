@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   site:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -30,7 +30,7 @@ jobs:
       - run: mvn clean site -Psite
   telegram:
     needs: site
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ failure() }}
     permissions:
       actions: read
@@ -55,7 +55,7 @@ jobs:
           format: markdown
   recovered:
     needs: site
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ success() }}
     permissions:
       actions: read
