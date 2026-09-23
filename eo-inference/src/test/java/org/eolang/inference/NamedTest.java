@@ -16,12 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Told}.
+ * Test case for {@link Named}.
  *
  * @since 0.74.0
  */
 @ExtendWith(MktmpResolver.class)
-final class ToldTest {
+final class NamedTest {
 
     @Test
     void writesWhatTheOneCallerSettlesTheVoidAt(@Mktmp final Path temp) throws IOException {
@@ -78,7 +78,7 @@ final class ToldTest {
             Files.createDirectories(temp.resolve("xmirs")).resolve("wood.xmir"),
             text.append("</object>").toString()
         );
-        new Told(new Witnessed(new Demanded(new Resolved(new Clues())))).follow(
+        new Named(new Witnessed(new Demanded(new Resolved(new Clues())))).follow(
             temp.resolve("xmirs"), temp.resolve("tables")
         );
         return new XMLDocument(temp.resolve("tables").resolve("provides.xml"));
