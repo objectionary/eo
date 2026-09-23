@@ -39,7 +39,6 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
         NamedSyscall.ALL.put("readdir", ReaddirSyscall::new);
         NamedSyscall.ALL.put("closedir", ClosedirSyscall::new);
-        NamedSyscall.ALL.put("creat", CreatSyscall::new);
         NamedSyscall.ALL.put("unlink", UnlinkSyscall::new);
         NamedSyscall.ALL.put("rmdir", RmdirSyscall::new);
         NamedSyscall.ALL.put("mkdir", MkdirSyscall::new);
@@ -48,10 +47,6 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("read", ReadSyscall::new);
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
         NamedSyscall.ALL.put("gettimeofday", GettimeofdaySyscall::new);
-        NamedSyscall.ALL.put("socket", SocketSyscall::new);
-        NamedSyscall.ALL.put("connect", ConnectSyscall::new);
-        NamedSyscall.ALL.put("bind", BindSyscall::new);
-        NamedSyscall.ALL.put("listen", ListenSyscall::new);
         NamedSyscall.ALL.put("accept", AcceptSyscall::new);
         NamedSyscall.ALL.put("recv", RecvSyscall::new);
         NamedSyscall.ALL.put("send", SendSyscall::new);
