@@ -416,7 +416,7 @@ final class Emissions {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
             str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+        } else if (Double.isFinite(num) && num >= -0x1p63 && num < 0x1p63) {
             str = Long.toString((long) num);
         } else {
             str = Double.toString(num);

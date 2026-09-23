@@ -14,24 +14,44 @@
 [name args] > posix
   [] > @ /Q.posix.return
     ? > ^
+  [] > accept /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   [] > access /Q.number
     ? > path /Q.string
     ? > mode /Q.number
   os.is-macos.if > append
     8
     1024
+  [] > bind /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > connect /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   os.is-macos.if > creat
     512
     64
   17 > eexist
+  22 > einval
+  2 > enoent
   [] > errno /Q.number
   os.is-macos.if > exclusive
     2048
     128
   [] > getpid /Q.number
+  [] > gettimeofday /Q.posix.time-return
   2 > inet
+  [] > inet-addr /Q.number
+    ? > address /Q.string
+  [] > listen /Q.number
+    ? > descriptor /Q.number
+    ? > backlog /Q.number
   420 > mode
   -1 > none
   511 > permissions
@@ -43,6 +63,11 @@
     ^.return > called
       code
       output
+  [] > send /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
+    ? > flags /Q.number
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
@@ -50,6 +75,10 @@
         family.size.plus port.size
         address.size
       padding.size
+  [] > socket /Q.number
+    ? > domain /Q.number
+    ? > type /Q.number
+    ? > protocol /Q.number
   [mode size] > stat
   2 > stderr
   0 > stdin
@@ -58,7 +87,11 @@
   [] > strerror /Q.string
     ? > errno /Q.number
   6 > tcp
-  [seconds micros] > timeval
+  [code seconds micros] > time-return
+    posix.time-return > called
+      code
+      seconds
+      micros
   os.is-macos.if > trunc
     1024
     512
@@ -77,9 +110,8 @@
           eq.
             posix.close sd
             -1
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp
@@ -91,8 +123,20 @@
       00-00
       00-00-00-00
 
+  os.is-windows.or ++> can-convert-the-limited-broadcast-address-without-an-error
+    seq *
+      posix.access "/there-is-no-such-path" 0
+      posix.inet-addr "255.255.255.255"
+      posix.errno.eq posix.enoent
+
   os.is-windows.or ++> can-invoke-getpid
     posix.getpid.gt 0
+
+  os.is-windows.or ++> can-leave-errno-alone-after-converting-an-address
+    seq *
+      posix.access "/there-is-no-such-path" 0
+      posix.inet-addr "127.0.0.1"
+      posix.errno.eq posix.enoent
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.or > @
@@ -123,9 +167,8 @@
       seq *
         posix.close sd
         sd.gt 0
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp
@@ -142,6 +185,11 @@
         0
         0
 
+  os.is-windows.or ++> can-report-an-address-it-cannot-convert-as-invalid
+    seq *
+      posix.inet-addr "nope"
+      posix.errno.eq posix.einval
+
   os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
@@ -156,26 +204,17 @@
 
   os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "10.0.0.200"
+      posix.inet-addr "10.0.0.200"
       3355443210
 
   os.is-windows.or ++> can-return-an-inet-address-for-localhost
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "127.0.0.1"
+      posix.inet-addr "127.0.0.1"
       16777343
 
   os.is-windows.or ++> can-return-the-limited-broadcast-address
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "255.255.255.255"
+      posix.inet-addr "255.255.255.255"
       posix.unresolved
 
   ++> can-stat-the-size-of-dev-null
@@ -186,11 +225,18 @@
         "stat"
         "/dev/null"
 
-  ++> can-store-seconds-in-a-timeval
+  ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @
-    posix.timeval > tv
+    posix.time-return > tv
+      0
       5
       100
+
+  posix.send --> stops-on-send-size-exceeding-buffer-length
+    0
+    "ab"
+    4096
+    0
 
   --> stops-on-write-size-being-negative
     os.is-windows.if > @

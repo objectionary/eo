@@ -54,6 +54,15 @@ import java.util.Map;
  * it up leaves hundreds of names rooted at a void again while settling almost
  * nothing (#8571).</p>
  *
+ * <p>No stranger is asked about a call that takes the void itself, though,
+ * such as the {@code if} of a boolean. Its arguments are the only ones that
+ * went into the formations the void holds on its behalf, and the calls up the
+ * chain of its receiver are the ones that made the receiver: the {@code or}
+ * that a {@code tuple.at} chooses with makes its own choice of two booleans,
+ * and asking it made every {@code at} a boolean. The guess is kept for a name
+ * read off what the void holds, which is where the call that filled it is
+ * further up the chain (#8552).</p>
+ *
  * <p>A walk that dies answers nothing at all, rather than handing back the
  * name it was asked about. The two are not the same question: a void nobody
  * fills is the answer, while a void this call fills with something the passes
@@ -158,7 +167,7 @@ final class Filled {
         Collection<String> found = Collections.emptyList();
         if (!root.isEmpty()) {
             found = new Arrived(this.owned).names(
-                this.chosen(root, bearer, site),
+                this.chosen(root, answer, bearer, site),
                 answer.substring(Math.min(root.length() + 1, answer.length()))
             );
         }
@@ -202,7 +211,7 @@ final class Filled {
         final String root = new Rooted(this.hollows).names(answer);
         String found = answer;
         if (!root.isEmpty()) {
-            final String handed = this.handed(root, fillings, bearer, site);
+            final String handed = this.handed(root, answer, fillings, bearer, site);
             if (!handed.isEmpty() && seen.add(handed)) {
                 found = this.through(answer, root, handed, site, seen);
             }
@@ -211,11 +220,11 @@ final class Filled {
     }
 
     private String handed(
-        final String root, final Map<String, String> fillings, final String bearer,
-        final String site
+        final String root, final String answer, final Map<String, String> fillings,
+        final String bearer, final String site
     ) {
         String found = "";
-        for (final String call : this.calls(bearer, site)) {
+        for (final String call : this.calls(root, answer, bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
                 found = new Branched(this.owned, arms, this.hollows, this.puts).names();
@@ -224,7 +233,7 @@ final class Filled {
                 }
             }
         }
-        if (found.isEmpty()) {
+        if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
                 this.owned, this.puts.armed(fillings, root), this.hollows, this.puts
             ).names();
@@ -233,10 +242,10 @@ final class Filled {
     }
 
     private Collection<String> chosen(
-        final String root, final String bearer, final String site
+        final String root, final String answer, final String bearer, final String site
     ) {
         Collection<String> found = Collections.emptyList();
-        for (final String call : this.calls(bearer, site)) {
+        for (final String call : this.calls(root, answer, bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
                 final Collection<String> given =
@@ -247,7 +256,7 @@ final class Filled {
                 }
             }
         }
-        if (found.isEmpty()) {
+        if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
                 this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows,
                 this.puts
@@ -256,11 +265,16 @@ final class Filled {
         return found;
     }
 
-    private Collection<String> calls(final String bearer, final String site) {
+    private Collection<String> calls(
+        final String root, final String answer, final String bearer, final String site
+    ) {
         final Collection<String> found = new LinkedHashSet<>(0);
         found.add(site);
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
+        if (root.equals(answer)) {
+            walked = "";
+        }
         while (!walked.isEmpty() && seen.add(walked)) {
             found.add(walked);
             if (this.pairs.containsKey(walked)) {

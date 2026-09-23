@@ -41,6 +41,11 @@ import org.xembly.Xembler;
  * left alone as well, a choice being what a row says when the census has more
  * than one member to offer (#8744).</p>
  *
+ * <p>A row told this way says so with {@code witnessed="true"}. The census is
+ * true of the callers this program happens to have, and a caller written
+ * tomorrow or compiled apart may put another shape into the void, so a reader
+ * in need of a contract leaves such a row out (#8914).</p>
+ *
  * <p>The row of the void itself is told as well. A void row says what it holds
  * only when the source wrote it down, and of the 2,038 void rows of eo-runtime
  * 636 carry the annotation and 711 more are settled by their census alone, so
@@ -100,7 +105,9 @@ public final class Named implements Clue {
     private static void told(final Xnav ref, final Map<String, String> ones) {
         final String sole = ones.getOrDefault(new Noted(ref).says("loc"), "");
         if (!sole.isEmpty() && !ref.elements(Filter.withName("union")).findAny().isPresent()) {
-            new Xembler(new Directives().attr("loc", sole)).applyQuietly(ref.node());
+            new Xembler(
+                new Directives().attr("loc", sole).attr("witnessed", "true")
+            ).applyQuietly(ref.node());
         }
     }
 
