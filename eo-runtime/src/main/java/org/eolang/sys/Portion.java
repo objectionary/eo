@@ -13,9 +13,9 @@ import org.eolang.Natural;
 import org.eolang.Phi;
 
 /**
- * The head of a buffer that a write is asked to hand to a descriptor.
+ * The head of a buffer that a call is asked to hand to a descriptor.
  *
- * <p>A size no write could mean is refused here rather than on the native
+ * <p>A size no call could mean is refused here rather than on the native
  * side: {@link Natural} turns down a negative or fractional one, and a size
  * larger than the buffer it names is turned down too, since the C library
  * would then read past the end of what EO gave it. What comes back is the
@@ -53,7 +53,7 @@ public final class Portion {
         final int size = new Natural(Expect.at(this.phi, "size")).it();
         if (size > buffer.length) {
             throw new ExFailure(
-                "Can't write %d bytes from a buffer of only %d bytes",
+                "Can't take %d bytes from a buffer of only %d bytes",
                 size, buffer.length
             );
         }
