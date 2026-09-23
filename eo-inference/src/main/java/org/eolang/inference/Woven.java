@@ -83,13 +83,18 @@ final class Woven {
      * @param pairs The pairs, each object against the one it is a copy of
      * @param chosen What every call on a void may come back with, from
      *  {@link Dispatched}
+     * @param certain The pairs the passes settle when no void is named by
+     *  what its callers put there, which is how a row tells what it knows
+     *  from what it was told by the callers of a void (#8914)
      * @return The types, by the locator of the object they are about, in the
      *  order the pairs came in
      */
     Map<String, Type> rows(
-        final Map<String, String> pairs, final Map<String, Collection<String>> chosen
+        final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
+        final Map<String, String> certain
     ) {
-        return new Refs(pairs, this.binds(pairs), chosen).all();
+        final Bound bound = this.bound(pairs);
+        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
     }
 
     /**
@@ -106,6 +111,10 @@ final class Woven {
      *  the object that put them there
      */
     Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
+        return this.bound(pairs).all();
+    }
+
+    private Bound bound(final Map<String, String> pairs) {
         return new Bound(
             this.applied.arguments(),
             this.applied.named(),
@@ -113,6 +122,6 @@ final class Woven {
             this.all,
             pairs,
             new Provided(this.given, new Ends(pairs).names(), this.hollows)
-        ).all();
+        );
     }
 }

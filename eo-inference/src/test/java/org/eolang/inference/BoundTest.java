@@ -173,4 +173,29 @@ final class BoundTest {
             Matchers.equalTo(Map.of("Φ.app.alpha.ρ", "Φ.app.thing"))
         );
     }
+
+    @Test
+    void namesTheBindsOnlyTheRelayPutThere() {
+        final Map<String, Collection<Map<String, String>>> rows = new HashMap<>(0);
+        rows.put("Φ.app", List.of(Map.of("void", "true", "type", "Φ.app.v")));
+        rows.put("Φ.oak", List.of(Map.of("void", "true", "type", "Φ.oak.x")));
+        final Map<String, List<String>> args = new HashMap<>(0);
+        args.put("Φ.caller", List.of("Φ.oak"));
+        args.put("Φ.app.call", List.of("Φ.one"));
+        final Map<String, String> pairs = new HashMap<>(0);
+        pairs.put("Φ.caller", "Φ.app");
+        pairs.put("Φ.app.call", "Φ.app.v");
+        MatcherAssert.assertThat(
+            "a bind that only the relay put there must be named, and no other, but it wasnt",
+            new Bound(
+                args, Collections.emptyMap(), Collections.emptyMap(),
+                Collections.emptyList(), pairs,
+                new Provided(
+                    rows, Collections.emptyMap(),
+                    List.of("Φ.app.v", "Φ.oak.x"), Collections.emptyMap()
+                )
+            ).relays(),
+            Matchers.equalTo(Map.of("Φ.app.call", Collections.singleton("Φ.oak.x")))
+        );
+    }
 }
