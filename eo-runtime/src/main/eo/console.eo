@@ -102,9 +102,8 @@
                     ^.^.output-block
                   code
                   remainder
-                code. > code
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.output.name
+                as-number. > code
+                  ^.^.^.sys.output.write >>!
                     ^.^.^.sys.output.descriptor
                     buffer
                     buffer.size
@@ -121,7 +120,7 @@
           "_read" > name
         [] > output
           win32.stdout > descriptor
-          "_write" > name
+          win32.write > write
         win32 > raw
     impl
       []
@@ -130,7 +129,7 @@
           "read" > name
         [] > output
           posix.stdout > descriptor
-          "write" > name
+          posix.write > write
         posix > raw
 
   ++> can-chain-writes-across-output-blocks

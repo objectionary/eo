@@ -27,7 +27,6 @@ public final class NamedSyscall implements Syscall {
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
     static {
-        NamedSyscall.ALL.put("getpid", GetpidSyscall::new);
         NamedSyscall.ALL.put("open", OpenSyscall::new);
         NamedSyscall.ALL.put(
             "stat",
@@ -47,7 +46,6 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("rename", RenameSyscall::new);
         NamedSyscall.ALL.put("symlink", SymlinkSyscall::new);
         NamedSyscall.ALL.put("read", ReadSyscall::new);
-        NamedSyscall.ALL.put("write", WriteSyscall::new);
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
         NamedSyscall.ALL.put("gettimeofday", GettimeofdaySyscall::new);
         NamedSyscall.ALL.put("socket", SocketSyscall::new);
@@ -58,8 +56,6 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("recv", RecvSyscall::new);
         NamedSyscall.ALL.put("send", SendSyscall::new);
         NamedSyscall.ALL.put("inet_addr", InetAddrSyscall::new);
-        NamedSyscall.ALL.put("errno", ErrnoSyscall::new);
-        NamedSyscall.ALL.put("strerror", StrerrorSyscall::new);
     }
 
     /**

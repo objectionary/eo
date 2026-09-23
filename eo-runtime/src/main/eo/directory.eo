@@ -36,14 +36,7 @@
           ^.closed descriptor
           path
       ^.opened path > descriptor!
-      code. > errno
-        os.is-windows.if
-          win32
-            "_errno"
-            *
-          posix
-            "errno"
-            *
+      os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
     | 0 > @
     [^ index] > candidate
@@ -80,14 +73,7 @@
         ^.retried
           ^.path
           clock.as-number
-          code.
-            os.is-windows.if
-              win32
-                "_getpid"
-                *
-              posix
-                "getpid"
-                *
+          os.is-windows.if win32.getpid posix.getpid
           os.is-windows.if
             clock.as-number.random
             div.

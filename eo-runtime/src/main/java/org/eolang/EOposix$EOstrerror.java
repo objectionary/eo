@@ -4,30 +4,31 @@
  */
 package org.eolang;
 
-import org.eolang.posix.CStdLib;
+import org.eolang.posix.Strerror;
 
 /**
- * Releases a descriptor, as `close(2)` does.
+ * Turns an error code into the message the operating system has for it, as
+ * `strerror(3)` does.
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "posix.close")
+@XmirObject(oname = "posix.strerror")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOposix$EOclose extends PhDefault implements Atom {
+public final class EOposix$EOstrerror extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOposix$EOclose() {
-        super(new Attrs(new Attr("descriptor", new AtVoid("descriptor"))));
+    public EOposix$EOstrerror() {
+        super(new Attrs(new Attr("errno", new AtVoid("errno"))));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            CStdLib.INSTANCE.close(new Int(Expect.at(this, "descriptor")).it())
+            new Strerror(new Int(Expect.at(this, "errno")).it()).it()
         );
     }
 }

@@ -61,11 +61,9 @@
       index
       1
   eq. > closed
-    code.
-      os.is-windows.if
-        win32 *1
-          "FindClose"
-          opened.code
+    os.is-windows.if
+      win32.find-close opened.code
+      code.
         posix *1
           "closedir"
           opened.code

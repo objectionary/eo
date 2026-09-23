@@ -227,13 +227,7 @@
         raw > @
         true > cleanup
         posix.close > close
-        code. > message
-          posix *1
-            "strerror"
-            code.
-              posix
-                "errno"
-                *
+        posix.strerror posix.errno > message
         posix > raw
         0 > startup
   [recv] > as-input

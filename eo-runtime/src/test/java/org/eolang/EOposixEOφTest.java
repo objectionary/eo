@@ -4,7 +4,6 @@
  */
 package org.eolang;
 
-import java.lang.management.ManagementFactory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -17,31 +16,6 @@ import org.junit.jupiter.api.condition.OS;
  * @since 0.40
  */
 final class EOposixEOφTest {
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"getpid\" system call was expected to work correctly",
-            new Dataized(
-                new PhApplication(
-                    new PhApplication(
-                        Phi.Φ.take("posix").copy(),
-                        "name",
-                        new Data.ToPhi("getpid")
-                    ),
-                    "args",
-                    Phi.Φ.take("tuple").take("empty")
-                ).take("code")
-            ).asNumber().intValue(),
-            Matchers.equalTo(
-                Integer.parseInt(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@", -1)[0]
-                )
-            )
-        );
-    }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)

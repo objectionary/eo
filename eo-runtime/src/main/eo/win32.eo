@@ -20,17 +20,21 @@
   [] > @ /Q.win32.return
     ? > ^
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   8 > append
   [] > close /Q.number
-    ? > ^
     ? > descriptor /Q.number
   256 > creat
   17 > eexist
+  [] > errno /Q.number
   1024 > exclusive
   -1 > failure
+  [] > find-close /Q.number
+    ? > search /Q.number
+  [] > get-file-attributes /Q.number
+    ? > path /Q.string
+  [] > getpid /Q.number
   2 > inet
   -1 > invalid
   384 > mode
@@ -60,6 +64,10 @@
   512 > trunc
   4294967295 > unresolved
   02-02 > version
+  [] > write /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
   32769 > wronly
 
   ++> can-close-a-tcp-socket
@@ -152,12 +160,7 @@
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-      eq.
-        code.
-          win32
-            "_errno"
-            *
-        win32.eexist
+      win32.errno.eq win32.eexist
 
   os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
@@ -183,16 +186,14 @@
         "_stat64"
         "NUL"
 
-  code. --> stops-on-write-size-being-negative
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      -1
+  win32.find-close -1 --> stops-on-a-handle-nobody-opened
 
-  code. --> stops-on-write-size-exceeding-buffer-length
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      4096
+  win32.write --> stops-on-write-size-being-negative
+    win32.stdout
+    "ab"
+    -1
+
+  win32.write --> stops-on-write-size-exceeding-buffer-length
+    win32.stdout
+    "ab"
+    4096
