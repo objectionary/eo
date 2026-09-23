@@ -233,22 +233,14 @@ final class Bound {
                     final Map<String, String> filled = found.computeIfAbsent(
                         application.getKey(), key -> new LinkedHashMap<>(1)
                     );
-                    Bound.noted(relays, application.getKey(), filled, passed);
+                    passed.keySet().stream()
+                        .filter(hollow -> !filled.containsKey(hollow)).forEach(
+                            hollow -> relays.computeIfAbsent(
+                                application.getKey(), key -> new HashSet<>(1)
+                            ).add(hollow)
+                        );
                     filled.putAll(passed);
                 }
-            }
-        }
-    }
-
-    // A void the application filled already, with an argument of its own and
-    // not by way of the relay, stays a void it filled itself.
-    private static void noted(
-        final Map<String, Collection<String>> relays, final String application,
-        final Map<String, String> filled, final Map<String, String> passed
-    ) {
-        for (final String hollow : passed.keySet()) {
-            if (!filled.containsKey(hollow)) {
-                relays.computeIfAbsent(application, key -> new HashSet<>(1)).add(hollow);
             }
         }
     }
