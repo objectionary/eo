@@ -25,8 +25,8 @@ eo:
     [] > held
       box 42 > @
 links:
-  - "/links/type[@id='Φ.guard.φ']/ref[@loc='Φ.app.loud' and @witnessed='true']"
-  - "/links/type[@id='Φ.guard.φ']/ref/bind[@void='Φ.app.loud.message' and @witnessed='true']"
-  - "/links/type[@id='Φ.guard.φ']/ref/bind[@void='Φ.app.loud.message']/ref[@loc='Φ.guard.φ.α0']"
-  - "/links/type[@id='Φ.held.φ']/ref[@loc='Φ.box' and not(@witnessed)]"
-  - "/links/type[@id='Φ.held.φ']/ref/bind[@void='Φ.box.item' and not(@witnessed)]"
+  - "/links/type[@id='Φ.guard.φ']/ref[@loc='Φ.app.loud'][@witnessed='true']"
+  - "//type[@id='Φ.guard.φ']//bind[@void='Φ.app.loud.message'][@witnessed]"
+  - "//type[@id='Φ.guard.φ']//bind/ref[@loc='Φ.guard.φ.α0']"
+  - "/links/type[@id='Φ.held.φ']/ref[@loc='Φ.box'][not(@witnessed)]"
+  - "//type[@id='Φ.held.φ']/ref/bind[@void='Φ.box.item'][not(@witnessed)]"
