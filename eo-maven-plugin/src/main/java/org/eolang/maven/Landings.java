@@ -81,16 +81,14 @@ final class Landings {
         final Xnav table = new Xnav(new XMLDocument(this.links).inner()).element("links");
         final Map<String, String> copies = new HashMap<>(0);
         table.elements(Filter.withName("type"))
-            .filter(row -> Landings.certain(row.element("ref")))
-            .forEach(
+            .filter(row -> Landings.certain(row.element("ref"))).forEach(
                 row -> row.element("ref").attribute("loc").text().ifPresent(
                     loc -> copies.put(row.attribute("id").text().get(), loc)
                 )
             );
         final Map<String, Collection<String>> found = new HashMap<>(0);
         table.elements(Filter.withName("type"))
-            .filter(row -> Landings.certain(row.element("ref")))
-            .forEach(
+            .filter(row -> Landings.certain(row.element("ref"))).forEach(
                 row -> {
                     final String end = Landings.end(copies, row.attribute("id").text().get());
                     row.element("ref").elements(Filter.withName("bind"))
