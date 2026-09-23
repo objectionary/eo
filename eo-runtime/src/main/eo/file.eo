@@ -49,10 +49,7 @@
             info.output.mode.div 4096
           10
         cant-check
-    code. > attributes
-      win32 *1
-        "GetFileAttributesW"
-        ^.path
+    win32.get-file-attributes ^.path > attributes
     called. > info
       posix *1
         "lstat"
@@ -91,14 +88,14 @@
             win32.close > close
             win32 "_open" > open
             win32 "_read" > read
-            win32 "_write" > write
+            win32.write > write
         open-through
           []
             posix > @
             posix.close > close
             posix "open" > open
             posix "read" > read
-            posix "write" > write
+            posix.write > write
       [^ syscall] > open-through
         if. > @
           descriptor.eq -1
@@ -175,9 +172,8 @@
                       ^.^.output-block
                     code
                     remainder
-                code. > code
-                  ^.^.^.^.syscall.write
-                    * ^.^.^.descriptor buffer buffer.size
+                as-number. > code
+                  ^.^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size >>!
                 if. > remainder
                   code.lt buffer.size
                   ^.^.output-block.write

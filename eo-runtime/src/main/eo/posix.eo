@@ -63,6 +63,10 @@
     1024
     512
   4294967295 > unresolved
+  [] > write /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
   1 > wronly
 
   ++> can-close-a-tcp-socket
@@ -192,12 +196,10 @@
     os.is-windows.if > @
       1.div 0
       seq *
-        code.
-          posix *1
-            "write"
-            fd
-            "ab"
-            -1
+        posix.write
+          fd
+          "ab"
+          -1
         true
     code. > fd
       posix *1
@@ -210,12 +212,10 @@
     os.is-windows.if > @
       1.div 0
       seq *
-        code.
-          posix *1
-            "write"
-            fd
-            "ab"
-            4096
+        posix.write
+          fd
+          "ab"
+          4096
         true
     code. > fd
       posix *1
