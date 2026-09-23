@@ -62,6 +62,18 @@ final class RunningTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void printsTheProtocolSweetAndWithoutRho(@Mktmp final Path temp) throws IOException {
+        final Path home = RunningTest.merged(temp);
+        new Running(home, RunningTest.recording(temp)).exec();
+        MatcherAssert.assertThat(
+            "the run must print its protocol sweet and without any rho, but it doesnt",
+            RunningTest.text(home.resolve("protocol.xml")),
+            Matchers.stringContainsInOrder("--sweet", "--hide-rho")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void writesTheTableOfOperationsBesideTheWorld(@Mktmp final Path temp) throws IOException {
         final Path home = RunningTest.merged(temp);
         new Running(home, RunningTest.recording(temp)).exec();

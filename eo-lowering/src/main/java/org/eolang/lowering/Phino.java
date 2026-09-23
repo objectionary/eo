@@ -84,14 +84,20 @@ final class Phino {
     /**
      * Merge XMIR files into one phi-expression.
      *
+     * <p>The world is printed with syntax sugar, and the protocol of the
+     * run also without a single ρ binding, since both are read back by
+     * this binary or by the stages after the run, and every glyph saved
+     * there is saved on every one of the thousands of entries.</p>
+     *
      * @param xmirs The XMIR files, in the order their objects are to stand
      * @param world The file to write the merged expression to
      * @throws IOException If the executable cannot be run
      */
     void merge(final Iterable<Path> xmirs, final Path world) throws IOException {
         this.run(
-            new Jaxec(this.binary, "merge", "--input=xmir", "--target", world.toString())
-                .with(new Mapped<>(Path::toString, xmirs)),
+            new Jaxec(
+                this.binary, "merge", "--input=xmir", "--sweet", "--target", world.toString()
+            ).with(new Mapped<>(Path::toString, xmirs)),
             String.format("merging the world into '%s'", world)
         );
     }
@@ -115,7 +121,8 @@ final class Phino {
         throws IOException {
         this.run(
             new Jaxec(
-                this.binary, "morph", "--deep", "--acyclic", "--partial", "--quiet", "--sweet",
+                this.binary, "morph", "--deep", "--acyclic", "--partial", "--quiet",
+                "--sweet", "--hide-rho",
                 String.format("--symbolic=%s", atoms),
                 "--locator=Q.l🌵",
                 String.format("--protocol=%s", protocol),

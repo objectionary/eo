@@ -13,7 +13,11 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -84,7 +88,7 @@ final class LoweringTest {
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.136")
+            Matchers.stringContainsInOrder("0.0.1", LoweringTest.pin())
         );
     }
 
@@ -107,6 +111,12 @@ final class LoweringTest {
         );
     }
 
+    private static String pin() {
+        return new UncheckedText(
+            new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
+        ).asString();
+    }
+
     private static String binary(final Path temp) throws IOException {
         final Path made = temp.resolve("phino");
         Files.write(
@@ -114,7 +124,7 @@ final class LoweringTest {
             new ListOf<>(
                 "#!/bin/sh",
                 "case $1 in",
-                "--version) echo 0.0.136;;",
+                String.format("--version) echo %s;;", LoweringTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"

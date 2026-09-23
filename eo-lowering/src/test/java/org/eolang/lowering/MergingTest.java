@@ -60,6 +60,29 @@ final class MergingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void printsTheWorldSweet(@Mktmp final Path temp) throws IOException {
+        final Path home = MergingTest.planted(temp);
+        new Merging(
+            Collections.singletonList(MergingTest.xmir(temp, "gap")),
+            home,
+            MergingTest.phino(
+                temp,
+                String.join(
+                    " ",
+                    "while [ $# -gt 0 ]; do case $1 in --target) t=$2; shift;;",
+                    "*) a=\"$a $1\";; esac; shift; done; echo \"$a\" > \"$t\""
+                )
+            )
+        ).exec();
+        MatcherAssert.assertThat(
+            "the world must be printed with syntax sugar, but it isnt",
+            new String(Files.readAllBytes(home.resolve("world.phi")), StandardCharsets.UTF_8),
+            Matchers.containsString("--sweet")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void quotesWhatTheBinaryPrintedWhenItRefusesTheWorld(@Mktmp final Path temp)
         throws IOException {
         final Path source = MergingTest.xmir(temp, "gap");

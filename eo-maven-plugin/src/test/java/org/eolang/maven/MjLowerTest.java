@@ -12,7 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -56,7 +60,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.136")
+            Matchers.containsString(MjLowerTest.pin())
         );
     }
 
@@ -138,8 +142,14 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.136")
+            Matchers.stringContainsInOrder("0.0.1", MjLowerTest.pin())
         );
+    }
+
+    private static String pin() {
+        return new UncheckedText(
+            new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
+        ).asString();
     }
 
     private static String binary(final Path temp) throws IOException {
@@ -149,7 +159,7 @@ final class MjLowerTest {
             new ListOf<>(
                 "#!/bin/sh",
                 "case $1 in",
-                "--version) echo 0.0.136;;",
+                String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"
