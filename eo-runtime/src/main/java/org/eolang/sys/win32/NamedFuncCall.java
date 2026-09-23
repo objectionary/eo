@@ -36,7 +36,6 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("rename", RenameFuncCall::new);
         NamedFuncCall.ALL.put("_read", ReadFuncCall::new);
         NamedFuncCall.ALL.put("getenv", GetenvFuncCall::new);
-        NamedFuncCall.ALL.put("_ftime64_s", FtimeFuncCall::new);
     }
 
     /**

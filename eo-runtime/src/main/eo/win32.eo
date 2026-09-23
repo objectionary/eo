@@ -47,6 +47,7 @@
   -1 > failure
   [] > find-close /Q.number
     ? > search /Q.number
+  [] > ftime64-s /Q.win32.time-return
   [] > get-file-attributes /Q.number
     ? > path /Q.string
   [] > getpid /Q.number
@@ -89,7 +90,11 @@
   1 > stdout
   1 > stream
   6 > tcp
-  [time millitm] > timeb
+  [code seconds micros] > time-return
+    win32.time-return > called
+      code
+      seconds
+      micros
   512 > trunc
   4294967295 > unresolved
   02-02 > version

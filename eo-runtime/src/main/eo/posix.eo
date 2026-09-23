@@ -45,6 +45,7 @@
     2048
     128
   [] > getpid /Q.number
+  [] > gettimeofday /Q.posix.time-return
   2 > inet
   [] > inet-addr /Q.number
     ? > address /Q.string
@@ -86,7 +87,11 @@
   [] > strerror /Q.string
     ? > errno /Q.number
   6 > tcp
-  [seconds micros] > timeval
+  [code seconds micros] > time-return
+    posix.time-return > called
+      code
+      seconds
+      micros
   os.is-macos.if > trunc
     1024
     512
@@ -220,9 +225,10 @@
         "stat"
         "/dev/null"
 
-  ++> can-store-seconds-in-a-timeval
+  ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @
-    posix.timeval > tv
+    posix.time-return > tv
+      0
       5
       100
 

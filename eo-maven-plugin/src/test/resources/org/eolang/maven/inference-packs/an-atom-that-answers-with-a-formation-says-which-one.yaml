@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A syscall that fills more than one number cannot come back with a number.
+# It comes back with an object of the package it belongs to, and the caller
+# reads the numbers off that object one name at a time.
+#
+# So the walk has to carry on past the atom. It reads what the atom says it
+# hands back, goes to that object, and lands on the attribute the caller
+# asked for. If it stopped at the atom, `called` would be a name rooted at
+# nothing and every number read off it would be lost.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [code seconds micros] > time-return
+        posix.time-return > called
+          code
+          seconds
+          micros
+      [] > gettimeofday /Q.posix.time-return
+  app.eo: |
+    [] > app
+      posix.gettimeofday.called > @
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.posix.time-return.called']"
