@@ -39,7 +39,8 @@ final class BoundTest {
         MatcherAssert.assertThat(
             "the second application of a chain must fill the void the first one left empty",
             new Bound(
-                args, Collections.emptyMap(), Collections.emptyMap(), pairs,
+                args, Collections.emptyMap(), Collections.emptyMap(),
+                Collections.emptyList(), pairs,
                 new Provided(
                     rows, Collections.emptyMap(),
                     Collections.emptyList(), Collections.emptyMap()
@@ -62,6 +63,7 @@ final class BoundTest {
                 Map.of("only", List.of()),
                 Map.of("only", Map.of("y", "only.y", "x", "only.x")),
                 Collections.emptyMap(),
+                Collections.emptyList(),
                 Map.of("only", "pair"),
                 new Provided(
                     Map.of(
@@ -105,7 +107,8 @@ final class BoundTest {
         MatcherAssert.assertThat(
             "an argument must reach the formation a void in the middle of the chain holds, but it didnt",
             new Bound(
-                args, Collections.emptyMap(), Collections.emptyMap(), pairs,
+                args, Collections.emptyMap(), Collections.emptyMap(),
+                Collections.emptyList(), pairs,
                 new Provided(
                     rows, Collections.emptyMap(),
                     Collections.emptyList(), Collections.emptyMap()
@@ -128,6 +131,7 @@ final class BoundTest {
                 Map.of("Φ.app.zebra", List.of("Φ.app.one")),
                 Collections.emptyMap(),
                 Collections.emptyMap(),
+                Collections.emptyList(),
                 pairs,
                 new Provided(
                     Map.of(
@@ -154,6 +158,7 @@ final class BoundTest {
                 Collections.emptyMap(),
                 Collections.emptyMap(),
                 Map.of("Φ.app.zebra", "Φ.app.thing"),
+                Collections.emptyList(),
                 pairs,
                 new Provided(
                     Map.of(
