@@ -4,13 +4,17 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -57,11 +61,17 @@ public final class Told implements Clue {
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
         final Map<String, String> ones = new Ones(given).all();
-        for (final XML hollow : given.nodes("//attr[@void='true' and not(@holds)]")) {
-            final String sole = ones.getOrDefault(new Noted(hollow).says("type"), "");
-            if (!sole.isEmpty()) {
-                new Xembler(new Directives().attr("settled", sole))
-                    .applyQuietly(hollow.inner());
+        for (final Xnav type : new Rows(given).all()) {
+            final List<Xnav> hollows = type.elements(Filter.withName("attr"))
+                .filter(attr -> "true".equals(new Noted(attr).says("void")))
+                .filter(attr -> new Noted(attr).says("holds").isEmpty())
+                .collect(Collectors.toList());
+            for (final Xnav hollow : hollows) {
+                final String sole = ones.getOrDefault(new Noted(hollow).says("type"), "");
+                if (!sole.isEmpty()) {
+                    new Xembler(new Directives().attr("settled", sole))
+                        .applyQuietly(hollow.node());
+                }
             }
         }
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));
