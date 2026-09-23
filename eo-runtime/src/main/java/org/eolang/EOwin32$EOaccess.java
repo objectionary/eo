@@ -25,7 +25,6 @@ public final class EOwin32$EOaccess extends PhDefault implements Atom {
     public EOwin32$EOaccess() {
         super(
             new Attrs(
-                new Attr(Phi.RHO, new AtRho()),
                 new Attr("path", new AtVoid("path")),
                 new Attr("mode", new AtVoid("mode"))
             )

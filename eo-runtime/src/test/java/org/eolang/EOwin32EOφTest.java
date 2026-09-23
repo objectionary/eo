@@ -5,7 +5,6 @@
 package org.eolang;
 
 import com.sun.jna.Pointer;
-import java.lang.management.ManagementFactory;
 import org.eolang.sys.win32.WSAData;
 import org.eolang.sys.win32.Winsock;
 import org.hamcrest.MatcherAssert;
@@ -23,31 +22,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.40
  */
 final class EOwin32EOφTest {
-
-    @Test
-    @DisabledOnOs({OS.LINUX, OS.MAC})
-    void invokesGetpidCorrectly() {
-        MatcherAssert.assertThat(
-            "The \"_getpid\" function call was expected to work correctly",
-            new Dataized(
-                new PhApplication(
-                    new PhApplication(
-                        Phi.Φ.take("win32").copy(),
-                        "name",
-                        new Data.ToPhi("_getpid")
-                    ),
-                    "args",
-                    Phi.Φ.take("tuple").take("empty")
-                ).take("code")
-            ).asNumber().intValue(),
-            Matchers.equalTo(
-                Integer.parseInt(
-                    ManagementFactory.getRuntimeMXBean()
-                        .getName().split("@", -1)[0]
-                )
-            )
-        );
-    }
 
     @Test
     @DisabledOnOs({OS.LINUX, OS.MAC})

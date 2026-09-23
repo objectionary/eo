@@ -7,27 +7,25 @@ package org.eolang;
 import org.eolang.sys.win32.Msvcrt;
 
 /**
- * Releases a descriptor, as msvcrt `_close` does.
+ * Reports the identifier of the running process, as msvcrt `_getpid` does.
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "win32.close")
+@XmirObject(oname = "win32.getpid")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOwin32$EOclose extends PhDefault implements Atom {
+public final class EOwin32$EOgetpid extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOwin32$EOclose() {
-        super(new Attrs(new Attr("descriptor", new AtVoid("descriptor"))));
+    public EOwin32$EOgetpid() {
+        super(new Attrs());
     }
 
     @Override
     public Phi lambda() {
-        return new Data.ToPhi(
-            Msvcrt.INSTANCE._close(new Int(Expect.at(this, "descriptor")).it())
-        );
+        return new Data.ToPhi(Msvcrt.INSTANCE._getpid());
     }
 }

@@ -20,17 +20,17 @@
   [] > @ /Q.win32.return
     ? > ^
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   8 > append
   [] > close /Q.number
-    ? > ^
     ? > descriptor /Q.number
   256 > creat
   17 > eexist
+  [] > errno /Q.number
   1024 > exclusive
   -1 > failure
+  [] > getpid /Q.number
   2 > inet
   -1 > invalid
   384 > mode
@@ -152,12 +152,7 @@
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-      eq.
-        code.
-          win32
-            "_errno"
-            *
-        win32.eexist
+      win32.errno.eq win32.eexist
 
   os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
     eq.

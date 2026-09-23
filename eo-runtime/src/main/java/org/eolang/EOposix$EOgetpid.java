@@ -7,27 +7,25 @@ package org.eolang;
 import org.eolang.posix.CStdLib;
 
 /**
- * Releases a descriptor, as `close(2)` does.
+ * Reports the identifier of the running process, as `getpid(2)` does.
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
  */
-@XmirObject(oname = "posix.close")
+@XmirObject(oname = "posix.getpid")
 @SuppressWarnings("PMD.AvoidDollarSigns")
-public final class EOposix$EOclose extends PhDefault implements Atom {
+public final class EOposix$EOgetpid extends PhDefault implements Atom {
 
     /**
      * Ctor.
      */
-    public EOposix$EOclose() {
-        super(new Attrs(new Attr("descriptor", new AtVoid("descriptor"))));
+    public EOposix$EOgetpid() {
+        super(new Attrs());
     }
 
     @Override
     public Phi lambda() {
-        return new Data.ToPhi(
-            CStdLib.INSTANCE.close(new Int(Expect.at(this, "descriptor")).it())
-        );
+        return new Data.ToPhi(CStdLib.INSTANCE.getpid());
     }
 }

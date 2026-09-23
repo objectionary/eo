@@ -15,22 +15,22 @@
   [] > @ /Q.posix.return
     ? > ^
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   os.is-macos.if > append
     8
     1024
   [] > close /Q.number
-    ? > ^
     ? > descriptor /Q.number
   os.is-macos.if > creat
     512
     64
   17 > eexist
+  [] > errno /Q.number
   os.is-macos.if > exclusive
     2048
     128
+  [] > getpid /Q.number
   2 > inet
   420 > mode
   -1 > none
@@ -55,6 +55,8 @@
   0 > stdin
   1 > stdout
   1 > stream
+  [] > strerror /Q.string
+    ? > errno /Q.number
   6 > tcp
   [seconds micros] > timeval
   os.is-macos.if > trunc
@@ -86,12 +88,7 @@
       00-00-00-00
 
   os.is-windows.or ++> can-invoke-getpid
-    gt.
-      code.
-        posix
-          "getpid"
-          *
-      0
+    posix.getpid.gt 0
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.or > @
@@ -151,12 +148,7 @@
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-      eq.
-        code.
-          posix
-            "errno"
-            *
-        posix.eexist
+      posix.errno.eq posix.eexist
 
   os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
