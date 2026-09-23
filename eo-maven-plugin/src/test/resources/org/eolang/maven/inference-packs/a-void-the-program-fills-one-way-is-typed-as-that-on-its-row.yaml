@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The row of a void says what it holds only when the source wrote it down, and
+# everything the passes learn about the same void arrives beside it as a
+# census. Where that census has one member the answer is in the table and
+# nobody has said it, so a reader has to gather the census and chase the links
+# to learn what `inc` is ever given. The row says it instead: every copy of
+# `inc` hands it a number, so `x` is settled at `Φ.number`. It is a cell of its
+# own and not the one the source writes, since what a source declares is true
+# of every caller there will ever be and what a census holds is true of the
+# callers this program happens to have.
+eo:
+  app.eo: |
+    [] > app
+      inc 42 > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  bytes.eo: |
+    [b] > bytes
+      b > @
+provides:
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @settled='Φ.number']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and not(@holds)]"
