@@ -26,11 +26,7 @@ final class NamedSocketFuncCall implements Syscall {
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
     static {
-        NamedSocketFuncCall.ALL.put("WSAStartup", WSAStartupFuncCall::new);
-        NamedSocketFuncCall.ALL.put("WSACleanup", WSACleanupFuncCall::new);
-        NamedSocketFuncCall.ALL.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
         NamedSocketFuncCall.ALL.put("recv", RecvFuncCall::new);
-        NamedSocketFuncCall.ALL.put("closesocket", ClosesocketFuncCall::new);
     }
 
     /**
