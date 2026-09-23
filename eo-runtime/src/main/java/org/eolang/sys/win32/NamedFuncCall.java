@@ -27,7 +27,6 @@ public final class NamedFuncCall implements Syscall {
 
     static {
         NamedFuncCall.ALL.put("_open", OpenFuncCall::new);
-        NamedFuncCall.ALL.put("_stat64", Stat64FuncCall::new);
         NamedFuncCall.ALL.put("FindFirstFileW", FindFirstFileFuncCall::new);
         NamedFuncCall.ALL.put("FindNextFileW", FindNextFileFuncCall::new);
         NamedFuncCall.ALL.put("_unlink", UnlinkFuncCall::new);

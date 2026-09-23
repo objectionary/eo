@@ -274,11 +274,9 @@
       temp.deleted
       owned
     called. > info
-      posix *1
-        "stat"
-        temp.path
+      posix.stat temp.path
     os.is-windows.or > owned!
-      info.output.mode.eq 33152
+      info.mode.eq 33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile

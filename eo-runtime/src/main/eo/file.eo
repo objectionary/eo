@@ -22,17 +22,13 @@
       info.code.eq 0
       eq.
         floor.
-          info.output.mode.div 4096
+          info.mode.div 4096
         4
       cant-check
     called. > info
       os.is-windows.if
-        win32 *1
-          "_stat64"
-          ^.path
-        posix *1
-          "stat"
-          ^.path
+        win32.stat64 ^.path
+        posix.stat ^.path
   [^ cant-check] > is-symlink
     os.is-windows.if > @
       if.
@@ -46,14 +42,12 @@
         info.code.eq 0
         eq.
           floor.
-            info.output.mode.div 4096
+            info.mode.div 4096
           10
         cant-check
     win32.get-file-attributes ^.path > attributes
     called. > info
-      posix *1
-        "lstat"
-        ^.path
+      posix.lstat ^.path
   [^ mode scope cant-open] > open
     known.not.if > @
       T

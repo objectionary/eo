@@ -28,14 +28,6 @@ public final class NamedSyscall implements Syscall {
 
     static {
         NamedSyscall.ALL.put("open", OpenSyscall::new);
-        NamedSyscall.ALL.put(
-            "stat",
-            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.stat(path, buf))
-        );
-        NamedSyscall.ALL.put(
-            "lstat",
-            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.lstat(path, buf))
-        );
         NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
         NamedSyscall.ALL.put("readdir", ReaddirSyscall::new);
         NamedSyscall.ALL.put("closedir", ClosedirSyscall::new);
