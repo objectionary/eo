@@ -66,53 +66,6 @@ final class MjDealphaTest {
     }
 
     @Test
-    void keepsAlphaInsideLiteral(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "the bytes of a literal must stay positional, but they were renamed",
-            new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[as-bytes] > number",
-                        "  as-bytes > @"
-                    ),
-                    "number",
-                    "number.eo"
-                ).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > app",
-                        "  42 > @"
-                    ),
-                    "app",
-                    "app.eo"
-                ).execute(new PpDealpha()).result().get("target/7-dealpha/app.xmir")
-            ),
-            XhtmlMatchers.hasXPath("//o[@base='Φ.number']/o[@as='α0']")
-        );
-    }
-
-    @Test
-    void keepsAlphaOfBranches(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "the branches of an 'if' must stay positional, but they were renamed",
-            new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > app",
-                        "  [] > yes",
-                        "    [left right] > if",
-                        "      left > @",
-                        "  yes.if 1 2 > @"
-                    )
-                ).execute(new PpDealpha()).result().get("target/7-dealpha/foo/x/main.xmir")
-            ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α1']")
-        );
-    }
-
-    @Test
     void keepsAlphaOfApplicationOfVoid(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "an argument of a void has nowhere to land, but it was renamed",

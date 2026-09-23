@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +28,13 @@ import org.w3c.dom.NodeList;
  * point at the argument. The result goes to {@link #DIR} and the tojo points
  * there, which is where {@link MjTranspile} reads it from.</p>
  *
- * <p>Some arguments keep their places on purpose. The bytes of a literal do,
- * because the runtime prints {@code Φ.number} and {@code Φ.string} readably
- * only when their bytes fill the first slot by position. The branches of an
- * {@code .if} and the arguments of {@code Φ.tuple} and {@code Φ.seq} do too,
- * because the transpiler finds tail calls by those positions.</p>
+ * <p>No object is treated apart: the bytes of a literal are named after the
+ * {@code φ} of {@code Φ.number} like any other argument, and the branches of
+ * an {@code .if} after the voids of the {@code if} they reach. Whatever reads
+ * an argument afterwards counts its place among the arguments instead of
+ * reading it off the name.</p>
  *
- * <p>An argument with no name to take keeps its place as well, and is
+ * <p>An argument with no name to take keeps its place, and is
  * counted. With the strict flag set, the build fails when there is one, after
  * every file is written and the numbers are in the log.</p>
  *
@@ -58,13 +57,6 @@ final class Dealphaing implements Step {
      * The positional name of an argument.
      */
     private static final Pattern ALPHA = Pattern.compile("^α[0-9]+$");
-
-    /**
-     * The objects whose arguments keep their places.
-     */
-    private static final Collection<String> KEPT = Arrays.asList(
-        "Φ.number", "Φ.string", "Φ.bytes", "Φ.tuple", "Φ.seq"
-    );
 
     /**
      * The tojos of the objects to rename arguments in.
@@ -119,11 +111,10 @@ final class Dealphaing implements Step {
             final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
             Logger.info(
                 this,
-                "Named %d of %d positional argument(s) in %d XMIR(s), kept %d of literals, branches and tuples, %d found no void to be named after, XMIR is in %[file]s",
+                "Named %d of %d positional argument(s) in %d XMIR(s), %d found no void to be named after, XMIR is in %[file]s",
                 verdicts.getOrDefault("named", new ArrayList<>(0)).size(),
                 verdicts.values().stream().mapToInt(Collection::size).sum(),
                 this.tojos.size(),
-                verdicts.getOrDefault("kept", new ArrayList<>(0)).size(),
                 lost.size(),
                 this.dir
             );
@@ -176,11 +167,8 @@ final class Dealphaing implements Step {
         final Node alias = arg.getAttributes().getNamedItem("as");
         if (alias != null && Dealphaing.ALPHA.matcher(alias.getNodeValue()).matches()) {
             final String loc = Dealphaing.attr(arg, "loc");
-            final String base = Dealphaing.attr(arg.getParentNode(), "base");
             final String verdict;
-            if (Dealphaing.KEPT.contains(base) || base.endsWith(".if")) {
-                verdict = "kept";
-            } else if (names.containsKey(loc)) {
+            if (names.containsKey(loc)) {
                 alias.setNodeValue(names.get(loc));
                 verdict = "named";
             } else {
