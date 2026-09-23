@@ -6,6 +6,7 @@ package org.eolang.sys.win32;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
@@ -110,7 +111,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, otherwise, a value of SOCKET_ERROR is returned
      */
-    int connect(Pointer sockfd, SockaddrIn addr, int addrlen);
+    int connect(Pointer sockfd, Structure addr, int addrlen);
 
     /**
      * Assigns the address specified by {@code addr} to the socket referred to
@@ -121,7 +122,7 @@ public interface Winsock extends StdCallLibrary {
      * @param addrlen The size of the address structure
      * @return Zero on success, -1 on error
      */
-    int bind(Pointer sockfd, SockaddrIn addr, int addrlen);
+    int bind(Pointer sockfd, Structure addr, int addrlen);
 
     /**
      * Listen for incoming connections on socket.

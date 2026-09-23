@@ -23,8 +23,16 @@
     ? > path /Q.string
     ? > mode /Q.number
   8 > append
+  [] > bind /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr
+    ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > connect /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr
+    ? > length /Q.number
   256 > creat
   17 > eexist
   [] > errno /Q.number
@@ -37,6 +45,9 @@
   [] > getpid /Q.number
   2 > inet
   -1 > invalid
+  [] > listen /Q.number
+    ? > descriptor /Q.number
+    ? > backlog /Q.number
   384 > mode
   -1 > none
   32768 > rdonly
@@ -54,6 +65,10 @@
         family.size.plus port.size
         address.size
       padding.size
+  [] > socket /Q.number
+    ? > domain /Q.number
+    ? > type /Q.number
+    ? > protocol /Q.number
   [mode size] > stat64
   2 > stderr
   0 > stdin
@@ -81,9 +96,8 @@
                 "closesocket"
                 sd
             -1
-    code. > sd
-      win32 *1
-        "socket"
+    as-number. > sd
+      win32.socket >>!
         win32.inet
         win32.stream
         win32.tcp
@@ -127,9 +141,8 @@
             "closesocket"
             sd
         sd.gt 0
-    code. > sd
-      win32 *1
-        "socket"
+    as-number. > sd
+      win32.socket >>!
         win32.inet
         win32.stream
         win32.tcp
