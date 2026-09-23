@@ -21,7 +21,8 @@
     cant-parse
       "Can't convert text %s to number".printf
         * ^
-    head. ("%f".scanf ^).at.^
+    head.
+      "%f".scanf ^
 
   1000.eq "1e3".as-number ++> can-convert-exponent-text
 
