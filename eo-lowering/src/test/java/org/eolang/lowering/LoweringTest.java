@@ -36,7 +36,7 @@ final class LoweringTest {
     void createsTheHomeDirectoryWhenTheBinaryReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
         final Path binary = temp.resolve("phino");
-        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.135"));
+        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.136"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
         new Lowering(
@@ -54,7 +54,7 @@ final class LoweringTest {
     void leavesOnlyTheEntriesWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
         final Path binary = temp.resolve("phino");
-        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.135"));
+        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.136"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
         new Lowering(
@@ -87,7 +87,7 @@ final class LoweringTest {
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.135")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.136")
         );
     }
 
