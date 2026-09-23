@@ -18,7 +18,8 @@ import java.util.regex.Pattern;
 public final class PhApplication extends PhOnce {
 
     /**
-     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}.
+     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}
+     * or {@code φ->Φ.bytes(0->[D> 40-45])} when its bytes are bound by name.
      *
      * <p>It is the shape the transpiler emits for a literal and nothing
      * else, so it is matched against the entire body rather than searched
@@ -29,7 +30,7 @@ public final class PhApplication extends PhOnce {
      * parsed back into bytes.</p>
      */
     private static final Pattern DATA = Pattern.compile(
-        "0->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
+        "(?:0|φ)->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
     );
 
     /**
