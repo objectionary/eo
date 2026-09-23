@@ -124,7 +124,7 @@ public final class Lowering {
         for (final Stage stage : new ListOf<Stage>(
             new Planting(this.sources, this.tables, this.home),
             new Merging(this.sources, this.home, this.phino),
-            new Running(this.home),
+            new Running(this.home, this.phino),
             new Patching(this.home),
             new Rendering(this.home)
         )) {

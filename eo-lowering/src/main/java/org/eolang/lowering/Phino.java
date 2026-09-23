@@ -89,28 +89,41 @@ final class Phino {
      * @throws IOException If the executable cannot be run
      */
     void merge(final Iterable<Path> xmirs, final Path world) throws IOException {
-        final Path err = Files.createTempFile("phino", ".err");
-        try {
-            final Result result = this.result(
-                new Jaxec(this.binary, "merge", "--input=xmir", "--target", world.toString())
-                    .with(new Mapped<>(Path::toString, xmirs))
-                    .withStdout(ProcessBuilder.Redirect.DISCARD)
-                    .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
-            );
-            if (result.code() != 0) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The binary '%s' exited with code %d instead of merging the world into '%s': %s",
-                        this.binary,
-                        result.code(),
-                        world,
-                        new UncheckedText(new Trimmed(new TextOf(err))).asString()
-                    )
-                );
-            }
-        } finally {
-            Files.deleteIfExists(err);
-        }
+        this.run(
+            new Jaxec(this.binary, "merge", "--input=xmir", "--target", world.toString())
+                .with(new Mapped<>(Path::toString, xmirs)),
+            String.format("merging the world into '%s'", world)
+        );
+    }
+
+    /**
+     * Morph the entries of a world symbolically, once.
+     *
+     * <p>The run is aimed at the {@code l🌵} object the planting writes,
+     * enters every mark in it, answers the λ functions the table names,
+     * leaves standing what it cannot answer, stops a term that comes back
+     * to itself, and writes nothing but the protocol.</p>
+     *
+     * @param world The merged world
+     * @param atoms The table of operations the run may answer
+     * @param protocol The file to record every firing into, XML by its name
+     * @param steps The ceiling of nested morphing and dataization steps
+     * @throws IOException If the executable cannot be run
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void morph(final Path world, final Path atoms, final Path protocol, final int steps)
+        throws IOException {
+        this.run(
+            new Jaxec(
+                this.binary, "morph", "--deep", "--acyclic", "--partial", "--quiet", "--sweet",
+                String.format("--symbolic=%s", atoms),
+                "--locator=Q.l🌵",
+                String.format("--protocol=%s", protocol),
+                String.format("--max-steps=%d", steps),
+                world.toString()
+            ),
+            String.format("running over '%s'", world)
+        );
     }
 
     /**
@@ -126,6 +139,30 @@ final class Phino {
                 )
             )
         ).asString();
+    }
+
+    private void run(final Jaxec command, final String task) throws IOException {
+        final Path err = Files.createTempFile("phino", ".err");
+        try {
+            final Result result = this.result(
+                command
+                    .withStdout(ProcessBuilder.Redirect.DISCARD)
+                    .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
+            );
+            if (result.code() != 0) {
+                throw new IllegalStateException(
+                    String.format(
+                        "The binary '%s' exited with code %d instead of %s: %s",
+                        this.binary,
+                        result.code(),
+                        task,
+                        new UncheckedText(new Trimmed(new TextOf(err))).asString()
+                    )
+                );
+            }
+        } finally {
+            Files.deleteIfExists(err);
+        }
     }
 
     private Result result(final Jaxec command) throws IOException {

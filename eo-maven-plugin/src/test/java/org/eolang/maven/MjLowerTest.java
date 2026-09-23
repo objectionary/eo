@@ -151,6 +151,7 @@ final class MjLowerTest {
                 "case $1 in",
                 "--version) echo 0.0.136;;",
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
+                "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"
             )
         );

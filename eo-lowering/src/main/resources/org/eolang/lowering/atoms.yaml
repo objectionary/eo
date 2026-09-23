@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The table of operations phino may answer symbolically during the one run
+# of the lowering. A key is a regular expression matched against the whole
+# name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
+# the carrier of the operation. A λ function no key matches is left where
+# it stands, and the formation that reached it is a taint.
+- λ: L_number_(plus|times|div)
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_number_gt
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ )
+- λ: L_dataized
+  dataize:
+    𝛿1: $.target
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_fork
+  dataize:
+    𝛿1: $.φ
+  morph:
+    𝑛1: $.left
+    𝑛2: $.right
+  symbolize:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
+  join:
+    𝑛5: [𝑛3, 𝑛4]
+  𝑛: 𝑛5
+- λ: L_entry
+  dataize:
+    𝛿1: $.n
+  morph:
+    𝑛1: $.v.φ
+  𝑛: Φ.l🌵.root( 𝑛1 )
+- λ: L_root
+  dataize:
+    𝛿1: $.v
+  𝑛: ⟦ ⟧

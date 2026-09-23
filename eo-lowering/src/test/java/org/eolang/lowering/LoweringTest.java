@@ -48,7 +48,7 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void mergesAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
+    void runsAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
         final Path home = temp.resolve("target/eo/7-lower");
         new Lowering(
@@ -59,7 +59,8 @@ final class LoweringTest {
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
-                    "entries.xmir", "voids.tsv", "entries.tsv", "world.phi"
+                    "entries.xmir", "voids.tsv", "entries.tsv",
+                    "world.phi", "atoms.yaml", "protocol.xml"
                 )
             );
         }
@@ -115,6 +116,7 @@ final class LoweringTest {
                 "case $1 in",
                 "--version) echo 0.0.136;;",
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
+                "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"
             )
         );
