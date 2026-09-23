@@ -139,6 +139,33 @@ final class Bound {
      *  nothing we can name
      */
     Map<String, Map<String, String>> all() {
+        return this.worked(new HashMap<>(0));
+    }
+
+    /**
+     * The voids every application fills only by way of what a void was seen
+     * to hold.
+     *
+     * <p>An argument handed to a call on a void goes into the formations the
+     * program puts there, and which formations those are is evidence gathered
+     * from the callers rather than a contract: the caller written tomorrow,
+     * or one compiled apart, may put a formation of another shape there. A
+     * bind that only this relay put there is named here, so that the row can
+     * say it is witnessed and a reader in need of a contract can leave it
+     * out (#8914).</p>
+     *
+     * @return The voids, by the locator of the application, without the
+     *  applications that fill nothing by way of a relay
+     */
+    Map<String, Collection<String>> relays() {
+        final Map<String, Collection<String>> found = new HashMap<>(0);
+        this.worked(found);
+        return found;
+    }
+
+    private Map<String, Map<String, String>> worked(
+        final Map<String, Collection<String>> relays
+    ) {
         final Map<String, String> landed = this.landed();
         final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
         for (final String application : this.args.keySet()) {
@@ -156,7 +183,7 @@ final class Bound {
                     .put(hollow, dispatch.getValue());
             }
         }
-        this.relayed(found, landed);
+        this.relayed(found, landed, relays);
         return found;
     }
 
@@ -195,16 +222,33 @@ final class Bound {
     }
 
     private void relayed(
-        final Map<String, Map<String, String>> found, final Map<String, String> landed
+        final Map<String, Map<String, String>> found, final Map<String, String> landed,
+        final Map<String, Collection<String>> relays
     ) {
         final Map<String, Collection<String>> fillers = this.puts(found);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
             for (final String filler : this.held(fillers, application.getKey(), landed)) {
                 final Map<String, String> passed = this.passed(filler, application.getValue());
                 if (!passed.isEmpty()) {
-                    found.computeIfAbsent(application.getKey(), key -> new LinkedHashMap<>(1))
-                        .putAll(passed);
+                    final Map<String, String> filled = found.computeIfAbsent(
+                        application.getKey(), key -> new LinkedHashMap<>(1)
+                    );
+                    Bound.noted(relays, application.getKey(), filled, passed);
+                    filled.putAll(passed);
                 }
+            }
+        }
+    }
+
+    // A void the application filled already, with an argument of its own and
+    // not by way of the relay, stays a void it filled itself.
+    private static void noted(
+        final Map<String, Collection<String>> relays, final String application,
+        final Map<String, String> filled, final Map<String, String> passed
+    ) {
+        for (final String hollow : passed.keySet()) {
+            if (!filled.containsKey(hollow)) {
+                relays.computeIfAbsent(application, key -> new HashSet<>(1)).add(hollow);
             }
         }
     }

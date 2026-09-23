@@ -219,6 +219,30 @@ will ever be; `settled` is what `Named` read off the census, true of the callers
 this program happens to have. It is written only where the source declared
 nothing, and a reader after the type of a void reads it second.
 
+A link says the same of itself. A `ref` or a `bind` that was reached only
+through what the program was seen to put into a void carries
+`witnessed="true"`: the call on a void that its one caller fills with a
+`refused` is a copy of `refused` and fills its `message` for as long as that
+caller is the only one, and not a moment longer. A reader that needs a
+contract, such as a pass renaming arguments after the voids they land in,
+leaves those out, since a caller compiled apart may put a formation of another
+shape there:
+
+```xml
+<type id="Φ.socket.connect.φ.α0">
+  <ref loc="Φ.socket.refused" witnessed="true">
+    <bind void="Φ.socket.refused.message" witnessed="true">
+      <ref loc="Φ.socket.connect.φ.α0.α0"/>
+    </bind>
+  </ref>
+</type>
+```
+
+A `ref` is marked where the passes, run once more with no void named after
+its callers, do not arrive at it, and wherever `Named` wrote it from the
+census; a `bind` is marked where only the relay into what a void holds put it
+there.
+
 ## How the behaviour is described
 
 By packs, in

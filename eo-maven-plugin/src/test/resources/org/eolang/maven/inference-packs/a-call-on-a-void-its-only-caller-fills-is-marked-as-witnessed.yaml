@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The "fail" of "guard" calls a void, and the only caller of "guard" puts a
+# "01- > [message] > loud" there, so the row of the call says it is a "loud"
+# and puts its argument into the "message", the way the "^.cant-connect" of
+# "socket.connect" is a "refused" of the one test that calls it. That is
+# evidence and not a contract: a caller written tomorrow, or compiled apart,
+# may put a formation of another shape into "fail". So the "ref" and the
+# "bind" say they were witnessed, while a plain application, which says what
+# it copies in so many words, says nothing of the kind (#8914).
+eo:
+  guard.eo: |
+    [fail] > guard
+      fail > @
+        "it broke"
+  app.eo: |
+    [] > app
+      guard > @
+        01- > [message] > loud
+  box.eo: |
+    [item] > box
+      item > @
+  held.eo: |
+    [] > held
+      box 42 > @
+links:
+  - "/links/type[@id='Φ.guard.φ']/ref[@loc='Φ.app.loud' and @witnessed='true']"
+  - "/links/type[@id='Φ.guard.φ']/ref/bind[@void='Φ.app.loud.message' and @witnessed='true']"
+  - "/links/type[@id='Φ.guard.φ']/ref/bind[@void='Φ.app.loud.message']/ref[@loc='Φ.guard.φ.α0']"
+  - "/links/type[@id='Φ.held.φ']/ref[@loc='Φ.box' and not(@witnessed)]"
+  - "/links/type[@id='Φ.held.φ']/ref/bind[@void='Φ.box.item' and not(@witnessed)]"
