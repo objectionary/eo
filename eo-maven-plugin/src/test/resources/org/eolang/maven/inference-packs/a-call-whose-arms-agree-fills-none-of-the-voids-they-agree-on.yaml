@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The "^.if" of "Φ.bool.and" comes back as a "Φ.bool", since both of its arms
+# are booleans, and it is a copy of the void "Φ.bool.if" all the same. Here
+# the arms are two grips, so the call comes back as a "grip", and its
+# arguments go into the "left" and the "right" of the formations the void
+# holds, never into the "size" of a grip. Were they to land there, every
+# reader of that void would be told a grip is sized by whatever the choice
+# was given (#8552).
+eo:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^ x] > both
+        ^.grip x
+        ^.grip 04-
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+links:
+  - "/links/type[@id='Φ.choice.both.φ']/ref[@loc='Φ.choice.grip']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.yes.φ.α0.left']/ref[@loc='Φ.choice.both.φ.α0']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.no.φ.α0.right']/ref[@loc='Φ.choice.both.φ.α1']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref[not(bind[@void='Φ.choice.grip.size'])]"
+  - "/links/type[@id='Φ.choice.both.φ']/ref[not(bind[@void='Φ.choice.grip.ρ'])]"
