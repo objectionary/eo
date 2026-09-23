@@ -10,7 +10,6 @@ import com.sun.jna.Structure;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
-import org.eolang.sys.SockaddrIn;
 
 /**
  * Interface definitions for <code>WS2_32.dll</code>.
@@ -143,7 +142,7 @@ public interface Winsock extends StdCallLibrary {
      * @return On success, file descriptor for the accepted socket (a nonnegative integer)
      *  is returned. On error, -1 is returned
      */
-    Pointer accept(Pointer sockfd, SockaddrIn addr, IntByReference addrlen);
+    Pointer accept(Pointer sockfd, Structure addr, IntByReference addrlen);
 
     /**
      * Send a message to a socket.

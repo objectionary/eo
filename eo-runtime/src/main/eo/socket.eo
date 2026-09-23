@@ -52,9 +52,8 @@
 [address port] > socket
   os.is-windows.if > @
     [^ sys] >> impl
-      code. > addr
-        sys.raw *1
-          "inet_addr"
+      as-number. > addr
+        sys.inet-addr >>!
           ^.address
       as-i32. > addrint
         if.
@@ -110,9 +109,8 @@
                         ^.^.^.^.^.guarded
                           scope (^.^.^.^.^.scoped-socket client)
                           ^.^.^.^.^.closed-socket client
-                      code. > client
-                        ^.^.^.^.^.sys.raw *1
-                          "accept"
+                      as-number. > client
+                        ^.^.^.^.^.sys.accept >>!
                           ^.^.^.^.^.sd
                           ^.^.^.^.^.sockaddr
                           ^.^.^.^.^.sockaddr.size
@@ -172,9 +170,8 @@
               "Failed to send a message through the socket #%d because %s".printf
                 * ^.descriptor ^.^.sys.message
             sent
-          code. > sent
-            ^.^.sys.raw *1
-              "send"
+          as-number. > sent
+            ^.^.sys.send >>!
               ^.descriptor
               buffer >> buff!
               buff.size
@@ -191,6 +188,7 @@
     |
       []
         raw > @
+        win32.accept > accept
         win32.bind > bind
         if. > cleanup
           eq.
@@ -215,6 +213,7 @@
                 "WSAGetLastError"
                 *
         win32 > raw
+        win32.send > send
         win32.socket > socket
         code. > startup
           win32 *1
@@ -223,6 +222,7 @@
     impl
       []
         raw > @
+        posix.accept > accept
         posix.bind > bind
         true > cleanup
         posix.close > close
@@ -230,6 +230,7 @@
         posix.listen > listen
         posix.strerror posix.errno > message
         posix > raw
+        posix.send > send
         posix.socket > socket
         0 > startup
   [recv] > as-input
