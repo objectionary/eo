@@ -68,7 +68,7 @@
     00-00-00-00-00-00-00-00
 
   eq. ++> can-convert-the-long-minimum-boundary
-    -9.223372036854776e18.as-i64.as-bytes
+    -9223372036854775808.as-i64.as-bytes
     80-00-00-00-00-00-00-00
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number

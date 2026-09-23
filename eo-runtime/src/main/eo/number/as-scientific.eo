@@ -110,7 +110,7 @@
 
   eq. ++> can-name-a-negative-magnitude
     "-9.223372e18"
-    string -9.223372036854776e18.as-scientific
+    string -9223372036854775808.as-scientific
 
   eq. ++> can-name-a-negative-small-magnitude-with-a-negative-power
     "-1.000000e-7"

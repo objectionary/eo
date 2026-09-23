@@ -199,7 +199,7 @@
     i64 7F-FF-FF-FF-FF-FF-FF-FF
     i64 80-00-00-00-00-00-00-00
 
-  -9.223372036854776e18.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
+  -9223372036854775808.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
 
   10.as-i64.lt 50.as-i64 ++> can-be-less-than-a-larger-i64
 
@@ -243,7 +243,7 @@
   eq. ++> can-convert-i64-min-to-a-number
     as-number.
       i64 80-00-00-00-00-00-00-00
-    -9.223372036854776e18
+    -9223372036854775808
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
