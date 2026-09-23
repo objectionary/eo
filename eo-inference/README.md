@@ -214,13 +214,11 @@ more question:
 `Depth` then walks the finished tables and puts every object on its rung.
 
 A void row carries two answers and they are not the same answer. `holds` is
-what the source declared, in `? > code /Q.number`, and it is true of every
-caller there will ever be. `settled` is what `Told` read off the census, and it
-is true of the callers this program happens to have, so it is written only
-where the source declared nothing and loses wherever the two would disagree.
-Both are locators, and a reader after the type of a void reads `holds` first
-and `settled` after it, instead of gathering the census and chasing the links
-again.
+what the source declared, in `? > code /Q.number`, true of every caller there
+will ever be; `settled` is what `Told` read off the census, true of the callers
+this program happens to have, so it is written only where the source declared
+nothing. Both are locators, and a reader after the type of a void reads `holds`
+first and `settled` after it, instead of chasing the links again.
 
 ## How the behaviour is described
 

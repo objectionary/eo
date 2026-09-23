@@ -25,14 +25,9 @@ final class ToldTest {
 
     @Test
     void writesWhatTheOneCallerSettlesTheVoidAt(@Mktmp final Path temp) throws IOException {
-        ToldTest.program(
-            temp,
-            "<o base='∅' loc='Φ.inc.x' name='x'/>",
-            ToldTest.caller("app", "Φ.oak")
-        );
         MatcherAssert.assertThat(
             "a void the program fills one way must be typed as that, but it wasnt",
-            new XMLDocument(temp.resolve("tables").resolve("provides.xml")).nodes(
+            ToldTest.program(temp, "<o base='∅' loc='Φ.inc.x' name='x'/>", "Φ.oak").nodes(
                 "/provides/type[@id='Φ.inc']/attr[@name='x' and @settled='Φ.oak']"
             ),
             Matchers.hasSize(1)
@@ -41,56 +36,51 @@ final class ToldTest {
 
     @Test
     void leavesAVoidFilledTwoWaysAlone(@Mktmp final Path temp) throws IOException {
-        ToldTest.program(
-            temp,
-            "<o base='∅' loc='Φ.inc.x' name='x'/>",
-            ToldTest.caller("app", "Φ.oak"),
-            ToldTest.caller("hut", "Φ.elm")
-        );
         MatcherAssert.assertThat(
             "a void filled two ways cannot be typed as either of them, but it was",
-            new XMLDocument(temp.resolve("tables").resolve("provides.xml"))
-                .nodes("//attr[@settled]"),
+            ToldTest.program(
+                temp, "<o base='∅' loc='Φ.inc.x' name='x'/>", "Φ.oak", "Φ.elm"
+            ).nodes("//attr[@settled]"),
             Matchers.empty()
         );
     }
 
     @Test
     void leavesAVoidTheSourceTypedAlone(@Mktmp final Path temp) throws IOException {
-        ToldTest.program(
-            temp,
-            "<o base='∅' loc='Φ.inc.x' name='x' type='Φ.elm'/>",
-            ToldTest.caller("app", "Φ.oak")
-        );
         MatcherAssert.assertThat(
             "a sighting cannot be written next to what the source declared, but it was",
-            new XMLDocument(temp.resolve("tables").resolve("provides.xml"))
-                .nodes("//attr[@settled]"),
+            ToldTest.program(
+                temp, "<o base='∅' loc='Φ.inc.x' name='x' type='Φ.elm'/>", "Φ.oak"
+            ).nodes("//attr[@settled]"),
             Matchers.empty()
         );
     }
 
-    private static String caller(final String name, final String filler) {
-        return String.format(
-            "<o base='Φ.inc' loc='Φ.%1$s' name='%1$s'><o as='α0' base='%2$s' loc='Φ.%1$s.α0'/></o>",
-            name, filler
-        );
-    }
-
-    private static void program(
-        final Path temp, final String hollow, final String... callers
+    private static XMLDocument program(
+        final Path temp, final String hollow, final String... fillers
     ) throws IOException {
-        Files.writeString(
-            Files.createDirectories(temp.resolve("xmirs")).resolve("wood.xmir"),
+        final StringBuilder text = new StringBuilder(
             String.join(
                 "",
-                "<object><o loc='Φ.inc' name='inc'>", hollow, "</o>",
-                "<o loc='Φ.oak' name='oak'/><o loc='Φ.elm' name='elm'/>",
-                String.join("", callers), "</object>"
+                "<object><o loc='Φ.inc' name='inc'>", hollow,
+                "</o><o loc='Φ.oak' name='oak'/><o loc='Φ.elm' name='elm'/>"
             )
+        );
+        for (int caller = 0; caller < fillers.length; caller += 1) {
+            text.append(
+                String.format(
+                    "<o base='Φ.inc' loc='Φ.app%1$d' name='app%1$d'><o as='α0' base='%2$s' loc='Φ.app%1$d.α0'/></o>",
+                    caller, fillers[caller]
+                )
+            );
+        }
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("wood.xmir"),
+            text.append("</object>").toString()
         );
         new Told(new Witnessed(new Demanded(new Resolved(new Clues())))).follow(
             temp.resolve("xmirs"), temp.resolve("tables")
         );
+        return new XMLDocument(temp.resolve("tables").resolve("provides.xml"));
     }
 }

@@ -17,32 +17,21 @@ import org.xembly.Xembler;
 /**
  * The rows about a void, with the object its callers settle it at.
  *
- * <p>A void row says what it holds only when the source wrote it down, as
- * {@code holds}, and everything the passes learn about the same void arrives
- * beside it as a census {@link Witnessed} writes. Of the 2,030 void rows of
- * eo-runtime 629 carry the annotation, and 810 of the rest are filled one way
- * and no other, so the answer is in the table and nobody has said it. This
- * says it, as one more cell of the row:</p>
+ * <p>A void row says what it holds only when the source wrote it down, and
+ * everything the passes learn about the same void arrives beside it as a census
+ * {@link Witnessed} writes. Of the 2,030 void rows of eo-runtime 629 carry the
+ * annotation and 810 of the rest are filled one way and no other, so the answer
+ * is in the table and nobody has said it. {@link Ones} works it out and this
+ * writes it down, as one more cell of the row:</p>
  *
  * <pre> &lt;attr name="x" type="Φ.inc.x" void="true" settled="Φ.number"/&gt;</pre>
  *
- * <p>A cell of its own and not the {@code holds} the source writes, because the
- * two are different facts and one of them beats the other. What a source
- * declares is true of every caller there will ever be; what a census holds is
- * true of the callers this program happens to have, and {@link Answers} already
- * lets the annotation win where they disagree. Writing a sighting into the cell
- * that carries a declaration would put the two beyond telling apart, and the
- * readers that walk through a void on the strength of what it declares —
- * {@link Held} and {@link Provided} — would be walking on a sighting instead.
- * So a row the source typed is left as it stands.</p>
- *
- * <p>Nothing is worked out here that {@link Ones} did not work out already: the
- * census is read back, a census of one member that names a row of the table is
- * the answer, and a choice, a variable, an {@code unknown} and a member no
- * reader could go and look at leave the row alone. The point is where the
- * answer ends up. A reader of the table would otherwise redo the union of the
- * annotation, the census and the chase through the links to learn what a void
- * holds, and the first such reader is a stylesheet that must chase nothing.</p>
+ * <p>A cell of its own and not the {@code holds} the source writes, because a
+ * declaration is true of every caller there will ever be and a sighting only of
+ * the callers this program happens to have. {@link Answers} already lets the
+ * annotation win where the two disagree, and {@link Held} and {@link Provided}
+ * walk through a void on the strength of what it declares, so a row the source
+ * typed is left as it stands.</p>
  *
  * @since 0.74.0
  */
