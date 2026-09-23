@@ -41,6 +41,10 @@ import java.util.Map;
  * caller may put one with a void of another name there. An argument landing
  * in two voids at once has no name either.</p>
  *
+ * <p>A {@code ref} or a {@code bind} marked {@code witnessed="true"} was
+ * reached only through what the program was seen to put into a void, so it is
+ * left out, together with the copies that pass through it.</p>
+ *
  * @since 0.69.0
  */
 final class Landings {
@@ -76,20 +80,24 @@ final class Landings {
         }
         final Xnav table = new Xnav(new XMLDocument(this.links).inner()).element("links");
         final Map<String, String> copies = new HashMap<>(0);
-        table.elements(Filter.withName("type")).forEach(
-            row -> row.element("ref").attribute("loc").text().ifPresent(
-                loc -> copies.put(row.attribute("id").text().get(), loc)
-            )
-        );
+        table.elements(Filter.withName("type"))
+            .filter(row -> Landings.certain(row.element("ref")))
+            .forEach(
+                row -> row.element("ref").attribute("loc").text().ifPresent(
+                    loc -> copies.put(row.attribute("id").text().get(), loc)
+                )
+            );
         final Map<String, Collection<String>> found = new HashMap<>(0);
-        table.elements(Filter.withName("type")).forEach(
-            row -> {
-                final String end = Landings.end(copies, row.attribute("id").text().get());
-                row.element("ref").elements(Filter.withName("bind")).forEach(
-                    bind -> Landings.landed(found, end, bind)
-                );
-            }
-        );
+        table.elements(Filter.withName("type"))
+            .filter(row -> Landings.certain(row.element("ref")))
+            .forEach(
+                row -> {
+                    final String end = Landings.end(copies, row.attribute("id").text().get());
+                    row.element("ref").elements(Filter.withName("bind"))
+                        .filter(Landings::certain)
+                        .forEach(bind -> Landings.landed(found, end, bind));
+                }
+            );
         final Map<String, String> names = new HashMap<>(found.size());
         for (final Map.Entry<String, Collection<String>> arg : found.entrySet()) {
             if (arg.getValue().size() == 1) {
@@ -110,6 +118,10 @@ final class Landings {
                     .add(hollow.substring(dot + 1))
             );
         }
+    }
+
+    private static boolean certain(final Xnav link) {
+        return !"true".equals(link.attribute("witnessed").text().orElse(""));
     }
 
     private static String end(final Map<String, String> copies, final String name) {
