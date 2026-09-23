@@ -9,26 +9,25 @@ import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.sys.Cstring;
-import org.eolang.sys.Syscall;
 
 /**
- * Stat syscall.
+ * The status of one file, as a {@code posix.stat-return}.
  *
  * <p>Fills a {@code struct stat} for the file at the given path, through
  * {@code stat} or through {@code lstat} when a symbolic link has to be seen as
- * itself, and hands its mode bits and byte size to EO. Linux x86-64, Linux
- * aarch64 and macOS lay that struct out differently, so each keeps its own
- * {@link FileStat}; the divergence is spelled out rather than papered over.</p>
+ * itself, and hands the code, the mode bits and the byte size to EO in one
+ * object. Linux x86-64, Linux aarch64 and macOS lay that struct out
+ * differently, so each keeps its own {@link FileStat}; the divergence is
+ * spelled out rather than papered over.</p>
  *
  * @since 0.57.0
  */
-public final class StatSyscall implements Syscall {
+public final class Stat {
 
     /**
-     * Posix object.
+     * The path of the file.
      */
-    private final Phi posix;
+    private final String path;
 
     /**
      * The C function filling the struct, either following a symbolic link or
@@ -39,38 +38,39 @@ public final class StatSyscall implements Syscall {
     /**
      * Ctor.
      *
-     * @param posix Posix object
+     * @param path The path of the file
      * @param call The C function filling the struct
      */
-    public StatSyscall(final Phi posix, final ToIntBiFunction<String, Structure> call) {
-        this.posix = posix;
+    public Stat(final String path, final ToIntBiFunction<String, Structure> call) {
+        this.path = path;
         this.call = call;
     }
 
-    @Override
-    public Phi make(final Phi... params) {
-        final Phi result = this.posix.take("return").copy();
-        final String path = new Cstring("the 'path' argument of stat", params[0]).it();
+    /**
+     * The status, filled.
+     *
+     * @return A copy of {@code posix.stat-return}
+     */
+    public Phi it() {
         final FileStat info;
         final int code;
         if (Platform.isMac()) {
             final MacFileStat mac = new MacFileStat();
-            code = this.call.applyAsInt(path, mac);
+            code = this.call.applyAsInt(this.path, mac);
             info = mac;
         } else if (Platform.isARM()) {
             final LinuxArmFileStat arm = new LinuxArmFileStat();
-            code = this.call.applyAsInt(path, arm);
+            code = this.call.applyAsInt(this.path, arm);
             info = arm;
         } else {
             final LinuxFileStat linux = new LinuxFileStat();
-            code = this.call.applyAsInt(path, linux);
+            code = this.call.applyAsInt(this.path, linux);
             info = linux;
         }
+        final Phi result = Phi.Φ.take("posix").take("stat-return").copy();
         result.put(0, new Data.ToPhi(code));
-        final Phi struct = this.posix.take("stat");
-        struct.put(0, new Data.ToPhi(info.mode()));
-        struct.put(1, new Data.ToPhi(info.length()));
-        result.put(1, struct);
+        result.put(1, new Data.ToPhi(info.mode()));
+        result.put(2, new Data.ToPhi(info.length()));
         return result;
     }
 
