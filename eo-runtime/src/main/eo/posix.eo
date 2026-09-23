@@ -22,13 +22,13 @@
     1024
   [] > bind /Q.number
     ? > descriptor /Q.number
-    ? > sockaddr
+    ? > sockaddr /Q.posix.sockaddr-in
     ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
   [] > connect /Q.number
     ? > descriptor /Q.number
-    ? > sockaddr
+    ? > sockaddr /Q.posix.sockaddr-in
     ? > length /Q.number
   os.is-macos.if > creat
     512
