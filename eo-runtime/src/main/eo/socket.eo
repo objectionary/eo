@@ -192,33 +192,22 @@
         win32.bind > bind
         if. > cleanup
           eq.
-            code.
-              win32
-                "WSACleanup"
-                *
+            as-number.
+              win32.wsa-cleanup >>!
             win32.failure
           T
             "Couldn't clean up the sockets subsystem"
           true
-        code. > [descriptor] > close
-          win32 *1
-            "closesocket"
-            descriptor
+        win32.closesocket > close
         win32.connect > connect
         win32.listen > listen
         "WSA error code %d".printf > message
-          *
-            code.
-              win32
-                "WSAGetLastError"
-                *
+          * win32.wsa-get-last-error
         win32 > raw
         win32.send > send
         win32.socket > socket
-        code. > startup
-          win32 *1
-            "WSAStartup"
-            win32.version
+        as-number. > startup
+          win32.wsa-startup win32.version >>!
     impl
       []
         raw > @

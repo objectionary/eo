@@ -33,6 +33,8 @@
     ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > closesocket /Q.number
+    ? > descriptor /Q.number
   [] > connect /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.win32.sockaddr-in
@@ -96,6 +98,10 @@
     ? > buffer
     ? > size /Q.number
   32769 > wronly
+  [] > wsa-cleanup /Q.number
+  [] > wsa-get-last-error /Q.number
+  [] > wsa-startup /Q.number
+    ? > version /Q.bytes
 
   os.is-windows.not.or ++> can-accept-the-two-part-form-of-an-address
     eq.
@@ -108,10 +114,7 @@
         sd
         not.
           eq.
-            code.
-              win32 *1
-                "closesocket"
-                sd
+            win32.closesocket sd
             -1
     as-number. > sd
       win32.socket >>!
@@ -153,10 +156,7 @@
   ++> can-open-a-tcp-socket
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "closesocket"
-            sd
+        win32.closesocket sd
         sd.gt 0
     as-number. > sd
       win32.socket >>!
@@ -177,12 +177,7 @@
   os.is-windows.not.or ++> can-report-an-address-it-cannot-convert-as-invalid
     seq *
       win32.inet-addr "nope"
-      eq.
-        code.
-          win32
-            "WSAGetLastError"
-            *
-        win32.einval
+      win32.wsa-get-last-error.eq win32.einval
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
