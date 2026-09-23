@@ -17,7 +17,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * The links, with a row that copies a void saying what the void holds.
+ * The links and the voids, each told what the callers settle a void at.
  *
  * <p>A row calling an object a copy of a void says everything the text says
  * and less than the program does. The body of {@code [item] > box} hands back
@@ -41,6 +41,22 @@ import org.xembly.Xembler;
  * left alone as well, a choice being what a row says when the census has more
  * than one member to offer (#8744).</p>
  *
+ * <p>The row of the void itself is told as well. A void row says what it holds
+ * only when the source wrote it down, and of the 2,038 void rows of eo-runtime
+ * 636 carry the annotation and 711 more are settled by their census alone, so
+ * the answer is in the table and nobody has said it. It goes into a cell of
+ * its own:</p>
+ *
+ * <pre> &lt;attr name="x" type="Φ.inc.x" void="true" settled="Φ.number"/&gt;</pre>
+ *
+ * <p>A cell of its own and not the {@code holds} the source writes, because a
+ * declaration is true of every caller there will ever be and a sighting only of
+ * the callers this program happens to have. {@link Answers} lets the annotation
+ * win where they disagree, and {@link Held} and {@link Provided} walk through a
+ * void on what it declares, so a row the source typed is left alone. Both
+ * tables are told from one reading of the census, since both want the same
+ * answer (#8274).</p>
+ *
  * @since 0.74.0
  */
 public final class Named implements Clue {
@@ -62,9 +78,17 @@ public final class Named implements Clue {
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
         this.origin.follow(xmirs, tables);
-        final Map<String, String> ones = new Ones(
-            new XMLDocument(tables.resolve("provides.xml"))
-        ).all();
+        final Path provides = tables.resolve("provides.xml");
+        final XML given = new XMLDocument(provides);
+        final Map<String, String> ones = new Ones(given).all();
+        for (final Xnav type : new Rows(given).all()) {
+            type.elements(Filter.withName("attr"))
+                .filter(attr -> "true".equals(new Noted(attr).says("void")))
+                .filter(attr -> new Noted(attr).says("holds").isEmpty())
+                .filter(attr -> ones.containsKey(new Noted(attr).says("type")))
+                .forEach(hollow -> Named.settle(hollow, ones.get(new Noted(hollow).says("type"))));
+        }
+        Files.write(provides, given.toString().getBytes(StandardCharsets.UTF_8));
         final Path links = tables.resolve("links.xml");
         final XML table = new XMLDocument(links);
         for (final Xnav row : new Rows(table).all()) {
@@ -78,5 +102,9 @@ public final class Named implements Clue {
         if (!sole.isEmpty() && !ref.elements(Filter.withName("union")).findAny().isPresent()) {
             new Xembler(new Directives().attr("loc", sole)).applyQuietly(ref.node());
         }
+    }
+
+    private static void settle(final Xnav hollow, final String sole) {
+        new Xembler(new Directives().attr("settled", sole)).applyQuietly(hollow.node());
     }
 }
