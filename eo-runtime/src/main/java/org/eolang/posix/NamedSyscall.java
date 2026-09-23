@@ -47,10 +47,7 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("read", ReadSyscall::new);
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
         NamedSyscall.ALL.put("gettimeofday", GettimeofdaySyscall::new);
-        NamedSyscall.ALL.put("accept", AcceptSyscall::new);
         NamedSyscall.ALL.put("recv", RecvSyscall::new);
-        NamedSyscall.ALL.put("send", SendSyscall::new);
-        NamedSyscall.ALL.put("inet_addr", InetAddrSyscall::new);
     }
 
     /**

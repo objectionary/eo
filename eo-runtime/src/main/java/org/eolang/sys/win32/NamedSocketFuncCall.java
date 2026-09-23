@@ -29,11 +29,8 @@ final class NamedSocketFuncCall implements Syscall {
         NamedSocketFuncCall.ALL.put("WSAStartup", WSAStartupFuncCall::new);
         NamedSocketFuncCall.ALL.put("WSACleanup", WSACleanupFuncCall::new);
         NamedSocketFuncCall.ALL.put("WSAGetLastError", WSAGetLastErrorFuncCall::new);
-        NamedSocketFuncCall.ALL.put("accept", AcceptFuncCall::new);
-        NamedSocketFuncCall.ALL.put("send", SendFuncCall::new);
         NamedSocketFuncCall.ALL.put("recv", RecvFuncCall::new);
         NamedSocketFuncCall.ALL.put("closesocket", ClosesocketFuncCall::new);
-        NamedSocketFuncCall.ALL.put("inet_addr", InetAddrFuncCall::new);
     }
 
     /**

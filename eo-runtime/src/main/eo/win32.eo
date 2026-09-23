@@ -19,6 +19,10 @@
 [name args] > win32
   [] > @ /Q.win32.return
     ? > ^
+  [] > accept /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.win32.sockaddr-in
+    ? > length /Q.number
   [] > access /Q.number
     ? > path /Q.string
     ? > mode /Q.number
@@ -35,6 +39,7 @@
     ? > length /Q.number
   256 > creat
   17 > eexist
+  10022 > einval
   [] > errno /Q.number
   1024 > exclusive
   -1 > failure
@@ -44,6 +49,8 @@
     ? > path /Q.string
   [] > getpid /Q.number
   2 > inet
+  [] > inet-addr /Q.number
+    ? > address /Q.string
   -1 > invalid
   [] > listen /Q.number
     ? > descriptor /Q.number
@@ -58,6 +65,11 @@
     ^.return > called
       code
       output
+  [] > send /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
+    ? > flags /Q.number
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
@@ -84,6 +96,11 @@
     ? > buffer
     ? > size /Q.number
   32769 > wronly
+
+  os.is-windows.not.or ++> can-accept-the-two-part-form-of-an-address
+    eq.
+      win32.inet-addr "127.1"
+      16777343
 
   ++> can-close-a-tcp-socket
     os.is-windows.not.or > @
@@ -147,20 +164,29 @@
         win32.stream
         win32.tcp
 
+  os.is-windows.not.or ++> can-read-a-leading-zero-as-octal
+    eq.
+      win32.inet-addr "010.1.1.1"
+      16843016
+
   os.is-windows.not.or ++> can-report-a-host-name-as-invalid
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "localhost"
+      win32.inet-addr "localhost"
       win32.unresolved
+
+  os.is-windows.not.or ++> can-report-an-address-it-cannot-convert-as-invalid
+    seq *
+      win32.inet-addr "nope"
+      eq.
+        code.
+          win32
+            "WSAGetLastError"
+            *
+        win32.einval
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "::1"
+      win32.inet-addr "::1"
       win32.unresolved
 
   os.is-windows.not.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
@@ -177,18 +203,12 @@
 
   os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "10.0.0.200"
+      win32.inet-addr "10.0.0.200"
       3355443210
 
   os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "127.0.0.1"
+      win32.inet-addr "127.0.0.1"
       16777343
 
   ++> can-stat-the-size-of-nul
@@ -200,6 +220,12 @@
         "NUL"
 
   win32.find-close -1 --> stops-on-a-handle-nobody-opened
+
+  win32.send --> stops-on-send-size-being-negative
+    0
+    "ab"
+    -0.5
+    0
 
   win32.write --> stops-on-write-size-being-negative
     win32.stdout
