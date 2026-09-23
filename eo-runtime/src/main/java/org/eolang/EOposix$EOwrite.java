@@ -5,6 +5,7 @@
 package org.eolang;
 
 import org.eolang.posix.CStdLib;
+import org.eolang.sys.Portion;
 
 /**
  * Puts the head of a buffer into a descriptor, as `write(2)` does.
@@ -32,17 +33,10 @@ public final class EOposix$EOwrite extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final byte[] buffer = new Dataized(this.take("buffer")).take();
-        final int size = new Natural(Expect.at(this, "size")).it();
-        if (size > buffer.length) {
-            throw new ExFailure(
-                "Can't write %d bytes from a buffer of only %d bytes",
-                size, buffer.length
-            );
-        }
+        final byte[] chunk = new Portion(this).it();
         return new Data.ToPhi(
             CStdLib.INSTANCE.write(
-                new Int(Expect.at(this, "descriptor")).it(), buffer, size
+                new Int(Expect.at(this, "descriptor")).it(), chunk, chunk.length
             )
         );
     }

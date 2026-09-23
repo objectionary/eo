@@ -186,6 +186,8 @@
         "_stat64"
         "NUL"
 
+  win32.find-close -1 --> stops-on-a-handle-nobody-opened
+
   win32.write --> stops-on-write-size-being-negative
     win32.stdout
     "ab"

@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import com.sun.jna.Pointer;
 import org.eolang.sys.Handles;
 import org.eolang.sys.win32.Kernel32;
 
@@ -31,15 +32,12 @@ public final class EOwin32$EOfind_close extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
+        final Pointer search = Handles.INSTANCE.remove(
+            "the 'search' attribute",
+            new Int(Expect.at(this, "search")).it()
+        );
         final int code;
-        if (
-            Kernel32.INSTANCE.FindClose(
-                Handles.INSTANCE.remove(
-                    "the 'search' attribute",
-                    new Int(Expect.at(this, "search")).it()
-                )
-            )
-        ) {
+        if (Kernel32.INSTANCE.FindClose(search)) {
             code = 0;
         } else {
             code = -1;

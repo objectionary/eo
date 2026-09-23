@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import org.eolang.sys.Portion;
 import org.eolang.sys.win32.Msvcrt;
 
 /**
@@ -32,17 +33,10 @@ public final class EOwin32$EOwrite extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final byte[] buffer = new Dataized(this.take("buffer")).take();
-        final int size = new Natural(Expect.at(this, "size")).it();
-        if (size > buffer.length) {
-            throw new ExFailure(
-                "Can't write %d bytes from a buffer of only %d bytes",
-                size, buffer.length
-            );
-        }
+        final byte[] chunk = new Portion(this).it();
         return new Data.ToPhi(
             Msvcrt.INSTANCE._write(
-                new Int(Expect.at(this, "descriptor")).it(), buffer, size
+                new Int(Expect.at(this, "descriptor")).it(), chunk, chunk.length
             )
         );
     }
