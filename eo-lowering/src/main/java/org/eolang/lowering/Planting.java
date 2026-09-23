@@ -50,13 +50,6 @@ import org.xembly.Xembler;
  *  it stands at. Let {@code entries.xsl} go down as far as the types go,
  *  with a guard against a type that holds itself, and say in
  *  {@code voids.tsv} what it planted.
- * @todo #8548:30min Enter a formation that was written in a place. An
- *  entry names its formation by dispatching to it, and a formation whose
- *  locator holds an α-index, an argument written in a place rather than
- *  under a name, cannot be dispatched to at all, so about one formation
- *  in nine of eo-runtime gets no entry and is never folded. Either give
- *  such a formation a name the world can reach it by, or write its entry
- *  over a copy of the formation itself rather than over a dispatch to it.
  */
 final class Planting implements Stage {
 

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `ρ` of a formation written as an argument is the copy of the callee
+# the argument was bound into, and the path to the formation walks through
+# that very copy, so the calculus binds the `ρ` on the way. Whatever the
+# tables say the `ρ` holds, nothing is planted for it: a planted copy of the
+# callee would have the void empty where this formation stands, and a
+# dispatch off it would reach the bottom rather than the formation.
+eo:
+  true.eo: |
+    [] > true
+      bool > @
+        [^ left right]
+          left > @
+dealpha:
+  Φ.true.φ.α0: if
+provides: |
+  <provides>
+    <type id="Φ.true.φ.α0">
+      <attr name="ρ" type="Φ.true.φ.α0.ρ" void="true" settled="Φ.bool"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if'][not(o)]"

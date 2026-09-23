@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The source never said what `a` holds, but the census of `eo:inference` did:
+# every caller of `gap` passes a number, so the row was settled at `Φ.number`.
+# What the census settled is planted exactly as what the source declared,
+# since either way the tables have one type for the void.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+provides: |
+  <provides>
+    <type id="Φ.gap">
+      <attr name="a" type="Φ.gap.a" void="true" settled="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1']/o[@as='v']/o[@as='a' and @base='Φ.number']/o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+voids:
+  - "𝜎1\t1\ta\tnumber"

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.list.ListOf;
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Planting}.
@@ -169,7 +172,9 @@ final class PlantingTest {
         Collection<String> unmet() throws IOException {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
-                if (!Arrays.asList("eo", "provides", "xmir", "voids", "entries").contains(key)) {
+                if (!Arrays.asList(
+                    "eo", "dealpha", "provides", "xmir", "voids", "entries"
+                ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
                 }
             }
@@ -191,9 +196,13 @@ final class PlantingTest {
             for (final Map.Entry<?, ?> source
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
                 paths.add(
-                    PlantingTest.parsed(
-                        sources.resolve(source.getKey().toString().replace(".eo", ".xmir")),
-                        source.getValue().toString()
+                    this.renamed(
+                        PlantingTest.parsed(
+                            sources.resolve(
+                                source.getKey().toString().replace(".eo", ".xmir")
+                            ),
+                            source.getValue().toString()
+                        )
                     )
                 );
             }
@@ -207,6 +216,22 @@ final class PlantingTest {
                 home
             ).exec();
             return home;
+        }
+
+        private Path renamed(final Path xmir) throws IOException {
+            final Directives dirs = new Directives();
+            for (final Map.Entry<?, ?> arg
+                : ((Map<?, ?>) this.story.map().getOrDefault("dealpha", new HashMap<>(0)))
+                .entrySet()) {
+                dirs.xpath(String.format("//o[@loc='%s']", arg.getKey()))
+                    .attr("as", arg.getValue().toString());
+            }
+            Files.write(
+                xmir,
+                new XMLDocument(new Xembler(dirs).applyQuietly(new XMLDocument(xmir).inner()))
+                    .toString().getBytes(StandardCharsets.UTF_8)
+            );
+            return xmir;
         }
 
         private Collection<String> missing(final Path home, final String name)

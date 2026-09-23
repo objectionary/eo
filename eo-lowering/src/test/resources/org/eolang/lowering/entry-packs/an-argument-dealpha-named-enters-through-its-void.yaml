@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation written as an argument has a place and no name, and `eo:dealpha`
+# turns the place into the name of the void the argument lands in, leaving
+# the locator as the parser wrote it. An entry names its formation by a path
+# the calculus can walk, so the path is read off the tree, void name and all,
+# while the tables and the table of entries still go by the locator.
+eo:
+  true.eo: |
+    [] > true
+      bool > @
+        [left right]
+          left > @
+dealpha:
+  Φ.true.φ.α0: if
+xmir:
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if']"
+entries:
+  - "2\tΦ.true.φ.α0"

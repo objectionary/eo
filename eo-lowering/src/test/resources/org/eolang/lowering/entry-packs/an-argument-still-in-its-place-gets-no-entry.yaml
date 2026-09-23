@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The same formation before `eo:dealpha` ran, or where it found no void to
+# name the argument after, still stands in its place. The calculus has no
+# path to a place: once the application binds the argument it goes by the
+# name of the void and the index is gone. So the formation gets no entry and
+# stays in EO exactly as it was written.
+eo:
+  true.eo: |
+    [] > true
+      bool > @
+        [left right]
+          left > @
+xmir:
+  - "/object/o[@name='l🌵'][count(o[starts-with(@name, 'e')]) = 1]"
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
+entries:
+  - "1\tΦ.true"
