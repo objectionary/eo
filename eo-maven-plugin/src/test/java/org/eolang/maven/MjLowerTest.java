@@ -64,17 +64,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path binary = temp.resolve("phino");
-        Files.write(
-            binary, new ListOf<>("#!/bin/sh", "echo 0.0.136")
-        );
-        Files.setPosixFilePermissions(
-            binary, PosixFilePermissions.fromString("rwxr-xr-x")
-        );
         final Path home = temp.resolve("target/eo/7-lower");
         new FakeMaven(temp)
             .with("lowering", true)
-            .with("binary", binary.toString())
+            .with("binary", MjLowerTest.binary(temp))
             .with("tables", MjLowerTest.tables(temp).toFile())
             .with("home", home.toFile())
             .execute(MjLower.class);
@@ -88,19 +81,12 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
-        final Path binary = temp.resolve("phino");
-        Files.write(
-            binary, new ListOf<>("#!/bin/sh", "echo 0.0.136")
-        );
-        Files.setPosixFilePermissions(
-            binary, PosixFilePermissions.fromString("rwxr-xr-x")
-        );
         final Path home = temp.resolve("target/eo/7-lower");
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)
             .with("lowering", true)
-            .with("binary", binary.toString())
+            .with("binary", MjLowerTest.binary(temp))
             .with("tables", MjLowerTest.tables(temp).toFile())
             .with("home", home.toFile())
             .execute(MjLower.class);
@@ -114,13 +100,6 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void namesTheTablesItCannotFind(@Mktmp final Path temp) throws IOException {
-        final Path binary = temp.resolve("phino");
-        Files.write(
-            binary, new ListOf<>("#!/bin/sh", "echo 0.0.136")
-        );
-        Files.setPosixFilePermissions(
-            binary, PosixFilePermissions.fromString("rwxr-xr-x")
-        );
         final Path absent = temp.resolve("nowhere");
         MatcherAssert.assertThat(
             "the failure must name the directory the tables are missing from, but it doesnt",
@@ -128,7 +107,7 @@ final class MjLowerTest {
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
                     .with("lowering", true)
-                    .with("binary", binary.toString())
+                    .with("binary", MjLowerTest.binary(temp))
                     .with("tables", absent.toFile())
                     .with("home", temp.resolve("target/eo/7-lower").toFile())
                     .execute(MjLower.class),
@@ -161,6 +140,22 @@ final class MjLowerTest {
             ).getCause().getCause().getMessage(),
             Matchers.stringContainsInOrder("0.0.1", "0.0.136")
         );
+    }
+
+    private static String binary(final Path temp) throws IOException {
+        final Path made = temp.resolve("phino");
+        Files.write(
+            made,
+            new ListOf<>(
+                "#!/bin/sh",
+                "case $1 in",
+                "--version) echo 0.0.136;;",
+                "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
+                "esac"
+            )
+        );
+        Files.setPosixFilePermissions(made, PosixFilePermissions.fromString("rwxr-xr-x"));
+        return made.toString();
     }
 
     private static Path tables(final Path temp) throws IOException {

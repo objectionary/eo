@@ -35,12 +35,9 @@ final class LoweringTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsTheHomeDirectoryWhenTheBinaryReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path binary = temp.resolve("phino");
-        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.136"));
-        Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), home, binary.toString()
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp)
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory it was given, but it didnt",
@@ -51,20 +48,19 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void leavesOnlyTheEntriesWhenThereIsNothingToLower(@Mktmp final Path temp)
+    void mergesAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
-        final Path binary = temp.resolve("phino");
-        Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.136"));
-        Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         final Path home = temp.resolve("target/eo/7-lower");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), home, binary.toString()
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp)
         ).exec();
         try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
-                Matchers.containsInAnyOrder("entries.xmir", "voids.tsv", "entries.tsv")
+                Matchers.containsInAnyOrder(
+                    "entries.xmir", "voids.tsv", "entries.tsv", "world.phi"
+                )
             );
         }
     }
@@ -108,6 +104,22 @@ final class LoweringTest {
             ).getMessage(),
             Matchers.containsString(binary.toString())
         );
+    }
+
+    private static String binary(final Path temp) throws IOException {
+        final Path made = temp.resolve("phino");
+        Files.write(
+            made,
+            new ListOf<>(
+                "#!/bin/sh",
+                "case $1 in",
+                "--version) echo 0.0.136;;",
+                "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
+                "esac"
+            )
+        );
+        Files.setPosixFilePermissions(made, PosixFilePermissions.fromString("rwxr-xr-x"));
+        return made.toString();
     }
 
     private static Path tables(final Path temp) throws IOException {
