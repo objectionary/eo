@@ -20,8 +20,16 @@
   os.is-macos.if > append
     8
     1024
+  [] > bind /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > connect /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   os.is-macos.if > creat
     512
     64
@@ -32,6 +40,9 @@
     128
   [] > getpid /Q.number
   2 > inet
+  [] > listen /Q.number
+    ? > descriptor /Q.number
+    ? > backlog /Q.number
   420 > mode
   -1 > none
   511 > permissions
@@ -50,6 +61,10 @@
         family.size.plus port.size
         address.size
       padding.size
+  [] > socket /Q.number
+    ? > domain /Q.number
+    ? > type /Q.number
+    ? > protocol /Q.number
   [mode size] > stat
   2 > stderr
   0 > stdin
@@ -77,9 +92,8 @@
           eq.
             posix.close sd
             -1
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp
@@ -123,9 +137,8 @@
       seq *
         posix.close sd
         sd.gt 0
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp

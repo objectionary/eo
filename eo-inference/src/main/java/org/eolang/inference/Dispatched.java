@@ -107,7 +107,7 @@ final class Dispatched {
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned);
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -204,7 +204,7 @@ final class Dispatched {
     Map<String, Collection<String>> choices(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned);
         final Map<String, Collection<String>> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -250,14 +250,9 @@ final class Dispatched {
         return more;
     }
 
-    private Filled filled(
-        final Map<String, String> pairs, final Map<String, String> names,
-        final Provided owned
-    ) {
-        final Map<String, Map<String, String>> bound = new Copied(
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
-            pairs,
-            new Lent(owned, this.all, this.args, this.receivers).sites(names)
+    private Filled filled(final Map<String, String> pairs, final Provided owned) {
+        final Map<String, Map<String, String>> bound = new Bound(
+            this.args, this.named, this.receivers, this.all, pairs, owned
         ).all();
         return new Filled(
             pairs,
