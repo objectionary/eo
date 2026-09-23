@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# R-9.8.1 holds the leading-zero prohibition against an INT, while R-9.8.2
+# asks nothing of the integer part of a FLOAT beyond one or more digits. So a
+# FLOAT may lead with zeros, however many and whatever sign or exponent it
+# carries, and the INT beside them is still refused elsewhere.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='x' and @base='Φ.number']
+  - //o[@name='y' and @base='Φ.number']
+  - //o[@name='z' and @base='Φ.number']
+input: |
+  [] > main
+    00.5 > x
+    -007.25 > y
+    0009.5e2 > z
