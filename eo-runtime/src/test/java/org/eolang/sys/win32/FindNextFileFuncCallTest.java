@@ -13,6 +13,7 @@ import org.eolang.Data;
 import org.eolang.Dataized;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
+import org.eolang.sys.Handles;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -70,9 +71,12 @@ final class FindNextFileFuncCallTest {
             names.add(new Dataized(entry.take("output")).asString());
             entry = new FindNextFileFuncCall(win).make(handle);
         }
-        new Dataized(
-            new FindCloseFuncCall(win).make(handle).take("code")
-        ).take();
+        Kernel32.INSTANCE.FindClose(
+            Handles.INSTANCE.remove(
+                "the search this test opened",
+                new Dataized(handle).asNumber().intValue()
+            )
+        );
         return names;
     }
 }

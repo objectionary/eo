@@ -30,6 +30,10 @@
   [] > errno /Q.number
   1024 > exclusive
   -1 > failure
+  [] > find-close /Q.number
+    ? > search /Q.number
+  [] > get-file-attributes /Q.number
+    ? > path /Q.string
   [] > getpid /Q.number
   2 > inet
   -1 > invalid
@@ -60,6 +64,10 @@
   512 > trunc
   4294967295 > unresolved
   02-02 > version
+  [] > write /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
   32769 > wronly
 
   ++> can-close-a-tcp-socket
@@ -178,16 +186,12 @@
         "_stat64"
         "NUL"
 
-  code. --> stops-on-write-size-being-negative
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      -1
+  win32.write --> stops-on-write-size-being-negative
+    win32.stdout
+    "ab"
+    -1
 
-  code. --> stops-on-write-size-exceeding-buffer-length
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      4096
+  win32.write --> stops-on-write-size-exceeding-buffer-length
+    win32.stdout
+    "ab"
+    4096
