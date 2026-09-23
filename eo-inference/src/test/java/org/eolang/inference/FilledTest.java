@@ -107,4 +107,57 @@ final class FilledTest {
             Matchers.equalTo("alpha")
         );
     }
+
+    @Test
+    void namesAReadOfAChoiceTheWayEveryArmNamesIt() {
+        final Map<String, Collection<Map<String, String>>> rows = new HashMap<>(0);
+        rows.put("Φ.bool", List.of(Map.of("void", "true", "name", "if", "type", "Φ.bool.if")));
+        rows.put(
+            "picks-left",
+            List.of(
+                Map.of("void", "true", "name", "left", "type", "picks-left.left"),
+                Map.of("void", "true", "name", "right", "type", "picks-left.right"),
+                Map.of("name", "φ", "type", "picks-left.left")
+            )
+        );
+        rows.put(
+            "picks-right",
+            List.of(
+                Map.of("void", "true", "name", "left", "type", "picks-right.left"),
+                Map.of("void", "true", "name", "right", "type", "picks-right.right"),
+                Map.of("name", "φ", "type", "picks-right.right")
+            )
+        );
+        rows.put("Φ.strïng", List.of(Map.of("name", "eq", "type", "Φ.bool")));
+        rows.put("Φ.number", List.of(Map.of("name", "eq", "type", "Φ.bool")));
+        final Collection<String> hollows = List.of(
+            "Φ.bool.if", "picks-left.left", "picks-left.right",
+            "picks-right.left", "picks-right.right"
+        );
+        final Provided owned = new Provided(
+            rows, Collections.emptyMap(), hollows, Collections.emptyMap()
+        );
+        final Map<String, String> pairs = new HashMap<>(0);
+        pairs.put("yes", "Φ.bool");
+        pairs.put("no", "Φ.bool");
+        pairs.put("call", "Φ.bool.if");
+        final Map<String, Map<String, String>> bound = new Bound(
+            Map.of(
+                "yes", List.of("picks-left"),
+                "no", List.of("picks-right"),
+                "call", List.of("Φ.strïng", "Φ.number")
+            ),
+            Collections.emptyMap(), Collections.emptyMap(), pairs, owned
+        ).all();
+        MatcherAssert.assertThat(
+            "a read on top of a choice must be what every arm reads, but it stayed on the void",
+            new Filled(
+                pairs,
+                owned,
+                new Puts(bound, new Holders(bound, pairs).all()),
+                hollows
+            ).instead("Φ.bool.if.eq", "call", "read"),
+            Matchers.equalTo("Φ.bool")
+        );
+    }
 }
