@@ -76,13 +76,7 @@
           os.is-windows.if win32.getpid posix.getpid
           os.is-windows.if
             clock.as-number.random
-            div.
-              micros.
-                output.
-                  posix
-                    "gettimeofday"
-                    *
-              1000000
+            posix.gettimeofday.called.micros.div 1000000
     T
       "Directory %s does not exist, can't create temporary file".printf
         * ^.file
