@@ -29,14 +29,12 @@ public final class NamedSyscall implements Syscall {
     static {
         NamedSyscall.ALL.put("open", OpenSyscall::new);
         NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
-        NamedSyscall.ALL.put("readdir", ReaddirSyscall::new);
         NamedSyscall.ALL.put("closedir", ClosedirSyscall::new);
         NamedSyscall.ALL.put("unlink", UnlinkSyscall::new);
         NamedSyscall.ALL.put("rmdir", RmdirSyscall::new);
         NamedSyscall.ALL.put("mkdir", MkdirSyscall::new);
         NamedSyscall.ALL.put("rename", RenameSyscall::new);
         NamedSyscall.ALL.put("symlink", SymlinkSyscall::new);
-        NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
     }
 
     /**

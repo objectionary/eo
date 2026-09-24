@@ -80,15 +80,11 @@
       read.code.eq -1
       acc
       ^.gathered
-        ^.added acc read.output
+        ^.added acc read.name
     called. > read
       os.is-windows.if
-        win32 *1
-          "FindNextFileW"
-          ^.opened.code
-        posix *1
-          "readdir"
-          ^.opened.code
+        win32.find-next-file ^.opened.code
+        posix.readdir ^.opened.code
   if. > [^ rest item] > inserted
     rest.length.eq 0
     * item
