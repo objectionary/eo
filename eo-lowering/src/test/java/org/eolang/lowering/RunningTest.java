@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
@@ -158,6 +160,71 @@ final class RunningTest {
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             RunningTest.text(home.resolve("protocol.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
+        final Path home = RunningTest.merged(temp);
+        new Running(home, RunningTest.recording(temp)).exec();
+        MatcherAssert.assertThat(
+            "the table must answer every atom of bytes, but it leaves one standing",
+            Stream.of("and", "concat", "eq", "not", "or", "right", "size", "slice")
+                .map(atom -> String.format("L_bytes_%s", atom))
+                .collect(Collectors.toList()),
+            Matchers.everyItem(
+                Matchers.matchesPattern(
+                    Files.readAllLines(home.resolve("atoms.yaml")).stream()
+                        .filter(line -> line.startsWith("- λ: "))
+                        .map(line -> String.format("(?:%s)", line.substring(5)))
+                        .collect(Collectors.joining("|"))
+                )
+            )
+        );
+    }
+
+    @Test
+    void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino");
+        Assumptions.assumeTrue(
+            RunningTest.pinned(phino),
+            "the pinned phino is not on this machine, so the world cannot be run here"
+        );
+        final Path len = Files.write(
+            temp.resolve("len.xmir"),
+            new EoSyntax(String.format("[a] > len%n  a.size > @%n")).parsed()
+                .toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final Path bytes = RunningTest.xmir(
+            temp,
+            "bytes",
+            "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>",
+            "<o name=\"size\" loc=\"Φ.bytes.size\">",
+            "<o name=\"λ\" loc=\"Φ.bytes.size.λ\"/>",
+            "</o>"
+        );
+        final Path number = RunningTest.xmir(
+            temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>"
+        );
+        final Path home = temp.resolve("lower");
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(
+            tables.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id=\"Φ.len\">",
+                "<attr name=\"a\" type=\"Φ.len.a\" void=\"true\" settled=\"Φ.bytes\"/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        new Planting(Arrays.asList(len, bytes, number), tables, home).exec();
+        new Merging(Arrays.asList(len, bytes, number), home, phino).exec();
+        new Running(home, phino).exec();
+        MatcherAssert.assertThat(
+            "the run must fire the atom of bytes the body reached, but it left it standing",
+            RunningTest.text(home.resolve("protocol.xml")),
+            Matchers.containsString("<evaluate λ=\"L_bytes_size\"")
         );
     }
 

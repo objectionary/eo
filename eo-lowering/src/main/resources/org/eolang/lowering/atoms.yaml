@@ -16,6 +16,30 @@
     𝛿1: $.ρ
     𝛿2: $.b
   𝑛: Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ )
+- λ: L_bytes_size
+  dataize:
+    𝛿1: $.ρ
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_bytes_eq
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ )
+- λ: L_bytes_(and|or|concat|right)
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_bytes_not
+  dataize:
+    𝛿1: $.ρ
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_bytes_slice
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.start
+    𝛿3: $.len
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
 - λ: L_dataized
   dataize:
     𝛿1: $.target
