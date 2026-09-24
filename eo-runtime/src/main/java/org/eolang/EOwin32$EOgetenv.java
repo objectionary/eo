@@ -4,8 +4,8 @@
  */
 package org.eolang;
 
-import org.eolang.sys.win32.Msvcrt;
 import org.eolang.sys.Cstring;
+import org.eolang.sys.win32.Msvcrt;
 
 /**
  * Tells the value of an environment variable, as msvcrt `getenv` does.
@@ -32,8 +32,8 @@ public final class EOwin32$EOgetenv extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final String name = new Cstring(Expect.at(this, "name")).it();
-        final String env = Msvcrt.INSTANCE.getenv(name);
         final Phi result = Phi.Φ.take("win32").take("getenv-return").copy();
+        final String env = Msvcrt.INSTANCE.getenv(name);
         result.put(0, new Data.ToPhi(env != null));
         if (env == null) {
             result.put(1, new Data.ToPhi(""));

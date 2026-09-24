@@ -32,8 +32,8 @@ public final class EOposix$EOgetenv extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         final String name = new Cstring(Expect.at(this, "name")).it();
-        final String env = CStdLib.INSTANCE.getenv(name);
         final Phi result = Phi.Φ.take("posix").take("getenv-return").copy();
+        final String env = CStdLib.INSTANCE.getenv(name);
         result.put(0, new Data.ToPhi(env != null));
         if (env == null) {
             result.put(1, new Data.ToPhi(""));

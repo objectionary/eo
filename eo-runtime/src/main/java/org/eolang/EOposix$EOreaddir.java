@@ -55,13 +55,12 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        final Pointer entry = CStdLib.INSTANCE.readdir(
-            Handles.INSTANCE.get(
-                "the 'dirp' attribute",
-                new Int(Expect.at(this, "dirp")).it()
-            )
+        final Pointer stream = Handles.INSTANCE.get(
+            "the 'dirp' attribute",
+            new Int(Expect.at(this, "dirp")).it()
         );
         final Phi result = Phi.Φ.take("posix").take("dir-return").copy();
+        final Pointer entry = CStdLib.INSTANCE.readdir(stream);
         if (entry == null) {
             result.put(0, new Data.ToPhi(-1));
             result.put(1, new PhDefault());
