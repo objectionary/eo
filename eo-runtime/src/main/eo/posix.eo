@@ -30,6 +30,8 @@
     ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > closedir /Q.posix.status-return
+    ? > dirp /Q.number
   [] > connect /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
@@ -69,6 +71,10 @@
     ? > mode /Q.number
   420 > mode
   -1 > none
+  [] > open /Q.posix.status-return
+    ? > path /Q.string
+    ? > flags /Q.number
+    ? > mode /Q.number
   511 > permissions
   384 > private
   0 > rdonly
@@ -87,6 +93,9 @@
     ? > descriptor /Q.number
     ? > size /Q.number
     ? > flags /Q.number
+  [] > rename /Q.posix.status-return
+    ? > from /Q.string
+    ? > to /Q.string
   [^ code output] > return
     output > @
     ^.return > called
@@ -187,8 +196,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.append
         0
@@ -199,8 +207,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.trunc
         0
@@ -222,8 +229,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         0
         0
@@ -236,8 +242,7 @@
   os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
-        posix *1
-          "open"
+        posix.open
           "/dev/null"
           plus.
             posix.rdonly.plus posix.creat
@@ -294,8 +299,7 @@
           -1
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0
@@ -310,8 +314,7 @@
           4096
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0

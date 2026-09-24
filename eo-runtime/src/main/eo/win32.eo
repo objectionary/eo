@@ -74,6 +74,10 @@
     ? > path /Q.string
   384 > mode
   -1 > none
+  [] > open /Q.win32.status-return
+    ? > path /Q.string
+    ? > flags /Q.number
+    ? > mode /Q.number
   32768 > rdonly
   32770 > rdwr
   [] > read /Q.win32.read-return
@@ -88,6 +92,9 @@
     ? > descriptor /Q.number
     ? > size /Q.number
     ? > flags /Q.number
+  [] > rename /Q.win32.status-return
+    ? > from /Q.string
+    ? > to /Q.string
   00-00-00-00-00-00-04-00 > reparse
   [^ code output] > return
     output > @
@@ -180,8 +187,7 @@
         win32.close fd
         fd.gt -1
     code. > fd
-      win32 *1
-        "_open"
+      win32.open
         "NUL"
         win32.wronly.plus win32.append
         0
@@ -192,8 +198,7 @@
         win32.close fd
         fd.gt -1
     code. > fd
-      win32 *1
-        "_open"
+      win32.open
         mktemp.tmpfile.as-path
         win32.wronly.plus win32.trunc
         win32.mode
@@ -232,8 +237,7 @@
   os.is-windows.not.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
-        win32 *1
-          "_open"
+        win32.open
           mktemp.tmpfile.as-path
           plus.
             win32.rdonly.plus win32.creat

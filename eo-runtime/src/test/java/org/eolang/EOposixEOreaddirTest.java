@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eolang.posix.ClosedirSyscall;
 import org.eolang.posix.OpendirSyscall;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -70,7 +69,7 @@ final class EOposixEOreaddirTest {
             entry = EOposixEOreaddirTest.entry(handle);
         }
         new Dataized(
-            new ClosedirSyscall(posix).make(handle).take("code")
+            new PhApplication(new EOposix$EOclosedir(), "dirp", handle).take("code")
         ).take();
         return names;
     }

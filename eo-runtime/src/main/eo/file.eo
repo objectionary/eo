@@ -80,14 +80,14 @@
           []
             win32 > @
             win32.close > close
-            win32 "_open" > open
+            win32.open > open
             win32.read > read
             win32.write > write
         open-through
           []
             posix > @
             posix.close > close
-            posix "open" > open
+            posix.open > open
             posix.read > read
             posix.write > write
       [^ syscall] > open-through
@@ -95,7 +95,7 @@
           descriptor.eq -1
           ^.^.cant-open
             "Couldn't open file '%s': %s".printf
-              * ^.^.^.path opened.output
+              * ^.^.^.path opened.message
           if.
             recovered
               seq *
@@ -124,8 +124,7 @@
             trunc
           append
         called. > opened
-          syscall.open
-            * ^.^.^.path flags syscall.mode
+          syscall.open ^.^.^.path flags syscall.mode
         [^ descriptor] > stream
           [^ size] > read
             read. > @
