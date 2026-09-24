@@ -36,16 +36,11 @@
         ^
         T
           "Cant make the directory '%s': %s".printf
-            * ^.path created.output
+            * ^.path created.message
   called. > created
     os.is-windows.if
-      win32 *1
-        "_mkdir"
-        ^.path
-      posix *1
-        "mkdir"
-        ^.path
-        posix.permissions
+      win32.mkdir ^.path
+      posix.mkdir ^.path posix.permissions
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist

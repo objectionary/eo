@@ -70,6 +70,8 @@
   [] > listen /Q.number
     ? > descriptor /Q.number
     ? > backlog /Q.number
+  [] > mkdir /Q.win32.status-return
+    ? > path /Q.string
   384 > mode
   -1 > none
   32768 > rdonly
@@ -92,6 +94,8 @@
     ^.return > called
       code
       output
+  [] > rmdir /Q.win32.status-return
+    ? > path /Q.string
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -115,6 +119,10 @@
       size
   [] > stat64 /Q.win32.stat-return
     ? > path /Q.string
+  [code message] > status-return
+    win32.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -126,6 +134,8 @@
       seconds
       micros
   512 > trunc
+  [] > unlink /Q.win32.status-return
+    ? > path /Q.string
   4294967295 > unresolved
   02-02 > version
   [] > write /Q.number

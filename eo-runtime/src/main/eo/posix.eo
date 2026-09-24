@@ -64,6 +64,9 @@
     ? > backlog /Q.number
   [] > lstat /Q.posix.stat-return
     ? > path /Q.string
+  [] > mkdir /Q.posix.status-return
+    ? > path /Q.string
+    ? > mode /Q.number
   420 > mode
   -1 > none
   511 > permissions
@@ -89,6 +92,8 @@
     ^.return > called
       code
       output
+  [] > rmdir /Q.posix.status-return
+    ? > path /Q.string
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -112,6 +117,10 @@
       code
       mode
       size
+  [code message] > status-return
+    posix.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -127,6 +136,8 @@
   os.is-macos.if > trunc
     1024
     512
+  [] > unlink /Q.posix.status-return
+    ? > path /Q.string
   4294967295 > unresolved
   [] > write /Q.number
     ? > descriptor /Q.number
