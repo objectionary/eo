@@ -33,7 +33,7 @@ final class WinsockTest {
     }
 
     @Test
-    void cleansupWinsockLibrary() {
+    void cleansUpWinsockLibrary() {
         this.startupsWinsock();
         MatcherAssert.assertThat(
             "Winsock library resources should be freed successfully",
