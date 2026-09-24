@@ -29,7 +29,7 @@
     opened.code.eq -1
     T
       "Can't list the directory '%s': %s".printf
-        * ^.path opened.output
+        * ^.path opened.message
     seq *
       entries.is-empty
       closed
@@ -71,7 +71,7 @@
       os.is-windows.if
         added
           *
-          opened.output
+          opened.name
         *
   [^ acc] > gathered
     if. > @
@@ -97,13 +97,10 @@
       rest.with item
   called. > opened
     os.is-windows.if
-      win32 *1
-        "FindFirstFileW"
+      win32.find-first-file
         ^.as-path.separator.joined
           * ^.path "*"
-      posix *1
-        "opendir"
-        ^.path
+      posix.opendir ^.path
   [^ one two bit] > smaller
     if. > @
       lit.eq

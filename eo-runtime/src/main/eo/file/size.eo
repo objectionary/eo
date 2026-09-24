@@ -62,10 +62,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.size.eq target.as-file.size
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "link-to-file" > link

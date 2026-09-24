@@ -219,10 +219,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.open
           "w"
           f.write "created" > [f]
@@ -354,8 +351,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d.resolved "absent"
             link
         link.as-file.exists
@@ -366,8 +362,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         not.
@@ -383,10 +378,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         link.as-file.is-symlink false
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link

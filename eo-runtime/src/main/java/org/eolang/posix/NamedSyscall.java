@@ -26,11 +26,6 @@ public final class NamedSyscall implements Syscall {
      */
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
-    static {
-        NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
-        NamedSyscall.ALL.put("symlink", SymlinkSyscall::new);
-    }
-
     /**
      * The POSIX name of the syscall.
      */
