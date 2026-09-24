@@ -2,15 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 sheets:
-  - /org/eolang/maven/shake/set-locators.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
 document:
   <?xml version="1.0" encoding="UTF-8"?>
-  <program>
-    <objects>
-      <o name="a">
-        <o base="b"/>
-      </o>
-    </objects>
-  </program>
+  <object>
+    <o name="a">
+      <o base="b"/>
+    </o>
+  </object>
 asserts:
   - /object/o[@loc='Φ.a']/o[@loc='Φ.a.α0']
