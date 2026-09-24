@@ -1,4 +1,4 @@
-# Makes a windows syscall by `name`.
+# Windows calls, one atom per call.
 #
 # The non-socket operations (file, console, process, environment and clock) go
 # through the Microsoft C runtime (msvcrt), which exposes POSIX-compatible
@@ -16,9 +16,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[name args] > win32
-  [] > @ /Q.win32.return
-    ? > ^
+[] > win32
   [] > accept /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.win32.sockaddr-in
@@ -98,11 +96,6 @@
     ? > from /Q.string
     ? > to /Q.string
   00-00-00-00-00-00-04-00 > reparse
-  [^ code output] > return
-    output > @
-    ^.return > called
-      code
-      output
   [] > rmdir /Q.win32.status-return
     ? > path /Q.string
   [code name message] > search-return
