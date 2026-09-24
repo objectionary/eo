@@ -54,6 +54,7 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/validate-object-presence.xsl",
         "/org/eolang/parser/parse/validate-attribute-names.xsl",
         "/org/eolang/parser/parse/validate-voids.xsl",
+        "/org/eolang/parser/parse/validate-package.xsl",
         "/org/eolang/parser/parse/build-fqns.xsl",
         "/org/eolang/parser/parse/expand-aliases.xsl",
         "/org/eolang/parser/parse/validate-aliases.xsl",
@@ -96,6 +97,7 @@ public final class Canonical implements UnaryOperator<XML> {
 
     /**
      * Ctor.
+     *
      * @param objects Space separated qualified names ("package.name")
      *  of the local package objects the compiler is aware of; a bare
      *  reference is homed into the current package only if

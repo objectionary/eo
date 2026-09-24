@@ -2,15 +2,16 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# #7452: a fragile dispatch written as a nameless body line, continuing on
-# the object right above it ("z", §3.5), had already been shifted ahead of
-# that object by an earlier shift by the time the printer sorted the body -
-# the sort key for a nameless entry collapsed to the empty string, so it
-# floated to the front of the alphabetical order. Writing the receiver "z"
-# into the head on top of that made the reparsed line an ordinary nameless
-# application, which the parser rejects. The fix sorts a continuation on
-# its receiver's own name and prints it without the receiver, exactly as
-# the source wrote it.
+# #7452: a fragile dispatch written as a body line, continuing on the
+# object right above it ("z", §3.5), had already been shifted ahead of
+# that object by an earlier shift by the time the printer sorted the
+# body - the sort key collapsed to the empty string, so it floated to
+# the front of the alphabetical order. R-6.2.2 puts the chain's naming
+# line on the last link, so the continuation carries "> w" while the
+# vertical application it hangs on keeps "z" as the intermediate name
+# R-6.2.3 allows. The run sorts under its own name, ahead of "z", and
+# the printer writes the receiver into the head, so the printed line
+# reads back as this very object.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -23,4 +24,11 @@ origin: |
     x > z
       1
       2
-    ?.y
+    ?.y > w
+
+printed: |
+  [] > m
+    z?.y > w
+    x > z
+      1
+      2

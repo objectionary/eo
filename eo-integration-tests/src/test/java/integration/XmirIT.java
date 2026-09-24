@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test for checking validity of parsed EO as XMIR documents.
+ *
  * @since 0.58.3
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

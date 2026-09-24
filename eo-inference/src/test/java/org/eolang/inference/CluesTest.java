@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Clues}.
+ *
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)

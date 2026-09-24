@@ -1,0 +1,71 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The body of `ready` is a read on top of a call that came back with a choice,
+# so the body itself comes back with either a `ring` of a `bell` or a `ring` of
+# a `chime`. A name read off `ready` is therefore that name read off either of
+# them. The walk to it goes behind the body and arrives at a name rooted at the
+# void, and the arms it passed on the way are what the read is owed. Nothing
+# fills a void here, so the arms cannot be found where the read is written:
+# they are only known because the body was asked first.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bell.eo: |
+    [^] > bell
+      [^] > ring
+        [^] > peal
+          06- > @
+  chime.eo: |
+    [^] > chime
+      [^] > ring
+        [^] > peal
+          07- > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        bell > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        chime > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  gauge.eo: |
+    [] > gauge
+      [^] > ready
+        ring. > @
+          listen.
+            held
+            05-
+  app.eo: |
+    [] > app
+      gauge.ready.peal > @
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.choice.pick.listen.ring.peal']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.bell.ring.peal']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.chime.ring.peal']"

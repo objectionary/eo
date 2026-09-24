@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Check errors and warnings.
+ *
  * @since 0.31.0
  */
 final class PpLint implements Iterable<Class<? extends AbstractMojo>> {

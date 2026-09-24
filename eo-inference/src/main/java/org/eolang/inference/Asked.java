@@ -31,6 +31,13 @@ import java.util.stream.Collectors;
  * without its last step, which is why an answer that does not end in the name
  * asked is left alone: nothing there says whose it is.</p>
  *
+ * <p>A void whose fillings hand an argument back answers nothing, so nothing
+ * is written against it: {@code x.if a b} arrives at whichever of {@code a}
+ * and {@code b} the choice takes, and a name read off that belongs there and
+ * not to the picker in between. {@link Relayed} knows which voids those are,
+ * and a name that lands on one is dropped rather than filed where no filling
+ * could ever answer it (#8720).</p>
+ *
  * @since 0.69.0
  */
 final class Asked {
@@ -51,19 +58,33 @@ final class Asked {
     private final Provided owned;
 
     /**
+     * The voids that hand an argument back, from {@link Relayed}.
+     */
+    private final Rooted relays;
+
+    /**
      * Ctor.
+     *
      * @param needs The needs table, as {@link Needs} wrote it
      * @param aliases The name every type goes by, from {@link Ends}
      * @param provided What the types certainly have
+     * @param handing The voids that hand an argument back, from {@link Relayed}
      */
-    Asked(final XML needs, final Map<String, String> aliases, final Provided provided) {
+    Asked(
+        final XML needs,
+        final Map<String, String> aliases,
+        final Provided provided,
+        final Rooted handing
+    ) {
         this.wanted = needs;
         this.names = aliases;
         this.owned = provided;
+        this.relays = handing;
     }
 
     /**
      * What is asked of every object of the program.
+     *
      * @return The names asked, by the object they are asked of, each against
      *  the object that answers it
      */
@@ -73,19 +94,29 @@ final class Asked {
             final String bearer = new Noted(type).says("id");
             for (final Xnav attr : Asked.attrs(type)) {
                 final String name = new Noted(attr).says("name");
-                final String step = ".".concat(name);
                 final String answer = this.owned.attribute(
                     this.names.getOrDefault(bearer, bearer), name
                 );
-                if (answer.endsWith(step)) {
-                    found.computeIfAbsent(
-                        answer.substring(0, answer.length() - step.length()),
-                        key -> new LinkedHashMap<>(0)
-                    ).put(name, answer);
+                final String owner = this.owner(answer, name);
+                if (!owner.isEmpty()) {
+                    found.computeIfAbsent(owner, key -> new LinkedHashMap<>(0))
+                        .put(name, answer);
                 }
             }
         }
         return Collections.unmodifiableMap(found);
+    }
+
+    private String owner(final String answer, final String name) {
+        final String step = ".".concat(name);
+        String found = "";
+        if (answer.endsWith(step)) {
+            final String asked = answer.substring(0, answer.length() - step.length());
+            if (!this.relays.covers(asked)) {
+                found = asked;
+            }
+        }
+        return found;
     }
 
     private static List<Xnav> attrs(final Xnav type) {

@@ -48,6 +48,7 @@ final class Xmirs {
 
     /**
      * Ctor.
+     *
      * @param prepared The directory with the prepared XMIR files
      */
     Xmirs(final Path prepared) {
@@ -148,11 +149,27 @@ final class Xmirs {
      * @throws IOException If a file cannot be read
      */
     Collection<Site> dispatches() throws IOException {
-        final Collection<Site> found = new ArrayList<>(0);
-        for (final XML dispatch : this.matching("//o[starts-with(@base, '.')]")) {
-            found.add(new Site(new Xnav(dispatch.inner())));
-        }
-        return found;
+        return this.sites("//o[starts-with(@base, '.')]");
+    }
+
+    /**
+     * Every application of a name read off the object it is written in.
+     *
+     * <p>{@code if > not} inside {@code [if] > bool} takes the same name from
+     * the same object as {@code b.if} does from outside, only the object goes
+     * unwritten because it is the one the line is written in. The name is
+     * still taken from something, so the question a dispatch asks is worth
+     * asking here too — and when the name is a void, the arguments of this
+     * very application are what say what the void holds.</p>
+     *
+     * @return The applications, file by file, in the order they appear in
+     *  the code
+     * @throws IOException If a file cannot be read
+     */
+    Collection<Site> reads() throws IOException {
+        return this.sites(
+            "//o[starts-with(@base, 'ξ.') and o[starts-with(@as, 'α')]]"
+        );
     }
 
     /**
@@ -190,6 +207,7 @@ final class Xmirs {
 
     /**
      * The locator of every object of the program.
+     *
      * @return The locators
      * @throws IOException If a file cannot be read
      */
@@ -210,13 +228,25 @@ final class Xmirs {
      * that locator rather than by the absence alone, because a formation
      * bound inside a dispatch carries no {@code @as} either.</p>
      *
+     * <p>A name written by itself dispatches as well and has nothing beside it
+     * to be found, so it is not here; {@link Taken} adds it.</p>
+     *
+     * <p>A caret is left out, though the parser writes a receiver beside it
+     * like any other dispatch. What {@code ^} takes is the receiver of the
+     * object below it, and the object below it is not what put it there: the
+     * {@code ^} of an {@code inc} comes from whoever dispatched into that
+     * {@code inc}, so it is the caller's caller and never the {@code inc}
+     * itself. Reading a receiver says nothing about what fills one
+     * (#8281).</p>
+     *
      * @return The locator of the receiver, by the locator of the dispatch
      * @throws IOException If a file cannot be read
      */
     Map<String, String> receivers() throws IOException {
         final Map<String, String> found = new HashMap<>(0);
         for (final XML xmir : this.documents()) {
-            for (final XML node : xmir.nodes("//o[@loc][o[@loc][not(@as)]]")) {
+            for (final XML node
+                : xmir.nodes("//o[@loc][not(@base='.ρ')][o[@loc][not(@as)]]")) {
                 final Xnav owner = new Xnav(node.inner());
                 final String loc = new Noted(owner).says("loc");
                 Xmirs.bare(owner)
@@ -233,6 +263,14 @@ final class Xmirs {
         return owner.elements(
             Filter.all(Filter.withName("o"), Filter.not(Filter.hasAttribute("as")))
         );
+    }
+
+    private Collection<Site> sites(final String xpath) throws IOException {
+        final Collection<Site> found = new ArrayList<>(0);
+        for (final XML site : this.matching(xpath)) {
+            found.add(new Site(new Xnav(site.inner())));
+        }
+        return found;
     }
 
     private Collection<XML> matching(final String xpath) throws IOException {
@@ -258,6 +296,7 @@ final class Xmirs {
         try (Stream<Path> found = Files.walk(this.dir)) {
             return found
                 .filter(path -> path.toString().endsWith(".xmir"))
+                .filter(Files::isRegularFile)
                 .sorted()
                 .collect(Collectors.toList());
         }

@@ -73,6 +73,7 @@ final class Transpilation {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
         "/org/eolang/maven/transpile/_recursion.xsl",
+        "/org/eolang/maven/transpile/_java-names.xsl",
     };
 
     /**
@@ -133,6 +134,7 @@ final class Transpilation {
 
     /**
      * Ctor.
+     *
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
@@ -176,6 +178,7 @@ final class Transpilation {
      * {@code trackSteps} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
      * The tables belong to {@link #version(Collection)} instead.
+     *
      * @return The version segment shared by every source
      */
     String version() {
@@ -195,14 +198,14 @@ final class Transpilation {
      *
      * <p>{@code purify.xsl} reads the tables and stamps {@code @pure}, which
      * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so a source
-     * with different rows is different Java (#7627, #7945).</p>
+     * with different rows is different Java (#7627, #7945). The Java files
+     * of that source are keyed by the same segment: {@code Transpiling}
+     * derives the cache of one tojo from this and hands it to
+     * {@code JavaFiles}, so a class never comes back from a slot the rows
+     * of another build filled (#8001).</p>
      *
      * @param locators The locators of the objects the file holds
      * @return The version segment for {@link CachePath}
-     * @todo #7945:40min Key the Java files by the rows as well.
-     *  `Transpiling` still pools them in one directory made from
-     *  {@link #version()}, which knows nothing about the tables. Hand
-     *  `JavaFiles.total` the directory of the tojo, made here.
      */
     String version(final Collection<String> locators) {
         return String.format("%s-%s", this.version(), this.rows.digest(locators));
@@ -225,6 +228,7 @@ final class Transpilation {
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
+     *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
      */

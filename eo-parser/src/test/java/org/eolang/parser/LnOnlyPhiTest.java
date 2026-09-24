@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnOnlyPhi}.
+ *
  * @since 0.1
  */
 final class LnOnlyPhiTest {
@@ -180,7 +181,7 @@ final class LnOnlyPhiTest {
             "an only-phi may be a `+>` test attribute — the suffix names the formation",
             LnOnlyPhiTest.render(emit),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@name='+name']"
+                "/object/o[@name='p🌵name']"
             )
         );
     }
@@ -275,6 +276,20 @@ final class LnOnlyPhiTest {
             () -> new LnOnlyPhi(new Span("seq *4294967297 > [m] > bar", 1))
                 .into(new Stack(), new Globals(), new Emit()),
             "a compact-tuple `*N` count above Integer.MAX_VALUE must be rejected, not silently wrapped"
+        );
+    }
+
+    @Test
+    void rejectsCompactTupleCountWithLeadingZeros() {
+        MatcherAssert.assertThat(
+            "the leading-zero diagnostic must match the sibling parser",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnOnlyPhi(new Span("seq *01 > [m] > bar", 1))
+                    .into(new Stack(), new Globals(), new Emit()),
+                "an only-phi compact-tuple count with a leading zero must be rejected"
+            ).getMessage(),
+            Matchers.containsString("integer literal must not have leading zeros")
         );
     }
 

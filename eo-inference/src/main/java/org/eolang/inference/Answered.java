@@ -24,6 +24,24 @@ import java.util.Map;
  * object green while the printed number counts it among the ones we know
  * nothing about is worse than either of them alone.</p>
  *
+ * <p>What an atom comes back with is asked for along with the rest. The body
+ * of an atom is a {@code λ} nobody types and nothing here can read, so it is
+ * a copy of nothing, has no row of its own and no void above it, and comes out
+ * as an object we know nothing about — which was every atom of the program
+ * until {@link Returned} was asked here as well as inside the walk (#8317).
+ * The source said all along what running the body gives back, and now the body
+ * answers with it.</p>
+ *
+ * <p>Which answers came back with a choice of several objects is stamped on
+ * afterwards too, by {@link Chosen}, for the same reason and from the same
+ * table the walk read its pairs from (#8854).</p>
+ *
+ * <p>Which voids an atom fills is stamped on afterwards, by {@link Forged},
+ * rather than worked out inside the walk. It is not something the walk found
+ * out — it is the same name rooted at the same void, and only the reason it
+ * stayed there differs — and the walk has no business carrying a fact it never
+ * uses (#8352).</p>
+ *
  * @since 0.70.0
  */
 final class Answered {
@@ -40,6 +58,7 @@ final class Answered {
 
     /**
      * Ctor.
+     *
      * @param xmirs The directory with the prepared XMIR files
      * @param rows The directory with the tables
      */
@@ -50,17 +69,20 @@ final class Answered {
 
     /**
      * The answer for every object of the program.
+     *
      * @return The answers, by the locator of the object
      * @throws IOException If a table or a file cannot be read
      */
     Map<String, Answer> all() throws IOException {
         final XML given = new XMLDocument(this.tables.resolve("provides.xml"));
         final Pairs pairs = new Pairs(new XMLDocument(this.tables.resolve("links.xml")));
+        final Map<String, String> ends = new LinkedHashMap<>(new Ends(pairs.all()).names());
+        ends.putAll(new Returned(given).bodies());
         final Answers answers = new Answers(
             new Ungrouped(given, Collections.emptyMap()).rows(),
             new Seen(given).all(),
             new HashSet<>(pairs.certain()),
-            new Ends(pairs.all()).names()
+            ends
         );
         final Map<String, Collection<String>> filled = pairs.filled();
         final Map<String, Answer> found = new LinkedHashMap<>(0);
@@ -69,6 +91,6 @@ final class Answered {
                 locator, answers.of(locator, filled.getOrDefault(locator, Collections.emptyList()))
             );
         }
-        return found;
+        return new Chosen(pairs.arms()).marked(new Forged(given).marked(found));
     }
 }

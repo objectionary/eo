@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name is taken from an object even when the object goes unwritten, because
+# it is the one the line is written in: `choose > taken` inside
+# `[choose] > pick` reads the same void that `p.choose` reads from outside.
+# Both are applied to two arms, both are answered by what the callers put into
+# the void, and there is no reason for the two to end differently. A reader
+# further along already got its answer this way, so the read itself staying a
+# question left the table saying two things about one object.
+eo:
+  pick.eo: |
+    [choose] > pick
+      choose > taken
+        oak
+        oak
+  yes.eo: |
+    [^] > yes
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  oak.eo: |
+    [] > oak
+      [^ tall] > grows
+        tall > @
+  app.eo: |
+    [] > app
+      yes.taken.grows > @
+        03-
+links:
+  - "/links/type[@id='Φ.pick.taken']/ref[@loc='Φ.oak']"
+  - "/links/type[@id='Φ.app.φ.ρ']/ref[@loc='Φ.pick.taken']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.oak.grows']"

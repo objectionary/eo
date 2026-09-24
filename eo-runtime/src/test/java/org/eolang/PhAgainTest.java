@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhAgain}.
+ *
  * @since 0.76
  */
 final class PhAgainTest {

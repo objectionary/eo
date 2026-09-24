@@ -26,6 +26,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link DrProgram}.
+ *
  * @since 0.49
  */
 final class DrProgramTest {

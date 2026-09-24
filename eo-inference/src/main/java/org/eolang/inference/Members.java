@@ -39,6 +39,7 @@ final class Members {
 
     /**
      * Ctor.
+     *
      * @param formations The formations of the program
      * @param tops The object every file is about
      */
@@ -49,6 +50,7 @@ final class Members {
 
     /**
      * Write these attributes into the given table.
+     *
      * @param rows The table to fill
      */
     void fill(final Tojos rows) {

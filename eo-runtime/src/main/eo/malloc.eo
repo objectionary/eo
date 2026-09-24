@@ -41,7 +41,7 @@
 #   [m]
 #     seq > @
 #       *
-#         m.write 2 "Hello"   # write object "Hello" with offset 2
+#         m.write 2 "Hello"   # write "Hello" at offset 2 -> the bytes written
 #         m.read 3 4          # read 4 bytes from offset 3 -> "ello"
 #         m.put 42            # write object 42 with offset 0
 #         m.get               # just get all the data from the memory block -> 42
@@ -56,9 +56,9 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [] > malloc
   malloc.of > [scope] > empty
@@ -132,7 +132,7 @@
 
   malloc.for ++> can-copy-data-from-start-to-end
     01-02-03-04-05-06
-    and. > [m]
+    seq * > [m]
       m.copy
         0
         3
@@ -141,7 +141,7 @@
 
   malloc.for ++> can-copy-data-inside-itself
     01-02-03-04-05
-    and. > [m]
+    seq * > [m]
       m.copy
         1
         2

@@ -95,6 +95,7 @@ final class Penalty {
 
     /**
      * Ctor, using the default weights for every key.
+     *
      * @param source The EO source code
      */
     Penalty(final String source) {
@@ -103,6 +104,7 @@ final class Penalty {
 
     /**
      * Ctor.
+     *
      * @param source The EO source code
      * @param config The overridden weights; absent keys use their defaults
      */
@@ -113,6 +115,7 @@ final class Penalty {
 
     /**
      * Calculate the total penalty.
+     *
      * @return The penalty in points
      */
     int points() {

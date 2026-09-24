@@ -1,0 +1,7 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'tab character in leading whitespace')]
+input: "[] > app\n  CA-FE-\n\t\t\t\tBE-BE\n"

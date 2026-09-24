@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation that binds nothing but a body has no behaviour of its own: every
+# name it answers to, it answers through its `@`. Telling a reader that
+# something is a `Φ.alias` gives him a name and nothing else, so the type it
+# goes by is the type of its `@`, and the row says which.
+eo:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+provides:
+  - "/provides/type[@id='Φ.alias' and @reduced='Φ.oak']"

@@ -67,6 +67,7 @@
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
         <xsl:attribute name="line" select="@line"/>
+        <xsl:attribute name="pos" select="@pos"/>
         <o>
           <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
             <xsl:attribute name="{name()}">

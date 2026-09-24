@@ -14,8 +14,6 @@ import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -45,6 +43,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjTranspile}.
+ *
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)
@@ -321,6 +320,30 @@ final class MjTranspileTest {
     }
 
     @Test
+    void handsOneSetOfHitsToEveryPhCoverageWrapperOfAClass(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the class must declare one static set of hits and hand it to every PhCoverage wrapper, but it didnt",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.program())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.allOf(
+                Matchers.stringContainsInOrder(
+                    "public final class EOmain",
+                    "private static final java.util.Set<String> HITS",
+                    "new PhCoverage("
+                ),
+                Matchers.not(Matchers.matchesRegex("(?s).*new PhCoverage\\(\\w+, \".*"))
+            )
+        );
+    }
+
+    @Test
     void excludesThrowingCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
@@ -442,37 +465,39 @@ final class MjTranspileTest {
     @ParameterizedTest
     @ValueSource(strings = {"", "org.example.Ph Inspected", "42Nope"})
     void rejectsPhiDefaultClassThatIsNotAJavaName(final String name, @Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjTranspileTest.program())
-                .with("superclass", name)
-                .execute(new PpTranspile()),
-            "a phiDefaultClass that is not a Java class name must not reach the generated Java"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "a phiDefaultClass that is not a Java class name must be refused by naming the option, instead of emitting an extends clause that cannot compile",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjTranspileTest.program())
+                            .with("superclass", name)
+                            .execute(new PpTranspile()),
+                        "a phiDefaultClass that is not a Java class name must not reach the generated Java"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("eo.phiDefaultClass")
         );
     }
 
     @Test
     void throwsDetailedError(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram("# Absent.")
-                .execute(new PpTranspile()),
-            "TranspileMojo should throw an exception on invalid EO code"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram("# Absent.")
+                            .execute(new PpTranspile()),
+                        "TranspileMojo should throw an exception on invalid EO code"
+                    )
+                )
+            ).asString(),
             Matchers.allOf(
                 Matchers.containsString("Expected 1 child nodes, but found 0"),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
@@ -503,6 +528,34 @@ final class MjTranspileTest {
                     Matchers.hasKey("target/generated/EO_com/EO_example/EOfoo.java")
                 )
             )
+        );
+    }
+
+    @Test
+    void namesTheAtomOfAPackageMemberInsideItsPackageObject(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the atom of a package member must be a class nested in the class of the package object, which is where the library that ships it puts it (#8295)",
+            new TextOf(
+                MjTranspileTest.withMember(temp)
+                    .execute(MjParse.class)
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EOfoo.java")
+            ).asString(),
+            Matchers.containsString("new EOfoo$EObar$EObaz()")
+        );
+    }
+
+    @Test
+    void compilesAPackageMemberAsAPartOfItsObject(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "a member of a package this build compiles an object for must not be compiled apart, even when the merge goal was never named",
+            MjTranspileTest.withMember(temp)
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
+            Matchers.not(Matchers.hasKey("target/generated/org/eolang/EO_foo/EObar.java"))
         );
     }
 
@@ -909,5 +962,31 @@ final class MjTranspileTest {
         ).pass(
             new EoSyntax(String.format("[] > %s%n  42 > @%n", name)).parsed()
         ).xpath("//@java-name").get(0);
+    }
+
+    // A workspace with an object and a member of its package, where the
+    // member holds an atom.
+    private static FakeMaven withMember(final Path temp) throws IOException {
+        return new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > foo",
+                "  42 > @"
+            ),
+            "foo",
+            "foo.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package foo",
+                "+rt jvm org.eolang:eo-runtime:0.0.0",
+                "",
+                "[] > bar",
+                "  [] > baz /bytes",
+                "    ? > x"
+            ),
+            "foo.bar",
+            "foo/bar.eo"
+        );
     }
 }

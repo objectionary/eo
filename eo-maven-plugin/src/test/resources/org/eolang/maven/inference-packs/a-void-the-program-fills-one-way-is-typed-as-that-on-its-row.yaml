@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Where the census of a void has one member the answer is in the table and
+# nobody has said it, so a reader gathers the census and chases the links to
+# learn what `inc` is ever given. The row says it instead: every copy of `inc`
+# hands it a number, so `x` is settled at `Φ.number`. It is a cell of its own
+# and not the one the source writes, since a declaration is true of every
+# caller there will ever be and a sighting only of the callers this program
+# happens to have.
+eo:
+  app.eo: |
+    [] > app
+      inc 42 > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  bytes.eo: |
+    [b] > bytes
+      b > @
+provides:
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and @settled='Φ.number']"
+  - "/provides/type[@id='Φ.inc']/attr[@name='x' and not(@holds)]"

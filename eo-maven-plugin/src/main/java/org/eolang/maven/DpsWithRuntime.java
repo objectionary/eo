@@ -13,6 +13,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Add runtime dependency to the list of dependencies, if it is absent there.
+ *
  * @since 0.28.11
  */
 final class DpsWithRuntime implements Dependencies {
@@ -29,6 +30,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
+     *
      * @param dlg Dependencies delegate
      */
     DpsWithRuntime(final Iterable<Dep> dlg) {
@@ -37,6 +39,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Dependency
      */
@@ -46,6 +49,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * The main constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */
@@ -55,6 +59,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * The main constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */

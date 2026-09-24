@@ -58,6 +58,7 @@ final class Diff {
 
     /**
      * Ctor.
+     *
      * @param before The text before the change
      * @param after The text after the change
      */
@@ -68,6 +69,7 @@ final class Diff {
 
     /**
      * Are the two texts identical?
+     *
      * @return TRUE if there is nothing to show
      */
     boolean same() {
@@ -76,6 +78,7 @@ final class Diff {
 
     /**
      * Render the difference as a colored unified diff.
+     *
      * @return The diff, or an empty string if the texts are identical
      */
     String colored() {

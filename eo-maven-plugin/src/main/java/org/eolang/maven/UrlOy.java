@@ -40,6 +40,7 @@ final class UrlOy {
 
     /**
      * Ctor for testing.
+     *
      * @param template URL template
      * @param hash Commit hash
      */
@@ -49,6 +50,7 @@ final class UrlOy {
 
     /**
      * Ctor.
+     *
      * @param template URL template
      * @param hash Objects version hash
      */
@@ -64,6 +66,7 @@ final class UrlOy {
 
     /**
      * URL for the program or directory.
+     *
      * @param name Fully qualified EO program as specified by {@link Place} or directory name
      * @return URL
      * @throws MalformedURLException in case of incorrect URL

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link OyCached}.
+ *
  * @since 0.56.10
  */
 final class OyCachedTest {

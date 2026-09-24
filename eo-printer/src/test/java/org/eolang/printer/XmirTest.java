@@ -16,13 +16,15 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.io.InputOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.parser.TrFull;
@@ -40,6 +42,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link Xmir}.
+ *
  * @since 0.5
  */
 final class XmirTest {
@@ -59,6 +62,28 @@ final class XmirTest {
             ),
             xmir.toEO(),
             Matchers.equalTo(this.printed(xtory))
+        );
+    }
+
+    @Test
+    void printsATreeThatCarriesTwoPackageMetas() {
+        MatcherAssert.assertThat(
+            "a tree with a second package meta comes from outside the parser, and the first meta alone must build the prefix of a self-reference (#7448)",
+            new Xmir(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas>",
+                        "<meta line='1'><head>package</head><tail>a</tail><part>a</part></meta>",
+                        "<meta line='2'><head>package</head><tail>b</tail><part>b</part></meta>",
+                        "</metas><o name='main'><o base='Φ.a.main.x' name='y'/></o></object>"
+                    )
+                )
+            ).toEO(),
+            Matchers.allOf(
+                Matchers.containsString("+package a"),
+                Matchers.containsString("main.x > y")
+            )
         );
     }
 
@@ -120,7 +145,7 @@ final class XmirTest {
     }
 
     @Test
-    void avoidsRepeatingHostedLookup() throws IOException {
+    void avoidsRepeatingHostedLookup() {
         MatcherAssert.assertThat(
             "The hosted template must not repeat the full first-host lookup",
             this.mergeMonikers(),
@@ -135,7 +160,7 @@ final class XmirTest {
     }
 
     @Test
-    void guardsExpensiveTemplatePredicates() throws IOException {
+    void guardsExpensiveTemplatePredicates() {
         MatcherAssert.assertThat(
             "Cheap predicates must reject nodes before hosted/applied lookups",
             this.mergeMonikers(),
@@ -147,7 +172,7 @@ final class XmirTest {
     }
 
     @Test
-    void sortsOnlyMultipleDispatches() throws IOException {
+    void sortsOnlyMultipleDispatches() {
         MatcherAssert.assertThat(
             "Dispatch ordering must sort only when at least two candidates exist",
             this.mergeMonikers(),
@@ -334,13 +359,16 @@ final class XmirTest {
         return new Xmir(xml, config);
     }
 
-    private XML mergeMonikers() throws IOException {
+    private XML mergeMonikers() {
         return new XMLDocument(
-            Objects.requireNonNull(
-                XmirTest.class.getResourceAsStream(
-                    "/org/eolang/printer/print/merge-monikers.xsl"
+            new UncheckedText(
+                new TextOf(
+                    new ResourceOf(
+                        "org/eolang/printer/print/merge-monikers.xsl",
+                        XmirTest.class
+                    )
                 )
-            )
+            ).asString()
         );
     }
 

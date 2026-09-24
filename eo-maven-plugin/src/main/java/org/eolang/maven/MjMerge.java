@@ -28,6 +28,12 @@ import org.apache.maven.plugins.annotations.Mojo;
  * whose name no object carries keeps its members as objects of their own,
  * reached through the package namespace as before.</p>
  *
+ * <p>{@link MjCompile} runs the same step right after its lint, and
+ * {@link MjTranspile} runs it again before it writes anything, so a build
+ * that never names this goal still compiles merged objects, and every goal
+ * between the two reads them merged. Naming it anyway costs nothing: a
+ * member already inside its object is not moved again.</p>
+ *
  * @since 0.68.0
  */
 @Mojo(

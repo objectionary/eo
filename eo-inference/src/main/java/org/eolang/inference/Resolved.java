@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,31 @@ import java.util.Map;
  * argument lands in means knowing which formation is being copied, and that is
  * what the pairs have just settled.</p>
  *
+ * <p>A dispatch on a void waits for the callers of the formation it sits in,
+ * and where they all put the same object there it waits for nothing: the whole
+ * program is read at once, so {@link Promoted} can say what a void holds and
+ * the chain can go on past it. That belongs inside the passes rather than
+ * before or after them, since a void named this way answers dispatches, and a
+ * dispatch answered may be what names the next void. It buys nothing for a
+ * reader of the table, though, and leaves no row of its own: what goes into a
+ * void is gathered from its callers and is a fact about them, so the voids are
+ * written down exactly as the rules wrote them.</p>
+ *
+ * <p>The passes are run twice. Once as described, and once more with no
+ * void named after what its callers put there, which is what the program
+ * says of its objects without asking who calls them. A row the second run
+ * does not arrive at was reached through a void, and it says so, since a
+ * reader in need of a contract cannot count on it: the caller written
+ * tomorrow, or compiled apart, may put a formation of another shape into
+ * that void (#8914).</p>
+ *
+ * <p>The arms of a dispatch that could not be settled to one object are
+ * written here as well, and here only. They are asked for once the passes have
+ * stopped, since a site answered by a pass has a better answer than a choice
+ * and there is no point in offering both; and they are asked for by whoever
+ * writes the rows, since a pass hands its answers round as locators and a
+ * choice is not one (#8744).</p>
+ *
  * <p>So is the admission that a dispatch could not be worked out, for the same
  * reason in reverse: only here, when the passes have stopped adding pairs, is
  * it known that no pass will answer it. A row saying nothing is known is worth
@@ -59,6 +85,7 @@ public final class Resolved implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the links are closed
      */
     public Resolved(final Clue clues) {
@@ -72,29 +99,34 @@ public final class Resolved implements Clue {
         final Xmirs world = new Xmirs(xmirs);
         final XML given = new XMLDocument(tables.resolve("provides.xml"));
         final Collection<Site> dispatches = world.dispatches();
+        final Collection<Site> asked = new ArrayList<>(dispatches);
+        asked.addAll(world.reads());
         final Given applied = new Given(world.applications());
         final Map<String, List<String>> args = applied.arguments();
         final Map<String, Map<String, String>> named = applied.named();
-        final Map<String, String> receivers = world.receivers();
-        final List<String> voids = given.xpath("//attr[@void='true']/@type");
         final Pairs written = new Pairs(new XMLDocument(links));
-        final Map<String, String> pairs = new Settled(
-            new Dispatched(given, dispatches, args, named, receivers, voids)
-        ).from(
-            new Settled(
-                new Dispatched(
-                    given, dispatches, args, named, receivers, Collections.emptyList()
-                )
-            ).from(written.all())
+        final Map<String, String> receivers = new Taken(world, written).all();
+        final Collection<String> voids = new Hollows(given).all();
+        final Map<String, Type> kept = written.others();
+        final Woven woven = new Woven(given, applied, receivers, voids, asked);
+        final Promoted promoted = new Promoted(woven, given, new Said(written), voids, args);
+        final Dispatched into = new Dispatched(given, asked, args, named, receivers, voids);
+        final Dispatched outside = new Dispatched(
+            given, asked, args, named, receivers, Collections.emptyList()
+        );
+        final Map<String, String> pairs = new Settled(into, promoted).from(
+            new Settled(outside, promoted).from(written.all())
+        );
+        final Promoted none = new Promoted(
+            woven, given, new Said(written), Collections.emptyList(), args
+        );
+        final Map<String, String> certain = new Settled(into, none).from(
+            new Settled(outside, none).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
-        final Map<String, Type> rows = new Refs(
-            pairs,
-            new Bound(
-                args, named, receivers, pairs, new Provided(given, names, voids)
-            ).all()
-        ).all();
-        rows.putAll(written.others());
+        final Map<String, Type> rows = woven.rows(pairs, into.choices(pairs), certain);
+        rows.keySet().removeAll(voids);
+        rows.putAll(kept);
         final Collection<String> dead = new Dead(written, dispatches, names).all();
         for (final Site dispatch : dispatches) {
             final String made = dispatch.made();

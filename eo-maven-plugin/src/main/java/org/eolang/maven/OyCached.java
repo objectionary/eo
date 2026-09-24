@@ -12,6 +12,7 @@ import org.cactoos.Input;
 
 /**
  * Cached Objectionary.
+ *
  * @since 0.56.10
  */
 final class OyCached implements Objectionary {
@@ -38,6 +39,7 @@ final class OyCached implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param oby The objectionary
      */
     OyCached(final Objectionary oby) {
@@ -46,6 +48,7 @@ final class OyCached implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param oby The objectionary
      * @param progs The cache for programs
      */
@@ -55,6 +58,7 @@ final class OyCached implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param oby The objectionary
      * @param progs The cache for programs
      * @param dirs The cache for directories
@@ -66,6 +70,7 @@ final class OyCached implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param oby The objectionary
      * @param progs The cache for programs
      * @param dirs The cache for directories

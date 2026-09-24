@@ -30,6 +30,7 @@ public final class AtVoid implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param name The name of the attribute
      */
     public AtVoid(final String name) {
@@ -38,6 +39,7 @@ public final class AtVoid implements Attribute {
 
     /**
      * Ctor for copying.
+     *
      * @param name Name of the attribute
      * @param phi Object
      */

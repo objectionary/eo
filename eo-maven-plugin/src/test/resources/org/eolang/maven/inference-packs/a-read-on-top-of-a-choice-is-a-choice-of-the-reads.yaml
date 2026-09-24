@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call rooted at a void that two callers fill differently comes back with a
+# choice of the two arguments. A name read off that call is then the same name
+# read off each of them: the `ring` of a `bell` or the `ring` of a `chime`, and
+# no third thing. Where the read is written there is nothing to find the arms
+# by, since the call that filled the void sits in another file and the walk
+# from here never reaches it. So the arms come from the row of the call the
+# read is written on, which already carries them.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bell.eo: |
+    [^] > bell
+      [^] > ring
+        06- > @
+  chime.eo: |
+    [^] > chime
+      [^] > ring
+        07- > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        bell > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        chime > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      ring. > @
+        listen.
+          held
+          05-
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.choice.pick.listen.ring']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.bell.ring']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.chime.ring']"

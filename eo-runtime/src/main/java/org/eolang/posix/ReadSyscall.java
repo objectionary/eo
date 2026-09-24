@@ -10,10 +10,12 @@ import org.eolang.Expect;
 import org.eolang.Int;
 import org.eolang.Natural;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Buffer;
+import org.eolang.sys.Syscall;
 
 /**
  * Read syscall.
+ *
  * @since 0.40
  */
 public final class ReadSyscall implements Syscall {
@@ -25,6 +27,7 @@ public final class ReadSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public ReadSyscall(final Phi posix) {
@@ -37,7 +40,7 @@ public final class ReadSyscall implements Syscall {
             new Expect<>("the 'size' argument of read", () -> params[1])
         ).it();
         final Phi result = this.posix.take("return").copy();
-        final byte[] buf = new byte[size];
+        final byte[] buf = new Buffer("the 'size' argument of read", size).it();
         final int count = CStdLib.INSTANCE.read(
             new Int("the 'descriptor' argument of read", params[0]).it(), buf, size
         );

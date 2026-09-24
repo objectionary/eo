@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link BytesOf}.
+ *
  * @since 0.1.0
  */
 final class BytesOfTest {
@@ -121,7 +122,9 @@ final class BytesOfTest {
         "0xFF000000,   8, 0x00FF0000",
         "0xFF000000,  16, 0x0000FF00",
         "0xFF000000,  24, 0x000000FF",
-        "0x000000FF,   8, 0x00000000"
+        "0x000000FF,   8, 0x00000000",
+        "0x00000080,  -1, 0x00000100",
+        "0x0000FF80,  -4, 0x000FF800"
     })
     void checksShift(final long num, final int bits, final long expected) {
         MatcherAssert.assertThat(
@@ -280,6 +283,7 @@ final class BytesOfTest {
      * A legal {@link Bytes} that deliberately inherits the identity-based
      * {@link Object#equals(Object)}, as any implementation of the public
      * interface is free to do.
+     *
      * @since 0.1.0
      */
     private static final class PlainBytes implements Bytes {

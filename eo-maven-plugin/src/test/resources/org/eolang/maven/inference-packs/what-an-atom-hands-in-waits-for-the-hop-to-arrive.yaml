@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Which formation an atom is handed is itself a question the hops answer: the
+# void the atom reads is filled by a void of somebody else. So the brace list
+# cannot be spent before the hops are walked, any more than after.
+eo:
+  oak.eo: |
+    [] > oak
+  hold.eo: |
+    [m] > hold
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  relay.eo: |
+    [s] > relay
+      grip s > @
+  app.eo: |
+    [] > app
+      relay hold > @
+provides:
+  - "//attr[@name='m']/witnessed/ref[@loc='Φ.oak']"

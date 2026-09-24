@@ -31,6 +31,7 @@ final class Style {
 
     /**
      * Ctor.
+     *
      * @param config The overridden weights; absent keys use their defaults
      */
     Style(final Map<PenaltyKey, Integer> config) {
@@ -44,6 +45,7 @@ final class Style {
 
     /**
      * Ctor.
+     *
      * @param config The overridden weights
      * @param step One level of indentation
      */
@@ -54,6 +56,7 @@ final class Style {
 
     /**
      * The blank prefix of a line sitting at the given indentation level.
+     *
      * @param level The indentation level
      * @return The leading whitespace
      */
@@ -63,6 +66,7 @@ final class Style {
 
     /**
      * The penalty of a rendered block: the lower, the prettier.
+     *
      * @param block The rendered block
      * @return The penalty points
      * @see Penalty
