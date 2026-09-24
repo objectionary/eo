@@ -35,7 +35,7 @@
         ^
       T
         "Cant touch the file '%s': %s".printf
-          * ^.path opened.output
+          * ^.path opened.message
   os.is-windows.if > accessible
     win32.access
       ^.path
@@ -56,15 +56,13 @@
   ^.is-symlink false > linked
   called. > opened
     os.is-windows.if
-      win32 *1
-        "_open"
+      win32.open
         ^.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
-      posix *1
-        "open"
+      posix.open
         ^.path
         plus.
           posix.creat.plus exclusive

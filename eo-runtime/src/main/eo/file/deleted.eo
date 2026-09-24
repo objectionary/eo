@@ -17,20 +17,20 @@
       ^
       T
         "Cant delete the file '%s': %s".printf
-          * ^.path removed.output
+          * ^.path removed.message
     ^
   called. > removed
     os.is-windows.if
-      win32 *1
-        ^.is-symlink.if
-          "_unlink"
-          ^.is-directory.if "_rmdir" "_unlink"
-        ^.path
-      posix *1
-        ^.is-symlink.if
-          "unlink"
-          ^.is-directory.if "rmdir" "unlink"
-        ^.path
+      ^.is-symlink.if
+        win32.unlink ^.path
+        ^.is-directory.if
+          win32.rmdir ^.path
+          win32.unlink ^.path
+      ^.is-symlink.if
+        posix.unlink ^.path
+        ^.is-directory.if
+          posix.rmdir ^.path
+          posix.unlink ^.path
 
   ++> can-delete-a-dangling-symlink
     os.is-windows.or > @

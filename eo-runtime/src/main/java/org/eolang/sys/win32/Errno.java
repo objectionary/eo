@@ -10,7 +10,7 @@ import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The {@code output} of a file function call's {@code return}, carrying the OS
+ * The message of a file function call's answer, carrying the OS
  * error reason when the native call failed.
  *
  * <p>The msvcrt file functions report a failure by returning {@code -1} and
@@ -22,7 +22,7 @@ import org.eolang.Phi;
  *
  * @since 0.74.0
  */
-final class Errno implements Supplier<Phi> {
+public final class Errno implements Supplier<Phi> {
 
     /**
      * The code the native call returned.
@@ -34,7 +34,7 @@ final class Errno implements Supplier<Phi> {
      *
      * @param status The code the native call returned
      */
-    Errno(final int status) {
+    public Errno(final int status) {
         this.code = status;
     }
 

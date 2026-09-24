@@ -27,12 +27,7 @@ public final class NamedFuncCall implements Syscall {
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
     static {
-        NamedFuncCall.ALL.put("_open", OpenFuncCall::new);
         NamedFuncCall.ALL.put("FindFirstFileW", FindFirstFileFuncCall::new);
-        NamedFuncCall.ALL.put("_unlink", UnlinkFuncCall::new);
-        NamedFuncCall.ALL.put("_rmdir", RmdirFuncCall::new);
-        NamedFuncCall.ALL.put("_mkdir", MkdirFuncCall::new);
-        NamedFuncCall.ALL.put("rename", RenameFuncCall::new);
     }
 
     /**

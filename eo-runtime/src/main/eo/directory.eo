@@ -53,15 +53,13 @@
       posix.close descriptor
     code. > [name] > opened
       os.is-windows.if
-        win32 *1
-          "_open"
+        win32.open
           name
           plus.
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-        posix *1
-          "open"
+        posix.open
           name
           plus.
             posix.rdonly.plus posix.creat

@@ -64,9 +64,7 @@
     os.is-windows.if
       win32.find-close opened.code
       code.
-        posix *1
-          "closedir"
-          opened.code
+        posix.closedir opened.code
     0
   sorted > entries
     gathered
