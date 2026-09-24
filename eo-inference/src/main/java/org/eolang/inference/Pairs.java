@@ -53,6 +53,7 @@ final class Pairs {
 
     /**
      * Ctor.
+     *
      * @param links The links table
      */
     Pairs(final XML links) {
@@ -211,6 +212,40 @@ final class Pairs {
                         ).add(new Noted(put).says("loc"))
                     )
                 );
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The arms of every row that comes back with one of several objects.
+     *
+     * <p>A call on a void that holds a picker is answered by whatever the call
+     * put there, and where the arms agree on nothing the row says so by naming
+     * all of them (#8744). That is a real answer and no rung can show it: the
+     * walk still ended at the void, so a row naming both arms stands where a
+     * row naming nothing stands. Whoever counts the program is handed the arms
+     * separately for that reason (#8854).</p>
+     *
+     * <p>A row holding one answer is no choice and is left out, so what comes
+     * back is only the rows there is something extra to say about.</p>
+     *
+     * @return The arms, by the locator of the object the row is about, without
+     *  the rows that came back with one object or none
+     */
+    Map<String, Collection<Type>> arms() {
+        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                final Collection<Type> chosen = ref.get()
+                    .elements(Filter.withName("union"))
+                    .flatMap(union -> union.elements(Filter.withName("ref")))
+                    .map(arm -> (Type) new Ref(new Noted(arm).says("loc")))
+                    .collect(Collectors.toList());
+                if (!chosen.isEmpty()) {
+                    found.put(new Noted(row).says("id"), chosen);
+                }
             }
         }
         return found;

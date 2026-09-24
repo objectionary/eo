@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link ParseError}.
+ *
  * @since 0.1
  */
 final class ParseErrorTest {

@@ -58,6 +58,28 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
   <!--
+  The dotted cactus prefix, hoisted out of the hot functions below: "$auto"
+  is a global variable rather than a literal, so Saxon rebuilds the same
+  concatenation at every call instead of folding it (#8529).
+  -->
+  <xsl:variable name="auto-dot" select="concat('.', $auto)"/>
+  <!--
+  Every reference to a cactus name, by the name it resolves to, and by the
+  head segment of that name, which is the same thing for a bare reference
+  ("ξ.ρ.a🌵4-2") and the receiver for a method dispatch ("ξ.ρ.a🌵4-2.seg").
+  The functions below used to answer "which references name this binding?"
+  with a "$target/..//o[...]" subtree scan, from template patterns Saxon
+  evaluates against every "o" node, which made a print quadratic in the size
+  of the largest formation (#8529). An index answers the same question
+  without walking anything, the way "merge-monikers" (#6511) and
+  "resolve-local-names" (#6502) already do; the scoping each function
+  enforced by hand stays where it was, as a predicate on what comes back,
+  and keys return nodes in document order, so "the first reference" and
+  "the second one" keep their meaning.
+  -->
+  <xsl:key name="local-ref" match="o[contains(@base, $auto)]" use="eo:resolved-name(@base)"/>
+  <xsl:key name="local-head" match="o[contains(@base, $auto)]" use="substring-before(concat(eo:resolved-name(@base), '.'), '.')"/>
+  <!--
   A reference resolves to its own auto-name: given a base such as
   "ξ.ρ.a🌵4-2", everything up to the cactus prefix is stripped, so the
   resolved name is the trailing "a🌵4-2". Mirrors "inline-cactoos".
@@ -86,7 +108,7 @@
   <xsl:function name="eo:recursive" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
+    <xsl:sequence select="exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target]])"/>
   </xsl:function>
   <!--
   The references in the binding's owner that resolve to the auto-name "$name"
@@ -96,7 +118,7 @@
   <xsl:function name="eo:references" as="element()*">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
+    <xsl:sequence select="key('local-head', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][not(ancestor-or-self::o[. is $target])]"/>
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner resolves to the
@@ -174,7 +196,7 @@
   <xsl:function name="eo:applied-receiver" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="eo:abstract($target) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and (o or @name) and not(ancestor-or-self::o[. is $target]) and not(preceding-sibling::o[. is $target])])"/>
+    <xsl:sequence select="eo:abstract($target) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o or @name][not(ancestor-or-self::o[. is $target])][not(preceding-sibling::o[. is $target])])"/>
   </xsl:function>
   <!--
   Whether the based "&gt;&gt; name" handle "$target" is itself an application
@@ -193,7 +215,7 @@
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and o and not(ancestor-or-self::o[. is $target])])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o][not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <!--
   Whether a reference in the auto-named binding's owner reaches it through a
@@ -208,7 +230,7 @@
   <xsl:function name="eo:dispatched" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists($target/../o[contains(@base, concat($name, '.')) and not(. is $target)])"/>
+    <xsl:sequence select="exists(key('local-head', $name, root($target))[contains(@base, concat($name, '.'))][.. is $target/..][not(. is $target)])"/>
   </xsl:function>
   <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
@@ -232,7 +254,7 @@
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
     <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
-    <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $wrapper/@name or starts-with(eo:resolved-name(@base), concat($wrapper/@name, '.'))) and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
+    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
   </xsl:function>
   <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
@@ -246,7 +268,7 @@
   -->
   <xsl:function name="eo:relocated" as="xs:boolean">
     <xsl:param name="ref" as="element()"/>
-    <xsl:sequence select="exists($ref/following-sibling::o[@local and eo:recursive(., @name/string()) and @name = eo:resolved-name($ref/@base)])"/>
+    <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())])"/>
   </xsl:function>
   <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
   <!--
@@ -318,7 +340,7 @@
   that already carries "@pipe" (an already-piped handle round-tripping) is
   left as is.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name]">
+  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name]">
     <xsl:copy>
       <xsl:if test="not(@pipe)">
         <xsl:attribute name="pipe"/>
@@ -345,7 +367,7 @@
   siblings ("eo:relocated"); a reference resolving to a different binding still
   prints in place, through the identity template.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and eo:relocated(.)]"/>
+  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and eo:relocated(.)]"/>
   <!--
   Re-emit the suppressed reference below the handle. Match the recursive handle,
   copy it, then for each applied reference among its preceding siblings that
@@ -358,7 +380,7 @@
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
-    <xsl:for-each select="preceding-sibling::o[contains(@base, concat('.', $auto)) and (o or @name) and eo:resolved-name(@base) = current()/@name]">
+    <xsl:for-each select="preceding-sibling::o[contains(@base, $auto-dot) and (o or @name) and eo:resolved-name(@base) = current()/@name]">
       <xsl:copy>
         <xsl:if test="not(@pipe)">
           <xsl:attribute name="pipe"/>

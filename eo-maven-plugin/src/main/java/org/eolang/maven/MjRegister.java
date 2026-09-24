@@ -44,6 +44,7 @@ public final class MjRegister extends MjSafe {
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      */
@@ -54,6 +55,7 @@ public final class MjRegister extends MjSafe {
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code defaultValue} attribute is omitted, because an empty
      *  one is not rendered into the descriptor of the plugin by
      *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.
@@ -155,9 +157,15 @@ public final class MjRegister extends MjSafe {
             this.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
         };
         for (final File file : files) {
-            if (file.exists()) {
-                new Deleted(file).get();
+            if (file.exists() && !new Deleted(file).get() && file.exists()) {
+                throw new IllegalStateException(
+                    String.format(
+                        "Failed to delete %s, so the previous build would leak into this one",
+                        file
+                    )
+                );
             }
         }
+        Catalogs.INSTANCE.drop(this.foreign.toPath());
     }
 }

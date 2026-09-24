@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * File generation report.
+ *
  * @since 0.56.7
  */
 final class FileGenerationReport {
@@ -31,6 +32,7 @@ final class FileGenerationReport {
 
     /**
      * Ctor.
+     *
      * @param aggregate Saved counter
      * @param gen Generated directory
      * @param tgt Target directory

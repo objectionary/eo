@@ -4,23 +4,27 @@
 
 # eo-inference
 
-Works out, for every object in an EO program, which object it was copied from.
+Works out, for every object in an EO program, which formation it behaves as.
 
 EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
-written in the source. That formation is the answer, and its FQN is the whole
-of what this module means by a type:
+written in the source. That formation is where the answer is looked for, and an
+FQN is the whole of what this module means by a type:
 
 ```eo
-[as-bytes] > number      # Φ.number.as-bytes is a Φ.bytes
-  [x] > plus             # Φ.number.plus.x is a Φ.number
-  [x] > minus
-    $.^.plus ($.x.times -1) > @      # Φ.number.minus.@ is a Φ.number
+[@] > number             # Φ.number.φ is a Φ.bytes
+  [b] > plus             # Φ.number.plus.b is a Φ.number
+  [b] > minus
+    $.^.plus ($.b.times -1) > @      # Φ.number.minus.@ is a Φ.number
 ```
 
-Nothing else counts as an answer. `Φ.number.plus.x` is not "a number-ish
-thing", it is `Φ.number`, and if we cannot say which formation it is we say so
-rather than dressing up a guess.
+Where the chain arrives is not always where it stops. A formation that binds
+nothing the outside can read but its own `φ` has no behaviour of its own: it
+hands on everything it can be asked, and its name says less about an object
+than the name behind it. So `1.plus 2` is a `Φ.number` rather than a
+`Φ.number.plus`, and the `as-bytes` of a `Φ.bytes` is a `Φ.bytes`. A formation
+that does bind something of its own is where the walk ends, and if we cannot
+say which formation it is we say so rather than dressing up a guess.
 
 The goal runs after `pre-inference` and writes three XML tables into
 `target/eo/6-inference`. Nothing else in the compiler reads them yet.
@@ -48,8 +52,8 @@ the ground everything else stands on, and asking what more there is to know
 about them is asking nothing. So does a termination.
 
 Whether the formation still has voids free does not matter here. Knowing that
-something is a `Φ.number.plus` is knowing which object it is, even before
-knowing what went into its `x`.
+something is a `Φ.number` is knowing which object it is, even before knowing
+what went into its `φ`.
 
 ### rooted at a void
 
@@ -93,6 +97,59 @@ empty row for every object would leave all four exactly where they are:
   9728  nothing left to find out
 ```
 
+### written down
+
+The line scrolls past, so the same numbers also go into `target/eo/ladder.txt`,
+beside the tables rather than among them, because they measure us and not the
+program:
+
+```text
+46896 objects
+81.0 named
+17.9 rooted at a void
+1.2 nothing known
+67.2 depth
+548 nothing at all
+8374 a name rooted at a void
+5953 a formation, voids still free
+22293 a formation, nothing left free
+9728 nothing left to find out
+581 rooted at a void nobody fills
+7790 rooted at a void the callers fill
+3 rooted at a void only an atom fills
+745 answered with a choice
+```
+
+One number a line, the value first and the name of it after, so that a shell
+can read it with one `read` and know nothing about what any of it means. The
+rungs go down with the shares and not instead of them, for the reason above.
+
+The three under the rung of the voids go down with them for a reason of their
+own. That rung is one number and three different situations, and only one of
+the three is ours. A void nobody fills and a void only Java fills are as far
+as anybody can go: the name is weak and it is true, and no amount of work will
+make it say more. A void the callers of the program fill is a gap we left,
+since the program says what goes in there and `Witnessed` wrote it down, so a
+name still rooted at it means we did not use what we recorded. Added together
+the three make a share that cannot get worse when we are wrong, which is the
+one thing a measurement of ourselves must never do. They are bands rather than
+rungs, so `Band` works them out and a page and a tally cannot disagree about
+them, and they sum to the rung above.
+
+The last line is neither a share nor a rung. A call on a void that holds a
+picker hands back one of the arguments it was given, and where those agree on
+nothing the row names all of them rather than none. That is a real answer, and
+no rung can show it: the walk ended at the void either way, so an object told
+it is either a `Φ.dial` or a `Φ.clock` is counted beside an object told
+nothing. It goes last and on its own, because a share that started counting
+arms would be a share nobody could compare against an older build.
+
+A pull request that touches the rules, the parser, the plugin or the program
+they are read from is built twice by `.github/workflows/ladder.yml` — once at
+the branch and once at the commit it sits on — and every line that differs
+between the two files is posted on it as a table. A branch that moved nothing
+is told nothing.
+
 ## What it draws
 
 The three numbers say how much of a program we understand without saying which
@@ -128,7 +185,7 @@ No clue decides anything, and none of them can fail, so they compose in any
 order:
 
 ```java
-new Witnessed(new Demanded(new Resolved(new Clues())))
+new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
 ```
 
 `Clues` is the first pass and fills the three tables from the source text
@@ -149,10 +206,42 @@ more question:
 | Pass | Answers |
 | --- | --- |
 | `Resolved` | What every dispatch turns out to be. `a.b.c` is walked one hop at a time, each hop asked of the type the last one arrived at, looking behind a delegation and into a package where it has to. |
-| `Demanded` | What a void will have to offer, gathered from everything ever asked of it. A contract: a caller that fills it owes these attributes. |
+| `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
+| `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
 | `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
+| `Named` | Which object a void is settled at, where the census `Witnessed` gathered has one member and that member is a type the table has a row for. It is written on the row of the void, and on every link that stops at the void. |
 
 `Depth` then walks the finished tables and puts every object on its rung.
+
+A void row carries two answers and they are not the same answer. `holds` is
+what the source declared, in `? > code /Q.number`, true of every caller there
+will ever be; `settled` is what `Named` read off the census, true of the callers
+this program happens to have. It is written only where the source declared
+nothing, and a reader after the type of a void reads it second.
+
+A link says the same of itself. A `ref` or a `bind` that was reached only
+through what the program was seen to put into a void carries
+`witnessed="true"`: the call on a void that its one caller fills with a
+`refused` is a copy of `refused` and fills its `message` for as long as that
+caller is the only one, and not a moment longer. A reader that needs a
+contract, such as a pass renaming arguments after the voids they land in,
+leaves those out, since a caller compiled apart may put a formation of another
+shape there:
+
+```xml
+<type id="Φ.socket.connect.φ.α0">
+  <ref loc="Φ.socket.refused" witnessed="true">
+    <bind void="Φ.socket.refused.message" witnessed="true">
+      <ref loc="Φ.socket.connect.φ.α0.α0"/>
+    </bind>
+  </ref>
+</type>
+```
+
+A `ref` is marked where the passes, run once more with no void named after
+its callers, do not arrive at it, and wherever `Named` wrote it from the
+census; a `bind` is marked where only the relay into what a void holds put it
+there.
 
 ## How the behaviour is described
 

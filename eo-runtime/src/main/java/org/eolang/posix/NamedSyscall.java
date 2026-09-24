@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 import org.eolang.ExFailure;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Syscall;
 
 /**
  * A POSIX syscall known by its name.
@@ -27,38 +27,18 @@ public final class NamedSyscall implements Syscall {
     private static final Map<String, Function<Phi, Syscall>> ALL = new HashMap<>();
 
     static {
-        NamedSyscall.ALL.put("getpid", GetpidSyscall::new);
         NamedSyscall.ALL.put("open", OpenSyscall::new);
-        NamedSyscall.ALL.put("access", AccessSyscall::new);
-        NamedSyscall.ALL.put(
-            "stat",
-            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.stat(path, buf))
-        );
-        NamedSyscall.ALL.put(
-            "lstat",
-            posix -> new StatSyscall(posix, (path, buf) -> CStdLib.INSTANCE.lstat(path, buf))
-        );
-        NamedSyscall.ALL.put("creat", CreatSyscall::new);
+        NamedSyscall.ALL.put("opendir", OpendirSyscall::new);
+        NamedSyscall.ALL.put("readdir", ReaddirSyscall::new);
+        NamedSyscall.ALL.put("closedir", ClosedirSyscall::new);
         NamedSyscall.ALL.put("unlink", UnlinkSyscall::new);
         NamedSyscall.ALL.put("rmdir", RmdirSyscall::new);
         NamedSyscall.ALL.put("mkdir", MkdirSyscall::new);
         NamedSyscall.ALL.put("rename", RenameSyscall::new);
         NamedSyscall.ALL.put("symlink", SymlinkSyscall::new);
         NamedSyscall.ALL.put("read", ReadSyscall::new);
-        NamedSyscall.ALL.put("write", WriteSyscall::new);
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
-        NamedSyscall.ALL.put("gettimeofday", GettimeofdaySyscall::new);
-        NamedSyscall.ALL.put("socket", SocketSyscall::new);
-        NamedSyscall.ALL.put("close", CloseSyscall::new);
-        NamedSyscall.ALL.put("connect", ConnectSyscall::new);
-        NamedSyscall.ALL.put("bind", BindSyscall::new);
-        NamedSyscall.ALL.put("listen", ListenSyscall::new);
-        NamedSyscall.ALL.put("accept", AcceptSyscall::new);
         NamedSyscall.ALL.put("recv", RecvSyscall::new);
-        NamedSyscall.ALL.put("send", SendSyscall::new);
-        NamedSyscall.ALL.put("inet_addr", InetAddrSyscall::new);
-        NamedSyscall.ALL.put("errno", ErrnoSyscall::new);
-        NamedSyscall.ALL.put("strerror", StrerrorSyscall::new);
     }
 
     /**
@@ -73,6 +53,7 @@ public final class NamedSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param name The POSIX name of the syscall
      * @param rho The object the syscall belongs to
      */

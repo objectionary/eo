@@ -12,9 +12,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > made
   ^.exists.if > @
@@ -49,14 +49,9 @@
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist
-  code. > errno
-    os.is-windows.if
-      win32
-        "_errno"
-        *
-      posix
-        "errno"
-        *
+  os.is-windows.if > errno
+    win32.errno
+    posix.errno
 
   ++> can-make-a-directory-and-return-the-same-path
     dir.made.path.eq dir.path > @
@@ -91,7 +86,7 @@
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
-        parent.resolved "foo-inner/foo-deepest"
+        parent.as-path.resolved "foo-inner/foo-deepest"
     made. > parent
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-partial"

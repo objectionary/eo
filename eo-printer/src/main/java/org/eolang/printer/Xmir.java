@@ -93,6 +93,7 @@ public final class Xmir implements XML {
 
     /**
      * Ctor, using the default formatting weights.
+     *
      * @param src The source
      */
     public Xmir(final XML src) {
@@ -101,6 +102,7 @@ public final class Xmir implements XML {
 
     /**
      * Ctor.
+     *
      * @param src The source
      * @param config The formatting weights; absent keys use their defaults
      */

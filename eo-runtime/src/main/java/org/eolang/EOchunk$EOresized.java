@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * Chunk.resized object.
+ *
  * @since 0.41.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)

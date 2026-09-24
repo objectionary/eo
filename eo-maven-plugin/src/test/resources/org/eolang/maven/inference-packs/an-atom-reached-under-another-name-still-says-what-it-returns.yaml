@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A program that has to run on two platforms writes each call once and reads
+# it through an object that stands for the platform it is on. That object
+# renames what it stands for: `closesocket` is what one platform calls it,
+# `close` is what the program calls it, and the two names meet on one line of
+# the platform object and nowhere else.
+#
+# So the walk cannot stop at `sys.close`. It has to go on to the attribute
+# that line binds, and from there to the atom, before it can say that what
+# comes back is a number.
+eo:
+  win32.eo: |
+    [name args] > win32
+      [] > @ /Q.win32.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > closesocket /Q.number
+        ? > descriptor /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        win32.closesocket > close
+      sys.close 3 > closed
+      closed.eq -1 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [] > eq
+  bytes.eo: |
+    [b] > bytes
+      b > @
+      [] > as-number /Q.number
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.eq']"

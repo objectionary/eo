@@ -5,9 +5,9 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -16,6 +16,9 @@ import java.util.Collections;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.UncheckedBytes;
+import org.cactoos.io.ResourceOf;
 
 /**
  * Short hex fingerprint of a set of classpath resources.
@@ -28,9 +31,18 @@ import java.util.stream.Stream;
  *
  * <p>A directory of files is hashed the same way, its files taken in the
  * order of their names, which is how the tables of {@link MjInference}
- * join the same key (see #7627). A directory that is not there hashes to
- * the digest of nothing, which is what a build without those tables
+ * join the same key (see #7627). Every file is framed by its relative path
+ * and the amount of bytes it holds, both closed by a NUL, so that a tree
+ * differing in file names or in file boundaries never lands on the same
+ * digest as another one (see #8140). A directory that is not there hashes
+ * to the digest of nothing, which is what a build without those tables
  * deserves and still tells it apart from a build with them.</p>
+ *
+ * <p>Callers name their resources the way
+ * {@link Class#getResourceAsStream(String)} wants them, with a leading
+ * slash, because the very same names also build XSL trains. The reading
+ * here goes through the {@link ClassLoader} instead, which takes only
+ * the global name, so the slash is dropped first.</p>
  *
  * @since 0.63
  */
@@ -49,6 +61,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param res Classpath resource paths to hash
      */
     Fingerprint(final String... res) {
@@ -57,6 +70,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param files The directory whose files to hash
      */
     Fingerprint(final Path files) {
@@ -65,6 +79,7 @@ final class Fingerprint implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param files The directories whose files to hash
      * @param res Classpath resource paths to hash
      */
@@ -78,24 +93,26 @@ final class Fingerprint implements Supplier<String> {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA-256");
             for (final String resource : this.resources) {
-                try (InputStream input = Fingerprint.class.getResourceAsStream(resource)) {
-                    if (input == null) {
-                        throw new IllegalStateException(
-                            String.format("Resource '%s' not found on classpath", resource)
-                        );
-                    }
-                    digest.update(input.readAllBytes());
-                }
+                digest.update(
+                    new UncheckedBytes(
+                        new BytesOf(
+                            new ResourceOf(Fingerprint.global(resource), Fingerprint.class)
+                        )
+                    ).asBytes()
+                );
             }
             for (final Path base : this.dirs) {
                 if (Files.isDirectory(base)) {
-                    try (Stream<Path> found = Files.walk(base)) {
+                    try (Stream<Path> found = Files.walk(base, FileVisitOption.FOLLOW_LINKS)) {
                         for (final Path file : found.filter(Files::isRegularFile)
                             .sorted().collect(Collectors.toList())) {
+                            final byte[] content = Files.readAllBytes(file);
                             digest.update(
-                                base.relativize(file).toString().getBytes(StandardCharsets.UTF_8)
+                                String.format(
+                                    "%s\0%d\0", base.relativize(file), content.length
+                                ).getBytes(StandardCharsets.UTF_8)
                             );
-                            digest.update(Files.readAllBytes(file));
+                            digest.update(content);
                         }
                     }
                 }
@@ -110,5 +127,15 @@ final class Fingerprint implements Supplier<String> {
         } catch (final IOException ex) {
             throw new UncheckedIOException("Failed to read a resource while fingerprinting", ex);
         }
+    }
+
+    private static String global(final String resource) {
+        final String global;
+        if (resource.startsWith("/")) {
+            global = resource.substring(1);
+        } else {
+            global = resource;
+        }
+        return global;
     }
 }

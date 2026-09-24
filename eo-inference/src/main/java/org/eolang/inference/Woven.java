@@ -1,0 +1,127 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.inference;
+
+import com.jcabi.xml.XML;
+import java.util.Collection;
+import java.util.Map;
+
+/**
+ * The rows that follow from a set of pairs.
+ *
+ * <p>What an object is a copy of and which voids that copy has filled are two
+ * halves of one row, and putting the halves together takes the provides table,
+ * every application of the program and the pairs themselves. {@link Refs} joins
+ * them, {@link Bound} works out what went where and {@link Provided} says which
+ * voids there were to fill; this is the four of them wired up, so that whoever
+ * has pairs and wants rows says so in one line.</p>
+ *
+ * <p>Rows are asked for twice over. Once at the end, for the table the build
+ * writes down, and once for every provisional table a fact is read off before
+ * that: what the program puts into a void is written in the rows of the objects
+ * that put it there, so learning it means having the rows already. Both come
+ * from here, because a fact read off a table the build does not go on to
+ * publish would be a fact nobody can check.</p>
+ *
+ * @since 0.71.0
+ */
+final class Woven {
+
+    /**
+     * The provides table.
+     */
+    private final XML given;
+
+    /**
+     * What every application of the program gives, from {@link Given}.
+     */
+    private final Given applied;
+
+    /**
+     * What every dispatch takes its attribute from, from {@link Taken}.
+     */
+    private final Map<String, String> receivers;
+
+    /**
+     * The locator of every void, from {@link Hollows}.
+     */
+    private final Collection<String> hollows;
+
+    /**
+     * Every dispatch and read of the program.
+     */
+    private final Collection<Site> all;
+
+    /**
+     * Ctor.
+     *
+     * @param provides The provides table, as {@link Provides} wrote it
+     * @param applications What every application of the program gives
+     * @param taken What every dispatch takes its attribute from
+     * @param voids The locator of every void
+     * @param dispatches Every dispatch and read of the program
+     */
+    Woven(
+        final XML provides,
+        final Given applications,
+        final Map<String, String> taken,
+        final Collection<String> voids,
+        final Collection<Site> dispatches
+    ) {
+        this.given = provides;
+        this.applied = applications;
+        this.receivers = taken;
+        this.hollows = voids;
+        this.all = dispatches;
+    }
+
+    /**
+     * These pairs as the rows of the links table.
+     *
+     * @param pairs The pairs, each object against the one it is a copy of
+     * @param chosen What every call on a void may come back with, from
+     *  {@link Dispatched}
+     * @param certain The pairs the passes settle when no void is named by
+     *  what its callers put there, which is how a row tells what it knows
+     *  from what it was told by the callers of a void (#8914)
+     * @return The types, by the locator of the object they are about, in the
+     *  order the pairs came in
+     */
+    Map<String, Type> rows(
+        final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
+        final Map<String, String> certain
+    ) {
+        final Bound bound = this.bound(pairs);
+        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
+    }
+
+    /**
+     * What every one of these pairs put into the voids of what it copies.
+     *
+     * <p>This is the half of a row that {@link Bound} works out, and a rule
+     * that reads it does not need the row: {@link Promoted} asks what the
+     * program puts into every void, which is this read the other way round,
+     * and rendering it into a document first only to read it back out again is
+     * a second of every pass of a fixpoint that runs a hundred of them.</p>
+     *
+     * @param pairs The pairs, each object against the one it is a copy of
+     * @return The objects put in, by the locator of the void, by the locator of
+     *  the object that put them there
+     */
+    Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
+        return this.bound(pairs).all();
+    }
+
+    private Bound bound(final Map<String, String> pairs) {
+        return new Bound(
+            this.applied.arguments(),
+            this.applied.named(),
+            this.receivers,
+            this.all,
+            pairs,
+            new Provided(this.given, new Ends(pairs).names(), this.hollows)
+        );
+    }
+}

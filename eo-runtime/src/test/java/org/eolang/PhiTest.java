@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link Phi}.
+ *
  * @since 0.22
  */
 final class PhiTest {

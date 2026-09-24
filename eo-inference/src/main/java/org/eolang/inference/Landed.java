@@ -39,7 +39,7 @@ final class Landed {
     /**
      * What the links table says.
      */
-    private final Pairs links;
+    private final Said links;
 
     /**
      * The provides table.
@@ -48,31 +48,30 @@ final class Landed {
 
     /**
      * Ctor.
+     *
      * @param table What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says what an atom comes back
      *  with and which objects are formations
      */
-    Landed(final Pairs table, final XML provides) {
+    Landed(final Said table, final XML provides) {
         this.links = table;
         this.given = provides;
     }
 
     /**
      * Where every object the table can place ends up.
+     *
      * @return The landings, by the locator of the object, without the objects
      *  whose walk runs into a void
      */
     Map<String, String> all() {
         final Collection<String> made = new HashSet<>(0);
-        final Map<String, String> comes = new LinkedHashMap<>(0);
         for (final Xnav type : new Rows(this.given).all()) {
-            final String owner = new Noted(type).says("id");
-            made.add(owner);
-            type.attribute("returns").text().ifPresent(back -> comes.put(owner, back));
+            made.add(new Noted(type).says("id"));
         }
         final Collection<String> plain = new HashSet<>(this.links.certain());
         final Map<String, String> hops = this.links.all();
-        final Walked walked = new Walked(hops, comes);
+        final Walked walked = new Walked(hops, new Returned(this.given).all());
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final String type : made) {
             found.put(type, type);

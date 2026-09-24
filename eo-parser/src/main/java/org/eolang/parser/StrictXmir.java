@@ -74,6 +74,7 @@ public final class StrictXmir implements XML {
 
     /**
      * Ctor.
+     *
      * @param src The source
      */
     public StrictXmir(final XML src) {
@@ -85,6 +86,7 @@ public final class StrictXmir implements XML {
      * Synchronization by XML is necessary in case we're trying to validate the same
      * {@link XML} in multiple threads. In such case the path to XSD scheme inside XML should
      * be updated only once.
+     *
      * @param before The XML source
      * @param tmp The directory with cached XSD files
      */

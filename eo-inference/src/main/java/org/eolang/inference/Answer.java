@@ -22,12 +22,32 @@ import java.util.Collections;
  * sure that cannot happen is for both to read the same answer.</p>
  *
  * <p>An object that settled on nothing better than somebody else's void
- * carries what the program was seen putting into that void as well. It is
- * evidence and not an answer — the callers of today do not oblige the one
- * written tomorrow — but a reader told that their object is whatever
- * {@code Φ.bool.and.x} turns out to be has nowhere to go next, and a reader
- * told that {@code Φ.true} and {@code Φ.false} have both been put there has.
- * The rung is untouched by it.</p>
+ * carries what the program was seen putting into that void as well. A void
+ * filled one way and no other is that one thing and settles there instead, so
+ * what is carried here is what the walk could not settle on — several types at
+ * once, or a single one naming nothing a reader could go and look at. A reader
+ * told that their object is whatever {@code Φ.bool.and.x} turns out to be has
+ * nowhere to go next, and a reader told that {@code Φ.true} and
+ * {@code Φ.false} have both been put there has. Nothing carried at all is an
+ * answer of its own rather than the want of one: nobody fills that void, so
+ * there is no caller to be sent to (#8355). The rung is untouched by it.</p>
+ *
+ * <p>An object whose answer is a choice between several carries them as well.
+ * Where the arms of a picker agree on nothing the row names all of them
+ * (#8744), which is a real answer and one no rung can show: the walk still
+ * ended at the void, so an object told it is either a {@code Φ.dial} or a
+ * {@code Φ.clock} stands where an object told nothing stands. The arms travel
+ * with the answer rather than beside it so that whoever counts the program and
+ * whoever draws it cannot disagree about which objects have them (#8854).</p>
+ *
+ * <p>Such an object also says whether the void it is rooted at is one that
+ * only an atom fills. {@code Φ.posix.return.code} is filled in Java, by the
+ * syscall that hands the object back, and no caller of the program can be
+ * looked at to find out what goes in there — which is a different thing to
+ * say than that the callers disagree, and asks a different thing of whoever
+ * reads it (#8352). The rung is untouched by this as well: it is the same
+ * name rooted at the same void, and only the reason it stayed there
+ * differs.</p>
  *
  * @since 0.70.0
  */
@@ -49,7 +69,18 @@ final class Answer {
     private final Collection<Type> witnesses;
 
     /**
+     * Whether that void is one only an atom fills.
+     */
+    private final boolean hammered;
+
+    /**
+     * The objects this one may be, where the answer is a choice.
+     */
+    private final Collection<Type> chosen;
+
+    /**
      * Ctor.
+     *
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
      * @param rung The rung it stands on, from nothing at all up to nothing
@@ -61,6 +92,7 @@ final class Answer {
 
     /**
      * Ctor.
+     *
      * @param where The object this one settled on, which is the object itself
      *  when the walk went nowhere
      * @param rung The rung it stands on, from nothing at all up to nothing
@@ -69,13 +101,50 @@ final class Answer {
      *  rooted at, empty when it is rooted at none or nobody fills it
      */
     Answer(final String where, final int rung, final Collection<Type> seen) {
+        this(where, rung, seen, false);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param where The object this one settled on, which is the object itself
+     *  when the walk went nowhere
+     * @param rung The rung it stands on, from nothing at all up to nothing
+     *  left to find out
+     * @param seen What the program was seen putting into the void it is
+     *  rooted at, empty when it is rooted at none or nobody fills it
+     * @param atom Whether that void is one only an atom fills
+     */
+    Answer(final String where, final int rung, final Collection<Type> seen,
+        final boolean atom) {
+        this(where, rung, seen, atom, Collections.emptyList());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param where The object this one settled on, which is the object itself
+     *  when the walk went nowhere
+     * @param rung The rung it stands on, from nothing at all up to nothing
+     *  left to find out
+     * @param seen What the program was seen putting into the void it is
+     *  rooted at, empty when it is rooted at none or nobody fills it
+     * @param atom Whether that void is one only an atom fills
+     * @param arms The objects this one may be, empty when the answer names one
+     *  object or none
+     */
+    Answer(final String where, final int rung, final Collection<Type> seen,
+        final boolean atom, final Collection<Type> arms) {
         this.settled = where;
         this.climbed = rung;
         this.witnesses = seen;
+        this.hammered = atom;
+        this.chosen = arms;
     }
 
     /**
      * The object this one settled on.
+     *
      * @return The locator
      */
     String where() {
@@ -84,6 +153,7 @@ final class Answer {
 
     /**
      * The rung it stands on.
+     *
      * @return The rung, from nothing at all up to nothing left to find out
      */
     int rung() {
@@ -92,9 +162,28 @@ final class Answer {
 
     /**
      * What the program was seen putting into the void it is rooted at.
+     *
      * @return The types, empty when nobody was seen filling it
      */
     Collection<Type> seen() {
         return this.witnesses;
+    }
+
+    /**
+     * Whether the void it is rooted at is one only an atom fills.
+     *
+     * @return TRUE when no caller of the program can be looked at
+     */
+    boolean forged() {
+        return this.hammered;
+    }
+
+    /**
+     * The objects this one may be, where the answer is a choice.
+     *
+     * @return The types, empty when the answer names one object or none
+     */
+    Collection<Type> arms() {
+        return this.chosen;
     }
 }

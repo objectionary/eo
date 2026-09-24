@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # A "+>" test attribute on a plain reference ("true +> works", XMIR
-# <o base="Phi.true" name="+works"/>) must keep the single-marker, spaced
+# <o base="Phi.true" name="p🌵works"/>) must keep the single-marker, spaced
 # " +> " form. The TAIL template's doubled-marker head-of-line shorthand
 # ("++> works", used to collapse an EMPTY anonymous formation's own bracket
 # head, "[] +> works") was firing here too, since it only checked for the

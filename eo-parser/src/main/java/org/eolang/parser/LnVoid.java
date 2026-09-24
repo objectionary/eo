@@ -4,8 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.regex.Pattern;
-
 /**
  * A vertical void-attribute line — R-3.4.7 / R-3.4.8 of the spec.
  *
@@ -49,8 +47,13 @@ import java.util.regex.Pattern;
  * It carries a type annotation like any other void, which is to say
  * inside an atom only.</p>
  *
- * <p>{@code ? > name}, {@code ? >> name} and {@code ? > ^} — each
- * optionally followed by one type annotation — are the only shapes the
+ * <p>Inside an atom, whose bracket head stays empty (R-3.4.10), the name
+ * may instead be {@code @}, the only spelling left for a φ void there;
+ * it maps to {@code φ} per R-3.4.2 / R-9.3, the same way {@code ^} maps
+ * to {@code ρ}.</p>
+ *
+ * <p>{@code ? > name}, {@code ? >> name}, {@code ? > ^} and {@code ? > @}
+ * — each optionally followed by one type annotation — are the only shapes the
  * {@code ?} marker may take, never an argument, a method receiver, or
  * anywhere else a value is expected. The marker is therefore <em>not</em> a {@link Value}
  * kind; this line is its sole producer. Cross-line behaviour: a closed
@@ -61,17 +64,13 @@ import java.util.regex.Pattern;
 final class LnVoid implements Line {
 
     /**
-     * The shape of a head that declares the formation's receiver.
-     */
-    private static final Pattern RECEIVER = Pattern.compile(" > \\^ *");
-
-    /**
      * The line's source span.
      */
     private final Span span;
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnVoid(final Span source) {
@@ -83,58 +82,54 @@ final class LnVoid implements Line {
         Blanks.checkPlain(this.span, globals, emit);
         final String tail = this.span.body().substring(1);
         final int slash = tail.indexOf('/');
-        if (LnVoid.RECEIVER.matcher(LnVoid.head(tail, slash)).matches()) {
-            this.receiver(stack, globals, emit, slash);
-        } else {
-            this.attribute(stack, globals, emit, tail, slash);
-        }
-        this.annotate(emit, tail, slash);
-    }
-
-    private void receiver(
-        final Stack stack, final Globals globals, final Emit emit, final int slash
-    ) {
-        globals.seal(emit, this.span);
-        this.checkTyped(
-            new Transition(stack, this.span).apply(
-                Kind.VOID, Openness.VCOMPLETED, new Admission("^", true)
-            ),
+        this.attribute(
+            stack, globals, emit,
+            new Suffix(LnVoid.head(tail, slash), this.span, this.span.indent() + 1),
             slash
         );
-        globals.clearBlanks();
-        globals.markEmitted();
-        emit.object("ρ", "∅", this.span.line(), this.span.indent());
+        this.annotate(emit, tail, slash);
     }
 
     private void attribute(
         final Stack stack, final Globals globals, final Emit emit,
-        final String tail, final int slash
+        final Suffix suffix, final int slash
     ) {
-        final Suffix suffix = new Suffix(
-            LnVoid.head(tail, slash), this.span, this.span.indent() + 1
-        );
-        if (suffix.form() != Suffix.Form.NAME && suffix.form() != Suffix.Form.AUTO
-            || suffix.constant()) {
+        if (suffix.form() == Suffix.Form.NONE || suffix.test() || suffix.constant()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "a void attribute must be written as `? > name` or `? >> name`"
             );
         }
         globals.seal(emit, this.span);
-        this.checkTyped(
-            new Transition(stack, this.span).apply(
-                Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
-            ),
-            slash
+        final Level level = new Transition(stack, this.span).apply(
+            Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
+        this.checkPlaced(level);
+        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
-        emit.object(
-            suffix.attribute(this.span.line(), this.span.indent()),
-            "∅", this.span.line(), this.span.indent()
-        );
+        emit.object(this.name(suffix), "∅", this.span.line(), this.span.indent());
         if (!suffix.handle().isEmpty()) {
             emit.local(suffix.handle());
+        }
+    }
+
+    private String name(final Suffix suffix) {
+        final String result;
+        if (suffix.form() == Suffix.Form.RECEIVER) {
+            result = new VoidName(suffix.named()).asString();
+        } else {
+            result = suffix.attribute(this.span.line(), this.span.indent());
+        }
+        return result;
+    }
+
+    private void checkPlaced(final Level level) {
+        if (!level.parent().formation()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void attribute is legal only as a direct child of a formation"
+            );
         }
     }
 

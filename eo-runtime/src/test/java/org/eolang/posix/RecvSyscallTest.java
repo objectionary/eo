@@ -19,6 +19,7 @@ import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link RecvSyscall}.
+ *
  * @since 0.57.0
  */
 final class RecvSyscallTest {
@@ -70,6 +71,18 @@ final class RecvSyscallTest {
                 new Data.ToPhi(0), new Data.ToPhi(Double.POSITIVE_INFINITY), new Data.ToPhi(0)
             ),
             "An infinite posix recv size must fail with ExFailure, not allocate the largest int"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void rejectsSizeLargerThanTheHeap() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new RecvSyscall(Phi.Φ.take("posix").copy()).make(
+                new Data.ToPhi(0), new Data.ToPhi(Integer.MAX_VALUE), new Data.ToPhi(0)
+            ),
+            "A posix recv of more bytes than the heap holds must fail with ExFailure"
         );
     }
 

@@ -42,6 +42,7 @@ final class Threaded<T> {
 
     /**
      * Ctor.
+     *
      * @param src The sources
      * @param fun The function to run
      */
@@ -51,6 +52,7 @@ final class Threaded<T> {
 
     /**
      * Ctor.
+     *
      * @param src The sources
      * @param fun The function to run
      * @param log The logger
@@ -64,8 +66,12 @@ final class Threaded<T> {
     }
 
     /**
-     * Exec them all and count.
-     * @return How many succeeded
+     * Execute the function for all elements and sum the returned values.
+     *
+     * <p>If the function fails for any element, the whole operation fails with
+     * an {@link IllegalStateException}.</p>
+     *
+     * @return Sum of the values returned by the function
      */
     int total() {
         return new SumOf(

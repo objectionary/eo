@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two syscalls reached by name come back through one `return`, so nothing tells
+# apart the one that answers with a number from the one that answers with a
+# message. Both callers stop at the same void.
+#
+# As atoms they say it themselves: `errno` hands back a number, `strerror` hands
+# back a string, and the caller that compares the message against another one
+# lands on `Φ.string.eq`.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > errno /Q.number
+        ? > ^
+      [] > strerror /Q.string
+        ? > ^
+        ? > errno /Q.number
+  app.eo: |
+    [] > app
+      eq. > @
+        posix.strerror posix.errno
+        "No such file"
+  string.eo: |
+    [] > string
+      [] > eq
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.string.eq']"

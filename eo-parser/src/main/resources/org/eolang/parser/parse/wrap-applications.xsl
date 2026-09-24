@@ -35,6 +35,13 @@
   predecessor with @float-up; `vars-float-up` then hoists its definition
   to the nearest abstract object and drops the in-place slot, so only the
   pipe application reaches the enclosing application or tuple.
+
+  An intermediate pipe of a chain is itself such a predecessor for the
+  next pipe in the chain (R-3.14.5 forces it to carry a @name), so it
+  needs both the @base rewrite above and the @float-up marker. The two
+  concerns are handled together in the `o[@pipe]` template below instead
+  of splitting them across two templates matching the same node, which
+  would leave the match ambiguous (#8490).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
@@ -65,12 +72,15 @@
       <xsl:attribute name="base">
         <xsl:value-of select="preceding-sibling::o[1]/@name"/>
       </xsl:attribute>
+      <xsl:if test="@name and (../@base or ../@star) and following-sibling::o[1][@pipe]">
+        <xsl:attribute name="float-up"/>
+      </xsl:if>
       <xsl:apply-templates select="@*"/>
       <xsl:apply-templates select="node()"/>
     </xsl:copy>
   </xsl:template>
   <!-- Predecessor formation of a pipe in an argument block or star tuple: float it up. -->
-  <xsl:template match="o[@name and not(@base) and (../@base or ../@star) and following-sibling::o[1][@pipe]]">
+  <xsl:template match="o[@name and not(@base) and not(@pipe) and (../@base or ../@star) and following-sibling::o[1][@pipe]]">
     <xsl:copy>
       <xsl:attribute name="float-up"/>
       <xsl:apply-templates select="@*|node()"/>

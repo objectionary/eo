@@ -44,16 +44,16 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
++version 0.0.0
 
 [address port] > socket
   os.is-windows.if > @
     [^ sys] >> impl
-      code. > addr
-        sys.raw *1
-          "inet_addr"
+      as-number. > addr
+        sys.inet-addr >>!
           ^.address
       as-i32. > addrint
         if.
@@ -67,10 +67,7 @@
             "Couldn't close the socket #%d because %s".printf
               * descriptor ^.sys.message
           true
-        code. > closed
-          ^.sys.raw *1
-            ^.sys.close
-            descriptor
+        ^.sys.close descriptor > closed
       [^ scope cant-connect] > connect
         ^.safe-socket > @
           [^] >>
@@ -81,9 +78,8 @@
                   * ^.^.^.address ^.^.^.port ^.^.^.sd ^.^.^.sys.message
               ^.scope
                 ^.^.^.scoped-socket ^.^.^.sd
-            code. > connected
-              ^.^.^.sys.raw *1
-                "connect"
+            as-number. > connected
+              ^.^.^.sys.connect >>!
                 ^.^.^.sd
                 ^.^.^.sockaddr
                 ^.^.^.sockaddr.size
@@ -113,23 +109,18 @@
                         ^.^.^.^.^.guarded
                           scope (^.^.^.^.^.scoped-socket client)
                           ^.^.^.^.^.closed-socket client
-                      code. > client
-                        ^.^.^.^.^.sys.raw *1
-                          "accept"
+                      as-number. > client
+                        ^.^.^.^.^.sys.accept >>!
                           ^.^.^.^.^.sd
                           ^.^.^.^.^.sockaddr
                           ^.^.^.^.^.sockaddr.size
-            code. > bound
-              ^.^.^.sys.raw *1
-                "bind"
+            as-number. > bound
+              ^.^.^.sys.bind >>!
                 ^.^.^.sd
                 ^.^.^.sockaddr
                 ^.^.^.sockaddr.size
-            code. > listened
-              ^.^.^.sys.raw *1
-                "listen"
-                ^.^.^.sd
-                2048
+            as-number. > listened
+              ^.^.^.sys.listen ^.^.^.sd 2048 >>!
           cant-listen
       [^ scope cant] > safe-socket
         if. > @
@@ -179,16 +170,14 @@
               "Failed to send a message through the socket #%d because %s".printf
                 * ^.descriptor ^.^.sys.message
             sent
-          code. > sent
-            ^.^.sys.raw *1
-              "send"
+          as-number. > sent
+            ^.^.sys.send >>!
               ^.descriptor
               buffer >> buff!
               buff.size
               0
-      code. > sd
-        sys.raw *1
-          "socket"
+      as-number. > sd
+        sys.socket >>!
           sys.inet
           sys.stream
           sys.tcp
@@ -199,41 +188,39 @@
     |
       []
         raw > @
+        win32.accept > accept
+        win32.bind > bind
         if. > cleanup
           eq.
-            code.
-              win32
-                "WSACleanup"
-                *
+            as-number.
+              win32.wsa-cleanup >>!
             win32.failure
           T
             "Couldn't clean up the sockets subsystem"
           true
-        "closesocket" > close
+        win32.closesocket > close
+        win32.connect > connect
+        win32.listen > listen
         "WSA error code %d".printf > message
-          *
-            code.
-              win32
-                "WSAGetLastError"
-                *
+          * win32.wsa-get-last-error
         win32 > raw
-        code. > startup
-          win32 *1
-            "WSAStartup"
-            win32.version
+        win32.send > send
+        win32.socket > socket
+        as-number. > startup
+          win32.wsa-startup win32.version >>!
     impl
       []
         raw > @
+        posix.accept > accept
+        posix.bind > bind
         true > cleanup
-        "close" > close
-        code. > message
-          posix *1
-            "strerror"
-            code.
-              posix
-                "errno"
-                *
+        posix.close > close
+        posix.connect > connect
+        posix.listen > listen
+        posix.strerror posix.errno > message
         posix > raw
+        posix.send > send
+        posix.socket > socket
         0 > startup
   [recv] > as-input
     [^ size] > read
@@ -268,8 +255,12 @@
           ^.^.^.send buffer > sent
   ^.port.is-integer.not.if > [^] > checked-port
     T
-      "Port must be an integer in 0 to 65535, but was %f".printf
-        * ^.port
+      ^.port.is-finite.if
+        "Port must be an integer in 0 to 65535, but was %f".printf
+          * ^.port
+        "Port must be an integer in 0 to 65535, but was %s".printf
+          *
+            string ^.port.as-scientific
     if.
       or.
         ^.port.lt 0
@@ -297,6 +288,13 @@
       2
       2
 
+  ++> can-bind-and-listen-on-an-ephemeral-loopback-port
+    os.is-windows.or > @
+      listen.
+        socket "127.0.0.1" 0
+        accepting
+    true > [client] > accepting
+
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
     socket.htons 40000
@@ -317,6 +315,15 @@
       42
       true
     42
+
+  ++> can-report-a-connection-nobody-accepts
+    os.is-windows.or > @
+      connect.
+        socket "127.0.0.1" 1
+        talking
+        refused
+    true > [message] > refused
+    false > [client] > talking
 
   ++> can-resend-the-remaining-bytes-after-a-short-send
     eq. > @
@@ -365,10 +372,25 @@
       "127.0.0.1"
       1.5
 
+  checked-port. --> rejects-a-nan-port
+    socket
+      "127.0.0.1"
+      nan
+
+  checked-port. --> rejects-a-negatively-infinite-port
+    socket
+      "127.0.0.1"
+      ninf
+
   checked-port. --> rejects-a-port-above-the-valid-range
     socket
       "127.0.0.1"
       70000
+
+  checked-port. --> rejects-a-positively-infinite-port
+    socket
+      "127.0.0.1"
+      pinf
 
   socket.guarded --> stops-on-a-terminated-guarded-scope
     2.as-i64.div 0.as-i64

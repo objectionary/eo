@@ -25,6 +25,7 @@ import org.xembly.Xembler;
 
 /**
  * EO source code for a single EO object.
+ *
  * @since 0.60
  */
 final class EoSource {
@@ -46,6 +47,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param source Path to the source file
      */
@@ -55,6 +57,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param input Object source code
      */
@@ -64,6 +67,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param source Path to the source file
      * @param transform Transform that parses EO into XMIR
@@ -74,6 +78,7 @@ final class EoSource {
 
     /**
      * Ctor.
+     *
      * @param identifier Object identifier
      * @param input Object source code
      * @param transform Transform that parses EO into XMIR
@@ -86,11 +91,21 @@ final class EoSource {
 
     /**
      * Parse the source code into XMIR.
+     *
      * @return Parsed XMIR
      * @throws IOException If fails
      */
     Xmir parsed() throws IOException {
-        final XML xmir = new EoSyntax(this.input, this.transform).parsed();
+        return this.parsed(new EoSyntax(this.input, this.transform).parsed());
+    }
+
+    /**
+     * Check the XMIR already made of this source.
+     *
+     * @param xmir The XMIR of this source
+     * @return The same XMIR, with the naming errors it earned
+     */
+    Xmir parsed(final XML xmir) {
         final List<String> errors = new ArrayList<>(0);
         final Node document = xmir.inner();
         final String name = new OnDetailed(

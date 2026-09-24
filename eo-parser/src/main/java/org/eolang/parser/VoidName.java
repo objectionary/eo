@@ -27,6 +27,7 @@ final class VoidName implements Text {
 
     /**
      * Ctor.
+     *
      * @param token The parameter, as the source wrote it
      */
     VoidName(final String token) {

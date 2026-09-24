@@ -28,6 +28,7 @@ final class Marked {
 
     /**
      * Ctor.
+     *
      * @param target The emitter
      * @param tail The suffix of the line
      */

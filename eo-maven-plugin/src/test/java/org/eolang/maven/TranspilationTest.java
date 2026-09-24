@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Transpilation}.
+ *
  * @since 0.74
  */
 @ExtendWith(MktmpResolver.class)

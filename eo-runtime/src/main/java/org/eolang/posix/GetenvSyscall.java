@@ -4,13 +4,14 @@
  */
 package org.eolang.posix;
 
-import org.eolang.Cstring;
 import org.eolang.Data;
 import org.eolang.Phi;
-import org.eolang.Syscall;
+import org.eolang.sys.Cstring;
+import org.eolang.sys.Syscall;
 
 /**
  * Getenv syscall.
+ *
  * @since 0.40
  */
 public final class GetenvSyscall implements Syscall {
@@ -22,6 +23,7 @@ public final class GetenvSyscall implements Syscall {
 
     /**
      * Ctor.
+     *
      * @param posix Posix object
      */
     public GetenvSyscall(final Phi posix) {

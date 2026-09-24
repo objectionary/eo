@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.tmpdir.tmpfile' and @name='file']
+  - //o[@base='ξ.file.open' and @name='fd']
+input: |
+  [] > main
+    tmpdir
+    .tmpfile > file
+    .open > fd
