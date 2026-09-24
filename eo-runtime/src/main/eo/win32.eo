@@ -51,6 +51,8 @@
   -1 > failure
   [] > find-close /Q.number
     ? > search /Q.number
+  [] > find-first-file /Q.win32.search-return
+    ? > pattern /Q.string
   [] > find-next-file /Q.win32.dir-return
     ? > search /Q.number
   [] > ftime64-s /Q.win32.time-return
@@ -103,6 +105,11 @@
       output
   [] > rmdir /Q.win32.status-return
     ? > path /Q.string
+  [code name message] > search-return
+    win32.search-return > called
+      code
+      name
+      message
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -270,6 +277,9 @@
 
   code. --> stops-on-reading-a-search-nobody-started
     win32.find-next-file -1
+
+  code. --> stops-on-searching-a-pattern-with-a-nul
+    win32.find-first-file "плюшка\u0000щи"
 
   win32.send --> stops-on-send-size-being-negative
     0

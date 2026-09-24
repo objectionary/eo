@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eolang.posix.OpendirSyscall;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -56,9 +55,9 @@ final class EOposixEOreaddirTest {
     private static Collection<String> walked(final Path path) {
         final Phi handle = new Data.ToPhi(
             new Dataized(
-                new OpendirSyscall(Phi.Φ.take("posix").copy())
-                    .make(new Data.ToPhi(path.toString()))
-                    .take("code")
+                new PhApplication(
+                    new EOposix$EOopendir(), "path", new Data.ToPhi(path.toString())
+                ).take("code")
             ).asNumber().intValue()
         );
         final Collection<String> names = new ArrayList<>(0);

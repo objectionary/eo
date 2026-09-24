@@ -434,8 +434,7 @@
       seq *
         touched. (d.resolved "щи.txt").as-file
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         eq.

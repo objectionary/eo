@@ -36,10 +36,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         d.as-file.deleted
         link.as-file.deleted
         link.as-file.exists.not
@@ -60,10 +57,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         link.as-file.deleted
         link.as-file.exists.not
         d.as-file.exists

@@ -74,10 +74,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.path.eq link
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "broken-link-2" > link
@@ -99,10 +96,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.exists.and target.as-file.exists
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "broken-link" > link
@@ -130,10 +124,7 @@
           "w"
           f.write "seed-content" > [^ f]
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.exists.and
           link.as-file.size.eq 12
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d

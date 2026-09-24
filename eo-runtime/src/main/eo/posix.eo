@@ -75,6 +75,8 @@
     ? > path /Q.string
     ? > flags /Q.number
     ? > mode /Q.number
+  [] > opendir /Q.posix.status-return
+    ? > path /Q.string
   511 > permissions
   384 > private
   0 > rdonly
@@ -136,6 +138,9 @@
   1 > stream
   [] > strerror /Q.string
     ? > errno /Q.number
+  [] > symlink /Q.posix.status-return
+    ? > target /Q.string
+    ? > path /Q.string
   6 > tcp
   [code seconds micros] > time-return
     posix.time-return > called
