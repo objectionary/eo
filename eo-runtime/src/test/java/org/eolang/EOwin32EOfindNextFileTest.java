@@ -25,7 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.77.0
  */
-final class EOwin32EOfind_next_fileTest {
+final class EOwin32EOfindNextFileTest {
 
     @Test
     void refusesAHandleNobodyOpened() {
@@ -51,7 +51,7 @@ final class EOwin32EOfind_next_fileTest {
         Files.createDirectory(temp.resolve("щи"));
         MatcherAssert.assertThat(
             "the search must report both children and the two dots, and nothing else",
-            EOwin32EOfind_next_fileTest.searched(temp),
+            EOwin32EOfindNextFileTest.searched(temp),
             Matchers.containsInAnyOrder(".", "..", "плюшка", "щи")
         );
     }
@@ -65,10 +65,10 @@ final class EOwin32EOfind_next_fileTest {
         );
         final Collection<String> names = new ArrayList<>(0);
         names.add(new Dataized(first.take("output")).asString());
-        Phi entry = EOwin32EOfind_next_fileTest.entry(handle);
+        Phi entry = EOwin32EOfindNextFileTest.entry(handle);
         while (new Dataized(entry.take("code")).asNumber().intValue() == 0) {
             names.add(new Dataized(entry.take("name")).asString());
-            entry = EOwin32EOfind_next_fileTest.entry(handle);
+            entry = EOwin32EOfindNextFileTest.entry(handle);
         }
         Kernel32.INSTANCE.FindClose(
             Handles.INSTANCE.remove(
