@@ -27,12 +27,15 @@ final class IntakeTest {
 
     @Test
     void handsBackOnlyTheBytesTheCallFilled() {
-        final int size = new SecureRandom().nextInt(512) + 64;
         MatcherAssert.assertThat(
             "the data must not carry the part of the buffer the call left untouched",
             new Dataized(
                 new Intake(
-                    new PhApplication(new EOposix$EOread(), "size", new Data.ToPhi(size)),
+                    new PhApplication(
+                        new EOposix$EOread(),
+                        "size",
+                        new Data.ToPhi(new SecureRandom().nextInt(512) + 64)
+                    ),
                     Phi.Φ.take("posix").take("read-return"),
                     (buffer, wanted) -> 13
                 ).it().take("data")
