@@ -47,7 +47,6 @@ public final class EOwin32$EOopen extends PhDefault implements Atom {
         final int mode = new Int(Expect.at(this, "mode")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wopen(new WString(path), flags, mode);
-
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

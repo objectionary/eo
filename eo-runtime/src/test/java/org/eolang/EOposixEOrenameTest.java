@@ -19,7 +19,7 @@ final class EOposixEOrenameTest {
     @Test
     void refusesSourceWithNul() {
         MatcherAssert.assertThat(
-            "the 'from' attribute carrying a NUL must be refused by name, but it wasnt",
+            "the 'from' attribute of posix.rename carrying a NUL must be refused, but it wasnt",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -29,7 +29,7 @@ final class EOposixEOrenameTest {
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),
-                "a 'from' attribute with a NUL was expected to fail"
+                "a 'from' attribute of posix.rename with a NUL was expected to fail"
             ).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("'from' attribute"),
@@ -41,7 +41,7 @@ final class EOposixEOrenameTest {
     @Test
     void refusesTargetWithNul() {
         MatcherAssert.assertThat(
-            "the 'to' attribute carrying a NUL must be refused by name, but it wasnt",
+            "the 'to' attribute of posix.rename carrying a NUL must be refused, but it wasnt",
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
@@ -55,7 +55,7 @@ final class EOposixEOrenameTest {
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),
-                "a 'to' attribute with a NUL was expected to fail"
+                "a 'to' attribute of posix.rename with a NUL was expected to fail"
             ).getMessage(),
             Matchers.allOf(
                 Matchers.containsString("'to' attribute"),

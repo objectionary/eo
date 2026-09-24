@@ -43,7 +43,6 @@ public final class EOposix$EOclosedir extends PhDefault implements Atom {
         );
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.closedir(stream);
-
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

@@ -46,7 +46,6 @@ public final class EOposix$EOopen extends PhDefault implements Atom {
         final int mode = new Int(Expect.at(this, "mode")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.open(path, flags, mode);
-
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

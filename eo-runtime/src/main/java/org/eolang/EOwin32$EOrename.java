@@ -42,7 +42,6 @@ public final class EOwin32$EOrename extends PhDefault implements Atom {
         final String target = new Cstring(Expect.at(this, "to")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wrename(new WString(from), new WString(target));
-
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

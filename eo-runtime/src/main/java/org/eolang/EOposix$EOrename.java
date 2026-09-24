@@ -41,7 +41,6 @@ public final class EOposix$EOrename extends PhDefault implements Atom {
         final String target = new Cstring(Expect.at(this, "to")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.rename(from, target);
-
         result.put(0, new Data.ToPhi(code));
         result.put(1, new Errno(code).get());
         return result;

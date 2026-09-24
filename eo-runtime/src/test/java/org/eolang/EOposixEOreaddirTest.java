@@ -54,10 +54,9 @@ final class EOposixEOreaddirTest {
     }
 
     private static Collection<String> walked(final Path path) {
-        final Phi posix = Phi.Φ.take("posix").copy();
         final Phi handle = new Data.ToPhi(
             new Dataized(
-                new OpendirSyscall(posix)
+                new OpendirSyscall(Phi.Φ.take("posix").copy())
                     .make(new Data.ToPhi(path.toString()))
                     .take("code")
             ).asNumber().intValue()
