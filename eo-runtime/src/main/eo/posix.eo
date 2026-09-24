@@ -37,6 +37,10 @@
   os.is-macos.if > creat
     512
     64
+  [code name] > dir-return
+    posix.dir-return > called
+      code
+      name
   17 > eexist
   22 > einval
   2 > enoent
@@ -44,6 +48,12 @@
   os.is-macos.if > exclusive
     2048
     128
+  [] > getenv /Q.posix.getenv-return
+    ? > name /Q.string
+  [code value] > getenv-return
+    posix.getenv-return > called
+      code
+      value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return
   2 > inet
@@ -68,6 +78,8 @@
     posix.read-return > called
       code
       data
+  [] > readdir /Q.posix.dir-return
+    ? > dirp /Q.number
   [] > recv /Q.posix.read-return
     ? > descriptor /Q.number
     ? > size /Q.number

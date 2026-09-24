@@ -40,6 +40,10 @@
     ? > sockaddr /Q.win32.sockaddr-in
     ? > length /Q.number
   256 > creat
+  [code name] > dir-return
+    win32.dir-return > called
+      code
+      name
   17 > eexist
   10022 > einval
   [] > errno /Q.number
@@ -47,9 +51,17 @@
   -1 > failure
   [] > find-close /Q.number
     ? > search /Q.number
+  [] > find-next-file /Q.win32.dir-return
+    ? > search /Q.number
   [] > ftime64-s /Q.win32.time-return
   [] > get-file-attributes /Q.number
     ? > path /Q.string
+  [] > getenv /Q.win32.getenv-return
+    ? > name /Q.string
+  [code value] > getenv-return
+    win32.getenv-return > called
+      code
+      value
   [] > getpid /Q.number
   2 > inet
   [] > inet-addr /Q.number

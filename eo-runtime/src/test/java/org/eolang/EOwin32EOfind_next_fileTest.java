@@ -2,18 +2,16 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.sys.win32;
+package org.eolang;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExFailure;
-import org.eolang.Phi;
 import org.eolang.sys.Handles;
+import org.eolang.sys.win32.FindFirstFileFuncCall;
+import org.eolang.sys.win32.Kernel32;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -23,24 +21,26 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Test case for {@link FindNextFileFuncCall}.
+ * Test case for {@link EOwin32$EOfind_next_file}.
  *
- * @since 0.76.0
+ * @since 0.77.0
  */
-final class FindNextFileFuncCallTest {
+final class EOwin32EOfind_next_fileTest {
 
     @Test
     void refusesAHandleNobodyOpened() {
         MatcherAssert.assertThat(
-            "a number naming no open search must be refused before it reaches the kernel as a handle",
+            "a number naming no open search must be refused before the kernel sees it as a handle",
             Assertions.assertThrows(
-                ExFailure.class,
-                () -> new FindNextFileFuncCall(Phi.Φ.take("win32").copy()).make(
-                    new Data.ToPhi(-42)
-                ),
-                "reading a search that was never started was expected to fail with ExFailure"
+                ExAbstract.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new EOwin32$EOfind_next_file(), "search", new Data.ToPhi(-42)
+                    ).take("code")
+                ).take(),
+                "reading a search that was never started was expected to fail"
             ).getMessage(),
-            Matchers.containsString("'search' argument of FindNextFile")
+            Matchers.containsString("'search' attribute")
         );
     }
 
@@ -51,14 +51,13 @@ final class FindNextFileFuncCallTest {
         Files.createDirectory(temp.resolve("щи"));
         MatcherAssert.assertThat(
             "the search must report both children and the two dots, and nothing else",
-            FindNextFileFuncCallTest.searched(temp),
+            EOwin32EOfind_next_fileTest.searched(temp),
             Matchers.containsInAnyOrder(".", "..", "плюшка", "щи")
         );
     }
 
     private static Collection<String> searched(final Path path) {
-        final Phi win = Phi.Φ.take("win32").copy();
-        final Phi first = new FindFirstFileFuncCall(win).make(
+        final Phi first = new FindFirstFileFuncCall(Phi.Φ.take("win32").copy()).make(
             new Data.ToPhi(String.format("%s\\*", path))
         );
         final Phi handle = new Data.ToPhi(
@@ -66,10 +65,10 @@ final class FindNextFileFuncCallTest {
         );
         final Collection<String> names = new ArrayList<>(0);
         names.add(new Dataized(first.take("output")).asString());
-        Phi entry = new FindNextFileFuncCall(win).make(handle);
+        Phi entry = EOwin32EOfind_next_fileTest.entry(handle);
         while (new Dataized(entry.take("code")).asNumber().intValue() == 0) {
-            names.add(new Dataized(entry.take("output")).asString());
-            entry = new FindNextFileFuncCall(win).make(handle);
+            names.add(new Dataized(entry.take("name")).asString());
+            entry = EOwin32EOfind_next_fileTest.entry(handle);
         }
         Kernel32.INSTANCE.FindClose(
             Handles.INSTANCE.remove(
@@ -78,5 +77,10 @@ final class FindNextFileFuncCallTest {
             )
         );
         return names;
+    }
+
+    private static Phi entry(final Phi handle) {
+        return new PhApplication(new EOwin32$EOfind_next_file(), "search", handle)
+            .take("called");
     }
 }
