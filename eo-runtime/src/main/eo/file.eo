@@ -81,14 +81,14 @@
             win32 > @
             win32.close > close
             win32 "_open" > open
-            win32 "_read" > read
+            win32.read > read
             win32.write > write
         open-through
           []
             posix > @
             posix.close > close
             posix "open" > open
-            posix "read" > read
+            posix.read > read
             posix.write > write
       [^ syscall] > open-through
         if. > @
@@ -143,12 +143,11 @@
                       received.code.eq -1
                       T
                         "Failed to read from file"
-                      received.output
+                      received.data
                     received
                     ^.^.input-block chunk
                 called. > received
-                  ^.^.^.^.syscall.read
-                    * ^.^.^.descriptor size
+                  ^.^.^.^.syscall.read ^.^.^.descriptor size
           [^ buffer] > write
             output-block.write buffer > @
             [^] > output-block

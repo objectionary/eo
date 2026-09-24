@@ -36,9 +36,7 @@ public final class NamedSyscall implements Syscall {
         NamedSyscall.ALL.put("mkdir", MkdirSyscall::new);
         NamedSyscall.ALL.put("rename", RenameSyscall::new);
         NamedSyscall.ALL.put("symlink", SymlinkSyscall::new);
-        NamedSyscall.ALL.put("read", ReadSyscall::new);
         NamedSyscall.ALL.put("getenv", GetenvSyscall::new);
-        NamedSyscall.ALL.put("recv", RecvSyscall::new);
     }
 
     /**

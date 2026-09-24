@@ -7,6 +7,7 @@ package org.eolang.sys.win32;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.eolang.ExFailure;
 import org.eolang.Phi;
 import org.eolang.sys.Syscall;
 
@@ -33,7 +34,6 @@ public final class NamedFuncCall implements Syscall {
         NamedFuncCall.ALL.put("_rmdir", RmdirFuncCall::new);
         NamedFuncCall.ALL.put("_mkdir", MkdirFuncCall::new);
         NamedFuncCall.ALL.put("rename", RenameFuncCall::new);
-        NamedFuncCall.ALL.put("_read", ReadFuncCall::new);
         NamedFuncCall.ALL.put("getenv", GetenvFuncCall::new);
     }
 
@@ -60,12 +60,12 @@ public final class NamedFuncCall implements Syscall {
 
     @Override
     public Phi make(final Phi... params) {
-        final Syscall call;
-        if (NamedFuncCall.ALL.containsKey(this.name)) {
-            call = NamedFuncCall.ALL.get(this.name).apply(this.rho);
-        } else {
-            call = new NamedSocketFuncCall(this.name, this.rho);
+        if (!NamedFuncCall.ALL.containsKey(this.name)) {
+            throw new ExFailure(
+                "Can't make win32 function call '%s' because it's either not supported yet or does not exist",
+                this.name
+            );
         }
-        return call.make(params);
+        return NamedFuncCall.ALL.get(this.name).apply(this.rho).make(params);
     }
 }

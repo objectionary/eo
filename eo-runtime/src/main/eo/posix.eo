@@ -60,6 +60,18 @@
   384 > private
   0 > rdonly
   2 > rdwr
+  [] > read /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+  [code data] > read-return
+    data > @
+    posix.read-return > called
+      code
+      data
+  [] > recv /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+    ? > flags /Q.number
   [^ code output] > return
     output > @
     ^.return > called
@@ -224,6 +236,12 @@
     eq.
       posix.inet-addr "255.255.255.255"
       posix.unresolved
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    posix.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
     os.is-windows.or > @
