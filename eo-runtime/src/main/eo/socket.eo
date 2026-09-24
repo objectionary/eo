@@ -156,13 +156,9 @@
             cant-receive
               "Failed to receive data from the socket #%d because %s".printf
                 * ^.descriptor ^.^.sys.message
-            received.output
+            received.data
           called. > received
-            ^.^.sys.raw *1
-              "recv"
-              ^.descriptor
-              size
-              0
+            ^.^.sys.recv ^.descriptor size 0
         [^ buffer cant-send] > send
           if. > @
             sent.eq -1
@@ -204,6 +200,7 @@
         "WSA error code %d".printf > message
           * win32.wsa-get-last-error
         win32 > raw
+        win32.recv > recv
         win32.send > send
         win32.socket > socket
         as-number. > startup
@@ -219,6 +216,7 @@
         posix.listen > listen
         posix.strerror posix.errno > message
         posix > raw
+        posix.recv > recv
         posix.send > send
         posix.socket > socket
         0 > startup

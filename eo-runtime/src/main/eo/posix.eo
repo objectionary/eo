@@ -60,6 +60,17 @@
   384 > private
   0 > rdonly
   2 > rdwr
+  [] > read /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+  [code data] > read-return
+    posix.read-return > called
+      code
+      data
+  [] > recv /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+    ? > flags /Q.number
   [^ code output] > return
     output > @
     ^.return > called
