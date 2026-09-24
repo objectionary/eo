@@ -254,6 +254,9 @@
 
   win32.find-close -1 --> stops-on-a-handle-nobody-opened
 
+  code. --> stops-on-reading-a-search-nobody-started
+    win32.find-next-file -1
+
   win32.send --> stops-on-send-size-being-negative
     0
     "ab"
