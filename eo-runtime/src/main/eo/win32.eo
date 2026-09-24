@@ -66,6 +66,7 @@
     ? > descriptor /Q.number
     ? > size /Q.number
   [code data] > read-return
+    data > @
     win32.read-return > called
       code
       data
@@ -227,6 +228,12 @@
     eq.
       win32.inet-addr "127.0.0.1"
       16777343
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    win32.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-nul
     os.is-windows.not.or > @

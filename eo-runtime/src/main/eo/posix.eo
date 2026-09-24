@@ -64,6 +64,7 @@
     ? > descriptor /Q.number
     ? > size /Q.number
   [code data] > read-return
+    data > @
     posix.read-return > called
       code
       data
@@ -235,6 +236,12 @@
     eq.
       posix.inet-addr "255.255.255.255"
       posix.unresolved
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    posix.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
     os.is-windows.or > @
