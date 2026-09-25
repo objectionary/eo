@@ -6,7 +6,6 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.lang.reflect.Field;
-import java.security.SecureRandom;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
 import org.hamcrest.MatcherAssert;
@@ -19,6 +18,15 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link PhDefault}.
  *
  * @since 0.1
+ * @todo #7974:30min Give the last three fixtures files of their own.
+ *  {@code Int}, {@code Foo} and {@code Kid} still sit at the bottom of this
+ *  file, which keeps it within two hundred lines of the thousand that
+ *  qulice allows, and the next regression to pin on {@link PhDefault} needs
+ *  that room. They could not travel together with {@code Rnd},
+ *  {@code WithVoidPhi} and {@code Counter}, since one pull request may
+ *  change two hundred lines and the six of them change more than twice
+ *  that. {@code Int} also needs a new name on the way out, because
+ *  {@link Int} already holds that one in the main sources of this package.
  */
 final class PhDefaultTest {
 
@@ -438,7 +446,7 @@ final class PhDefaultTest {
 
     @Test
     void doesNotReadMultipleTimes() {
-        final Phi phi = PhDefaultTest.Counter.made();
+        final Phi phi = Counter.made();
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -543,7 +551,7 @@ final class PhDefaultTest {
 
     @Test
     void injectsPhi() {
-        final Phi phi = new PhDefaultTest.WithVoidPhi();
+        final Phi phi = new WithVoidPhi();
         phi.put(0, new Data.ToPhi(5));
         MatcherAssert.assertThat(
             "Object must be injected to phi attribute and dataized",
@@ -558,7 +566,7 @@ final class PhDefaultTest {
             new PhDispatch(
                 new PhApplication(
                     new PhDispatch(
-                        new PhDefaultTest.Rnd(), this.plus()
+                        new Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -728,31 +736,6 @@ final class PhDefaultTest {
     }
 
     /**
-     * Rnd.
-     *
-     * @since 0.1.0
-     */
-    private static final class Rnd extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Rnd() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            self -> new Data.ToPhi(new SecureRandom().nextDouble())
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
      * Int.
      *
      * @since 0.36.0
@@ -829,61 +812,6 @@ final class PhDefaultTest {
                     )
                 )
             );
-        }
-    }
-
-    /**
-     * Dummy.
-     *
-     * @since 0.1.0
-     */
-    static final class WithVoidPhi extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        WithVoidPhi() {
-            super(new Attrs(new Attr(Phi.PHI, new AtVoid(Phi.PHI))));
-        }
-    }
-
-    /**
-     * Counter.
-     *
-     * @since 0.1.0
-     */
-    static final class Counter extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private long count;
-
-        /**
-         * Make one, with all its attributes in place.
-         *
-         * <p>The attributes are attached here, and not in a constructor,
-         * because both of them are expressions over the object itself, which
-         * does not exist yet while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Counter made() {
-            final PhDefaultTest.Counter made = new PhDefaultTest.Counter();
-            made.add(
-                Phi.PHI,
-                new AtOnce(
-                    new AtComposite(
-                        made,
-                        rho -> {
-                            ++made.count;
-                            return new Data.ToPhi(new byte[]{(byte) 0x01});
-                        }
-                    )
-                )
-            );
-            made.add("count", new AtComposite(made, rho -> new Data.ToPhi(made.count)));
-            return made;
         }
     }
 
