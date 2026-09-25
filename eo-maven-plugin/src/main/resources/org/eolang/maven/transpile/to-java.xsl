@@ -111,6 +111,8 @@
     <xsl:apply-templates select="/object" mode="package"/>
     <xsl:text>import java.util.function.Function;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.Optional;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import java.util.function.Supplier;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.eolang.*;</xsl:text>
@@ -245,21 +247,21 @@
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> * @param obj The object to wrap</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text> * @param term Supplier of the term</xsl:text>
+    <xsl:text> * @param phrase Supplier of the term</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text> */</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:value-of select="concat('private ', $class, '(final Supplier&lt;Phi&gt; obj, final Supplier&lt;String&gt; term) {')"/>
+    <xsl:value-of select="concat('private ', $class, '(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {')"/>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:text>super(obj, term);</xsl:text>
+    <xsl:text>super(obj, phrase);</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>@Override</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
-    <xsl:text>public Phi wrapped(final Supplier&lt;Phi&gt; obj, final Supplier&lt;String&gt; term) {</xsl:text>
+    <xsl:text>public Phi wrapped(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {</xsl:text>
     <xsl:value-of select="eo:eol(2)"/>
-    <xsl:value-of select="concat('return new ', $class, '(obj, term);')"/>
+    <xsl:value-of select="concat('return new ', $class, '(obj, phrase);')"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>

@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -23,7 +24,7 @@ public final class PhDispatch extends PhOnce {
     public PhDispatch(final Phi phi, final String mtd) {
         this(
             () -> phi.take(mtd),
-            () -> String.join(".", phi.φTerm(), mtd)
+            Optional.of(() -> String.join(".", phi.φTerm(), mtd))
         );
     }
 
@@ -31,14 +32,14 @@ public final class PhDispatch extends PhOnce {
      * Ctor.
      *
      * @param obj The object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term
      */
-    private PhDispatch(final Supplier<Phi> obj, final Supplier<String> term) {
-        super(obj, term);
+    private PhDispatch(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
+        super(obj, phrase);
     }
 
     @Override
-    public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+    public Phi wrapped(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
         return new PhDispatch(obj, phrase);
     }
 }
