@@ -34,7 +34,7 @@ jobs:
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' clean install
   telegram:
     needs: mvn
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ failure() }}
     permissions:
       actions: read
@@ -59,7 +59,7 @@ jobs:
           format: markdown
   recovered:
     needs: mvn
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ success() }}
     permissions:
       actions: read

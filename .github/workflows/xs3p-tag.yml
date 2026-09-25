@@ -13,7 +13,7 @@ concurrency:
 jobs:
   xs3p-tag:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes xsltproc
