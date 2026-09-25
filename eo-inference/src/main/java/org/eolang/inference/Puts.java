@@ -17,6 +17,10 @@ import java.util.Map;
  * call filled. So both sides are kept here, the second worked out once by
  * {@link Holders} rather than looked for again at every question.</p>
  *
+ * <p>So is which of the things put in never come back with a value, since an
+ * arm that terminates is put into a void like any other and hands nothing to
+ * whoever reads it (#8946).</p>
+ *
  * @since 0.71.0
  */
 final class Puts {
@@ -32,17 +36,26 @@ final class Puts {
     private final Map<String, Collection<String>> holds;
 
     /**
+     * Every object of the program that terminates, from {@link Dead}.
+     */
+    private final Collection<String> dead;
+
+    /**
      * Ctor.
      *
      * @param bound What every application fills, from {@link Bound}
      * @param holders What every void holds, from {@link Holders}
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
      */
     Puts(
         final Map<String, Map<String, String>> bound,
-        final Map<String, Collection<String>> holders
+        final Map<String, Collection<String>> holders,
+        final Collection<String> ends
     ) {
         this.fills = bound;
         this.holds = holders;
+        this.dead = ends;
     }
 
     /**
@@ -68,6 +81,16 @@ final class Puts {
      */
     boolean fills(final String hollow) {
         return this.holds.containsKey(hollow);
+    }
+
+    /**
+     * Whether this filling never comes back with a value.
+     *
+     * @param filling The locator of what a call put in
+     * @return True when it terminates
+     */
+    boolean dies(final String filling) {
+        return this.dead.contains(filling);
     }
 
     /**
