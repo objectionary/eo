@@ -45,6 +45,12 @@ import java.util.function.Predicate;
  * an arm as long as anybody fills the void it reads, and only an arm nobody
  * anywhere fills is gone for good.</p>
  *
+ * <p>An arm that terminates is gone from both. It is not rooted at a void, so
+ * nothing above says it hands nothing back, and yet it never does: the
+ * {@code tmpfile} of a {@code directory} is a {@code Φ.file} in one arm and an
+ * error in the other, and no caller ever holds the error. Left in, it agrees
+ * with nothing, and the call was left rooted at the void it was (#8946).</p>
+ *
  * @since 0.71.0
  */
 final class Branched {
@@ -139,6 +145,7 @@ final class Branched {
                 break;
             }
             given.removeIf(arm -> !this.stands(arm) && !alive.test(arm));
+            given.removeIf(this.every::dies);
             handed.addAll(given);
         }
         return handed;
