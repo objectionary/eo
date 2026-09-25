@@ -53,7 +53,7 @@ public final class PhApplication extends PhOnce {
                 }
                 return copy;
             },
-            () -> PhApplication.applied(phi, binds)
+            Optional.of(() -> PhApplication.applied(phi, binds))
         );
     }
 
@@ -83,14 +83,14 @@ public final class PhApplication extends PhOnce {
      * Ctor.
      *
      * @param sup Supplier of the wrapped object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term
      */
-    private PhApplication(final Supplier<Phi> sup, final Supplier<String> term) {
-        super(sup, term);
+    private PhApplication(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
+        super(sup, phrase);
     }
 
     @Override
-    public Phi wrapped(final Supplier<Phi> sup, final Supplier<String> phrase) {
+    public Phi wrapped(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
         return new PhApplication(sup, phrase);
     }
 

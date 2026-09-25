@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -26,12 +27,6 @@ import java.util.function.Supplier;
  * and {@code Object.equals} requires the two to agree.</p>
  *
  * @since 0.1
- * @todo #7062:30min Give the missing term an object instead of a {@code null}.
- *  The one-argument constructor passes one to mean "render the wrapped
- *  object instead", {@link PhOnce#term} branches on it, and now
- *  {@code copy()} and {@code normalized()} hand it to every subclass, so
- *  each of them has to tolerate it. An empty term would remove the branch
- *  and the hole alike.
  */
 public abstract class PhOnce implements Phi {
 
@@ -46,9 +41,9 @@ public abstract class PhOnce implements Phi {
     private final AtomicReference<Phi> ref;
 
     /**
-     * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
+     * Supplier of the φ-term, empty when the wrapped object renders itself.
      */
-    private final Supplier<String> term;
+    private final Optional<Supplier<String>> phrase;
 
     /**
      * Lock guarding the first load of the reference.
@@ -61,18 +56,18 @@ public abstract class PhOnce implements Phi {
      * @param obj The object
      */
     protected PhOnce(final Supplier<Phi> obj) {
-        this(obj, null);
+        this(obj, Optional.empty());
     }
 
     /**
      * Ctor.
      *
      * @param obj The object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term, empty to render the wrapped object
      */
-    protected PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
+    protected PhOnce(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
         this.ref = new AtomicReference<>(null);
-        this.term = term;
+        this.phrase = phrase;
         this.lock = new ReentrantLock();
         this.object = () -> this.loaded(obj);
     }
@@ -89,7 +84,7 @@ public abstract class PhOnce implements Phi {
 
     @Override
     public final Phi copy() {
-        return this.wrapped(() -> this.object.get().copy(), this.term);
+        return this.wrapped(() -> this.object.get().copy(), this.phrase);
     }
 
     @Override
@@ -134,30 +129,24 @@ public abstract class PhOnce implements Phi {
         if (result instanceof PhTerminator) {
             normalized = result;
         } else {
-            normalized = this.wrapped(() -> result, this.term);
+            normalized = this.wrapped(() -> result, this.phrase);
         }
         return normalized;
     }
 
     @Override
     public final String φTerm() {
-        final String result;
-        if (this.term == null) {
-            result = this.object.get().φTerm();
-        } else {
-            result = this.term.get();
-        }
-        return result;
+        return this.phrase.map(Supplier::get).orElseGet(() -> this.object.get().φTerm());
     }
 
     /**
      * Wrap the given object into an object of the same type as this one.
      *
      * @param obj The object to wrap
-     * @param phrase Supplier of the φ-term
+     * @param text Supplier of the φ-term, empty to render the wrapped object
      * @return The wrapper
      */
-    protected abstract Phi wrapped(Supplier<Phi> obj, Supplier<String> phrase);
+    protected abstract Phi wrapped(Supplier<Phi> obj, Optional<Supplier<String>> text);
 
     private Phi loaded(final Supplier<Phi> obj) {
         if (this.ref.get() == null) {

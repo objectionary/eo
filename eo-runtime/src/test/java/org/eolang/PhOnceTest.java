@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -64,7 +65,7 @@ final class PhOnceTest {
                 () -> {
                     throw new IllegalStateException("must not be evaluated");
                 },
-                () -> "x.foo"
+                Optional.of(() -> "x.foo")
             ).φTerm(),
             Matchers.equalTo("x.foo")
         );
@@ -87,15 +88,15 @@ final class PhOnceTest {
     private static final class Fake extends PhOnce {
 
         Fake(final Supplier<Phi> obj) {
-            this(obj, null);
+            this(obj, Optional.empty());
         }
 
-        Fake(final Supplier<Phi> obj, final Supplier<String> term) {
-            super(obj, term);
+        Fake(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
+            super(obj, phrase);
         }
 
         @Override
-        public Phi wrapped(final Supplier<Phi> obj, final Supplier<String> phrase) {
+        public Phi wrapped(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
             return new PhOnceTest.Fake(obj, phrase);
         }
     }
