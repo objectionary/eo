@@ -62,7 +62,7 @@ public final class MjResolve extends MjSafe {
                 tojos,
                 this.target.toPath().resolve(MjResolve.DIR),
                 this.central,
-                this.discoverSelf,
+                this.discover,
                 this.skipZeroVersions,
                 this.resolveJna,
                 this.ignoreRuntime,
