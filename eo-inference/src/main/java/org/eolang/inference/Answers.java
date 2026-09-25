@@ -45,11 +45,10 @@ import java.util.Map;
  * is a {@code Φ.number} because only a {@code Φ.number} declares a
  * {@code minus} for anybody to call, and {@link Received} wrote that on the
  * row two passes before anybody asks here. {@code minus} is called from all
- * over the program, so its callers run past the cap {@link Witnessed} keeps
- * and the census comes back with nothing that can be named, which was shown
- * as a void seen too many things to name over the {@code ^} of a file that
- * says plainly what it takes (#8554). A sighting is the poorer fact of the
- * two and loses where they disagree. An annotation ending in a question mark
+ * over the program, so its census runs past what a page can list, which was
+ * shown as a void seen too many things to name over the {@code ^} of a file
+ * that says plainly what it takes (#8554). A sighting is the poorer fact of
+ * the two and loses where they disagree. An annotation ending in a question mark
  * says the value is that type or a termination, and is read here as the type
  * alone, the way {@link Held} reads it.</p>
  *

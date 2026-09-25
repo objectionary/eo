@@ -78,7 +78,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
                     identifier
                 );
             }
@@ -212,7 +212,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Can't read a block in memory with identifier '%d' because it's not allocated",
+                    "Can't write a block in memory with identifier '%d' because it's not allocated",
                     identifier
                 );
             }

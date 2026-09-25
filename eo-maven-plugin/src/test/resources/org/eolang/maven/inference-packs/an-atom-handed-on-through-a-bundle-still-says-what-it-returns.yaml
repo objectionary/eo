@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A caller rarely names the platform twice. It binds one object that holds the
+# calls it needs and reads them off that, so the answer has to survive being
+# handed on: the syscall is bound in `sys`, read as `sys.write`, and only then
+# applied.
+#
+# Reached by name, what comes back is the one `return` the platform declares
+# and the comparison below it stops at a void. As an atom the number reaches
+# through the bundle, and the caller lands on `Φ.number.lt`.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > write /Q.number
+        ? > descriptor /Q.number
+        ? > buffer
+        ? > size /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.write > write
+      sys.write 1 "hi" 2 > written
+      written.lt 5 > @
+  number.eo: |
+    [] > number
+      [] > lt
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.lt']"

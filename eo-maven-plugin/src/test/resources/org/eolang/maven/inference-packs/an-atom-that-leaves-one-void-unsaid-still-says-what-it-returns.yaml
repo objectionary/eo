@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Most voids of a syscall atom name the forma they take, but not all of them
+# can: the `buffer` of `send` is handed bytes by one caller and a string by
+# another, so no single name is the truth about it and it stays unsaid.
+#
+# The question here is whether that silence spreads. An atom that cannot say
+# what one of its arguments is must still be able to say what it answers
+# with, or one unsayable void would cost the tables every row downstream of
+# the call.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > send /Q.number
+        ? > descriptor /Q.number
+        ? > buffer
+        ? > size /Q.number
+        ? > flags /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.send > send
+      as-number. > sent
+        sys.send 3 "ab" 2 0 >>!
+      sent.eq -1 > @
+  dataized.eo: |
+    [x] > dataized
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [] > eq
+  string.eo: |
+    [s] > string
+      s > @
+  bytes.eo: |
+    [b] > bytes
+      b > @
+      [] > as-number /Q.number
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.eq']"

@@ -22,17 +22,13 @@
       info.code.eq 0
       eq.
         floor.
-          info.output.mode.div 4096
+          info.mode.div 4096
         4
       cant-check
     called. > info
       os.is-windows.if
-        win32 *1
-          "_stat64"
-          ^.path
-        posix *1
-          "stat"
-          ^.path
+        win32.stat64 ^.path
+        posix.stat ^.path
   [^ cant-check] > is-symlink
     os.is-windows.if > @
       if.
@@ -46,17 +42,12 @@
         info.code.eq 0
         eq.
           floor.
-            info.output.mode.div 4096
+            info.mode.div 4096
           10
         cant-check
-    code. > attributes
-      win32 *1
-        "GetFileAttributesW"
-        ^.path
+    win32.get-file-attributes ^.path > attributes
     called. > info
-      posix *1
-        "lstat"
-        ^.path
+      posix.lstat ^.path
   [^ mode scope cant-open] > open
     known.not.if > @
       T
@@ -89,22 +80,22 @@
           []
             win32 > @
             win32.close > close
-            win32 "_open" > open
-            win32 "_read" > read
-            win32 "_write" > write
+            win32.open > open
+            win32.read > read
+            win32.write > write
         open-through
           []
             posix > @
             posix.close > close
-            posix "open" > open
-            posix "read" > read
-            posix "write" > write
+            posix.open > open
+            posix.read > read
+            posix.write > write
       [^ syscall] > open-through
         if. > @
           descriptor.eq -1
           ^.^.cant-open
             "Couldn't open file '%s': %s".printf
-              * ^.^.^.path opened.output
+              * ^.^.^.path opened.message
           if.
             recovered
               seq *
@@ -133,8 +124,7 @@
             trunc
           append
         called. > opened
-          syscall.open
-            * ^.^.^.path flags syscall.mode
+          syscall.open ^.^.^.path flags syscall.mode
         [^ descriptor] > stream
           [^ size] > read
             read. > @
@@ -152,12 +142,11 @@
                       received.code.eq -1
                       T
                         "Failed to read from file"
-                      received.output
+                      received.data
                     received
                     ^.^.input-block chunk
                 called. > received
-                  ^.^.^.^.syscall.read
-                    * ^.^.^.descriptor size
+                  ^.^.^.^.syscall.read ^.^.^.descriptor size
           [^ buffer] > write
             output-block.write buffer > @
             [^] > output-block
@@ -175,9 +164,8 @@
                       ^.^.output-block
                     code
                     remainder
-                code. > code
-                  ^.^.^.^.syscall.write
-                    * ^.^.^.descriptor buffer buffer.size
+                as-number. > code
+                  ^.^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size >>!
                 if. > remainder
                   code.lt buffer.size
                   ^.^.output-block.write
@@ -231,10 +219,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.open
           "w"
           f.write "created" > [f]
@@ -366,8 +351,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d.resolved "absent"
             link
         link.as-file.exists
@@ -378,8 +362,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         not.
@@ -395,10 +378,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         link.as-file.is-symlink false
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link

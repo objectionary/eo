@@ -138,6 +138,28 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void saysTooManyThingsOfALongChoice(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.crowded(temp), ReportTest.witnessed(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a choice of nine must be shown as too many things to name, but it was listed",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.containsString("too many things to name")
+        );
+    }
+
+    @Test
+    void namesNoMemberOfALongChoice(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.crowded(temp), ReportTest.witnessed(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "no member of a choice too long to print may reach the page, but one did",
+            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
+            Matchers.not(Matchers.containsString("Φ.ivy"))
+        );
+    }
+
     private static Path program(final Path temp) throws IOException {
         Files.writeString(
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
@@ -176,6 +198,49 @@ final class ReportTest {
 
     private static Path tables(final Path temp) throws IOException {
         new Resolved(new Clues()).follow(temp.resolve("xmirs"), temp.resolve("tables"));
+        return temp.resolve("tables");
+    }
+
+    private static Path crowded(final Path temp) throws IOException {
+        final String[] trees = {
+            "oak", "elm", "ash", "fir", "yew", "box", "bay", "gum", "ivy",
+        };
+        final StringBuilder text = new StringBuilder("[x] &gt; cup");
+        final StringBuilder nodes = new StringBuilder(
+            String.join(
+                "",
+                "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
+                "<o base='∅' line='1' loc='Φ.cup.x' name='x' pos='1'/></o>"
+            )
+        );
+        for (int idx = 0; idx < trees.length; idx += 1) {
+            text.append(System.lineSeparator())
+                .append(String.format("cup %1$s &gt; cup-%1$s", trees[idx]));
+            nodes.append(
+                String.format(
+                    String.join(
+                        "",
+                        "<o loc='Φ.%1$s' name='%1$s'/>",
+                        "<o base='Φ.cup' line='%2$d' loc='Φ.cup-%1$s' name='cup-%1$s' pos='0'>",
+                        "<o as='α0' base='Φ.%1$s' loc='Φ.cup-%1$s.α0'/></o>"
+                    ),
+                    trees[idx], idx + 2
+                )
+            );
+        }
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            String.format(
+                "<object><listing>%s%s</listing>%s</object>",
+                text, System.lineSeparator(), nodes
+            )
+        );
+        return temp.resolve("xmirs");
+    }
+
+    private static Path witnessed(final Path temp) throws IOException {
+        new Witnessed(new Demanded(new Resolved(new Clues())))
+            .follow(temp.resolve("xmirs"), temp.resolve("tables"));
         return temp.resolve("tables");
     }
 }

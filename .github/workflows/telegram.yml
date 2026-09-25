@@ -27,7 +27,9 @@ jobs:
           ruby-version: 4.0.7
           bundler-cache: true
       - run: gem install hoc
-      - run: .github/telegram.sh ${{ github.ref_name }}
+      - env:
+          REF_NAME: ${{ github.ref_name }}
+        run: .github/telegram.sh "${REF_NAME}"
       - uses: appleboy/telegram-action@master
         with:
           to: -1001381878846

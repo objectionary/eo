@@ -24,7 +24,6 @@ public final class EOposix$EOaccess extends PhDefault implements Atom {
     public EOposix$EOaccess() {
         super(
             new Attrs(
-                new Attr(Phi.RHO, new AtRho()),
                 new Attr("path", new AtVoid("path")),
                 new Attr("mode", new AtVoid("mode"))
             )

@@ -1,4 +1,4 @@
-# Makes a windows syscall by `name`.
+# Windows calls, one atom per call.
 #
 # The non-socket operations (file, console, process, environment and clock) go
 # through the Microsoft C runtime (msvcrt), which exposes POSIX-compatible
@@ -16,33 +16,98 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[name args] > win32
-  [] > @ /Q.win32.return
-    ? > ^
+[] > win32
+  [] > accept /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.win32.sockaddr-in
+    ? > length /Q.number
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   8 > append
-  [] > close /Q.number
-    ? > ^
+  [] > bind /Q.number
     ? > descriptor /Q.number
+    ? > sockaddr /Q.win32.sockaddr-in
+    ? > length /Q.number
+  [] > close /Q.number
+    ? > descriptor /Q.number
+  [] > closesocket /Q.number
+    ? > descriptor /Q.number
+  [] > connect /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.win32.sockaddr-in
+    ? > length /Q.number
   256 > creat
+  [code name] > dir-return
+    win32.dir-return > called
+      code
+      name
   17 > eexist
+  10022 > einval
+  [] > errno /Q.number
   1024 > exclusive
   -1 > failure
+  [] > find-close /Q.number
+    ? > search /Q.number
+  [] > find-first-file /Q.win32.search-return
+    ? > pattern /Q.string
+  [] > find-next-file /Q.win32.dir-return
+    ? > search /Q.number
+  [] > ftime64-s /Q.win32.time-return
+  [] > get-file-attributes /Q.number
+    ? > path /Q.string
+  [] > getenv /Q.win32.getenv-return
+    ? > name /Q.string
+  [code value] > getenv-return
+    win32.getenv-return > called
+      code
+      value
+  [] > getpid /Q.number
   2 > inet
+  [] > inet-addr /Q.number
+    ? > address /Q.string
   -1 > invalid
+  [] > listen /Q.number
+    ? > descriptor /Q.number
+    ? > backlog /Q.number
+  [] > mkdir /Q.win32.status-return
+    ? > path /Q.string
   384 > mode
   -1 > none
+  [] > open /Q.win32.status-return
+    ? > path /Q.string
+    ? > flags /Q.number
+    ? > mode /Q.number
   32768 > rdonly
   32770 > rdwr
-  00-00-00-00-00-00-04-00 > reparse
-  [^ code output] > return
-    output > @
-    ^.return > called
+  [] > read /Q.win32.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+  [code data] > read-return
+    data > @
+    win32.read-return > called
       code
-      output
+      data
+  [] > recv /Q.win32.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+    ? > flags /Q.number
+  [] > rename /Q.win32.status-return
+    ? > from /Q.string
+    ? > to /Q.string
+  00-00-00-00-00-00-04-00 > reparse
+  [] > rmdir /Q.win32.status-return
+    ? > path /Q.string
+  [code name message] > search-return
+    win32.search-return > called
+      code
+      name
+      message
+  [] > send /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
+    ? > flags /Q.number
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
@@ -50,17 +115,50 @@
         family.size.plus port.size
         address.size
       padding.size
-  [mode size] > stat64
+  [] > socket /Q.number
+    ? > domain /Q.number
+    ? > type /Q.number
+    ? > protocol /Q.number
+  [code mode size] > stat-return
+    win32.stat-return > called
+      code
+      mode
+      size
+  [] > stat64 /Q.win32.stat-return
+    ? > path /Q.string
+  [code message] > status-return
+    win32.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [time millitm] > timeb
+  [code seconds micros] > time-return
+    win32.time-return > called
+      code
+      seconds
+      micros
   512 > trunc
+  [] > unlink /Q.win32.status-return
+    ? > path /Q.string
   4294967295 > unresolved
   02-02 > version
+  [] > write /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
   32769 > wronly
+  [] > wsa-cleanup /Q.number
+  [] > wsa-get-last-error /Q.number
+  [] > wsa-startup /Q.number
+    ? > version /Q.bytes
+
+  os.is-windows.not.or ++> can-accept-the-two-part-form-of-an-address
+    eq.
+      win32.inet-addr "127.1"
+      16777343
 
   ++> can-close-a-tcp-socket
     os.is-windows.not.or > @
@@ -68,14 +166,10 @@
         sd
         not.
           eq.
-            code.
-              win32 *1
-                "closesocket"
-                sd
+            win32.closesocket sd
             -1
-    code. > sd
-      win32 *1
-        "socket"
+    as-number. > sd
+      win32.socket >>!
         win32.inet
         win32.stream
         win32.tcp
@@ -93,8 +187,7 @@
         win32.close fd
         fd.gt -1
     code. > fd
-      win32 *1
-        "_open"
+      win32.open
         "NUL"
         win32.wronly.plus win32.append
         0
@@ -105,8 +198,7 @@
         win32.close fd
         fd.gt -1
     code. > fd
-      win32 *1
-        "_open"
+      win32.open
         mktemp.tmpfile.as-path
         win32.wronly.plus win32.trunc
         win32.mode
@@ -114,85 +206,86 @@
   ++> can-open-a-tcp-socket
     os.is-windows.not.or > @
       seq *
-        code.
-          win32 *1
-            "closesocket"
-            sd
+        win32.closesocket sd
         sd.gt 0
-    code. > sd
-      win32 *1
-        "socket"
+    as-number. > sd
+      win32.socket >>!
         win32.inet
         win32.stream
         win32.tcp
 
+  os.is-windows.not.or ++> can-read-a-leading-zero-as-octal
+    eq.
+      win32.inet-addr "010.1.1.1"
+      16843016
+
   os.is-windows.not.or ++> can-report-a-host-name-as-invalid
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "localhost"
+      win32.inet-addr "localhost"
       win32.unresolved
+
+  os.is-windows.not.or ++> can-report-an-address-it-cannot-convert-as-invalid
+    seq *
+      win32.inet-addr "nope"
+      win32.wsa-get-last-error.eq win32.einval
 
   os.is-windows.not.or ++> can-report-an-ipv6-address-as-invalid
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "::1"
+      win32.inet-addr "::1"
       win32.unresolved
 
   os.is-windows.not.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
-        win32 *1
-          "_open"
+        win32.open
           mktemp.tmpfile.as-path
           plus.
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-      eq.
-        code.
-          win32
-            "_errno"
-            *
-        win32.eexist
+      win32.errno.eq win32.eexist
 
   os.is-windows.not.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "10.0.0.200"
+      win32.inet-addr "10.0.0.200"
       3355443210
 
   os.is-windows.not.or ++> can-return-an-inet-address-for-localhost
     eq.
-      code.
-        win32 *1
-          "inet_addr"
-          "127.0.0.1"
+      win32.inet-addr "127.0.0.1"
       16777343
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    win32.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-nul
     os.is-windows.not.or > @
       info.size.eq 0
-    output. > info
-      win32 *1
-        "_stat64"
-        "NUL"
+    win32.stat64 "NUL" > info
 
-  code. --> stops-on-write-size-being-negative
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      -1
+  win32.find-close -1 --> stops-on-a-handle-nobody-opened
 
-  code. --> stops-on-write-size-exceeding-buffer-length
-    win32 *1
-      "_write"
-      win32.stdout
-      "ab"
-      4096
+  code. --> stops-on-reading-a-search-nobody-started
+    win32.find-next-file -1
+
+  code. --> stops-on-searching-a-pattern-with-a-nul
+    win32.find-first-file "плюшка\u0000щи"
+
+  win32.send --> stops-on-send-size-being-negative
+    0
+    "ab"
+    -0.5
+    0
+
+  win32.write --> stops-on-write-size-being-negative
+    win32.stdout
+    "ab"
+    -1
+
+  win32.write --> stops-on-write-size-exceeding-buffer-length
+    win32.stdout
+    "ab"
+    4096

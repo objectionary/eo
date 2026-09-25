@@ -281,6 +281,7 @@
               <goal>format</goal>
               <goal>compile</goal>
               <goal>inference</goal>
+              <goal>dealpha</goal>
               <goal>inference-report</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
@@ -527,7 +528,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.1.2</version>
+                <version>6.0.0</version>
               </dependency>
             </dependencies>
           </plugin>

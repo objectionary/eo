@@ -1,6 +1,6 @@
-# Makes a Unix syscall by `name` with POSIX interface.
-# Here `args` is a `org.eolang.tuple` of arguments required for
-# the particular syscall.
+# Unix syscalls with POSIX interface, one atom per call.
+# Each call that reports more than a number answers with a flat object of its
+# own, which says what the call did and leaves what to do about it to the caller.
 # See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
 
 +architect yegor256@gmail.com
@@ -11,38 +11,98 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[name args] > posix
-  [] > @ /Q.posix.return
-    ? > ^
+[] > posix
+  [] > accept /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   [] > access /Q.number
-    ? > ^
     ? > path /Q.string
     ? > mode /Q.number
   os.is-macos.if > append
     8
     1024
-  [] > close /Q.number
-    ? > ^
+  [] > bind /Q.number
     ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
+  [] > close /Q.number
+    ? > descriptor /Q.number
+  [] > closedir /Q.posix.status-return
+    ? > dirp /Q.number
+  [] > connect /Q.number
+    ? > descriptor /Q.number
+    ? > sockaddr /Q.posix.sockaddr-in
+    ? > length /Q.number
   os.is-macos.if > creat
     512
     64
+  [code name] > dir-return
+    posix.dir-return > called
+      code
+      name
   17 > eexist
+  22 > einval
+  2 > enoent
+  [] > errno /Q.number
   os.is-macos.if > exclusive
     2048
     128
+  [] > getenv /Q.posix.getenv-return
+    ? > name /Q.string
+  [code value] > getenv-return
+    posix.getenv-return > called
+      code
+      value
+  [] > getpid /Q.number
+  [] > gettimeofday /Q.posix.time-return
   2 > inet
+  [] > inet-addr /Q.number
+    ? > address /Q.string
+  [] > listen /Q.number
+    ? > descriptor /Q.number
+    ? > backlog /Q.number
+  [] > lstat /Q.posix.stat-return
+    ? > path /Q.string
+  [] > mkdir /Q.posix.status-return
+    ? > path /Q.string
+    ? > mode /Q.number
   420 > mode
   -1 > none
+  [] > open /Q.posix.status-return
+    ? > path /Q.string
+    ? > flags /Q.number
+    ? > mode /Q.number
+  [] > opendir /Q.posix.status-return
+    ? > path /Q.string
   511 > permissions
   384 > private
   0 > rdonly
   2 > rdwr
-  [^ code output] > return
-    output > @
-    ^.return > called
+  [] > read /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+  [code data] > read-return
+    data > @
+    posix.read-return > called
       code
-      output
+      data
+  [] > readdir /Q.posix.dir-return
+    ? > dirp /Q.number
+  [] > recv /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+    ? > flags /Q.number
+  [] > rename /Q.posix.status-return
+    ? > from /Q.string
+    ? > to /Q.string
+  [] > rmdir /Q.posix.status-return
+    ? > path /Q.string
+  [] > send /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
+    ? > flags /Q.number
   [family port address] > sockaddr-in
     00-00-00-00-00-00-00-00 > padding
     plus. > size
@@ -50,17 +110,46 @@
         family.size.plus port.size
         address.size
       padding.size
-  [mode size] > stat
+  [] > socket /Q.number
+    ? > domain /Q.number
+    ? > type /Q.number
+    ? > protocol /Q.number
+  [] > stat /Q.posix.stat-return
+    ? > path /Q.string
+  [code mode size] > stat-return
+    posix.stat-return > called
+      code
+      mode
+      size
+  [code message] > status-return
+    posix.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
+  [] > strerror /Q.string
+    ? > errno /Q.number
+  [] > symlink /Q.posix.status-return
+    ? > target /Q.string
+    ? > path /Q.string
   6 > tcp
-  [seconds micros] > timeval
+  [code seconds micros] > time-return
+    posix.time-return > called
+      code
+      seconds
+      micros
   os.is-macos.if > trunc
     1024
     512
+  [] > unlink /Q.posix.status-return
+    ? > path /Q.string
   4294967295 > unresolved
+  [] > write /Q.number
+    ? > descriptor /Q.number
+    ? > buffer
+    ? > size /Q.number
   1 > wronly
 
   ++> can-close-a-tcp-socket
@@ -71,9 +160,8 @@
           eq.
             posix.close sd
             -1
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp
@@ -85,13 +173,20 @@
       00-00
       00-00-00-00
 
+  os.is-windows.or ++> can-convert-the-limited-broadcast-address-without-an-error
+    seq *
+      posix.access "/there-is-no-such-path" 0
+      posix.inet-addr "255.255.255.255"
+      posix.errno.eq posix.enoent
+
   os.is-windows.or ++> can-invoke-getpid
-    gt.
-      code.
-        posix
-          "getpid"
-          *
-      0
+    posix.getpid.gt 0
+
+  os.is-windows.or ++> can-leave-errno-alone-after-converting-an-address
+    seq *
+      posix.access "/there-is-no-such-path" 0
+      posix.inet-addr "127.0.0.1"
+      posix.errno.eq posix.enoent
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.or > @
@@ -99,8 +194,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.append
         0
@@ -111,8 +205,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.trunc
         0
@@ -122,9 +215,8 @@
       seq *
         posix.close sd
         sd.gt 0
-    code. > sd
-      posix *1
-        "socket"
+    as-number. > sd
+      posix.socket >>!
         posix.inet
         posix.stream
         posix.tcp
@@ -135,81 +227,77 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         0
         0
 
+  os.is-windows.or ++> can-report-an-address-it-cannot-convert-as-invalid
+    seq *
+      posix.inet-addr "nope"
+      posix.errno.eq posix.einval
+
   os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
-        posix *1
-          "open"
+        posix.open
           "/dev/null"
           plus.
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-      eq.
-        code.
-          posix
-            "errno"
-            *
-        posix.eexist
+      posix.errno.eq posix.eexist
 
   os.is-windows.or ++> can-return-an-inet-address-above-the-signed-range
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "10.0.0.200"
+      posix.inet-addr "10.0.0.200"
       3355443210
 
   os.is-windows.or ++> can-return-an-inet-address-for-localhost
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "127.0.0.1"
+      posix.inet-addr "127.0.0.1"
       16777343
 
   os.is-windows.or ++> can-return-the-limited-broadcast-address
     eq.
-      code.
-        posix *1
-          "inet_addr"
-          "255.255.255.255"
+      posix.inet-addr "255.255.255.255"
       posix.unresolved
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    posix.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
     os.is-windows.or > @
       info.size.eq 0
-    output. > info
-      posix *1
-        "stat"
-        "/dev/null"
+    posix.stat "/dev/null" > info
 
-  ++> can-store-seconds-in-a-timeval
+  ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @
-    posix.timeval > tv
+    posix.time-return > tv
+      0
       5
       100
+
+  posix.send --> stops-on-send-size-exceeding-buffer-length
+    0
+    "ab"
+    4096
+    0
 
   --> stops-on-write-size-being-negative
     os.is-windows.if > @
       1.div 0
       seq *
-        code.
-          posix *1
-            "write"
-            fd
-            "ab"
-            -1
+        posix.write
+          fd
+          "ab"
+          -1
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0
@@ -218,16 +306,13 @@
     os.is-windows.if > @
       1.div 0
       seq *
-        code.
-          posix *1
-            "write"
-            fd
-            "ab"
-            4096
+        posix.write
+          fd
+          "ab"
+          4096
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0

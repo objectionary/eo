@@ -36,8 +36,8 @@
 # ready to `write` again.
 #
 # One implementation does the reading and the writing, and the platform
-# enters it as an adapter carrying the raw syscall object and, for each of
-# the two streams, the name of the call and the descriptor. Each access
+# enters it as an adapter carrying, for each of the two streams, the call
+# and the descriptor. Each access
 # to the `console` object creates a new console instance, so reusing the
 # returned input/output blocks improves performance by maintaining the
 # same console session:
@@ -78,14 +78,11 @@
                     received.code.eq -1
                     T
                       "Failed to read from standard input"
-                    received.output
+                    received.data
                   received
                   ^.^.input-block chunk
                 called. > received
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.input.name
-                    ^.^.^.sys.input.descriptor
-                    size
+                  ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
             | --
             size
       [^ buffer] > write
@@ -102,9 +99,8 @@
                     ^.^.output-block
                   code
                   remainder
-                code. > code
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.output.name
+                as-number. > code
+                  ^.^.^.sys.output.write >>!
                     ^.^.^.sys.output.descriptor
                     buffer
                     buffer.size
@@ -118,20 +114,18 @@
       []
         [] > input
           win32.stdin > descriptor
-          "_read" > name
+          win32.read > read
         [] > output
           win32.stdout > descriptor
-          "_write" > name
-        win32 > raw
+          win32.write > write
     impl
       []
         [] > input
           posix.stdin > descriptor
-          "read" > name
+          posix.read > read
         [] > output
           posix.stdout > descriptor
-          "write" > name
-        posix > raw
+          posix.write > write
 
   ++> can-chain-writes-across-output-blocks
     seq * > @

@@ -209,8 +209,39 @@ more question:
 | `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
 | `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
 | `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
+| `Named` | Which object a void is settled at, where the census `Witnessed` gathered has one member and that member is a type the table has a row for. It is written on the row of the void, and on every link that stops at the void. |
 
 `Depth` then walks the finished tables and puts every object on its rung.
+
+A void row carries two answers and they are not the same answer. `holds` is
+what the source declared, in `? > code /Q.number`, true of every caller there
+will ever be; `settled` is what `Named` read off the census, true of the callers
+this program happens to have. It is written only where the source declared
+nothing, and a reader after the type of a void reads it second.
+
+A link says the same of itself. A `ref` or a `bind` that was reached only
+through what the program was seen to put into a void carries
+`witnessed="true"`: the call on a void that its one caller fills with a
+`refused` is a copy of `refused` and fills its `message` for as long as that
+caller is the only one, and not a moment longer. A reader that needs a
+contract, such as a pass renaming arguments after the voids they land in,
+leaves those out, since a caller compiled apart may put a formation of another
+shape there:
+
+```xml
+<type id="Φ.socket.connect.φ.α0">
+  <ref loc="Φ.socket.refused" witnessed="true">
+    <bind void="Φ.socket.refused.message" witnessed="true">
+      <ref loc="Φ.socket.connect.φ.α0.α0"/>
+    </bind>
+  </ref>
+</type>
+```
+
+A `ref` is marked where the passes, run once more with no void named after
+its callers, do not arrive at it, and wherever `Named` wrote it from the
+census; a `bind` is marked where only the relay into what a void holds put it
+there.
 
 ## How the behaviour is described
 
