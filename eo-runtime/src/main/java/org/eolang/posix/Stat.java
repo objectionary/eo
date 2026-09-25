@@ -4,7 +4,6 @@
  */
 package org.eolang.posix;
 
-import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import java.util.function.ToIntBiFunction;
 import org.eolang.Data;
@@ -52,23 +51,9 @@ public final class Stat {
      * @return A copy of {@code posix.stat-return}
      */
     public Phi it() {
-        final FileStat info;
-        final int code;
-        if (Platform.isMac()) {
-            final MacFileStat mac = new MacFileStat();
-            code = this.call.applyAsInt(this.path, mac);
-            info = mac;
-        } else if (Platform.isARM()) {
-            final LinuxArmFileStat arm = new LinuxArmFileStat();
-            code = this.call.applyAsInt(this.path, arm);
-            info = arm;
-        } else {
-            final LinuxFileStat linux = new LinuxFileStat();
-            code = this.call.applyAsInt(this.path, linux);
-            info = linux;
-        }
+        final FileStat info = new StatLayout().stat(this.path);
         final Phi result = Phi.Φ.take("posix").take("stat-return").copy();
-        result.put(0, new Data.ToPhi(code));
+        result.put(0, new Data.ToPhi(this.call.applyAsInt(this.path, (Structure) info)));
         result.put(1, new Data.ToPhi(info.mode()));
         result.put(2, new Data.ToPhi(info.length()));
         return result;
