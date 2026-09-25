@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @checkstyle ClassFanOutComplexityCheck (3 lines)
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -480,6 +482,7 @@ abstract class MjSafe extends AbstractMojo {
             final long start = System.nanoTime();
             new Deadline(this, this.timeout, this.unrollExitError).spent(
                 () -> {
+                    new Naming(FileSystems.getDefault(), "EOΦ").exec();
                     this.exec();
                     return new Object();
                 }

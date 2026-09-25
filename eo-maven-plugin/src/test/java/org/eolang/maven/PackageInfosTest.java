@@ -56,6 +56,7 @@ final class PackageInfosTest {
 
     @Test
     void skipsPackageInfoWhenHandWrittenOneExists(@Mktmp final Path tmp) throws IOException {
+        new Naming(tmp.getFileSystem(), "EO_привет").exec();
         final Path generated = tmp.resolve("generated");
         final Path handwritten = tmp.resolve("java");
         Files.createDirectories(generated.resolve("EO_привет"));
