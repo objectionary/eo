@@ -43,12 +43,6 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6627:30min Bound the store of raw trees.
- *  {@link Raws} writes a tree for every distinct source text it is asked
- *  about and never takes one out again, so the machine-wide cache grows
- *  with every edit of every source built on this machine. Give it the
- *  treatment the rest of the cache gets, or an age at which a tree nobody
- *  has asked for is dropped.
  */
 @Mojo(
     name = "format",
@@ -92,7 +86,7 @@ public final class MjFormat extends MjPenalties {
     private int reformat(final TjForeign tojo) throws IOException {
         final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(tojo.identifier(), source, actual);
+        final String canonical = this.canonical(tojo, actual);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -114,11 +108,9 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(
-        final String name, final Path path, final String source
-    ) throws IOException {
+    private String canonical(final TjForeign tojo, final String source) throws IOException {
         String structure = source;
-        XML tree = MjFormat.checked(path, structure, this.stored(name, path));
+        XML tree = MjFormat.checked(tojo.source(), structure, this.stored(tojo));
         Optional<String> settled = Optional.empty();
         final int settle = 8;
         for (int pass = 0; pass < settle; ++pass) {
@@ -128,7 +120,7 @@ public final class MjFormat extends MjPenalties {
                 break;
             }
             structure = printed;
-            tree = MjFormat.checked(path, structure, new EoSyntax(structure).parsed());
+            tree = MjFormat.checked(tojo.source(), structure, new EoSyntax(structure).parsed());
         }
         final String canon;
         if (settled.isPresent() && this.weights().isEmpty()) {
@@ -139,12 +131,12 @@ public final class MjFormat extends MjPenalties {
         return canon;
     }
 
-    private XML stored(final String name, final Path source) throws IOException {
+    private XML stored(final TjForeign tojo) throws IOException {
         return new Canonical().apply(
             new Raws(
                 this.caching(Parsing.CACHE).with("raws"),
                 this.targetDir.toPath().resolve("0-raw")
-            ).of(name, source)
+            ).of(tojo)
         );
     }
 

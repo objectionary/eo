@@ -169,7 +169,7 @@ final class Parsing implements Step {
             base.relativize(xmir),
             new TojoHash(tojo),
             src -> {
-                final Node node = this.parsed(src, name, pipeline);
+                final Node node = this.parsed(tojo, pipeline);
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
@@ -199,18 +199,17 @@ final class Parsing implements Step {
     }
 
     private Node parsed(
-        final Path source, final String identifier, final UnaryOperator<XML> pipeline
+        final TjForeign tojo, final UnaryOperator<XML> pipeline
     ) throws IOException {
-        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed(
+        final Xmir xmir = new EoSource(tojo.identifier(), tojo.source(), pipeline).parsed(
             pipeline.apply(
-                new Raws(this.cache.with("raws"), this.target.resolve("0-raw"))
-                    .of(identifier, source)
+                new Raws(this.cache.with("raws"), this.target.resolve("0-raw")).of(tojo)
             )
         );
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
-            identifier, this.home.relativize(source.toAbsolutePath()), xmir
+            tojo.identifier(), this.home.relativize(tojo.source().toAbsolutePath()), xmir
         );
         if (xmir.broken()) {
             new Saved(
