@@ -46,29 +46,32 @@ final class StatLayoutTest {
 
     @Test
     void refusesNarrowArmInsteadOfReadingTheWideLayout() {
+        final StatLayout narrow = new StatLayout("arm", false);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new StatLayout("arm", false).stat("/tmp/four"),
+            () -> narrow.stat("/tmp/four"),
             "a 32-bit ARM must be refused, since it doesnt share the aarch64 struct stat"
         );
     }
 
     @Test
     void refusesRiscvInsteadOfReadingTheIntelLayout() {
+        final StatLayout riscv = new StatLayout("riscv64", false);
         Assertions.assertThrows(
             ExFailure.class,
-            () -> new StatLayout("riscv64", false).stat("/tmp/five"),
+            () -> riscv.stat("/tmp/five"),
             "a RISC-V must be refused, since it doesnt share the x86-64 struct stat"
         );
     }
 
     @Test
     void namesTheArchitectureItCannotRead() {
+        final StatLayout other = new StatLayout("loongarch64", false);
         MatcherAssert.assertThat(
             "the refusal must name the architecture nobody mapped, but it didnt",
             Assertions.assertThrows(
                 ExFailure.class,
-                () -> new StatLayout("loongarch64", false).stat("/tmp/six")
+                () -> other.stat("/tmp/six")
             ).getMessage(),
             Matchers.containsString("loongarch64")
         );
