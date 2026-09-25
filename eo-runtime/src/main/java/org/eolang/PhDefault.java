@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A simple object.
@@ -59,6 +60,16 @@ public class PhDefault implements Phi, Cloneable {
     private static final AtomTypes ATOMS = PhDefault.atoms();
 
     /**
+     * Locks shared by all objects, each object taking the one its identity
+     * hash points at, so no object carries a lock of its own. A lock is held
+     * only while the object loads or registers its attributes and never
+     * across a call into another object, since two objects may share one.
+     */
+    private static final ReentrantLock[] LOCKS = Stream.generate(ReentrantLock::new)
+        .limit(1024)
+        .toArray(ReentrantLock[]::new);
+
+    /**
      * From Java package name to forma.
      */
     private static final Pattern TO_FORMA = Pattern.compile("(^|\\.)EO_?");
@@ -85,7 +96,7 @@ public class PhDefault implements Phi, Cloneable {
     private final Map<String, Attribute> initial;
 
     /**
-     * Order of their names.
+     * Order of their names, guarded by {@link #lock()}.
      *
      * <p>Not final: {@link #copy()} gives the copy a list of its own, so an
      * attribute registered on either side afterwards is not seen by the
@@ -94,16 +105,9 @@ public class PhDefault implements Phi, Cloneable {
     private List<String> order;
 
     /**
-     * Attributes.
+     * Attributes, guarded by {@link #lock()}.
      */
     private Map<String, Attribute> attrs;
-
-    /**
-     * Guards {@link #attrs} and {@link #order} against concurrent lazy init.
-     * Not final: {@link #copy()} gives the copy its own, since a copy's
-     * lazy init is independent of the origin's.
-     */
-    private ReentrantLock lock;
 
     /**
      * Default ctor.
@@ -163,7 +167,6 @@ public class PhDefault implements Phi, Cloneable {
         this.data = new Snapshot(dta);
         this.initial = attributes;
         this.order = new ArrayList<>(0);
-        this.lock = new ReentrantLock();
     }
 
     @Override
@@ -180,7 +183,6 @@ public class PhDefault implements Phi, Cloneable {
     public final Phi copy() {
         try {
             final PhDefault copy = (PhDefault) this.clone();
-            copy.lock = new ReentrantLock();
             final CopiedAttrs fresh = new CopiedAttrs(this.loaded(), copy);
             fresh.freeze();
             copy.attrs = fresh;
@@ -199,11 +201,12 @@ public class PhDefault implements Phi, Cloneable {
 
     @Override
     public void put(final int pos, final Phi object) {
-        this.lock.lock();
+        final ReentrantLock lock = this.lock();
+        lock.lock();
         try {
             this.put(this.vacancy(pos), object);
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -333,7 +336,8 @@ public class PhDefault implements Phi, Cloneable {
      * @param attr The attr
      */
     public void add(final String name, final Attribute attr) {
-        this.lock.lock();
+        final ReentrantLock lock = this.lock();
+        lock.lock();
         try {
             if (PhDefault.SORTABLE.matcher(name).matches() && !this.order.contains(name)) {
                 this.order.add(name);
@@ -344,7 +348,7 @@ public class PhDefault implements Phi, Cloneable {
                 this.loaded().put(name, new AtWithRho(attr, this));
             }
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -459,7 +463,8 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     private Map<String, Attribute> loaded() {
-        this.lock.lock();
+        final ReentrantLock lock = this.lock();
+        lock.lock();
         try {
             if (this.attrs == null) {
                 this.attrs = new Bindings();
@@ -469,8 +474,12 @@ public class PhDefault implements Phi, Cloneable {
             }
             return this.attrs;
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
+    }
+
+    private ReentrantLock lock() {
+        return PhDefault.LOCKS[System.identityHashCode(this) & (PhDefault.LOCKS.length - 1)];
     }
 
     private boolean literal(final String name) {
