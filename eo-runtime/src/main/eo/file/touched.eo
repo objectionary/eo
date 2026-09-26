@@ -12,9 +12,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > touched
   reachable.if > @
@@ -28,56 +28,41 @@
       seq *
         if.
           descriptor.gte 0
-          code.
-            os.is-windows.if
-              win32 *1
-                "_close"
-                descriptor
-              posix *1
-                "close"
-                descriptor
+          os.is-windows.if
+            win32.close descriptor
+            posix.close descriptor
           0
         ^
       T
         "Cant touch the file '%s': %s".printf
-          * ^.path opened.output
-  code. > accessible
-    os.is-windows.if
-      win32 *1
-        "_access"
-        ^.path
-        0
-      posix *1
-        "access"
-        ^.path
-        0
+          * ^.path opened.message
+  os.is-windows.if > accessible
+    win32.access
+      ^.path
+      0
+    posix.access
+      ^.path
+      0
   opened.code > descriptor
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist
-  code. > errno
-    os.is-windows.if
-      win32
-        "_errno"
-        *
-      posix
-        "errno"
-        *
+  os.is-windows.if > errno
+    win32.errno
+    posix.errno
   linked.not.if > exclusive
     posix.exclusive
     0
   ^.is-symlink false > linked
   called. > opened
     os.is-windows.if
-      win32 *1
-        "_open"
+      win32.open
         ^.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
-      posix *1
-        "open"
+      posix.open
         ^.path
         plus.
           posix.creat.plus exclusive
@@ -89,10 +74,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.path.eq link
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "broken-link-2" > link
@@ -114,10 +96,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.exists.and target.as-file.exists
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "broken-link" > link
@@ -145,10 +124,7 @@
           "w"
           f.write "seed-content" > [^ f]
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.touched.exists.and
           link.as-file.size.eq 12
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d

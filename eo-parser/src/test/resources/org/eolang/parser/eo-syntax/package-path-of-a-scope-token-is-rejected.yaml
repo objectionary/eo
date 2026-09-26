@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# `build-fqns.xsl` builds the package chain by wrapping each segment as a
+# `.`-prefixed base on top of `Φ`, the same construction `expand-aliases.xsl`
+# uses for an alias target. A scope token among the segments therefore comes
+# out as `Φ.^`, which names nothing, and the top-level `a > b` below resolves
+# to `Φ.^.a`. `+alias` has refused a scope token since #7926 and `+package`
+# feeds the same kind of value into the same kind of transformation, so it
+# refuses one too, on the line that wrote it.
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),"'+package' path must be made of object names, not a scope token")]
+input: |
+  +package ^
+
+  [] > a
+    42 > @
+
+  a > b

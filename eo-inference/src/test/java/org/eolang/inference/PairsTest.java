@@ -54,4 +54,33 @@ final class PairsTest {
             Matchers.containsInAnyOrder("pair.y", "pair.x")
         );
     }
+
+    @Test
+    void readsBothArmsOfARowThatHoldsAChoice() {
+        MatcherAssert.assertThat(
+            "a row saying its object is one of two must hand both of them over, but it didnt",
+            new Pairs(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<links><type id='pick'><ref loc='p.choose'>",
+                        "<union><ref loc='Q.dial'/><ref loc='Q.clock'/></union>",
+                        "</ref></type></links>"
+                    )
+                )
+            ).arms().get("pick"),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    void leavesARowWithOneAnswerOutOfTheArms() {
+        MatcherAssert.assertThat(
+            "a row that settled on one object is no choice and must be left out, but it wasnt",
+            new Pairs(
+                new XMLDocument("<links><type id='one'><ref loc='Q.dial'/></type></links>")
+            ).arms().keySet(),
+            Matchers.empty()
+        );
+    }
 }

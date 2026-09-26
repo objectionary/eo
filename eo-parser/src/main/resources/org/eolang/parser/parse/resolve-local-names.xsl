@@ -158,16 +158,19 @@
   -->
   <xsl:function name="eo:receiver" as="element()">
     <xsl:param name="hops" as="xs:integer"/>
+    <xsl:param name="ref" as="element()"/>
     <xsl:choose>
       <xsl:when test="$hops le 0">
         <o>
           <xsl:attribute name="base" select="'ξ'"/>
+          <xsl:apply-templates select="$ref/@line | $ref/@pos"/>
         </o>
       </xsl:when>
       <xsl:otherwise>
         <o>
           <xsl:attribute name="base" select="'.ρ'"/>
-          <xsl:sequence select="eo:receiver($hops - 1)"/>
+          <xsl:apply-templates select="$ref/@line | $ref/@pos"/>
+          <xsl:sequence select="eo:receiver($hops - 1, $ref)"/>
         </o>
       </xsl:otherwise>
     </xsl:choose>
@@ -201,7 +204,7 @@
         <xsl:copy>
           <xsl:attribute name="base" select="concat('.', $holder/@name)"/>
           <xsl:apply-templates select="@* except @base"/>
-          <xsl:sequence select="eo:receiver($hops)"/>
+          <xsl:sequence select="eo:receiver($hops, .)"/>
           <xsl:apply-templates select="node()"/>
         </xsl:copy>
       </xsl:when>

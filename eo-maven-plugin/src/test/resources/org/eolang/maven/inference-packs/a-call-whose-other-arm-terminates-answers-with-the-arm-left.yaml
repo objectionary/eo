@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The "^.pick" of "made" takes a void, and every formation the program puts
+# there hands back one of the two things given to it. The second of them is a
+# termination, which never hands anything back, so the call comes back as the
+# "grip" of the first, the way the "tmpfile" of a "directory" comes back as the
+# "file" in its first arm and never as the error in its second (#8946).
+eo:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^] > made
+        ^.grip 04-
+        T
+          "cannot make a grip"
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+links:
+  - "/links/type[@id='Φ.choice.made.φ']/ref[@loc='Φ.choice.grip']"

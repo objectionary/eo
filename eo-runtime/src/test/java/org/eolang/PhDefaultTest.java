@@ -514,7 +514,7 @@ final class PhDefaultTest {
                 Matchers.equalTo(
                     new PhApplication(
                         five.take(this.plus()).copy(),
-                        "x",
+                        "b",
                         new Data.ToPhi(5)
                     ).forma()
                 )
@@ -528,13 +528,13 @@ final class PhDefaultTest {
             "Similar Phis with different data should have the same forma, but they didn't",
             new PhApplication(
                 new Data.ToPhi(5L).take(this.plus()).copy(),
-                "x",
+                "b",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhApplication(
                     new Data.ToPhi(6L).take(this.plus()).copy(),
-                    "x",
+                    "b",
                     new Data.ToPhi(6L)
                 ).forma()
             )
@@ -578,11 +578,13 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "the message explains what's going on",
             Assertions.assertThrows(
-                ExAbstract.class,
+                ExReadOnly.class,
                 () -> new PhCached().put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
-            Matchers.containsString("Can't overwrite the cached attribute ")
+            Matchers.equalTo(
+                "Φ.PhCached has just 1 void attribute(s), can't put the 1-th one"
+            )
         );
     }
 

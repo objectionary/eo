@@ -9,9 +9,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > deleted
   seq * > @
@@ -34,8 +34,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             target.as-path
             dir.as-path.resolved "broken-link"
         target.deleted
@@ -47,8 +46,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             target.as-path
             dir.as-path.resolved "link"
         dir.deleted.exists.not.and target.exists

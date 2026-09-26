@@ -4,7 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="to-java" version="2.0">
-  <!-- A code transpiler; its 27 match templates form one cohesive module. -->
+  <!-- A code transpiler; its 26 match templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:import href="/org/eolang/maven/transpile/_java-names.xsl"/>
@@ -111,6 +111,10 @@
     <xsl:apply-templates select="/object" mode="package"/>
     <xsl:text>import java.util.function.Function;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.Optional;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.function.Supplier;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -153,14 +157,6 @@
         </java>
       </xsl:if>
     </xsl:copy>
-  </xsl:template>
-  <!--
-  A class that "lowered.xsl" rendered already carries its Java, so it
-  passes through untouched: the templates below would try to render its
-  absent attributes and lose the finished text.
-  -->
-  <xsl:template match="class[@lowered]" priority="2">
-    <xsl:copy-of select="."/>
   </xsl:template>
   <!-- Class name -->
   <xsl:template match="class/@name">
@@ -216,6 +212,11 @@
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="eo:class-name(@name)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
@@ -232,6 +233,38 @@
       <xsl:text>private static final java.util.Set&lt;String&gt; HITS = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
       <xsl:value-of select="eo:eol(1)"/>
     </xsl:if>
+  </xsl:template>
+  <!--
+  The ctor and the factory a class extending PhOnce needs, so that a copy of
+  it stays its own type instead of decaying into a bare wrapper (#7062).
+  -->
+  <xsl:template name="wrapper">
+    <xsl:param name="class"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param obj The object to wrap</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param phrase Supplier of the term</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:value-of select="concat('private ', $class, '(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {')"/>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>super(obj, phrase);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public Phi wrapped(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="concat('return new ', $class, '(obj, phrase);')"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Nested classes for anonymous abstract objects -->
   <xsl:template match="nested">
@@ -368,15 +401,6 @@
   So we can't compile nested-blah-test from true.eo.
   We haven't reported the bug to openjdk yet, but we will
   2. it just works faster because dynamic dispatch is not happened
-  An atom whose formation the "lower" goal folded carries the @pure the
-  goal wrote (the formation is copied whole into "atom", so it sits at
-  "o[1]"), and its instance is wrapped in PhSticky, the same way the
-  "abstract" template below wraps a pure formation: the class of such an
-  atom is a straight-line computation rendered by "lowered.xsl", and its
-  result is decided by its inputs alone. Those inputs are its voids and
-  nothing more, which is why "lowered.xsl" gives the class no "ρ" of its
-  own: a vacant one would be filled with the object the atom hangs on and
-  counted among the inputs PhSticky keys its answers by (see #8439).
   -->
   <xsl:template match="atom">
     <xsl:param name="name"/>
@@ -387,9 +411,9 @@
     The class is named after the chain of formations from the top-level
     class down, not after the threaded "$parent": the two agree in the
     main body, but a test body threads its own "Test"-prefixed root, and
-    the one atom class "lowered.xsl" declares carries the main name - so
-    a lowered atom under a test attribute must reach for that class, the
-    way the test body already reaches for every other main-side class.
+    the atom class carries the main name - so an atom under a test
+    attribute must reach for that class, the way the test body already
+    reaches for every other main-side class.
     -->
     <xsl:variable name="class" select="string-join((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name($name)), '$')"/>
     <xsl:variable name="variable">
@@ -413,13 +437,6 @@
     <xsl:text> = new </xsl:text>
     <xsl:value-of select="$class"/>
     <xsl:text>();</xsl:text>
-    <xsl:if test="$argument/@pure='true'">
-      <xsl:value-of select="eo:eol($indent + 2)"/>
-      <xsl:value-of select="$variable"/>
-      <xsl:text> = new PhSticky(</xsl:text>
-      <xsl:value-of select="$variable"/>
-      <xsl:text>);</xsl:text>
-    </xsl:if>
     <xsl:apply-templates select="$argument" mode="located">
       <xsl:with-param name="indent" select="$indent + 2"/>
       <xsl:with-param name="name" select="$variable"/>
@@ -811,6 +828,11 @@
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="testing-ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="eo:test-class-name(@name)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="." mode="tests"/>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>

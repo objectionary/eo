@@ -4,23 +4,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^ cant-measure] > size
   if. > @
     info.code.eq 0
-    info.output.size
+    info.size
     cant-measure
   called. > info
     os.is-windows.if
-      win32 *1
-        "_stat64"
-        ^.path
-      posix *1
-        "stat"
-        ^.path
+      win32.stat64 ^.path
+      posix.stat ^.path
 
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0
@@ -66,10 +62,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.size.eq target.as-file.size
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "link-to-file" > link

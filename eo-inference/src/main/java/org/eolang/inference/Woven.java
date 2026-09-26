@@ -15,9 +15,8 @@ import java.util.Map;
  * halves of one row, and putting the halves together takes the provides table,
  * every application of the program and the pairs themselves. {@link Refs} joins
  * them, {@link Bound} works out what went where and {@link Provided} says which
- * voids there were to fill and {@link Copied} drops what a call was handed
- * rather than copied; this is the five of them wired up, so that whoever has
- * pairs and wants rows says so in one line.</p>
+ * voids there were to fill; this is the four of them wired up, so that whoever
+ * has pairs and wants rows says so in one line.</p>
  *
  * <p>Rows are asked for twice over. Once at the end, for the table the build
  * writes down, and once for every provisional table a fact is read off before
@@ -82,11 +81,20 @@ final class Woven {
      * These pairs as the rows of the links table.
      *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param chosen What every call on a void may come back with, from
+     *  {@link Dispatched}
+     * @param certain The pairs the passes settle when no void is named by
+     *  what its callers put there, which is how a row tells what it knows
+     *  from what it was told by the callers of a void (#8914)
      * @return The types, by the locator of the object they are about, in the
      *  order the pairs came in
      */
-    Map<String, Type> rows(final Map<String, String> pairs) {
-        return new Refs(pairs, this.binds(pairs)).all();
+    Map<String, Type> rows(
+        final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
+        final Map<String, String> certain
+    ) {
+        final Bound bound = this.bound(pairs);
+        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
     }
 
     /**
@@ -103,18 +111,17 @@ final class Woven {
      *  the object that put them there
      */
     Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
-        final Map<String, String> names = new Ends(pairs).names();
-        final Provided owned = new Provided(this.given, names, this.hollows);
-        return new Copied(
-            new Bound(
-                this.applied.arguments(),
-                this.applied.named(),
-                this.receivers,
-                pairs,
-                owned
-            ).all(),
+        return this.bound(pairs).all();
+    }
+
+    private Bound bound(final Map<String, String> pairs) {
+        return new Bound(
+            this.applied.arguments(),
+            this.applied.named(),
+            this.receivers,
+            this.all,
             pairs,
-            new Lent(owned, this.all, this.applied.arguments(), this.receivers).sites(names)
-        ).all();
+            new Provided(this.given, new Ends(pairs).names(), this.hollows)
+        );
     }
 }

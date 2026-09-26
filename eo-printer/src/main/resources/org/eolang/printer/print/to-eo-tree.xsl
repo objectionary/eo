@@ -568,7 +568,7 @@
     which is itself the argument the label belongs to, not a separate
     definition.
     -->
-    <xsl:if test="@as and (not(@name) or starts-with(@name, $eo:cactus-name))">
+    <xsl:if test="@as and @as != $eo:phi and (not(@name) or starts-with(@name, $eo:cactus-name))">
       <xsl:text>:</xsl:text>
       <xsl:choose>
         <xsl:when test="starts-with(@as, $eo:alpha)">

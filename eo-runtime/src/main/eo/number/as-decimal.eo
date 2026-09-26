@@ -29,16 +29,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > as-decimal
   ^.is-finite.not.if > @
     T
       "Can't write a non-finite number as decimal"
     if.
-      ^.eq -9.223372036854776e18
+      ^.eq -9223372036854775808
       "-9223372036854775808".as-bytes
       if.
         ^.abs.gte 9.223372036854776e18

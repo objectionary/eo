@@ -105,10 +105,7 @@ final class Escapes {
     private static int appendUnicode(
         final StringBuilder out, final String body, final int start
     ) {
-        int cursor = start;
-        while (cursor < body.length() && body.charAt(cursor) == 'u') {
-            cursor = cursor + 1;
-        }
+        final int cursor = start + 1;
         boolean valid = cursor + 4 <= body.length();
         for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
             valid = Character.digit(body.charAt(idx), 16) >= 0;

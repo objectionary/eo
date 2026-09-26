@@ -1,4 +1,4 @@
-# Left bit shift of the byte chain `b` by `x` bits, expressed as a
+# Left bit shift of the byte chain by `b` bits, expressed as a
 # right shift by the negated amount. The smallest count has no negation
 # that fits into an `int`, and a shift by that many bits leaves nothing
 # of any chain, so it is answered by the largest right shift instead.
@@ -9,15 +9,15 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ x] > left
+[^ b] > left
   if. > @
-    x.as-bytes.eq C1-E0-00-00-00-00-00-00
+    b.as-bytes.eq C1-E0-00-00-00-00-00-00
     ^.right 2147483647
-    ^.right x.neg
+    ^.right b.neg
 
   eq. ++> can-shift-left-an-even-negative
     FF-FF-FF-FF-FF-FF-FF-EE.left 2

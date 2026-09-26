@@ -32,6 +32,14 @@ import java.util.Collections;
  * answer of its own rather than the want of one: nobody fills that void, so
  * there is no caller to be sent to (#8355). The rung is untouched by it.</p>
  *
+ * <p>An object whose answer is a choice between several carries them as well.
+ * Where the arms of a picker agree on nothing the row names all of them
+ * (#8744), which is a real answer and one no rung can show: the walk still
+ * ended at the void, so an object told it is either a {@code Φ.dial} or a
+ * {@code Φ.clock} stands where an object told nothing stands. The arms travel
+ * with the answer rather than beside it so that whoever counts the program and
+ * whoever draws it cannot disagree about which objects have them (#8854).</p>
+ *
  * <p>Such an object also says whether the void it is rooted at is one that
  * only an atom fills. {@code Φ.posix.return.code} is filled in Java, by the
  * syscall that hands the object back, and no caller of the program can be
@@ -64,6 +72,11 @@ final class Answer {
      * Whether that void is one only an atom fills.
      */
     private final boolean hammered;
+
+    /**
+     * The objects this one may be, where the answer is a choice.
+     */
+    private final Collection<Type> chosen;
 
     /**
      * Ctor.
@@ -104,10 +117,29 @@ final class Answer {
      */
     Answer(final String where, final int rung, final Collection<Type> seen,
         final boolean atom) {
+        this(where, rung, seen, atom, Collections.emptyList());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param where The object this one settled on, which is the object itself
+     *  when the walk went nowhere
+     * @param rung The rung it stands on, from nothing at all up to nothing
+     *  left to find out
+     * @param seen What the program was seen putting into the void it is
+     *  rooted at, empty when it is rooted at none or nobody fills it
+     * @param atom Whether that void is one only an atom fills
+     * @param arms The objects this one may be, empty when the answer names one
+     *  object or none
+     */
+    Answer(final String where, final int rung, final Collection<Type> seen,
+        final boolean atom, final Collection<Type> arms) {
         this.settled = where;
         this.climbed = rung;
         this.witnesses = seen;
         this.hammered = atom;
+        this.chosen = arms;
     }
 
     /**
@@ -144,5 +176,14 @@ final class Answer {
      */
     boolean forged() {
         return this.hammered;
+    }
+
+    /**
+     * The objects this one may be, where the answer is a choice.
+     *
+     * @return The types, empty when the answer names one object or none
+     */
+    Collection<Type> arms() {
+        return this.chosen;
     }
 }

@@ -24,7 +24,7 @@ final class HeapsTest {
     void allocatesMemory() {
         Assertions.assertDoesNotThrow(
             () -> Heaps.INSTANCE.malloc(
-                10, idx -> Heaps.INSTANCE.fetched(idx, 0, 10).orElseThrow()
+                10, idx -> Heaps.INSTANCE.fetched(idx, 0, 10).bytes().orElseThrow()
             ),
             "Heaps should successfully read from allocated memory, but it didn't"
         );
@@ -35,7 +35,7 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "a range outside the block must be answered as nothing, so the caller can fall back",
             Heaps.INSTANCE.malloc(
-                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512)
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512).bytes()
             ),
             Matchers.equalTo(Optional.empty())
         );
@@ -46,9 +46,20 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "a range inside the block must be answered with its bytes, but it wasnt",
             Heaps.INSTANCE.malloc(
-                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow().length
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).bytes().orElseThrow().length
             ),
             Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void explainsARangeThatDidNotFitAfterTheBlockIsFreed() {
+        MatcherAssert.assertThat(
+            "the answer must carry the size the fallback message needs, since asking for it again reaches a block that is already freed",
+            Heaps.INSTANCE.malloc(
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512)
+            ).size(),
+            Matchers.equalTo(8)
         );
     }
 
@@ -78,7 +89,7 @@ final class HeapsTest {
                     inner -> {
                         Heaps.INSTANCE.write(outer, 0, new byte[] {1});
                         Heaps.INSTANCE.write(inner, 0, new byte[] {2});
-                        return Heaps.INSTANCE.fetched(outer, 0, 1).orElseThrow();
+                        return Heaps.INSTANCE.fetched(outer, 0, 1).bytes().orElseThrow();
                     }
                 )
             ),
@@ -100,7 +111,7 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "Heaps should return empty bytes after memory allocation, but it didn't",
             Heaps.INSTANCE.malloc(
-                5, idx -> Heaps.INSTANCE.fetched(idx, 0, 5).orElseThrow()
+                5, idx -> Heaps.INSTANCE.fetched(idx, 0, 5).bytes().orElseThrow()
             ),
             Matchers.equalTo(new byte[] {0, 0, 0, 0, 0})
         );
@@ -115,7 +126,7 @@ final class HeapsTest {
                 5,
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, bytes);
-                    return Heaps.INSTANCE.fetched(idx, 0, bytes.length).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, bytes.length).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(bytes)
@@ -174,7 +185,7 @@ final class HeapsTest {
                         () -> Heaps.INSTANCE.write(idx, -2, new byte[] {1, 2}),
                         "Heaps must reject a negative write offset before touching the block, but it didn't"
                     );
-                    return Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, 3).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {7, 8, 9})
@@ -198,7 +209,7 @@ final class HeapsTest {
                 10,
                 idx -> Heaps.INSTANCE.fetched(
                     idx, Integer.MAX_VALUE - 1, Integer.MAX_VALUE - 1
-                )
+                ).bytes()
             ),
             Matchers.equalTo(Optional.empty())
         );
@@ -210,7 +221,7 @@ final class HeapsTest {
             Optional.empty(),
             Heaps.INSTANCE.malloc(
                 10,
-                idx -> Heaps.INSTANCE.fetched(idx, -5, 3)
+                idx -> Heaps.INSTANCE.fetched(idx, -5, 3).bytes()
             ),
             "a negative offset must be answered as nothing"
         );
@@ -222,7 +233,7 @@ final class HeapsTest {
             Optional.empty(),
             Heaps.INSTANCE.malloc(
                 10,
-                idx -> Heaps.INSTANCE.fetched(idx, 2, -3)
+                idx -> Heaps.INSTANCE.fetched(idx, 2, -3).bytes()
             ),
             "a negative length must be answered as nothing"
         );
@@ -238,7 +249,7 @@ final class HeapsTest {
                     for (int offset = 0; offset < 4; offset += 1) {
                         Heaps.INSTANCE.write(idx, offset, new byte[] {(byte) (offset + 1)});
                     }
-                    return Heaps.INSTANCE.fetched(idx, 0, 4).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, 4).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4})
@@ -253,7 +264,7 @@ final class HeapsTest {
                 5,
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
-                    return Heaps.INSTANCE.fetched(idx, 1, 3).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 1, 3).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {2, 3, 4})
@@ -318,7 +329,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 1, 3, 4, 5});
                     Heaps.INSTANCE.write(idx, 2, new byte[] {2, 2});
-                    return Heaps.INSTANCE.fetched(idx, 0, 5).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, 5).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 1, 2, 2, 5})
@@ -386,7 +397,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
                     Heaps.INSTANCE.resize(idx, 7);
-                    return Heaps.INSTANCE.fetched(idx, 0, 7).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, 7).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3, 4, 5, 0, 0})
@@ -402,7 +413,7 @@ final class HeapsTest {
                 idx -> {
                     Heaps.INSTANCE.write(idx, 0, new byte[] {1, 2, 3, 4, 5});
                     Heaps.INSTANCE.resize(idx, 3);
-                    return Heaps.INSTANCE.fetched(idx, 0, 3).orElseThrow();
+                    return Heaps.INSTANCE.fetched(idx, 0, 3).bytes().orElseThrow();
                 }
             ),
             Matchers.equalTo(new byte[] {1, 2, 3})
@@ -445,6 +456,6 @@ final class HeapsTest {
             Heaps.INSTANCE.size(identifier),
             Matchers.equalTo(original.length)
         );
-        return Heaps.INSTANCE.fetched(identifier, 0, original.length).orElseThrow();
+        return Heaps.INSTANCE.fetched(identifier, 0, original.length).bytes().orElseThrow();
     }
 }

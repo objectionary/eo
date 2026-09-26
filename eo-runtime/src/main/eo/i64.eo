@@ -30,9 +30,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [as-bytes] > i64
   as-bytes > @
@@ -76,40 +76,40 @@
         43-30-00-00-00-00-00-00.or
           ^.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
       4503599627370496
-  [^ x] > gt
+  [^ b] > gt
     if. > @
       not.
         eq.
           ^.as-bytes.and 80-00-00-00-00-00-00-00 >> sign
-          x.as-bytes.and 80-00-00-00-00-00-00-00
+          b.as-bytes.and 80-00-00-00-00-00-00-00
       sign.eq 00-00-00-00-00-00-00-00
       and.
         eq.
           and.
             as-bytes.
-              ^.minus x >> difference
+              ^.minus b >> difference
             80-00-00-00-00-00-00-00
           00-00-00-00-00-00-00-00
         not.
           difference.as-bytes.eq 00-00-00-00-00-00-00-00
-  [^ x] > gte
+  [^ b] > gte
     or. > @
       ^.gt
-        x >> value!
+        b >> value!
       ^.eq value
-  gt. > [^ x] > lt
-    i64 x.as-bytes
+  gt. > [^ b] > lt
+    i64 b.as-bytes
     ^
-  [^ x] > lte
+  [^ b] > lte
     or. > @
       ^.lt
-        x >> value!
+        b >> value!
       ^.eq value
-  ^.plus (i64 x!).neg > [^ x] > minus
+  ^.plus (i64 b!).neg > [^ b] > minus
   plus. > [^] > neg
     i64 ^.as-bytes.not
     i64 00-00-00-00-00-00-00-01
-  [^ x] > plus
+  [^ b] > plus
     i64 > @
       concat.
         slice.
@@ -135,7 +135,7 @@
       minus.
         number
           43-30-00-00-00-00-00-00.or
-            x.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+            b.as-bytes.and 00-00-00-00-FF-FF-FF-FF
         4503599627370496
     plus. > upper
       plus.
@@ -148,18 +148,18 @@
           number
             43-30-00-00-00-00-00-00.or
               and.
-                x.as-bytes.right 32
+                b.as-bytes.right 32
                 00-00-00-00-FF-FF-FF-FF
           4503599627370496
       carried.if 1 0
-  [^ x] > times
-    if. > [^ acc a b] > looped
-      b.eq 00-00-00-00-00-00-00-00
+  [^ b] > times
+    if. > [^ acc a bits] > looped
+      bits.eq 00-00-00-00-00-00-00-00
       i64 acc
       ^.looped
         if.
           eq.
-            b.and 00-00-00-00-00-00-00-01
+            bits.and 00-00-00-00-00-00-00-01
             00-00-00-00-00-00-00-01
           as-bytes.
             plus.
@@ -167,11 +167,11 @@
               i64 a
           acc
         a.left 1
-        b.right 1
+        bits.right 1
     | > @
       00-00-00-00-00-00-00-00
       ^.as-bytes
-      x.as-bytes
+      b.as-bytes
 
   eq. ++> can-add-mixed-signs
     -100.as-i64.plus 42.as-i64
@@ -199,7 +199,7 @@
     i64 7F-FF-FF-FF-FF-FF-FF-FF
     i64 80-00-00-00-00-00-00-00
 
-  -9.223372036854776e18.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
+  -9223372036854775808.as-i64.lt 1.as-i64 ++> can-be-less-across-the-full-range
 
   10.as-i64.lt 50.as-i64 ++> can-be-less-than-a-larger-i64
 
@@ -243,7 +243,7 @@
   eq. ++> can-convert-i64-min-to-a-number
     as-number.
       i64 80-00-00-00-00-00-00-00
-    -9.223372036854776e18
+    -9223372036854775808
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 

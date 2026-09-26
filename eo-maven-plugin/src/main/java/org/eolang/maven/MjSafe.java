@@ -29,6 +29,14 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
+ * @todo #7061:60min Give the other parameters one-word names too. Five of
+ *  them are plain renames of a flag, from {@code trackSteps} to
+ *  {@code discoverSelf}, and wait only for a second pull request, since
+ *  this one is already at the size the build allows. The eighteen left
+ *  after those want a word another field holds, {@code foreign},
+ *  {@code placed}, {@code cache} or {@code skip}, or one that would read
+ *  as the opposite of the flag it names, so they wait for the grouping
+ *  of #6459.
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -67,15 +75,13 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Directory where classes are stored in target.
-     *
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         defaultValue = "${project.build.directory}/classes",
         readonly = true,
         required = true
     )
-    protected File classesDir;
+    protected File classes;
 
     /**
      * File with foreign "tojos".
@@ -109,15 +115,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Target directory.
-     *
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "targetDir",
         property = "eo.targetDir",
         required = true,
         defaultValue = "${project.build.directory}/eo"
     )
-    protected File targetDir;
+    protected File target;
 
     /**
      * Current scope (either "compile" or "test").
@@ -148,22 +153,20 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Generated sourced directory.
-     *
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "generatedDir",
         property = "eo.generatedDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
-    protected File generatedDir;
+    protected File generated;
 
     /**
      * The path of the file where XSL measurements (time of execution
      * in milliseconds) will be stored.
      *
      * @since 0.41.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "xslMeasuresFile",
@@ -171,7 +174,7 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
     )
-    protected File xslMeasures;
+    protected File measures;
 
     /**
      * Mojo execution timeout in seconds.
@@ -442,12 +445,16 @@ abstract class MjSafe extends AbstractMojo {
     protected boolean resolveInCentral = true;
 
     /**
-     * Objectionary.
+     * The Objectionary this Mojo pulls from.
+     *
+     * <p>It is a {@link Scalar} because the hash and the settings it is
+     * built from are injected after the Mojo is made, so the chain behind it
+     * waits for the first request. A test hands over a fake one instead, the
+     * way {@code Moja} hands over every other attribute here.</p>
      *
      * @since 0.50
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new OyConfigured(
+    private final Scalar<Objectionary> objectionary = new OyConfigured(
         () -> this.hash,
         () -> this.settings
     );
@@ -560,7 +567,7 @@ abstract class MjSafe extends AbstractMojo {
             new Timed(
                 new Parsing(
                     tojos,
-                    this.targetDir.toPath(),
+                    this.target.toPath(),
                     this.sourcesDir.toPath(),
                     this.caching(Parsing.CACHE)
                 )
@@ -571,7 +578,7 @@ abstract class MjSafe extends AbstractMojo {
             new Timed(
                 new Pulling(
                     tojos,
-                    this.targetDir.toPath().resolve(Pulling.DIR),
+                    this.target.toPath().resolve(Pulling.DIR),
                     this.hash,
                     this.objectionary(),
                     this.cache.toPath().resolve(Pulling.CACHE),
