@@ -46,7 +46,7 @@ jobs:
               | [ ., 0 ] | max')
           echo "This run took ${seconds} seconds"
           echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
-      - uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -91,7 +91,7 @@ jobs:
             echo 'broken=yes' >> "${GITHUB_OUTPUT}"
           fi
       - if: ${{ steps.previous.outputs.broken == 'yes' }}
-        uses: appleboy/telegram-action@master
+        uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
