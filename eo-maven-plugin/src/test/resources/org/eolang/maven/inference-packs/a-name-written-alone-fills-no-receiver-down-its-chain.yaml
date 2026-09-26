@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name written by itself reads the attribute it points at and nothing else:
+# `opened` inside `shelf` is the `opened` of that `shelf`, and that attribute
+# is a copy of `kept.opened`. The `ρ` of that far `opened` is filled once, by
+# the `kept` it is taken off, and the `shelf` that reads its own attribute
+# puts nothing there. Were it to, every `opened` of the program would be told
+# it can hang off a `shelf`, and what the `ρ` of `opened` holds would join a
+# `box` with a `shelf` into nothing at all (#8953).
+eo:
+  box.eo: |
+    [] > box
+      [^] > lid
+        ^ > @
+  shelf.eo: |
+    [] > shelf
+      box > kept
+      kept.lid > opened
+      opened > @
+  cupboard.eo: |
+    [] > cupboard
+      box.lid > @
+links:
+  - "/links/type[@id='Φ.shelf.φ']/ref[@loc='Φ.shelf.opened'][not(bind)]"
+provides:
+  - "//type[@id='Φ.box.lid']/attr[@name='ρ']/witnessed[.//ref[@loc='Φ.box']][not(.//ref[@loc='Φ.shelf'])]"
