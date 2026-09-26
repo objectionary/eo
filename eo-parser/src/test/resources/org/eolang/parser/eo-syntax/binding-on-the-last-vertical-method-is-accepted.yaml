@@ -2,12 +2,15 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# #8185: the chain sits in argument position (under app2, not a formation
+# body), since a plain formation child cannot carry a binding on any link.
 sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@as='slot']
 input: |
   [] > app
-    source
-    .first
-    .second:slot > result
+    source > app2
+      receiver
+      .first
+      .second:slot > result
