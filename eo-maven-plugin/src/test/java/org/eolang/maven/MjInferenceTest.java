@@ -11,6 +11,8 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -43,6 +45,31 @@ final class MjInferenceTest {
                 .resolve("provides.xml")
             ),
             XhtmlMatchers.hasXPath("/provides/type[@id='Φ.app.t']/attr[@name='next']")
+        );
+    }
+
+    @Test
+    void refusesProgramShallowerThanDemanded(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "the goal must say what depth it demanded when it refuses, but it didnt",
+            new Causes(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(temp).withProgram(
+                        String.join(
+                            System.lineSeparator(),
+                            "[pin] > hinge",
+                            "  pin.head > @",
+                            ""
+                        )
+                    )
+                    .with("least", 100.0d)
+                    .execute(MjParse.class)
+                    .execute(MjInference.class),
+                    "a goal whose tables fall below the demanded depth must break the build, but it didnt"
+                )
+            ),
+            Matchers.hasItem(Matchers.containsString("100.0%"))
         );
     }
 
