@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 3
+message: |-
+  method continuation not allowed after void attribute
+input: |
+  [] > main
+    ? > v
+    .foo > y
