@@ -51,20 +51,12 @@
 
   "\tvalue".trimmed-left.eq "value" ++> can-trim-a-leading-tab
 
-  eq. ++> can-trim-a-text-of-leading-spaces-only
-    "     ".trimmed-left
-    ""
+  "     ".trimmed-left.eq "" ++> can-trim-a-text-of-leading-spaces-only
 
   "".trimmed-left.eq "" ++> can-trim-an-empty-text-from-the-left
 
-  eq. ++> can-trim-many-leading-spaces
-    "     some".trimmed-left
-    "some"
+  "     some".trimmed-left.eq "some" ++> can-trim-many-leading-spaces
 
-  eq. ++> can-trim-mixed-leading-whitespace
-    " \t\n\f\rvalue".trimmed-left
-    "value"
+  " \t\n\f\rvalue".trimmed-left.eq "value" ++> can-trim-mixed-leading-whitespace
 
-  eq. ++> can-trim-one-leading-space-from-the-left
-    " s".trimmed-left
-    "s"
+  " s".trimmed-left.eq "s" ++> can-trim-one-leading-space-from-the-left

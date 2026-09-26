@@ -41,8 +41,7 @@
     "Hello".eq 42
 
   not. ++> can-compare-two-different-strings
-    "Hello".eq
-      "Good bye"
+    "Hello".eq "Good bye"
 
   eq. ++> can-compare-two-equal-strings
     "x".eq "x"
@@ -54,31 +53,23 @@
 
   "Abc".eq "Abc" ++> can-hold-a-one-line-text-block
 
-  eq. ++> can-hold-a-text-block-with-a-margin
-    "z\n  y\n x"
-    7A-0A-20-20-79-0A-20-78
+  "z\n  y\n x".eq 7A-0A-20-20-79-0A-20-78 ++> can-hold-a-text-block-with-a-margin
 
   "e\ne\ne".eq 65-0A-65-0A-65 ++> can-hold-a-three-line-text-block
 
-  eq. ++> can-preserve-indentation-in-a-text-block
-    "a\n b\n  c"
-    "a\n b\n  c"
+  "a\n b\n  c".eq "a\n b\n  c" ++> can-preserve-indentation-in-a-text-block
 
   "\n".eq "\n" ++> can-support-a-line-break-escape-sequence
 
   "Ф".eq "Ф" ++> can-support-a-unicode-escape-sequence
 
-  eq. ++> can-support-escape-sequences
-    "Hello, друг!\n"
-    "Hello, друг!\n"
+  "Hello, друг!\n".eq "Hello, друг!\n" ++> can-support-escape-sequences
 
   eq. ++> can-support-escape-sequences-in-a-text-block
     "Hello, друг!\n"
     "Hello, друг!\n"
 
-  eq. ++> can-turn-into-bytes
-    "€ друг".as-bytes
-    E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3
+  "€ друг".as-bytes.eq E2-82-AC-20-D0-B4-D1-80-D1-83-D0-B3 ++> can-turn-into-bytes
 
   eq. ++> can-unescape-slashes
     "x\\b\\f\\u\\r\\t\\n\\'"

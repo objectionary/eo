@@ -136,9 +136,7 @@
             ^.^.as-bytes.slice idx csize
             idx
 
-  eq. ++> can-count-a-text-of-spaces-only
-    " ".length
-    1
+  " ".length.eq 1 ++> can-count-a-text-of-spaces-only
 
   ++> can-count-four-byte-characters
     and. > @
@@ -146,9 +144,7 @@
       str.as-bytes.size.eq 14
     "The 😀 smile" > str
 
-  eq. ++> can-count-the-characters-of-the-origin-text
-    "Hello, world!".length
-    13
+  "Hello, world!".length.eq 13 ++> can-count-the-characters-of-the-origin-text
 
   ++> can-count-three-byte-characters
     and. > @

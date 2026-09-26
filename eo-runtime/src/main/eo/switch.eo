@@ -27,13 +27,11 @@
 [cases fallback] > switch
   if. > @
     cases.length.eq 0
-    fallback
-      "Switch cases are empty"
+    fallback "Switch cases are empty"
     [^ rest] >> rec-case
       if. > @
         rest.length.eq 0
-        ^.fallback
-          "No switch case matched"
+        ^.fallback "No switch case matched"
         if.
           true.eq rest.head.tail.head!
           rest.head.head
@@ -86,9 +84,7 @@
         *
           password.eq ""
           "empty password is not allowed"
-        *
-          false
-          "password is wrong"
+        * false "password is wrong"
       "password is correct!"
     "swordfish" > password
 

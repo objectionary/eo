@@ -93,8 +93,7 @@
 
   eq. ++> can-concat-strings-as-bytes
     string
-      "hello ".as-bytes.concat
-        "world".as-bytes
+      "hello ".as-bytes.concat "world".as-bytes
     "hello world"
 
   eq. ++> can-concat-two-empty-bytes
@@ -218,9 +217,7 @@
       3
     1F-EE-B5
 
-  eq. ++> can-turn-bytes-into-a-string
-    "你好, друг!"
-    "你好, друг!"
+  "你好, друг!".eq "你好, друг!" ++> can-turn-bytes-into-a-string
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90

@@ -50,8 +50,7 @@
       posix.lstat ^.path
   [^ mode scope cant-open] > open
     known.not.if > @
-      T
-        "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         existing.and ^.exists.not
         cant-open
@@ -140,8 +139,7 @@
                   seq *
                     if. >> chunk!
                       received.code.eq -1
-                      T
-                        "Failed to read from file"
+                      T "Failed to read from file"
                       received.data
                     received
                     ^.^.input-block chunk
@@ -159,8 +157,7 @@
                   seq *
                     if. >>!
                       code.eq -1
-                      T
-                        "Failed to write to file"
+                      T "Failed to write to file"
                       ^.^.output-block
                     code
                     remainder
@@ -296,8 +293,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       "Shrek is love".eq
         malloc.of
           13
@@ -454,8 +450,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
     12
 
   eq. ++> can-write-to-a-file-sequentially
@@ -471,8 +466,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       open.
         file source
         "a"
