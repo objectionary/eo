@@ -77,7 +77,7 @@ final class Unplacing implements Step {
             if (total == 0) {
                 Logger.info(
                     this, "No binaries out of %d deleted in %[file]s",
-                    binaries.size(), this.classes
+                    available.size(), this.classes
                 );
             } else if (total == available.size()) {
                 Logger.info(
@@ -87,7 +87,7 @@ final class Unplacing implements Step {
             } else {
                 Logger.info(
                     this, "Just %d binari(es) out of %d deleted in %[file]s",
-                    total, binaries.size(), this.classes
+                    total, available.size(), this.classes
                 );
             }
         }

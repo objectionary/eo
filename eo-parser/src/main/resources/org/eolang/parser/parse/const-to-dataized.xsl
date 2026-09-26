@@ -69,6 +69,20 @@
         <xsl:attribute name="line" select="@line"/>
         <xsl:attribute name="pos" select="@pos"/>
         <o>
+          <!--
+          @local (the file-local handle, R-3.10.12) belongs to the object
+          the author actually marked with ">> name" - here, the reference
+          nested inside Φ.dataized - not to the synthetic .as-bytes wrapper
+          this template floats above it. resolve-local-names has already
+          run and resolved every reference against that handle by the time
+          this template fires, but it deliberately leaves the "@local"
+          marker itself in place on the declaring object so that later
+          passes (the printer, see #5563) can recover the readable handle;
+          moving it up to the wrapper would strand it on a node the handle
+          was never written on. So "local" is left out of this exclusion
+          list and travels with the rest of the node's attributes onto the
+          nested copy below.
+          -->
           <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
