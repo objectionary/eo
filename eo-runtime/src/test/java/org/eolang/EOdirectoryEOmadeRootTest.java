@@ -30,23 +30,28 @@ import org.junit.jupiter.api.condition.OS;
  *
  * @since 0.78.0
  */
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOdirectoryEOmadeRootTest {
 
     @Test
     @EnabledOnOs(OS.WINDOWS)
     void refusesADriveRootWithNoDriveBehindIt() {
-        final Phi file = Phi.Φ.take("file").copy();
-        file.put(0, new Data.ToPhi("Q:\\"));
-        final Phi directory = Phi.Φ.take("directory").copy();
-        directory.put(0, file);
         MatcherAssert.assertThat(
             "a drive root that is its own parent must end the walk with the reason, but it didnt",
             Assertions.assertThrows(
                 ExAbstract.class,
-                () -> new Dataized(directory.take("made")).take(),
+                () -> this.make("Q:\\"),
                 "a drive root with no drive behind it was expected to be refused"
             ).getMessage(),
             Matchers.containsString("it has no parent")
         );
+    }
+
+    private void make(final String path) {
+        final Phi file = Phi.Φ.take("file").copy();
+        file.put(0, new Data.ToPhi(path));
+        final Phi directory = Phi.Φ.take("directory").copy();
+        directory.put(0, file);
+        new Dataized(directory.take("made")).take();
     }
 }
