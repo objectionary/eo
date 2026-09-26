@@ -76,8 +76,7 @@
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
-                    T
-                      "Failed to read from standard input"
+                    T "Failed to read from standard input"
                     received.data
                   received
                   ^.^.input-block chunk
@@ -94,8 +93,7 @@
                 seq * > @
                   if. >>!
                     code.eq -1
-                    T
-                      "Failed to write to standard output"
+                    T "Failed to write to standard output"
                     ^.^.output-block
                   code
                   remainder
@@ -130,10 +128,8 @@
   ++> can-chain-writes-across-output-blocks
     seq * > @
       o1
-      o1.write
-        "part two.\n"
-    console.write > o1
-      "part one, "
+      o1.write "part two.\n"
+    console.write "part one, " > o1
 
   console.write ++> can-write-a-non-ascii-string-to-the-console
     "héllo, wörld! 日本語\n"
@@ -142,7 +138,6 @@
 
   console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
 
-  console.write ++> can-write-to-the-console
-    "Hello, console-test!\n"
+  console.write "Hello, console-test!\n" ++> can-write-to-the-console
 
   console --> cannot-dataize-console-directly

@@ -20,32 +20,20 @@
 
   "no-whitespace".trimmed.eq "no-whitespace" ++> can-preserve-inner-content
 
-  eq. ++> can-preserve-inner-whitespace
-    "\t hello world \n".trimmed
-    "hello world"
+  "\t hello world \n".trimmed.eq "hello world" ++> can-preserve-inner-whitespace
 
-  eq. ++> can-trim-a-text-of-spaces-only
-    "        ".trimmed
-    ""
+  "        ".trimmed.eq "" ++> can-trim-a-text-of-spaces-only
 
   "".trimmed.eq "" ++> can-trim-an-empty-text
 
-  eq. ++> can-trim-many-surrounding-spaces
-    "    some     ".trimmed
-    "some"
+  "    some     ".trimmed.eq "some" ++> can-trim-many-surrounding-spaces
 
   eq. ++> can-trim-mixed-whitespace-on-both-sides
     " \t\n\f\rvalue \t\n\f\r".trimmed
     "value"
 
-  eq. ++> can-trim-one-leading-space
-    " some".trimmed
-    "some"
+  " some".trimmed.eq "some" ++> can-trim-one-leading-space
 
-  eq. ++> can-trim-one-space-on-both-sides
-    " some ".trimmed
-    "some"
+  " some ".trimmed.eq "some" ++> can-trim-one-space-on-both-sides
 
-  eq. ++> can-trim-one-trailing-space
-    "some ".trimmed
-    "some"
+  "some ".trimmed.eq "some" ++> can-trim-one-trailing-space

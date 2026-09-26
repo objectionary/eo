@@ -15,8 +15,7 @@
         ^.i.eq index
         accum
         accum.with item
-    T
-      "Given index must be an integer"
+    T "Given index must be an integer"
 
   eq. ++> can-drop-an-item-by-index
     withouti.

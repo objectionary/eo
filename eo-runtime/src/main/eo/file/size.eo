@@ -37,8 +37,7 @@
           "w"
           f.write "Hello" > [^ f]
         "a"
-        f.write > [^ f]
-          ", world"
+        f.write ", world" > [^ f]
 
   eq. ++> can-measure-a-file-after-truncating-it
     0
@@ -55,8 +54,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [^ f]
-          "Hello, world"
+        f.write "Hello, world" > [^ f]
 
   ++> can-measure-a-symbolic-link-by-its-target-size
     os.is-windows.or > @

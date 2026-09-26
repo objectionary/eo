@@ -41,9 +41,7 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> can-trim-a-text-of-trailing-spaces-only
-    "     ".trimmed-right
-    ""
+  "     ".trimmed-right.eq "" ++> can-trim-a-text-of-trailing-spaces-only
 
   "value\r".trimmed-right.eq "value" ++> can-trim-a-trailing-carriage-return
 
@@ -55,14 +53,8 @@
 
   "".trimmed-right.eq "" ++> can-trim-an-empty-text-from-the-right
 
-  eq. ++> can-trim-many-trailing-spaces
-    "some     ".trimmed-right
-    "some"
+  "some     ".trimmed-right.eq "some" ++> can-trim-many-trailing-spaces
 
-  eq. ++> can-trim-mixed-trailing-whitespace
-    "value \t\n\f\r".trimmed-right
-    "value"
+  "value \t\n\f\r".trimmed-right.eq "value" ++> can-trim-mixed-trailing-whitespace
 
-  eq. ++> can-trim-one-trailing-space-from-the-right
-    "s ".trimmed-right
-    "s"
+  "s ".trimmed-right.eq "s" ++> can-trim-one-trailing-space-from-the-right

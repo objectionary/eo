@@ -34,9 +34,7 @@
     number length
     size
 
-  contains. ++> can-contain-a-substring
-    "Hello, world!"
-    "o, wo"
+  "Hello, world!".contains "o, wo" ++> can-contain-a-substring
 
   not. ++> can-tell-a-long-text-does-not-contain-an-absent-substring
     contains.
@@ -44,5 +42,4 @@
       "y"
 
   not. ++> can-tell-it-does-not-contain-an-absent-substring
-    "Hello, world!".contains
-      "Hey"
+    "Hello, world!".contains "Hey"

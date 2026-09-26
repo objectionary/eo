@@ -35,15 +35,13 @@
 
 [^] > as-decimal
   ^.is-finite.not.if > @
-    T
-      "Can't write a non-finite number as decimal"
+    T "Can't write a non-finite number as decimal"
     if.
       ^.eq -9223372036854775808
       "-9223372036854775808".as-bytes
       if.
         ^.abs.gte 9.223372036854776e18
-        T
-          "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
+        T "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
         signed.if
           "-".as-bytes.concat spelled
           spelled
