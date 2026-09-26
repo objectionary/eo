@@ -32,7 +32,7 @@ public final class EOwin32$EOclosesocket extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.closesocket(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue())
+                new Pointer(new Handle("the socket of closesocket", this.take("descriptor")).it())
             )
         );
     }
