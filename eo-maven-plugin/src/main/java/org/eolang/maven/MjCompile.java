@@ -77,7 +77,7 @@ public final class MjCompile extends MjSafe {
                             tojos,
                             this.target.toPath().resolve(MjResolve.DIR),
                             new CentralMaven(this.system, this.session, this.repositories),
-                            this.discoverSelf,
+                            this.discover,
                             this.skipZeroVersions,
                             this.resolveJna,
                             this.ignoreRuntime,
@@ -92,7 +92,7 @@ public final class MjCompile extends MjSafe {
                             this.classes.toPath(),
                             this.placeBinaries,
                             this.skipBinaries,
-                            this.rewriteBinaries
+                            this.rewrite
                         )
                     )
                 )

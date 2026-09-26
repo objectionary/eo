@@ -41,7 +41,7 @@ public final class MjPlace extends MjSafe {
                 this.classes.toPath(),
                 this.placeBinaries,
                 this.skipBinaries,
-                this.rewriteBinaries
+                this.rewrite
             ).exec();
         }
     }

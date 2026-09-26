@@ -41,7 +41,7 @@ public final class MjPull extends MjSafe {
                 this.objectionary(),
                 this.cache.toPath().resolve(Pulling.CACHE),
                 this.plugin.getVersion(),
-                this.overWrite,
+                this.overwrite,
                 this.cacheEnabled,
                 this.offline
             ).exec();

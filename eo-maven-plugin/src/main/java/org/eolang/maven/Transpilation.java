@@ -162,7 +162,7 @@ final class Transpilation {
     /**
      * Cache-key version segment: a fingerprint of the bundled transpile
      * XSLs and the libraries they {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code trackSteps}/{@code coverageTracking} flags. The plugin version
+     * {@code tracking}/{@code coverageTracking} flags. The plugin version
      * is not part of it: {@link Caching} already folds that into the key of
      * every cache it makes. Folding the XSL content in means
      * that a change in the transformation logic invalidates the global
@@ -175,7 +175,7 @@ final class Transpilation {
      * cache, since all of them change what a build of the same source
      * produces: the first two and the base class change what
      * {@code to-java.xsl} emits (see #6031 and #5955), and
-     * {@code trackSteps} decides whether the XMIRs of the train are written
+     * {@code tracking} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
      * The tables belong to {@link #version(Collection)} instead.
      *

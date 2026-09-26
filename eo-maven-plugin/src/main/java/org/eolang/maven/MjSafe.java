@@ -29,14 +29,12 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
- * @todo #7061:60min Give the other parameters one-word names too. Five of
- *  them are plain renames of a flag, from {@code trackSteps} to
- *  {@code discoverSelf}, and wait only for a second pull request, since
- *  this one is already at the size the build allows. The eighteen left
- *  after those want a word another field holds, {@code foreign},
+ * @todo #8943:60min Give the last eighteen parameters one-word names too.
+ *  Each wants a word another field already holds, {@code foreign},
  *  {@code placed}, {@code cache} or {@code skip}, or one that would read
- *  as the opposite of the flag it names, so they wait for the grouping
- *  of #6459.
+ *  as the opposite of the flag it names, such as {@code skipZeroVersions}
+ *  shortened to {@code zeros}. Group them the way #6459 discusses and the
+ *  names come free.
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -198,7 +196,6 @@ abstract class MjSafe extends AbstractMojo {
      * Track optimization steps into intermediate XMIR files?
      *
      * @since 0.24.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "trackTransformationSteps",
@@ -206,17 +203,16 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean trackSteps;
+    protected boolean tracking;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
      *
      * @since 0.29.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.unrollExitError")
-    protected boolean unrollExitError = true;
+    @Parameter(alias = "unrollExitError", property = "eo.unrollExitError")
+    protected boolean unroll = true;
 
     /**
      * EO cache directory.
@@ -237,10 +233,13 @@ abstract class MjSafe extends AbstractMojo {
      * Rewrite binaries in output directory or not.
      *
      * @since 0.32.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
-    protected boolean rewriteBinaries = true;
+    @Parameter(
+        alias = "rewriteBinaries",
+        property = "eo.rewriteBinaries",
+        defaultValue = "true"
+    )
+    protected boolean rewrite = true;
 
     /**
      * If we are offline and not able to download anything from the internet.
@@ -276,10 +275,14 @@ abstract class MjSafe extends AbstractMojo {
      * Pull again even if the .eo file is already present?
      *
      * @since 0.10.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
-    protected boolean overWrite;
+    @Parameter(
+        alias = "overWrite",
+        property = "eo.overWrite",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean overwrite;
 
     /**
      * Skip artifact with the version 0.0.0.
@@ -308,10 +311,14 @@ abstract class MjSafe extends AbstractMojo {
      * Shall we discover JAR artifacts for .EO sources?
      *
      * @since 0.12.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
-    protected boolean discoverSelf;
+    @Parameter(
+        alias = "discoverSelf",
+        property = "eo.discoverSelf",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean discover;
 
     /**
      * List of inclusion GLOB filters for finding class files while placing them from where
@@ -481,7 +488,7 @@ abstract class MjSafe extends AbstractMojo {
             }
         } else {
             final long start = System.nanoTime();
-            new Deadline(this, this.timeout, this.unrollExitError).spent(
+            new Deadline(this, this.timeout, this.unroll).spent(
                 () -> {
                     this.exec();
                     return new Object();
@@ -583,7 +590,7 @@ abstract class MjSafe extends AbstractMojo {
                     this.objectionary(),
                     this.cache.toPath().resolve(Pulling.CACHE),
                     this.plugin.getVersion(),
-                    this.overWrite,
+                    this.overwrite,
                     this.cacheEnabled,
                     this.offline
                 )
