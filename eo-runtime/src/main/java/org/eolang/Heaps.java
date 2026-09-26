@@ -164,43 +164,6 @@ final class Heaps {
     }
 
     /**
-     * Get data from the block in memory by identifier.
-     *
-     * @param identifier Identifier of the pointer
-     * @param offset Offset to start reading from
-     * @param length Length of bytes to read
-     * @return Bytes from the block in memory
-     */
-    byte[] read(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (offset < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read at negative offset '%d'",
-                    identifier, offset
-                );
-            }
-            if (length < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read a negative number of bytes '%d'",
-                    identifier, length
-                );
-            }
-            final Fetched data = this.fetched(identifier, offset, length);
-            return data.bytes().orElseThrow(
-                () -> new ExFailure(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    data.size()
-                )
-            );
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
      * Write given data to the block in memory by given identifier.
      *
      * @param identifier Identifier of the pointer
