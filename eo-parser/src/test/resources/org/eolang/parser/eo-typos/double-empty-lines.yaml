@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 line: 3
 message: |-
-  [3:0] error: 'consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)'
+  [3:0] error: 'consecutive blank lines forbidden — at most one blank may separate two non-blank lines'
 input: |
   [args] > one
 

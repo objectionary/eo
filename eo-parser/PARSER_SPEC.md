@@ -1079,6 +1079,7 @@ R-6.5.4. Between two plain siblings: blank lines forbidden.
 R-6.5.5. After the meta header: exactly one blank line separates metas from whatever follows.
 R-6.5.6. At end-of-file: zero or one trailing blank line; more than one is an error.
 R-6.5.7. Inside the meta header: blank lines forbidden. The metas of a file form a single contiguous block; a blank line between two of them is rejected: error "blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block".
+R-6.5.8. Outside the trailing run exempted by R-6.5.6, no two blank lines may be consecutive: at most one blank line may separate any two non-blank lines, whatever those lines turn out to be. Reported at the second blank of the run, before the parser knows what follows it: error "consecutive blank lines forbidden — at most one blank may separate two non-blank lines".
 
 Examples:
 
@@ -1478,7 +1479,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
 | Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
-| Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
+| Two or more consecutive blank lines outside the trailing EOF run (R-6.5.8) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
 | Blank line between two meta directives (R-6.5.7) | `blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block` |
 | Cactus emoji at the head of a line (§9.2) | `cactus emoji is reserved for auto-names; not allowed as a line head` |
