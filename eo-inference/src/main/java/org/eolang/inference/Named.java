@@ -58,9 +58,15 @@ import org.xembly.Xembler;
  * declaration is true of every caller there will ever be and a sighting only of
  * the callers this program happens to have. {@link Answers} lets the annotation
  * win where they disagree, and {@link Held} and {@link Provided} walk through a
- * void on what it declares, so a row the source typed is left alone. Both
- * tables are told from one reading of the census, since both want the same
- * answer (#8274).</p>
+ * void on what it declares, so a void the source typed is told nothing, and
+ * neither is a row that reads it. That row goes on naming the void, and every
+ * reader arrives at the declaration from there. Told the census instead, the
+ * row of {@code ^ >> txt} in {@code ends-with} said that the receiver of every
+ * {@code ends-with} is {@code Φ.eol}, the one string eo-runtime happens to
+ * take it off; told the declaration, it would call witnessed what the source
+ * wrote down (#8960). {@link Ones} leaves such voids out, and both tables are
+ * told from that one reading of the census, since both want the same answer
+ * (#8274).</p>
  *
  * @since 0.74.0
  */
@@ -89,7 +95,6 @@ public final class Named implements Clue {
         for (final Xnav type : new Rows(given).all()) {
             type.elements(Filter.withName("attr"))
                 .filter(attr -> "true".equals(new Noted(attr).says("void")))
-                .filter(attr -> new Noted(attr).says("holds").isEmpty())
                 .filter(attr -> ones.containsKey(new Noted(attr).says("type")))
                 .forEach(hollow -> Named.settle(hollow, ones.get(new Noted(hollow).says("type"))));
         }
