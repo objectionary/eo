@@ -26,5 +26,5 @@ eo:
 provides:
   - "/provides/type[@id='Φ.rope.ends']/attr[@name='ρ' and @holds='Φ.rope']"
 links:
-  - "/links/type[starts-with(@id, 'Φ.rope.ends.a🌵')]/ref[@loc='Φ.rope.ends.ρ'][not(@witnessed)]"
+  - "/links/type/ref[@loc='Φ.rope.ends.ρ'][not(@witnessed)]"
   - "/links[not(type[starts-with(@id, 'Φ.rope.ends.')]/ref[@loc='Φ.knot'])]"
