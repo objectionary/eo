@@ -10,6 +10,8 @@ name: xslint
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: xslint-${{ github.ref }}
   cancel-in-progress: true

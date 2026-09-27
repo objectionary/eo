@@ -8,6 +8,9 @@ name: titles
     - cron: '0 * * * *'
   issues:
     types: [opened]
+permissions:
+  contents: read
+  issues: write
 concurrency:
   group: titles
   cancel-in-progress: false

@@ -7,6 +7,8 @@ name: snippets
   push:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: snippets-${{ github.ref }}
   cancel-in-progress: true
