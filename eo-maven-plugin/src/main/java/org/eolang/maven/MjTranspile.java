@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -172,21 +171,20 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
             new Timed(
-                new Merging(tojos, this.targetDir.toPath().resolve(Merging.DIR))
+                new Merging(tojos, this.target.toPath().resolve(Merging.DIR))
             ).exec();
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
-                    this.targetDir.toPath(),
-                    new Written(this.generatedDir.toPath(), this.tests, this.roots()),
+                    this.target.toPath(),
+                    new Written(this.generated.toPath(), this.tests, this.roots()),
                     new Transpilation(
                         new Tracking(this.trackSteps, this.located),
                         this.coverage,
                         this.base(),
-                        this.xslMeasures.toPath(),
-                        this.targetDir.toPath(),
-                        this.tables.toPath(),
-                        this.lowered()
+                        this.measures.toPath(),
+                        this.target.toPath(),
+                        this.tables.toPath()
                     ),
                     this.stored()
                 )
@@ -194,13 +192,13 @@ public final class MjTranspile extends MjSafe {
         }
         if (this.attach) {
             this.project.addCompileSourceRoot(
-                this.generatedDir.toPath().toAbsolutePath().toString()
+                this.generated.toPath().toAbsolutePath().toString()
             );
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
+                this.generated
             );
-            final String gtests = this.generatedDir.toPath().getParent().resolve(
+            final String gtests = this.generated.toPath().getParent().resolve(
                 "generated-test-sources"
             ).toAbsolutePath().toString();
             this.project.addTestCompileSourceRoot(gtests);
@@ -212,26 +210,11 @@ public final class MjTranspile extends MjSafe {
     }
 
     private Collection<Path> roots() {
-        final Path build = this.targetDir.toPath().getParent();
+        final Path build = this.target.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
             .collect(Collectors.toList());
-    }
-
-    // What MjLower left in its marker file, or the empty string when it
-    // skipped or was disabled: whether the XMIR of this build was folded
-    // through phino changes the generated Java, so it belongs in the
-    // cache key that Transpilation.version() makes.
-    private String lowered() throws IOException {
-        final Path marker = this.targetDir.toPath()
-            .resolve(Lowering.DIR)
-            .resolve(Lowering.MARKER);
-        String content = "";
-        if (Files.exists(marker)) {
-            content = Files.readString(marker).trim();
-        }
-        return content;
     }
 
     private String base() {

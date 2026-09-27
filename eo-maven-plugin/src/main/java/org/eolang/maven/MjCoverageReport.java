@@ -49,12 +49,12 @@ import org.eolang.parser.EoSyntax;
  * <p>The raw hits are read one line at a time and never held together in
  * memory. What the report keeps out of them is one counter per line of
  * source, so its own size is bounded by the manifest, but the file the
- * runtime appends to is not: every {@code PhCoverage} wrapper starts with
- * a dedup set of its own, so a location touched through many instances of
- * the same object is appended once per instance (#6508), and a whole test
- * suite leaves gigabytes of duplicates behind for the few thousand
- * distinct locations in them. Reading that file into a list first is what
- * killed the {@code eo-runtime} coverage build with an
+ * runtime appends to is not: a location is written once per generated
+ * class per JVM, so every surefire fork appends its own copy of the few
+ * thousand distinct locations, and while every {@code PhCoverage} wrapper
+ * still started a dedup set of its own (#6508), a whole test suite left
+ * gigabytes of duplicates behind. Reading that file into a list first is
+ * what killed the {@code eo-runtime} coverage build with an
  * {@code OutOfMemoryError} once it outgrew the 4Gb heap
  * {@code .mvn/jvm.config} gives Maven.</p>
  *

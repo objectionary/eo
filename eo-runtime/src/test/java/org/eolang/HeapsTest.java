@@ -35,7 +35,7 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "a range outside the block must be answered as nothing, so the caller can fall back",
             Heaps.INSTANCE.malloc(
-                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512)
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512).bytes()
             ),
             Matchers.equalTo(Optional.empty())
         );
@@ -46,9 +46,20 @@ final class HeapsTest {
         MatcherAssert.assertThat(
             "a range inside the block must be answered with its bytes, but it wasnt",
             Heaps.INSTANCE.malloc(
-                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).get().length
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 3).bytes().get().length
             ),
             Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void explainsARangeThatDidNotFitAfterTheBlockIsFreed() {
+        MatcherAssert.assertThat(
+            "the answer must carry the size the fallback message needs, since asking for it again reaches a block that is already freed",
+            Heaps.INSTANCE.malloc(
+                8, idx -> Heaps.INSTANCE.fetched(idx, 0, 512)
+            ).size(),
+            Matchers.equalTo(8)
         );
     }
 

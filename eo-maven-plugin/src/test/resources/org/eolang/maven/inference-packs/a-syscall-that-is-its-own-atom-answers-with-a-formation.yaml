@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A platform object that takes the name of a syscall as an argument can say
+# nothing about what any one of them comes back with, since the answer would
+# have to be the same for all of them. Every caller then reads its result off
+# the one return the platform declares, and stops at a void.
+#
+# An atom of its own says what it hands back, so the caller walks on. Here
+# `close` comes back with a number, and the object that compares it against
+# zero is a `Φ.number.eq` rather than a name rooted at somebody else's void.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > close /Q.number
+        ? > descriptor /Q.number
+  app.eo: |
+    [] > app
+      (posix.close 3).eq 0 > @
+  number.eo: |
+    [] > number
+      [] > eq
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.eq']"

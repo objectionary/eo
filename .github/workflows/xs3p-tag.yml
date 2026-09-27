@@ -17,12 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes xsltproc
-      - run: |
+      - env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
           mkdir -p gh-pages/xsd
           xsltproc \
             "eo-parser/src/main/xs3p/xs3p.xsl" \
             "eo-parser/src/main/resources/XMIR.xsd" \
-            > "gh-pages/xsd/XMIR-${{github.ref_name}}.html"
+            > "gh-pages/xsd/XMIR-${REF_NAME}.html"
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: peter-evans/create-pull-request@v8
         with:

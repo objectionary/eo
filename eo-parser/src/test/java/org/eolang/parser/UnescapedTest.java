@@ -39,6 +39,27 @@ final class UnescapedTest {
     }
 
     @Test
+    void decodesUnicodeEscape() {
+        MatcherAssert.assertThat(
+            "a unicode escape must decode to the character its four digits name",
+            new String(new Unescaped("\\u0424", 7, 3).bytes(), StandardCharsets.UTF_8),
+            Matchers.equalTo("Ф")
+        );
+    }
+
+    @Test
+    void refusesUnicodeEscapeWithSecondMarker() {
+        MatcherAssert.assertThat(
+            "a second 'u' must not be swallowed as part of the escape, but it was",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Unescaped("\\uu0424", 7, 3).bytes()
+            ).getMessage(),
+            Matchers.equalTo("unicode escape \\uu042 is not exactly four hexadecimal digits")
+        );
+    }
+
+    @Test
     void reportsFailureAtTheLiteralPosition() {
         MatcherAssert.assertThat(
             "a failing escape must be reported at the line the literal was given",

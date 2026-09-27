@@ -31,7 +31,7 @@ import org.xembly.Xembler;
  * application fills — {@link Bound} settles the name of what a dispatch is
  * taken from before asking which void an argument lands in, so a
  * {@code plus 2} would fill a void of {@code Φ.number} instead of the
- * {@code x} of {@code Φ.number.plus}. A pair says the two objects are one, and
+ * {@code b} of {@code Φ.number.plus}. A pair says the two objects are one, and
  * they are not: one of them behaves like the other, which is a weaker thing to
  * say and needs a weaker place to say it.</p>
  *

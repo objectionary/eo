@@ -31,25 +31,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      # The `lower` goal needs the exact phino version pinned in
-      # eo-lowering; the Linux leg installs it and demands lowering,
-      # while Windows and macOS build without it, keeping the skip
-      # path of the goal continuously covered.
-      - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: actions/cache@v6
-        with:
-          path: ~/.cabal
-          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
-      - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        run: |
-          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
-            cabal update
-            cabal install "phino-${ver}" --overwrite-policy=always
-          fi
-          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
-          echo "LOWERING=-Deo.loweringRequired=true" >> "$GITHUB_ENV"
-      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' ${{ env.LOWERING }} clean install
+      - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' clean install
   telegram:
     needs: mvn
     runs-on: ubuntu-24.04
@@ -68,7 +50,7 @@ jobs:
               | [ ., 0 ] | max')
           echo "This run took ${seconds} seconds"
           echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
-      - uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -113,7 +95,7 @@ jobs:
             echo 'broken=yes' >> "${GITHUB_OUTPUT}"
           fi
       - if: ${{ steps.previous.outputs.broken == 'yes' }}
-        uses: appleboy/telegram-action@master
+        uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}

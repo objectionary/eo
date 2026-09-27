@@ -49,7 +49,8 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
 
     private Phi bytes(final int id, final int offset, final int length) {
         final Phi result;
-        final Optional<byte[]> data = Heaps.INSTANCE.fetched(id, offset, length);
+        final Fetched fetched = Heaps.INSTANCE.fetched(id, offset, length);
+        final Optional<byte[]> data = fetched.bytes();
         if (data.isPresent()) {
             result = new Data.ToPhi(data.get());
         } else {
@@ -61,7 +62,7 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
                         "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
                         length,
                         offset,
-                        Heaps.INSTANCE.size(id)
+                        fetched.size()
                     )
                 )
             );

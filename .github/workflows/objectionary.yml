@@ -26,7 +26,9 @@ jobs:
           key: ubuntu-qulice-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-qulice-jdk-26-maven-
       - run: mvn install -DskipTests -Dinvoker.skip --errors --batch-mode
-      - run: .github/objectionary.sh ${{ github.ref_name }}
+      - env:
+          REF_NAME: ${{ github.ref_name }}
+        run: .github/objectionary.sh "${REF_NAME}"
       - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
           branch: gh-pages

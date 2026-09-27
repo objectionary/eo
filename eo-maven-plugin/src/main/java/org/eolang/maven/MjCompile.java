@@ -18,8 +18,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  * the need to call each goal separately.</p>
  *
  * <p>The merge happens right after the lint, so that every goal between this
- * one and {@link MjTranspile}, such as {@link MjInference} or {@link MjLower},
- * reads the object in the shape it will be compiled in and not in the shape
+ * one and {@link MjTranspile}, such as {@link MjInference}, reads the object
+ * in the shape it will be compiled in and not in the shape
  * the parser left. A project therefore never has to name {@code merge}
  * between them, and naming it changes nothing: a member already inside its
  * object is not moved again.</p>
@@ -54,7 +54,7 @@ public final class MjCompile extends MjSafe {
                         new Linting(
                             tojos,
                             compile,
-                            this.targetDir.toPath(),
+                            this.target.toPath(),
                             this.cache.toPath(),
                             this.cacheEnabled,
                             this.plugin.getVersion(),
@@ -69,13 +69,13 @@ public final class MjCompile extends MjSafe {
                     new Timed(
                         new Merging(
                             tojos,
-                            this.targetDir.toPath().resolve(Merging.DIR)
+                            this.target.toPath().resolve(Merging.DIR)
                         )
                     ),
                     new Timed(
                         new Resolving(
                             tojos,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
+                            this.target.toPath().resolve(MjResolve.DIR),
                             new CentralMaven(this.system, this.session, this.repositories),
                             this.discoverSelf,
                             this.skipZeroVersions,
@@ -88,8 +88,8 @@ public final class MjCompile extends MjSafe {
                     new Timed(
                         new Placing(
                             placed,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
-                            this.classesDir.toPath(),
+                            this.target.toPath().resolve(MjResolve.DIR),
+                            this.classes.toPath(),
                             this.placeBinaries,
                             this.skipBinaries,
                             this.rewriteBinaries

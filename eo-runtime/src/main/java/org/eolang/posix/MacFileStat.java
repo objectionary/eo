@@ -14,7 +14,7 @@ import java.util.List;
  * @since 0.74.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
-public final class MacFileStat extends Structure implements StatSyscall.FileStat {
+public final class MacFileStat extends Structure implements Stat.FileStat {
 
     /**
      * Device id.

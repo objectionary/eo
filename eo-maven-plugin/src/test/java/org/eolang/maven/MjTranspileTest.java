@@ -320,6 +320,30 @@ final class MjTranspileTest {
     }
 
     @Test
+    void handsOneSetOfHitsToEveryPhCoverageWrapperOfAClass(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "the class must declare one static set of hits and hand it to every PhCoverage wrapper, but it didnt",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.program())
+                    .with("coverage", true)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get(MjTranspileTest.compiled())
+            ).asString(),
+            Matchers.allOf(
+                Matchers.stringContainsInOrder(
+                    "public final class EOmain",
+                    "private static final java.util.Set<String> HITS",
+                    "new PhCoverage("
+                ),
+                Matchers.not(Matchers.matchesRegex("(?s).*new PhCoverage\\(\\w+, \".*"))
+            )
+        );
+    }
+
+    @Test
     void excludesThrowingCasesFromPhCoverageWhenTrackingEnabled(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
@@ -763,14 +787,14 @@ final class MjTranspileTest {
         final Path tests = target.resolve("generated-test-sources");
         final FakeMaven maven = new FakeMaven(temp);
         maven
-            .with("generatedDir", sources.toFile())
-            .with("targetDir", target.resolve("eo-sources").toFile())
+            .with("generated", sources.toFile())
+            .with("target", target.resolve("eo-sources").toFile())
             .withHelloWorld()
             .execute(new PpTranspile());
         maven
             .with("scope", "test")
-            .with("generatedDir", tests.toFile())
-            .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
+            .with("generated", tests.toFile())
+            .with("target", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
             .execute(new PpTranspile());

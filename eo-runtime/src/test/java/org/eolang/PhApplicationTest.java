@@ -55,6 +55,23 @@ final class PhApplicationTest {
     }
 
     @Test
+    void keepsANumberOfTheWrongWidthStructural() {
+        MatcherAssert.assertThat(
+            "one byte spells no number and must render as the application it is, but the renderer threw",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"),
+                0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"),
+                    0,
+                    new PhDefault(new byte[] {(byte) 0x01})
+                )
+            ).φTerm(),
+            Matchers.equalTo("Φ.number(0->Φ.bytes(0->[D> 01-]))")
+        );
+    }
+
+    @Test
     void appliesSeveralBindingsToObject() {
         MatcherAssert.assertThat(
             "PhApplication must bind every pair to the object, but it didnt",
@@ -110,6 +127,26 @@ final class PhApplicationTest {
             "Number construction chain must render as its value, but it didnt",
             new PhApplication(
                 new PhDispatch(Phi.Φ, "number"), 0,
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(
+                        new byte[] {
+                            (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
+                            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                        }
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("42")
+        );
+    }
+
+    @Test
+    void rendersNumberBoundByNameAsValue() {
+        MatcherAssert.assertThat(
+            "a number whose bytes are bound into its phi by name must render as its value, but it didnt",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"), "φ",
                 new PhApplication(
                     new PhDispatch(Phi.Φ, "bytes"), 0,
                     new PhDefault(

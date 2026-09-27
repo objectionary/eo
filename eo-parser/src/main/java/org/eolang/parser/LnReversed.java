@@ -29,11 +29,15 @@ import java.util.List;
  * at close time if no receiver appeared.</li>
  * </ul>
  *
- * <p>Emission: opens {@code <o base='.<name>' method=''>} at the
- * current cursor and stays inside. For horizontal form, the receiver
- * and method args are appended as children before the cursor closes.
- * For vertical form, deeper-indent lines (dispatched through
- * {@link LnApplication} etc.) attach as children automatically.</p>
+ * <p>Emission: opens {@code <o base='.<name>'>} at the current cursor
+ * and stays inside. No {@code @method} is written: {@code @method}
+ * marks an {@code <o>} as a link continuing a dispatch chain, and a
+ * reversed dispatch opens a chain instead of continuing one (§9.4).
+ * A fragile {@code ?.} head gains {@code @fragile=''} alone. For
+ * horizontal form, the receiver and method args are appended as
+ * children before the cursor closes. For vertical form,
+ * deeper-indent lines (dispatched through {@link LnApplication} etc.)
+ * attach as children automatically.</p>
  *
  * <p>R-3.8.1 restricts the head identifier to a single {@code NAME},
  * {@code @}, {@code ^}, or {@code $} token — no dotted paths and no

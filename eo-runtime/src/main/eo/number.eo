@@ -5,25 +5,25 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [@] > number
   as-i32.as-i16 > as-i16
   $.as-i64.as-i32 > as-i32
   [] > div /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > gt /Q.bool
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > plus /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > times /Q.number
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
 
   eq. ++> can-add-a-negative-float-to-negative-infinity
     ninf.plus -42.5

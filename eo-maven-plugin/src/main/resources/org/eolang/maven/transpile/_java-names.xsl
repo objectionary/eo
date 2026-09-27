@@ -8,8 +8,8 @@
   How EO names become Java names: identifier escaping, class and package
   naming with the 250-character fingerprint cut, attribute naming, and the
   locator-to-class mapping. Extracted from "to-java.xsl" so that every sheet
-  rendering Java (see #8137) derives a name the same way, since a declaration
-  and a reference produced by two different sheets must never diverge.
+  rendering Java derives a name the same way, since a declaration and a
+  reference produced by two different sheets must never diverge.
   The "$eo:phi"/"$eo:alpha"/"$eo:cactoos" variables come from "_specials.xsl",
   which an importing sheet must bring in alongside (importing it from here
   trips Saxon's cycle check under the classpath resolver, whose sources
