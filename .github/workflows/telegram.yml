@@ -30,7 +30,7 @@ jobs:
       - env:
           REF_NAME: ${{ github.ref_name }}
         run: .github/telegram.sh "${REF_NAME}"
-      - uses: appleboy/telegram-action@master
+      - uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}
