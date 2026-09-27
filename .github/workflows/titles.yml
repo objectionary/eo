@@ -3,11 +3,14 @@
 ---
 # yamllint disable rule:line-length
 name: titles
+# The hourly schedule is the only trigger, on purpose. An `issues: opened`
+# trigger runs with the repository's secrets, and anybody at all can open an
+# issue, so that trigger handed `OPENAI_API_KEY` to a third-party action on
+# text a stranger wrote (#8853). The schedule already looks back 180 days, so
+# a title opened in between is still read, an hour later at the latest.
 'on':
   schedule:
     - cron: '0 * * * *'
-  issues:
-    types: [opened]
 concurrency:
   group: titles
   cancel-in-progress: false

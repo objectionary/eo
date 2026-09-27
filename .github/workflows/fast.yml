@@ -84,7 +84,11 @@ jobs:
           # `EOdirectoryEOmadeRaceTest` is skipped in all ten repetitions of
           # every job that completes. They are added here unconditionally, so
           # the branch they guard is executed rather than reported as covered.
-          always='EOdirectoryEOmadeRaceTest,EOfileEOtouchedTest'
+          # `EOdirectoryEOmadeRootTest` is here for the same reason and one
+          # more: it only runs on windows, because a path that is its own
+          # parent and is not there is a drive root or a UNC share root, and
+          # POSIX has neither (#7480).
+          always='EOdirectoryEOmadeRaceTest,EOfileEOtouchedTest,EOdirectoryEOmadeRootTest'
           if [ -z "${classes}" ]; then
             classes="${always}"
           else
