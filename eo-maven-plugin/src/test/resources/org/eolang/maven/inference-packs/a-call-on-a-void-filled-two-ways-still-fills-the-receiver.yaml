@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The "tail" of "stripped" is filled with a "text" by one caller and with a
+# "rope" by another, so "tail.ends-with" is a call on a void and names no
+# receiver of its own. It still hangs the "ends-with" of a "text" off the
+# "tail", and the one of a "rope" too, the way "path.stripped" calls the
+# "ends-with" of a "string". The only other caller of that "ends-with" hangs
+# it off a "label", and a census that drops the "tail" is left with the
+# "label" alone and settles the receiver of every "ends-with" of a "text" as a
+# "label", which no "text" is (#8960).
+eo:
+  text.eo: |
+    [] > text
+      [^ suffix] > ends-with
+        suffix > @
+  rope.eo: |
+    [] > rope
+      [^ suffix] > ends-with
+        suffix > @
+  cut.eo: |
+    [] > cut
+      [^ tail] > stripped
+        tail.ends-with "/" > @
+  label.eo: |
+    [] > label
+      text > @
+      "!" > mark
+  sign.eo: |
+    [] > sign
+      label.ends-with "?" > @
+  first.eo: |
+    [] > first
+      cut.stripped text > @
+  second.eo: |
+    [] > second
+      cut.stripped rope > @
+links:
+  - "//type[@id='Φ.cut.stripped.φ']/ref/bind[@void='Φ.text.ends-with.ρ']"
+  - "//type[@id='Φ.cut.stripped.φ']/ref/bind[@void='Φ.rope.ends-with.ρ']"
+provides:
+  - "//type[@id='Φ.text.ends-with']/attr[@name='ρ']/witnessed/union[ref[@loc='Φ.label']][ref[@loc='Φ.text']]"
+  - "//type[@id='Φ.rope.ends-with']/attr[@name='ρ']/witnessed[ref[@loc='Φ.rope']]"

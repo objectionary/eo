@@ -48,6 +48,10 @@ import java.util.Map;
  * reader of that void that a file can hang off a test. The census of such a
  * void then joined its members into nothing (#8953).</p>
  *
+ * <p>A dispatch whose chain of copies ends on a name taken off a void names
+ * no receiver of its own, and {@link Hung} fills the receivers of whatever
+ * the void is seen to hold instead, in the row alone (#8960).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -148,7 +152,29 @@ final class Bound {
      *  nothing we can name
      */
     Map<String, Map<String, String>> all() {
-        return this.worked(new HashMap<>(0));
+        return this.worked(new HashMap<>(0), new HashMap<>(0));
+    }
+
+    /**
+     * What every application fills, as the row of the application says it.
+     *
+     * <p>A row says more than a pass is told. A dispatch on a void fills the
+     * receivers of whatever the void is seen to hold, and {@link Hung} writes
+     * that down for the census of each receiver to read. The passes are not
+     * told, since a call that fills a void of a formation is taken by
+     * {@link Filled} to be a call on that formation, and a void filled with a
+     * {@code bytes} by one caller and an {@code i64} by another is neither
+     * (#8960).</p>
+     *
+     * @return The objects the voids hold, by the locator of the void, in the
+     *  order the voids were declared, without the applications that fill
+     *  nothing we can name
+     */
+    Map<String, Map<String, String>> written() {
+        final Map<String, String> bases = new HashMap<>(0);
+        return new Hung(
+            this.owned, this.pairs, this.worked(new HashMap<>(0), bases), this.receivers
+        ).all(bases);
     }
 
     /**
@@ -161,19 +187,21 @@ final class Bound {
      * or one compiled apart, may put a formation of another shape there. A
      * bind that only this relay put there is named here, so that the row can
      * say it is witnessed and a reader in need of a contract can leave it
-     * out (#8914).</p>
+     * out (#8914). So is every receiver {@link Hung} fills.</p>
      *
      * @return The voids, by the locator of the application, without the
      *  applications that fill nothing by way of a relay
      */
     Map<String, Collection<String>> relays() {
         final Map<String, Collection<String>> found = new HashMap<>(0);
-        this.worked(found);
-        return found;
+        final Map<String, String> bases = new HashMap<>(0);
+        return new Hung(
+            this.owned, this.pairs, this.worked(found, bases), this.receivers
+        ).relays(bases, found);
     }
 
     private Map<String, Map<String, String>> worked(
-        final Map<String, Collection<String>> relays
+        final Map<String, Collection<String>> relays, final Map<String, String> bases
     ) {
         final Map<String, String> landed = this.landed();
         final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
@@ -186,7 +214,8 @@ final class Bound {
             }
         }
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
-            final String hollow = this.owned.receiver(this.hung(dispatch, landed));
+            bases.put(dispatch.getKey(), this.hung(dispatch, landed));
+            final String hollow = this.owned.receiver(bases.get(dispatch.getKey()));
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
                     .put(hollow, dispatch.getValue());

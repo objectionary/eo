@@ -94,7 +94,7 @@ final class Woven {
         final Map<String, String> certain
     ) {
         final Bound bound = this.bound(pairs);
-        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
+        return new Refs(pairs, bound.written(), chosen, bound.relays(), certain).all();
     }
 
     /**

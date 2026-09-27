@@ -275,6 +275,18 @@ final class Provided {
         return new Rooted(this.hollows).covers(type);
     }
 
+    /**
+     * The void this name is taken off.
+     *
+     * @param type The name the type goes by
+     * @return The locator of the nearest void the name is rooted at, the
+     *  name itself when it is a void, or an empty string when it is rooted
+     *  at none
+     */
+    String root(final String type) {
+        return new Rooted(this.hollows).names(type);
+    }
+
     private String kept(final String type, final String name, final Collection<String> walked) {
         String found = this.here(type, name);
         final String behind = this.behind(type);
