@@ -37,16 +37,6 @@ import java.util.Map;
  * only ever asked for what the last one could not answer.</p>
  *
  * @since 0.68.0
- * @todo #8777:90min Carry the arms through a body a walk goes behind.
- *  A read takes its arms from the row of the call it is written on, which
- *  leaves out the read whose call settled on an object whose own body is the
- *  choice. Of the 622 rows eo-runtime still keeps rooted at {@code Φ.bool.if}
- *  without arms, 488 read such a receiver and 133 read one rooted at a void
- *  that names no arms of its own. {@link Provided} walks behind the body,
- *  arrives at a name rooted at the void and says nothing of what it passed on
- *  the way, so the arms sitting on the body are lost before the read is asked.
- *  Handing them up wants the walk to give back where it went as well as where
- *  it ended.
  */
 final class Dispatched {
 
@@ -81,6 +71,11 @@ final class Dispatched {
     private final Collection<String> hollows;
 
     /**
+     * Every object of the program that terminates, from {@link Dead}.
+     */
+    private final Collection<String> dead;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table
@@ -90,6 +85,8 @@ final class Dispatched {
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void this pass may look into, empty
      *  when it may look into none
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
      */
     Dispatched(
         final XML provides,
@@ -97,7 +94,8 @@ final class Dispatched {
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Collection<String> ends
     ) {
         this.given = provides;
         this.all = dispatches;
@@ -105,6 +103,7 @@ final class Dispatched {
         this.named = bindings;
         this.receivers = taken;
         this.hollows = voids;
+        this.dead = ends;
     }
 
     /**
@@ -117,7 +116,7 @@ final class Dispatched {
     Map<String, String> answers(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned);
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -203,7 +202,9 @@ final class Dispatched {
      * them, the way {@link Arrived} has it: an arm without the attribute leaves
      * the read rooted at the void it had, which is true of every caller and
      * says little, rather than with a choice that holds for some callers and
-     * lies about the rest.</p>
+     * lies about the rest. Which row carries them is {@link Borne}'s business,
+     * since a receiver that settled on an object of its own keeps the choice
+     * one step in, behind that object's body.</p>
      *
      * @param pairs The pairs, each name against the one it is a copy of
      * @return The arms, by the locator of the dispatch, without the dispatches
@@ -212,7 +213,7 @@ final class Dispatched {
     Map<String, Collection<String>> choices(final Map<String, String> pairs) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned);
         final Map<String, Collection<String>> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -230,7 +231,7 @@ final class Dispatched {
         }
         boolean more = true;
         while (more) {
-            more = this.spread(found, pairs, owned);
+            more = this.spread(found, pairs, names, owned);
         }
         return found;
     }
@@ -238,16 +239,16 @@ final class Dispatched {
     private boolean spread(
         final Map<String, Collection<String>> found,
         final Map<String, String> pairs,
+        final Map<String, String> names,
         final Provided owned
     ) {
         boolean more = false;
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
-            final String bearer = dispatch.bearer();
-            if (!found.containsKey(made) && found.containsKey(bearer)
+            if (!found.containsKey(made) && !dispatch.bearer().isEmpty()
                 && this.rooted(pairs.getOrDefault(made, ""))) {
                 final Collection<String> arms = new Arrived(owned).names(
-                    found.get(bearer), dispatch.name()
+                    new Borne(found, names, owned).arms(dispatch), dispatch.name()
                 );
                 if (arms.size() > 1) {
                     found.put(made, arms);
@@ -258,19 +259,14 @@ final class Dispatched {
         return more;
     }
 
-    private Filled filled(
-        final Map<String, String> pairs, final Map<String, String> names,
-        final Provided owned
-    ) {
-        final Map<String, Map<String, String>> bound = new Copied(
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
-            pairs,
-            new Lent(owned, this.all, this.args, this.receivers).sites(names)
+    private Filled filled(final Map<String, String> pairs, final Provided owned) {
+        final Map<String, Map<String, String>> bound = new Bound(
+            this.args, this.named, this.receivers, this.all, pairs, owned
         ).all();
         return new Filled(
             pairs,
             owned,
-            new Puts(bound, new Holders(bound, pairs).all()),
+            new Puts(bound, new Holders(bound, pairs).all(), this.dead),
             this.hollows
         );
     }

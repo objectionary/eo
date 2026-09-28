@@ -59,7 +59,7 @@ A conforming parser meets these complexity bounds:
 - **Time:** O(n) in the number of source lines (single pass). Per-line work is O(L) in line length for classification and emission; total: O(N) in source character count.
 - **Memory:** O(D) for the indent stack (§5.1), where D is the maximum indent depth in the source. O(B) for any open BYTES continuation (§3.13) or TEXT block (§3.11), where B is body size. O(C) for the pending comment buffer (§5.1.1), where C is the largest comment block.
 - **No backtracking:** the cross-line FSM (§5.2) consults only the current stack top and a small global state; no rewriting of earlier emission is required after a line is processed (modulo the per-line savepoint for error recovery, §7.2).
-- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup. Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
+- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup, and nesting past 256 levels is rejected outright (R-5.2.7a). Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
 
 ---
 
@@ -894,6 +894,7 @@ R-5.2.5. If the line's kind is `MethodDispatch`: error `method continuation has 
 R-5.2.5a. If the line's kind is `PipeApplication`: error `a pipe must follow a named formation or another pipe` — a deeper-indent ("descending") pipe has no same-indent predecessor to apply to. A `.method` line at indent `N` requires a previous sibling expression at the same indent; a deeper-than-parent position has no such sibling. **This rule is the authoritative owner of the `.method`-as-deeper-line rejection**, including the bare-reversed-receiver edge case (a `.method` line as the first deeper child of a bare-reversed parent). R-5.2.9's "must not start with `.`" condition is enforced *via this rule*; R-5.2.9 itself only manages the `receiver_consumed?` flag.
 R-5.2.6. The previous top's openness must be `open`. If `vertical-completed` or `horizontal-completed`: error `unexpected deeper-indent line — previous expression is closed for children`.
 R-5.2.7. `N` must equal `previous_top.indent + 2`. Otherwise: error `indent increased by more than one level`.
+R-5.2.7a. **Depth limit.** The stack must hold fewer than 256 entries, so that the pushed entry sits at level 256 at the deepest. Otherwise: error `object nested deeper than 256 levels`, and the block under the offending line is skipped as §7 prescribes. The limit guards the emitted tree, not the stack: the XSL chain behind the parser walks the tree recursively and dies on a few hundred levels with an overflow no caller can report, while the deepest object written in practice sits at level 41.
 R-5.2.8. Push a new entry. Its `parent_kind` is the previous top's `kind`.
 R-5.2.9. If `parent_kind = bare-reversed` and the previous top's `receiver_consumed?` is false: this deeper line is the receiver. (The line-starts-with-`.` rejection has already fired in R-5.2.5 if applicable; this rule only manages the `receiver_consumed?` flag.) Mark `receiver_consumed? = true` on the previous top.
 
@@ -1265,6 +1266,8 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
 
+R-9.3.1. **Name suffix.** The table above also governs the `> name` suffix (§3.10): the name reaches `@name` verbatim, with `@` as the single exception — it reaches it as `φ`. So `42 > @` binds the decoratee of the formation it sits in, not an attribute spelled `@`. The `^` receiver has no suffix form at all, since only a void may declare it (R-3.4.11), and the `>>` cactus auto-name (§9.2) together with the `p🌵` and `n🌵` test prefixes (§9.4) are generated rather than mapped.
+
 ### 9.4 Per-construct attribute emission
 
 | Source construct | XMIR effect |
@@ -1361,6 +1364,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
+| Nesting past 256 levels (R-5.2.7a) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
@@ -1449,6 +1453,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Anything but a single plain space between meta parts — a second space, a tab, an ideographic space (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
 | `+package` carrying a number of parts other than one (§3.2) | `'+package' directive requires exactly one argument` |
 | `+package` path with an empty dotted segment (§3.2) | `'+package' path must not have an empty segment` |
+| `+package` path with a segment that is a scope token rather than an object name (§3.2) | `'+package' path must be made of object names, not a scope token` |
 | `+alias` carrying no part (R-3.2.3) | `'+alias' directive requires at least one argument` |
 | `+alias` renaming the root token `Q` (R-3.2.3) | `'+alias' cannot rename the root token Q` |
 | `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
@@ -1473,7 +1478,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Pipe line whose `\|` is glued to the argument list or suffix that follows it (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
-| Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |

@@ -33,7 +33,7 @@ final class Placing implements Step {
     private final TjsPlaced placed;
 
     /**
-     * Home directory where resolved deps live (targetDir / MjResolve.DIR).
+     * Home directory where resolved deps live (target / MjResolve.DIR).
      */
     private final Path home;
 

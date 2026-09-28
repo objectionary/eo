@@ -179,7 +179,7 @@ final class PhiTest {
             ),
             Arguments.of("logged", (Function<Phi, Phi>) PhLogged::new),
             Arguments.of("loop", (Function<Phi, Phi>) PhLoop::new),
-            Arguments.of("once", (Function<Phi, Phi>) phi -> new PhOnce(() -> phi)),
+            Arguments.of("once", (Function<Phi, Phi>) phi -> new PhDispatch(phi, "x")),
             Arguments.of("safe", (Function<Phi, Phi>) PhSafe::new),
             Arguments.of("sticky", (Function<Phi, Phi>) PhSticky::new)
         );
