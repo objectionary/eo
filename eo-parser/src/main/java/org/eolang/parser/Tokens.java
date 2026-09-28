@@ -223,7 +223,10 @@ final class Tokens {
      * a FLOAT (R-9.8.1 / R-9.8.2). The choice between INT and FLOAT is
      * decided by lookahead: a dot followed by a digit continues as
      * FLOAT; otherwise the digits stop and the dot belongs to a
-     * subsequent chain link.
+     * subsequent chain link. The leading-zero prohibition is spent only
+     * once the INT branch is taken, since R-9.8.1 holds it against an
+     * INT and R-9.8.2 asks nothing of the integer part of a FLOAT, so
+     * {@code 00.5} is a number and {@code 007} is an error.
      *
      * @return INT or FLOAT value
      */
@@ -234,17 +237,15 @@ final class Tokens {
             && this.body.charAt(this.cursor) == '0'
             && this.body.charAt(this.cursor + 1) == 'x') {
             value = this.readHex();
+        } else if (this.fractional()) {
+            this.readDigits();
+            this.readFloatTail(start);
+            value = new Value(
+                Value.Kind.FLOAT, this.body.substring(start, this.cursor),
+                this.span.indent() + start
+            );
         } else {
-            final Value integer = this.readInt();
-            if (this.dottedDigit()) {
-                this.readFloatTail(start);
-                value = new Value(
-                    Value.Kind.FLOAT, this.body.substring(start, this.cursor),
-                    this.span.indent() + start
-                );
-            } else {
-                value = integer;
-            }
+            value = this.readInt();
         }
         return value;
     }
@@ -256,40 +257,7 @@ final class Tokens {
      * @return INT value
      */
     Value readInt() {
-        final int start = this.cursor;
-        int idx = start;
-        final boolean sign = idx < this.body.length()
-            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
-        if (sign) {
-            idx = idx + 1;
-        }
-        final int from = idx;
-        while (Tokens.digitAt(this.body, idx)) {
-            idx = idx + 1;
-        }
-        if (sign && Tokens.letterAt(this.body, idx)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
-        }
-        if (idx == from) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
-        }
-        final String digits = this.body.substring(from, idx);
-        if (digits.length() >= 2 && digits.charAt(0) == '0') {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "integer literal must not have leading zeros"
-            );
-        }
-        this.cursor = idx;
-        return new Value(
-            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
-        );
+        return this.integer(this.readDigits());
     }
 
     /**
@@ -450,7 +418,7 @@ final class Tokens {
      */
     boolean reversedAhead(final Value head) {
         final boolean result;
-        if (head.reversible() && !this.atEnd() && this.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !this.atEnd() && this.dispatchAhead()) {
             final int skip;
             if (this.current() == '?') {
                 skip = 2;
@@ -646,6 +614,66 @@ final class Tokens {
             idx = idx + 1;
         }
         return idx;
+    }
+
+    private Value readDigits() {
+        final int start = this.cursor;
+        int idx = start;
+        final boolean sign = idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
+        if (sign) {
+            idx = idx + 1;
+        }
+        final int from = idx;
+        while (Tokens.digitAt(this.body, idx)) {
+            idx = idx + 1;
+        }
+        if (sign && Tokens.letterAt(this.body, idx)) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
+        }
+        if (idx == from) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                "invalid signed-number literal"
+            );
+        }
+        this.cursor = idx;
+        return new Value(
+            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
+        );
+    }
+
+    private Value integer(final Value digits) {
+        final String raw = digits.raw();
+        final int from;
+        if (raw.charAt(0) == '+' || raw.charAt(0) == '-') {
+            from = 1;
+        } else {
+            from = 0;
+        }
+        if (raw.length() - from >= 2 && raw.charAt(from) == '0') {
+            throw new ParseError(
+                this.span.line(), digits.pos(),
+                "integer literal must not have leading zeros"
+            );
+        }
+        return digits;
+    }
+
+    private boolean fractional() {
+        int idx = this.cursor;
+        if (idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-')) {
+            idx = idx + 1;
+        }
+        while (Tokens.digitAt(this.body, idx)) {
+            idx = idx + 1;
+        }
+        return idx < this.body.length() && this.body.charAt(idx) == '.'
+            && Tokens.digitAt(this.body, idx + 1);
     }
 
     private static int clamped(final int pos, final Span source) {
@@ -922,12 +950,6 @@ final class Tokens {
         return idx + 1 < this.body.length()
             && Tokens.byteDigit(this.body.charAt(idx))
             && Tokens.byteDigit(this.body.charAt(idx + 1));
-    }
-
-    private boolean dottedDigit() {
-        return this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '.'
-            && Tokens.digitAt(this.body, this.cursor + 1);
     }
 
     private boolean plusArrow() {

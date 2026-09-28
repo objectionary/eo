@@ -43,7 +43,7 @@ public final class MjParse extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Parsing(
                 tojos,
-                this.targetDir.toPath(),
+                this.target.toPath(),
                 this.sourcesDir.toPath(),
                 this.caching(Parsing.CACHE)
             ).exec();
