@@ -179,7 +179,7 @@ public final class MjTranspile extends MjSafe {
                     this.target.toPath(),
                     new Written(this.generated.toPath(), this.tests, this.roots()),
                     new Transpilation(
-                        new Tracking(this.trackSteps, this.located),
+                        new Tracking(this.tracking, this.located),
                         this.coverage,
                         this.base(),
                         this.measures.toPath(),
@@ -238,7 +238,7 @@ public final class MjTranspile extends MjSafe {
     // `Transpiling` folds it in per file.
     private GlobalCache stored() {
         final GlobalCache store;
-        if (this.trackSteps) {
+        if (this.tracking) {
             store = new GlobalCache.GcFresh();
         } else {
             store = this.caching(Transpiling.CACHE);

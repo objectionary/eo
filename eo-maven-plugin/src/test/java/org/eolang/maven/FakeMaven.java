@@ -183,7 +183,7 @@ final class FakeMaven {
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("skipZeroVersions", true);
             this.params.putIfAbsent("cacheEnabled", true);
-            this.params.putIfAbsent("discoverSelf", false);
+            this.params.putIfAbsent("discover", false);
             this.params.putIfAbsent("ignoreConflicts", false);
             this.params.putIfAbsent("central", new DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
@@ -214,7 +214,7 @@ final class FakeMaven {
                 "objectionary",
                 new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
             );
-            this.params.putIfAbsent("rewriteBinaries", true);
+            this.params.putIfAbsent("rewrite", true);
             this.params.putIfAbsent("offline", false);
             this.params.putIfAbsent("classes", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
