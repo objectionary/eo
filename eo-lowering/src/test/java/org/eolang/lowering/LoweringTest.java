@@ -63,7 +63,7 @@ final class LoweringTest {
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
-                    "entries.xmir", "voids.tsv", "entries.tsv",
+                    "sources", "entries.xmir", "voids.tsv", "entries.tsv",
                     "world.phi", "atoms.yaml", "protocol.xml"
                 )
             );

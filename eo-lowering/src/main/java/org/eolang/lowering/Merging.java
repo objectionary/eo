@@ -20,8 +20,9 @@ import org.cactoos.iterable.Sorted;
  * object of another file has to find that object where it stands, so the
  * XMIR files of the build and the entries are joined into a single
  * document, and it is that document, and never a file of it, that the
- * evaluation is asked about. The tests of an object stay in it, since an
- * object and what is said about it are one document in this compiler.</p>
+ * evaluation is asked about. The sources that arrive here are the copies
+ * the pruning wrote, with the tests cut out, so the world holds the
+ * objects and nothing that is said about them.</p>
  *
  * <p>There is one call and no second one, because the number an entry
  * carries means nothing outside the one world it was written for. The
@@ -36,7 +37,7 @@ import org.cactoos.iterable.Sorted;
 final class Merging implements Stage {
 
     /**
-     * The XMIR files of the build.
+     * The XMIR files of the build, with their tests cut out.
      */
     private final Collection<Path> sources;
 
@@ -53,7 +54,7 @@ final class Merging implements Stage {
     /**
      * Ctor.
      *
-     * @param srcs The XMIR files of the build
+     * @param srcs The XMIR files of the build, with their tests cut out
      * @param dir The directory where the lowering keeps what it makes
      * @param exe The binary that merges
      */

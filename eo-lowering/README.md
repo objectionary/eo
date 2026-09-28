@@ -12,6 +12,8 @@ The whole world of a build goes through the external `phino` binary in one
 run, and what comes back is a protocol of every operation that fired, which
 becomes the body of one generated Java class per folded formation.
 
-Nothing is folded yet. The pipeline is five stages: the first of them plants
-the entries of the build, and the puzzle in each of the other four says what
-it will do.
+Nothing is folded yet. The pipeline is six stages: the tests are cut out of
+the sources, since each of them is a program of its own and not part of the
+world, the entries are planted, the world is merged, the run is made, and the
+puzzle in each of the last two says how the sources will be patched and the
+Java rendered.

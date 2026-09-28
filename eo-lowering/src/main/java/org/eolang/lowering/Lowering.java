@@ -18,9 +18,10 @@ import org.cactoos.list.ListOf;
  * <p>Lowering happens over the whole world at once, and not a file at a
  * time, because a formation of one file is copied by objects of another
  * and the calculus has to see all of them together. So the stages here
- * are not a chain of independent tools: the first of them numbers every
- * formation of the build, and every stage after it speaks of a formation
- * by that number alone.</p>
+ * are not a chain of independent tools: the first of them cuts the tests
+ * out of every source, the second numbers every formation of what is
+ * left, and every stage after that speaks of a formation by that number
+ * alone.</p>
  *
  * <p>Nothing on the way is optional. A stage that cannot read what the
  * one before it wrote, a binary of the wrong version, a run that reaches
@@ -121,9 +122,12 @@ public final class Lowering {
             this.phino
         );
         Files.createDirectories(this.home);
+        final Pruning pruning = new Pruning(this.sources, this.home);
+        final Collection<Path> pruned = pruning.paths();
         for (final Stage stage : new ListOf<Stage>(
-            new Planting(this.sources, this.tables, this.home),
-            new Merging(this.sources, this.home, this.phino),
+            pruning,
+            new Planting(pruned, this.tables, this.home),
+            new Merging(pruned, this.home, this.phino),
             new Running(this.home, this.phino),
             new Patching(this.home),
             new Rendering(this.home)
