@@ -222,10 +222,10 @@ final class EoSyntaxTest {
     void reportsDeeplyNestedFormationsInsteadOfOverflowing() throws Exception {
         MatcherAssert.assertThat(
             "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
-            new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2))).parsed(),
-            XhtmlMatchers.hasXPaths(
-                "/object/errors/error[contains(text(),'nested deeper than')]"
-            )
+            new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
+                .parsed()
+                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
         );
     }
 
