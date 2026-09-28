@@ -60,6 +60,7 @@ final class JavaFiles {
 
     /**
      * Ctor.
+     *
      * @param dir Generated sources directory
      */
     JavaFiles(final Path dir) {
@@ -70,6 +71,7 @@ final class JavaFiles {
 
     /**
      * Generate java files and count them.
+     *
      * @param rewrite Rewrite .java files even if they exist
      * @param target Full target path to XMIR after transpilation optimizations
      * @param hsh Tojo hash

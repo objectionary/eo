@@ -37,6 +37,7 @@ final class Dotted {
 
     /**
      * Ctor.
+     *
      * @param text The path, as the source wrote it
      */
     Dotted(final String text) {
@@ -45,6 +46,7 @@ final class Dotted {
 
     /**
      * Whether the path names a segment that is not there.
+     *
      * @return True if a dot of it introduces nothing
      */
     boolean broken() {

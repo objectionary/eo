@@ -9,9 +9,10 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
++version 0.0.0
 
 [^] > naturals
   if. > @
@@ -28,9 +29,16 @@
           ^.build > next
             1.plus @
       ^.end
-    T
-      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
-        * ^.start ^.end
+    T complaint
+  printf. > complaint
+    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s"
+    *
+      printed ^.start
+      printed ^.end
+  num.is-finite.if > [num] > printed
+    "%f".printf
+      * num
+    string num.as-scientific
   2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives
@@ -83,6 +91,18 @@
       7
       8
       9
+
+  eq. ++> can-name-a-fractional-bound-in-its-complaint
+    complaint.
+      naturals.
+        range 0.5 2
+    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were 0.500000 and 2.000000"
+
+  eq. ++> can-name-a-non-finite-bound-in-its-complaint
+    complaint.
+      naturals.
+        range pinf 0
+    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were infinity and 0.000000"
 
   naturals. --> rejects-a-fractional-lower-bound
     range

@@ -60,9 +60,9 @@ public final class MjResolve extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Resolving(
                 tojos,
-                this.targetDir.toPath().resolve(MjResolve.DIR),
+                this.target.toPath().resolve(MjResolve.DIR),
                 this.central,
-                this.discoverSelf,
+                this.discover,
                 this.skipZeroVersions,
                 this.resolveJna,
                 this.ignoreRuntime,

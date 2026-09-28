@@ -27,7 +27,7 @@
   </xsl:function>
   <xsl:function name="eo:test-attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="starts-with($o/@name, '+') or starts-with($o/@name, '-')"/>
+    <xsl:sequence select="starts-with($o/@name, $eo:positive) or starts-with($o/@name, $eo:negative)"/>
   </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
@@ -123,9 +123,10 @@
     <xsl:variable name="decimal" select="sum(for $i in 1 to $length return (index-of($hex-digits, string-to-codepoints(substring($hex-upper, $i, 1))) - 1) * math:pow(16, $length - $i))"/>
     <xsl:value-of select="xs:int($decimal)"/>
   </xsl:function>
-  <!-- Escape `+` in test name syntax. -->
-  <xsl:function name="eo:escape-plus" as="xs:string">
+  <!-- Strip the test marker prefix out of a name or of a locator. -->
+  <xsl:function name="eo:unmarked" as="xs:string">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="if (contains($name, '+')) then concat(substring-before($name, '+'), substring-after($name, '+')) else $name"/>
+    <xsl:variable name="marker" select="if (contains($name, $eo:positive)) then $eo:positive else $eo:negative"/>
+    <xsl:sequence select="if (contains($name, $marker)) then concat(substring-before($name, $marker), substring-after($name, $marker)) else $name"/>
   </xsl:function>
 </xsl:stylesheet>

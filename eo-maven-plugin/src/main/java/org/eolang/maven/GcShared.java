@@ -37,6 +37,7 @@ final class GcShared implements GlobalCache {
 
     /**
      * Ctor.
+     *
      * @param dir Directory of this step inside the machine-wide cache
      * @param key The segment that tells one compiler output from another
      */
@@ -46,6 +47,7 @@ final class GcShared implements GlobalCache {
 
     /**
      * Ctor.
+     *
      * @param dir Directory of this step inside the machine-wide cache
      * @param key The segment that tells one compiler output from another
      * @param guard Guard shared with the cache this one was derived from

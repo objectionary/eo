@@ -51,6 +51,7 @@ final class Seen {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table
      */
     Seen(final XML provides) {
@@ -59,6 +60,7 @@ final class Seen {
 
     /**
      * What was seen going into every void.
+     *
      * @return The witnesses, by the locator of the void
      */
     Map<String, Collection<Type>> all() {
@@ -90,9 +92,6 @@ final class Seen {
         if (Seen.holds(told, "data")) {
             found.add(new Data());
         }
-        if (Seen.holds(told, "unknown")) {
-            found.add(new Unknown());
-        }
         return found;
     }
 
@@ -108,7 +107,7 @@ final class Seen {
     }
 
     private static List<Xnav> listed(final Xnav node) {
-        return Seen.choices(node, "ref", "var", "data", "unknown");
+        return Seen.choices(node, "ref", "var", "data");
     }
 
     private static List<Xnav> choices(final Xnav node, final String... names) {

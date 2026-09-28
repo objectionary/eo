@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -31,6 +30,18 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * {@link MjAssemble}, {@link MjParse} or {@link MjPull} goals.
  * The resulting Java files are stored in the {@link Transpiling#DIR} directory.
  * The intermediate optimized XMIRs are stored in the {@link Transpiling#PRE} directory.</p>
+ *
+ * <p>Before anything is written, the members of every package this build
+ * compiles an object for are put inside that object, the way {@link MjMerge}
+ * does it. The two are the same step and running both changes nothing, since
+ * {@link Merging} leaves a merged member alone; it is done here as well
+ * because the shape of an object decides the name of the Java class of every
+ * atom it holds, and a build that skipped the goal would name classes that
+ * the library it compiles against does not carry. An atom
+ * {@code string.foo.bar} ships as {@code EOstring$EOfoo$EObar}, which is
+ * where it lands once {@code foo} is an attribute of {@code string}, and
+ * nowhere near the {@code org.eolang.EO_string} package an unmerged
+ * {@code +package string} would compile it into (#8295).</p>
  *
  * @since 0.1
  */
@@ -160,18 +171,20 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
             new Timed(
+                new Merging(tojos, this.target.toPath().resolve(Merging.DIR))
+            ).exec();
+            new Timed(
                 new Transpiling(
                     tojos.standalone(),
-                    this.targetDir.toPath(),
-                    new Written(this.generatedDir.toPath(), this.tests, this.roots()),
+                    this.target.toPath(),
+                    new Written(this.generated.toPath(), this.tests, this.roots()),
                     new Transpilation(
-                        new Tracking(this.trackSteps, this.located),
+                        new Tracking(this.tracking, this.located),
                         this.coverage,
                         this.base(),
-                        this.xslMeasures.toPath(),
-                        this.targetDir.toPath(),
-                        this.tables.toPath(),
-                        this.lowered()
+                        this.measures.toPath(),
+                        this.target.toPath(),
+                        this.tables.toPath()
                     ),
                     this.stored()
                 )
@@ -179,13 +192,13 @@ public final class MjTranspile extends MjSafe {
         }
         if (this.attach) {
             this.project.addCompileSourceRoot(
-                this.generatedDir.toPath().toAbsolutePath().toString()
+                this.generated.toPath().toAbsolutePath().toString()
             );
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
+                this.generated
             );
-            final String gtests = this.generatedDir.toPath().getParent().resolve(
+            final String gtests = this.generated.toPath().getParent().resolve(
                 "generated-test-sources"
             ).toAbsolutePath().toString();
             this.project.addTestCompileSourceRoot(gtests);
@@ -197,26 +210,11 @@ public final class MjTranspile extends MjSafe {
     }
 
     private Collection<Path> roots() {
-        final Path build = this.targetDir.toPath().getParent();
+        final Path build = this.target.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
             .collect(Collectors.toList());
-    }
-
-    // What MjLower left in its marker file, or the empty string when it
-    // skipped or was disabled: whether the XMIR of this build was folded
-    // through phino changes the generated Java, so it belongs in the
-    // cache key that Transpilation.version() makes.
-    private String lowered() throws IOException {
-        final Path marker = this.targetDir.toPath()
-            .resolve(Lowering.DIR)
-            .resolve(Lowering.MARKER);
-        String content = "";
-        if (Files.exists(marker)) {
-            content = Files.readString(marker).trim();
-        }
-        return content;
     }
 
     private String base() {
@@ -240,7 +238,7 @@ public final class MjTranspile extends MjSafe {
     // `Transpiling` folds it in per file.
     private GlobalCache stored() {
         final GlobalCache store;
-        if (this.trackSteps) {
+        if (this.tracking) {
             store = new GlobalCache.GcFresh();
         } else {
             store = this.caching(Transpiling.CACHE);

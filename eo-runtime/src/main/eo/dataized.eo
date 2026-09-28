@@ -33,12 +33,11 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [] > dataized /Q.bytes
-  ? > ^
   ? > target
 
   ++> can-avoid-recalculation
@@ -50,7 +49,7 @@
             as-number.
               func >> cached!
             cached.as-bytes
-            cached.as-bool
+            cached.size
             m
           ^.m.put > [^] > func
             ^.m.as-number.plus 1

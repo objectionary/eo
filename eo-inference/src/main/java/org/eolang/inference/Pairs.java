@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.w3c.dom.Node;
 
 /**
@@ -53,6 +54,7 @@ final class Pairs {
 
     /**
      * Ctor.
+     *
      * @param links The links table
      */
     Pairs(final XML links) {
@@ -196,6 +198,11 @@ final class Pairs {
      * gathered per void and not per row, since a void filled with a
      * {@code number} at eleven call sites was filled one way eleven times.</p>
      *
+     * <p>An arm of a choice is a copy too, and what it put in counts the
+     * same: the {@code ok} of a call that came back with either of two
+     * records hangs off whichever record it was, and the receiver of that
+     * {@code ok} was filled by both (#8885).</p>
+     *
      * @return The locators of what went in, by the locator of the void, in the
      *  order the table names them, without the binds that put nothing
      */
@@ -204,13 +211,51 @@ final class Pairs {
         for (final Xnav row : this.rows()) {
             final Optional<Xnav> ref = Pairs.ref(row);
             if (ref.isPresent()) {
-                ref.get().elements(Filter.withName("bind")).forEach(
+                Stream.concat(
+                    Stream.of(ref.get()),
+                    ref.get().elements(Filter.withName("union"))
+                        .flatMap(union -> union.elements(Filter.withName("ref")))
+                ).flatMap(arm -> arm.elements(Filter.withName("bind"))).forEach(
                     bind -> Pairs.ref(bind).ifPresent(
                         put -> found.computeIfAbsent(
                             new Noted(bind).says("void"), key -> new LinkedHashSet<>(0)
                         ).add(new Noted(put).says("loc"))
                     )
                 );
+            }
+        }
+        return found;
+    }
+
+    /**
+     * The arms of every row that comes back with one of several objects.
+     *
+     * <p>A call on a void that holds a picker is answered by whatever the call
+     * put there, and where the arms agree on nothing the row says so by naming
+     * all of them (#8744). That is a real answer and no rung can show it: the
+     * walk still ended at the void, so a row naming both arms stands where a
+     * row naming nothing stands. Whoever counts the program is handed the arms
+     * separately for that reason (#8854).</p>
+     *
+     * <p>A row holding one answer is no choice and is left out, so what comes
+     * back is only the rows there is something extra to say about.</p>
+     *
+     * @return The arms, by the locator of the object the row is about, without
+     *  the rows that came back with one object or none
+     */
+    Map<String, Collection<Type>> arms() {
+        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent()) {
+                final Collection<Type> chosen = ref.get()
+                    .elements(Filter.withName("union"))
+                    .flatMap(union -> union.elements(Filter.withName("ref")))
+                    .map(arm -> (Type) new Ref(new Noted(arm).says("loc")))
+                    .collect(Collectors.toList());
+                if (!chosen.isEmpty()) {
+                    found.put(new Noted(row).says("id"), chosen);
+                }
             }
         }
         return found;

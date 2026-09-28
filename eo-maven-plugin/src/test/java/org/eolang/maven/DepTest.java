@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Dep}.
+ *
  * @since 0.56.9
  */
 final class DepTest {

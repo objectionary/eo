@@ -7,13 +7,12 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;
 import org.hamcrest.MatcherAssert;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjFormat}.
+ *
  * @since 0.57.0
  */
 @ExtendWith(MktmpResolver.class)
@@ -112,72 +112,76 @@ final class MjFormatTest {
 
     @Test
     void failsWhenSourceDoesNotParse(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjFormatTest.unparsable())
-                .execute(MjFormat.class),
-            "a source that fails to parse must not be silently formatted"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "the failure must explain that the source does not fully parse",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjFormatTest.unparsable())
+                            .execute(MjFormat.class),
+                        "a source that fails to parse must not be silently formatted"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("does not fully parse")
         );
     }
 
     @Test
     void failsWhenErrorRecoveredWithPlaceholder(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjFormatTest.placeholder())
-                .execute(MjFormat.class),
-            "a source recovered with a placeholder node must not be silently formatted"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "the failure must explain that the source does not fully parse",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjFormatTest.placeholder())
+                            .execute(MjFormat.class),
+                        "a source recovered with a placeholder node must not be silently formatted"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("does not fully parse")
         );
     }
 
     @Test
     void failsWhenErrorRecoveredByDroppingABinding(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjFormatTest.droppedBinding())
-                .execute(MjFormat.class),
-            "a source recovered by dropping a whole binding must not be silently formatted"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "the failure must explain that the source does not fully parse",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjFormatTest.droppedBinding())
+                            .execute(MjFormat.class),
+                        "a source recovered by dropping a whole binding must not be silently formatted"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("does not fully parse")
         );
     }
 
     @Test
     void failsWhenNameOnlyLivesInAnEnclosingScope(@Mktmp final Path temp) {
-        final IllegalStateException exception = Assertions.assertThrows(
-            IllegalStateException.class,
-            () -> new FakeMaven(temp)
-                .withProgram(MjFormatTest.enclosing())
-                .execute(MjFormat.class),
-            "a name reachable only through the parent must not be silently formatted"
-        );
-        final StringWriter writer = new StringWriter();
-        exception.printStackTrace(new PrintWriter(writer));
         MatcherAssert.assertThat(
             "the failure must explain that the source does not fully parse",
-            writer.toString(),
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjFormatTest.enclosing())
+                            .execute(MjFormat.class),
+                        "a name reachable only through the parent must not be silently formatted"
+                    )
+                )
+            ).asString(),
             Matchers.containsString("does not fully parse")
         );
     }

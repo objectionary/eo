@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link GcShared}.
+ *
  * @since 0.74
  */
 @ExtendWith(MktmpResolver.class)

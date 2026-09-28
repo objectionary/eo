@@ -86,6 +86,21 @@ final class MjMergeTest {
     }
 
     @Test
+    void leavesAMergedMemberAloneWhenMergedAgain(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a member already inside its object must not arrive there a second time, since MjTranspile merges too",
+            new XMLDocument(
+                MjMergeTest.merged(temp)
+                    .execute(MjMerge.class)
+                    .foreignTojos()
+                    .find("foo")
+                    .xmir()
+            ).nodes("/object/o[@name='foo']/o[@name='bar']").size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
     void leavesAPackageWithoutAnObjectAlone(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a package no object is named after has nothing to merge into, so nothing may be written",

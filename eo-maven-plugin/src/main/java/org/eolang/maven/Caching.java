@@ -35,6 +35,7 @@ final class Caching {
 
     /**
      * Ctor.
+     *
      * @param home The machine-wide cache directory, as configured by the user
      * @param able Whether caching is enabled at all
      * @param ver The version that tells one compiler output from another
@@ -47,6 +48,7 @@ final class Caching {
 
     /**
      * The cache of one step.
+     *
      * @param sub Directory of that step inside the machine-wide cache
      * @return The cache of that step
      */

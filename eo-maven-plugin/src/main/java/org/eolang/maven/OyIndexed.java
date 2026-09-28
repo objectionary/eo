@@ -13,6 +13,7 @@ import org.cactoos.scalar.ScalarWithFallback;
 
 /**
  * Objectionary with index.
+ *
  * @since 0.29
  */
 final class OyIndexed implements Objectionary {
@@ -29,6 +30,7 @@ final class OyIndexed implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param objectionary Objectionary
      */
     OyIndexed(final Objectionary objectionary) {
@@ -37,6 +39,7 @@ final class OyIndexed implements Objectionary {
 
     /**
      * Ctor.
+     *
      * @param objectionary Objectionary
      * @param index Index
      */

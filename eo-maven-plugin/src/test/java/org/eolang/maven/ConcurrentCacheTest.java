@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link ConcurrentCache}.
+ *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)

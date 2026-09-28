@@ -3,6 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 3
+message: |-
+  [3:2] error: 'a pipe must follow a named formation or another pipe'
+    | 6 > n
+    ^
 input: |
   [] > app
     5 > five

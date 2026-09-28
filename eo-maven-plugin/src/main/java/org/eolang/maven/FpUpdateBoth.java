@@ -11,12 +11,14 @@ import org.cactoos.text.TextOf;
 
 /**
  * Footprint that updates target from content function and updates cache from target.
+ *
  * @since 0.41
  */
 final class FpUpdateBoth extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param origin Original footprint that updates target from source
      * @param cache Lazy path to cache
      */

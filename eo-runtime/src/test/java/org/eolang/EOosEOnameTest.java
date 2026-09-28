@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link EOos$EOname}.
+ *
  * @since 0.40
  */
 final class EOosEOnameTest {
