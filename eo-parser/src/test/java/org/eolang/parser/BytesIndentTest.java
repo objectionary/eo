@@ -12,6 +12,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link BytesIndent}.
+ *
  * @since 0.1
  */
 final class BytesIndentTest {
