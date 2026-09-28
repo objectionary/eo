@@ -219,6 +219,17 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void reportsDeeplyNestedFormationsInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2))).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[contains(text(),'nested deeper than')]"
+            )
+        );
+    }
+
+    @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = "[] > x-н, 1".concat(String.valueOf((char) 10));
         MatcherAssert.assertThat(
@@ -949,5 +960,18 @@ final class EoSyntaxTest {
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
         );
+    }
+
+    private static String nested(final int depth) {
+        final String eol = String.format("%n");
+        final StringBuilder source = new StringBuilder(depth * 16)
+            .append("[] > top").append(eol);
+        for (int level = 1; level <= depth; level = level + 1) {
+            for (int indent = 0; indent < level; indent = indent + 1) {
+                source.append("  ");
+            }
+            source.append("[] > n").append(level).append(eol);
+        }
+        return source.toString();
     }
 }
