@@ -93,8 +93,7 @@
         or.
           or.
             base.size.eq 0
-          index.eq -1
-          index.eq 0
+            index.eq -1
           or.
             index.eq 0
             base.eq ".."
