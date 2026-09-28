@@ -234,28 +234,26 @@
     <xsl:sequence select="exists(key('local-head', $name, root($target))[contains(@base, concat($name, '.'))][.. is $target/..][not(. is $target)])"/>
   </xsl:function>
   <!--
-  Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
-  R-3.10.12) that is referenced more than once. "const-to-dataized" wraps such
-  a const in a `.as-bytes` over `Φ.dataized` node carrying the obfuscated
-  cactus @name together with the readable "@local" handle that qualifies it
-  (#8738).
-  A const is dataized once and cached in that single binding, so every
-  reference shares one const object; inlining it per use (as "inline-cactoos"
-  does for a single-use const, #5821, or a referentially-transparent non-const
-  handle, #5810) would mint an independent const object at each site and drop
-  the shared name. Its "@local" marker is therefore kept here so the surviving
-  binding still prints its readable `&gt;&gt; b` handle; the binding itself
-  stays cactus-named for "merge-monikers" to fold onto its first reference
-  (#5828). A reference reaches the handle either bare (`ξ.b`) or through a
-  method dispatch (`ξ.b.seg`, e.g. `b.gte 1`, #5883), so both spellings are
-  counted — exactly as "eo:multi-referenced" does; counting only the bare shape
-  would leave a handle whose sibling reference is a dispatch looking
-  single-use, dropping "@local" and stranding that dispatch on a synthetic
-  "vL_P" placeholder.
+  Whether "$wrapper" is the dataized-const shell of a file-local handle
+  (`a &gt;&gt; b!`, R-3.10.12): the `.as-bytes` over `Φ.dataized` node
+  "const-to-dataized" wraps such a const in, carrying the obfuscated cactus
+  "@name" together with the readable "@local" handle that qualifies it
+  (#8738). A const is dataized once and cached in that single binding, so
+  every reference shares one const object; inlining it per use (as
+  "inline-cactoos" does for a single-use const, #5821, or a
+  referentially-transparent non-const handle, #5810) would mint an independent
+  const object at each site and drop the shared name. Such a shell keeps its
+  "@local" marker here at any use count, whatever spelling the references
+  take — bare (`ξ.b`), a method dispatch (`ξ.b.seg`, e.g. `b.gte 1`, #5883) or
+  none at all: a binding that outlives "inline-cactoos" needs the handle to
+  print its readable `&gt;&gt; b`, and one that does not sheds "@local" with
+  the cactus "@name" as it folds, so keeping the marker costs the inlined
+  shape nothing. The binding itself stays cactus-named for "merge-monikers"
+  to fold onto its first reference (#5828).
   -->
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
-    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($wrapper/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
+    <xsl:sequence select="exists($wrapper[@base='.as-bytes'][@name][@local][o[1][@base='Φ.dataized']])"/>
   </xsl:function>
   <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
@@ -321,7 +319,7 @@
   handle reached by a further application (see "eo:reapplied") — left standing
   by "inline-cactoos", having no inline spelling as the head of another
   application (#5952) — and on the wrapper of a
-  multi-referenced dataized-const handle (see
+  dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
   handle; drop it on the other non-void formations, whose handle is inlined
   away by "inline-cactoos".
