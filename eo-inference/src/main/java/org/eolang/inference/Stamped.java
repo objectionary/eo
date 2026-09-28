@@ -74,8 +74,24 @@ final class Stamped {
      *  string when the copy it reaches has a receiver already
      */
     String names(final String dispatch) {
+        return this.lands(this.pairs.getOrDefault(dispatch, ""));
+    }
+
+    /**
+     * The object the receiver lands on when the dispatch comes back as this.
+     *
+     * <p>A dispatch that comes back with one of several objects hands its
+     * receiver to whichever of them it comes back with, and the walk down the
+     * chain of copies starts at that arm, where it starts at the pair of a
+     * dispatch that comes back with one (#8885).</p>
+     *
+     * @param arm The locator of what the dispatch comes back as
+     * @return The locator of the object whose receiver it fills, or an empty
+     *  string when the copy it reaches has a receiver already
+     */
+    String lands(final String arm) {
         final Collection<String> seen = new HashSet<>(0);
-        String walked = this.pairs.getOrDefault(dispatch, "");
+        String walked = arm;
         while (this.owned.receiver(walked).isEmpty() && !this.dotted(walked)
             && this.pairs.containsKey(walked) && seen.add(walked)) {
             walked = this.pairs.get(walked);

@@ -70,20 +70,6 @@ final class Puts {
     }
 
     /**
-     * Whether any call of the program puts anything into this void.
-     *
-     * <p>A void nobody fills terminates the moment it is read, and a void the
-     * callers fill holds whatever they put there. The two read alike in a
-     * locator and are worlds apart in what an arm rooted at one is worth.</p>
-     *
-     * @param hollow The locator of the void
-     * @return True when at least one call of the program fills it
-     */
-    boolean fills(final String hollow) {
-        return this.holds.containsKey(hollow);
-    }
-
-    /**
      * Whether this filling never comes back with a value.
      *
      * @param filling The locator of what a call put in

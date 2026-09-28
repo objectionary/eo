@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * What a call hands back, where every formation it reaches hands back what the
@@ -31,25 +30,23 @@ import java.util.function.Predicate;
  * formation binds. What the call put in says which it is: a body that is one
  * of the arguments is a void wearing the argument's name.</p>
  *
- * <p>An arm rooted at a void this call leaves empty is left out of the
- * agreement. Reading a void nobody filled terminates, so that arm never hands
- * a value to anyone, and a caller holding one got it from another arm. Every
- * fragile object is written this way, with the excuse in one arm and the
- * answer in the other, and the callers who want the answer fill nothing.</p>
+ * <p>An arm rooted at a void this call leaves empty counts like any other.
+ * The call does not fill that void, but whoever called the object the arm
+ * sits in did: the {@code made} of a {@code directory} hands back its own
+ * receiver in one arm and a {@code seq} in the other, and the {@code if} that
+ * chooses between them fills neither the receiver nor what the first arm asks
+ * of it. Dropping that arm left the {@code seq} standing and the agreement was
+ * the {@code seq}, which is a lie told about every caller who got the
+ * directory back. Nor is it dropped where nobody in the program fills the
+ * void, since the program is not every caller there will be. So the arm stays
+ * in the agreement and in the choice alike, and where it shares nothing with
+ * the other arms the call is a choice of all of them (#8885).</p>
  *
- * <p>Left out of the agreement, though, and not out of the choice. A void this
- * call leaves empty is one another call of the same object fills, and then the
- * arm does hand a value to somebody. Dropping it left one arm standing and the
- * agreement was that arm, which is a lie told about every caller who took the
- * other one (#8875). So the whole of what the call may come back with counts
- * an arm as long as anybody fills the void it reads, and only an arm nobody
- * anywhere fills is gone for good.</p>
- *
- * <p>An arm that terminates is gone from both. It is not rooted at a void, so
- * nothing above says it hands nothing back, and yet it never does: the
- * {@code tmpfile} of a {@code directory} is a {@code Φ.file} in one arm and an
- * error in the other, and no caller ever holds the error. Left in, it agrees
- * with nothing, and the call was left rooted at the void it was (#8946).</p>
+ * <p>An arm that terminates is gone from both, since it never hands a value
+ * back: the {@code tmpfile} of a {@code directory} is a {@code Φ.file} in one
+ * arm and an error in the other, and no caller ever holds the error. Left in,
+ * it agrees with nothing, and the call was left rooted at the void it was
+ * (#8946).</p>
  *
  * @since 0.71.0
  */
@@ -66,11 +63,6 @@ final class Branched {
     private final Map<String, String> binds;
 
     /**
-     * The locator of every void.
-     */
-    private final Collection<String> hollows;
-
-    /**
      * What the calls of the program put into its voids.
      */
     private final Puts every;
@@ -81,18 +73,11 @@ final class Branched {
      * @param provided What the types certainly have
      * @param filled What the call put into the voids, by the locator of the
      *  void
-     * @param voids The locator of every void, from {@link Hollows}
      * @param puts What the calls of the program put into its voids
      */
-    Branched(
-        final Provided provided,
-        final Map<String, String> filled,
-        final Collection<String> voids,
-        final Puts puts
-    ) {
+    Branched(final Provided provided, final Map<String, String> filled, final Puts puts) {
         this.owned = provided;
         this.binds = filled;
-        this.hollows = voids;
         this.every = puts;
     }
 
@@ -118,25 +103,6 @@ final class Branched {
      *  body of its own
      */
     Collection<String> arms() {
-        return this.handed(arm -> false);
-    }
-
-    /**
-     * The whole of what the call may come back with, one arm apiece.
-     *
-     * <p>Unlike {@link #arms()}, an arm rooted at a void this call leaves empty
-     * is kept, as long as some call of the program fills it. Nothing about this
-     * call says which arm it comes back with, and an arm another caller gets a
-     * value out of is one this caller may get a value out of too (#8875).</p>
-     *
-     * @return The locators, empty when a formation this call reaches binds a
-     *  body of its own
-     */
-    Collection<String> whole() {
-        return this.handed(this::filled);
-    }
-
-    private Collection<String> handed(final Predicate<String> alive) {
         final Collection<String> handed = new LinkedHashSet<>(0);
         for (final Map.Entry<String, Map<String, String>> owner : this.owners().entrySet()) {
             final Collection<String> given = this.given(owner.getKey(), owner.getValue());
@@ -144,15 +110,10 @@ final class Branched {
                 handed.clear();
                 break;
             }
-            given.removeIf(arm -> !this.stands(arm) && !alive.test(arm));
             given.removeIf(this.every::dies);
             handed.addAll(given);
         }
         return handed;
-    }
-
-    private boolean filled(final String arm) {
-        return this.every.fills(new Rooted(this.hollows).names(arm));
     }
 
     private Map<String, Map<String, String>> owners() {
@@ -181,10 +142,5 @@ final class Branched {
     private boolean hands(final String owner, final Map.Entry<String, String> bind) {
         final String body = this.owned.behind(owner);
         return body.equals(bind.getKey()) || body.equals(bind.getValue());
-    }
-
-    private boolean stands(final String arm) {
-        final String root = new Rooted(this.hollows).names(arm);
-        return root.isEmpty() || this.binds.containsKey(root);
     }
 }
