@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Answers}.
+ *
  * @since 0.70.0
  */
 final class AnswersTest {
@@ -185,10 +186,135 @@ final class AnswersTest {
         );
     }
 
+    @Test
+    void answersWithTheNameATypeBehavesAs() {
+        final Map<String, Collection<Map<String, String>>> rows = new LinkedHashMap<>(0);
+        final Map<String, String> alias = new LinkedHashMap<>(0);
+        alias.put("id", "Φ.bytes.as-bytes");
+        alias.put("complete", "true");
+        alias.put("reduced", "Φ.bytes");
+        rows.put("Φ.bytes.as-bytes", Collections.singletonList(alias));
+        MatcherAssert.assertThat(
+            "an as-bytes has nothing of its own, so it must answer as bytes, but it kept its name",
+            new Answers(
+                rows, Collections.emptyMap(), Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.bytes.as-bytes", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.bytes")
+        );
+    }
+
+    @Test
+    void keepsTheRungOfTheTypeItArrivedAt() {
+        final Map<String, Collection<Map<String, String>>> rows = new LinkedHashMap<>(0);
+        final Map<String, String> alias = new LinkedHashMap<>(0);
+        alias.put("id", "Φ.bytes.as-bytes");
+        alias.put("complete", "true");
+        alias.put("reduced", "Φ.bytes");
+        rows.put("Φ.bytes.as-bytes", Collections.singletonList(alias));
+        final Map<String, String> whole = new LinkedHashMap<>(0);
+        whole.put("id", "Φ.bytes");
+        whole.put("complete", "true");
+        final Map<String, String> hollow = new LinkedHashMap<>(0);
+        hollow.put("name", "data");
+        hollow.put("void", "true");
+        hollow.put("type", "Φ.bytes.data");
+        rows.put("Φ.bytes", Arrays.asList(whole, hollow));
+        MatcherAssert.assertThat(
+            "an as-bytes has no void left free, but it was counted as wanting one",
+            new Answers(
+                rows, Collections.emptyMap(), Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.bytes.as-bytes", Collections.emptyList()).rung(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void answersAVoidWithWhatItSaysItHolds() {
+        MatcherAssert.assertThat(
+            "a void that says it holds a number must answer that it is one, but it didnt",
+            new Answers(
+                AnswersTest.holding("Φ.number.minus", "ρ", "Φ.number"),
+                Collections.singletonMap(
+                    "Φ.number.minus.ρ", Collections.singletonList(new Unknown())
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.number.minus.ρ", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.number")
+        );
+    }
+
+    @Test
+    void prefersWhatAVoidSaysItHoldsOverWhatWasPutInIt() {
+        final Map<String, Collection<Map<String, String>>> rows =
+            AnswersTest.holding("Φ.number.div", "x", "Φ.number");
+        rows.putAll(AnswersTest.formation("Φ.bytes"));
+        MatcherAssert.assertThat(
+            "a void saying it holds a number cannot be the bytes put there, but it was",
+            new Answers(
+                rows,
+                Collections.singletonMap(
+                    "Φ.number.div.x", Collections.singletonList(new Ref("Φ.bytes"))
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.number.div.x", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.number")
+        );
+    }
+
+    @Test
+    void readsAVoidThatMayTerminateAsTheTypeAlone() {
+        MatcherAssert.assertThat(
+            "a void holding a number or a termination must answer as a number, but it didnt",
+            new Answers(
+                AnswersTest.holding("Φ.number.minus", "ρ", "Φ.number?"),
+                Collections.singletonMap(
+                    "Φ.number.minus.ρ", Collections.singletonList(new Unknown())
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.number.minus.ρ", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.number")
+        );
+    }
+
+    @Test
+    void leavesAVoidHoldingSomethingNoRowMentionsAlone() {
+        MatcherAssert.assertThat(
+            "a void holding what no row mentions has nowhere to send a reader, but it sent them",
+            new Answers(
+                AnswersTest.holding("Φ.number.minus", "ρ", "Φ.nowhere"),
+                Collections.singletonMap(
+                    "Φ.number.minus.ρ", Collections.singletonList(new Unknown())
+                ),
+                Collections.emptyList(),
+                Collections.emptyMap()
+            ).of("Φ.number.minus.ρ", Collections.emptyList()).where(),
+            Matchers.equalTo("Φ.number.minus.ρ")
+        );
+    }
+
     private static Map<String, Collection<Map<String, String>>> formation(final String locator) {
         final Map<String, String> whole = new LinkedHashMap<>(0);
         whole.put("id", locator);
         whole.put("complete", "true");
         return Collections.singletonMap(locator, Collections.singletonList(whole));
+    }
+
+    private static Map<String, Collection<Map<String, String>>> holding(
+        final String owner, final String name, final String held
+    ) {
+        final Map<String, String> hollow = new LinkedHashMap<>(0);
+        hollow.put("name", name);
+        hollow.put("void", "true");
+        hollow.put("type", String.join(".", owner, name));
+        hollow.put("holds", held);
+        final Map<String, Collection<Map<String, String>>> found =
+            new LinkedHashMap<>(AnswersTest.formation("Φ.number"));
+        found.put(owner, Collections.singletonList(hollow));
+        return found;
     }
 }

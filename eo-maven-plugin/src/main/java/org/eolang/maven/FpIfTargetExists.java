@@ -11,12 +11,14 @@ import org.cactoos.Func;
 /**
  * Footprint that behaves like one of the given wrapped footprints depending on
  * existence of provided target path.
+ *
  * @since 0.41
  */
 final class FpIfTargetExists extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param first First wrapped footprint
      * @param second Second wrapped footprint
      */
@@ -26,6 +28,7 @@ final class FpIfTargetExists extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param destination Function that modifies result target path
      * @param first First wrapped footprint
      * @param second Second wrapped footprint

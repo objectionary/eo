@@ -4,9 +4,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > true
   bool > @
@@ -19,10 +19,11 @@
 
   true.or true ++> can-disjoin-true-with-true
 
-  not. ++> can-ignore-the-right-argument-of-if
-    eq.
-      true.if 1 2
-      2
+  eq. ++> can-ignore-the-right-argument-of-if
+    true.if
+      42
+      20-1F.and CA-FE-BE
+    42
 
   true.if ++> can-pick-itself-as-the-left-branch
     true

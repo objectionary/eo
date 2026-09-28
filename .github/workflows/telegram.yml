@@ -7,6 +7,8 @@ name: telegram
   push:
     tags:
       - '*'
+permissions:
+  contents: read
 concurrency:
   group: telegram-${{ github.ref }}
   cancel-in-progress: true
@@ -24,11 +26,13 @@ jobs:
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 4.0.6
+          ruby-version: 4.0.7
           bundler-cache: true
       - run: gem install hoc
-      - run: .github/telegram.sh ${{ github.ref_name }}
-      - uses: appleboy/telegram-action@master
+      - env:
+          REF_NAME: ${{ github.ref_name }}
+        run: .github/telegram.sh "${REF_NAME}"
+      - uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}

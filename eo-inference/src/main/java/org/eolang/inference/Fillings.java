@@ -21,8 +21,10 @@ import java.util.Map;
  * <p>What goes in is gathered as a type rather than as a locator, which is
  * what makes the answer worth reading: the {@code φ} of {@code Φ.bytes} is
  * filled 7,752 times and all but a handful of those fillings are literals. As
- * types there are two of them, a datum and a {@code Φ.bytes.as-bytes}; as
- * locators there are 7,752.</p>
+ * types there are two of them, a datum and a {@code Φ.bytes}; as locators
+ * there are 7,752. The handful arrive as a {@code Φ.bytes.as-bytes}, which is
+ * a {@code Φ.bytes} and is counted as one by {@link Counted}, once the walk is
+ * over.</p>
  *
  * <p>Which type a filling is counted as is {@link Landed}'s question, and it
  * has to be asked of the links rather than of {@link Ends} alone. An argument
@@ -54,9 +56,9 @@ import java.util.Map;
 final class Fillings {
 
     /**
-     * The links table.
+     * What the links table says.
      */
-    private final XML table;
+    private final Said table;
 
     /**
      * The provides table.
@@ -64,28 +66,46 @@ final class Fillings {
     private final XML given;
 
     /**
+     * The locator of every void.
+     */
+    private final Collection<String> hollows;
+
+    /**
      * Ctor.
+     *
      * @param links The links table, as {@link Resolved} left it
      * @param provides The provides table, which says where a filling can land
      */
     Fillings(final XML links, final XML provides) {
+        this(new Said(new Pairs(links)), provides, new Hollows(provides).all());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param links What the links table says, as {@link Resolved} left it
+     * @param provides The provides table, which says where a filling can land
+     * @param voids The locator of every void, from {@link Hollows}
+     */
+    Fillings(final Said links, final XML provides, final Collection<String> voids) {
         this.table = links;
         this.given = provides;
+        this.hollows = voids;
     }
 
     /**
      * What is ever put into every void.
+     *
      * @return The types put in, by the locator of the void, without the voids
      *  nobody ever fills
      */
     Map<String, Collection<Type>> all() {
-        final Pairs pairs = new Pairs(this.table);
-        final Map<String, String> names = new Ends(pairs.all()).names();
-        final Map<String, String> landings = new Landed(pairs, this.given).all();
-        final Forms forms = new Forms(pairs.forms());
+        final Map<String, String> names = new Ends(this.table.all()).names();
+        final Map<String, String> landings = new Landed(this.table, this.given).all();
+        final Forms forms = new Forms(this.table.forms());
         final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
         final Map<String, Map<String, Type>> handed = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Collection<String>> bound : pairs.puts().entrySet()) {
+        for (final Map.Entry<String, Collection<String>> bound : this.table.puts().entrySet()) {
             for (final String put : bound.getValue()) {
                 final String end = landings.get(put);
                 if (end == null) {
@@ -98,14 +118,17 @@ final class Fillings {
                 }
             }
         }
-        final Handed atoms = new Handed(this.table, this.given);
+        final Handed atoms = new Handed(
+            this.given, new Provided(this.given, names, this.hollows)
+        );
         Map<String, Map<String, Type>> walked = new Carried(placed, handed).all();
         while (atoms.fills(placed, walked)) {
             walked = new Carried(placed, handed).all();
         }
+        final Map<String, String> behaves = new Behaviours(this.given).all();
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
-            found.put(hollow.getKey(), hollow.getValue().values());
+            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
         }
         return found;
     }

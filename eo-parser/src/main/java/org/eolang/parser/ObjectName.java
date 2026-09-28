@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 /**
  * Object name.
+ *
  * @since 0.56.5
  */
 @FunctionalInterface

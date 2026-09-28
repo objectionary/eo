@@ -15,6 +15,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Pieces}.
+ *
  * @since 0.70.0
  */
 final class PiecesTest {

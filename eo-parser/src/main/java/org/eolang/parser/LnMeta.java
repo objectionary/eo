@@ -49,6 +49,7 @@ final class LnMeta implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The meta span
      */
     LnMeta(final Span source) {
@@ -132,10 +133,17 @@ final class LnMeta implements Line {
                 "'+package' directive requires exactly one argument"
             );
         }
-        if (new Dotted(parts.get(0)).broken()) {
+        final Dotted path = new Dotted(parts.get(0));
+        if (path.broken()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+package' path must not have an empty segment"
+            );
+        }
+        if (path.scoped()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' path must be made of object names, not a scope token"
             );
         }
     }

@@ -42,6 +42,7 @@ final class ConcurrentCache {
 
     /**
      * Ctor.
+     *
      * @param shared Locks map
      */
     private ConcurrentCache(final ConcurrentMap<Path, ReentrantLock> shared) {
@@ -50,6 +51,7 @@ final class ConcurrentCache {
 
     /**
      * Check cache and apply compilation if needed, under the tail path lock.
+     *
      * @param source From file
      * @param target To file
      * @param tail Tail path in cache

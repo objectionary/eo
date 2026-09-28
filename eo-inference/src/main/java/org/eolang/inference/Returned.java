@@ -41,6 +41,7 @@ final class Returned {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, which says what an atom comes back
      *  with
      */
@@ -50,6 +51,7 @@ final class Returned {
 
     /**
      * What every atom comes back with.
+     *
      * @return The forma, by the locator of the atom, without the atoms that
      *  declare nothing a reader could go and look at
      */
@@ -64,6 +66,7 @@ final class Returned {
 
     /**
      * What the body of every atom comes back with.
+     *
      * @return The forma, by the locator of the body, which is the {@code λ}
      *  nobody types and which is where a reader hovers to be told
      */

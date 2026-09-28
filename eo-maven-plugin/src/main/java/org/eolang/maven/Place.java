@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 
 /**
  * Make the place for the object.
+ *
  * @since 0.1
  */
 final class Place {
@@ -21,6 +22,7 @@ final class Place {
 
     /**
      * Ctor.
+     *
      * @param obj The name of the object
      */
     Place(final String obj) {
@@ -29,6 +31,7 @@ final class Place {
 
     /**
      * Make a full path.
+     *
      * @param ext Extension
      * @return Full path
      */
@@ -38,6 +41,7 @@ final class Place {
 
     /**
      * Make a full path.
+     *
      * @param dir The dir
      * @param ext The ext
      * @return Full path

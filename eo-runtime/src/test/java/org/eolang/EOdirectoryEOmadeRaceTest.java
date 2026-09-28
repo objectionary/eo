@@ -5,12 +5,14 @@
 
 package org.eolang;
 
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import java.nio.file.Path;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@code directory.made} under concurrency.
@@ -36,12 +38,22 @@ import org.junit.jupiter.api.io.TempDir;
  * gigabytes of heap and minutes of collecting it, for no more of the race than
  * four reach.</p>
  *
+ * <p>The directory is one {@link MktmpResolver} hands out, because it deletes
+ * nothing. Four threads down a three-level path outlive the second of
+ * {@code eo.deadline} that eo-runtime grants a test, so {@link Watched}
+ * interrupts them and reports the skip after a bounded grace, whether they
+ * stopped or not, and one that did not stop is still making those very
+ * directories. A directory JUnit owns is deleted the moment the test's context
+ * closes: on windows that delete meets the {@code mkdir} going on underneath
+ * it, fails, and turns a skip into a broken context (#8336).</p>
+ *
  * @since 0.75.0
  */
+@ExtendWith(MktmpResolver.class)
 final class EOdirectoryEOmadeRaceTest {
 
     @RepeatedTest(10)
-    void makesOneDirectoryFromManyThreadsAtOnce(@TempDir final Path temp) {
+    void makesOneDirectoryFromManyThreadsAtOnce(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "every thread racing for the same missing directory must be told it is there, since the one that loses the mkdir is the one the EEXIST branch rescues",
             new Together<>(

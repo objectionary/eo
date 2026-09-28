@@ -46,6 +46,7 @@ final class MojoFields {
 
     /**
      * Ctor.
+     *
      * @param mark The prefix every mojo class name carries
      */
     MojoFields(final String mark) {
@@ -54,6 +55,7 @@ final class MojoFields {
 
     /**
      * Every name declared by a mojo of the plugin.
+     *
      * @return The names, empty when the mojos cannot be found
      */
     Set<String> all() {

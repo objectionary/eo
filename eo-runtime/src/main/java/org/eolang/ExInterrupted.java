@@ -29,6 +29,7 @@ public final class ExInterrupted extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      */
     public ExInterrupted(final String cause) {

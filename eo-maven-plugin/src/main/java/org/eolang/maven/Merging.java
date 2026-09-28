@@ -79,6 +79,7 @@ final class Merging implements Step {
 
     /**
      * Ctor.
+     *
      * @param foreign The tojos of everything this build compiles
      * @param target The directory for the merged XMIR
      */
@@ -190,7 +191,7 @@ final class Merging implements Step {
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             final String name = Merging.named(kid);
-            if (name.startsWith("+") || name.startsWith("-")) {
+            if (name.startsWith("p🌵") || name.startsWith("n🌵")) {
                 found.add(kid);
             }
         }

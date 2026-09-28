@@ -36,12 +36,15 @@ asserts:
   # No forward "ξ.a🌵….q" reference survives: the dispatch was un-rolled.
   - /object[count(//o[starts-with(@base, 'ξ.a🌵')])=0]
   # The dispatch is now a reversed "q." (base '.q') that keeps its own "@name"
-  # ("φ", i.e. "> @"); its receiver is the inlined anonymous formation.
-  - /object/o[@name='bar']/o[@name='φ' and @base='.q']/o[starts-with(@name, 'a🌵') and not(@base)]
+  # ("φ", i.e. "> @"); its receiver is the inlined anonymous formation. The
+  # merge spends the formation's cactus name — nothing refers to it any more —
+  # so the receiver carries none, rather than the nameless ">>" a surviving
+  # cactus name printed and "redundant-attachment" refused (#8655).
+  - /object/o[@name='bar']/o[@name='φ' and @base='.q']/o[not(@name) and not(@base)]
   # The reversed dispatch keeps its own "5" argument after the receiver.
-  - /object/o[@name='bar']/o[@base='.q']/o[starts-with(@name, 'a🌵')]/following-sibling::o[@as='α0' and @base='Φ.number']
+  - /object/o[@name='bar']/o[@base='.q']/o[not(@name) and not(@base)]/following-sibling::o[@as='α0' and @base='Φ.number']
   # The formation's "$"-recursion stays a bare "ξ".
-  - /object/o[@name='bar']/o[@base='.q']/o[starts-with(@name, 'a🌵')]/o[@name='φ' and @base='ξ']
+  - /object/o[@name='bar']/o[@base='.q']/o[not(@name) and not(@base)]/o[@name='φ' and @base='ξ']
 input: |
   +package foo
 

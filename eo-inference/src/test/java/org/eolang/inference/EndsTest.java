@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Ends}.
+ *
  * @since 0.68.0
  */
 final class EndsTest {

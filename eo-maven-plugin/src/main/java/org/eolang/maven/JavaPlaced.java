@@ -15,6 +15,7 @@ import org.cactoos.BiProc;
 
 /**
  * Placed Java generated code.
+ *
  * @since 0.56.7
  */
 final class JavaPlaced implements BiProc<Xnav, Boolean> {
@@ -36,6 +37,7 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
 
     /**
      * Ctor.
+     *
      * @param ftprnt The footprint
      * @param tgt The target path
      * @param gen Generated sources dir

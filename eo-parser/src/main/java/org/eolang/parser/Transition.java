@@ -33,6 +33,7 @@ final class Transition {
 
     /**
      * Ctor.
+     *
      * @param stk The indent stack
      * @param src The line span being adopted
      */
@@ -45,6 +46,7 @@ final class Transition {
      * Push a fresh level (when stepping deeper) or replace the level
      * on top (when staying at the same indent), and mark it named if
      * {@code admission} carries a label.
+     *
      * @param kind Outer kind for the level
      * @param openness Openness for the level
      * @param admission The line's naming suffix and atom-body permission

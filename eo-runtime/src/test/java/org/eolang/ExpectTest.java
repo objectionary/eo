@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link Expect}.
+ *
  * @since 0.1.0
  */
 final class ExpectTest {
@@ -328,7 +329,7 @@ final class ExpectTest {
             EOnumber$EOtimes.class
         }
     )
-    void failsInNumberAtomForNonNumericX(final Class<?> cls) {
+    void failsInNumberAtomForNonNumericB(final Class<?> cls) {
         MatcherAssert.assertThat(
             "the message in the error is correct",
             Assertions.assertThrows(
@@ -340,13 +341,13 @@ final class ExpectTest {
                             Phi.RHO,
                             new Data.ToPhi(42)
                         ),
-                        "x",
+                        "b",
                         new Data.ToPhi(true)
                     )
                 ).take(),
                 "operation with TRUE fails with a proper message that explains what happened"
             ).getMessage(),
-            Matchers.equalTo("the 'x' attribute must be a number")
+            Matchers.equalTo("the 'b' attribute must be a number")
         );
     }
 

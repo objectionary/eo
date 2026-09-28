@@ -5,6 +5,7 @@
 
 /**
  * EO runtime, posix.
+ *
  * @since 0.40
  */
 package org.eolang.posix;

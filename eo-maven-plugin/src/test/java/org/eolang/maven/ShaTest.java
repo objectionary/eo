@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link Sha}.
+ *
  * @since 0.62.0
  */
 @ExtendWith(MktmpResolver.class)

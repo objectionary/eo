@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Band}.
+ *
  * @since 0.71.0
  */
 final class BandTest {

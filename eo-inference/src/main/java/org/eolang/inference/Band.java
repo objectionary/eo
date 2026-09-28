@@ -52,6 +52,7 @@ final class Band {
 
     /**
      * Ctor.
+     *
      * @param answer The answer, which says where a walk ended and how far up
      */
     Band(final Answer answer) {
@@ -60,6 +61,7 @@ final class Band {
 
     /**
      * The name of the band.
+     *
      * @return The name, which a page puts on a span and a tally counts under
      */
     String name() {
@@ -68,6 +70,7 @@ final class Band {
 
     /**
      * How much is known, on the bands rather than on the rungs.
+     *
      * @return The rank, from nothing at all up to a formation we can name
      */
     int rank() {
@@ -84,6 +87,7 @@ final class Band {
 
     /**
      * Whether the walk ended at somebody else's void.
+     *
      * @return TRUE when the answer is a void rather than a formation
      */
     boolean hollow() {

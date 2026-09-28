@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
+ *
  * @since 0.52
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")

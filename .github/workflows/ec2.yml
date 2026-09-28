@@ -58,7 +58,10 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=4G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
+      # `eo.maxmem` binds one test, while this box runs as many at once as
+      # it has cores: sixteen budgets of 4G on a 24G heap can never hold, so
+      # every test stayed inside its own and the heap died under all of them.
+      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=1G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
   terminate-instance:
     needs:
       - start-instance
@@ -82,7 +85,7 @@ jobs:
       - start-instance
       - runtime
     runs-on: ubuntu-24.04
-    if: ${{ failure() }}
+    if: ${{ always() }}
     permissions:
       actions: read
     steps:
@@ -99,7 +102,6 @@ jobs:
           echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
       - uses: appleboy/telegram-action@master
         with:
-          to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: "⚠️ EC2-based build of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
           disable_web_page_preview: true

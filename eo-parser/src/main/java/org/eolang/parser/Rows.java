@@ -26,6 +26,7 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param lines The source in lines
      */
     Rows(final List<Span> lines) {
@@ -34,6 +35,7 @@ final class Rows {
 
     /**
      * The message with the offending line and a caret beneath it.
+     *
      * @param number The line number, 1-indexed
      * @param pos The position in the line, 0-indexed
      * @param message The message

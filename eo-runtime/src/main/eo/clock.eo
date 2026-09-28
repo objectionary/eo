@@ -1,33 +1,26 @@
 # Wall-clock time source backed by the operating system.
 # Reads the underlying syscall: `gettimeofday` on POSIX, `_ftime64_s` on Windows.
 # Decorates an `i64` holding the current time in milliseconds since the Unix epoch.
+# The microseconds are cut down to milliseconds with number arithmetic,
+# since an `i64` division costs many megabytes for a value that never
+# leaves the range of a double.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [] > clock
   as-i64. > @
+    plus.
+      now.seconds.times 1000
+      floor.
+        now.micros.div 1000
+  called. > now
     os.is-windows.if
-      plus.
-        timeb.time.times 1000
-        millitm.
-          output. >> timeb
-            win32
-              "_ftime64_s"
-              *
-      plus.
-        times.
-          seconds.
-            output. >> timeval
-              posix
-                "gettimeofday"
-                *
-          1000
-        as-number.
-          timeval.micros.as-i64.div 1000.as-i64
+      win32.ftime64-s
+      posix.gettimeofday
 
   clock.as-bytes.size.eq 8 ++> can-be-eight-bytes-long
 

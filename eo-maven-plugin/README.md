@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-maven-plugin)
+[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-maven-plugin.svg)](https://central.sonatype.com/artifact/org.eolang/eo-maven-plugin)
 [![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-maven-plugin.svg)](https://www.javadoc.io/doc/org.eolang/eo-maven-plugin)
 
 This is a

@@ -9,6 +9,7 @@ import java.nio.file.Path;
 
 /**
  * Wrapper for footprint.
+ *
  * @since 0.41
  */
 class FpEnvelope implements Footprint {
@@ -20,6 +21,7 @@ class FpEnvelope implements Footprint {
 
     /**
      * Ctor.
+     *
      * @param footprint Wrapped footprint
      */
     FpEnvelope(final Footprint footprint) {

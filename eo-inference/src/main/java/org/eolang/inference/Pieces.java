@@ -69,6 +69,7 @@ final class Pieces {
 
     /**
      * Ctor.
+     *
      * @param text The line, as the source wrote it
      * @param written The objects written on it, in the order the XMIR has them
      */
@@ -79,6 +80,7 @@ final class Pieces {
 
     /**
      * The pieces of the line, in the order they are read.
+     *
      * @return The directives, one {@code bit} per piece
      */
     Directives directives() {

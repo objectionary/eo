@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Transpilation}.
+ *
  * @since 0.74
  */
 @ExtendWith(MktmpResolver.class)
@@ -52,25 +53,6 @@ final class TranspilationTest {
     }
 
     @Test
-    void tellsLoweredBuildsApartInTheCacheKey() {
-        MatcherAssert.assertThat(
-            "a build whose XMIR was folded through phino must not take the Java of one whose XMIR was not",
-            new Transpilation(
-                new Tracking(false, false),
-                false,
-                "PhDefault",
-                Paths.get("xsl-measures.csv"),
-                Paths.get("target"),
-                Paths.get("target/eo/6-inference"),
-                "lower-0.0.112-cafebabe"
-            ).version(),
-            Matchers.not(
-                Matchers.equalTo(this.transpilation(new Tracking(false, false)).version())
-            )
-        );
-    }
-
-    @Test
     void foldsInImportedXslLibrariesIntoVersion() {
         MatcherAssert.assertThat(
             "the cache-key version must differ from a fingerprint of the top-level XSLS alone, proving the xsl:import-ed libraries are actually folded in",
@@ -90,8 +72,7 @@ final class TranspilationTest {
                 "PhDefault",
                 Paths.get("xsl-measures.csv"),
                 Paths.get("target"),
-                Paths.get("target/eo/6-inference"),
-                ""
+                Paths.get("target/eo/6-inference")
             ).forSource("foo"),
             "forSource() must not throw when eo.xslMeasuresFile is a bare relative path with no parent directory"
         );
@@ -104,8 +85,7 @@ final class TranspilationTest {
             "PhDefault",
             Paths.get("xsl-measures.csv"),
             Paths.get("target"),
-            Paths.get("target/eo/6-inference"),
-            ""
+            Paths.get("target/eo/6-inference")
         );
     }
 
@@ -116,8 +96,7 @@ final class TranspilationTest {
             "PhDefault",
             Paths.get("xsl-measures.csv"),
             Paths.get("target"),
-            tables,
-            ""
+            tables
         );
     }
 }

@@ -35,6 +35,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link MjPrint}.
+ *
  * @since 0.33.0
  */
 @ExtendWith(MktmpResolver.class)
