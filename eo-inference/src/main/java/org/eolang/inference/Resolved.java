@@ -53,6 +53,21 @@ import java.util.Map;
  * void is gathered from its callers and is a fact about them, so the voids are
  * written down exactly as the rules wrote them.</p>
  *
+ * <p>The passes are run twice. Once as described, and once more with no
+ * void named after what its callers put there, which is what the program
+ * says of its objects without asking who calls them. A row the second run
+ * does not arrive at was reached through a void, and it says so, since a
+ * reader in need of a contract cannot count on it: the caller written
+ * tomorrow, or compiled apart, may put a formation of another shape into
+ * that void (#8914).</p>
+ *
+ * <p>The arms of a dispatch that could not be settled to one object are
+ * written here as well, and here only. They are asked for once the passes have
+ * stopped, since a site answered by a pass has a better answer than a choice
+ * and there is no point in offering both; and they are asked for by whoever
+ * writes the rows, since a pass hands its answers round as locators and a
+ * choice is not one (#8744).</p>
+ *
  * <p>So is the admission that a dispatch could not be worked out, for the same
  * reason in reverse: only here, when the passes have stopped adding pairs, is
  * it known that no pass will answer it. A row saying nothing is known is worth
@@ -95,18 +110,26 @@ public final class Resolved implements Clue {
         final Map<String, Type> kept = written.others();
         final Woven woven = new Woven(given, applied, receivers, voids, asked);
         final Promoted promoted = new Promoted(woven, given, new Said(written), voids, args);
-        final Map<String, String> pairs = new Settled(
-            new Dispatched(given, asked, args, named, receivers, voids), promoted
-        ).from(
-            new Settled(
-                new Dispatched(
-                    given, asked, args, named, receivers, Collections.emptyList()
-                ),
-                promoted
-            ).from(written.all())
+        final Collection<String> ends = new Dead(
+            written, dispatches, new Ends(written.all()).names()
+        ).all();
+        final Dispatched into = new Dispatched(
+            given, asked, args, named, receivers, voids, ends
+        );
+        final Dispatched outside = new Dispatched(
+            given, asked, args, named, receivers, Collections.emptyList(), ends
+        );
+        final Map<String, String> pairs = new Settled(into, promoted).from(
+            new Settled(outside, promoted).from(written.all())
+        );
+        final Promoted none = new Promoted(
+            woven, given, new Said(written), Collections.emptyList(), args
+        );
+        final Map<String, String> certain = new Settled(into, none).from(
+            new Settled(outside, none).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
-        final Map<String, Type> rows = woven.rows(pairs);
+        final Map<String, Type> rows = woven.rows(pairs, into.choices(pairs), certain);
         rows.keySet().removeAll(voids);
         rows.putAll(kept);
         final Collection<String> dead = new Dead(written, dispatches, names).all();

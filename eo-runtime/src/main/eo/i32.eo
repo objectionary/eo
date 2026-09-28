@@ -3,9 +3,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [as-bytes] > i32
   as-bytes > @
@@ -19,21 +19,20 @@
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
           * ^.as-i64.as-number
-  [^] > as-i64
-    i64 > @
-      concat.
-        if. >>
-          eq.
-            ^.as-bytes.and 80-00-00-00
-            00-00-00-00
+  i64 > [^] > as-i64
+    concat.
+      if.
+        eq.
+          ^.as-bytes.and 80-00-00-00
           00-00-00-00
-          FF-FF-FF-FF
-        ^.as-bytes
+        00-00-00-00
+        FF-FF-FF-FF
+      ^.as-bytes
   as-i64.as-number > as-number
-  [^ x cant-divide] > div
+  [^ b cant-divide] > div
     if. > @
       eq.
-        x.as-i32 >> other
+        b.as-i32 >> other
         00-00-00-00
       cant-divide
         "Can't divide %d by i32 zero".printf
@@ -44,22 +43,22 @@
             ^.as-i64.div other.as-i64
           4
           4
-  ^.as-i64.gt x.as-i32.as-i64 > [^ x] > gt
-  ^.as-i64.gte x.as-i32.as-i64 > [^ x] > gte
-  ^.as-i64.lt x.as-i32.as-i64 > [^ x] > lt
-  ^.as-i64.lte x.as-i32.as-i64 > [^ x] > lte
-  ^.plus x.as-i32.neg > [^ x] > minus
+  ^.as-i64.gt b.as-i32.as-i64 > [^ b] > gt
+  ^.as-i64.gte b.as-i32.as-i64 > [^ b] > gte
+  ^.as-i64.lt b.as-i32.as-i64 > [^ b] > lt
+  ^.as-i64.lte b.as-i32.as-i64 > [^ b] > lte
+  ^.plus b.as-i32.neg > [^ b] > minus
   times -1.as-i64.as-i32 > neg
-  i32 > [^ x] > plus
+  i32 > [^ b] > plus
     slice.
       as-bytes.
-        ^.as-i64.plus x.as-i32.as-i64
+        ^.as-i64.plus b.as-i32.as-i64
       4
       4
-  i32 > [^ x] > times
+  i32 > [^ b] > times
     slice.
       as-bytes.
-        ^.as-i64.times x.as-i32.as-i64
+        ^.as-i64.times b.as-i32.as-i64
       4
       4
 

@@ -287,14 +287,14 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="ends-with(@base, '.if') and o[@as=('α0', 'α1')] and empty(eo:reach(o[not(@as=('α0', 'α1'))], $f, $calls, ()) intersect $left)">
+      <xsl:when test="ends-with(@base, '.if') and o[eo:arg(.) = (0, 1)] and empty(eo:reach(o[not(eo:arg(.) = (0, 1))], $f, $calls, ()) intersect $left)">
         <xsl:copy>
           <xsl:apply-templates select="@* except (@as, @name)"/>
           <xsl:copy-of select="$head"/>
           <xsl:attribute name="base" select="eo:hopped(@base, 0, $depth, $f, $calls, $done, $tainted)"/>
           <xsl:for-each select="node()">
             <xsl:choose>
-              <xsl:when test="self::o[@as=('α0', 'α1')]">
+              <xsl:when test="self::o[eo:arg(.) = (0, 1)]">
                 <xsl:apply-templates select="." mode="body">
                   <xsl:with-param name="f" select="$f"/>
                   <xsl:with-param name="depth" select="$depth"/>
@@ -317,18 +317,18 @@
           </xsl:for-each>
         </xsl:copy>
       </xsl:when>
-      <xsl:when test="@base='Φ.seq' and o[@as='α0' and @base='Φ.tuple']/o[@as='α1'] and empty(eo:reach((o[not(@as='α0')], o[@as='α0']/o[not(@as='α1')]), $f, $calls, ()) intersect $left)">
+      <xsl:when test="@base='Φ.seq' and o[eo:arg(.) = 0 and @base='Φ.tuple']/o[eo:arg(.) = 1] and empty(eo:reach((o[not(eo:arg(.) = 0)], o[eo:arg(.) = 0]/o[not(eo:arg(.) = 1)]), $f, $calls, ()) intersect $left)">
         <xsl:copy>
           <xsl:apply-templates select="@* except (@as, @name)"/>
           <xsl:copy-of select="$head"/>
           <xsl:for-each select="node()">
             <xsl:choose>
-              <xsl:when test="self::o[@as='α0']">
+              <xsl:when test="self::o[eo:arg(.) = 0]">
                 <xsl:copy>
                   <xsl:apply-templates select="@*"/>
                   <xsl:for-each select="node()">
                     <xsl:choose>
-                      <xsl:when test="self::o[@as='α1']">
+                      <xsl:when test="self::o[eo:arg(.) = 1]">
                         <xsl:apply-templates select="." mode="body">
                           <xsl:with-param name="f" select="$f"/>
                           <xsl:with-param name="depth" select="$depth"/>

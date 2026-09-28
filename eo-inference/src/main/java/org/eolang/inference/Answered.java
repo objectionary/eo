@@ -32,6 +32,10 @@ import java.util.Map;
  * The source said all along what running the body gives back, and now the body
  * answers with it.</p>
  *
+ * <p>Which answers came back with a choice of several objects is stamped on
+ * afterwards too, by {@link Chosen}, for the same reason and from the same
+ * table the walk read its pairs from (#8854).</p>
+ *
  * <p>Which voids an atom fills is stamped on afterwards, by {@link Forged},
  * rather than worked out inside the walk. It is not something the walk found
  * out — it is the same name rooted at the same void, and only the reason it
@@ -87,6 +91,6 @@ final class Answered {
                 locator, answers.of(locator, filled.getOrDefault(locator, Collections.emptyList()))
             );
         }
-        return new Forged(given).marked(found);
+        return new Chosen(pairs.arms()).marked(new Forged(given).marked(found));
     }
 }

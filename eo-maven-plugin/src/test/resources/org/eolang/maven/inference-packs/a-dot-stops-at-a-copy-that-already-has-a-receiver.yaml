@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name written after a dot gives its receiver to the first object down the
+# chain of copies whose own receiver is still empty. `flagged` is a copy of
+# `label.has 1`, which took its receiver off `label` where it was written, so
+# `host.flagged` gives the `host` to nobody; were it to, every `has` of the
+# program would be told it can hang off a `host`. `host.label.has` reaches the
+# `has` itself and gives it the `label`. `raised` is a copy of `flag` that
+# nothing took off anything, so `board.raised` gives the `board` to the `^`
+# of that `flag`, the way the runtime stamps it on the way out. `got` is a
+# copy of the `fetch` of its own `store`, which it takes off whatever reads it,
+# so `store.got` still gives the `store` to that `fetch` (#8955).
+eo:
+  text.eo: |
+    [] > text
+      [^ other] > has
+        other > @
+  host.eo: |
+    [] > host
+      text > label
+      label.has 1 > flagged
+  probe.eo: |
+    [] > probe
+      host.flagged > @
+  caller.eo: |
+    [] > caller
+      host.label.has 2 > @
+  flag.eo: |
+    [^] > flag
+      text > @
+  board.eo: |
+    [] > board
+      flag > raised
+  reader.eo: |
+    [] > reader
+      board.raised > @
+  store.eo: |
+    [] > store
+      [^] > fetch
+        text > @
+      fetch > got
+  user.eo: |
+    [] > user
+      store.got > @
+links:
+  - "/links/type[@id='Φ.probe.φ']/ref[@loc='Φ.host.flagged'][not(bind)]"
+  - "/links/type[@id='Φ.caller.φ']/ref/bind[@void='Φ.text.has.ρ']"
+  - "/links/type[@id='Φ.reader.φ']/ref/bind[@void='Φ.flag.ρ']"
+  - "/links/type[@id='Φ.user.φ']/ref/bind[@void='Φ.store.fetch.ρ']"
+provides:
+  - "//type[@id='Φ.text.has']/attr[@name='ρ']/witnessed[not(.//ref[@loc='Φ.host'])]"

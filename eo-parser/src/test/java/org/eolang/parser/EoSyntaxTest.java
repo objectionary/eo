@@ -129,6 +129,20 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void stampsMsBeforeTransformRuns() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not present when the transform receives the document",
+            new EoSyntax(
+                new InputOf(String.format("# Ünïcödé.%n[] > tiny%n")),
+                xml -> new XMLDocument(
+                    String.format("<seen>%d</seen>", xml.xpath("/object/@ms").size())
+                )
+            ).parsed().xpath("/seen/text()").get(0),
+            Matchers.equalTo("1")
+        );
+    }
+
+    @Test
     void measuresParsingTimeOnEveryCall() throws Exception {
         final EoSyntax syntax = new EoSyntax(
             new LargeProgram(30), UnaryOperator.<XML>identity()
@@ -201,6 +215,17 @@ final class EoSyntaxTest {
                 ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths("/object/errors/error")
+        );
+    }
+
+    @Test
+    void reportsDeeplyNestedFormationsInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
+                .parsed()
+                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
         );
     }
 
@@ -935,5 +960,18 @@ final class EoSyntaxTest {
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
         );
+    }
+
+    private static String nested(final int depth) {
+        final String eol = String.format("%n");
+        final StringBuilder source = new StringBuilder(depth * 16)
+            .append("[] > top").append(eol);
+        for (int level = 1; level <= depth; level = level + 1) {
+            for (int indent = 0; indent < level; indent = indent + 1) {
+                source.append("  ");
+            }
+            source.append("[] > n").append(level).append(eol);
+        }
+        return source.toString();
     }
 }

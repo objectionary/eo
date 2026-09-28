@@ -181,9 +181,9 @@ final class LnTextBlockTest {
     @Test
     void acceptsAttributeAfterBlankLine() {
         final Globals globals = new Globals();
+        globals.blank();
         globals.openTextBlock(1, 2);
         globals.appendTextLine("hello");
-        globals.blank();
         final Emit emit = new Emit();
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);

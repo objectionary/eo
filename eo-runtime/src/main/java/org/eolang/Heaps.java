@@ -78,7 +78,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
                     identifier
                 );
             }
@@ -130,12 +130,18 @@ final class Heaps {
      * under one hold of the lock, so a resize cannot shrink the block
      * between the two and take the fallback away from the caller.</p>
      *
+     * <p>The answer carries the size of the block as well, because a caller
+     * that falls back has to say how many bytes were allocated. Asking for
+     * that size afterwards would be a second, separately locked question,
+     * and a free arriving between the two would abort it.</p>
+     *
      * @param identifier Identifier of the block
      * @param offset Offset to start reading from
      * @param length Length of bytes to read
-     * @return The bytes, or nothing if the range lies outside the block
+     * @return The bytes, or nothing if the range lies outside the block,
+     *  together with the size of the block
      */
-    Optional<byte[]> fetched(final int identifier, final int offset, final int length) {
+    Fetched fetched(final int identifier, final int offset, final int length) {
         this.lock.lock();
         try {
             if (!this.blocks.containsKey(identifier)) {
@@ -151,43 +157,7 @@ final class Heaps {
             } else {
                 out = Optional.empty();
             }
-            return out;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
-     * Get data from the block in memory by identifier.
-     *
-     * @param identifier Identifier of the pointer
-     * @param offset Offset to start reading from
-     * @param length Length of bytes to read
-     * @return Bytes from the block in memory
-     */
-    byte[] read(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (offset < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read at negative offset '%d'",
-                    identifier, offset
-                );
-            }
-            if (length < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read a negative number of bytes '%d'",
-                    identifier, length
-                );
-            }
-            return this.fetched(identifier, offset, length).orElseThrow(
-                () -> new ExFailure(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    this.blocks.get(identifier).length
-                )
-            );
+            return new Fetched(out, block.length);
         } finally {
             this.lock.unlock();
         }
@@ -205,7 +175,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Can't read a block in memory with identifier '%d' because it's not allocated",
+                    "Can't write a block in memory with identifier '%d' because it's not allocated",
                     identifier
                 );
             }

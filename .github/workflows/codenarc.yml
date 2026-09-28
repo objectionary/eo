@@ -10,6 +10,8 @@ name: codenarc
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: codenarc-${{ github.ref }}
   cancel-in-progress: true
@@ -22,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 17.0.20+101
       - run: |
           wget --quiet https://repo1.maven.org/maven2/org/codenarc/CodeNarc/3.5.0/CodeNarc-3.5.0-all.jar
           java -cp CodeNarc-3.5.0-all.jar \

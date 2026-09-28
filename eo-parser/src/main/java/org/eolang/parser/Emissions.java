@@ -87,9 +87,9 @@ final class Emissions {
         if (Emissions.reversedDispatch(tokens, head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
-            Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
+                Bindings.checkAllOrNothing(rargs.subList(1, rargs.size()), span);
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
@@ -416,7 +416,7 @@ final class Emissions {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
             str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+        } else if (Double.isFinite(num) && num >= -0x1p63 && num < 0x1p63) {
             str = Long.toString((long) num);
         } else {
             str = Double.toString(num);

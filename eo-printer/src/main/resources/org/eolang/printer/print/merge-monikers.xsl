@@ -567,11 +567,29 @@
       </xsl:when>
       <xsl:otherwise>
         <o>
-          <xsl:apply-templates select="@*[name() != 'as']|node()"/>
+          <xsl:apply-templates select="@*[name() != 'as'][not(eo:spent-name(.))]|node()"/>
         </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!--
+  Whether `$attr` is the cactus `@name` of a handle whose last reference this
+  merge has just consumed. A `&gt;&gt;` handle carries the synthetic cactus name
+  the parser mints and, in `@local`, the readable one the author wrote;
+  "restore-local-names" drops `@local` from a handle it expects to be folded
+  away, so a merged binding with a cactus `@name` and no `@local` has neither a
+  readable name nor anything referring to the obfuscated one. Carrying it to the
+  use site made "to-eo-tree" print a nameless `&gt;&gt;`, which
+  `redundant-attachment` refuses, leaving no spelling of the handle both
+  canonical and lint-clean (#8655). A const handle (`42 &gt;&gt;!`) keeps its
+  name even with no readable one: the cactus name is what the `&gt;&gt;!` marker
+  is printed from, and that marker means dataize-once rather than a way to refer
+  to the object.
+  -->
+  <xsl:function name="eo:spent-name" as="xs:boolean">
+    <xsl:param name="attr" as="attribute()"/>
+    <xsl:sequence select="name($attr) = 'name' and starts-with($attr, $eo:cactus-name) and empty($attr/../@local) and empty($attr/../@const)"/>
+  </xsl:function>
   <!--
   Host an applied formation handle (see `eo:applied-handle`): emit the inlined
   handle formation in place of the reference, then a "@pipe" node carrying the

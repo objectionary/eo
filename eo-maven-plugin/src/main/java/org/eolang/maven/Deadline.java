@@ -67,6 +67,11 @@ final class Deadline {
      * is abandoned where it stands and never holds the JVM back from
      * exiting.</p>
      *
+     * <p>A deadline of zero seconds is no deadline: the body is waited for
+     * as long as it takes. Anything else would leave a build no way to say
+     * "do not time me out" other than naming a number large enough to never
+     * arrive, which is the default this class was given to replace.</p>
+     *
      * @param body The body of the Mojo
      * @throws MojoFailureException If the deadline passes or the body fails
      */
@@ -87,7 +92,11 @@ final class Deadline {
         thread.setDaemon(true);
         thread.start();
         try {
-            task.get(this.seconds, TimeUnit.SECONDS);
+            if (this.seconds == 0L) {
+                task.get();
+            } else {
+                task.get(this.seconds, TimeUnit.SECONDS);
+            }
         } catch (final TimeoutException ex) {
             this.reported(
                 Logger.format(

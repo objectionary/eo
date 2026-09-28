@@ -5,6 +5,13 @@ SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="page" version="2.0">
   <xsl:output method="html" version="5.0" encoding="UTF-8" indent="no" omit-xml-declaration="yes"/>
+  <!--
+  How many members of a choice a mark may list before it stops naming them.
+  The tables keep the whole census, however long, since every reader of theirs
+  can use it; the page cannot, because a choice of 56 tells a reader nothing
+  but that nobody has thought about it, and is shorter to say so (#8844).
+  -->
+  <xsl:variable name="cap" select="8"/>
   <xsl:template match="/page">
     <html lang="en">
       <head>
@@ -99,12 +106,19 @@ SPDX-License-Identifier: MIT
   </xsl:template>
   <xsl:template match="seen">
     <xsl:text>, seen </xsl:text>
-    <xsl:for-each select="*">
-      <xsl:if test="position() &gt; 1">
-        <xsl:text>, </xsl:text>
-      </xsl:if>
-      <xsl:apply-templates select="."/>
-    </xsl:for-each>
+    <xsl:choose>
+      <xsl:when test="count(*) &gt; $cap">
+        <xsl:text>too many things to name</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:for-each select="*">
+          <xsl:if test="position() &gt; 1">
+            <xsl:text>, </xsl:text>
+          </xsl:if>
+          <xsl:apply-templates select="."/>
+        </xsl:for-each>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="seen/ref">
     <code>
@@ -119,9 +133,6 @@ SPDX-License-Identifier: MIT
   </xsl:template>
   <xsl:template match="seen/data">
     <xsl:text>a datum</xsl:text>
-  </xsl:template>
-  <xsl:template match="seen/unknown">
-    <xsl:text>too many things to name</xsl:text>
   </xsl:template>
   <xsl:template name="style">
     <style>

@@ -21,8 +21,10 @@ import java.util.Map;
  * <p>What goes in is gathered as a type rather than as a locator, which is
  * what makes the answer worth reading: the {@code φ} of {@code Φ.bytes} is
  * filled 7,752 times and all but a handful of those fillings are literals. As
- * types there are two of them, a datum and a {@code Φ.bytes.as-bytes}; as
- * locators there are 7,752.</p>
+ * types there are two of them, a datum and a {@code Φ.bytes}; as locators
+ * there are 7,752. The handful arrive as a {@code Φ.bytes.as-bytes}, which is
+ * a {@code Φ.bytes} and is counted as one by {@link Counted}, once the walk is
+ * over.</p>
  *
  * <p>Which type a filling is counted as is {@link Landed}'s question, and it
  * has to be asked of the links rather than of {@link Ends} alone. An argument
@@ -123,9 +125,10 @@ final class Fillings {
         while (atoms.fills(placed, walked)) {
             walked = new Carried(placed, handed).all();
         }
+        final Map<String, String> behaves = new Behaviours(this.given).all();
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
-            found.put(hollow.getKey(), hollow.getValue().values());
+            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
         }
         return found;
     }

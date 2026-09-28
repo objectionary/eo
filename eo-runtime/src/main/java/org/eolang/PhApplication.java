@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +18,8 @@ import java.util.regex.Pattern;
 public final class PhApplication extends PhOnce {
 
     /**
-     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}.
+     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}
+     * or {@code φ->Φ.bytes(0->[D> 40-45])} when its bytes are bound by name.
      *
      * <p>It is the shape the transpiler emits for a literal and nothing
      * else, so it is matched against the entire body rather than searched
@@ -28,7 +30,7 @@ public final class PhApplication extends PhOnce {
      * parsed back into bytes.</p>
      */
     private static final Pattern DATA = Pattern.compile(
-        "0->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
+        "(?:0|φ)->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
     );
 
     /**
@@ -51,7 +53,7 @@ public final class PhApplication extends PhOnce {
                 }
                 return copy;
             },
-            () -> PhApplication.applied(phi, binds)
+            Optional.of(() -> PhApplication.applied(phi, binds))
         );
     }
 
@@ -81,10 +83,15 @@ public final class PhApplication extends PhOnce {
      * Ctor.
      *
      * @param sup Supplier of the wrapped object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term
      */
-    private PhApplication(final Supplier<Phi> sup, final Supplier<String> term) {
-        super(sup, term);
+    private PhApplication(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
+        super(sup, phrase);
+    }
+
+    @Override
+    public Phi wrapped(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
+        return new PhApplication(sup, phrase);
     }
 
     private static String applied(final Phi phi, final Bind... binds) {
@@ -92,27 +99,15 @@ public final class PhApplication extends PhOnce {
         final String body = PhApplication.body(binds);
         final Matcher data = PhApplication.DATA.matcher(body);
         final boolean literal = binds.length == 1 && binds[0].first() && data.matches();
-        final String string;
+        final Optional<String> printed;
         if (literal && "Φ.string".equals(head)) {
-            string = PhApplication.string(PhApplication.bytes(data.group(1)));
-        } else {
-            string = null;
-        }
-        final String result;
-        if (string != null) {
-            result = string;
+            printed = new Quoted(PhApplication.bytes(data.group(1))).get();
         } else if (literal && "Φ.number".equals(head)) {
-            result = new Numeral(
-                new BytesOf(PhApplication.bytes(data.group(1))).asNumber()
-            ).get();
+            printed = new Numbered(PhApplication.bytes(data.group(1))).get();
         } else {
-            result = String.format("%s(%s)", head, body);
+            printed = Optional.empty();
         }
-        return result;
-    }
-
-    private static String string(final byte[] bytes) {
-        return new Quoted(bytes).get().orElse(null);
+        return printed.orElseGet(() -> String.format("%s(%s)", head, body));
     }
 
     private static String body(final Bind... binds) {
