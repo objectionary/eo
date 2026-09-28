@@ -22,6 +22,7 @@ import org.openjdk.jmh.annotations.Warmup;
  * Benchmark for printing a deeply nested chain of reversed dispatches
  * ({@code 5.plus 1 .plus 2 ...}), the shape that repeatedly exercises
  * {@code Pretty.suffixed}/{@code Pretty.flat} at every nesting level.
+ *
  * @since 0.1
  * @checkstyle NonStaticMethodCheck (100 lines)
  */

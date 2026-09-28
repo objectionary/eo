@@ -73,6 +73,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      */
     public PhSafe(final Phi phi) {
@@ -81,6 +82,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line
@@ -92,6 +94,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line

@@ -12,6 +12,7 @@ import org.cactoos.func.UncheckedFunc;
 
 /**
  * Footprint that saves content generated from lambda to the target file.
+ *
  * @since 0.41
  */
 final class FpGenerated implements Footprint {
@@ -23,6 +24,7 @@ final class FpGenerated implements Footprint {
 
     /**
      * Ctor.
+     *
      * @param content Content as bytes
      */
     FpGenerated(final Func<Path, Input> content) {

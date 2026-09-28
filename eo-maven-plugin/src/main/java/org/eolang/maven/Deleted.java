@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 /**
  * Deleting a directory with files or just a file.
+ *
  * @since 0.52
  */
 final class Deleted implements Supplier<Boolean> {
@@ -21,6 +22,7 @@ final class Deleted implements Supplier<Boolean> {
 
     /**
      * Ctor.
+     *
      * @param file File or directory to be deleted
      */
     Deleted(final File file) {

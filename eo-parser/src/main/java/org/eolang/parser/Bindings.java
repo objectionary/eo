@@ -75,6 +75,7 @@ final class Bindings {
     /**
      * Verify that a reversed-dispatch receiver carries no binding —
      * R-6.6.3.
+     *
      * @param receiver The receiver value (first arg of a horizontal
      *  reversed line)
      * @param span Source span
@@ -94,6 +95,7 @@ final class Bindings {
      * R-6.6.3. When the chain being extended is the receiver of a
      * reversed dispatch, a binding on a later link names the whole
      * reversed expression, which is the same as binding the receiver.
+     *
      * @param below The chain head's parent (what the upgrade would
      *  touch), or the stack's bottom sentinel when there is none
      * @param span Source span of the continuation line

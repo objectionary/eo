@@ -34,6 +34,7 @@ public final class AtOnce implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param attr Origin attribute
      */
     public AtOnce(final Attribute attr) {

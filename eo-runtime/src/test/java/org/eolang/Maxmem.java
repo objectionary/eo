@@ -65,6 +65,7 @@ public final class Maxmem implements InvocationInterceptor {
 
     /**
      * How many bytes the property stands for.
+     *
      * @param text What the property says, may be NULL or empty
      * @return Bytes a test may allocate, zero if there is no limit
      */

@@ -76,6 +76,7 @@ final class Transpiling implements Step {
 
     /**
      * Constructor.
+     *
      * @param srcs XMIR sources to transpile
      * @param target Target directory
      * @param written Where the output lands

@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.bytes']/o[text()='44-43-FE-A8-CD-C3-67-FE-8D']
+  - //o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']
+input: |
+  [] > main
+    foo > one
+      44-
+      -43-FE-A8-
+      -CD-C3-67-FE-8D
+    foo > two
+      CA-FE-
+      -BE-BE

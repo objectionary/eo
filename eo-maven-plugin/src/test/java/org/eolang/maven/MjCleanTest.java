@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjClean}.
+ *
  * @since 0.28.6
  */
 @ExtendWith(MktmpResolver.class)
@@ -40,7 +41,7 @@ final class MjCleanTest {
             throw new IllegalStateException("Files not created.");
         }
         new FakeMaven(temp)
-            .with("targetDir", dir.toFile())
+            .with("target", dir.toFile())
             .execute(MjClean.class);
         MatcherAssert.assertThat(
             "CleanMojo should delete all temp files and directories, but it doesn't",
@@ -65,7 +66,7 @@ final class MjCleanTest {
         try {
             Assertions.assertThrows(
                 Exception.class,
-                () -> new FakeMaven(temp).with("targetDir", dir.toFile()).execute(MjClean.class),
+                () -> new FakeMaven(temp).with("target", dir.toFile()).execute(MjClean.class),
                 "a directory that could not be deleted must not pass for a clean one"
             );
         } finally {
@@ -86,7 +87,7 @@ final class MjCleanTest {
         new FakeMaven(temp)
             .withHelloWorld()
             .with("included", new SetOf<>("**.eo"))
-            .with("classesDir", temp.resolve("out").toFile())
+            .with("classes", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
             .with("skipZeroVersions", true).with(

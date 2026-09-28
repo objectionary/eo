@@ -149,15 +149,16 @@
   <!--
   The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
   an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
-  or test binding in its own bucket. Hosting by this key, not by document
-  order, makes a reprint settle instead of moving the binding again.
+  or test binding in its own bucket — truthy and throwing tests in two of
+  them, keyed by the name under the marker. Hosting by this key, not by
+  document order, makes a reprint settle instead of moving the binding again.
   -->
   <xsl:function name="eo:host-key" as="xs:string">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="owner" as="element()"/>
     <xsl:variable name="binding" select="$ref/ancestor-or-self::o[parent::*[. is $owner]][1]"/>
-    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (eo:test-attr($binding)) then 4 else 3"/>
-    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else string(($binding/@local, $binding/@name)[1]))"/>
+    <xsl:variable name="bucket" select="if (not(eo:abstract($owner) and empty($owner/o[@pipe]))) then 0 else if (eo:void($binding)) then 1 else if ($binding/@name = $eo:phi) then 2 else if (starts-with($binding/@name, $eo:positive)) then 4 else if (starts-with($binding/@name, $eo:negative)) then 5 else 3"/>
+    <xsl:sequence select="concat($bucket, ' ', if ($bucket = (0, 1, 2)) then '' else eo:unmarked(string(($binding/@local, $binding/@name)[1])))"/>
   </xsl:function>
   <!--
   The references that can host the binding `$attr`, shortest spelling first: a
@@ -566,11 +567,29 @@
       </xsl:when>
       <xsl:otherwise>
         <o>
-          <xsl:apply-templates select="@*[name() != 'as']|node()"/>
+          <xsl:apply-templates select="@*[name() != 'as'][not(eo:spent-name(.))]|node()"/>
         </o>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <!--
+  Whether `$attr` is the cactus `@name` of a handle whose last reference this
+  merge has just consumed. A `&gt;&gt;` handle carries the synthetic cactus name
+  the parser mints and, in `@local`, the readable one the author wrote;
+  "restore-local-names" drops `@local` from a handle it expects to be folded
+  away, so a merged binding with a cactus `@name` and no `@local` has neither a
+  readable name nor anything referring to the obfuscated one. Carrying it to the
+  use site made "to-eo-tree" print a nameless `&gt;&gt;`, which
+  `redundant-attachment` refuses, leaving no spelling of the handle both
+  canonical and lint-clean (#8655). A const handle (`42 &gt;&gt;!`) keeps its
+  name even with no readable one: the cactus name is what the `&gt;&gt;!` marker
+  is printed from, and that marker means dataize-once rather than a way to refer
+  to the object.
+  -->
+  <xsl:function name="eo:spent-name" as="xs:boolean">
+    <xsl:param name="attr" as="attribute()"/>
+    <xsl:sequence select="name($attr) = 'name' and starts-with($attr, $eo:cactus-name) and empty($attr/../@local) and empty($attr/../@const)"/>
+  </xsl:function>
   <!--
   Host an applied formation handle (see `eo:applied-handle`): emit the inlined
   handle formation in place of the reference, then a "@pipe" node carrying the
