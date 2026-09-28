@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
@@ -180,6 +181,40 @@ final class RunningTest {
                         .map(line -> String.format("(?:%s)", line.substring(5)))
                         .collect(Collectors.joining("|"))
                 )
+            )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void bringsTheBranchesOfAForkToOneShapeBeforeTheJoin(@Mktmp final Path temp)
+        throws IOException {
+        final Path home = RunningTest.merged(temp);
+        new Running(home, RunningTest.recording(temp)).exec();
+        MatcherAssert.assertThat(
+            "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
+            RunningTest.text(home.resolve("atoms.yaml")),
+            Matchers.stringContainsInOrder(
+                "- λ: L_fork", "morph:", "rewrite:",
+                "false-literal", "true-literal", "bool-without-rho", "decorated-bool",
+                "symbolize:", "join:"
+            )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
+        final Path home = RunningTest.merged(temp);
+        new Running(home, RunningTest.recording(temp)).exec();
+        MatcherAssert.assertThat(
+            "every bool the table answers must be the formation wrapping it, but one is bare",
+            Files.readAllLines(home.resolve("atoms.yaml")).stream()
+                .filter(line -> line.startsWith("  𝑛: ") && line.contains("Φ.bool("))
+                .collect(Collectors.toList()),
+            Matchers.<List<String>>allOf(
+                Matchers.not(Matchers.empty()),
+                Matchers.everyItem(Matchers.startsWith("  𝑛: ⟦ φ ↦ Φ.bool("))
             )
         );
     }

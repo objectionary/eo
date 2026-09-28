@@ -6,6 +6,10 @@
 # name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
 # the carrier of the operation. A λ function no key matches is left where
 # it stands, and the formation that reached it is a taint.
+# A fork brings its two branches to one shape with the rules of its rewrite
+# block before it symbolizes and joins them: the true and false eo-runtime
+# spells, a bool a firing answered and an object decorating one are one
+# value in three spellings, and the join pairs nothing but symbols.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -15,7 +19,7 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ )
+  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ ) ⟧
 - λ: L_bytes_size
   dataize:
     𝛿1: $.ρ
@@ -24,7 +28,7 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ )
+  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ ) ⟧
 - λ: L_bytes_(and|or|concat|right)
   dataize:
     𝛿1: $.ρ
@@ -50,12 +54,47 @@
   morph:
     𝑛1: $.left
     𝑛2: $.right
+  rewrite:
+    𝑛3:
+      of: 𝑛1
+      rules: &bool
+        - name: false-literal
+          pattern: >-
+            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
+            φ ↦ ξ.𝜏2 ⟧ ), !B2 ⟧
+          result: >-
+            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            φ ↦ ⟦ Δ ⤍ 00- ⟧ ⟧ ) ⟧
+        - name: true-literal
+          pattern: >-
+            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
+            φ ↦ ξ.𝜏1 ⟧ ), !B2 ⟧
+          result: >-
+            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            φ ↦ ⟦ Δ ⤍ FF- ⟧ ⟧ ) ⟧
+        - name: bool-without-rho
+          pattern: >-
+            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            φ ↦ 𝑒1 ⟧ ), !B2 ⟧
+          result: >-
+            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            φ ↦ 𝑒1 ⟧ ) ⟧
+        - name: decorated-bool
+          pattern: >-
+            ⟦ !B1, φ ↦ ⟦ !B3, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅,
+            right ↦ ∅, φ ↦ 𝑒1 ⟧ ), !B4 ⟧, !B2 ⟧
+          result: >-
+            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            φ ↦ 𝑒1 ⟧ ) ⟧
+    𝑛4:
+      of: 𝑛2
+      rules: *bool
   symbolize:
-    𝑛3: 𝑛1
-    𝑛4: 𝑛2
+    𝑛5: 𝑛3
+    𝑛6: 𝑛4
   join:
-    𝑛5: [𝑛3, 𝑛4]
-  𝑛: 𝑛5
+    𝑛7: [𝑛5, 𝑛6]
+  𝑛: 𝑛7
 - λ: L_entry
   dataize:
     𝛿1: $.n
