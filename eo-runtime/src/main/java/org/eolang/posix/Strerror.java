@@ -13,7 +13,7 @@ import java.util.function.IntFunction;
  *
  * <p>Looking a message up is a native call of its own, and JNA remembers the
  * {@code errno} of the call it made last: {@code strerror} therefore overwrites
- * the very number the program is about to read through {@link ErrnoSyscall}.
+ * the very number the program is about to read through {@code posix.errno}.
  * It really does — the first lookup in the process makes libc probe the message
  * catalogs of the current locale, they are not there, and {@code ENOENT} lands
  * where {@code EEXIST} was. Every later lookup finds the catalog answer cached
@@ -24,7 +24,7 @@ import java.util.function.IntFunction;
  *
  * @since 0.75
  */
-final class Strerror {
+public final class Strerror {
 
     /**
      * Where a message comes from, by error code.
@@ -41,7 +41,7 @@ final class Strerror {
      *
      * @param code The code to translate
      */
-    Strerror(final int code) {
+    public Strerror(final int code) {
         this(CStdLib.INSTANCE::strerror, code);
     }
 
@@ -61,7 +61,7 @@ final class Strerror {
      *
      * @return The error as a human-readable string
      */
-    String it() {
+    public String it() {
         final int last = Native.getLastError();
         final String result = this.messages.apply(this.errno);
         Native.setLastError(last);

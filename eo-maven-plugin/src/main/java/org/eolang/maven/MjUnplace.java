@@ -34,7 +34,7 @@ public final class MjUnplace extends MjSafe {
             new Timed(
                 new Unplacing(
                     placed,
-                    this.classesDir.toPath(),
+                    this.classes.toPath(),
                     this.keepBinaries
                 )
             ).exec();

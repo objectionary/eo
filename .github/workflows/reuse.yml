@@ -10,6 +10,8 @@ name: reuse
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: reuse-${{ github.ref }}
   cancel-in-progress: true

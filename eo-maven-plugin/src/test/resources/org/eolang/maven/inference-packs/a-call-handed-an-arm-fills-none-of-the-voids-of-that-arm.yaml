@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call on a void is a copy of that void, even once it is known to come back
+# as one of its arms. The "^.pick" of "both" takes a void, and every formation
+# the program puts there hands back one of the two things given to it. The
+# second of them reads a void nobody fills, so the call comes back as the
+# "grip" of the first, the way the "if" of "tuple.front" comes back as a
+# "tuple.back". Its arguments still go into the voids of those formations,
+# the "left" and the "right", and into nothing of the arm it comes back as:
+# neither its receiver into the "ρ" of the "grip" nor its first argument
+# into the "size" (#8552).
+eo:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^ x] > both
+        ^.grip x
+        x
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+links:
+  - "/links/type[@id='Φ.choice.both.φ']/ref[@loc='Φ.choice.grip']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.yes.φ.α0.left']/ref[@loc='Φ.choice.both.φ.α0']"
+  - "/links/type[@id='Φ.choice.both.φ']/ref/bind[@void='Φ.no.φ.α0.right']/ref[@loc='Φ.choice.both.φ.α1']"
+  - "/links[not(//bind[@void='Φ.choice.grip.size']/ref[@loc='Φ.choice.both.φ.α0'])]"
+  - "/links[not(//bind[@void='Φ.choice.grip.ρ']/ref[@loc='Φ.choice.both.φ.ρ'])]"

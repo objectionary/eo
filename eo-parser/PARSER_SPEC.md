@@ -551,7 +551,7 @@ type-var  ::=  'A' | 'B' | 'C' | 'D' | 'E' | 'F'
 R-3.10.10. `sig` declares the atom's return type. A `NAME`/dotted form names a **concrete** forma (`/number`, `/bytes`, `/Q.org.eolang.number`); a `type-var` declares a **generic** return — a universally-quantified type variable scoped to the atom. Same letter ⇒ same type throughout that atom; distinct atoms are independent. The variable set is capped at `A`–`F` (six) for now; any other letter, or a multi-character uppercase-initial token, used where a variable is expected is rejected (`type variable must be one of A-F`). A return signature carries **no** `?`: the optional marker is legal only on a void attribute (§3.4.8), so `/A?` on a return is rejected (`optional marker ? is allowed only on a void attribute`). A bare `/Q` (root alone, no dot-name) is rejected, as are the other malformed sigs (bare `/`, trailing dot `/Q.`, sigs starting with `.`).
 R-3.10.11. The leading `Q` in a dotted concrete `sig` is promoted to `Φ` in XMIR (the source→XMIR mapping table in §9.3 is the single source of truth for all Q→Φ / @→φ / ^→ρ promotions). A `type-var` is emitted **verbatim** — never `Φ`-promoted, never alias-expanded, never homed by `add-default-package` (§9.3).
 
-R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application, method continuation R-3.5, text block R-3.11.4, vertical void R-3.4.7); `!` const stays allowed (`>>! name`) except on a vertical void, `/sig` stays forbidden (R-3.10.2). A handle declared twice in one file is a compile-time error (`duplicate local name 'name'`); a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
+R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application, method continuation R-3.5, reversed dispatch R-3.8, compact tuple R-3.9, text block R-3.11.4, pipe R-3.14, vertical void R-3.4.7); `!` const stays allowed (`>>! name`) except on a vertical void, `/sig` stays forbidden (R-3.10.2). A handle declared twice within one enclosing formation is a compile-time error (`duplicate local name 'name'`), while two sibling formations may each declare a handle of the same name; a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
 
 ### 3.11 Triple-quoted text block — `"""`
 
@@ -1265,6 +1265,8 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
 
+R-9.3.1. **Name suffix.** The table above also governs the `> name` suffix (§3.10): the name reaches `@name` verbatim, with `@` as the single exception — it reaches it as `φ`. So `42 > @` binds the decoratee of the formation it sits in, not an attribute spelled `@`. The `^` receiver has no suffix form at all, since only a void may declare it (R-3.4.11), and the `>>` cactus auto-name (§9.2) together with the `p🌵` and `n🌵` test prefixes (§9.4) are generated rather than mapped.
+
 ### 9.4 Per-construct attribute emission
 
 | Source construct | XMIR effect |
@@ -1449,6 +1451,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Anything but a single plain space between meta parts — a second space, a tab, an ideographic space (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
 | `+package` carrying a number of parts other than one (§3.2) | `'+package' directive requires exactly one argument` |
 | `+package` path with an empty dotted segment (§3.2) | `'+package' path must not have an empty segment` |
+| `+package` path with a segment that is a scope token rather than an object name (§3.2) | `'+package' path must be made of object names, not a scope token` |
 | `+alias` carrying no part (R-3.2.3) | `'+alias' directive requires at least one argument` |
 | `+alias` renaming the root token `Q` (R-3.2.3) | `'+alias' cannot rename the root token Q` |
 | `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
@@ -1473,7 +1476,6 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Pipe line whose `\|` is glued to the argument list or suffix that follows it (§3.14) | `` a pipe `\|` must be followed by a space before its arguments `` |
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
-| Text block closer that does not open with `"""` (R-3.11.3) | `text block closer must start with triple-quote` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |

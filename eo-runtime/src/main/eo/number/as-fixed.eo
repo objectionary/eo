@@ -17,7 +17,9 @@
 # directly. Only that many digits are peeled off; any place beyond them is a
 # trailing zero. This keeps the digits shared by two calls with different
 # `places` in agreement, instead of drifting as an unfloored accumulator was
-# carried through more divisions the larger `places` was.
+# carried through more divisions the larger `places` was. The sign is judged
+# by that same capped scale, so a negative value whose printed digits are all
+# zero drops its `-` however many places were asked for.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -78,8 +80,7 @@
           eq.
             floor.
               plus.
-                a.times
-                  pow10 ^.places
+                a.times (positive a).scale
                 0.5
             0
           positive a
@@ -149,6 +150,11 @@
     "0.00"
     string
       -0.001.as-fixed 2
+
+  eq. ++> can-drop-the-sign-past-the-scale-cap
+    "0.0000000000000000"
+    string
+      -1.0e-16.as-fixed 16
 
   eq. ++> can-format-the-error-message-of-a-magnitude-past-the-decimal-range
     "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"

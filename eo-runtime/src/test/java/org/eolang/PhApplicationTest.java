@@ -142,6 +142,26 @@ final class PhApplicationTest {
     }
 
     @Test
+    void rendersNumberBoundByNameAsValue() {
+        MatcherAssert.assertThat(
+            "a number whose bytes are bound into its phi by name must render as its value, but it didnt",
+            new PhApplication(
+                new PhDispatch(Phi.Φ, "number"), "φ",
+                new PhApplication(
+                    new PhDispatch(Phi.Φ, "bytes"), 0,
+                    new PhDefault(
+                        new byte[] {
+                            (byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00,
+                            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                        }
+                    )
+                )
+            ).φTerm(),
+            Matchers.equalTo("42")
+        );
+    }
+
+    @Test
     void rendersStringConstructionAsValue() {
         MatcherAssert.assertThat(
             "String construction chain must render as its quoted value, but it didnt",
