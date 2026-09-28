@@ -123,9 +123,18 @@ final class Promoted {
      *
      * @param pairs The pairs, each object against the one it is a copy of
      * @return The voids answered this time, each against the one object the
-     *  program puts into it, empty when no void is worth anything further
+     *  program puts into it, empty when no void is worth anything further or
+     *  there is no void to look into
      */
     Map<String, String> from(final Map<String, String> pairs) {
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        if (!this.hollows.isEmpty()) {
+            found.putAll(this.named(pairs));
+        }
+        return found;
+    }
+
+    private Map<String, String> named(final Map<String, String> pairs) {
         final Collection<String> known = this.known();
         final Provided owned = new Provided(
             this.given, new Ends(pairs).names(), this.hollows

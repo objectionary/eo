@@ -30,11 +30,23 @@ import java.util.Map;
  * formation binds. What the call put in says which it is: a body that is one
  * of the arguments is a void wearing the argument's name.</p>
  *
- * <p>An arm rooted at a void this call leaves empty is left out of the
- * agreement. Reading a void nobody filled terminates, so that arm never hands
- * a value to anyone, and a caller holding one got it from another arm. Every
- * fragile object is written this way, with the excuse in one arm and the
- * answer in the other, and the callers who want the answer fill nothing.</p>
+ * <p>An arm rooted at a void this call leaves empty counts like any other.
+ * The call does not fill that void, but whoever called the object the arm
+ * sits in did: the {@code made} of a {@code directory} hands back its own
+ * receiver in one arm and a {@code seq} in the other, and the {@code if} that
+ * chooses between them fills neither the receiver nor what the first arm asks
+ * of it. Dropping that arm left the {@code seq} standing and the agreement was
+ * the {@code seq}, which is a lie told about every caller who got the
+ * directory back. Nor is it dropped where nobody in the program fills the
+ * void, since the program is not every caller there will be. So the arm stays
+ * in the agreement and in the choice alike, and where it shares nothing with
+ * the other arms the call is a choice of all of them (#8885).</p>
+ *
+ * <p>An arm that terminates is gone from both, since it never hands a value
+ * back: the {@code tmpfile} of a {@code directory} is a {@code Φ.file} in one
+ * arm and an error in the other, and no caller ever holds the error. Left in,
+ * it agrees with nothing, and the call was left rooted at the void it was
+ * (#8946).</p>
  *
  * @since 0.71.0
  */
@@ -51,9 +63,9 @@ final class Branched {
     private final Map<String, String> binds;
 
     /**
-     * The locator of every void.
+     * What the calls of the program put into its voids.
      */
-    private final Collection<String> hollows;
+    private final Puts every;
 
     /**
      * Ctor.
@@ -61,16 +73,12 @@ final class Branched {
      * @param provided What the types certainly have
      * @param filled What the call put into the voids, by the locator of the
      *  void
-     * @param voids The locator of every void, from {@link Hollows}
+     * @param puts What the calls of the program put into its voids
      */
-    Branched(
-        final Provided provided,
-        final Map<String, String> filled,
-        final Collection<String> voids
-    ) {
+    Branched(final Provided provided, final Map<String, String> filled, final Puts puts) {
         this.owned = provided;
         this.binds = filled;
-        this.hollows = voids;
+        this.every = puts;
     }
 
     /**
@@ -102,7 +110,7 @@ final class Branched {
                 handed.clear();
                 break;
             }
-            given.removeIf(arm -> !this.stands(arm));
+            given.removeIf(this.every::dies);
             handed.addAll(given);
         }
         return handed;
@@ -134,10 +142,5 @@ final class Branched {
     private boolean hands(final String owner, final Map.Entry<String, String> bind) {
         final String body = this.owned.behind(owner);
         return body.equals(bind.getKey()) || body.equals(bind.getValue());
-    }
-
-    private boolean stands(final String arm) {
-        final String root = new Rooted(this.hollows).names(arm);
-        return root.isEmpty() || this.binds.containsKey(root);
     }
 }
