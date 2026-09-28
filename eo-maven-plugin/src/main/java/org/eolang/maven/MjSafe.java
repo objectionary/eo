@@ -29,12 +29,21 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
- * @todo #8943:60min Give the last eighteen parameters one-word names too.
- *  Each wants a word another field already holds, {@code foreign},
- *  {@code placed}, {@code cache} or {@code skip}, or one that would read
- *  as the opposite of the flag it names, such as {@code skipZeroVersions}
- *  shortened to {@code zeros}. Group them the way #6459 discusses and the
- *  names come free.
+ * @todo #8968:60min Give the last fourteen parameters one-word names too.
+ *  Every one of them wants a word that is already spent. {@code foreign}
+ *  and {@code placed} each hold the word their {@code Format} sibling
+ *  wants; {@code cache} holds the one {@code cacheEnabled} wants;
+ *  {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
+ *  {@code MjAtomsTable} both declare; the three binary filters
+ *  ({@code placeBinaries}, {@code skipBinaries}, {@code keepBinaries})
+ *  want one word between them, as do the three lint flags
+ *  ({@code skipSourceLints}, {@code skipProgramLints},
+ *  {@code skipLinting}); and {@code ignoreRuntime},
+ *  {@code failOnWarning}, {@code lintAsPackage} and
+ *  {@code resolveInCentral} each want a word this class reads as
+ *  something else. A file with its format, a cache with its switch, the
+ *  binary filters and the lint flags are four groups, and once each one
+ *  is an object of its own the names come free.
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -261,7 +270,6 @@ abstract class MjSafe extends AbstractMojo {
      * If set to TRUE, experimental lints are skipped during the linting.
      *
      * @since 0.57.0
-     * @checkstyle MemberNameCheck (9 lines)
      */
     @Parameter(
         alias = "skipExperimentalLints",
@@ -269,7 +277,7 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean skipExperimental;
+    protected boolean experimental;
 
     /**
      * Pull again even if the .eo file is already present?
@@ -288,16 +296,19 @@ abstract class MjSafe extends AbstractMojo {
      * Skip artifact with the version 0.0.0.
      *
      * @since 0.9.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    protected boolean skipZeroVersions;
+    @Parameter(
+        alias = "skipZeroVersions",
+        property = "eo.skipZeroVersions",
+        required = true,
+        defaultValue = "true"
+    )
+    protected boolean zeros;
 
     /**
      * Fail resolution process on conflicting dependencies.
      *
      * @since 0.1.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "ignoreVersionConflicts",
@@ -305,7 +316,7 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean ignoreConflicts;
+    protected boolean conflicts;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
@@ -438,10 +449,9 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Resolve default JNA dependency or not.
      *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (6 lines)
      */
-    protected boolean resolveJna = true;
+    protected boolean jna = true;
 
     /**
      * Resolve dependencies in central or not.
