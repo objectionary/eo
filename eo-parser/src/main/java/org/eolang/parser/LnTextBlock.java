@@ -4,6 +4,7 @@
  */
 package org.eolang.parser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ final class LnTextBlock implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnTextBlock(final Span source) {
@@ -44,14 +46,7 @@ final class LnTextBlock implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        final String body = this.span.body();
-        if (!body.startsWith("\"\"\"")) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "text block closer must start with triple-quote"
-            );
-        }
-        final Tokens tokens = new Tokens(body, this.span);
+        final Tokens tokens = new Tokens(this.span.body(), this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
         final String outer = LnApplication.readOuterBinding(tokens, this.span);
@@ -64,14 +59,11 @@ final class LnTextBlock implements Line {
         } else {
             Blanks.checkPlain(this.span, globals, emit);
         }
-        final byte[] joined = new Unescaped(
-            String.join(String.valueOf('\n'), globals.tbody()),
-            this.span.line(), this.span.indent()
-        ).bytes();
+        final byte[] joined = this.decoded(globals.tbody());
         this.transition(stack, suffix);
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             emit.slot(Emissions.bindingTag(outer));
         }
         globals.closeTextBlock();
@@ -79,11 +71,26 @@ final class LnTextBlock implements Line {
         globals.markEmitted();
     }
 
+    private byte[] decoded(final List<String> lines) {
+        final int first = this.span.line() - lines.size();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        for (int idx = 0; idx < lines.size(); idx = idx + 1) {
+            if (idx > 0) {
+                out.write('\n');
+            }
+            final byte[] bytes = new Unescaped(
+                lines.get(idx), first + idx, this.span.indent()
+            ).bytes();
+            out.write(bytes, 0, bytes.length);
+        }
+        return out.toByteArray();
+    }
+
     private void transition(final Stack stack, final Suffix suffix) {
         new Transition(stack, this.span).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
-            new Admission(suffix.named(), suffix.test())
+            new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

@@ -4,7 +4,10 @@
  */
 package org.eolang.parser;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.IntPredicate;
 import org.xembly.Directive;
 
 /**
@@ -29,26 +32,19 @@ import org.xembly.Directive;
 final class Eo implements Iterable<Directive> {
 
     /**
-     * NAME-like terminator characters per §2.3 (excluding the dot,
-     * which callers check explicitly).
+     * What a line indented with a tab is told, wherever it is written.
      */
-    private static final String NAME_TERMINATORS = " \t,|':;!?[]{}()";
+    static final String TAB = "tab character in leading whitespace";
 
     /**
-     * Head characters of §3.1 that open a root-headed line without
-     * opening a literal — group, star, root, and identity tokens.
+     * What a line indented with neither a space nor a tab is told.
      */
-    private static final String ROOT_TOKENS = "*(QTI@^$";
+    static final String ALIEN = "invalid character in leading whitespace";
 
     /**
      * What a line with a space at its end is told, wherever it is written.
      */
     private static final String TRAILING = "trailing whitespace at end of line";
-
-    /**
-     * Initial capacity of the source line buffer, {@link java.util.ArrayList}'s own default.
-     */
-    private static final int SPANS_CAPACITY = 10;
 
     /**
      * Raw EO source text.
@@ -57,6 +53,7 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Ctor.
+     *
      * @param text The EO program text
      */
     Eo(final String text) {
@@ -70,11 +67,12 @@ final class Eo implements Iterable<Directive> {
 
     /**
      * Walk the source and accumulate directives.
+     *
      * @return Directives in source order
      */
     Iterable<Directive> directives() {
         final Globals globals = new Globals();
-        final java.util.List<Span> spans = new java.util.ArrayList<>(Eo.SPANS_CAPACITY);
+        final List<Span> spans = new ArrayList<>(10);
         new Source(this.source).forEach(spans::add);
         final Emit emit = new Emit(spans);
         final Stack stack = new Stack(
@@ -96,7 +94,7 @@ final class Eo implements Iterable<Directive> {
                 );
                 idx = recovery.after(idx);
             } else if (!globals.inTextBlock() && !span.trailing()
-                && Eo.isBytesContinuation(span.body())) {
+                && Eo.opensBytes(spans, idx)) {
                 idx = Eo.mergeBytesContinuation(spans, idx, stack, globals, emit, recovery);
             } else if (Eo.process(span, idx >= tail, stack, globals, emit)) {
                 idx = recovery.after(idx);
@@ -115,6 +113,7 @@ final class Eo implements Iterable<Directive> {
      * none exists. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where an only-phi formation
      * splits.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -137,6 +136,7 @@ final class Eo implements Iterable<Directive> {
      * formation. Shared by the {@link Eo#onlyPhi} classifier and
      * {@link LnOnlyPhi}, so both agree on where a compact test
      * shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -154,6 +154,7 @@ final class Eo implements Iterable<Directive> {
      * routes to a bare formation. Shared by the {@link Eo#onlyPhi}
      * classifier and {@link LnOnlyPhi}, so both agree on where a
      * compact throwing-test shorthand splits its LHS.
+     *
      * @param body Line body to scan
      * @return Index of the top-level marker, or -1
      */
@@ -169,7 +170,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int topLevelMarker(
-        final String body, final java.util.function.IntPredicate marker
+        final String body, final IntPredicate marker
     ) {
         int depth = 0;
         int found = -1;
@@ -191,7 +192,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static int mergeBytesContinuation(
-        final java.util.List<Span> spans, final int start, final Stack stack,
+        final List<Span> spans, final int start, final Stack stack,
         final Globals globals, final Emit emit, final Recovery recovery
     ) {
         final Span head = spans.get(start);
@@ -207,21 +208,28 @@ final class Eo implements Iterable<Directive> {
                 break;
             }
             final String trimmed = next.body().stripTrailing();
+            if (next.trailing()) {
+                emit.error(next.line(), 0, Eo.TRAILING);
+                broken = true;
+                break;
+            }
             if (new BytesIndent(next, head.indent(), above).reported(emit)) {
                 broken = true;
                 break;
             }
             above = next.indent();
-            if (!Eo.isBytesOnly(trimmed)) {
+            final int mark = Eo.mark(trimmed);
+            final String chunk = Eo.bare(Eo.run(trimmed));
+            if (!Eo.isBytesOnly(chunk)) {
                 emit.error(
                     next.line(), 0, "multi-line bytes interrupted by non-byte content"
                 );
                 broken = true;
                 break;
             }
-            body.append(trimmed);
+            body.append(chunk).append(trimmed.substring(mark));
             idx = idx + 1;
-            if (!Eo.isBytesContinuation(trimmed)) {
+            if (mark < trimmed.length() || !Eo.carriesMore(trimmed)) {
                 break;
             }
         }
@@ -239,9 +247,58 @@ final class Eo implements Iterable<Directive> {
         return resumption;
     }
 
+    private static boolean opensBytes(final List<Span> spans, final int start) {
+        final String body = spans.get(start).body();
+        return Eo.isBytesContinuation(body) || Eo.isByte(body) && Eo.joinedBelow(spans, start);
+    }
+
+    private static boolean joinedBelow(final List<Span> spans, final int start) {
+        return start + 1 < spans.size()
+            && spans.get(start + 1).indent() >= spans.get(start).indent()
+            && Eo.isJoined(Eo.run(spans.get(start + 1).body().stripTrailing()));
+    }
+
+    private static String run(final String body) {
+        return body.substring(0, Eo.mark(body));
+    }
+
     private static boolean isBytesContinuation(final String body) {
         final String trimmed = body.stripTrailing();
         return trimmed.length() >= 6 && trimmed.endsWith("-") && Eo.isBytesOnly(trimmed);
+    }
+
+    private static boolean carriesMore(final String body) {
+        return Eo.isBytesContinuation(body) || Eo.isJoined(body) && body.endsWith("-");
+    }
+
+    private static boolean isJoined(final String body) {
+        return body.length() > 2 && body.charAt(0) == '-' && Eo.isBytesOnly(body.substring(1));
+    }
+
+    private static String bare(final String body) {
+        final String stripped;
+        if (Eo.isJoined(body)) {
+            stripped = body.substring(1);
+        } else {
+            stripped = body;
+        }
+        return stripped;
+    }
+
+    private static int mark(final String body) {
+        final int arrow = body.indexOf(" >");
+        final int found;
+        if (arrow < 0) {
+            found = body.length();
+        } else {
+            found = arrow;
+        }
+        return found;
+    }
+
+    private static boolean isByte(final String body) {
+        final String trimmed = body.stripTrailing();
+        return trimmed.length() == 3 && Eo.isBytesOnly(trimmed);
     }
 
     private static boolean isBytesOnly(final String body) {
@@ -276,10 +333,10 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
-            emit.error(span.line(), 0, "tab character in leading whitespace");
+            emit.error(span.line(), 0, Eo.TAB);
             failed = true;
         } else if (span.alien() && !span.blank()) {
-            emit.error(span.line(), 0, "invalid character in leading whitespace");
+            emit.error(span.line(), 0, Eo.ALIEN);
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
@@ -289,9 +346,9 @@ final class Eo implements Iterable<Directive> {
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
             globals.seal(emit, span);
+            Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
-            globals.clearBlanks();
         } else {
             failed = Eo.dispatch(span, tail, stack, globals, emit);
         }
@@ -311,8 +368,9 @@ final class Eo implements Iterable<Directive> {
                 new LnTextBlock(span).into(stack, globals, emit);
             } catch (final ParseError err) {
                 point.apply();
-                emit.error(err.line(), err.pos(), err.getMessage());
+                emit.error(err.line(), err.pos(), err.getMessage(), true);
                 globals.closeTextBlock();
+                globals.clearBlanks();
             }
         } else {
             final String raw = span.text();
@@ -344,6 +402,7 @@ final class Eo implements Iterable<Directive> {
         } catch (final ParseError err) {
             point.apply();
             globals.restore(saved);
+            globals.clearBlanks();
             emit.error(err.line(), err.pos(), err.getMessage(), true);
             failed = true;
         }
@@ -459,7 +518,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static void finish(
-        final Globals globals, final Emit emit, final java.util.List<Span> spans
+        final Globals globals, final Emit emit, final List<Span> spans
     ) {
         if (globals.inTextBlock()) {
             emit.error(
@@ -471,7 +530,7 @@ final class Eo implements Iterable<Directive> {
             );
         }
         if (!globals.pendingComments().isEmpty()) {
-            final java.util.List<Span> pending = globals.pendingComments();
+            final List<Span> pending = globals.pendingComments();
             emit.comment(pending, pending.get(pending.size() - 1).line());
             globals.clearComments();
         }
@@ -489,7 +548,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean tokenHead(final char head) {
-        return Eo.ROOT_TOKENS.indexOf(head) >= 0;
+        return "*(QTI@^$".indexOf(head) >= 0;
     }
 
     private static boolean literalHead(final Span span) {
@@ -651,7 +710,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean nameTerminator(final char glyph) {
-        return Eo.NAME_TERMINATORS.indexOf(glyph) >= 0;
+        return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {
@@ -661,7 +720,8 @@ final class Eo implements Iterable<Directive> {
             emit.error(err.line(), err.pos(), err.getMessage());
         }
         Eo.checkNaming(level, emit, naming);
-        if (level.kind() == Kind.BARE_REVERSED && !level.taken()) {
+        if ((level.kind() == Kind.BARE_REVERSED || level.kind() == Kind.ONLY_PHI)
+            && !level.taken()) {
             emit.error(
                 level.start(), level.indent(),
                 "reversed dispatch missing receiver"

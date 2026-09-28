@@ -12,6 +12,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Blanks}.
+ *
  * @since 0.1
  */
 final class BlanksTest {
@@ -45,6 +46,20 @@ final class BlanksTest {
             XhtmlMatchers.hasXPaths(
                 "/object[not(errors/error[contains(text(),'missing blank line')])]"
             )
+        );
+    }
+
+    @Test
+    void keepsBlankAfterTopCommentBlock() {
+        final Globals globals = new Globals();
+        globals.addComment(new Span("# top doc", 1));
+        globals.blank();
+        final Emit emit = new Emit();
+        Blanks.checkPlain(new Span("I > foo", 3), globals, emit);
+        MatcherAssert.assertThat(
+            "the mandatory blank after a top comment must not become a sibling blank",
+            BlanksTest.render(emit),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
         );
     }
 

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Suffix}.
+ *
  * @since 0.1
  */
 final class SuffixTest {
@@ -52,6 +53,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`>  foo` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" >  foo", new Span("[] >  foo", 1), 2).label(),
+            Matchers.equalTo("foo")
+        );
+    }
+
+    @Test
     void parsesAutoName() {
         MatcherAssert.assertThat(
             "`>>` must yield Form.AUTO with no label",
@@ -79,6 +89,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesPlusGreaterNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`+>  bar` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" +>  bar", new Span("[] +>  bar", 1), 2).label(),
+            Matchers.equalTo("bar")
+        );
+    }
+
+    @Test
     void parsesMinusGreaterAttribute() {
         MatcherAssert.assertThat(
             "`-> name` must yield Form.THROWS with the parsed name",
@@ -97,6 +116,15 @@ final class SuffixTest {
     }
 
     @Test
+    void parsesThrowsNameWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`->  bar` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" ->  bar", new Span("[] ->  bar", 1), 2).label(),
+            Matchers.equalTo("bar")
+        );
+    }
+
+    @Test
     void reportsMinusGreaterAsThrowingAttribute() {
         MatcherAssert.assertThat(
             "`-> name` must report test() == true so the blank-line rule applies",
@@ -106,11 +134,11 @@ final class SuffixTest {
     }
 
     @Test
-    void marksMinusGreaterAttributeWithMinusPrefix() {
+    void marksMinusGreaterAttributeWithThrowingPrefix() {
         MatcherAssert.assertThat(
-            "a throwing test's XMIR name must carry the `-` marker prefix",
+            "a throwing test's XMIR name must carry the `n🌵` marker prefix",
             new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).attribute(1, 2),
-            Matchers.equalTo("-on-add")
+            Matchers.equalTo("n🌵on-add")
         );
     }
 
@@ -167,6 +195,15 @@ final class SuffixTest {
         MatcherAssert.assertThat(
             "`> name /sig` must record the atom signature as sig()",
             new Suffix(" > foo /number", new Span("[] > foo /number", 1), 2).sig(),
+            Matchers.equalTo("number")
+        );
+    }
+
+    @Test
+    void parsesAtomSignatureWithMultipleSpacesBeforeSlash() {
+        MatcherAssert.assertThat(
+            "`> name  /sig` with two spaces before the slash must parse the same as one space (#8024)",
+            new Suffix(" > foo  /number", new Span("[] > foo  /number", 1), 2).sig(),
             Matchers.equalTo("number")
         );
     }
@@ -240,6 +277,15 @@ final class SuffixTest {
         MatcherAssert.assertThat(
             "`>> fibo` must yield Form.AUTO carrying the file-local handle",
             new Suffix(" >> fibo", new Span("[] >> fibo", 1), 2).handle(),
+            Matchers.equalTo("fibo")
+        );
+    }
+
+    @Test
+    void parsesAutoNameHandleWithMultipleSpacesAfterMarker() {
+        MatcherAssert.assertThat(
+            "`>>  fibo` with two spaces after the marker must parse the same as one space (#8024)",
+            new Suffix(" >>  fibo", new Span("[] >>  fibo", 1), 2).handle(),
             Matchers.equalTo("fibo")
         );
     }
@@ -424,6 +470,32 @@ final class SuffixTest {
     }
 
     @Test
+    void clampsColumnWhenNamedSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix(" >", new Span("[] >", 1), 2),
+                "`>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void clampsColumnWhenPlusGreaterSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix("+>", new Span("[] +>", 1), 3),
+                "`+>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
     void reportsAutoFlagOnDoubleArrow() {
         MatcherAssert.assertThat(
             "auto() must report true for `>>` suffix",
@@ -462,7 +534,7 @@ final class SuffixTest {
     @Test
     void mapsAtAttributeNameToPhi() {
         MatcherAssert.assertThat(
-            "an explicit `> @` suffix must surface as the φ attribute per R-9.3.1",
+            "an explicit `> @` suffix must surface as the φ attribute per the suffix grammar",
             new Suffix(" > @", new Span("foo > @", 1), 3).attribute(1, 0),
             Matchers.equalTo("φ")
         );
@@ -481,9 +553,9 @@ final class SuffixTest {
     @Test
     void prefixesPlusFormAttribute() {
         MatcherAssert.assertThat(
-            "a `+> name` test suffix must surface as `+name` in the attribute",
+            "a `+> name` test suffix must surface as `p🌵name` in the attribute",
             new Suffix(" +> ready", new Span("[] +> ready", 1), 2).attribute(1, 0),
-            Matchers.equalTo("+ready")
+            Matchers.equalTo("p🌵ready")
         );
     }
 

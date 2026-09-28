@@ -37,13 +37,17 @@ final class Blanks {
      * (formations, atoms, only-phi formations, {@code +>} tests)
      * are exempt and call this method only when they want to
      * not exempt themselves.
+     *
      * @param span The offending line's span (used for error position)
      * @param globals The global parser state
      * @param emit The directives sink
      */
     static void checkPlain(final Span span, final Globals globals, final Emit emit) {
         Blanks.enterAfterMeta(span, globals, emit);
-        if (globals.pendingBlanks() > 0) {
+        if (
+            globals.pendingBlanks() > 0
+                && (globals.sealed() || globals.pendingComments().isEmpty())
+        ) {
             emit.error(
                 span.line(), span.indent(),
                 "blank line not allowed between non-master siblings"
@@ -63,7 +67,7 @@ final class Blanks {
      * the file's top-level object is an application — {@code bool >
      * true}, {@code number > nan}, {@code string > eol} — indent 2 is
      * an argument position, and a test attribute landing there would
-     * silently become an argument named {@code Φ.+can-…} while its body
+     * silently become an argument named {@code Φ.p🌵can-…} while its body
      * vanished from the XMIR. The outermost entry of {@code stack} is
      * therefore read as well, and anything but a formation is rejected
      * with the same error.</p>
@@ -97,6 +101,7 @@ final class Blanks {
      * line, reporting R-6.5.5 when that line is not preceded by
      * exactly one blank line. Does nothing once the header is already
      * closed.
+     *
      * @param span The first post-meta line's span
      * @param globals The global parser state
      * @param emit The directives sink

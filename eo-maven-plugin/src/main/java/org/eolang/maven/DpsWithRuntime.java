@@ -13,6 +13,7 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Add runtime dependency to the list of dependencies, if it is absent there.
+ *
  * @since 0.28.11
  */
 final class DpsWithRuntime implements Dependencies {
@@ -29,6 +30,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
+     *
      * @param dlg Dependencies delegate
      */
     DpsWithRuntime(final Iterable<Dep> dlg) {
@@ -37,6 +39,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * Constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Dependency
      */
@@ -46,6 +49,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * The main constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */
@@ -55,6 +59,7 @@ final class DpsWithRuntime implements Dependencies {
 
     /**
      * The main constructor.
+     *
      * @param dlg Dependencies delegate
      * @param sup Supplier of the eo-runtime dependency
      */
@@ -72,8 +77,14 @@ final class DpsWithRuntime implements Dependencies {
         return all.iterator();
     }
 
+    // A classifier names a different artifact of the same coordinates, so
+    // "org.eolang:eo-runtime:tests" carries none of the classes the generated
+    // code imports. Reading it as the runtime would leave the main jar out of
+    // the build for anybody who asks for a classifier beside it (#8148), so
+    // only the unclassified one counts.
     private static boolean isRuntime(final Dependency other) {
         return "org.eolang".equals(other.getGroupId())
-            && "eo-runtime".equals(other.getArtifactId());
+            && "eo-runtime".equals(other.getArtifactId())
+            && (other.getClassifier() == null || other.getClassifier().isEmpty());
     }
 }

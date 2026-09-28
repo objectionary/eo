@@ -47,16 +47,6 @@ final class Diff {
     private static final String RESET = "\033[0m";
 
     /**
-     * ANSI escape that turns the text red (used for deletions).
-     */
-    private static final String RED = "\033[31m";
-
-    /**
-     * ANSI escape that turns the text green (used for additions).
-     */
-    private static final String GREEN = "\033[32m";
-
-    /**
      * The text before the change.
      */
     private final String before;
@@ -68,6 +58,7 @@ final class Diff {
 
     /**
      * Ctor.
+     *
      * @param before The text before the change
      * @param after The text after the change
      */
@@ -78,6 +69,7 @@ final class Diff {
 
     /**
      * Are the two texts identical?
+     *
      * @return TRUE if there is nothing to show
      */
     boolean same() {
@@ -86,6 +78,7 @@ final class Diff {
 
     /**
      * Render the difference as a colored unified diff.
+     *
      * @return The diff, or an empty string if the texts are identical
      */
     String colored() {
@@ -165,10 +158,10 @@ final class Diff {
     }
 
     private static void deleted(final StringBuilder out, final String line) {
-        out.append(Diff.RED).append('-').append(line).append(Diff.RESET).append('\n');
+        out.append("\033[31m-").append(line).append(Diff.RESET).append('\n');
     }
 
     private static void added(final StringBuilder out, final String line) {
-        out.append(Diff.GREEN).append('+').append(line).append(Diff.RESET).append('\n');
+        out.append("\033[32m+").append(line).append(Diff.RESET).append('\n');
     }
 }

@@ -28,11 +28,6 @@ import java.nio.charset.StandardCharsets;
 final class Escapes {
 
     /**
-     * Maximum value of a {@code \NNN} octal byte escape (0o377, one byte).
-     */
-    private static final int MAX_OCTAL_BYTE = 0xFF;
-
-    /**
      * No instances.
      */
     private Escapes() {
@@ -40,6 +35,7 @@ final class Escapes {
 
     /**
      * Decode a string body to its raw byte representation.
+     *
      * @param inner Source body without surrounding quotes
      * @return Decoded bytes
      */
@@ -85,7 +81,7 @@ final class Escapes {
             value = value * 8 + body.charAt(cursor) - '0';
             cursor = cursor + 1;
         }
-        if (value > Escapes.MAX_OCTAL_BYTE) {
+        if (value > 0xFF) {
             throw new NumberFormatException(
                 String.format(
                     "octal escape \\%s is out of range: value %d exceeds the 1-byte limit of 0o377 (255)",
@@ -109,10 +105,7 @@ final class Escapes {
     private static int appendUnicode(
         final StringBuilder out, final String body, final int start
     ) {
-        int cursor = start;
-        while (cursor < body.length() && body.charAt(cursor) == 'u') {
-            cursor = cursor + 1;
-        }
+        final int cursor = start + 1;
         boolean valid = cursor + 4 <= body.length();
         for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
             valid = Character.digit(body.charAt(idx), 16) >= 0;

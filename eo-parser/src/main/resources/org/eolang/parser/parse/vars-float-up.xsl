@@ -58,7 +58,7 @@
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
-      <xsl:apply-templates select="@line"/>
+      <xsl:apply-templates select="@line | @pos"/>
       <xsl:apply-templates select="@as"/>
     </o>
   </xsl:template>
@@ -72,7 +72,7 @@
   <xsl:template match="o[@float-up and @name and ancestor::o[1][not(eo:abstract(.))]]" priority="2"/>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="(node()|@*) except @float-up"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

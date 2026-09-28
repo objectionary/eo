@@ -31,6 +31,18 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * The resulting Java files are stored in the {@link Transpiling#DIR} directory.
  * The intermediate optimized XMIRs are stored in the {@link Transpiling#PRE} directory.</p>
  *
+ * <p>Before anything is written, the members of every package this build
+ * compiles an object for are put inside that object, the way {@link MjMerge}
+ * does it. The two are the same step and running both changes nothing, since
+ * {@link Merging} leaves a merged member alone; it is done here as well
+ * because the shape of an object decides the name of the Java class of every
+ * atom it holds, and a build that skipped the goal would name classes that
+ * the library it compiles against does not carry. An atom
+ * {@code string.foo.bar} ships as {@code EOstring$EOfoo$EObar}, which is
+ * where it lands once {@code foo} is an attribute of {@code string}, and
+ * nowhere near the {@code org.eolang.EO_string} package an unmerged
+ * {@code +package string} would compile it into (#8295).</p>
+ *
  * @since 0.1
  */
 @Mojo(
@@ -148,46 +160,45 @@ public final class MjTranspile extends MjSafe {
     )
     private File tables;
 
+    /**
+     * Ctor.
+     */
+    public MjTranspile() {
+        // nothing
+    }
+
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            final Transpilation train = new Transpilation(
-                this.plugin.getVersion(),
-                new Tracking(this.trackSteps, this.located),
-                this.coverage,
-                this.base(),
-                this.xslMeasures.toPath(),
-                this.targetDir.toPath(),
-                this.tables.toPath()
-            );
+            new Timed(
+                new Merging(tojos, this.target.toPath().resolve(Merging.DIR))
+            ).exec();
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
-                    this.targetDir.toPath(),
-                    this.generatedDir.toPath(),
-                    this.tests,
-                    this.roots(),
-                    train,
-                    this.stored(),
-                    new JavaFiles(
-                        this.generatedDir.toPath(),
-                        this.cache.toPath()
-                            .resolve(Transpiling.CACHE)
-                            .resolve(train.version()),
-                        this.cacheEnabled
-                    )
+                    this.target.toPath(),
+                    new Written(this.generated.toPath(), this.tests, this.roots()),
+                    new Transpilation(
+                        new Tracking(this.tracking, this.located),
+                        this.coverage,
+                        this.base(),
+                        this.measures.toPath(),
+                        this.target.toPath(),
+                        this.tables.toPath()
+                    ),
+                    this.stored()
                 )
             ).exec();
         }
         if (this.attach) {
             this.project.addCompileSourceRoot(
-                this.generatedDir.toPath().toAbsolutePath().toString()
+                this.generated.toPath().toAbsolutePath().toString()
             );
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
+                this.generated
             );
-            final String gtests = this.generatedDir.toPath().getParent().resolve(
+            final String gtests = this.generated.toPath().getParent().resolve(
                 "generated-test-sources"
             ).toAbsolutePath().toString();
             this.project.addTestCompileSourceRoot(gtests);
@@ -199,7 +210,7 @@ public final class MjTranspile extends MjSafe {
     }
 
     private Collection<Path> roots() {
-        final Path build = this.targetDir.toPath().getParent();
+        final Path build = this.target.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
@@ -227,7 +238,7 @@ public final class MjTranspile extends MjSafe {
     // `Transpiling` folds it in per file.
     private GlobalCache stored() {
         final GlobalCache store;
-        if (this.trackSteps) {
+        if (this.tracking) {
             store = new GlobalCache.GcFresh();
         } else {
             store = this.caching(Transpiling.CACHE);

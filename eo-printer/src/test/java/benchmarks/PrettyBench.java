@@ -22,6 +22,7 @@ import org.openjdk.jmh.annotations.Warmup;
  * Benchmark for printing a deeply nested chain of reversed dispatches
  * ({@code 5.plus 1 .plus 2 ...}), the shape that repeatedly exercises
  * {@code Pretty.suffixed}/{@code Pretty.flat} at every nesting level.
+ *
  * @since 0.1
  * @checkstyle NonStaticMethodCheck (100 lines)
  */
@@ -31,7 +32,11 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "JTCOP.RuleCorrectTestName"})
+@SuppressWarnings({
+    "JTCOP.RuleAllTestsHaveProductionClass",
+    "JTCOP.RuleCorrectTestName",
+    "PMD.ConstructorShouldDoInitialization"
+})
 public class PrettyBench {
 
     /**
@@ -43,6 +48,13 @@ public class PrettyBench {
             this.chain(24)
         )
     );
+
+    /**
+     * Ctor.
+     */
+    public PrettyBench() {
+        // nothing
+    }
 
     /**
      * Print the chain to EO.

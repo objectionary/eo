@@ -44,21 +44,12 @@ public final class PhLoop implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The formation
      */
     public PhLoop(final Phi phi) {
         this.origin = phi;
         this.base = new AtomicReference<>();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
     }
 
     @Override

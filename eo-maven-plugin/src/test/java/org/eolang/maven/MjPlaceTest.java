@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjPlace}.
+ *
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
@@ -54,7 +55,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).with("rewriteBinaries", false).withPlacedBinary(
+            new FakeMaven(temp).with("rewrite", false).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -153,6 +154,7 @@ final class MjPlaceTest {
      * Test case for {@link MjPlace#execute()}.
      * Since for tests we are using dummy maven central, then instead of unpacking
      * of classes from jar it just copies the just simple .class files to target/classes folder.
+     *
      * @param temp Temporary directory
      * @throws IOException If fails
      */
@@ -194,7 +196,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, updated, binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must be replaced with new content because rewriteBinaries is on by default, but it was not",
+            "The binary file must be replaced with new content because rewrite is on by default, but it was not",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(updated)
         );
@@ -203,7 +205,7 @@ final class MjPlaceTest {
     @Test
     void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
         throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).with("rewriteBinaries", false);
+        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);
@@ -211,7 +213,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "new content", binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must not be replaced with new content because rewriteBinaries is off, but it was",
+            "The binary file must not be replaced with new content because rewrite is off, but it was",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );

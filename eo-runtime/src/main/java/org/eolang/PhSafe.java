@@ -73,6 +73,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      */
     public PhSafe(final Phi phi) {
@@ -81,6 +82,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line
@@ -92,6 +94,7 @@ public final class PhSafe implements Phi, Atom {
 
     /**
      * Ctor.
+     *
      * @param phi The object
      * @param prg Name of the program
      * @param lne Line
@@ -109,16 +112,6 @@ public final class PhSafe implements Phi, Atom {
         this.position = pos;
         this.location = loc;
         this.oname = oname;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
     }
 
     @Override

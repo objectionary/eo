@@ -21,6 +21,7 @@ import org.openjdk.jmh.annotations.Warmup;
 
 /**
  * Benchmark for XSL transformations.
+ *
  * @since 0.41
  * @checkstyle NonStaticMethodCheck (100 lines)
  */
@@ -50,6 +51,13 @@ public class XslBench {
             "/org/eolang/parser/parse/build-fqns.xsl"
         ).back()
     );
+
+    /**
+     * Ctor.
+     */
+    public XslBench() {
+        // nothing
+    }
 
     /**
      * Run all sheets on a large XMIR document.

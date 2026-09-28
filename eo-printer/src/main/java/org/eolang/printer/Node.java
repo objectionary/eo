@@ -80,6 +80,7 @@ final class Node {
 
     /**
      * Ctor, from a {@code <line>} element.
+     *
      * @param line The {@code <line>} element
      */
     Node(final Xnav line) {
@@ -98,6 +99,7 @@ final class Node {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head
      * @param suffix The rendered suffix
      * @param formation Whether it is a formation
@@ -163,22 +165,53 @@ final class Node {
      * Print this node on the lines below the head of its parent: the block
      * itself, preceded by the newline that opens it and, for a test
      * attribute, by the blank line R-6.5.3 requires in front of it.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block with its leading newlines
      */
     String indented(final Style style, final int indent) {
-        final StringBuilder block = new StringBuilder();
-        if (this.test) {
-            block.append('\n');
-        }
-        return block.append('\n')
+        return this.opened()
             .append(this.lined().print(style, indent))
             .toString();
     }
 
     /**
+     * Print this node on the lines below the head of its parent, keeping
+     * its own children beneath it whatever the penalties say.
+     *
+     * <p>A method continuation ({@code .y}, §3.5) parses only under a
+     * vertical application: it attaches to the lines above it and the
+     * horizontal form has no place for it. So an application a
+     * continuation hangs on stays vertical however cheap its one-line
+     * spelling looks, or the printer writes a file the next build cannot
+     * read (#8058).</p>
+     *
+     * @param style The style to lay out in
+     * @param indent The indentation level
+     * @return The rendered block with its leading newlines
+     */
+    String stacked(final Style style, final int indent) {
+        return this.opened()
+            .append(this.lined().vertical(style, indent))
+            .toString();
+    }
+
+    /**
+     * Whether this node is a nameless method-dispatch continuation
+     * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
+     * instead of carrying a receiver of its own.
+     *
+     * @return True when this node continues the sibling above it
+     */
+    boolean continuation() {
+        return this.children.isEmpty() && this.tail.isEmpty()
+            && (this.base.startsWith(".") || this.base.startsWith("?."));
+    }
+
+    /**
      * Print this node with its children laid out beneath its head.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -369,6 +402,7 @@ final class Node {
      * inline-phi form: not a formation, whose children are bindings rather
      * than arguments, and not a bare token, which has nothing to lay out
      * beneath a marker.
+     *
      * @return True when this node applies arguments
      */
     boolean applied() {
@@ -378,11 +412,20 @@ final class Node {
     /**
      * Whether no line in this node's children carries a name suffix, so
      * their subtrees are safe to fold into a compact only-phi formation.
+     *
      * @return True when every child subtree is nameless
      * @see #nameless()
      */
     boolean anonymous() {
         return this.children.stream().allMatch(Node::nameless);
+    }
+
+    private StringBuilder opened() {
+        final StringBuilder block = new StringBuilder();
+        if (this.test) {
+            block.append('\n');
+        }
+        return block.append('\n');
     }
 
     private String shaped(final Style style, final int indent) {

@@ -1,6 +1,6 @@
 # Calculate MOD.
-# An operation that finds the remainder after dividing the number by `y`.
-# When `y` is zero, the result is the caller-supplied `cant-mod` fallback, or
+# An operation that finds the remainder after dividing the number by `b`.
+# When `b` is zero, the result is the caller-supplied `cant-mod` fallback, or
 # the terminator when none was provided, which terminates on use. Otherwise
 # the divisor is doubled until it reaches the dividend and then halved back
 # down, subtracting it from the dividend whenever it fits. Doubling and
@@ -14,14 +14,14 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ y cant-mod] > mod
+[^ b cant-mod] > mod
   if. > @
     eq.
-      number y.as-bytes >> divisor
+      number b.as-bytes >> divisor
       0
     cant-mod
       "cannot calculate mod by zero"

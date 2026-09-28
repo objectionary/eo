@@ -32,6 +32,7 @@ final class Held {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, as {@link Provides} wrote it
      */
     Held(final XML provides) {
@@ -40,17 +41,15 @@ final class Held {
 
     /**
      * What every void that says so will hold.
+     *
      * @return The types, by the locator of the void, without the voids that
      *  say nothing
      */
     Map<String, String> all() {
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final XML attr : this.table.nodes("//attr[@void='true' and @holds]")) {
-            final String holds = attr.xpath("@holds").get(0);
-            found.put(
-                attr.xpath("@type").get(0),
-                holds.replace("?", "")
-            );
+            final Noted row = new Noted(attr);
+            found.put(row.says("type"), row.says("holds").replace("?", ""));
         }
         return found;
     }

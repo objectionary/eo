@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -42,12 +43,6 @@ final class Emissions {
     );
 
     /**
-     * Bits an IEEE-754 double keeps below the leading one of its
-     * significand.
-     */
-    private static final int SIGNIFICAND_BITS = 52;
-
-    /**
      * The void the identity object {@code I} binds and decorates.
      */
     private static final String IDENTITY = "x";
@@ -62,7 +57,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*(?:\\.\\.\\.)?"
+        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -76,6 +71,7 @@ final class Emissions {
      * head, optional {@code .method} chain, and optional horizontal
      * args (§9.0.3). The outermost {@code <o>} (head or chain's last
      * link) is left <em>open</em> for the caller to close.
+     *
      * @param emit Emitter
      * @param name Name to attach to the outermost {@code <o>}, or
      *  {@code null}
@@ -91,9 +87,9 @@ final class Emissions {
         if (Emissions.reversedDispatch(tokens, head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
-            Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
+                Bindings.checkAllOrNothing(rargs.subList(1, rargs.size()), span);
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
@@ -169,6 +165,7 @@ final class Emissions {
      * Emit a value as a self-contained argument child — opened and
      * immediately closed. If the value carries an inline binding
      * (§3.12), attaches {@code @as}.
+     *
      * @param emit Emitter
      * @param value The value
      * @param line Source line
@@ -200,6 +197,7 @@ final class Emissions {
      * Translate an inline-binding label to its {@code @as} value.
      * Numeric bindings become {@code αN}; identifier bindings are
      * emitted verbatim per R-9.4 inline-binding row.
+     *
      * @param raw Binding label or N
      * @return The {@code @as} attribute value
      */
@@ -220,6 +218,7 @@ final class Emissions {
      * data carrier used by numeric, hex and string literals to hold
      * the IEEE-754/UTF-8 byte representation. The cursor is left back
      * at the parent (both nested elements are closed).
+     *
      * @param emit Emitter
      * @param line Source line
      * @param pos Source column
@@ -238,6 +237,11 @@ final class Emissions {
 
     /**
      * Reject a void parameter name the grammar does not accept — §4.5.
+     *
+     * <p>The shape check leaves a control character through, since §2.3
+     * does not count one among the NAME terminators, so the glyph check
+     * every other identifier position runs happens here too.</p>
+     *
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
      * @param pos Source column of the parameter's first character
@@ -246,7 +250,28 @@ final class Emissions {
         if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME or @"
+                "parameter names in voids must be NAME, @ or ^"
+            );
+        }
+        Suffix.checkGlyphs(raw, line, pos);
+    }
+
+    /**
+     * Reject a bracket entry of an only-phi formation that names φ. Such a
+     * formation binds its φ from the left-hand side, so a {@code @} void
+     * would leave it holding two attributes of that name and the object
+     * would keep only one of them.
+     *
+     * @param raw The parameter text, as written
+     * @param line Source line (for error reporting)
+     * @param pos Source column of the parameter's first character
+     */
+    static void validPhiParam(final String raw, final int line, final int pos) {
+        Emissions.validParam(raw, line, pos);
+        if ("@".equals(raw)) {
+            throw new ParseError(
+                line, pos,
+                "an only-phi formation binds φ from its left-hand side, so @ is not allowed among its voids"
             );
         }
     }
@@ -371,7 +396,7 @@ final class Emissions {
     private static BigDecimal exactly(final double value) {
         final int exponent = Math.max(
             Math.getExponent(value), Double.MIN_EXPONENT
-        ) - Emissions.SIGNIFICAND_BITS;
+        ) - 52;
         final BigInteger mantissa = BigInteger.valueOf(
             (long) Math.scalb(value, -exponent)
         );
@@ -391,7 +416,7 @@ final class Emissions {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
             str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+        } else if (Double.isFinite(num) && num >= -0x1p63 && num < 0x1p63) {
             str = Long.toString((long) num);
         } else {
             str = Double.toString(num);
@@ -418,7 +443,7 @@ final class Emissions {
 
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;
@@ -437,7 +462,7 @@ final class Emissions {
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
-            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+            mapped = head.rootSymbol();
         } else {
             mapped = head.raw();
         }
@@ -477,6 +502,13 @@ final class Emissions {
                 "only-phi parameter list missing closing `]`"
             );
         }
+        final int chained = Eo.topLevelGreaterBracketIndex(inner.substring(close + 1));
+        if (chained >= 0) {
+            throw new ParseError(
+                line, column + close + 1 + chained,
+                "chained inline-phi suffixes are not allowed"
+            );
+        }
         final String lhs = inner.substring(0, phi).stripTrailing();
         final String params = inner.substring(bracket + 1, close);
         final boolean suffixed = new Suffix(
@@ -490,30 +522,43 @@ final class Emissions {
                 "inline-phi inside parentheses must be anonymous"
             );
         }
+        final Span sub = new Span(" ".repeat(column).concat(lhs), line);
+        final Lhs slot = new Lhs(sub);
+        if (slot.stars() >= 0) {
+            throw new ParseError(
+                line, column + lhs.lastIndexOf('*'),
+                "compact tuple marker is not allowed inside a parenthesised inline-phi"
+            );
+        }
+        if (slot.receiverless()) {
+            throw new ParseError(
+                line, column, "reversed dispatch missing receiver"
+            );
+        }
         emit.baselessObject(name, line, column);
         int pcol = column + bracket + 1;
-        for (final String param : Emissions.splitParams(params)) {
-            Emissions.validParam(param, line, pcol);
-            final String mapped;
-            if ("@".equals(param)) {
-                mapped = "φ";
-            } else if ("^".equals(param)) {
-                mapped = "ρ";
-            } else {
-                mapped = param;
-            }
-            emit.voidParam(mapped, line, pcol);
+        for (final String param : Emissions.splitParams(params, line, pcol)) {
+            Emissions.validPhiParam(param, line, pcol);
+            emit.voidParam(new VoidName(param).asString(), line, pcol);
             pcol = pcol + param.length() + 1;
         }
-        final Span sub = new Span(" ".repeat(column).concat(lhs), line);
         final Tokens tokens = new Tokens(sub.body(), sub);
         Emissions.expression(emit, "φ", tokens, line);
         tokens.checkEnd("unexpected content in the body of an only-phi formation");
         emit.close();
     }
 
-    private static List<String> splitParams(final String text) {
-        final List<String> out = new java.util.ArrayList<>(0);
+    private static List<String> splitParams(
+        final String text, final int line, final int column
+    ) {
+        final List<String> out = new ArrayList<>(0);
+        if (!text.isEmpty()
+            && (text.charAt(0) == ' ' || text.charAt(text.length() - 1) == ' ')) {
+            throw new ParseError(
+                line, column,
+                "formation brackets must not contain leading or trailing space"
+            );
+        }
         int idx = 0;
         while (idx < text.length()) {
             int end = idx;
@@ -522,6 +567,12 @@ final class Emissions {
             }
             out.add(text.substring(idx, end));
             if (end < text.length()) {
+                if (end + 1 < text.length() && text.charAt(end + 1) == ' ') {
+                    throw new ParseError(
+                        line, column + end,
+                        "parameter names in voids must be separated by exactly one space"
+                    );
+                }
                 idx = end + 1;
             } else {
                 idx = end;

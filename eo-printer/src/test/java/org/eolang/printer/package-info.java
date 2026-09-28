@@ -5,6 +5,7 @@
 
 /**
  * XMIR-to-EO printer, tests.
+ *
  * @since 0.60.0
  */
 package org.eolang.printer;

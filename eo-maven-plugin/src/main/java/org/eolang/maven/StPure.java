@@ -55,13 +55,6 @@ import org.xml.sax.SAXException;
 final class StPure extends StEnvelope {
 
     /**
-     * The feature that makes a parser build the whole document at once,
-     * instead of leaving parts of it to be built by whoever reads them.
-     */
-    private static final String EXPANSION =
-        "http://apache.org/xml/features/dom/defer-node-expansion";
-
-    /**
      * The tables read so far, by their URIs.
      */
     private static final Map<String, SoftReference<Node>> TABLES = new HashMap<>(0);
@@ -75,6 +68,7 @@ final class StPure extends StEnvelope {
 
     /**
      * Ctor.
+     *
      * @param sheet The classpath path of the stylesheet to run
      * @param tables The directory with the tables of {@link MjInference},
      *  which does not have to exist
@@ -130,7 +124,7 @@ final class StPure extends StEnvelope {
         try {
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
-            factory.setFeature(StPure.EXPANSION, false);
+            factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
             return factory.newDocumentBuilder().parse(href);
         } catch (final ParserConfigurationException | SAXException | IOException ex) {
             throw new TransformerException(

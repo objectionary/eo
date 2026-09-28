@@ -23,6 +23,7 @@ public final class PhLogged implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The origin
      */
     public PhLogged(final Phi phi) {
@@ -75,16 +76,6 @@ public final class PhLogged implements Phi {
     @Override
     public String forma() {
         return this.origin.forma();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.origin.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.origin.hashCode();
     }
 
     @Override

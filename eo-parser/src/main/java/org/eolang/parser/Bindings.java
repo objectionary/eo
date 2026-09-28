@@ -75,6 +75,7 @@ final class Bindings {
     /**
      * Verify that a reversed-dispatch receiver carries no binding —
      * R-6.6.3.
+     *
      * @param receiver The receiver value (first arg of a horizontal
      *  reversed line)
      * @param span Source span
@@ -94,6 +95,7 @@ final class Bindings {
      * R-6.6.3. When the chain being extended is the receiver of a
      * reversed dispatch, a binding on a later link names the whole
      * reversed expression, which is the same as binding the receiver.
+     *
      * @param below The chain head's parent (what the upgrade would
      *  touch), or the stack's bottom sentinel when there is none
      * @param span Source span of the continuation line
@@ -120,7 +122,7 @@ final class Bindings {
      * R-3.12.3.</p>
      *
      * @param stack Indent stack (the new child is already on top)
-     * @param outer Outer binding label, or {@code null} when absent
+     * @param outer Outer binding label, empty when the line carries none
      * @param span Source span of the child line
      */
     static void observeChild(final Stack stack, final String outer, final Span span) {
@@ -130,7 +132,7 @@ final class Bindings {
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
         } else if (Bindings.tracksBindings(parent.kind())) {
-            parent.observeBinding(outer != null, span);
+            parent.observeBinding(!outer.isEmpty(), span);
         }
     }
 
@@ -139,7 +141,7 @@ final class Bindings {
     }
 
     private static void rejectBinding(final String outer, final Span span) {
-        if (outer != null) {
+        if (!outer.isEmpty()) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "binding allowed only in argument position"
@@ -151,8 +153,8 @@ final class Bindings {
         final Level parent, final String outer, final Span span
     ) {
         if (parent.children() > 1) {
-            parent.observeBinding(outer != null, span);
-        } else if (outer != null) {
+            parent.observeBinding(!outer.isEmpty(), span);
+        } else if (!outer.isEmpty()) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "reversed-dispatch receiver cannot carry a binding"

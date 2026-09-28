@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Supplier;
+import org.cactoos.BiFunc;
 import org.cactoos.Func;
 
 /**
@@ -36,6 +37,7 @@ final class GcShared implements GlobalCache {
 
     /**
      * Ctor.
+     *
      * @param dir Directory of this step inside the machine-wide cache
      * @param key The segment that tells one compiler output from another
      */
@@ -45,6 +47,7 @@ final class GcShared implements GlobalCache {
 
     /**
      * Ctor.
+     *
      * @param dir Directory of this step inside the machine-wide cache
      * @param key The segment that tells one compiler output from another
      * @param guard Guard shared with the cache this one was derived from
@@ -66,6 +69,18 @@ final class GcShared implements GlobalCache {
             );
             return target;
         };
+    }
+
+    @Override
+    public Footprint kept(
+        final Path tail,
+        final Supplier<String> hash,
+        final BiFunc<Path, Path, Boolean> rewrite,
+        final Footprint made
+    ) {
+        return new FpAppliedWithCache(
+            made, new CachePath(this.dir, this.key, hash, tail), rewrite, true
+        );
     }
 
     @Override

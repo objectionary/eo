@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Settings;
 import org.cactoos.Scalar;
 
@@ -28,6 +29,7 @@ final class Proxies implements Scalar<MvnProxy[]> {
 
     /**
      * Ctor.
+     *
      * @param settings Maven settings
      */
     Proxies(final Settings settings) {
@@ -36,12 +38,12 @@ final class Proxies implements Scalar<MvnProxy[]> {
 
     @Override
     public MvnProxy[] value() {
-        final Collection<org.apache.maven.settings.Proxy> active =
+        final Collection<Proxy> active =
             this.settings.getProxies()
                 .stream()
-                .filter(org.apache.maven.settings.Proxy::isActive)
+                .filter(Proxy::isActive)
                 .collect(Collectors.toList());
-        for (final org.apache.maven.settings.Proxy proxy : active) {
+        for (final Proxy proxy : active) {
             final String protocol = proxy.getProtocol();
             if (protocol != null && !protocol.isEmpty()
                 && !"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {

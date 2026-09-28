@@ -68,25 +68,26 @@ final class Links implements Clue {
         final Xmirs world = new Xmirs(xmirs);
         final Collection<String> made = new ArrayList<>(0);
         for (final XML formation : world.formations()) {
-            made.add(formation.xpath("@loc").get(0));
+            made.add(new Noted(formation).says("loc"));
         }
         final Scope scope = new Scope(new HashSet<>(world.locators()), new HashSet<>(made));
         final Map<String, Type> found = new LinkedHashMap<>(0);
         for (final XML reference : world.references()) {
-            final String from = reference.xpath("@loc").get(0);
-            final String target = scope.target(from, reference.xpath("@base").get(0));
+            final Noted ref = new Noted(reference);
+            final String from = ref.says("loc");
+            final String target = scope.target(from, ref.says("base"));
             if (!target.isEmpty()) {
                 found.put(from, new Ref(target));
             }
         }
         for (final XML datum : world.data()) {
-            found.put(datum.xpath("@loc").get(0), new Data());
+            found.put(new Noted(datum).says("loc"), new Data());
         }
         for (final XML dead : world.terminators()) {
-            found.put(dead.xpath("@loc").get(0), new Terminator());
+            found.put(new Noted(dead).says("loc"), new Terminator());
         }
         for (final XML hollow : world.voids()) {
-            found.put(hollow.xpath("@loc").get(0), new Var());
+            found.put(new Noted(hollow).says("loc"), new Var());
         }
         Files.createDirectories(tables);
         Files.write(

@@ -73,6 +73,7 @@ final class Transpilation {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
         "/org/eolang/maven/transpile/_recursion.xsl",
+        "/org/eolang/maven/transpile/_java-names.xsl",
     };
 
     /**
@@ -90,11 +91,6 @@ final class Transpilation {
      */
     private static final ThreadLocal<Map<String, Train<Shift>>> TRAINS =
         ThreadLocal.withInitial(HashMap::new);
-
-    /**
-     * Plugin version.
-     */
-    private final String version;
 
     /**
      * Which optional diagnostic artifacts to emit while transpiling.
@@ -138,7 +134,7 @@ final class Transpilation {
 
     /**
      * Ctor.
-     * @param ver Plugin version string
+     *
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
@@ -147,7 +143,6 @@ final class Transpilation {
      * @param tables The directory with the tables of {@link MjInference}
      */
     Transpilation(
-        final String ver,
         final Tracking diagnostics,
         final boolean cvrg,
         final String base,
@@ -155,7 +150,6 @@ final class Transpilation {
         final Path dir,
         final Path tables
     ) {
-        this.version = ver;
         this.tracking = diagnostics;
         this.coverage = cvrg;
         this.superclass = base;
@@ -166,11 +160,11 @@ final class Transpilation {
     }
 
     /**
-     * Cache-key version segment: the plugin version combined with a
-     * fingerprint of the bundled transpile XSLs and the libraries they
-     * {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code trackSteps}/{@code coverageTracking} flags. Folding the XSL
-     * content in means
+     * Cache-key version segment: a fingerprint of the bundled transpile
+     * XSLs and the libraries they {@code xsl:import}, plus the {@code trackLocations}/
+     * {@code tracking}/{@code coverageTracking} flags. The plugin version
+     * is not part of it: {@link Caching} already folds that into the key of
+     * every cache it makes. Folding the XSL content in means
      * that a change in the transformation logic invalidates the global
      * transpile cache even when the plugin version is unchanged (a
      * constant {@code -SNAPSHOT} during development), see #5578; folding
@@ -181,15 +175,15 @@ final class Transpilation {
      * cache, since all of them change what a build of the same source
      * produces: the first two and the base class change what
      * {@code to-java.xsl} emits (see #6031 and #5955), and
-     * {@code trackSteps} decides whether the XMIRs of the train are written
+     * {@code tracking} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
      * The tables belong to {@link #version(Collection)} instead.
+     *
      * @return The version segment shared by every source
      */
     String version() {
         return String.format(
-            "%s-%s-%b-%b-%b-%s",
-            this.version,
+            "%s-%b-%b-%b-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
@@ -204,14 +198,14 @@ final class Transpilation {
      *
      * <p>{@code purify.xsl} reads the tables and stamps {@code @pure}, which
      * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so a source
-     * with different rows is different Java (#7627, #7945).</p>
+     * with different rows is different Java (#7627, #7945). The Java files
+     * of that source are keyed by the same segment: {@code Transpiling}
+     * derives the cache of one tojo from this and hands it to
+     * {@code JavaFiles}, so a class never comes back from a slot the rows
+     * of another build filled (#8001).</p>
      *
      * @param locators The locators of the objects the file holds
      * @return The version segment for {@link CachePath}
-     * @todo #7945:40min Key the Java files by the rows as well.
-     *  `Transpiling` still pools them in one directory made from
-     *  {@link #version()}, which knows nothing about the tables. Hand
-     *  `JavaFiles.total` the directory of the tojo, made here.
      */
     String version(final Collection<String> locators) {
         return String.format("%s-%s", this.version(), this.rows.digest(locators));
@@ -234,6 +228,7 @@ final class Transpilation {
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
+     *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
      */

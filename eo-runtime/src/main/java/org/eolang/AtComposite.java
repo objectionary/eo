@@ -28,6 +28,7 @@ public final class AtComposite implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param obj The \rho
      * @param exp The expression
      */

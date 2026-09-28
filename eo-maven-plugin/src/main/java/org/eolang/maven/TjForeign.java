@@ -12,6 +12,7 @@ import java.util.Objects;
 
 /**
  * Foreign tojo.
+ *
  * @since 0.30
  */
 final class TjForeign {
@@ -23,6 +24,7 @@ final class TjForeign {
 
     /**
      * Ctor.
+     *
      * @param original The delegate
      */
     TjForeign(final Tojo original) {
@@ -54,6 +56,7 @@ final class TjForeign {
 
     /**
      * The id of the tojo.
+     *
      * @return The id of the tojo
      */
     String identifier() {
@@ -62,6 +65,7 @@ final class TjForeign {
 
     /**
      * The tojo xmir.
+     *
      * @return The xmir
      */
     Path xmir() {
@@ -70,6 +74,7 @@ final class TjForeign {
 
     /**
      * Path to linted xmir.
+     *
      * @return Linted xmir
      */
     Path linted() {
@@ -78,6 +83,7 @@ final class TjForeign {
 
     /**
      * The tojo eo object.
+     *
      * @return The eo object
      */
     Path source() {
@@ -86,6 +92,7 @@ final class TjForeign {
 
     /**
      * The tojo version.
+     *
      * @return The version
      */
     String version() {
@@ -94,6 +101,7 @@ final class TjForeign {
 
     /**
      * The tojo description.
+     *
      * @return The description
      */
     String description() {
@@ -106,6 +114,7 @@ final class TjForeign {
 
     /**
      * The tojo hash.
+     *
      * @return The hash
      */
     String hash() {
@@ -114,6 +123,7 @@ final class TjForeign {
 
     /**
      * The tojo probed.
+     *
      * @return The probed
      */
     String probed() {
@@ -122,6 +132,7 @@ final class TjForeign {
 
     /**
      * The discovered at location.
+     *
      * @return The discovered at
      */
     String discoveredAt() {
@@ -130,25 +141,24 @@ final class TjForeign {
 
     /**
      * Check if the given tojo has not been parsed.
+     *
      * @return True if the tojo has not been parsed
      */
     boolean notParsed() {
         boolean res = true;
-        if (this.delegate.exists(TjsForeign.Attribute.XMIR.getKey())) {
-            final Path xmir = this.xmir();
-            if (xmir.toFile().lastModified() >= this.source().toFile().lastModified()) {
-                Logger.debug(
-                    this, "Already parsed %s to %[file]s (it's newer than the source)",
-                    this.identifier(), xmir
-                );
-                res = false;
-            }
+        if (this.delegate.exists(TjsForeign.Attribute.XMIR.getKey()) && this.unchanged()) {
+            Logger.debug(
+                this, "Already parsed %s to %[file]s (the source is the very same one)",
+                this.identifier(), this.xmir()
+            );
+            res = false;
         }
         return res;
     }
 
     /**
      * Checks if tojo has hash.
+     *
      * @return True if has hash, false otherwise
      */
     boolean hasHash() {
@@ -159,6 +169,7 @@ final class TjForeign {
      * Checks if the tojo has no source of its own, meaning that it is one of
      * the objects {@link Pulling} is going to fetch from the remote
      * objectionary.
+     *
      * @return True if there is neither {@code .eo} nor {@code .xmir} on disk
      */
     boolean sourceless() {
@@ -169,6 +180,7 @@ final class TjForeign {
     /**
      * Checks if tojo was discovered as a dependency of another object,
      * rather than registered directly as a user source.
+     *
      * @return True if discovered, false otherwise
      */
     boolean discovered() {
@@ -177,6 +189,7 @@ final class TjForeign {
 
     /**
      * Set the jar.
+     *
      * @param coordinates The coordinates of jar
      * @return The tojo itself
      */
@@ -187,6 +200,7 @@ final class TjForeign {
 
     /**
      * Set the discovered at.
+     *
      * @param path The path where was discovered
      * @return The tojo itself
      */
@@ -200,6 +214,7 @@ final class TjForeign {
 
     /**
      * Set the linted xmir.
+     *
      * @param xmir The linted xmir
      * @return The tojo itself
      */
@@ -210,6 +225,7 @@ final class TjForeign {
 
     /**
      * Set the eo path.
+     *
      * @param source The eo path
      * @return The tojo itself
      */
@@ -220,6 +236,7 @@ final class TjForeign {
 
     /**
      * Set the hash.
+     *
      * @param hash The hash
      * @return The tojo itself
      */
@@ -230,6 +247,7 @@ final class TjForeign {
 
     /**
      * Set the number of probed objects.
+     *
      * @param count The number of probed objects
      * @return The tojo itself
      */
@@ -241,6 +259,7 @@ final class TjForeign {
     /**
      * Say that this object now lives inside another one and is compiled as a
      * part of it.
+     *
      * @param object The name of the object it was put inside of
      * @return The tojo itself
      */
@@ -251,6 +270,7 @@ final class TjForeign {
 
     /**
      * Set the xmir.
+     *
      * @param xmir The xmir
      * @return The tojo itself
      */
@@ -260,7 +280,19 @@ final class TjForeign {
     }
 
     /**
+     * Set the digest of the source the xmir was parsed from.
+     *
+     * @param digest The digest
+     * @return The tojo itself
+     */
+    TjForeign withDigest(final String digest) {
+        this.delegate.set(TjsForeign.Attribute.DIGEST.getKey(), digest);
+        return this;
+    }
+
+    /**
      * Set the version.
+     *
      * @param ver The version
      * @return The tojo itself
      */
@@ -271,6 +303,7 @@ final class TjForeign {
 
     /**
      * Set the scope.
+     *
      * @param scope The scope
      * @return The tojo itself
      */
@@ -281,10 +314,18 @@ final class TjForeign {
 
     /**
      * Return the scope of the tojo.
+     *
      * @return The scope
      */
     String scope() {
         return this.attribute(TjsForeign.Attribute.SCOPE);
+    }
+
+    private boolean unchanged() {
+        return this.delegate.exists(TjsForeign.Attribute.DIGEST.getKey())
+            && this.source().toFile().exists()
+            && this.attribute(TjsForeign.Attribute.DIGEST)
+                .equals(new Sha(this.source()).toString());
     }
 
     private String attribute(final TjsForeign.Attribute attribute) {

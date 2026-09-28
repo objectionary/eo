@@ -26,11 +26,6 @@ import org.cactoos.text.TextOf;
 final class CommitHashesText extends TextEnvelope {
 
     /**
-     * Tags.
-     */
-    private static final String HOME = "https://home.objectionary.com/tags.txt";
-
-    /**
      * Fallback hashes.
      */
     private static final String FALLBACK = String.join(
@@ -64,6 +59,7 @@ final class CommitHashesText extends TextEnvelope {
 
     /**
      * Constructor.
+     *
      * @param source Text source, retried on its own before this class falls
      *  back to {@link CommitHashesText#FALLBACK}
      */
@@ -88,6 +84,6 @@ final class CommitHashesText extends TextEnvelope {
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private static String fetch() throws Exception {
-        return new TextOf(new URL(CommitHashesText.HOME)).asString();
+        return new TextOf(new URL("https://home.objectionary.com/tags.txt")).asString();
     }
 }

@@ -39,7 +39,7 @@ final class Pulling implements Step {
     private final TjsForeign tojos;
 
     /**
-     * Base target directory (targetDir + DIR).
+     * Base target directory (target + DIR).
      */
     private final Path base;
 
@@ -80,6 +80,7 @@ final class Pulling implements Step {
 
     /**
      * Constructor.
+     *
      * @param tjs Foreign tojos catalog
      * @param dir Base target directory
      * @param hsh Commit hash

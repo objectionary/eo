@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
@@ -43,12 +45,12 @@ import org.junit.jupiter.api.parallel.Isolated;
 final class PhCoverageTest {
 
     @Test
-    void staysEqualToItsOrigin() {
+    void staysDistinctFromItsOrigin() {
         final Phi origin = new Data.ToPhi(42L);
         MatcherAssert.assertThat(
-            "a coverage wrapper must compare equal to the object it wraps, but it didnt",
+            "a coverage wrapper must not compare equal to the object it wraps",
             new PhCoverage(origin, "Φ.n:1:1"),
-            Matchers.equalTo(origin)
+            Matchers.not(Matchers.equalTo(origin))
         );
     }
 
@@ -70,6 +72,34 @@ final class PhCoverageTest {
                 "every location, hit repeatedly and through a copy, must be recorded exactly once",
                 Files.readAllLines(hits, StandardCharsets.UTF_8),
                 Matchers.containsInAnyOrder("Φ.foo:7:3", "Φ.bar:9:5")
+            );
+        } finally {
+            if (before == null) {
+                System.clearProperty("eo.coverageFile");
+            } else {
+                System.setProperty("eo.coverageFile", before);
+            }
+        }
+    }
+
+    @Test
+    void recordsALocationOnceAcrossWrappersSharingASet(@Mktmp final Path temp)
+        throws Exception {
+        final Path hits = temp.resolve("hits.txt");
+        final String before = System.getProperty("eo.coverageFile");
+        System.setProperty("eo.coverageFile", hits.toString());
+        try {
+            final Set<String> shared = ConcurrentHashMap.newKeySet();
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2A}), shared, "Φ.shared:5:9")
+            ).take();
+            new Dataized(
+                new PhCoverage(new PhDefault(new byte[] {(byte) 0x2B}), shared, "Φ.shared:5:9")
+            ).take();
+            MatcherAssert.assertThat(
+                "a location hit through two wrappers sharing one set must be recorded once, but it wasnt",
+                Files.readAllLines(hits, StandardCharsets.UTF_8),
+                Matchers.contains("Φ.shared:5:9")
             );
         } finally {
             if (before == null) {

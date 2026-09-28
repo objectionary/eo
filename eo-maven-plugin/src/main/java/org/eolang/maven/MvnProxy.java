@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 /**
  * One active proxy of Maven settings, carrying the excluded hosts that a
  * plain {@link Proxy} drops.
+ *
  * @since 0.73.4
  */
 final class MvnProxy {
@@ -25,6 +26,7 @@ final class MvnProxy {
 
     /**
      * Ctor.
+     *
      * @param origin The Maven proxy this wraps
      */
     MvnProxy(final org.apache.maven.settings.Proxy origin) {
@@ -33,6 +35,7 @@ final class MvnProxy {
 
     /**
      * The Java proxy this settles to.
+     *
      * @return The Java proxy
      */
     Proxy address() {

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DpsWithRuntime}.
+ *
  * @since 0.28.11
  */
 final class DpsWithRuntimeTest {
@@ -96,6 +97,24 @@ final class DpsWithRuntimeTest {
                     Matchers.containsString("org.eolang:eo-runtime:0.0.1")
                 )
             )
+        );
+    }
+
+    @Test
+    void addsTheRuntimeBesideAClassifierOfIt() {
+        MatcherAssert.assertThat(
+            "a classifier of the runtime must not stand in for the runtime itself, but it did",
+            new DpsWithRuntime(
+                new ListOf<>(
+                    new Dep()
+                        .withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withVersion("0.30.0")
+                        .withClassifier("tests")
+                ),
+                Dependencies.Fake.runtimeDep()
+            ),
+            Matchers.iterableWithSize(2)
         );
     }
 }

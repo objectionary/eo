@@ -33,6 +33,10 @@ import org.xembly.Directives;
  * asked for, 77 of the 2,303 in eo-runtime, and a fact that cannot be written
  * where it belongs is still a fact.</p>
  *
+ * <p>A name is not the only thing the program asks of a void. It also applies
+ * one, and that demand is {@link Applies}, written beside these on the same
+ * row and checked the other way round.</p>
+ *
  * @since 0.69.0
  */
 final class Demands {
@@ -43,28 +47,31 @@ final class Demands {
     private final Map<String, Map<String, String>> asked;
 
     /**
-     * The void these demands are made of.
+     * The voids these demands are made of.
      */
-    private final String hollow;
+    private final Rooted rooted;
 
     /**
      * Ctor.
+     *
      * @param all What is asked of every object, from {@link Asked}
-     * @param object The void these demands are made of
+     * @param objects The voids these demands are made of: the void itself,
+     *  and every void it is handed into
      */
-    Demands(final Map<String, Map<String, String>> all, final String object) {
+    Demands(final Map<String, Map<String, String>> all, final Rooted objects) {
         this.asked = all;
-        this.hollow = object;
+        this.rooted = objects;
     }
 
     /**
      * These demands, to be put inside the row of the void.
+     *
      * @return The directives, empty when nothing is ever asked of it
      */
     Directives directives() {
         final Directives dirs = new Directives();
         for (final Map.Entry<String, Map<String, String>> bearer : this.asked.entrySet()) {
-            if (this.below(bearer.getKey())) {
+            if (this.rooted.covers(bearer.getKey())) {
                 for (final Map.Entry<String, String> demand : bearer.getValue().entrySet()) {
                     dirs.add("demand")
                         .attr("of", bearer.getKey())
@@ -79,20 +86,17 @@ final class Demands {
 
     /**
      * Whether anything is ever asked of this void, or of a name rooted at it.
+     *
      * @return True when at least one name is
      */
     boolean any() {
         boolean found = false;
         for (final String bearer : this.asked.keySet()) {
-            if (this.below(bearer)) {
+            if (this.rooted.covers(bearer)) {
                 found = true;
                 break;
             }
         }
         return found;
-    }
-
-    private boolean below(final String object) {
-        return object.equals(this.hollow) || object.startsWith(this.hollow.concat("."));
     }
 }

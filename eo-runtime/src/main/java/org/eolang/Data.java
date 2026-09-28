@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * A data container.
+ *
  * @since 0.1
  */
 @FunctionalInterface
@@ -16,6 +17,7 @@ public interface Data {
 
     /**
      * Take the data.
+     *
      * @return The data
      */
     byte[] delta();
@@ -63,20 +65,11 @@ public interface Data {
 
         /**
          * Ctor.
+         *
          * @param phi Already converted object
          */
         private ToPhi(final Phi phi) {
             this.object = phi;
-        }
-
-        @Override
-        public boolean equals(final Object obj) {
-            return this == obj || this.object.equals(obj);
-        }
-
-        @Override
-        public int hashCode() {
-            return this.object.hashCode();
         }
 
         @Override

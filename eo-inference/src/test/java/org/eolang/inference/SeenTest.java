@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Seen}.
+ *
  * @since 0.70.0
  */
 final class SeenTest {
@@ -47,6 +48,21 @@ final class SeenTest {
                 )
             ).xmlQuietly(),
             XhtmlMatchers.hasXPath("/seen/data")
+        );
+    }
+
+    @Test
+    void readsBackTheCallerThatPassesOnAVoid() {
+        MatcherAssert.assertThat(
+            "the void a caller passes on must come back with its locator, but it didnt",
+            new Xembler(
+                SeenTest.drawn(
+                    "<provides><type id='Φ.bool.and'><attr name='x' type='Φ.bool.and.x'",
+                    " void='true'><witnessed><union><ref loc='Φ.true'/>",
+                    "<var id='Φ.app.y'/></union></witnessed></attr></type></provides>"
+                )
+            ).xmlQuietly(),
+            XhtmlMatchers.hasXPath("/seen/var[@id='Φ.app.y']")
         );
     }
 

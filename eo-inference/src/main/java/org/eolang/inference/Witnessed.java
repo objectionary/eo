@@ -33,20 +33,31 @@ import org.xembly.Xembler;
  *   &lt;/witnessed&gt;
  * &lt;/attr&gt;</pre>
  *
- * <p>This is evidence of callers and never a contract. Nothing may work out
- * the type of a void from it: the callers a program happens to have today do
- * not oblige the one written tomorrow, and a void filled with a
- * {@code number} everywhere is still a void. It is written because it is true
- * and because whoever reads the tables wants it, which is the whole of the
- * reason.</p>
+ * <p>Where the choice has one member, that member is the type of the void, and
+ * {@link Answers} says so. There is no tomorrow for such a claim to leak into:
+ * a build parses the library it uses along with the program, transpiles it
+ * again, and keys the cache on the rows it wrote, so a caller who passes
+ * something else is in a run of their own, where the void has two witnesses
+ * and is a void again. What a program does with a void everywhere is a fact
+ * about that program, and refusing to read it is refusing to know it.</p>
  *
- * <p>A choice longer than the cap is written as {@code unknown} instead of its
- * members. {@code Φ.tuple.head} is filled with 56 different types, and a
- * choice of 56 tells a reader nothing except that nobody has thought about
- * it; saying so outright is shorter and truer. Eleven voids of eo-runtime are
- * over the cap, and every one of them holds whatever it is handed: the target
- * of a {@code dataized}, the scope of a {@code malloc}, the body of a
- * {@code while}.</p>
+ * <p>A choice of several stays a choice. {@code Φ.bool.and.x} is filled with a
+ * {@code Φ.true}, with a {@code Φ.false} and with five other things, and
+ * naming any one of them would be picking a favourite among facts.</p>
+ *
+ * <p>Not every filling is an application. An atom calls what it is handed, and
+ * a formation only Java ever copies is filled where no source can be read, so
+ * the voids of one are answered by the annotation the atom carries and by
+ * {@link Handed}, which reads it (#8380).</p>
+ *
+ * <p>A choice is written whole, however long it grows. {@code Φ.tuple.head}
+ * is filled with 56 different types and {@code Φ.string.φ} with 26, and a
+ * choice that long tells a reader nothing except that nobody has thought
+ * about it, so the page says as much instead of listing it. But the page is
+ * the only reader for whom the length is the point: {@link Seen} reads the
+ * census back to type the voids with, and a census cut to {@code unknown}
+ * where it was written told it nothing about a void the tables had already
+ * worked out (#8844).</p>
  *
  * @since 0.69.0
  */
@@ -58,27 +69,12 @@ public final class Witnessed implements Clue {
     private final Clue origin;
 
     /**
-     * How many members a choice may have before it says nothing.
-     */
-    private final int cap;
-
-    /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are looked into
      */
     public Witnessed(final Clue clues) {
-        this(clues, 8);
-    }
-
-    /**
-     * Ctor.
-     * @param clues The clues to follow before the voids are looked into
-     * @param members How many members a choice may have before it says
-     *  nothing, measured at eight in the state document
-     */
-    Witnessed(final Clue clues, final int members) {
         this.origin = clues;
-        this.cap = members;
     }
 
     @Override
@@ -91,13 +87,13 @@ public final class Witnessed implements Clue {
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(
-                hollow.xpath("@type").get(0), Collections.emptyList()
+                new Noted(hollow).says("type"), Collections.emptyList()
             );
             if (!members.isEmpty()) {
                 new Xembler(
                     new Directives()
                         .add("witnessed")
-                        .append(this.joined(members).directives())
+                        .append(Witnessed.joined(members).directives())
                         .up()
                 ).applyQuietly(hollow.inner());
             }
@@ -105,11 +101,9 @@ public final class Witnessed implements Clue {
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    private Type joined(final Collection<Type> members) {
+    private static Type joined(final Collection<Type> members) {
         final Type found;
-        if (members.size() > this.cap) {
-            found = new Unknown();
-        } else if (members.size() == 1) {
+        if (members.size() == 1) {
             found = members.iterator().next();
         } else {
             found = new Union(members);

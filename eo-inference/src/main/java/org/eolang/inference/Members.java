@@ -39,6 +39,7 @@ final class Members {
 
     /**
      * Ctor.
+     *
      * @param formations The formations of the program
      * @param tops The object every file is about
      */
@@ -49,18 +50,20 @@ final class Members {
 
     /**
      * Write these attributes into the given table.
+     *
      * @param rows The table to fill
      */
     void fill(final Tojos rows) {
         final Collection<String> owners = new HashSet<>(0);
         for (final XML formation : this.made) {
-            owners.add(formation.xpath("@loc").get(0));
+            owners.add(new Noted(formation).says("loc"));
         }
         for (final XML root : this.roots) {
-            final String type = root.xpath("@loc").get(0);
+            final Noted member = new Noted(root);
+            final String type = member.says("loc");
             final String owner = type.substring(0, type.lastIndexOf('.'));
             if (owners.contains(owner)) {
-                final String name = root.xpath("@name").get(0);
+                final String name = member.says("name");
                 rows.add(String.join(" ", owner, name))
                     .set("owner", owner)
                     .set("name", name)

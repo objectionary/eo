@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PenaltyKey} weights and their overrides.
+ *
  * @since 0.57.0
  */
 final class PenaltyKeyTest {
@@ -76,7 +77,7 @@ final class PenaltyKeyTest {
         MatcherAssert.assertThat(
             "Characters past the overridden 40th column should be charged",
             new Penalty(
-                String.join("", java.util.Collections.nCopies(45, "x")), weights
+                String.join("", Collections.nCopies(45, "x")), weights
             ).points(),
             Matchers.equalTo(15)
         );

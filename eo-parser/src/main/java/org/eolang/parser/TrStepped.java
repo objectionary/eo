@@ -13,12 +13,14 @@ import com.yegor256.xsline.Train;
 
 /**
  * Train that adds sheet names that were processed.
+ *
  * @since 0.1
  */
 final class TrStepped extends TrEnvelope {
 
     /**
      * Ctor.
+     *
      * @param train Original train
      */
     TrStepped(final Train<Shift> train) {

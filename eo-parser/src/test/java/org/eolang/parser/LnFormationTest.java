@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnFormation}.
+ *
  * @since 0.1
  */
 final class LnFormationTest {
@@ -151,9 +152,9 @@ final class LnFormationTest {
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "a `+>` test attribute must emit @name='+<name>' per §9.4",
+            "a `+>` test attribute must emit @name='p🌵<name>' per §9.4",
             LnFormationTest.render(emit),
-            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo']")
+            XhtmlMatchers.hasXPath("/object/o[@name='p🌵tests-foo']")
         );
     }
 
@@ -164,9 +165,9 @@ final class LnFormationTest {
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "a `++> name` shorthand must emit the same <o name='+<name>'> as `[] +> name`",
+            "a `++> name` shorthand must emit the same <o name='p🌵<name>'> as `[] +> name`",
             LnFormationTest.render(emit),
-            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo' and not(o)]")
+            XhtmlMatchers.hasXPath("/object/o[@name='p🌵tests-foo' and not(o)]")
         );
     }
 
@@ -248,6 +249,19 @@ final class LnFormationTest {
                     .into(new Stack(), new Globals(), new Emit())
             ).line(),
             Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void rejectsMissingClosingBracketWhenBodyLacksLeadingBracket() {
+        MatcherAssert.assertThat(
+            "a body with no `[` anywhere must still report the missing-bracket message",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnFormation(new Span("x", 1))
+                    .into(new Stack(), new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("formation is missing its closing bracket")
         );
     }
 
@@ -364,6 +378,15 @@ final class LnFormationTest {
             "a `+>` test attribute preceded by one blank line must not emit any error",
             LnFormationTest.render(emit),
             Matchers.not(XhtmlMatchers.hasXPath("/object/errors"))
+        );
+    }
+
+    @Test
+    void locatesClosingBracketRegardlessOfLeadingCharacter() {
+        Assertions.assertDoesNotThrow(
+            () -> new LnFormation(new Span("x]", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "findClosing must search for `]` from the start, not require a leading `[`"
         );
     }
 

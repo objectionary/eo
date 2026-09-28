@@ -52,7 +52,7 @@
         <xsl:variable name="nested">
           <o>
             <xsl:attribute name="star"/>
-            <xsl:apply-templates select="@line"/>
+            <xsl:apply-templates select="@line | @pos"/>
             <xsl:apply-templates select="$elems[position()!=last()]"/>
           </o>
         </xsl:variable>
@@ -63,13 +63,13 @@
           <xsl:apply-templates select="$elems[last()]"/>
           <o>
             <xsl:attribute name="base" select="'Φ.number'"/>
-            <xsl:apply-templates select="@line"/>
+            <xsl:apply-templates select="@line | @pos"/>
             <o>
               <xsl:attribute name="base" select="'Φ.bytes'"/>
-              <xsl:apply-templates select="@line"/>
+              <xsl:apply-templates select="@line | @pos"/>
               <o>
                 <xsl:attribute name="hex"/>
-                <xsl:apply-templates select="@line"/>
+                <xsl:apply-templates select="@line | @pos"/>
                 <xsl:value-of select="count($elems)"/>
               </o>
             </o>

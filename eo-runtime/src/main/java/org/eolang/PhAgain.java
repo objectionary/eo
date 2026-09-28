@@ -26,20 +26,11 @@ public final class PhAgain implements Phi {
 
     /**
      * Ctor.
+     *
      * @param phi The tail call
      */
     public PhAgain(final Phi phi) {
         this.next = phi;
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        return this == obj || this.next.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return this.next.hashCode();
     }
 
     @Override
