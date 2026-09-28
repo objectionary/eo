@@ -48,6 +48,12 @@ import java.util.Map;
  * reader of that void that a file can hang off a test. The census of such a
  * void then joined its members into nothing (#8953).</p>
  *
+ * <p>A name written after a dot goes down that chain only as far as the
+ * first copy whose receiver is still empty, which {@link Stamped} finds: the
+ * {@code os} of {@code os.is-windows} fills nothing, since the
+ * {@code name.contains} it reaches took its receiver where it was written
+ * (#8955).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -349,9 +355,11 @@ final class Bound {
         final Map.Entry<String, String> dispatch, final Map<String, String> landed
     ) {
         final String found;
-        if (landed.containsKey(dispatch.getKey())
-            || dispatch.getValue().equals(dispatch.getKey().concat(".ρ"))) {
-            found = this.base(dispatch.getKey(), landed);
+        if (landed.containsKey(dispatch.getKey())) {
+            found = landed.get(dispatch.getKey());
+        } else if (dispatch.getValue().equals(dispatch.getKey().concat(".ρ"))) {
+            found = new Stamped(this.pairs, this.receivers, this.owned)
+                .names(dispatch.getKey());
         } else {
             found = this.pairs.getOrDefault(dispatch.getKey(), "");
         }

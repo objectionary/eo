@@ -28,6 +28,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Test cases for {@link Unplacing}.
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
  * @since 0.61.0
  */
 @Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 final class UnplacingTest {
 
     @Test

@@ -16,7 +16,9 @@ import java.util.Map;
  * every application of the program and the pairs themselves. {@link Refs} joins
  * them, {@link Bound} works out what went where and {@link Provided} says which
  * voids there were to fill; this is the four of them wired up, so that whoever
- * has pairs and wants rows says so in one line.</p>
+ * has pairs and wants rows says so in one line. {@link Forked} gives every arm
+ * of a choice the receiver it is read off, which only the rows can know, since
+ * the choices are worked out once the pairs are (#8885).</p>
  *
  * <p>Rows are asked for twice over. Once at the end, for the table the build
  * writes down, and once for every provisional table a fact is read off before
@@ -93,8 +95,17 @@ final class Woven {
         final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
         final Map<String, String> certain
     ) {
-        final Bound bound = this.bound(pairs);
-        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
+        final Provided owned = new Provided(this.given, new Ends(pairs).names(), this.hollows);
+        final Bound bound = this.bound(pairs, owned);
+        return new Refs(
+            pairs,
+            bound.all(),
+            new Forked(
+                chosen, new Stamped(pairs, this.receivers, owned), owned, this.hollows
+            ).all(),
+            bound.relays(),
+            certain
+        ).all();
     }
 
     /**
@@ -111,17 +122,15 @@ final class Woven {
      *  the object that put them there
      */
     Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
-        return this.bound(pairs).all();
+        return this.bound(
+            pairs, new Provided(this.given, new Ends(pairs).names(), this.hollows)
+        ).all();
     }
 
-    private Bound bound(final Map<String, String> pairs) {
+    private Bound bound(final Map<String, String> pairs, final Provided owned) {
         return new Bound(
-            this.applied.arguments(),
-            this.applied.named(),
-            this.receivers,
-            this.all,
-            pairs,
-            new Provided(this.given, new Ends(pairs).names(), this.hollows)
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            owned
         );
     }
 }
