@@ -4,6 +4,8 @@
 # yamllint disable rule:line-length
 name: pr-size
 on: pull_request
+permissions:
+  contents: read
 concurrency:
   group: pr-size-${{ github.ref }}
   cancel-in-progress: true

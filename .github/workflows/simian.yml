@@ -10,6 +10,8 @@ name: simian
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: simian-${{ github.ref }}
   cancel-in-progress: true

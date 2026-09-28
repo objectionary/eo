@@ -8,6 +8,10 @@ name: Post Benchmark Comment
     workflows: ["Performance Regression Check"]
     types:
       - completed
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
 concurrency:
   group: post-comment-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: true

@@ -10,6 +10,8 @@ name: shellcheck
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: shellcheck-${{ github.ref }}
   cancel-in-progress: true
