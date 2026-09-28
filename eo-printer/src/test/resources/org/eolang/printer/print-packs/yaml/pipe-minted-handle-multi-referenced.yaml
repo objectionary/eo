@@ -33,8 +33,7 @@ printed: |
     if. > @
       true.eq found.match
       found.head
-      fallback
-        "no case"
+      fallback "no case"
     rest.is-empty.if > [^ rest] >> rec-case
       false
       ^.rec-case rest.tail

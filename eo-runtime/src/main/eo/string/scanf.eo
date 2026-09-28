@@ -270,8 +270,7 @@
     if. > @
       position.gte ^.^.length
       pending.if *1
-        T
-          "The format string ends with a dangling percent and no specifier after it"
+        T "The format string ends with a dangling percent and no specifier after it"
         accumulated
         found
       pending.if
@@ -352,8 +351,7 @@
   eq. ++> can-scan-a-complex-float
     1991.01
     head.
-      "this will be=%f".scanf
-        "this will be=1991.01"
+      "this will be=%f".scanf "this will be=1991.01"
 
   eq. ++> can-scan-a-complex-integer
     734987259
@@ -428,8 +426,7 @@
     * ""
 
   eq. ++> can-scan-a-string-an-integer-and-a-float
-    "%s %d %f".scanf
-      "hello 33 0.24"
+    "%s %d %f".scanf "hello 33 0.24"
     *
       "hello"
       33
@@ -441,15 +438,13 @@
       "%s!".scanf "hello!"
 
   eq. ++> can-scan-two-fields-separated-by-extra-spaces
-    "%s %s".scanf
-      "a  b"
+    "%s %s".scanf "a  b"
     *
       "a"
       "b"
 
   eq. ++> can-scan-three-fields-separated-by-extra-spaces
-    "%s %s %s".scanf
-      "a  b c"
+    "%s %s %s".scanf "a  b c"
     *
       "a"
       "b"
@@ -458,13 +453,11 @@
   eq. ++> can-scan-while-ignoring-trailing-text
     42
     head.
-      "id=%d".scanf
-        "id=42 suffix"
+      "id=%d".scanf "id=42 suffix"
 
   eq. ++> can-scan-nothing-past-unmatched-leading-text
     length.
-      "id=%d".scanf
-        "prefix id=42"
+      "id=%d".scanf "prefix id=42"
     0
 
   "hello%".scanf "hello" --> stops-on-a-dangling-percent

@@ -18,8 +18,7 @@
         item
       ^.back
         ^.length.minus bounded
-    T
-      "Given index must be an integer"
+    T "Given index must be an integer"
   if. > bounded
     0.gt index
     0

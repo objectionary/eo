@@ -18,12 +18,10 @@
             ^.length.plus idx
             idx
         ^.length.lte index
-      fallback
-        "Given index is out of tuple bounds"
+      fallback "Given index is out of tuple bounds"
       if. > [^ tup] >> at-fast
         0.eq tup.length
-        ^.fallback
-          "Given index is out of tuple bounds"
+        ^.fallback "Given index is out of tuple bounds"
         if.
           eq.
             tup.length.plus -1
@@ -32,10 +30,8 @@
           ^.at-fast tup.tail
       | ^
   tuple > empty
-    T
-      "Can't get tail from the empty tuple"
-    T
-      "Can't get head from the empty tuple"
+    T "Can't get tail from the empty tuple"
+    T "Can't get head from the empty tuple"
     0
   [^ other] > eq
     and. > @

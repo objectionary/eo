@@ -53,8 +53,7 @@
     recovered
       2.as-i64.div
         0.as-i64
-        T > [message]
-          "cannot divide"
+        T "cannot divide" > [message]
       42
     42
 

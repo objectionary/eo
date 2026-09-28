@@ -23,8 +23,7 @@
     eq.
       number b.as-bytes >> divisor
       0
-    cant-mod
-      "cannot calculate mod by zero"
+    cant-mod "cannot calculate mod by zero"
     dividend.is-finite.not.if
       nan
       divisor.is-finite.not.if

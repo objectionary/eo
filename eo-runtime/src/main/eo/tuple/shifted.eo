@@ -16,8 +16,7 @@
         0
         shift
       ^.length
-    T
-      "Given shift must be an integer"
+    T "Given shift must be an integer"
 
   eq. ++> can-ignore-a-negative-shift
     shifted.

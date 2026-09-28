@@ -191,8 +191,7 @@
             as-number.
               win32.wsa-cleanup >>!
             win32.failure
-          T
-            "Couldn't clean up the sockets subsystem"
+          T "Couldn't clean up the sockets subsystem"
           true
         win32.closesocket > close
         win32.connect > connect

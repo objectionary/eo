@@ -41,8 +41,7 @@
           size.is-finite.not.or
             size.is-integer.not.or
               0.gt size
-          T
-            "Can't read a non-integer, non-finite, or negative byte count"
+          T "Can't read a non-integer, non-finite, or negative byte count"
           if.
             available.eq 0
             ^.^.input-block -- --

@@ -11,8 +11,7 @@
 
 [^ cant-max] > maximum
   ^.is-empty.if > @
-    cant-max
-      "cannot get the maximum number from an empty sequence"
+    cant-max "cannot get the maximum number from an empty sequence"
     ^.reduced
       ninf
       if. > [max item]

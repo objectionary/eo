@@ -277,8 +277,7 @@
     opens.if > @
       if.
         1.gt closes
-        cant-compile
-          "regex is missing the closing slash"
+        cant-compile "regex is missing the closing slash"
         if.
           if. > [^ index] >> legal
             ^.size.gt index
@@ -297,8 +296,7 @@
               concat.
                 "regex flags '".as-bytes.concat flags
                 "' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".as-bytes
-      cant-compile
-        "regex is missing the opening slash"
+      cant-compile "regex is missing the opening slash"
     raw.slice > body
       1
       closes.plus -1
@@ -788,26 +786,18 @@
           ^.missing position
         sought offset > hit
       [^ position] > missing
-        T > count
-          "Matched block does not exist, can't get count"
-        T > existing
-          "Matched block does not exist, can't get groups"
+        T "Matched block does not exist, can't get count" > count
+        T "Matched block does not exist, can't get groups" > existing
         start.gte 0 > exists
-        T > from
-          "Matched block does not exist, can't get 'from' position"
-        T > [index] > group
-          "Matched block does not exist, can't get group"
+        T "Matched block does not exist, can't get 'from' position" > from
+        T "Matched block does not exist, can't get group" > [index] > group
         T > [index] > group-exists
           "Matched block does not exist, can't get group-exists"
-        T > groups
-          "Matched block does not exist, can't get groups"
-        T > next
-          "Matched block does not exist, can't get next"
+        T "Matched block does not exist, can't get groups" > groups
+        T "Matched block does not exist, can't get next" > next
         -1 > start
-        T > text
-          "Matched block does not exist, can't get text"
-        T > to
-          "Matched block does not exist, can't get 'to' position"
+        T "Matched block does not exist, can't get text" > text
+        T "Matched block does not exist, can't get 'to' position" > to
       matched-from-index > next
         1
         0
@@ -818,8 +808,7 @@
             or.
               0.gt start
               start.gt ^.total
-          T
-            "the 'start' attribute must be a non-negative integer no greater than the text length"
+          T "the 'start' attribute must be a non-negative integer no greater than the text length"
           result.exists.if
             *
               result.from
@@ -889,8 +878,7 @@
       T
         string
           concat.
-            "cannot search with the regex pattern '".as-bytes.concat
-              raw
+            "cannot search with the regex pattern '".as-bytes.concat raw
             "'".as-bytes
     [at groups mode node text] >> yes
       true > ok
@@ -953,9 +941,7 @@
           "Braced hexadecimal escapes are not supported"
         if.
           0.gt h
-          no
-            index
-            "Illegal hexadecimal escape sequence"
+          no index "Illegal hexadecimal escape sequence"
           if.
             0.gt l
             no
@@ -1291,8 +1277,7 @@
           index
           string
             concat.
-              "Dangling meta character '".as-bytes.concat
-                b
+              "Dangling meta character '".as-bytes.concat b
               "'".as-bytes
         if.
           b.eq 2E-
@@ -1463,9 +1448,7 @@
             --
           if.
             b.eq 5B-
-            no
-              start
-              "Nested character classes are not supported"
+            no start "Nested character classes are not supported"
             if.
               and.
                 b.eq 26-
@@ -1473,9 +1456,7 @@
                   byte
                     start.plus 1
                   26-
-              no
-                start
-                "Character class intersections are not supported"
+              no start "Character class intersections are not supported"
               e.ok.if
                 ^.members
                   e.at
@@ -1520,9 +1501,7 @@
                       gt.
                         key s.from
                         key u.from
-                    no
-                      u.at.plus -1
-                      "Illegal character range"
+                    no (u.at.plus -1) "Illegal character range"
                     span u.at s.from u.from
                   u
             s
@@ -1550,9 +1529,7 @@
     [^ index mode] >> classed
       if. > @
         e.eq --
-        no
-          index
-          "Unescaped trailing backslash"
+        no index "Unescaped trailing backslash"
         if.
           e.eq 78-
           h.ok.if
@@ -1703,12 +1680,9 @@
                   index.plus -1
                   string
                     concat.
-                      "The escape sequence '\\".as-bytes.concat
-                        e
+                      "The escape sequence '\\".as-bytes.concat e
                       "' is not supported".as-bytes
-                no
-                  index
-                  "Illegal/unsupported escape sequence"
+                no index "Illegal/unsupported escape sequence"
     [^ index opened bits] >> group
       if. > @
         b.eq 3F-
@@ -1798,14 +1772,10 @@
             or.
               b.eq 55-
               b.eq 63-
-            no
-              index
-              "The inline modifiers 'U' and 'c' are not supported"
+            no index "The inline modifiers 'U' and 'c' are not supported"
             if.
               bit.eq --
-              no
-                index
-                "Unknown inline modifier"
+              no index "Unknown inline modifier"
               ^.modifiers
                 index.plus 1
                 toggled
@@ -1827,9 +1797,7 @@
             outer
             inner
             --
-          no
-            ^.size
-            "Unclosed group"
+          no ^.size "Unclosed group"
         r
       if. > inner
         1.gt index
@@ -1842,9 +1810,7 @@
     [^ index] >> braces
       if. > @
         0.gt n.value
-        no
-          index
-          "Illegal repetition"
+        no index "Illegal repetition"
         if.
           c.eq 7D-
           bounds
@@ -1870,12 +1836,8 @@
                     n.value.gt m.value
                     no m.at "Illegal repetition range"
                     bounds (m.at.plus 1) n.value m.value
-                  no
-                    m.at
-                    "Unclosed counted closure"
-            no
-              n.at
-              "Unclosed counted closure"
+                  no m.at "Unclosed counted closure"
+            no n.at "Unclosed counted closure"
       byte n.at > c
       byte > d
         n.at.plus 1
@@ -2060,8 +2022,7 @@
             ^.advanced
               number stride
               number bump
-            T
-              "the 'start' attribute is beyond the text"
+            T "the 'start' attribute is beyond the text"
           at
         count.plus 1 > bump!
         at.plus > stride!
@@ -2142,12 +2103,10 @@
         prefix
         concat.
           concat.
-            prefix.concat
-              " at offset ".as-bytes
+            prefix.concat " at offset ".as-bytes
             decimal -- offset
           " of the pattern".as-bytes
-    "regex syntax is invalid: ".as-bytes.concat > prefix
-      reason.as-bytes
+    "regex syntax is invalid: ".as-bytes.concat reason.as-bytes > prefix
 
   eq. ++> can-advance-after-a-zero-width-match
     1
@@ -2165,8 +2124,7 @@
       "a**"
       ""
     and. > [reason offset]
-      reason.eq
-        "Dangling meta character '*'"
+      reason.eq "Dangling meta character '*'"
       offset.eq 2
 
   matches. ++> can-bind-a-quantifier-to-the-last-character-of-a-run
@@ -2242,19 +2200,9 @@
       "/([a-z]+)([1-9]{1})/".regex.compiled.match "!hello1!world2"
     first.next > second
 
-  eq. ++> can-find-a-non-word-border
-    1
-    from.
-      next.
-        "/\\B/".regex.match
-          "ab cd"
+  1.eq ("/\\B/".regex.match "ab cd").next.from ++> can-find-a-non-word-border
 
-  eq. ++> can-find-a-word-border
-    3
-    from.
-      next.
-        "/\\bc/".regex.match
-          "ab cd"
+  3.eq ("/\\bc/".regex.match "ab cd").next.from ++> can-find-a-word-border
 
   exists. ++> can-find-the-end-anchor-before-a-final-line-terminator
     next.
@@ -2472,8 +2420,9 @@
     "/a{3,2}/".regex.compile I
     "regex syntax is invalid: Illegal repetition range at offset 5 of the pattern"
 
-  ++> can-name-an-unclosed-character-class
-    eq. ("/[a-z/".regex.compile I) "regex syntax is invalid: Unclosed character class at offset 3 of the pattern" > @
+  eq. ++> can-name-an-unclosed-character-class
+    "/[a-z/".regex.compile I
+    "regex syntax is invalid: Unclosed character class at offset 3 of the pattern"
 
   eq. ++> can-name-an-unclosed-counted-closure
     "/a{2/".regex.compile I

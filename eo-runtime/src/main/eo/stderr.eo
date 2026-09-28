@@ -32,8 +32,7 @@
                 seq * > @
                   if. >>!
                     code.eq -1
-                    T
-                      "Failed to write to standard error"
+                    T "Failed to write to standard error"
                     ^.^.output-block
                   code
                   remainder
@@ -55,24 +54,19 @@
       text
     true
 
-  stderr ++> can-print-a-multiline-string
-    "Line one\nLine two\nLine three\n"
+  stderr "Line one\nLine two\nLine three\n" ++> can-print-a-multiline-string
 
   stderr "x" ++> can-print-a-single-character
 
-  stderr ++> can-print-a-string-that-is-only-whitespace
-    "   \t  "
+  stderr "   \t  " ++> can-print-a-string-that-is-only-whitespace
 
-  stderr ++> can-print-a-string-with-a-carriage-return
-    "Windows-style line\r\n"
+  stderr "Windows-style line\r\n" ++> can-print-a-string-with-a-carriage-return
 
-  stderr ++> can-print-a-string-with-emoji
-    "Build failed ⚠️\n"
+  stderr "Build failed ⚠️\n" ++> can-print-a-string-with-emoji
 
   stderr "col1\tcol2\t\"quoted\"\n" ++> can-print-a-string-with-tabs-and-quotes
 
-  stderr ++> can-print-a-string-with-unicode-characters
-    "Привет, мир! 你好，世界！\n"
+  stderr "Привет, мир! 你好，世界！\n" ++> can-print-a-string-with-unicode-characters
 
   stderr ++> can-print-a-string-without-a-trailing-newline
     "no newline at the end"
@@ -83,21 +77,15 @@
   stderr "" ++> can-print-an-empty-string
 
   eq. ++> can-print-the-same-string-consistently-across-repeated-calls
-    stderr
-      "Repeatable message\n"
-    stderr
-      "Repeatable message\n"
+    stderr "Repeatable message\n"
+    stderr "Repeatable message\n"
 
-  stderr ++> can-print-to-stderr
-    "Hello, stderr-test!\n"
+  stderr "Hello, stderr-test!\n" ++> can-print-to-stderr
 
   seq * ++> can-print-to-stderr-multiple-times-in-a-row
-    stderr
-      "First line\n"
-    stderr
-      "Second line\n"
+    stderr "First line\n"
+    stderr "Second line\n"
 
   eq. ++> can-return-true-after-printing-to-stderr
-    stderr
-      "Checking the return value\n"
+    stderr "Checking the return value\n"
     true

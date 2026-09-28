@@ -43,8 +43,7 @@
             index.lt e
           accum.with item
           accum
-    T
-      "Given slice start and end must both be integers"
+    T "Given slice start and end must both be integers"
 
   eq. ++> can-slice-a-list
     slice.
