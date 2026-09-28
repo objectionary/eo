@@ -14,9 +14,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [file] > directory
   file > @
@@ -36,14 +36,7 @@
           ^.closed descriptor
           path
       ^.opened path > descriptor!
-      code. > errno
-        os.is-windows.if
-          win32
-            "_errno"
-            *
-          posix
-            "errno"
-            *
+      os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
     | 0 > @
     [^ index] > candidate
@@ -55,25 +48,18 @@
           ^.process
           index
           ^.fraction
-    code. > [descriptor] > closed
-      os.is-windows.if
-        win32 *1
-          "_close"
-          descriptor
-        posix *1
-          "close"
-          descriptor
+    os.is-windows.if > [descriptor] > closed
+      win32.close descriptor
+      posix.close descriptor
     code. > [name] > opened
       os.is-windows.if
-        win32 *1
-          "_open"
+        win32.open
           name
           plus.
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-        posix *1
-          "open"
+        posix.open
           name
           plus.
             posix.rdonly.plus posix.creat
@@ -85,23 +71,10 @@
         ^.retried
           ^.path
           clock.as-number
-          code.
-            os.is-windows.if
-              win32
-                "_getpid"
-                *
-              posix
-                "getpid"
-                *
+          os.is-windows.if win32.getpid posix.getpid
           os.is-windows.if
             clock.as-number.random
-            div.
-              micros.
-                output.
-                  posix
-                    "gettimeofday"
-                    *
-              1000000
+            posix.gettimeofday.micros.div 1000000
     T
       "Directory %s does not exist, can't create temporary file".printf
         * ^.file
@@ -293,11 +266,9 @@
       temp.deleted
       owned
     called. > info
-      posix *1
-        "stat"
-        temp.path
+      posix.stat temp.path
     os.is-windows.or > owned!
-      info.output.mode.eq 33152
+      info.mode.eq 33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile
@@ -463,8 +434,7 @@
       seq *
         touched. (d.resolved "щи.txt").as-file
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         eq.

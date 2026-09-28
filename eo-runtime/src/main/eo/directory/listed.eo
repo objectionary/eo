@@ -20,16 +20,16 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^] > listed
   if. > @
     opened.code.eq -1
     T
       "Can't list the directory '%s': %s".printf
-        * ^.path opened.output
+        * ^.path opened.message
     seq *
       entries.is-empty
       closed
@@ -61,36 +61,28 @@
       index
       1
   eq. > closed
-    code.
-      os.is-windows.if
-        win32 *1
-          "FindClose"
-          opened.code
-        posix *1
-          "closedir"
-          opened.code
+    os.is-windows.if
+      win32.find-close opened.code
+      code.
+        posix.closedir opened.code
     0
   sorted > entries
     gathered
       os.is-windows.if
         added
           *
-          opened.output
+          opened.name
         *
   [^ acc] > gathered
     if. > @
       read.code.eq -1
       acc
       ^.gathered
-        ^.added acc read.output
+        ^.added acc read.name
     called. > read
       os.is-windows.if
-        win32 *1
-          "FindNextFileW"
-          ^.opened.code
-        posix *1
-          "readdir"
-          ^.opened.code
+        win32.find-next-file ^.opened.code
+        posix.readdir ^.opened.code
   if. > [^ rest item] > inserted
     rest.length.eq 0
     * item
@@ -105,13 +97,10 @@
       rest.with item
   called. > opened
     os.is-windows.if
-      win32 *1
-        "FindFirstFileW"
+      win32.find-first-file
         ^.as-path.separator.joined
           * ^.path "*"
-      posix *1
-        "opendir"
-        ^.path
+      posix.opendir ^.path
   [^ one two bit] > smaller
     if. > @
       lit.eq

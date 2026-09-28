@@ -21,7 +21,7 @@ concurrency:
 jobs:
   # This job is handed the write the job that measured could not be given,
   # because that one builds the code of the branch. Nothing of the branch is
-  # checked out here and nothing from it is run: the three files come out of
+  # checked out here and nothing from it is run: the two files come out of
   # the artifact and the only one that is read as anything but text is the
   # pull request number, which is a number.
   comment:
@@ -42,14 +42,13 @@ jobs:
             exit 1
           fi
           echo "pr=${number}" >> "${GITHUB_OUTPUT}"
-          echo "changed=$(tr -d '[:space:]' < changed)" >> "${GITHUB_OUTPUT}"
-      # A branch that moved nothing gets no new comment, only an older one
-      # brought up to date, so that a pull request which never touched the
-      # rules is not told about them.
+      # The comment is written whether the numbers moved or not, and the one
+      # written last time is written over rather than added to. A branch that
+      # moved nothing used to be told nothing, which from the outside is what
+      # a job that never ran looks like.
       - uses: mshick/add-pr-comment@v3
         with:
           issue: ${{ steps.numbers.outputs.pr }}
           message-id: ladder
           message-path: ladder.md
-          update-only: ${{ steps.numbers.outputs.changed == 'false' }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}

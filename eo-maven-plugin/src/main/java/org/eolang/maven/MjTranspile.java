@@ -171,19 +171,19 @@ public final class MjTranspile extends MjSafe {
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
             new Timed(
-                new Merging(tojos, this.targetDir.toPath().resolve(Merging.DIR))
+                new Merging(tojos, this.target.toPath().resolve(Merging.DIR))
             ).exec();
             new Timed(
                 new Transpiling(
                     tojos.standalone(),
-                    this.targetDir.toPath(),
-                    new Written(this.generatedDir.toPath(), this.tests, this.roots()),
+                    this.target.toPath(),
+                    new Written(this.generated.toPath(), this.tests, this.roots()),
                     new Transpilation(
                         new Tracking(this.trackSteps, this.located),
                         this.coverage,
                         this.base(),
-                        this.xslMeasures.toPath(),
-                        this.targetDir.toPath(),
+                        this.measures.toPath(),
+                        this.target.toPath(),
                         this.tables.toPath()
                     ),
                     this.stored()
@@ -192,13 +192,13 @@ public final class MjTranspile extends MjSafe {
         }
         if (this.attach) {
             this.project.addCompileSourceRoot(
-                this.generatedDir.toPath().toAbsolutePath().toString()
+                this.generated.toPath().toAbsolutePath().toString()
             );
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s",
-                this.generatedDir
+                this.generated
             );
-            final String gtests = this.generatedDir.toPath().getParent().resolve(
+            final String gtests = this.generated.toPath().getParent().resolve(
                 "generated-test-sources"
             ).toAbsolutePath().toString();
             this.project.addTestCompileSourceRoot(gtests);
@@ -210,7 +210,7 @@ public final class MjTranspile extends MjSafe {
     }
 
     private Collection<Path> roots() {
-        final Path build = this.targetDir.toPath().getParent();
+        final Path build = this.target.toPath().getParent();
         return this.project.getCompileSourceRoots().stream()
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))

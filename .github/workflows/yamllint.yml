@@ -10,6 +10,8 @@ name: yamllint
   pull_request:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: yamllint-${{ github.ref }}
   cancel-in-progress: true

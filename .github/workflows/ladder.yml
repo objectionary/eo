@@ -9,12 +9,16 @@ name: ladder
       - master
     # The numbers can only move when the rules move or when the program they
     # are read from does. A branch that touches neither would spend two builds
-    # proving that nothing happened.
+    # proving that nothing happened, and a pattern reaching wider than
+    # `src/main` spends them on every bump of a dependency in a `pom.xml`. This
+    # file is on the list as well, since a branch that changes how the numbers
+    # are measured is the one branch that has to measure them.
     paths:
-      - 'eo-inference/**'
-      - 'eo-parser/**'
+      - 'eo-inference/src/main/**'
+      - 'eo-parser/src/main/**'
       - 'eo-maven-plugin/src/main/**'
       - 'eo-runtime/src/main/eo/**'
+      - '.github/workflows/ladder.yml'
 permissions:
   contents: read
 concurrency:
@@ -43,8 +47,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      - id: ladder
-        run: |
+      - run: |
           # The numbers are of eo-runtime, the only program here big enough for
           # them to mean anything, and the goal that writes them runs in its
           # `process-sources` phase. None of its Java is wanted, so the plugin
@@ -69,6 +72,14 @@ jobs:
           base=$(git rev-parse "${head}^1")
           measure "${base}" "${RUNNER_TEMP}/master.txt"
           measure "${head}" "${RUNNER_TEMP}/branch.txt"
+          # The branch is the one side that may not be empty. The goal ran on
+          # it a moment ago, so a branch with no numbers is a build that went
+          # wrong quietly, and no table should be allowed to report that as a
+          # branch which moved nothing.
+          if [ ! -s "${RUNNER_TEMP}/branch.txt" ]; then
+            echo 'The branch wrote no numbers down, so the goal that writes them never ran'
+            exit 1
+          fi
           # Every line is a number and the name it goes by, the value first, so
           # that nothing here has to know what any of them mean. Shares are
           # written with a decimal point and rungs without one, and `awk` takes
@@ -79,34 +90,41 @@ jobs:
           done < "${RUNNER_TEMP}/master.txt"
           rows="${RUNNER_TEMP}/rows.md"
           : > "${rows}"
+          # Every number goes into the table, and not only the ones that moved.
+          # A share is a number to game and may not be read without the rungs
+          # beside it, which is as true of the ones that stayed where they were
+          # as of the ones that did not: a branch told that the depth fell by a
+          # tenth, and nothing of what it fell from, has been handed half the
+          # fact. A branch that moved none of them would be told nothing at
+          # all, which reads exactly like a job that never ran.
           while read -r total metric; do
             before="${was["${metric}"]:-}"
             if [ -z "${before}" ]; then
-              printf '| %s | none | %s | new |\n' "${metric}" "${total}" >> "${rows}"
-            elif [ "${before}" != "${total}" ]; then
-              printf '| %s | %s | %s | %s |\n' "${metric}" "${before}" "${total}" \
-                "$(awk -v was="${before}" -v now="${total}" 'BEGIN { printf "%+g", now - was }')" >> "${rows}"
+              before='none'
+              change='new'
+            elif [ "${before}" = "${total}" ]; then
+              change='same'
+            else
+              change=$(awk -v was="${before}" -v now="${total}" 'BEGIN { printf "%+g", now - was }')
             fi
+            printf '| %s | %s | %s | %s |\n' "${metric}" "${before}" "${total}" "${change}" >> "${rows}"
           done < "${RUNNER_TEMP}/branch.txt"
           report="${RUNNER_TEMP}/ladder.md"
-          if [ -s "${rows}" ]; then
-            {
-              echo 'These inference numbers moved in this branch. A share is a'
-              echo 'percentage of every object in the program, and the rungs are'
-              echo 'the counts it is made of, which come along because a share on'
-              echo 'its own is a number to game:'
-              echo ''
-              echo '| Number | master | branch | change |'
-              echo '|:--|--:|--:|--:|'
-              cat "${rows}"
-              echo ''
-              echo "They come from \`eo-runtime/target/eo/ladder.txt\`, written by the \`inference\` goal."
-            } > "${report}"
-            echo 'changed=true' >> "${GITHUB_OUTPUT}"
-          else
-            echo 'None of the inference numbers moved in this branch' > "${report}"
-            echo 'changed=false' >> "${GITHUB_OUTPUT}"
-          fi
+          {
+            echo 'Where the inference numbers of this branch stand, and where the same'
+            echo 'numbers stood on master. A share is a percentage of every object in the'
+            echo 'program, and the rungs are the counts it is made of, which come along'
+            echo 'because a share on its own is a number to game:'
+            echo ''
+            echo '| Number | master | branch | change |'
+            echo '|:--|--:|--:|--:|'
+            cat "${rows}"
+            echo ''
+            echo "They come from \`eo-runtime/target/eo/ladder.txt\`, written by the \`inference\` goal."
+          } > "${report}"
+          # The same table on the run's own page, for a reader who has the job
+          # in front of them rather than the pull request.
+          cat "${report}" >> "${GITHUB_STEP_SUMMARY}"
           cat "${report}"
       # Nothing is said on the pull request from here. This job builds the code
       # of a branch that may come from a fork, and a job that does so must have
@@ -114,14 +132,10 @@ jobs:
       # which builds nothing and can be trusted with the write.
       - env:
           NUMBER: ${{ github.event.pull_request.number }}
-          CHANGED: ${{ steps.ladder.outputs.changed }}
-        run: |
-          echo "${NUMBER}" > "${RUNNER_TEMP}/pr-number"
-          echo "${CHANGED}" > "${RUNNER_TEMP}/changed"
+        run: echo "${NUMBER}" > "${RUNNER_TEMP}/pr-number"
       - uses: actions/upload-artifact@v7
         with:
           name: ladder
           path: |
             ${{ runner.temp }}/ladder.md
             ${{ runner.temp }}/pr-number
-            ${{ runner.temp }}/changed

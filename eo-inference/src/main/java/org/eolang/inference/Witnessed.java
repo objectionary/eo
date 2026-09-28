@@ -50,13 +50,14 @@ import org.xembly.Xembler;
  * the voids of one are answered by the annotation the atom carries and by
  * {@link Handed}, which reads it (#8380).</p>
  *
- * <p>A choice longer than the cap is written as {@code unknown} instead of its
- * members. {@code Φ.tuple.head} is filled with 56 different types, and a
- * choice of 56 tells a reader nothing except that nobody has thought about
- * it; saying so outright is shorter and truer. Eleven voids of eo-runtime are
- * over the cap, and every one of them holds whatever it is handed: the target
- * of a {@code dataized}, the scope of a {@code malloc}, the body of a
- * {@code while}.</p>
+ * <p>A choice is written whole, however long it grows. {@code Φ.tuple.head}
+ * is filled with 56 different types and {@code Φ.string.φ} with 26, and a
+ * choice that long tells a reader nothing except that nobody has thought
+ * about it, so the page says as much instead of listing it. But the page is
+ * the only reader for whom the length is the point: {@link Seen} reads the
+ * census back to type the voids with, and a census cut to {@code unknown}
+ * where it was written told it nothing about a void the tables had already
+ * worked out (#8844).</p>
  *
  * @since 0.69.0
  */
@@ -68,29 +69,12 @@ public final class Witnessed implements Clue {
     private final Clue origin;
 
     /**
-     * How many members a choice may have before it says nothing.
-     */
-    private final int cap;
-
-    /**
      * Ctor.
      *
      * @param clues The clues to follow before the voids are looked into
      */
     public Witnessed(final Clue clues) {
-        this(clues, 8);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param clues The clues to follow before the voids are looked into
-     * @param members How many members a choice may have before it says
-     *  nothing, measured at eight in the state document
-     */
-    Witnessed(final Clue clues, final int members) {
         this.origin = clues;
-        this.cap = members;
     }
 
     @Override
@@ -109,7 +93,7 @@ public final class Witnessed implements Clue {
                 new Xembler(
                     new Directives()
                         .add("witnessed")
-                        .append(this.joined(members).directives())
+                        .append(Witnessed.joined(members).directives())
                         .up()
                 ).applyQuietly(hollow.inner());
             }
@@ -117,11 +101,9 @@ public final class Witnessed implements Clue {
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    private Type joined(final Collection<Type> members) {
+    private static Type joined(final Collection<Type> members) {
         final Type found;
-        if (members.size() > this.cap) {
-            found = new Unknown();
-        } else if (members.size() == 1) {
+        if (members.size() == 1) {
             found = members.iterator().next();
         } else {
             found = new Union(members);

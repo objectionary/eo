@@ -64,7 +64,7 @@ final class Suffix {
      * but a token boundary.
      */
     private static final Pattern NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()]*"
     );
 
     /**
@@ -134,8 +134,8 @@ final class Suffix {
     }
 
     /**
-     * The suffix form — one of {@code NONE}, {@code NAME}, {@code AUTO},
-     * {@code TEST}, {@code THROWS}.
+     * The suffix form — one of {@code NONE}, {@code NAME},
+     * {@code RECEIVER}, {@code AUTO}, {@code TEST}, {@code THROWS}.
      *
      * @return Form
      */
@@ -192,22 +192,28 @@ final class Suffix {
 
     /**
      * Resolve the {@code @name} attribute value for the line carrying
-     * this suffix, applying R-9.3 source-token mapping: {@code @} becomes
-     * {@code φ} for an explicit name.
+     * this suffix, asking {@link VoidName} for the R-9.3 source-token
+     * promotion of an explicit name.
      *
      * <p>This is the single source of truth for naming any line shape
      * — formations, applications, method chains, reversed dispatches,
      * compact tuples, only-phi formations, text blocks. Returns
-     * {@code null} for {@link Form#NONE} (no name attribute).</p>
+     * {@code null} for {@link Form#NONE}, and refuses
+     * {@link Form#RECEIVER}, which only {@link LnVoid} may name.</p>
      *
      * @param line Source line (for {@link Form#AUTO} naming)
      * @param indent Source indent (for {@link Form#AUTO} naming)
      * @return The {@code @name} value, or {@code null}
      */
     String attribute(final int line, final int indent) {
+        if (this.form == Form.RECEIVER) {
+            throw new ParseError(
+                line, indent, "only a void attribute can declare the receiver ^"
+            );
+        }
         final String name;
         if (this.form == Form.NAME) {
-            name = Suffix.phi(this.label);
+            name = new VoidName(this.label).asString();
         } else if (this.form == Form.TEST) {
             name = "p🌵".concat(this.label);
         } else if (this.form == Form.THROWS) {
@@ -380,16 +386,6 @@ final class Suffix {
         return Math.min(pos, span.text().length() - 1);
     }
 
-    private static String phi(final String raw) {
-        final String mapped;
-        if ("@".equals(raw)) {
-            mapped = "φ";
-        } else {
-            mapped = raw;
-        }
-        return mapped;
-    }
-
     private static Suffix parse(final String tail, final Span span, final int home) {
         final int idx = Suffix.start(tail);
         final Suffix result;
@@ -542,7 +538,13 @@ final class Suffix {
         Suffix.checkNamePresent(tail, begin, idx, span, home);
         final String name = tail.substring(begin, idx);
         Suffix.checkGlyphs(name, span.line(), home + begin);
-        Suffix.checkLowercaseStart(name, span, home, begin);
+        final Form kind;
+        if ("^".equals(name)) {
+            kind = Form.RECEIVER;
+        } else {
+            Suffix.checkLowercaseStart(name, span, home, begin);
+            kind = Form.NAME;
+        }
         boolean cnst = false;
         if (idx < tail.length() && tail.charAt(idx) == '!') {
             cnst = true;
@@ -565,7 +567,7 @@ final class Suffix {
             rest = idx;
         }
         Suffix.endsClean(tail, rest, span, home);
-        return new Suffix(Form.NAME, name, signature, cnst);
+        return new Suffix(kind, name, signature, cnst);
     }
 
     private static void endsClean(
@@ -666,6 +668,12 @@ final class Suffix {
          * Explicit name binding ({@code > name}).
          */
         NAME,
+
+        /**
+         * The receiver ({@code > ^}) — a name only a void attribute may
+         * bind (R-3.4.11).
+         */
+        RECEIVER,
 
         /**
          * Auto-generated name ({@code >>}), optional handle (§3.10).

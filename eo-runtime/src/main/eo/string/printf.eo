@@ -61,9 +61,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint sprintf-constant-args
++unlint sprintf-without-formatters
++unlint wrong-sprintf-arguments
++version 0.0.0
 
 [^ args] > printf
   string > @
@@ -159,7 +162,7 @@
             auto
             acc.concat 25-
           T
-            "The escaped %% conversion does not take flags, width or precision".printf
+            "The escaped %% conversion in the format %s does not take flags, width or precision".printf
               * ^.^
         walk
           plus.
@@ -199,7 +202,7 @@
                 9.223372036854776e18
               lt.
                 number numeric
-                -9.223372036854776e18
+                -9223372036854775808
             T
               "The number %s doesn't fit into the long range of the '%%d' conversion".printf
                 *
@@ -601,7 +604,7 @@
   eq. ++> can-write-the-negative-long-boundary-as-a-decimal
     "-9223372036854775808"
     "%d".printf
-      * -9.223372036854776e18
+      * -9223372036854775808
 
   printf. --> stops-on-a-boolean-as-a-string
     "%s"
@@ -639,12 +642,24 @@
     "%(s"
     * "Jeff"
 
+  printf. --> stops-on-a-positional-index-before-an-escaped-percent
+    "%1$%s"
+    * "x"
+
+  printf. --> stops-on-a-precision-before-an-escaped-percent
+    "%.2%s"
+    * "x"
+
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
 
   printf. --> stops-on-a-width-before-an-escaped-percent
     "%5%s"
+    * "x"
+
+  printf. --> stops-on-a-zero-flag-before-an-escaped-percent
+    "%0%s"
     * "x"
 
   printf. --> stops-on-a-zero-flag-with-x
