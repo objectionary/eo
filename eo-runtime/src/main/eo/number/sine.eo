@@ -14,8 +14,9 @@
 # a double into halves narrow enough that their pairwise products round
 # nowhere: `turns` into `top` and `foot`, `tau` into `crown` and `stub`.
 # The four partials `high`, `mid`, `cross` and `low` then say what the single
-# rounded `product` dropped, and `slip` is that dropped part. The `reduced`
-# angle is the argument less `product`, less `slip`, less `turns times tail`.
+# rounded `product` dropped, and `slip` is that dropped part. The `angle` is
+# the argument less `product`, less `slip`, less `turns times tail`, taken
+# once and read back by the series as the `reduced` number.
 #
 # The attributes below stand in alphabetical order, which is not the order
 # they are computed in; the paragraph above is the order.
@@ -52,6 +53,11 @@
           ^.factor
             depth.plus 1
     | 1
+  minus. > angle!
+    minus.
+      arg.minus product
+      slip
+    turns.times tail
   number ^.as-bytes > arg
   spread.minus tau > away
   foot.times crown > cross
@@ -62,11 +68,7 @@
   foot.times stub > low
   top.times stub > mid
   turns.times tau > product
-  minus. > reduced
-    minus.
-      arg.minus product
-      slip
-    turns.times tail
+  number angle > reduced
   wide.minus turns > shed
   plus. > slip
     plus.
@@ -129,6 +131,11 @@
   lt. ++> can-take-a-sine-of-a-quadrillion
     abs.
       1000000000000000.sine.minus 0.8582727931702359
+    1.0e-14
+
+  lt. ++> can-take-a-sine-of-minus-a-quadrillion
+    abs.
+      -1000000000000000.sine.plus 0.8582727931702359
     1.0e-14
 
   lt. ++> can-take-a-sine-of-minus-pi-halves

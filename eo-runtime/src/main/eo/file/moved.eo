@@ -17,17 +17,11 @@
         *
           ^.path
           target
-          renamed.output
+          renamed.message
   called. > renamed
     os.is-windows.if
-      win32 *1
-        "rename"
-        ^.path
-        target
-      posix *1
-        "rename"
-        ^.path
-        target
+      win32.rename ^.path target
+      posix.rename ^.path target
 
   ++> can-move-a-directory
     and. > @
