@@ -181,10 +181,10 @@ final class FakeMaven {
             stub.setCompileSourceRoots(new ArrayList<>(0));
             this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
-            this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("zeros", true);
             this.params.putIfAbsent("cacheEnabled", true);
             this.params.putIfAbsent("discover", false);
-            this.params.putIfAbsent("ignoreConflicts", false);
+            this.params.putIfAbsent("conflicts", false);
             this.params.putIfAbsent("central", new DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent(

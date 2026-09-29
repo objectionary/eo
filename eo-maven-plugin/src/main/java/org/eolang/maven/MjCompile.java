@@ -60,7 +60,7 @@ public final class MjCompile extends MjSafe {
                             this.plugin.getVersion(),
                             this.skipSourceLints,
                             this.skipProgramLints,
-                            this.skipExperimental,
+                            this.experimental,
                             this.failOnWarning,
                             this.lintAsPackage,
                             this.skipLinting
@@ -78,11 +78,11 @@ public final class MjCompile extends MjSafe {
                             this.target.toPath().resolve(MjResolve.DIR),
                             new CentralMaven(this.system, this.session, this.repositories),
                             this.discover,
-                            this.skipZeroVersions,
-                            this.resolveJna,
+                            this.zeros,
+                            this.jna,
                             this.ignoreRuntime,
                             this.runtime(),
-                            this.ignoreConflicts
+                            this.conflicts
                         )
                     ),
                     new Timed(
