@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.ResourceOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;

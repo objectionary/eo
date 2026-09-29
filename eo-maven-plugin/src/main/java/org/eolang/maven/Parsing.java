@@ -24,6 +24,9 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
+import org.eolang.cache.Saved;
+import org.eolang.cache.Sha;
 import org.eolang.parser.Canonical;
 import org.w3c.dom.Node;
 
