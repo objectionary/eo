@@ -37,6 +37,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -219,6 +220,7 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @Timeout(60L)
     void reportsDeeplyNestedFormationsInsteadOfOverflowing() throws Exception {
         MatcherAssert.assertThat(
             "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
