@@ -43,7 +43,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("generated")
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make its home under the directory of the build, but it didnt",
@@ -59,7 +59,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("generated")
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the protocols beside its home, but it didnt",
@@ -75,7 +75,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("generated")
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the pruned sources beside its home, but it didnt",
@@ -91,7 +91,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("generated")
+            new GlobalCache.GcFresh()
         ).exec();
         try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
             MatcherAssert.assertThat(
@@ -120,8 +120,7 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("target/eo"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
-                    temp.resolve("generated")
+                    new GlobalCache.GcFresh()
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -141,8 +140,7 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("target/eo"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
-                    temp.resolve("generated")
+                    new GlobalCache.GcFresh()
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),

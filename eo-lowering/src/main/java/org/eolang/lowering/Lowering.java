@@ -72,11 +72,6 @@ public final class Lowering {
     private final GlobalCache cache;
 
     /**
-     * The directory of generated sources the atoms are written into.
-     */
-    private final Path generated;
-
-    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
@@ -84,13 +79,12 @@ public final class Lowering {
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The name or path of the phino executable
      * @param store The cache the protocols of the morphing are kept in
-     * @param gen The directory of generated sources the atoms are written into
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store, final Path gen
+        final GlobalCache store
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, gen);
+        this(srcs, tbls, dir, new Phino(exe), store);
     }
 
     /**
@@ -101,18 +95,16 @@ public final class Lowering {
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The phino binary on this machine
      * @param store The cache the protocols of the morphing are kept in
-     * @param gen The directory of generated sources the atoms are written into
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
-        final GlobalCache store, final Path gen
+        final GlobalCache store
     ) {
         this.sources = srcs;
         this.tables = tbls;
         this.target = dir;
         this.phino = exe;
         this.cache = store;
-        this.generated = gen;
     }
 
     /**
@@ -161,7 +153,7 @@ public final class Lowering {
                 new Merging(this.phino),
                 new Morphing(this.phino, this.cache),
                 new Patching(),
-                new Rendering(this.generated)
+                new Rendering()
             )
         );
     }

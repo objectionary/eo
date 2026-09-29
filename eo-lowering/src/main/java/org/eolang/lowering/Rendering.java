@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +33,14 @@ import org.cactoos.text.TextOf;
  * an object graph built and dataized at runtime is a handful of Java
  * statements here, one per symbol the protocol minted, and the atom the
  * patch put into the formation is the class those statements live in. The
- * class is written into {@code 7-lowering-atoms} first, beside the
- * protocol it was made of, so a reader of the build can put the two side by
- * side, and is then copied into the directory of generated sources, where
- * the transpiler writes the classes of the build, so javac finds it under
- * the very name the transpiler gives the atom. The atoms of an earlier
- * build are deleted before the rendering, so that an entry that is a taint
- * now leaves no atom behind.</p>
+ * class is written into {@code 7-lowering-atoms}, beside the protocol it
+ * was made of, so a reader of the build can put the two side by side, and
+ * the goal of the plugin hands that directory to javac as a source root of
+ * its own, so javac finds the class under the very name the transpiler gives
+ * the atom. It is not written among the generated sources, because the
+ * transpiler deletes every file there it did not write itself. The atoms of
+ * an earlier build are deleted before the rendering, so that an entry that
+ * is a taint now leaves no atom behind.</p>
  *
  * <p>The protocol is read and the program phino morphed is not, because
  * the protocol already says what fired, in what order, and off which
@@ -71,20 +71,6 @@ import org.cactoos.text.TextOf;
  *  is a taint now, while its atom could return those bytes as they are.
  */
 final class Rendering implements Proc<Path> {
-
-    /**
-     * The directory of generated sources the classes are written into.
-     */
-    private final Path generated;
-
-    /**
-     * Ctor.
-     *
-     * @param dir The directory of generated sources
-     */
-    Rendering(final Path dir) {
-        this.generated = dir;
-    }
 
     @Override
     public void exec(final Path target) throws IOException {
@@ -146,7 +132,7 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
                     rendered += 1;
-                    Logger.info(
+                    Logger.debug(
                         this,
                         "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
                         cells[0], cells[1], file, Files.size(file),
@@ -157,22 +143,11 @@ final class Rendering implements Proc<Path> {
                 }
             }
         }
-        this.copy(atoms);
         Logger.info(
             this,
-            "Rendered %d atoms into %[file]s and copied them into %[file]s, while %d entries were taints",
-            rendered, atoms, this.generated, tainted
+            "Rendered %d atoms into %[file]s, while %d entries were taints",
+            rendered, atoms, tainted
         );
-    }
-
-    private void copy(final Path atoms) throws IOException {
-        if (Files.exists(atoms)) {
-            for (final Path atom : new Filtered<>(Files::isRegularFile, new Directory(atoms))) {
-                final Path copy = this.generated.resolve(atoms.relativize(atom));
-                Files.createDirectories(copy.getParent());
-                Files.copy(atom, copy, StandardCopyOption.REPLACE_EXISTING);
-            }
-        }
     }
 
     private static Path cleared(final Path atoms) throws IOException {

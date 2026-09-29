@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.ArrayList;
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
@@ -77,6 +79,27 @@ final class MjLowerTest {
             "the goal must make the folder it was given, but it didnt",
             home.toFile(),
             FileMatchers.anExistingDirectory()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void addsTheAtomsItRenderedToTheSourcesMavenCompiles(@Mktmp final Path temp)
+        throws IOException {
+        final MavenProjectStub project = new MavenProjectStub();
+        project.setCompileSourceRoots(new ArrayList<>(0));
+        new FakeMaven(temp)
+            .with("project", project)
+            .with("lowering", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand its atoms to javac as a source root, but it didnt",
+            project.getCompileSourceRoots(),
+            Matchers.hasItem(
+                temp.resolve("target/7-lowering-atoms").toAbsolutePath().toString()
+            )
         );
     }
 

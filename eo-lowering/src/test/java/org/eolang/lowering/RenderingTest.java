@@ -67,10 +67,10 @@ final class RenderingTest {
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
                 .getBytes(StandardCharsets.UTF_8)
         );
-        new Rendering(temp.resolve("generated")).exec(temp);
+        new Rendering().exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
-            Files.exists(temp.resolve("generated")),
+            Files.exists(temp.resolve("7-lowering-atoms")),
             Matchers.is(false)
         );
     }
@@ -118,29 +118,18 @@ final class RenderingTest {
                     failed.add(String.format("unknown key: %s", key));
                 }
             }
-            final Path generated = this.rendered();
+            final Path atoms = this.rendered();
             if (this.story.map().containsKey("file")) {
-                failed.addAll(this.missing(generated));
-            } else {
-                for (final Path dir
-                    : new ListOf<>(generated, this.temp.resolve("7-lowering-atoms"))) {
-                    if (!this.files(dir).isEmpty()) {
-                        failed.add(String.format("no file, while %s", this.files(dir)));
-                    }
-                }
+                failed.addAll(this.missing(atoms));
+            } else if (!this.files(atoms).isEmpty()) {
+                failed.add(String.format("no file, while %s", this.files(atoms)));
             }
             return failed;
         }
 
-        private Collection<String> missing(final Path generated) throws IOException {
+        private Collection<String> missing(final Path atoms) throws IOException {
             final Collection<String> failed = new ArrayList<>(0);
-            final String name = this.story.map().get("file").toString();
-            final Path file = generated.resolve(name);
-            final Path kept = this.temp.resolve("7-lowering-atoms").resolve(name);
-            if (!Files.exists(kept)
-                || Files.exists(file) && Files.mismatch(kept, file) != -1L) {
-                failed.add(String.format("kept: %s is not what %s is", kept, file));
-            }
+            final Path file = atoms.resolve(this.story.map().get("file").toString());
             if (Files.exists(file)) {
                 final String java = Files.readString(file, StandardCharsets.UTF_8);
                 for (final Object line : this.demands("java")) {
@@ -149,7 +138,7 @@ final class RenderingTest {
                     }
                 }
             } else {
-                failed.add(String.format("file: %s, only %s", file, this.files(generated)));
+                failed.add(String.format("file: %s, only %s", file, this.files(atoms)));
             }
             return failed;
         }
@@ -187,17 +176,16 @@ final class RenderingTest {
                 protocol,
                 this.story.map().get("protocol").toString().getBytes(StandardCharsets.UTF_8)
             );
-            final Path generated = this.temp.resolve("generated");
-            new Rendering(generated).exec(this.temp);
-            return generated;
+            new Rendering().exec(this.temp);
+            return this.temp.resolve("7-lowering-atoms");
         }
 
-        private List<Path> files(final Path generated) throws IOException {
+        private List<Path> files(final Path atoms) throws IOException {
             final List<Path> files;
-            if (Files.exists(generated)) {
-                try (Stream<Path> all = Files.walk(generated)) {
+            if (Files.exists(atoms)) {
+                try (Stream<Path> all = Files.walk(atoms)) {
                     files = all.filter(Files::isRegularFile)
-                        .map(generated::relativize)
+                        .map(atoms::relativize)
                         .collect(Collectors.toList());
                 }
             } else {

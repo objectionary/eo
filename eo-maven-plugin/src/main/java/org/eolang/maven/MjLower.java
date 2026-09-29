@@ -92,10 +92,15 @@ public final class MjLower extends MjSafe {
                     this.tables.toPath(),
                     this.target.toPath(),
                     this.binary,
-                    this.caching("lowered"),
-                    this.generated.toPath()
+                    this.caching("lowered")
                 ).exec();
             }
+            final String atoms = this.target.toPath().resolve("7-lowering-atoms")
+                .toAbsolutePath().toString();
+            this.project.addCompileSourceRoot(atoms);
+            Logger.info(
+                this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
+            );
         } else {
             Logger.info(
                 this,
