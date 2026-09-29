@@ -209,7 +209,7 @@ more question:
 | `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
 | `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
 | `Witnessed` | What the program is seen to put into every void, gathered from every application that fills it, as the choice between the types put there. A build reads the program whole, library and all, so this is every caller there is, and rule 6 below reads it as the answer rather than as evidence of one. |
-| `Named` | Which object a void is settled at, read off the census `Witnessed` gathered, where that census names one type the table has a row for; several members become a choice under #8982. It is written on the row of the void as `settled`, and on every link that stops at the void, marked `witnessed`. |
+| `Named` | Which object a void is settled at, read off the census `Witnessed` gathered, where that census names one type the table has a row for; several members become a choice under #8982. It is written on the row of the void as `settled`, and on every link that stops at the void, marked `witnessed`. A link that stops at a void the source declared is told the `holds` instead, unmarked, so the read of a `^` names its owner. |
 
 `Depth` then walks the finished tables and puts every object on its rung.
 
@@ -420,9 +420,8 @@ lists; the table does not, since a reader of the table wants the fact.
 Rules 1, 3, 4 and 7 are what the passes do today. Rule 2 stops instead of
 answering (#8980), rule 5 keeps an empty input as a live unknown arm (#8981),
 rule 6 is read for one member and refused for several (#8982), rule 8 empties
-the whole read where one arm lacks the name (#8881), and the row of a `^`
-still names the void rather than the owner (#8979). Each of those gets a pack
-in `inference-packs` the day it lands, and this paragraph shrinks with it.
+the whole read where one arm lacks the name (#8881). Each of those gets a
+pack in `inference-packs` the day it lands, and this paragraph shrinks with it.
 
 ## How the behaviour is described
 

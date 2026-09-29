@@ -5,9 +5,9 @@
 # holds a `rope`, and the source says so for every caller there will ever be.
 # The one caller this program happens to have takes it off a `knot`, which
 # makes the `knot` the whole census of that `^`. The census is the poorer fact
-# of the two, so the row that reads `^` keeps naming the void, which a reader
-# walks through on the `rope` it declares, and is never told that every `ends`
-# hangs off a `knot` (#8960).
+# of the two, so the row that reads `^` says the `rope` the void declares,
+# without calling it witnessed, and is never told that every `ends` hangs off
+# a `knot` (#8960, #8979).
 eo:
   rope.eo: |
     [] > rope
@@ -26,5 +26,5 @@ eo:
 provides:
   - "/provides/type[@id='Φ.rope.ends']/attr[@name='ρ' and @holds='Φ.rope']"
 links:
-  - "/links/type/ref[@loc='Φ.rope.ends.ρ'][not(@witnessed)]"
+  - "/links/type[starts-with(@id, 'Φ.rope.ends.')]/ref[@loc='Φ.rope'][not(@witnessed)]"
   - "/links[not(type[starts-with(@id, 'Φ.rope.ends.')]/ref[@loc='Φ.knot'])]"
