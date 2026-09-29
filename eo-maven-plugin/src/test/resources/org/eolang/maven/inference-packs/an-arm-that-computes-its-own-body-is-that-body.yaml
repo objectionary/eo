@@ -3,11 +3,15 @@
 ---
 # The `pick` that `odd` hands to `choice` reads neither of its slots and gives
 # back `42` whatever went into them, while the ones `yes` and `no` hand give
-# back what went in. The void of `sock` holds all three, so every one of them
-# contributes an arm: the `oak` that `yes` picks, the `elm` that `no` picks and
-# the number `odd` makes of its own. The call is the choice of the three,
-# where it used to be nothing at all, since the body of `odd` is none of the
-# arguments and one such arm threw the others away (#8980).
+# back what went in. Where `odd` is all the void of `lone` holds, the call is
+# a copy of that `pick`, whose only public name is a body that is a number, so
+# `lone` goes by `Φ.number`; the `pick` of `yes` stays as it is, since its
+# body is a void and a void is walked through rather than settled on. The void
+# of `sock` holds all three, so every one of them contributes an arm: the
+# `oak` that `yes` picks, the `elm` that `no` picks and the number `odd` makes
+# of its own. The call is the choice of the three, where it used to be
+# nothing at all, since the body of `odd` is none of the arguments and one
+# such arm threw the others away (#8980).
 eo:
   choice.eo: |
     [pick] > choice
@@ -51,6 +55,17 @@ eo:
   third.eo: |
     [] > third
       sock odd > @
+  lone.eo: |
+    [^ flag] > lone
+      flag.pick > @
+        oak
+        elm
+  single.eo: |
+    [] > single
+      lone odd > @
+provides:
+  - "/provides/type[@id='Φ.lone' and @reduced='Φ.number']"
+  - "/provides/type[@id='Φ.yes.φ.α0' and not(@reduced)]"
 links:
   - "/links/type[@id='Φ.sock.φ']/ref/union/ref[@loc='Φ.oak']"
   - "/links/type[@id='Φ.sock.φ']/ref/union/ref[@loc='Φ.elm']"

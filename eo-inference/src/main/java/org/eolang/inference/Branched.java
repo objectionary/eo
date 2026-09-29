@@ -30,7 +30,9 @@ import java.util.Map;
  * own locator, which is a member of the choice that says nothing beyond
  * itself until a later pass settles it. Where no formation the void holds
  * hands back what the call put in, there is no choice to join, since then the
- * call is a copy of what the void holds and says so itself. A void
+ * call is a copy of what the void holds and says so itself: a void that holds
+ * the {@code odd} alone makes the call a copy of its {@code pick}, and
+ * {@link Behaved} reduces that copy to the {@code Φ.number} of its body. A void
  * does go by a name of its own once one thing has been seen in it, though,
  * so the body that was {@code left} yesterday is a {@code Φ.dial} today and
  * reads like a body the formation binds. What the call put in says which it
