@@ -124,7 +124,7 @@ final class Phino {
     ) throws IOException {
         this.run(
             new Jaxec(
-                this.binary, "morph", "--deep", "--acyclic", "--partial", "--quiet",
+                this.binary, "morph", "--deep", "--acyclic=plausible", "--partial", "--quiet",
                 "--sweet", "--hide-rho",
                 String.format("--symbolic=%s", atoms),
                 String.format("--locator=Q.l🌵.e%d", entry),
