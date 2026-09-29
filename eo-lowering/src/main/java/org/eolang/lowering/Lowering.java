@@ -9,10 +9,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
-import org.cactoos.Proc;
-import org.cactoos.list.ListOf;
-import org.cactoos.proc.ForEach;
 import org.cactoos.proc.IoCheckedProc;
+import org.cactoos.proc.Procs;
 import org.eolang.cache.GlobalCache;
 
 /**
@@ -38,11 +36,6 @@ import org.eolang.cache.GlobalCache;
  * account for.</p>
  *
  * @since 0.74.0
- * @todo #8548:30min Run the stages through {@code Procs} of Cactoos. The
- *  stages are applied to the directory of the build by a {@code ForEach}
- *  over the list of them, which turns the list into the argument and hides
- *  the directory in a lambda. Once yegor256/cactoos#1960 is released, put
- *  them into one {@code Procs} and apply it to the directory instead.
  */
 public final class Lowering {
 
@@ -162,9 +155,7 @@ public final class Lowering {
             this.phino
         );
         new IoCheckedProc<>(
-            new ForEach<Proc<Path>>(stage -> stage.exec(this.target))
-        ).exec(
-            new ListOf<>(
+            new Procs<>(
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
@@ -172,6 +163,6 @@ public final class Lowering {
                 new Patching(),
                 new Rendering(this.atoms)
             )
-        );
+        ).exec(this.target);
     }
 }
