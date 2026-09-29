@@ -417,10 +417,10 @@ attribute does, or where an atom is declared to hand into it, as
 A union is written whole, however many members it has. The page caps what it
 lists; the table does not, since a reader of the table wants the fact.
 
-Rules 1, 3, 4 and 7 are what the passes do today. Rule 2 stops instead of
-answering (#8980), rule 5 keeps an empty input as a live unknown arm (#8981),
-rule 6 is read for one member and refused for several (#8982), rule 8 empties
-the whole read where one arm lacks the name (#8881). Each of those gets a
+Rules 1, 2, 3, 4 and 7 are what the passes do today. Rule 5 keeps an empty
+input as a live unknown arm (#8981), rule 6 is read for one member and refused
+for several (#8982), rule 8 empties the whole read where one arm lacks the
+name (#8881). Each of those gets a
 pack in `inference-packs` the day it lands, and this paragraph shrinks with it.
 
 ## How the behaviour is described

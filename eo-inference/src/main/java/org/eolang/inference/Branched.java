@@ -20,15 +20,24 @@ import java.util.Map;
  * on that void is one of the two arguments, and which one is not known —
  * whichever it is, it is what they both are.</p>
  *
- * <p>Nothing is guessed, so one formation that binds a body of its own is the
- * end of it: the call may be that one, what comes back is then that body, and
- * a body is a question for whoever walks a delegation and not for this. Where
- * a void holds a formation of each kind there is no agreement to join, and the
- * call is left rooted at the void it was. A void does go by a name of its own
- * once one thing has been seen in it, though, so the body that was
- * {@code left} yesterday is a {@code Φ.dial} today and reads like a body the
- * formation binds. What the call put in says which it is: a body that is one
- * of the arguments is a void wearing the argument's name.</p>
+ * <p>A formation that binds a body of its own among them is an arm as well,
+ * and the arm is that body, whatever went into the slots: the {@code pick} of
+ * an {@code odd} whose body is {@code 42} makes a call that holds it one of
+ * the arguments or a {@code Φ.number}. It used to be the end of it, and one
+ * such formation threw away the arms every other one had handed back, so the
+ * call was left rooted at the void it was (#8980). Nothing is guessed: the arm
+ * is the name the body goes by, and a body nobody has settled yet goes by its
+ * own locator, which is a member of the choice that says nothing beyond
+ * itself until a later pass settles it. Where no formation the void holds
+ * hands back what the call put in, there is no choice to join, since then the
+ * call is a copy of what the void holds and says so itself: a void that holds
+ * the {@code odd} alone makes the call a copy of its {@code pick}, and
+ * {@link Behaved} reduces that copy to the {@code Φ.number} of its body. A void
+ * does go by a name of its own once one thing has been seen in it, though,
+ * so the body that was {@code left} yesterday is a {@code Φ.dial} today and
+ * reads like a body the formation binds. What the call put in says which it
+ * is: a body that is one of the arguments is a void wearing the argument's
+ * name.</p>
  *
  * <p>An arm rooted at a void this call leaves empty counts like any other.
  * The call does not fill that void, but whoever called the object the arm
@@ -99,19 +108,27 @@ final class Branched {
      * a choice between the arms, which is an answer of its own for whoever can
      * hold two of them (#8744).</p>
      *
-     * @return The locators, empty when a formation this call reaches binds a
-     *  body of its own
+     * @return The locators, empty when no formation this call reaches hands
+     *  back what it was given
      */
     Collection<String> arms() {
-        final Collection<String> handed = new LinkedHashSet<>(0);
+        final Map<String, Collection<String>> given = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Map<String, String>> owner : this.owners().entrySet()) {
-            final Collection<String> given = this.given(owner.getKey(), owner.getValue());
-            if (given.isEmpty()) {
-                handed.clear();
-                break;
+            given.put(owner.getKey(), this.given(owner.getKey(), owner.getValue()));
+        }
+        final Collection<String> handed = new LinkedHashSet<>(0);
+        if (given.values().stream().anyMatch(arm -> !arm.isEmpty())) {
+            for (final Map.Entry<String, Collection<String>> arm : given.entrySet()) {
+                if (arm.getValue().isEmpty()) {
+                    arm.getValue().add(this.owned.behind(arm.getKey()));
+                }
+                if (arm.getValue().contains("")) {
+                    handed.clear();
+                    break;
+                }
+                arm.getValue().removeIf(this.every::dies);
+                handed.addAll(arm.getValue());
             }
-            given.removeIf(this.every::dies);
-            handed.addAll(given);
         }
         return handed;
     }
