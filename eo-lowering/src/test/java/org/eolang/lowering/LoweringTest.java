@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
@@ -43,7 +44,8 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms")
+            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make its home under the directory of the build, but it didnt",
@@ -59,7 +61,8 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms")
+            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the protocols beside its home, but it didnt",
@@ -75,7 +78,8 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms")
+            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the pruned sources beside its home, but it didnt",
@@ -91,7 +95,8 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms")
+            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            Duration.ofMinutes(1L)
         ).exec();
         try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
             MatcherAssert.assertThat(
@@ -121,7 +126,8 @@ final class LoweringTest {
                     temp.resolve("target/eo"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms")
+                    temp.resolve("atoms"),
+                    Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -142,7 +148,8 @@ final class LoweringTest {
                     temp.resolve("target/eo"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms")
+                    temp.resolve("atoms"),
+                    Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),

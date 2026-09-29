@@ -7,6 +7,7 @@ package org.eolang.lowering;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import org.cactoos.Proc;
 import org.cactoos.list.ListOf;
@@ -77,6 +78,11 @@ public final class Lowering {
     private final Path atoms;
 
     /**
+     * The time one run of phino may take on one entry before it is killed.
+     */
+    private final Duration budget;
+
+    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
@@ -85,12 +91,13 @@ public final class Lowering {
      * @param exe The name or path of the phino executable
      * @param store The cache the protocols of the morphing are kept in
      * @param kept The directory the atoms are written into, which javac compiles
+     * @param span The time one run of phino may take before it is killed
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store, final Path kept
+        final GlobalCache store, final Path kept, final Duration span
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept);
+        this(srcs, tbls, dir, new Phino(exe), store, kept, span);
     }
 
     /**
@@ -102,10 +109,11 @@ public final class Lowering {
      * @param exe The phino binary on this machine
      * @param store The cache the protocols of the morphing are kept in
      * @param kept The directory the atoms are written into, which javac compiles
+     * @param span The time one run of phino may take before it is killed
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
-        final GlobalCache store, final Path kept
+        final GlobalCache store, final Path kept, final Duration span
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -113,6 +121,7 @@ public final class Lowering {
         this.phino = exe;
         this.cache = store;
         this.atoms = kept;
+        this.budget = span;
     }
 
     /**
@@ -159,7 +168,7 @@ public final class Lowering {
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino, this.cache),
+                new Morphing(this.phino, this.cache, this.budget),
                 new Patching(),
                 new Rendering(this.atoms)
             )

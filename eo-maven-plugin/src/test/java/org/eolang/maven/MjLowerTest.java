@@ -105,6 +105,25 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void killsTheRunThatOutlastsTheBudgetItWasGiven(@Mktmp final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("budget", 1)
+            .with("binary", MjLowerTest.binary(temp, 5))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "a run longer than the budget must be killed and leave no protocol, but it didnt",
+            temp.resolve("target/7-lowering-protocols/gap.xml").toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
         final Path home = temp.resolve("target/7-lowering");
         new FakeMaven(temp)
@@ -171,6 +190,10 @@ final class MjLowerTest {
     }
 
     private static String binary(final Path temp) throws IOException {
+        return MjLowerTest.binary(temp, 0);
+    }
+
+    private static String binary(final Path temp, final int pause) throws IOException {
         final Path made = temp.resolve("phino");
         Files.write(
             made,
@@ -179,7 +202,10 @@ final class MjLowerTest {
                 "case $1 in",
                 String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
-                "morph) for a; do case $a in --protocol=*) echo \"<morph/>\" > \"${a#--protocol=}\";; esac; done;;",
+                String.format(
+                    "morph) sleep %d; for a; do case $a in --protocol=*) echo \"<morph/>\" > \"${a#--protocol=}\";; esac; done;;",
+                    pause
+                ),
                 "esac"
             )
         );

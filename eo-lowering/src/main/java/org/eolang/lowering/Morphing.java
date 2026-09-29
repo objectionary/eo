@@ -115,9 +115,10 @@ final class Morphing implements Proc<Path> {
      *
      * @param exe The binary that morphs
      * @param store The cache the protocols are kept in between builds
+     * @param span The time one run may take before it is killed
      */
-    Morphing(final Phino exe, final GlobalCache store) {
-        this(exe, store, 32, Duration.ofSeconds(60L));
+    Morphing(final Phino exe, final GlobalCache store, final Duration span) {
+        this(exe, store, 32, span);
     }
 
     /**

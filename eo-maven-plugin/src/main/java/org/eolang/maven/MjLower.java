@@ -8,6 +8,7 @@ import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -67,6 +68,16 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The seconds one run of phino may take on one entry before it is killed.
+     */
+    @Parameter(
+        alias = "loweringBudget",
+        property = "eo.loweringBudget",
+        defaultValue = "10"
+    )
+    private int budget;
+
+    /**
      * The directory with the tables of {@code eo:inference}.
      */
     @Parameter(
@@ -96,7 +107,8 @@ public final class MjLower extends MjSafe {
                     this.target.toPath(),
                     this.binary,
                     this.caching("lowered"),
-                    atoms
+                    atoms,
+                    Duration.ofSeconds(this.budget)
                 ).exec();
             }
             this.project.addCompileSourceRoot(atoms.toString());
