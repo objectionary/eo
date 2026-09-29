@@ -69,7 +69,7 @@ import java.util.Map;
  * have not settled yet is an answer nobody has worked out. Writing the second
  * one down as if it were the first froze it, since {@link Dispatched} asks
  * again only about a name rooted at a void and takes one rooted answer for
- * another only when the second stands under the first. The {@code if} of a
+ * another only when the second is made of fewer steps. The {@code if} of a
  * {@code recovered} is a {@code Φ.bool.if}, which is rooted at a void as well,
  * so the site kept the name of a void the line above it fills (#8351).</p>
  *

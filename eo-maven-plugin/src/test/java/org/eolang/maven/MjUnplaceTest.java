@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.UUID;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

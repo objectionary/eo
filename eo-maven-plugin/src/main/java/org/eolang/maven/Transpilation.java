@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.eolang.cache.CachePath;
+import org.eolang.cache.Caching;
 import org.eolang.parser.TrFull;
 
 /**

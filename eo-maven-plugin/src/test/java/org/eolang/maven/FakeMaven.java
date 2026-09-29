@@ -30,6 +30,7 @@ import org.cactoos.scalar.Synced;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 
 /**
  * Fake maven workspace that executes Mojos in order to test

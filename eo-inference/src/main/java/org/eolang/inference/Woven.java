@@ -96,7 +96,10 @@ final class Woven {
         final Map<String, String> certain
     ) {
         final Provided owned = new Provided(this.given, new Ends(pairs).names(), this.hollows);
-        final Bound bound = this.bound(pairs, owned);
+        final Bound bound = new Bound(
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            owned, new Copied(this.all, chosen).all()
+        );
         return new Refs(
             pairs,
             bound.all(),

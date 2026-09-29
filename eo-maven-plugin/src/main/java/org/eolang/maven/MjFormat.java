@@ -17,6 +17,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;

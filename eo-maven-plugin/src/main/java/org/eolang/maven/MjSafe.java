@@ -23,6 +23,8 @@ import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eolang.cache.Caching;
+import org.eolang.cache.GlobalCache;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**

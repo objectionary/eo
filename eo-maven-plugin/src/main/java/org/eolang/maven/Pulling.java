@@ -11,6 +11,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
+import org.eolang.cache.CachePath;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpFork;
+import org.eolang.cache.FpGenerated;
+import org.eolang.cache.FpIfTargetExists;
+import org.eolang.cache.FpIgnore;
+import org.eolang.cache.FpUpdateBoth;
+import org.eolang.cache.FpUpdateFromCache;
 
 /**
  * Pulls EO sources from Objectionary.

@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The Java files that a transpiled XMIR is written out as.
