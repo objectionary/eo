@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `pick` that `odd` hands to `choice` reads neither of its slots and gives
+# back `42` whatever went into them, while the ones `yes` and `no` hand give
+# back what went in. The void of `sock` holds all three, so every one of them
+# contributes an arm: the `oak` that `yes` picks, the `elm` that `no` picks and
+# the number `odd` makes of its own. The call is the choice of the three,
+# where it used to be nothing at all, since the body of `odd` is none of the
+# arguments and one such arm threw the others away (#8980).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  odd.eo: |
+    [^] > odd
+      choice > @
+        [^ left right]
+          42 > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  bytes.eo: |
+    [b] > bytes
+      b > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        oak
+        elm
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  third.eo: |
+    [] > third
+      sock odd > @
+links:
+  - "/links/type[@id='Φ.sock.φ']/ref/union/ref[@loc='Φ.oak']"
+  - "/links/type[@id='Φ.sock.φ']/ref/union/ref[@loc='Φ.elm']"
+  - "/links/type[@id='Φ.sock.φ']/ref/union/ref[@loc='Φ.number']"
