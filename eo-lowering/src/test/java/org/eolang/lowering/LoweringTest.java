@@ -45,7 +45,7 @@ final class LoweringTest {
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make its home under the directory of the build, but it didnt",
-            target.resolve("7-lower").toFile(),
+            target.resolve("7-lowering").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
@@ -88,7 +88,7 @@ final class LoweringTest {
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
         ).exec();
-        try (Stream<Path> made = Files.list(target.resolve("7-lower"))) {
+        try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
             MatcherAssert.assertThat(
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),

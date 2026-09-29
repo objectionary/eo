@@ -36,7 +36,7 @@ final class MjLowerTest {
 
     @Test
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/7-lower");
+        final Path home = temp.resolve("target/7-lowering");
         new FakeMaven(temp)
             .with("lowering", false)
             .execute(MjLower.class);
@@ -67,7 +67,7 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path home = temp.resolve("target/7-lower");
+        final Path home = temp.resolve("target/7-lowering");
         new FakeMaven(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
@@ -83,7 +83,7 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/7-lower");
+        final Path home = temp.resolve("target/7-lowering");
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)

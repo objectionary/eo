@@ -20,7 +20,7 @@ List<String> allowed = [
     '6-pre-inference',
     '6-inference',
     '7-dealpha',
-    '7-lower',
+    '7-lowering',
 ]
 List<File> allowedDirs = allowed.stream()
     .map { dirName -> target.resolve(dirName).toFile() }

@@ -23,7 +23,7 @@ import org.cactoos.list.ListOf;
  * left, and every stage after that speaks of a formation by that number
  * alone. What the stages make lives under the directory of the build:
  * the sources with their tests cut out in {@code 7-lowering-planting}, the
- * world and everything on the way to it in {@code 7-lower}, and the
+ * world and everything on the way to it in {@code 7-lowering}, and the
  * protocol of every entry, one file per object morphed, beside it in
  * {@code 7-lowering-protocols}.</p>
  *
@@ -126,7 +126,7 @@ public final class Lowering {
             pinned,
             this.phino
         );
-        final Path home = Files.createDirectories(this.target.resolve("7-lower"));
+        final Path home = Files.createDirectories(this.target.resolve("7-lowering"));
         final Pruning pruning = new Pruning(
             this.sources, this.target.resolve("7-lowering-planting")
         );
