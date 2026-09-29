@@ -72,6 +72,11 @@ public final class Lowering {
     private final GlobalCache cache;
 
     /**
+     * The directory the atoms are written into, which javac compiles.
+     */
+    private final Path atoms;
+
+    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
@@ -79,12 +84,13 @@ public final class Lowering {
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The name or path of the phino executable
      * @param store The cache the protocols of the morphing are kept in
+     * @param kept The directory the atoms are written into, which javac compiles
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store
+        final GlobalCache store, final Path kept
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store);
+        this(srcs, tbls, dir, new Phino(exe), store, kept);
     }
 
     /**
@@ -95,16 +101,18 @@ public final class Lowering {
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The phino binary on this machine
      * @param store The cache the protocols of the morphing are kept in
+     * @param kept The directory the atoms are written into, which javac compiles
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
-        final GlobalCache store
+        final GlobalCache store, final Path kept
     ) {
         this.sources = srcs;
         this.tables = tbls;
         this.target = dir;
         this.phino = exe;
         this.cache = store;
+        this.atoms = kept;
     }
 
     /**
@@ -153,7 +161,7 @@ public final class Lowering {
                 new Merging(this.phino),
                 new Morphing(this.phino, this.cache),
                 new Patching(),
-                new Rendering()
+                new Rendering(this.atoms)
             )
         );
     }

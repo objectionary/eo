@@ -33,10 +33,10 @@ import org.cactoos.text.TextOf;
  * an object graph built and dataized at runtime is a handful of Java
  * statements here, one per symbol the protocol minted, and the atom the
  * patch put into the formation is the class those statements live in. The
- * class is written into {@code 7-lowering-atoms}, beside the protocol it
+ * class is written into the directory of atoms, beside the protocols it
  * was made of, so a reader of the build can put the two side by side, and
- * the goal of the plugin hands that directory to javac as a source root of
- * its own, so javac finds the class under the very name the transpiler gives
+ * the goal of the plugin, which names that directory, hands it to javac as
+ * a source root of its own, so javac finds the class under the very name the transpiler gives
  * the atom. It is not written among the generated sources, because the
  * transpiler deletes every file there it did not write itself. The atoms of
  * an earlier build are deleted before the rendering, so that an entry that
@@ -72,6 +72,20 @@ import org.cactoos.text.TextOf;
  */
 final class Rendering implements Proc<Path> {
 
+    /**
+     * The directory the atoms are written into.
+     */
+    private final Path atoms;
+
+    /**
+     * Ctor.
+     *
+     * @param dir The directory the atoms are written into
+     */
+    Rendering(final Path dir) {
+        this.atoms = dir;
+    }
+
     @Override
     public void exec(final Path target) throws IOException {
         final Path home = target.resolve("7-lowering");
@@ -92,7 +106,7 @@ final class Rendering implements Proc<Path> {
                 String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
             );
         }
-        final Path atoms = Rendering.cleared(target.resolve("7-lowering-atoms"));
+        Rendering.clear(this.atoms);
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
@@ -123,7 +137,7 @@ final class Rendering implements Proc<Path> {
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
-                    final Path file = atoms.resolve(
+                    final Path file = this.atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
                     );
                     Files.createDirectories(file.getParent());
@@ -146,18 +160,17 @@ final class Rendering implements Proc<Path> {
         Logger.info(
             this,
             "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered, atoms, tainted
+            rendered, this.atoms, tainted
         );
     }
 
-    private static Path cleared(final Path atoms) throws IOException {
-        if (Files.exists(atoms)) {
+    private static void clear(final Path dir) throws IOException {
+        if (Files.exists(dir)) {
             for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(atoms))) {
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(dir))) {
                 Files.delete(stale);
             }
         }
-        return atoms;
     }
 
     private static String top(final Map<String, String> tops, final String locator) {

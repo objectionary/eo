@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -86,18 +87,19 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
+            final Path atoms = this.target.toPath().resolve("7-lowering-atoms")
+                .toAbsolutePath();
             try (TjsForeign tojos = this.tojos()) {
                 new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
                     this.tables.toPath(),
                     this.target.toPath(),
                     this.binary,
-                    this.caching("lowered")
+                    this.caching("lowered"),
+                    atoms
                 ).exec();
             }
-            final String atoms = this.target.toPath().resolve("7-lowering-atoms")
-                .toAbsolutePath().toString();
-            this.project.addCompileSourceRoot(atoms);
+            this.project.addCompileSourceRoot(atoms.toString());
             Logger.info(
                 this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
             );

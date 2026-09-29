@@ -67,10 +67,10 @@ final class RenderingTest {
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
                 .getBytes(StandardCharsets.UTF_8)
         );
-        new Rendering().exec(temp);
+        new Rendering(temp.resolve("atoms")).exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
-            Files.exists(temp.resolve("7-lowering-atoms")),
+            Files.exists(temp.resolve("atoms")),
             Matchers.is(false)
         );
     }
@@ -176,8 +176,8 @@ final class RenderingTest {
                 protocol,
                 this.story.map().get("protocol").toString().getBytes(StandardCharsets.UTF_8)
             );
-            new Rendering().exec(this.temp);
-            return this.temp.resolve("7-lowering-atoms");
+            new Rendering(this.temp.resolve("atoms")).exec(this.temp);
+            return this.temp.resolve("atoms");
         }
 
         private List<Path> files(final Path atoms) throws IOException {
