@@ -19,6 +19,7 @@ List<String> allowed = [
     '5-transpile',
     '6-pre-inference',
     '6-inference',
+    '7-dealpha',
     '7-lower',
 ]
 List<File> allowedDirs = allowed.stream()

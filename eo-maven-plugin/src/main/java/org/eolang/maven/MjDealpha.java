@@ -73,7 +73,7 @@ public final class MjDealpha extends MjSafe {
                 new Dealphaing(
                     tojos.standalone(),
                     new Landings(this.tables.toPath().resolve("links.xml")),
-                    this.targetDir.toPath().resolve(Dealphaing.DIR),
+                    this.target.toPath().resolve(Dealphaing.DIR),
                     this.rigid
                 )
             ).exec();

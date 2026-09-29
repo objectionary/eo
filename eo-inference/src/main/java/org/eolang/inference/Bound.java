@@ -39,6 +39,21 @@ import java.util.Map;
  * itself dispatches as well, off the object it is written inside, and
  * {@link Taken} answers for both.</p>
  *
+ * <p>A name written by itself fills the receiver of the attribute it points
+ * at, and of nothing further down the chain of copies that attribute starts.
+ * {@code deleted}, inside a test that says {@code temp.deleted > deleted}, is
+ * the {@code deleted} of that test, which declares no receiver; the
+ * {@code deleted} of a file at the end of the chain got its receiver from
+ * {@code temp} already, and filling it with the test as well told every
+ * reader of that void that a file can hang off a test. The census of such a
+ * void then joined its members into nothing (#8953).</p>
+ *
+ * <p>A name written after a dot goes down that chain only as far as the
+ * first copy whose receiver is still empty, which {@link Stamped} finds: the
+ * {@code os} of {@code os.is-windows} fills nothing, since the
+ * {@code name.contains} it reaches took its receiver where it was written
+ * (#8955).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -177,7 +192,7 @@ final class Bound {
             }
         }
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
-            final String hollow = this.owned.receiver(this.base(dispatch.getKey(), landed));
+            final String hollow = this.owned.receiver(this.hung(dispatch, landed));
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
                     .put(hollow, dispatch.getValue());
@@ -327,6 +342,26 @@ final class Bound {
         final Collection<String> found = new HashSet<>(0);
         for (final String step : chain) {
             found.addAll(this.filled(step, found, landed).keySet());
+        }
+        return found;
+    }
+
+    // The parser writes the receiver of a name written after a dot beside it,
+    // at the locator of the dispatch with ρ on the end, so a receiver found
+    // anywhere else is one Taken found for a name written by itself. Such a
+    // name reads the attribute it points at, and that attribute is asked for
+    // its receiver rather than the end of its chain of copies.
+    private String hung(
+        final Map.Entry<String, String> dispatch, final Map<String, String> landed
+    ) {
+        final String found;
+        if (landed.containsKey(dispatch.getKey())) {
+            found = landed.get(dispatch.getKey());
+        } else if (dispatch.getValue().equals(dispatch.getKey().concat(".ρ"))) {
+            found = new Stamped(this.pairs, this.receivers, this.owned)
+                .names(dispatch.getKey());
+        } else {
+            found = this.pairs.getOrDefault(dispatch.getKey(), "");
         }
         return found;
     }

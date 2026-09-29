@@ -72,12 +72,14 @@
         [m1]
           malloc.of > @
             5
-            seq * > [^ m2] >>
-              read.
-                tee.
-                  input ((input 01-02-03-04-05.as-input).tee m2.to-output)
-                  ^.m1.to-output
-                5
-              ^.m1.write 5 2A-
-              ^.m1
+            [^ m2] >>
+              seq * > @
+                read.
+                  tee.
+                    input (source.tee m2.to-output)
+                    ^.m1.to-output
+                  5
+                ^.m1.write 5 2A-
+                ^.m1
+              input 01-02-03-04-05.as-input > source
       01-02-03-04-05-2A

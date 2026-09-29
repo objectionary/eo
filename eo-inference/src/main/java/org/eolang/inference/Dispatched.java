@@ -71,6 +71,11 @@ final class Dispatched {
     private final Collection<String> hollows;
 
     /**
+     * Every object of the program that terminates, from {@link Dead}.
+     */
+    private final Collection<String> dead;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table
@@ -80,6 +85,8 @@ final class Dispatched {
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void this pass may look into, empty
      *  when it may look into none
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
      */
     Dispatched(
         final XML provides,
@@ -87,7 +94,8 @@ final class Dispatched {
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Collection<String> ends
     ) {
         this.given = provides;
         this.all = dispatches;
@@ -95,6 +103,7 @@ final class Dispatched {
         this.named = bindings;
         this.receivers = taken;
         this.hollows = voids;
+        this.dead = ends;
     }
 
     /**
@@ -257,7 +266,7 @@ final class Dispatched {
         return new Filled(
             pairs,
             owned,
-            new Puts(bound, new Holders(bound, pairs).all()),
+            new Puts(bound, new Holders(bound, pairs).all(), this.dead),
             this.hollows
         );
     }

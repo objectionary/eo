@@ -54,13 +54,13 @@ public final class MjCompile extends MjSafe {
                         new Linting(
                             tojos,
                             compile,
-                            this.targetDir.toPath(),
+                            this.target.toPath(),
                             this.cache.toPath(),
                             this.cacheEnabled,
                             this.plugin.getVersion(),
                             this.skipSourceLints,
                             this.skipProgramLints,
-                            this.skipExperimental,
+                            this.experimental,
                             this.failOnWarning,
                             this.lintAsPackage,
                             this.skipLinting
@@ -69,30 +69,30 @@ public final class MjCompile extends MjSafe {
                     new Timed(
                         new Merging(
                             tojos,
-                            this.targetDir.toPath().resolve(Merging.DIR)
+                            this.target.toPath().resolve(Merging.DIR)
                         )
                     ),
                     new Timed(
                         new Resolving(
                             tojos,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
+                            this.target.toPath().resolve(MjResolve.DIR),
                             new CentralMaven(this.system, this.session, this.repositories),
-                            this.discoverSelf,
-                            this.skipZeroVersions,
-                            this.resolveJna,
+                            this.discover,
+                            this.zeros,
+                            this.jna,
                             this.ignoreRuntime,
                             this.runtime(),
-                            this.ignoreConflicts
+                            this.conflicts
                         )
                     ),
                     new Timed(
                         new Placing(
                             placed,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
-                            this.classesDir.toPath(),
+                            this.target.toPath().resolve(MjResolve.DIR),
+                            this.classes.toPath(),
                             this.placeBinaries,
                             this.skipBinaries,
-                            this.rewriteBinaries
+                            this.rewrite
                         )
                     )
                 )

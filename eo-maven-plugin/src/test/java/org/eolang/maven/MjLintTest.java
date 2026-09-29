@@ -100,7 +100,7 @@ final class MjLintTest {
     void reportsExperimentalDefectWhenSkipExperimentalIsFalse(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", false).withProgram(
+            .with("experimental", false).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -127,7 +127,7 @@ final class MjLintTest {
     void skipsExperimentalDefectWhenSkipExperimentalIsTrue(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", true).withProgram(
+            .with("experimental", true).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",

@@ -46,13 +46,13 @@ public final class MjLint extends MjSafe {
             new Linting(
                 tojos,
                 compile,
-                this.targetDir.toPath(),
+                this.target.toPath(),
                 this.cache.toPath(),
                 this.cacheEnabled,
                 this.plugin.getVersion(),
                 this.skipSourceLints,
                 this.skipProgramLints,
-                this.skipExperimental,
+                this.experimental,
                 this.failOnWarning,
                 this.lintAsPackage,
                 this.skipLinting

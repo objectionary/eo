@@ -335,7 +335,7 @@ final class MjResolveTest {
                     "[] > main-1 /bytes"
                 )
             );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -364,7 +364,7 @@ final class MjResolveTest {
                 "[] > main-1 /bytes"
             )
         );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new PpResolve());
         MatcherAssert.assertThat(
             "Both sibling versions must survive resolving, but one was deleted",

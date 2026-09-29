@@ -137,4 +137,44 @@ final class MjDealphaTest {
             Matchers.containsString("new Bind(\"bar\"")
         );
     }
+
+    @Test
+    void remembersFormationInsideRenamedArgument(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the formation under a renamed argument must still be found in the tables and cached, but it isnt",
+            new TextOf(
+                new FakeMaven(temp).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package examples",
+                        "",
+                        "[] > app",
+                        "  call > @",
+                        "    [z]",
+                        "      half 42 > @",
+                        "      [x] > half",
+                        "        x.div 2 > @",
+                        "  [f] > call",
+                        "    f 7 > @"
+                    ),
+                    "examples.app",
+                    "examples/app.eo"
+                ).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "[as-bytes] > number",
+                        "  as-bytes > @",
+                        "  [x] > div",
+                        "    x > @"
+                    ),
+                    "number",
+                    "number.eo"
+                ).execute(new PpDealpha())
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOapp.java")
+            ).asString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
 }

@@ -171,9 +171,9 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            this.params.putIfAbsent("targetDir", this.targetPath().toFile());
+            this.params.putIfAbsent("target", this.targetPath().toFile());
             this.params.putIfAbsent(
-                "xslMeasures", this.targetPath().resolve("measures.csv").toFile()
+                "measures", this.targetPath().resolve("measures.csv").toFile()
             );
             this.params.putIfAbsent("foreign", this.foreignPath().toFile());
             this.params.putIfAbsent("foreignFormat", "csv");
@@ -181,10 +181,10 @@ final class FakeMaven {
             stub.setCompileSourceRoots(new ArrayList<>(0));
             this.params.putIfAbsent("project", stub);
             this.params.putIfAbsent("transpiledFormat", "csv");
-            this.params.putIfAbsent("skipZeroVersions", true);
+            this.params.putIfAbsent("zeros", true);
             this.params.putIfAbsent("cacheEnabled", true);
-            this.params.putIfAbsent("discoverSelf", false);
-            this.params.putIfAbsent("ignoreConflicts", false);
+            this.params.putIfAbsent("discover", false);
+            this.params.putIfAbsent("conflicts", false);
             this.params.putIfAbsent("central", new DummyCentral());
             this.params.putIfAbsent("resolveInCentral", false);
             this.params.putIfAbsent(
@@ -198,7 +198,7 @@ final class FakeMaven {
             this.params.putIfAbsent(
                 "cache", this.workspace.resolve("eo/cache/parsed").toFile()
             );
-            this.params.putIfAbsent("generatedDir", this.generatedPath().toFile());
+            this.params.putIfAbsent("generated", this.generatedPath().toFile());
             this.params.putIfAbsent(
                 "prepared", this.targetPath().resolve("6-pre-inference").toFile()
             );
@@ -214,9 +214,9 @@ final class FakeMaven {
                 "objectionary",
                 new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
             );
-            this.params.putIfAbsent("rewriteBinaries", true);
+            this.params.putIfAbsent("rewrite", true);
             this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("classesDir", this.classesPath().toFile());
+            this.params.putIfAbsent("classes", this.classesPath().toFile());
             this.params.putIfAbsent("superclass", "PhDefault");
             this.params.putIfAbsent("attach", true);
             this.params.putIfAbsent("tests", true);

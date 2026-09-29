@@ -122,6 +122,10 @@
             normalized.size.eq 0
             "."
             string normalized
+      if. > closing
+        trailing.and rooted.not
+        ^.separator
+        --
       concat. > core!
         ^.drive.concat
           ^.is-absolute.if
@@ -179,16 +183,8 @@
                   ^.drive.size.gt 0
                   ^.is-absolute.not
               core.concat
-                ".".concat
-                  if.
-                    trailing.and rooted.not
-                    ^.separator
-                    --
-              core.concat
-                if.
-                  trailing.and rooted.not
-                  ^.separator
-                  --
+                ".".concat closing
+              core.concat closing
       and. > rooted
         core.size.gt 0
         eq.

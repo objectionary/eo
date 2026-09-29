@@ -39,12 +39,6 @@ import org.w3c.dom.NodeList;
  * every file is written and the numbers are in the log.</p>
  *
  * @since 0.69.0
- * @todo #8301:90min Keep the purity of formations passed as named arguments.
- *  The transpiler runs set-locators.xsl again, so a renamed argument gets a
- *  new locator, while purify.xsl looks formations up in the inference tables
- *  by the old one. A formation inside a renamed argument is never marked as
- *  pure because of that. Let set-locators.xsl keep the locator of an argument
- *  the way the parser gave it, or let purify.xsl read the original locator.
  */
 final class Dealphaing implements Step {
 

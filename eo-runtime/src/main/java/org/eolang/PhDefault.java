@@ -409,14 +409,22 @@ public class PhDefault implements Phi, Cloneable {
 
     private String vacancy(final int pos) {
         String name = this.attr(pos);
-        if (!this.loaded().get(name).vacant()) {
-            for (int idx = pos + 1; idx < this.order.size(); ++idx) {
-                final String next = this.order.get(idx);
-                if (this.loaded().get(next).vacant()) {
-                    name = next;
-                    break;
-                }
-            }
+        boolean available = this.loaded().get(name).vacant();
+        for (
+            int idx = pos + 1;
+            !available && idx < this.order.size();
+            ++idx
+        ) {
+            name = this.order.get(idx);
+            available = this.loaded().get(name).vacant();
+        }
+        if (!available) {
+            throw new ExReadOnly(
+                String.format(
+                    "%s has just %d void attribute(s), can't put the %d-th one",
+                    this.forma(), pos, pos
+                )
+            );
         }
         return name;
     }
