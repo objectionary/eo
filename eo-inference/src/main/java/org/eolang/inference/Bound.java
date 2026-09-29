@@ -66,6 +66,16 @@ import java.util.Map;
  * another one, and filling the second fills the first, so the formations are
  * gathered along the whole chain of copies rather than off its end alone.</p>
  *
+ * <p>A read off a choice copies nothing one can name, since its pair is rooted
+ * at a void, and yet the formations it copies are known: they are the arms.
+ * {@code n.wide.div m}, where {@code wide} comes back as a {@code big} or as
+ * whatever its {@code fail} holds, is the {@code div} of that {@code big} in
+ * the first arm, and the {@code m} goes into its {@code b}. It used to go
+ * nowhere, since nothing in the program puts anything into the {@code div} of
+ * a void, and the {@code b} of every {@code u64.div} read as a void nobody
+ * fills (#8883). So the arms {@link Copied} finds are more formations such a
+ * call holds, and its arguments are relayed into them.</p>
+ *
  * <p>What an application is a copy of is read off the attribute it takes, and
  * not off its pair, wherever that attribute is a void. The two say different
  * things there: the pair says what the call comes back as, and once
@@ -121,6 +131,11 @@ final class Bound {
     private final Provided owned;
 
     /**
+     * The arms every read off a choice is a copy of, from {@link Copied}.
+     */
+    private final Map<String, Collection<String>> arms;
+
+    /**
      * Ctor.
      *
      * @param arguments The arguments of every application, from {@link Given}
@@ -138,12 +153,36 @@ final class Bound {
         final Map<String, String> links,
         final Provided provided
     ) {
+        this(arguments, bindings, taken, dispatches, links, provided, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
+     * @param taken What every dispatch takes its attribute from
+     * @param dispatches Every dispatch and read of the program
+     * @param links The pairs, each name against the one it is a copy of
+     * @param provided What the types certainly have
+     * @param copied The arms every read off a choice is a copy of
+     */
+    Bound(
+        final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
+        final Map<String, String> taken,
+        final Collection<Site> dispatches,
+        final Map<String, String> links,
+        final Provided provided,
+        final Map<String, Collection<String>> copied
+    ) {
         this.args = arguments;
         this.named = bindings;
         this.receivers = taken;
         this.sites = dispatches;
         this.pairs = links;
         this.owned = provided;
+        this.arms = copied;
     }
 
     /**
@@ -241,6 +280,7 @@ final class Bound {
         final Map<String, Collection<String>> relays
     ) {
         final Map<String, Collection<String>> fillers = this.puts(found);
+        fillers.putAll(this.arms);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
             for (final String filler : this.held(fillers, application.getKey(), landed)) {
                 final Map<String, String> passed = this.passed(filler, application.getValue());
