@@ -63,11 +63,11 @@ public final class MjResolve extends MjSafe {
                 this.target.toPath().resolve(MjResolve.DIR),
                 this.central,
                 this.discover,
-                this.skipZeroVersions,
-                this.resolveJna,
+                this.zeros,
+                this.jna,
                 this.ignoreRuntime,
                 this.runtime(),
-                this.ignoreConflicts
+                this.conflicts
             ).exec();
         }
     }

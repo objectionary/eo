@@ -163,7 +163,7 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
@@ -177,7 +177,7 @@ final class MjPlaceTest {
             "PlaceMojo have not to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),

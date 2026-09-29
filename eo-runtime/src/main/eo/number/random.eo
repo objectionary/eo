@@ -30,27 +30,32 @@
     35 > shift1
     17 > shift3
     clock.as-bytes > tbytes
+  as-i64. > high
+    and.
+      as-bytes.
+        ^.as-i64.div 67108864.as-i64
+      00-00-00-00-03-FF-FF-FF
+  as-i64. > low
+    ^.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF
+  as-i64. > lowered
+    low.times 25214903917.as-i64
   random. > next
     as-number.
       as-i64.
         and.
           as-bytes.
             plus.
-              plus.
-                as-i64.
-                  left.
-                    and.
-                      as-bytes.
-                        ((^.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                          25214903917.as-i64
-                      00-00-00-00-03-FF-FF-FF
-                    26
-                as-i64.
-                  (^.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                    25214903917.as-i64
+              shifted.plus lowered
               11.as-i64
           00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
+  as-i64. > shifted
+    left.
+      and.
+        as-bytes.
+          high.times 25214903917.as-i64
+        00-00-00-00-03-FF-FF-FF
+      26
 
   not. ++> can-differ-between-two-draws
     eq.

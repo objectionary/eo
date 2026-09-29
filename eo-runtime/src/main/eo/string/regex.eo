@@ -1336,21 +1336,30 @@
                     index.plus 1
                     opened
                     bits
-                  if.
-                    b.eq 7B-
-                    yes index opened bits empty --
-                    r.ok.if
-                      if.
-                        r.at.as-bytes.eq index.as-bytes
-                        escaped (index.plus 1) opened bits
-                        yes
-                          r.at
-                          opened
-                          bits
-                          plain bits r.text
-                          r.text
-                      r
+                  brace
       byte index > b
+      if. > brace
+        b.eq 7B-
+        yes
+          index
+          opened
+          bits
+          empty
+          --
+        r.ok.if
+          if.
+            r.at.as-bytes.eq index.as-bytes
+            escaped
+              index.plus 1
+              opened
+              bits
+            yes
+              r.at
+              opened
+              bits
+              plain bits r.text
+              r.text
+          r
       scanned > r
         index
         bits
@@ -1514,22 +1523,23 @@
                 no
                   s.at.plus 1
                   "Illegal character range"
-                u.ok.if
-                  if.
-                    u.preset.or
-                      gt.
-                        key s.from
-                        key u.from
-                    no
-                      u.at.plus -1
-                      "Illegal character range"
-                    span u.at s.from u.from
-                  u
+                ranged
             s
         s
       byte s.at > d
       byte > n
         s.at.plus 1
+      u.ok.if > ranged
+        if.
+          u.preset.or
+            gt.
+              key s.from
+              key u.from
+          no
+            u.at.plus -1
+            "Illegal character range"
+          span u.at s.from u.from
+        u
       single index mode > s
       single > u
         s.at.plus 1
@@ -1656,59 +1666,57 @@
                   refused index e
       byte index > e
       e.or 20- > l
-    if. > [^ index e] >> refused
-      or.
-        e.eq 70-
-        e.eq 50-
-      no
-        index.plus -1
-        "Unicode property classes are not supported"
-      if.
-        e.eq 75-
+    [^ index e] >> refused
+      if. > @
+        or.
+          e.eq 70-
+          e.eq 50-
         no
           index.plus -1
-          "Unicode escapes are not supported"
+          "Unicode property classes are not supported"
         if.
-          e.eq 63-
+          e.eq 75-
           no
             index.plus -1
-            "Control escapes are not supported"
+            "Unicode escapes are not supported"
           if.
-            e.eq 30-
+            e.eq 63-
             no
               index.plus -1
-              "Octal escapes are not supported"
+              "Control escapes are not supported"
             if.
-              or.
-                e.eq 6B-
-                gt.
-                  digit e
-                  0
+              e.eq 30-
               no
                 index.plus -1
-                "Back references are not supported"
+                "Octal escapes are not supported"
               if.
                 or.
-                  e.eq 47-
-                  or.
-                    e.eq 52-
-                    or.
-                      e.eq 68-
-                      or.
-                        e.eq 76-
-                        or.
-                          e.eq 58-
-                          e.eq 4E-
+                  e.eq 6B-
+                  gt. (digit e) 0
                 no
                   index.plus -1
-                  string
-                    concat.
-                      "The escape sequence '\\".as-bytes.concat
-                        e
-                      "' is not supported".as-bytes
-                no
-                  index
-                  "Illegal/unsupported escape sequence"
+                  "Back references are not supported"
+                unsupported.if
+                  no (index.plus -1) message
+                  no
+                    index
+                    "Illegal/unsupported escape sequence"
+      string > message
+        concat.
+          "The escape sequence '\\".as-bytes.concat
+            e
+          "' is not supported".as-bytes
+      or. > unsupported
+        e.eq 47-
+        or.
+          e.eq 52-
+          or.
+            e.eq 68-
+            or.
+              e.eq 76-
+              or.
+                e.eq 58-
+                e.eq 4E-
     [^ index opened bits] >> group
       if. > @
         b.eq 3F-
