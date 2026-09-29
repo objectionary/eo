@@ -17,6 +17,7 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;

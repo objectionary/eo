@@ -27,6 +27,8 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Cache;
+import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.eolang.cache.GlobalCache;
 import org.eolang.parser.OnDefault;
 import org.eolang.parser.OnDetailed;
 

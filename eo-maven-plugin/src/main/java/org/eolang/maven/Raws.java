@@ -17,6 +17,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.GlobalCache;
 import org.eolang.parser.EoSyntax;
 
 /**

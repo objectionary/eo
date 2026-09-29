@@ -12,6 +12,7 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.cache.ConcurrentCache;
 import org.junit.jupiter.api.Test;
 
 /**
