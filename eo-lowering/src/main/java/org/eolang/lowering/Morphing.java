@@ -8,9 +8,11 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeoutException;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -56,7 +58,11 @@ import org.cactoos.text.TextOf;
  * comes back to a term it has seen, so no guard against cycles can stop
  * it. At the ceiling the binary leaves that formation standing as a taint,
  * and the build fails only when the binary itself exits with an error, on
- * any one entry. Nothing is retried and nothing is skipped.</p>
+ * any one entry. Every run is also bounded by a budget of time, since the
+ * ceiling bounds the depth of a run and not its width: a run still going
+ * when its budget is spent is killed, its protocol is deleted, and the
+ * formation stays as it was written, the way a taint does. Nothing is
+ * retried.</p>
  *
  * @since 0.74.0
  */
@@ -71,6 +77,11 @@ final class Morphing implements Proc<Path> {
      * The ceiling of nested morphing and dataization steps of one run.
      */
     private final int steps;
+
+    /**
+     * The time one run may take before it is killed.
+     */
+    private final Duration budget;
 
     /**
      * Ctor.
@@ -88,8 +99,20 @@ final class Morphing implements Proc<Path> {
      * @param ceiling The ceiling of nested morphing and dataization steps
      */
     Morphing(final Phino exe, final int ceiling) {
+        this(exe, ceiling, Duration.ofSeconds(60L));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param exe The binary that morphs
+     * @param ceiling The ceiling of nested morphing and dataization steps
+     * @param span The time one run may take before it is killed
+     */
+    Morphing(final Phino exe, final int ceiling, final Duration span) {
         this.phino = exe;
         this.steps = ceiling;
+        this.budget = span;
     }
 
     @Override
@@ -187,13 +210,22 @@ final class Morphing implements Proc<Path> {
             String.format("%s.xml", cells[1].substring(2).replace('.', '/'))
         );
         Files.createDirectories(protocol.getParent());
-        this.phino.morph(world, atoms, number, protocol, this.steps);
-        Logger.debug(
-            this,
-            "Morphed the entry %d of %[file]s in %[ms]s into %[file]s",
-            number, world, System.currentTimeMillis() - start, protocol
-        );
-        progress.add(protocol);
+        try {
+            this.phino.morph(world, atoms, number, protocol, this.steps, this.budget);
+            Logger.debug(
+                this,
+                "Morphed the entry %d of %[file]s in %[ms]s into %[file]s",
+                number, world, System.currentTimeMillis() - start, protocol
+            );
+            progress.add(protocol);
+        } catch (final TimeoutException ex) {
+            Files.deleteIfExists(protocol);
+            Logger.warn(
+                this,
+                "The entry %d at %s was killed after %[ms]s, so it has no protocol",
+                number, cells[1], this.budget.toMillis()
+            );
+        }
         return protocol;
     }
 }

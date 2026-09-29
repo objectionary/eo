@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,6 +67,30 @@ final class MorphingTest {
             "the protocol must be named after the locator of its entry, but it isnt",
             temp.resolve("7-lowering-protocols/bytes/as-hex/a🌵16-3.xml").toFile(),
             FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void dropsTheProtocolOfARunThatOutlastsItsBudget(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 5);
+        new Morphing(
+            MorphingTest.phino(
+                temp,
+                String.join(
+                    " ",
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
+                    "echo '<protocol/>' > \"$p\"; exec sleep 30"
+                )
+            ),
+            32,
+            Duration.ofMillis(900L)
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a run killed over its budget must leave no protocol, but it does",
+            temp.resolve("7-lowering-protocols/e5.xml").toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
         );
     }
 

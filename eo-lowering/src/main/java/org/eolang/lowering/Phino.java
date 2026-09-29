@@ -4,11 +4,14 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.log.Logger;
 import com.yegor256.Jaxec;
 import com.yegor256.Result;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
@@ -109,37 +112,53 @@ final class Phino {
      * planting writes, the one numbered as the entry is, answers the λ
      * functions the table names, leaves standing what it cannot answer,
      * stops a term that comes back to itself, and writes nothing but the
-     * protocol.</p>
+     * protocol. A run that is still going when its budget is spent is
+     * killed, since one entry that never ends must not hold the build.</p>
      *
      * @param world The merged world
      * @param atoms The table of operations the run may answer
      * @param entry The number of the entry to morph
      * @param protocol The file to record every firing into, XML by its name
      * @param steps The ceiling of nested morphing and dataization steps
+     * @param budget The time the run may take before it is killed
      * @throws IOException If the executable cannot be run
+     * @throws TimeoutException If the run was killed over its budget
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     void morph(
-        final Path world, final Path atoms, final int entry, final Path protocol, final int steps
-    ) throws IOException {
-        this.run(
-            new Jaxec(
-                this.binary, "morph",
-                "--deep",
-                "--acyclic=plausible",
-                "--partial",
-                "--quiet",
-                "--sweet",
-                "--hide-rho",
-                "--abridged",
-                String.format("--symbolic=%s", atoms),
-                String.format("--locator=Q.l🌵.e%d", entry),
-                String.format("--protocol=%s", protocol),
-                String.format("--max-steps=%d", steps),
-                world.toString()
-            ),
-            String.format("morphing the entry %d of '%s'", entry, world)
-        );
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final int steps, final Duration budget
+    ) throws IOException, TimeoutException {
+        final String task = String.format("morphing the entry %d of '%s'", entry, world);
+        try {
+            this.run(
+                new Jaxec(
+                    this.binary, "morph",
+                    "--deep",
+                    "--acyclic=plausible",
+                    "--partial",
+                    "--quiet",
+                    "--sweet",
+                    "--hide-rho",
+                    "--abridged",
+                    String.format("--symbolic=%s", atoms),
+                    String.format("--locator=Q.l🌵.e%d", entry),
+                    String.format("--protocol=%s", protocol),
+                    String.format("--max-steps=%d", steps),
+                    world.toString()
+                ).withTimeout(budget),
+                task
+            );
+        } catch (final IllegalArgumentException ex) {
+            final TimeoutException killed = new TimeoutException(
+                Logger.format(
+                    "The binary '%s' was killed after %[ms]s of %s",
+                    this.binary, budget.toMillis(), task
+                )
+            );
+            killed.initCause(ex);
+            throw killed;
+        }
     }
 
     /**
