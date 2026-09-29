@@ -506,8 +506,8 @@ abstract class MjSafe extends AbstractMojo {
                     return new Object();
                 }
             );
-            if (Logger.isDebugEnabled(this)) {
-                Logger.debug(
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
                     this,
                     "Execution of %s took %[nano]s",
                     this.getClass().getSimpleName(),
