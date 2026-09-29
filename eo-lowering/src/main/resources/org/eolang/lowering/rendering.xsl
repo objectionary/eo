@@ -8,7 +8,8 @@
   Here the protocol of one entry becomes the Java class of one atom. The
   input is the protocol phino wrote for that entry, and the output is either
   "atom", holding the path of the file under the directory of generated
-  sources and the Java to put there, or "taint", holding why there is none.
+  sources, the Java to put there, and how many voids it reads, statements it
+  computes, and branches it forks into, or "taint", holding why there is none.
   The protocol says what fired and off which symbols, and a symbol is all a
   Java local is: a void is read off the object the atom lives in, a minted
   symbol is one statement under the operation of its λ, a known one is a
@@ -75,8 +76,10 @@
   <xsl:template match="/">
     <rendered>
       <xsl:try>
-        <atom file="{eo:file()}">
-          <xsl:value-of select="eo:java()"/>
+        <xsl:variable name="root" select="eo:root()"/>
+        <xsl:variable name="at" select="eo:placed($root)"/>
+        <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))])}">
+          <xsl:value-of select="eo:java($root, $at)"/>
         </atom>
         <xsl:catch errors="eo:taint">
           <taint>
@@ -127,7 +130,11 @@
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root'))"/>
     </xsl:if>
-    <xsl:sequence select="substring-before(concat(string($root), ':'), ':')"/>
+    <xsl:variable name="symbol" select="substring-before(concat(string($root), ':'), ':')"/>
+    <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
+      <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
+    </xsl:if>
+    <xsl:sequence select="$symbol"/>
   </xsl:function>
   <!-- The object a void is, as a chain of takes off the atom. -->
   <xsl:function name="eo:object" as="xs:string">
@@ -136,17 +143,15 @@
   </xsl:function>
   <!-- The whole Java file of the atom. -->
   <xsl:function name="eo:java" as="xs:string">
-    <xsl:variable name="root" select="eo:root()"/>
+    <xsl:param name="root" as="xs:string"/>
+    <xsl:param name="at" as="map(xs:string, xs:string*)"/>
     <xsl:variable name="body">
       <xsl:choose>
         <xsl:when test="map:contains($eo:voids, $root)">
           <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
         </xsl:when>
-        <xsl:when test="exists(key('eo:known', $root, $eo:doc))">
-          <xsl:sequence select="eo:taint(concat('The root ', $root, ' of the entry ', $number, ' is a constant'))"/>
-        </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(eo:block(eo:placed($root), (), 2), '        return new Data.ToPhi(', eo:local($root), ');&#10;')"/>
+          <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', eo:local($root), ');&#10;')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

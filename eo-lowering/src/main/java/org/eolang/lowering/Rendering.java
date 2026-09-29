@@ -137,6 +137,14 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
                     rendered += 1;
+                    Logger.info(
+                        this,
+                        "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
+                        cells[0], cells[1], file, Files.size(file),
+                        out.xpath("/rendered/atom/@voids").get(0),
+                        out.xpath("/rendered/atom/@statements").get(0),
+                        out.xpath("/rendered/atom/@branches").get(0)
+                    );
                 }
             }
         }
