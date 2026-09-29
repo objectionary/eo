@@ -29,16 +29,15 @@ import org.eolang.lowering.Lowering;
  * the lowering needs to hear about it, and before {@code transpile}, the
  * last moment at which the Java of a program can still be changed.</p>
  *
- * <p>Nothing is folded yet. The goal is off unless {@code eo.lowering}
- * turns it on, and when it is on it makes sure that the binary on this
- * machine is the one the pin names, since an answer of another version
- * cannot be trusted, and then plants the entries of the build. It hands
- * the lowering the XMIR of every standalone object, the directory
- * where {@code eo:inference} left its tables, because an entry is a
- * formation applied to what the tables say its voids hold, and the
- * directory of the build, where the lowering keeps the world in
- * {@code 7-lower} and the protocol of every object morphed in
- * {@code 7-lowering-protocols}.</p>
+ * <p>The goal folds by default; {@code -Deo.lowering=false} turns it off.
+ * When it runs it makes sure that the binary on this machine is the one
+ * the pin names, since an answer of another version cannot be trusted,
+ * and then plants the entries of the build. It hands the lowering the
+ * XMIR of every standalone object, the directory where {@code eo:inference}
+ * left its tables, because an entry is a formation applied to what the
+ * tables say its voids hold, and the directory of the build, where the
+ * lowering keeps the world in {@code 7-lower} and the protocol of every
+ * object morphed in {@code 7-lowering-protocols}.</p>
  *
  * @since 0.74.0
  */
@@ -52,7 +51,7 @@ public final class MjLower extends MjSafe {
     /**
      * Whether formations are lowered at all.
      */
-    @Parameter(property = "eo.lowering", defaultValue = "false")
+    @Parameter(property = "eo.lowering", defaultValue = "true")
     private boolean lowering;
 
     /**
@@ -97,7 +96,7 @@ public final class MjLower extends MjSafe {
         } else {
             Logger.info(
                 this,
-                "Lowering is disabled, turn it on with -Deo.lowering=true"
+                "Lowering is disabled with -Deo.lowering=false"
             );
         }
     }

@@ -38,6 +38,7 @@ final class MjLowerTest {
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
         final Path home = temp.resolve("target/7-lower");
         new FakeMaven(temp)
+            .with("lowering", false)
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a disabled goal must leave no folder behind, but it made one",
