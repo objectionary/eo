@@ -25,14 +25,6 @@ import java.util.Map;
  * voids of {@code a}. So only an arm of the name the call reads is kept.</p>
  *
  * @since 0.76.0
- * @todo #8883:90min Credit the arms of a read off a choice while the passes run.
- *  The choices are asked for once, by {@link Woven}, after {@link Settled} has
- *  stopped, so only the rows and the census of the provides table hear of
- *  these fillings, while the {@link Holders} that {@link Dispatched} builds on
- *  every pass never does, and {@link Branched} still takes such a void for one
- *  nobody fills. Asking for the choices on every pass costs a second
- *  {@link Bound}, which is most of what a pass costs, so find a way that does
- *  not before rule 5 of #8977 drops an arm for being empty.
  */
 final class Copied {
 

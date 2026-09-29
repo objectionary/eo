@@ -6,7 +6,9 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -110,13 +112,17 @@ final class Dispatched {
      * The pairs that follow from what is known, beyond what is known already.
      *
      * @param pairs The pairs, each name against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link #copies(Map, Map)}
      * @return The dispatches answered this time, each against the attribute it
      *  turns out to be, empty when nothing further can be answered
      */
-    Map<String, String> answers(final Map<String, String> pairs) {
+    Map<String, String> answers(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, owned);
+        final Filled filled = this.filled(pairs, owned, copied);
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -184,7 +190,7 @@ final class Dispatched {
      * call put there, and where the arms agree on nothing {@link Filled} has
      * an answer all the same: one of them, and no third thing. There is
      * nowhere to keep that while an answer is a locator, so it is asked for
-     * here rather than inside {@link #answers(Map)}, once, by whoever writes
+     * here rather than inside {@link #answers(Map, Map)}, once, by whoever writes
      * the rows and can hold two of them (#8744).</p>
      *
      * <p>Only a site left rooted at a void is asked. A site that settled on an
@@ -207,13 +213,17 @@ final class Dispatched {
      * one step in, behind that object's body.</p>
      *
      * @param pairs The pairs, each name against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link #copies(Map, Map)}
      * @return The arms, by the locator of the dispatch, without the dispatches
      *  that come back with one object or none
      */
-    Map<String, Collection<String>> choices(final Map<String, String> pairs) {
+    Map<String, Collection<String>> choices(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, owned);
+        final Filled filled = this.filled(pairs, owned, copied);
         final Map<String, Collection<String>> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -232,6 +242,43 @@ final class Dispatched {
         boolean more = true;
         while (more) {
             more = this.spread(found, pairs, names, owned);
+        }
+        return found;
+    }
+
+    /**
+     * The arms every read off a choice is a copy of, as far as they reach.
+     *
+     * <p>A call on a read off a choice fills the voids of every arm the read
+     * is a copy of (#8883), and what fills a void is what a pass answers the
+     * dispatches rooted at it from. The arms are a choice, though, and a
+     * choice is worked out from those very fillings, so every arm found fills
+     * a void that may make a choice of some further read. Asking for them on
+     * every pass costs one more {@link Bound}, which is most of what a pass
+     * costs, so they are asked for only where a pass would otherwise be the
+     * last, and asked again until no arm is added (#8993).</p>
+     *
+     * @param pairs The pairs, each name against the one it is a copy of
+     * @param known The arms found already
+     * @return The arms, by the locator of the read, the known ones among them
+     */
+    Map<String, Collection<String>> copies(
+        final Map<String, String> pairs, final Map<String, Collection<String>> known
+    ) {
+        final Map<String, Collection<String>> found = new HashMap<>(known);
+        boolean more = !this.hollows.isEmpty();
+        while (more) {
+            more = false;
+            for (final Map.Entry<String, Collection<String>> read
+                : new Copied(this.all, this.choices(pairs, found)).all().entrySet()) {
+                final Collection<String> arms = new LinkedHashSet<>(
+                    found.getOrDefault(read.getKey(), Collections.emptyList())
+                );
+                if (arms.addAll(read.getValue())) {
+                    found.put(read.getKey(), arms);
+                    more = true;
+                }
+            }
         }
         return found;
     }
@@ -259,9 +306,12 @@ final class Dispatched {
         return more;
     }
 
-    private Filled filled(final Map<String, String> pairs, final Provided owned) {
+    private Filled filled(
+        final Map<String, String> pairs, final Provided owned,
+        final Map<String, Collection<String>> copied
+    ) {
         final Map<String, Map<String, String>> bound = new Bound(
-            this.args, this.named, this.receivers, this.all, pairs, owned
+            this.args, this.named, this.receivers, this.all, pairs, owned, copied
         ).all();
         return new Filled(
             pairs,
