@@ -80,6 +80,16 @@ final class Puts {
     }
 
     /**
+     * Whether any call of the program puts anything into this void.
+     *
+     * @param hollow The locator of the void
+     * @return True when some call fills it
+     */
+    boolean fills(final String hollow) {
+        return this.holds.containsKey(hollow);
+    }
+
+    /**
      * Which of these fillings went into a formation this void holds.
      *
      * <p>A call fills the voids of whatever it copies, and only the arms of a

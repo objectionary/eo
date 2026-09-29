@@ -8,7 +8,9 @@
 # that `div`, the way every `x.as-u64.div y` of `u64/div.eo` fills the `b` of
 # `u64.div`. It went nowhere, since the pair of the call is rooted at a void
 # and nobody puts anything into the `div` of a void, and the `b` read as a
-# void nothing in the program fills (#8883).
+# void nothing in the program fills (#8883). The `other` fills that `fail`
+# with a `small`, or the arm would be dead and there would be no choice
+# (#8981).
 eo:
   choice.eo: |
     [pick] > choice
@@ -37,12 +39,16 @@ eo:
     [v] > big
       [^ b fail] > div
         b > @
+  small.eo: |
+    [v] > small
+      [^ b] > div
+        b > @
   app.eo: |
     [] > app
       (num yes).wide.div (num no) > @
   other.eo: |
     [] > other
-      num no > @
+      (num no).wide (small 0) > @
 links:
   - "/links/type[@id='Φ.app.φ']/ref/bind[@void='Φ.big.div.b'][@witnessed]\
     /ref[@loc='Φ.app.φ.α0']"

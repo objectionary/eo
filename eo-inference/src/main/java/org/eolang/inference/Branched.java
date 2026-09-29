@@ -46,10 +46,17 @@ import java.util.Map;
  * chooses between them fills neither the receiver nor what the first arm asks
  * of it. Dropping that arm left the {@code seq} standing and the agreement was
  * the {@code seq}, which is a lie told about every caller who got the
- * directory back. Nor is it dropped where nobody in the program fills the
- * void, since the program is not every caller there will be. So the arm stays
- * in the agreement and in the choice alike, and where it shares nothing with
- * the other arms the call is a choice of all of them (#8885).</p>
+ * directory back. So the arm stays in the agreement and in the choice alike,
+ * and where it shares nothing with the other arms the call is a choice of all
+ * of them (#8885).</p>
+ *
+ * <p>It is dropped where nobody in the program fills that void. The program
+ * is everything compiled together, so there is no later caller to fill it,
+ * and a run that takes the arm reads an empty void and stops there: the
+ * {@code cant-read} of a {@code gauge} that no call passes is as dead as an
+ * arm that terminates. A {@code ρ} and a void that says what it holds are
+ * never empty, since whoever dispatches fills the one and the other is true
+ * of every caller (#8981).</p>
  *
  * <p>An arm that terminates is gone from both, since it never hands a value
  * back: the {@code tmpfile} of a {@code directory} is a {@code Φ.file} in one
@@ -127,10 +134,16 @@ final class Branched {
                     break;
                 }
                 arm.getValue().removeIf(this.every::dies);
+                arm.getValue().removeIf(this::vacant);
                 handed.addAll(arm.getValue());
             }
         }
         return handed;
+    }
+
+    private boolean vacant(final String filling) {
+        final String hollow = this.owned.rooted(filling);
+        return !hollow.isEmpty() && !this.every.fills(hollow);
     }
 
     private Map<String, Map<String, String>> owners() {
