@@ -11,7 +11,7 @@ import java.nio.file.Path;
  * The putting of an atom in the place of every folded body.
  *
  * <p>The program phino morphed is never read. The patch is made from the
- * XMIR files of the build and the protocol of the run alone, so that a
+ * XMIR files of the build and the protocols of the entries alone, so that a
  * formation nothing could be worked out about comes out of the pipeline
  * exactly as its author wrote it, down to the order of its bindings, and
  * the only difference a reader can find in a folded one is the atom that
@@ -20,7 +20,8 @@ import java.nio.file.Path;
  * @since 0.74.0
  * @todo #8548:60min Walk the XMIR files of the build with
  *  {@code patch.xsl}, reading {@code entries.tsv} through
- *  {@code unparsed-text()} and {@code protocol.xml} through
+ *  {@code unparsed-text()} and the protocol of each entry, the file
+ *  named after its number in {@code 7-lowering-protocols}, through
  *  {@code document()}, and write the result into the {@code patched/}
  *  directory under the lowering directory. A formation whose entry came
  *  back with a root gets one attribute more, an atom named

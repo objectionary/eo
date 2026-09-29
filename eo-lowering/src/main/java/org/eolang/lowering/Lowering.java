@@ -21,7 +21,10 @@ import org.cactoos.list.ListOf;
  * are not a chain of independent tools: the first of them cuts the tests
  * out of every source, the second numbers every formation of what is
  * left, and every stage after that speaks of a formation by that number
- * alone.</p>
+ * alone. What the stages make lives under the directory of the build:
+ * the world and everything on the way to it in {@code 7-lower}, and the
+ * protocol of every entry, one file per object morphed, beside it in
+ * {@code 7-lowering-protocols}.</p>
  *
  * <p>Nothing on the way is optional. A stage that cannot read what the
  * one before it wrote, a binary of the wrong version, a run that reaches
@@ -44,9 +47,10 @@ public final class Lowering {
     private final Path tables;
 
     /**
-     * The directory where the lowering keeps what it makes.
+     * The directory of the build, {@code target/eo}, where the lowering
+     * makes the directories it keeps what it makes in.
      */
-    private final Path home;
+    private final Path target;
 
     /**
      * The phino binary on this machine.
@@ -58,7 +62,7 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory where the lowering keeps what it makes
+     * @param dir The directory of the build, {@code target/eo}
      * @param exe The name or path of the phino executable
      */
     public Lowering(
@@ -72,7 +76,7 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory where the lowering keeps what it makes
+     * @param dir The directory of the build, {@code target/eo}
      * @param exe The phino binary on this machine
      */
     Lowering(
@@ -80,7 +84,7 @@ public final class Lowering {
     ) {
         this.sources = srcs;
         this.tables = tbls;
-        this.home = dir;
+        this.target = dir;
         this.phino = exe;
     }
 
@@ -121,16 +125,16 @@ public final class Lowering {
             pinned,
             this.phino
         );
-        Files.createDirectories(this.home);
-        final Pruning pruning = new Pruning(this.sources, this.home);
+        final Path home = Files.createDirectories(this.target.resolve("7-lower"));
+        final Pruning pruning = new Pruning(this.sources, home);
         final Collection<Path> pruned = pruning.paths();
         for (final Stage stage : new ListOf<Stage>(
             pruning,
-            new Planting(pruned, this.tables, this.home),
-            new Merging(pruned, this.home, this.phino),
-            new Running(this.home, this.phino),
-            new Patching(this.home),
-            new Rendering(this.home)
+            new Planting(pruned, this.tables, home),
+            new Merging(pruned, home, this.phino),
+            new Morphing(home, this.target.resolve("7-lowering-protocols"), this.phino),
+            new Patching(home),
+            new Rendering(home)
         )) {
             stage.exec();
         }

@@ -103,33 +103,36 @@ final class Phino {
     }
 
     /**
-     * Morph the entries of a world symbolically, once.
+     * Morph one entry of a world symbolically.
      *
-     * <p>The run is aimed at the {@code l🌵} object the planting writes,
-     * enters every mark in it, answers the λ functions the table names,
-     * leaves standing what it cannot answer, stops a term that comes back
-     * to itself, and writes nothing but the protocol.</p>
+     * <p>The run is aimed at one mark of the {@code l🌵} object the
+     * planting writes, the one numbered as the entry is, answers the λ
+     * functions the table names, leaves standing what it cannot answer,
+     * stops a term that comes back to itself, and writes nothing but the
+     * protocol.</p>
      *
      * @param world The merged world
      * @param atoms The table of operations the run may answer
+     * @param entry The number of the entry to morph
      * @param protocol The file to record every firing into, XML by its name
      * @param steps The ceiling of nested morphing and dataization steps
      * @throws IOException If the executable cannot be run
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    void morph(final Path world, final Path atoms, final Path protocol, final int steps)
-        throws IOException {
+    void morph(
+        final Path world, final Path atoms, final int entry, final Path protocol, final int steps
+    ) throws IOException {
         this.run(
             new Jaxec(
                 this.binary, "morph", "--deep", "--acyclic", "--partial", "--quiet",
                 "--sweet", "--hide-rho",
                 String.format("--symbolic=%s", atoms),
-                "--locator=Q.l🌵",
+                String.format("--locator=Q.l🌵.e%d", entry),
                 String.format("--protocol=%s", protocol),
                 String.format("--max-steps=%d", steps),
                 world.toString()
             ),
-            String.format("running over '%s'", world)
+            String.format("morphing the entry %d of '%s'", entry, world)
         );
     }
 

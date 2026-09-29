@@ -23,8 +23,8 @@ import java.nio.file.Path;
  * would mean parsing a phi-expression, and this module parses none.</p>
  *
  * @since 0.74.0
- * @todo #8548:90min Render one Java class per rooted entry of
- *  {@code protocol.xml} into the directory of generated sources, naming
+ * @todo #8548:90min Render one Java class per rooted protocol of
+ *  {@code 7-lowering-protocols} into the directory of generated sources, naming
  *  it by the rule {@code _java-names.xsl} gives every atom attribute of
  *  the transpiler. Find the formation of a number through
  *  {@code entries.tsv}, read each void symbol as a chain of {@code take}

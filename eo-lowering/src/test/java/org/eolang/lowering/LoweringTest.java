@@ -37,15 +37,30 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void createsTheHomeDirectoryWhenTheBinaryReportsThePinnedVersion(@Mktmp final Path temp)
+    void makesItsHomeUnderTheDirectoryOfTheBuild(@Mktmp final Path temp)
         throws IOException {
-        final Path home = temp.resolve("target/eo/7-lower");
+        final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
         ).exec();
         MatcherAssert.assertThat(
-            "the lowering must make the directory it was given, but it didnt",
-            home.toFile(),
+            "the lowering must make its home under the directory of the build, but it didnt",
+            target.resolve("7-lower").toFile(),
+            FileMatchers.anExistingDirectory()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void makesTheDirectoryOfTheProtocolsBesideItsHome(@Mktmp final Path temp)
+        throws IOException {
+        final Path target = temp.resolve("target/eo");
+        new Lowering(
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+        ).exec();
+        MatcherAssert.assertThat(
+            "the lowering must make the directory of the protocols beside its home, but it didnt",
+            target.resolve("7-lowering-protocols").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
@@ -54,17 +69,17 @@ final class LoweringTest {
     @DisabledOnOs(OS.WINDOWS)
     void runsAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
-        final Path home = temp.resolve("target/eo/7-lower");
+        final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
         ).exec();
-        try (Stream<Path> made = Files.list(home)) {
+        try (Stream<Path> made = Files.list(target.resolve("7-lower"))) {
             MatcherAssert.assertThat(
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
                     "sources", "entries.xmir", "voids.tsv", "entries.tsv",
-                    "world.phi", "atoms.yaml", "protocol.xml"
+                    "world.phi", "atoms.yaml"
                 )
             );
         }
@@ -83,7 +98,7 @@ final class LoweringTest {
                 () -> new Lowering(
                     new ListOf<>(),
                     temp.resolve("tables"),
-                    temp.resolve("target/eo/7-lower"),
+                    temp.resolve("target/eo"),
                     binary.toString()
                 ).exec(),
                 "a binary of another version must fail the lowering"
@@ -102,7 +117,7 @@ final class LoweringTest {
                 () -> new Lowering(
                     new ListOf<>(),
                     temp.resolve("tables"),
-                    temp.resolve("target/eo/7-lower"),
+                    temp.resolve("target/eo"),
                     binary.toString()
                 ).exec(),
                 "a binary that is not there must fail the lowering"

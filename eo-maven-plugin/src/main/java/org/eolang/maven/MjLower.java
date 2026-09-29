@@ -33,9 +33,12 @@ import org.eolang.lowering.Lowering;
  * turns it on, and when it is on it makes sure that the binary on this
  * machine is the one the pin names, since an answer of another version
  * cannot be trusted, and then plants the entries of the build. It hands
- * the lowering the XMIR of every standalone object and the directory
+ * the lowering the XMIR of every standalone object, the directory
  * where {@code eo:inference} left its tables, because an entry is a
- * formation applied to what the tables say its voids hold.</p>
+ * formation applied to what the tables say its voids hold, and the
+ * directory of the build, where the lowering keeps the world in
+ * {@code 7-lower} and the protocol of every object morphed in
+ * {@code 7-lowering-protocols}.</p>
  *
  * @since 0.74.0
  */
@@ -74,17 +77,6 @@ public final class MjLower extends MjSafe {
     private File tables;
 
     /**
-     * The directory where the lowering keeps what it makes.
-     */
-    @Parameter(
-        alias = "loweringDir",
-        property = "eo.loweringDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/7-lower"
-    )
-    private File home;
-
-    /**
      * Ctor.
      */
     public MjLower() {
@@ -98,7 +90,7 @@ public final class MjLower extends MjSafe {
                 new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
                     this.tables.toPath(),
-                    this.home.toPath(),
+                    this.targetDir.toPath(),
                     this.binary
                 ).exec();
             }

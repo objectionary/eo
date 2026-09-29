@@ -36,9 +36,8 @@ final class MjLowerTest {
 
     @Test
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/eo/7-lower");
+        final Path home = temp.resolve("target/7-lower");
         new FakeMaven(temp)
-            .with("home", home.toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a disabled goal must leave no folder behind, but it made one",
@@ -56,7 +55,6 @@ final class MjLowerTest {
                 () -> new FakeMaven(temp)
                     .with("lowering", true)
                     .with("binary", temp.resolve("absent").toString())
-                    .with("home", temp.resolve("target/eo/7-lower").toFile())
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
@@ -68,12 +66,11 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path home = temp.resolve("target/eo/7-lower");
+        final Path home = temp.resolve("target/7-lower");
         new FakeMaven(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
             .with("tables", MjLowerTest.tables(temp).toFile())
-            .with("home", home.toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must make the folder it was given, but it didnt",
@@ -85,14 +82,13 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/eo/7-lower");
+        final Path home = temp.resolve("target/7-lower");
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
             .with("tables", MjLowerTest.tables(temp).toFile())
-            .with("home", home.toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must plant the formations of the program it compiled, but it didnt",
@@ -113,7 +109,6 @@ final class MjLowerTest {
                     .with("lowering", true)
                     .with("binary", MjLowerTest.binary(temp))
                     .with("tables", absent.toFile())
-                    .with("home", temp.resolve("target/eo/7-lower").toFile())
                     .execute(MjLower.class),
                 "tables that are not there must fail the build"
             ).getCause().getCause().getMessage(),
@@ -138,7 +133,6 @@ final class MjLowerTest {
                 () -> new FakeMaven(temp)
                     .with("lowering", true)
                     .with("binary", binary.toString())
-                    .with("home", temp.resolve("target/eo/7-lower").toFile())
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
