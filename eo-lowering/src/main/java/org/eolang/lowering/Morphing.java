@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -184,7 +185,6 @@ final class Morphing implements Proc<Path> {
                 new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
-        final long start = System.currentTimeMillis();
         final Progress progress = new Progress(rows.size());
         final Timer ticker = new Timer("morphing-progress", true);
         ticker.scheduleAtFixedRate(
@@ -200,7 +200,7 @@ final class Morphing implements Proc<Path> {
         try {
             Logger.info(
                 this,
-                "Morphed %d entries of %[file]s in %[ms]s, up to %d nested steps each, into %[file]s",
+                "Ran %d entries of %[file]s, up to %d nested steps each, into %[file]s: %s",
                 new IoChecked<>(
                     new LengthOf(
                         new Threads<>(
@@ -215,9 +215,9 @@ final class Morphing implements Proc<Path> {
                     )
                 ).value(),
                 world,
-                System.currentTimeMillis() - start,
                 this.steps,
-                protocols
+                protocols,
+                progress.asString()
             );
         } finally {
             ticker.cancel();
@@ -244,22 +244,33 @@ final class Morphing implements Proc<Path> {
         );
         final Path protocol = protocols.resolve(tail);
         Files.createDirectories(protocol.getParent());
+        final AtomicBoolean fresh = new AtomicBoolean();
         try {
             store.kept(
                 tail,
                 () -> hash,
                 (src, tgt) -> false,
                 (src, tgt) -> {
+                    fresh.set(true);
                     this.phino.morph(src, atoms, number, tgt, this.steps, this.budget);
                     return tgt;
                 }
             ).apply(world, protocol);
-            Logger.debug(
-                this,
-                "Took the protocol of the entry %d of %[file]s in %[ms]s into %[file]s",
-                number, world, System.currentTimeMillis() - start, protocol
-            );
-            progress.add(protocol);
+            if (fresh.get()) {
+                Logger.debug(
+                    this,
+                    "Morphed the entry %d of %[file]s in %[ms]s into %[file]s",
+                    number, world, System.currentTimeMillis() - start, protocol
+                );
+                progress.add(protocol);
+            } else {
+                Logger.debug(
+                    this,
+                    "Took the protocol of the entry %d of %[file]s from cache into %[file]s",
+                    number, world, protocol
+                );
+                progress.reuse(protocol);
+            }
         } catch (final KilledException ex) {
             Files.deleteIfExists(protocol);
             Logger.warn(

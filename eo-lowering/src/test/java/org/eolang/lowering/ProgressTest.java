@@ -45,4 +45,30 @@ final class ProgressTest {
             Matchers.containsString("648b of protocols")
         );
     }
+
+    @Test
+    void countsTheProtocolsTakenFromTheCache(@Mktmp final Path temp) throws IOException {
+        final Progress progress = new Progress(9);
+        progress.add(Files.write(temp.resolve("4.xml"), new byte[17]));
+        progress.reuse(Files.write(temp.resolve("6.xml"), new byte[23]));
+        progress.reuse(Files.write(temp.resolve("8.xml"), new byte[31]));
+        MatcherAssert.assertThat(
+            "the status must count the protocols taken from the cache, but it doesnt",
+            progress.asString(),
+            Matchers.containsString("2 of them from cache")
+        );
+    }
+
+    @Test
+    void countsTheReusedProtocolsAmongTheMorphedEntries(@Mktmp final Path temp)
+        throws IOException {
+        final Progress progress = new Progress(5);
+        progress.add(Files.write(temp.resolve("2.xml"), new byte[41]));
+        progress.reuse(Files.write(temp.resolve("3.xml"), new byte[19]));
+        MatcherAssert.assertThat(
+            "the status must count a reused protocol as a morphed entry, but it doesnt",
+            progress.asString(),
+            Matchers.startsWith("2 of 5 entries")
+        );
+    }
 }
