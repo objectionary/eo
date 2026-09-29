@@ -133,7 +133,7 @@ final class Dispatched {
                         made
                     );
                 }
-                if (this.better(kept, known, made)) {
+                if (new Improved(this.hollows, known, made).on(kept)) {
                     found.put(made, kept);
                 }
             }
@@ -169,7 +169,7 @@ final class Dispatched {
                 final String kept = owned.attribute(
                     names.getOrDefault(bearer, bearer), dispatch.name()
                 );
-                if (this.better(kept, "", made)) {
+                if (new Improved(this.hollows, "", made).on(kept)) {
                     found.put(made, kept);
                 }
             }
@@ -273,16 +273,5 @@ final class Dispatched {
 
     private boolean rooted(final String type) {
         return !this.hollows.isEmpty() && new Rooted(this.hollows).covers(type);
-    }
-
-    private boolean better(final String kept, final String known, final String made) {
-        final boolean found;
-        if (kept.isEmpty() || kept.equals(made) || kept.equals(known)) {
-            found = false;
-        } else {
-            found = known.isEmpty() || !this.rooted(kept)
-                || known.startsWith(kept.concat("."));
-        }
-        return found;
     }
 }
