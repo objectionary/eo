@@ -121,19 +121,17 @@ final class Woven {
      * a second of every pass of a fixpoint that runs a hundred of them.</p>
      *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link Dispatched}
      * @return The objects put in, by the locator of the void, by the locator of
      *  the object that put them there
      */
-    Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
-        return this.bound(
-            pairs, new Provided(this.given, new Ends(pairs).names(), this.hollows)
-        ).all();
-    }
-
-    private Bound bound(final Map<String, String> pairs, final Provided owned) {
+    Map<String, Map<String, String>> binds(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         return new Bound(
             this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
-            owned
-        );
+            new Provided(this.given, new Ends(pairs).names(), this.hollows), copied
+        ).all();
     }
 }
