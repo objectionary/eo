@@ -44,7 +44,7 @@ final class PruningTest {
         ).exec();
         MatcherAssert.assertThat(
             "the copy must hold no test, but it does",
-            new XMLDocument(home.resolve("sources/flag.xmir"))
+            new XMLDocument(home.resolve("flag.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -66,7 +66,7 @@ final class PruningTest {
         ).exec();
         MatcherAssert.assertThat(
             "the copy must hold no failing test, but it does",
-            new XMLDocument(home.resolve("sources/gate.xmir"))
+            new XMLDocument(home.resolve("gate.xmir"))
                 .nodes("//o[starts-with(@name, 'n🌵')]"),
             Matchers.empty()
         );
@@ -97,7 +97,7 @@ final class PruningTest {
         ).exec();
         MatcherAssert.assertThat(
             "the copy must hold no test at any depth, but it does",
-            new XMLDocument(home.resolve("sources/outer.xmir"))
+            new XMLDocument(home.resolve("outer.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -127,7 +127,7 @@ final class PruningTest {
         ).exec();
         MatcherAssert.assertThat(
             "the bindings on both sides of the test must stay, but they dont",
-            new XMLDocument(home.resolve("sources/pair.xmir"))
+            new XMLDocument(home.resolve("pair.xmir"))
                 .nodes("/object/o[@name='pair'][o[@name='φ']][o[@name='gap']][count(o) = 4]"),
             Matchers.not(Matchers.empty())
         );
@@ -143,7 +143,7 @@ final class PruningTest {
                 home
             ).paths(),
             Matchers.contains(
-                home.resolve("sources/alpha.xmir"), home.resolve("sources/zeta.xmir")
+                home.resolve("alpha.xmir"), home.resolve("zeta.xmir")
             )
         );
     }

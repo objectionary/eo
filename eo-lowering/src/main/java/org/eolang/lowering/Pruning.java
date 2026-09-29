@@ -32,7 +32,7 @@ import org.cactoos.list.ListOf;
  * the objects and nothing that is said about them.</p>
  *
  * <p>The sources are never touched: a copy of each of them, with the tests
- * cut out, is written under the lowering directory under the name of the
+ * cut out, is written into a directory of its own under the name of the
  * source, and it is those copies the stages after this one read. Two
  * sources named alike would share one copy and one of them would quietly
  * drop out of the world, so such a build fails here.</p>
@@ -47,7 +47,7 @@ final class Pruning implements Stage {
     private final Collection<Path> sources;
 
     /**
-     * The directory where the lowering keeps what it makes.
+     * The directory where the pruning writes its copies.
      */
     private final Path home;
 
@@ -55,7 +55,7 @@ final class Pruning implements Stage {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param dir The directory where the lowering keeps what it makes
+     * @param dir The directory where the pruning writes its copies
      */
     Pruning(final Collection<Path> srcs, final Path dir) {
         this.sources = srcs;
@@ -69,7 +69,7 @@ final class Pruning implements Stage {
             "/org/eolang/lowering/pruning.xsl"
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
-        Files.createDirectories(this.home.resolve("sources"));
+        Files.createDirectories(this.home);
         for (final Path source : new Sorted<>(this.sources)) {
             if (!names.add(source.getFileName().toString())) {
                 throw new IllegalStateException(
@@ -89,7 +89,7 @@ final class Pruning implements Stage {
             this,
             "Cut the tests out of %d XMIR files into %[file]s",
             this.sources.size(),
-            this.home.resolve("sources")
+            this.home
         );
     }
 
@@ -104,6 +104,6 @@ final class Pruning implements Stage {
     }
 
     private Path copy(final Path source) {
-        return this.home.resolve("sources").resolve(source.getFileName().toString());
+        return this.home.resolve(source.getFileName().toString());
     }
 }

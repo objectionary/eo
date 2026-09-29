@@ -36,8 +36,9 @@ import org.eolang.lowering.Lowering;
  * XMIR of every standalone object, the directory where {@code eo:inference}
  * left its tables, because an entry is a formation applied to what the
  * tables say its voids hold, and the directory of the build, where the
- * lowering keeps the world in {@code 7-lower} and the protocol of every
- * object morphed in {@code 7-lowering-protocols}.</p>
+ * lowering keeps the sources with their tests cut out in
+ * {@code 7-lowering-planting}, the world in {@code 7-lower} and the
+ * protocol of every object morphed in {@code 7-lowering-protocols}.</p>
  *
  * @since 0.74.0
  */

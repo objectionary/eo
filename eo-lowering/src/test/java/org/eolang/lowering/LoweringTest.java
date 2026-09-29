@@ -67,6 +67,21 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void makesTheDirectoryOfThePrunedSourcesBesideItsHome(@Mktmp final Path temp)
+        throws IOException {
+        final Path target = temp.resolve("target/eo");
+        new Lowering(
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+        ).exec();
+        MatcherAssert.assertThat(
+            "the lowering must make the directory of the pruned sources beside its home, but it didnt",
+            target.resolve("7-lowering-planting").toFile(),
+            FileMatchers.anExistingDirectory()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void runsAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
         final Path target = temp.resolve("target/eo");
@@ -78,7 +93,7 @@ final class LoweringTest {
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
-                    "sources", "entries.xmir", "voids.tsv", "entries.tsv",
+                    "entries.xmir", "voids.tsv", "entries.tsv",
                     "world.phi", "atoms.yaml"
                 )
             );
