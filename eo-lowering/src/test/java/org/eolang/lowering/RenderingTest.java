@@ -121,15 +121,26 @@ final class RenderingTest {
             final Path generated = this.rendered();
             if (this.story.map().containsKey("file")) {
                 failed.addAll(this.missing(generated));
-            } else if (!this.files(generated).isEmpty()) {
-                failed.add(String.format("no file, while %s", this.files(generated)));
+            } else {
+                for (final Path dir
+                    : new ListOf<>(generated, this.temp.resolve("7-lowering-atoms"))) {
+                    if (!this.files(dir).isEmpty()) {
+                        failed.add(String.format("no file, while %s", this.files(dir)));
+                    }
+                }
             }
             return failed;
         }
 
         private Collection<String> missing(final Path generated) throws IOException {
             final Collection<String> failed = new ArrayList<>(0);
-            final Path file = generated.resolve(this.story.map().get("file").toString());
+            final String name = this.story.map().get("file").toString();
+            final Path file = generated.resolve(name);
+            final Path kept = this.temp.resolve("7-lowering-atoms").resolve(name);
+            if (!Files.exists(kept)
+                || Files.exists(file) && Files.mismatch(kept, file) != -1L) {
+                failed.add(String.format("kept: %s is not what %s is", kept, file));
+            }
             if (Files.exists(file)) {
                 final String java = Files.readString(file, StandardCharsets.UTF_8);
                 for (final Object line : this.demands("java")) {

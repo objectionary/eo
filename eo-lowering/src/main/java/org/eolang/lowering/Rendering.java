@@ -13,13 +13,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
+import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
@@ -30,9 +34,13 @@ import org.cactoos.text.TextOf;
  * an object graph built and dataized at runtime is a handful of Java
  * statements here, one per symbol the protocol minted, and the atom the
  * patch put into the formation is the class those statements live in. The
- * class is written into the directory of generated sources, where the
- * transpiler writes the classes of the build, so javac finds it under the
- * very name the transpiler gives the atom.</p>
+ * class is written into {@code 7-lowering-atoms} first, beside the
+ * protocol it was made of, so a reader of the build can put the two side by
+ * side, and is then copied into the directory of generated sources, where
+ * the transpiler writes the classes of the build, so javac finds it under
+ * the very name the transpiler gives the atom. The atoms of an earlier
+ * build are deleted before the rendering, so that an entry that is a taint
+ * now leaves no atom behind.</p>
  *
  * <p>The protocol is read and the program phino morphed is not, because
  * the protocol already says what fired, in what order, and off which
@@ -98,6 +106,7 @@ final class Rendering implements Proc<Path> {
                 String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
             );
         }
+        final Path atoms = Rendering.cleared(target.resolve("7-lowering-atoms"));
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
@@ -128,7 +137,7 @@ final class Rendering implements Proc<Path> {
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
-                    final Path file = this.generated.resolve(
+                    final Path file = atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
                     );
                     Files.createDirectories(file.getParent());
@@ -148,11 +157,32 @@ final class Rendering implements Proc<Path> {
                 }
             }
         }
+        this.copy(atoms);
         Logger.info(
             this,
-            "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered, this.generated, tainted
+            "Rendered %d atoms into %[file]s and copied them into %[file]s, while %d entries were taints",
+            rendered, atoms, this.generated, tainted
         );
+    }
+
+    private void copy(final Path atoms) throws IOException {
+        if (Files.exists(atoms)) {
+            for (final Path atom : new Filtered<>(Files::isRegularFile, new Directory(atoms))) {
+                final Path copy = this.generated.resolve(atoms.relativize(atom));
+                Files.createDirectories(copy.getParent());
+                Files.copy(atom, copy, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+    }
+
+    private static Path cleared(final Path atoms) throws IOException {
+        if (Files.exists(atoms)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(atoms))) {
+                Files.delete(stale);
+            }
+        }
+        return atoms;
     }
 
     private static String top(final Map<String, String> tops, final String locator) {
