@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Timer;
+import java.util.TimerTask;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
@@ -35,7 +37,10 @@ import org.cactoos.text.TextOf;
  * another, and an entry morphed alone fires exactly as many times as it
  * fires among the others. So the runs go side by side, one per processor,
  * and the build waits for its slowest entry rather than for the sum of all
- * of them.</p>
+ * of them. While they go, a line every thirty seconds says how many entries
+ * are morphed, how long it has taken, and how many bytes of protocols are
+ * written, since one slow entry may keep the build silent for
+ * minutes.</p>
  *
  * <p>What the binary can say about a primitive is said in
  * {@code atoms.yaml} and nowhere else, and that table is written beside
@@ -126,29 +131,48 @@ final class Morphing implements Proc<Path> {
             )
         );
         final long start = System.currentTimeMillis();
-        Logger.info(
-            this,
-            "Morphed %d entries of %[file]s in %[ms]s, up to %d nested steps each, into %[file]s",
-            new IoChecked<>(
-                new LengthOf(
-                    new Threads<>(
-                        Runtime.getRuntime().availableProcessors(),
-                        new Mapped<Scalar<Path>>(
-                            number -> () -> this.morph(world, atoms, protocols, number),
-                            numbers
+        final Progress progress = new Progress(numbers.size());
+        final Timer ticker = new Timer("morphing-progress", true);
+        ticker.scheduleAtFixedRate(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    Logger.info(Morphing.this, "Morphed %s so far", progress.asString());
+                }
+            },
+            30_000L,
+            30_000L
+        );
+        try {
+            Logger.info(
+                this,
+                "Morphed %d entries of %[file]s in %[ms]s, up to %d nested steps each, into %[file]s",
+                new IoChecked<>(
+                    new LengthOf(
+                        new Threads<>(
+                            Runtime.getRuntime().availableProcessors(),
+                            new Mapped<Scalar<Path>>(
+                                number -> () -> this.morph(
+                                    world, atoms, protocols, number, progress
+                                ),
+                                numbers
+                            )
                         )
                     )
-                )
-            ).value(),
-            world,
-            System.currentTimeMillis() - start,
-            this.steps,
-            protocols
-        );
+                ).value(),
+                world,
+                System.currentTimeMillis() - start,
+                this.steps,
+                protocols
+            );
+        } finally {
+            ticker.cancel();
+        }
     }
 
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final int number
+        final Path world, final Path atoms, final Path protocols, final int number,
+        final Progress progress
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final Path protocol = protocols.resolve(String.format("%d.xml", number));
@@ -158,6 +182,7 @@ final class Morphing implements Proc<Path> {
             "Morphed the entry %d of %[file]s in %[ms]s into %[file]s",
             number, world, System.currentTimeMillis() - start, protocol
         );
+        progress.add(protocol);
         return protocol;
     }
 }
