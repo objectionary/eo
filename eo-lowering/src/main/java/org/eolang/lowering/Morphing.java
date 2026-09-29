@@ -10,23 +10,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeoutException;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.experimental.Threads;
+import org.cactoos.io.Directory;
+import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
+import org.cactoos.text.HexOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The morphing of every entry of the world, one run of phino per entry.
@@ -62,9 +69,23 @@ import org.cactoos.text.TextOf;
  * ceiling bounds the depth of a run and not its width: a run still going
  * when its budget is spent is killed, its protocol is deleted, and the
  * formation stays as it was written, the way a taint does. Nothing is
- * retried.</p>
+ * retried within a build.</p>
+ *
+ * <p>A protocol is the same for as long as the world, the table of atoms,
+ * the version of phino and the ceiling are the same, so every protocol is
+ * kept in the cache under all four of them, and a build that brings them
+ * again takes it from there instead of running the binary. A killed run
+ * leaves nothing in the cache, and is tried again by the next build. The
+ * protocols of an earlier build are deleted before the runs, so that an
+ * entry the world no longer has leaves no protocol behind.</p>
  *
  * @since 0.74.0
+ * @todo #8548:90min Key every protocol in the cache by the part of the
+ *  world its entry reaches, not by the whole world. Now a change of any
+ *  one formation of the build changes the hash of {@code world.phi}, and
+ *  every entry is morphed again, even those that never reach the changed
+ *  formation. The key could be made from the formation of the entry and
+ *  the formations it refers to, walked to the end.
  */
 final class Morphing implements Proc<Path> {
 
@@ -72,6 +93,11 @@ final class Morphing implements Proc<Path> {
      * The binary that morphs.
      */
     private final Phino phino;
+
+    /**
+     * The cache the protocols are kept in between builds.
+     */
+    private final GlobalCache cache;
 
     /**
      * The ceiling of nested morphing and dataization steps of one run.
@@ -87,30 +113,25 @@ final class Morphing implements Proc<Path> {
      * Ctor.
      *
      * @param exe The binary that morphs
+     * @param store The cache the protocols are kept in between builds
      */
-    Morphing(final Phino exe) {
-        this(exe, 32);
+    Morphing(final Phino exe, final GlobalCache store) {
+        this(exe, store, 32, Duration.ofSeconds(60L));
     }
 
     /**
      * Ctor.
      *
      * @param exe The binary that morphs
-     * @param ceiling The ceiling of nested morphing and dataization steps
-     */
-    Morphing(final Phino exe, final int ceiling) {
-        this(exe, ceiling, Duration.ofSeconds(60L));
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param exe The binary that morphs
+     * @param store The cache the protocols are kept in between builds
      * @param ceiling The ceiling of nested morphing and dataization steps
      * @param span The time one run may take before it is killed
      */
-    Morphing(final Phino exe, final int ceiling, final Duration span) {
+    Morphing(
+        final Phino exe, final GlobalCache store, final int ceiling, final Duration span
+    ) {
         this.phino = exe;
+        this.cache = store;
         this.steps = ceiling;
         this.budget = span;
     }
@@ -142,9 +163,21 @@ final class Morphing implements Proc<Path> {
                 new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml"))
             ).asBytes()
         );
-        final Path protocols = Files.createDirectories(
-            target.resolve("7-lowering-protocols")
-        );
+        final Path protocols = target.resolve("7-lowering-protocols");
+        if (Files.exists(protocols)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(protocols))) {
+                Files.delete(stale);
+            }
+        }
+        Files.createDirectories(protocols);
+        final GlobalCache store = this.cache
+            .with(this.phino.pin())
+            .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
+            .with(String.valueOf(this.steps));
+        final String hash = new UncheckedText(
+            new HexOf(new Sha256DigestOf(new InputOf(world)))
+        ).asString();
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
                 line -> !line.isEmpty(),
@@ -174,7 +207,7 @@ final class Morphing implements Proc<Path> {
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
                                 row -> () -> this.morph(
-                                    world, atoms, protocols, row, progress
+                                    world, atoms, protocols, row, progress, store, hash
                                 ),
                                 rows
                             )
@@ -193,7 +226,7 @@ final class Morphing implements Proc<Path> {
 
     private Path morph(
         final Path world, final Path atoms, final Path protocols, final String row,
-        final Progress progress
+        final Progress progress, final GlobalCache store, final String hash
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
@@ -206,19 +239,28 @@ final class Morphing implements Proc<Path> {
                 )
             );
         }
-        final Path protocol = protocols.resolve(
+        final Path tail = Path.of(
             String.format("%s.xml", cells[1].substring(2).replace('.', '/'))
         );
+        final Path protocol = protocols.resolve(tail);
         Files.createDirectories(protocol.getParent());
         try {
-            this.phino.morph(world, atoms, number, protocol, this.steps, this.budget);
+            store.kept(
+                tail,
+                () -> hash,
+                (src, tgt) -> false,
+                (src, tgt) -> {
+                    this.phino.morph(src, atoms, number, tgt, this.steps, this.budget);
+                    return tgt;
+                }
+            ).apply(world, protocol);
             Logger.debug(
                 this,
-                "Morphed the entry %d of %[file]s in %[ms]s into %[file]s",
+                "Took the protocol of the entry %d of %[file]s in %[ms]s into %[file]s",
                 number, world, System.currentTimeMillis() - start, protocol
             );
             progress.add(protocol);
-        } catch (final TimeoutException ex) {
+        } catch (final KilledException ex) {
             Files.deleteIfExists(protocol);
             Logger.warn(
                 this,

@@ -12,6 +12,7 @@ import org.cactoos.Proc;
 import org.cactoos.list.ListOf;
 import org.cactoos.proc.ForEach;
 import org.cactoos.proc.IoCheckedProc;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The whole lowering, from the sources of a build to the Java it folds
@@ -66,17 +67,24 @@ public final class Lowering {
     private final Phino phino;
 
     /**
+     * The cache the protocols of the morphing are kept in between builds.
+     */
+    private final GlobalCache cache;
+
+    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The name or path of the phino executable
+     * @param store The cache the protocols of the morphing are kept in
      */
     public Lowering(
-        final Collection<Path> srcs, final Path tbls, final Path dir, final String exe
+        final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
+        final GlobalCache store
     ) {
-        this(srcs, tbls, dir, new Phino(exe));
+        this(srcs, tbls, dir, new Phino(exe), store);
     }
 
     /**
@@ -86,14 +94,17 @@ public final class Lowering {
      * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The directory of the build, {@code target/eo}
      * @param exe The phino binary on this machine
+     * @param store The cache the protocols of the morphing are kept in
      */
     Lowering(
-        final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe
+        final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
+        final GlobalCache store
     ) {
         this.sources = srcs;
         this.tables = tbls;
         this.target = dir;
         this.phino = exe;
+        this.cache = store;
     }
 
     /**
@@ -140,7 +151,7 @@ public final class Lowering {
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino),
+                new Morphing(this.phino, this.cache),
                 new Patching(),
                 new Rendering()
             )

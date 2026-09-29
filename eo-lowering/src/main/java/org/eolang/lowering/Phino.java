@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.concurrent.TimeoutException;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
@@ -121,14 +120,14 @@ final class Phino {
      * @param protocol The file to record every firing into, XML by its name
      * @param steps The ceiling of nested morphing and dataization steps
      * @param budget The time the run may take before it is killed
-     * @throws IOException If the executable cannot be run
-     * @throws TimeoutException If the run was killed over its budget
+     * @throws IOException If the executable cannot be run, or when it is
+     *  killed over its budget, as a {@link KilledException}
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     void morph(
         final Path world, final Path atoms, final int entry, final Path protocol,
         final int steps, final Duration budget
-    ) throws IOException, TimeoutException {
+    ) throws IOException {
         final String task = String.format("morphing the entry %d of '%s'", entry, world);
         try {
             this.run(
@@ -150,14 +149,13 @@ final class Phino {
                 task
             );
         } catch (final IllegalArgumentException ex) {
-            final TimeoutException killed = new TimeoutException(
+            throw new KilledException(
                 Logger.format(
                     "The binary '%s' was killed after %[ms]s of %s",
                     this.binary, budget.toMillis(), task
-                )
+                ),
+                ex
             );
-            killed.initCause(ex);
-            throw killed;
         }
     }
 

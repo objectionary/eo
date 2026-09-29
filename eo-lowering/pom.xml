@@ -21,6 +21,11 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-cache</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->

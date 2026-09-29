@@ -18,6 +18,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -41,7 +42,8 @@ final class LoweringTest {
         throws IOException {
         final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make its home under the directory of the build, but it didnt",
@@ -56,7 +58,8 @@ final class LoweringTest {
         throws IOException {
         final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the protocols beside its home, but it didnt",
@@ -71,7 +74,8 @@ final class LoweringTest {
         throws IOException {
         final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new GlobalCache.GcFresh()
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the pruned sources beside its home, but it didnt",
@@ -86,7 +90,8 @@ final class LoweringTest {
         throws IOException {
         final Path target = temp.resolve("target/eo");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp)
+            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new GlobalCache.GcFresh()
         ).exec();
         try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
             MatcherAssert.assertThat(
@@ -114,7 +119,8 @@ final class LoweringTest {
                     new ListOf<>(),
                     temp.resolve("tables"),
                     temp.resolve("target/eo"),
-                    binary.toString()
+                    binary.toString(),
+                    new GlobalCache.GcFresh()
                 ).exec(),
                 "a binary of another version must fail the lowering"
             ).getMessage(),
@@ -133,7 +139,8 @@ final class LoweringTest {
                     new ListOf<>(),
                     temp.resolve("tables"),
                     temp.resolve("target/eo"),
-                    binary.toString()
+                    binary.toString(),
+                    new GlobalCache.GcFresh()
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),

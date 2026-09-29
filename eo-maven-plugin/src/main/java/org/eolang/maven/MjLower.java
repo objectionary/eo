@@ -91,7 +91,8 @@ public final class MjLower extends MjSafe {
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
                     this.tables.toPath(),
                     this.target.toPath(),
-                    this.binary
+                    this.binary,
+                    this.caching("lowered")
                 ).exec();
             }
         } else {

@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
-import java.util.concurrent.TimeoutException;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -71,7 +70,7 @@ final class PhinoTest {
         MatcherAssert.assertThat(
             "the failure must name the budget the run outlasted, but it doesnt",
             Assertions.assertThrows(
-                TimeoutException.class,
+                KilledException.class,
                 () -> new Phino(binary.toString()).morph(
                     temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 3,
                     temp.resolve("3.xml"), 32, Duration.ofMillis(700L)
