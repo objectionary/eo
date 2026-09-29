@@ -92,7 +92,8 @@ public final class MjLower extends MjSafe {
                     this.tables.toPath(),
                     this.target.toPath(),
                     this.binary,
-                    this.caching("lowered")
+                    this.caching("lowered"),
+                    this.generated.toPath()
                 ).exec();
             }
         } else {

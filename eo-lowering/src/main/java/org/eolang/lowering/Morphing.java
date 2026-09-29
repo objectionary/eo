@@ -231,17 +231,7 @@ final class Morphing implements Proc<Path> {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
         final int number = Integer.parseInt(cells[0]);
-        if (!cells[1].startsWith("Φ.")) {
-            throw new IllegalStateException(
-                String.format(
-                    "The locator '%s' of the entry %d does not start with 'Φ.', while its protocol is named after the path below it",
-                    cells[1], number
-                )
-            );
-        }
-        final Path tail = Path.of(
-            String.format("%s.xml", cells[1].substring(2).replace('.', '/'))
-        );
+        final Path tail = new Locator(cells[1]).protocol();
         final Path protocol = protocols.resolve(tail);
         Files.createDirectories(protocol.getParent());
         final AtomicBoolean fresh = new AtomicBoolean();

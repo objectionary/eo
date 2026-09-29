@@ -156,7 +156,7 @@ final class MjLowerTest {
                 "case $1 in",
                 String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
-                "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
+                "morph) for a; do case $a in --protocol=*) echo \"<morph/>\" > \"${a#--protocol=}\";; esac; done;;",
                 "esac"
             )
         );

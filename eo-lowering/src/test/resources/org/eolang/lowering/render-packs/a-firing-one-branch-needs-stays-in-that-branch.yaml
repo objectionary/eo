@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# twice is ((t.gt 0).if (t.plus 1) (t.plus 2)).plus (t.plus 1), so each
+# plus of a branch is computed inside its branch alone, while the void t,
+# which the condition and the last plus read too, is read before the if.
+locator: Φ.twice
+number: 1
+eo:
+  twice.eo: |
+    [t] > twice
+      plus. > @
+        if.
+          t.gt 0
+          t.plus 1
+          t.plus 2
+        t.plus 1
+voids:
+  - "𝜎1\t1\tt\tnumber"
+protocol: |
+  <morph at="Φ.l🌵.e1">
+    <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1">
+      <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_fork" by="morph" at="Φ.a🌵2">
+        <dataize meta="𝛿1.3">𝜎2:λ</dataize>
+        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
+          <minted symbol="𝜎3">𝜎1 3F-F0-00-00-00-00-00-00</minted>
+        </evaluate>
+        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵4">
+          <minted symbol="𝜎4">𝜎1 40-00-00-00-00-00-00-00</minted>
+        </evaluate>
+        <joined symbol="𝜎5">𝜎3 𝜎4</joined>
+      </evaluate>
+      <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵5">
+        <minted symbol="𝜎6">𝜎1 3F-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵6">
+        <minted symbol="𝜎7">𝜎5 𝜎6</minted>
+      </evaluate>
+    </evaluate>
+    <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+      <dataize meta="𝛿1.8">𝜎7:λ</dataize>
+    </evaluate>
+  </morph>
+file: org/eolang/EOtwice$EOl$uF3351.java
+java:
+  - "        final double s1 = new Dataized(this.take(\"ρ\").take(\"t\")).asNumber();\n        final boolean s2 = s1 > Double.longBitsToDouble(0x0000000000000000L);\n        final double s5;\n        if (s2) {\n            final double s3 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);\n            s5 = s3;\n        } else {\n            final double s4 = s1 + Double.longBitsToDouble(0x4000000000000000L);\n            s5 = s4;\n        }\n        final double s6 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);\n        final double s7 = s5 + s6;\n        return new Data.ToPhi(s7);\n"

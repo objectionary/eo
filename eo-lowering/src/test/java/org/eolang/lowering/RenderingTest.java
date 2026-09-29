@@ -1,0 +1,202 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.lowering;
+
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.cactoos.list.ListOf;
+import org.eolang.jucs.ClasspathSource;
+import org.eolang.parser.EoSyntax;
+import org.eolang.xax.XtSticky;
+import org.eolang.xax.XtYaml;
+import org.eolang.xax.Xtory;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+
+/**
+ * Test case for {@link Rendering}.
+ *
+ * @since 0.74.0
+ */
+@ExtendWith(MktmpResolver.class)
+final class RenderingTest {
+
+    /**
+     * Temp directory, injected into every test instance, since a parameterized
+     * test cannot also take one as an argument.
+     */
+    @Mktmp
+    private Path dir;
+
+    @ParameterizedTest
+    @ClasspathSource(value = "org/eolang/lowering/render-packs/", glob = "**.yaml")
+    void rendersTheAtomsOfAPack(final String yaml) throws IOException {
+        MatcherAssert.assertThat(
+            "every demand of the pack must be met by what the rendering wrote, but some werent",
+            new RenderingTest.Pack(new XtSticky(new XtYaml(yaml)), this.dir).unmet(),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void rendersNothingOfAnEntryWithNoProtocol(@Mktmp final Path temp) throws IOException {
+        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        Files.write(
+            home.resolve("entries.tsv"),
+            String.format("3\tΦ.slow%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.write(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("slow.xmir"),
+            new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        new Rendering(temp.resolve("generated")).exec(temp);
+        MatcherAssert.assertThat(
+            "an entry whose run was killed must be rendered into nothing, but it is",
+            Files.exists(temp.resolve("generated")),
+            Matchers.is(false)
+        );
+    }
+
+    /**
+     * One pack of the rendering: a protocol, and what its atom must be.
+     *
+     * @since 0.74.0
+     */
+    private static final class Pack {
+
+        /**
+         * The pack, as it was written.
+         */
+        private final Xtory story;
+
+        /**
+         * The temp directory of the test.
+         */
+        private final Path temp;
+
+        /**
+         * Ctor.
+         *
+         * @param pack The pack, as it was written
+         * @param home The temp directory of the test
+         */
+        Pack(final Xtory pack, final Path home) {
+            this.story = pack;
+            this.temp = home;
+        }
+
+        /**
+         * Every demand of the pack the rendering did not meet.
+         *
+         * @return The demands that were not met, empty when all of them were
+         * @throws IOException If anything cannot be read or written
+         */
+        Collection<String> unmet() throws IOException {
+            final Collection<String> failed = new ArrayList<>(0);
+            for (final Object key : this.story.map().keySet()) {
+                if (!Arrays.asList(
+                    "locator", "number", "eo", "voids", "protocol", "file", "java"
+                ).contains(key)) {
+                    failed.add(String.format("unknown key: %s", key));
+                }
+            }
+            final Path generated = this.rendered();
+            if (this.story.map().containsKey("file")) {
+                failed.addAll(this.missing(generated));
+            } else if (!this.files(generated).isEmpty()) {
+                failed.add(String.format("no file, while %s", this.files(generated)));
+            }
+            return failed;
+        }
+
+        private Collection<String> missing(final Path generated) throws IOException {
+            final Collection<String> failed = new ArrayList<>(0);
+            final Path file = generated.resolve(this.story.map().get("file").toString());
+            if (Files.exists(file)) {
+                final String java = Files.readString(file, StandardCharsets.UTF_8);
+                for (final Object line : this.demands("java")) {
+                    if (!java.contains(line.toString())) {
+                        failed.add(String.format("java: %s%nin:%n%s", line, java));
+                    }
+                }
+            } else {
+                failed.add(String.format("file: %s, only %s", file, this.files(generated)));
+            }
+            return failed;
+        }
+
+        private Path rendered() throws IOException {
+            final String locator = this.story.map().get("locator").toString();
+            final Path home = Files.createDirectories(this.temp.resolve("7-lowering"));
+            Files.write(
+                home.resolve("entries.tsv"),
+                String.format("%s\t%s%n", this.story.map().get("number"), locator)
+                    .getBytes(StandardCharsets.UTF_8)
+            );
+            Files.write(
+                home.resolve("voids.tsv"),
+                this.demands("voids").stream()
+                    .map(row -> String.format("%s%n", row))
+                    .collect(Collectors.joining())
+                    .getBytes(StandardCharsets.UTF_8)
+            );
+            final Path sources = Files.createDirectories(
+                this.temp.resolve("7-lowering-planting")
+            );
+            for (final Map.Entry<?, ?> source
+                : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
+                Files.write(
+                    sources.resolve(source.getKey().toString().replace(".eo", ".xmir")),
+                    new EoSyntax(source.getValue().toString()).parsed().toString()
+                        .getBytes(StandardCharsets.UTF_8)
+                );
+            }
+            final Path protocol = this.temp.resolve("7-lowering-protocols")
+                .resolve(new Locator(locator).protocol());
+            Files.createDirectories(protocol.getParent());
+            Files.write(
+                protocol,
+                this.story.map().get("protocol").toString().getBytes(StandardCharsets.UTF_8)
+            );
+            final Path generated = this.temp.resolve("generated");
+            new Rendering(generated).exec(this.temp);
+            return generated;
+        }
+
+        private List<Path> files(final Path generated) throws IOException {
+            final List<Path> files;
+            if (Files.exists(generated)) {
+                try (Stream<Path> all = Files.walk(generated)) {
+                    files = all.filter(Files::isRegularFile)
+                        .map(generated::relativize)
+                        .collect(Collectors.toList());
+                }
+            } else {
+                files = new ListOf<>();
+            }
+            return files;
+        }
+
+        private List<?> demands(final String key) {
+            return (List<?>) this.story.map().getOrDefault(key, new ListOf<>());
+        }
+    }
+}
