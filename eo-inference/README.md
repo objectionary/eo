@@ -255,34 +255,147 @@ together and there are no later callers, so a row asserts what every run of
 the program does, and a rule that would need a caller who is not there is not
 a rule of this module.
 
-1. **An arm that is a picker's input is what the call passed.** Where the arms
-   agree the row names that formation; where they do not, it names the choice
-   of them, written as a `union` inside the `ref` so that the row stays a pair
-   (#8744).
-2. **An arm the formation computes itself is that body's own type,** whatever
-   went into the slots. A void that holds several formations gets an arm from
-   each of them, and a body nobody has settled is an unknown member of the
-   choice, never a guess.
-3. **An arm that is the `^` of an attribute is exactly its owner.** `made` is
-   an attribute of `directory`, so only a `Φ.directory` ever sits in its `^`,
-   through a wrapper as much as directly, and the row says `Φ.directory`. The
-   source declares this in `holds`, and anything else seen there is a bug in
-   the tool.
-4. **An arm that is the `^` of an anonymous formation is what its readers put
-   there.** `[^]` written as an argument belongs to nobody, and its `^` is
-   filled by the first dotted read of it, so the answer comes from the readers
-   and nothing is declared for it.
-5. **An arm that is an input is what this call passed,** and is dead where
-   this call passed nothing, since reading an empty void stops the program. A
-   formation written inline is what it reduces to.
-6. **The general answer of a formation is the union of its real calls.** What
-   `is-symlink` returns, asked of the formation rather than of a call, is what
-   every call in the program made it return, joined.
-7. **An arm that terminates is dead** and takes no part in the agreement or
-   in the choice (#8946).
-8. **A read an arm cannot answer kills that arm.** Taking a name an arm does
-   not have stops the program on that arm, so the other arms answer. An arm
-   nobody can see into stays unknown, and unknown is not dead.
+**Rule 1. An arm that is a picker's input is what the call passed.** The
+`if` of a boolean holds a formation that gives back one of its inputs and
+nothing of its own:
+
+```eo
+[if] > bool
+  if > @
+
+[^] > true
+  bool > @
+    [^ left right]
+      left > @
+
+[^] > false
+  bool > @
+    [^ left right]
+      right > @
+
+[] > app
+  flag.if a b > answer
+```
+
+`answer` is `a` or `b`. Where both are a `Φ.file` the row says `Φ.file`;
+where one is a `Φ.file` and the other a `Φ.string` it says the choice of the
+two, written as a `union` inside the `ref` so that the row stays a pair
+(#8744).
+
+**Rule 2. An arm the formation computes itself is that body's own type,**
+whatever went into the slots:
+
+```eo
+[] > odd
+  [left right] > if
+    42 > @
+
+[] > app
+  odd.if a b > answer
+```
+
+`answer` is a `Φ.number` whatever `a` and `b` are, since this `if` reads
+neither. Where `flag` above may hold `true`, `false` or `odd`, every one of
+them contributes an arm and the row is the choice of `a`, `b` and
+`Φ.number`. A body nobody has settled is an unknown member of that choice,
+never a guess.
+
+**Rule 3. An arm that is the `^` of an attribute is exactly its owner.**
+`made` is an attribute of `directory`, so only a `Φ.directory` ever sits in
+its `^`:
+
+```eo
+[] > directory
+  [^] > made
+    ^.exists.if > @
+      ^
+      ^.created
+
+[] > wrapper
+  directory > @
+
+[] > app
+  wrapper.made > answer
+```
+
+The first arm is a `Φ.directory` even at `wrapper.made`, where the read falls
+through the wrapper's body and the runtime stamps `made` with the directory
+it was found on, not with the wrapper. The source declares this in `holds`,
+and anything else seen there is a bug in the tool.
+
+**Rule 4. An arm that is the `^` of an anonymous formation is what its
+readers put there.** A formation written as an argument belongs to nobody:
+
+```eo
+[] > foo
+  x > @
+    [^]
+      5 > five
+  [y] > x
+    $.y.five > @
+```
+
+The `[^]` sits inside `foo`, but its `^` is filled by the first dotted read
+of it, `$.y` inside `x`, so it is an `x` and not a `foo`. Nothing is declared
+for it, and the answer comes from the readers alone.
+
+**Rule 5. An arm that is an input is what this call passed,** and is dead
+where this call passed nothing:
+
+```eo
+[^ cant-check] > is-symlink
+  ^.stat.code.eq 0 > ok
+  ok.if > @
+    ^.stat.mode.eq 40960
+    cant-check
+
+[] > app
+  f.is-symlink "hi" > first
+  f.is-symlink 42 > second
+  f.is-symlink.if > third
+    f.unlink
+    f.rmdir
+```
+
+The first arm is a `Φ.bool` at every call. The second is what each call put
+into `cant-check`: a `Φ.string` at `first`, a `Φ.number` at `second`, and
+nothing at `third`, where the arm is dead, since a run that takes it reads an
+empty void and stops. A formation written inline in that place is what it
+reduces to.
+
+**Rule 6. The general answer of a formation is the union of its real calls.**
+Asked of `is-symlink` itself rather than of one call on it, the answer is what
+every call in the program made it return, joined: a `Φ.bool`, a `Φ.string` or
+a `Φ.number` for the three calls above. There is no fourth caller to wait for.
+
+**Rule 7. An arm that terminates is dead** and takes no part in the agreement
+or in the choice (#8946):
+
+```eo
+[] > directory
+  [^] > tmpfile
+    ^.exists.if > @
+      file "tmp"
+      T "cannot make it"
+```
+
+`T` never hands anything back, so `tmpfile` is a `Φ.file`.
+
+**Rule 8. A read an arm cannot answer kills that arm.** Taking a name an arm
+does not have stops the program on that arm, so the other arms answer:
+
+```eo
+[] > app
+  flag.if > chosen
+    "text"
+    42
+  chosen.trimmed > answer
+```
+
+`chosen` is a `Φ.string` or a `Φ.number`. A number has no `trimmed`, so a run
+that chose `42` stops at that read, and `answer` is what `"text".trimmed` is,
+a `Φ.string`. An arm nobody can see into is another matter: it stays unknown,
+and unknown is not dead.
 
 Four things the rules lean on, said once.
 
