@@ -24,12 +24,13 @@
  * another and the two cannot be evaluated apart, and each entry of that
  * document is morphed by a run of its own.</p>
  *
- * <p>The work is a pipeline of {@link org.eolang.lowering.Stage} steps
- * composed by {@link org.eolang.lowering.Lowering}: the tests are cut
- * out, the entries are written, the world is merged, every entry is
- * morphed into a protocol of its own, the sources are patched, and the
- * Java is rendered. No stage skips and no stage retries, so a build
- * either folds what it says it folded or fails.</p>
+ * <p>The work is a pipeline of stages, each a {@link org.cactoos.Proc}
+ * over the directory of the build, composed by
+ * {@link org.eolang.lowering.Lowering}: the tests are cut out, the entries
+ * are written, the world is merged, every entry is morphed into a protocol
+ * of its own, the sources are patched, and the Java is rendered. No stage
+ * skips and no stage retries, so a build either folds what it says it
+ * folded or fails.</p>
  *
  * @since 0.74.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>

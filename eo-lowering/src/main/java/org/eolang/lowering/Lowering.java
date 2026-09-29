@@ -6,10 +6,12 @@ package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import org.cactoos.Proc;
 import org.cactoos.list.ListOf;
+import org.cactoos.proc.ForEach;
+import org.cactoos.proc.IoCheckedProc;
 
 /**
  * The whole lowering, from the sources of a build to the Java it folds
@@ -34,6 +36,11 @@ import org.cactoos.list.ListOf;
  * account for.</p>
  *
  * @since 0.74.0
+ * @todo #8548:30min Run the stages through {@code Procs} of Cactoos. The
+ *  stages are applied to the directory of the build by a {@code ForEach}
+ *  over the list of them, which turns the list into the argument and hides
+ *  the directory in a lambda. Once yegor256/cactoos#1960 is released, put
+ *  them into one {@code Procs} and apply it to the directory instead.
  */
 public final class Lowering {
 
@@ -126,20 +133,17 @@ public final class Lowering {
             pinned,
             this.phino
         );
-        final Path home = Files.createDirectories(this.target.resolve("7-lowering"));
-        final Pruning pruning = new Pruning(
-            this.sources, this.target.resolve("7-lowering-planting")
+        new IoCheckedProc<>(
+            new ForEach<Proc<Path>>(stage -> stage.exec(this.target))
+        ).exec(
+            new ListOf<>(
+                new Pruning(this.sources),
+                new Planting(this.tables),
+                new Merging(this.phino),
+                new Morphing(this.phino),
+                new Patching(),
+                new Rendering()
+            )
         );
-        final Collection<Path> pruned = pruning.paths();
-        for (final Stage stage : new ListOf<Stage>(
-            pruning,
-            new Planting(pruned, this.tables, home),
-            new Merging(pruned, home, this.phino),
-            new Morphing(home, this.target.resolve("7-lowering-protocols"), this.phino),
-            new Patching(home),
-            new Rendering(home)
-        )) {
-            stage.exec();
-        }
     }
 }

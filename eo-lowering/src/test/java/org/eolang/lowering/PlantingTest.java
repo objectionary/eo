@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,7 @@ final class PlantingTest {
             "the failure must name the directory the tables are missing from, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Planting(new ListOf<>(), absent, temp.resolve("lower")).exec(),
+                () -> new Planting(absent).exec(temp),
                 "tables that are not there must fail the planting"
             ).getMessage(),
             Matchers.containsString(absent.toString())
@@ -107,20 +106,12 @@ final class PlantingTest {
     }
 
     private static Path planted(final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
-        new Planting(
-            PlantingTest.sources(temp), PlantingTest.tables(temp, "<provides/>"), home
-        ).exec();
-        return home;
-    }
-
-    private static Collection<Path> sources(final Path temp) throws IOException {
-        return Collections.singletonList(
-            PlantingTest.parsed(
-                Files.createDirectories(temp.resolve("sources")).resolve("gap.xmir"),
-                String.format("[a b] > gap%n  a.plus b > @%n")
-            )
+        PlantingTest.parsed(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
+            String.format("[a b] > gap%n  a.plus b > @%n")
         );
+        new Planting(PlantingTest.tables(temp, "<provides/>")).exec(temp);
+        return temp.resolve("7-lowering");
     }
 
     private static Path tables(final Path temp, final String provides) throws IOException {
@@ -191,31 +182,25 @@ final class PlantingTest {
         }
 
         private Path plant() throws IOException {
-            final Path sources = Files.createDirectories(this.temp.resolve("sources"));
-            final Collection<Path> paths = new ArrayList<>(0);
+            final Path sources = Files.createDirectories(
+                this.temp.resolve("7-lowering-planting")
+            );
             for (final Map.Entry<?, ?> source
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
-                paths.add(
-                    this.renamed(
-                        PlantingTest.parsed(
-                            sources.resolve(
-                                source.getKey().toString().replace(".eo", ".xmir")
-                            ),
-                            source.getValue().toString()
-                        )
+                this.renamed(
+                    PlantingTest.parsed(
+                        sources.resolve(source.getKey().toString().replace(".eo", ".xmir")),
+                        source.getValue().toString()
                     )
                 );
             }
-            final Path home = this.temp.resolve("lower");
             new Planting(
-                paths,
                 PlantingTest.tables(
                     this.temp,
                     this.story.map().getOrDefault("provides", "<provides/>").toString()
-                ),
-                home
-            ).exec();
-            return home;
+                )
+            ).exec(this.temp);
+            return this.temp.resolve("7-lowering");
         }
 
         private Path renamed(final Path xmir) throws IOException {

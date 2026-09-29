@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
 import java.nio.file.Path;
+import org.cactoos.Proc;
 
 /**
  * The writing of the Java the folded formations became.
@@ -32,24 +33,10 @@ import java.nio.file.Path;
  *  reachable from the root as one statement under its lambda name, a fork
  *  as an {@code if} that assigns a blank final, and return the root.
  */
-final class Rendering implements Stage {
-
-    /**
-     * The directory where the lowering keeps what it makes.
-     */
-    private final Path home;
-
-    /**
-     * Ctor.
-     *
-     * @param dir The directory where the lowering keeps what it makes
-     */
-    Rendering(final Path dir) {
-        this.home = dir;
-    }
+final class Rendering implements Proc<Path> {
 
     @Override
-    public void exec() {
-        Logger.debug(this, "No Java is rendered yet from %s", this.home);
+    public void exec(final Path target) {
+        Logger.debug(this, "No Java is rendered yet from %s", target.resolve("7-lowering"));
     }
 }

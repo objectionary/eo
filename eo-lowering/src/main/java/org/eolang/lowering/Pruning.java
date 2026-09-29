@@ -14,9 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
-import org.cactoos.iterable.Mapped;
+import org.cactoos.Proc;
 import org.cactoos.iterable.Sorted;
-import org.cactoos.list.ListOf;
 
 /**
  * The cutting of the tests out of every source of the build.
@@ -32,14 +31,17 @@ import org.cactoos.list.ListOf;
  * the objects and nothing that is said about them.</p>
  *
  * <p>The sources are never touched: a copy of each of them, with the tests
- * cut out, is written into a directory of its own under the name of the
- * source, and it is those copies the stages after this one read. Two
+ * cut out, is written into {@code 7-lowering-planting} under the name of
+ * the source, and it is those copies the stages after this one read. Two
  * sources named alike would share one copy and one of them would quietly
- * drop out of the world, so such a build fails here.</p>
+ * drop out of the world, so such a build fails here. The copies of an
+ * earlier build are deleted first, since the later stages read whatever
+ * the directory holds, and a source removed since then would otherwise
+ * stay in the world.</p>
  *
  * @since 0.74.0
  */
-final class Pruning implements Stage {
+final class Pruning implements Proc<Path> {
 
     /**
      * The XMIR files of the build.
@@ -47,29 +49,25 @@ final class Pruning implements Stage {
     private final Collection<Path> sources;
 
     /**
-     * The directory where the pruning writes its copies.
-     */
-    private final Path home;
-
-    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param dir The directory where the pruning writes its copies
      */
-    Pruning(final Collection<Path> srcs, final Path dir) {
+    Pruning(final Collection<Path> srcs) {
         this.sources = srcs;
-        this.home = dir;
     }
 
     @Override
-    public void exec() throws IOException {
+    public void exec(final Path target) throws IOException {
         final XSL sheet = new XSLDocument(
             Pruning.class.getResource("/org/eolang/lowering/pruning.xsl"),
             "/org/eolang/lowering/pruning.xsl"
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
-        Files.createDirectories(this.home);
+        final Path home = Files.createDirectories(target.resolve("7-lowering-planting"));
+        for (final Path stale : new Copies(target)) {
+            Files.delete(stale);
+        }
         for (final Path source : new Sorted<>(this.sources)) {
             if (!names.add(source.getFileName().toString())) {
                 throw new IllegalStateException(
@@ -80,7 +78,7 @@ final class Pruning implements Stage {
                 );
             }
             Files.write(
-                this.copy(source),
+                home.resolve(source.getFileName().toString()),
                 sheet.transform(new XMLDocument(source)).toString()
                     .getBytes(StandardCharsets.UTF_8)
             );
@@ -89,21 +87,7 @@ final class Pruning implements Stage {
             this,
             "Cut the tests out of %d XMIR files into %[file]s",
             this.sources.size(),
-            this.home
+            home
         );
-    }
-
-    /**
-     * The copies this stage writes, one per source, in the order the
-     * later stages read them.
-     *
-     * @return The paths of the copies, sorted
-     */
-    Collection<Path> paths() {
-        return new ListOf<>(new Mapped<>(this::copy, new Sorted<>(this.sources)));
-    }
-
-    private Path copy(final Path source) {
-        return this.home.resolve(source.getFileName().toString());
     }
 }

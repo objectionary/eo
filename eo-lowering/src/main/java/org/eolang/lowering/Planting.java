@@ -14,8 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import javax.xml.transform.stream.StreamSource;
+import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -51,12 +52,7 @@ import org.xembly.Xembler;
  *  with a guard against a type that holds itself, and say in
  *  {@code voids.tsv} what it planted.
  */
-final class Planting implements Stage {
-
-    /**
-     * The XMIR files of the build.
-     */
-    private final Collection<Path> sources;
+final class Planting implements Proc<Path> {
 
     /**
      * The directory with the tables of {@code eo:inference}.
@@ -64,25 +60,16 @@ final class Planting implements Stage {
     private final Path tables;
 
     /**
-     * The directory where the lowering keeps what it makes.
-     */
-    private final Path home;
-
-    /**
      * Ctor.
      *
-     * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory where the lowering keeps what it makes
      */
-    Planting(final Collection<Path> srcs, final Path tbls, final Path dir) {
-        this.sources = srcs;
+    Planting(final Path tbls) {
         this.tables = tbls;
-        this.home = dir;
     }
 
     @Override
-    public void exec() throws IOException {
+    public void exec(final Path target) throws IOException {
         if (!Files.exists(this.tables.resolve("provides.xml"))) {
             throw new IllegalStateException(
                 String.format(
@@ -91,39 +78,44 @@ final class Planting implements Stage {
                 )
             );
         }
+        final Collection<Path> sources = new ListOf<>(new Copies(target));
         final XML planted = new XSLDocument(
             Planting.class.getResource("/org/eolang/lowering/entries.xsl"),
             "/org/eolang/lowering/entries.xsl"
         ).with((href, base) -> new StreamSource(href))
             .with("inference", this.tables.toUri().toString())
-            .transform(this.manifest());
-        Files.createDirectories(this.home);
-        this.save("entries.xmir", planted.nodes("/planted/object").get(0).toString());
-        this.save("voids.tsv", String.join("", planted.xpath("/planted/voids/text()")));
-        this.save("entries.tsv", String.join("", planted.xpath("/planted/entries/text()")));
+            .transform(Planting.manifest(sources));
+        final Path home = Files.createDirectories(target.resolve("7-lowering"));
+        Planting.save(
+            home.resolve("entries.xmir"), planted.nodes("/planted/object").get(0).toString()
+        );
+        Planting.save(
+            home.resolve("voids.tsv"), String.join("", planted.xpath("/planted/voids/text()"))
+        );
+        Planting.save(
+            home.resolve("entries.tsv"),
+            String.join("", planted.xpath("/planted/entries/text()"))
+        );
         Logger.info(
             this,
             "Planted %s entries of %d files with %s symbols, %s voids left unfilled, into %[file]s",
             planted.xpath("/planted/@entries").get(0),
-            this.sources.size(),
+            sources.size(),
             planted.xpath("/planted/@symbols").get(0),
             planted.xpath("/planted/@unfilled").get(0),
-            this.home
+            home
         );
     }
 
-    private XML manifest() {
+    private static XML manifest(final Collection<Path> sources) {
         final Directives dirs = new Directives().add("sources");
-        for (final String uri
-            : new Sorted<>(new Mapped<>(src -> src.toUri().toString(), this.sources))) {
+        for (final String uri : new Mapped<>(src -> src.toUri().toString(), sources)) {
             dirs.add("source").set(uri).up();
         }
         return new XMLDocument(new Xembler(dirs).xmlQuietly());
     }
 
-    private void save(final String name, final String content) throws IOException {
-        Files.write(
-            this.home.resolve(name), content.getBytes(StandardCharsets.UTF_8)
-        );
+    private static void save(final Path file, final String content) throws IOException {
+        Files.write(file, content.getBytes(StandardCharsets.UTF_8));
     }
 }

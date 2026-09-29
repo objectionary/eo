@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Collections;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
@@ -38,8 +37,6 @@ final class MergingTest {
         final Path home = MergingTest.planted(temp);
         final Path source = MergingTest.xmir(temp, "gap");
         new Merging(
-            Collections.singletonList(source),
-            home,
             MergingTest.phino(
                 temp,
                 String.join(
@@ -48,7 +45,7 @@ final class MergingTest {
                     "*) a=\"$a $1\";; esac; shift; done; echo \"$a\" > \"$t\""
                 )
             )
-        ).exec();
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the one call must take every source before the entries, but it doesnt",
             new String(Files.readAllBytes(home.resolve("world.phi")), StandardCharsets.UTF_8),
@@ -62,9 +59,8 @@ final class MergingTest {
     @DisabledOnOs(OS.WINDOWS)
     void printsTheWorldSweet(@Mktmp final Path temp) throws IOException {
         final Path home = MergingTest.planted(temp);
+        MergingTest.xmir(temp, "gap");
         new Merging(
-            Collections.singletonList(MergingTest.xmir(temp, "gap")),
-            home,
             MergingTest.phino(
                 temp,
                 String.join(
@@ -73,7 +69,7 @@ final class MergingTest {
                     "*) a=\"$a $1\";; esac; shift; done; echo \"$a\" > \"$t\""
                 )
             )
-        ).exec();
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the world must be printed with syntax sugar, but it isnt",
             new String(Files.readAllBytes(home.resolve("world.phi")), StandardCharsets.UTF_8),
@@ -85,8 +81,8 @@ final class MergingTest {
     @DisabledOnOs(OS.WINDOWS)
     void quotesWhatTheBinaryPrintedWhenItRefusesTheWorld(@Mktmp final Path temp)
         throws IOException {
-        final Path source = MergingTest.xmir(temp, "gap");
-        final Path home = MergingTest.planted(temp);
+        MergingTest.xmir(temp, "gap");
+        MergingTest.planted(temp);
         final Phino phino = MergingTest.phino(
             temp, "echo 'no world for this one' >&2; exit 2"
         );
@@ -94,7 +90,7 @@ final class MergingTest {
             "the failure must quote what the binary printed, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Merging(Collections.singletonList(source), home, phino).exec(),
+                () -> new Merging(phino).exec(temp),
                 "a binary that exits with an error must fail the merging"
             ).getMessage(),
             Matchers.containsString("no world for this one")
@@ -103,15 +99,14 @@ final class MergingTest {
 
     @Test
     void failsNamingTheEntriesItCannotFind(@Mktmp final Path temp) {
-        final Path home = temp.resolve("lower");
         MatcherAssert.assertThat(
             "the failure must name the entries that are missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Merging(new ListOf<>(), home, new Phino("absent")).exec(),
+                () -> new Merging(new Phino("absent")).exec(temp),
                 "a home without entries must fail the merging"
             ).getMessage(),
-            Matchers.containsString(home.resolve("entries.xmir").toString())
+            Matchers.containsString(temp.resolve("7-lowering/entries.xmir").toString())
         );
     }
 
@@ -122,19 +117,20 @@ final class MergingTest {
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
         );
-        final Path source = Files.write(
-            temp.resolve("gap.xmir"),
+        Files.write(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path home = temp.resolve("lower");
         final Path tables = Files.createDirectories(temp.resolve("tables"));
         Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(Collections.singletonList(source), tables, home).exec();
-        new Merging(Collections.singletonList(source), home, phino).exec();
+        new Planting(tables).exec(temp);
+        new Merging(phino).exec(temp);
         MatcherAssert.assertThat(
             "the world must hold the object and the marks of the entries, but it doesnt",
-            new String(Files.readAllBytes(home.resolve("world.phi")), StandardCharsets.UTF_8),
+            new String(
+                Files.readAllBytes(temp.resolve("7-lowering/world.phi")), StandardCharsets.UTF_8
+            ),
             Matchers.stringContainsInOrder("gap", "l🌵", "L_entry")
         );
     }
@@ -150,14 +146,15 @@ final class MergingTest {
     }
 
     private static Path planted(final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("lower"));
+        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
         Files.write(home.resolve("entries.xmir"), "<object/>".getBytes(StandardCharsets.UTF_8));
         return home;
     }
 
     private static Path xmir(final Path temp, final String name) throws IOException {
         return Files.write(
-            temp.resolve(String.format("%s.xmir", name)),
+            Files.createDirectories(temp.resolve("7-lowering-planting"))
+                .resolve(String.format("%s.xmir", name)),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );
     }

@@ -39,9 +39,9 @@ final class MorphingTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void writesOneProtocolPerEntryOfTheWorld(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("protocols");
-        new Morphing(home, protocols, MorphingTest.recording(temp)).exec();
+        MorphingTest.merged(temp, 1, 2);
+        final Path protocols = temp.resolve("7-lowering-protocols");
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         try (Stream<Path> made = Files.list(protocols)) {
             MatcherAssert.assertThat(
                 "every entry must get a protocol of its own, but one is missing",
@@ -54,9 +54,9 @@ final class MorphingTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("protocols");
-        new Morphing(home, protocols, MorphingTest.recording(temp)).exec();
+        MorphingTest.merged(temp, 1, 2);
+        final Path protocols = temp.resolve("7-lowering-protocols");
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run of an entry must be aimed at the mark of that entry, but it isnt",
             MorphingTest.text(protocols.resolve("2.xml")),
@@ -68,8 +68,8 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void morphsEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("protocols");
-        new Morphing(home, protocols, MorphingTest.recording(temp)).exec();
+        final Path protocols = temp.resolve("7-lowering-protocols");
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run must morph the entry of the world with the table, but it doesnt",
             MorphingTest.text(protocols.resolve("1.xml")),
@@ -84,9 +84,9 @@ final class MorphingTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void boundsEveryRunWithTheStepsItWasGiven(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("protocols");
-        new Morphing(home, protocols, MorphingTest.recording(temp), 7).exec();
+        MorphingTest.merged(temp, 1);
+        final Path protocols = temp.resolve("7-lowering-protocols");
+        new Morphing(MorphingTest.recording(temp), 7).exec(temp);
         MatcherAssert.assertThat(
             "the run must stop at the step ceiling it was given, but it doesnt",
             MorphingTest.text(protocols.resolve("1.xml")),
@@ -97,9 +97,9 @@ final class MorphingTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void printsEveryProtocolSweetAndWithoutRho(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("protocols");
-        new Morphing(home, protocols, MorphingTest.recording(temp)).exec();
+        MorphingTest.merged(temp, 1);
+        final Path protocols = temp.resolve("7-lowering-protocols");
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run must print its protocol sweet and without any rho, but it doesnt",
             MorphingTest.text(protocols.resolve("1.xml")),
@@ -114,11 +114,9 @@ final class MorphingTest {
             Runtime.getRuntime().availableProcessors() > 1,
             "this machine has one processor, so the entries cannot be morphed side by side here"
         );
-        final Path home = MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("protocols");
+        MorphingTest.merged(temp, 1, 2);
+        final Path protocols = temp.resolve("7-lowering-protocols");
         new Morphing(
-            home,
-            protocols,
             MorphingTest.phino(
                 temp,
                 String.join(
@@ -131,7 +129,7 @@ final class MorphingTest {
                     "echo \"$@\" > \"$p\""
                 )
             )
-        ).exec();
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the second entry must be morphed while the first one still runs, but it waits",
             protocols.resolve("2.xml").toFile(),
@@ -143,7 +141,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void writesTheTableOfOperationsBesideTheWorld(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
-        new Morphing(home, temp.resolve("protocols"), MorphingTest.recording(temp)).exec();
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the table must name the mark the entries fire, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
@@ -155,13 +153,13 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void quotesWhatTheBinaryPrintedWhenItRefusesARun(@Mktmp final Path temp)
         throws IOException {
-        final Path home = MorphingTest.merged(temp, 1);
+        MorphingTest.merged(temp, 1);
         final Phino phino = MorphingTest.phino(temp, "echo 'no run for this one' >&2; exit 3");
         MatcherAssert.assertThat(
             "the failure must quote what the binary printed, but it doesnt",
             Assertions.assertThrows(
                 UncheckedIOException.class,
-                () -> new Morphing(home, temp.resolve("protocols"), phino).exec(),
+                () -> new Morphing(phino).exec(temp),
                 "a binary that exits with an error must fail the morphing"
             ).getMessage(),
             Matchers.containsString("no run for this one")
@@ -169,28 +167,27 @@ final class MorphingTest {
     }
 
     @Test
-    void failsNamingTheWorldItCannotFind(@Mktmp final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("lower"));
+    void failsNamingTheWorldItCannotFind(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "the failure must name the world that is missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Morphing(home, temp.resolve("protocols"), new Phino("absent")).exec(),
+                () -> new Morphing(new Phino("absent")).exec(temp),
                 "a world that was not merged must fail the morphing"
             ).getMessage(),
-            Matchers.containsString(home.resolve("world.phi").toString())
+            Matchers.containsString(temp.resolve("7-lowering/world.phi").toString())
         );
     }
 
     @Test
     void failsNamingTheEntriesItCannotFind(@Mktmp final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("lower"));
+        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "the failure must name the entries that are missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Morphing(home, temp.resolve("protocols"), new Phino("absent")).exec(),
+                () -> new Morphing(new Phino("absent")).exec(temp),
                 "entries that were not planted must fail the morphing"
             ).getMessage(),
             Matchers.containsString(home.resolve("entries.tsv").toString())
@@ -204,12 +201,12 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        final Path gap = Files.write(
-            temp.resolve("gap.xmir"),
+        Files.write(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path number = MorphingTest.xmir(
+        MorphingTest.xmir(
             temp,
             "number",
             "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
@@ -218,10 +215,9 @@ final class MorphingTest {
             "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
             "</o>"
         );
-        final Path bytes = MorphingTest.xmir(
+        MorphingTest.xmir(
             temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
         );
-        final Path home = temp.resolve("lower");
         final Path tables = Files.createDirectories(temp.resolve("tables"));
         Files.write(
             tables.resolve("provides.xml"),
@@ -233,12 +229,12 @@ final class MorphingTest {
                 "</type></provides>"
             ).getBytes(StandardCharsets.UTF_8)
         );
-        new Planting(Arrays.asList(gap, number, bytes), tables, home).exec();
-        new Merging(Arrays.asList(gap, number, bytes), home, phino).exec();
-        new Morphing(home, temp.resolve("protocols"), phino).exec();
+        new Planting(tables).exec(temp);
+        new Merging(phino).exec(temp);
+        new Morphing(phino).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
-            MorphingTest.text(temp.resolve("protocols/1.xml")),
+            MorphingTest.text(temp.resolve("7-lowering-protocols/1.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
         );
     }
@@ -247,7 +243,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
-        new Morphing(home, temp.resolve("protocols"), MorphingTest.recording(temp)).exec();
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the table must answer every atom of bytes, but it leaves one standing",
             Stream.of("and", "concat", "eq", "not", "or", "right", "size", "slice")
@@ -269,7 +265,7 @@ final class MorphingTest {
     void bringsTheBranchesOfAForkToOneShapeBeforeTheJoin(@Mktmp final Path temp)
         throws IOException {
         final Path home = MorphingTest.merged(temp);
-        new Morphing(home, temp.resolve("protocols"), MorphingTest.recording(temp)).exec();
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
@@ -285,7 +281,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
-        new Morphing(home, temp.resolve("protocols"), MorphingTest.recording(temp)).exec();
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "every bool the table answers must be the formation wrapping it, but one is bare",
             Files.readAllLines(home.resolve("atoms.yaml")).stream()
@@ -305,12 +301,12 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        final Path len = Files.write(
-            temp.resolve("len.xmir"),
+        Files.write(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("len.xmir"),
             new EoSyntax(String.format("[a] > len%n  a.size > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path bytes = MorphingTest.xmir(
+        MorphingTest.xmir(
             temp,
             "bytes",
             "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>",
@@ -318,10 +314,9 @@ final class MorphingTest {
             "<o name=\"λ\" loc=\"Φ.bytes.size.λ\"/>",
             "</o>"
         );
-        final Path number = MorphingTest.xmir(
+        MorphingTest.xmir(
             temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>"
         );
-        final Path home = temp.resolve("lower");
         final Path tables = Files.createDirectories(temp.resolve("tables"));
         Files.write(
             tables.resolve("provides.xml"),
@@ -332,12 +327,12 @@ final class MorphingTest {
                 "</type></provides>"
             ).getBytes(StandardCharsets.UTF_8)
         );
-        new Planting(Arrays.asList(len, bytes, number), tables, home).exec();
-        new Merging(Arrays.asList(len, bytes, number), home, phino).exec();
-        new Morphing(home, temp.resolve("protocols"), phino).exec();
+        new Planting(tables).exec(temp);
+        new Merging(phino).exec(temp);
+        new Morphing(phino).exec(temp);
         MatcherAssert.assertThat(
             "the run must fire the atom of bytes the body reached, but it left it standing",
-            MorphingTest.text(temp.resolve("protocols/1.xml")),
+            MorphingTest.text(temp.resolve("7-lowering-protocols/1.xml")),
             Matchers.containsString("<evaluate λ=\"L_bytes_size\"")
         );
     }
@@ -357,7 +352,7 @@ final class MorphingTest {
     }
 
     private static Path merged(final Path temp, final int... entries) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("lower"));
+        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
@@ -372,7 +367,8 @@ final class MorphingTest {
     private static Path xmir(final Path temp, final String name, final String... body)
         throws IOException {
         return Files.write(
-            temp.resolve(String.format("%s.xmir", name)),
+            Files.createDirectories(temp.resolve("7-lowering-planting"))
+                .resolve(String.format("%s.xmir", name)),
             String.format(
                 "<object><o name=\"%s\" loc=\"Φ.%s\">%s</o></object>",
                 name, name, String.join("", body)

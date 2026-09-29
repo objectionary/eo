@@ -10,8 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
+import org.cactoos.Proc;
 import org.cactoos.iterable.Joined;
-import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 
 /**
  * The merging of every object of the build into one phi-expression.
@@ -34,17 +35,7 @@ import org.cactoos.iterable.Sorted;
  *
  * @since 0.74.0
  */
-final class Merging implements Stage {
-
-    /**
-     * The XMIR files of the build, with their tests cut out.
-     */
-    private final Collection<Path> sources;
-
-    /**
-     * The directory where the lowering keeps what it makes.
-     */
-    private final Path home;
+final class Merging implements Proc<Path> {
 
     /**
      * The binary that merges.
@@ -54,19 +45,16 @@ final class Merging implements Stage {
     /**
      * Ctor.
      *
-     * @param srcs The XMIR files of the build, with their tests cut out
-     * @param dir The directory where the lowering keeps what it makes
      * @param exe The binary that merges
      */
-    Merging(final Collection<Path> srcs, final Path dir, final Phino exe) {
-        this.sources = srcs;
-        this.home = dir;
+    Merging(final Phino exe) {
         this.phino = exe;
     }
 
     @Override
-    public void exec() throws IOException {
-        final Path entries = this.home.resolve("entries.xmir");
+    public void exec(final Path target) throws IOException {
+        final Path home = target.resolve("7-lowering");
+        final Path entries = home.resolve("entries.xmir");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(
                 String.format(
@@ -75,15 +63,16 @@ final class Merging implements Stage {
                 )
             );
         }
-        final Path world = this.home.resolve("world.phi");
+        final Collection<Path> sources = new ListOf<>(new Copies(target));
+        final Path world = home.resolve("world.phi");
         this.phino.merge(
-            new Joined<Path>(new Sorted<>(this.sources), Collections.singletonList(entries)),
+            new Joined<Path>(sources, Collections.singletonList(entries)),
             world
         );
         Logger.info(
             this,
             "Merged %d XMIR files and the entries into %[file]s (%[size]s)",
-            this.sources.size(),
+            sources.size(),
             world,
             Files.size(world)
         );

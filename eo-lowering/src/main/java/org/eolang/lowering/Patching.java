@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
 import java.nio.file.Path;
+import org.cactoos.Proc;
 
 /**
  * The putting of an atom in the place of every folded body.
@@ -30,24 +31,10 @@ import java.nio.file.Path;
  *  and the nested formations and the tests and what a package object
  *  holds, stays where it was. A tainted formation changes not at all.
  */
-final class Patching implements Stage {
-
-    /**
-     * The directory where the lowering keeps what it makes.
-     */
-    private final Path home;
-
-    /**
-     * Ctor.
-     *
-     * @param dir The directory where the lowering keeps what it makes
-     */
-    Patching(final Path dir) {
-        this.home = dir;
-    }
+final class Patching implements Proc<Path> {
 
     @Override
-    public void exec() {
-        Logger.debug(this, "No file is patched yet in %s", this.home);
+    public void exec(final Path target) {
+        Logger.debug(this, "No file is patched yet in %s", target.resolve("7-lowering"));
     }
 }

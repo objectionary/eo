@@ -16,6 +16,7 @@ import org.cactoos.list.ListOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.io.FileMatchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +31,6 @@ final class PruningTest {
 
     @Test
     void cutsACheckOutOfAnObject(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
         new Pruning(
             Collections.singletonList(
                 PruningTest.parsed(
@@ -39,12 +39,11 @@ final class PruningTest {
                         "[a] > flag%n  a.not > @%n  ++> can-flip-a-lie%n    true > @%n"
                     )
                 )
-            ),
-            home
-        ).exec();
+            )
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no test, but it does",
-            new XMLDocument(home.resolve("flag.xmir"))
+            new XMLDocument(temp.resolve("7-lowering-planting/flag.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -52,7 +51,6 @@ final class PruningTest {
 
     @Test
     void cutsAFailingCheckOutOfAnObject(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
         new Pruning(
             Collections.singletonList(
                 PruningTest.parsed(
@@ -61,12 +59,11 @@ final class PruningTest {
                         "[a] > gate%n  a.not > @%n  --> stops-on-a-missing-void%n    gate.plus 7 > @%n"
                     )
                 )
-            ),
-            home
-        ).exec();
+            )
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no failing test, but it does",
-            new XMLDocument(home.resolve("gate.xmir"))
+            new XMLDocument(temp.resolve("7-lowering-planting/gate.xmir"))
                 .nodes("//o[starts-with(@name, 'n🌵')]"),
             Matchers.empty()
         );
@@ -74,7 +71,6 @@ final class PruningTest {
 
     @Test
     void cutsACheckOutOfANestedFormation(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
         new Pruning(
             Collections.singletonList(
                 PruningTest.parsed(
@@ -92,12 +88,11 @@ final class PruningTest {
                         )
                     )
                 )
-            ),
-            home
-        ).exec();
+            )
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no test at any depth, but it does",
-            new XMLDocument(home.resolve("outer.xmir"))
+            new XMLDocument(temp.resolve("7-lowering-planting/outer.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -105,7 +100,6 @@ final class PruningTest {
 
     @Test
     void keepsTheBindingsAroundTheCheck(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
         new Pruning(
             Collections.singletonList(
                 PruningTest.parsed(
@@ -122,29 +116,34 @@ final class PruningTest {
                         )
                     )
                 )
-            ),
-            home
-        ).exec();
+            )
+        ).exec(temp);
         MatcherAssert.assertThat(
             "the bindings on both sides of the test must stay, but they dont",
-            new XMLDocument(home.resolve("pair.xmir"))
+            new XMLDocument(temp.resolve("7-lowering-planting/pair.xmir"))
                 .nodes("/object/o[@name='pair'][o[@name='φ']][o[@name='gap']][count(o) = 4]"),
             Matchers.not(Matchers.empty())
         );
     }
 
     @Test
-    void namesEveryCopyAfterItsSourceInOrder(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("lower");
-        MatcherAssert.assertThat(
-            "the copies must be named after the sources and sorted, but they arent",
-            new Pruning(
-                new ListOf<>(temp.resolve("zeta.xmir"), temp.resolve("alpha.xmir")),
-                home
-            ).paths(),
-            Matchers.contains(
-                home.resolve("alpha.xmir"), home.resolve("zeta.xmir")
+    void dropsTheCopyOfASourceTheBuildNoLongerHas(@Mktmp final Path temp)
+        throws IOException {
+        final Path stale = Files.write(
+            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gone.xmir"),
+            "<object/>".getBytes(StandardCharsets.UTF_8)
+        );
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("kept.xmir"), String.format("[a] > kept%n  a > @%n")
+                )
             )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the copy of a source the build no longer has must be gone, but it stays",
+            stale.toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
         );
     }
 
@@ -163,7 +162,7 @@ final class PruningTest {
             "the failure must name the file two sources are named after, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Pruning(new ListOf<>(first, second), temp.resolve("lower")).exec(),
+                () -> new Pruning(new ListOf<>(first, second)).exec(temp),
                 "two sources of one name must fail the pruning"
             ).getMessage(),
             Matchers.containsString("twin.xmir")
