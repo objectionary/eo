@@ -22,7 +22,7 @@ import org.cactoos.Proc;
  * @todo #8548:60min Walk the XMIR files of the build with
  *  {@code patch.xsl}, reading {@code entries.tsv} through
  *  {@code unparsed-text()} and the protocol of each entry, the file
- *  named after its number in {@code 7-lowering-protocols}, through
+ *  its locator names in {@code 7-lowering-protocols}, through
  *  {@code document()}, and write the result into the {@code patched/}
  *  directory under the lowering directory. A formation whose entry came
  *  back with a root gets one attribute more, an atom named

@@ -31,16 +31,17 @@ import org.cactoos.text.TextOf;
  *
  * <p>Every formation of the build is folded by a call of the binary aimed
  * at the mark of its entry, and the protocol of that call is written as a
- * file of its own, named after the number of the entry, into
- * {@code 7-lowering-protocols}. The entries have nothing to share: each of them brings
- * its own symbols, so a firing of one is never answered by the memo of
- * another, and an entry morphed alone fires exactly as many times as it
- * fires among the others. So the runs go side by side, one per processor,
- * and the build waits for its slowest entry rather than for the sum of all
- * of them. While they go, a line every thirty seconds says how many entries
- * are morphed, how long it has taken, and how many bytes of protocols are
- * written, since one slow entry may keep the build silent for
- * minutes.</p>
+ * file of its own into {@code 7-lowering-protocols}, at the path the
+ * locator of the formation names, so the protocol of
+ * {@code Φ.bytes.as-hex} is {@code bytes/as-hex.xml}. The entries have
+ * nothing to share: each of them brings its own symbols, so a firing of one is never
+ * answered by the memo of another, and an entry morphed alone fires
+ * exactly as many times as it fires among the others. So the runs go side
+ * by side, one per processor, and the build waits for its slowest entry
+ * rather than for the sum of all of them. While they go, a line every
+ * thirty seconds says how many entries are morphed, how long it has taken,
+ * and how many bytes of protocols are written, since one slow entry may
+ * keep the build silent for minutes.</p>
  *
  * <p>What the binary can say about a primitive is said in
  * {@code atoms.yaml} and nowhere else, and that table is written beside
@@ -121,17 +122,14 @@ final class Morphing implements Proc<Path> {
         final Path protocols = Files.createDirectories(
             target.resolve("7-lowering-protocols")
         );
-        final Collection<Integer> numbers = new ListOf<>(
-            new Mapped<>(
-                line -> Integer.parseInt(line.split("\t", -1)[0]),
-                new Filtered<>(
-                    line -> !line.isEmpty(),
-                    new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
-                )
+        final Collection<String> rows = new ListOf<>(
+            new Filtered<>(
+                line -> !line.isEmpty(),
+                new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
         final long start = System.currentTimeMillis();
-        final Progress progress = new Progress(numbers.size());
+        final Progress progress = new Progress(rows.size());
         final Timer ticker = new Timer("morphing-progress", true);
         ticker.scheduleAtFixedRate(
             new TimerTask() {
@@ -152,10 +150,10 @@ final class Morphing implements Proc<Path> {
                         new Threads<>(
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
-                                number -> () -> this.morph(
-                                    world, atoms, protocols, number, progress
+                                row -> () -> this.morph(
+                                    world, atoms, protocols, row, progress
                                 ),
-                                numbers
+                                rows
                             )
                         )
                     )
@@ -171,11 +169,24 @@ final class Morphing implements Proc<Path> {
     }
 
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final int number,
+        final Path world, final Path atoms, final Path protocols, final String row,
         final Progress progress
     ) throws IOException {
         final long start = System.currentTimeMillis();
-        final Path protocol = protocols.resolve(String.format("%d.xml", number));
+        final String[] cells = row.split("\t", -1);
+        final int number = Integer.parseInt(cells[0]);
+        if (!cells[1].startsWith("Φ.")) {
+            throw new IllegalStateException(
+                String.format(
+                    "The locator '%s' of the entry %d does not start with 'Φ.', while its protocol is named after the path below it",
+                    cells[1], number
+                )
+            );
+        }
+        final Path protocol = protocols.resolve(
+            String.format("%s.xml", cells[1].substring(2).replace('.', '/'))
+        );
+        Files.createDirectories(protocol.getParent());
         this.phino.morph(world, atoms, number, protocol, this.steps);
         Logger.debug(
             this,

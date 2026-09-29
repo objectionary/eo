@@ -46,9 +46,27 @@ final class MorphingTest {
             MatcherAssert.assertThat(
                 "every entry must get a protocol of its own, but one is missing",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
-                Matchers.containsInAnyOrder("1.xml", "2.xml")
+                Matchers.containsInAnyOrder("e1.xml", "e2.xml")
             );
         }
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesTheProtocolOfAnEntryUnderItsLocator(@Mktmp final Path temp)
+        throws IOException {
+        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
+        Files.write(
+            home.resolve("entries.tsv"),
+            String.format("4\tΦ.bytes.as-hex.a🌵16-3%n").getBytes(StandardCharsets.UTF_8)
+        );
+        new Morphing(MorphingTest.recording(temp)).exec(temp);
+        MatcherAssert.assertThat(
+            "the protocol must be named after the locator of its entry, but it isnt",
+            temp.resolve("7-lowering-protocols/bytes/as-hex/a🌵16-3.xml").toFile(),
+            FileMatchers.anExistingFile()
+        );
     }
 
     @Test
@@ -59,7 +77,7 @@ final class MorphingTest {
         new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run of an entry must be aimed at the mark of that entry, but it isnt",
-            MorphingTest.text(protocols.resolve("2.xml")),
+            MorphingTest.text(protocols.resolve("e2.xml")),
             Matchers.containsString("--locator=Q.l🌵.e2")
         );
     }
@@ -72,7 +90,7 @@ final class MorphingTest {
         new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run must morph the entry of the world with the table, but it doesnt",
-            MorphingTest.text(protocols.resolve("1.xml")),
+            MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.stringContainsInOrder(
                 "morph",
                 String.format("--symbolic=%s", home.resolve("atoms.yaml")),
@@ -89,7 +107,7 @@ final class MorphingTest {
         new Morphing(MorphingTest.recording(temp), 7).exec(temp);
         MatcherAssert.assertThat(
             "the run must stop at the step ceiling it was given, but it doesnt",
-            MorphingTest.text(protocols.resolve("1.xml")),
+            MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.containsString("--max-steps=7")
         );
     }
@@ -102,7 +120,7 @@ final class MorphingTest {
         new Morphing(MorphingTest.recording(temp)).exec(temp);
         MatcherAssert.assertThat(
             "the run must print its protocol sweet and without any rho, but it doesnt",
-            MorphingTest.text(protocols.resolve("1.xml")),
+            MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.stringContainsInOrder("--sweet", "--hide-rho")
         );
     }
@@ -132,7 +150,7 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the second entry must be morphed while the first one still runs, but it waits",
-            protocols.resolve("2.xml").toFile(),
+            protocols.resolve("e2.xml").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -234,7 +252,7 @@ final class MorphingTest {
         new Morphing(phino).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
-            MorphingTest.text(temp.resolve("7-lowering-protocols/1.xml")),
+            MorphingTest.text(temp.resolve("7-lowering-protocols/gap.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
         );
     }
@@ -332,7 +350,7 @@ final class MorphingTest {
         new Morphing(phino).exec(temp);
         MatcherAssert.assertThat(
             "the run must fire the atom of bytes the body reached, but it left it standing",
-            MorphingTest.text(temp.resolve("7-lowering-protocols/1.xml")),
+            MorphingTest.text(temp.resolve("7-lowering-protocols/len.xml")),
             Matchers.containsString("<evaluate λ=\"L_bytes_size\"")
         );
     }
