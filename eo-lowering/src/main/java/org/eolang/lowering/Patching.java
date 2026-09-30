@@ -36,9 +36,7 @@ import org.cactoos.iterable.Sorted;
  * the name of its source, and a source with nothing patched in it is not
  * written at all, so a reader of the build finds there only what the
  * lowering changed, and the goal of the plugin, which names that directory,
- * points the transpiler at a patched copy only where there is one. The
- * copies of an earlier build are deleted first, so that a source whose
- * formations are all taints now is read from where it was.</p>
+ * points the transpiler at a patched copy only where there is one.</p>
  *
  * @since 0.74.0
  */
@@ -76,7 +74,6 @@ final class Patching implements Proc<Path> {
                 )
             );
         }
-        new Wiping().exec(this.patched);
         final XSL sheet = new XSLDocument(
             Patching.class.getResource("/org/eolang/lowering/patching.xsl"),
             "/org/eolang/lowering/patching.xsl"

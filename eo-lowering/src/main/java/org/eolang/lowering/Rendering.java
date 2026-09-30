@@ -37,9 +37,7 @@ import org.cactoos.text.TextOf;
  * the goal of the plugin, which names that directory, hands it to javac as
  * a source root of its own, so javac finds the class under the very name the transpiler gives
  * the atom. It is not written among the generated sources, because the
- * transpiler deletes every file there it did not write itself. The atoms of
- * an earlier build are deleted before the rendering, so that an entry that
- * is a taint now leaves no atom behind.</p>
+ * transpiler deletes every file there it did not write itself.</p>
  *
  * <p>The protocol is read and the program phino morphed is not, because
  * the protocol already says what fired, in what order, and off which
@@ -105,7 +103,6 @@ final class Rendering implements Proc<Path> {
                 String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
             );
         }
-        new Wiping().exec(this.atoms);
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
