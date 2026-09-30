@@ -77,6 +77,11 @@ import org.eolang.cache.GlobalCache;
  * fails with an error on some entry. Nothing is tried twice in one
  * build.</p>
  *
+ * <p>phino runs only on the entries that the {@link Scope} given to the
+ * constructor covers, which helps to study one slow entry alone, or to keep
+ * one entry away from phino. The other entries get no protocol, and they
+ * stay in EO.</p>
+ *
  * <p>A protocol stays the same as long as four things stay the same: the
  * world, the table of operations, the version of phino, and the limit of
  * steps. So, every protocol is saved in the cache, together with these
@@ -109,6 +114,11 @@ final class Morphing implements Proc<Path> {
     private final GlobalCache cache;
 
     /**
+     * The entries that phino is allowed to run on.
+     */
+    private final Scope scope;
+
+    /**
      * The largest number of steps inside one another that one run may take.
      */
     private final int steps;
@@ -123,14 +133,17 @@ final class Morphing implements Proc<Path> {
      *
      * @param exe The phino program, which does the morphing
      * @param store The cache, where the protocols are kept between builds
+     * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another
      * @param span The time that one run may take before it is stopped
      */
     Morphing(
-        final Phino exe, final GlobalCache store, final int ceiling, final Duration span
+        final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
+        final Duration span
     ) {
         this.phino = exe;
         this.cache = store;
+        this.scope = range;
         this.steps = ceiling;
         this.budget = span;
     }
@@ -178,7 +191,8 @@ final class Morphing implements Proc<Path> {
         ).asString();
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
-                line -> !line.isEmpty(),
+                line -> !line.isEmpty()
+                    && this.scope.covers(line.split("\t", -1)[1]),
                 new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
@@ -197,7 +211,7 @@ final class Morphing implements Proc<Path> {
         try {
             Logger.info(
                 this,
-                "Ran %d entries of %[file]s, up to %d nested steps each, into %[file]s: %s",
+                "Ran %d entries of %[file]s covered by %s, up to %d nested steps each, into %[file]s: %s",
                 new IoChecked<>(
                     new LengthOf(
                         new Threads<>(
@@ -212,6 +226,7 @@ final class Morphing implements Proc<Path> {
                     )
                 ).value(),
                 world,
+                this.scope,
                 this.steps,
                 protocols,
                 progress.asString()

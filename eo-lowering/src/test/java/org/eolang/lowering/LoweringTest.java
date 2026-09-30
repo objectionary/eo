@@ -43,7 +43,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"), 16,
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16,
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -60,7 +61,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"), 16,
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16,
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -77,7 +79,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"), 16,
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16,
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -94,7 +97,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"), 16,
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16,
             Duration.ofMinutes(1L)
         ).exec();
         try (Stream<Path> made = Files.list(home)) {
@@ -126,7 +130,8 @@ final class LoweringTest {
                     temp.resolve("home"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"), temp.resolve("patched"), 16,
+                    temp.resolve("atoms"), temp.resolve("patched"),
+                    new Scope(".*", "(?!)"), 16,
                     Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary of another version must fail the lowering"
@@ -148,7 +153,8 @@ final class LoweringTest {
                     temp.resolve("home"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"), temp.resolve("patched"), 16,
+                    temp.resolve("atoms"), temp.resolve("patched"),
+                    new Scope(".*", "(?!)"), 16,
                     Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary that is not there must fail the lowering"
@@ -167,7 +173,8 @@ final class LoweringTest {
                 temp.resolve("home"),
                 temp.resolve("absent").toString(),
                 new GlobalCache.GcFresh(),
-                temp.resolve("atoms"), temp.resolve("patched"), 16,
+                temp.resolve("atoms"), temp.resolve("patched"),
+                new Scope(".*", "(?!)"), 16,
                 Duration.ofMinutes(1L)
             ).available(),
             Matchers.is(false)
@@ -185,7 +192,8 @@ final class LoweringTest {
                 temp.resolve("home"),
                 LoweringTest.binary(temp),
                 new GlobalCache.GcFresh(),
-                temp.resolve("atoms"), temp.resolve("patched"), 16,
+                temp.resolve("atoms"), temp.resolve("patched"),
+                new Scope(".*", "(?!)"), 16,
                 Duration.ofMinutes(1L)
             ).available(),
             Matchers.is(true)

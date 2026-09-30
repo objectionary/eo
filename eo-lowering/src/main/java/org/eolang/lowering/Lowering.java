@@ -96,6 +96,11 @@ public final class Lowering {
     private final Path patched;
 
     /**
+     * The entries that phino is allowed to run on.
+     */
+    private final Scope scope;
+
+    /**
      * The largest number of steps inside one another that one run of phino
      * on one entry may take.
      */
@@ -117,16 +122,17 @@ public final class Lowering {
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
+     * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
      * @param span The time that one run of phino may take before it is stopped
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store, final Path kept, final Path copies, final int ceiling,
-        final Duration span
+        final GlobalCache store, final Path kept, final Path copies, final Scope range,
+        final int ceiling, final Duration span
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, ceiling, span);
+        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, span);
     }
 
     /**
@@ -139,14 +145,15 @@ public final class Lowering {
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
+     * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
      * @param span The time that one run of phino may take before it is stopped
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
-        final GlobalCache store, final Path kept, final Path copies, final int ceiling,
-        final Duration span
+        final GlobalCache store, final Path kept, final Path copies, final Scope range,
+        final int ceiling, final Duration span
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -155,6 +162,7 @@ public final class Lowering {
         this.cache = store;
         this.atoms = kept;
         this.patched = copies;
+        this.scope = range;
         this.steps = ceiling;
         this.budget = span;
     }
@@ -224,7 +232,7 @@ public final class Lowering {
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino, this.cache, this.steps, this.budget),
+                new Morphing(this.phino, this.cache, this.scope, this.steps, this.budget),
                 new Rendering(this.atoms),
                 new Patching(this.sources, this.tables, this.patched)
             )

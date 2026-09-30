@@ -201,6 +201,44 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("only", "Φ\\.gapped")
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must not morph an entry that its filter doesnt include, but it did",
+            temp.resolve("morph.txt").toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void morphsNoEntryTheFilterOfTheExcludedMatches(@Mktmp final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("never", ".*gap")
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must not morph an entry that its filter excludes, but it did",
+            temp.resolve("morph.txt").toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfStepsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int steps = new SecureRandom().nextInt(1000) + 1;
         new FakeMaven(temp)

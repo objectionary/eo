@@ -19,6 +19,7 @@ import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 import org.eolang.lowering.Lowering;
+import org.eolang.lowering.Scope;
 
 /**
  * Fold the formations of a program into Java atoms.
@@ -114,6 +115,28 @@ public final class MjLower extends MjSafe {
     private int steps;
 
     /**
+     * The regular expression that the whole locator of an entry, such as
+     * {@code Φ.string.printf}, must match for phino to run on it.
+     */
+    @Parameter(
+        alias = "lowerOnly",
+        property = "eo.lowerOnly",
+        defaultValue = ".*"
+    )
+    private String only;
+
+    /**
+     * The regular expression that the whole locator of an entry must not
+     * match for phino to run on it. By default it matches nothing.
+     */
+    @Parameter(
+        alias = "lowerNever",
+        property = "eo.lowerNever",
+        defaultValue = "(?!)"
+    )
+    private String never;
+
+    /**
      * The directory with the tables of {@code eo:inference}. When it is not
      * set, the goal uses the directory that {@link Subdir} gives to the name
      * "inference", which is where {@code eo:inference} saves the tables.
@@ -142,6 +165,7 @@ public final class MjLower extends MjSafe {
                     this.caching("lowered"),
                     atoms,
                     home.resolve("4-patched"),
+                    new Scope(this.only, this.never),
                     this.steps,
                     Duration.ofSeconds(this.budget)
                 );
