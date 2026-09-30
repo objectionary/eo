@@ -57,11 +57,27 @@ final class MjLowerTest {
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
                     .with("lowering", true)
+                    .with("optional", false)
                     .with("binary", temp.resolve("absent").toString())
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
             Matchers.containsString(MjLowerTest.pin())
+        );
+    }
+
+    @Test
+    void skipsWhenTheBinaryIsMissingAndThatIsAllowed(@Mktmp final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .with("lowering", true)
+            .with("optional", true)
+            .with("binary", temp.resolve("absent").toString())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "a goal with no phino to run must skip and leave no folder, but it made one",
+            temp.resolve("target/7-lowering").toFile(),
+            Matchers.not(FileMatchers.anExistingDirectory())
         );
     }
 

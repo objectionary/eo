@@ -144,6 +144,29 @@ public final class Lowering {
     }
 
     /**
+     * Whether the phino program can be started on this computer at all.
+     *
+     * <p>This method only checks that phino starts and prints its version.
+     * It does not check that the version is the right one. A wrong version
+     * still makes {@link #exec()} fail.</p>
+     *
+     * @return TRUE if phino can be started, FALSE if it cannot
+     */
+    public boolean available() {
+        boolean found;
+        try {
+            this.phino.version();
+            found = true;
+        } catch (final IOException ex) {
+            Logger.debug(
+                this, "The binary '%s' cannot be started: %s", this.phino, ex.getMessage()
+            );
+            found = false;
+        }
+        return found;
+    }
+
+    /**
      * Run all the stages on the whole build.
      *
      * @throws IOException If a file that a stage needs cannot be read or

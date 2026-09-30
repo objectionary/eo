@@ -36,6 +36,9 @@ import org.eolang.lowering.Lowering;
  * last moment at which the Java of a program can still be changed.</p>
  *
  * <p>The goal folds by default; {@code -Deo.lowering=false} turns it off.
+ * When phino cannot be started on this computer, the goal prints a warning
+ * and does nothing, so the build goes on without atoms. With
+ * {@code -Deo.skipWithoutPhino=false} the goal fails the build instead.
  * When it runs it makes sure that the binary on this machine is the one
  * the pin names, since an answer of another version cannot be trusted,
  * and then plants the entries of the build. It hands the lowering the
@@ -79,6 +82,17 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * Whether the goal skips, instead of failing the build, when phino
+     * cannot be started on this computer.
+     */
+    @Parameter(
+        alias = "skipWithoutPhino",
+        property = "eo.skipWithoutPhino",
+        defaultValue = "true"
+    )
+    private boolean optional;
+
+    /**
      * The seconds one run of phino may take on one entry before it is killed.
      */
     @Parameter(
@@ -114,7 +128,7 @@ public final class MjLower extends MjSafe {
             final Path patched = this.target.toPath().resolve("7-lowering-patched")
                 .toAbsolutePath();
             try (TjsForeign tojos = this.tojos()) {
-                new Lowering(
+                final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
                     this.tables.toPath(),
                     this.target.toPath(),
@@ -123,34 +137,45 @@ public final class MjLower extends MjSafe {
                     atoms,
                     patched,
                     Duration.ofSeconds(this.budget)
-                ).exec();
-                final Collection<String> fresh = new ListOf<>(
-                    new Mapped<>(
-                        Text::asString,
-                        new Split(
-                            new TextOf(
-                                this.target.toPath().resolve("7-lowering/patched.tsv")
-                            ),
-                            "\\R"
-                        )
-                    )
                 );
-                for (final TjForeign tojo : tojos.standalone()) {
-                    final String name = tojo.xmir().getFileName().toString();
-                    if (fresh.contains(name)) {
-                        tojo.withXmir(patched.resolve(name));
-                    }
+                if (this.optional && !pipeline.available()) {
+                    Logger.warn(
+                        this,
+                        "Lowering is skipped, since phino '%s' cannot be started, set -Deo.skipWithoutPhino=false to fail instead",
+                        this.binary
+                    );
+                } else {
+                    pipeline.exec();
+                    this.repoint(tojos, patched);
+                    this.project.addCompileSourceRoot(atoms.toString());
+                    Logger.info(
+                        this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
+                    );
                 }
             }
-            this.project.addCompileSourceRoot(atoms.toString());
-            Logger.info(
-                this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
-            );
         } else {
             Logger.info(
                 this,
                 "Lowering is disabled with -Deo.lowering=false"
             );
+        }
+    }
+
+    private void repoint(final TjsForeign tojos, final Path patched) {
+        final Collection<String> fresh = new ListOf<>(
+            new Mapped<>(
+                Text::asString,
+                new Split(
+                    new TextOf(this.target.toPath().resolve("7-lowering/patched.tsv")),
+                    "\\R"
+                )
+            )
+        );
+        for (final TjForeign tojo : tojos.standalone()) {
+            final String name = tojo.xmir().getFileName().toString();
+            if (fresh.contains(name)) {
+                tojo.withXmir(patched.resolve(name));
+            }
         }
     }
 }

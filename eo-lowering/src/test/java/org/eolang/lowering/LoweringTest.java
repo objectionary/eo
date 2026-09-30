@@ -157,6 +157,41 @@ final class LoweringTest {
         );
     }
 
+    @Test
+    void saysPhinoIsNotAvailableWhenTheBinaryIsMissing(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a binary that is not there must be reported as not available, but it isnt",
+            new Lowering(
+                new ListOf<>(),
+                temp.resolve("tables"),
+                temp.resolve("target/eo"),
+                temp.resolve("absent").toString(),
+                new GlobalCache.GcFresh(),
+                temp.resolve("atoms"), temp.resolve("patched"),
+                Duration.ofMinutes(1L)
+            ).available(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void saysPhinoIsAvailableWhenTheBinaryRuns(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "a binary that runs must be reported as available, but it isnt",
+            new Lowering(
+                new ListOf<>(),
+                temp.resolve("tables"),
+                temp.resolve("target/eo"),
+                LoweringTest.binary(temp),
+                new GlobalCache.GcFresh(),
+                temp.resolve("atoms"), temp.resolve("patched"),
+                Duration.ofMinutes(1L)
+            ).available(),
+            Matchers.is(true)
+        );
+    }
+
     private static String pin() {
         return new UncheckedText(
             new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
