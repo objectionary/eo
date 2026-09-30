@@ -12,7 +12,9 @@ rendered:
   - "1\tΦ.gap"
 patched:
   gap.xmir:
-    - "/object/o[@name='gap']/o[3][@name='φ' and not(@base) and @loc='Φ.gap.φ' and count(o)=1]/o[@name='λ' and @loc='Φ.gap.φ.λ']"
+    - "/object/o[@name='gap']\
+      /o[3][@name='φ' and not(@base) and @loc='Φ.gap.φ' and count(o)=1]\
+      /o[@name='λ' and @loc='Φ.gap.φ.λ']"
     - "/object/o[@name='gap']/o[1][@name='a' and @base='∅']"
     - "/object/o[@name='gap']/o[2][@name='b' and @base='∅']"
     - "/object/o[@name='gap'][count(o)=3]"

@@ -22,6 +22,7 @@ links: |
     </type>
   </links>
 xmir:
-  - "//o[@name='e1']/o[@as='v']/o[@as='a' and @base='Φ.number']/o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+  - "//o[@name='e1']/o[@as='v']/o[@as='a' and @base='Φ.number']\
+    /o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
 voids:
   - "𝜎1\t1\ta\tnumber"

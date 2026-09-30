@@ -31,8 +31,10 @@ links: |
     </type>
   </links>
 xmir:
-  - "//o[@name='e1']/o[@as='v' and @base='Φ.one']/o[@as='a']//o[@name='λ' and text()='𝜎1']"
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.two']/o[@as='c']//o[@name='λ' and text()='𝜎2']"
+  - "//o[@name='e1']/o[@as='v' and @base='Φ.one']/o[@as='a']/\
+    /o[@name='λ' and text()='𝜎1']"
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.two']/o[@as='c']/\
+    /o[@name='λ' and text()='𝜎2']"
 entries:
   - "1\tΦ.one"
   - "2\tΦ.two"

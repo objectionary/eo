@@ -22,9 +22,11 @@ links: |
     </type>
   </links>
 xmir:
-  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='λ' and text()='L_fork']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']\
+    /o[@name='λ' and text()='L_fork']"
   - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='left' and @base='∅']"
   - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='right' and @base='∅']"
-  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='φ']/o[@name='λ' and text()='𝜎1']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='φ']\
+    /o[@name='λ' and text()='𝜎1']"
 voids:
   - "𝜎1\t1\ta\tbool"

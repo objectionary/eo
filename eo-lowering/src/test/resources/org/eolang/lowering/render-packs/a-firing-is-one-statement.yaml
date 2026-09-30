@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # The body of neg is one firing of times over its receiver and the literal
 # minus one, so the atom reads the void into a double, multiplies it by the
 # bits of minus one in one statement, and returns the product as a number.

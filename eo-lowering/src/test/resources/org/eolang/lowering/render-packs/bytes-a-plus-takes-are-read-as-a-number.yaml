@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # dataized answers bytes, and plus reads a number, so the bytes are read as
 # a number where plus takes them, the way Dataized reads them.
 locator: Φ.sum

@@ -15,6 +15,8 @@ rendered:
   - "5\tΦ.pair.thrice"
 patched:
   pair.xmir:
-    - "/object/o[@name='pair']/o[@name='twice']/o[@name='φ' and not(@base)]/o[@name='λ']"
-    - "/object/o[@name='pair']/o[@name='thrice']/o[@name='φ' and not(@base)]/o[@name='λ']"
+    - "/object/o[@name='pair']/o[@name='twice']/o[@name='φ' and not(@base)]\
+      /o[@name='λ']"
+    - "/object/o[@name='pair']/o[@name='thrice']/o[@name='φ' and not(@base)]\
+      /o[@name='λ']"
     - "/object/o[@name='pair'][not(o[@name='φ'])]"

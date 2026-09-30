@@ -25,7 +25,8 @@ links: |
   </links>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='.twice']"
-  - "//o[@name='e1']/o[@as='v']/o[1][@base='Φ.number' and not(@as)]//o[@name='λ' and text()='𝜎1']"
+  - "//o[@name='e1']/o[@as='v']/o[1][@base='Φ.number' and not(@as)]/\
+    /o[@name='λ' and text()='𝜎1']"
 voids:
   - "𝜎1\t1\tρ\tnumber"
 entries:

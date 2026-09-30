@@ -18,6 +18,7 @@ rendered:
 patched:
   box.xmir:
     - "/object/o[@name='box']/o[2][@name='φ' and not(@base)]/o[@name='λ']"
-    - "/object/o[@name='box']/o[3][@name='inner']/o[@name='φ' and @base='Φ.number']"
+    - "/object/o[@name='box']/o[3][@name='inner']\
+      /o[@name='φ' and @base='Φ.number']"
     - "/object/o[@name='box']/o[starts-with(@name, 'p🌵')]"
     - "/object/o[@name='box'][count(o[@name='φ'])=1]"

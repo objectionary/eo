@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # as-bool compares the bytes with FF and dataizes the bool it gets, so the
 # fork joins the two known bytes of the literals under the comparison: the
 # joined symbol is a blank final that each branch of an if assigns.

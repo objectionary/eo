@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # twice is ((t.gt 0).if (t.plus 1) (t.plus 2)).plus (t.plus 1), so each
 # plus of a branch is computed inside its branch alone, while the void t,
 # which the condition and the last plus read too, is read before the if.
