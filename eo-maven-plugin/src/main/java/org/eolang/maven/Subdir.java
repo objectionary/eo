@@ -5,40 +5,57 @@
 package org.eolang.maven;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A numbered subdirectory of {@code target/eo}.
  *
- * <p>No stage picks its own number any more. The number is the position at
- * which {@code name} is first asked for, among every other name asked for
- * under the same {@code target} in this run: the first stage to ask for a
- * directory this run gets {@code 01-}, the next distinct name gets
- * {@code 02-}, and so on. Two stages that ask for different names therefore
- * never land on the same number, no matter which one runs first, and a
- * stage that asks for the same name twice always lands on the directory it
- * got the first time.</p>
+ * <p>No stage picks its own number any more. A name that already owns a
+ * {@code NN-name} directory under {@code target} keeps that number, found
+ * by reading the directory itself rather than by replaying how this build
+ * reached it; a name with none yet is given the number past the highest one
+ * already taken, and that empty directory is created on the spot so the
+ * reservation is visible to whoever asks next, in this build or a later
+ * one. A stage that this build never reaches because an earlier one was
+ * cached therefore does not shift the numbers a later build gives to the
+ * stages that do run, and the same {@code target} never grows two
+ * directories for the same name.</p>
  *
  * @since 0.72.0
  */
 final class Subdir {
 
     /**
-     * The number already given to each name asked for so far, per target
-     * directory.
+     * The shape of an already-numbered subdirectory: its number and name.
+     */
+    private static final Pattern PREFIXED = Pattern.compile("(\\d+)-(.+)");
+
+    /**
+     * The number already found on disk, or given, for each name asked for
+     * so far, per target directory.
      */
     private static final Map<Path, ConcurrentMap<String, Integer>> NUMBERED =
         new ConcurrentHashMap<>();
 
     /**
-     * How many distinct names have been given a number so far, per target
-     * directory.
+     * One lock per target directory, guarding the read-and-reserve of a
+     * number so two names never claim the same one.
      */
-    private static final Map<Path, AtomicInteger> COUNTS = new ConcurrentHashMap<>();
+    private static final Map<Path, ReentrantLock> LOCKS = new ConcurrentHashMap<>();
 
     /**
      * The {@code target/eo} directory this subdirectory lives under.
@@ -100,12 +117,61 @@ final class Subdir {
     private int number() {
         return Subdir.NUMBERED
             .computeIfAbsent(this.target, ignored -> new ConcurrentHashMap<>())
-            .computeIfAbsent(this.name, ignored -> Subdir.next(this.target));
+            .computeIfAbsent(this.name, ignored -> this.reserved());
     }
 
-    private static int next(final Path target) {
-        return Subdir.COUNTS
-            .computeIfAbsent(target, ignored -> new AtomicInteger())
-            .incrementAndGet();
+    private int reserved() {
+        final ReentrantLock lock = Subdir.LOCKS.computeIfAbsent(
+            this.target, ignored -> new ReentrantLock()
+        );
+        lock.lock();
+        try {
+            Files.createDirectories(this.target);
+            final List<Matcher> taken;
+            try (Stream<Path> kids = Files.list(this.target)) {
+                taken = kids
+                    .filter(Files::isDirectory)
+                    .map(kid -> Subdir.PREFIXED.matcher(kid.getFileName().toString()))
+                    .filter(Matcher::matches)
+                    .collect(Collectors.toList());
+            }
+            final Optional<Integer> owned = taken.stream()
+                .filter(matcher -> matcher.group(2).equals(this.name))
+                .map(matcher -> Integer.parseInt(matcher.group(1)))
+                .findFirst();
+            final int number;
+            if (owned.isPresent()) {
+                number = owned.get();
+            } else {
+                number = this.claimed(
+                    1 + taken.stream()
+                        .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
+                        .max()
+                        .orElse(0)
+                );
+            }
+            return number;
+        } catch (final IOException ex) {
+            throw new UncheckedIOException(
+                String.format(
+                    "Failed to number '%s' under %s", this.name, this.target
+                ),
+                ex
+            );
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private int claimed(final int number) throws IOException {
+        int result = number;
+        try {
+            Files.createDirectory(
+                this.target.resolve(String.format("%02d-%s", number, this.name))
+            );
+        } catch (final FileAlreadyExistsException collision) {
+            result = this.reserved();
+        }
+        return result;
     }
 }
