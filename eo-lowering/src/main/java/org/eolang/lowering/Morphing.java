@@ -274,8 +274,8 @@ final class Morphing implements Proc<Path> {
             Files.deleteIfExists(protocol);
             Logger.warn(
                 this,
-                "The entry %d at %s was killed after %[ms]s, so it has no protocol",
-                number, cells[1], this.budget.toMillis()
+                "Lowering of %s ran out of time budget (%[ms]s), no XML protocol saved",
+                cells[1], this.budget.toMillis()
             );
         }
         return protocol;
