@@ -17,6 +17,12 @@ provides: |
       <attr name="b" type="Φ.gap.b" void="true"/>
     </type>
   </provides>
+links: |
+  <links>
+    <type id="Φ.gap.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v'][count(o) = 1]"
   - "//o[@name='e1']/o[@as='v']/o[@as='a']"

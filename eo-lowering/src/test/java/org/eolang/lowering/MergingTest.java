@@ -124,6 +124,12 @@ final class MergingTest {
         );
         final Path tables = Files.createDirectories(temp.resolve("tables"));
         Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+        Files.write(
+            tables.resolve("links.xml"),
+            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         MatcherAssert.assertThat(

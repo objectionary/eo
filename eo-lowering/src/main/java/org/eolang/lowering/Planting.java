@@ -41,6 +41,14 @@ import org.xembly.Xembler;
  * and the entry becomes a "taint". A taint is an entry that cannot be
  * turned into Java, and the next stages simply leave it alone.</p>
  *
+ * <p>Not every object gets an entry. The object must give a number, a
+ * string or a bool, as {@code eo:inference} says. The Java atom gives back
+ * only the data that the object computes. If the object gives, for
+ * example, an {@code i16}, the atom would give plain bytes, and every
+ * attribute of the {@code i16} would be lost. So such an object stays in
+ * EO, and so does an object whose type {@code eo:inference} does not
+ * know.</p>
+ *
  * <p>All the sources of the build are handled by one XSL transformation,
  * {@code entries.xsl}. This is why this class gives the transformation a
  * list of all the sources, and not one source. The transformation returns
@@ -76,13 +84,15 @@ final class Planting implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
-        if (!Files.exists(this.tables.resolve("provides.xml"))) {
-            throw new IllegalStateException(
-                String.format(
-                    "There is no 'provides.xml' in '%s', while planting needs the tables of eo:inference to say what a void holds",
-                    this.tables
-                )
-            );
+        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+            if (!Files.exists(this.tables.resolve(table))) {
+                throw new IllegalStateException(
+                    String.format(
+                        "There is no '%s' in '%s', while planting needs the tables of eo:inference to say what a void holds and what a body gives",
+                        table, this.tables
+                    )
+                );
+            }
         }
         final Collection<Path> sources = new ListOf<>(new Copies(home));
         final XML planted = new XSLDocument(
@@ -104,12 +114,23 @@ final class Planting implements Proc<Path> {
         );
         Logger.info(
             this,
-            "Planted %s entries of %d files with %s symbols, %s voids left unfilled, into %[file]s",
+            String.join(
+                "",
+                "Planted %s entries of %d files with %s symbols, %s voids left unfilled, ",
+                "into %[file]s, and left out %s atoms, %s formations without a body, ",
+                "%s formations under an argument without a name, %s of unknown type, ",
+                "and %s of other types than a number, a string or a bool"
+            ),
             planted.xpath("/planted/@entries").get(0),
             sources.size(),
             planted.xpath("/planted/@symbols").get(0),
             planted.xpath("/planted/@unfilled").get(0),
-            home
+            home,
+            planted.xpath("/planted/@atom").get(0),
+            planted.xpath("/planted/@bodiless").get(0),
+            planted.xpath("/planted/@placed").get(0),
+            planted.xpath("/planted/@untyped").get(0),
+            planted.xpath("/planted/@typed").get(0)
         );
     }
 

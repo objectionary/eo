@@ -377,6 +377,12 @@ final class MorphingTest {
                 "</type></provides>"
             ).getBytes(StandardCharsets.UTF_8)
         );
+        Files.write(
+            tables.resolve("links.xml"),
+            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(phino, new GlobalCache.GcFresh(), 32, Duration.ofMinutes(1L)).exec(temp);
@@ -481,6 +487,12 @@ final class MorphingTest {
                 "</type></provides>"
             ).getBytes(StandardCharsets.UTF_8)
         );
+        Files.write(
+            tables.resolve("links.xml"),
+            "<links><type id='Φ.len.φ'><ref loc='Φ.number'/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(phino, new GlobalCache.GcFresh(), 32, Duration.ofMinutes(1L)).exec(temp);

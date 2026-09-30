@@ -38,6 +38,9 @@
   renamed its "as" after the void it lands in, and a name is a step the
   calculus can take where an index is not. The tables are still asked by the
   locator, since that is what their rows are keyed on.
+  A formation gets an entry only when its body is a number, a string or a
+  bool, as the tables of "eo:inference" say, and every formation left out
+  is counted by the reason it is left out for.
   The "ρ" of a nested formation is a void like the others, but it cannot be
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
@@ -50,13 +53,18 @@
   opened and never asked about.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
-  <xsl:variable name="eo:provides" as="document-node()" select="document(concat(if (ends-with($inference, '/')) then $inference else concat($inference, '/'), 'provides.xml'))"/>
+  <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
+  <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
+  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
+  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
   <!--
   The rows of the table, by the type each one is about. Without the index
   every question about a formation walks the whole table, and the table of
   eo-runtime holds tens of thousands of rows.
   -->
   <xsl:key name="eo:type" match="type" use="@id"/>
+  <!-- The atoms the tables know, by locator, for the type an atom gives. -->
+  <xsl:key name="eo:atom" match="atom" use="@loc"/>
   <!-- The objects of a source, by locator, for the path behind a type the tables name. -->
   <xsl:key name="eo:loc" match="o[@loc]" use="@loc"/>
   <!-- The sources of the build, in the order of the manifest. -->
@@ -66,18 +74,36 @@
   manifest and, inside a file, in document order. That order is the
   numbering, and it is why the manifest is sorted before it arrives.
   -->
-  <xsl:variable name="eo:formations" as="element(o)*" select="for $s in $eo:sources return document($s)//o[eo:entry(.)]"/>
+  <xsl:variable name="eo:formations" as="element(o)*" select="for $s in $eo:sources return document($s)//o[eo:formation(.)][eo:reason(.) = '']"/>
+  <!-- The reason why each of the other formations of the build is left out. -->
+  <xsl:variable name="eo:reasons" as="xs:string*" select="for $s in $eo:sources return document($s)//o[eo:formation(.)]/eo:reason(.)[. != '']"/>
   <!--
-  Whether this object is a formation with a body: it copies nothing, it
-  carries no "λ" of its own, and it declares a "φ" that is not void. A
-  package object has no "φ" and an atom has a "λ", so neither is here.
-  A formation under an argument that still goes by its place is out too:
-  "eo:dealpha" found no void to name that argument after, and the calculus
-  has no step to a place, so there is no path to walk to the formation.
+  Whether this object is a formation: it copies nothing and it is not data
+  or a "λ", which are the other objects of XMIR that copy nothing and that
+  hold a text.
   -->
-  <xsl:function name="eo:entry" as="xs:boolean">
+  <xsl:function name="eo:formation" as="xs:boolean">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:sequence select="empty($o/@base) and empty($o/o[@name = 'λ']) and exists($o/o[@name = 'φ'][not(@base = '∅')]) and eo:walkable(eo:path($o))"/>
+    <xsl:sequence select="empty($o/@base) and normalize-space(string-join($o/text(), '')) = ''"/>
+  </xsl:function>
+  <!--
+  Why this formation gets no entry, or an empty string when it gets one.
+  An atom has a "λ" of its own, and a package object has no "φ", so
+  neither has a body to compute. A formation under an argument that still
+  goes by its place is out too: "eo:dealpha" found no void to name that
+  argument after, and the calculus has no step to a place, so there is no
+  path to walk to the formation. The last two reasons are about the type
+  of the body, which must be a number, a string or a bool, as "links.xml"
+  says, where a body that is an atom is what "atoms.xml" says that atom
+  gives. The Java atom of an entry gives back the data of the body, and
+  nothing else, so for a body of any other type, an "i16" for example, the
+  atom would lose the object around that data. A body the tables say
+  nothing about is left out as well, for the same reason.
+  -->
+  <xsl:function name="eo:reason" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="types" as="xs:string*" select="for $r in key('eo:type', concat($o/@loc, '.φ'), $eo:links)/ref/@loc return string((key('eo:atom', $r, $eo:atoms)/@forma, $r)[1])"/>
+    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false'))) then 'typed' else ''"/>
   </xsl:function>
   <!--
   The path the calculus walks to reach an object, one step per ancestor: the
@@ -265,7 +291,7 @@
   and the table of the formations behind the numbers.
   -->
   <xsl:template match="/">
-    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" unfilled="{count($eo:plan//hole)}">
+    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" unfilled="{count($eo:plan//hole)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" untyped="{count($eo:reasons[. = 'untyped'])}" typed="{count($eo:reasons[. = 'typed'])}">
       <object author="eo-lowering">
         <o name="l🌵">
           <o name="mark">

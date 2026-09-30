@@ -220,6 +220,12 @@ final class LoweringTest {
         Files.write(
             made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
         );
+        Files.write(
+            made.resolve("links.xml"),
+            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(made.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
         return made;
     }
 }

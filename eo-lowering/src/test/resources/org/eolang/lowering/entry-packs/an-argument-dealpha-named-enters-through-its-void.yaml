@@ -14,6 +14,15 @@ eo:
           left > @
 dealpha:
   Φ.true.φ.α0: if
+links: |
+  <links>
+    <type id="Φ.true.φ">
+      <ref loc="Φ.bool"/>
+    </type>
+    <type id="Φ.true.φ.α0.φ">
+      <ref loc="Φ.bool"/>
+    </type>
+  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
   - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if']"

@@ -20,6 +20,12 @@ provides: |
       <attr name="args" type="Φ.string.printf.args" void="true" holds="Φ.tuple"/>
     </type>
   </provides>
+links: |
+  <links>
+    <type id="Φ.uses.φ">
+      <ref loc="Φ.string"/>
+    </type>
+  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v']/o[@as='p' and @base='Φ.string.printf']"
   - "//o[@as='p']/o[@as='fmt' and @base='Φ.string']/o[@as='φ']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
