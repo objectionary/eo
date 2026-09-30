@@ -105,6 +105,25 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void pointsTheTranspilerAtTheSourceItPatched(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the goal must hand the transpiler the source with the atom in it, but it didnt",
+            new FakeMaven(temp)
+                .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+                .execute(MjParse.class)
+                .with("lowering", true)
+                .with("binary", MjLowerTest.binary(temp, 0, MjLowerTest.rooted()))
+                .with("tables", MjLowerTest.tables(temp).toFile())
+                .execute(MjLower.class)
+                .foreignTojos()
+                .find("foo.x.main")
+                .xmir(),
+            Matchers.equalTo(temp.resolve("target/7-lowering-patched/main.xmir").toAbsolutePath())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void killsTheRunThatOutlastsTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
@@ -194,6 +213,11 @@ final class MjLowerTest {
     }
 
     private static String binary(final Path temp, final int pause) throws IOException {
+        return MjLowerTest.binary(temp, pause, "<morph/>");
+    }
+
+    private static String binary(final Path temp, final int pause, final String protocol)
+        throws IOException {
         final Path made = temp.resolve("phino");
         Files.write(
             made,
@@ -203,14 +227,29 @@ final class MjLowerTest {
                 String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "morph) sleep %d; for a; do case $a in --protocol=*) echo \"<morph/>\" > \"${a#--protocol=}\";; esac; done;;",
-                    pause
+                    "morph) sleep %d; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done;;",
+                    pause,
+                    Files.write(
+                        temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)
+                    )
                 ),
                 "esac"
             )
         );
         Files.setPosixFilePermissions(made, PosixFilePermissions.fromString("rwxr-xr-x"));
         return made.toString();
+    }
+
+    private static String rooted() {
+        return String.join(
+            "",
+            "<morph><evaluate λ='L_entry'><evaluate λ='L_number_times'>",
+            "<bind meta='𝛿1.2'>40-00-00-00-00-00-00-00</bind>",
+            "<bind meta='𝛿2.2'>40-08-00-00-00-00-00-00</bind>",
+            "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
+            "</evaluate></evaluate><evaluate λ='L_root'>",
+            "<dataize meta='𝛿1.3'>𝜎9:λ</dataize></evaluate></morph>"
+        );
     }
 
     private static Path tables(final Path temp) throws IOException {

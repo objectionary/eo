@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -40,7 +41,12 @@ import org.eolang.lowering.Lowering;
  * tables say its voids hold, and the directory of the build, where the
  * lowering keeps the sources with their tests cut out in
  * {@code 7-lowering-planting}, the world in {@code 7-lowering} and the
- * protocol of every object morphed in {@code 7-lowering-protocols}.</p>
+ * protocol of every object morphed in {@code 7-lowering-protocols}.
+ * The atoms the lowering renders land in {@code 7-lowering-atoms}, which
+ * this goal hands to javac as a source root, and every XMIR file with an
+ * atom in the place of a body lands in {@code 7-lowering-patched}, where
+ * this goal points the tojo of that object, so the transpiler reads the
+ * patched copy and every other object stays where it was.</p>
  *
  * @since 0.74.0
  */
@@ -100,6 +106,8 @@ public final class MjLower extends MjSafe {
         if (this.lowering) {
             final Path atoms = this.target.toPath().resolve("7-lowering-atoms")
                 .toAbsolutePath();
+            final Path patched = this.target.toPath().resolve("7-lowering-patched")
+                .toAbsolutePath();
             try (TjsForeign tojos = this.tojos()) {
                 new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
@@ -108,8 +116,15 @@ public final class MjLower extends MjSafe {
                     this.binary,
                     this.caching("lowered"),
                     atoms,
+                    patched,
                     Duration.ofSeconds(this.budget)
                 ).exec();
+                for (final TjForeign tojo : tojos.standalone()) {
+                    final Path copy = patched.resolve(tojo.xmir().getFileName().toString());
+                    if (Files.exists(copy)) {
+                        tojo.withXmir(copy);
+                    }
+                }
             }
             this.project.addCompileSourceRoot(atoms.toString());
             Logger.info(

@@ -184,6 +184,7 @@ final class FakeMaven {
             this.params.putIfAbsent("transpiledFormat", "csv");
             this.params.putIfAbsent("zeros", true);
             this.params.putIfAbsent("cacheEnabled", true);
+            this.params.putIfAbsent("budget", 10);
             this.params.putIfAbsent("discover", false);
             this.params.putIfAbsent("conflicts", false);
             this.params.putIfAbsent("central", new DummyCentral());

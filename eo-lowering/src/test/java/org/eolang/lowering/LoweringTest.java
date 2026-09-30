@@ -44,7 +44,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -61,7 +61,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -78,7 +78,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
@@ -95,7 +95,7 @@ final class LoweringTest {
         final Path target = temp.resolve("target/eo");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"),
+            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
@@ -104,7 +104,7 @@ final class LoweringTest {
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv",
-                    "world.phi", "atoms.yaml"
+                    "world.phi", "atoms.yaml", "rendered.tsv"
                 )
             );
         }
@@ -126,7 +126,7 @@ final class LoweringTest {
                     temp.resolve("target/eo"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"),
+                    temp.resolve("atoms"), temp.resolve("patched"),
                     Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary of another version must fail the lowering"
@@ -148,7 +148,7 @@ final class LoweringTest {
                     temp.resolve("target/eo"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"),
+                    temp.resolve("atoms"), temp.resolve("patched"),
                     Duration.ofMinutes(1L)
                 ).exec(),
                 "a binary that is not there must fail the lowering"

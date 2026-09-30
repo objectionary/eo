@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Only the body of a rendered formation changes. Its φ keeps its place among
+# the bindings, the nested formation and the test beside it stay as they were
+# written, and the atom comes last.
+eo:
+  box.eo: |
+    [x] > box
+      x.times 2 > @
+      [] > inner
+        42 > @
+      eq. ++> keeps-the-inner-one
+        box.inner
+        42
+rendered:
+  - "7\tΦ.box"
+patched:
+  box.xmir:
+    - "/object/o[@name='box']/o[2][@name='φ' and @base='ξ.l🌵7']"
+    - "/object/o[@name='box']/o[3][@name='inner']/o[@name='φ' and @base='Φ.number']"
+    - "/object/o[@name='box']/o[starts-with(@name, 'p🌵')]"
+    - "/object/o[@name='box']/o[last()][@name='l🌵7']/o[@name='λ']"

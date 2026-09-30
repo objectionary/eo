@@ -119,10 +119,19 @@ final class RenderingTest {
                 }
             }
             final Path atoms = this.rendered();
+            final String listed = Files.readString(
+                this.temp.resolve("7-lowering/rendered.tsv"), StandardCharsets.UTF_8
+            );
+            final String row = String.format(
+                "%s\t%s%n", this.story.map().get("number"), this.story.map().get("locator")
+            );
             if (this.story.map().containsKey("file")) {
                 failed.addAll(this.missing(atoms));
-            } else if (!this.files(atoms).isEmpty()) {
-                failed.add(String.format("no file, while %s", this.files(atoms)));
+                if (!listed.equals(row)) {
+                    failed.add(String.format("rendered.tsv: %s, while %s", row, listed));
+                }
+            } else if (!this.files(atoms).isEmpty() || !listed.isEmpty()) {
+                failed.add(String.format("no file, while %s and %s", this.files(atoms), listed));
             }
             return failed;
         }

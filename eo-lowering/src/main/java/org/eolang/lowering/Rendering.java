@@ -13,16 +13,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
-import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
@@ -106,13 +105,13 @@ final class Rendering implements Proc<Path> {
                 String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
             );
         }
-        Rendering.clear(this.atoms);
+        new Wiping().exec(this.atoms);
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
         ).with((href, base) -> new StreamSource(href))
             .with("voids", home.resolve("voids.tsv").toUri().toString());
-        int rendered = 0;
+        final Collection<String> rendered = new ArrayList<>(0);
         int tainted = 0;
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
@@ -145,7 +144,7 @@ final class Rendering implements Proc<Path> {
                         file,
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
-                    rendered += 1;
+                    rendered.add(String.format("%s%n", row));
                     Logger.debug(
                         this,
                         "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
@@ -157,20 +156,15 @@ final class Rendering implements Proc<Path> {
                 }
             }
         }
+        Files.write(
+            home.resolve("rendered.tsv"),
+            String.join("", rendered).getBytes(StandardCharsets.UTF_8)
+        );
         Logger.info(
             this,
             "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered, this.atoms, tainted
+            rendered.size(), this.atoms, tainted
         );
-    }
-
-    private static void clear(final Path dir) throws IOException {
-        if (Files.exists(dir)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(dir))) {
-                Files.delete(stale);
-            }
-        }
     }
 
     private static String top(final Map<String, String> tops, final String locator) {
