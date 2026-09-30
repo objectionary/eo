@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.iterable.Sorted;
@@ -97,16 +98,18 @@ final class Patching implements Proc<Path> {
         int atoms = 0;
         for (final Path source : new Sorted<>(this.sources)) {
             final XML out = sheet.transform(new XMLDocument(source));
-            final int found = out.nodes("//o[starts-with(@name, 'l🌵')][o[@name='λ']]").size();
-            if (found > 0) {
+            final List<String> names = out.xpath(
+                "//o[starts-with(@name, 'l🌵')][o[@name='λ']]/../@name"
+            );
+            if (!names.isEmpty()) {
                 final Path file = Files.createDirectories(this.patched)
                     .resolve(source.getFileName().toString());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
                 files.add(String.format("%s%n", file.getFileName()));
-                atoms += found;
+                atoms += names.size();
                 Logger.info(
-                    this, "Put %d atom(s) into %[file]s",
-                    found, file
+                    this, "Patched %[file]s: %s",
+                    file, String.join(", ", names)
                 );
             }
         }
