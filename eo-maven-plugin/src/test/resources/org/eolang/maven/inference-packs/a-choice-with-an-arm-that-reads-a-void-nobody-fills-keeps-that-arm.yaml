@@ -1,0 +1,53 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An arm of a choice that reads a void nobody here fills is still an arm.
+# Nobody in this program puts anything in `cant-read`, but the program is not
+# every caller the `gauge` will ever have, and one that fills it gets a value
+# out of that arm. It used to be dropped, and the choice then came back as the
+# `listen` of the `dial` in the other arm, as if nobody could ever take the
+# second one. So the choice keeps both arms, and what `app` asks of it is a
+# choice of the two `listen`s (#8885).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        dial 03-
+        cant-read
+          "the gauge cannot be read"
+  held.eo: |
+    [] > held
+      gauge yes > @
+  other.eo: |
+    [] > other
+      gauge no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.app.φ'][not(ref[@loc='Φ.dial.listen'])]"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.dial.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.gauge.cant-read.listen']"

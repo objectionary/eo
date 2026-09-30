@@ -6,7 +6,9 @@ package org.eolang.inference;
 
 import com.jcabi.xml.XML;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -37,16 +39,6 @@ import java.util.Map;
  * only ever asked for what the last one could not answer.</p>
  *
  * @since 0.68.0
- * @todo #8777:90min Carry the arms through a body a walk goes behind.
- *  A read takes its arms from the row of the call it is written on, which
- *  leaves out the read whose call settled on an object whose own body is the
- *  choice. Of the 622 rows eo-runtime still keeps rooted at {@code Φ.bool.if}
- *  without arms, 488 read such a receiver and 133 read one rooted at a void
- *  that names no arms of its own. {@link Provided} walks behind the body,
- *  arrives at a name rooted at the void and says nothing of what it passed on
- *  the way, so the arms sitting on the body are lost before the read is asked.
- *  Handing them up wants the walk to give back where it went as well as where
- *  it ended.
  */
 final class Dispatched {
 
@@ -81,6 +73,11 @@ final class Dispatched {
     private final Collection<String> hollows;
 
     /**
+     * Every object of the program that terminates, from {@link Dead}.
+     */
+    private final Collection<String> dead;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table
@@ -90,6 +87,8 @@ final class Dispatched {
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void this pass may look into, empty
      *  when it may look into none
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
      */
     Dispatched(
         final XML provides,
@@ -97,7 +96,8 @@ final class Dispatched {
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Collection<String> ends
     ) {
         this.given = provides;
         this.all = dispatches;
@@ -105,19 +105,24 @@ final class Dispatched {
         this.named = bindings;
         this.receivers = taken;
         this.hollows = voids;
+        this.dead = ends;
     }
 
     /**
      * The pairs that follow from what is known, beyond what is known already.
      *
      * @param pairs The pairs, each name against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link #copies(Map, Map)}
      * @return The dispatches answered this time, each against the attribute it
      *  turns out to be, empty when nothing further can be answered
      */
-    Map<String, String> answers(final Map<String, String> pairs) {
+    Map<String, String> answers(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned, copied);
         final Map<String, String> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -134,7 +139,7 @@ final class Dispatched {
                         made
                     );
                 }
-                if (this.better(kept, known, made)) {
+                if (new Improved(this.hollows, known, made).on(kept)) {
                     found.put(made, kept);
                 }
             }
@@ -170,7 +175,7 @@ final class Dispatched {
                 final String kept = owned.attribute(
                     names.getOrDefault(bearer, bearer), dispatch.name()
                 );
-                if (this.better(kept, "", made)) {
+                if (new Improved(this.hollows, "", made).on(kept)) {
                     found.put(made, kept);
                 }
             }
@@ -185,7 +190,7 @@ final class Dispatched {
      * call put there, and where the arms agree on nothing {@link Filled} has
      * an answer all the same: one of them, and no third thing. There is
      * nowhere to keep that while an answer is a locator, so it is asked for
-     * here rather than inside {@link #answers(Map)}, once, by whoever writes
+     * here rather than inside {@link #answers(Map, Map)}, once, by whoever writes
      * the rows and can hold two of them (#8744).</p>
      *
      * <p>Only a site left rooted at a void is asked. A site that settled on an
@@ -203,16 +208,22 @@ final class Dispatched {
      * them, the way {@link Arrived} has it: an arm without the attribute leaves
      * the read rooted at the void it had, which is true of every caller and
      * says little, rather than with a choice that holds for some callers and
-     * lies about the rest.</p>
+     * lies about the rest. Which row carries them is {@link Borne}'s business,
+     * since a receiver that settled on an object of its own keeps the choice
+     * one step in, behind that object's body.</p>
      *
      * @param pairs The pairs, each name against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link #copies(Map, Map)}
      * @return The arms, by the locator of the dispatch, without the dispatches
      *  that come back with one object or none
      */
-    Map<String, Collection<String>> choices(final Map<String, String> pairs) {
+    Map<String, Collection<String>> choices(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Map<String, String> names = new Ends(pairs).names();
         final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, names, owned);
+        final Filled filled = this.filled(pairs, owned, copied);
         final Map<String, Collection<String>> found = new HashMap<>(0);
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
@@ -230,7 +241,44 @@ final class Dispatched {
         }
         boolean more = true;
         while (more) {
-            more = this.spread(found, pairs, owned);
+            more = this.spread(found, pairs, names, owned);
+        }
+        return found;
+    }
+
+    /**
+     * The arms every read off a choice is a copy of, as far as they reach.
+     *
+     * <p>A call on a read off a choice fills the voids of every arm the read
+     * is a copy of (#8883), and what fills a void is what a pass answers the
+     * dispatches rooted at it from. The arms are a choice, though, and a
+     * choice is worked out from those very fillings, so every arm found fills
+     * a void that may make a choice of some further read. Asking for them on
+     * every pass costs one more {@link Bound}, which is most of what a pass
+     * costs, so they are asked for only where a pass would otherwise be the
+     * last, and asked again until no arm is added (#8993).</p>
+     *
+     * @param pairs The pairs, each name against the one it is a copy of
+     * @param known The arms found already
+     * @return The arms, by the locator of the read, the known ones among them
+     */
+    Map<String, Collection<String>> copies(
+        final Map<String, String> pairs, final Map<String, Collection<String>> known
+    ) {
+        final Map<String, Collection<String>> found = new HashMap<>(known);
+        boolean more = !this.hollows.isEmpty();
+        while (more) {
+            more = false;
+            for (final Map.Entry<String, Collection<String>> read
+                : new Copied(this.all, this.choices(pairs, found)).all().entrySet()) {
+                final Collection<String> arms = new LinkedHashSet<>(
+                    found.getOrDefault(read.getKey(), Collections.emptyList())
+                );
+                if (arms.addAll(read.getValue())) {
+                    found.put(read.getKey(), arms);
+                    more = true;
+                }
+            }
         }
         return found;
     }
@@ -238,16 +286,16 @@ final class Dispatched {
     private boolean spread(
         final Map<String, Collection<String>> found,
         final Map<String, String> pairs,
+        final Map<String, String> names,
         final Provided owned
     ) {
         boolean more = false;
         for (final Site dispatch : this.all) {
             final String made = dispatch.made();
-            final String bearer = dispatch.bearer();
-            if (!found.containsKey(made) && found.containsKey(bearer)
+            if (!found.containsKey(made) && !dispatch.bearer().isEmpty()
                 && this.rooted(pairs.getOrDefault(made, ""))) {
                 final Collection<String> arms = new Arrived(owned).names(
-                    found.get(bearer), dispatch.name()
+                    new Borne(found, names, owned).arms(dispatch), dispatch.name()
                 );
                 if (arms.size() > 1) {
                     found.put(made, arms);
@@ -259,34 +307,21 @@ final class Dispatched {
     }
 
     private Filled filled(
-        final Map<String, String> pairs, final Map<String, String> names,
-        final Provided owned
+        final Map<String, String> pairs, final Provided owned,
+        final Map<String, Collection<String>> copied
     ) {
-        final Map<String, Map<String, String>> bound = new Copied(
-            new Bound(this.args, this.named, this.receivers, pairs, owned).all(),
-            pairs,
-            new Lent(owned, this.all, this.args, this.receivers).sites(names)
+        final Map<String, Map<String, String>> bound = new Bound(
+            this.args, this.named, this.receivers, this.all, pairs, owned, copied
         ).all();
         return new Filled(
             pairs,
             owned,
-            new Puts(bound, new Holders(bound, pairs).all()),
+            new Puts(bound, new Holders(bound, pairs).all(), this.dead),
             this.hollows
         );
     }
 
     private boolean rooted(final String type) {
         return !this.hollows.isEmpty() && new Rooted(this.hollows).covers(type);
-    }
-
-    private boolean better(final String kept, final String known, final String made) {
-        final boolean found;
-        if (kept.isEmpty() || kept.equals(made) || kept.equals(known)) {
-            found = false;
-        } else {
-            found = known.isEmpty() || !this.rooted(kept)
-                || known.startsWith(kept.concat("."));
-        }
-        return found;
     }
 }

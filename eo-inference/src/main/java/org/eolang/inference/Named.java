@@ -17,7 +17,7 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * The links, with a row that copies a void saying what the void holds.
+ * The links and the voids, each told what the callers settle a void at.
  *
  * <p>A row calling an object a copy of a void says everything the text says
  * and less than the program does. The body of {@code [item] > box} hands back
@@ -41,6 +41,37 @@ import org.xembly.Xembler;
  * left alone as well, a choice being what a row says when the census has more
  * than one member to offer (#8744).</p>
  *
+ * <p>A row told this way says so with {@code witnessed="true"}. The census is
+ * true of the callers this program happens to have, and a caller written
+ * tomorrow or compiled apart may put another shape into the void, so a reader
+ * in need of a contract leaves such a row out (#8914).</p>
+ *
+ * <p>The row of the void itself is told as well. A void row says what it holds
+ * only when the source wrote it down, and of the 2,038 void rows of eo-runtime
+ * 636 carry the annotation and 711 more are settled by their census alone, so
+ * the answer is in the table and nobody has said it. It goes into a cell of
+ * its own:</p>
+ *
+ * <pre> &lt;attr name="x" type="Φ.inc.x" void="true" settled="Φ.number"/&gt;</pre>
+ *
+ * <p>A cell of its own and not the {@code holds} the source writes, because a
+ * declaration is true of every caller there will ever be and a sighting only of
+ * the callers this program happens to have. {@link Answers} lets the annotation
+ * win where they disagree, so a void the source typed is told no census.
+ * Told the census, the row of {@code ^ >> txt} in {@code ends-with} said that
+ * the receiver of every {@code ends-with} is {@code Φ.eol}, the one string
+ * eo-runtime happens to take it off (#8960). {@link Ones} leaves such voids
+ * out, and both tables are told from that one reading of the census, since
+ * both want the same answer (#8274).</p>
+ *
+ * <p>A row that reads such a void is told what the void declares, off
+ * {@link Held}, and without the mark. The {@code ^} of every attribute holds
+ * its owner, so a row that stopped at {@code Φ.rope.ends.ρ} handed its reader
+ * a void and a walk through {@code holds} to arrive at {@code Φ.rope}, and 300
+ * of the 343 rows of eo-runtime that end at a receiver ended so. A read on top
+ * of the void is resolved by {@link Provided} already; only the bare read was
+ * left naming it (#8979).</p>
+ *
  * @since 0.74.0
  */
 public final class Named implements Clue {
@@ -62,21 +93,42 @@ public final class Named implements Clue {
     @Override
     public void follow(final Path xmirs, final Path tables) throws IOException {
         this.origin.follow(xmirs, tables);
-        final Map<String, String> ones = new Ones(
-            new XMLDocument(tables.resolve("provides.xml"))
-        ).all();
+        final Path provides = tables.resolve("provides.xml");
+        final XML given = new XMLDocument(provides);
+        final Map<String, String> ones = new Ones(given).all();
+        for (final Xnav type : new Rows(given).all()) {
+            type.elements(Filter.withName("attr"))
+                .filter(attr -> "true".equals(new Noted(attr).says("void")))
+                .filter(attr -> ones.containsKey(new Noted(attr).says("type")))
+                .forEach(hollow -> Named.settle(hollow, ones.get(new Noted(hollow).says("type"))));
+        }
+        Files.write(provides, given.toString().getBytes(StandardCharsets.UTF_8));
         final Path links = tables.resolve("links.xml");
         final XML table = new XMLDocument(links);
+        final Map<String, String> declared = new Held(given).all();
         for (final Xnav row : new Rows(table).all()) {
-            row.elements(Filter.withName("ref")).forEach(ref -> Named.told(ref, ones));
+            row.elements(Filter.withName("ref")).forEach(ref -> Named.told(ref, ones, declared));
         }
         Files.write(links, table.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    private static void told(final Xnav ref, final Map<String, String> ones) {
-        final String sole = ones.getOrDefault(new Noted(ref).says("loc"), "");
-        if (!sole.isEmpty() && !ref.elements(Filter.withName("union")).findAny().isPresent()) {
-            new Xembler(new Directives().attr("loc", sole)).applyQuietly(ref.node());
+    private static void told(
+        final Xnav ref, final Map<String, String> ones, final Map<String, String> declared
+    ) {
+        final String loc = new Noted(ref).says("loc");
+        if (!ref.elements(Filter.withName("union")).findAny().isPresent()) {
+            if (ones.containsKey(loc)) {
+                new Xembler(
+                    new Directives().attr("loc", ones.get(loc)).attr("witnessed", "true")
+                ).applyQuietly(ref.node());
+            } else if (declared.containsKey(loc)) {
+                new Xembler(new Directives().attr("loc", declared.get(loc)))
+                    .applyQuietly(ref.node());
+            }
         }
+    }
+
+    private static void settle(final Xnav hollow, final String sole) {
+        new Xembler(new Directives().attr("settled", sole)).applyQuietly(hollow.node());
     }
 }

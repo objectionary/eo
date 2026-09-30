@@ -15,10 +15,11 @@
   and its body never refers to its own "φ" (that would open a way to the call
   other than the one through the loop). A call "ξ.ρ.F" is in a tail position
   when every step from the root of the "φ" expression down to it is one of
-  two: a branch of an ".if" (the argument α0 or α1, never the receiver), or
-  the last element of the tuple that a "seq" is applied to, which after
-  "stars-to-tuples" is the α1 of the "Φ.tuple" standing as the α0 of the
-  "Φ.seq". Both "bool.if" and "seq" answer exactly that element, so the value
+  two: a branch of an ".if" (its first or second argument, never the
+  receiver), or the last element of the tuple that a "seq" is applied to,
+  which after "stars-to-tuples" is the second argument of the "Φ.tuple"
+  standing as the first argument of the "Φ.seq", positional or named alike
+  (see "eo:arg"). Both "bool.if" and "seq" answer exactly that element, so the value
   of the whole body is the value of the call whenever the call is forced,
   and continuing with the next copy in place of the current one is sound.
   The operands of ".or" and ".and" are not tail positions: "bytes.or" is

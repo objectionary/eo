@@ -41,7 +41,7 @@ final class MjParseIT {
                 MjParseIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",
-                    f.files().file("target/eo/1-parse/foo.xmir").exists(),
+                    f.files().file("target/eo/03-parse/foo.xmir").exists(),
                     Matchers.is(true)
                 );
             }

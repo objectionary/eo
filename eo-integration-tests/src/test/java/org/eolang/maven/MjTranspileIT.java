@@ -105,7 +105,7 @@ final class MjTranspileIT {
         );
         MatcherAssert.assertThat(
             "the plugin must still understand the old name of the tracking option",
-            temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
+            temp.resolve("target/eo/07-pre-transpile").toFile().exists(),
             Matchers.is(true)
         );
     }

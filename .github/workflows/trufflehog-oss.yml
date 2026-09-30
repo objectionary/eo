@@ -7,6 +7,8 @@ name: trufflehog-oss
   push:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: trufflehog-oss-${{ github.ref }}
   cancel-in-progress: false
@@ -20,6 +22,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@48b58d3bf3f02ba17bf23b87f095499bc80c6fd7 # main
         with:
           extra_args: --only-verified

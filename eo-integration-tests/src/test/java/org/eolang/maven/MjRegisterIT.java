@@ -48,7 +48,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
-                    temp.resolve("target/eo/2-pull").toFile().exists(),
+                    temp.resolve("target/eo/01-pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -68,7 +68,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
-                    temp.resolve("target/eo/2-pull").toFile().exists(),
+                    temp.resolve("target/eo/01-pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -114,12 +114,12 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
-                    temp.resolve("target/eo/2-pull/number.eo").toFile().exists(),
+                    temp.resolve("target/eo/01-pull/number.eo").toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "Unnecessary objects were not removed",
-                    temp.resolve("target/eo/2-pull/string.eo").toFile().exists(),
+                    temp.resolve("target/eo/01-pull/string.eo").toFile().exists(),
                     Matchers.is(false)
                 );
             }

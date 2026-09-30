@@ -78,7 +78,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
                     identifier
                 );
             }
@@ -164,43 +164,6 @@ final class Heaps {
     }
 
     /**
-     * Get data from the block in memory by identifier.
-     *
-     * @param identifier Identifier of the pointer
-     * @param offset Offset to start reading from
-     * @param length Length of bytes to read
-     * @return Bytes from the block in memory
-     */
-    byte[] read(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (offset < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read at negative offset '%d'",
-                    identifier, offset
-                );
-            }
-            if (length < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read a negative number of bytes '%d'",
-                    identifier, length
-                );
-            }
-            final Fetched data = this.fetched(identifier, offset, length);
-            return data.bytes().orElseThrow(
-                () -> new ExFailure(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    data.size()
-                )
-            );
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
      * Write given data to the block in memory by given identifier.
      *
      * @param identifier Identifier of the pointer
@@ -212,7 +175,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Can't read a block in memory with identifier '%d' because it's not allocated",
+                    "Can't write a block in memory with identifier '%d' because it's not allocated",
                     identifier
                 );
             }

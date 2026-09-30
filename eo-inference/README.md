@@ -114,11 +114,35 @@ program:
 5953 a formation, voids still free
 22293 a formation, nothing left free
 9728 nothing left to find out
+581 rooted at a void nobody fills
+7790 rooted at a void the callers fill
+3 rooted at a void only an atom fills
+745 answered with a choice
 ```
 
 One number a line, the value first and the name of it after, so that a shell
 can read it with one `read` and know nothing about what any of it means. The
 rungs go down with the shares and not instead of them, for the reason above.
+
+The three under the rung of the voids go down with them for a reason of their
+own. That rung is one number and three different situations, and only one of
+the three is ours. A void nobody fills and a void only Java fills are as far
+as anybody can go: the name is weak and it is true, and no amount of work will
+make it say more. A void the callers of the program fill is a gap we left,
+since the program says what goes in there and `Witnessed` wrote it down, so a
+name still rooted at it means we did not use what we recorded. Added together
+the three make a share that cannot get worse when we are wrong, which is the
+one thing a measurement of ourselves must never do. They are bands rather than
+rungs, so `Band` works them out and a page and a tally cannot disagree about
+them, and they sum to the rung above.
+
+The last line is neither a share nor a rung. A call on a void that holds a
+picker hands back one of the arguments it was given, and where those agree on
+nothing the row names all of them rather than none. That is a real answer, and
+no rung can show it: the walk ended at the void either way, so an object told
+it is either a `Φ.dial` or a `Φ.clock` is counted beside an object told
+nothing. It goes last and on its own, because a share that started counting
+arms would be a share nobody could compare against an older build.
 
 A pull request that touches the rules, the parser, the plugin or the program
 they are read from is built twice by `.github/workflows/ladder.yml` — once at
@@ -184,9 +208,220 @@ more question:
 | `Resolved` | What every dispatch turns out to be. `a.b.c` is walked one hop at a time, each hop asked of the type the last one arrived at, looking behind a delegation and into a package where it has to. |
 | `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
 | `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
-| `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
+| `Witnessed` | What the program is seen to put into every void, gathered from every application that fills it, as the choice between the types put there. A build reads the program whole, library and all, so this is every caller there is, and rule 6 below reads it as the answer rather than as evidence of one. |
+| `Named` | Which object a void is settled at, read off the census `Witnessed` gathered, where that census names one type the table has a row for; several members become a choice under #8982. It is written on the row of the void as `settled`, and on every link that stops at the void, marked `witnessed`. A link that stops at a void the source declared is told the `holds` instead, unmarked, so the read of a `^` names its owner. |
 
 `Depth` then walks the finished tables and puts every object on its rung.
+
+A void row carries two answers and they are not the same answer. `holds` is
+what the source declared, in `? > code /Q.number`, true of every caller there
+will ever be; `settled` is what `Named` read off the census, true of the callers
+this program has, which are all of them. It is written only where the source
+declared nothing, a reader after the type of a void reads it second, and it may
+be a choice.
+
+A link says where its answer came from. A `ref` or a `bind` that was reached
+only through what the program was seen to put into a void carries
+`witnessed="true"`: the call on a void that its one caller fills with a
+`refused` is a copy of `refused` and fills its `message` because that caller
+does. The mark is provenance and not doubt, since the callers of the program
+are all the callers there are; it says which rows change when a caller does.
+A pass renaming arguments after the voids they land in leaves such rows out
+today, and #8982 decides whether it goes on doing so:
+
+```xml
+<type id="Φ.socket.connect.φ.α0">
+  <ref loc="Φ.socket.refused" witnessed="true">
+    <bind void="Φ.socket.refused.message" witnessed="true">
+      <ref loc="Φ.socket.connect.φ.α0.α0"/>
+    </bind>
+  </ref>
+</type>
+```
+
+A `ref` is marked where the passes, run once more with no void named after
+its callers, do not arrive at it, and wherever `Named` wrote it from the
+census; a `bind` is marked where only the relay into what a void holds put it
+there.
+
+### What a choice comes back as
+
+`x.if a b` is never about `x`. The `if` of a boolean is a void, `true` fills
+it with a formation that hands back its first argument and `false` with one
+that hands back its second, so the call is one of its two arms, and which one
+is not known. Every rule below is about an arm: what it is, and what the row
+that reads the call may therefore claim. A program is everything compiled
+together and there are no later callers, so a row asserts what every run of
+the program does, and a rule that would need a caller who is not there is not
+a rule of this module.
+
+**Rule 1. An arm that is a picker's input is what the call passed.** The
+`if` of a boolean holds a formation that gives back one of its inputs and
+nothing of its own:
+
+```eo
+[if] > bool
+  if > @
+
+[^] > true
+  bool > @
+    [^ left right]
+      left > @
+
+[^] > false
+  bool > @
+    [^ left right]
+      right > @
+
+[] > app
+  flag.if a b > answer
+```
+
+`answer` is `a` or `b`. Where both are a `Φ.file` the row says `Φ.file`;
+where one is a `Φ.file` and the other a `Φ.string` it says the choice of the
+two, written as a `union` inside the `ref` so that the row stays a pair
+(#8744).
+
+**Rule 2. An arm the formation computes itself is that body's own type,**
+whatever went into the slots:
+
+```eo
+[] > odd
+  [left right] > if
+    42 > @
+
+[] > app
+  odd.if a b > answer
+```
+
+`answer` is a `Φ.number` whatever `a` and `b` are, since this `if` reads
+neither. Where `flag` above may hold `true`, `false` or `odd`, every one of
+them contributes an arm and the row is the choice of `a`, `b` and
+`Φ.number`. A body nobody has settled is an unknown member of that choice,
+never a guess.
+
+**Rule 3. An arm that is the `^` of an attribute is exactly its owner.**
+`made` is an attribute of `directory`, so only a `Φ.directory` ever sits in
+its `^`:
+
+```eo
+[] > directory
+  [^] > made
+    ^.exists.if > @
+      ^
+      ^.created
+
+[] > wrapper
+  directory > @
+
+[] > app
+  wrapper.made > answer
+```
+
+The first arm is a `Φ.directory` even at `wrapper.made`, where the read falls
+through the wrapper's body and the runtime stamps `made` with the directory
+it was found on, not with the wrapper. The source declares this in `holds`,
+and anything else seen there is a bug in the tool.
+
+**Rule 4. An arm that is the `^` of an anonymous formation is what its
+readers put there.** A formation written as an argument belongs to nobody:
+
+```eo
+[] > foo
+  x > @
+    [^]
+      5 > five
+  [y] > x
+    $.y.five > @
+```
+
+The `[^]` sits inside `foo`, but its `^` is filled by the first dotted read
+of it, `$.y` inside `x`, so it is an `x` and not a `foo`. Nothing is declared
+for it, and the answer comes from the readers alone.
+
+**Rule 5. An arm that is an input is what this call passed,** and is dead
+where this call passed nothing:
+
+```eo
+[^ cant-check] > is-symlink
+  ^.stat.code.eq 0 > ok
+  ok.if > @
+    ^.stat.mode.eq 40960
+    cant-check
+
+[] > app
+  f.is-symlink "hi" > first
+  f.is-symlink 42 > second
+  f.is-symlink.if > third
+    f.unlink
+    f.rmdir
+```
+
+The first arm is a `Φ.bool` at every call. The second is what each call put
+into `cant-check`: a `Φ.string` at `first`, a `Φ.number` at `second`, and
+nothing at `third`, where the arm is dead, since a run that takes it reads an
+empty void and stops. A formation written inline in that place is what it
+reduces to.
+
+**Rule 6. The general answer of a formation is the union of its real calls.**
+Asked of `is-symlink` itself rather than of one call on it, the answer is what
+every call in the program made it return, joined: a `Φ.bool`, a `Φ.string` or
+a `Φ.number` for the three calls above. There is no fourth caller to wait for.
+
+**Rule 7. An arm that terminates is dead** and takes no part in the agreement
+or in the choice (#8946):
+
+```eo
+[] > directory
+  [^] > tmpfile
+    ^.exists.if > @
+      file "tmp"
+      T "cannot make it"
+```
+
+`T` never hands anything back, so `tmpfile` is a `Φ.file`.
+
+**Rule 8. A read an arm cannot answer kills that arm.** Taking a name an arm
+does not have stops the program on that arm, so the other arms answer:
+
+```eo
+[] > app
+  flag.if > chosen
+    "text"
+    42
+  chosen.trimmed > answer
+```
+
+`chosen` is a `Φ.string` or a `Φ.number`. A number has no `trimmed`, so a run
+that chose `42` stops at that read, and `answer` is what `"text".trimmed` is,
+a `Φ.string`. An arm nobody can see into is another matter: it stays unknown,
+and unknown is not dead.
+
+Four things the rules lean on, said once.
+
+Arms *agree* when they are the same formation after alias reduction, which is
+the name `Reduced` wrote on the row. Standing on a shared ancestor is not
+agreement: `Φ.string` and `Φ.number` both stand on `Φ.bytes`, and a call that
+is one or the other is a choice of the two and not a `Φ.bytes`. A page may
+show the ancestor; the row keeps the arms.
+
+Rule 3 is applied before rule 5. A declared `^` sits among the voids like any
+input, and the `if` that chooses on it rarely fills it, yet it is never empty,
+so it is never dead.
+
+A void is *filled* where a call put something into it, where the source
+declared what it holds, as `? > size /Q.number` does and as the `^` of every
+attribute does, or where an atom is declared to hand into it, as
+`? > scope /{Q.chunk}` does. Only a void none of those reaches is empty.
+
+A union is written whole, however many members it has. The page caps what it
+lists; the table does not, since a reader of the table wants the fact.
+
+Rules 1, 2, 3, 4 and 7 are what the passes do today. Rule 5 keeps an empty
+input as a live unknown arm (#8981), rule 6 is read for one member and refused
+for several (#8982), rule 8 empties the whole read where one arm lacks the
+name (#8881). Each of those gets a
+pack in `inference-packs` the day it lands, and this paragraph shrinks with it.
 
 ## How the behaviour is described
 
