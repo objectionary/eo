@@ -39,7 +39,7 @@ java: |
   /**
    * The atom that took the place of the body of Φ.number.neg.
    */
-  @XmirObject(oname = "φ")
+  @XmirObject(oname = "number.neg.φ")
   public final class EOnumber$EOneg$EOφ extends PhDefault implements Atom {
       public EOnumber$EOneg$EOφ() {
           super(new Attrs(new Attr(Phi.RHO, new AtRho())));

@@ -45,7 +45,7 @@ java: |
   /**
    * The atom that took the place of the body of Φ.bytes.as-bool.
    */
-  @XmirObject(oname = "φ")
+  @XmirObject(oname = "bytes.as-bool.φ")
   public final class EObytes$EOas_bool$EOφ extends PhDefault implements Atom {
       public EObytes$EOas_bool$EOφ() {
           super(new Attrs(new Attr(Phi.RHO, new AtRho())));

@@ -34,7 +34,7 @@ java: |
   /**
    * The atom that took the place of the body of Φ.foo.b-ar.a-b.c_d.
    */
-  @XmirObject(oname = "φ")
+  @XmirObject(oname = "a-b.c_d.φ")
   public final class EOa_b$EOc__d$EOφ extends PhDefault implements Atom {
       public EOa_b$EOc__d$EOφ() {
           super(new Attrs(new Attr(Phi.RHO, new AtRho())));

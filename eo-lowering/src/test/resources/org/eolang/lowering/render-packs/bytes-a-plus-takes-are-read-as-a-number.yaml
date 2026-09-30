@@ -38,7 +38,7 @@ java: |
   /**
    * The atom that took the place of the body of Φ.sum.
    */
-  @XmirObject(oname = "φ")
+  @XmirObject(oname = "sum.φ")
   public final class EOsum$EOφ extends PhDefault implements Atom {
       public EOsum$EOφ() {
           super(new Attrs(new Attr(Phi.RHO, new AtRho())));

@@ -57,7 +57,7 @@ java: |
   /**
    * The atom that took the place of the body of Φ.twice.
    */
-  @XmirObject(oname = "φ")
+  @XmirObject(oname = "twice.φ")
   public final class EOtwice$EOφ extends PhDefault implements Atom {
       public EOtwice$EOφ() {
           super(new Attrs(new Attr(Phi.RHO, new AtRho())));
