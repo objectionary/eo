@@ -77,6 +77,18 @@ public final class MjInference extends MjSafe {
     private File tables;
 
     /**
+     * The depth, out of a hundred, the tables must reach. A build that goes
+     * below it is broken, so that a sharpness once reached is kept. Zero, the
+     * default, demands nothing.
+     */
+    @Parameter(
+        alias = "inferenceDepth",
+        property = "eo.inferenceDepth",
+        defaultValue = "0"
+    )
+    private double least;
+
+    /**
      * Ctor.
      */
     public MjInference() {
@@ -89,7 +101,8 @@ public final class MjInference extends MjSafe {
             new Inferring(
                 this.target.toPath().resolve(Parsing.DIR),
                 this.prepared.toPath(),
-                this.tables.toPath()
+                this.tables.toPath(),
+                this.least
             )
         ).exec();
     }

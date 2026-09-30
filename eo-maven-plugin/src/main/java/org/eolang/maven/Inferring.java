@@ -64,6 +64,12 @@ import org.xembly.Xembler;
  * the base and for the branch, to say on the pull request which way we
  * moved.</p>
  *
+ * <p>A build may also demand a depth of its own and break when the tables come
+ * out below it, which is how a sharpness once reached is kept: the rules may
+ * not quietly get worse than they were the day the demand was written down.
+ * {@link MjInference} names the demand, and a build that demands nothing,
+ * the default, is never broken by it.</p>
+ *
  * @since 0.67.0
  */
 final class Inferring implements Step {
@@ -87,6 +93,12 @@ final class Inferring implements Step {
     private final Path tables;
 
     /**
+     * The depth, out of a hundred, the tables must reach, below which the
+     * build is broken.
+     */
+    private final double least;
+
+    /**
      * Ctor.
      *
      * @param parsed The directory with XMIR files, as the parser leaves them
@@ -95,9 +107,23 @@ final class Inferring implements Step {
      * @param rows The directory for the tables
      */
     Inferring(final Path parsed, final Path pre, final Path rows) {
+        this(parsed, pre, rows, 0.0d);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param parsed The directory with XMIR files, as the parser leaves them
+     *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
+     * @param pre The directory for the prepared XMIR files
+     * @param rows The directory for the tables
+     * @param minimum The depth, out of a hundred, the tables must reach
+     */
+    Inferring(final Path parsed, final Path pre, final Path rows, final double minimum) {
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
+        this.least = minimum;
     }
 
     @Override
@@ -138,15 +164,24 @@ final class Inferring implements Step {
         final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
         final Path numbers = this.tables.resolveSibling("ladder.txt");
         Files.write(numbers, ladder.lines(), StandardCharsets.UTF_8);
+        final double reached = ladder.percent();
         Logger.info(
             this,
             "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
-            ladder.total(), ladder.named(), ladder.rooted(), ladder.blank(), ladder.percent()
+            ladder.total(), ladder.named(), ladder.rooted(), ladder.blank(), reached
         );
         for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
             Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
         }
         Logger.info(this, "The same numbers are written down in %[file]s", numbers);
+        if (reached < this.least) {
+            throw new IllegalStateException(
+                Logger.format(
+                    "The types of %d object(s) are understood to a depth of %.1f%%, while %.1f%% is demanded, see %[file]s for the rungs behind the number",
+                    ladder.total(), reached, this.least, numbers
+                )
+            );
+        }
     }
 
     private void declared() throws IOException {

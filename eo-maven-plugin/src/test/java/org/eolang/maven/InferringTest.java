@@ -142,6 +142,47 @@ final class InferringTest {
     }
 
     @Test
+    void refusesAProgramShallowerThanDemanded(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("gate"));
+        Files.writeString(
+            sources.resolve("hinge.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(), "[pin] > hinge", "  pin.head > @", ""
+                )
+            ).parsed().toString()
+        );
+        MatcherAssert.assertThat(
+            "the refusal must say what depth was demanded, but it didnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Inferring(
+                    sources, temp.resolve("pre"), temp.resolve("rows"), 100.0d
+                ).exec(),
+                "a program understood less deeply than demanded must break the build, but it didnt"
+            ).getMessage(),
+            Matchers.containsString("100.0%")
+        );
+    }
+
+    @Test
+    void takesAProgramDeeperThanDemanded(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("well"));
+        Files.writeString(
+            sources.resolve("bucket.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > bucket", "  [] > handle", "")
+            ).parsed().toString()
+        );
+        Assertions.assertDoesNotThrow(
+            () -> new Inferring(
+                sources, temp.resolve("pre"), temp.resolve("rows"), 87.5d
+            ).exec(),
+            "a program standing above the depth demanded of it must pass, but it didnt"
+        );
+    }
+
+    @Test
     void forgetsSourceThatIsGone(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("shed"));
         Files.writeString(
