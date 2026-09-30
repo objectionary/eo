@@ -79,10 +79,10 @@ final class RenderingTest {
     /**
      * One YAML file with an example for {@link Rendering}.
      *
-     * <p>The file has EO sources, one entry, its protocol, and the lines
-     * that the Java atom of that entry must contain. When the file names
-     * no Java file, the entry must be a taint, and no atom may be
-     * written.</p>
+     * <p>The file has EO sources, one entry, its protocol, and the whole
+     * text of the Java atom of that entry, which the rendering must write
+     * exactly. When the file names no Java file, the entry must be a taint,
+     * and no atom may be written.</p>
      *
      * @since 0.74.0
      */
@@ -147,10 +147,8 @@ final class RenderingTest {
             final Path file = atoms.resolve(this.story.map().get("file").toString());
             if (Files.exists(file)) {
                 final String java = Files.readString(file, StandardCharsets.UTF_8);
-                for (final Object line : this.demands("java")) {
-                    if (!java.contains(line.toString())) {
-                        failed.add(String.format("java: %s%nin:%n%s", line, java));
-                    }
+                if (!java.equals(this.story.map().get("java"))) {
+                    failed.add(String.format("java differs, the rendering wrote:%n%s", java));
                 }
             } else {
                 failed.add(String.format("file: %s, only %s", file, this.files(atoms)));
