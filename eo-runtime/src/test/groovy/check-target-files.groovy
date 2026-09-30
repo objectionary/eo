@@ -18,17 +18,12 @@ List<String> expected = [
 ]
 
 for (path in expected) {
-    File f = basedir.toPath().resolve('target').toFile()
-    for (step in path.split('/')) {
-        if (step.startsWith('NN-')) {
-            String name = step.substring(3)
-            File numbered = f.listFiles()?.find {
-                it.directory && it.name.matches('\\d{2,}-' + java.util.regex.Pattern.quote(name))
-            }
-            f = numbered ?: new File(f, step)
-        } else {
-            f = new File(f, step)
+    File f = path.split('/').inject(basedir.toPath().resolve('target').toFile()) { File dir, String step ->
+        File numbered = dir.listFiles()?.find { File sub ->
+            step.startsWith('NN-') && sub.directory &&
+                sub.name.matches('\\d{2,}-' + java.util.regex.Pattern.quote(step.substring(3)))
         }
+        numbered ?: new File(dir, step)
     }
     if (!f.exists()) {
         fail("The file '${f}' is not present")
