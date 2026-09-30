@@ -39,7 +39,8 @@ import org.w3c.dom.Node;
  *
  * <p>The class scans all the EO sources registered in the foreign file catalog
  * and then parses those that were not parsed before (i.e. do not have XMIRs yet)
- * to XMIR format. The resulting XMIR files are stored in the {@link #DIR} directory.</p>
+ * to XMIR format. The resulting XMIR files are stored in a directory
+ * {@link Subdir} numbers "parse".</p>
  *
  * @since 0.1
  */
@@ -49,11 +50,6 @@ final class Parsing implements Step {
      * Zero version.
      */
     static final String ZERO = "0.0.0";
-
-    /**
-     * The directory where to parse to.
-     */
-    static final String DIR = "1-parse";
 
     /**
      * Subdirectory for parsed cache.
@@ -157,7 +153,7 @@ final class Parsing implements Step {
     }
 
     private boolean unparsed(final TjForeign tojo) {
-        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
+        return tojo.notParsed() || !tojo.xmir().startsWith(new Subdir(this.target, "parse").path());
     }
 
     private int parsed(
@@ -165,7 +161,7 @@ final class Parsing implements Step {
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = this.target.resolve(Parsing.DIR);
+        final Path base = new Subdir(this.target, "parse").path();
         final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
@@ -206,7 +202,7 @@ final class Parsing implements Step {
     ) throws IOException {
         final Xmir xmir = new EoSource(tojo.identifier(), tojo.source(), pipeline).parsed(
             pipeline.apply(
-                new Raws(this.cache.with("raws"), this.target.resolve("0-raw")).of(tojo)
+                new Raws(this.cache.with("raws"), new Subdir(this.target, "raw").path()).of(tojo)
             )
         );
         Logger.debug(

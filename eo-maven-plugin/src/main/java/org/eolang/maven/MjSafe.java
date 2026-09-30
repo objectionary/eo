@@ -597,7 +597,7 @@ abstract class MjSafe extends AbstractMojo {
             new Timed(
                 new Pulling(
                     tojos,
-                    this.target.toPath().resolve(Pulling.DIR),
+                    this.target.toPath(),
                     this.hash,
                     this.objectionary(),
                     this.cache.toPath().resolve(Pulling.CACHE),

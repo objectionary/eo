@@ -41,7 +41,7 @@ final class MjPrintIT {
                 f.files()
                     .file("src/main/xmir/foo.xmir").save(
                         f.files()
-                            .file("target/eo/1-parse/foo.xmir")
+                            .file("target/eo/03-parse/foo.xmir")
                             .path()
                     );
                 f.exec("eo:print");

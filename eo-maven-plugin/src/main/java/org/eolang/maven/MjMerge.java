@@ -22,7 +22,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * <p>It runs after {@link MjLint}, so that every member is read and reported
  * on as the file a human wrote, and before {@link MjTranspile}, which is the
  * first goal that cares about the shape of the object it compiles. The
- * merged XMIR goes to {@link Merging#DIR}.</p>
+ * merged XMIR goes to a directory {@link Subdir} numbers "merge".</p>
  *
  * <p>Every package this build compiles an object for is merged. A package
  * whose name no object carries keeps its members as objects of their own,
@@ -56,7 +56,7 @@ public final class MjMerge extends MjSafe {
             new Timed(
                 new Merging(
                     tojos,
-                    this.target.toPath().resolve(Merging.DIR)
+                    this.target.toPath()
                 )
             ).exec();
         }

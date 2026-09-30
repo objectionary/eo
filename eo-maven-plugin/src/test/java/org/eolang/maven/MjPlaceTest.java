@@ -87,7 +87,7 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(temp.resolve("target").resolve(MjResolve.DIR));
+        Files.createDirectories(new Subdir(temp.resolve("target"), "resolve").path());
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
@@ -252,7 +252,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
             content,
-            temp.resolve("target").resolve(MjResolve.DIR).resolve(
+            new Subdir(temp.resolve("target"), "resolve").path().resolve(
                 Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();

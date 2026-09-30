@@ -201,12 +201,6 @@ final class FakeMaven {
             );
             this.params.putIfAbsent("generated", this.generatedPath().toFile());
             this.params.putIfAbsent(
-                "prepared", this.targetPath().resolve("6-pre-inference").toFile()
-            );
-            this.params.putIfAbsent(
-                "tables", this.targetPath().resolve("6-inference").toFile()
-            );
-            this.params.putIfAbsent(
                 "pages", this.targetPath().getParent().resolve("site/inference").toFile()
             );
             this.params.putIfAbsent("placedFormat", "csv");
@@ -239,6 +233,17 @@ final class FakeMaven {
      */
     Path targetPath() {
         return this.workspace.resolve("target");
+    }
+
+    /**
+     * Name of the numbered subdirectory of the target directory a stage
+     * named {@code name} writes to.
+     *
+     * @param name Stage name, e.g. "parse"
+     * @return Directory name, e.g. "01-parse"
+     */
+    String dirName(final String name) {
+        return new Subdir(this.targetPath(), name).path().getFileName().toString();
     }
 
     /**
