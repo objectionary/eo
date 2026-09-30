@@ -100,7 +100,12 @@ final class Phino {
     void merge(final Iterable<Path> xmirs, final Path world) throws IOException {
         this.run(
             new Jaxec(
-                this.binary, "merge", "--input=xmir", "--sweet", "--target", world.toString()
+                this.binary,
+                "merge",
+                "--input=xmir",
+                "--sweet",
+                "--target",
+                world.toString()
             ).with(new Mapped<>(Path::toString, xmirs)),
             String.format("merging the world into '%s'", world)
         );
@@ -140,7 +145,8 @@ final class Phino {
         try {
             this.run(
                 new Jaxec(
-                    this.binary, "morph",
+                    this.binary,
+                    "morph",
                     "--deep",
                     "--acyclic=plausible",
                     "--partial",
