@@ -68,7 +68,7 @@ public final class MjAtomsTable extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = this.dir(this.sources, "parse");
+        final Path home = new Subdir(this.target, "parse").orConfigured(this.sources);
         if (!Files.isDirectory(home)) {
             Logger.info(
                 this,

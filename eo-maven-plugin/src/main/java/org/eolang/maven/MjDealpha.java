@@ -69,7 +69,11 @@ public final class MjDealpha extends MjSafe {
             new Timed(
                 new Dealphaing(
                     tojos.standalone(),
-                    new Landings(this.dir(this.tables, "inference").resolve("links.xml")),
+                    new Landings(
+                        new Subdir(this.target, "inference")
+                            .orConfigured(this.tables)
+                            .resolve("links.xml")
+                    ),
                     this.target.toPath(),
                     this.rigid
                 )

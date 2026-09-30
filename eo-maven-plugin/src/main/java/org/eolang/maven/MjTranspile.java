@@ -182,7 +182,7 @@ public final class MjTranspile extends MjSafe {
                         this.base(),
                         this.measures.toPath(),
                         this.target.toPath(),
-                        this.dir(this.tables, "inference")
+                        new Subdir(this.target, "inference").orConfigured(this.tables)
                     ),
                     this.stored()
                 )

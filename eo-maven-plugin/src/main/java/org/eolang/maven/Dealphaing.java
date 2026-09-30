@@ -98,7 +98,7 @@ final class Dealphaing implements Step {
             final Map<String, String> names = this.landings.names();
             final Map<String, Collection<String>> verdicts = new HashMap<>(3);
             for (final TjForeign tojo : this.tojos) {
-                this.renamed(tojo, dir, names, verdicts);
+                Dealphaing.renamed(tojo, dir, names, verdicts);
             }
             final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
             Logger.info(
@@ -121,7 +121,7 @@ final class Dealphaing implements Step {
         }
     }
 
-    private void renamed(
+    private static void renamed(
         final TjForeign tojo,
         final Path dir,
         final Map<String, String> names,

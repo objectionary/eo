@@ -11,7 +11,6 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -38,11 +37,12 @@ final class MjDealphaTest {
                 "  foo 42 > @"
             )
         );
-        final Map<String, Path> result = maven.execute(new PpDealpha()).result();
         MatcherAssert.assertThat(
             "the argument must carry the name of the void it fills, but it doesnt",
             new XMLDocument(
-                result.get(String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha")))
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='bar']")
         );
@@ -60,11 +60,12 @@ final class MjDealphaTest {
                 "  half 2 > @"
             )
         );
-        final Map<String, Path> result = maven.execute(new PpDealpha()).result();
         MatcherAssert.assertThat(
             "the argument of a curried copy must fill the void left vacant, but it doesnt",
             new XMLDocument(
-                result.get(String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha")))
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='right']")
         );
@@ -79,11 +80,12 @@ final class MjDealphaTest {
                 "  f 7 > @"
             )
         );
-        final Map<String, Path> result = maven.execute(new PpDealpha()).result();
         MatcherAssert.assertThat(
             "an argument of a void has nowhere to land, but it was renamed",
             new XMLDocument(
-                result.get(String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha")))
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
         );

@@ -116,13 +116,12 @@ final class MjTranspileTest {
             .withProgram(src)
             .with("cache", cache.toFile())
             .with("tracking", true);
-        final Map<String, Path> result = maven
-            .execute(MjParse.class)
-            .execute(MjTranspile.class)
-            .result();
         MatcherAssert.assertThat(
             "a second build with the same flag and source must write the steps again, but the cache took them away",
-            result,
+            maven
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
             Matchers.hasKey(
                 String.format(
                     "target/%s/examples/x/01-set-locators.xml", maven.dirName("pre-transpile")
@@ -135,13 +134,12 @@ final class MjTranspileTest {
     void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjTranspileTest.pair())
             .with("tracking", true);
-        final Map<String, Path> result = maven
-            .execute(MjParse.class)
-            .execute(MjTranspile.class)
-            .result();
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
-            result,
+            maven
+                .execute(MjParse.class)
+                .execute(MjTranspile.class)
+                .result(),
             Matchers.hasKey(
                 String.format(
                     "target/%s/examples/x/01-set-locators.xml", maven.dirName("pre-transpile")
@@ -525,10 +523,9 @@ final class MjTranspileTest {
             "  ? > y",
             "  ? > z"
         );
-        final Map<String, Path> result = maven.execute(new PpTranspile()).result();
         MatcherAssert.assertThat(
             "TranspileMojo should not touch atoms, but it did",
-            result,
+            maven.execute(new PpTranspile()).result(),
             Matchers.not(
                 Matchers.allOf(
                     Matchers.hasKey(

@@ -80,8 +80,8 @@ public final class MjInference extends MjSafe {
         new Timed(
             new Inferring(
                 new Subdir(this.target, "parse").path(),
-                this.dir(this.prepared, "pre-inference"),
-                this.dir(this.tables, "inference")
+                new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
+                new Subdir(this.target, "inference").orConfigured(this.tables)
             )
         ).exec();
     }

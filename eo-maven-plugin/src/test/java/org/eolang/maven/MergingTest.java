@@ -34,8 +34,9 @@ final class MergingTest {
             member,
             new EoSyntax("[] > bar").parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path merge = new Subdir(temp, "merge").path();
-        final Path target = new Place("foo").make(merge, MjAssemble.XMIR);
+        final Path target = new Place("foo").make(
+            new Subdir(temp, "merge").path(), MjAssemble.XMIR
+        );
         this.merge(pkg, member, temp);
         final FileTime before = Files.getLastModifiedTime(target);
         Thread.sleep(1_100L);

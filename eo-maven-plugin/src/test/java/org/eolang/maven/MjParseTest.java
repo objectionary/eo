@@ -147,10 +147,9 @@ final class MjParseTest {
             "  seq *-1 > @",
             "    true"
         );
-        final Map<String, Path> result = maven.execute(new PpParse()).result();
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
-            result,
+            maven.execute(new PpParse()).result(),
             Matchers.hasKey(
                 String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
             )
@@ -324,11 +323,10 @@ final class MjParseTest {
             "[] > app",
             "main"
         );
-        final Map<String, Path> result = maven.execute(new PpParse()).result();
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                result.get(
+                maven.execute(new PpParse()).result().get(
                     String.format("target/%s/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
                 )
             ),
@@ -343,11 +341,10 @@ final class MjParseTest {
     @Test
     void addsErrorsWhenObjectNameFails(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram("# App.");
-        final Map<String, Path> result = maven.execute(new PpParse()).result();
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                result.get(
+                maven.execute(new PpParse()).result().get(
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("parse"))
                 )
             ),

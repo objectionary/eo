@@ -7,7 +7,6 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
@@ -621,24 +620,5 @@ abstract class MjSafe extends AbstractMojo {
      */
     GlobalCache caching(final String sub) {
         return new Caching(this.cache, this.cacheEnabled, this.plugin.getVersion()).forStep(sub);
-    }
-
-    /**
-     * The path a directory parameter falls back to when the user left it
-     * unset: a directory {@link Subdir} numbers {@code name} under
-     * {@link #target}.
-     *
-     * @param configured The value of the parameter, or null when unset
-     * @param name The name {@link Subdir} should know this directory by
-     * @return The path to use
-     */
-    final Path dir(final File configured, final String name) {
-        final Path path;
-        if (configured == null) {
-            path = new Subdir(this.target, name).path();
-        } else {
-            path = configured.toPath();
-        }
-        return path;
     }
 }

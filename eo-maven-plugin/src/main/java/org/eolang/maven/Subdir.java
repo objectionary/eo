@@ -6,10 +6,10 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A numbered subdirectory of {@code target/eo}.
@@ -28,9 +28,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 final class Subdir {
 
     /**
-     * Names already numbered, per target directory, oldest first.
+     * The number already given to each name asked for so far, per target
+     * directory.
      */
-    private static final Map<Path, List<String>> NUMBERED = new ConcurrentHashMap<>();
+    private static final Map<Path, ConcurrentMap<String, Integer>> NUMBERED =
+        new ConcurrentHashMap<>();
+
+    /**
+     * How many distinct names have been given a number so far, per target
+     * directory.
+     */
+    private static final Map<Path, AtomicInteger> COUNTS = new ConcurrentHashMap<>();
 
     /**
      * The {@code target/eo} directory this subdirectory lives under.
@@ -64,24 +72,40 @@ final class Subdir {
     }
 
     /**
+     * The path of this subdirectory, unless a mojo parameter already
+     * names one to use instead.
+     *
+     * @param configured The value of the parameter, or null when unset
+     * @return The path to use
+     */
+    Path orConfigured(final File configured) {
+        final Path path;
+        if (configured == null) {
+            path = this.path();
+        } else {
+            path = configured.toPath();
+        }
+        return path;
+    }
+
+    /**
      * The path of this subdirectory.
      *
      * @return The path
      */
     Path path() {
-        final List<String> names = Subdir.NUMBERED.computeIfAbsent(
-            this.target, ignored -> new CopyOnWriteArrayList<>()
-        );
-        final int number;
-        synchronized (names) {
-            final int idx = names.indexOf(this.name);
-            if (idx >= 0) {
-                number = idx + 1;
-            } else {
-                names.add(this.name);
-                number = names.size();
-            }
-        }
-        return this.target.resolve(String.format("%02d-%s", number, this.name));
+        return this.target.resolve(String.format("%02d-%s", this.number(), this.name));
+    }
+
+    private int number() {
+        return Subdir.NUMBERED
+            .computeIfAbsent(this.target, ignored -> new ConcurrentHashMap<>())
+            .computeIfAbsent(this.name, ignored -> Subdir.next(this.target));
+    }
+
+    private static int next(final Path target) {
+        return Subdir.COUNTS
+            .computeIfAbsent(target, ignored -> new AtomicInteger())
+            .incrementAndGet();
     }
 }

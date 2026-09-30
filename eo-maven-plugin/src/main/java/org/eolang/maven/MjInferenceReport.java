@@ -67,8 +67,8 @@ public final class MjInferenceReport extends MjSafe {
     void exec() throws IOException {
         new Timed(
             new Reporting(
-                this.dir(this.prepared, "pre-inference"),
-                this.dir(this.tables, "inference"),
+                new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
+                new Subdir(this.target, "inference").orConfigured(this.tables),
                 this.pages.toPath()
             )
         ).exec();
