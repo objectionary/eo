@@ -103,14 +103,11 @@ public final class MjLower extends MjSafe {
     private int budget;
 
     /**
-     * The directory with the tables of {@code eo:inference}.
+     * The directory with the tables of {@code eo:inference}. When it is not
+     * set, the goal uses the directory that {@link Subdir} gives to the name
+     * "inference", which is where {@code eo:inference} saves the tables.
      */
-    @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
-    )
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -130,7 +127,7 @@ public final class MjLower extends MjSafe {
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
-                    this.tables.toPath(),
+                    new Subdir(this.target, "inference").orConfigured(this.tables),
                     this.target.toPath(),
                     this.binary,
                     this.caching("lowered"),

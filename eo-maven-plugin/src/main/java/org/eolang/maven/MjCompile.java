@@ -65,11 +65,11 @@ public final class MjCompile extends MjSafe {
                 ),
                 new Merging(
                     tojos,
-                    this.target.toPath().resolve(Merging.DIR)
+                    this.target.toPath()
                 ),
                 new Resolving(
                     tojos,
-                    this.target.toPath().resolve(MjResolve.DIR),
+                    this.target.toPath(),
                     new CentralMaven(this.system, this.session, this.repositories),
                     this.discover,
                     this.zeros,
@@ -80,7 +80,7 @@ public final class MjCompile extends MjSafe {
                 ),
                 new Placing(
                     placed,
-                    this.target.toPath().resolve(MjResolve.DIR),
+                    new Subdir(this.target, "resolve").path(),
                     this.classes.toPath(),
                     this.placeBinaries,
                     this.skipBinaries,

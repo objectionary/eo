@@ -129,7 +129,9 @@ public final class Resolved implements Clue {
             new Settled(outside, none).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
-        final Map<String, Type> rows = woven.rows(pairs, into.choices(pairs), certain);
+        final Map<String, Type> rows = woven.rows(
+            pairs, into.choices(pairs, into.copies(pairs, Collections.emptyMap())), certain
+        );
         rows.keySet().removeAll(voids);
         rows.putAll(kept);
         final Collection<String> dead = new Dead(written, dispatches, names).all();

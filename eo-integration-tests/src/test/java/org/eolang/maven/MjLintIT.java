@@ -30,7 +30,7 @@ final class MjLintIT {
     @Test
     void lintsAgainAfterModification(@Mktmp final Path temp) throws Exception {
         final String source = "src/main/eo/foo/x/main.eo";
-        final String xmir = "target/eo/3-lint/foo/x/main.xmir";
+        final String xmir = "target/eo/05-lint/foo/x/main.xmir";
         final byte[] prog = MjLintIT.program().getBytes(StandardCharsets.UTF_8);
         new Farea(temp).together(
             f -> {

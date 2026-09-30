@@ -25,8 +25,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and the number of those is written to the log. With {@link #rigid} set,
  * the build fails when there is one.</p>
  *
- * <p>The XMIR goes to {@link Dealphaing#DIR}, and {@link MjTranspile} reads it
- * from there.</p>
+ * <p>The XMIR goes to a directory {@link Subdir} numbers "dealpha", and
+ * {@link MjTranspile} reads it from there.</p>
  *
  * @since 0.69.0
  */
@@ -38,14 +38,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class MjDealpha extends MjSafe {
 
     /**
-     * The directory with the tables that {@link MjInference} writes.
+     * The directory with the tables that {@link MjInference} writes,
+     * falling back to a directory {@link Subdir} numbers "inference"
+     * when unset.
      */
-    @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
-    )
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -71,8 +68,12 @@ public final class MjDealpha extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Dealphaing(
                 tojos.standalone(),
-                new Landings(this.tables.toPath().resolve("links.xml")),
-                this.target.toPath().resolve(Dealphaing.DIR),
+                new Landings(
+                    new Subdir(this.target, "inference")
+                        .orConfigured(this.tables)
+                        .resolve("links.xml")
+                ),
+                this.target.toPath(),
                 this.rigid
             ).exec();
         }
