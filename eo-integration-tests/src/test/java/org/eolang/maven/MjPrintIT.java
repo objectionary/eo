@@ -55,19 +55,11 @@ final class MjPrintIT {
         );
     }
 
-    /**
-     * Find the directory the parse stage put its output in.
-     *
-     * @param home The Farea working directory
-     * @return The path to the parse stage's subdirectory
-     * @throws IOException If fails to list the target/eo directory
-     */
     private static Path parsed(final Path home) throws IOException {
         try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
             return kids
                 .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
-                .findFirst()
-                .orElseThrow(
+                .findFirst().orElseThrow(
                     () -> new IllegalStateException(
                         String.format("No parse directory found under %s", home)
                     )

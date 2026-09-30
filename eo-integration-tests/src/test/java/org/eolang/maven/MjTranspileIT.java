@@ -113,21 +113,12 @@ final class MjTranspileIT {
         );
     }
 
-    /**
-     * Find the name of a target/eo subdirectory by its suffix.
-     *
-     * @param home The Farea working directory
-     * @param suffix The suffix the subdirectory name must end with
-     * @return The subdirectory name, with its numeric prefix
-     * @throws IOException If fails to list the target/eo directory
-     */
     private static String subdir(final Path home, final String suffix) throws IOException {
         try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
             return kids
                 .map(kid -> kid.getFileName().toString())
                 .filter(name -> name.endsWith(suffix))
-                .findFirst()
-                .orElseThrow(
+                .findFirst().orElseThrow(
                     () -> new IllegalStateException(
                         String.format("No '*%s' directory found under %s", suffix, home)
                     )

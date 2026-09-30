@@ -30,18 +30,17 @@ final class XmirIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void validatesWithXsd() throws IOException {
-        final Path eo = Paths.get("").toAbsolutePath().getParent()
+        final Path stages = Paths.get("").toAbsolutePath().getParent()
             .resolve("eo-runtime")
             .resolve("target")
             .resolve("eo");
         final Path parsed;
-        try (Stream<Path> kids = Files.list(eo)) {
+        try (Stream<Path> kids = Files.list(stages)) {
             parsed = kids
                 .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
-                .findFirst()
-                .orElseThrow(
+                .findFirst().orElseThrow(
                     () -> new IllegalStateException(
-                        String.format("No parse directory found under %s", eo)
+                        String.format("No parse directory found under %s", stages)
                     )
                 );
         }
