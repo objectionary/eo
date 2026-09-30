@@ -43,11 +43,11 @@ import org.eolang.lowering.Lowering;
  * left its tables, because an entry is a formation applied to what the
  * tables say its voids hold, and the directory of the build, where the
  * lowering keeps the sources with their tests cut out in
- * {@code 7-lowering-planting}, the world in {@code 7-lowering} and the
- * protocol of every object morphed in {@code 7-lowering-protocols}.
- * The atoms the lowering renders land in {@code 7-lowering-atoms}, which
+ * {@code NN-lowering-planting}, the world in {@code NN-lowering} and the
+ * protocol of every object morphed in {@code NN-lowering-protocols}.
+ * The atoms the lowering renders land in {@code NN-lowering-atoms}, which
  * this goal hands to javac as a source root, and every XMIR file with an
- * atom in the place of a body lands in {@code 7-lowering-patched}, where
+ * atom in the place of a body lands in {@code NN-lowering-patched}, where
  * this goal points the tojo of that object, so the transpiler reads the
  * patched copy and every other object stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one

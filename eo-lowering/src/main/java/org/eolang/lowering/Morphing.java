@@ -42,7 +42,7 @@ import org.eolang.cache.GlobalCache;
  * <p>For every entry, this stage asks phino to compute the body of the
  * entry with symbols as its inputs. This is called "morphing". phino
  * writes down every step it takes into a protocol file. The file is saved
- * in {@code 7-lowering-protocols}, at a path made from the locator of the
+ * in {@code NN-lowering-protocols}, at a path made from the locator of the
  * object, so the protocol of {@code Φ.bytes.as-hex} is
  * {@code bytes/as-hex.xml}.</p>
  *

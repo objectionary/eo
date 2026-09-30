@@ -33,7 +33,7 @@ import org.cactoos.iterable.Sorted;
  *
  * <p>The original sources are never changed. For every source, this stage
  * writes a copy without the tests into the directory
- * {@code 7-lowering-planting}, under the same file name as the source. All
+ * {@code NN-lowering-planting}, under the same file name as the source. All
  * the next stages read these copies. If two sources have the same file
  * name, they would need the same copy, and one of them would be lost
  * without any warning. So, in that case, this stage fails the build. The

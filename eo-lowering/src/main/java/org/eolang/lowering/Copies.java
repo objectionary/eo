@@ -16,7 +16,7 @@ import org.cactoos.iterable.Sorted;
  *
  * <p>The stage {@link Pruning} makes a copy of every source file of the
  * build, removes the tests from it, and saves it into the directory
- * {@code 7-lowering-planting}. All the stages after {@link Pruning} read
+ * {@code NN-lowering-planting}. All the stages after {@link Pruning} read
  * only these copies, and never the original sources. This class lists
  * those copies.</p>
  *

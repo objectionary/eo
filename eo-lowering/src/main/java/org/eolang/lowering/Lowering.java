@@ -32,11 +32,11 @@ import org.eolang.cache.GlobalCache;
  * directory of the build:</p>
  *
  * <ul>
- * <li>{@code 7-lowering-planting} holds the copies of the sources,
+ * <li>{@code NN-lowering-planting} holds the copies of the sources,
  * without the tests;</li>
- * <li>{@code 7-lowering} holds the world and the other files that are
+ * <li>{@code NN-lowering} holds the world and the other files that are
  * made on the way to it;</li>
- * <li>{@code 7-lowering-protocols} holds one protocol file for every
+ * <li>{@code NN-lowering-protocols} holds one protocol file for every
  * entry that phino worked on;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java
  * atoms;</li>
