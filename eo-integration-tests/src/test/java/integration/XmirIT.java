@@ -30,15 +30,22 @@ final class XmirIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void validatesWithXsd() throws IOException {
-        try (
-            Stream<Path> stream = Files.walk(
-                Paths.get("").toAbsolutePath().getParent()
-                    .resolve("eo-runtime")
-                    .resolve("target")
-                    .resolve("eo")
-                    .resolve("04-parse")
-            )
-        ) {
+        final Path eo = Paths.get("").toAbsolutePath().getParent()
+            .resolve("eo-runtime")
+            .resolve("target")
+            .resolve("eo");
+        final Path parsed;
+        try (Stream<Path> kids = Files.list(eo)) {
+            parsed = kids
+                .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
+                .findFirst()
+                .orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No parse directory found under %s", eo)
+                    )
+                );
+        }
+        try (Stream<Path> stream = Files.walk(parsed)) {
             stream.filter(Files::isRegularFile).forEach(
                 xmir -> {
                     try {

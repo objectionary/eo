@@ -13,7 +13,9 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -31,18 +33,21 @@ final class MjAssembleIT {
 
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
-        final String stdout = "target/eo/%s/stdout.%s";
-        final String parsed = String.format(stdout, "03-parse", "xmir");
-        final String pulled = String.format(stdout, "01-pull", "eo");
         new Farea(temp).together(
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
                 f.exec("package");
                 MjAssembleIT.succeeds(f);
+                final String parsed = String.format(
+                    "target/eo/%s/stdout.xmir", MjAssembleIT.subdir(temp, "-parse")
+                );
                 MatcherAssert.assertThat(
                     String.format("AssembleMojo should have parsed stdout %s, but didn't", parsed),
                     f.files().file(parsed).exists(),
                     Matchers.is(true)
+                );
+                final String pulled = String.format(
+                    "target/eo/%s/stdout.eo", MjAssembleIT.subdir(temp, "-pull")
                 );
                 MatcherAssert.assertThat(
                     String.format("AssembleMojo should have pulled stdout %s, but didn't", pulled),
@@ -66,11 +71,37 @@ final class MjAssembleIT {
                 );
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
-                    temp.resolve("target/eo/03-parse/one/main.xmir").toAbsolutePath().toFile(),
+                    temp.resolve(
+                        String.format(
+                            "target/eo/%s/one/main.xmir", MjAssembleIT.subdir(temp, "-parse")
+                        )
+                    ).toAbsolutePath().toFile(),
                     FileMatchers.anExistingFile()
                 );
             }
         );
+    }
+
+    /**
+     * Find the name of a target/eo subdirectory by its suffix.
+     *
+     * @param home The Farea working directory
+     * @param suffix The suffix the subdirectory name must end with
+     * @return The subdirectory name, with its numeric prefix
+     * @throws IOException If fails to list the target/eo directory
+     */
+    private static String subdir(final Path home, final String suffix) throws IOException {
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            return kids
+                .map(kid -> kid.getFileName().toString())
+                .filter(name -> name.endsWith(suffix))
+                .findFirst()
+                .orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No '*%s' directory found under %s", suffix, home)
+                    )
+                );
+        }
     }
 
     private static void succeeds(final Farea farea) throws IOException {

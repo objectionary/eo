@@ -12,7 +12,9 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -41,11 +43,31 @@ final class MjParseIT {
                 MjParseIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "the XMIR file is generated",
-                    f.files().file("target/eo/03-parse/foo.xmir").exists(),
+                    MjParseIT.parsed(temp).resolve("foo.xmir").toFile().exists(),
                     Matchers.is(true)
                 );
             }
         );
+    }
+
+    /**
+     * Find the directory the parse stage put its output in.
+     *
+     * @param home The Farea working directory
+     * @return The path to the parse stage's subdirectory
+     * @throws IOException If fails to list the target/eo directory
+     */
+    private static Path parsed(final Path home) throws IOException {
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            return kids
+                .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
+                .findFirst()
+                .orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No parse directory found under %s", home)
+                    )
+                );
+        }
     }
 
     private static void succeeds(final Farea farea) throws IOException {
