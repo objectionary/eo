@@ -15,4 +15,4 @@ rendered:
   - "1\tΦ.left"
 patched:
   left.xmir:
-    - "/object/o[@name='left']/o[@name='φ' and @base='ξ.l🌵1']"
+    - "/object/o[@name='left']/o[@name='φ' and not(@base)]/o[@name='λ']"

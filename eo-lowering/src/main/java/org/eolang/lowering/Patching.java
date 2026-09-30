@@ -33,13 +33,13 @@ import org.cactoos.iterable.Sorted;
  * tests, and the file {@code rendered.tsv}, which lists the entries that
  * {@link Rendering} turned into atoms. It never reads the result of phino.
  * The change of one file is done by the stylesheet
- * {@code patching.xsl}. In an object whose entry has the number N, the
- * stylesheet adds one more attribute, the atom {@code l🌵N}, and it
- * replaces the body of the object, which is its {@code φ} attribute, with
- * {@code ξ.l🌵N}, which means "ask my atom". All the other attributes of
- * the object stay as they were. When the transpiler meets this atom, it
- * uses exactly the class name that {@link Rendering} gave to the Java
- * file.</p>
+ * {@code patching.xsl}. In an object whose entry was rendered, the
+ * stylesheet replaces the body of the object, which is its {@code φ}
+ * attribute, with an atom, so that the {@code φ} of the object is the atom
+ * itself. All the other attributes of the object stay as they were. When
+ * the transpiler meets this atom, it names its class after the object, with
+ * {@code φ} at the end, which is exactly the class name that
+ * {@link Rendering} gave to the Java file.</p>
  *
  * <p>A changed file is written into the directory of patched sources,
  * under the same name as its source. A source where nothing changed is not
@@ -99,7 +99,7 @@ final class Patching implements Proc<Path> {
         for (final Path source : new Sorted<>(this.sources)) {
             final XML out = sheet.transform(new XMLDocument(source));
             final List<String> names = out.xpath(
-                "//o[starts-with(@name, 'l🌵')][o[@name='λ']]/../@name"
+                "//o[@name='φ'][o[@name='λ' and not(@atom)]]/../@name"
             );
             if (!names.isEmpty()) {
                 final Path file = Files.createDirectories(this.patched)

@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# Both methods of one object were rendered, so each of them gets its own atom,
-# named after its own entry, and the object gets none.
+# Both methods of one object were rendered, so the φ of each of them becomes
+# its own atom, and the object gets none.
 eo:
   pair.eo: |
     [] > pair
@@ -15,6 +15,6 @@ rendered:
   - "5\tΦ.pair.thrice"
 patched:
   pair.xmir:
-    - "/object/o[@name='pair']/o[@name='twice']/o[@name='φ' and @base='ξ.l🌵4']"
-    - "/object/o[@name='pair']/o[@name='thrice']/o[@name='φ' and @base='ξ.l🌵5']"
-    - "/object/o[@name='pair'][not(o[starts-with(@name, 'l🌵')])]"
+    - "/object/o[@name='pair']/o[@name='twice']/o[@name='φ' and not(@base)]/o[@name='λ']"
+    - "/object/o[@name='pair']/o[@name='thrice']/o[@name='φ' and not(@base)]/o[@name='λ']"
+    - "/object/o[@name='pair'][not(o[@name='φ'])]"

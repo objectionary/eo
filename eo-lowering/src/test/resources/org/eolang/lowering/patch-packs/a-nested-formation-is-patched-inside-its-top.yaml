@@ -14,6 +14,5 @@ rendered:
 patched:
   outer.xmir:
     - "/object/o[@name='outer']/o[@name='φ' and @base='ξ.inner']"
-    - "/object/o[@name='outer']/o[@name='inner']/o[@name='φ' and @base='ξ.l🌵3']"
-    - "/object/o[@name='outer']/o[@name='inner']/o[@name='l🌵3' and @loc='Φ.outer.inner.l🌵3']/o[@name='λ']"
-    - "/object/o[@name='outer'][not(o[starts-with(@name, 'l🌵')])]"
+    - "/object/o[@name='outer']/o[@name='inner']/o[@name='φ' and not(@base) and @loc='Φ.outer.inner.φ']/o[@name='λ']"
+    - "/object/o[@name='outer'][not(o[@name='φ']/o[@name='λ'])]"
