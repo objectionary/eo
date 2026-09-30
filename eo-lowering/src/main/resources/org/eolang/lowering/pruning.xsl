@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pruning" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="pruning" version="3.0">
   <!--
   Here we cut the tests out of one XMIR file. A test is a binding the parser
   names with a mark, "p🌵" for one that must hold and "n🌵" for one that
