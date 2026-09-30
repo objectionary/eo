@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
 
 /**
@@ -63,6 +64,12 @@ final class Patching implements Proc<Path> {
     private final Collection<Path> sources;
 
     /**
+     * The types that go into the objects and come out of them, which are
+     * shown in the log for every atom.
+     */
+    private final Signatures signatures;
+
+    /**
      * The directory where the patched XMIR files are written.
      */
     private final Path patched;
@@ -71,10 +78,23 @@ final class Patching implements Proc<Path> {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
+     * @param tables The directory with the tables of {@code eo:inference}
      * @param dir The directory where the patched XMIR files are written
      */
-    Patching(final Collection<Path> srcs, final Path dir) {
+    Patching(final Collection<Path> srcs, final Path tables, final Path dir) {
+        this(srcs, new Signatures(tables), dir);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param srcs The XMIR files of the build
+     * @param types The types that go into the objects and come out of them
+     * @param dir The directory where the patched XMIR files are written
+     */
+    Patching(final Collection<Path> srcs, final Signatures types, final Path dir) {
         this.sources = srcs;
+        this.signatures = types;
         this.patched = dir;
     }
 
@@ -98,18 +118,18 @@ final class Patching implements Proc<Path> {
         int atoms = 0;
         for (final Path source : new Sorted<>(this.sources)) {
             final XML out = sheet.transform(new XMLDocument(source));
-            final List<String> names = out.xpath(
-                "//o[@name='φ'][o[@name='λ' and not(@atom)]]/../@name"
+            final List<String> locs = out.xpath(
+                "//o[@name='φ'][o[@name='λ' and not(@atom)]]/../@loc"
             );
-            if (!names.isEmpty()) {
+            if (!locs.isEmpty()) {
                 final Path file = Files.createDirectories(this.patched)
                     .resolve(source.getFileName().toString());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
                 files.add(String.format("%s%n", file.getFileName()));
-                atoms += names.size();
+                atoms += locs.size();
                 Logger.info(
                     this, "Patched %[file]s: %s",
-                    file, String.join(", ", names)
+                    file, String.join(", ", new Mapped<>(this.signatures::of, locs))
                 );
             }
         }

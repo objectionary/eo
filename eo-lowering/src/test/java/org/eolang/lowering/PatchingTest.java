@@ -65,7 +65,9 @@ final class PatchingTest {
             "the failure must name the list of the rendered entries, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Patching(new ListOf<>(), temp.resolve("patched")).exec(temp),
+                () -> new Patching(
+                    new ListOf<>(), temp.resolve("tables"), temp.resolve("patched")
+                ).exec(temp),
                 "a patching with no list of the rendered entries must fail"
             ).getMessage(),
             Matchers.containsString("rendered.tsv")
@@ -90,6 +92,7 @@ final class PatchingTest {
                         .toString().getBytes(StandardCharsets.UTF_8)
                 )
             ),
+            temp.resolve("tables"),
             temp.resolve("patched")
         ).exec(temp);
         MatcherAssert.assertThat(
@@ -207,7 +210,9 @@ final class PatchingTest {
                     )
                 );
             }
-            new Patching(xmirs, this.temp.resolve("patched")).exec(this.temp);
+            new Patching(
+                xmirs, this.temp.resolve("tables"), this.temp.resolve("patched")
+            ).exec(this.temp);
             return this.temp.resolve("patched");
         }
 

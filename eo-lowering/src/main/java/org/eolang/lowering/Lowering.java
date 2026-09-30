@@ -226,7 +226,7 @@ public final class Lowering {
                 new Merging(this.phino),
                 new Morphing(this.phino, this.cache, this.steps, this.budget),
                 new Rendering(this.atoms),
-                new Patching(this.sources, this.patched)
+                new Patching(this.sources, this.tables, this.patched)
             )
         ).exec(this.home);
     }
