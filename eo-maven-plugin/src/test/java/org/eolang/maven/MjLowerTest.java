@@ -39,13 +39,12 @@ final class MjLowerTest {
 
     @Test
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
-        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
             .with("lowering", false)
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a disabled goal must leave no folder behind, but it made one",
-            home.toFile(),
+            temp.resolve("target").toFile(),
             Matchers.not(FileMatchers.anExistingDirectory())
         );
     }
@@ -76,9 +75,9 @@ final class MjLowerTest {
             .with("binary", temp.resolve("absent").toString())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
-            "a goal with no phino to run must skip and leave no folder, but it made one",
-            new Subdir(temp.resolve("target"), "lowering").path().toFile(),
-            Matchers.not(FileMatchers.anExistingDirectory())
+            "a goal with no phino to run must skip and write nothing, but it wrote something",
+            new Subdir(temp.resolve("target"), "lowering").path().toFile().list(),
+            Matchers.emptyArray()
         );
     }
 
