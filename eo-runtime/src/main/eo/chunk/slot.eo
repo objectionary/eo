@@ -98,15 +98,14 @@
           mem.slot 4 20 > outer
       0A-0B-0C-0D
 
-  ++> can-create-a-slot
-    eq. > @
-      malloc.of
-        16
-        [mem]
-          seq > @
-            * head head.size
-          mem.slot 0 4 > head
-      4
+  ++> can-create-a-slot-with-parent-id
+    malloc.of > @
+      16
+      [mem]
+        and. > @
+          part.size.eq 4
+          part.id.eq mem.id
+        mem.slot 2 4 > part
 
   ++> can-have-a-zero-length-slot
     eq. > @
@@ -116,17 +115,6 @@
           empty.size > @
           mem.slot 8 0 > empty
       0
-
-  ++> can-invalidate-a-stale-slot-after-parent-shrink
-    not. > @
-      malloc.of
-        8
-        [mem]
-          seq * > @
-            part
-            mem.resized 4
-            part.valid
-          mem.slot 0 8 > part
 
   ++> can-invalidate-nested-child-after-root-shrink
     not. > @
@@ -157,20 +145,6 @@
           mem.slot 4 4 > right
       true
 
-  ++> can-nest-slots-and-compose-offsets
-    eq. > @
-      malloc.of
-        16
-        [mem]
-          seq * > @
-            outer
-            inner
-            inner.put 0A-0B-0C-0D
-            mem.read 6 4
-          outer.slot 2 4 > inner
-          mem.slot 4 8 > outer
-      0A-0B-0C-0D
-
   ++> can-propagate-parent-validity-after-resize
     eq. > @
       malloc.of
@@ -197,38 +171,6 @@
           mem.slot 2 4 > part
       01-02-03-04
 
-  ++> can-reject-a-fractional-slot-length
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot 1 2.5 > invalid
-
-  ++> can-reject-a-negative-slot-start
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot -1 2 > invalid
-
-  ++> can-reject-a-non-finite-slot-start
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot pinf 2 > invalid
-
-  ++> can-reject-a-slot-that-exceeds-the-parent
-    not. > @
-      malloc.of
-        8
-        [mem]
-          invalid.valid > @
-          mem.slot 7 2 > invalid
-
   ++> can-reject-child-that-exceeds-its-direct-parent
     not. > @
       malloc.of
@@ -238,13 +180,14 @@
           parent.slot 7 2 > child
           mem.slot 0 8 > parent
 
-  ++> can-report-the-parent-id
-    eq. > @
-      malloc.of
-        8
-        [mem]
-          seq * > @
-            part
-            part.id.eq mem.id
-          mem.slot 2 4 > part
-      true
+  ++> can-reject-invalid-slot-regions
+    malloc.of > @
+      8
+      [mem]
+        and. > @
+          fractional.valid.not.and negative.valid.not
+          infinite.valid.not.and overrun.valid.not
+        mem.slot 1 2.5 > fractional
+        mem.slot pinf 2 > infinite
+        mem.slot -1 2 > negative
+        mem.slot 7 2 > overrun
