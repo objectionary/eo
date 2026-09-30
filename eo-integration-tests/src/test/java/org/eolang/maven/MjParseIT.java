@@ -50,6 +50,17 @@ final class MjParseIT {
         );
     }
 
+    private static void succeeds(final Farea farea) throws IOException {
+        MatcherAssert.assertThat(
+            "the build must succeed without errors, but it didn't",
+            farea.log(),
+            new RequisiteMatcher()
+                .with("BUILD SUCCESS")
+                .without("BUILD FAILURE")
+                .without("[ERROR]")
+        );
+    }
+
     private static Path parsed(final Path home) throws IOException {
         try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
             return kids
@@ -60,16 +71,5 @@ final class MjParseIT {
                     )
                 );
         }
-    }
-
-    private static void succeeds(final Farea farea) throws IOException {
-        MatcherAssert.assertThat(
-            "the build must succeed without errors, but it didn't",
-            farea.log(),
-            new RequisiteMatcher()
-                .with("BUILD SUCCESS")
-                .without("BUILD FAILURE")
-                .without("[ERROR]")
-        );
     }
 }
