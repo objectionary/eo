@@ -390,6 +390,25 @@ final class MjParseTest {
         );
     }
 
+    @Test
+    void numbersNextDirectoryAlikeWhenParsedFromCache(@Mktmp final Path temp)
+        throws IOException {
+        final File cache = temp.resolve("cache").toFile();
+        final FakeMaven cold = new FakeMaven(temp.resolve("cold"))
+            .withHelloWorld()
+            .with("cache", cache)
+            .execute(new PpParse());
+        final FakeMaven warm = new FakeMaven(temp.resolve("warm"))
+            .withHelloWorld()
+            .with("cache", cache)
+            .execute(new PpParse());
+        MatcherAssert.assertThat(
+            "the stage after a parse from cache is not numbered as after a fresh parse",
+            warm.dirName("lint"),
+            Matchers.equalTo(cold.dirName("lint"))
+        );
+    }
+
     private static String cacheVersion(final String identifier) {
         return String.format(
             "%s-%s-%s",

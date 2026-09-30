@@ -107,7 +107,9 @@ final class Parsing implements Step {
             .collect(Collectors.joining(" "));
         final int total = this.parsed(
             sources,
+            new Subdir(this.target, "parse").path(),
             new Canonical(objects),
+            new Raws(this.cache.with("raws"), new Subdir(this.target, "raw").path()),
             this.cache.with(
                 new Fingerprint(
                     Stream.concat(
@@ -143,32 +145,37 @@ final class Parsing implements Step {
 
     private int parsed(
         final Collection<TjForeign> sources,
+        final Path base,
         final UnaryOperator<XML> pipeline,
+        final Raws raws,
         final GlobalCache store
     ) {
         return new Threaded<>(
-            new Filtered<>(this::unparsed, sources),
-            tojo -> this.parsed(tojo, pipeline, store)
+            new Filtered<>(tojo -> Parsing.unparsed(tojo, base), sources),
+            tojo -> this.parsed(tojo, base, pipeline, raws, store)
         ).total();
     }
 
-    private boolean unparsed(final TjForeign tojo) {
-        return tojo.notParsed() || !tojo.xmir().startsWith(new Subdir(this.target, "parse").path());
+    private static boolean unparsed(final TjForeign tojo, final Path base) {
+        return tojo.notParsed() || !tojo.xmir().startsWith(base);
     }
 
     private int parsed(
-        final TjForeign tojo, final UnaryOperator<XML> pipeline, final GlobalCache store
+        final TjForeign tojo,
+        final Path base,
+        final UnaryOperator<XML> pipeline,
+        final Raws raws,
+        final GlobalCache store
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = new Subdir(this.target, "parse").path();
         final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
             base.relativize(xmir),
             new TojoHash(tojo),
             src -> {
-                final Node node = this.parsed(tojo, pipeline);
+                final Node node = this.parsed(tojo, pipeline, raws);
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
@@ -198,12 +205,10 @@ final class Parsing implements Step {
     }
 
     private Node parsed(
-        final TjForeign tojo, final UnaryOperator<XML> pipeline
+        final TjForeign tojo, final UnaryOperator<XML> pipeline, final Raws raws
     ) throws IOException {
         final Xmir xmir = new EoSource(tojo.identifier(), tojo.source(), pipeline).parsed(
-            pipeline.apply(
-                new Raws(this.cache.with("raws"), new Subdir(this.target, "raw").path()).of(tojo)
-            )
+            pipeline.apply(raws.of(tojo))
         );
         Logger.debug(
             Parsing.class,
