@@ -276,6 +276,7 @@
           <loweringBudget>60</loweringBudget>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
           <maxMorphingSteps>100</maxMorphingSteps>
+          <phinoBinary>/code/o/phino/phino</phinoBinary>
         </configuration>
         <executions>
           <execution>
