@@ -24,6 +24,12 @@ import java.util.Map;
  * arm that terminates is put into a void like any other and hands nothing to
  * whoever reads it (#8946).</p>
  *
+ * <p>And so is which formations Java makes. An atom that comes back with a
+ * {@code stat-return} built it in Java, voids and all, so its {@code mode} is
+ * filled on every run although no call of the source ever fills it. What went
+ * in is unknown, which is why it is kept apart from what every void holds and
+ * never read as a member of it (#8981).</p>
+ *
  * @since 0.71.0
  */
 final class Puts {
@@ -44,21 +50,30 @@ final class Puts {
     private final Collection<String> dead;
 
     /**
+     * The formations atoms come back with, from {@link Returned}.
+     */
+    private final Collection<String> made;
+
+    /**
      * Ctor.
      *
      * @param bound What every application fills, from {@link Bound}
      * @param holders What every void holds, from {@link Fillings}
      * @param ends Every object of the program that terminates, from
      *  {@link Dead}
+     * @param returned The formations atoms come back with, from
+     *  {@link Returned}
      */
     Puts(
         final Map<String, Map<String, String>> bound,
         final Map<String, Collection<String>> holders,
-        final Collection<String> ends
+        final Collection<String> ends,
+        final Collection<String> returned
     ) {
         this.fills = bound;
         this.holds = holders;
         this.dead = ends;
+        this.made = returned;
     }
 
     /**
@@ -83,13 +98,16 @@ final class Puts {
     }
 
     /**
-     * Whether any call of the program puts anything into this void.
+     * Whether anything puts anything into this void.
      *
      * @param hollow The locator of the void
-     * @return True when some call fills it
+     * @return True when some call fills it, or Java does, since it makes the
+     *  formation the void belongs to
      */
     boolean fills(final String hollow) {
-        return this.holds.containsKey(hollow);
+        final int dot = hollow.lastIndexOf('.');
+        return this.holds.containsKey(hollow)
+            || dot > 0 && this.made.contains(hollow.substring(0, dot));
     }
 
     /**

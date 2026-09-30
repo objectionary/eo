@@ -328,7 +328,8 @@ final class Dispatched {
             new Puts(
                 bound,
                 new Fillings(this.written.with(pairs, bound), this.given, this.hollows).holders(),
-                this.dead
+                this.dead,
+                new Returned(this.given).all().values()
             ),
             this.hollows
         );

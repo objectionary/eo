@@ -411,8 +411,12 @@ so it is never dead.
 
 A void is *filled* where a call put something into it, where the source
 declared what it holds, as `? > size /Q.number` does and as the `^` of every
-attribute does, or where an atom is declared to hand into it, as
-`? > scope /{Q.chunk}` does. Only a void none of those reaches is empty.
+attribute does, where an atom is declared to hand into it, as
+`? > scope /{Q.chunk}` does, or where it belongs to a formation an atom comes
+back with, as the `mode` of the `Φ.posix.stat-return` that `[] > lstat
+/Q.posix.stat-return` hands back: Java made that formation and filled it. What
+is in such a void is unknown, not a member of any census. Only a void none of
+those reaches is empty.
 
 A union is written whole, however many members it has. The page caps what it
 lists; the table does not, since a reader of the table wants the fact.
