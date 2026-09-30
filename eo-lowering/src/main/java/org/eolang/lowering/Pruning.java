@@ -32,14 +32,14 @@ import org.cactoos.iterable.Sorted;
  * them.</p>
  *
  * <p>The original sources are never changed. For every source, this stage
- * writes a copy without the tests into the directory
- * {@code NN-lowering-planting}, under the same file name as the source. All
- * the next stages read these copies. If two sources have the same file
- * name, they would need the same copy, and one of them would be lost
- * without any warning. So, in that case, this stage fails the build. The
- * copies of an earlier build are deleted first. Without this, a source
- * that was deleted from the project would still be in the directory, and
- * the next stages would still read it.</p>
+ * writes a copy without the tests into the directory {@code planting},
+ * inside the home directory of the lowering, under the same file name as
+ * the source. All the next stages read these copies. If two sources have
+ * the same file name, they would need the same copy, and one of them would
+ * be lost without any warning. So, in that case, this stage fails the
+ * build. The copies of an earlier build are deleted first. Without this, a
+ * source that was deleted from the project would still be in the
+ * directory, and the next stages would still read it.</p>
  *
  * @since 0.74.0
  */
@@ -60,14 +60,14 @@ final class Pruning implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
+    public void exec(final Path home) throws IOException {
         final XSL sheet = new XSLDocument(
             Pruning.class.getResource("/org/eolang/lowering/pruning.xsl"),
             "/org/eolang/lowering/pruning.xsl"
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
-        final Path home = Files.createDirectories(target.resolve("7-lowering-planting"));
-        for (final Path stale : new Copies(target)) {
+        final Path planting = Files.createDirectories(home.resolve("planting"));
+        for (final Path stale : new Copies(home)) {
             Files.delete(stale);
         }
         for (final Path source : new Sorted<>(this.sources)) {
@@ -80,7 +80,7 @@ final class Pruning implements Proc<Path> {
                 );
             }
             Files.write(
-                home.resolve(source.getFileName().toString()),
+                planting.resolve(source.getFileName().toString()),
                 sheet.transform(new XMLDocument(source)).toString()
                     .getBytes(StandardCharsets.UTF_8)
             );
@@ -89,7 +89,7 @@ final class Pruning implements Proc<Path> {
             this,
             "Cut the tests out of %d XMIR files into %[file]s",
             this.sources.size(),
-            home
+            planting
         );
     }
 }

@@ -42,9 +42,9 @@ import org.eolang.cache.GlobalCache;
  * <p>For every entry, this stage asks phino to compute the body of the
  * entry with symbols as its inputs. This is called "morphing". phino
  * writes down every step it takes into a protocol file. The file is saved
- * in {@code NN-lowering-protocols}, at a path made from the locator of the
- * object, so the protocol of {@code Φ.bytes.as-hex} is
- * {@code bytes/as-hex.xml}.</p>
+ * in {@code protocols}, inside the home directory of the lowering, at a
+ * path made from the locator of the object, so the protocol of
+ * {@code Φ.bytes.as-hex} is {@code bytes/as-hex.xml}.</p>
  *
  * <p>The entries do not depend on each other. Every entry has its own
  * symbols, so one entry never reuses a result of another, and one entry
@@ -147,8 +147,7 @@ final class Morphing implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
-        final Path home = target.resolve("7-lowering");
+    public void exec(final Path home) throws IOException {
         final Path world = home.resolve("world.phi");
         if (!Files.exists(world)) {
             throw new IllegalStateException(
@@ -173,7 +172,7 @@ final class Morphing implements Proc<Path> {
                 new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml"))
             ).asBytes()
         );
-        final Path protocols = target.resolve("7-lowering-protocols");
+        final Path protocols = home.resolve("protocols");
         if (Files.exists(protocols)) {
             for (final Path stale
                 : new Sorted<>(Comparator.reverseOrder(), new Directory(protocols))) {

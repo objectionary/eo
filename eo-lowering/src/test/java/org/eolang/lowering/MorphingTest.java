@@ -43,7 +43,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void writesOneProtocolPerEntryOfTheWorld(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
         ).exec(temp);
@@ -60,7 +60,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void writesTheProtocolOfAnEntryUnderItsLocator(@Mktmp final Path temp)
         throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        final Path home = Files.createDirectories(temp);
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
@@ -71,7 +71,7 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must be named after the locator of its entry, but it isnt",
-            temp.resolve("7-lowering-protocols/bytes/as-hex/a🌵16-3.xml").toFile(),
+            temp.resolve("protocols/bytes/as-hex/a🌵16-3.xml").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -96,7 +96,7 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "a run killed over its budget must leave no protocol, but it does",
-            temp.resolve("7-lowering-protocols/e5.xml").toFile(),
+            temp.resolve("protocols/e5.xml").toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );
     }
@@ -129,7 +129,7 @@ final class MorphingTest {
             phino, new GcShared(temp.resolve("cache"), "0.3.4"), Duration.ofMinutes(1L)
         ).exec(temp);
         Files.write(
-            temp.resolve("7-lowering/world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
+            temp.resolve("world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
         );
         new Morphing(
             phino, new GcShared(temp.resolve("cache"), "0.3.4"), Duration.ofMinutes(1L)
@@ -167,7 +167,7 @@ final class MorphingTest {
     void dropsTheProtocolsOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 2);
         final Path stale = Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-protocols/gone")).resolve("x.xml"),
+            Files.createDirectories(temp.resolve("protocols/gone")).resolve("x.xml"),
             "<protocol/>".getBytes(StandardCharsets.UTF_8)
         );
         new Morphing(
@@ -184,7 +184,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
         ).exec(temp);
@@ -199,7 +199,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void morphsEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
         ).exec(temp);
@@ -218,7 +218,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void boundsEveryRunWithTheStepsItWasGiven(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(), 7, Duration.ofMinutes(1L)
         ).exec(temp);
@@ -233,7 +233,7 @@ final class MorphingTest {
     @DisabledOnOs(OS.WINDOWS)
     void printsEveryProtocolSweetAndWithoutRho(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
         ).exec(temp);
@@ -252,7 +252,7 @@ final class MorphingTest {
             "this machine has one processor, so the entries cannot be morphed side by side here"
         );
         MorphingTest.merged(temp, 1, 2);
-        final Path protocols = temp.resolve("7-lowering-protocols");
+        final Path protocols = temp.resolve("protocols");
         new Morphing(
             MorphingTest.phino(
                 temp,
@@ -320,13 +320,13 @@ final class MorphingTest {
                 ).exec(temp),
                 "a world that was not merged must fail the morphing"
             ).getMessage(),
-            Matchers.containsString(temp.resolve("7-lowering/world.phi").toString())
+            Matchers.containsString(temp.resolve("world.phi").toString())
         );
     }
 
     @Test
     void failsNamingTheEntriesItCannotFind(@Mktmp final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        final Path home = Files.createDirectories(temp);
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "the failure must name the entries that are missing, but it doesnt",
@@ -349,7 +349,7 @@ final class MorphingTest {
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
         Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
+            Files.createDirectories(temp.resolve("planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
@@ -381,7 +381,7 @@ final class MorphingTest {
         new Morphing(phino, new GlobalCache.GcFresh(), Duration.ofMinutes(1L)).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
-            MorphingTest.text(temp.resolve("7-lowering-protocols/gap.xml")),
+            MorphingTest.text(temp.resolve("protocols/gap.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
         );
     }
@@ -455,7 +455,7 @@ final class MorphingTest {
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
         Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("len.xmir"),
+            Files.createDirectories(temp.resolve("planting")).resolve("len.xmir"),
             new EoSyntax(String.format("[a] > len%n  a.size > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
@@ -485,7 +485,7 @@ final class MorphingTest {
         new Morphing(phino, new GlobalCache.GcFresh(), Duration.ofMinutes(1L)).exec(temp);
         MatcherAssert.assertThat(
             "the run must fire the atom of bytes the body reached, but it left it standing",
-            MorphingTest.text(temp.resolve("7-lowering-protocols/len.xml")),
+            MorphingTest.text(temp.resolve("protocols/len.xml")),
             Matchers.containsString("<evaluate λ=\"L_bytes_size\"")
         );
     }
@@ -505,7 +505,7 @@ final class MorphingTest {
     }
 
     private static Path merged(final Path temp, final int... entries) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        final Path home = Files.createDirectories(temp);
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
@@ -520,7 +520,7 @@ final class MorphingTest {
     private static Path xmir(final Path temp, final String name, final String... body)
         throws IOException {
         return Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting"))
+            Files.createDirectories(temp.resolve("planting"))
                 .resolve(String.format("%s.xmir", name)),
             String.format(
                 "<object><o name=\"%s\" loc=\"Φ.%s\">%s</o></object>",

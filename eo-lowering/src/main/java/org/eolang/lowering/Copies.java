@@ -16,9 +16,9 @@ import org.cactoos.iterable.Sorted;
  *
  * <p>The stage {@link Pruning} makes a copy of every source file of the
  * build, removes the tests from it, and saves it into the directory
- * {@code NN-lowering-planting}. All the stages after {@link Pruning} read
- * only these copies, and never the original sources. This class lists
- * those copies.</p>
+ * {@code planting}, inside the home directory of the lowering. All the
+ * stages after {@link Pruning} read only these copies, and never the
+ * original sources. This class lists those copies.</p>
  *
  * <p>The copies are always listed in the order of their file names. The
  * build may find the source files in any order, but thanks to this sorting
@@ -30,17 +30,17 @@ import org.cactoos.iterable.Sorted;
 final class Copies implements Iterable<Path> {
 
     /**
-     * The directory of the build, where the directory of copies is.
+     * The home directory of the lowering, where the directory of copies is.
      */
-    private final Path target;
+    private final Path home;
 
     /**
      * Ctor.
      *
-     * @param dir The directory of the build, where the directory of copies is
+     * @param dir The home directory of the lowering, where the directory of copies is
      */
     Copies(final Path dir) {
-        this.target = dir;
+        this.home = dir;
     }
 
     @Override
@@ -48,7 +48,7 @@ final class Copies implements Iterable<Path> {
         return new Sorted<>(
             new Filtered<>(
                 Files::isRegularFile,
-                new Directory(this.target.resolve("7-lowering-planting"))
+                new Directory(this.home.resolve("planting"))
             )
         ).iterator();
     }

@@ -75,7 +75,7 @@ final class PatchingTest {
     @Test
     void leavesTheCopyOfAnEarlierBuildOutOfTheList(@Mktmp final Path temp) throws IOException {
         Files.write(
-            Files.createDirectories(temp.resolve("7-lowering")).resolve("rendered.tsv"),
+            Files.createDirectories(temp).resolve("rendered.tsv"),
             new byte[0]
         );
         Files.write(
@@ -94,7 +94,7 @@ final class PatchingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "a copy an earlier build patched must not be listed as patched now, but it is",
-            Files.readString(temp.resolve("7-lowering/patched.tsv"), StandardCharsets.UTF_8),
+            Files.readString(temp.resolve("patched.tsv"), StandardCharsets.UTF_8),
             Matchers.emptyString()
         );
     }
@@ -160,7 +160,7 @@ final class PatchingTest {
                 );
             }
             final String listed = Files.readString(
-                this.temp.resolve("7-lowering/patched.tsv"), StandardCharsets.UTF_8
+                this.temp.resolve("patched.tsv"), StandardCharsets.UTF_8
             );
             final String expected = new TreeSet<>(
                 demands.keySet().stream().map(Object::toString).collect(Collectors.toList())
@@ -189,7 +189,7 @@ final class PatchingTest {
 
         private Path patched() throws IOException {
             Files.write(
-                Files.createDirectories(this.temp.resolve("7-lowering")).resolve("rendered.tsv"),
+                Files.createDirectories(this.temp).resolve("rendered.tsv"),
                 ((List<?>) this.story.map().get("rendered")).stream()
                     .map(row -> String.format("%s%n", row))
                     .collect(Collectors.joining())

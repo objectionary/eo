@@ -28,16 +28,16 @@ import org.eolang.cache.GlobalCache;
  * second stage gives a number to every object that may become an atom,
  * and all the next stages talk about an object only by that number.</p>
  *
- * <p>The stages keep what they make in these directories, inside the
- * directory of the build:</p>
+ * <p>The stages keep what they make in one home directory, which is given
+ * to the constructor, usually {@code target/eo/NN-lowering}:</p>
  *
  * <ul>
- * <li>{@code NN-lowering-planting} holds the copies of the sources,
- * without the tests;</li>
- * <li>{@code NN-lowering} holds the world and the other files that are
- * made on the way to it;</li>
- * <li>{@code NN-lowering-protocols} holds one protocol file for every
- * entry that phino worked on;</li>
+ * <li>the home directory itself holds the world and the other files that
+ * are made on the way to it;</li>
+ * <li>{@code planting}, inside the home directory, holds the copies of the
+ * sources, without the tests;</li>
+ * <li>{@code protocols}, inside the home directory, holds one protocol file
+ * for every entry that phino worked on;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java
  * atoms;</li>
  * <li>the directory of patched sources, given to the constructor, holds
@@ -66,10 +66,10 @@ public final class Lowering {
     private final Path tables;
 
     /**
-     * The directory of the build, usually {@code target/eo}, where the
-     * stages make their own directories.
+     * The home directory of the lowering, usually
+     * {@code target/eo/NN-lowering}, where the stages keep what they make.
      */
-    private final Path target;
+    private final Path home;
 
     /**
      * The phino program on this computer.
@@ -103,7 +103,7 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory of the build, usually {@code target/eo}
+     * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
@@ -122,7 +122,7 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory of the build, usually {@code target/eo}
+     * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The phino program on this computer
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
@@ -135,7 +135,7 @@ public final class Lowering {
     ) {
         this.sources = srcs;
         this.tables = tbls;
-        this.target = dir;
+        this.home = dir;
         this.phino = exe;
         this.cache = store;
         this.atoms = kept;
@@ -212,6 +212,6 @@ public final class Lowering {
                 new Rendering(this.atoms),
                 new Patching(this.sources, this.patched)
             )
-        ).exec(this.target);
+        ).exec(this.home);
     }
 }

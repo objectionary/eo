@@ -46,7 +46,7 @@ jobs:
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.
-      - run: test -d eo-runtime/target/eo/7-lowering
+      - run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

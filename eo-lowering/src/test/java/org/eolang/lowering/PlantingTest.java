@@ -109,11 +109,11 @@ final class PlantingTest {
 
     private static Path planted(final Path temp) throws IOException {
         PlantingTest.parsed(
-            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
+            Files.createDirectories(temp.resolve("planting")).resolve("gap.xmir"),
             String.format("[a b] > gap%n  a.plus b > @%n")
         );
         new Planting(PlantingTest.tables(temp, "<provides/>")).exec(temp);
-        return temp.resolve("7-lowering");
+        return temp;
     }
 
     private static Path tables(final Path temp, final String provides) throws IOException {
@@ -186,7 +186,7 @@ final class PlantingTest {
 
         private Path plant() throws IOException {
             final Path sources = Files.createDirectories(
-                this.temp.resolve("7-lowering-planting")
+                this.temp.resolve("planting")
             );
             for (final Map.Entry<?, ?> source
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
@@ -203,7 +203,7 @@ final class PlantingTest {
                     this.story.map().getOrDefault("provides", "<provides/>").toString()
                 )
             ).exec(this.temp);
-            return this.temp.resolve("7-lowering");
+            return this.temp;
         }
 
         private Path renamed(final Path xmir) throws IOException {

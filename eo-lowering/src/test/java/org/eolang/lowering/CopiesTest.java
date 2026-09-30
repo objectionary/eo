@@ -24,7 +24,7 @@ final class CopiesTest {
 
     @Test
     void listsTheCopiesInTheOrderOfTheirNames(@Mktmp final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering-planting"));
+        final Path home = Files.createDirectories(temp.resolve("planting"));
         Files.write(home.resolve("zeta.xmir"), new byte[0]);
         Files.write(home.resolve("alpha.xmir"), new byte[0]);
         MatcherAssert.assertThat(

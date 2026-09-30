@@ -79,8 +79,8 @@ final class Patching implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
-        final Path rendered = target.resolve("7-lowering").resolve("rendered.tsv");
+    public void exec(final Path home) throws IOException {
+        final Path rendered = home.resolve("rendered.tsv");
         if (!Files.exists(rendered)) {
             throw new IllegalStateException(
                 String.format(
@@ -114,7 +114,7 @@ final class Patching implements Proc<Path> {
             }
         }
         Files.write(
-            target.resolve("7-lowering").resolve("patched.tsv"),
+            home.resolve("patched.tsv"),
             String.join("", files).getBytes(StandardCharsets.UTF_8)
         );
         Logger.info(

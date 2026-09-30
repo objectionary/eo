@@ -57,14 +57,14 @@ final class RenderingTest {
 
     @Test
     void rendersNothingOfAnEntryWithNoProtocol(@Mktmp final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        final Path home = Files.createDirectories(temp);
         Files.write(
             home.resolve("entries.tsv"),
             String.format("3\tΦ.slow%n").getBytes(StandardCharsets.UTF_8)
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("slow.xmir"),
+            Files.createDirectories(temp.resolve("planting")).resolve("slow.xmir"),
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
                 .getBytes(StandardCharsets.UTF_8)
         );
@@ -126,7 +126,7 @@ final class RenderingTest {
             }
             final Path atoms = this.rendered();
             final String listed = Files.readString(
-                this.temp.resolve("7-lowering/rendered.tsv"), StandardCharsets.UTF_8
+                this.temp.resolve("rendered.tsv"), StandardCharsets.UTF_8
             );
             final String row = String.format(
                 "%s\t%s%n", this.story.map().get("number"), this.story.map().get("locator")
@@ -158,7 +158,7 @@ final class RenderingTest {
 
         private Path rendered() throws IOException {
             final String locator = this.story.map().get("locator").toString();
-            final Path home = Files.createDirectories(this.temp.resolve("7-lowering"));
+            final Path home = Files.createDirectories(this.temp);
             Files.write(
                 home.resolve("entries.tsv"),
                 String.format("%s\t%s%n", this.story.map().get("number"), locator)
@@ -172,7 +172,7 @@ final class RenderingTest {
                     .getBytes(StandardCharsets.UTF_8)
             );
             final Path sources = Files.createDirectories(
-                this.temp.resolve("7-lowering-planting")
+                this.temp.resolve("planting")
             );
             for (final Map.Entry<?, ?> source
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
@@ -182,7 +182,7 @@ final class RenderingTest {
                         .getBytes(StandardCharsets.UTF_8)
                 );
             }
-            final Path protocol = this.temp.resolve("7-lowering-protocols")
+            final Path protocol = this.temp.resolve("protocols")
                 .resolve(new Locator(locator).protocol());
             Files.createDirectories(protocol.getParent());
             Files.write(

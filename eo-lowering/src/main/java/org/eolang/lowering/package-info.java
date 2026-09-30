@@ -34,7 +34,7 @@
  * "taint", and its object simply stays in EO as it was written.</p>
  *
  * <p>The work happens in stages, one after another. Every stage is a
- * {@link org.cactoos.Proc} that works in the directory of the build, and
+ * {@link org.cactoos.Proc} that works in the home directory of the lowering, and
  * the class {@link org.eolang.lowering.Lowering} runs them in this
  * order:</p>
  *

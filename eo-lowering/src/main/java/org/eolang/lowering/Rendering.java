@@ -98,8 +98,7 @@ final class Rendering implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
-        final Path home = target.resolve("7-lowering");
+    public void exec(final Path home) throws IOException {
         final Path entries = home.resolve("entries.tsv");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(
@@ -110,7 +109,7 @@ final class Rendering implements Proc<Path> {
             );
         }
         final Map<String, String> tops = new HashMap<>(0);
-        for (final Path copy : new Copies(target)) {
+        for (final Path copy : new Copies(home)) {
             final XML xmir = new XMLDocument(copy);
             tops.put(
                 xmir.xpath("/object/o[1]/@loc").get(0),
@@ -129,7 +128,7 @@ final class Rendering implements Proc<Path> {
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
         )) {
             final String[] cells = row.split("\t", -1);
-            final Path protocol = target.resolve("7-lowering-protocols")
+            final Path protocol = home.resolve("protocols")
                 .resolve(new Locator(cells[1]).protocol());
             if (Files.exists(protocol)) {
                 final String top = Rendering.top(tops, cells[1]);

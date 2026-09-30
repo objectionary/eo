@@ -106,7 +106,7 @@ final class MergingTest {
                 () -> new Merging(new Phino("absent")).exec(temp),
                 "a home without entries must fail the merging"
             ).getMessage(),
-            Matchers.containsString(temp.resolve("7-lowering/entries.xmir").toString())
+            Matchers.containsString(temp.resolve("entries.xmir").toString())
         );
     }
 
@@ -118,7 +118,7 @@ final class MergingTest {
             "the pinned phino is not on this machine, so the world cannot be merged here"
         );
         Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting")).resolve("gap.xmir"),
+            Files.createDirectories(temp.resolve("planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
@@ -129,7 +129,7 @@ final class MergingTest {
         MatcherAssert.assertThat(
             "the world must hold the object and the marks of the entries, but it doesnt",
             new String(
-                Files.readAllBytes(temp.resolve("7-lowering/world.phi")), StandardCharsets.UTF_8
+                Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
             Matchers.stringContainsInOrder("gap", "l🌵", "L_entry")
         );
@@ -146,14 +146,14 @@ final class MergingTest {
     }
 
     private static Path planted(final Path temp) throws IOException {
-        final Path home = Files.createDirectories(temp.resolve("7-lowering"));
+        final Path home = Files.createDirectories(temp);
         Files.write(home.resolve("entries.xmir"), "<object/>".getBytes(StandardCharsets.UTF_8));
         return home;
     }
 
     private static Path xmir(final Path temp, final String name) throws IOException {
         return Files.write(
-            Files.createDirectories(temp.resolve("7-lowering-planting"))
+            Files.createDirectories(temp.resolve("planting"))
                 .resolve(String.format("%s.xmir", name)),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );

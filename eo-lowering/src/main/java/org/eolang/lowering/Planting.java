@@ -75,7 +75,7 @@ final class Planting implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
+    public void exec(final Path home) throws IOException {
         if (!Files.exists(this.tables.resolve("provides.xml"))) {
             throw new IllegalStateException(
                 String.format(
@@ -84,14 +84,14 @@ final class Planting implements Proc<Path> {
                 )
             );
         }
-        final Collection<Path> sources = new ListOf<>(new Copies(target));
+        final Collection<Path> sources = new ListOf<>(new Copies(home));
         final XML planted = new XSLDocument(
             Planting.class.getResource("/org/eolang/lowering/entries.xsl"),
             "/org/eolang/lowering/entries.xsl"
         ).with((href, base) -> new StreamSource(href))
             .with("inference", this.tables.toUri().toString())
             .transform(Planting.manifest(sources));
-        final Path home = Files.createDirectories(target.resolve("7-lowering"));
+        Files.createDirectories(home);
         Planting.save(
             home.resolve("entries.xmir"), planted.nodes("/planted/object").get(0).toString()
         );

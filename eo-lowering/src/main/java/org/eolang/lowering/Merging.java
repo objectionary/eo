@@ -56,8 +56,7 @@ final class Merging implements Proc<Path> {
     }
 
     @Override
-    public void exec(final Path target) throws IOException {
-        final Path home = target.resolve("7-lowering");
+    public void exec(final Path home) throws IOException {
         final Path entries = home.resolve("entries.xmir");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(
@@ -67,7 +66,7 @@ final class Merging implements Proc<Path> {
                 )
             );
         }
-        final Collection<Path> sources = new ListOf<>(new Copies(target));
+        final Collection<Path> sources = new ListOf<>(new Copies(home));
         final Path world = home.resolve("world.phi");
         this.phino.merge(
             new Joined<Path>(sources, Collections.singletonList(entries)),

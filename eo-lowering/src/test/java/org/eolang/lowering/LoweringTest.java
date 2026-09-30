@@ -39,51 +39,50 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void makesItsHomeUnderTheDirectoryOfTheBuild(@Mktmp final Path temp)
-        throws IOException {
-        final Path target = temp.resolve("target/eo");
+    void makesTheHomeItWasGiven(@Mktmp final Path temp) throws IOException {
+        final Path home = temp.resolve("home");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
             new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
-            "the lowering must make its home under the directory of the build, but it didnt",
-            target.resolve("7-lowering").toFile(),
+            "the lowering must make the home it was given, but it didnt",
+            home.toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void makesTheDirectoryOfTheProtocolsBesideItsHome(@Mktmp final Path temp)
+    void makesTheDirectoryOfTheProtocolsInsideItsHome(@Mktmp final Path temp)
         throws IOException {
-        final Path target = temp.resolve("target/eo");
+        final Path home = temp.resolve("home");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
             new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
-            "the lowering must make the directory of the protocols beside its home, but it didnt",
-            target.resolve("7-lowering-protocols").toFile(),
+            "the lowering must make the directory of the protocols inside its home, but it didnt",
+            home.resolve("protocols").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void makesTheDirectoryOfThePrunedSourcesBesideItsHome(@Mktmp final Path temp)
+    void makesTheDirectoryOfThePrunedSourcesInsideItsHome(@Mktmp final Path temp)
         throws IOException {
-        final Path target = temp.resolve("target/eo");
+        final Path home = temp.resolve("home");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
             new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
         MatcherAssert.assertThat(
-            "the lowering must make the directory of the pruned sources beside its home, but it didnt",
-            target.resolve("7-lowering-planting").toFile(),
+            "the lowering must make the directory of the pruned sources inside its home, but it didnt",
+            home.resolve("planting").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
@@ -92,19 +91,20 @@ final class LoweringTest {
     @DisabledOnOs(OS.WINDOWS)
     void runsAnEmptyWorldWhenThereIsNothingToLower(@Mktmp final Path temp)
         throws IOException {
-        final Path target = temp.resolve("target/eo");
+        final Path home = temp.resolve("home");
         new Lowering(
-            new ListOf<>(), LoweringTest.tables(temp), target, LoweringTest.binary(temp),
+            new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
             new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
             Duration.ofMinutes(1L)
         ).exec();
-        try (Stream<Path> made = Files.list(target.resolve("7-lowering"))) {
+        try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv",
-                    "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv"
+                    "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
+                    "planting", "protocols"
                 )
             );
         }
@@ -123,7 +123,7 @@ final class LoweringTest {
                 () -> new Lowering(
                     new ListOf<>(),
                     temp.resolve("tables"),
-                    temp.resolve("target/eo"),
+                    temp.resolve("home"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
@@ -145,7 +145,7 @@ final class LoweringTest {
                 () -> new Lowering(
                     new ListOf<>(),
                     temp.resolve("tables"),
-                    temp.resolve("target/eo"),
+                    temp.resolve("home"),
                     binary.toString(),
                     new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
@@ -164,7 +164,7 @@ final class LoweringTest {
             new Lowering(
                 new ListOf<>(),
                 temp.resolve("tables"),
-                temp.resolve("target/eo"),
+                temp.resolve("home"),
                 temp.resolve("absent").toString(),
                 new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),
@@ -182,7 +182,7 @@ final class LoweringTest {
             new Lowering(
                 new ListOf<>(),
                 temp.resolve("tables"),
-                temp.resolve("target/eo"),
+                temp.resolve("home"),
                 LoweringTest.binary(temp),
                 new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),

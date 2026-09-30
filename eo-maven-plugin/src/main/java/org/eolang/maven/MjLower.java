@@ -44,15 +44,15 @@ import org.eolang.lowering.Lowering;
  * and then plants the entries of the build. It hands the lowering the
  * XMIR of every standalone object, the directory where {@code eo:inference}
  * left its tables, because an entry is a formation applied to what the
- * tables say its voids hold, and the directory of the build, where the
- * lowering keeps the sources with their tests cut out in
- * {@code NN-lowering-planting}, the world in {@code NN-lowering} and the
- * protocol of every object morphed in {@code NN-lowering-protocols}.
- * The atoms the lowering renders land in {@code NN-lowering-atoms}, which
- * this goal hands to javac as a source root, and every XMIR file with an
- * atom in the place of a body lands in {@code NN-lowering-patched}, where
- * this goal points the tojo of that object, so the transpiler reads the
- * patched copy and every other object stays where it was. The copies stay
+ * tables say its voids hold, and one home directory, which {@link Subdir}
+ * numbers as {@code NN-lowering}. There the lowering keeps the world, the
+ * sources with their tests cut out in {@code planting}, and the protocol
+ * of every object morphed in {@code protocols}. The atoms the lowering
+ * renders land in {@code atoms}, which this goal hands to javac as a
+ * source root, and every XMIR file with an atom in the place of a body
+ * lands in {@code patched}, where this goal points the tojo of that
+ * object, so the transpiler reads the patched copy and every other object
+ * stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
@@ -120,19 +120,17 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            final Path atoms = this.target.toPath().resolve("7-lowering-atoms")
-                .toAbsolutePath();
-            final Path patched = this.target.toPath().resolve("7-lowering-patched")
-                .toAbsolutePath();
+            final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
+            final Path atoms = home.resolve("atoms");
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
                     new Subdir(this.target, "inference").orConfigured(this.tables),
-                    this.target.toPath(),
+                    home,
                     this.binary,
                     this.caching("lowered"),
                     atoms,
-                    patched,
+                    home.resolve("patched"),
                     Duration.ofSeconds(this.budget)
                 );
                 if (this.optional && !pipeline.available()) {
@@ -143,7 +141,7 @@ public final class MjLower extends MjSafe {
                     );
                 } else {
                     pipeline.exec();
-                    this.repoint(tojos, patched);
+                    MjLower.repoint(tojos, home);
                     this.project.addCompileSourceRoot(atoms.toString());
                     Logger.info(
                         this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
@@ -158,20 +156,17 @@ public final class MjLower extends MjSafe {
         }
     }
 
-    private void repoint(final TjsForeign tojos, final Path patched) {
+    private static void repoint(final TjsForeign tojos, final Path home) {
         final Collection<String> fresh = new ListOf<>(
             new Mapped<>(
                 Text::asString,
-                new Split(
-                    new TextOf(this.target.toPath().resolve("7-lowering/patched.tsv")),
-                    "\\R"
-                )
+                new Split(new TextOf(home.resolve("patched.tsv")), "\\R")
             )
         );
         for (final TjForeign tojo : tojos.standalone()) {
             final String name = tojo.xmir().getFileName().toString();
             if (fresh.contains(name)) {
-                tojo.withXmir(patched.resolve(name));
+                tojo.withXmir(home.resolve("patched").resolve(name));
             }
         }
     }

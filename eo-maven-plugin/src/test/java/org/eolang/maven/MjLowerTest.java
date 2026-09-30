@@ -38,7 +38,7 @@ final class MjLowerTest {
 
     @Test
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/7-lowering");
+        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
             .with("lowering", false)
             .execute(MjLower.class);
@@ -76,7 +76,7 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a goal with no phino to run must skip and leave no folder, but it made one",
-            temp.resolve("target/7-lowering").toFile(),
+            new Subdir(temp.resolve("target"), "lowering").path().toFile(),
             Matchers.not(FileMatchers.anExistingDirectory())
         );
     }
@@ -85,7 +85,7 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path home = temp.resolve("target/7-lowering");
+        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
@@ -114,7 +114,10 @@ final class MjLowerTest {
             "the goal must hand its atoms to javac as a source root, but it didnt",
             project.getCompileSourceRoots(),
             Matchers.hasItem(
-                temp.resolve("target/7-lowering-atoms").toAbsolutePath().toString()
+                new Subdir(temp.resolve("target"), "lowering").path()
+                    .resolve("atoms")
+                    .toAbsolutePath()
+                    .toString()
             )
         );
     }
@@ -134,7 +137,11 @@ final class MjLowerTest {
                 .foreignTojos()
                 .find("foo.x.main")
                 .xmir(),
-            Matchers.equalTo(temp.resolve("target/7-lowering-patched/main.xmir").toAbsolutePath())
+            Matchers.equalTo(
+                new Subdir(temp.resolve("target"), "lowering").path()
+                    .resolve("patched/main.xmir")
+                    .toAbsolutePath()
+            )
         );
     }
 
@@ -145,7 +152,9 @@ final class MjLowerTest {
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class);
         Files.write(
-            Files.createDirectories(temp.resolve("target/7-lowering-patched")).resolve("main.xmir"),
+            Files.createDirectories(
+                new Subdir(temp.resolve("target"), "lowering").path().resolve("patched")
+            ).resolve("main.xmir"),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );
         MatcherAssert.assertThat(
@@ -160,7 +169,9 @@ final class MjLowerTest {
                 .xmir(),
             Matchers.not(
                 Matchers.equalTo(
-                    temp.resolve("target/7-lowering-patched/main.xmir").toAbsolutePath()
+                    new Subdir(temp.resolve("target"), "lowering").path()
+                        .resolve("patched/main.xmir")
+                        .toAbsolutePath()
                 )
             )
         );
@@ -180,7 +191,9 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a run longer than the budget must be killed and leave no protocol, but it didnt",
-            temp.resolve("target/7-lowering-protocols/gap.xml").toFile(),
+            new Subdir(temp.resolve("target"), "lowering").path()
+                .resolve("protocols/gap.xml")
+                .toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );
     }
@@ -188,7 +201,7 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
-        final Path home = temp.resolve("target/7-lowering");
+        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)
