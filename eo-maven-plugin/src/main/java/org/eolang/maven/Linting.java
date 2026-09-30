@@ -44,7 +44,7 @@ import org.xembly.Xembler;
  * The linting results are also embedded back into the XMIR files for future reference.
  * Lints might use caching to speed up the process on subsequent runs.
  * Cached files are stored in the {@link #CACHE} directory.
- * The results of linting are saved in the {@link #DIR} directory.</p>
+ * The results of linting are saved in a directory {@link Subdir} numbers "lint".</p>
  *
  * <p>Note: this class is intentionally named {@code Linting} rather than {@code Lint} to avoid
  * a conflict with Maven's Plexus configurator. When a class named {@code Lint} exists in the
@@ -56,11 +56,6 @@ import org.xembly.Xembler;
  */
 @SuppressWarnings("PMD.GodClass")
 final class Linting implements Step {
-
-    /**
-     * The directory where to lint to.
-     */
-    static final String DIR = "3-lint";
 
     /**
      * Subdirectory for linted cache.
@@ -301,7 +296,7 @@ final class Linting implements Step {
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.target.resolve(Linting.DIR);
+        final Path base = new Subdir(this.target, "lint").path();
         final Path out = new LintTarget(xmir, source).under(base);
         if (this.enabled) {
             this.guard.apply(
@@ -372,7 +367,7 @@ final class Linting implements Step {
         final List<org.eolang.wpa.Defect> defects;
         if (this.enabled) {
             final Path wpa = Path.of("wpa.xmir");
-            final Path base = this.target.resolve(Linting.DIR);
+            final Path base = new Subdir(this.target, "lint").path();
             final Path out = base.resolve(wpa);
             Files.createDirectories(base);
             this.guard.apply(

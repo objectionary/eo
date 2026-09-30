@@ -26,8 +26,9 @@ import org.w3c.dom.NodeList;
  * tojo points, and every {@code @as} of the {@code αN} form is replaced with
  * the name {@link Landings} knows for the {@code @loc} of the argument. The
  * {@code @loc} stays as it is, so the rows of the inference tables still
- * point at the argument. The result goes to {@link #DIR} and the tojo points
- * there, which is where {@link MjTranspile} reads it from.</p>
+ * point at the argument. The result goes to a directory {@link Subdir}
+ * numbers "dealpha" and the tojo points there, which is where
+ * {@link MjTranspile} reads it from.</p>
  *
  * <p>No object is treated apart: the bytes of a literal are named after the
  * {@code φ} of {@code Φ.number} like any other argument, and the branches of
@@ -42,11 +43,6 @@ import org.w3c.dom.NodeList;
  * @since 0.69.0
  */
 final class Dealphaing implements Step {
-
-    /**
-     * The directory for the XMIR with named arguments.
-     */
-    static final String DIR = "7-dealpha";
 
     /**
      * The positional name of an argument.
@@ -64,9 +60,9 @@ final class Dealphaing implements Step {
     private final Landings landings;
 
     /**
-     * The directory to write the XMIR to.
+     * Base target directory.
      */
-    private final Path dir;
+    private final Path target;
 
     /**
      * Whether to fail when an argument has no name to take.
@@ -78,18 +74,18 @@ final class Dealphaing implements Step {
      *
      * @param objects The tojos of the objects to rename arguments in
      * @param names The names of the voids the arguments land in
-     * @param target The directory to write the XMIR to
+     * @param tgt Base target directory
      * @param fail Whether to fail when an argument has no name to take
      */
     Dealphaing(
         final Collection<TjForeign> objects,
         final Landings names,
-        final Path target,
+        final Path tgt,
         final boolean fail
     ) {
         this.tojos = objects;
         this.landings = names;
-        this.dir = target;
+        this.target = tgt;
         this.strict = fail;
     }
 
@@ -98,10 +94,11 @@ final class Dealphaing implements Step {
         if (this.tojos.isEmpty()) {
             Logger.debug(this, "No XMIR to name the arguments in");
         } else {
+            final Path dir = new Subdir(this.target, "dealpha").path();
             final Map<String, String> names = this.landings.names();
             final Map<String, Collection<String>> verdicts = new HashMap<>(3);
             for (final TjForeign tojo : this.tojos) {
-                this.renamed(tojo, names, verdicts);
+                this.renamed(tojo, dir, names, verdicts);
             }
             final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
             Logger.info(
@@ -111,7 +108,7 @@ final class Dealphaing implements Step {
                 verdicts.values().stream().mapToInt(Collection::size).sum(),
                 this.tojos.size(),
                 lost.size(),
-                this.dir
+                dir
             );
             if (this.strict && !lost.isEmpty()) {
                 throw new IllegalStateException(
@@ -126,17 +123,18 @@ final class Dealphaing implements Step {
 
     private void renamed(
         final TjForeign tojo,
+        final Path dir,
         final Map<String, String> names,
         final Map<String, Collection<String>> verdicts
     ) throws IOException {
         final Node xmir = new XMLDocument(tojo.xmir()).inner();
         Dealphaing.walked(xmir, names, verdicts);
-        final Path target = new Place(tojo.identifier()).make(this.dir, MjAssemble.XMIR);
+        final Path dest = new Place(tojo.identifier()).make(dir, MjAssemble.XMIR);
         final String named = new XMLDocument(xmir).toString();
-        if (!Files.exists(target) || !new Diff(Files.readString(target), named).same()) {
-            new Saved(named, target).value();
+        if (!Files.exists(dest) || !new Diff(Files.readString(dest), named).same()) {
+            new Saved(named, dest).value();
         }
-        tojo.withXmir(target);
+        tojo.withXmir(dest);
     }
 
     private static void walked(

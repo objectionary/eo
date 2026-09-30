@@ -36,7 +36,7 @@ final class XmirIT {
                     .resolve("eo-runtime")
                     .resolve("target")
                     .resolve("eo")
-                    .resolve("1-parse")
+                    .resolve("04-parse")
             )
         ) {
             stream.filter(Files::isRegularFile).forEach(

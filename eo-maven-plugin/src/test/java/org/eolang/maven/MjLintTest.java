@@ -611,7 +611,7 @@ final class MjLintTest {
             .allTojosWithHash(CommitHash.FAKE)
             .execute(new PpLint());
         final Path path = maven.result().get(
-            String.format("target/%s/foo/x/main.%s", Linting.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", maven.dirName("lint"), MjAssemble.XMIR)
         );
         final String xpath = "/object/@time";
         final String before = new Xnav(path).one(xpath).text().orElseThrow();

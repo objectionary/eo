@@ -23,8 +23,8 @@ import org.apache.maven.plugins.annotations.Mojo;
  * <p>This goal goes through all dependencies found in the
  * {@link MjPull} goal, finds their implementations
  * (i.e. transitive dependencies), downloads them from Maven Central,
- * unpacks them and places the resulting files to the
- * {@link MjResolve#DIR} directory.</p>
+ * unpacks them and places the resulting files to a directory
+ * {@link Subdir} numbers "resolve".</p>
  *
  * @since 0.1
  */
@@ -34,11 +34,6 @@ import org.apache.maven.plugins.annotations.Mojo;
     threadSafe = true
 )
 public final class MjResolve extends MjSafe {
-
-    /**
-     * The directory where to resolve to.
-     */
-    static final String DIR = "4-resolve";
 
     /**
      * The central.
@@ -60,7 +55,7 @@ public final class MjResolve extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Resolving(
                 tojos,
-                this.target.toPath().resolve(MjResolve.DIR),
+                this.target.toPath(),
                 this.central,
                 this.discover,
                 this.zeros,

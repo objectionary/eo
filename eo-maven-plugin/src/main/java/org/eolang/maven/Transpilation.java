@@ -238,7 +238,8 @@ final class Transpilation {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
-            final Path dir = new Place(name).make(this.target.resolve(Transpiling.PRE), "");
+            final Path pre = new Subdir(this.target, "pre-transpile").path();
+            final Path dir = new Place(name).make(pre, "");
             func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
             func = new Xsline(measured)::pass;

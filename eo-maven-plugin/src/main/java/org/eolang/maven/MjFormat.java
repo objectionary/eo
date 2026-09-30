@@ -136,7 +136,7 @@ public final class MjFormat extends MjPenalties {
         return new Canonical().apply(
             new Raws(
                 this.caching(Parsing.CACHE).with("raws"),
-                this.target.toPath().resolve("0-raw")
+                new Subdir(this.target, "raw").path()
             ).of(tojo)
         );
     }

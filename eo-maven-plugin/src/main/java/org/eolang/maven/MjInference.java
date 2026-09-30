@@ -55,25 +55,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class MjInference extends MjSafe {
 
     /**
-     * The directory where the XMIR prepared for the rules is saved.
+     * The directory where the XMIR prepared for the rules is saved, falling
+     * back to a directory {@link Subdir} numbers "pre-inference" when unset.
      */
-    @Parameter(
-        alias = "preInferenceDir",
-        property = "eo.preInferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-pre-inference"
-    )
+    @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
     private File prepared;
 
     /**
-     * The directory where the tables are saved.
+     * The directory where the tables are saved, falling back to a directory
+     * {@link Subdir} numbers "inference" when unset.
      */
-    @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
-    )
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -87,9 +79,9 @@ public final class MjInference extends MjSafe {
     void exec() throws IOException {
         new Timed(
             new Inferring(
-                this.target.toPath().resolve(Parsing.DIR),
-                this.prepared.toPath(),
-                this.tables.toPath()
+                new Subdir(this.target, "parse").path(),
+                this.dir(this.prepared, "pre-inference"),
+                this.dir(this.tables, "inference")
             )
         ).exec();
     }
