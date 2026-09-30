@@ -53,11 +53,9 @@ public final class MjMerge extends MjSafe {
     @Override
     void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            new Timed(
-                new Merging(
-                    tojos,
-                    this.target.toPath().resolve(Merging.DIR)
-                )
+            new Merging(
+                tojos,
+                this.target.toPath().resolve(Merging.DIR)
             ).exec();
         }
     }

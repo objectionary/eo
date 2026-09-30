@@ -73,8 +73,6 @@ public final class MjInferenceReport extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Timed(
-            new Reporting(this.prepared.toPath(), this.tables.toPath(), this.pages.toPath())
-        ).exec();
+        new Reporting(this.prepared.toPath(), this.tables.toPath(), this.pages.toPath()).exec();
     }
 }

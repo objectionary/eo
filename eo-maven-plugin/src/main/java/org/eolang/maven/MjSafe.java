@@ -583,29 +583,23 @@ abstract class MjSafe extends AbstractMojo {
     Assembling assembling(final TjsForeign tojos) {
         return new Assembling(
             tojos,
-            new Timed(
-                new Parsing(
-                    tojos,
-                    this.target.toPath(),
-                    this.sourcesDir.toPath(),
-                    this.caching(Parsing.CACHE)
-                )
+            new Parsing(
+                tojos,
+                this.target.toPath(),
+                this.sourcesDir.toPath(),
+                this.caching(Parsing.CACHE)
             ),
-            new Timed(
-                new Probing(tojos, this.objectionary(), !this.offline)
-            ),
-            new Timed(
-                new Pulling(
-                    tojos,
-                    this.target.toPath().resolve(Pulling.DIR),
-                    this.hash,
-                    this.objectionary(),
-                    this.cache.toPath().resolve(Pulling.CACHE),
-                    this.plugin.getVersion(),
-                    this.overwrite,
-                    this.cacheEnabled,
-                    this.offline
-                )
+            new Probing(tojos, this.objectionary(), !this.offline),
+            new Pulling(
+                tojos,
+                this.target.toPath().resolve(Pulling.DIR),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overwrite,
+                this.cacheEnabled,
+                this.offline
             )
         );
     }

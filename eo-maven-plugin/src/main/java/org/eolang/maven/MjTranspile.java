@@ -171,24 +171,20 @@ public final class MjTranspile extends MjSafe {
     @Override
     public void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            new Timed(
-                new Merging(tojos, this.target.toPath().resolve(Merging.DIR))
-            ).exec();
-            new Timed(
-                new Transpiling(
-                    tojos.standalone(),
+            new Merging(tojos, this.target.toPath().resolve(Merging.DIR)).exec();
+            new Transpiling(
+                tojos.standalone(),
+                this.target.toPath(),
+                new Written(this.generated.toPath(), this.tests, this.roots()),
+                new Transpilation(
+                    new Tracking(this.tracking, this.located),
+                    this.coverage,
+                    this.base(),
+                    this.measures.toPath(),
                     this.target.toPath(),
-                    new Written(this.generated.toPath(), this.tests, this.roots()),
-                    new Transpilation(
-                        new Tracking(this.tracking, this.located),
-                        this.coverage,
-                        this.base(),
-                        this.measures.toPath(),
-                        this.target.toPath(),
-                        this.tables.toPath()
-                    ),
-                    this.stored()
-                )
+                    this.tables.toPath()
+                ),
+                this.stored()
             ).exec();
         }
         if (this.attach) {
