@@ -123,17 +123,6 @@ final class Morphing implements Proc<Path> {
      *
      * @param exe The phino program, which does the morphing
      * @param store The cache, where the protocols are kept between builds
-     * @param span The time that one run may take before it is stopped
-     */
-    Morphing(final Phino exe, final GlobalCache store, final Duration span) {
-        this(exe, store, 32, span);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param exe The phino program, which does the morphing
-     * @param store The cache, where the protocols are kept between builds
      * @param ceiling The largest number of steps inside one another
      * @param span The time that one run may take before it is stopped
      */

@@ -45,7 +45,7 @@ final class MorphingTest {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         try (Stream<Path> made = Files.list(protocols)) {
             MatcherAssert.assertThat(
@@ -67,7 +67,7 @@ final class MorphingTest {
             String.format("4\tΦ.bytes.as-hex.a🌵16-3%n").getBytes(StandardCharsets.UTF_8)
         );
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must be named after the locator of its entry, but it isnt",
@@ -108,10 +108,10 @@ final class MorphingTest {
         MorphingTest.merged(temp, 3);
         final Phino phino = MorphingTest.counting(temp);
         new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.1.2"), Duration.ofMinutes(1L)
+            phino, new GcShared(temp.resolve("cache"), "0.1.2"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.1.2"), Duration.ofMinutes(1L)
+            phino, new GcShared(temp.resolve("cache"), "0.1.2"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the second build over the same world must not run the binary again, but it does",
@@ -126,13 +126,13 @@ final class MorphingTest {
         MorphingTest.merged(temp, 3);
         final Phino phino = MorphingTest.counting(temp);
         new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.3.4"), Duration.ofMinutes(1L)
+            phino, new GcShared(temp.resolve("cache"), "0.3.4"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         Files.write(
             temp.resolve("world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
         );
         new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.3.4"), Duration.ofMinutes(1L)
+            phino, new GcShared(temp.resolve("cache"), "0.3.4"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "a build over a changed world must run the binary again, but it doesnt",
@@ -148,12 +148,12 @@ final class MorphingTest {
         new Morphing(
             MorphingTest.phino(temp, "exec sleep 30"),
             new GcShared(temp.resolve("cache"), "0.5.6"),
-            32,
+            16,
             Duration.ofMillis(700L)
         ).exec(temp);
         new Morphing(
             MorphingTest.counting(temp), new GcShared(temp.resolve("cache"), "0.5.6"),
-            Duration.ofMinutes(1L)
+            16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "a run killed in an earlier build must be tried again, but it isnt",
@@ -171,7 +171,7 @@ final class MorphingTest {
             "<protocol/>".getBytes(StandardCharsets.UTF_8)
         );
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the protocol of an entry the world no longer has must be gone, but it stays",
@@ -186,7 +186,7 @@ final class MorphingTest {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the run of an entry must be aimed at the mark of that entry, but it isnt",
@@ -201,7 +201,7 @@ final class MorphingTest {
         final Path home = MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the run must morph the entry of the world with the table, but it doesnt",
@@ -235,7 +235,7 @@ final class MorphingTest {
         MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the run must print its protocol sweet and without any rho, but it doesnt",
@@ -267,6 +267,7 @@ final class MorphingTest {
                 )
             ),
             new GlobalCache.GcFresh(),
+            16,
             Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
@@ -281,7 +282,7 @@ final class MorphingTest {
     void writesTheTableOfOperationsBesideTheWorld(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the table must name the mark the entries fire, but it doesnt",
@@ -301,7 +302,7 @@ final class MorphingTest {
             Assertions.assertThrows(
                 UncheckedIOException.class,
                 () -> new Morphing(
-                    phino, new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+                    phino, new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
                 ).exec(temp),
                 "a binary that exits with an error must fail the morphing"
             ).getMessage(),
@@ -316,7 +317,7 @@ final class MorphingTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Morphing(
-                    new Phino("absent"), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+                    new Phino("absent"), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
                 ).exec(temp),
                 "a world that was not merged must fail the morphing"
             ).getMessage(),
@@ -333,7 +334,7 @@ final class MorphingTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Morphing(
-                    new Phino("absent"), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+                    new Phino("absent"), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
                 ).exec(temp),
                 "entries that were not planted must fail the morphing"
             ).getMessage(),
@@ -378,7 +379,7 @@ final class MorphingTest {
         );
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
-        new Morphing(phino, new GlobalCache.GcFresh(), Duration.ofMinutes(1L)).exec(temp);
+        new Morphing(phino, new GlobalCache.GcFresh(), 32, Duration.ofMinutes(1L)).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
@@ -391,7 +392,7 @@ final class MorphingTest {
     void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the table must answer every atom of bytes, but it leaves one standing",
@@ -415,7 +416,7 @@ final class MorphingTest {
         throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
@@ -433,7 +434,7 @@ final class MorphingTest {
     void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(), Duration.ofMinutes(1L)
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
             "every bool the table answers must be the formation wrapping it, but one is bare",
@@ -482,7 +483,7 @@ final class MorphingTest {
         );
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
-        new Morphing(phino, new GlobalCache.GcFresh(), Duration.ofMinutes(1L)).exec(temp);
+        new Morphing(phino, new GlobalCache.GcFresh(), 32, Duration.ofMinutes(1L)).exec(temp);
         MatcherAssert.assertThat(
             "the run must fire the atom of bytes the body reached, but it left it standing",
             MorphingTest.text(temp.resolve("2-protocols/len.xml")),

@@ -103,6 +103,17 @@ public final class MjLower extends MjSafe {
     private int budget;
 
     /**
+     * The largest number of steps inside one another that one run of phino
+     * on one entry may take.
+     */
+    @Parameter(
+        alias = "maxMorphingSteps",
+        property = "eo.maxMorphingSteps",
+        defaultValue = "32"
+    )
+    private int steps;
+
+    /**
      * The directory with the tables of {@code eo:inference}. When it is not
      * set, the goal uses the directory that {@link Subdir} gives to the name
      * "inference", which is where {@code eo:inference} saves the tables.
@@ -131,6 +142,7 @@ public final class MjLower extends MjSafe {
                     this.caching("lowered"),
                     atoms,
                     home.resolve("4-patched"),
+                    this.steps,
                     Duration.ofSeconds(this.budget)
                 );
                 if (this.optional && !pipeline.available()) {

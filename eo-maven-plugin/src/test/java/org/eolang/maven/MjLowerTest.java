@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 import org.cactoos.io.ResourceOf;
@@ -200,6 +201,25 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheNumberOfStepsItWasGiven(@Mktmp final Path temp) throws IOException {
+        final int steps = new SecureRandom().nextInt(1000) + 1;
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("steps", steps)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the number of steps it was given, but it didnt",
+            Files.readString(temp.resolve("morph.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-steps=%d", steps))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
         final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
@@ -284,7 +304,8 @@ final class MjLowerTest {
                 String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "morph) sleep %d; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done;;",
+                    "morph) echo \"$@\" >> '%s'; sleep %d; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done;;",
+                    temp.resolve("morph.txt"),
                     pause,
                     Files.write(
                         temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)
