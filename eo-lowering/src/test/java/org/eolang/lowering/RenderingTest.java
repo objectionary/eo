@@ -32,7 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Tests of the class {@link Rendering}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
 final class RenderingTest {
@@ -84,7 +84,7 @@ final class RenderingTest {
      * exactly. When the file names no Java file, the entry must be a taint,
      * and no atom may be written.</p>
      *
-     * @since 0.74.0
+     * @since 0.64.0
      */
     private static final class Pack {
 

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests of the class {@link Locator}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class LocatorTest {
 

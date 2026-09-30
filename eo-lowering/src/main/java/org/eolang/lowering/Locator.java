@@ -21,7 +21,7 @@ import java.nio.file.Path;
  * protocols, and {@link Rendering}, which reads them. Because both use
  * the same class, they always agree on the name of the file.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Locator {
 

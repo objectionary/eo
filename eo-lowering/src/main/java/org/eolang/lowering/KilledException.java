@@ -18,7 +18,7 @@ import java.io.IOException;
  * made it finishes normally. So, when a run is stopped, nothing is stored
  * in the cache, and the next build tries this run again.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class KilledException extends IOException {
 

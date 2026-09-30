@@ -33,7 +33,7 @@ import org.cactoos.scalar.Unchecked;
  * missing, or that says nothing about a type, does not stop the build: the
  * type is shown as {@code ?}.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Signatures {
 

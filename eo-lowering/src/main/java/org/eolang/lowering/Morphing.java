@@ -92,7 +92,7 @@ import org.eolang.cache.GlobalCache;
  * an entry that is not in the world any more leaves no protocol
  * behind.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @todo #8548:90min Save every protocol in the cache under the part of the
  *  world that its entry uses, and not under the whole world. Now, when
  *  any one object of the build changes, the hash of {@code world.phi}

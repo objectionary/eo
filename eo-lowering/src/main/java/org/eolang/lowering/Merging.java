@@ -37,7 +37,7 @@ import org.cactoos.list.ListOf;
  * what phino printed. There is nothing useful the next stages can do
  * without the world.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Merging implements Proc<Path> {
 

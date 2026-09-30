@@ -25,7 +25,7 @@ import org.cactoos.Text;
  * any of them may finish at any moment. This is why every counter here is
  * safe to change from many threads at once.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Progress implements Text {
 

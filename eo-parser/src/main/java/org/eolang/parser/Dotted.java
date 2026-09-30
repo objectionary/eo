@@ -16,7 +16,7 @@ import java.util.Set;
  * verbatim into a base by `expand-aliases.xsl`, where it names nothing at
  * all, which is why it is caught while the line is still being read.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Dotted {
 

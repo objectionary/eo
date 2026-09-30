@@ -33,7 +33,7 @@ import org.cactoos.text.UncheckedText;
  * away, and its error output is shown only when phino fails. A reader of
  * the log should not be worried by lines that do not matter.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Phino {
 

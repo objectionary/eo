@@ -36,7 +36,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Tests of the class {@link Patching}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
 final class PatchingTest {
@@ -110,7 +110,7 @@ final class PatchingTest {
      * queries that the patched XMIR must match. A source that is not
      * listed must not be patched at all.</p>
      *
-     * @since 0.74.0
+     * @since 0.64.0
      */
     private static final class Pack {
 

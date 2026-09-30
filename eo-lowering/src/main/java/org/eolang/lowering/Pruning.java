@@ -41,7 +41,7 @@ import org.cactoos.iterable.Sorted;
  * source that was deleted from the project would still be in the
  * directory, and the next stages would still read it.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Pruning implements Proc<Path> {
 

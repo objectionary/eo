@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * one slow entry has to be studied alone, or when one entry has to be
  * kept away from phino, while all the others are lowered as usual.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class Scope {
 

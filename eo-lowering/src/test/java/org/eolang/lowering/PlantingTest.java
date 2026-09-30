@@ -50,7 +50,7 @@ import org.xembly.Xembler;
  * things that an EO program cannot show: which files are written, whether
  * two runs give the same result, and when the stage refuses to work.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
 @Isolated
@@ -248,7 +248,7 @@ final class PlantingTest {
      * One YAML file of {@code entry-packs}, with what it expects from
      * {@link Planting}.
      *
-     * @since 0.74.0
+     * @since 0.64.0
      */
     private static final class Pack {
 

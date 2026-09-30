@@ -53,7 +53,7 @@ import org.eolang.cache.GlobalCache;
  * object were quietly skipped, nobody could explain the Java of the
  * program later.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class Lowering {
 

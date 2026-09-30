@@ -54,7 +54,7 @@ import org.cactoos.iterable.Sorted;
  * to {@code rendered.tsv}. The Maven goal uses only the copies in that
  * list, and an old copy that is not in the list is ignored.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Patching implements Proc<Path> {
 

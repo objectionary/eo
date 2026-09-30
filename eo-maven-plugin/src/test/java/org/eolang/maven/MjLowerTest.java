@@ -32,7 +32,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link MjLower}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
 final class MjLowerTest {

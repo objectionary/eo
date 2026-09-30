@@ -57,7 +57,7 @@ import org.eolang.lowering.Scope;
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @Mojo(
     name = "lower",

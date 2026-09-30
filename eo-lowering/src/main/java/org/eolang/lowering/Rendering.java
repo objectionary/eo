@@ -62,7 +62,7 @@ import org.cactoos.text.TextOf;
  * {@code rendered.tsv}, so that {@link Patching} knows which objects to
  * change.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @todo #8548:60min Make a slice outside of the bytes fail the same way
  *  as the atom does. When the range of a slice is outside of the bytes,
  *  the Java that {@code rendering.xsl} writes throws a Java exception. But

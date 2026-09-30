@@ -25,7 +25,7 @@ import org.cactoos.iterable.Sorted;
  * the entries and the world are exactly the same on every build of the
  * same program.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Copies implements Iterable<Path> {
 

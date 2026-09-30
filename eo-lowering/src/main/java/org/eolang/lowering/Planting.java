@@ -55,7 +55,7 @@ import org.xembly.Xembler;
  * one document, and this class saves three files from it:
  * {@code entries.xmir}, {@code voids.tsv} and {@code entries.tsv}.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @todo #8548:60min Fill the voids of the voids of an object. Sometimes
  *  the type of a void is not a simple type, like a number, but another
  *  object with voids of its own. Then that void gets that object, and the

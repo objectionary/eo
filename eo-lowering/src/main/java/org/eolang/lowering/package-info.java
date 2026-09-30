@@ -55,7 +55,7 @@
  * something goes wrong, the whole build fails. This way, a build never
  * quietly produces something that nobody can explain.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>
  */
