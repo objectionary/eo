@@ -46,11 +46,11 @@ import org.eolang.lowering.Lowering;
  * left its tables, because an entry is a formation applied to what the
  * tables say its voids hold, and one home directory, which {@link Subdir}
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
- * sources with their tests cut out in {@code planting}, and the protocol
- * of every object morphed in {@code protocols}. The atoms the lowering
- * renders land in {@code atoms}, which this goal hands to javac as a
+ * sources with their tests cut out in {@code 1-planting}, and the protocol
+ * of every object morphed in {@code 2-protocols}. The atoms the lowering
+ * renders land in {@code 3-atoms}, which this goal hands to javac as a
  * source root, and every XMIR file with an atom in the place of a body
- * lands in {@code patched}, where this goal points the tojo of that
+ * lands in {@code 4-patched}, where this goal points the tojo of that
  * object, so the transpiler reads the patched copy and every other object
  * stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one
@@ -121,7 +121,7 @@ public final class MjLower extends MjSafe {
     void exec() throws IOException {
         if (this.lowering) {
             final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
-            final Path atoms = home.resolve("atoms");
+            final Path atoms = home.resolve("3-atoms");
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
@@ -130,7 +130,7 @@ public final class MjLower extends MjSafe {
                     this.binary,
                     this.caching("lowered"),
                     atoms,
-                    home.resolve("patched"),
+                    home.resolve("4-patched"),
                     Duration.ofSeconds(this.budget)
                 );
                 if (this.optional && !pipeline.available()) {
@@ -166,7 +166,7 @@ public final class MjLower extends MjSafe {
         for (final TjForeign tojo : tojos.standalone()) {
             final String name = tojo.xmir().getFileName().toString();
             if (fresh.contains(name)) {
-                tojo.withXmir(home.resolve("patched").resolve(name));
+                tojo.withXmir(home.resolve("4-patched").resolve(name));
             }
         }
     }

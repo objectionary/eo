@@ -115,7 +115,7 @@ final class MjLowerTest {
             project.getCompileSourceRoots(),
             Matchers.hasItem(
                 new Subdir(temp.resolve("target"), "lowering").path()
-                    .resolve("atoms")
+                    .resolve("3-atoms")
                     .toAbsolutePath()
                     .toString()
             )
@@ -139,7 +139,7 @@ final class MjLowerTest {
                 .xmir(),
             Matchers.equalTo(
                 new Subdir(temp.resolve("target"), "lowering").path()
-                    .resolve("patched/main.xmir")
+                    .resolve("4-patched/main.xmir")
                     .toAbsolutePath()
             )
         );
@@ -153,7 +153,7 @@ final class MjLowerTest {
             .execute(MjParse.class);
         Files.write(
             Files.createDirectories(
-                new Subdir(temp.resolve("target"), "lowering").path().resolve("patched")
+                new Subdir(temp.resolve("target"), "lowering").path().resolve("4-patched")
             ).resolve("main.xmir"),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );
@@ -170,7 +170,7 @@ final class MjLowerTest {
             Matchers.not(
                 Matchers.equalTo(
                     new Subdir(temp.resolve("target"), "lowering").path()
-                        .resolve("patched/main.xmir")
+                        .resolve("4-patched/main.xmir")
                         .toAbsolutePath()
                 )
             )
@@ -192,7 +192,7 @@ final class MjLowerTest {
         MatcherAssert.assertThat(
             "a run longer than the budget must be killed and leave no protocol, but it didnt",
             new Subdir(temp.resolve("target"), "lowering").path()
-                .resolve("protocols/gap.xml")
+                .resolve("2-protocols/gap.xml")
                 .toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );

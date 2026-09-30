@@ -34,9 +34,9 @@ import org.eolang.cache.GlobalCache;
  * <ul>
  * <li>the home directory itself holds the world and the other files that
  * are made on the way to it;</li>
- * <li>{@code planting}, inside the home directory, holds the copies of the
+ * <li>{@code 1-planting}, inside the home directory, holds the copies of the
  * sources, without the tests;</li>
- * <li>{@code protocols}, inside the home directory, holds one protocol file
+ * <li>{@code 2-protocols}, inside the home directory, holds one protocol file
  * for every entry that phino worked on;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java
  * atoms;</li>
@@ -44,6 +44,9 @@ import org.eolang.cache.GlobalCache;
  * the XMIR files where atoms took the place of the bodies of
  * objects.</li>
  * </ul>
+ *
+ * <p>The number at the start of the name of a directory tells in which
+ * order the stages make these directories.</p>
  *
  * <p>No step can be skipped. The build fails when a stage cannot read what
  * the stage before it wrote, and when phino has the wrong version. If an

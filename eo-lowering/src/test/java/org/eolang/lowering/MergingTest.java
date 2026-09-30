@@ -118,7 +118,7 @@ final class MergingTest {
             "the pinned phino is not on this machine, so the world cannot be merged here"
         );
         Files.write(
-            Files.createDirectories(temp.resolve("planting")).resolve("gap.xmir"),
+            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
@@ -153,7 +153,7 @@ final class MergingTest {
 
     private static Path xmir(final Path temp, final String name) throws IOException {
         return Files.write(
-            Files.createDirectories(temp.resolve("planting"))
+            Files.createDirectories(temp.resolve("1-planting"))
                 .resolve(String.format("%s.xmir", name)),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );

@@ -16,7 +16,7 @@ import org.cactoos.iterable.Sorted;
  *
  * <p>The stage {@link Pruning} makes a copy of every source file of the
  * build, removes the tests from it, and saves it into the directory
- * {@code planting}, inside the home directory of the lowering. All the
+ * {@code 1-planting}, inside the home directory of the lowering. All the
  * stages after {@link Pruning} read only these copies, and never the
  * original sources. This class lists those copies.</p>
  *
@@ -48,7 +48,7 @@ final class Copies implements Iterable<Path> {
         return new Sorted<>(
             new Filtered<>(
                 Files::isRegularFile,
-                new Directory(this.home.resolve("planting"))
+                new Directory(this.home.resolve("1-planting"))
             )
         ).iterator();
     }

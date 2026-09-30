@@ -64,7 +64,7 @@ final class RenderingTest {
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.write(
-            Files.createDirectories(temp.resolve("planting")).resolve("slow.xmir"),
+            Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
                 .getBytes(StandardCharsets.UTF_8)
         );
@@ -172,7 +172,7 @@ final class RenderingTest {
                     .getBytes(StandardCharsets.UTF_8)
             );
             final Path sources = Files.createDirectories(
-                this.temp.resolve("planting")
+                this.temp.resolve("1-planting")
             );
             for (final Map.Entry<?, ?> source
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
@@ -182,7 +182,7 @@ final class RenderingTest {
                         .getBytes(StandardCharsets.UTF_8)
                 );
             }
-            final Path protocol = this.temp.resolve("protocols")
+            final Path protocol = this.temp.resolve("2-protocols")
                 .resolve(new Locator(locator).protocol());
             Files.createDirectories(protocol.getParent());
             Files.write(

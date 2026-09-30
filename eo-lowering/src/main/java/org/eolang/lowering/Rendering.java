@@ -128,7 +128,7 @@ final class Rendering implements Proc<Path> {
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
         )) {
             final String[] cells = row.split("\t", -1);
-            final Path protocol = home.resolve("protocols")
+            final Path protocol = home.resolve("2-protocols")
                 .resolve(new Locator(cells[1]).protocol());
             if (Files.exists(protocol)) {
                 final String top = Rendering.top(tops, cells[1]);

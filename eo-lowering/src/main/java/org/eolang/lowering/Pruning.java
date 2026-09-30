@@ -32,7 +32,7 @@ import org.cactoos.iterable.Sorted;
  * them.</p>
  *
  * <p>The original sources are never changed. For every source, this stage
- * writes a copy without the tests into the directory {@code planting},
+ * writes a copy without the tests into the directory {@code 1-planting},
  * inside the home directory of the lowering, under the same file name as
  * the source. All the next stages read these copies. If two sources have
  * the same file name, they would need the same copy, and one of them would
@@ -66,7 +66,7 @@ final class Pruning implements Proc<Path> {
             "/org/eolang/lowering/pruning.xsl"
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
-        final Path planting = Files.createDirectories(home.resolve("planting"));
+        final Path planting = Files.createDirectories(home.resolve("1-planting"));
         for (final Path stale : new Copies(home)) {
             Files.delete(stale);
         }

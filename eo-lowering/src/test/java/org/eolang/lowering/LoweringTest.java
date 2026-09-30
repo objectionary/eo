@@ -65,7 +65,7 @@ final class LoweringTest {
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the protocols inside its home, but it didnt",
-            home.resolve("protocols").toFile(),
+            home.resolve("2-protocols").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
@@ -82,7 +82,7 @@ final class LoweringTest {
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the pruned sources inside its home, but it didnt",
-            home.resolve("planting").toFile(),
+            home.resolve("1-planting").toFile(),
             FileMatchers.anExistingDirectory()
         );
     }
@@ -104,7 +104,7 @@ final class LoweringTest {
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv",
                     "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
-                    "planting", "protocols"
+                    "1-planting", "2-protocols"
                 )
             );
         }

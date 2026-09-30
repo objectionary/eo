@@ -43,7 +43,7 @@ final class PruningTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no test, but it does",
-            new XMLDocument(temp.resolve("planting/flag.xmir"))
+            new XMLDocument(temp.resolve("1-planting/flag.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -63,7 +63,7 @@ final class PruningTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no failing test, but it does",
-            new XMLDocument(temp.resolve("planting/gate.xmir"))
+            new XMLDocument(temp.resolve("1-planting/gate.xmir"))
                 .nodes("//o[starts-with(@name, 'n🌵')]"),
             Matchers.empty()
         );
@@ -92,7 +92,7 @@ final class PruningTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the copy must hold no test at any depth, but it does",
-            new XMLDocument(temp.resolve("planting/outer.xmir"))
+            new XMLDocument(temp.resolve("1-planting/outer.xmir"))
                 .nodes("//o[starts-with(@name, 'p🌵')]"),
             Matchers.empty()
         );
@@ -120,7 +120,7 @@ final class PruningTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the bindings on both sides of the test must stay, but they dont",
-            new XMLDocument(temp.resolve("planting/pair.xmir"))
+            new XMLDocument(temp.resolve("1-planting/pair.xmir"))
                 .nodes("/object/o[@name='pair'][o[@name='φ']][o[@name='gap']][count(o) = 4]"),
             Matchers.not(Matchers.empty())
         );
@@ -130,7 +130,7 @@ final class PruningTest {
     void dropsTheCopyOfASourceTheBuildNoLongerHas(@Mktmp final Path temp)
         throws IOException {
         final Path stale = Files.write(
-            Files.createDirectories(temp.resolve("planting")).resolve("gone.xmir"),
+            Files.createDirectories(temp.resolve("1-planting")).resolve("gone.xmir"),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );
         new Pruning(
