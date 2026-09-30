@@ -21,41 +21,47 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * The planting of the entries of the build.
+ * The stage that writes down the entries of the build.
  *
- * <p>A formation is folded by being evaluated, and evaluating it means
- * applying it to something. Its voids are not known at compile time, so
- * each of them is filled with a symbol, a lambda nobody answers, wrapped
- * in the carrier the tables of {@code eo:inference} name for it, and the
- * application is written down as one entry. What the evaluation comes
- * back with is the body of the formation written in terms of its own
- * inputs, which is exactly what a Java method needs to say.</p>
+ * <p>An "entry" is an object that may become an atom, together with made-up
+ * inputs. To learn what an object computes, phino has to run it, and to run
+ * it, phino needs values for its inputs. In EO, the inputs of an object are
+ * called its "voids". Their real values are not known while the program is
+ * compiled. So, every void gets a "symbol" instead of a value. A symbol is
+ * a placeholder, a name that stands for a value nobody knows yet. phino then
+ * computes the body of the object in terms of these symbols. The result
+ * says, for example, "multiply the first input by two". This is exactly
+ * what a Java method needs to know.</p>
  *
- * <p>A symbol is never planted bare, since a formation holding nothing
- * but a lambda carries no attribute for the body to dispatch off. What
- * the tables cannot type is not planted at all: the body reaches the
- * bottom where it reads it, and the entry is a taint the run records and
- * the later stages leave alone.</p>
+ * <p>A symbol is never given alone. It is wrapped into the type that the
+ * stage {@code eo:inference} found for that void, such as a number or a
+ * bool, because the body of the object needs the attributes of that type.
+ * When {@code eo:inference} does not know the type of a void, that void
+ * gets nothing at all. Then phino cannot finish the work on that entry,
+ * and the entry becomes a "taint". A taint is an entry that cannot be
+ * turned into Java, and the next stages simply leave it alone.</p>
  *
- * <p>The whole build is read by one transformation, which is why this
- * class hands {@code entries.xsl} a manifest of the sources rather than a
- * source, and takes three files out of the one document that comes
- * back.</p>
+ * <p>All the sources of the build are handled by one XSL transformation,
+ * {@code entries.xsl}. This is why this class gives the transformation a
+ * list of all the sources, and not one source. The transformation returns
+ * one document, and this class saves three files from it:
+ * {@code entries.xmir}, {@code voids.tsv} and {@code entries.tsv}.</p>
  *
  * @since 0.74.0
- * @todo #8548:60min Plant a void of a void of an object. A void the
- *  tables type as an object other than a carrier is planted as that
- *  object applied to symbols for its own voids, and there the planting
- *  stops: a void of that object which is again such an object is left
- *  unfilled, and the entry is a taint for no better reason than the depth
- *  it stands at. Let {@code entries.xsl} go down as far as the types go,
- *  with a guard against a type that holds itself, and say in
- *  {@code voids.tsv} what it planted.
+ * @todo #8548:60min Fill the voids of the voids of an object. Sometimes
+ *  the type of a void is not a simple type, like a number, but another
+ *  object with voids of its own. Then that void gets that object, and the
+ *  voids of that object get symbols. But if one of those voids is again
+ *  such an object, it gets nothing, and the entry becomes a taint only
+ *  because it is too deep. Let {@code entries.xsl} go as deep as the types
+ *  go, stop when a type contains itself, and write into
+ *  {@code voids.tsv} what it filled.
  */
 final class Planting implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference}.
+     * The directory with the tables of {@code eo:inference}, which say the
+     * types of the voids.
      */
     private final Path tables;
 

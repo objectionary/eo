@@ -14,26 +14,41 @@ import org.cactoos.proc.Procs;
 import org.eolang.cache.GlobalCache;
 
 /**
- * The whole lowering, from the sources of a build to the Java it folds
- * them into.
+ * All the work of this module, from the sources of a build to Java atoms.
  *
- * <p>Lowering happens over the whole world at once, and not a file at a
- * time, because a formation of one file is copied by objects of another
- * and the calculus has to see all of them together. So the stages here
- * are not a chain of independent tools: the first of them cuts the tests
- * out of every source, the second numbers every formation of what is
- * left, and every stage after that speaks of a formation by that number
- * alone. What the stages make lives under the directory of the build:
- * the sources with their tests cut out in {@code 7-lowering-planting}, the
- * world and everything on the way to it in {@code 7-lowering}, and the
- * protocol of every entry, one file per object morphed, beside it in
- * {@code 7-lowering-protocols}.</p>
+ * <p>This is the only public class of the module. It checks that the
+ * right version of phino is installed, and then runs all the stages, one
+ * after another. The work is done on all the objects of the build at once,
+ * and not on one file at a time. The reason is that an object in one file
+ * often uses objects from other files, and phino has to see all of them
+ * together.</p>
  *
- * <p>Nothing on the way is optional. A stage that cannot read what the
- * one before it wrote, a binary of the wrong version, a run that reaches
- * its step limit — each of them fails the build, since a lowering that
- * quietly skipped a formation would leave a program whose Java nobody can
- * account for.</p>
+ * <p>Because of this, the stages are not separate tools. They depend on
+ * each other. The first stage removes the tests from every source. The
+ * second stage gives a number to every object that may become an atom,
+ * and all the next stages talk about an object only by that number.</p>
+ *
+ * <p>The stages keep what they make in these directories, inside the
+ * directory of the build:</p>
+ *
+ * <ul>
+ * <li>{@code 7-lowering-planting} holds the copies of the sources,
+ * without the tests;</li>
+ * <li>{@code 7-lowering} holds the world and the other files that are
+ * made on the way to it;</li>
+ * <li>{@code 7-lowering-protocols} holds one protocol file for every
+ * entry that phino worked on;</li>
+ * <li>the directory of atoms, given to the constructor, holds the Java
+ * atoms;</li>
+ * <li>the directory of patched sources, given to the constructor, holds
+ * the XMIR files where atoms took the place of the bodies of
+ * objects.</li>
+ * </ul>
+ *
+ * <p>No step can be skipped. The build fails when a stage cannot read what
+ * the stage before it wrote, and when phino has the wrong version. If an
+ * object were quietly skipped, nobody could explain the Java of the
+ * program later.</p>
  *
  * @since 0.74.0
  */
@@ -45,39 +60,41 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference}.
+     * The directory with the tables of {@code eo:inference}, which say the
+     * types of the voids.
      */
     private final Path tables;
 
     /**
-     * The directory of the build, {@code target/eo}, where the lowering
-     * makes the directories it keeps what it makes in.
+     * The directory of the build, usually {@code target/eo}, where the
+     * stages make their own directories.
      */
     private final Path target;
 
     /**
-     * The phino binary on this machine.
+     * The phino program on this computer.
      */
     private final Phino phino;
 
     /**
-     * The cache the protocols of the morphing are kept in between builds.
+     * The cache, where the protocols are kept from one build to the next.
      */
     private final GlobalCache cache;
 
     /**
-     * The directory the atoms are written into, which javac compiles.
+     * The directory for the Java atoms, which javac compiles.
      */
     private final Path atoms;
 
     /**
-     * The directory the XMIR files with atoms in place of bodies are
-     * written into, which the transpiler reads.
+     * The directory for the XMIR files where atoms took the place of the
+     * bodies of objects, which the transpiler reads.
      */
     private final Path patched;
 
     /**
-     * The time one run of phino may take on one entry before it is killed.
+     * The time that one run of phino on one entry may take before it is
+     * stopped.
      */
     private final Duration budget;
 
@@ -86,12 +103,12 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory of the build, {@code target/eo}
-     * @param exe The name or path of the phino executable
-     * @param store The cache the protocols of the morphing are kept in
-     * @param kept The directory the atoms are written into, which javac compiles
-     * @param copies The directory the patched XMIR files are written into
-     * @param span The time one run of phino may take before it is killed
+     * @param dir The directory of the build, usually {@code target/eo}
+     * @param exe The name of the phino program, or the path to it
+     * @param store The cache, where the protocols are kept between builds
+     * @param kept The directory for the Java atoms, which javac compiles
+     * @param copies The directory for the patched XMIR files
+     * @param span The time that one run of phino may take before it is stopped
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
@@ -105,12 +122,12 @@ public final class Lowering {
      *
      * @param srcs The XMIR files of the build
      * @param tbls The directory with the tables of {@code eo:inference}
-     * @param dir The directory of the build, {@code target/eo}
-     * @param exe The phino binary on this machine
-     * @param store The cache the protocols of the morphing are kept in
-     * @param kept The directory the atoms are written into, which javac compiles
-     * @param copies The directory the patched XMIR files are written into
-     * @param span The time one run of phino may take before it is killed
+     * @param dir The directory of the build, usually {@code target/eo}
+     * @param exe The phino program on this computer
+     * @param store The cache, where the protocols are kept between builds
+     * @param kept The directory for the Java atoms, which javac compiles
+     * @param copies The directory for the patched XMIR files
+     * @param span The time that one run of phino may take before it is stopped
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
@@ -127,10 +144,10 @@ public final class Lowering {
     }
 
     /**
-     * Fold the formations of the whole build.
+     * Run all the stages on the whole build.
      *
-     * @throws IOException If anything the lowering needs cannot be read
-     *  or written
+     * @throws IOException If a file that a stage needs cannot be read or
+     *  written
      */
     public void exec() throws IOException {
         final String pinned = this.phino.pin();

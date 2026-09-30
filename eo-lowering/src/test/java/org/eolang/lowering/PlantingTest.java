@@ -33,15 +33,16 @@ import org.xembly.Directives;
 import org.xembly.Xembler;
 
 /**
- * Test case for {@link Planting}.
+ * Tests of the class {@link Planting}.
  *
- * <p>Which formation deserves an entry, and what goes into its voids, is
- * said by the packs in {@code entry-packs}: each one carries the program a
- * human would write, the tables {@code eo:inference} would have left about
- * it, the XPaths the planted XMIR must satisfy, and the rows the two
- * tables must hold. What is left here are the mechanics no EO source can
- * express: which files are written, whether two runs agree, and what the
- * stage refuses to do at all.</p>
+ * <p>Most of the checks are in the YAML files of the directory
+ * {@code entry-packs}. They say which objects get an entry, and what their
+ * voids get. Every file has an EO program, the tables that
+ * {@code eo:inference} would write for it, the XPath queries that the
+ * XMIR of the entries must match, and the rows that {@code entries.tsv}
+ * and {@code voids.tsv} must have. The tests in this class check the
+ * things that an EO program cannot show: which files are written, whether
+ * two runs give the same result, and when the stage refuses to work.</p>
  *
  * @since 0.74.0
  */
@@ -49,8 +50,9 @@ import org.xembly.Xembler;
 final class PlantingTest {
 
     /**
-     * Temp directory, injected into every test instance, since a parameterized
-     * test cannot also take one as an argument.
+     * A temporary directory for the test. It is a field, and not an argument
+     * of the test method, because a parameterized test cannot take it as an
+     * argument.
      */
     @Mktmp
     private Path dir;
@@ -127,27 +129,28 @@ final class PlantingTest {
     }
 
     /**
-     * One pack of {@code entry-packs}, and what it demands of the planting.
+     * One YAML file of {@code entry-packs}, with what it expects from
+     * {@link Planting}.
      *
      * @since 0.74.0
      */
     private static final class Pack {
 
         /**
-         * The pack, as it was written.
+         * The content of the YAML file.
          */
         private final Xtory story;
 
         /**
-         * The temp directory of the test.
+         * The temporary directory of the test.
          */
         private final Path temp;
 
         /**
          * Ctor.
          *
-         * @param pack The pack, as it was written
-         * @param dir The temp directory of the test
+         * @param pack The content of the YAML file
+         * @param dir The temporary directory of the test
          */
         Pack(final Xtory pack, final Path dir) {
             this.story = pack;
@@ -155,10 +158,10 @@ final class PlantingTest {
         }
 
         /**
-         * Every demand of the pack the planting did not meet.
+         * Every check of the YAML file that failed after the planting.
          *
-         * @return The demands that were not met, empty when all of them were
-         * @throws IOException If anything cannot be read or written
+         * @return The checks that failed, or an empty list when all of them passed
+         * @throws IOException If a file cannot be read or written
          */
         Collection<String> unmet() throws IOException {
             final Collection<String> failed = new ArrayList<>(0);

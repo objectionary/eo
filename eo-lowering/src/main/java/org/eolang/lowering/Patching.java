@@ -20,29 +20,37 @@ import org.cactoos.Proc;
 import org.cactoos.iterable.Sorted;
 
 /**
- * The putting of an atom in the place of every body rendered into Java.
+ * The stage that puts the atoms into the EO objects.
  *
- * <p>This is the last stage, since only a body the rendering wrote a class
- * for may be taken away: a formation whose entry is a taint, or whose run
- * was killed, keeps its body, and the transpiler compiles it as it always
- * did. The patch is made of the XMIR files of the build, with their tests,
- * and of the list of the entries the rendering wrote, and phino's morphed
- * program is never read. What {@code patching.xsl} does to one file is
- * all there is to the patch: a formation of a rendered entry gets the atom
- * {@code l🌵N}, named after the number of its entry, and its {@code φ}
- * becomes {@code ξ.l🌵N}, so the transpiler, meeting an atom, refers to the
- * very class the rendering named after it.</p>
+ * <p>This is the last stage. It must come after {@link Rendering}, because
+ * the body of an object may be taken away only when {@link Rendering}
+ * really wrote a Java atom for it. An object whose entry is a taint, or
+ * whose run was stopped because of the time limit, keeps its body, and
+ * the transpiler compiles it as usual.</p>
  *
- * <p>A patched file is written into the directory of patched sources, under
- * the name of its source, and a source with nothing patched in it is not
- * written at all, so a reader of the build finds there only what the
- * lowering changed, and the goal of the plugin, which names that directory,
- * points the transpiler at a patched copy only where there is one. The
- * copies stay from build to build, so the names of the files patched in
- * this build are listed in {@code patched.tsv}, beside the list of the
- * entries rendered, and a copy an earlier build left behind, whose
- * formations are all taints now, is not in that list, and its source is
- * read from where it was.</p>
+ * <p>This stage reads two things: the XMIR files of the build, with their
+ * tests, and the file {@code rendered.tsv}, which lists the entries that
+ * {@link Rendering} turned into atoms. It never reads the result of phino.
+ * The change of one file is done by the stylesheet
+ * {@code patching.xsl}. In an object whose entry has the number N, the
+ * stylesheet adds one more attribute, the atom {@code l🌵N}, and it
+ * replaces the body of the object, which is its {@code φ} attribute, with
+ * {@code ξ.l🌵N}, which means "ask my atom". All the other attributes of
+ * the object stay as they were. When the transpiler meets this atom, it
+ * uses exactly the class name that {@link Rendering} gave to the Java
+ * file.</p>
+ *
+ * <p>A changed file is written into the directory of patched sources,
+ * under the same name as its source. A source where nothing changed is not
+ * written at all. So a reader of the build finds in that directory only
+ * what this module changed. The Maven goal then tells the transpiler to
+ * read the patched copy instead of the source, but only where such a copy
+ * exists. The copies are never deleted, so a copy from an earlier build
+ * may still be in the directory, even when none of its objects can be an
+ * atom any more. This is why this stage also writes the names of the
+ * files it changed in this build into the file {@code patched.tsv}, next
+ * to {@code rendered.tsv}. The Maven goal uses only the copies in that
+ * list, and an old copy that is not in the list is ignored.</p>
  *
  * @since 0.74.0
  */
@@ -54,7 +62,7 @@ final class Patching implements Proc<Path> {
     private final Collection<Path> sources;
 
     /**
-     * The directory the patched XMIR files are written into.
+     * The directory where the patched XMIR files are written.
      */
     private final Path patched;
 
@@ -62,7 +70,7 @@ final class Patching implements Proc<Path> {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param dir The directory the patched XMIR files are written into
+     * @param dir The directory where the patched XMIR files are written
      */
     Patching(final Collection<Path> srcs, final Path dir) {
         this.sources = srcs;

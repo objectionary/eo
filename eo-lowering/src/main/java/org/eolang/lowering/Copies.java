@@ -12,26 +12,32 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Sorted;
 
 /**
- * The copies of the sources the pruning wrote, with their tests cut out.
+ * The list of the copies of the sources, which have no tests inside.
  *
- * <p>The stages after the pruning never see the sources of the build, only
- * these copies, and they read them in the order of their names, so the
- * entries and the world come out the same on every run however the files
- * of the build were listed.</p>
+ * <p>The stage {@link Pruning} makes a copy of every source file of the
+ * build, removes the tests from it, and saves it into the directory
+ * {@code 7-lowering-planting}. All the stages after {@link Pruning} read
+ * only these copies, and never the original sources. This class lists
+ * those copies.</p>
+ *
+ * <p>The copies are always listed in the order of their file names. The
+ * build may find the source files in any order, but thanks to this sorting
+ * the entries and the world are exactly the same on every build of the
+ * same program.</p>
  *
  * @since 0.74.0
  */
 final class Copies implements Iterable<Path> {
 
     /**
-     * The directory of the build.
+     * The directory of the build, where the directory of copies is.
      */
     private final Path target;
 
     /**
      * Ctor.
      *
-     * @param dir The directory of the build
+     * @param dir The directory of the build, where the directory of copies is
      */
     Copies(final Path dir) {
         this.target = dir;

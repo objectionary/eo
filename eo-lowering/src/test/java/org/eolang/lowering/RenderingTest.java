@@ -30,7 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Test case for {@link Rendering}.
+ * Tests of the class {@link Rendering}.
  *
  * @since 0.74.0
  */
@@ -38,8 +38,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class RenderingTest {
 
     /**
-     * Temp directory, injected into every test instance, since a parameterized
-     * test cannot also take one as an argument.
+     * A temporary directory for the test. It is a field, and not an argument
+     * of the test method, because a parameterized test cannot take it as an
+     * argument.
      */
     @Mktmp
     private Path dir;
@@ -76,27 +77,32 @@ final class RenderingTest {
     }
 
     /**
-     * One pack of the rendering: a protocol, and what its atom must be.
+     * One YAML file with an example for {@link Rendering}.
+     *
+     * <p>The file has EO sources, one entry, its protocol, and the lines
+     * that the Java atom of that entry must contain. When the file names
+     * no Java file, the entry must be a taint, and no atom may be
+     * written.</p>
      *
      * @since 0.74.0
      */
     private static final class Pack {
 
         /**
-         * The pack, as it was written.
+         * The content of the YAML file.
          */
         private final Xtory story;
 
         /**
-         * The temp directory of the test.
+         * The temporary directory of the test.
          */
         private final Path temp;
 
         /**
          * Ctor.
          *
-         * @param pack The pack, as it was written
-         * @param home The temp directory of the test
+         * @param pack The content of the YAML file
+         * @param home The temporary directory of the test
          */
         Pack(final Xtory pack, final Path home) {
             this.story = pack;
@@ -104,10 +110,10 @@ final class RenderingTest {
         }
 
         /**
-         * Every demand of the pack the rendering did not meet.
+         * Every check of the YAML file that failed after the rendering.
          *
-         * @return The demands that were not met, empty when all of them were
-         * @throws IOException If anything cannot be read or written
+         * @return The checks that failed, or an empty list when all of them passed
+         * @throws IOException If a file cannot be read or written
          */
         Collection<String> unmet() throws IOException {
             final Collection<String> failed = new ArrayList<>(0);

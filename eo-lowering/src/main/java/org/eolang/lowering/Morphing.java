@@ -37,85 +37,93 @@ import org.cactoos.text.UncheckedText;
 import org.eolang.cache.GlobalCache;
 
 /**
- * The morphing of every entry of the world, one run of phino per entry.
+ * The stage that runs phino on every entry, one run for every entry.
  *
- * <p>Every formation of the build is folded by a call of the binary aimed
- * at the mark of its entry, and the protocol of that call is written as a
- * file of its own into {@code 7-lowering-protocols}, at the path the
- * locator of the formation names, so the protocol of
- * {@code Φ.bytes.as-hex} is {@code bytes/as-hex.xml}. The entries have
- * nothing to share: each of them brings its own symbols, so a firing of one is never
- * answered by the memo of another, and an entry morphed alone fires
- * exactly as many times as it fires among the others. So the runs go side
- * by side, one per processor, and the build waits for its slowest entry
- * rather than for the sum of all of them. While they go, a line every
- * thirty seconds says how many entries are morphed, how long it has taken,
- * and how many bytes of protocols are written, since one slow entry may
- * keep the build silent for minutes.</p>
+ * <p>For every entry, this stage asks phino to compute the body of the
+ * entry with symbols as its inputs. This is called "morphing". phino
+ * writes down every step it takes into a protocol file. The file is saved
+ * in {@code 7-lowering-protocols}, at a path made from the locator of the
+ * object, so the protocol of {@code Φ.bytes.as-hex} is
+ * {@code bytes/as-hex.xml}.</p>
  *
- * <p>What the binary can say about a primitive is said in
- * {@code atoms.yaml} and nowhere else, and that table is written beside
- * the world from the resource of the same name before the runs, so that
- * what phino was told stays next to what it answered. A lambda no entry
- * of that file matches is left standing where it is, and the formation
- * that reached it is a taint: nothing is guessed about it, and nothing is
- * folded.</p>
+ * <p>The entries do not depend on each other. Every entry has its own
+ * symbols, so one entry never reuses a result of another, and one entry
+ * takes the same number of steps alone as it takes together with the
+ * others. This is why many runs of phino work at the same time, one for
+ * every processor. The build waits only as long as its slowest entry, and
+ * not as long as all the entries together. One slow entry can keep the
+ * build silent for minutes, so every thirty seconds this stage prints a
+ * line from {@link Progress} that says how much work is done.</p>
  *
- * <p>Every run is bounded by a ceiling of nested steps, because a
- * formation that grows on every round, a loop counting up for one, never
- * comes back to a term it has seen, so no guard against cycles can stop
- * it. At the ceiling the binary leaves that formation standing as a taint,
- * and the build fails only when the binary itself exits with an error, on
- * any one entry. Every run is also bounded by a budget of time, since the
- * ceiling bounds the depth of a run and not its width: a run still going
- * when its budget is spent is killed, its protocol is deleted, and the
- * formation stays as it was written, the way a taint does. Nothing is
- * retried within a build.</p>
+ * <p>phino is allowed to write down only the operations that are listed in
+ * the file {@code atoms.yaml}, such as adding two numbers. Before the runs,
+ * this stage copies that file from the resources of the module into the
+ * directory of the world, so that anybody can see what phino was told,
+ * next to what phino answered. When phino meets an atom that is not in the
+ * file, it leaves that atom as it is. Then the entry becomes a taint:
+ * nothing is guessed about it, and nothing about it is turned into
+ * Java.</p>
  *
- * <p>A protocol is the same for as long as the world, the table of atoms,
- * the version of phino and the ceiling are the same, so every protocol is
- * kept in the cache under all four of them, and a build that brings them
- * again takes it from there instead of running the binary. A killed run
- * leaves nothing in the cache, and is tried again by the next build. The
- * protocols of an earlier build are deleted before the runs, so that an
- * entry the world no longer has leaves no protocol behind.</p>
+ * <p>Every run has two limits. The first limit is the largest number of
+ * steps phino may take inside one another. This limit is needed because
+ * some objects grow on every round, like a loop that counts up. Such an
+ * object never repeats itself, so phino cannot see that it is going around
+ * in a circle. When phino reaches this limit, it stops working on that
+ * object, and the entry becomes a taint. The second limit is time. The
+ * first limit controls how deep phino goes, but not how wide, so a run may
+ * still take a very long time. When a run is still working after its time
+ * is over, it is stopped, its protocol is deleted, and the object stays in
+ * EO, the same way as a taint does. The build fails only when phino itself
+ * fails with an error on some entry. Nothing is tried twice in one
+ * build.</p>
+ *
+ * <p>A protocol stays the same as long as four things stay the same: the
+ * world, the table of operations, the version of phino, and the limit of
+ * steps. So, every protocol is saved in the cache, together with these
+ * four things. When a later build has the same four things, it takes the
+ * protocol from the cache and does not run phino at all. A run that was
+ * stopped saves nothing in the cache, so the next build tries it again.
+ * The protocols of an earlier build are deleted before the runs, so that
+ * an entry that is not in the world any more leaves no protocol
+ * behind.</p>
  *
  * @since 0.74.0
- * @todo #8548:90min Key every protocol in the cache by the part of the
- *  world its entry reaches, not by the whole world. Now a change of any
- *  one formation of the build changes the hash of {@code world.phi}, and
- *  every entry is morphed again, even those that never reach the changed
- *  formation. The key could be made from the formation of the entry and
- *  the formations it refers to, walked to the end.
+ * @todo #8548:90min Save every protocol in the cache under the part of the
+ *  world that its entry uses, and not under the whole world. Now, when
+ *  any one object of the build changes, the hash of {@code world.phi}
+ *  changes too, and phino runs again on every entry, even on the entries
+ *  that never use the changed object. The key could be made from the
+ *  object of the entry and all the objects it uses, directly or through
+ *  other objects.
  */
 final class Morphing implements Proc<Path> {
 
     /**
-     * The binary that morphs.
+     * The phino program, which does the morphing.
      */
     private final Phino phino;
 
     /**
-     * The cache the protocols are kept in between builds.
+     * The cache, where the protocols are kept from one build to the next.
      */
     private final GlobalCache cache;
 
     /**
-     * The ceiling of nested morphing and dataization steps of one run.
+     * The largest number of steps inside one another that one run may take.
      */
     private final int steps;
 
     /**
-     * The time one run may take before it is killed.
+     * The time that one run may take before it is stopped.
      */
     private final Duration budget;
 
     /**
      * Ctor.
      *
-     * @param exe The binary that morphs
-     * @param store The cache the protocols are kept in between builds
-     * @param span The time one run may take before it is killed
+     * @param exe The phino program, which does the morphing
+     * @param store The cache, where the protocols are kept between builds
+     * @param span The time that one run may take before it is stopped
      */
     Morphing(final Phino exe, final GlobalCache store, final Duration span) {
         this(exe, store, 32, span);
@@ -124,10 +132,10 @@ final class Morphing implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param exe The binary that morphs
-     * @param store The cache the protocols are kept in between builds
-     * @param ceiling The ceiling of nested morphing and dataization steps
-     * @param span The time one run may take before it is killed
+     * @param exe The phino program, which does the morphing
+     * @param store The cache, where the protocols are kept between builds
+     * @param ceiling The largest number of steps inside one another
+     * @param span The time that one run may take before it is stopped
      */
     Morphing(
         final Phino exe, final GlobalCache store, final int ceiling, final Duration span

@@ -18,32 +18,34 @@ import org.cactoos.text.Trimmed;
 import org.cactoos.text.UncheckedText;
 
 /**
- * The phino binary on this machine.
+ * The phino program installed on this computer.
  *
- * <p>Everything the lowering knows about the calculus lives in the
- * external {@code phino} executable, and this is the only class that talks
- * to it. The binary is trusted only when the version it reports is the one
- * pinned in the {@code phino-version.txt} resource, since both the dialect
- * it reads and the rewriting it does change from release to release.</p>
+ * <p>phino is an external program that knows the math of EO, which is
+ * called the "phi-calculus". This module knows nothing about that math by
+ * itself, and this class is the only place that runs phino. Every new
+ * release of phino may read its input a little differently and may give
+ * different results. So, this module trusts phino only when its version is
+ * exactly the one written in the resource file
+ * {@code phino-version.txt}.</p>
  *
- * <p>The subprocess runs through {@link Jaxec} with both of its streams
- * sent away from the terminal, because what the binary prints belongs to
- * the caller and not to the build log, where a stray line of it would
- * alarm a reader for no reason.</p>
+ * <p>phino is started as a separate process through {@link Jaxec}. What it
+ * prints is not shown in the log of the build. Its normal output is thrown
+ * away, and its error output is shown only when phino fails. A reader of
+ * the log should not be worried by lines that do not matter.</p>
  *
  * @since 0.74.0
  */
 final class Phino {
 
     /**
-     * The name or path of the executable.
+     * The name of the phino program, or the path to it.
      */
     private final String binary;
 
     /**
      * Ctor.
      *
-     * @param exe The name or path of the executable
+     * @param exe The name of the phino program, or the path to it
      */
     Phino(final String exe) {
         this.binary = exe;
@@ -55,10 +57,10 @@ final class Phino {
     }
 
     /**
-     * The version the executable reports.
+     * The version of the phino program on this computer.
      *
-     * @return The trimmed output of {@code phino --version}
-     * @throws IOException If the executable cannot be run
+     * @return What {@code phino --version} prints, without spaces around it
+     * @throws IOException If phino cannot be started
      */
     String version() throws IOException {
         final Path out = Files.createTempFile("phino", ".txt");
@@ -84,16 +86,16 @@ final class Phino {
     }
 
     /**
-     * Merge XMIR files into one phi-expression.
+     * Join many XMIR files into one phi-expression, which is the world.
      *
-     * <p>The world is printed with syntax sugar, and the protocol of the
-     * run also without a single ρ binding, since both are read back by
-     * this binary or by the stages after the run, and every glyph saved
-     * there is saved on every one of the thousands of entries.</p>
+     * <p>The world is written in the short form of the phi-calculus, which
+     * is called "sweet". phino reads this file again once for every entry,
+     * and there are thousands of entries, so every character saved in this
+     * file saves a lot of work.</p>
      *
-     * @param xmirs The XMIR files, in the order their objects are to stand
-     * @param world The file to write the merged expression to
-     * @throws IOException If the executable cannot be run
+     * @param xmirs The XMIR files, in the order their objects must appear
+     * @param world The file to write the world into
+     * @throws IOException If phino cannot be started
      */
     void merge(final Iterable<Path> xmirs, final Path world) throws IOException {
         this.run(
@@ -105,23 +107,29 @@ final class Phino {
     }
 
     /**
-     * Morph one entry of a world symbolically.
+     * Ask phino to compute one entry of the world, with symbols as inputs.
      *
-     * <p>The run is aimed at one mark of the {@code l🌵} object the
-     * planting writes, the one numbered as the entry is, answers the λ
-     * functions the table names, leaves standing what it cannot answer,
-     * stops a term that comes back to itself, and writes nothing but the
-     * protocol. A run that is still going when its budget is spent is
-     * killed, since one entry that never ends must not hold the build.</p>
+     * <p>This is called "morphing". The stage {@link Planting} put every
+     * entry into an object named {@code l🌵}, under the name {@code e} plus
+     * the number of the entry, and this method asks phino to work on
+     * exactly that one. When phino meets an atom whose work is listed in
+     * the table of operations, such as adding two numbers, it does not run
+     * the atom, but writes down "here the two symbols were added". When
+     * phino cannot go further, it leaves that part as it is. When phino
+     * sees that it is going around in a circle, it stops that circle. phino
+     * writes down every step it takes into the protocol file, and it writes
+     * nothing else. If phino is still working when the time limit is over,
+     * it is stopped, because one entry that never ends must not stop the
+     * whole build.</p>
      *
-     * @param world The merged world
-     * @param atoms The table of operations the run may answer
-     * @param entry The number of the entry to morph
-     * @param protocol The file to record every firing into, XML by its name
-     * @param steps The ceiling of nested morphing and dataization steps
-     * @param budget The time the run may take before it is killed
-     * @throws IOException If the executable cannot be run, or when it is
-     *  killed over its budget, as a {@link KilledException}
+     * @param world The world, which {@link Merging} wrote
+     * @param atoms The table of operations phino may write down
+     * @param entry The number of the entry to work on
+     * @param protocol The file for the steps, in XML because its name ends with .xml
+     * @param steps The largest number of steps phino may take inside one another
+     * @param budget The time phino may work before it is stopped
+     * @throws IOException If phino cannot be started, or a
+     *  {@link KilledException} if phino was stopped because of the time limit
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     void morph(
@@ -160,9 +168,9 @@ final class Phino {
     }
 
     /**
-     * The version the lowering is pinned to.
+     * The only version of phino that this module accepts.
      *
-     * @return The trimmed content of the {@code phino-version.txt} resource
+     * @return The content of {@code phino-version.txt}, without spaces around it
      */
     String pin() {
         return new UncheckedText(

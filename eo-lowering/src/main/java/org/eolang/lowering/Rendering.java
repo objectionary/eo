@@ -26,58 +26,72 @@ import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
 /**
- * The writing of the Java the folded formations became.
+ * The stage that writes a Java atom for every entry that phino computed.
  *
- * <p>This is where the work of the pipeline is paid back. A body that was
- * an object graph built and dataized at runtime is a handful of Java
- * statements here, one per symbol the protocol minted, and the atom the
- * patch put into the formation is the class those statements live in. The
- * class is written into the directory of atoms, beside the protocols it
- * was made of, so a reader of the build can put the two side by side, and
- * the goal of the plugin, which names that directory, hands it to javac as
- * a source root of its own, so javac finds the class under the very name the transpiler gives
- * the atom. It is not written among the generated sources, because the
- * transpiler deletes every file there it did not write itself.</p>
+ * <p>This is where all the work of the module pays off. Without this
+ * stage, the body of an object is a graph of many small objects, which EO
+ * builds and computes while the program runs. After this stage, the same
+ * body is a few lines of Java: one line for every symbol that phino made
+ * in the protocol. These lines are put into a Java class, which is an
+ * atom. Later, {@link Patching} puts this atom into the EO object.</p>
  *
- * <p>The protocol is read and the program phino morphed is not, because
- * the protocol already says what fired, in what order, and off which
- * symbol, which is all a Java method is; reading the morphed program back
- * would mean parsing a phi-expression, and this module parses none. What a
- * protocol becomes is said by {@code rendering.xsl} alone, one protocol at a
- * time, and this stage only finds what that stylesheet needs to know about
- * the entry: its number, its locator, the top object it lives in, and the
- * package of that object. An entry whose run was killed has no protocol and
- * is skipped, and an entry the stylesheet finds a taint in is only
- * logged, so its formation stays in EO exactly as it was written.</p>
+ * <p>The Java files are written into the directory of atoms, next to the
+ * directory of protocols, so that a reader of the build can compare every
+ * atom with the protocol it was made from. The Maven goal gives this
+ * directory to javac as one more directory of sources. The file name of
+ * every atom is exactly the class name that the transpiler will use when
+ * it meets that atom, so javac finds it. The atoms are not written into
+ * the directory of generated sources, because the transpiler deletes
+ * every file there that it did not write itself.</p>
+ *
+ * <p>This stage reads the protocol, and not the result of phino. The
+ * protocol already says which operations happened, in what order, and on
+ * which symbols, and this is all that a Java method needs. To read the
+ * result of phino, this module would have to parse a phi-expression, and
+ * this module never does that. How a protocol becomes Java is decided
+ * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
+ * This class only finds what the stylesheet needs to know about the
+ * entry: its number, its locator, the top object it is inside, and the
+ * package of that object.</p>
+ *
+ * <p>An entry whose run was stopped because of the time limit has no
+ * protocol, so it is skipped. When the stylesheet finds that an entry is a
+ * taint, this class only writes about it into the log, and the object
+ * stays in EO exactly as it was written. At the end, this class writes the
+ * list of the entries it turned into atoms into the file
+ * {@code rendered.tsv}, so that {@link Patching} knows which objects to
+ * change.</p>
  *
  * @since 0.74.0
- * @todo #8548:60min Fall back to the atom where a slice is out of bounds.
- *  The slice of {@code rendering.xsl} throws when its range is outside
- *  the bytes, while the atom of {@code bytes.slice} answers with its
- *  {@code cant-slice} error, which EO code may catch. Render the slice so
- *  that it fails the way the atom does, or leave an entry that slices
- *  as a taint.
- * @todo #8548:60min Render the entries of formations that are arguments of
- *  an application. A locator with a {@code φ}, {@code ρ} or {@code α} step,
- *  like {@code Φ.true.φ.α0}, names a formation with no name of its own,
- *  whose atom the transpiler names by a rule {@code rendering.xsl} does
- *  not mirror, so such an entry is a taint now: four of the 587 entries of
- *  eo-runtime are.
- * @todo #8548:30min Render an entry whose root is a constant. A body that
- *  comes to known bytes, like a formation that always answers {@code 42},
- *  is a taint now, while its atom could return those bytes as they are.
+ * @todo #8548:60min Make a slice outside of the bytes fail the same way
+ *  as the atom does. When the range of a slice is outside of the bytes,
+ *  the Java that {@code rendering.xsl} writes throws a Java exception. But
+ *  the atom {@code bytes.slice} returns its {@code cant-slice} error
+ *  instead, and EO code may catch that error. Write the slice so that it
+ *  fails the same way as the atom does, or make every entry that slices a
+ *  taint.
+ * @todo #8548:60min Write atoms for objects that are arguments of other
+ *  objects. A locator with a {@code φ}, {@code ρ} or {@code α} in it, like
+ *  {@code Φ.true.φ.α0}, belongs to an object that has no name of its own.
+ *  The transpiler names the atom of such an object by a rule that
+ *  {@code rendering.xsl} does not follow, so such an entry is a taint now.
+ *  Four of the 587 entries of eo-runtime are like this.
+ * @todo #8548:30min Write an atom for an entry whose result is always the
+ *  same. When the result of the body is known bytes, like an object that
+ *  always returns {@code 42}, the entry is a taint now. But its atom could
+ *  simply return those bytes.
  */
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory the atoms are written into.
+     * The directory where the Java atoms are written.
      */
     private final Path atoms;
 
     /**
      * Ctor.
      *
-     * @param dir The directory the atoms are written into
+     * @param dir The directory where the Java atoms are written
      */
     Rendering(final Path dir) {
         this.atoms = dir;

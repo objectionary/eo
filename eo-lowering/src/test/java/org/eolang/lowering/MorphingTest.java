@@ -32,7 +32,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Morphing}.
+ * Tests of the class {@link Morphing}.
  *
  * @since 0.74.0
  */

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
- * Test case for {@link Patching}.
+ * Tests of the class {@link Patching}.
  *
  * @since 0.74.0
  */
@@ -42,8 +42,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 final class PatchingTest {
 
     /**
-     * Temp directory, injected into every test instance, since a parameterized
-     * test cannot also take one as an argument.
+     * A temporary directory for the test. It is a field, and not an argument
+     * of the test method, because a parameterized test cannot take it as an
+     * argument.
      */
     @Mktmp
     private Path dir;
@@ -99,28 +100,32 @@ final class PatchingTest {
     }
 
     /**
-     * One pack of the patching: the sources, the entries rendered, and what
-     * every patched source must be.
+     * One YAML file with an example for {@link Patching}.
+     *
+     * <p>The file has EO sources, the list of the entries that were turned
+     * into atoms, and, for every source that must be patched, the XPath
+     * queries that the patched XMIR must match. A source that is not
+     * listed must not be patched at all.</p>
      *
      * @since 0.74.0
      */
     private static final class Pack {
 
         /**
-         * The pack, as it was written.
+         * The content of the YAML file.
          */
         private final Xtory story;
 
         /**
-         * The temp directory of the test.
+         * The temporary directory of the test.
          */
         private final Path temp;
 
         /**
          * Ctor.
          *
-         * @param pack The pack, as it was written
-         * @param home The temp directory of the test
+         * @param pack The content of the YAML file
+         * @param home The temporary directory of the test
          */
         Pack(final Xtory pack, final Path home) {
             this.story = pack;
@@ -128,10 +133,10 @@ final class PatchingTest {
         }
 
         /**
-         * Every demand of the pack the patching did not meet.
+         * Every check of the YAML file that failed after the patching.
          *
-         * @return The demands that were not met, empty when all of them were
-         * @throws IOException If anything cannot be read or written
+         * @return The checks that failed, or an empty list when all of them passed
+         * @throws IOException If a file cannot be read or written
          */
         Collection<String> unmet() throws IOException {
             final Collection<String> failed = new ArrayList<>(0);

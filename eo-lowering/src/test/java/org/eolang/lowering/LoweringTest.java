@@ -30,7 +30,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Lowering}.
+ * Tests of the class {@link Lowering}.
  *
  * @since 0.74.0
  */

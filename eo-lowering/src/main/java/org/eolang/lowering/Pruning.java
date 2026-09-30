@@ -18,26 +18,28 @@ import org.cactoos.Proc;
 import org.cactoos.iterable.Sorted;
 
 /**
- * The cutting of the tests out of every source of the build.
+ * The stage that removes the tests from copies of all the sources.
  *
- * <p>A test is a program of its own: it builds the objects it needs, runs
- * them and says what it expects, and nothing outside it copies what it
- * builds. Lowering folds what an object says about its inputs, and every
- * copy of that object standing in a test is one more copy the calculus
- * walks without a single formation of the build folding through it, which
- * is why the eo-runtime world stalled on the tests of its first objects.
- * So the tests, the bindings the parser marks as such, are cut out of
- * every source before anything is planted or merged, and the world holds
- * the objects and nothing that is said about them.</p>
+ * <p>In EO, a test is written inside the object it tests. But a test is
+ * really a separate small program: it makes the objects it needs, runs
+ * them, and checks the result. No other object uses what a test makes.
+ * This module is interested only in the objects themselves. If the tests
+ * stayed, phino would spend a lot of time on them, and it would learn
+ * nothing useful from that work. In fact, this is what happened with
+ * eo-runtime: phino got stuck on the tests of the very first objects.
+ * So, the tests are removed before any other stage starts. The parser
+ * marks every test with a special name, and this is how this stage finds
+ * them.</p>
  *
- * <p>The sources are never touched: a copy of each of them, with the tests
- * cut out, is written into {@code 7-lowering-planting} under the name of
- * the source, and it is those copies the stages after this one read. Two
- * sources named alike would share one copy and one of them would quietly
- * drop out of the world, so such a build fails here. The copies of an
- * earlier build are deleted first, since the later stages read whatever
- * the directory holds, and a source removed since then would otherwise
- * stay in the world.</p>
+ * <p>The original sources are never changed. For every source, this stage
+ * writes a copy without the tests into the directory
+ * {@code 7-lowering-planting}, under the same file name as the source. All
+ * the next stages read these copies. If two sources have the same file
+ * name, they would need the same copy, and one of them would be lost
+ * without any warning. So, in that case, this stage fails the build. The
+ * copies of an earlier build are deleted first. Without this, a source
+ * that was deleted from the project would still be in the directory, and
+ * the next stages would still read it.</p>
  *
  * @since 0.74.0
  */

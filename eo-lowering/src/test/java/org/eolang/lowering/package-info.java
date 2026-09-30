@@ -4,7 +4,7 @@
  */
 
 /**
- * Lowering of EO formations into Java atoms, tests.
+ * Tests of the module that turns some EO objects into Java atoms.
  *
  * @since 0.74.0
  */

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link Locator}.
+ * Tests of the class {@link Locator}.
  *
  * @since 0.74.0
  */

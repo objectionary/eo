@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Pruning}.
+ * Tests of the class {@link Pruning}.
  *
  * @since 0.74.0
  */

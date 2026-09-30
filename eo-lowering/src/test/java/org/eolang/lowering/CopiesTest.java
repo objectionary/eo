@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Copies}.
+ * Tests of the class {@link Copies}.
  *
  * @since 0.74.0
  */

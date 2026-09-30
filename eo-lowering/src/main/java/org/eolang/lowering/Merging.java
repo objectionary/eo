@@ -15,37 +15,41 @@ import org.cactoos.iterable.Joined;
 import org.cactoos.list.ListOf;
 
 /**
- * The merging of every object of the build into one phi-expression.
+ * The stage that puts all the objects of the build into one file.
  *
- * <p>The calculus knows nothing of files. A formation that copies an
- * object of another file has to find that object where it stands, so the
- * XMIR files of the build and the entries are joined into a single
- * document, and it is that document, and never a file of it, that the
- * evaluation is asked about. The sources that arrive here are the copies
- * the pruning wrote, with the tests cut out, so the world holds the
- * objects and nothing that is said about them.</p>
+ * <p>phino does not know anything about files. But an object in one file
+ * often uses an object from another file. So, before phino can work, all
+ * the objects must be in one place. This stage asks phino to join all the
+ * XMIR files of the build and the file of the entries into one big
+ * phi-expression, which is saved in the file {@code world.phi}. This file
+ * is called the "world". Later stages ask phino questions only about the
+ * world, and never about the separate files.</p>
  *
- * <p>There is one call and no second one, because the number an entry
- * carries means nothing outside the one world it was written for. The
- * sources go in a fixed order and the entries last, so the world comes
- * out the same on every run. A call that fails fails the build with what
- * the binary printed, since a world that was not merged cannot be
- * evaluated and there is nothing sensible for a later stage to do about
- * it.</p>
+ * <p>The XMIR files that come here are the copies that {@link Pruning}
+ * wrote, so they have no tests inside. The world holds only the objects,
+ * and nothing that tests them.</p>
+ *
+ * <p>This stage calls phino exactly once. It cannot be done in parts,
+ * because every entry has a number, and that number means something only
+ * inside this one world. The files always go in the same order, with the
+ * entries last, so the world is exactly the same on every build of the
+ * same program. If phino fails, the build fails too, and the error shows
+ * what phino printed. There is nothing useful the next stages can do
+ * without the world.</p>
  *
  * @since 0.74.0
  */
 final class Merging implements Proc<Path> {
 
     /**
-     * The binary that merges.
+     * The phino program, which joins the files.
      */
     private final Phino phino;
 
     /**
      * Ctor.
      *
-     * @param exe The binary that merges
+     * @param exe The phino program, which joins the files
      */
     Merging(final Phino exe) {
         this.phino = exe;

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Progress}.
+ * Tests of the class {@link Progress}.
  *
  * @since 0.74.0
  */

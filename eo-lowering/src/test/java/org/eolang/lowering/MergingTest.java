@@ -23,7 +23,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link Merging}.
+ * Tests of the class {@link Merging}.
  *
  * @since 0.74.0
  */
