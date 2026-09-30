@@ -272,6 +272,10 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
+          <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
+          <loweringBudget>10</loweringBudget>
+          <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
+          <maxMorphingSteps>32</maxMorphingSteps>
         </configuration>
         <executions>
           <execution>
