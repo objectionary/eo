@@ -15,7 +15,10 @@ import java.util.Map;
  * <p>The same facts are wanted two ways. What a call is a copy of is answered
  * by what that one call filled, and what a void holds is answered by what every
  * call filled. So both sides are kept here, the second worked out once by
- * {@link Holders} rather than looked for again at every question.</p>
+ * {@link Fillings} rather than looked for again at every question. It is the
+ * census the tables publish, before it is counted, and not a list of the calls
+ * alone, since an atom fills a void too and a void handed on from another void
+ * holds whatever that one holds (#9006).</p>
  *
  * <p>So is which of the things put in never come back with a value, since an
  * arm that terminates is put into a void like any other and hands nothing to
@@ -31,7 +34,7 @@ final class Puts {
     private final Map<String, Map<String, String>> fills;
 
     /**
-     * What every void holds, from {@link Holders}.
+     * What every void holds, from {@link Fillings}.
      */
     private final Map<String, Collection<String>> holds;
 
@@ -44,7 +47,7 @@ final class Puts {
      * Ctor.
      *
      * @param bound What every application fills, from {@link Bound}
-     * @param holders What every void holds, from {@link Holders}
+     * @param holders What every void holds, from {@link Fillings}
      * @param ends Every object of the program that terminates, from
      *  {@link Dead}
      */

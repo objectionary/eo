@@ -48,6 +48,11 @@ final class Dispatched {
     private final XML given;
 
     /**
+     * What the links table says, as the rules left it.
+     */
+    private final Said written;
+
+    /**
      * Every dispatch of the program.
      */
     private final Collection<Site> all;
@@ -81,6 +86,8 @@ final class Dispatched {
      * Ctor.
      *
      * @param provides The provides table
+     * @param said What the links table says, as the rules left it, which the
+     *  fillings of every pass are read against
      * @param dispatches Every dispatch of the program
      * @param arguments The arguments of every application, from {@link Given}
      * @param bindings The arguments of every application bound by name
@@ -92,6 +99,7 @@ final class Dispatched {
      */
     Dispatched(
         final XML provides,
+        final Said said,
         final Collection<Site> dispatches,
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
@@ -100,6 +108,7 @@ final class Dispatched {
         final Collection<String> ends
     ) {
         this.given = provides;
+        this.written = said;
         this.all = dispatches;
         this.args = arguments;
         this.named = bindings;
@@ -316,7 +325,11 @@ final class Dispatched {
         return new Filled(
             pairs,
             owned,
-            new Puts(bound, new Holders(bound, pairs).all(), this.dead),
+            new Puts(
+                bound,
+                new Fillings(this.written.with(pairs, bound), this.given, this.hollows).holders(),
+                this.dead
+            ),
             this.hollows
         );
     }
