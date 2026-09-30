@@ -104,7 +104,7 @@ final class LoweringTest {
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv",
-                    "world.phi", "atoms.yaml", "rendered.tsv"
+                    "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv"
                 )
             );
         }

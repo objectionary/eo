@@ -124,6 +124,34 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void ignoresTheCopyAnEarlierBuildPatched(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class);
+        Files.write(
+            Files.createDirectories(temp.resolve("target/7-lowering-patched")).resolve("main.xmir"),
+            "<object/>".getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "the goal must not hand the transpiler a copy it did not patch now, but it did",
+            maven
+                .with("lowering", true)
+                .with("binary", MjLowerTest.binary(temp))
+                .with("tables", MjLowerTest.tables(temp).toFile())
+                .execute(MjLower.class)
+                .foreignTojos()
+                .find("foo.x.main")
+                .xmir(),
+            Matchers.not(
+                Matchers.equalTo(
+                    temp.resolve("target/7-lowering-patched/main.xmir").toAbsolutePath()
+                )
+            )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void killsTheRunThatOutlastsTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)

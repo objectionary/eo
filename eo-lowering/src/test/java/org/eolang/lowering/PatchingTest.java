@@ -14,8 +14,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
@@ -66,6 +68,33 @@ final class PatchingTest {
                 "a patching with no list of the rendered entries must fail"
             ).getMessage(),
             Matchers.containsString("rendered.tsv")
+        );
+    }
+
+    @Test
+    void leavesTheCopyOfAnEarlierBuildOutOfTheList(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            Files.createDirectories(temp.resolve("7-lowering")).resolve("rendered.tsv"),
+            new byte[0]
+        );
+        Files.write(
+            Files.createDirectories(temp.resolve("patched")).resolve("gap.xmir"),
+            "<object/>".getBytes(StandardCharsets.UTF_8)
+        );
+        new Patching(
+            Collections.singletonList(
+                Files.write(
+                    temp.resolve("gap.xmir"),
+                    new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
+                        .toString().getBytes(StandardCharsets.UTF_8)
+                )
+            ),
+            temp.resolve("patched")
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a copy an earlier build patched must not be listed as patched now, but it is",
+            Files.readString(temp.resolve("7-lowering/patched.tsv"), StandardCharsets.UTF_8),
+            Matchers.emptyString()
         );
     }
 
@@ -124,6 +153,15 @@ final class PatchingTest {
                         patched.resolve(demand.getKey().toString()), (List<?>) demand.getValue()
                     )
                 );
+            }
+            final String listed = Files.readString(
+                this.temp.resolve("7-lowering/patched.tsv"), StandardCharsets.UTF_8
+            );
+            final String expected = new TreeSet<>(
+                demands.keySet().stream().map(Object::toString).collect(Collectors.toList())
+            ).stream().map(name -> String.format("%s%n", name)).collect(Collectors.joining());
+            if (!listed.equals(expected)) {
+                failed.add(String.format("patched.tsv: %s, while %s", listed, expected));
             }
             return failed;
         }

@@ -7,14 +7,17 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Text;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
 import org.eolang.lowering.Lowering;
 
 /**
@@ -46,7 +49,9 @@ import org.eolang.lowering.Lowering;
  * this goal hands to javac as a source root, and every XMIR file with an
  * atom in the place of a body lands in {@code 7-lowering-patched}, where
  * this goal points the tojo of that object, so the transpiler reads the
- * patched copy and every other object stays where it was.</p>
+ * patched copy and every other object stays where it was. The copies stay
+ * from build to build, so only a copy listed in {@code patched.tsv}, one
+ * patched in this very build, is handed to the transpiler.</p>
  *
  * @since 0.74.0
  */
@@ -119,10 +124,21 @@ public final class MjLower extends MjSafe {
                     patched,
                     Duration.ofSeconds(this.budget)
                 ).exec();
+                final Collection<String> fresh = new ListOf<>(
+                    new Mapped<>(
+                        Text::asString,
+                        new Split(
+                            new TextOf(
+                                this.target.toPath().resolve("7-lowering/patched.tsv")
+                            ),
+                            "\\R"
+                        )
+                    )
+                );
                 for (final TjForeign tojo : tojos.standalone()) {
-                    final Path copy = patched.resolve(tojo.xmir().getFileName().toString());
-                    if (Files.exists(copy)) {
-                        tojo.withXmir(copy);
+                    final String name = tojo.xmir().getFileName().toString();
+                    if (fresh.contains(name)) {
+                        tojo.withXmir(patched.resolve(name));
                     }
                 }
             }

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
@@ -36,7 +37,12 @@ import org.cactoos.iterable.Sorted;
  * the name of its source, and a source with nothing patched in it is not
  * written at all, so a reader of the build finds there only what the
  * lowering changed, and the goal of the plugin, which names that directory,
- * points the transpiler at a patched copy only where there is one.</p>
+ * points the transpiler at a patched copy only where there is one. The
+ * copies stay from build to build, so the names of the files patched in
+ * this build are listed in {@code patched.tsv}, beside the list of the
+ * entries rendered, and a copy an earlier build left behind, whose
+ * formations are all taints now, is not in that list, and its source is
+ * read from where it was.</p>
  *
  * @since 0.74.0
  */
@@ -79,7 +85,7 @@ final class Patching implements Proc<Path> {
             "/org/eolang/lowering/patching.xsl"
         ).with((href, base) -> new StreamSource(href))
             .with("rendered", rendered.toUri().toString());
-        int files = 0;
+        final Collection<String> files = new ArrayList<>(0);
         int atoms = 0;
         for (final Path source : new Sorted<>(this.sources)) {
             final XML out = sheet.transform(new XMLDocument(source));
@@ -88,7 +94,7 @@ final class Patching implements Proc<Path> {
                 final Path file = Files.createDirectories(this.patched)
                     .resolve(source.getFileName().toString());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
-                files += 1;
+                files.add(String.format("%s%n", file.getFileName()));
                 atoms += found;
                 Logger.info(
                     this, "Put %d atom(s) into %[file]s, patched into %[file]s",
@@ -96,10 +102,14 @@ final class Patching implements Proc<Path> {
                 );
             }
         }
+        Files.write(
+            target.resolve("7-lowering").resolve("patched.tsv"),
+            String.join("", files).getBytes(StandardCharsets.UTF_8)
+        );
         Logger.info(
             this,
             "Put %d atom(s) into %d of %d XMIR files, patched into %[file]s",
-            atoms, files, this.sources.size(), this.patched
+            atoms, files.size(), this.sources.size(), this.patched
         );
     }
 }
