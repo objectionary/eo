@@ -105,8 +105,8 @@ final class Patching implements Proc<Path> {
                 files.add(String.format("%s%n", file.getFileName()));
                 atoms += found;
                 Logger.info(
-                    this, "Put %d atom(s) into %[file]s, patched into %[file]s",
-                    found, source, file
+                    this, "Put %d atom(s) into %[file]s",
+                    found, file
                 );
             }
         }
