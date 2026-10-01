@@ -5,6 +5,7 @@
 # came, and there is nothing to render.
 locator: Φ.os.name
 number: 4
+taint: phino got no answer from L_os_name
 eo:
   os.eo: |
     [] > os
@@ -13,6 +14,6 @@ eo:
 protocol: |
   <morph at="Φ.l🌵.e4">
     <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e4">
-      <unanswered λ="L_os_name"/>
+      <unanswered>L_os_name:λ</unanswered>
     </evaluate>
   </morph>

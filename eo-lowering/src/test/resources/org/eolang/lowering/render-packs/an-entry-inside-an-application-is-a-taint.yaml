@@ -5,6 +5,7 @@
 # and the transpiler names its atom by another rule, so it is left alone.
 locator: Φ.true.φ.α0
 number: 499
+taint: is inside an application, which has no name of its own
 eo:
   true.eo: |
     [] > true

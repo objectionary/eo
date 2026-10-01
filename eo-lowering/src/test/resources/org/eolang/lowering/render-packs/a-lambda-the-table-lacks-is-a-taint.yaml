@@ -5,6 +5,7 @@
 # no Java to be spelled with.
 locator: Φ.clock.now
 number: 9
+taint: is minted by L_clock_now, which has no Java
 eo:
   clock.eo: |
     [] > clock

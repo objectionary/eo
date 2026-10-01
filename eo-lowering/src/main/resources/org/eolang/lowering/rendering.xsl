@@ -128,6 +128,39 @@
   <xsl:function name="eo:file" as="xs:string">
     <xsl:sequence select="concat(replace(eo:package(), '\.', '/'), '/', eo:class(), '.java')"/>
   </xsl:function>
+  <!--
+  Stop the rendering of an entry whose root dataized no symbol, saying what
+  the protocol shows instead: a constant the root dataized, a body that was
+  ⊥ from the start, the last step phino got no answer for, or the last λ
+  phino left unfinished.
+  -->
+  <xsl:function name="eo:rootless">
+    <xsl:variable name="constant" select="($eo:doc/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="unanswered" select="string(($eo:doc//unanswered)[last()])"/>
+    <xsl:choose>
+      <xsl:when test="exists($constant)">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $constant, ', and an atom that only returns a constant is not written yet'))"/>
+      </xsl:when>
+      <xsl:when test="empty($eo:doc/morph/evaluate[@λ = 'L_root']) and $eo:doc/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
+        <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
+      </xsl:when>
+      <xsl:when test="$unanswered = '⊥'">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root, because phino came to a step that reduced to ⊥ and could not go on'))"/>
+      </xsl:when>
+      <xsl:when test="ends-with($unanswered, ':λ')">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root, because phino got no answer from ', substring-before($unanswered, ':λ')))"/>
+      </xsl:when>
+      <xsl:when test="$unanswered != ''">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root, because phino got no answer for ', $unanswered))"/>
+      </xsl:when>
+      <xsl:when test="exists($eo:doc//unfinished[@λ])">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root, because phino left ', ($eo:doc//unfinished[@λ])[last()]/@λ, ' unfinished'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root, while its protocol says nothing about why'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
   <!-- The symbol the root of the entry dataizes. -->
   <xsl:function name="eo:root" as="xs:string">
     <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
@@ -136,7 +169,7 @@
     </xsl:if>
     <xsl:variable name="root" select="$eo:doc/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:if test="empty($root)">
-      <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root'))"/>
+      <xsl:sequence select="eo:rootless()"/>
     </xsl:if>
     <xsl:variable name="symbol" select="substring-before(concat(string($root), ':'), ':')"/>
     <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
