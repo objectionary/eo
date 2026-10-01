@@ -65,13 +65,6 @@ import org.cactoos.text.TextOf;
  * change.</p>
  *
  * @since 0.64.0
- * @todo #8548:60min Make a slice outside of the bytes fail the same way
- *  as the atom does. When the range of a slice is outside of the bytes,
- *  the Java that {@code rendering.xsl} writes throws a Java exception. But
- *  the atom {@code bytes.slice} returns its {@code cant-slice} error
- *  instead, and EO code may catch that error. Write the slice so that it
- *  fails the same way as the atom does, or make every entry that slices a
- *  taint.
  * @todo #8548:60min Write atoms for objects that are arguments of other
  *  objects. A locator with a {@code φ}, {@code ρ} or {@code α} in it, like
  *  {@code Φ.true.φ.α0}, belongs to an object that has no name of its own.
