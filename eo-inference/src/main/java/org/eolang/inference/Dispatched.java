@@ -8,6 +8,7 @@ import com.jcabi.xml.XML;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,11 @@ final class Dispatched {
     private final Collection<String> dead;
 
     /**
+     * The voids nothing ever fills, which an arm may not read.
+     */
+    private final Collection<String> vacant;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table
@@ -107,6 +113,40 @@ final class Dispatched {
         final Collection<String> voids,
         final Collection<String> ends
     ) {
+        this(
+            provides, said, dispatches, arguments, bindings, taken, voids, ends,
+            Collections.emptySet()
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param provides The provides table
+     * @param said What the links table says, as the rules left it, which the
+     *  fillings of every pass are read against
+     * @param dispatches Every dispatch of the program
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
+     * @param taken What every dispatch takes its attribute from
+     * @param voids The locator of every void this pass may look into, empty
+     *  when it may look into none
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
+     * @param empty The voids nothing ever fills, from {@link #empty(Map)},
+     *  empty where no arm may be struck for reading one
+     */
+    Dispatched(
+        final XML provides,
+        final Said said,
+        final Collection<Site> dispatches,
+        final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
+        final Map<String, String> taken,
+        final Collection<String> voids,
+        final Collection<String> ends,
+        final Collection<String> empty
+    ) {
         this.given = provides;
         this.written = said;
         this.all = dispatches;
@@ -115,6 +155,66 @@ final class Dispatched {
         this.receivers = taken;
         this.hollows = voids;
         this.dead = ends;
+        this.vacant = empty;
+    }
+
+    /**
+     * The same dispatches, with an arm struck where it reads a void nothing
+     * fills.
+     *
+     * @param empty The voids nothing ever fills, from {@link #empty(Map)}
+     * @return The dispatches that strike such arms
+     */
+    Dispatched striking(final Collection<String> empty) {
+        return new Dispatched(
+            this.given, this.written, this.all, this.args, this.named, this.receivers,
+            this.hollows, this.dead, empty
+        );
+    }
+
+    /**
+     * The voids nothing ever fills, as far as these pairs say.
+     *
+     * <p>A void is filled where a call of the program put something into it,
+     * where an atom is declared to hand into it, where it is handed on from a
+     * void that is filled, and where it belongs to a formation an atom comes
+     * back with, since Java made that one and filled it. The first three are
+     * what every void holds, by {@link Fillings}, and the fourth is
+     * {@link Returned}. Asked of the pairs a whole run of passes ended with,
+     * and of nothing in between, since what a void holds only grows while the
+     * passes run, and a void that looked empty halfway is not empty for it
+     * (#8981).</p>
+     *
+     * <p>Nor is a {@code ρ} ever empty, or a void that says what it holds,
+     * so neither is on the list: whoever dispatches fills the one, and the
+     * other is true of every caller, as {@link Provided} has it.</p>
+     *
+     * @param pairs The pairs a whole run of passes ended with
+     * @return The locators of the voids, without the ones anything fills
+     */
+    Collection<String> empty(final Map<String, String> pairs) {
+        final Collection<String> found = new LinkedHashSet<>(this.hollows);
+        found.removeAll(
+            new Fillings(
+                this.written.with(
+                    pairs,
+                    new Bound(
+                        this.args, this.named, this.receivers, this.all, pairs,
+                        new Provided(this.given, new Ends(pairs).names(), this.hollows),
+                        this.copies(pairs, Collections.emptyMap())
+                    ).all()
+                ),
+                this.given,
+                this.hollows
+            ).holders().keySet()
+        );
+        found.removeAll(new Held(this.given).all().keySet());
+        found.removeIf(hollow -> hollow.endsWith(".ρ"));
+        final Collection<String> made = new HashSet<>(new Returned(this.given).all().values());
+        found.removeIf(
+            hollow -> made.contains(hollow.substring(0, Math.max(0, hollow.lastIndexOf('.'))))
+        );
+        return found;
     }
 
     /**
@@ -329,7 +429,7 @@ final class Dispatched {
                 bound,
                 new Fillings(this.written.with(pairs, bound), this.given, this.hollows).holders(),
                 this.dead,
-                new Returned(this.given).all().values()
+                this.vacant
             ),
             this.hollows
         );
