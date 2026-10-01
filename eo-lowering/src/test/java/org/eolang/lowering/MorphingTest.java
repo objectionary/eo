@@ -84,6 +84,7 @@ final class MorphingTest {
             home.resolve("entries.tsv"),
             String.format("4\tΦ.bytes.as-hex.a🌵16-3%n").getBytes(StandardCharsets.UTF_8)
         );
+        Files.write(home.resolve("entries.xmir"), "<object/>".getBytes(StandardCharsets.UTF_8));
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
@@ -143,24 +144,55 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void morphsAgainWhenTheWorldChanges(@Mktmp final Path temp) throws IOException {
+    void morphsAgainWhenAnObjectTheEntryUsesChanges(@Mktmp final Path temp)
+        throws IOException {
         MorphingTest.merged(temp, 3);
+        MorphingTest.xmir(temp, "e3", "<o name=\"φ\" base=\"Φ.number\"/>");
+        MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"Φ.bytes\"/>");
+        MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\"/>");
         final Phino phino = MorphingTest.counting(temp);
         new Morphing(
             phino, new GcShared(temp.resolve("cache"), "0.3.4"),
             new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
-        Files.write(
-            temp.resolve("world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
-        );
+        MorphingTest.xmir(temp, "bytes", "<o name=\"Δ\" base=\"∅\"/>");
         new Morphing(
             phino, new GcShared(temp.resolve("cache"), "0.3.4"),
             new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
-            "a build over a changed world must run the binary again, but it doesnt",
+            "a build where an object the entry reaches changed must run the binary again, but it doesnt",
             Files.readAllLines(temp.resolve("runs.txt")),
             Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void takesTheProtocolFromTheCacheWhenAnObjectTheEntryDoesNotUseChanges(
+        @Mktmp final Path temp
+    ) throws IOException {
+        MorphingTest.merged(temp, 3);
+        MorphingTest.xmir(temp, "e3", "<o name=\"φ\" base=\"Φ.number\"/>");
+        MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"∅\"/>");
+        MorphingTest.xmir(temp, "string", "<o name=\"φ\" base=\"∅\"/>");
+        final Phino phino = MorphingTest.counting(temp);
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.5"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+        ).exec(temp);
+        MorphingTest.xmir(temp, "string", "<o name=\"Δ\" base=\"∅\"/>");
+        Files.write(
+            temp.resolve("world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
+        );
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.5"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a build where only an object the entry never reaches changed must not run the binary again, but it does",
+            Files.readAllLines(temp.resolve("runs.txt")),
+            Matchers.hasSize(1)
         );
     }
 
@@ -572,6 +604,20 @@ final class MorphingTest {
                 .mapToObj(entry -> String.format("%d\tΦ.e%d%n", entry, entry))
                 .collect(Collectors.joining())
                 .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            home.resolve("entries.xmir"),
+            String.format(
+                "<object><o name=\"l🌵\"><o name=\"mark\"/><o name=\"root\"/>%s</o></object>",
+                Arrays.stream(entries)
+                    .mapToObj(
+                        entry -> String.format(
+                            "<o base=\"Φ.l🌵.mark\" name=\"e%d\"><o as=\"v\" base=\"Φ.e%d\"/></o>",
+                            entry, entry
+                        )
+                    )
+                    .collect(Collectors.joining())
+            ).getBytes(StandardCharsets.UTF_8)
         );
         return home;
     }
