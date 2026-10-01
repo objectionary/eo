@@ -186,7 +186,7 @@ final class MjLowerTest {
             .execute(MjParse.class)
             .with("lowering", true)
             .with("budget", 1)
-            .with("binary", MjLowerTest.binary(temp, 1, "<morph><timeout limit=\"1\"/></morph>"))
+            .with("binary", MjLowerTest.binary(temp, 1, "<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>"))
             .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
@@ -323,7 +323,7 @@ final class MjLowerTest {
     }
 
     private static String binary(final Path temp) throws IOException {
-        return MjLowerTest.binary(temp, 0, "<morph/>");
+        return MjLowerTest.binary(temp, 0, "<protocol><morph/><msec>7</msec><firings>0</firings><fps>0</fps></protocol>");
     }
 
     private static String binary(final Path temp, final int code, final String protocol)
@@ -354,12 +354,13 @@ final class MjLowerTest {
     private static String rooted() {
         return String.join(
             "",
-            "<morph><evaluate λ='L_entry'><evaluate λ='L_number_times'>",
+            "<protocol><morph><evaluate λ='L_entry'><evaluate λ='L_number_times'>",
             "<bind meta='𝛿1.2'>40-00-00-00-00-00-00-00</bind>",
             "<bind meta='𝛿2.2'>40-08-00-00-00-00-00-00</bind>",
             "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
             "</evaluate></evaluate><evaluate λ='L_root'>",
-            "<dataize meta='𝛿1.3'>𝜎9:λ</dataize></evaluate></morph>"
+            "<dataize meta='𝛿1.3'>𝜎9:λ</dataize></evaluate></morph>",
+            "<msec>13</msec><firings>2</firings><fps>153</fps></protocol>"
         );
     }
 

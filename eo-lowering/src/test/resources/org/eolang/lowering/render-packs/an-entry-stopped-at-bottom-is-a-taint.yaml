@@ -12,9 +12,14 @@ eo:
       [] > lower
         ^.at > @
 protocol: |
-  <morph at="Φ.l🌵.e52">
-    <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e52">
-      <unanswered>⊥</unanswered>
-      <unfinished/>
-    </evaluate>
-  </morph>
+  <protocol>
+    <morph at="Φ.l🌵.e52">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e52">
+        <unanswered>⊥</unanswered>
+        <unfinished/>
+      </evaluate>
+    </morph>
+    <msec>332</msec>
+    <firings>1</firings>
+    <fps>3</fps>
+  </protocol>

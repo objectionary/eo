@@ -15,8 +15,13 @@ eo:
 voids:
   - "𝜎9\t499\tx\tnumber"
 protocol: |
-  <morph at="Φ.l🌵.e499">
-    <evaluate λ="L_root" by="morph" at="Φ.l🌵.e499">
-      <dataize meta="𝛿1.2">𝜎9:λ</dataize>
-    </evaluate>
-  </morph>
+  <protocol>
+    <morph at="Φ.l🌵.e499">
+      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e499">
+        <dataize meta="𝛿1.2">𝜎9:λ</dataize>
+      </evaluate>
+    </morph>
+    <msec>39</msec>
+    <firings>1</firings>
+    <fps>25</fps>
+  </protocol>

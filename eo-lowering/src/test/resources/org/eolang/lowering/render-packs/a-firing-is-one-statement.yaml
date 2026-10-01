@@ -15,18 +15,23 @@ eo:
 voids:
   - "𝜎200\t217\tρ\tnumber"
 protocol: |
-  <morph at="Φ.l🌵.e217">
-    <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e217">
-      <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-        <dataize meta="𝛿1.2">𝜎200:λ</dataize>
-        <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
-        <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
+  <protocol>
+    <morph at="Φ.l🌵.e217">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e217">
+        <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+          <dataize meta="𝛿1.2">𝜎200:λ</dataize>
+          <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
+          <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
+        </evaluate>
       </evaluate>
-    </evaluate>
-    <evaluate λ="L_root" by="morph" at="Φ.l🌵.e217">
-      <dataize meta="𝛿1.3">𝜎752:λ</dataize>
-    </evaluate>
-  </morph>
+      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e217">
+        <dataize meta="𝛿1.3">𝜎752:λ</dataize>
+      </evaluate>
+    </morph>
+    <msec>113</msec>
+    <firings>3</firings>
+    <fps>26</fps>
+  </protocol>
 file: org/eolang/EOnumber$EOneg$EOφ.java
 java: |
   /*
