@@ -76,33 +76,35 @@ final class MjRegisterIT {
     }
 
     @Test
-    void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
+    void completesRootPackageInForeign(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.runForeign(f);
                 MjRegisterIT.succeeds(f);
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
-                    "Foreign must contain only 3 references to objects, but it doesn't",
-                    foreign.size(),
-                    Matchers.equalTo(3)
-                );
-                MatcherAssert.assertThat(
                     "Foreign must contain refs to Number, Bytes, and current object",
                     MjRegisterIT.existences(foreign, "number", "bytes", "foo"),
                     Matchers.everyItem(Matchers.is(true))
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must not contain a reference to an old object",
+                    "Foreign must also complete the root package, picking up a sibling"
+                        + " such as string that the program itself never mentions",
                     foreign.select(tojo -> "string".equals(tojo.get("id"))).isEmpty(),
-                    Matchers.is(true)
+                    Matchers.is(false)
+                );
+                MatcherAssert.assertThat(
+                    "Foreign must grow past the 3 directly referenced objects once the root"
+                        + " package is completed",
+                    foreign.size(),
+                    Matchers.greaterThan(3)
                 );
             }
         );
     }
 
     @Test
-    void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
+    void pullsRootPackageSiblingsAlongsideNeededObject(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.run(
@@ -118,9 +120,10 @@ final class MjRegisterIT {
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    "Unnecessary objects were not removed",
+                    "A root package sibling such as string must be pulled too, since the"
+                        + " root package is completed as a whole, not just the referenced object",
                     temp.resolve("target/eo/01-pull/string.eo").toFile().exists(),
-                    Matchers.is(false)
+                    Matchers.is(true)
                 );
             }
         );
