@@ -54,10 +54,12 @@ import org.cactoos.text.TextOf;
  * entry: its number, its locator, the top object it is inside, and the
  * package of that object.</p>
  *
- * <p>An entry whose run was stopped because of the time limit has no
- * protocol, so it is skipped. When the stylesheet finds that an entry is a
- * taint, this class only writes about it into the log, and the object
- * stays in EO exactly as it was written. At the end, this class writes the
+ * <p>An entry that phino did not run has no protocol, so it is skipped.
+ * When the stylesheet finds that an entry is a taint, this class only
+ * writes into the log why, and the object stays in EO exactly as it was
+ * written. Every skipped entry and every taint gets its own line in the
+ * log, at the level INFO, so that a reader of the build sees why each
+ * object was not turned into Java. At the end, this class writes the
  * list of the entries it turned into atoms into the file
  * {@code rendered.tsv}, so that {@link Patching} knows which objects to
  * change.</p>
@@ -140,9 +142,9 @@ final class Rendering implements Proc<Path> {
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
                     tainted += 1;
-                    Logger.debug(
+                    Logger.info(
                         this,
-                        "The entry %s at %s is a taint: %s",
+                        "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
@@ -164,6 +166,12 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/@branches").get(0)
                     );
                 }
+            } else {
+                Logger.info(
+                    this,
+                    "The entry %s at %s gets no Java atom and stays in EO as written, because it has no protocol at %[file]s, since phino did not run it",
+                    cells[0], cells[1], protocol
+                );
             }
         }
         Files.write(

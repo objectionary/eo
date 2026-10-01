@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.list.ListOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
@@ -27,6 +32,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -35,6 +41,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
+@Isolated
 final class RenderingTest {
 
     /**
@@ -76,13 +83,74 @@ final class RenderingTest {
         );
     }
 
+    @Test
+    void logsAnEntryWithNoProtocol(@Mktmp final Path temp) throws IOException {
+        final Path home = Files.createDirectories(temp);
+        final int number = new SecureRandom().nextInt(900) + 100;
+        Files.write(
+            home.resolve("entries.tsv"),
+            String.format("%d\tΦ.lazy%n", number).getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.write(
+            Files.createDirectories(temp.resolve("1-planting")).resolve("lazy.xmir"),
+            new EoSyntax(String.format("[] > lazy%n  42 > @%n")).parsed().toString()
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "an entry with no protocol must be logged as left in EO, but it isnt",
+            RenderingTest.logged(new Rendering(temp.resolve("atoms")), temp),
+            Matchers.hasItem(
+                Matchers.allOf(
+                    Matchers.containsString(String.format("entry %d at Φ.lazy", number)),
+                    Matchers.containsString("has no protocol")
+                )
+            )
+        );
+    }
+
+    private static List<String> logged(final Rendering rendering, final Path home)
+        throws IOException {
+        final List<String> messages = new ArrayList<>(0);
+        final AppenderSkeleton appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                if (event.getLevel().equals(Level.INFO)) {
+                    messages.add(String.valueOf(event.getRenderedMessage()));
+                }
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Rendering.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.INFO);
+        logger.addAppender(appender);
+        try {
+            rendering.exec(home);
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        return messages;
+    }
+
     /**
      * One YAML file with an example for {@link Rendering}.
      *
      * <p>The file has EO sources, one entry, its protocol, and the whole
      * text of the Java atom of that entry, which the rendering must write
      * exactly. When the file names no Java file, the entry must be a taint,
-     * and no atom may be written.</p>
+     * and no atom may be written. Then the key {@code taint} may hold a
+     * part of the line the log must have about it, which says why.</p>
      *
      * @since 0.64.0
      */
@@ -119,12 +187,13 @@ final class RenderingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "locator", "number", "eo", "voids", "protocol", "file", "java"
+                    "locator", "number", "eo", "voids", "protocol", "file", "java", "taint"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
                 }
             }
-            final Path atoms = this.rendered();
+            final List<String> log = new ArrayList<>(0);
+            final Path atoms = this.rendered(log);
             final String listed = Files.readString(
                 this.temp.resolve("rendered.tsv"), StandardCharsets.UTF_8
             );
@@ -138,6 +207,12 @@ final class RenderingTest {
                 }
             } else if (!this.files(atoms).isEmpty() || !listed.isEmpty()) {
                 failed.add(String.format("no file, while %s and %s", this.files(atoms), listed));
+            }
+            if (this.story.map().containsKey("taint")) {
+                final String why = this.story.map().get("taint").toString();
+                if (log.stream().noneMatch(line -> line.contains(why))) {
+                    failed.add(String.format("taint: '%s' is not in the log %s", why, log));
+                }
             }
             return failed;
         }
@@ -156,7 +231,7 @@ final class RenderingTest {
             return failed;
         }
 
-        private Path rendered() throws IOException {
+        private Path rendered(final List<String> log) throws IOException {
             final String locator = this.story.map().get("locator").toString();
             final Path home = Files.createDirectories(this.temp);
             Files.write(
@@ -189,7 +264,7 @@ final class RenderingTest {
                 protocol,
                 this.story.map().get("protocol").toString().getBytes(StandardCharsets.UTF_8)
             );
-            new Rendering(this.temp.resolve("atoms")).exec(this.temp);
+            log.addAll(RenderingTest.logged(new Rendering(this.temp.resolve("atoms")), this.temp));
             return this.temp.resolve("atoms");
         }
 
