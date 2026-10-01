@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.stream.Stream;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
@@ -123,18 +124,20 @@ final class Phino {
      * phino cannot go further, it leaves that part as it is. When phino
      * sees that it is going around in a circle, it stops that circle. phino
      * writes down every step it takes into the protocol file, and it writes
-     * nothing else. If phino is still working when the time limit is over,
-     * it is stopped, because one entry that never ends must not stop the
-     * whole build.</p>
+     * nothing else. One entry that never ends must not stop the whole build,
+     * so phino is told how many seconds it may work, and it stops by itself
+     * when they are over. Then it closes the protocol with a {@code timeout}
+     * element and fails. This class never kills phino, because a killed phino
+     * leaves a protocol cut in the middle, which nobody can read.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
      * @param protocol The file for the steps, in XML because its name ends with .xml
      * @param steps The largest number of steps phino may take inside one another
-     * @param budget The time phino may work before it is stopped
+     * @param budget The time phino may work, rounded up to whole seconds
      * @throws IOException If phino cannot be started, or a
-     *  {@link KilledException} if phino was stopped because of the time limit
+     *  {@link KilledException} if phino stopped because its time was over
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     void morph(
@@ -158,14 +161,26 @@ final class Phino {
                     String.format("--locator=Q.l🌵.e%d", entry),
                     String.format("--protocol=%s", protocol),
                     String.format("--max-steps=%d", steps),
+                    String.format(
+                        "--max-seconds=%d",
+                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
+                    ),
                     world.toString()
-                ).withTimeout(budget),
+                ),
                 task
             );
-        } catch (final IllegalArgumentException ex) {
+        } catch (final IllegalStateException ex) {
+            if (Files.notExists(protocol)) {
+                throw ex;
+            }
+            try (Stream<String> lines = Files.lines(protocol)) {
+                if (lines.noneMatch(line -> line.contains("<timeout "))) {
+                    throw ex;
+                }
+            }
             throw new KilledException(
                 Logger.format(
-                    "The binary '%s' was killed after %[ms]s of %s",
+                    "The binary '%s' ran out of its budget of %[ms]s while %s",
                     this.binary, budget.toMillis(), task
                 ),
                 ex

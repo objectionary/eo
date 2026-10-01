@@ -10,7 +10,9 @@ import java.io.IOException;
  * The error that says a run of phino was stopped because it took too long.
  *
  * <p>Every run of phino is given a limit of time. When a run is still
- * working after that time, it is stopped, and this error is thrown.</p>
+ * working after that time, phino stops by itself, writes a {@code timeout}
+ * element at the end of its protocol, and fails. Then this error is
+ * thrown.</p>
  *
  * <p>This error is an {@link IOException} for two reasons. First, the cache
  * that stores the results of phino lets only an {@link IOException} pass

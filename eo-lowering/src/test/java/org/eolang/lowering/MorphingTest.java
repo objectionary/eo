@@ -106,7 +106,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol/>' > \"$p\"; exec sleep 30"
+                    "echo '<morph><timeout limit=\"1\"/></morph>' > \"$p\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -114,7 +114,7 @@ final class MorphingTest {
             Duration.ofMillis(900L)
         ).exec(temp);
         MatcherAssert.assertThat(
-            "a run killed over its budget must leave no protocol, but it does",
+            "a run out of its budget must leave no protocol, but it does",
             temp.resolve("2-protocols/e5.xml").toFile(),
             Matchers.not(FileMatchers.anExistingFile())
         );
@@ -166,10 +166,17 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void retriesARunKilledInAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+    void retriesARunOutOfTimeInAnEarlierBuild(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 8);
         new Morphing(
-            MorphingTest.phino(temp, "exec sleep 30"),
+            MorphingTest.phino(
+                temp,
+                String.join(
+                    " ",
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
+                    "echo '<morph><timeout limit=\"1\"/></morph>' > \"$p\"; exit 1"
+                )
+            ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
             new Scope(".*", "(?!)"), 16,
             Duration.ofMillis(700L)
@@ -179,7 +186,7 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
         ).exec(temp);
         MatcherAssert.assertThat(
-            "a run killed in an earlier build must be tried again, but it isnt",
+            "a run out of time in an earlier build must be tried again, but it isnt",
             Files.readAllLines(temp.resolve("runs.txt")),
             Matchers.hasSize(1)
         );

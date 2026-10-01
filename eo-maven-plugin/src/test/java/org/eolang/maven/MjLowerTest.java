@@ -179,18 +179,18 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void killsTheRunThatOutlastsTheBudgetItWasGiven(@Mktmp final Path temp)
+    void dropsTheProtocolOfARunOutOfTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)
             .with("lowering", true)
             .with("budget", 1)
-            .with("binary", MjLowerTest.binary(temp, 5))
+            .with("binary", MjLowerTest.binary(temp, 1, "<morph><timeout limit=\"1\"/></morph>"))
             .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
-            "a run longer than the budget must be killed and leave no protocol, but it didnt",
+            "a run out of its budget must leave no protocol, but it does",
             new Subdir(temp.resolve("target"), "lowering").path()
                 .resolve("2-protocols/gap.xml")
                 .toFile(),
@@ -323,14 +323,10 @@ final class MjLowerTest {
     }
 
     private static String binary(final Path temp) throws IOException {
-        return MjLowerTest.binary(temp, 0);
+        return MjLowerTest.binary(temp, 0, "<morph/>");
     }
 
-    private static String binary(final Path temp, final int pause) throws IOException {
-        return MjLowerTest.binary(temp, pause, "<morph/>");
-    }
-
-    private static String binary(final Path temp, final int pause, final String protocol)
+    private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
         final Path made = temp.resolve("phino");
         Files.write(
@@ -341,12 +337,12 @@ final class MjLowerTest {
                 String.format("--version) echo %s;;", MjLowerTest.pin()),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "morph) echo \"$@\" >> '%s'; sleep %d; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done;;",
+                    "morph) echo \"$@\" >> '%s'; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done; exit %d;;",
                     temp.resolve("morph.txt"),
-                    pause,
                     Files.write(
                         temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)
-                    )
+                    ),
+                    code
                 ),
                 "esac"
             )
