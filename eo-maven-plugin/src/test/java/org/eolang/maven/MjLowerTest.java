@@ -186,7 +186,7 @@ final class MjLowerTest {
             .execute(MjParse.class)
             .with("lowering", true)
             .with("budget", 1)
-            .with("binary", MjLowerTest.binary(temp, 1, "<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>"))
+            .with("binary", MjLowerTest.binary(temp, 1, MjLowerTest.expired()))
             .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
@@ -323,7 +323,9 @@ final class MjLowerTest {
     }
 
     private static String binary(final Path temp) throws IOException {
-        return MjLowerTest.binary(temp, 0, "<protocol><morph/><msec>7</msec><firings>0</firings><fps>0</fps></protocol>");
+        return MjLowerTest.binary(
+            temp, 0, "<protocol><morph/><msec>7</msec><firings>0</firings><fps>0</fps></protocol>"
+        );
     }
 
     private static String binary(final Path temp, final int code, final String protocol)
@@ -349,6 +351,10 @@ final class MjLowerTest {
         );
         Files.setPosixFilePermissions(made, PosixFilePermissions.fromString("rwxr-xr-x"));
         return made.toString();
+    }
+
+    private static String expired() {
+        return "<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>";
     }
 
     private static String rooted() {
