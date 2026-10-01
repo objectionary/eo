@@ -122,7 +122,7 @@ final class Rendering implements Proc<Path> {
         ).with((href, base) -> new StreamSource(href))
             .with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
-        int tainted = 0;
+        final Collection<String> tainted = new ArrayList<>(0);
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
@@ -139,7 +139,7 @@ final class Rendering implements Proc<Path> {
                     .with("package", tops.get(top))
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
-                    tainted += 1;
+                    tainted.add(cells[1].replaceFirst("^Φ\\.", ""));
                     Logger.debug(
                         this,
                         "The entry %s at %s is a taint: %s",
@@ -170,11 +170,19 @@ final class Rendering implements Proc<Path> {
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        Logger.info(
-            this,
-            "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered.size(), this.atoms, tainted
-        );
+        if (tainted.isEmpty()) {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while no entries were taints",
+                rendered.size(), this.atoms
+            );
+        } else {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
+                rendered.size(), this.atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+            );
+        }
     }
 
     private static String top(final Map<String, String> tops, final String locator) {
