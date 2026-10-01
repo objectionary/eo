@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -50,6 +51,12 @@ import org.xembly.Xembler;
  * the voids of one are answered by the annotation the atom carries and by
  * {@link Handed}, which reads it (#8380).</p>
  *
+ * <p>A call nobody can place fills a void out of sight, and the census says so
+ * with an {@code unknown} among its members, so that a void one caller fills
+ * with an {@code oak} is not read back as holding an {@code oak} and nothing
+ * else (#9006). The calls are read from the sources again, since the tables
+ * keep no row for what a call nobody could place handed over.</p>
+ *
  * <p>A choice is written whole, however long it grows. {@code Φ.tuple.head}
  * is filled with 56 different types and {@code Φ.string.φ} with 26, and a
  * choice that long tells a reader nothing except that nobody has thought
@@ -82,8 +89,14 @@ public final class Witnessed implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
+        final Pairs pairs = new Pairs(new XMLDocument(tables.resolve("links.xml")));
+        final Xmirs world = new Xmirs(xmirs);
+        final Collection<Site> asked = new ArrayList<>(world.dispatches());
+        asked.addAll(world.reads());
+        final Given applied = new Given(world.applications());
         final Map<String, Collection<Type>> filled = new Fillings(
-            new XMLDocument(tables.resolve("links.xml")), given
+            new Said(pairs), given, new Hollows(given).all(),
+            new Unplaced(asked, applied.arguments(), applied.named(), pairs.bound())
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
             final Collection<Type> members = filled.getOrDefault(

@@ -228,6 +228,31 @@ final class Pairs {
     }
 
     /**
+     * The rows that put something into a void.
+     *
+     * <p>{@link Bound} writes a bind on the row of every call whose formation
+     * it can name, and on that row alone, so a call whose row binds nothing
+     * and still hands arguments over is one nobody could place, as
+     * {@link Unplaced} has it (#9006).</p>
+     *
+     * @return The locators of the rows, in the order the table names them
+     */
+    Collection<String> bound() {
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final Xnav row : this.rows()) {
+            final Optional<Xnav> ref = Pairs.ref(row);
+            if (ref.isPresent() && Stream.concat(
+                Stream.of(ref.get()),
+                ref.get().elements(Filter.withName("union"))
+                    .flatMap(union -> union.elements(Filter.withName("ref")))
+            ).anyMatch(arm -> arm.elements(Filter.withName("bind")).findAny().isPresent())) {
+                found.add(new Noted(row).says("id"));
+            }
+        }
+        return found;
+    }
+
+    /**
      * The arms of every row that comes back with one of several objects.
      *
      * <p>A call on a void that holds a picker is answered by whatever the call
