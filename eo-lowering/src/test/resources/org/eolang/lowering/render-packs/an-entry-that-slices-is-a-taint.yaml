@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A slice out of its range returns the cant-slice its caller binds, which
 # the protocol does not hold, so no Java can fail the way the atom does.
 locator: Φ.head
