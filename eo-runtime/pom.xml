@@ -20,7 +20,9 @@
     <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
-    runs to its end instead of being skipped.
+    runs to its end instead of being skipped. The "transpile" goal reads the
+    same property and writes it into the @Timeout of every test it makes out
+    of an .eo file, while the hand-written tests get it from surefire below.
     -->
     <eo.deadline>1</eo.deadline>
     <!--
@@ -33,7 +35,9 @@
     without ever holding much — so that the guard fires on a runaway test
     rather than on the population (#8341). It binds one test, while tests
     run as wide as the box has cores, so a job raising it from the command
-    line must keep the value times the workers under -Xmx.
+    line must keep the value times the workers under -Xmx. The "transpile"
+    goal reads the same property and writes it into the @Budget of every
+    test it makes out of an .eo file, which wins over the system property.
     -->
     <eo.maxmem>1G</eo.maxmem>
   </properties>
@@ -135,10 +139,17 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!--
+      Deadline, Maxmem, and Budget guard every test the transpiler makes out
+      of an .eo file, so they live among the classes of the runtime and need
+      JUnit to compile (#9074). The scope is "provided": a test that uses them
+      brings JUnit along, while a program that only runs EO objects must not
+      get JUnit on its classpath through eo-runtime.
+      -->
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
@@ -147,10 +158,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- Deadline and Watched throw its TestAbortedException, see junit-jupiter-api above. -->
       <groupId>org.opentest4j</groupId>
       <artifactId>opentest4j</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
