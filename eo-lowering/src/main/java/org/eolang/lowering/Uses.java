@@ -7,16 +7,18 @@ package org.eolang.lowering;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
-import org.cactoos.Scalar;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.io.InputOf;
+import org.cactoos.map.MapEntry;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
@@ -26,26 +28,22 @@ import org.cactoos.text.UncheckedText;
 /**
  * The part of the world that one entry uses, as a hash.
  *
- * <p>phino meets, while it runs an entry, only the objects that the entry
- * refers to, the objects that those objects refer to, and so on. An object
- * refers to another top object by its full locator, so this class follows
- * such references from the entry through the copies, one top object at a
- * time, until nothing new is found. The hash is made of the entry, the two
- * objects of the world that wrap every entry, the hash of every copy that
- * was reached, and every reference that no copy holds, since a copy that
- * holds it later must change the hash too.</p>
- *
- * <p>{@link Morphing} keeps every protocol in the cache under this hash. So
- * when an object changes, phino runs again only on the entries that reach
- * it, and not on every entry of the world.</p>
+ * <p>phino meets, while it runs an entry, only the objects the entry refers
+ * to, the objects those refer to, and so on. One top object refers to
+ * another by its full locator, so this class follows such references from
+ * the entry through the copies until nothing new is found. The hash is made
+ * of the entry, the objects that wrap it, the hash of every copy reached,
+ * and every reference no copy holds, since a copy that holds it later must
+ * change the hash too. {@link Morphing} keeps every protocol in the cache
+ * under this hash.</p>
  *
  * @since 0.64.0
  */
 final class Uses {
 
     /**
-     * The top objects of the copies, with the hash of each copy and its
-     * references.
+     * The top objects of the copies, each with the hash of its copy and the
+     * full locators it refers to.
      */
     private final Unchecked<Map<String, Map.Entry<String, Collection<String>>>> tops;
 
@@ -60,24 +58,32 @@ final class Uses {
      * @param home The home directory of the lowering
      */
     Uses(final Path home) {
-        this(
-            new Synced<>(new Sticky<>(new Tops(home))),
+        this.tops = new Unchecked<>(
+            new Synced<>(
+                new Sticky<>(
+                    () -> {
+                        final Map<String, Map.Entry<String, Collection<String>>> all =
+                            new HashMap<>(0);
+                        if (Files.exists(home.resolve("1-planting"))) {
+                            for (final Path copy : new Copies(home)) {
+                                final XML xmir = new XMLDocument(copy);
+                                all.put(
+                                    xmir.xpath("/object/o[1]/@loc").get(0),
+                                    new MapEntry<>(
+                                        new HexOf(new Sha256DigestOf(new InputOf(copy))).asString(),
+                                        new TreeSet<>(xmir.xpath("//o/@base[starts-with(., 'Φ.')]"))
+                                    )
+                                );
+                            }
+                        }
+                        return all;
+                    }
+                )
+            )
+        );
+        this.entries = new Unchecked<>(
             new Synced<>(new Sticky<>(() -> new XMLDocument(home.resolve("entries.xmir"))))
         );
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param all The top objects of the copies
-     * @param xmir The XMIR of the entries
-     */
-    Uses(
-        final Scalar<Map<String, Map.Entry<String, Collection<String>>>> all,
-        final Scalar<XML> xmir
-    ) {
-        this.tops = new Unchecked<>(all);
-        this.entries = new Unchecked<>(xmir);
     }
 
     /**
@@ -102,15 +108,16 @@ final class Uses {
         final Collection<String> outside = new TreeSet<>();
         while (!todo.isEmpty()) {
             final String ref = todo.pop();
-            final String top = this.top(all, ref);
+            String top = ref;
+            while (!top.isEmpty() && !all.containsKey(top)) {
+                top = top.substring(0, Math.max(top.lastIndexOf('.'), 0));
+            }
             if (top.isEmpty()) {
                 outside.add(ref);
             } else if (reached.add(top)) {
                 todo.addAll(all.get(top).getValue());
+                parts.add(String.format("%s %s", top, all.get(top).getKey()));
             }
-        }
-        for (final String top : reached) {
-            parts.add(String.format("%s %s", top, all.get(top).getKey()));
         }
         parts.addAll(outside);
         return new UncheckedText(
@@ -120,20 +127,5 @@ final class Uses {
                 )
             )
         ).asString();
-    }
-
-    /**
-     * The locator of the top object that holds the object of a reference.
-     *
-     * @param all The top objects of the copies
-     * @param ref The full locator of the object
-     * @return The locator of its top object, or an empty string when no copy holds it
-     */
-    private String top(final Map<String, ?> all, final String ref) {
-        String prefix = ref;
-        while (!prefix.isEmpty() && !all.containsKey(prefix)) {
-            prefix = prefix.substring(0, Math.max(prefix.lastIndexOf('.'), 0));
-        }
-        return prefix;
     }
 }
