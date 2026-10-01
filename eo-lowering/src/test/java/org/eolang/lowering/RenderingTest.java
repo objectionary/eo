@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.list.ListOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
@@ -27,6 +32,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 
 /**
@@ -35,6 +41,7 @@ import org.junit.jupiter.params.ParameterizedTest;
  * @since 0.64.0
  */
 @ExtendWith(MktmpResolver.class)
+@Isolated
 final class RenderingTest {
 
     /**
@@ -74,6 +81,76 @@ final class RenderingTest {
             Files.exists(temp.resolve("atoms")),
             Matchers.is(false)
         );
+    }
+
+    @Test
+    void namesTheTaintsInTheLog(@Mktmp final Path temp) throws IOException {
+        final int count = new SecureRandom().nextInt(4) + 2;
+        final List<String> names = new ArrayList<>(count);
+        final StringBuilder entries = new StringBuilder();
+        for (int idx = 0; idx < count; ++idx) {
+            final String name = String.format("zj%d", new SecureRandom().nextInt(1000) * 10 + idx);
+            names.add(name);
+            entries.append(String.format("%d\tΦ.%s%n", idx, name));
+            Files.write(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(String.format("%s.xmir", name)),
+                new EoSyntax(String.format("[] > %s%n  42 > @%n", name)).parsed().toString()
+                    .getBytes(StandardCharsets.UTF_8)
+            );
+            Files.write(
+                Files.createDirectories(temp.resolve("2-protocols"))
+                    .resolve(String.format("%s.xml", name)),
+                "<morph/>".getBytes(StandardCharsets.UTF_8)
+            );
+        }
+        Files.write(
+            temp.resolve("entries.tsv"), entries.toString().getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(temp.resolve("voids.tsv"), new byte[0]);
+        MatcherAssert.assertThat(
+            "the log must name the entries that are taints, but it doesnt",
+            RenderingTest.logged(new Rendering(temp.resolve("atoms")), temp),
+            Matchers.hasItem(
+                Matchers.endsWith(
+                    String.format(
+                        "while %d entries were taints: %s", count, String.join(", ", names)
+                    )
+                )
+            )
+        );
+    }
+
+    private static List<String> logged(final Rendering rendering, final Path home)
+        throws IOException {
+        final List<String> messages = new ArrayList<>(0);
+        final AppenderSkeleton appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                messages.add(String.valueOf(event.getRenderedMessage()));
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Rendering.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.INFO);
+        logger.addAppender(appender);
+        try {
+            rendering.exec(home);
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        return messages;
     }
 
     /**
