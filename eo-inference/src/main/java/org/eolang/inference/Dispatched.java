@@ -189,30 +189,38 @@ final class Dispatched {
      * so neither is on the list: whoever dispatches fills the one, and the
      * other is true of every caller, as {@link Provided} has it.</p>
      *
+     * <p>Nor is a void of a formation whose name a call hands arguments to
+     * while {@link Bound} cannot say whose formation that call takes, as
+     * {@code ^.child.run s at caps k} does on a void {@code child}. Such a
+     * call fills somebody's voids by that name, and not knowing whose is not
+     * knowing that nobody's are (#9062).</p>
+     *
      * @param pairs The pairs a whole run of passes ended with
      * @return The locators of the voids, without the ones anything fills
      */
     Collection<String> empty(final Map<String, String> pairs) {
+        final Map<String, Map<String, String>> bound = new Bound(
+            this.args, this.named, this.receivers, this.all, pairs,
+            new Provided(this.given, new Ends(pairs).names(), this.hollows),
+            this.copies(pairs, Collections.emptyMap())
+        ).all();
         final Collection<String> found = new LinkedHashSet<>(this.hollows);
         found.removeAll(
-            new Fillings(
-                this.written.with(
-                    pairs,
-                    new Bound(
-                        this.args, this.named, this.receivers, this.all, pairs,
-                        new Provided(this.given, new Ends(pairs).names(), this.hollows),
-                        this.copies(pairs, Collections.emptyMap())
-                    ).all()
-                ),
-                this.given,
-                this.hollows
-            ).holders().keySet()
+            new Fillings(this.written.with(pairs, bound), this.given, this.hollows)
+                .holders().keySet()
         );
         found.removeAll(new Held(this.given).all().keySet());
         found.removeIf(hollow -> hollow.endsWith(".ρ"));
         final Collection<String> made = new HashSet<>(new Returned(this.given).all().values());
         found.removeIf(
             hollow -> made.contains(hollow.substring(0, Math.max(0, hollow.lastIndexOf('.'))))
+        );
+        final Collection<String> unseen = this.unseen(bound);
+        found.removeIf(
+            hollow -> unseen.contains(
+                hollow.substring(0, Math.max(0, hollow.lastIndexOf('.')))
+                    .replaceFirst("^.*\\.", "")
+            )
         );
         return found;
     }
@@ -437,5 +445,17 @@ final class Dispatched {
 
     private boolean rooted(final String type) {
         return !this.hollows.isEmpty() && new Rooted(this.hollows).covers(type);
+    }
+
+    private Collection<String> unseen(final Map<String, Map<String, String>> bound) {
+        final Collection<String> found = new HashSet<>(0);
+        for (final Site dispatch : this.all) {
+            if (!bound.containsKey(dispatch.made())
+                && (!this.args.getOrDefault(dispatch.made(), Collections.emptyList()).isEmpty()
+                || !this.named.getOrDefault(dispatch.made(), Collections.emptyMap()).isEmpty())) {
+                found.add(dispatch.name());
+            }
+        }
+        return found;
     }
 }
