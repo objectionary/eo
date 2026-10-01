@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -62,16 +61,9 @@ import java.util.Map;
  * tomorrow, or compiled apart, may put a formation of another shape into
  * that void (#8914).</p>
  *
- * <p>Before either of those the passes run once more, striking no arm, only
- * to learn which voids nothing ever fills. An arm that reads such a void is
- * dead, but that is a claim of absence, and asked while the passes still add
- * fillings it is asked too soon: a void filled a pass later stays struck,
- * since a site once answered is never asked again. So the empty voids are
- * read off the end of a run that struck nothing, and the runs that follow
- * strike against that list. Striking an arm can only take fillings away, so
- * every void on the list must still be empty when they end, and a build in
- * which one is not stops rather than write rows that disagree with the
- * census (#8981).</p>
+ * <p>Before either of those the passes run until {@link Emptied} knows
+ * which voids nothing fills, since an arm that reads one is dead and the
+ * runs that write the rows strike it (#8981).</p>
  *
  * <p>The arms of a dispatch that could not be settled to one object are
  * written here as well, and here only. They are asked for once the passes have
@@ -133,19 +125,8 @@ public final class Resolved implements Clue {
             given, said, asked, args, named, receivers, Collections.emptyList(), ends
         );
         final Map<String, String> plain = new Settled(outside, promoted).from(written.all());
-        final Collection<String> empty = into.empty(new Settled(into, promoted).from(plain));
-        final Dispatched strict = into.striking(empty);
+        final Dispatched strict = into.striking(new Emptied(into, promoted).from(plain));
         final Map<String, String> pairs = new Settled(strict, promoted).from(plain);
-        final Collection<String> filled = new LinkedHashSet<>(empty);
-        filled.removeAll(strict.empty(pairs));
-        if (!filled.isEmpty()) {
-            throw new IllegalStateException(
-                String.format(
-                    "The void %s was struck as one nothing fills, yet the arms left standing fill it",
-                    filled.iterator().next()
-                )
-            );
-        }
         final Promoted none = new Promoted(
             woven, given, said, Collections.emptyList(), args
         );
