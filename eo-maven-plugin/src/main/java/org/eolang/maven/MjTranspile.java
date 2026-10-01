@@ -147,6 +147,30 @@ public final class MjTranspile extends MjSafe {
     private String superclass;
 
     /**
+     * How many seconds a single test made of an {@code ++>} or {@code -->}
+     * attribute may run before it is stopped and reported as skipped. The
+     * number is written into the {@code @Timeout} of every test, so the tests
+     * keep it in any build that compiles them, even one that configures
+     * nothing for JUnit. A test that outlives it is reported as skipped by
+     * {@code org.eolang.Deadline}, rather than left to run until the heap
+     * of the whole build is gone. The property has the same name as the one
+     * {@code eo-runtime} gives its own tests, so one setting covers both.
+     */
+    @Parameter(property = "eo.deadline", defaultValue = "1")
+    private long deadline;
+
+    /**
+     * How much memory a single test made of an {@code ++>} or {@code -->}
+     * attribute may allocate before it is stopped and reported as skipped.
+     * It is written the way {@code -Xmx} is: {@code 1G}, {@code 512M},
+     * {@code 65536K}, or plain bytes; zero or nothing means no limit. The
+     * value goes into the {@code @Budget} of every test, which
+     * {@code org.eolang.Maxmem} reads while the test runs.
+     */
+    @Parameter(alias = "maxmem", property = "eo.maxmem", defaultValue = "1G")
+    private String memory;
+
+    /**
      * The directory with the tables that {@link MjInference} writes, read by
      * {@code purify.xsl} to find out which formations are safe to cache. The
      * default is the one {@link MjInference} saves them to, so a build that
@@ -177,6 +201,8 @@ public final class MjTranspile extends MjSafe {
                     new Tracking(this.tracking, this.located),
                     this.coverage,
                     this.base(),
+                    this.deadline,
+                    this.memory,
                     this.measures.toPath(),
                     this.target.toPath(),
                     new Subdir(this.target, "inference").orConfigured(this.tables)

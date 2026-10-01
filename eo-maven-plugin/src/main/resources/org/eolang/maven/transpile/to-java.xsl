@@ -12,6 +12,8 @@
   <xsl:param name="trackLocations" select="'true'"/>
   <xsl:param name="coverage" select="'false'"/>
   <xsl:param name="phiDefaultClass" select="'PhDefault'"/>
+  <xsl:param name="deadline" select="'1'"/>
+  <xsl:param name="maxmem" select="'1G'"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- VARIABLES -->
   <xsl:variable name="TAB">
@@ -795,9 +797,15 @@
   <!-- Test suite for given class. -->
   <xsl:template match="class" mode="testing">
     <xsl:if test="attr[eo:test-attr(.)]">
+      <xsl:text>import java.util.concurrent.TimeUnit;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.Timeout;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.extension.ExtendWith;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
     <xsl:value-of select="eo:eol(0)"/>
@@ -912,7 +920,14 @@
       <xsl:text>);</xsl:text>
     </xsl:if>
   </xsl:template>
-  <!-- Class for tests -->
+  <!--
+  Class for tests.
+
+  Every test carries its own deadline and memory budget, so that it keeps them
+  in any build that compiles it, even one that tells JUnit nothing: a runaway
+  test is stopped and reported as skipped, instead of eating the heap of the
+  whole build (#9074).
+  -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:for-each select="attr">
@@ -921,6 +936,12 @@
       </xsl:if>
       <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Budget(&quot;', eo:literal($maxmem), '&quot;)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
         <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>

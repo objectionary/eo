@@ -18,7 +18,6 @@ import org.opentest4j.TestAbortedException;
  *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class WatchedTest {
 
     @Test
