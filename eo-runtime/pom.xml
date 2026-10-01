@@ -272,6 +272,10 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
+          <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
+          <loweringBudget>60</loweringBudget>
+          <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
+          <maxMorphingSteps>100</maxMorphingSteps>
         </configuration>
         <executions>
           <execution>
@@ -283,6 +287,7 @@
               <goal>inference</goal>
               <goal>dealpha</goal>
               <goal>inference-report</goal>
+              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>

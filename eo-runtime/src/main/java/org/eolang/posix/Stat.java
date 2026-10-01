@@ -63,7 +63,7 @@ public final class Stat {
      * A file's status, exposing the two fields EO reads no matter how the
      * platform's {@code struct stat} is laid out.
      *
-     * @since 0.74.0
+     * @since 0.64.0
      */
     public interface FileStat {
 

@@ -1,0 +1,198 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.lowering;
+
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.transform.stream.StreamSource;
+import org.cactoos.Proc;
+import org.cactoos.Text;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+
+/**
+ * The stage that writes a Java atom for every entry that phino computed.
+ *
+ * <p>This is where all the work of the module pays off. Without this
+ * stage, the body of an object is a graph of many small objects, which EO
+ * builds and computes while the program runs. After this stage, the same
+ * body is a few lines of Java: one line for every symbol that phino made
+ * in the protocol. These lines are put into a Java class, which is an
+ * atom. Later, {@link Patching} puts this atom into the EO object.</p>
+ *
+ * <p>The Java files are written into the directory of atoms, next to the
+ * directory of protocols, so that a reader of the build can compare every
+ * atom with the protocol it was made from. The Maven goal gives this
+ * directory to javac as one more directory of sources. The file name of
+ * every atom is exactly the class name that the transpiler will use when
+ * it meets that atom, so javac finds it. The atoms are not written into
+ * the directory of generated sources, because the transpiler deletes
+ * every file there that it did not write itself.</p>
+ *
+ * <p>This stage reads the protocol, and not the result of phino. The
+ * protocol already says which operations happened, in what order, and on
+ * which symbols, and this is all that a Java method needs. To read the
+ * result of phino, this module would have to parse a phi-expression, and
+ * this module never does that. How a protocol becomes Java is decided
+ * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
+ * This class only finds what the stylesheet needs to know about the
+ * entry: its number, its locator, the top object it is inside, and the
+ * package of that object.</p>
+ *
+ * <p>An entry whose run was stopped because of the time limit has no
+ * protocol, so it is skipped. When the stylesheet finds that an entry is a
+ * taint, this class only writes about it into the log, and the object
+ * stays in EO exactly as it was written. At the end, this class writes the
+ * list of the entries it turned into atoms into the file
+ * {@code rendered.tsv}, so that {@link Patching} knows which objects to
+ * change.</p>
+ *
+ * @since 0.64.0
+ * @todo #8548:60min Make a slice outside of the bytes fail the same way
+ *  as the atom does. When the range of a slice is outside of the bytes,
+ *  the Java that {@code rendering.xsl} writes throws a Java exception. But
+ *  the atom {@code bytes.slice} returns its {@code cant-slice} error
+ *  instead, and EO code may catch that error. Write the slice so that it
+ *  fails the same way as the atom does, or make every entry that slices a
+ *  taint.
+ * @todo #8548:60min Write atoms for objects that are arguments of other
+ *  objects. A locator with a {@code φ}, {@code ρ} or {@code α} in it, like
+ *  {@code Φ.true.φ.α0}, belongs to an object that has no name of its own.
+ *  The transpiler names the atom of such an object by a rule that
+ *  {@code rendering.xsl} does not follow, so such an entry is a taint now.
+ *  Four of the 587 entries of eo-runtime are like this.
+ * @todo #8548:30min Write an atom for an entry whose result is always the
+ *  same. When the result of the body is known bytes, like an object that
+ *  always returns {@code 42}, the entry is a taint now. But its atom could
+ *  simply return those bytes.
+ */
+final class Rendering implements Proc<Path> {
+
+    /**
+     * The directory where the Java atoms are written.
+     */
+    private final Path atoms;
+
+    /**
+     * Ctor.
+     *
+     * @param dir The directory where the Java atoms are written
+     */
+    Rendering(final Path dir) {
+        this.atoms = dir;
+    }
+
+    @Override
+    public void exec(final Path home) throws IOException {
+        final Path entries = home.resolve("entries.tsv");
+        if (!Files.exists(entries)) {
+            throw new IllegalStateException(
+                String.format(
+                    "There is no '%s', while rendering needs the entries the planting writes",
+                    entries
+                )
+            );
+        }
+        final Map<String, String> tops = new HashMap<>(0);
+        for (final Path copy : new Copies(home)) {
+            final XML xmir = new XMLDocument(copy);
+            tops.put(
+                xmir.xpath("/object/o[1]/@loc").get(0),
+                String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
+            );
+        }
+        final XSL sheet = new XSLDocument(
+            Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
+            "/org/eolang/lowering/rendering.xsl"
+        ).with((href, base) -> new StreamSource(href))
+            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        final Collection<String> rendered = new ArrayList<>(0);
+        int tainted = 0;
+        for (final String row : new Filtered<>(
+            line -> !line.isEmpty(),
+            new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
+        )) {
+            final String[] cells = row.split("\t", -1);
+            final Path protocol = home.resolve("2-protocols")
+                .resolve(new Locator(cells[1]).protocol());
+            if (Files.exists(protocol)) {
+                final String top = Rendering.top(tops, cells[1]);
+                final XML out = sheet
+                    .with("number", cells[0])
+                    .with("locator", cells[1])
+                    .with("top", top)
+                    .with("package", tops.get(top))
+                    .transform(new XMLDocument(protocol));
+                if (out.nodes("/rendered/atom").isEmpty()) {
+                    tainted += 1;
+                    Logger.debug(
+                        this,
+                        "The entry %s at %s is a taint: %s",
+                        cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
+                    );
+                } else {
+                    final Path file = this.atoms.resolve(
+                        out.xpath("/rendered/atom/@file").get(0)
+                    );
+                    Files.createDirectories(file.getParent());
+                    Files.write(
+                        file,
+                        out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
+                    );
+                    rendered.add(String.format("%s%n", row));
+                    Logger.debug(
+                        this,
+                        "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
+                        cells[0], cells[1], file, Files.size(file),
+                        out.xpath("/rendered/atom/@voids").get(0),
+                        out.xpath("/rendered/atom/@statements").get(0),
+                        out.xpath("/rendered/atom/@branches").get(0)
+                    );
+                }
+            }
+        }
+        Files.write(
+            home.resolve("rendered.tsv"),
+            String.join("", rendered).getBytes(StandardCharsets.UTF_8)
+        );
+        Logger.info(
+            this,
+            "Rendered %d atoms into %[file]s, while %d entries were taints",
+            rendered.size(), this.atoms, tainted
+        );
+    }
+
+    private static String top(final Map<String, String> tops, final String locator) {
+        String found = "";
+        for (final String loc : tops.keySet()) {
+            if ((locator.equals(loc) || locator.startsWith(String.format("%s.", loc)))
+                && loc.length() > found.length()) {
+                found = loc;
+            }
+        }
+        if (found.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "The entry at %s is inside none of the copies, while its atom is named after the top object it lives in",
+                    locator
+                )
+            );
+        }
+        return found;
+    }
+}

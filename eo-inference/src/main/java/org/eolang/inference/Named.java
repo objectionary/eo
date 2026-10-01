@@ -72,7 +72,7 @@ import org.xembly.Xembler;
  * of the void is resolved by {@link Provided} already; only the bare read was
  * left naming it (#8979).</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class Named implements Clue {
 
