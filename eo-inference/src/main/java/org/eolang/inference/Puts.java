@@ -15,11 +15,20 @@ import java.util.Map;
  * <p>The same facts are wanted two ways. What a call is a copy of is answered
  * by what that one call filled, and what a void holds is answered by what every
  * call filled. So both sides are kept here, the second worked out once by
- * {@link Holders} rather than looked for again at every question.</p>
+ * {@link Fillings} rather than looked for again at every question. It is the
+ * census the tables publish, before it is counted, and not a list of the calls
+ * alone, since an atom fills a void too and a void handed on from another void
+ * holds whatever that one holds (#9006).</p>
  *
  * <p>So is which of the things put in never come back with a value, since an
  * arm that terminates is put into a void like any other and hands nothing to
  * whoever reads it (#8946).</p>
+ *
+ * <p>And so is which formations Java makes. An atom that comes back with a
+ * {@code stat-return} built it in Java, voids and all, so its {@code mode} is
+ * filled on every run although no call of the source ever fills it. What went
+ * in is unknown, which is why it is kept apart from what every void holds and
+ * never read as a member of it (#8981).</p>
  *
  * @since 0.71.0
  */
@@ -31,7 +40,7 @@ final class Puts {
     private final Map<String, Map<String, String>> fills;
 
     /**
-     * What every void holds, from {@link Holders}.
+     * What every void holds, from {@link Fillings}.
      */
     private final Map<String, Collection<String>> holds;
 
@@ -41,21 +50,30 @@ final class Puts {
     private final Collection<String> dead;
 
     /**
+     * The formations atoms come back with, from {@link Returned}.
+     */
+    private final Collection<String> made;
+
+    /**
      * Ctor.
      *
      * @param bound What every application fills, from {@link Bound}
-     * @param holders What every void holds, from {@link Holders}
+     * @param holders What every void holds, from {@link Fillings}
      * @param ends Every object of the program that terminates, from
      *  {@link Dead}
+     * @param returned The formations atoms come back with, from
+     *  {@link Returned}
      */
     Puts(
         final Map<String, Map<String, String>> bound,
         final Map<String, Collection<String>> holders,
-        final Collection<String> ends
+        final Collection<String> ends,
+        final Collection<String> returned
     ) {
         this.fills = bound;
         this.holds = holders;
         this.dead = ends;
+        this.made = returned;
     }
 
     /**
@@ -77,6 +95,19 @@ final class Puts {
      */
     boolean dies(final String filling) {
         return this.dead.contains(filling);
+    }
+
+    /**
+     * Whether anything puts anything into this void.
+     *
+     * @param hollow The locator of the void
+     * @return True when some call fills it, or Java does, since it makes the
+     *  formation the void belongs to
+     */
+    boolean fills(final String hollow) {
+        final int dot = hollow.lastIndexOf('.');
+        return this.holds.containsKey(hollow)
+            || dot > 0 && this.made.contains(hollow.substring(0, dot));
     }
 
     /**

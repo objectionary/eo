@@ -108,22 +108,23 @@ public final class Resolved implements Clue {
         final Map<String, String> receivers = new Taken(world, written).all();
         final Collection<String> voids = new Hollows(given).all();
         final Map<String, Type> kept = written.others();
+        final Said said = new Said(written);
         final Woven woven = new Woven(given, applied, receivers, voids, asked);
-        final Promoted promoted = new Promoted(woven, given, new Said(written), voids, args);
+        final Promoted promoted = new Promoted(woven, given, said, voids, args);
         final Collection<String> ends = new Dead(
             written, dispatches, new Ends(written.all()).names()
         ).all();
         final Dispatched into = new Dispatched(
-            given, asked, args, named, receivers, voids, ends
+            given, said, asked, args, named, receivers, voids, ends
         );
         final Dispatched outside = new Dispatched(
-            given, asked, args, named, receivers, Collections.emptyList(), ends
+            given, said, asked, args, named, receivers, Collections.emptyList(), ends
         );
         final Map<String, String> pairs = new Settled(into, promoted).from(
             new Settled(outside, promoted).from(written.all())
         );
         final Promoted none = new Promoted(
-            woven, given, new Said(written), Collections.emptyList(), args
+            woven, given, said, Collections.emptyList(), args
         );
         final Map<String, String> certain = new Settled(into, none).from(
             new Settled(outside, none).from(written.all())
