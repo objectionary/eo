@@ -135,13 +135,13 @@
   phino left unfinished.
   -->
   <xsl:function name="eo:rootless">
-    <xsl:variable name="constant" select="($eo:doc/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:variable name="unanswered" select="string(($eo:doc//unanswered)[last()])"/>
     <xsl:choose>
       <xsl:when test="exists($constant)">
         <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $constant, ', and an atom that only returns a constant is not written yet'))"/>
       </xsl:when>
-      <xsl:when test="empty($eo:doc/morph/evaluate[@λ = 'L_root']) and $eo:doc/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
+      <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
         <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
       </xsl:when>
       <xsl:when test="$unanswered = '⊥'">
@@ -167,7 +167,7 @@
     <xsl:if test="exists($timeout)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
     </xsl:if>
-    <xsl:variable name="root" select="$eo:doc/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:rootless()"/>
     </xsl:if>

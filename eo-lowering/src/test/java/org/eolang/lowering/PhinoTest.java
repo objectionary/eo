@@ -107,7 +107,7 @@ final class PhinoTest {
             PhinoTest.binary(
                 temp,
                 "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo '<morph><timeout limit=\"2\"/></morph>' > \"$p\"; exit 1"
+                "echo '<protocol><morph><timeout limit=\"2\"/></morph><msec>2000</msec></protocol>' > \"$p\"; exit 1"
             )
         );
         MatcherAssert.assertThat(

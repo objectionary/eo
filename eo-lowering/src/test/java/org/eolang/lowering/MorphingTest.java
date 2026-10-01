@@ -106,7 +106,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<morph><timeout limit=\"1\"/></morph>' > \"$p\"; exit 1"
+                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -174,7 +174,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<morph><timeout limit=\"1\"/></morph>' > \"$p\"; exit 1"
+                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
