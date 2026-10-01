@@ -154,14 +154,15 @@
   The plan for one void: what is planted in it and which symbols that
   planting spends. A carrier is planted as the library shapes that datum, a
   tuple as its three attributes, and any other object as itself applied to
-  its own voids. That last step goes one level down and no further, so the
-  plan of the whole build stays finite and a void of a void of an object is
-  left unfilled.
+  its own voids, by the same rules, as deep as the types go. The types an
+  object was planted for on the way down are carried along, and a void that
+  holds one of them again is left unfilled, so the plan of the whole build
+  stays finite even when a type contains itself.
   -->
   <xsl:function name="eo:plant" as="element()">
     <xsl:param name="holds" as="xs:string"/>
     <xsl:param name="path" as="xs:string"/>
-    <xsl:param name="deep" as="xs:boolean"/>
+    <xsl:param name="above" as="xs:string*"/>
     <xsl:variable name="carrier" as="xs:string" select="eo:carrier($holds)"/>
     <xsl:choose>
       <xsl:when test="$carrier = ('number', 'string', 'bytes', 'bool')">
@@ -176,7 +177,7 @@
           <sym path="{concat($path, '.tail')}" carrier="tuple"/>
         </plant>
       </xsl:when>
-      <xsl:when test="$carrier = 'object' and $deep and eo:walkable(eo:named($holds))">
+      <xsl:when test="$carrier = 'object' and not($holds = $above) and eo:walkable(eo:named($holds))">
         <plant carrier="object" base="{eo:named($holds)}">
           <xsl:for-each select="key('eo:type', $holds, $eo:provides)[1]/attr[@void = 'true'][not(@name = 'ρ')]">
             <xsl:variable name="held" as="xs:string" select="replace(string((@holds, @settled)[1]), '\?$', '')"/>
@@ -186,7 +187,7 @@
               </xsl:when>
               <xsl:otherwise>
                 <arg name="{@name}">
-                  <xsl:sequence select="eo:plant($held, concat($path, '.', @name), false())"/>
+                  <xsl:sequence select="eo:plant($held, concat($path, '.', @name), ($above, $holds))"/>
                 </arg>
               </xsl:otherwise>
             </xsl:choose>
@@ -256,7 +257,7 @@
               </xsl:when>
               <xsl:otherwise>
                 <receiver>
-                  <xsl:sequence select="eo:plant($held, 'ρ', true())"/>
+                  <xsl:sequence select="eo:plant($held, 'ρ', ())"/>
                 </receiver>
               </xsl:otherwise>
             </xsl:choose>
@@ -269,7 +270,7 @@
               </xsl:when>
               <xsl:otherwise>
                 <arg name="{@name}">
-                  <xsl:sequence select="eo:plant($own, string(@name), true())"/>
+                  <xsl:sequence select="eo:plant($own, string(@name), ())"/>
                 </arg>
               </xsl:otherwise>
             </xsl:choose>

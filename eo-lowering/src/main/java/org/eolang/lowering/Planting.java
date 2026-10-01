@@ -56,14 +56,6 @@ import org.xembly.Xembler;
  * {@code entries.xmir}, {@code voids.tsv} and {@code entries.tsv}.</p>
  *
  * @since 0.64.0
- * @todo #8548:60min Fill the voids of the voids of an object. Sometimes
- *  the type of a void is not a simple type, like a number, but another
- *  object with voids of its own. Then that void gets that object, and the
- *  voids of that object get symbols. But if one of those voids is again
- *  such an object, it gets nothing, and the entry becomes a taint only
- *  because it is too deep. Let {@code entries.xsl} go as deep as the types
- *  go, stop when a type contains itself, and write into
- *  {@code voids.tsv} what it filled.
  */
 final class Planting implements Proc<Path> {
 
