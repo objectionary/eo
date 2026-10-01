@@ -130,6 +130,10 @@
   </xsl:function>
   <!-- The symbol the root of the entry dataizes. -->
   <xsl:function name="eo:root" as="xs:string">
+    <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
+    <xsl:if test="exists($timeout)">
+      <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
+    </xsl:if>
     <xsl:variable name="root" select="$eo:doc/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to no root'))"/>

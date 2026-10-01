@@ -97,7 +97,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void dropsTheProtocolOfARunThatOutlastsItsBudget(@Mktmp final Path temp)
+    void keepsTheProtocolOfARunOutOfItsBudget(@Mktmp final Path temp)
         throws IOException {
         MorphingTest.merged(temp, 5);
         new Morphing(
@@ -114,9 +114,9 @@ final class MorphingTest {
             Duration.ofMillis(900L)
         ).exec(temp);
         MatcherAssert.assertThat(
-            "a run out of its budget must leave no protocol, but it does",
+            "a run out of its budget must keep its protocol for study, but it doesnt",
             temp.resolve("2-protocols/e5.xml").toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
+            FileMatchers.anExistingFile()
         );
     }
 

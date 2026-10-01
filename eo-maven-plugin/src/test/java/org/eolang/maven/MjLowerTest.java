@@ -179,7 +179,7 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void dropsTheProtocolOfARunOutOfTheBudgetItWasGiven(@Mktmp final Path temp)
+    void keepsTheProtocolOfARunOutOfTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
@@ -190,11 +190,11 @@ final class MjLowerTest {
             .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
-            "a run out of its budget must leave no protocol, but it does",
+            "a run out of its budget must keep its protocol for study, but it doesnt",
             new Subdir(temp.resolve("target"), "lowering").path()
                 .resolve("2-protocols/gap.xml")
                 .toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
+            FileMatchers.anExistingFile()
         );
     }
 

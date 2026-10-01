@@ -72,8 +72,11 @@ import org.eolang.cache.GlobalCache;
  * object, and the entry becomes a taint. The second limit is time. The
  * first limit controls how deep phino goes, but not how wide, so a run may
  * still take a very long time. When a run is still working after its time
- * is over, it is stopped, its protocol is deleted, and the object stays in
- * EO, the same way as a taint does. The build fails only when phino itself
+ * is over, phino stops by itself, and the object stays in EO, the same way
+ * as a taint does. Its protocol stays on the disk for a reader to study,
+ * with a {@code timeout} element where the time ran out, but it is not
+ * kept in the cache, and {@link Rendering} makes no atom from it. The next
+ * build tries this run again. The build fails only when phino itself
  * fails with an error on some entry. Nothing is tried twice in one
  * build.</p>
  *
@@ -274,11 +277,10 @@ final class Morphing implements Proc<Path> {
                 progress.reuse(protocol);
             }
         } catch (final KilledException ex) {
-            Files.deleteIfExists(protocol);
             Logger.warn(
                 this,
-                "Lowering of %s ran out of time budget (%[ms]s), no XML protocol saved",
-                cells[1], this.budget.toMillis()
+                "Lowering of %s ran out of time budget (%[ms]s), its XML protocol kept in %[file]s for study",
+                cells[1], this.budget.toMillis(), protocol
             );
         }
         return protocol;
