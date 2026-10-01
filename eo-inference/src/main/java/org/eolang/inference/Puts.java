@@ -24,11 +24,12 @@ import java.util.Map;
  * arm that terminates is put into a void like any other and hands nothing to
  * whoever reads it (#8946).</p>
  *
- * <p>And so is which formations Java makes. An atom that comes back with a
- * {@code stat-return} built it in Java, voids and all, so its {@code mode} is
- * filled on every run although no call of the source ever fills it. What went
- * in is unknown, which is why it is kept apart from what every void holds and
- * never read as a member of it (#8981).</p>
+ * <p>And so is which voids nothing ever fills, which is a different list from
+ * what every void holds, although it is worked out from it. What a void holds
+ * grows from pass to pass, so a void it is silent about may be filled a pass
+ * later, and an arm struck for reading it never comes back. The empty voids
+ * are therefore said once, by {@link Dispatched#empty(Map)}, after a whole run
+ * of passes that struck nothing, and handed to a second run that may (#8981).</p>
  *
  * @since 0.71.0
  */
@@ -50,9 +51,9 @@ final class Puts {
     private final Collection<String> dead;
 
     /**
-     * The formations atoms come back with, from {@link Returned}.
+     * The voids nothing ever fills, from {@link Dispatched#empty(Map)}.
      */
-    private final Collection<String> made;
+    private final Collection<String> empty;
 
     /**
      * Ctor.
@@ -61,19 +62,19 @@ final class Puts {
      * @param holders What every void holds, from {@link Fillings}
      * @param ends Every object of the program that terminates, from
      *  {@link Dead}
-     * @param returned The formations atoms come back with, from
-     *  {@link Returned}
+     * @param vacant The voids nothing ever fills, from
+     *  {@link Dispatched#empty(Map)}, empty where no arm may be struck
      */
     Puts(
         final Map<String, Map<String, String>> bound,
         final Map<String, Collection<String>> holders,
         final Collection<String> ends,
-        final Collection<String> returned
+        final Collection<String> vacant
     ) {
         this.fills = bound;
         this.holds = holders;
         this.dead = ends;
-        this.made = returned;
+        this.empty = vacant;
     }
 
     /**
@@ -101,13 +102,10 @@ final class Puts {
      * Whether anything puts anything into this void.
      *
      * @param hollow The locator of the void
-     * @return True when some call fills it, or Java does, since it makes the
-     *  formation the void belongs to
+     * @return False only when the void is among the ones nothing ever fills
      */
     boolean fills(final String hollow) {
-        final int dot = hollow.lastIndexOf('.');
-        return this.holds.containsKey(hollow)
-            || dot > 0 && this.made.contains(hollow.substring(0, dot));
+        return !this.empty.contains(hollow);
     }
 
     /**
