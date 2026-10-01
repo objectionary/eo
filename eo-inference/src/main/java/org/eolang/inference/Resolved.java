@@ -61,6 +61,10 @@ import java.util.Map;
  * tomorrow, or compiled apart, may put a formation of another shape into
  * that void (#8914).</p>
  *
+ * <p>Before either of those the passes run until {@link Emptied} knows
+ * which voids nothing fills, since an arm that reads one is dead and the
+ * runs that write the rows strike it (#8981).</p>
+ *
  * <p>The arms of a dispatch that could not be settled to one object are
  * written here as well, and here only. They are asked for once the passes have
  * stopped, since a site answered by a pass has a better answer than a choice
@@ -120,18 +124,18 @@ public final class Resolved implements Clue {
         final Dispatched outside = new Dispatched(
             given, said, asked, args, named, receivers, Collections.emptyList(), ends
         );
-        final Map<String, String> pairs = new Settled(into, promoted).from(
-            new Settled(outside, promoted).from(written.all())
-        );
+        final Map<String, String> plain = new Settled(outside, promoted).from(written.all());
+        final Dispatched strict = into.striking(new Emptied(into, promoted).from(plain));
+        final Map<String, String> pairs = new Settled(strict, promoted).from(plain);
         final Promoted none = new Promoted(
             woven, given, said, Collections.emptyList(), args
         );
-        final Map<String, String> certain = new Settled(into, none).from(
+        final Map<String, String> certain = new Settled(strict, none).from(
             new Settled(outside, none).from(written.all())
         );
         final Map<String, String> names = new Ends(pairs).names();
         final Map<String, Type> rows = woven.rows(
-            pairs, into.choices(pairs, into.copies(pairs, Collections.emptyMap())), certain
+            pairs, strict.choices(pairs, strict.copies(pairs, Collections.emptyMap())), certain
         );
         rows.keySet().removeAll(voids);
         rows.putAll(kept);
