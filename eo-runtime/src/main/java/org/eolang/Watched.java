@@ -203,14 +203,6 @@ final class Watched {
         }
     }
 
-    /**
-     * Stop the body and, once it is out, give its leftover threads the
-     * same grace to empty, without turning a slow one into a failure.
-     *
-     * @param group The group the body and its threads run in
-     * @param done Counts down once the body is out
-     * @return True if the body itself stopped in time
-     */
     private boolean terminate(final ThreadGroup group, final CountDownLatch done) {
         final boolean gone = this.stopped(group, done);
         if (gone) {
