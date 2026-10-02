@@ -12,19 +12,19 @@
 +version 0.0.0
 
 [^data] > hash
-  data.as-bytes >> b!
-  [^ acc index] >> rec-hash-code
-    if. > @
-      index.eq b.size!
-      acc.as-number
-      ^.rec-hash-code
-        plus.
-          31.as-i64.times acc
-          as-i64.
-            00-00-00-00-00-00-00.concat
-              b.slice index 1
-        as-number.
-          index.plus 1
+  size. >> length!
+    data.as-bytes >> b!
+  if. > [^ acc index] >> rec-hash-code
+    index.eq length
+    acc.as-number
+    ^.rec-hash-code
+      plus.
+        31.as-i64.times acc
+        as-i64.
+          00-00-00-00-00-00-00.concat
+            b.slice index 1
+      as-number.
+        index.plus 1
   | > @
     0
     0

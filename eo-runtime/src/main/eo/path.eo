@@ -19,6 +19,7 @@
     directory > as-dir
       file uri
     file uri > as-file
+    basename >> base!
     [^] > basename
       string > @
         if.
@@ -104,8 +105,7 @@
               text.last-index-of "." >> index!
               text.length.minus
                 number index
-      string > text
-        ^.basename >> base!
+      string base > text
     and. > is-absolute
       driveless.size.gt 0
       eq.
@@ -195,8 +195,7 @@
       and. > trailing
         ubts.size.gt 0
         eq.
-          slice.
-            ^.uri >> ubts!
+          ubts.slice
             ubts.size.plus -1
             1
           ^.separator
@@ -253,6 +252,7 @@
         tail
     string > [^] > trimmed
       ^.stripped ^.uri
+    uri >> ubts!
     and. > unc
       separator.eq "\\"
       and.
