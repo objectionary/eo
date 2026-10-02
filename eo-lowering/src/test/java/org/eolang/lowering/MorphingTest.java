@@ -84,6 +84,7 @@ final class MorphingTest {
             home.resolve("entries.tsv"),
             String.format("4\tΦ.bytes.as-hex.a🌵16-3%n").getBytes(StandardCharsets.UTF_8)
         );
+        Files.write(home.resolve("entries.xmir"), "<object/>".getBytes(StandardCharsets.UTF_8));
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
@@ -143,22 +144,23 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void morphsAgainWhenTheWorldChanges(@Mktmp final Path temp) throws IOException {
+    void morphsAgainOnlyWhenAnObjectTheEntryUsesChanges(@Mktmp final Path temp)
+        throws IOException {
         MorphingTest.merged(temp, 3);
+        MorphingTest.xmir(temp, "e3", "<o name=\"φ\" base=\"Φ.number\"/>");
+        MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"∅\"/>");
         final Phino phino = MorphingTest.counting(temp);
-        new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.3.4"),
-            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
-        ).exec(temp);
-        Files.write(
-            temp.resolve("world.phi"), "⟦ x ↦ ∅ ⟧".getBytes(StandardCharsets.UTF_8)
-        );
-        new Morphing(
-            phino, new GcShared(temp.resolve("cache"), "0.3.4"),
-            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
-        ).exec(temp);
+        for (final String changed : new ListOf<>("", "string", "number")) {
+            if (!changed.isEmpty()) {
+                MorphingTest.xmir(temp, changed, "<o name=\"Δ\" base=\"∅\"/>");
+            }
+            new Morphing(
+                phino, new GcShared(temp.resolve("cache"), "0.3.4"),
+                new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+            ).exec(temp);
+        }
         MatcherAssert.assertThat(
-            "a build over a changed world must run the binary again, but it doesnt",
+            "only the build where an object the entry reaches changed may run the binary again",
             Files.readAllLines(temp.resolve("runs.txt")),
             Matchers.hasSize(2)
         );
@@ -571,6 +573,13 @@ final class MorphingTest {
             Arrays.stream(entries)
                 .mapToObj(entry -> String.format("%d\tΦ.e%d%n", entry, entry))
                 .collect(Collectors.joining())
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            home.resolve("entries.xmir"),
+            Arrays.stream(entries)
+                .mapToObj(n -> String.format("<o name='e%d'><o base='Φ.e%d'/></o>", n, n))
+                .collect(Collectors.joining("", "<object><o>", "</o></object>"))
                 .getBytes(StandardCharsets.UTF_8)
         );
         return home;
