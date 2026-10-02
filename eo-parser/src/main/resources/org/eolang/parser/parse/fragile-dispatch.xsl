@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="fragile-dispatch" version="2.0" exclude-result-prefixes="eo">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" id="fragile-dispatch" version="3.0" exclude-result-prefixes="eo">
   <!--
   Warn when a regular `.` dispatch is performed directly on a fragile
   `?.` dispatch that was not applied (R-3.5.3b). The offending link is a

@@ -38,6 +38,7 @@ public interface Phi extends Data, Term {
 
     /**
      * The global scope object, which owns all other objects.
+     *
      * @checkstyle ConstantNameCheck (5 lines)
      */
     @SuppressWarnings("PMD.FieldNamingConventions")
@@ -45,6 +46,7 @@ public interface Phi extends Data, Term {
 
     /**
      * Make a copy, leaving it at the same parent.
+     *
      * @return A copy
      */
     Phi copy();
@@ -63,6 +65,7 @@ public interface Phi extends Data, Term {
 
     /**
      * Take object by name of the attribute.
+     *
      * @param name The name of the attribute
      * @return The object
      */
@@ -70,6 +73,7 @@ public interface Phi extends Data, Term {
 
     /**
      * Put object by position of the attribute.
+     *
      * @param pos The position of the attribute
      * @param object The object to put
      */
@@ -77,6 +81,7 @@ public interface Phi extends Data, Term {
 
     /**
      * Put object by name of the attribute.
+     *
      * @param name The name of the attribute
      * @param object The object to put
      */
@@ -84,12 +89,14 @@ public interface Phi extends Data, Term {
 
     /**
      * Get code locator of the phi.
+     *
      * @return String containing code locator
      */
     String locator();
 
     /**
      * Get forma of the phi.
+     *
      * @return Forma of it as {@link String}
      */
     String forma();

@@ -7,6 +7,8 @@ name: trufflehog-oss
   push:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: trufflehog-oss-${{ github.ref }}
   cancel-in-progress: false
@@ -17,9 +19,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+      # Full history of `master` only: `fetch-depth: 0` would also pull
+      # `gh-pages`, about three gigabytes of site snapshots, and the job
+      # would time out before scanning a single commit.
+      - name: Fetch history of master
+        run: git fetch --unshallow --no-tags origin +refs/heads/master:refs/remotes/origin/master
       - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@e28360875917c9c730f9c64aae29fb93aa6c359e # main
         with:
           extra_args: --only-verified

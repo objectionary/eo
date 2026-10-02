@@ -37,6 +37,21 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * This tests checks how eo-maven-plugin works when a proxy is set.
+ *
+ * <p>The sandbox is walled off from the network: the only repository it is
+ * given is a Jetty serving the local {@code ~/.m2/repository}, so every
+ * artifact it asks for has to be in there already. It is taken no further
+ * than {@code process-sources}, the last phase the four goals under test are
+ * bound to, because the phases after it bind plugins of their own, at the
+ * versions Maven defaults to rather than the ones this build pins, and the
+ * one missing from the local repository fails the sandbox before the proxy
+ * is ever exercised.</p>
+ *
+ * <p>The runtime is ignored for the same reason. Without it, {@code resolve}
+ * asks for the latest {@code eo-runtime} released to Maven Central, which the
+ * local repository holds only when another test happened to download it
+ * earlier in the same build, so the sandbox passed or failed by test order.</p>
+ *
  * @since 0.60
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -75,7 +90,7 @@ final class ProxyIT {
             new Farea(tmp).together(
                 f -> {
                     ProxyIT.setupForProxy(f, port, ProxyIT.port(repo));
-                    f.exec("package");
+                    f.exec("process-sources");
                     log[0] = f.log().content();
                 }
             );
@@ -150,7 +165,9 @@ final class ProxyIT {
             .file("src/main/eo/foo/x/y/main.eo")
             .write(ProxyIT.program().getBytes(StandardCharsets.UTF_8));
         new AppendedPlugin(farea).value()
-            .goals("register", "assemble", "resolve", "place");
+            .goals("register", "assemble", "resolve", "place")
+            .configuration()
+            .set("ignoreRuntime", "true");
         farea.withOpt("-s");
         farea.withOpt(
             farea.files().file("settings.xml").write(

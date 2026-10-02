@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test for {@link OyIndexed}.
+ *
  * @since 0.29
  */
 final class OyIndexedTest {

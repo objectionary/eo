@@ -31,6 +31,7 @@ public interface Clue {
 
     /**
      * Read the program and write down what is understood.
+     *
      * @param xmirs The directory with the prepared XMIR of the whole
      *  program, since an object in one file is used by objects in others
      *  and no single file can be typed on its own

@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.UUID;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjUnplace}.
+ *
  * @since 0.1
  */
 @ExtendWith(MktmpResolver.class)

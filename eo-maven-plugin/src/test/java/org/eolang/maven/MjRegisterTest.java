@@ -7,8 +7,10 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.ResourceOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjRegister}.
+ *
  * @since 0.11
  */
 @ExtendWith(MktmpResolver.class)
@@ -66,6 +69,24 @@ final class MjRegisterTest {
                 "sourcesDir should not be set and the %s should fail, but didn't",
                 MjRegister.class
             )
+        );
+    }
+
+    @Test
+    void forgetsASourceRemovedBetweenTwoRegistrations(@Mktmp final Path temp) throws IOException {
+        final Path source = temp.resolve("src/eo/org/eolang/maven/abc-def.eo");
+        new Saved(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            source
+        ).value();
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("sourcesDir", temp.resolve("src/eo").toFile());
+        maven.execute(new PpRegister());
+        Files.delete(source);
+        MatcherAssert.assertThat(
+            "a source deleted between two registrations in one JVM must leave the catalog, but it stayed",
+            maven.execute(new PpRegister()).foreign().size(),
+            Matchers.equalTo(0)
         );
     }
 }

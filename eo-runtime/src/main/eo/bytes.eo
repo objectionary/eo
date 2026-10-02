@@ -16,9 +16,9 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [@] > bytes
   [] > and /Q.bytes
@@ -37,7 +37,7 @@
     ? > b /Q.bytes
   [] > right /Q.bytes
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > size /Q.number
     ? > ^
   [] > slice /Q.bytes
@@ -81,7 +81,7 @@
 
   eq. ++> can-concat-bools-as-bytes
     true.as-bytes.concat false.as-bytes
-    01-00
+    FF-00
 
   eq. ++> can-concat-bytes-with-empty-ones
     05-5E-78.concat --

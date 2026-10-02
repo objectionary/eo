@@ -7,6 +7,7 @@ package org.eolang;
 
 /**
  * Number.plus.
+ *
  * @since 0.39.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -19,7 +20,7 @@ public final class EOnumber$EOplus extends PhDefault implements Atom {
      * Ctor.
      */
     public EOnumber$EOplus() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("x", new AtVoid("x"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b", new AtVoid("b"))));
     }
 
     @Override
@@ -27,7 +28,7 @@ public final class EOnumber$EOplus extends PhDefault implements Atom {
         return new Data.ToPhi(
             Double.sum(
                 new Numeric(Expect.at(this, Phi.RHO)).it(),
-                new Numeric(Expect.at(this, "x")).it()
+                new Numeric(Expect.at(this, "b")).it()
             )
         );
     }

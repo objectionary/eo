@@ -28,6 +28,7 @@ import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test cases for {@link MjLint}.
+ *
  * @since 0.31.0
  */
 @ExtendWith(MktmpResolver.class)
@@ -99,7 +101,7 @@ final class MjLintTest {
     void reportsExperimentalDefectWhenSkipExperimentalIsFalse(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", false).withProgram(
+            .with("experimental", false).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -126,7 +128,7 @@ final class MjLintTest {
     void skipsExperimentalDefectWhenSkipExperimentalIsTrue(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", true).withProgram(
+            .with("experimental", true).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -609,7 +611,7 @@ final class MjLintTest {
             .allTojosWithHash(CommitHash.FAKE)
             .execute(new PpLint());
         final Path path = maven.result().get(
-            String.format("target/%s/foo/x/main.%s", Linting.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", maven.dirName("lint"), MjAssemble.XMIR)
         );
         final String xpath = "/object/@time";
         final String before = new Xnav(path).one(xpath).text().orElseThrow();

@@ -55,6 +55,7 @@ final class CopiedAttrs extends AbstractMap<String, Attribute> implements Walkab
 
     /**
      * Ctor.
+     *
      * @param from Attributes of the origin object
      * @param phi The object these attributes belong to
      */

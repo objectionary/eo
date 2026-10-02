@@ -22,11 +22,17 @@ import org.apache.maven.plugins.annotations.Mojo;
  * <p>It runs after {@link MjLint}, so that every member is read and reported
  * on as the file a human wrote, and before {@link MjTranspile}, which is the
  * first goal that cares about the shape of the object it compiles. The
- * merged XMIR goes to {@link Merging#DIR}.</p>
+ * merged XMIR goes to a directory {@link Subdir} numbers "merge".</p>
  *
  * <p>Every package this build compiles an object for is merged. A package
  * whose name no object carries keeps its members as objects of their own,
  * reached through the package namespace as before.</p>
+ *
+ * <p>{@link MjCompile} runs the same step right after its lint, and
+ * {@link MjTranspile} runs it again before it writes anything, so a build
+ * that never names this goal still compiles merged objects, and every goal
+ * between the two reads them merged. Naming it anyway costs nothing: a
+ * member already inside its object is not moved again.</p>
  *
  * @since 0.68.0
  */
@@ -47,11 +53,9 @@ public final class MjMerge extends MjSafe {
     @Override
     void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            new Timed(
-                new Merging(
-                    tojos,
-                    this.targetDir.toPath().resolve(Merging.DIR)
-                )
+            new Merging(
+                tojos,
+                this.target.toPath()
             ).exec();
         }
     }

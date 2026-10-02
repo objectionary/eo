@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
+import org.cactoos.scalar.Synced;
 import org.cactoos.scalar.Unchecked;
 
 /**
@@ -26,6 +27,12 @@ import org.cactoos.scalar.Unchecked;
  *
  * <p>{@code purify.xsl} reads {@code provides.xml} and {@code links.xml} by
  * locator only, so a transpile of one file reads that file's rows (#7945).</p>
+ *
+ * <p>The reading is remembered under a lock, because a parallel transpile
+ * asks one of these from every worker at once. A {@link Sticky} on its own
+ * keeps the answer in a map nobody guards, so a worker arriving while
+ * another was still putting the answer there was handed nothing and fell
+ * over on it (#8324).</p>
  *
  * @since 0.75.0
  */
@@ -38,32 +45,36 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@link MjInference}
      */
     Rows(final Path tables) {
-        this.index = new Sticky<>(
-            () -> {
-                final SortedMap<String, String> rows = new TreeMap<>();
-                for (final String name : new String[] {"provides.xml", "links.xml"}) {
-                    final Path table = tables.resolve(name);
-                    if (Files.exists(table)) {
-                        for (final XML row : new XMLDocument(table).nodes("/*/type[@id]")) {
-                            rows.merge(
-                                row.xpath("@id").get(0),
-                                String.format("%s:%s", name, row),
-                                String::concat
-                            );
+        this.index = new Synced<>(
+            new Sticky<>(
+                () -> {
+                    final SortedMap<String, String> rows = new TreeMap<>();
+                    for (final String name : new String[] {"provides.xml", "links.xml"}) {
+                        final Path table = tables.resolve(name);
+                        if (Files.exists(table)) {
+                            for (final XML row : new XMLDocument(table).nodes("/*/type[@id]")) {
+                                rows.merge(
+                                    row.xpath("@id").get(0),
+                                    String.format("%s:%s", name, row),
+                                    String::concat
+                                );
+                            }
                         }
                     }
+                    return rows;
                 }
-                return rows;
-            }
+            )
         );
     }
 
     /**
      * Digest of the rows these objects and what they hold are named in.
      * Absent tables and empty ones answer alike.
+     *
      * @param locators The locators of the objects a file holds
      * @return Twelve hex characters
      */
@@ -72,18 +83,29 @@ final class Rows {
         try {
             final MessageDigest sha = MessageDigest.getInstance("SHA-256");
             for (final String locator : new TreeSet<>(locators)) {
-                for (final Map.Entry<String, String> row : rows.tailMap(locator).entrySet()) {
-                    if (!row.getKey().equals(locator)
-                        && !row.getKey().startsWith(String.format("%s.", locator))) {
-                        break;
+                final String prefix = String.format("%s.", locator);
+                final SortedMap<String, String> subtree = rows.subMap(
+                    locator, String.format("%s%c", prefix, Character.MAX_VALUE)
+                );
+                for (final Map.Entry<String, String> row : subtree.entrySet()) {
+                    if (!row.getKey().equals(locator) && !row.getKey().startsWith(prefix)) {
+                        continue;
                     }
-                    sha.update(row.getKey().getBytes(StandardCharsets.UTF_8));
-                    sha.update(row.getValue().getBytes(StandardCharsets.UTF_8));
+                    Rows.feed(sha, row.getKey());
+                    Rows.feed(sha, row.getValue());
                 }
             }
             return String.format("%064x", new BigInteger(1, sha.digest())).substring(0, 12);
         } catch (final NoSuchAlgorithmException ex) {
             throw new IllegalStateException("SHA-256 is not available", ex);
         }
+    }
+
+    private static void feed(final MessageDigest digest, final String value) {
+        final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        digest.update(
+            String.format("%d\0", bytes.length).getBytes(StandardCharsets.UTF_8)
+        );
+        digest.update(bytes);
     }
 }

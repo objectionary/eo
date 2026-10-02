@@ -80,6 +80,7 @@ final class Node {
 
     /**
      * Ctor, from a {@code <line>} element.
+     *
      * @param line The {@code <line>} element
      */
     Node(final Xnav line) {
@@ -98,6 +99,7 @@ final class Node {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head
      * @param suffix The rendered suffix
      * @param formation Whether it is a formation
@@ -163,6 +165,7 @@ final class Node {
      * Print this node on the lines below the head of its parent: the block
      * itself, preceded by the newline that opens it and, for a test
      * attribute, by the blank line R-6.5.3 requires in front of it.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block with its leading newlines
@@ -198,6 +201,7 @@ final class Node {
      * Whether this node is a nameless method-dispatch continuation
      * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
      * instead of carrying a receiver of its own.
+     *
      * @return True when this node continues the sibling above it
      */
     boolean continuation() {
@@ -207,6 +211,7 @@ final class Node {
 
     /**
      * Print this node with its children laid out beneath its head.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -397,6 +402,7 @@ final class Node {
      * inline-phi form: not a formation, whose children are bindings rather
      * than arguments, and not a bare token, which has nothing to lay out
      * beneath a marker.
+     *
      * @return True when this node applies arguments
      */
     boolean applied() {
@@ -406,6 +412,7 @@ final class Node {
     /**
      * Whether no line in this node's children carries a name suffix, so
      * their subtrees are safe to fold into a compact only-phi formation.
+     *
      * @return True when every child subtree is nameless
      * @see #nameless()
      */

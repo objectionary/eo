@@ -3,13 +3,13 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_java-names" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_java-names" version="3.0">
   <!--
   How EO names become Java names: identifier escaping, class and package
   naming with the 250-character fingerprint cut, attribute naming, and the
   locator-to-class mapping. Extracted from "to-java.xsl" so that every sheet
-  rendering Java (see #8137) derives a name the same way, since a declaration
-  and a reference produced by two different sheets must never diverge.
+  rendering Java derives a name the same way, since a declaration and a
+  reference produced by two different sheets must never diverge.
   The "$eo:phi"/"$eo:alpha"/"$eo:cactoos" variables come from "_specials.xsl",
   which an importing sheet must bring in alongside (importing it from here
   trips Saxon's cycle check under the classpath resolver, whose sources

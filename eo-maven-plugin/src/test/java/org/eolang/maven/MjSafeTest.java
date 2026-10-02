@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link MjSafe}.
+ *
  * @since 0.1
  */
 final class MjSafeTest {
@@ -20,22 +21,22 @@ final class MjSafeTest {
     @Test
     void failsBuildWhenUnrollExitErrorIsTrue() {
         final MjSafeTest.Failing mojo = new MjSafeTest.Failing();
-        mojo.unrollExitError = true;
+        mojo.unroll = true;
         Assertions.assertThrows(
             MojoFailureException.class,
             mojo::execute,
-            "Build must fail when the wrapped Mojo throws and unrollExitError is true"
+            "Build must fail when the wrapped Mojo throws and unroll is true"
         );
     }
 
     @Test
     void failsBuildWhenUnrollExitErrorIsFalse() {
         final MjSafeTest.Failing mojo = new MjSafeTest.Failing();
-        mojo.unrollExitError = false;
+        mojo.unroll = false;
         Assertions.assertThrows(
             MojoFailureException.class,
             mojo::execute,
-            "Build must still fail when the wrapped Mojo throws, even if unrollExitError is false"
+            "Build must still fail when the wrapped Mojo throws, even if unroll is false"
         );
     }
 
@@ -53,6 +54,7 @@ final class MjSafeTest {
 
     /**
      * The mojo whose exec() always fails.
+     *
      * @since 0.1
      */
     @Mojo(name = "failing", defaultPhase = LifecyclePhase.VALIDATE)

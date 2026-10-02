@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="vars-float-up" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="vars-float-up" version="3.0">
   <!--
   If we see this code, where a name is defined inside
   an abstract objects:
@@ -58,7 +58,7 @@
       <xsl:attribute name="base">
         <xsl:value-of select="@name"/>
       </xsl:attribute>
-      <xsl:apply-templates select="@line"/>
+      <xsl:apply-templates select="@line | @pos"/>
       <xsl:apply-templates select="@as"/>
     </o>
   </xsl:template>
@@ -72,7 +72,7 @@
   <xsl:template match="o[@float-up and @name and ancestor::o[1][not(eo:abstract(.))]]" priority="2"/>
   <xsl:template match="node()|@*" mode="#all">
     <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
+      <xsl:apply-templates select="(node()|@*) except @float-up"/>
     </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

@@ -11,15 +11,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
+import org.eolang.cache.FpEnvelope;
+import org.eolang.cache.FpGenerated;
 
 /**
  * Footprint of Java generated files as input.
+ *
  * @since 0.56.7
  */
 final class FpJavaGenerated extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param clazz Transpiled Java class
      * @param generated Generated path
      * @param target Target path
@@ -30,6 +34,7 @@ final class FpJavaGenerated extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param clazz Transpiled Java class
      * @param generated Generated
      */

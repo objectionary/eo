@@ -42,6 +42,7 @@ final class PhPackage implements Phi {
 
     /**
      * Ctor.
+     *
      * @param name The name
      */
     PhPackage(final String name) {
