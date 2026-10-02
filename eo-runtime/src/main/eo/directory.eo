@@ -65,11 +65,11 @@
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-  ^.exists.if > [^] > tmpfile
+  folder.exists.if > [^folder] > tmpfile
     Q.file
       as-bytes.
-        ^.retried
-          ^.path
+        folder.retried
+          folder.path
           clock.as-number
           os.is-windows.if win32.getpid posix.getpid
           os.is-windows.if
@@ -77,8 +77,8 @@
             posix.gettimeofday.micros.div 1000000
     T
       "Directory %s does not exist, can't create temporary file".printf
-        * ^.file
-  [^ glob] > walk
+        * folder.file
+  [^folder glob] > walk
     [^ accum prefix dir] >> walked
       [^ rest] >> stepped
         if. > @
@@ -107,13 +107,13 @@
     | > @
       *
       ""
-      ^
+      folder
     if. > [^ accum rel] >> picked
       matched rel
       accum.with
         Q.file (base.resolved rel).as-bytes
       accum
-    ^.as-path >> base
+    folder.as-path >> base
     if. > [char] >> escaped
       ".+()|^$[]\\".contains char
       "".joined

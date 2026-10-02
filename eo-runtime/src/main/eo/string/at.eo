@@ -11,7 +11,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ i fallback] > at
+[^text i fallback] > at
   if. > @
     not.
       eq.
@@ -37,7 +37,7 @@
         0.gt index
         gte.
           number index
-          ^.length >> len!
+          text.length >> len!
       fallback
         i.is-finite.if
           "Given index %f is out of text bounds".printf
@@ -45,7 +45,7 @@
           "Given index %s is out of text bounds".printf
             *
               string i.as-scientific
-      ^.slice index 1
+      text.slice index 1
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Index must be an integer, but was 1.500000"

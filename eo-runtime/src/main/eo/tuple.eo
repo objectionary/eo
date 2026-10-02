@@ -8,16 +8,16 @@
 +version 0.0.0
 
 [tail head length] > tuple
-  [^ i fallback] > at
+  [^list i fallback] > at
     if. > @
       or.
         0.gt
           if. >> index!
             0.gt
               i >> idx!
-            ^.length.plus idx
+            list.length.plus idx
             idx
-        ^.length.lte index
+        list.length.lte index
       fallback
         "Given index is out of tuple bounds"
       if. > [^ tup] >> at-fast
@@ -30,16 +30,16 @@
             index
           tup.head
           ^.at-fast tup.tail
-      | ^
+      | list
   tuple > empty
     T
       "Can't get tail from the empty tuple"
     T
       "Can't get head from the empty tuple"
     0
-  [^ other] > eq
+  [^list other] > eq
     and. > @
-      ^.length.eq other.length
+      list.length.eq other.length
       if. > [^ first second] >> receq
         first.length.eq 0
         true
@@ -47,12 +47,12 @@
           first.head.eq second.head
           ^.receq first.tail second.tail
           false
-      | ^ other
-  tuple > [^ x] > with
-    ^
+      | list other
+  tuple > [^list x] > with
+    list
     x
     as-number.
-      ^.length.plus 1
+      list.length.plus 1
 
   ++> can-add-an-item
     and. > @
