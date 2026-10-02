@@ -10,15 +10,15 @@
 +version 0.0.0
 
 [^data] > array
-  [^ tup index] >> slice-byte
-    if. > @
-      index.lt ^.data.size!
-      ^.slice-byte
-        tup.with
-          ^.data.slice index 1
-        as-number.
-          index.plus 1
-      tup
+  data.size >> length!
+  if. > [^ tup index] >> slice-byte
+    index.lt length
+    ^.slice-byte
+      tup.with
+        ^.data.slice index 1
+      as-number.
+        index.plus 1
+    tup
   | > @
     *
     0

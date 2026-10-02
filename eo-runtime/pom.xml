@@ -368,16 +368,6 @@
                 -->
                 <lint>cyclomatic-complexity</lint>
                 <!--
-                @todo #9114:30min Stop skipping 'misplaced-dataization' here.
-                The lint wants a nested formation to stop dataizing an object
-                of the formation around it, as 'string/joined.eo:22' and
-                'bytes/array.eo:15' do on every step. The cure is to hoist a
-                private constant into the outer formation, but the printer
-                folds a constant used once back into the nested formation, so
-                the code dataizes it in every copy again (#9122).
-                -->
-                <lint>misplaced-dataization</lint>
-                <!--
                 @todo #9108:30min Stop skipping 'direct-phi' here.
                 The lint forbids reading '@' directly and reports 24 errors.
                 Some are tests like '123.@.eq 123.@' in 'i64.eo', where '@'
