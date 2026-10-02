@@ -13,16 +13,18 @@
     if. >>!
       items.length.eq 0
       --
-      [^ acc tup] >> with-delimiter
-        if. > @
-          tup.length.eq 0
-          acc
-          ^.with-delimiter
+      if. > [^ acc tup] >> with-delimiter
+        tup.length.eq 0
+        acc
+        ^.with-delimiter
+          concat.
             concat.
-              concat. (dataized tup.head) ^.text!
-              acc
-            tup.tail
+              dataized tup.head
+              delimiter
+            acc
+          tup.tail
       | items.head items.tail
+  text >> delimiter!
 
   matches. ++> can-apply-regex-to-a-joined-string
     compiled.
