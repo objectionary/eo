@@ -324,11 +324,12 @@
                 -->
                 <lint>many-void-attributes</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'unit-test-is-not-verb' here.
+                @todo #9110:30min Stop skipping 'unit-test-is-not-verb' here.
                 The lint wants a test name to hold a verb in singular form,
-                and in 155 names it finds none: its tagger reads 'format',
-                'print', 'scan', or 'floor' in 'can-format' and its siblings
-                as nouns, and names like 'can-or' or 'can-upper' have no verb.
+                and in 138 names it finds none. The nine 'can-or' tests of
+                'bytes' have no verb and need the 'can-apply-or' form of their
+                'and' siblings, which moves them in the file. In the other 129
+                its tagger reads 'format', 'print', 'scan', or 'floor' as nouns.
                 -->
                 <lint>unit-test-is-not-verb</lint>
                 <!--
