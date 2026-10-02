@@ -123,7 +123,7 @@ final class Uses {
         return new UncheckedText(
             new HexOf(
                 new Sha256DigestOf(
-                    new InputOf(String.join("\n", parts).getBytes(StandardCharsets.UTF_8))
+                    new InputOf(String.join(" ", parts).getBytes(StandardCharsets.UTF_8))
                 )
             )
         ).asString();

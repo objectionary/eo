@@ -19,7 +19,6 @@ import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.Directory;
 import org.cactoos.io.InputOf;
@@ -168,9 +167,9 @@ final class Morphing implements Proc<Path> {
         }
         final Path atoms = Files.write(
             home.resolve("atoms.yaml"),
-            new UncheckedBytes(
-                new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml"))
-            ).asBytes()
+            new IoChecked<>(
+                () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
+            ).value()
         );
         final Path protocols = home.resolve("2-protocols");
         if (Files.exists(protocols)) {
