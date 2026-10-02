@@ -14,7 +14,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    timeout-minutes: 25
+    # Forty-five minutes and not twenty-five: the first run after a bump of
+    # the pinned phino version builds it from source, and only that run.
+    timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -28,7 +30,26 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
-      - run: mvn install '-Deo.coverageTracking=true'
+      # The `lower` goal needs the exact phino version pinned in the plugin,
+      # and this job is the one that always builds with lowering on.
+      # The binary is copied into a folder of its own, because cabal keeps
+      # its files under `~/.local` and only symlinks the executable there,
+      # so a cache of `~/.cabal` would save nothing and rebuild phino each run.
+      - uses: actions/cache@v6
+        with:
+          path: ~/.phino
+          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
+      - run: |
+          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
+          if ! "$HOME/.phino/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+            cabal update
+            cabal install "phino-${ver}" --installdir="$HOME/.phino" --install-method=copy --overwrite-policy=always
+          fi
+          echo "$HOME/.phino" >> "$GITHUB_PATH"
+      - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+      # The goal must have run, and a missing folder is how a silently
+      # disabled lowering would look.
+      - run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -42,7 +63,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: yegor256/terald-action@6d5c4dab44d17afefa282df9bd7340185b8e93bc  # master
+      - uses: yegor256/terald-action@0.1.0
         with:
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          chat: -1004371404002
+          chat: ${{ secrets.TELEGRAM_CHAT }}

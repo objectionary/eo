@@ -172,51 +172,7 @@ final class FakeMaven {
      */
     <T extends AbstractMojo> FakeMaven execute(final Class<T> mojo) throws IOException {
         if (this.defaults) {
-            this.params.putIfAbsent("target", this.targetPath().toFile());
-            this.params.putIfAbsent(
-                "measures", this.targetPath().resolve("measures.csv").toFile()
-            );
-            this.params.putIfAbsent("foreign", this.foreignPath().toFile());
-            this.params.putIfAbsent("foreignFormat", "csv");
-            final MavenProjectStub stub = new MavenProjectStub();
-            stub.setCompileSourceRoots(new ArrayList<>(0));
-            this.params.putIfAbsent("project", stub);
-            this.params.putIfAbsent("transpiledFormat", "csv");
-            this.params.putIfAbsent("zeros", true);
-            this.params.putIfAbsent("cacheEnabled", true);
-            this.params.putIfAbsent("discover", false);
-            this.params.putIfAbsent("conflicts", false);
-            this.params.putIfAbsent("central", new DummyCentral());
-            this.params.putIfAbsent("resolveInCentral", false);
-            this.params.putIfAbsent(
-                "placed",
-                this.workspace.resolve(Paths.get("placed.json")).toFile()
-            );
-            this.params.putIfAbsent("placedFormat", "json");
-            this.params.putIfAbsent(
-                "sourcesDir", this.workspace.resolve(".").toFile()
-            );
-            this.params.putIfAbsent(
-                "cache", this.workspace.resolve("eo/cache/parsed").toFile()
-            );
-            this.params.putIfAbsent("generated", this.generatedPath().toFile());
-            this.params.putIfAbsent(
-                "pages", this.targetPath().getParent().resolve("site/inference").toFile()
-            );
-            this.params.putIfAbsent("placedFormat", "csv");
-            this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
-            this.params.putIfAbsent(
-                "objectionary",
-                new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
-            );
-            this.params.putIfAbsent("rewrite", true);
-            this.params.putIfAbsent("offline", false);
-            this.params.putIfAbsent("classes", this.classesPath().toFile());
-            this.params.putIfAbsent("superclass", "PhDefault");
-            this.params.putIfAbsent("attach", true);
-            this.params.putIfAbsent("tests", true);
-            this.params.putIfAbsent("strict", true);
-            this.params.putIfAbsent("included", new SetOf<>("**.eo"));
+            this.prefill();
         }
         final Moja<T> moja = new Moja<>(mojo);
         for (final Map.Entry<String, ?> entry : this.allowedParams(mojo).entrySet()) {
@@ -469,6 +425,60 @@ final class FakeMaven {
             }
         }
         return res;
+    }
+
+    private void prefill() {
+        this.params.putIfAbsent("target", this.targetPath().toFile());
+        this.params.putIfAbsent(
+            "measures", this.targetPath().resolve("measures.csv").toFile()
+        );
+        this.params.putIfAbsent("foreign", this.foreignPath().toFile());
+        this.params.putIfAbsent("foreignFormat", "csv");
+        final MavenProjectStub stub = new MavenProjectStub();
+        stub.setCompileSourceRoots(new ArrayList<>(0));
+        this.params.putIfAbsent("project", stub);
+        this.params.putIfAbsent("transpiledFormat", "csv");
+        this.params.putIfAbsent("zeros", true);
+        this.params.putIfAbsent("cacheEnabled", true);
+        this.params.putIfAbsent("budget", 10);
+        this.params.putIfAbsent("steps", 32);
+        this.params.putIfAbsent("only", ".*");
+        this.params.putIfAbsent("never", "(?!)");
+        this.params.putIfAbsent("discover", false);
+        this.params.putIfAbsent("conflicts", false);
+        this.params.putIfAbsent("central", new DummyCentral());
+        this.params.putIfAbsent("resolveInCentral", false);
+        this.params.putIfAbsent(
+            "placed",
+            this.workspace.resolve(Paths.get("placed.json")).toFile()
+        );
+        this.params.putIfAbsent("placedFormat", "json");
+        this.params.putIfAbsent(
+            "sourcesDir", this.workspace.resolve(".").toFile()
+        );
+        this.params.putIfAbsent(
+            "cache", this.workspace.resolve("eo/cache/parsed").toFile()
+        );
+        this.params.putIfAbsent("generated", this.generatedPath().toFile());
+        this.params.putIfAbsent(
+            "pages", this.targetPath().getParent().resolve("site/inference").toFile()
+        );
+        this.params.putIfAbsent("placedFormat", "csv");
+        this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
+        this.params.putIfAbsent(
+            "objectionary",
+            new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
+        );
+        this.params.putIfAbsent("rewrite", true);
+        this.params.putIfAbsent("offline", false);
+        this.params.putIfAbsent("classes", this.classesPath().toFile());
+        this.params.putIfAbsent("superclass", "PhDefault");
+        this.params.putIfAbsent("deadline", 1L);
+        this.params.putIfAbsent("memory", "1G");
+        this.params.putIfAbsent("attach", true);
+        this.params.putIfAbsent("tests", true);
+        this.params.putIfAbsent("strict", true);
+        this.params.putIfAbsent("included", new SetOf<>("**.eo"));
     }
 
     private String scope() {

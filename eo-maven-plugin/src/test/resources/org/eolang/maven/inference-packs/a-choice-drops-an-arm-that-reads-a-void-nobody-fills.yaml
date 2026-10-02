@@ -1,13 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# An arm of a choice that reads a void nobody here fills is still an arm.
-# Nobody in this program puts anything in `cant-read`, but the program is not
-# every caller the `gauge` will ever have, and one that fills it gets a value
-# out of that arm. It used to be dropped, and the choice then came back as the
-# `listen` of the `dial` in the other arm, as if nobody could ever take the
-# second one. So the choice keeps both arms, and what `app` asks of it is a
-# choice of the two `listen`s (#8885).
+# An arm of a choice that reads a void nobody fills is not an arm. Nobody in
+# this program puts anything in `cant-read`, and the program is everything
+# compiled together, so a run that takes that arm reads an empty void and
+# stops there. The arm is as dead as one that terminates, and the choice comes
+# back as the `listen` of the `dial` in the other arm alone (#8981).
 eo:
   choice.eo: |
     [pick] > choice
@@ -48,6 +46,5 @@ eo:
         held
         05-
 links:
-  - "/links/type[@id='Φ.app.φ'][not(ref[@loc='Φ.dial.listen'])]"
-  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.dial.listen']"
-  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.gauge.cant-read.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.dial.listen']"
+  - "/links/type[@id='Φ.app.φ'][not(.//union)]"

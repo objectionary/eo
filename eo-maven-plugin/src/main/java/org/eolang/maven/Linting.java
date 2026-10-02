@@ -365,7 +365,7 @@ final class Linting implements Step {
             progs.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
         if (!this.programlints.isEmpty()) {
-            Logger.info(this, "Unliting WPA lints: %[list]s", this.programlints);
+            Logger.info(this, "Unlinting WPA lints: %[list]s", this.programlints);
         }
         final List<org.eolang.wpa.Defect> defects;
         if (this.enabled) {

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.eolang.cache.Saved;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -103,13 +104,23 @@ final class Dealphaing implements Step {
             final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
             Logger.info(
                 this,
-                "Named %d of %d positional argument(s) in %d XMIR(s), %d found no void to be named after, XMIR is in %[file]s",
+                "Named %d of %d positional argument(s) in %d XMIR(s), %d found no void to be named after",
                 verdicts.getOrDefault("named", new ArrayList<>(0)).size(),
                 verdicts.values().stream().mapToInt(Collection::size).sum(),
                 this.tojos.size(),
-                lost.size(),
-                dir
+                lost.size()
             );
+            try (Stream<Path> found = Files.walk(dir)) {
+                Logger.info(
+                    this,
+                    "%d XMIR files are in %[file]s",
+                    found
+                        .filter(path -> path.toString().endsWith(".xmir"))
+                        .filter(Files::isRegularFile)
+                        .count(),
+                    dir
+                );
+            }
             if (this.strict && !lost.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(

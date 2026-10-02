@@ -4,22 +4,15 @@
 # yamllint disable rule:line-length
 name: ec2
 'on':
-  push:
-    branches:
-      - master
+  schedule:
+    - cron: '0 */6 * * *'
 permissions:
   contents: read
 concurrency:
   group: ec2-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  wait:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 70
-    steps:
-      - run: sleep 3600
   start-instance:
-    needs: wait
     runs-on: ubuntu-24.04
     outputs:
       label: ${{ steps.start.outputs.label }}
@@ -97,7 +90,7 @@ jobs:
     permissions:
       actions: read
     steps:
-      - uses: yegor256/terald-action@6d5c4dab44d17afefa282df9bd7340185b8e93bc  # master
+      - uses: yegor256/terald-action@0.1.0
         with:
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          chat: -1004371404002
+          chat: ${{ secrets.TELEGRAM_CHAT }}

@@ -19,7 +19,7 @@ import org.eolang.XmirObject;
  * the instance exists. It says whether a first take under many threads builds
  * the member once or once per thread (#7700).</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @XmirObject(oname = "probe")
 public final class EOprobe extends PhDefault {

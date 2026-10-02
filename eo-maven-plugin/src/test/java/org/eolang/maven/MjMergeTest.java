@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
@@ -111,11 +112,13 @@ final class MjMergeTest {
             "foo/bar.eo"
         );
         maven.execute(new PpMerge());
-        MatcherAssert.assertThat(
-            "a package no object is named after has nothing to merge into, so nothing may be written",
-            Files.exists(maven.targetPath().resolve(maven.dirName("merge"))),
-            Matchers.is(false)
-        );
+        try (Stream<Path> kids = Files.list(maven.targetPath())) {
+            MatcherAssert.assertThat(
+                "a package no object is named after has nothing to merge into, so nothing may be written",
+                kids.anyMatch(kid -> kid.getFileName().toString().endsWith("-merge")),
+                Matchers.is(false)
+            );
+        }
     }
 
     @Test

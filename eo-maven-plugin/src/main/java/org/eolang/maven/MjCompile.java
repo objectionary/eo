@@ -47,54 +47,44 @@ public final class MjCompile extends MjSafe {
             TjsForeign compile = this.compileTojos();
             TjsPlaced placed = this.placed()
         ) {
-            new Timed(
-                new Compiling(
-                    new Timed(this.assembling(tojos)),
-                    new Timed(
-                        new Linting(
-                            tojos,
-                            compile,
-                            this.target.toPath(),
-                            this.cache.toPath(),
-                            this.cacheEnabled,
-                            this.plugin.getVersion(),
-                            this.skipSourceLints,
-                            this.skipProgramLints,
-                            this.experimental,
-                            this.failOnWarning,
-                            this.lintAsPackage,
-                            this.skipLinting
-                        )
-                    ),
-                    new Timed(
-                        new Merging(
-                            tojos,
-                            this.target.toPath()
-                        )
-                    ),
-                    new Timed(
-                        new Resolving(
-                            tojos,
-                            this.target.toPath(),
-                            new CentralMaven(this.system, this.session, this.repositories),
-                            this.discover,
-                            this.zeros,
-                            this.jna,
-                            this.ignoreRuntime,
-                            this.runtime(),
-                            this.conflicts
-                        )
-                    ),
-                    new Timed(
-                        new Placing(
-                            placed,
-                            new Subdir(this.target, "resolve").path(),
-                            this.classes.toPath(),
-                            this.placeBinaries,
-                            this.skipBinaries,
-                            this.rewrite
-                        )
-                    )
+            new Compiling(
+                this.assembling(tojos),
+                new Linting(
+                    tojos,
+                    compile,
+                    this.target.toPath(),
+                    this.cache.toPath(),
+                    this.cacheEnabled,
+                    this.plugin.getVersion(),
+                    this.skipSourceLints,
+                    this.skipProgramLints,
+                    this.experimental,
+                    this.failOnWarning,
+                    this.lintAsPackage,
+                    this.skipLinting
+                ),
+                new Merging(
+                    tojos,
+                    this.target.toPath()
+                ),
+                new Resolving(
+                    tojos,
+                    this.target.toPath(),
+                    new CentralMaven(this.system, this.session, this.repositories),
+                    this.discover,
+                    this.zeros,
+                    this.jna,
+                    this.ignoreRuntime,
+                    this.runtime(),
+                    this.conflicts
+                ),
+                new Placing(
+                    placed,
+                    new Subdir(this.target, "resolve").path(),
+                    this.classes.toPath(),
+                    this.placeBinaries,
+                    this.skipBinaries,
+                    this.rewrite
                 )
             ).exec();
         }

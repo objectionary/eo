@@ -10,7 +10,9 @@
 # a void, and the `dial` put there got its receiver where it was written, so
 # the arm of `crate` that reads it gives the `box` to nobody. The `chain` is
 # written the way a `seq` is, with a second choice nested in its last arm,
-# so it is a choice and not the `lamp` of its first arm (#8885).
+# so it is a choice and not the `lamp` of its first arm (#8885). The `other`
+# fills that `cant-read` with a `spare`, or the arm would be dead and `p.ok`
+# would read off no choice at all (#8981).
 eo:
   choice.eo: |
     [pick] > choice
@@ -52,7 +54,10 @@ eo:
       gauge yes > p
   other.eo: |
     [] > other
-      gauge no > @
+      gauge no spare > @
+  spare.eo: |
+    [msg] > spare
+      lamp > ok
   box.eo: |
     [ok] > box
   crate.eo: |

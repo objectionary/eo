@@ -66,17 +66,15 @@ public final class MjDealpha extends MjSafe {
     @Override
     void exec() throws IOException {
         try (TjsForeign tojos = this.tojos()) {
-            new Timed(
-                new Dealphaing(
-                    tojos.standalone(),
-                    new Landings(
-                        new Subdir(this.target, "inference")
-                            .orConfigured(this.tables)
-                            .resolve("links.xml")
-                    ),
-                    this.target.toPath(),
-                    this.rigid
-                )
+            new Dealphaing(
+                tojos.standalone(),
+                new Landings(
+                    new Subdir(this.target, "inference")
+                        .orConfigured(this.tables)
+                        .resolve("links.xml")
+                ),
+                this.target.toPath(),
+                this.rigid
             ).exec();
         }
     }

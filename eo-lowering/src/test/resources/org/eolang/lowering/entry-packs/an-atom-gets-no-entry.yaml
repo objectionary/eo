@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An atom already asks the outside world to do its work, and the lambda it was
+# written with says what that work is. There is no EO body to fold into Java,
+# because the Java is what the atom is made of.
+eo:
+  plus.eo: |
+    [] > plus /Q.number
+      ? > ^
+      ? > x
+xmir:
+  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"
+  - "/object/o[@name='l🌵'][count(o) = 2]"

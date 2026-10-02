@@ -18,7 +18,6 @@ import org.opentest4j.TestAbortedException;
  *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class WatchedTest {
 
     @Test
@@ -77,6 +76,7 @@ final class WatchedTest {
                             final byte[][] junk = new byte[1][];
                             while (!release.get()) {
                                 junk[0] = new byte[256 * 1024];
+                                Thread.interrupted();
                                 WatchedTest.rest(1L);
                             }
                             return null;

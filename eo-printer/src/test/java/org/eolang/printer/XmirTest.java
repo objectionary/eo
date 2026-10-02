@@ -182,7 +182,7 @@ final class XmirTest {
             "The hosted template must not repeat the full first-host lookup",
             this.mergeMonikers(),
             XhtmlMatchers.hasXPaths(
-                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*[local-name()='stylesheet' and @version='3.0']",
                 "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
                 "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
                 "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",

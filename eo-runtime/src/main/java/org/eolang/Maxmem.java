@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -23,10 +24,15 @@ import org.junit.jupiter.api.extension.ReflectiveInvocationContext;
  *
  * <p>The limit is the number of bytes the test allocates, counted the only
  * way a shared heap allows it to be counted per test - see
- * {@link Consumed}. It is read from the {@code eo.maxmem} system property,
- * which understands the suffixes of {@code -Xmx}: {@code 1G}, {@code 512M},
- * {@code 65536K}, or plain bytes. An empty property, or a zero, means no
+ * {@link Consumed}. It is read from the {@link Budget} of the test, and from
+ * the {@code eo.maxmem} system property when the test has none. Both
+ * understand the suffixes of {@code -Xmx}: {@code 1G}, {@code 512M},
+ * {@code 65536K}, or plain bytes. An empty value, or a zero, means no
  * limit at all and no watching either.</p>
+ *
+ * <p>It lives among the classes of the runtime rather than among its tests,
+ * because every test the transpiler makes out of an {@code .eo} file asks
+ * for it, wherever that test is compiled (#9074).</p>
  *
  * @since 0.75.0
  */
@@ -38,7 +44,8 @@ public final class Maxmem implements InvocationInterceptor {
     private static final Pattern SIZE = Pattern.compile("(\\d+)\\s*([kKmMgG]?)[bB]?");
 
     /**
-     * How many bytes a single test may allocate, zero if there is no limit.
+     * How many bytes a test without a {@link Budget} may allocate, zero if
+     * there is no limit.
      */
     private static final long LIMIT = Maxmem.limit(System.getProperty("eo.maxmem"));
 
@@ -53,14 +60,26 @@ public final class Maxmem implements InvocationInterceptor {
     public void interceptTestMethod(final Invocation<Void> invocation,
         final ReflectiveInvocationContext<Method> context,
         final ExtensionContext extension) throws Throwable {
-        new Watched(Maxmem.LIMIT).through(invocation);
+        new Watched(Maxmem.budget(context.getExecutable())).through(invocation);
     }
 
     @Override
     public void interceptTestTemplateMethod(final Invocation<Void> invocation,
         final ReflectiveInvocationContext<Method> context,
         final ExtensionContext extension) throws Throwable {
-        new Watched(Maxmem.LIMIT).through(invocation);
+        new Watched(Maxmem.budget(context.getExecutable())).through(invocation);
+    }
+
+    /**
+     * How many bytes a test may allocate.
+     *
+     * @param test The method of the test
+     * @return What its {@link Budget} says, or what the property says
+     */
+    static long budget(final Method test) {
+        return Optional.ofNullable(test.getAnnotation(Budget.class))
+            .map(budget -> Maxmem.limit(budget.value()))
+            .orElse(Maxmem.LIMIT);
     }
 
     /**

@@ -12,7 +12,10 @@ import com.yegor256.farea.Execution;
 import com.yegor256.farea.Farea;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -30,7 +33,6 @@ final class MjLintIT {
     @Test
     void lintsAgainAfterModification(@Mktmp final Path temp) throws Exception {
         final String source = "src/main/eo/foo/x/main.eo";
-        final String xmir = "target/eo/05-lint/foo/x/main.xmir";
         final byte[] prog = MjLintIT.program().getBytes(StandardCharsets.UTF_8);
         new Farea(temp).together(
             f -> {
@@ -40,16 +42,12 @@ final class MjLintIT {
                     .configuration()
                     .set("failOnWarning", "false");
                 f.exec("process-classes");
-                final long before = f.files()
-                    .file(xmir)
-                    .path()
-                    .toFile()
-                    .lastModified();
+                final long before = MjLintIT.xmirModified(temp);
                 f.files().file(source).write(prog);
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     String.format("the .xmir file is re-generated past %d", before),
-                    f.files().file(xmir).path().toFile().lastModified(),
+                    MjLintIT.xmirModified(temp),
                     Matchers.not(Matchers.equalTo(before))
                 );
             }
@@ -101,5 +99,18 @@ final class MjLintIT {
     private static Execution appendItself(final Farea farea) throws IOException {
         return new AppendedPlugin(farea).value()
             .goals("register", "parse", "lint");
+    }
+
+    private static long xmirModified(final Path home) throws IOException {
+        long modified = 0L;
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            final Optional<Path> lint = kids
+                .filter(kid -> kid.getFileName().toString().endsWith("-lint"))
+                .findFirst();
+            if (lint.isPresent()) {
+                modified = lint.get().resolve("foo/x/main.xmir").toFile().lastModified();
+            }
+        }
+        return modified;
     }
 }
