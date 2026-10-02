@@ -377,13 +377,14 @@
                 -->
                 <lint>direct-phi</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'unoptimizable-recursion' here.
-                Thirteen of its 24 reports, in 'u8' to 'u64', 'i8' to 'i64',
+                @todo #9116:30min Stop skipping 'unoptimizable-recursion' here.
+                Thirteen of its 21 reports, in 'u8' to 'u64', 'i8' to 'i64',
                 'buffer', 'set', 'map', 'path', and 'stdin', are methods that
                 build a new copy of their owner, not recursion at all
-                (objectionary/lints#1528). The other eleven, from
+                (objectionary/lints#1528). The other eight, from
                 'directory.listed' to 'seq', are real and must be rewritten
-                to call themselves in a tail position.
+                to call themselves in a tail position; 'number.ln.epow' needs
+                its squared accumulator kept constant while doing so.
                 -->
                 <lint>unoptimizable-recursion</lint>
                 <!--
