@@ -45,7 +45,10 @@
     number raw
     number shift
   as-fixed. > mantissa!
-    scaled.div
+    div.
+      tiny.as-bool.if >> scaled
+        num.times boost
+        num
       10.power
         number raw
     6
@@ -72,9 +75,6 @@
         m.div 10
         as-number.
           count.plus 1
-  tiny.as-bool.if > scaled
-    num.times boost
-    num
   tiny.as-bool.if > shift!
     300
     0
