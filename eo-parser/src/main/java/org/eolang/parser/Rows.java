@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,9 +27,10 @@ final class Rows {
      * Ctor.
      *
      * @param lines The source in lines
+     * @checkstyle ConstructorsCodeFreeCheck (3 lines)
      */
     Rows(final List<Span> lines) {
-        this.source = new ArrayList<>(lines);
+        this.source = List.copyOf(lines);
     }
 
     /**
