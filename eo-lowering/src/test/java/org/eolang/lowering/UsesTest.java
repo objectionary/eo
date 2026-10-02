@@ -11,14 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -33,44 +31,45 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class UsesTest {
 
     @Test
-    void givesEveryThreadTheHashItGetsAlone(@Mktmp final Path temp)
-        throws IOException, InterruptedException, ExecutionException {
-        final int count = 64;
+    void givesEveryThreadTheHashItGetsAlone(@Mktmp final Path temp) throws IOException {
+        final int count = 300;
+        final Collection<String> rows = new ArrayList<>(count);
+        final Collection<Integer> numbers = new ArrayList<>(count);
+        final StringBuilder body = new StringBuilder(0);
+        for (int idx = 0; idx < 20; ++idx) {
+            body.append(String.format("<o name='k%d' base='Φ.x'><o base='Φ.y'/></o>", idx));
+        }
+        for (int num = 1; num <= count; ++num) {
+            rows.add(String.format("<o name='e%d'><o base='Φ.e%d'/>%s</o>", num, num, body));
+            numbers.add(num);
+        }
         Files.write(
             temp.resolve("entries.xmir"),
-            IntStream.rangeClosed(1, count)
-                .mapToObj(n -> String.format("<o name='e%d'><o base='Φ.e%d'/></o>", n, n))
-                .collect(
-                    Collectors.joining(
-                        "", "<object><o><o name='mark'/><o name='root'/>", "</o></object>"
-                    )
-                )
-                .getBytes(StandardCharsets.UTF_8)
+            String.format(
+                "<object><o><o name='mark'/><o name='root'/>%s</o></object>",
+                String.join("", rows)
+            ).getBytes(StandardCharsets.UTF_8)
         );
-        final List<String> alone = new ArrayList<>(count);
         final Uses single = new Uses(temp);
-        for (int num = 1; num <= count; ++num) {
+        final List<String> alone = new ArrayList<>(count);
+        for (final int num : numbers) {
             alone.add(single.hash(num, String.format("Φ.e%d", num)));
         }
         final Uses shared = new Uses(temp);
-        final ExecutorService pool = Executors.newFixedThreadPool(32);
-        try {
-            final List<Callable<String>> tasks = new ArrayList<>(count);
-            for (int num = 1; num <= count; ++num) {
-                final int entry = num;
-                tasks.add(() -> shared.hash(entry, String.format("Φ.e%d", entry)));
-            }
-            final List<String> together = new ArrayList<>(count);
-            for (final Future<String> future : pool.invokeAll(tasks)) {
-                together.add(future.get());
-            }
+        for (int round = 0; round < 20; ++round) {
             MatcherAssert.assertThat(
                 "every thread must get the hash its entry gets alone, but some didnt",
-                together,
+                new ListOf<>(
+                    new Threads<>(
+                        32,
+                        new Mapped<Scalar<String>>(
+                            num -> () -> shared.hash(num, String.format("Φ.e%d", num)),
+                            numbers
+                        )
+                    )
+                ),
                 Matchers.equalTo(alone)
             );
-        } finally {
-            pool.shutdownNow();
         }
     }
 }
