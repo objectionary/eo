@@ -32,17 +32,20 @@ jobs:
             maven-
       # The `lower` goal needs the exact phino version pinned in the plugin,
       # and this job is the one that always builds with lowering on.
+      # The binary is copied into a folder of its own, because cabal keeps
+      # its files under `~/.local` and only symlinks the executable there,
+      # so a cache of `~/.cabal` would save nothing and rebuild phino each run.
       - uses: actions/cache@v6
         with:
-          path: ~/.cabal
+          path: ~/.phino
           key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
       - run: |
           ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+          if ! "$HOME/.phino/phino" --version 2>/dev/null | grep -qx "${ver}"; then
             cabal update
-            cabal install "phino-${ver}" --overwrite-policy=always
+            cabal install "phino-${ver}" --installdir="$HOME/.phino" --install-method=copy --overwrite-policy=always
           fi
-          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.phino" >> "$GITHUB_PATH"
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.
