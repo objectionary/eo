@@ -97,7 +97,7 @@
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="if (exists($ref/@method)) then substring-after($ref/@base, '.') else string($ref/@base)"/>
-    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][exists(key('attributes', concat($name, '#', generate-id(.)))) or exists(key('handles', concat($name, '#', generate-id(.))))][1]"/>
+    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][let $pair := concat($name, '#', generate-id(.)) return exists(key('attributes', $pair)) or exists(key('handles', $pair))][1]"/>
     <xsl:sequence select="for $found in $scope return key('handles', concat($name, '#', generate-id($found)), $found)[1]"/>
   </xsl:function>
   <!--
