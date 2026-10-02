@@ -106,12 +106,65 @@ final class Subdir {
     }
 
     /**
+     * The path of this subdirectory as the disk already has it, unless a
+     * mojo parameter already names one to use instead.
+     *
+     * @param configured The value of the parameter, absent when unset
+     * @return The path to read
+     */
+    Path foundOrConfigured(final File configured) {
+        return Optional.ofNullable(configured).map(File::toPath).orElseGet(this::found);
+    }
+
+    /**
+     * The path of this subdirectory as the disk already has it.
+     *
+     * <p>Nothing is created and no number is reserved, unlike
+     * {@link #path()}, so a goal that only reads a stage leaves no empty
+     * directory behind. A stage with no directory yet gets its unnumbered
+     * path under the target, which no stage ever occupies, so that the
+     * caller finds it absent and says so.</p>
+     *
+     * @return The path, which is no directory when the stage never ran
+     */
+    Path found() {
+        return this.owned().orElseGet(() -> this.target.resolve(this.name));
+    }
+
+    /**
      * The path of this subdirectory.
      *
      * @return The path
      */
     Path path() {
         return this.target.resolve(String.format("%02d-%s", this.number(), this.name));
+    }
+
+    private Optional<Path> owned() {
+        final Optional<Path> found;
+        if (Files.isDirectory(this.target)) {
+            try (Stream<Path> kids = Files.list(this.target)) {
+                found = kids
+                    .filter(Files::isDirectory)
+                    .filter(kid -> this.owns(kid.getFileName().toString()))
+                    .findFirst();
+            } catch (final IOException ex) {
+                throw new UncheckedIOException(
+                    String.format(
+                        "Failed to look for '%s' under %s", this.name, this.target
+                    ),
+                    ex
+                );
+            }
+        } else {
+            found = Optional.empty();
+        }
+        return found;
+    }
+
+    private boolean owns(final String dir) {
+        final Matcher matcher = Subdir.PREFIXED.matcher(dir);
+        return matcher.matches() && matcher.group(2).equals(this.name);
     }
 
     private int number() {
