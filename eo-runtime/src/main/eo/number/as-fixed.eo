@@ -30,7 +30,7 @@
 
 [^num places cant-print] > as-fixed
   if. > @
-    ^.num.is-finite.not.or > [] >> unwritable
+    ^.num.is-finite.not.or > [^] >> unwritable
       ^.huge.or
         or.
           0.gt ^.places

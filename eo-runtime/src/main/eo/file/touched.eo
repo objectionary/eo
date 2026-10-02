@@ -64,7 +64,7 @@
           posix.wronly
         posix.mode
   accessible.eq 0 > reachable
-  or. > [] > success
+  or. > [^] > success
     ^.descriptor.gte 0
     and.
       ^.errno.eq ^.eexist
