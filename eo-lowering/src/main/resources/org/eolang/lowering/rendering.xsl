@@ -34,8 +34,8 @@
   <xsl:param name="locator" as="xs:string" select="''"/>
   <!-- The locator of the top object of the source the formation is in. -->
   <xsl:param name="top" as="xs:string" select="''"/>
-  <!-- The package of that source, empty when it has none. -->
-  <xsl:param name="package" as="xs:string" select="''"/>
+  <!-- The XMIR of that source, as a URI. -->
+  <xsl:param name="source" as="xs:string" select="''"/>
   <!-- The table of voids the planting wrote, as a URI. -->
   <xsl:param name="voids" as="xs:string" select="''"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
@@ -95,31 +95,27 @@
     <xsl:param name="why" as="xs:string"/>
     <xsl:sequence select="error(QName('https://www.eolang.org', 'eo:taint'), $why)"/>
   </xsl:function>
-  <!-- The steps of the locator below its top object. -->
-  <xsl:function name="eo:steps" as="xs:string*">
-    <xsl:variable name="steps" select="tokenize(substring-after($locator, concat($top, '.')), '\.')"/>
-    <xsl:choose>
-      <xsl:when test="$locator = $top">
-        <xsl:sequence select="()"/>
-      </xsl:when>
-      <xsl:when test="not(starts-with($locator, concat($top, '.')))">
-        <xsl:sequence select="eo:taint(concat('The locator ', $locator, ' is not inside ', $top))"/>
-      </xsl:when>
-      <xsl:when test="some $s in $steps satisfies ($s = ('φ', 'ρ') or starts-with($s, 'α'))">
-        <xsl:sequence select="eo:taint(concat('The formation ', $locator, ' is inside an application, which has no name of its own'))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:sequence select="$steps"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
   <!-- The Java package of the atom. -->
   <xsl:function name="eo:package" as="xs:string">
+    <xsl:variable name="package" select="string-join(doc($source)/object/metas/meta[head = 'package']/tail/text(), '')"/>
     <xsl:sequence select="if ($package = '') then 'org.eolang' else concat('org.eolang.', eo:package-name($package))"/>
   </xsl:function>
-  <!-- The names from the top object down to the atom, which is the φ of the entry. -->
+  <!--
+  The names from the top object down to the atom, which is the φ of the entry.
+  The transpiler makes a class of its own of every formation with no name,
+  which is an argument of some application, and names the atom inside it
+  after the top object and the formations below that argument only: the atom
+  of "Φ.true.φ.α0" is "true.φ", and the atom of a formation "inner" inside
+  that argument is "true.inner.φ".
+  -->
   <xsl:function name="eo:names" as="xs:string*">
-    <xsl:sequence select="(tokenize($top, '\.')[last()], eo:steps(), 'φ')"/>
+    <xsl:variable name="formation" select="doc($source)//o[@loc = $locator][1]"/>
+    <xsl:if test="empty($formation)">
+      <xsl:sequence select="eo:taint(concat('The formation ', $locator, ' is not inside ', $top))"/>
+    </xsl:if>
+    <xsl:variable name="argument" select="$formation/ancestor-or-self::o[not(@name)][1]"/>
+    <xsl:variable name="named" select="$formation/ancestor-or-self::o[empty($argument) or ancestor::o[. is $argument]]"/>
+    <xsl:sequence select="(tokenize($top, '\.')[last()][exists($argument)], $named/@name ! string(.), 'φ')"/>
   </xsl:function>
   <!-- The simple name of the class of the atom. -->
   <xsl:function name="eo:class" as="xs:string">
