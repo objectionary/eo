@@ -648,8 +648,7 @@
   `$drop` formations, from a node `$depth` formations inside that value.
   A climb of `$depth` lands on the value's own root, so a climb that far
   or further has left the value and gains `$drop` hops. A shorter climb
-  stays inside, and a base rooted anywhere but `ξ`, or naming nothing
-  past its climb, is left alone.
+  stays inside, and a base rooted anywhere but `ξ` is left alone.
   -->
   <xsl:function name="eo:dropped-base" as="xs:string">
     <xsl:param name="base" as="xs:string"/>
@@ -657,7 +656,7 @@
     <xsl:param name="depth" as="xs:integer"/>
     <xsl:variable name="segments" select="tokenize($base, '\.')"/>
     <xsl:variable name="climb" select="if ($segments[1] = $eo:xi) then eo:rho-climb(subsequence($segments, 2)) else -1"/>
-    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth or count($segments) &lt;= $climb + 1) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
+    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
   </xsl:function>
   <!--
   Rewrites the bases of a folded value, counting how deep inside it each
