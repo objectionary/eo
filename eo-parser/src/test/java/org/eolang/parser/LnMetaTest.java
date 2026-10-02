@@ -213,6 +213,16 @@ final class LnMetaTest {
     }
 
     @Test
+    void rejectsMetaNameWithHyphen() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMeta(new Span("+co-op", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a meta name with a hyphen must be rejected per R-3.2.6"
+        );
+    }
+
+    @Test
     void reportsATabBetweenPartsWithTheCanonicalMessage() {
         MatcherAssert.assertThat(
             "a tab between meta parts must carry the §9.9 text of R-3.2.4, but it didnt",
