@@ -81,6 +81,14 @@ import java.util.Map;
  * choices of a boolean and into the {@code b} of {@code Φ.bytes.eq} as
  * well.</p>
  *
+ * <p>A name taken off such a call is a read on top of a choice, answered by
+ * that read asked of every arm: the {@code eq} of a call handing back a string
+ * or a number is a {@code Φ.bool} whichever arm arrives. So where the arms
+ * share nothing the reads on top of them are joined instead, and a row left
+ * rooted at {@code Φ.bool.if} settles all the same. An arm without the
+ * attribute ends it, since a read arriving nowhere from one of them says
+ * nothing about the one they stand for (#8744).</p>
+ *
  * @since 0.69.0
  */
 final class Filled {
@@ -166,10 +174,7 @@ final class Filled {
         final String root = new Rooted(this.hollows).names(answer);
         Collection<String> found = Collections.emptyList();
         if (!root.isEmpty()) {
-            found = new Arrived(this.owned).names(
-                this.chosen(root, answer, bearer, site),
-                answer.substring(Math.min(root.length() + 1, answer.length()))
-            );
+            found = this.reads(answer, root, bearer, site);
         }
         if (found.size() < 2) {
             found = Collections.emptyList();
@@ -212,11 +217,32 @@ final class Filled {
         String found = answer;
         if (!root.isEmpty()) {
             final String handed = this.handed(root, answer, fillings, bearer, site);
-            if (!handed.isEmpty() && seen.add(handed)) {
+            if (handed.isEmpty()) {
+                found = this.agreed(answer, root, bearer, site);
+            } else if (seen.add(handed)) {
                 found = this.through(answer, root, handed, site, seen);
             }
         }
         return found;
+    }
+
+    private String agreed(
+        final String answer, final String root, final String bearer, final String site
+    ) {
+        String found = new Joined(this.reads(answer, root, bearer, site), this.owned).names();
+        if (found.isEmpty()) {
+            found = answer;
+        }
+        return found;
+    }
+
+    private Collection<String> reads(
+        final String answer, final String root, final String bearer, final String site
+    ) {
+        return new Arrived(this.owned).names(
+            this.chosen(root, answer, bearer, site),
+            answer.substring(Math.min(root.length() + 1, answer.length()))
+        );
     }
 
     private String handed(
