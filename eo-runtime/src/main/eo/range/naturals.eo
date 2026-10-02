@@ -19,7 +19,8 @@
     and.
       span.start.is-integer.and span.end.is-integer
       and.
-        span.start.abs.lt safe
+        span.start.abs.lt
+          2.power 53 >> safe
         span.end.abs.lt safe
     range
       [^] >>
@@ -39,7 +40,6 @@
     "%f".printf
       * num
     string num.as-scientific
-  2.power 53 > safe
 
   eq. ++> can-build-a-range-of-negatives
     naturals.

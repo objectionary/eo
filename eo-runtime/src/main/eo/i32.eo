@@ -94,6 +94,8 @@
     -123.as-i64.as-i32
     -123.as-i64.as-i32.as-i16.as-i32
 
+  42.as-i32.as-number.eq 42 ++> can-convert-to-a-number
+
   eq. ++> can-convert-to-i16-and-back
     123.as-i64.as-i32
     123.as-i64.as-i32.as-i16.as-i32
@@ -133,6 +135,8 @@
   eq. ++> can-multiply-with-overflow
     2147483647.as-i64.as-i32.times 2.as-i64.as-i32
     -2.as-i64.as-i32
+
+  7.as-i32.neg.eq -7.as-i32 ++> can-negate-a-positive
 
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
     "recovered"

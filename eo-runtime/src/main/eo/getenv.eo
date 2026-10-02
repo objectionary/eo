@@ -10,12 +10,12 @@
 
 [name cant-get] > getenv
   result.code.if > @
-    result.value
+    value.
+      called. >> result
+        os.is-windows.if
+          win32.getenv name
+          posix.getenv name
     cant-get
-  called. > result
-    os.is-windows.if
-      win32.getenv name
-      posix.getenv name
 
   not. ++> can-distinguish-different-fallbacks-for-different-missing-variables
     eq.
