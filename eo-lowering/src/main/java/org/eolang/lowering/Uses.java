@@ -98,11 +98,14 @@ final class Uses {
         final Collection<String> parts = new ArrayList<>(0);
         final Deque<String> todo = new ArrayDeque<>(0);
         todo.add(loc);
-        for (final XML node : this.entries.value().nodes(
-            String.format("/object/o/o[@name='e%d' or @name='mark' or @name='root']", number)
-        )) {
-            parts.add(node.toString());
-            todo.addAll(node.xpath("descendant-or-self::o/@base[starts-with(., 'Φ.')]"));
+        final XML doc = this.entries.value();
+        synchronized (doc) {
+            for (final XML node : doc.nodes(
+                String.format("/object/o/o[@name='e%d' or @name='mark' or @name='root']", number)
+            )) {
+                parts.add(node.toString());
+                todo.addAll(node.xpath("descendant-or-self::o/@base[starts-with(., 'Φ.')]"));
+            }
         }
         final Collection<String> reached = new TreeSet<>();
         final Collection<String> outside = new TreeSet<>();
