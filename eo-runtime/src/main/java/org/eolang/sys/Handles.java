@@ -35,6 +35,11 @@ public final class Handles {
     public static final Handles INSTANCE = new Handles();
 
     /**
+     * What is said about a number that stands for no pointer.
+     */
+    private static final String NAMES_NONE = "%s must be an open handle, but %d names none";
+
+    /**
      * The pointers being kept, by the number standing for each one.
      */
     private final ConcurrentMap<Integer, Pointer> kept;
@@ -74,10 +79,7 @@ public final class Handles {
     public Pointer get(final String subject, final int handle) {
         final Pointer pointer = this.kept.get(handle);
         if (pointer == null) {
-            throw new ExFailure(
-                "%s must be an open handle, but %d names none",
-                subject, handle
-            );
+            throw new ExFailure(Handles.NAMES_NONE, subject, handle);
         }
         return pointer;
     }
@@ -85,13 +87,19 @@ public final class Handles {
     /**
      * Stop keeping the pointer a number stands for, and give it back.
      *
+     * <p>The pointer is taken out in one operation, so that two callers
+     * closing the same handle at once never both receive it and close it
+     * twice, which is undefined behaviour in C.</p>
+     *
      * @param subject What the number is, for the failure message
      * @param handle The number
      * @return The pointer
      */
     public Pointer remove(final String subject, final int handle) {
-        final Pointer pointer = this.get(subject, handle);
-        this.kept.remove(handle);
+        final Pointer pointer = this.kept.remove(handle);
+        if (pointer == null) {
+            throw new ExFailure(Handles.NAMES_NONE, subject, handle);
+        }
         return pointer;
     }
 }
