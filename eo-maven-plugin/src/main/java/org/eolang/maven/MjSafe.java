@@ -24,21 +24,29 @@ import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eolang.cache.Caching;
+import org.eolang.cache.GlobalCache;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Abstract Mojo for all others.
  *
  * @since 0.1
- * @todo #7061:60min Give the other parameters one-word names too. Five of
- *  them are plain renames of a flag, from {@code trackSteps} to
- *  {@code discoverSelf}, and wait only for a second pull request, since
- *  this one is already at the size the build allows. The eighteen left
- *  after those want a word another field holds, {@code foreign},
- *  {@code placed}, {@code cache} or {@code skip}, or one that would read
- *  as the opposite of the flag it names, so they wait for the grouping
- *  of #6459.
- * @checkstyle ClassFanOutComplexityCheck (3 lines)
+ * @todo #8968:60min Give the last fourteen parameters one-word names too.
+ *  Every one of them wants a word that is already spent. {@code foreign}
+ *  and {@code placed} each hold the word their {@code Format} sibling
+ *  wants; {@code cache} holds the one {@code cacheEnabled} wants;
+ *  {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
+ *  {@code MjAtomsTable} both declare; the three binary filters
+ *  ({@code placeBinaries}, {@code skipBinaries}, {@code keepBinaries})
+ *  want one word between them, as do the three lint flags
+ *  ({@code skipSourceLints}, {@code skipProgramLints},
+ *  {@code skipLinting}); and {@code ignoreRuntime},
+ *  {@code failOnWarning}, {@code lintAsPackage} and
+ *  {@code resolveInCentral} each want a word this class reads as
+ *  something else. A file with its format, a cache with its switch, the
+ *  binary filters and the lint flags are four groups, and once each one
+ *  is an object of its own the names come free.
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -200,7 +208,6 @@ abstract class MjSafe extends AbstractMojo {
      * Track optimization steps into intermediate XMIR files?
      *
      * @since 0.24.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "trackTransformationSteps",
@@ -208,17 +215,16 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean trackSteps;
+    protected boolean tracking;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
      *
      * @since 0.29.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.unrollExitError")
-    protected boolean unrollExitError = true;
+    @Parameter(alias = "unrollExitError", property = "eo.unrollExitError")
+    protected boolean unroll = true;
 
     /**
      * EO cache directory.
@@ -239,10 +245,13 @@ abstract class MjSafe extends AbstractMojo {
      * Rewrite binaries in output directory or not.
      *
      * @since 0.32.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
-    protected boolean rewriteBinaries = true;
+    @Parameter(
+        alias = "rewriteBinaries",
+        property = "eo.rewriteBinaries",
+        defaultValue = "true"
+    )
+    protected boolean rewrite = true;
 
     /**
      * If we are offline and not able to download anything from the internet.
@@ -264,7 +273,6 @@ abstract class MjSafe extends AbstractMojo {
      * If set to TRUE, experimental lints are skipped during the linting.
      *
      * @since 0.57.0
-     * @checkstyle MemberNameCheck (9 lines)
      */
     @Parameter(
         alias = "skipExperimentalLints",
@@ -272,31 +280,38 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean skipExperimental;
+    protected boolean experimental;
 
     /**
      * Pull again even if the .eo file is already present?
      *
      * @since 0.10.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
-    protected boolean overWrite;
+    @Parameter(
+        alias = "overWrite",
+        property = "eo.overWrite",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean overwrite;
 
     /**
      * Skip artifact with the version 0.0.0.
      *
      * @since 0.9.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    protected boolean skipZeroVersions;
+    @Parameter(
+        alias = "skipZeroVersions",
+        property = "eo.skipZeroVersions",
+        required = true,
+        defaultValue = "true"
+    )
+    protected boolean zeros;
 
     /**
      * Fail resolution process on conflicting dependencies.
      *
      * @since 0.1.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "ignoreVersionConflicts",
@@ -304,16 +319,20 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean ignoreConflicts;
+    protected boolean conflicts;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
      *
      * @since 0.12.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
-    protected boolean discoverSelf;
+    @Parameter(
+        alias = "discoverSelf",
+        property = "eo.discoverSelf",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean discover;
 
     /**
      * List of inclusion GLOB filters for finding class files while placing them from where
@@ -433,10 +452,9 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Resolve default JNA dependency or not.
      *
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
+     * @checkstyle VisibilityModifierCheck (6 lines)
      */
-    protected boolean resolveJna = true;
+    protected boolean jna = true;
 
     /**
      * Resolve dependencies in central or not.
@@ -483,15 +501,15 @@ abstract class MjSafe extends AbstractMojo {
             }
         } else {
             final long start = System.nanoTime();
-            new Deadline(this, this.timeout, this.unrollExitError).spent(
+            new Deadline(this, this.timeout, this.unroll).spent(
                 () -> {
                     new Naming(FileSystems.getDefault(), "EOΦ").exec();
                     this.exec();
                     return new Object();
                 }
             );
-            if (Logger.isDebugEnabled(this)) {
-                Logger.debug(
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
                     this,
                     "Execution of %s took %[nano]s",
                     this.getClass().getSimpleName(),
@@ -567,29 +585,23 @@ abstract class MjSafe extends AbstractMojo {
     Assembling assembling(final TjsForeign tojos) {
         return new Assembling(
             tojos,
-            new Timed(
-                new Parsing(
-                    tojos,
-                    this.target.toPath(),
-                    this.sourcesDir.toPath(),
-                    this.caching(Parsing.CACHE)
-                )
+            new Parsing(
+                tojos,
+                this.target.toPath(),
+                this.sourcesDir.toPath(),
+                this.caching(Parsing.CACHE)
             ),
-            new Timed(
-                new Probing(tojos, this.objectionary(), !this.offline)
-            ),
-            new Timed(
-                new Pulling(
-                    tojos,
-                    this.target.toPath().resolve(Pulling.DIR),
-                    this.hash,
-                    this.objectionary(),
-                    this.cache.toPath().resolve(Pulling.CACHE),
-                    this.plugin.getVersion(),
-                    this.overWrite,
-                    this.cacheEnabled,
-                    this.offline
-                )
+            new Probing(tojos, this.objectionary(), !this.offline),
+            new Pulling(
+                tojos,
+                this.target.toPath(),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overwrite,
+                this.cacheEnabled,
+                this.offline
             )
         );
     }

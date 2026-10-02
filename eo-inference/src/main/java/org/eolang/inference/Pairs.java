@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.w3c.dom.Node;
 
 /**
@@ -197,6 +198,11 @@ final class Pairs {
      * gathered per void and not per row, since a void filled with a
      * {@code number} at eleven call sites was filled one way eleven times.</p>
      *
+     * <p>An arm of a choice is a copy too, and what it put in counts the
+     * same: the {@code ok} of a call that came back with either of two
+     * records hangs off whichever record it was, and the receiver of that
+     * {@code ok} was filled by both (#8885).</p>
+     *
      * @return The locators of what went in, by the locator of the void, in the
      *  order the table names them, without the binds that put nothing
      */
@@ -205,7 +211,11 @@ final class Pairs {
         for (final Xnav row : this.rows()) {
             final Optional<Xnav> ref = Pairs.ref(row);
             if (ref.isPresent()) {
-                ref.get().elements(Filter.withName("bind")).forEach(
+                Stream.concat(
+                    Stream.of(ref.get()),
+                    ref.get().elements(Filter.withName("union"))
+                        .flatMap(union -> union.elements(Filter.withName("ref")))
+                ).flatMap(arm -> arm.elements(Filter.withName("bind"))).forEach(
                     bind -> Pairs.ref(bind).ifPresent(
                         put -> found.computeIfAbsent(
                             new Noted(bind).says("void"), key -> new LinkedHashSet<>(0)

@@ -9,6 +9,7 @@ import com.yegor256.tojos.Tojo;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import org.eolang.cache.Sha;
 
 /**
  * Foreign tojo.

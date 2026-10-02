@@ -1,0 +1,53 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.cache;
+
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+/**
+ * Test for {@link ConcurrentCache}.
+ *
+ * @since 0.60
+ */
+@ExtendWith(MktmpResolver.class)
+final class ConcurrentCacheTest {
+
+    @Test
+    void triesToCompileProgramConcurrently(@Mktmp final Path temp) throws IOException {
+        final AtomicInteger counter = new AtomicInteger(0);
+        final ConcurrentCache cache = new ConcurrentCache();
+        final Cache original = new Cache(
+            temp.resolve("cache"),
+            p -> String.format("only once %d", counter.incrementAndGet())
+        );
+        final Path source = temp.resolve("program.eo");
+        new Saved(
+            String.format("[] > main%n  (stdout \"Hello, EO!\") > @%n"),
+            source
+        ).value();
+        final Path target = temp.resolve("program.xmir");
+        new Together<>(
+            100,
+            thread -> {
+                cache.apply(source, target, source.getFileName(), original);
+                return thread;
+            }
+        ).asList();
+        MatcherAssert.assertThat(
+            "Program must be compiled only once",
+            counter.get(),
+            Matchers.equalTo(1)
+        );
+    }
+}

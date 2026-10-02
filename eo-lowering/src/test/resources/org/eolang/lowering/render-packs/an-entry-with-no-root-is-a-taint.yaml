@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The body stopped at a λ function nothing answers, so the root firing never
+# came, and there is nothing to render.
+locator: Φ.os.name
+number: 4
+taint: phino got no answer from L_os_name
+eo:
+  os.eo: |
+    [] > os
+      [] > name
+        ^.at > @
+protocol: |
+  <protocol>
+    <morph at="Φ.l🌵.e4">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e4">
+        <unanswered>L_os_name:λ</unanswered>
+      </evaluate>
+    </morph>
+    <msec>871</msec>
+    <firings>1</firings>
+    <fps>1</fps>
+  </protocol>

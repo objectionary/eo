@@ -42,9 +42,9 @@ final class Refs {
     private final Map<String, Map<String, String>> filled;
 
     /**
-     * What every call on a void may come back with, from {@link Dispatched}.
+     * What every call on a void may come back with, from {@link Forked}.
      */
-    private final Map<String, Collection<String>> arms;
+    private final Map<String, Collection<Type>> arms;
 
     /**
      * The voids every application filled through a void, from {@link Bound}.
@@ -63,12 +63,12 @@ final class Refs {
      * @param binds What every application put into the voids of what it
      *  copies, from {@link Bound}
      * @param chosen What every call on a void may come back with, from
-     *  {@link Dispatched}
+     *  {@link Forked}
      */
     Refs(
         final Map<String, String> pairs,
         final Map<String, Map<String, String>> binds,
-        final Map<String, Collection<String>> chosen
+        final Map<String, Collection<Type>> chosen
     ) {
         this(pairs, binds, chosen, Collections.emptyMap(), pairs);
     }
@@ -80,7 +80,7 @@ final class Refs {
      * @param binds What every application put into the voids of what it
      *  copies, from {@link Bound}
      * @param chosen What every call on a void may come back with, from
-     *  {@link Dispatched}
+     *  {@link Forked}
      * @param relayed The voids every application filled through what a void
      *  was seen to hold, from {@link Bound}
      * @param sure The pairs the passes settle when no void is named by what
@@ -89,7 +89,7 @@ final class Refs {
     Refs(
         final Map<String, String> pairs,
         final Map<String, Map<String, String>> binds,
-        final Map<String, Collection<String>> chosen,
+        final Map<String, Collection<Type>> chosen,
         final Map<String, Collection<String>> relayed,
         final Map<String, String> sure
     ) {

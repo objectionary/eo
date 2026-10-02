@@ -29,7 +29,7 @@ import java.util.Map;
  * has only one member it names that member for everybody who reads the void
  * (#8960).</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Ones {
 
