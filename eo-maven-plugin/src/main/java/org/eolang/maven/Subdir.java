@@ -109,17 +109,11 @@ final class Subdir {
      * The path of this subdirectory as the disk already has it, unless a
      * mojo parameter already names one to use instead.
      *
-     * @param configured The value of the parameter, or null when unset
+     * @param configured The value of the parameter, absent when unset
      * @return The path to read
      */
     Path foundOrConfigured(final File configured) {
-        final Path path;
-        if (configured == null) {
-            path = this.found();
-        } else {
-            path = configured.toPath();
-        }
-        return path;
+        return Optional.ofNullable(configured).map(File::toPath).orElseGet(this::found);
     }
 
     /**
