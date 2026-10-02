@@ -19,12 +19,7 @@
 [^entry] > touched
   reachable.if > @
     entry
-    if.
-      or.
-        descriptor.gte 0
-        and.
-          errno.eq eexist
-          linked.not
+    success.if
       seq *
         if.
           descriptor.gte 0
@@ -69,6 +64,11 @@
           posix.wronly
         posix.mode
   accessible.eq 0 > reachable
+  or. > [] > success
+    ^.descriptor.gte 0
+    and.
+      ^.errno.eq ^.eexist
+      ^.linked.not
 
   ++> can-keep-the-symlink-path-after-touching-a-dangling-symlink
     os.is-windows.or > @

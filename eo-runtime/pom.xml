@@ -359,12 +359,12 @@
                 -->
                 <lint>long-live-object</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'cyclomatic-complexity' here.
-                The lint counts every 'if', 'and', 'or', and 'while' as a
-                decision point and complains about seven formations, from
-                'file.touched' with twelve to 'number.power' with
-                twenty-five. Each of them has to be split into smaller
-                objects.
+                @todo #9113:30min Stop skipping 'cyclomatic-complexity' here.
+                It still complains about five formations. 'path.normalized'
+                with fifteen, 'uri' with twenty-one, and 'number.power' with
+                twenty-five have to be split into smaller objects. 'i64.plus'
+                and 'number.as-i64' are over only because the lint counts the
+                bitwise 'and' and 'or' of 'bytes' as decision points.
                 -->
                 <lint>cyclomatic-complexity</lint>
                 <!--
