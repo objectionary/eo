@@ -58,7 +58,7 @@
         [^ i] > build
           i > @
           ^.build > next
-            1.plus @
+            1.plus i
       10
 
   ++> can-build-a-range-of-floats-from-one-to-five
@@ -78,7 +78,7 @@
         [^ i] > x
           i > @
           ^.x > next
-            0.5.plus @
+            0.5.plus i
       5
 
   ++> can-build-a-range-with-out-of-bounds-items
@@ -90,7 +90,7 @@
         [^ num] > b
           num > @
           ^.b > next
-            5.plus @
+            5.plus num
       10
 
   ++> can-build-an-empty-range-from-wrong-items
