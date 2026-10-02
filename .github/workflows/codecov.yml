@@ -17,7 +17,7 @@ jobs:
     # Forty-five minutes and not twenty-five: the first run after a bump of
     # the pinned phino version builds it from source, and only that run.
     timeout-minutes: 45
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -58,7 +58,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
   telegram:
     needs: codecov
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() }}
     permissions:
       actions: read
