@@ -30,12 +30,13 @@
       and.
         0.lt
           text.length >> len!
-        "-".eq
-          text.slice 0 1
+        or.
+          "-".eq sign
+          "+".eq sign
       string
         concat.
           as-bytes.
-            ^.slice 0 1 >> sign
+            text.slice 0 1 >> sign
           as-bytes.
             padded-left.
               text.slice 1 ((number len).minus 1).as-number
