@@ -50,10 +50,11 @@ final class Emissions {
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
      * special forms — §4.5. The same shape follows the {@code ^} of a
-     * receiver that carries a handle, {@code ^name} (R-3.4.11). Shared by every producer of a void parameter
-     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
-     * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on. The cactus emoji is
+     * receiver that carries a handle, {@code ^name} (R-3.4.13). Shared by
+     * every producer of a void parameter list ({@link LnFormation},
+     * {@link LnOnlyPhi}, this class's own {@link #inlinePhi}), so a bracket
+     * list is validated the same way regardless of which line shape it
+     * appears on. The cactus emoji is
      * excluded along with the ordinary NAME terminators, since §2.3 keeps
      * that glyph for auto-names.
      */

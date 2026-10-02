@@ -494,7 +494,7 @@ final class Emit {
     /**
      * Emit a void parameter child that may carry a file-local handle —
      * the {@code @local="handle"} marker of a receiver written as
-     * {@code ^handle} (R-3.4.11 / R-3.10.12). An empty handle emits no
+     * {@code ^handle} (R-3.4.13 / R-3.10.12). An empty handle emits no
      * marker, the same child {@link #voidParam(String, int, int)} emits.
      *
      * @param name Parameter name

@@ -13,7 +13,7 @@ import org.cactoos.Text;
  * and is emitted as {@code φ}; one written as {@code ^} declares its
  * receiver and is emitted as {@code ρ} (R-3.4.2 / R-3.4.11 / R-9.3), and
  * so is one written as {@code ^name}, which gives the receiver a readable
- * handle as well (see {@link VoidHandle}). Every other token names
+ * handle as well (R-3.4.13, see {@link VoidHandle}). Every other token names
  * itself. The §9.3 table is the single source of
  * truth for these promotions, so every parameter loop that emits a void
  * asks this object rather than deciding for itself.</p>

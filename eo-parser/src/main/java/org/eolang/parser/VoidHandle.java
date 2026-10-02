@@ -11,7 +11,7 @@ import org.cactoos.Text;
  *
  * <p>The receiver of a formation is a void named {@code ρ}, written as
  * {@code ^} in the bracket head (R-3.4.11). Written as {@code ^name}
- * instead, it also gets a readable name: {@code name} becomes a
+ * instead, it also gets a readable name (R-3.4.13): {@code name} becomes a
  * file-local handle (R-3.10.12) that the body may use wherever it would
  * otherwise write {@code ^}. This object is that handle, and it is empty
  * for every other parameter, which carries none.</p>
