@@ -14,6 +14,7 @@ import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.eolang.cache.ConcurrentCache;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -60,11 +61,13 @@ final class ArchitectureTest {
 
     @Test
     void buildsStepCacheOncePerRun() {
-        ArchRuleDefinition.noClasses()
-            .that().haveSimpleNameNotEndingWith("Test")
-            .should().callMethodWhere(ArchitectureTest.cacheBuiltPerSource())
-            .because("each cache built per source brings its own guard (#8903)")
-            .check(ArchitectureTest.imported());
+        Assertions.assertDoesNotThrow(
+            () -> ArchRuleDefinition.noClasses()
+                .that().haveSimpleNameNotEndingWith("Test")
+                .should().callMethodWhere(ArchitectureTest.cacheBuiltPerSource())
+                .because("each cache built per source brings its own guard (#8903)")
+                .check(ArchitectureTest.imported())
+        );
     }
 
     private static JavaClasses imported() {
