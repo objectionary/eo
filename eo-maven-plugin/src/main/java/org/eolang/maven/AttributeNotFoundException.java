@@ -6,12 +6,14 @@ package org.eolang.maven;
 
 /**
  * If the attributes were not found in the Tojo.
+ *
  * @since 0.35.0
  */
 final class AttributeNotFoundException extends RuntimeException {
 
     /**
      * Ctor.
+     *
      * @param attribute The attribute of Tojo
      */
     AttributeNotFoundException(final TjsForeign.Attribute attribute) {

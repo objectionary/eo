@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Put the members of a package inside the object it names.
+ *
  * @since 0.68.0
  */
 final class PpMerge implements Iterable<Class<? extends AbstractMojo>> {

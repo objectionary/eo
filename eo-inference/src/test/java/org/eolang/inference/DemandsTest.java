@@ -16,6 +16,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Demands}.
+ *
  * @since 0.69.0
  */
 final class DemandsTest {

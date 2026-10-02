@@ -4,408 +4,214 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLDocument;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.xml.transform.stream.StreamSource;
+import org.cactoos.Proc;
+import org.cactoos.Text;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
 
 /**
- * The Java spelling of the values one protocol computes.
+ * The stage that writes a Java atom for every entry that phino computed.
  *
- * <p>Every operand key has one Java expression: a symbol is the local
- * named after it, a number literal is the double its eight bytes encode,
- * a bool is {@code true} or {@code false}, and bytes or a string are a
- * byte array. Every forma has one Java type, with a string carried as
- * bytes, since its Δ is the very UTF-8 sequence the byte atoms it
- * reaches through {@code φ} operate on, and a tuple or an object it
- * answers carried as the {@code Phi} itself, since neither is a datum
- * and every operation on either dispatches back into EO. The value of an
- * application comes from the format the {@link Op} table holds for its
- * atom, except a dispatch back into EO, which is a {@link Call}, and an
- * equality, which compares by the forma of its operands: two numbers by
- * their value, so that a not-a-number equals nothing and the two zeroes
- * equal each other, and anything else by its bytes; and a void is read
- * through the public runtime API. The forma of a key is looked up in the
- * voids of the program or in the steps of its bodies, nested arms
- * included. Whatever the table cannot spell — an operation with no Java
- * column, a void of a forma the runtime cannot hand over, an operand of
- * a forma the atom does not take — is refused.</p>
+ * <p>This is where all the work of the module pays off. Without this
+ * stage, the body of an object is a graph of many small objects, which EO
+ * builds and computes while the program runs. After this stage, the same
+ * body is a few lines of Java: one line for every symbol that phino made
+ * in the protocol. These lines are put into a Java class, which is an
+ * atom. Later, {@link Patching} puts this atom into the EO object.</p>
  *
- * @since 0.76.0
+ * <p>The Java files are written into the directory of atoms, next to the
+ * directory of protocols, so that a reader of the build can compare every
+ * atom with the protocol it was made from. The Maven goal gives this
+ * directory to javac as one more directory of sources. The file name of
+ * every atom is exactly the class name that the transpiler will use when
+ * it meets that atom, so javac finds it. The atoms are not written into
+ * the directory of generated sources, because the transpiler deletes
+ * every file there that it did not write itself.</p>
+ *
+ * <p>This stage reads the protocol, and not the result of phino. The
+ * protocol already says which operations happened, in what order, and on
+ * which symbols, and this is all that a Java method needs. To read the
+ * result of phino, this module would have to parse a phi-expression, and
+ * this module never does that. How a protocol becomes Java is decided
+ * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
+ * This class only finds what the stylesheet needs to know about the
+ * entry: its number, its locator, the top object it is inside, and the
+ * package of that object.</p>
+ *
+ * <p>An entry that phino did not run has no protocol, so it is skipped.
+ * When the stylesheet finds that an entry is a taint, this class only
+ * writes into the log why, and the object stays in EO exactly as it was
+ * written. Every skipped entry and every taint gets its own line in the
+ * log, at the level INFO, so that a reader of the build sees why each
+ * object was not turned into Java. At the end, this class writes the
+ * list of the entries it turned into atoms into the file
+ * {@code rendered.tsv}, so that {@link Patching} knows which objects to
+ * change.</p>
+ *
+ * <p>The transpiler names the atom of an argument of another object after
+ * the top object only, so two entries may ask for one class. Each of them
+ * is a taint then, since javac would find only one of the two.</p>
+ *
+ * @since 0.64.0
+ * @todo #8548:30min Write an atom for an entry whose result is always the
+ *  same. When the result of the body is known bytes, like an object that
+ *  always returns {@code 42}, the entry is a taint now. But its atom could
+ *  simply return those bytes.
  */
-public final class Rendering {
+final class Rendering implements Proc<Path> {
 
     /**
-     * The program.
+     * The directory where the Java atoms are written.
      */
-    private final Program program;
-
-    /**
-     * Ctor, for a program of one body.
-     * @param proto The protocol
-     * @param inputs The voids of the fragment: names to formas, in order
-     */
-    public Rendering(final Protocol proto, final Map<String, String> inputs) {
-        this(
-            new Program(
-                Collections.singletonList(
-                    new Body("", 0, new ArrayList<>(inputs.values()), proto)
-                ),
-                inputs
-            )
-        );
-    }
+    private final Path atoms;
 
     /**
      * Ctor.
-     * @param plan The program
-     */
-    public Rendering(final Program plan) {
-        this.program = plan;
-    }
-
-    /**
-     * The declaration reading one void of the formation, without {@code final}.
-     * @param index The index of the void
-     * @return A statement such as {@code double v0 = new Dataized(this.take("x")).asNumber();}
-     */
-    public String reading(final int index) {
-        final List<String> names = new ArrayList<>(this.program.inputs().keySet());
-        if (index >= names.size()) {
-            throw new IllegalStateException(
-                String.format("The protocol reads void #%d, which the fragment lacks", index)
-            );
-        }
-        final String name = names.get(index);
-        final String forma = this.program.inputs().get(name);
-        final String out;
-        if ("number".equals(forma)) {
-            out = String.format(
-                "double v%d = new Dataized(this.take(\"%s\")).asNumber();", index, name
-            );
-        } else if ("bool".equals(forma)) {
-            out = String.format(
-                "boolean v%d = new Dataized(this.take(\"%s\")).asBool();", index, name
-            );
-        } else if ("bytes".equals(Rendering.carried(forma))) {
-            out = String.format(
-                "byte[] v%d = new Dataized(this.take(\"%s\")).take();", index, name
-            );
-        } else if ("tuple".equals(forma)) {
-            out = String.format("Phi v%d = this.take(\"%s\");", index, name);
-        } else {
-            throw new IllegalStateException(
-                String.format("The void '%s' of forma '%s' cannot be read in Java", name, forma)
-            );
-        }
-        return out;
-    }
-
-    /**
-     * The declaration of one void of a resumed body, blank until a repeat
-     * hands it a value, without {@code final}.
-     * @param index The index of the void
-     * @return A statement such as {@code double v3 = 0.0;}
-     */
-    public String blank(final int index) {
-        final String type = this.type(String.format("sym:v%d", index));
-        final String out;
-        if ("double".equals(type)) {
-            out = String.format("double v%d = 0.0;", index);
-        } else if ("boolean".equals(type)) {
-            out = String.format("boolean v%d = false;", index);
-        } else if ("Phi".equals(type)) {
-            out = String.format("Phi v%d = Phi.Φ;", index);
-        } else {
-            out = String.format("byte[] v%d = new byte[0];", index);
-        }
-        return out;
-    }
-
-    /**
-     * The value of one application.
-     * @param step The application
-     * @return A Java expression over the locals of its operands
-     */
-    public String applied(final Step step) {
-        final String out;
-        if (step.atom().charAt(0) == '.') {
-            out = new Call(step, this).text();
-        } else if ("eq".equals(new Op(step.atom()).method())) {
-            out = this.compared(step);
-        } else {
-            out = this.formatted(step, new Op(step.atom()));
-        }
-        return out;
-    }
-
-    /**
-     * The Java type of the value a key names.
-     * @param key The key, such as {@code sym:v0} or {@code sym:s2}
-     * @return The type, such as {@code double} or {@code byte[]}
-     */
-    public String type(final String key) {
-        return Rendering.typed(this.forma(key), key);
-    }
-
-    /**
-     * The forma a key carries in Java, with a string carried as bytes.
-     * @param key The key, such as {@code sym:v0} or {@code number:40-...}
-     * @return The forma, one of {@code number}, {@code bool}, {@code bytes}
-     */
-    public String forma(final String key) {
-        return Rendering.carried(this.kind(key));
-    }
-
-    /**
-     * The forma a key names, before Java carries it.
-     * @param key The key, such as {@code sym:v0} or {@code string:68-69-}
-     * @return The forma, such as {@code string} or {@code object}
-     */
-    public String kind(final String key) {
-        final String[] parts = key.split(":", 2);
-        final String out;
-        if ("sym".equals(parts[0])) {
-            if (parts[1].charAt(0) == 'v') {
-                out = this.program.formas().get(Integer.parseInt(parts[1].substring(1)));
-            } else {
-                out = this.step(parts[1]).forma();
-            }
-        } else {
-            out = parts[0];
-        }
-        return out;
-    }
-
-    /**
-     * The step with the label, wherever it stands in the protocol.
-     * @param label The label, such as {@code s3}
-     * @return The step
-     */
-    public Step step(final String label) {
-        final Optional<Step> found = this.program.bodies().stream()
-            .map(Body::protocol)
-            .flatMap(Rendering::unfolded)
-            .flatMap(proto -> proto.moves().stream())
-            .filter(step -> step.label().equals(label))
-            .findFirst();
-        if (!found.isPresent()) {
-            throw new IllegalStateException(
-                String.format("The protocol has no step '%s'", label)
-            );
-        }
-        return found.get();
-    }
-
-    /**
-     * The Java expression of a key.
-     * @param key The key, such as {@code sym:s1} or {@code bool:FF-}
-     * @return The expression, such as {@code s1} or {@code true}
-     */
-    public String expression(final String key) {
-        final String out;
-        final String[] parts = key.split(":", 2);
-        if ("sym".equals(parts[0])) {
-            this.forma(key);
-            out = parts[1];
-        } else if ("number".equals(parts[0])) {
-            final String hex = parts[1].replace("-", "");
-            if (hex.length() != 16) {
-                throw new IllegalStateException(
-                    String.format("The number '%s' is not eight bytes", parts[1])
-                );
-            }
-            out = String.format("Double.longBitsToDouble(0x%sL)", hex);
-        } else if ("bool".equals(parts[0])) {
-            if ("FF-".equals(parts[1])) {
-                out = "true";
-            } else if ("00-".equals(parts[1])) {
-                out = "false";
-            } else {
-                throw new IllegalStateException(
-                    String.format("The bool '%s' is not one byte", parts[1])
-                );
-            }
-        } else if ("bytes".equals(Rendering.carried(parts[0]))) {
-            out = Rendering.array(parts[1]);
-        } else {
-            throw new IllegalStateException(
-                String.format("The operand '%s' has no Java expression", key)
-            );
-        }
-        return out;
-    }
-
-    /**
-     * The name of the void a key names, under which the atom holds the
-     * object it was given.
      *
-     * <p>A {@link Call} needs that object, not the datum of its bytes:
-     * the tables witness the forma a void dataizes to, and an object
-     * decorating a datum — a chunk of memory, an input of bytes —
-     * answers there as well as the datum itself while owning methods the
-     * datum never heard of. A program that repeats has no such object to
-     * name, since its voids are locals the loop rebinds, so a call in
-     * one is refused.</p>
-     *
-     * @param key The key of a void, such as {@code sym:v0}
-     * @return The name, such as {@code x}
+     * @param dir The directory where the Java atoms are written
      */
-    public String named(final String key) {
-        if (this.program.repeats()) {
-            throw new IllegalStateException(
-                String.format("The void '%s' is rebound by a repeat, so no call can reach it", key)
-            );
-        }
-        final List<String> names = new ArrayList<>(this.program.inputs().keySet());
-        final int index = Integer.parseInt(key.split(":", 2)[1].substring(1));
-        if (index >= names.size()) {
-            throw new IllegalStateException(
-                String.format("A call reads void #%d, which the fragment lacks", index)
-            );
-        }
-        return names.get(index);
+    Rendering(final Path dir) {
+        this.atoms = dir;
     }
 
-    /**
-     * The Java expression the atom hands to {@code Data.ToPhi}.
-     *
-     * <p>Where the fragment settled into a view of a local rather than
-     * the local itself, as {@code x!} does, the step is a double and the
-     * answer is bytes: the raw bits of the local are those bytes.</p>
-     *
-     * @param local The Java expression of the value, such as {@code s1}
-     * @param key The key that value stands under, such as {@code sym:s1}
-     * @return The expression to hand over, wrapped when the formas part
-     */
-    public String handed(final String local, final String key) {
-        final String carrier = Rendering.carried(this.program.carrier());
-        final String own = this.forma(key);
-        final String out;
-        if (carrier.equals(own)) {
-            out = local;
-        } else if ("bytes".equals(carrier) && "number".equals(own)) {
-            out = String.format(
-                "java.nio.ByteBuffer.allocate(8).putLong(Double.doubleToRawLongBits(%s)).array()",
-                local
-            );
-        } else if ("bytes".equals(carrier) && "bool".equals(own)) {
-            out = String.format("new byte[] {(byte) (%s ? 0xFF : 0x00)}", local);
-        } else {
+    @Override
+    public void exec(final Path home) throws IOException {
+        final Path entries = home.resolve("entries.tsv");
+        if (!Files.exists(entries)) {
             throw new IllegalStateException(
                 String.format(
-                    "The answer '%s' carries a %s, which no view renders as a %s",
-                    key, own, carrier
+                    "There is no '%s', while rendering needs the entries the planting writes",
+                    entries
                 )
             );
         }
-        return out;
-    }
-
-    private static String typed(final String carrier, final String what) {
-        final String out;
-        if ("number".equals(carrier)) {
-            out = "double";
-        } else if ("bool".equals(carrier)) {
-            out = "boolean";
-        } else if ("bytes".equals(carrier)) {
-            out = "byte[]";
-        } else if ("tuple".equals(carrier) || "object".equals(carrier)) {
-            out = "Phi";
-        } else {
-            throw new IllegalStateException(
-                String.format("The value '%s' has no Java type to carry it", what)
-            );
+        final Map<String, Path> tops = new HashMap<>(0);
+        for (final Path copy : new Copies(home)) {
+            tops.put(new XMLDocument(copy).xpath("/object/o[1]/@loc").get(0), copy);
         }
-        return out;
-    }
-
-    private String formatted(final Step step, final Op operation) {
-        final String format = operation.java();
-        final List<String> expected = new ArrayList<>(step.keys().size());
-        expected.add(operation.carrier());
-        expected.addAll(operation.formas());
-        for (int idx = 0; idx < step.keys().size(); ++idx) {
-            final String key = step.keys().get(idx);
-            if (!expected.get(idx).equals(this.forma(key))) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The operand '%s' of '%s' does not carry a %s",
-                        key, step.atom(), expected.get(idx)
-                    )
+        final XSL sheet = new XSLDocument(
+            Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
+            "/org/eolang/lowering/rendering.xsl"
+        ).with((href, base) -> new StreamSource(href))
+            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        final Collection<String> rendered = new ArrayList<>(0);
+        final Map<String, Collection<String>> claims = new HashMap<>(0);
+        int tainted = 0;
+        for (final String row : new Filtered<>(
+            line -> !line.isEmpty(),
+            new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
+        )) {
+            final String[] cells = row.split("\t", -1);
+            final Path protocol = home.resolve("2-protocols")
+                .resolve(new Locator(cells[1]).protocol());
+            if (Files.exists(protocol)) {
+                final String top = Rendering.top(tops, cells[1]);
+                final XML out = sheet
+                    .with("number", cells[0])
+                    .with("locator", cells[1])
+                    .with("top", top)
+                    .with("source", tops.get(top).toUri().toString())
+                    .transform(new XMLDocument(protocol));
+                if (out.nodes("/rendered/atom").isEmpty()) {
+                    tainted += 1;
+                    Logger.info(
+                        this,
+                        "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
+                        cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
+                    );
+                } else {
+                    final Path file = this.atoms.resolve(
+                        out.xpath("/rendered/atom/@file").get(0)
+                    );
+                    Files.createDirectories(file.getParent());
+                    Files.write(
+                        file,
+                        out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
+                    );
+                    rendered.add(String.format("%s%n", row));
+                    claims.computeIfAbsent(
+                        out.xpath("/rendered/atom/@file").get(0), key -> new ArrayList<>(1)
+                    ).add(String.format("%s%n", row));
+                    Logger.debug(
+                        this,
+                        "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
+                        cells[0], cells[1], file, Files.size(file),
+                        out.xpath("/rendered/atom/@voids").get(0),
+                        out.xpath("/rendered/atom/@statements").get(0),
+                        out.xpath("/rendered/atom/@branches").get(0)
+                    );
+                }
+            } else {
+                Logger.info(
+                    this,
+                    "The entry %s at %s gets no Java atom and stays in EO as written, because it has no protocol at %[file]s, since phino did not run it",
+                    cells[0], cells[1], protocol
                 );
             }
         }
-        return String.format(
-            format,
-            step.keys().stream().map(this::expression).toArray(Object[]::new)
+        tainted += this.unshared(claims, rendered);
+        Files.write(
+            home.resolve("rendered.tsv"),
+            String.join("", rendered).getBytes(StandardCharsets.UTF_8)
+        );
+        Logger.info(
+            this,
+            "Rendered %d atoms into %[file]s, while %d entries were taints",
+            rendered.size(), this.atoms, tainted
         );
     }
 
-    private String compared(final Step step) {
-        final String kinds = step.keys().stream()
-            .map(this::forma)
-            .distinct()
-            .collect(Collectors.joining(","));
-        final List<String> sides = step.keys().stream()
-            .map(this::expression)
-            .collect(Collectors.toList());
-        final String out;
-        if ("number".equals(kinds)) {
-            out = String.format("%s == %s", sides.get(0), sides.get(1));
-        } else if ("bytes".equals(kinds)) {
-            out = String.format(
-                "java.util.Arrays.equals(%s, %s)",
-                sides.get(0), sides.get(1)
-            );
-        } else if ("bool".equals(kinds)) {
-            out = String.format("%s == %s", sides.get(0), sides.get(1));
-        } else {
+    private int unshared(
+        final Map<String, Collection<String>> claims, final Collection<String> rendered
+    ) throws IOException {
+        int dropped = 0;
+        for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
+            if (claim.getValue().size() > 1) {
+                rendered.removeAll(claim.getValue());
+                Files.delete(this.atoms.resolve(claim.getKey()));
+                dropped += claim.getValue().size();
+                Logger.info(
+                    this,
+                    "%d entries get no Java atom and stay in EO as written, because all of them ask for %s",
+                    claim.getValue().size(), claim.getKey()
+                );
+            }
+        }
+        return dropped;
+    }
+
+    private static String top(final Map<String, Path> tops, final String locator) {
+        String found = "";
+        for (final String loc : tops.keySet()) {
+            if ((locator.equals(loc) || locator.startsWith(String.format("%s.", loc)))
+                && loc.length() > found.length()) {
+                found = loc;
+            }
+        }
+        if (found.isEmpty()) {
             throw new IllegalStateException(
                 String.format(
-                    "The equality '%s' mixes the formas '%s' and cannot render",
-                    step.label(), kinds
+                    "The entry at %s is inside none of the copies, while its atom is named after the top object it lives in",
+                    locator
                 )
             );
         }
-        return out;
-    }
-
-    private static Stream<Protocol> unfolded(final Protocol proto) {
-        return Stream.concat(
-            Stream.of(proto),
-            proto.moves().stream()
-                .flatMap(step -> step.branches().stream())
-                .flatMap(Rendering::unfolded)
-        );
-    }
-
-    private static String carried(final String forma) {
-        final String out;
-        if ("string".equals(forma)) {
-            out = "bytes";
-        } else {
-            out = forma;
-        }
-        return out;
-    }
-
-    private static String array(final String dashed) {
-        final List<String> cells = new ArrayList<>(0);
-        for (final String pair : dashed.split("-", -1)) {
-            if (!pair.isEmpty()) {
-                cells.add(String.format("(byte) 0x%s", pair));
-            }
-        }
-        final String out;
-        if (cells.isEmpty()) {
-            out = "new byte[0]";
-        } else {
-            out = String.format("new byte[] {%s}", String.join(", ", cells));
-        }
-        return out;
+        return found;
     }
 }

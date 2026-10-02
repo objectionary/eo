@@ -43,6 +43,7 @@ final class Call {
 
     /**
      * Ctor.
+     *
      * @param object The locator of the object the call was made on
      * @param place The place the argument fills, counted from zero
      * @param passed What was passed there
@@ -55,6 +56,7 @@ final class Call {
 
     /**
      * The object the call was made on.
+     *
      * @return The locator
      */
     String of() {
@@ -63,6 +65,7 @@ final class Call {
 
     /**
      * This call, to be put inside the row of a void.
+     *
      * @return The directives
      */
     Directives directives() {

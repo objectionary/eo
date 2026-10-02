@@ -43,6 +43,7 @@ final class Shared {
 
     /**
      * Ctor.
+     *
      * @param witnesses What the program was seen putting into the void, from
      *  {@link Fillings}
      * @param objects The objects the provides table has a row for
@@ -60,6 +61,7 @@ final class Shared {
 
     /**
      * The object every filling of this void is.
+     *
      * @return The locator, empty where the fillings share nothing a reader
      *  could go and look at
      */

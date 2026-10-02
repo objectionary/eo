@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `both` of a `box` comes back with one of the two things it was handed,
+# the `grip` or the `hold`, so it is a choice of the two. A call written on a
+# choice fills the voids of every arm of the name it reads, but the arms of
+# a picker are what it hands back and not what it copies: the `^.grip` and
+# the `^.hold` it is handed go into the voids of the formations the program
+# puts into `pick`, and never into the `size` of the `grip` (#8883).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  box.eo: |
+    [flag] > box
+      [^ size] > grip
+        size > @
+      [^ weight] > hold
+        weight > @
+      ^.flag.pick > [^] > both
+        ^.grip
+        ^.hold
+  user.eo: |
+    [] > user
+      (box no).both > @
+  other.eo: |
+    [] > other
+      box yes > @
+links:
+  - "//type[@id='Φ.box.both.φ']/ref[not(bind[@void='Φ.box.grip.size'])]"
+provides:
+  - "//type[@id='Φ.box.grip']/attr[@name='size'][not(witnessed)]"

@@ -87,6 +87,7 @@ public final class PhSticky implements Phi {
 
     /**
      * Ctor.
+     *
      * @param obj The object to decorate
      */
     public PhSticky(final Phi obj) {
@@ -95,6 +96,7 @@ public final class PhSticky implements Phi {
 
     /**
      * Ctor.
+     *
      * @param obj The object to decorate
      * @param capacity How many answers to keep before evicting
      */
@@ -109,6 +111,7 @@ public final class PhSticky implements Phi {
 
     /**
      * Primary ctor.
+     *
      * @param obj The object to decorate
      * @param map The answers remembered so far
      * @param puts The puts received so far

@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The Java files that a transpiled XMIR is written out as.
@@ -60,6 +62,7 @@ final class JavaFiles {
 
     /**
      * Ctor.
+     *
      * @param dir Generated sources directory
      */
     JavaFiles(final Path dir) {
@@ -70,6 +73,7 @@ final class JavaFiles {
 
     /**
      * Generate java files and count them.
+     *
      * @param rewrite Rewrite .java files even if they exist
      * @param target Full target path to XMIR after transpilation optimizations
      * @param hsh Tojo hash

@@ -47,6 +47,7 @@ final class Taken {
 
     /**
      * Ctor.
+     *
      * @param xmirs The XMIR of the program
      * @param links The links table, as the rules wrote it, which says where
      *  every name of the program points
@@ -58,6 +59,7 @@ final class Taken {
 
     /**
      * What every object of the program takes its attribute from.
+     *
      * @return The locator of the object taken from, by the locator of the
      *  object doing the taking, without the ones that take from nothing
      * @throws IOException If a file cannot be read

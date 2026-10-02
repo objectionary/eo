@@ -62,22 +62,17 @@ final class Handed {
 
     /**
      * Ctor.
-     * @param links The links table, as {@link Resolved} left it
+     *
      * @param provides The provides table, which says what an atom hands in
+     * @param rows The provides table, asked what void a place lands in
      */
-    Handed(final XML links, final XML provides) {
-        this(
-            provides.nodes("//attr[@void='true' and @args]"),
-            new Provided(
-                provides,
-                new Ends(new Pairs(links).all()).names(),
-                provides.xpath("//attr[@void='true']/@type")
-            )
-        );
+    Handed(final XML provides, final Provided rows) {
+        this(provides.nodes("//attr[@void='true' and @args]"), rows);
     }
 
     /**
      * Ctor.
+     *
      * @param attrs The rows of the provides table that carry a brace list
      * @param rows The provides table, asked what void a place lands in
      */
@@ -88,6 +83,7 @@ final class Handed {
 
     /**
      * Put what the atoms hand in among the fillings the call sites name.
+     *
      * @param named What every void is filled with where a call site says so,
      *  which is what the atoms are added to
      * @param filled What every void is filled with, the hops walked through,

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Timeout;
 
 /**
  * Test case for {@link Deadline}.
+ *
  * @since 0.62.0
  */
 final class DeadlineTest {
@@ -23,6 +24,20 @@ final class DeadlineTest {
         Assertions.assertDoesNotThrow(
             () -> new Deadline(this, 5, false).spent(() -> "done"),
             "A body that finishes well within the deadline must not fail"
+        );
+    }
+
+    @Test
+    @Timeout(30)
+    void letsASlowBodyFinishWhenTheDeadlineIsZero() {
+        Assertions.assertDoesNotThrow(
+            () -> new Deadline(this, 0L, false).spent(
+                () -> {
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(1L));
+                    return "slow";
+                }
+            ),
+            "A timeout of zero must take the deadline away, not fail the goal at once"
         );
     }
 

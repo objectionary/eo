@@ -37,7 +37,7 @@ final class Calls {
     /**
      * What the links table says.
      */
-    private final Pairs links;
+    private final Said links;
 
     /**
      * The provides table.
@@ -46,12 +46,13 @@ final class Calls {
 
     /**
      * Ctor.
+     *
      * @param applications Every application of the program
      * @param table What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says where an argument can
      *  land
      */
-    Calls(final Collection<XML> applications, final Pairs table, final XML provides) {
+    Calls(final Collection<XML> applications, final Said table, final XML provides) {
         this.sites = applications;
         this.links = table;
         this.given = provides;
@@ -59,6 +60,7 @@ final class Calls {
 
     /**
      * Every call, one per argument.
+     *
      * @return The calls, without the ones that pass the same type at the same
      *  place of the same object twice
      */

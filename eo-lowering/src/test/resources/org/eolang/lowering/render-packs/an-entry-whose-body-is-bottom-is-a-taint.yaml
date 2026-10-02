@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# phino reduced the body of the entry to ⊥ before it computed anything, so
+# the root was never asked to dataize.
+locator: Φ.wide.as-number
+number: 11
+taint: The body of the entry 11 reduced to ⊥ before phino computed anything
+eo:
+  wide.eo: |
+    [as-bytes] > wide
+      as-bytes.size > as-number
+protocol: |
+  <protocol>
+    <morph at="Φ.l🌵.e11">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e11">
+        <bind meta="𝛿1.1">40-26-00-00-00-00-00-00</bind>
+        <bind meta="𝑛1.1">⊥</bind>
+        <built meta="𝑛.1.1">Φ.l🌵.root( ⊥ )</built>
+        <answer meta="𝑛.1.2">⟦ v ↦ ⊥, λ ⤍ L_root ⟧</answer>
+      </evaluate>
+    </morph>
+    <msec>225</msec>
+    <firings>1</firings>
+    <fps>4</fps>
+  </protocol>

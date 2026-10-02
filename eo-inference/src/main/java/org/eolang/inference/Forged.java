@@ -51,6 +51,7 @@ final class Forged {
 
     /**
      * Ctor.
+     *
      * @param provides The provides table, which says what every atom comes
      *  back with and which voids that formation declares
      */
@@ -60,6 +61,7 @@ final class Forged {
 
     /**
      * Stamp the answers rooted at a void only an atom fills.
+     *
      * @param told The answers, by the locator of the object
      * @return The same answers, with the ones an atom fills told apart
      */

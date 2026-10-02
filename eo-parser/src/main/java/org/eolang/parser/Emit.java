@@ -91,6 +91,7 @@ final class Emit {
 
     /**
      * Primary ctor.
+     *
      * @param source The source lines {@link Source} split off the text
      *  being parsed (for caret-underlined error messages — pass an
      *  empty list to disable)
@@ -107,6 +108,7 @@ final class Emit {
      * three must roll back together via {@link #rollback(Savepoint)}, or
      * an error recovered mid-formation leaves {@link #depth} drifted from
      * the tree it describes (#7539).
+     *
      * @return Savepoint token
      */
     Savepoint savepoint() {
@@ -120,6 +122,7 @@ final class Emit {
      * Roll the sink and cursor back to the given savepoint, discarding
      * any directives appended after it and restoring {@link #depth} and
      * the owed atom signature to what they were at that point.
+     *
      * @param token Savepoint token from {@link #savepoint()}
      */
     void rollback(final Savepoint token) {
@@ -131,6 +134,7 @@ final class Emit {
 
     /**
      * Put {@link #depth} back to what it was at a savepoint.
+     *
      * @param cursor Depth to restore
      */
     void depth(final int cursor) {
@@ -139,6 +143,7 @@ final class Emit {
 
     /**
      * Put the owed atom signature back to what it was at a savepoint.
+     *
      * @param owed Signature owed to the open object, empty when nothing is owed
      * @param line Source line of the owed marker
      * @param pos Source column of the owed marker
@@ -235,6 +240,7 @@ final class Emit {
     /**
      * Append a non-lossy error directive to {@code /object/errors} — see
      * {@link #error(int, int, String, boolean)}.
+     *
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
      * @param message Canonical message text (no position prefix)
@@ -253,6 +259,7 @@ final class Emit {
      * {@code Linting.toDefect} in eo-maven-plugin) fails fast if
      * {@code check} is ever missing, so it must be set here rather than
      * defaulted downstream.
+     *
      * @param line Line where the error occurred
      * @param pos Column where the error occurred (0-indexed)
      * @param message Canonical message text (no position prefix)
@@ -308,6 +315,7 @@ final class Emit {
     /**
      * Open an unnamed {@code <o base="...">} element, i.e. one with
      * no {@code @name} — §9.0.2 / §9.4.2.
+     *
      * @param base Value for {@code @base}
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
@@ -320,6 +328,7 @@ final class Emit {
      * Open a named, base-less {@code <o>} element — one whose
      * {@code @base} is absent because the {@code wrap-applications}
      * reshape fills it in later — §9.0.2 / §9.4.2.
+     *
      * @param name Value for {@code @name}, or {@code null} to omit
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
@@ -331,6 +340,7 @@ final class Emit {
     /**
      * Open an unnamed, base-less {@code <o>} element — neither
      * {@code @name} nor {@code @base} is written — §9.0.2 / §9.4.2.
+     *
      * @param line Source line for {@code @line}
      * @param pos Source column for {@code @pos}
      */
@@ -358,6 +368,7 @@ final class Emit {
      * Add the {@code @method=""} attribute to the most recently opened
      * {@code <o>}, plus {@code @fragile=""} when the dispatch is the
      * fragile {@code ?.} operator (R-3.5 / §9.4).
+     *
      * @param fragile Whether the dispatch link is fragile ({@code ?.})
      */
     void method(final boolean fragile) {
@@ -403,6 +414,7 @@ final class Emit {
      * {@code resolve-local-names} reshape uses it to resolve references
      * and keeps it on the declaring object so the readable handle can be
      * recovered later (for example by the printer, see #5563).
+     *
      * @param name The file-local handle
      */
     void local(final String name) {
@@ -415,6 +427,7 @@ final class Emit {
      * atom's vertical void callback branch (R-3.4.8). Each token is a
      * concrete forma (homed by later passes) or a verbatim generic type
      * variable.
+     *
      * @param types Space-separated argument-type list
      */
     void args(final String types) {
@@ -426,6 +439,7 @@ final class Emit {
      * {@code <o>} — the declared type of an atom's vertical void
      * attribute (R-3.4.8): a concrete forma or a generic type variable,
      * with an optional trailing {@code ?} marking a maybe-terminator value.
+     *
      * @param type The declared type
      */
     void type(final String type) {
@@ -436,6 +450,7 @@ final class Emit {
      * Add the {@code @as=tag} attribute to the most recently opened
      * {@code <o>} — inline-binding marker per §3.12 / §9.4. Numeric
      * tags must be pre-formatted as {@code αN} by the caller.
+     *
      * @param tag Binding tag
      */
     void slot(final String tag) {
@@ -446,6 +461,7 @@ final class Emit {
      * Set the text content of the most recently opened {@code <o>}.
      * Used for {@code <o base='Φ.bytes'>HEX</o>} value carriers (R-9.4
      * data carriers).
+     *
      * @param text Text content
      */
     void set(final String text) {
@@ -466,6 +482,7 @@ final class Emit {
      * Emit a void parameter child — an {@code <o>} named after the
      * parameter and based on the empty set, per §9.4. The cursor is
      * expected to be inside the parent formation's {@code <o>}.
+     *
      * @param name Parameter name
      * @param line Source line of the formation
      * @param pos Source column of the parameter
@@ -486,6 +503,7 @@ final class Emit {
      * Emit the atom marker child for a formation declared with
      * {@code /sig} — {@code <o name='λ' atom='<sig>'/>} per §9.4. The
      * cursor is expected to be inside the parent atom's {@code <o>}.
+     *
      * @param sig Atom signature value (already promoted from Q to Φ)
      * @param line Source line of the atom declaration
      * @param pos Source column of the {@code /sig} marker

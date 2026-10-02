@@ -15,9 +15,9 @@ import org.opentest4j.TestAbortedException;
 
 /**
  * Test case for {@link Watched}.
+ *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class WatchedTest {
 
     @Test
@@ -64,24 +64,25 @@ final class WatchedTest {
     }
 
     @Test
-    void failsWhenBodyRefusesToStop() {
+    void saysWhenBodyRefusesToStop() {
         final AtomicBoolean release = new AtomicBoolean(false);
         try {
             MatcherAssert.assertThat(
                 "A body ignoring the interrupt must be named as holding the heap, but it wasnt",
                 Assertions.assertThrows(
-                    IllegalStateException.class,
+                    TestAbortedException.class,
                     () -> new Watched(1024L * 1024L, 100L).through(
                         () -> {
                             final byte[][] junk = new byte[1][];
                             while (!release.get()) {
                                 junk[0] = new byte[256 * 1024];
+                                Thread.interrupted();
                                 WatchedTest.rest(1L);
                             }
                             return null;
                         }
                     ),
-                    "A body that would not stop must fail the test, but it didnt"
+                    "A body that would not stop must still be skipped, but it wasnt"
                 ).getMessage(),
                 Matchers.containsString("would not stop")
             );

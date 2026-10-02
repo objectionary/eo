@@ -45,6 +45,7 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@link MjInference}
      */
     Rows(final Path tables) {
@@ -73,6 +74,7 @@ final class Rows {
     /**
      * Digest of the rows these objects and what they hold are named in.
      * Absent tables and empty ones answer alike.
+     *
      * @param locators The locators of the objects a file holds
      * @return Twelve hex characters
      */
@@ -81,10 +83,13 @@ final class Rows {
         try {
             final MessageDigest sha = MessageDigest.getInstance("SHA-256");
             for (final String locator : new TreeSet<>(locators)) {
-                for (final Map.Entry<String, String> row : rows.tailMap(locator).entrySet()) {
-                    if (!row.getKey().equals(locator)
-                        && !row.getKey().startsWith(String.format("%s.", locator))) {
-                        break;
+                final String prefix = String.format("%s.", locator);
+                final SortedMap<String, String> subtree = rows.subMap(
+                    locator, String.format("%s%c", prefix, Character.MAX_VALUE)
+                );
+                for (final Map.Entry<String, String> row : subtree.entrySet()) {
+                    if (!row.getKey().equals(locator) && !row.getKey().startsWith(prefix)) {
+                        continue;
                     }
                     Rows.feed(sha, row.getKey());
                     Rows.feed(sha, row.getValue());

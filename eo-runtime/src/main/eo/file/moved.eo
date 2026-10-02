@@ -4,9 +4,9 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package file
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [^ target] > moved
   if. > @
@@ -17,17 +17,11 @@
         *
           ^.path
           target
-          renamed.output
+          renamed.message
   called. > renamed
     os.is-windows.if
-      win32 *1
-        "rename"
-        ^.path
-        target
-      posix *1
-        "rename"
-        ^.path
-        target
+      win32.rename ^.path target
+      posix.rename ^.path target
 
   ++> can-move-a-directory
     and. > @

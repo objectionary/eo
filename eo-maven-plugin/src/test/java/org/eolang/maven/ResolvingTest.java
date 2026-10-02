@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link Resolving}.
+ *
  * @since 0.61.0
  */
 @ExtendWith(MktmpResolver.class)

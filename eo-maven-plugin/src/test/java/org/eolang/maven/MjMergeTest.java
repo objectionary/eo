@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.xax.XtSticky;
 import org.eolang.xax.XtYaml;
@@ -66,10 +67,13 @@ final class MjMergeTest {
 
     @Test
     void pointsTheObjectAtTheMergedXmir(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = MjMergeTest.merged(temp);
         MatcherAssert.assertThat(
             "the object must be transpiled from the merged XMIR and not from the parsed one",
-            MjMergeTest.merged(temp).foreignTojos().find("foo").xmir().toString(),
-            Matchers.endsWith(Paths.get("4-merge/foo.xmir").toString())
+            maven.foreignTojos().find("foo").xmir().toString(),
+            Matchers.endsWith(
+                Paths.get(String.format("%s/foo.xmir", maven.dirName("merge"))).toString()
+            )
         );
     }
 
@@ -102,17 +106,19 @@ final class MjMergeTest {
 
     @Test
     void leavesAPackageWithoutAnObjectAlone(@Mktmp final Path temp) throws Exception {
-        MatcherAssert.assertThat(
-            "a package no object is named after has nothing to merge into, so nothing may be written",
-            Files.exists(
-                new FakeMaven(temp).withProgram(
-                    MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
-                    "foo.bar",
-                    "foo/bar.eo"
-                ).execute(new PpMerge()).targetPath().resolve(Merging.DIR)
-            ),
-            Matchers.is(false)
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
+            "foo.bar",
+            "foo/bar.eo"
         );
+        maven.execute(new PpMerge());
+        try (Stream<Path> kids = Files.list(maven.targetPath())) {
+            MatcherAssert.assertThat(
+                "a package no object is named after has nothing to merge into, so nothing may be written",
+                kids.anyMatch(kid -> kid.getFileName().toString().endsWith("-merge")),
+                Matchers.is(false)
+            );
+        }
     }
 
     @Test
@@ -189,7 +195,9 @@ final class MjMergeTest {
                 failed.add(String.format("unknown key: %s", key));
             }
         }
-        failed.addAll(MjMergeTest.unmerged(pack, maven.targetPath().resolve(Merging.DIR)));
+        failed.addAll(
+            MjMergeTest.unmerged(pack, maven.targetPath().resolve(maven.dirName("merge")))
+        );
         failed.addAll(MjMergeTest.untranspiled(pack, maven));
         return failed;
     }

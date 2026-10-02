@@ -27,7 +27,8 @@ import org.cactoos.text.Joined;
 
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
- * unpacks and places them into the target directory.
+ * unpacks and places them into a directory {@link Subdir} numbers "resolve".
+ *
  * @since 0.61.0
  */
 final class Resolving implements Step {
@@ -38,7 +39,7 @@ final class Resolving implements Step {
     private final TjsForeign tojos;
 
     /**
-     * Target directory.
+     * Base target directory.
      */
     private final Path target;
 
@@ -86,8 +87,9 @@ final class Resolving implements Step {
 
     /**
      * Ctor.
+     *
      * @param tjs Tojos
-     * @param tgt Target directory
+     * @param tgt Base target directory
      * @param cntrl Central dependency consumer
      * @param self Discover self
      * @param zero Skip zero versions
@@ -121,6 +123,7 @@ final class Resolving implements Step {
 
     @Override
     public void exec() {
+        final Path dir = new Subdir(this.target, "resolve").path();
         final Collection<Dep> deps = this.deps();
         final int unpacked;
         if (deps.isEmpty()) {
@@ -129,7 +132,7 @@ final class Resolving implements Step {
             final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, this.target, versions)
+                dep -> this.resolved(dep, dir, versions)
             ).total();
         }
         if (unpacked == 0) {
@@ -138,7 +141,7 @@ final class Resolving implements Step {
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                unpacked, this.target,
+                unpacked, dir,
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
@@ -146,6 +149,7 @@ final class Resolving implements Step {
 
     /**
      * Delete every stale sibling version found in the given directory.
+     *
      * @param dir The directory shared by every version of one dependency
      * @param version The version being resolved
      * @param keep The versions to keep, everything else in {@code dir} is stale

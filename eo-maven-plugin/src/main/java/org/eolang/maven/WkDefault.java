@@ -37,6 +37,7 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     /**
      * Ctor.
+     *
      * @param dir The directory
      */
     WkDefault(final Path dir) {
@@ -45,6 +46,7 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     /**
      * Ctor.
+     *
      * @param dir The directory
      * @param list The list
      */

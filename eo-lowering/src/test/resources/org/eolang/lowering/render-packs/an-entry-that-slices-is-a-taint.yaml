@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A slice out of its range returns the cant-slice its caller binds, which
+# the protocol does not hold, so no Java can fail the way the atom does.
+locator: Φ.head
+number: 6
+eo:
+  head.eo: |
+    [x] > head
+      x.slice 0 1 > @
+voids:
+  - "𝜎1\t6\tx\tbytes"
+protocol: |
+  <morph at="Φ.l🌵.e6">
+    <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e6">
+      <evaluate λ="L_bytes_slice" by="morph" at="Φ.a🌵1">
+        <bind meta="𝛿2.2">00-00-00-00-00-00-00-00</bind>
+        <bind meta="𝛿3.2">3F-F0-00-00-00-00-00-00</bind>
+        <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00 3F-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+    </evaluate>
+    <evaluate λ="L_root" by="morph" at="Φ.l🌵.e6">
+      <dataize meta="𝛿1.3">𝜎2:λ</dataize>
+    </evaluate>
+  </morph>

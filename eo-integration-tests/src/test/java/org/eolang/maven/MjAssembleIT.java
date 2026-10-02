@@ -13,7 +13,9 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for mojas.
+ *
  * @since 0.52
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -30,14 +33,13 @@ final class MjAssembleIT {
 
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
-        final String stdout = "target/eo/%s/stdout.%s";
-        final String parsed = String.format(stdout, "1-parse", "xmir");
-        final String pulled = String.format(stdout, "2-pull", "eo");
         new Farea(temp).together(
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
                 f.exec("package");
                 MjAssembleIT.succeeds(f);
+                final String parsed = MjAssembleIT.stdoutPath(temp, "-parse", "stdout.xmir");
+                final String pulled = MjAssembleIT.stdoutPath(temp, "-pull", "stdout.eo");
                 MatcherAssert.assertThat(
                     String.format("AssembleMojo should have parsed stdout %s, but didn't", parsed),
                     f.files().file(parsed).exists(),
@@ -65,11 +67,34 @@ final class MjAssembleIT {
                 );
                 MatcherAssert.assertThat(
                     "Even if the eo program invalid we still have to parse it, but we didn't",
-                    temp.resolve("target/eo/1-parse/one/main.xmir").toAbsolutePath().toFile(),
+                    temp.resolve(
+                        String.format(
+                            "target/eo/%s/one/main.xmir", MjAssembleIT.subdir(temp, "-parse")
+                        )
+                    ).toAbsolutePath().toFile(),
                     FileMatchers.anExistingFile()
                 );
             }
         );
+    }
+
+    private static String subdir(final Path home, final String suffix) throws IOException {
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            return kids
+                .map(kid -> kid.getFileName().toString())
+                .filter(name -> name.endsWith(suffix))
+                .findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No '*%s' directory found under %s", suffix, home)
+                    )
+                );
+        }
+    }
+
+    private static String stdoutPath(
+        final Path home, final String suffix, final String file
+    ) throws IOException {
+        return String.format("target/eo/%s/%s", MjAssembleIT.subdir(home, suffix), file);
     }
 
     private static void succeeds(final Farea farea) throws IOException {

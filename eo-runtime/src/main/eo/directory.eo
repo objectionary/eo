@@ -1,6 +1,12 @@
 # Directory in the file system.
 # Apparently every directory is a file.
 #
+# A temporary file is named after the clock in milliseconds, the process
+# and the microsecond within the current second, so two names asked for
+# within one millisecond, as parallel tests do, still differ; Windows has
+# no finer clock than a millisecond, so there the last part is derived
+# from the clock alone.
+#
 # @todo #6484:60min Walk a directory in constant stack space. The `stepped`
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
@@ -8,13 +14,13 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [file] > directory
   file > @
-  [dir time process random] > retried
+  [dir time process fraction] > retried
     [^ index] >> attempted
       if. > @
         descriptor.eq -1
@@ -30,14 +36,7 @@
           ^.closed descriptor
           path
       ^.opened path > descriptor!
-      code. > errno
-        os.is-windows.if
-          win32
-            "_errno"
-            *
-          posix
-            "errno"
-            *
+      os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
     | 0 > @
     [^ index] > candidate
@@ -48,49 +47,37 @@
           ^.time
           ^.process
           index
-          ^.random
-    code. > [descriptor] > closed
-      os.is-windows.if
-        win32 *1
-          "_close"
-          descriptor
-        posix *1
-          "close"
-          descriptor
+          ^.fraction
+    os.is-windows.if > [descriptor] > closed
+      win32.close descriptor
+      posix.close descriptor
     code. > [name] > opened
       os.is-windows.if
-        win32 *1
-          "_open"
+        win32.open
           name
           plus.
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-        posix *1
-          "open"
+        posix.open
           name
           plus.
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-  [^] > tmpfile
-    ^.exists.if > @
-      Q.file touch.as-bytes
-      T
-        "Directory %s does not exist, can't create temporary file".printf
-          * ^.file
-    ^.^.retried > [^] > touch
-      ^.^.path
-      clock.as-number
-      code.
-        os.is-windows.if
-          win32
-            "_getpid"
-            *
-          posix
-            "getpid"
-            *
-      clock.as-number.random
+  ^.exists.if > [^] > tmpfile
+    Q.file
+      as-bytes.
+        ^.retried
+          ^.path
+          clock.as-number
+          os.is-windows.if win32.getpid posix.getpid
+          os.is-windows.if
+            clock.as-number.random
+            posix.gettimeofday.micros.div 1000000
+    T
+      "Directory %s does not exist, can't create temporary file".printf
+        * ^.file
   [^ glob] > walk
     [^ accum prefix dir] >> walked
       [^ rest] >> stepped
@@ -141,7 +128,7 @@
                 regex.
                   string
                     as-bytes.
-                      "".joined >>
+                      "".joined
                         *
                           "/^"
                           translated 0 "" false false
@@ -279,11 +266,9 @@
       temp.deleted
       owned
     called. > info
-      posix *1
-        "stat"
-        temp.path
+      posix.stat temp.path
     os.is-windows.or > owned!
-      info.output.mode.eq 33152
+      info.mode.eq 33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile
@@ -449,8 +434,7 @@
       seq *
         touched. (d.resolved "щи.txt").as-file
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         eq.
@@ -709,17 +693,14 @@
         directory mktemp.tmpfile.deleted
 
   ++> can-walk-with-a-star-inside-a-glob-character-class
-    seq * > @
-      touched.
-        as-file.
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "*.txt").as-file
+        touched. (d.resolved "a.txt").as-file
+        eq.
+          ",".joined
+            d.as-dir.walk "[*].txt"
           d.resolved "*.txt"
-      touched.
-        as-file.
-          d.resolved "a.txt"
-      eq.
-        ",".joined
-          d.as-dir.walk "[*].txt"
-        d.resolved "*.txt"
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

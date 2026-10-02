@@ -117,6 +117,7 @@ final class Globals {
 
     /**
      * Whether a non-meta object has been emitted.
+     *
      * @return Flag
      */
     boolean firstObjectEmitted() {
@@ -133,6 +134,7 @@ final class Globals {
     /**
      * Whether the header zone is closed — no comment may appear after
      * this (§3.3).
+     *
      * @return Flag
      */
     boolean sealed() {
@@ -152,6 +154,7 @@ final class Globals {
      * zone — idempotent once {@link #sealed()} is true. A non-empty
      * block with no blank line before the sealing line (§6.5) is
      * dropped via {@link #dropComments()} and reported as an error.
+     *
      * @param emit XMIR emitter
      * @param span Source span of the meta or object closing the header
      */
@@ -175,6 +178,7 @@ final class Globals {
 
     /**
      * Whether the parser is still consuming the meta header (R-6.5.5).
+     *
      * @return Flag
      */
     boolean inMetaHeader() {
@@ -199,6 +203,7 @@ final class Globals {
 
     /**
      * Current pending-blank count.
+     *
      * @return Count
      */
     int pendingBlanks() {
@@ -224,6 +229,7 @@ final class Globals {
 
     /**
      * Current trailing-blank count (only meaningful at EOF).
+     *
      * @return Count
      */
     int trailingBlanks() {
@@ -232,6 +238,7 @@ final class Globals {
 
     /**
      * Whether currently inside an open text block.
+     *
      * @return Flag
      */
     boolean inTextBlock() {
@@ -240,6 +247,7 @@ final class Globals {
 
     /**
      * Source line where the current text block opened.
+     *
      * @return Line
      */
     int textBlockOpenLine() {
@@ -248,6 +256,7 @@ final class Globals {
 
     /**
      * Mark a text block as opened with a recorded indent.
+     *
      * @param line Open line
      * @param indent Open indent
      */
@@ -271,6 +280,7 @@ final class Globals {
     /**
      * Append a body line to the current text block, stripping the
      * opener's indent prefix where present.
+     *
      * @param raw Raw line text
      */
     void appendTextLine(final String raw) {
@@ -290,6 +300,7 @@ final class Globals {
 
     /**
      * The accumulated body lines, in source order.
+     *
      * @return Body lines
      */
     List<String> tbody() {
@@ -298,6 +309,7 @@ final class Globals {
 
     /**
      * Indent at which the current text block opened.
+     *
      * @return Open indent
      */
     int textBlockOpenIndent() {
@@ -306,6 +318,7 @@ final class Globals {
 
     /**
      * Pending comment lines, in source order.
+     *
      * @return Unmodifiable view of the comment buffer
      */
     List<Span> pendingComments() {
@@ -314,6 +327,7 @@ final class Globals {
 
     /**
      * Append a comment span to the pending buffer.
+     *
      * @param span Comment line
      */
     void addComment(final Span span) {
@@ -342,6 +356,7 @@ final class Globals {
     /**
      * Restore the state from a savepoint, discarding every mutation
      * made since it was taken.
+     *
      * @param saved A savepoint taken earlier via {@link #savepoint()}
      */
     void restore(final Globals saved) {

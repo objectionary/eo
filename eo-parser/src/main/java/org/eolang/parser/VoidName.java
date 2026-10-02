@@ -16,7 +16,7 @@ import org.cactoos.Text;
  * truth for these promotions, so every parameter loop that emits a void
  * asks this object rather than deciding for itself.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class VoidName implements Text {
 
@@ -27,6 +27,7 @@ final class VoidName implements Text {
 
     /**
      * Ctor.
+     *
      * @param token The parameter, as the source wrote it
      */
     VoidName(final String token) {

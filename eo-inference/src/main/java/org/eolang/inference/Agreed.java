@@ -62,6 +62,7 @@ final class Agreed {
 
     /**
      * Ctor.
+     *
      * @param witnesses What the program was seen putting into the void, from
      *  {@link Fillings}
      * @param objects The objects the provides table has a row for
@@ -79,6 +80,7 @@ final class Agreed {
 
     /**
      * The names taken off this void that every filling answers the same way.
+     *
      * @param hollow The locator of the void
      * @param asked The names the program takes off it, without the void in
      *  front of them
