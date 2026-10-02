@@ -239,6 +239,18 @@
             </error>
           </xsl:if>
         </xsl:for-each-group>
+        <xsl:for-each select="//o[@local][key('attributes', concat(@local, '#', generate-id(ancestor::o[not(@base)][1])))]">
+          <error>
+            <xsl:attribute name="check" select="'resolve-local-names'"/>
+            <xsl:attribute name="line" select="if (@line) then @line else 0"/>
+            <xsl:attribute name="severity" select="'error'"/>
+            <xsl:text>local name '</xsl:text>
+            <xsl:value-of select="@local"/>
+            <xsl:text>' hides the attribute '</xsl:text>
+            <xsl:value-of select="@local"/>
+            <xsl:text>'</xsl:text>
+          </error>
+        </xsl:for-each>
       </xsl:variable>
       <xsl:if test="not(empty($errors)) or exists(/object/errors)">
         <errors>
