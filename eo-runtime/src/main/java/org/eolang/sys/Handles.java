@@ -6,6 +6,7 @@
 package org.eolang.sys;
 
 import com.sun.jna.Pointer;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -96,10 +97,8 @@ public final class Handles {
      * @return The pointer
      */
     public Pointer remove(final String subject, final int handle) {
-        final Pointer pointer = this.kept.remove(handle);
-        if (pointer == null) {
-            throw new ExFailure(Handles.NAMES_NONE, subject, handle);
-        }
-        return pointer;
+        return Optional.ofNullable(this.kept.remove(handle)).orElseThrow(
+            () -> new ExFailure(Handles.NAMES_NONE, subject, handle)
+        );
     }
 }
