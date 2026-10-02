@@ -733,9 +733,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static void checkNaming(final Level level, final Emit emit, final boolean naming) {
-        if (naming && !level.named()
-            && (level.parent() == Kind.TOP_LEVEL
-                || level.parent() == Kind.BARE_FORMATION)) {
+        if (naming && !level.named() && level.parent().body()) {
             final String message;
             if (level.kind() == Kind.ONLY_PHI) {
                 message = "inline-phi formation must carry a name on the right";

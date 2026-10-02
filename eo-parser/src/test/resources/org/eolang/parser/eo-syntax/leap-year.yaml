@@ -27,5 +27,5 @@ input: |
       stdout
         sprintf
           "%s is %sa leap year!"
-          (scanner stdin).nextInt > year!
+          (scanner stdin).nextInt >>! year
           if (leap year:y) "" "not "

@@ -99,7 +99,9 @@ final class LnReversed implements Line {
             kind = Kind.REVERSED_HARGS;
             openness = Openness.HCOMPLETED;
         }
-        this.transition(stack, suffix, kind, openness);
+        suffix.rejectNameInArguments(
+            this.transition(stack, suffix, kind, openness), this.span
+        );
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();
@@ -156,10 +158,10 @@ final class LnReversed implements Line {
         }
     }
 
-    private void transition(
+    private Level transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(
+        return new Transition(stack, this.span).apply(
             kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }

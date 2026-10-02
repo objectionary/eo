@@ -257,6 +257,28 @@ final class Suffix {
     }
 
     /**
+     * Refuse an explicit {@code > name} on a line that is an argument
+     * (R-6.2.4). The name would float the argument up to the enclosing
+     * formation as an attribute of its own, which is not what the author
+     * of {@code 42 > bar} under {@code x > foo} meant (#6145); an argument
+     * that must be reachable by name takes a {@code >>} handle instead. A
+     * formation line never gets here, since it floats up by design
+     * (R-3.14.8), and an argument of an only-phi formation is left to
+     * the §4.5 check, which names the formation in its message.
+     *
+     * @param level The level the line was pushed or replaced as
+     * @param span Source span (for error reporting)
+     */
+    void rejectNameInArguments(final Level level, final Span span) {
+        if (this.form == Form.NAME && !level.parent().body() && !level.argument()) {
+            throw new ParseError(
+                span.line(), span.indent(),
+                "an argument cannot carry a name, move it into the formation body or give it a `>>` handle"
+            );
+        }
+    }
+
+    /**
      * Whether this suffix is a test attribute — either a truthy
      * {@code +> name} or a throwing {@code -> name}.
      *
