@@ -97,18 +97,8 @@
   <xsl:function name="eo:captor" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="name" as="xs:string" select="if (exists($ref/@method)) then substring-after($ref/@base, '.') else string($ref/@base)"/>
-    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][eo:declares(., $name)][1]"/>
+    <xsl:variable name="scope" as="element()?" select="if (not($name = $eo:handle-names)) then () else if (exists($ref/@method)) then eo:scope($ref) else $ref/ancestor::o[not(@base)][let $pair := concat($name, '#', generate-id(.)) return exists(key('attributes', $pair)) or exists(key('handles', $pair))][1]"/>
     <xsl:sequence select="for $found in $scope return key('handles', concat($name, '#', generate-id($found)), $found)[1]"/>
-  </xsl:function>
-  <!--
-  Whether this formation declares the name, publicly or as a handle. Both
-  indexes are filed under one "name in this scope" pair, built once here.
-  -->
-  <xsl:function name="eo:declares" as="xs:boolean">
-    <xsl:param name="scope" as="element()"/>
-    <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="pair" as="xs:string" select="concat($name, '#', generate-id($scope))"/>
-    <xsl:sequence select="exists(key('attributes', $pair, root($scope))) or exists(key('handles', $pair, root($scope)))"/>
   </xsl:function>
   <!--
   The formation that the explicit receiver of a dispatch names: "ξ" (written
@@ -138,43 +128,24 @@
     <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <!--
-  How many formations separate a bare, ancestor-search-captured reference
-  from the formation that owns the handle capturing it - the same "rhos"
-  count "build-fqns.xsl" computes for every other name, so the receiver
-  built below matches what that stage would have built itself, and it never
-  needs to walk scopes for a cactus name again (#7134).
-  -->
-  <xsl:function name="eo:hops" as="xs:integer">
-    <xsl:param name="ref" as="element()"/>
-    <xsl:param name="owner" as="element()"/>
-    <xsl:sequence select="count($ref/ancestor::o[not(@base)]) - count($owner/ancestor-or-self::o[not(@base)])"/>
-  </xsl:function>
-  <!--
   The receiver a captured bare reference dispatches through: "ξ" itself
   when the handle lives in the reference's own formation, or that many
   ".ρ" hops out otherwise - the exact shape "build-fqns.xsl"'s "with-rho"
   builds from a "rhos" count, built here instead since this pass is the one
   that knows the count.
   -->
-  <xsl:function name="eo:receiver" as="element()">
+  <xsl:template name="eo:receiver">
     <xsl:param name="hops" as="xs:integer"/>
-    <xsl:param name="ref" as="element()"/>
-    <xsl:choose>
-      <xsl:when test="$hops le 0">
-        <o>
-          <xsl:attribute name="base" select="'ξ'"/>
-          <xsl:apply-templates select="$ref/@line | $ref/@pos"/>
-        </o>
-      </xsl:when>
-      <xsl:otherwise>
-        <o>
-          <xsl:attribute name="base" select="'.ρ'"/>
-          <xsl:apply-templates select="$ref/@line | $ref/@pos"/>
-          <xsl:sequence select="eo:receiver($hops - 1, $ref)"/>
-        </o>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
+    <o>
+      <xsl:attribute name="base" select="if ($hops le 0) then 'ξ' else '.ρ'"/>
+      <xsl:apply-templates select="@line | @pos"/>
+      <xsl:if test="$hops gt 0">
+        <xsl:call-template name="eo:receiver">
+          <xsl:with-param name="hops" select="$hops - 1"/>
+        </xsl:call-template>
+      </xsl:if>
+    </o>
+  </xsl:template>
   <!--
   Matches every reference and rewrites the ones a handle captures. The
   captor is looked up once, into a variable, instead of once in the match
@@ -198,13 +169,15 @@
     <xsl:variable name="name" as="xs:string" select="string(@base)"/>
     <xsl:variable name="anonymous" as="element()?" select="if (exists($captor) or exists(@method) or not(contains($name, $eo:cactoos))) then () else ancestor::o[@name=$name][1]"/>
     <xsl:variable name="holder" as="element()?" select="($captor, $anonymous)[1]"/>
-    <xsl:variable name="hops" as="xs:integer?" select="if (exists($holder) and empty(@method)) then eo:hops(., $holder/ancestor::o[not(@base)][1]) else ()"/>
+    <xsl:variable name="hops" as="xs:integer?" select="if (exists($holder) and empty(@method)) then count(ancestor::o[not(@base)]) - count($holder/ancestor::o[not(@base)][1]/ancestor-or-self::o[not(@base)]) else ()"/>
     <xsl:choose>
       <xsl:when test="exists($hops) and $hops gt 0">
         <xsl:copy>
           <xsl:attribute name="base" select="concat('.', $holder/@name)"/>
           <xsl:apply-templates select="@* except @base"/>
-          <xsl:sequence select="eo:receiver($hops, .)"/>
+          <xsl:call-template name="eo:receiver">
+            <xsl:with-param name="hops" select="$hops"/>
+          </xsl:call-template>
           <xsl:apply-templates select="node()"/>
         </xsl:copy>
       </xsl:when>
