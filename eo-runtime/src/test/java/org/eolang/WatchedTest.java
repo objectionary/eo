@@ -76,6 +76,7 @@ final class WatchedTest {
                             final byte[][] junk = new byte[1][];
                             while (!release.get()) {
                                 junk[0] = new byte[256 * 1024];
+                                Thread.interrupted();
                                 WatchedTest.rest(1L);
                             }
                             return null;
