@@ -368,12 +368,14 @@
                 -->
                 <lint>cyclomatic-complexity</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'direct-phi' here.
-                The lint forbids reading '@' directly and reports 24 errors.
-                Some are tests like '123.@.eq 123.@' in 'i64.eo', where '@'
-                is the void of 'number'. Others are deliberate, like the
-                '@. > @' heads of 'console', 'stdin', 'file', and 'map'
-                (#5747, #5748). Each place needs its own decision.
+                @todo #9115:30min Stop skipping 'direct-phi' here.
+                The lint forbids reading '@' directly and still reports 13
+                errors. Eleven are the deliberate '@.' heads of 'console',
+                'stdin', 'stderr', 'socket', 'file', 'map', and
+                'bytes.as-input' (#5747, #5748), which only the architect
+                may change. The other two are the negative tests that reach
+                'tmpfile' through the '@' of a path in 'directory.eo' and
+                'file.eo'.
                 -->
                 <lint>direct-phi</lint>
                 <!--
