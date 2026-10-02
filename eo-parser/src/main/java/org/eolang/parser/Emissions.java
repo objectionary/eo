@@ -49,7 +49,8 @@ final class Emissions {
 
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
-     * special forms — §4.5. Shared by every producer of a void parameter
+     * special forms — §4.5. The same shape follows the {@code ^} of a
+     * receiver that carries a handle, {@code ^name} (R-3.4.11). Shared by every producer of a void parameter
      * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
      * {@link #inlinePhi}), so a bracket list is validated the same way
      * regardless of which line shape it appears on. The cactus emoji is
@@ -247,10 +248,11 @@ final class Emissions {
      * @param pos Source column of the parameter's first character
      */
     static void validParam(final String raw, final int line, final int pos) {
-        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()
+            && !Emissions.PARAM_NAME.matcher(new VoidHandle(raw).asString()).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME, @ or ^"
+                "parameter names in voids must be NAME, @, ^ or ^NAME"
             );
         }
         Suffix.checkGlyphs(raw, line, pos);
@@ -539,7 +541,9 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
             Emissions.validPhiParam(param, line, pcol);
-            emit.voidParam(new VoidName(param).asString(), line, pcol);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(), line, pcol
+            );
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);

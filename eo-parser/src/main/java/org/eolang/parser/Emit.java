@@ -488,15 +488,27 @@ final class Emit {
      * @param pos Source column of the parameter
      */
     void voidParam(final String name, final int line, final int pos) {
-        this.append(
-            new Directives()
-                .add("o")
-                .attr("name", name)
-                .attr("base", "∅")
-                .attr("line", line)
-                .attr("pos", pos)
-                .up()
-        );
+        this.voidParam(name, "", line, pos);
+    }
+
+    /**
+     * Emit a void parameter child that may carry a file-local handle —
+     * the {@code @local="handle"} marker of a receiver written as
+     * {@code ^handle} (R-3.4.11 / R-3.10.12). An empty handle emits no
+     * marker, the same child {@link #voidParam(String, int, int)} emits.
+     *
+     * @param name Parameter name
+     * @param handle The file-local handle, or an empty string for none
+     * @param line Source line of the formation
+     * @param pos Source column of the parameter
+     * @checkstyle ParameterNumberCheck (3 lines)
+     */
+    void voidParam(final String name, final String handle, final int line, final int pos) {
+        final Directives dirs = new Directives().add("o").attr("name", name).attr("base", "∅");
+        if (!handle.isEmpty()) {
+            dirs.attr("local", handle);
+        }
+        this.append(dirs.attr("line", line).attr("pos", pos).up());
     }
 
     /**

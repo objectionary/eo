@@ -2,11 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
+line: 2
 message: |-
-  [1:1] error: 'parameter names in voids must be NAME, @, ^ or ^NAME'
-  [foo🌵] > main
-   ^
+  duplicate local name 's'
 input: |
-  [foo🌵] > main
-    5 > x
+  [^s] > foo
+    42 >> s
