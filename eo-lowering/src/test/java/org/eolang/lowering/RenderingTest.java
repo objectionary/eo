@@ -101,17 +101,16 @@ final class RenderingTest {
                 String.format("[] > foo%n  bar > @%n    [x]%n      x > @%n    [y]%n      y > @%n")
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
-        for (final String entry : new ListOf<>("1:𝜎1:α0", "2:𝜎2:α1")) {
-            final String[] parts = entry.split(":");
+        for (final int idx : new ListOf<>(0, 1)) {
             final Path protocol = temp.resolve("2-protocols").resolve(
-                new Locator(String.format("Φ.foo.φ.%s", parts[2])).protocol()
+                new Locator(String.format("Φ.foo.φ.α%d", idx)).protocol()
             );
             Files.createDirectories(protocol.getParent());
             Files.write(
                 protocol,
                 String.format(
-                    "<morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">%s:λ</dataize></evaluate></morph>",
-                    parts[1]
+                    "<morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">𝜎%d:λ</dataize></evaluate></morph>",
+                    idx + 1
                 ).getBytes(StandardCharsets.UTF_8)
             );
         }

@@ -111,7 +111,7 @@ final class Rendering implements Proc<Path> {
         ).with((href, base) -> new StreamSource(href))
             .with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
-        final Map<String, String> written = new HashMap<>(0);
+        final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
@@ -135,18 +135,6 @@ final class Rendering implements Proc<Path> {
                         "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
-                } else if (written.containsKey(out.xpath("/rendered/atom/@file").get(0))) {
-                    final String name = out.xpath("/rendered/atom/@file").get(0);
-                    tainted += 1;
-                    if (rendered.remove(written.get(name))) {
-                        tainted += 1;
-                        Files.delete(this.atoms.resolve(name));
-                    }
-                    Logger.info(
-                        this,
-                        "The entry %s at %s gets no Java atom and stays in EO as written, because another entry asks for %s too",
-                        cells[0], cells[1], name
-                    );
                 } else {
                     final Path file = this.atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
@@ -157,7 +145,9 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
                     rendered.add(String.format("%s%n", row));
-                    written.put(out.xpath("/rendered/atom/@file").get(0), String.format("%s%n", row));
+                    claims.computeIfAbsent(
+                        out.xpath("/rendered/atom/@file").get(0), key -> new ArrayList<>(1)
+                    ).add(String.format("%s%n", row));
                     Logger.debug(
                         this,
                         "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
@@ -175,6 +165,7 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
+        tainted += this.unshared(claims, rendered);
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
@@ -184,6 +175,25 @@ final class Rendering implements Proc<Path> {
             "Rendered %d atoms into %[file]s, while %d entries were taints",
             rendered.size(), this.atoms, tainted
         );
+    }
+
+    private int unshared(
+        final Map<String, Collection<String>> claims, final Collection<String> rendered
+    ) throws IOException {
+        int dropped = 0;
+        for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
+            if (claim.getValue().size() > 1) {
+                rendered.removeAll(claim.getValue());
+                Files.delete(this.atoms.resolve(claim.getKey()));
+                dropped += claim.getValue().size();
+                Logger.info(
+                    this,
+                    "%d entries get no Java atom and stay in EO as written, because all of them ask for %s",
+                    claim.getValue().size(), claim.getKey()
+                );
+            }
+        }
+        return dropped;
     }
 
     private static String top(final Map<String, Path> tops, final String locator) {
