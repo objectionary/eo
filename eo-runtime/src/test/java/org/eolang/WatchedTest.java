@@ -178,10 +178,11 @@ final class WatchedTest {
     @Test
     void skipsTerminatedBodyThatLeftAThread() {
         final AtomicBoolean release = new AtomicBoolean(false);
+        final Watched watched = new Watched(1024L * 1024L, 100L);
         try {
             Assertions.assertThrows(
                 TestAbortedException.class,
-                () -> new Watched(1024L * 1024L, 100L).through(
+                () -> watched.through(
                     () -> {
                         final Thread extra = new Thread(
                             () -> {
@@ -210,12 +211,13 @@ final class WatchedTest {
     @Test
     void namesThreadThatOutlivedItsBody() {
         final AtomicBoolean release = new AtomicBoolean(false);
+        final Watched watched = new Watched(64L * 1024L * 1024L, 100L);
         try {
             MatcherAssert.assertThat(
                 "The thread that outlived the test must be named, but it wasnt",
                 Assertions.assertThrows(
                     IllegalStateException.class,
-                    () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                    () -> watched.through(
                         () -> {
                             final Thread extra = new Thread(
                                 () -> {

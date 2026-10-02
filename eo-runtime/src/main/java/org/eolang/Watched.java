@@ -74,7 +74,7 @@ import org.opentest4j.TestAbortedException;
  *
  * @since 0.75.0
  */
-@SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
+@SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException", "java:S3014"})
 final class Watched {
 
     /**
