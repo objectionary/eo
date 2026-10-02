@@ -52,7 +52,8 @@ import org.eolang.cache.GlobalCache;
  * every processor. The build waits only as long as its slowest entry, and
  * not as long as all the entries together. One slow entry can keep the
  * build silent for minutes, so every thirty seconds this stage prints a
- * line from {@link Progress} that says how much work is done.</p>
+ * line from {@link Progress} that says how much work is done, and which
+ * entries phino is still working on.</p>
  *
  * <p>phino is allowed to write down only the operations that are listed in
  * the file {@code atoms.yaml}, such as adding two numbers. Before the runs,
@@ -197,7 +198,7 @@ final class Morphing implements Proc<Path> {
             new TimerTask() {
                 @Override
                 public void run() {
-                    Logger.info(Morphing.this, "Morphed %s so far", progress.asString());
+                    Logger.info(Morphing.this, "Morphed %s", progress.asString());
                 }
             },
             30_000L,
@@ -243,6 +244,7 @@ final class Morphing implements Proc<Path> {
         Files.createDirectories(protocol.getParent());
         final String hash = uses.hash(number, cells[1]);
         final AtomicBoolean fresh = new AtomicBoolean();
+        progress.begin(cells[1]);
         try {
             store.kept(
                 tail,
@@ -275,6 +277,8 @@ final class Morphing implements Proc<Path> {
                 "Lowering of %s ran out of time budget (%[ms]s), its XML protocol kept in %[file]s for study",
                 cells[1], this.budget.toMillis(), protocol
             );
+        } finally {
+            progress.end(cells[1]);
         }
         return protocol;
     }
