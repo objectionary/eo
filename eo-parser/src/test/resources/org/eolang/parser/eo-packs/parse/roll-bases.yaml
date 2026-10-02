@@ -29,8 +29,10 @@ input: |
   [] > main
     [x] > foo
       a. > one
-        b. > two
-          c > three
+        two
+      b. > two
+        three
+      c > three
       * 1 2 > tup
       if. true 1 2 > cond
       if. > rev
