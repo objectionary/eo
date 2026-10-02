@@ -39,7 +39,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 26
-      - uses: actions/cache@v6
+      # Restored, never saved: the `mvn` job saves this very key on master,
+      # where every pull request can read it, while a cache saved here is
+      # scoped to one pull request and pushes master's out of the quota.
+      - uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}

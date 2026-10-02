@@ -19,7 +19,6 @@ import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
-import org.cactoos.bytes.UncheckedBytes;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.Directory;
 import org.cactoos.io.InputOf;
@@ -86,23 +85,18 @@ import org.eolang.cache.GlobalCache;
  * stay in EO.</p>
  *
  * <p>A protocol stays the same as long as four things stay the same: the
- * world, the table of operations, the version of phino, and the limit of
- * steps. So, every protocol is saved in the cache, together with these
- * four things. When a later build has the same four things, it takes the
- * protocol from the cache and does not run phino at all. A run that was
+ * part of the world that its entry uses, as {@link Uses} says, the table of
+ * operations, the version of phino, and the limit of steps. So, every
+ * protocol is saved in the cache, together with these four things. When a
+ * later build has the same four things, it takes the protocol from the
+ * cache and does not run phino at all. An object that changed makes phino
+ * run again only on the entries that use it. A run that was
  * stopped saves nothing in the cache, so the next build tries it again.
  * The protocols of an earlier build are deleted before the runs, so that
  * an entry that is not in the world any more leaves no protocol
  * behind.</p>
  *
  * @since 0.64.0
- * @todo #8548:90min Save every protocol in the cache under the part of the
- *  world that its entry uses, and not under the whole world. Now, when
- *  any one object of the build changes, the hash of {@code world.phi}
- *  changes too, and phino runs again on every entry, even on the entries
- *  that never use the changed object. The key could be made from the
- *  object of the entry and all the objects it uses, directly or through
- *  other objects.
  */
 final class Morphing implements Proc<Path> {
 
@@ -173,9 +167,9 @@ final class Morphing implements Proc<Path> {
         }
         final Path atoms = Files.write(
             home.resolve("atoms.yaml"),
-            new UncheckedBytes(
-                new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml"))
-            ).asBytes()
+            new IoChecked<>(
+                () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
+            ).value()
         );
         final Path protocols = home.resolve("2-protocols");
         if (Files.exists(protocols)) {
@@ -189,9 +183,7 @@ final class Morphing implements Proc<Path> {
             .with(this.phino.pin())
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
             .with(String.valueOf(this.steps));
-        final String hash = new UncheckedText(
-            new HexOf(new Sha256DigestOf(new InputOf(world)))
-        ).asString();
+        final Uses uses = new Uses(home);
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
                 line -> !line.isEmpty()
@@ -221,7 +213,7 @@ final class Morphing implements Proc<Path> {
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
                                 row -> () -> this.morph(
-                                    world, atoms, protocols, row, progress, store, hash
+                                    world, atoms, protocols, row, progress, store, uses
                                 ),
                                 rows
                             )
@@ -241,7 +233,7 @@ final class Morphing implements Proc<Path> {
 
     private Path morph(
         final Path world, final Path atoms, final Path protocols, final String row,
-        final Progress progress, final GlobalCache store, final String hash
+        final Progress progress, final GlobalCache store, final Uses uses
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
@@ -249,6 +241,7 @@ final class Morphing implements Proc<Path> {
         final Path tail = new Locator(cells[1]).protocol();
         final Path protocol = protocols.resolve(tail);
         Files.createDirectories(protocol.getParent());
+        final String hash = uses.hash(number, cells[1]);
         final AtomicBoolean fresh = new AtomicBoolean();
         try {
             store.kept(

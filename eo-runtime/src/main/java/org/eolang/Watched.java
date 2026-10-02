@@ -4,6 +4,8 @@
  */
 package org.eolang;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -60,14 +62,19 @@ import org.opentest4j.TestAbortedException;
  * a box with more memory would never have reached says nothing about the
  * code under test.</p>
  *
+ * <p>The threads a body started are waited for as well, not only the body
+ * itself: one of them may still hold a file when JUnit deletes the
+ * {@code @TempDir} of the test behind it, which on windows fails (#8336).
+ * Once the body is out, the group is given the same grace to empty, and a
+ * test that came out clean while its own threads keep running fails,
+ * naming them — a thread nobody waits for is a leak of the test, and the
+ * next test pays for it. A body that was terminated keeps the verdict it
+ * earned: its leftovers are waited for all the same, but a skip does not
+ * turn into a failure because one of them was slow to notice.</p>
+ *
  * @since 0.75.0
- * @todo #8336:30min Wait for the threads a body left behind too. They are
- *  interrupted as often as the body is, but never waited for, so one may
- *  still hold a file when JUnit deletes the {@code @TempDir} of the test
- *  behind it, which on windows fails. Wait for the group to empty as well,
- *  or say plainly which threads outlived the test.
  */
-@SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException"})
+@SuppressWarnings({"PMD.AvoidThreadGroup", "PMD.AvoidCatchingGenericException", "java:S3014"})
 final class Watched {
 
     /**
@@ -86,6 +93,16 @@ final class Watched {
         " ",
         ", and it would not stop within %d milliseconds of being",
         "interrupted, so its thread may still be holding the heap"
+    );
+
+    /**
+     * What is said about a test whose own threads outlived it.
+     */
+    private static final String LEFT = String.join(
+        " ",
+        "The test left %s behind, still running %d milliseconds after being",
+        "interrupted, so the files and the heap they hold are theirs and not",
+        "the next test's"
     );
 
     /**
@@ -142,7 +159,7 @@ final class Watched {
         }
     }
 
-    // @checkstyle IllegalThrowsCheck (39 lines)
+    // @checkstyle IllegalThrowsCheck (45 lines)
     private void guarded(final InvocationInterceptor.Invocation<Void> body) throws Throwable {
         final ThreadGroup group = new ThreadGroup(
             String.format("maxmem-%d", Watched.COUNT.incrementAndGet())
@@ -165,12 +182,13 @@ final class Watched {
                 }
             }
         } catch (final InterruptedException ex) {
-            this.stopped(group, done);
+            this.terminate(group, done);
             throw ex;
         }
         if (over) {
-            throw this.aborted(consumed, this.stopped(group, done));
+            throw this.aborted(consumed, this.terminate(group, done));
         }
+        final boolean idle = this.emptied(group);
         final Throwable error = failure.get();
         if (error != null) {
             throw error;
@@ -178,21 +196,63 @@ final class Watched {
         if (consumed.bytes() > this.limit) {
             throw this.aborted(consumed, true);
         }
+        if (!idle) {
+            throw new IllegalStateException(
+                String.format(Watched.LEFT, Watched.alive(group), this.grace)
+            );
+        }
+    }
+
+    private boolean terminate(final ThreadGroup group, final CountDownLatch done) {
+        final boolean gone = this.stopped(group, done);
+        if (gone) {
+            this.emptied(group);
+        }
+        return gone;
     }
 
     private boolean stopped(final ThreadGroup group, final CountDownLatch done) {
         final long deadline = System.currentTimeMillis() + this.grace;
         group.interrupt();
         while (done.getCount() > 0L && System.currentTimeMillis() < deadline) {
-            try {
-                done.await(50L, TimeUnit.MILLISECONDS);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                break;
-            }
+            Watched.rest();
             group.interrupt();
         }
         return done.getCount() == 0L;
+    }
+
+    private boolean emptied(final ThreadGroup group) {
+        final long deadline = System.currentTimeMillis() + this.grace;
+        group.interrupt();
+        while (group.activeCount() > 0 && System.currentTimeMillis() < deadline) {
+            Watched.rest();
+            group.interrupt();
+        }
+        return group.activeCount() == 0;
+    }
+
+    private static void rest() {
+        try {
+            Thread.sleep(10L);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private static String alive(final ThreadGroup group) {
+        final Thread[] threads = new Thread[1 + group.activeCount() * 2];
+        final int found = group.enumerate(threads);
+        final Collection<String> names = new ArrayList<>(found);
+        for (int idx = 0; idx < found; ++idx) {
+            names.add(String.format("'%s'", threads[idx].getName()));
+        }
+        final String out;
+        if (names.isEmpty()) {
+            out = "a thread of its own";
+        } else {
+            out = String.join(", ", names);
+        }
+        return out;
     }
 
     private TestAbortedException aborted(final Consumed consumed, final boolean gone) {

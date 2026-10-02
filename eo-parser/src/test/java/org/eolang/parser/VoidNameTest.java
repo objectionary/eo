@@ -34,6 +34,15 @@ final class VoidNameTest {
     }
 
     @Test
+    void promotesRhoTokenWithHandle() {
+        MatcherAssert.assertThat(
+            "a `^name` parameter must be emitted as `ρ`, since it declares the receiver",
+            new VoidName("^wf7").asString(),
+            Matchers.equalTo("ρ")
+        );
+    }
+
+    @Test
     void keepsOrdinaryName() {
         MatcherAssert.assertThat(
             "a parameter that is not a scope token must name itself",
