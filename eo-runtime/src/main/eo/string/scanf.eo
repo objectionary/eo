@@ -47,12 +47,7 @@
             txt.slice 0 1
             "-"
           folded.times -1
-          if.
-            eq.
-              txt.slice 0 1
-              "+"
-            folded
-            folded
+          folded
         ^.^.fold-digits > folded
           signed.if
             txt.slice
