@@ -1,16 +1,16 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The root of the entry dataized to bytes phino knew in advance, so the
-# object always gives the same constant, and there is no computing to turn
-# into Java.
+# The root of the entry dataized to bytes phino knew in advance, but the
+# bytes alone do not say they are a number, and bare bytes would lose every
+# attribute of it, so the object stays in EO.
 locator: Φ.yes
 number: 75
-taint: always gives the constant FF-
+taint: always gives the constant 40-45-00-00-00-00-00-00, which is not a bool
 eo:
   yes.eo: |
     [] > yes
-      true > @
+      42 > @
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e75">
@@ -19,7 +19,7 @@ protocol: |
         <answer meta="𝑛.1.2">⟦ λ ⤍ L_root, +1 ⟧</answer>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l🌵.e75">
-        <bind meta="𝛿1.2">FF-</bind>
+        <bind meta="𝛿1.2">40-45-00-00-00-00-00-00</bind>
         <built meta="𝑛.2.1">⟦⟧</built>
         <answer meta="𝑛.2.2">⟦⟧</answer>
       </evaluate>

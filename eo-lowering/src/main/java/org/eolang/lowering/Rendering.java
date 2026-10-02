@@ -69,10 +69,12 @@ import org.cactoos.text.TextOf;
  * is a taint then, since javac would find only one of the two.</p>
  *
  * @since 0.64.0
- * @todo #8548:30min Write an atom for an entry whose result is always the
- *  same. When the result of the body is known bytes, like an object that
- *  always returns {@code 42}, the entry is a taint now. But its atom could
- *  simply return those bytes.
+ * @todo #9061:60min Write an atom for an entry whose body is always the same
+ *  number or string. Now only a constant bool gets an atom, because the bytes
+ *  alone do not say what type they are, and returning bare bytes for a number
+ *  or a string loses every attribute of it, as it did to {@code Φ.false} in
+ *  eo-runtime. Give {@code rendering.xsl} the type that the tables of
+ *  {@code eo:inference} say the body has, and wrap the constant into it.
  */
 final class Rendering implements Proc<Path> {
 
