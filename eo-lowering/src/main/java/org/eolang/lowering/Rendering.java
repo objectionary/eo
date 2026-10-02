@@ -64,13 +64,11 @@ import org.cactoos.text.TextOf;
  * {@code rendered.tsv}, so that {@link Patching} knows which objects to
  * change.</p>
  *
+ * <p>The transpiler names the atom of an argument of another object after
+ * the top object only, so two entries may ask for one class. Each of them
+ * is a taint then, since javac would find only one of the two.</p>
+ *
  * @since 0.64.0
- * @todo #8548:60min Write atoms for objects that are arguments of other
- *  objects. A locator with a {@code φ}, {@code ρ} or {@code α} in it, like
- *  {@code Φ.true.φ.α0}, belongs to an object that has no name of its own.
- *  The transpiler names the atom of such an object by a rule that
- *  {@code rendering.xsl} does not follow, so such an entry is a taint now.
- *  Four of the 587 entries of eo-runtime are like this.
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
@@ -103,13 +101,9 @@ final class Rendering implements Proc<Path> {
                 )
             );
         }
-        final Map<String, String> tops = new HashMap<>(0);
+        final Map<String, Path> tops = new HashMap<>(0);
         for (final Path copy : new Copies(home)) {
-            final XML xmir = new XMLDocument(copy);
-            tops.put(
-                xmir.xpath("/object/o[1]/@loc").get(0),
-                String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
-            );
+            tops.put(new XMLDocument(copy).xpath("/object/o[1]/@loc").get(0), copy);
         }
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
@@ -117,6 +111,7 @@ final class Rendering implements Proc<Path> {
         ).with((href, base) -> new StreamSource(href))
             .with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
+        final Map<String, String> written = new HashMap<>(0);
         int tainted = 0;
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
@@ -131,7 +126,7 @@ final class Rendering implements Proc<Path> {
                     .with("number", cells[0])
                     .with("locator", cells[1])
                     .with("top", top)
-                    .with("package", tops.get(top))
+                    .with("source", tops.get(top).toUri().toString())
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
                     tainted += 1;
@@ -139,6 +134,18 @@ final class Rendering implements Proc<Path> {
                         this,
                         "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
+                    );
+                } else if (written.containsKey(out.xpath("/rendered/atom/@file").get(0))) {
+                    final String name = out.xpath("/rendered/atom/@file").get(0);
+                    tainted += 1;
+                    if (rendered.remove(written.get(name))) {
+                        tainted += 1;
+                        Files.delete(this.atoms.resolve(name));
+                    }
+                    Logger.info(
+                        this,
+                        "The entry %s at %s gets no Java atom and stays in EO as written, because another entry asks for %s too",
+                        cells[0], cells[1], name
                     );
                 } else {
                     final Path file = this.atoms.resolve(
@@ -150,6 +157,7 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
                     rendered.add(String.format("%s%n", row));
+                    written.put(out.xpath("/rendered/atom/@file").get(0), String.format("%s%n", row));
                     Logger.debug(
                         this,
                         "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
@@ -178,7 +186,7 @@ final class Rendering implements Proc<Path> {
         );
     }
 
-    private static String top(final Map<String, String> tops, final String locator) {
+    private static String top(final Map<String, Path> tops, final String locator) {
         String found = "";
         for (final String loc : tops.keySet()) {
             if ((locator.equals(loc) || locator.startsWith(String.format("%s.", loc)))

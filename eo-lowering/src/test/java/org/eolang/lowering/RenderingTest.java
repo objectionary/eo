@@ -84,6 +84,46 @@ final class RenderingTest {
     }
 
     @Test
+    void rendersNothingOfTwoEntriesWhoseAtomsShareAClass(@Mktmp final Path temp)
+        throws IOException {
+        Files.write(
+            temp.resolve("entries.tsv"),
+            String.format("1\tΦ.foo.φ.α0%n2\tΦ.foo.φ.α1%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            temp.resolve("voids.tsv"),
+            String.format("𝜎1\t1\tx\tobject%n𝜎2\t2\ty\tobject%n")
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            Files.createDirectories(temp.resolve("1-planting")).resolve("foo.xmir"),
+            new EoSyntax(
+                String.format("[] > foo%n  bar > @%n    [x]%n      x > @%n    [y]%n      y > @%n")
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        for (final String entry : new ListOf<>("1:𝜎1:α0", "2:𝜎2:α1")) {
+            final String[] parts = entry.split(":");
+            final Path protocol = temp.resolve("2-protocols").resolve(
+                new Locator(String.format("Φ.foo.φ.%s", parts[2])).protocol()
+            );
+            Files.createDirectories(protocol.getParent());
+            Files.write(
+                protocol,
+                String.format(
+                    "<morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">%s:λ</dataize></evaluate></morph>",
+                    parts[1]
+                ).getBytes(StandardCharsets.UTF_8)
+            );
+        }
+        new Rendering(temp.resolve("atoms")).exec(temp);
+        MatcherAssert.assertThat(
+            "two entries whose atoms ask for one class must both be taints, but some were rendered",
+            Files.readString(temp.resolve("rendered.tsv"), StandardCharsets.UTF_8),
+            Matchers.emptyString()
+        );
+    }
+
+    @Test
     void logsAnEntryWithNoProtocol(@Mktmp final Path temp) throws IOException {
         final Path home = Files.createDirectories(temp);
         final int number = new SecureRandom().nextInt(900) + 100;
