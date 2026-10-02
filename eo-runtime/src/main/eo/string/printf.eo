@@ -68,7 +68,7 @@
 +unlint wrong-sprintf-arguments
 +version 0.0.0
 
-[^ args] > printf
+[^text args] > printf
   string > @
     [^ index auto acc] >> walk
       if. > @
@@ -140,7 +140,7 @@
       i
   size. >> span!
     bytes
-      ^.as-bytes >> raw!
+      text.as-bytes >> raw!
   [^ index auto acc] >> spec
     if. > @
       gte.
@@ -148,7 +148,7 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * ^.^
+          * ^.text
       if.
         25-.eq conv
         if.
@@ -163,7 +163,7 @@
             acc.concat 25-
           T
             "The escaped %% conversion in the format %s does not take flags, width or precision".printf
-              * ^.^
+              * ^.text
         walk
           plus.
             number end
@@ -344,7 +344,7 @@
             index.plus 1
       T
         "The positional argument index in the format %s is too large".printf
-          * ^.^
+          * ^.text
       if.
         positional.as-bool.and
           lt.

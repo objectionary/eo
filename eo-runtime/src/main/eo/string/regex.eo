@@ -80,7 +80,7 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^] > regex
+[^text] > regex
   compile > @
   or. > [^ c] >> alnum
     numeric c
@@ -317,7 +317,7 @@
       2F-.eq
         raw.slice 0 1
       false
-    ^.^.as-bytes > raw
+    ^.text.as-bytes > raw
     ^.cant-compile > [^ reason offset] > reported
       worded offset reason
     raw.size > size

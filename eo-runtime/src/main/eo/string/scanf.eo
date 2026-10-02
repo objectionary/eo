@@ -34,7 +34,7 @@
 +unlint sprintf-without-formatters
 +version 0.0.0
 
-[^ read] > scanf
+[^text read] > scanf
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -268,7 +268,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.^.length
+      position.gte ^.text.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -330,7 +330,7 @@
                   escaped ch
               found
               false
-    ^.^.slice > ch
+    ^.text.slice > ch
       position
       1
   | >> tokens
