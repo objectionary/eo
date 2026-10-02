@@ -1,8 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A named formation inside an argument is named after the top object and
-# the formations below the argument, since the argument has no name.
+# A formation in an argument is named after the top and what is below it.
 locator: Φ.foo.φ.α0.inner
 number: 12
 eo:
@@ -16,11 +15,13 @@ eo:
 voids:
   - "𝜎4\t12\tz\tobject"
 protocol: |
-  <morph at="Φ.l🌵.e12">
-    <evaluate λ="L_root" by="morph" at="Φ.l🌵.e12">
-      <dataize meta="𝛿1.2">𝜎4:λ</dataize>
-    </evaluate>
-  </morph>
+  <protocol>
+    <morph at="Φ.l🌵.e12">
+      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e12">
+        <dataize meta="𝛿1.2">𝜎4:λ</dataize>
+      </evaluate>
+    </morph>
+  </protocol>
 file: org/eolang/EOfoo$EOinner$EOφ.java
 java: |
   /*

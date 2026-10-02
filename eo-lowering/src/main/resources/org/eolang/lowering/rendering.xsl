@@ -106,8 +106,7 @@
   which is an argument of some application, and names the atom inside it
   after the top object and the formations below that argument only: the atom
   of "Φ.true.φ.α0" is "true.φ", and the atom of a formation "inner" inside
-  that argument is "true.inner.φ". A formation inside an application, but not
-  inside an argument of it, has no name the transpiler would give its atom.
+  that argument is "true.inner.φ".
   -->
   <xsl:function name="eo:names" as="xs:string*">
     <xsl:variable name="formation" select="doc($source)//o[@loc = $locator][1]"/>
@@ -116,9 +115,6 @@
     </xsl:if>
     <xsl:variable name="argument" select="$formation/ancestor-or-self::o[not(@name)][1]"/>
     <xsl:variable name="named" select="$formation/ancestor-or-self::o[empty($argument) or ancestor::o[. is $argument]]"/>
-    <xsl:for-each select="$named[@base][not(. is $formation)][1]">
-      <xsl:sequence select="eo:taint(concat('The formation ', $locator, ' is inside an application, which has no name of its own'))"/>
-    </xsl:for-each>
     <xsl:sequence select="(tokenize($top, '\.')[last()][exists($argument)], $named/@name ! string(.), 'φ')"/>
   </xsl:function>
   <!-- The simple name of the class of the atom. -->

@@ -92,8 +92,7 @@ final class RenderingTest {
         );
         Files.write(
             temp.resolve("voids.tsv"),
-            String.format("𝜎1\t1\tx\tobject%n𝜎2\t2\ty\tobject%n")
-                .getBytes(StandardCharsets.UTF_8)
+            String.format("𝜎1\t1\tx\tobject%n𝜎2\t2\ty\tobject%n").getBytes(StandardCharsets.UTF_8)
         );
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("foo.xmir"),
@@ -109,7 +108,7 @@ final class RenderingTest {
             Files.write(
                 protocol,
                 String.format(
-                    "<morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">𝜎%d:λ</dataize></evaluate></morph>",
+                    "<protocol><morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">𝜎%d:λ</dataize></evaluate></morph></protocol>",
                     idx + 1
                 ).getBytes(StandardCharsets.UTF_8)
             );
