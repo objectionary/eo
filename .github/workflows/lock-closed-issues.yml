@@ -14,7 +14,7 @@ concurrency:
 jobs:
   lock-closed-issues:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Lock closed issues after 7 days of inactivity
         uses: actions/github-script@v9
