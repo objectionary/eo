@@ -79,12 +79,6 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
         return result;
     }
 
-    /**
-     * The bytes of {@code d_name}, up to the zero that closes it.
-     *
-     * @param entry The {@code struct dirent} libc handed back
-     * @return The bytes of the name
-     */
     private static byte[] named(final Pointer entry) {
         int length = 0;
         while (entry.getByte(EOposix$EOreaddir.NAME + length) != 0) {
