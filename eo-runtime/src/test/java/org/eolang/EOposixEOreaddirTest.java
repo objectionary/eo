@@ -74,10 +74,9 @@ final class EOposixEOreaddirTest {
                 )
             )
         );
-        final Phi entry = EOposixEOreaddirTest.entry(handle);
         MatcherAssert.assertThat(
             "a read from a stream whose descriptor is closed must fail with code -2, not end with -1 (see #9050)",
-            new Dataized(entry.take("code")).asNumber().intValue(),
+            new Dataized(EOposixEOreaddirTest.entry(handle).take("code")).asNumber().intValue(),
             Matchers.equalTo(-2)
         );
     }
@@ -112,6 +111,7 @@ final class EOposixEOreaddirTest {
      * @since 0.77.0
      */
     private interface Dirs extends Library {
+
         /**
          * The descriptor of a directory stream.
          *
