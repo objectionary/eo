@@ -5,12 +5,12 @@
 package org.eolang;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -52,8 +52,8 @@ final class EOposixEOreaddirTest {
             "the stream must report both children and the two dots, and nothing else",
             EOposixEOreaddirTest.named(temp)
                 .stream()
-                .map(String::new)
-                .collect(Collectors.toList()),
+                .map(bytes -> new String(bytes, StandardCharsets.UTF_8))
+                .toList(),
             Matchers.containsInAnyOrder(".", "..", "плюшка", "щи")
         );
     }
