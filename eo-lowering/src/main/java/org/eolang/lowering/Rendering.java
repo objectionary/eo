@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
@@ -53,6 +54,11 @@ import org.cactoos.text.TextOf;
  * This class only finds what the stylesheet needs to know about the
  * entry: its number, its locator, the top object it is inside, and the
  * package of that object.</p>
+ *
+ * <p>The stylesheet imports {@code _java-names.xsl} by an absolute path, the
+ * file the transpiler names its classes with as well (#9141), so an absolute
+ * path it asks for is read from the classpath, while anything else is a URI
+ * this class handed it as a parameter.</p>
  *
  * <p>An entry that phino did not run has no protocol, so it is skipped.
  * When the stylesheet finds that an entry is a taint, this class only
@@ -108,8 +114,22 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        ).with(
+            (href, base) -> {
+                final StreamSource src;
+                if (href.startsWith("/")) {
+                    src = new StreamSource(
+                        Objects.requireNonNull(
+                            Rendering.class.getResource(href),
+                            () -> String.format("There is no '%s' on the classpath", href)
+                        ).toString()
+                    );
+                } else {
+                    src = new StreamSource(href);
+                }
+                return src;
+            }
+        ).with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
