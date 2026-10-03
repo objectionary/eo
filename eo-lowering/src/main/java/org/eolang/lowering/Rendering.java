@@ -55,6 +55,11 @@ import org.cactoos.text.TextOf;
  * entry: its number, its locator, the top object it is inside, and the
  * package of that object.</p>
  *
+ * <p>The stylesheet imports {@code _java-names.xsl} by an absolute path, the
+ * file the transpiler names its classes with as well (#9141), so an absolute
+ * path it asks for is read from the classpath, while anything else is a URI
+ * this class handed it as a parameter.</p>
+ *
  * <p>An entry that phino did not run has no protocol, so it is skipped.
  * When the stylesheet finds that an entry is a taint, this class only
  * writes into the log why, and the object stays in EO exactly as it was
@@ -109,8 +114,22 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> this.source(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        ).with(
+            (href, base) -> {
+                final StreamSource src;
+                if (href.startsWith("/")) {
+                    src = new StreamSource(
+                        Objects.requireNonNull(
+                            Rendering.class.getResource(href),
+                            () -> String.format("There is no '%s' on the classpath", href)
+                        ).toString()
+                    );
+                } else {
+                    src = new StreamSource(href);
+                }
+                return src;
+            }
+        ).with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
@@ -214,32 +233,5 @@ final class Rendering implements Proc<Path> {
             );
         }
         return found;
-    }
-
-    /**
-     * The source an {@code xsl:import} or a {@code document()} call of the
-     * stylesheet points at.
-     *
-     * <p>An absolute path is a resource on the classpath, the way every
-     * stylesheet of the transpiler names the ones it imports, since
-     * {@code _java-names.xsl} is shared with {@code to-java.xsl} (#9141).
-     * Anything else is a URI the stylesheet was handed as a parameter.</p>
-     *
-     * @param href What the stylesheet asks for
-     * @return The source
-     */
-    private StreamSource source(final String href) {
-        final StreamSource src;
-        if (href.startsWith("/")) {
-            src = new StreamSource(
-                Objects.requireNonNull(
-                    Rendering.class.getResource(href),
-                    () -> String.format("There is no '%s' on the classpath", href)
-                ).toString()
-            );
-        } else {
-            src = new StreamSource(href);
-        }
-        return src;
     }
 }
