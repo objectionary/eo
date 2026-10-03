@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
@@ -108,7 +109,7 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
+        ).with((href, base) -> this.source(href))
             .with("voids", home.resolve("voids.tsv").toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
@@ -213,5 +214,32 @@ final class Rendering implements Proc<Path> {
             );
         }
         return found;
+    }
+
+    /**
+     * The source an {@code xsl:import} or a {@code document()} call of the
+     * stylesheet points at.
+     *
+     * <p>An absolute path is a resource on the classpath, the way every
+     * stylesheet of the transpiler names the ones it imports, since
+     * {@code _java-names.xsl} is shared with {@code to-java.xsl} (#9141).
+     * Anything else is a URI the stylesheet was handed as a parameter.</p>
+     *
+     * @param href What the stylesheet asks for
+     * @return The source
+     */
+    private StreamSource source(final String href) {
+        final StreamSource src;
+        if (href.startsWith("/")) {
+            src = new StreamSource(
+                Objects.requireNonNull(
+                    Rendering.class.getResource(href),
+                    () -> String.format("There is no '%s' on the classpath", href)
+                ).toString()
+            );
+        } else {
+            src = new StreamSource(href);
+        }
+        return src;
     }
 }
