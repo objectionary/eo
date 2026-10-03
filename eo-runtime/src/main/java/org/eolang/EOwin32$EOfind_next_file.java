@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import org.eolang.sys.Handles;
 import org.eolang.sys.win32.Kernel32;
@@ -26,6 +27,12 @@ import org.eolang.sys.win32.WinFindData;
 public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
 
     /**
+     * The code of {@code ERROR_NO_MORE_FILES}, the only failure of
+     * {@code FindNextFileW} that means the search is over.
+     */
+    private static final int NO_MORE_FILES = 18;
+
+    /**
      * Ctor.
      */
     public EOwin32$EOfind_next_file() {
@@ -44,9 +51,14 @@ public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
         if (found) {
             result.put(0, new Data.ToPhi(0));
             result.put(1, new Data.ToPhi(data.filename()));
-        } else {
+        } else if (Native.getLastError() == EOwin32$EOfind_next_file.NO_MORE_FILES) {
             result.put(0, new Data.ToPhi(-1));
             result.put(1, new PhDefault());
+        } else {
+            result.put(0, new Data.ToPhi(-2));
+            result.put(
+                1, new Data.ToPhi(String.format("Win32 error %d", Native.getLastError()))
+            );
         }
         return result;
     }
