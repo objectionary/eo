@@ -982,14 +982,14 @@
           ^.counted
             next
             index.plus 1
+      digit > d
+        byte index
       if. > next
         0.gt acc
         d
         plus.
           acc.times 10
           d
-      digit > d
-        byte index
     if. > [^ index] >> indexed
       0.gt index
       index
@@ -1854,7 +1854,9 @@
     [^ index] >> braces
       if. > @
         n.value.eq -2
-        no n.at "Illegal repetition range"
+        no
+          n.at
+          "Illegal repetition range"
         if.
           0.gt n.value
           no
@@ -1874,23 +1876,7 @@
                   n.at.plus 2
                   n.value
                   number 7F-F0-00-00-00-00-00-00
-                if.
-                  m.value.eq -2
-                  no m.at "Illegal repetition range"
-                  if.
-                    0.gt m.value
-                    no
-                      n.at.plus 1
-                      "Unclosed counted closure"
-                    if.
-                      eq. (byte m.at) 7D-
-                      if.
-                        n.value.gt m.value
-                        no m.at "Illegal repetition range"
-                        bounds (m.at.plus 1) n.value m.value
-                      no
-                        m.at
-                        "Unclosed counted closure"
+                ranged
               no
                 n.at
                 "Unclosed counted closure"
@@ -1901,6 +1887,32 @@
         -1
         n.at.plus 1
       counted -1 index > n
+      if. > ranged
+        m.value.eq -2
+        no
+          m.at
+          "Illegal repetition range"
+        if.
+          0.gt m.value
+          no
+            n.at.plus 1
+            "Unclosed counted closure"
+          if.
+            eq.
+              byte m.at
+              7D-
+            if.
+              n.value.gt m.value
+              no
+                m.at
+                "Illegal repetition range"
+              bounds
+                m.at.plus 1
+                n.value
+                m.value
+            no
+              m.at
+              "Unclosed counted closure"
   [^ child least most] >> possessive
     [^ s at caps k] > run
       [^ n at caps] >> drain
@@ -2426,7 +2438,9 @@
     "/\\(\\)\\[\\]\\{\\}\\*\\+\\?\\.\\^\\$\\|\\\\\\//".regex.compiled
     "()[]{}*+?.^$|\\/"
 
-  "/a{3}99999999999/".regex.compiled.matches "aaa99999999999" ++> can-match-long-digits-after-a-count
+  matches. ++> can-match-long-digits-after-a-count
+    "/a{3}99999999999/".regex.compiled
+    "aaa99999999999"
 
   "/\\W\\S\\D/".regex.compiled.matches "-x?" ++> can-match-negated-preset-classes
 
