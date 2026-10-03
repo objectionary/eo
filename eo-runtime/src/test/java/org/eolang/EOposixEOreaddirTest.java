@@ -77,14 +77,9 @@ final class EOposixEOreaddirTest {
     }
 
     private static boolean touched(final Path dir) throws Exception {
-        final Process shell = new ProcessBuilder(
+        return new ProcessBuilder(
             "/bin/sh", "-c", "touch \"$1/$(printf '\\377\\376').txt\"", "sh", dir.toString()
-        ).start();
-        try {
-            return shell.waitFor(1L, TimeUnit.MINUTES) && shell.exitValue() == 0;
-        } finally {
-            shell.destroy();
-        }
+        ).start().waitFor(1L, TimeUnit.MINUTES);
     }
 
     private static Collection<byte[]> named(final Path path) {
