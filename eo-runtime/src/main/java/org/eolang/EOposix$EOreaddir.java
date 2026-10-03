@@ -25,6 +25,12 @@ import org.eolang.sys.Handles;
  * offset, the record length, the name length and the type, which is
  * twenty-one.</p>
  *
+ * <p>The name is taken as the bytes it is, up to the first zero, and not as
+ * text decoded from them. A name is any run of bytes the filesystem accepted,
+ * and decoding one that is no UTF-8 gave back replacement characters, so the
+ * name {@code directory.listed} answered with named no file any more
+ * (#9049).</p>
+ *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
  * @checkstyle TypeNameCheck (5 lines)
@@ -65,9 +71,25 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
             result.put(0, new Data.ToPhi(-1));
             result.put(1, new PhDefault());
         } else {
+            final Phi name = Phi.Φ.take("string").copy();
+            name.put(0, new Data.ToPhi(EOposix$EOreaddir.named(entry)));
             result.put(0, new Data.ToPhi(0));
-            result.put(1, new Data.ToPhi(entry.getString(EOposix$EOreaddir.NAME, "UTF-8")));
+            result.put(1, name);
         }
         return result;
+    }
+
+    /**
+     * The bytes of {@code d_name}, up to the zero that closes it.
+     *
+     * @param entry The {@code struct dirent} libc handed back
+     * @return The bytes of the name
+     */
+    private static byte[] named(final Pointer entry) {
+        int length = 0;
+        while (entry.getByte(EOposix$EOreaddir.NAME + length) != 0) {
+            length += 1;
+        }
+        return entry.getByteArray(EOposix$EOreaddir.NAME, length);
     }
 }

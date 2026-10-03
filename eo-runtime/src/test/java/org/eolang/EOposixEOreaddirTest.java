@@ -9,9 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -47,12 +50,36 @@ final class EOposixEOreaddirTest {
         Files.createDirectory(temp.resolve("щи"));
         MatcherAssert.assertThat(
             "the stream must report both children and the two dots, and nothing else",
-            EOposixEOreaddirTest.walked(temp),
+            EOposixEOreaddirTest.named(temp)
+                .stream()
+                .map(String::new)
+                .collect(Collectors.toList()),
             Matchers.containsInAnyOrder(".", "..", "плюшка", "щи")
         );
     }
 
-    private static Collection<String> walked(final Path path) {
+    @Test
+    @DisabledOnOs({OS.WINDOWS, OS.MAC})
+    void keepsTheBytesOfANameThatIsNoText(@TempDir final Path temp) throws Exception {
+        final Process touch = new ProcessBuilder(
+            "/bin/sh", "-c", "touch \"$1/$(printf '\\377\\376').txt\"", "sh", temp.toString()
+        ).start();
+        Assumptions.assumeTrue(
+            touch.waitFor(1L, TimeUnit.MINUTES) && touch.exitValue() == 0,
+            "a file whose name is no UTF-8 could not be made here"
+        );
+        MatcherAssert.assertThat(
+            "a name kept as bytes must come back as those bytes, but it came back decoded",
+            EOposixEOreaddirTest.named(temp),
+            Matchers.hasItem(
+                new byte[] {
+                    (byte) 0xFF, (byte) 0xFE, (byte) '.', (byte) 't', (byte) 'x', (byte) 't',
+                }
+            )
+        );
+    }
+
+    private static Collection<byte[]> named(final Path path) {
         final Phi handle = new Data.ToPhi(
             new Dataized(
                 new PhApplication(
@@ -60,10 +87,10 @@ final class EOposixEOreaddirTest {
                 ).take("code")
             ).asNumber().intValue()
         );
-        final Collection<String> names = new ArrayList<>(0);
+        final Collection<byte[]> names = new ArrayList<>(0);
         Phi entry = EOposixEOreaddirTest.entry(handle);
         while (new Dataized(entry.take("code")).asNumber().intValue() == 0) {
-            names.add(new Dataized(entry.take("name")).asString());
+            names.add(new Dataized(entry.take("name")).take());
             entry = EOposixEOreaddirTest.entry(handle);
         }
         new Dataized(
