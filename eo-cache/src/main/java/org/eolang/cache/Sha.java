@@ -20,10 +20,10 @@ import java.util.stream.Stream;
 
 /**
  * SHA-256 hash of a file or directory.
- * For a directory, hashes every file sorted by its relative path, framed by that path and by
- * the amount of bytes read from it, so that trees differing in file names or in file boundaries
- * never collide. Only files speak into the digest, hence a directory holding none of them stays
- * invisible to the hash, the way Git also sees it.
+ * For a directory, the digest starts with a root-kind marker, then hashes every file sorted by
+ * its relative path, framed by that path and by the amount of bytes read from it, so that file
+ * names and file boundaries participate in the digest. The root directory and files speak into
+ * the digest. Empty subdirectories remain invisible, the way Git also sees them.
  * The walk follows symbolic links, because everything else here already does:
  * a path is called a directory with {@link Files#isDirectory(Path, java.nio.file.LinkOption...)}
  * and a file with {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)}, and both look
@@ -77,6 +77,7 @@ public final class Sha {
         final MessageDigest digest = MessageDigest.getInstance("SHA-256");
         final Predicate<Path> active;
         if (Files.isDirectory(this.path)) {
+            digest.update("directory\0".getBytes(StandardCharsets.UTF_8));
             active = this.filter;
         } else {
             active = any -> true;

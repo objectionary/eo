@@ -84,6 +84,21 @@ final class ShaTest {
     }
 
     @Test
+    void distinguishesAnEmptyFileFromAnEmptyDirectory(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path file = temp.resolve("empty.txt");
+        final Path directory = temp.resolve("empty");
+        new Saved("", file).value();
+        Files.createDirectory(directory);
+        MatcherAssert.assertThat(
+            "hashes of an empty file and an empty directory must differ",
+            new Sha(file).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(directory).toString()))
+        );
+    }
+
+    @Test
     void hashesLoneFileWithoutFraming(@Mktmp final Path temp)
         throws IOException, NoSuchAlgorithmException {
         final long seed = System.nanoTime();
@@ -126,13 +141,22 @@ final class ShaTest {
     @Test
     void hashesEqualDirsEqually(@Mktmp final Path temp) throws IOException {
         final long seed = System.nanoTime();
-        final String text = String.format("%s-שלום", Long.toHexString(seed));
-        new Saved(text, temp.resolve("first/nested/a.txt")).value();
-        new Saved(text, temp.resolve("second/nested/a.txt")).value();
+        final String first = String.format("%s-שלום", Long.toHexString(seed));
+        final String second = String.format("%s-κόσμε", Long.toHexString(seed + 1L));
+        new Saved(first, temp.resolve("first/nested/a.txt")).value();
+        new Saved(second, temp.resolve("first/z.txt")).value();
+        new Saved(second, temp.resolve("second/z.txt")).value();
+        new Saved(first, temp.resolve("second/nested/a.txt")).value();
+        new Saved("ignored", temp.resolve("second/ignored.txt")).value();
+        Files.createDirectories(temp.resolve("second/empty"));
         MatcherAssert.assertThat(
             String.format("hashes of two identical dirs differ, seed=%d", seed),
             new Sha(temp.resolve("first")).toString(),
-            Matchers.equalTo(new Sha(temp.resolve("second")).toString())
+            Matchers.equalTo(
+                new Sha(
+                    temp.resolve("second"), path -> !path.endsWith("ignored.txt")
+                ).toString()
+            )
         );
     }
 
