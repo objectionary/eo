@@ -1,9 +1,16 @@
 # Returns Euler's number raised to the power of a `num`.
-# An argument above `710` answers `pinf` and one below `-750` answers zero,
-# without asking `power` at all. Beyond those two bounds the answer is out of
-# the range a double holds anyway, while `power` walks the exponent down by
-# halves, one step per binary digit, and a magnitude of the order of `1e308`
-# takes more than a thousand of them, which is deeper than the stack goes.
+# An argument above `710` answers `pinf` and one below `-750` answers zero.
+# Beyond those two bounds the answer is out of the range a double holds anyway.
+# In between, the argument is reduced the way libm does it: `num` is written
+# as `k ln2 + r`, with an integer `k` and `|r|` no bigger than half of `ln2`,
+# using `ln2` split into a high part whose product with `k` is exact and a
+# low part that carries the rest. Then `e^r` is a short Taylor polynomial,
+# evaluated by Horner's rule from the thirteenth term down, and the answer is
+# that polynomial scaled by `2^k`, which `power` computes exactly. The
+# scaling goes in two halves, so that neither a `k` near the top of the
+# range nor one in the subnormal range overflows or underflows on the way.
+# Raising the rounded constant `e` to `num` instead multiplies its rounding
+# error by `num`, which is 272 ULP off at `700` (#9029).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -19,11 +26,54 @@
     if.
       num.lt -750
       0
-      e.power num
+      num.is-nan.if
+        num
+        times.
+          times.
+            horner 13 1
+            2.power half
+          2.power
+            k.minus half
+  floor. > k!
+    plus.
+      num.div 0.6931471805599453
+      0.5
+  floor. > half!
+    k.div 2
+  minus. > r!
+    minus.
+      num
+      k.times 0.6931471803691238
+    k.times 1.9082149292705877e-10
+  if. > [^ n acc] >> horner
+    n.eq 0
+    acc
+    ^.horner
+      n.minus 1
+      plus.
+        1
+        times.
+          acc
+          ^.r.div n
 
   -1.0e308.exp.eq 0 ++> can-exponentiate-a-huge-negative-argument
 
   1.0e308.exp.eq pinf ++> can-exponentiate-a-huge-positive-argument
+
+  lt. ++> can-exponentiate-a-hundred-within-a-few-ulp
+    abs.
+      div.
+        100.exp.minus 2.6881171418161356e43
+        2.6881171418161356e43
+    1.0e-15
+
+  lt. ++> can-exponentiate-a-subnormal-result
+    abs.
+      minus.
+        -740.exp
+        4.2e-322
+    1.0e-323
+
 
   lt. ++> can-exponentiate-five
     abs.
@@ -33,6 +83,13 @@
     1.0e-7
 
   709.exp.is-finite ++> can-exponentiate-just-below-the-upper-bound
+
+  lt. ++> can-exponentiate-minus-a-hundred-within-a-few-ulp
+    abs.
+      div.
+        -100.exp.minus 3.720075976020836e-44
+        3.720075976020836e-44
+    1.0e-15
 
   lt. ++> can-exponentiate-minus-one
     abs.
@@ -56,5 +113,12 @@
     1.0e-8
 
   pinf.exp.eq pinf ++> can-exponentiate-positive-infinity
+
+  lt. ++> can-exponentiate-seven-hundred-within-a-few-ulp
+    abs.
+      div.
+        700.exp.minus 1.0142320547350045e304
+        1.0142320547350045e304
+    1.0e-15
 
   nan.exp.is-nan ++> can-return-nan-when-exponentiating-nan
