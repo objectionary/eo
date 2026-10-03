@@ -7,9 +7,12 @@ package org.eolang.maven;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -180,30 +183,12 @@ final class Subdir {
         lock.lock();
         try {
             Files.createDirectories(this.target);
-            final List<Matcher> taken;
-            try (Stream<Path> kids = Files.list(this.target)) {
-                taken = kids
-                    .filter(Files::isDirectory)
-                    .map(kid -> Subdir.PREFIXED.matcher(kid.getFileName().toString()))
-                    .filter(Matcher::matches)
-                    .collect(Collectors.toList());
+            try (FileChannel channel = FileChannel.open(
+                this.target.resolve(".numbering.lock"),
+                StandardOpenOption.CREATE, StandardOpenOption.WRITE
+            ); FileLock ignored = channel.lock()) {
+                return this.unlocked();
             }
-            final Optional<Integer> owned = taken.stream()
-                .filter(matcher -> matcher.group(2).equals(this.name))
-                .map(matcher -> Integer.parseInt(matcher.group(1)))
-                .findFirst();
-            final int number;
-            if (owned.isPresent()) {
-                number = owned.get();
-            } else {
-                number = this.claimed(
-                    1 + taken.stream()
-                        .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
-                        .max()
-                        .orElse(0)
-                );
-            }
-            return number;
         } catch (final IOException ex) {
             throw new UncheckedIOException(
                 String.format(
@@ -216,6 +201,46 @@ final class Subdir {
         }
     }
 
+    /**
+     * Read the numbers taken and reserve one, with both locks already held.
+     *
+     * <p>The {@link ReentrantLock} keeps two threads of one build apart and
+     * the {@link FileLock} keeps two Maven processes apart, which share the
+     * target directory but no memory. Without the second, two processes
+     * asking for two different names could both see the same highest number
+     * and both take the next one, and since the two directories differ in
+     * name, neither creation would fail (see #9013).</p>
+     *
+     * @return The number
+     * @throws IOException If the directory can't be read or written
+     */
+    private int unlocked() throws IOException {
+        final List<Matcher> taken;
+        try (Stream<Path> kids = Files.list(this.target)) {
+            taken = kids
+                .filter(Files::isDirectory)
+                .map(kid -> Subdir.PREFIXED.matcher(kid.getFileName().toString()))
+                .filter(Matcher::matches)
+                .collect(Collectors.toList());
+        }
+        final Optional<Integer> owned = taken.stream()
+            .filter(matcher -> matcher.group(2).equals(this.name))
+            .map(matcher -> Integer.parseInt(matcher.group(1)))
+            .findFirst();
+        final int number;
+        if (owned.isPresent()) {
+            number = owned.get();
+        } else {
+            number = this.claimed(
+                1 + taken.stream()
+                    .mapToInt(matcher -> Integer.parseInt(matcher.group(1)))
+                    .max()
+                    .orElse(0)
+            );
+        }
+        return number;
+    }
+
     private int claimed(final int number) throws IOException {
         int result = number;
         try {
@@ -223,7 +248,7 @@ final class Subdir {
                 this.target.resolve(String.format("%02d-%s", number, this.name))
             );
         } catch (final FileAlreadyExistsException collision) {
-            result = this.reserved();
+            result = this.unlocked();
         }
         return result;
     }
