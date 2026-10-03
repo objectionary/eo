@@ -905,6 +905,7 @@
     [at least most] >> bounds
       true > ok
     [at value] >> numeral
+      true > ok
     [at mode] >> switched
       true > ok
     bit.eq > [bit mode] >> flagged
@@ -976,14 +977,23 @@
       if. > @
         0.gt d
         numeral index acc
-        ^.counted
-          if.
-            0.gt acc
-            d
-            plus.
-              acc.times 10
+        if.
+          or.
+            acc.gt 214748364
+            and.
+              acc.eq 214748364
+              d.gt 7
+          no
+            index
+            "Illegal repetition range"
+          ^.counted
+            if.
+              0.gt acc
               d
-          index.plus 1
+              plus.
+                acc.times 10
+                d
+            index.plus 1
       digit > d
         byte index
     if. > [^ index] >> indexed
@@ -1847,43 +1857,55 @@
         from
         opened
         bits
-    [^ index] >> braces
-      if. > @
-        0.gt n.value
-        no
-          index
-          "Illegal repetition"
+    if. > [^ n m] >> bounded
+      0.gt m.value
+      no
+        n.at.plus 1
+        "Unclosed counted closure"
+      if.
+        eq.
+          byte m.at
+          7D-
         if.
-          c.eq 7D-
+          n.value.gt m.value
+          no
+            m.at
+            "Illegal repetition range"
           bounds
-            n.at.plus 1
+            m.at.plus 1
             n.value
-            n.value
+            m.value
+        no
+          m.at
+          "Unclosed counted closure"
+    [^ index] >> braces
+      n.ok.if > @
+        if.
+          0.gt n.value
+          no
+            index
+            "Illegal repetition"
           if.
-            c.eq 2C-
+            c.eq 7D-
+            bounds
+              n.at.plus 1
+              n.value
+              n.value
             if.
-              d.eq 7D-
-              bounds
-                n.at.plus 2
-                n.value
-                number 7F-F0-00-00-00-00-00-00
+              c.eq 2C-
               if.
-                0.gt m.value
-                no
-                  n.at.plus 1
-                  "Unclosed counted closure"
-                if.
-                  eq. (byte m.at) 7D-
-                  if.
-                    n.value.gt m.value
-                    no m.at "Illegal repetition range"
-                    bounds (m.at.plus 1) n.value m.value
-                  no
-                    m.at
-                    "Unclosed counted closure"
-            no
-              n.at
-              "Unclosed counted closure"
+                d.eq 7D-
+                bounds
+                  n.at.plus 2
+                  n.value
+                  number 7F-F0-00-00-00-00-00-00
+                m.ok.if
+                  bounded n m
+                  m
+              no
+                n.at
+                "Unclosed counted closure"
+        n
       byte n.at > c
       byte > d
         n.at.plus 1
@@ -2157,6 +2179,16 @@
     "regex syntax is invalid: ".as-bytes.concat > prefix
       reason.as-bytes
 
+  not. ++> can-accept-leading-zeroes-before-the-largest-repetition-count
+    "/a{0002147483647}/".regex.compiled.matches ""
+
+  not. ++> can-accept-the-largest-repetition-count
+    "/a{2147483647}/".regex.compiled.matches ""
+
+  matches. ++> can-accept-the-largest-upper-repetition-count
+    "/a{0,2147483647}/".regex.compiled
+    ""
+
   eq. ++> can-advance-after-a-zero-width-match
     1
     from. ("/a*/".regex.match "xa").next.next
@@ -2198,6 +2230,10 @@
     count.
       next.
         "/(?:a)(b)/".regex.match "ab"
+
+  eq. ++> can-count-leading-zeroes-before-repetition-overflow
+    "/a{0002147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 14 of the pattern"
 
   ++> can-count-supplementary-characters-as-one-position
     and. > @
@@ -2331,6 +2367,9 @@
   matches. ++> can-keep-an-inline-flag-to-the-end-of-its-group
     "/(a(?i)b)c/".regex.compiled
     "aBc"
+
+  not. ++> can-keep-the-largest-open-ended-repetition-count
+    "/a{2147483647,}/".regex.compiled.matches ""
 
   eq. ++> can-keep-the-position-of-a-missing-block
     position.
@@ -2565,6 +2604,10 @@
     "/[a[b]]/".regex.compile I
     "regex syntax is invalid: Nested character classes are not supported at offset 2 of the pattern"
 
+  eq. ++> can-refuse-a-repetition-count-above-i32
+    "/a{2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 11 of the pattern"
+
   eq. ++> can-refuse-a-unicode-escape
     "/\\u0041/".regex.compile I
     "regex syntax is invalid: Unicode escapes are not supported at offset 0 of the pattern"
@@ -2584,6 +2627,10 @@
   eq. ++> can-refuse-an-octal-escape
     "/\\0101/".regex.compile I
     "regex syntax is invalid: Octal escapes are not supported at offset 0 of the pattern"
+
+  eq. ++> can-refuse-an-upper-repetition-count-above-i32
+    "/a{0,2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 13 of the pattern"
 
   eq. ++> can-refuse-flags-that-carry-regex-syntax
     "/b/i)|(?:a".regex.compile I
@@ -2650,6 +2697,10 @@
 
   not. ++> can-stop-at-a-terminal-zero-width-match
     exists. ("/$/".regex.match "x").next.next
+
+  eq. ++> can-stop-at-the-first-overflowing-repetition-digit
+    "/a{99999999999}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 11 of the pattern"
 
   not. ++> can-tell-a-bounded-repetition-stops-at-its-maximum
     "/^a{2,3}$/".regex.compiled.matches "aaaa"
