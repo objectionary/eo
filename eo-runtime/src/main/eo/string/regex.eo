@@ -976,14 +976,18 @@
       if. > @
         0.gt d
         numeral index acc
-        ^.counted
-          if.
-            0.gt acc
-            d
-            plus.
-              acc.times 10
-              d
-          index.plus 1
+        if.
+          next.gt 2147483647
+          numeral index -2
+          ^.counted
+            next
+            index.plus 1
+      if. > next
+        0.gt acc
+        d
+        plus.
+          acc.times 10
+          d
       digit > d
         byte index
     if. > [^ index] >> indexed
@@ -1849,41 +1853,47 @@
         bits
     [^ index] >> braces
       if. > @
-        0.gt n.value
-        no
-          index
-          "Illegal repetition"
+        n.value.eq -2
+        no n.at "Illegal repetition range"
         if.
-          c.eq 7D-
-          bounds
-            n.at.plus 1
-            n.value
-            n.value
+          0.gt n.value
+          no
+            index
+            "Illegal repetition"
           if.
-            c.eq 2C-
+            c.eq 7D-
+            bounds
+              n.at.plus 1
+              n.value
+              n.value
             if.
-              d.eq 7D-
-              bounds
-                n.at.plus 2
-                n.value
-                number 7F-F0-00-00-00-00-00-00
+              c.eq 2C-
               if.
-                0.gt m.value
-                no
-                  n.at.plus 1
-                  "Unclosed counted closure"
+                d.eq 7D-
+                bounds
+                  n.at.plus 2
+                  n.value
+                  number 7F-F0-00-00-00-00-00-00
                 if.
-                  eq. (byte m.at) 7D-
+                  m.value.eq -2
+                  no m.at "Illegal repetition range"
                   if.
-                    n.value.gt m.value
-                    no m.at "Illegal repetition range"
-                    bounds (m.at.plus 1) n.value m.value
-                  no
-                    m.at
-                    "Unclosed counted closure"
-            no
-              n.at
-              "Unclosed counted closure"
+                    0.gt m.value
+                    no
+                      n.at.plus 1
+                      "Unclosed counted closure"
+                    if.
+                      eq. (byte m.at) 7D-
+                      if.
+                        n.value.gt m.value
+                        no m.at "Illegal repetition range"
+                        bounds (m.at.plus 1) n.value m.value
+                      no
+                        m.at
+                        "Unclosed counted closure"
+              no
+                n.at
+                "Unclosed counted closure"
       byte n.at > c
       byte > d
         n.at.plus 1
@@ -2416,6 +2426,8 @@
     "/\\(\\)\\[\\]\\{\\}\\*\\+\\?\\.\\^\\$\\|\\\\\\//".regex.compiled
     "()[]{}*+?.^$|\\/"
 
+  "/a{3}99999999999/".regex.compiled.matches "aaa99999999999" ++> can-match-long-digits-after-a-count
+
   "/\\W\\S\\D/".regex.compiled.matches "-x?" ++> can-match-negated-preset-classes
 
   exists. ++> can-match-with-a-pattern-built-from-a-body-and-flags
@@ -2459,6 +2471,14 @@
   eq. ++> can-name-a-leading-unmatched-closing-parenthesis-without-an-offset
     "/)/".regex.compile I
     "regex syntax is invalid: Unmatched closing ')'"
+
+  eq. ++> can-name-a-repetition-count-past-an-int
+    "/a{2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 11 of the pattern"
+
+  eq. ++> can-name-a-repetition-maximum-past-an-int
+    "/a{1,2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 13 of the pattern"
 
   eq. ++> can-name-a-trailing-backslash
     "/a\\/".regex.compile I
