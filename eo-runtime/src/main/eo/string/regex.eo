@@ -1357,10 +1357,10 @@
               and.
                 r.text.eq --
                 or.
-                  (byte r.at).eq 2A-
+                  eq. (byte r.at) 2A-
                   or.
-                    (byte r.at).eq 2B-
-                    (byte r.at).eq 3F-
+                    eq. (byte r.at) 2B-
+                    eq. (byte r.at) 3F-
               no
                 index
                 string
@@ -2192,7 +2192,9 @@
         "Dangling meta character '*'"
       offset.eq 2
 
-  "/^x\\Q\\E*$/".regex.compiled.matches "xxx" ++> can-bind-a-quantifier-across-an-empty-quote
+  matches. ++> can-bind-a-quantifier-across-an-empty-quote
+    "/^x\\Q\\E*$/".regex.compiled
+    "xxx"
 
   matches. ++> can-bind-a-quantifier-to-the-last-character-of-a-run
     "/xab*/".regex.compiled
