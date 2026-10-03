@@ -4,11 +4,16 @@
  */
 package org.eolang;
 
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.eolang.posix.CStdLib;
+import org.eolang.sys.Handles;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -52,6 +57,30 @@ final class EOposixEOreaddirTest {
         );
     }
 
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void reportsAFailedReadApartFromTheEnd(@TempDir final Path temp) {
+        final Phi handle = new Data.ToPhi(
+            new Dataized(
+                new PhApplication(
+                    new EOposix$EOopendir(), "path", new Data.ToPhi(temp.toString())
+                ).take("code")
+            ).asNumber().intValue()
+        );
+        CStdLib.INSTANCE.close(
+            Native.load("c", EOposixEOreaddirTest.Dirs.class).dirfd(
+                Handles.INSTANCE.get(
+                    "the test stream", new Dataized(handle).asNumber().intValue()
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "a read from a stream whose descriptor is closed must fail with code -2, not end with -1 (see #9050)",
+            new Dataized(EOposixEOreaddirTest.entry(handle).take("code")).asNumber().intValue(),
+            Matchers.equalTo(-2)
+        );
+    }
+
     private static Collection<String> walked(final Path path) {
         final Phi handle = new Data.ToPhi(
             new Dataized(
@@ -74,5 +103,21 @@ final class EOposixEOreaddirTest {
 
     private static Phi entry(final Phi handle) {
         return new PhApplication(new EOposix$EOreaddir(), "dirp", handle).take("called");
+    }
+
+    /**
+     * The part of libc that hands out the descriptor of a directory stream.
+     *
+     * @since 0.77.0
+     */
+    private interface Dirs extends Library {
+
+        /**
+         * The descriptor of a directory stream.
+         *
+         * @param dirp The stream
+         * @return The descriptor
+         */
+        int dirfd(Pointer dirp);
     }
 }
