@@ -61,11 +61,8 @@ final class EOposixEOreaddirTest {
     @Test
     @DisabledOnOs({OS.WINDOWS, OS.MAC})
     void keepsTheBytesOfANameThatIsNoText(@TempDir final Path temp) throws Exception {
-        final Process touch = new ProcessBuilder(
-            "/bin/sh", "-c", "touch \"$1/$(printf '\\377\\376').txt\"", "sh", temp.toString()
-        ).start();
         Assumptions.assumeTrue(
-            touch.waitFor(1L, TimeUnit.MINUTES) && touch.exitValue() == 0,
+            EOposixEOreaddirTest.touched(temp),
             "a file whose name is no UTF-8 could not be made here"
         );
         MatcherAssert.assertThat(
@@ -77,6 +74,17 @@ final class EOposixEOreaddirTest {
                 }
             )
         );
+    }
+
+    private static boolean touched(final Path dir) throws Exception {
+        final Process shell = new ProcessBuilder(
+            "/bin/sh", "-c", "touch \"$1/$(printf '\\377\\376').txt\"", "sh", dir.toString()
+        ).start();
+        try {
+            return shell.waitFor(1L, TimeUnit.MINUTES) && shell.exitValue() == 0;
+        } finally {
+            shell.destroy();
+        }
     }
 
     private static Collection<byte[]> named(final Path path) {
