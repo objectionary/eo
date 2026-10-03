@@ -101,9 +101,7 @@ final class EOprintfDiagnosticTest {
     private static String failure(final Phi argument) {
         return Assertions.assertThrows(
             ExAbstract.class,
-            () -> new Dataized(
-                EOprintfDiagnosticTest.formatted(argument)
-            ).take()
+            new Dataized(EOprintfDiagnosticTest.formatted(argument))::take
         ).getMessage();
     }
 
