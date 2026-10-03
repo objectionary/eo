@@ -42,19 +42,9 @@
             2.power half
           2.power
             k.minus half
-  number > half
-    floor. >> half-bytes!
-      k.div 2
-  number > k
-    floor. >> k-bytes!
-      plus.
-        num.div 0.6931471805599453
-        0.5
-  number > r
-    minus. >> r-bytes!
-      num.minus
-        k.times 0.6931471803691238
-      k.times 1.9082149292705877e-10
+  number (k.div 2).floor! > half
+  number ((num.div 0.6931471805599453).plus 0.5).floor! > k
+  number ((num.minus (k.times 0.6931471803691238)).minus (k.times 1.9082149292705877e-10))! > r
 
   -1.0e308.exp.eq 0 ++> can-exponentiate-a-huge-negative-argument
 
