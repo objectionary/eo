@@ -773,19 +773,24 @@
     "**"
 
   --> stops-on-walking-with-a-glob-bracket-left-open
-    eq. > @
-      length.
-        d.as-dir.walk "[.txt"
-      0
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq. (d.as-dir.walk "[.txt").length 0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
 
   --> stops-on-walking-with-a-malformed-glob
-    eq. > @
-      length.
-        d.as-dir.walk "a{b"
-      0
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "a{b"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
