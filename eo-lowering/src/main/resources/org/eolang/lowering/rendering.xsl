@@ -425,11 +425,15 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <!--
+  Unicode escape of a character Java forbids in an identifier. Six digits,
+  not four: four dropped everything above the sixteenth bit of a code point,
+  so U+1F600 and U+F600 both read as "$uF600" (#9047).
+  -->
   <xsl:function name="eo:escape-char" as="xs:string">
     <xsl:param name="c" as="xs:string"/>
     <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
-    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (1048576, 65536, 4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
   </xsl:function>
   <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
   <xsl:function name="eo:identifier" as="xs:string">
@@ -451,10 +455,15 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
-  <!-- Get clean escaped object name -->
+  <!--
+  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
+  its own, which no "-" can produce: mapping "_" to "__" beside them made
+  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
+  that the escape is never read as a dollar the name itself carried.
+  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -538,10 +547,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">
