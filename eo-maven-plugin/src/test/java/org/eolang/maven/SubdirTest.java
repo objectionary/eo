@@ -4,9 +4,13 @@
  */
 package org.eolang.maven;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -87,5 +91,55 @@ final class SubdirTest {
             Files.isDirectory(new Subdir(temp, "transpile").path()),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void waitsWhileAnotherProcessNumbersTheSameTarget(@TempDir final Path temp)
+        throws Exception {
+        final Path holder = temp.resolve("Holder.java");
+        Files.write(
+            holder,
+            String.join(
+                "\n",
+                "import java.nio.channels.FileChannel;",
+                "import java.nio.file.Paths;",
+                "import java.nio.file.StandardOpenOption;",
+                "public class Holder {",
+                "  public static void main(String[] args) throws Exception {",
+                "    try (FileChannel chan = FileChannel.open(Paths.get(args[0]),",
+                "      StandardOpenOption.CREATE, StandardOpenOption.WRITE)) {",
+                "      chan.lock();",
+                "      System.out.println(\"locked\");",
+                "      System.out.flush();",
+                "      Thread.sleep(2000L);",
+                "    }",
+                "  }",
+                "}"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        final Path target = Files.createDirectories(temp.resolve("eo"));
+        final Process proc = new ProcessBuilder(
+            ProcessHandle.current().info().command().orElse("java"),
+            holder.toString(),
+            target.resolve(".numbering.lock").toString()
+        ).redirectErrorStream(true).start();
+        try (BufferedReader out = new BufferedReader(
+            new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8)
+        )) {
+            MatcherAssert.assertThat(
+                "the other process must hold the lock before the number is asked for",
+                out.readLine(),
+                Matchers.equalTo("locked")
+            );
+            final long start = System.nanoTime();
+            new Subdir(target, "parse").path();
+            MatcherAssert.assertThat(
+                "a number must not be reserved while another process holds the lock (see #9013)",
+                TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start),
+                Matchers.greaterThan(1000L)
+            );
+        } finally {
+            proc.waitFor();
+        }
     }
 }
