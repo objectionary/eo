@@ -162,11 +162,7 @@
     [^ index acc braced classed] >> translated
       if. > @
         index.gte ^.glob.length
-        braced.if
-          T
-            "Can't parse '%s' as a glob pattern, Missing '}'".printf
-              * ^.glob
-          acc
+        finished
         ^.translated
           index.plus advance
           "".joined
@@ -199,6 +195,12 @@
               char.eq ","
             "|"
             escaped char
+      if. > bracketed
+        char.eq "["
+        T
+          "Can't parse '%s' as a glob pattern, Missing ']'".printf
+            * ^.glob
+        alternated
       ^.glob.at index > char
       classed.not.and > double
         and.
@@ -208,6 +210,11 @@
               index.plus 1
               "" > [message]
             "*"
+      braced.if > finished
+        T
+          "Can't parse '%s' as a glob pattern, Missing '}'".printf
+            * ^.glob
+        acc
       opening.and > negated
         eq.
           ^.glob.at
@@ -247,12 +254,7 @@
                   if.
                     char.eq "/"
                     literal
-                    if.
-                      char.eq "["
-                      T
-                        "Can't parse '%s' as a glob pattern, Missing ']'".printf
-                          * ^.glob
-                      alternated
+                    bracketed
       opening.if > within
         true
         if.
