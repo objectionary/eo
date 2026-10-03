@@ -38,6 +38,14 @@ import java.util.stream.Stream;
  * stages that do run, and the same {@code target} never grows two
  * directories for the same name.</p>
  *
+ * <p>The number is read and reserved under two locks. A {@link ReentrantLock}
+ * keeps two threads of one build apart and a {@link FileLock} on a file in
+ * {@code target} keeps two Maven processes apart, which share the directory
+ * but no memory. Without the second, two processes asking for two different
+ * names could both see the same highest number and both take the next one,
+ * and since the two directories differ in name, neither creation would fail
+ * (see #9013).</p>
+ *
  * @since 0.72.0
  */
 final class Subdir {
@@ -183,10 +191,13 @@ final class Subdir {
         lock.lock();
         try {
             Files.createDirectories(this.target);
-            try (FileChannel channel = FileChannel.open(
-                this.target.resolve(".numbering.lock"),
-                StandardOpenOption.CREATE, StandardOpenOption.WRITE
-            ); FileLock ignored = channel.lock()) {
+            try (
+                FileChannel channel = FileChannel.open(
+                    this.target.resolve(".numbering.lock"),
+                    StandardOpenOption.CREATE, StandardOpenOption.WRITE
+                );
+                FileLock ignored = channel.lock()
+            ) {
                 return this.unlocked();
             }
         } catch (final IOException ex) {
@@ -201,19 +212,6 @@ final class Subdir {
         }
     }
 
-    /**
-     * Read the numbers taken and reserve one, with both locks already held.
-     *
-     * <p>The {@link ReentrantLock} keeps two threads of one build apart and
-     * the {@link FileLock} keeps two Maven processes apart, which share the
-     * target directory but no memory. Without the second, two processes
-     * asking for two different names could both see the same highest number
-     * and both take the next one, and since the two directories differ in
-     * name, neither creation would fail (see #9013).</p>
-     *
-     * @return The number
-     * @throws IOException If the directory can't be read or written
-     */
     private int unlocked() throws IOException {
         final List<Matcher> taken;
         try (Stream<Path> kids = Files.list(this.target)) {

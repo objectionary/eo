@@ -100,7 +100,7 @@ final class SubdirTest {
         Files.write(
             holder,
             String.join(
-                "\n",
+                System.lineSeparator(),
                 "import java.nio.channels.FileChannel;",
                 "import java.nio.file.Paths;",
                 "import java.nio.file.StandardOpenOption;",
@@ -123,14 +123,14 @@ final class SubdirTest {
             holder.toString(),
             target.resolve(".numbering.lock").toString()
         ).redirectErrorStream(true).start();
-        try (BufferedReader out = new BufferedReader(
-            new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8)
-        )) {
-            MatcherAssert.assertThat(
-                "the other process must hold the lock before the number is asked for",
-                out.readLine(),
-                Matchers.equalTo("locked")
-            );
+        try (
+            BufferedReader out = new BufferedReader(
+                new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8)
+            )
+        ) {
+            if (!"locked".equals(out.readLine())) {
+                throw new IllegalStateException("The other process didn't take the lock");
+            }
             final long start = System.nanoTime();
             new Subdir(target, "parse").path();
             MatcherAssert.assertThat(
