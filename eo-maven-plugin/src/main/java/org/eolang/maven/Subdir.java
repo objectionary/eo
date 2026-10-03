@@ -217,12 +217,16 @@ final class Subdir {
     }
 
     private int claimed(final int number) throws IOException {
+        final Path path = this.target.resolve(
+            String.format("%02d-%s", number, this.name)
+        );
         int result = number;
         try {
-            Files.createDirectory(
-                this.target.resolve(String.format("%02d-%s", number, this.name))
-            );
+            Files.createDirectory(path);
         } catch (final FileAlreadyExistsException collision) {
+            if (!Files.isDirectory(path)) {
+                throw collision;
+            }
             result = this.reserved();
         }
         return result;
