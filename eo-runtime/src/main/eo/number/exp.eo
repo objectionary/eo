@@ -30,31 +30,28 @@
         num
         times.
           times.
-            horner 13 1
+            if. > [^ n acc] >> horner
+              n.eq 0
+              acc
+              ^.horner
+                n.minus 1
+                1.plus
+                  acc.times
+                    ^.r.div n
+            | 13 1
             2.power half
           2.power
             k.minus half
+  floor. > half!
+    k.div 2
   floor. > k!
     plus.
       num.div 0.6931471805599453
       0.5
-  floor. > half!
-    k.div 2
   minus. > r!
-    minus.
-      num
+    num.minus
       k.times 0.6931471803691238
     k.times 1.9082149292705877e-10
-  if. > [^ n acc] >> horner
-    n.eq 0
-    acc
-    ^.horner
-      n.minus 1
-      plus.
-        1
-        times.
-          acc
-          ^.r.div n
 
   -1.0e308.exp.eq 0 ++> can-exponentiate-a-huge-negative-argument
 
@@ -69,9 +66,7 @@
 
   lt. ++> can-exponentiate-a-subnormal-result
     abs.
-      minus.
-        -740.exp
-        4.2e-322
+      -740.exp.minus 4.2e-322
     4.9e-323
 
   lt. ++> can-exponentiate-five
