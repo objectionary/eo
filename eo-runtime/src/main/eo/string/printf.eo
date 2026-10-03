@@ -312,7 +312,7 @@
                                       0
                                   6
                               T
-                                "The argument %x is not a number, the %%f conversion takes one".printf
+                                "The argument %x is not a number, the %%f conversion takes an eight-byte number".printf
                                   * datum
                             if.
                               78-.eq conv
