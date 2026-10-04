@@ -23,12 +23,14 @@ import java.util.List;
  * Errors thrown are {@link ParseError} with the canonical message
  * texts from §9.9.</p>
  *
- * <p>Paren groups are refused past {@link Stack#DEEPEST} levels of nesting
- * (R-3.6.5a), while the line is still one unbroken scan and nothing has
- * recursed into it yet. The limit is the one R-5.2.7a puts on indentation,
- * and it is there for the same reason: the XSL chain behind the parser walks
- * the emitted tree recursively and dies on a few hundred levels with an
- * overflow no caller can report (#9183).</p>
+ * <p>Two shapes of nesting are refused past {@link Stack#DEEPEST}: paren
+ * groups, caught while the line is still one unbroken scan and nothing has
+ * recursed into it yet (R-3.6.5a), and the hops of a dispatch chain, each of
+ * which becomes one more level of the emitted tree even though the source
+ * holds them all on one flat line (R-3.5.3c). The limit is the one R-5.2.7a
+ * puts on indentation, and it is there for the same reason: the XSL chain
+ * behind the parser walks that tree recursively and dies on a few hundred
+ * levels with an overflow no caller can report (#9183, #9184).</p>
  *
  * @since 0.1
  */
@@ -394,6 +396,12 @@ final class Tokens {
             int dot = this.span.indent() + this.cursor;
             if (fragile) {
                 dot = dot + 1;
+            }
+            if (chain.size() >= Stack.DEEPEST) {
+                throw new ParseError(
+                    this.span.line(), dot,
+                    String.format("object nested deeper than %d levels", Stack.DEEPEST)
+                );
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
