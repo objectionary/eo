@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -165,9 +166,14 @@ final class PatchingTest {
             final String listed = Files.readString(
                 this.temp.resolve("patched.tsv"), StandardCharsets.UTF_8
             );
+            final Path sources = this.temp.resolve("sources");
             final String expected = new TreeSet<>(
-                demands.keySet().stream().map(Object::toString).collect(Collectors.toList())
-            ).stream().map(name -> String.format("%s%n", name)).collect(Collectors.joining());
+                demands.keySet().stream().map(Object::toString).map(
+                    name -> String.format(
+                        "%s\t%s%n", sources.resolve(Paths.get(name).getFileName()), name
+                    )
+                ).collect(Collectors.toList())
+            ).stream().collect(Collectors.joining());
             if (!listed.equals(expected)) {
                 failed.add(String.format("patched.tsv: %s, while %s", listed, expected));
             }
