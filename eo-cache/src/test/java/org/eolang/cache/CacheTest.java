@@ -260,18 +260,15 @@ final class CacheTest {
             new Together<>(
                 2,
                 thread -> {
-                    final Path source = temp.resolve(String.format("build%d", thread))
-                        .resolve("app.eo");
-                    new Saved(String.format("v%d", thread), source).value();
+                    final String own = String.format("v%d", thread);
+                    final Path source = temp.resolve(own).resolve("app.eo");
+                    new Saved(own, source).value();
                     final Path target = source.resolveSibling("app.xmir");
                     final Cache cache = new Cache(temp.resolve("cache"), Files::readString);
-                    String seen = "";
-                    for (int run = 0; run < 200; ++run) {
+                    String seen = own;
+                    for (int run = 0; run < 200 && seen.equals(own); ++run) {
                         cache.apply(source, target, Paths.get("foo", "app.xmir"));
                         seen = Files.readString(target);
-                        if (!seen.equals(Files.readString(source))) {
-                            break;
-                        }
                     }
                     return seen;
                 }

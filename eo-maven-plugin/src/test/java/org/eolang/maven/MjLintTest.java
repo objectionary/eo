@@ -656,8 +656,11 @@ final class MjLintTest {
             .execute(new PpLint());
         final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
-            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
-                .forEach(p -> new Unchecked<>(new Saved(planted, p)).value());
+            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir"))).forEach(
+                p -> new Unchecked<>(
+                    new Saved(MjLintTest.restamped(p, planted), p)
+                ).value()
+            );
         }
         maven.execute(MjLint.class);
         MatcherAssert.assertThat(
@@ -759,5 +762,10 @@ final class MjLintTest {
             "",
             "[] > main",
         };
+    }
+
+    private static String restamped(final Path slot, final String content) {
+        final String text = new UncheckedText(new TextOf(slot)).asString();
+        return text.substring(0, text.indexOf(' ') + 1).concat(content);
     }
 }

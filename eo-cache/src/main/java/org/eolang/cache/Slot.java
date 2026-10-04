@@ -12,26 +12,22 @@ import java.util.Optional;
 
 /**
  * One place in the cache, holding compiled content and the sha of the source
- * it was made from.
- *
- * <p>The two are one file, written at once by {@link Saved}, so a reader that
- * finds the sha it expects has already read the content that belongs to it.
- * Kept apart, as a {@code .sha256} beside the content, they disagree for as
- * long as it takes another build to write both, and a reader that checks the
- * sha and then reads the content gets the content of a source it never asked
- * for (#9174). The cache is machine-wide and the slot of a local source is
- * named after that source alone, so the other build is not a rare one: two
- * projects that both hold a {@code foo/app.eo} share this very file.</p>
+ * it was made from, as one file written at once by {@link Saved}, so a reader
+ * that finds the sha it expects has already read the content that belongs to
+ * it. Kept apart, as a {@code .sha256} beside the content, the two disagree
+ * for as long as it takes another build to write both, and the reader gets the
+ * content of a source it never asked for (#9174). The cache is machine-wide
+ * and this slot is named after the source alone, so the other build is no rare
+ * one: two projects holding a {@code foo/app.eo} share this very file.
  *
  * @since 0.75
  */
 final class Slot {
 
     /**
-     * What tells the sha from the content: the first space in the file. A
-     * sha is Base64 and holds none of its own, while a line separator would
-     * be the one of the machine that wrote the file, and this cache is read
-     * by whatever reads that directory.
+     * What tells the sha from the content: the first space in the file. A sha
+     * is Base64 and holds none, while a line separator would be the one of the
+     * machine that wrote it, and other machines read this directory too.
      */
     private static final String SPLIT = " ";
 
