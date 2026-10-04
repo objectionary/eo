@@ -303,12 +303,16 @@
   #5983). Recursion plays no part: #5848 folded recursive handles only because
   those were the sole ones "inline-cactoos" left standing to reach here; a plain
   formation handle now reaches here too (kept standing by #5983's
-  `eo:arg-applied`) and folds by the very same rule (#6008).
+  `eo:arg-applied`) and folds by the very same rule (#6008). An anonymous
+  formation (`[x] &gt;&gt;` with no "@local") folds onto its first reference too,
+  when that reference carries no positional "@as": no handle name is there for
+  the reference to read the formation back by, so leaving it standing prints
+  the reference against a synthetic "vL_P" that nothing declares (#9164).
   -->
   <xsl:function name="eo:applied-hosted" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="refs" select="eo:applied-refs($attr)"/>
-    <xsl:sequence select="exists($refs) and eo:abstract($attr) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr))"/>
+    <xsl:sequence select="exists($refs) and eo:abstract($attr) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr) or (empty($attr/@local) and empty($refs[1]/@as)))"/>
   </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>
