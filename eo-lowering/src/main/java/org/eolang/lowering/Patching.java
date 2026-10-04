@@ -43,15 +43,17 @@ import org.cactoos.iterable.Sorted;
  * {@link Rendering} gave to the Java file.</p>
  *
  * <p>A changed file is written into the directory of patched sources,
- * under the same name as its source. A source where nothing changed is not
+ * under the directories of its package and the same name as its source,
+ * see {@link Copy}. A source where nothing changed is not
  * written at all. So a reader of the build finds in that directory only
  * what this module changed. The Maven goal then tells the transpiler to
  * read the patched copy instead of the source, but only where such a copy
  * exists. The copies are never deleted, so a copy from an earlier build
  * may still be in the directory, even when none of its objects can be an
- * atom any more. This is why this stage also writes the names of the
- * files it changed in this build into the file {@code patched.tsv}, next
- * to {@code rendered.tsv}. The Maven goal uses only the copies in that
+ * atom any more. This is why this stage also writes every file it changed
+ * in this build into the file {@code patched.tsv}, next to
+ * {@code rendered.tsv}, as the path of the source and the path of its copy
+ * inside the directory of patched sources, split by a tab. The Maven goal uses only the copies in that
  * list, and an old copy that is not in the list is ignored.</p>
  *
  * @since 0.64.0
@@ -117,15 +119,17 @@ final class Patching implements Proc<Path> {
         final Collection<String> files = new ArrayList<>(0);
         int atoms = 0;
         for (final Path source : new Sorted<>(this.sources)) {
-            final XML out = sheet.transform(new XMLDocument(source));
+            final XML xmir = new XMLDocument(source);
+            final XML out = sheet.transform(xmir);
             final List<String> locs = out.xpath(
                 "//o[@name='φ'][o[@name='λ' and not(@atom)]]/../@loc"
             );
             if (!locs.isEmpty()) {
-                final Path file = Files.createDirectories(this.patched)
-                    .resolve(source.getFileName().toString());
+                final Path copy = new Copy(source, xmir).relative();
+                final Path file = this.patched.resolve(copy);
+                Files.createDirectories(file.getParent());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
-                files.add(String.format("%s%n", file.getFileName()));
+                files.add(String.format("%s\t%s%n", source, copy));
                 atoms += locs.size();
                 Logger.info(
                     this, "Patched %[file]s: %s",
