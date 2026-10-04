@@ -51,7 +51,7 @@ final class Copy {
         Path path = Paths.get("");
         for (final String part : String.join(
             "", this.xmir.xpath("/object/metas/meta[head='package']/tail/text()")
-        ).split("\\.")) {
+        ).split("\\.", -1)) {
             if (!part.isEmpty()) {
                 path = path.resolve(part);
             }

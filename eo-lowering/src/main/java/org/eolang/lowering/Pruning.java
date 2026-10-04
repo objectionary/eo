@@ -38,9 +38,10 @@ import org.cactoos.iterable.Sorted;
  * package and the same file name as the source, see {@link Copy}. All the
  * next stages read these copies. If two sources of one package have the
  * same file name, they would need the same copy, and one of them would be
- * lost without any warning. So, in that case, this stage fails the build. The copies of an earlier build are deleted first. Without this, a
- * source that was deleted from the project would still be in the
- * directory, and the next stages would still read it.</p>
+ * lost without any warning. So, in that case, this stage fails the build.
+ * The copies of an earlier build are deleted first. Without this, a source
+ * that was deleted from the project would still be in the directory, and
+ * the next stages would still read it.</p>
  *
  * @since 0.64.0
  */
