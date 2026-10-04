@@ -1,8 +1,7 @@
 # Recovers from a terminated computation.
 # Resolves `value` to its normal form; if that resolution terminates, behaves
-# as `alternative`, otherwise as `value`. A termination that is never
-# intercepted ends the program. The message it carried is dropped here; the
-# `caught` object hands it to its alternative instead.
+# as `alternative`, otherwise as `value`. A termination never intercepted ends
+# the program; the message it carried is dropped, and `caught` hands it over.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

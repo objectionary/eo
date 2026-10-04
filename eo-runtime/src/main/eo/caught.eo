@@ -1,22 +1,15 @@
 # Recovers from a terminated computation and says why it terminated.
 # Resolves `value` to its normal form; if that resolution terminates, behaves
 # as `alternative` applied to the message the termination carried, otherwise
-# as `value`. The message goes to the alternative by position, the way an atom
-# hands one to a fallback, so `caught x I` answers the message itself:
-#
-# ```
-# caught (2.as-i64.div 0.as-i64) I  # "i64 cannot be divided by zero"
-# ```
-#
-# `recovered` drops the message and this one keeps it, which is what lets a
-# test say which failure it expects rather than only that there was one. An
-# alternative with no void to take the message aborts, instead of losing it.
-#
-# The message is the one the termination would print at the top of the
-# program, so a termination that something forced on the way, such as a step
-# of a `seq`, arrives with the location that `PhSafe` puts in front of the
-# reason. A test of such a failure asks whether the message ends with the
-# reason, rather than whether it equals it.
+# as `value`. The message goes by position, the way an atom hands one to a
+# fallback, so `caught (2.as-i64.div 0.as-i64) I` answers "i64 cannot be
+# divided by zero". `recovered` drops that message and this one keeps it,
+# which is what lets a test say which failure it expects rather than only
+# that there was one. An alternative with no void to take the message aborts,
+# instead of losing it again. A termination that something forced on the way,
+# such as a step of a `seq`, arrives with the location that `PhSafe` puts in
+# front of the reason, since that is what the program prints at the top, so a
+# test of such a failure asks whether the message ends with the reason.
 #
 # @todo #9145:30min Stop skipping 'mandatory-package' here. The lint keeps
 #  the names of the objects that live directly under 'eo-runtime/src/main/eo'
@@ -36,12 +29,6 @@
 [] > caught /A
   ? > value /A?
   ? > alternative /A
-
-  eq. ++> can-hand-the-message-of-a-division-by-zero
-    caught
-      2.as-i64.div 0.as-i64
-      I
-    "i64 cannot be divided by zero"
 
   eq. ++> can-hand-the-message-of-a-termination-to-the-alternative
     caught
@@ -72,6 +59,11 @@
         -1.as-i64
       I
     "the smallest i64 divided by minus one is past the largest i64"
+
+  caught --> stops-on-an-alternative-that-cannot-take-the-message
+    T
+      "the value that stopped"
+    42
 
   caught --> stops-on-an-alternative-that-terminates-too
     T

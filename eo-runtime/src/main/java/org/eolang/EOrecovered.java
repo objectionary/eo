@@ -36,12 +36,7 @@ public final class EOrecovered extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        Phi picked;
-        try {
-            picked = this.take("value").normalized();
-        } catch (final ExFailure ex) {
-            picked = new PhTerminator(new Data.ToPhi(ex.getMessage()));
-        }
+        final Phi picked = new Resolved(this.take("value")).it();
         final Phi result;
         if (picked instanceof PhTerminator) {
             result = this.take("alternative").normalized();

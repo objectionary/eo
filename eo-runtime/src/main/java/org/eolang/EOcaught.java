@@ -9,20 +9,13 @@ package org.eolang;
  * CAUGHT.
  *
  * <p>Resolves {@code value} to its normal form; if that is a terminated
- * computation (a terminator), behaves as {@code alternative} applied to the
- * message the termination carried, otherwise as {@code value}. This is the
- * only way to read that message, which {@link EOrecovered} drops.</p>
+ * computation, behaves as {@code alternative} applied to the message the
+ * termination carried, otherwise as {@code value}. This is the only way to
+ * read that message, which {@link EOrecovered} drops.</p>
  *
  * <p>The message is handed over by position, the way an atom hands one to a
- * fallback, so {@code alternative} must have a void to take it. One that has
- * none aborts, instead of losing the message the way the alternative of
- * {@link EOrecovered} does.</p>
- *
- * <p>A terminator arrives in two shapes. It is a {@link PhTerminator} when
- * nothing forced it on the way here, and it is an {@link ExFailure} when
- * something did: a {@code seq} step, a const, or anything else that dataizes
- * while the normal form is computed. Both are the same termination, so both
- * are intercepted and both carry a message.</p>
+ * fallback, so an {@code alternative} with no void to take it aborts instead
+ * of losing the message again.</p>
  *
  * @since 0.0.0
  */
@@ -41,16 +34,11 @@ public final class EOcaught extends PhDefault implements Atom {
 
     @Override
     public Phi lambda() {
-        Phi picked;
-        try {
-            picked = this.take("value").normalized();
-        } catch (final ExFailure ex) {
-            picked = new PhTerminator(new Data.ToPhi(ex.getMessage()));
-        }
+        final Phi picked = new Resolved(this.take("value")).it();
         final Phi result;
-        if (picked instanceof PhTerminator) {
+        if (picked instanceof final PhTerminator terminator) {
             result = this.take("alternative");
-            result.put(0, ((PhTerminator) picked).reason());
+            result.put(0, terminator.reason());
         } else {
             result = picked;
         }
