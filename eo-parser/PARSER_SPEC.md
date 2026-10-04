@@ -349,6 +349,8 @@ R-3.5.2. Name mapping inside the dispatch: `@` → `φ`, `^` → `ρ`. (Cross-re
 R-3.5.3. Horizontal arguments are accepted after the method name; they become args of the method.
 R-3.5.3a. **Fragile dispatch `?.`.** Anywhere the plain `.` dispatch operator is accepted, the fragile operator `?.` (`QDOT`, §2.3) is equally accepted: a horizontal chain link (`x?.read`, mixed `a.b?.c`), a `?.method` continuation line, and a reversed dispatch (`name?. …`). It parses identically to `.` and emits the same `<o>` — the only difference is an added `@fragile=''` marker on that link (§9.4). The operator is **syntax only** in this revision: the parser does not require `?.` for any receiver nor forbid `.`, because fragility is not known at parse time; enforcement (a fragile object must use `?.`) is a separate concern that reads the `@fragile` marker downstream. A `?` that is not immediately followed by `.` is the vertical-void marker (§3.4), not a dispatch.
 R-3.5.3b. **Fragile-dispatch enforcement (warning).** A first, purely syntactic slice of the enforcement that R-3.5.3a deferred: when a regular `.` dispatch is performed **directly** on a fragile `?.` dispatch that was not applied, a `warning`-severity `<error check='fragile-dispatch'>` is reported (no type inference — only the in-chain case decidable from the `@fragile` markers is checked). `x?.y.a` warns (write `x?.y?.a`); `x?.y?.a` is clean; `(x?.y 1 2).a` is clean because the dispatch is on the result of an application, not directly on `?.y`. Structurally the offending link is a method dispatch (`@method`, no `@fragile`) whose immediately-preceding sibling is a *childless* fragile link — an application carries arg children and so does not match. The check runs before `wrap-method-calls` (on the flat chain) and covers horizontal, vertical, and reversed dispatch uniformly; the broader "object known to be fragile" case needs type inference and is out of scope.
+R-3.5.3c. **Depth limit.** One chain holds 256 hops at the most. Otherwise: error `object nested deeper than 256 levels`, reported at the dot that goes too far. Every hop becomes one more level of the emitted tree, even though the source holds them all on one flat line, so the limit is the one R-5.2.7a puts on indentation, and it is there for the same reason.
+
 R-3.5.4. **Cross-line ownership of standalone-`.method` rejection.** A `.method` line carries an optional name suffix; the line's *legality* is decided cross-line, not per-line. Three rules own the rejection paths:
   - **R-5.2.3(b)** — same-indent `.method` after a horizontally-completed predecessor.
   - **R-5.2.5** — `.method` as a deeper-indent line (no previous sibling at this indent).
@@ -1374,7 +1376,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
-| Nesting past 256 levels (R-5.2.7a) | `object nested deeper than 256 levels` |
+| Nesting past 256 levels, by indentation (R-5.2.7a) or by a dispatch chain (R-3.5.3c) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
