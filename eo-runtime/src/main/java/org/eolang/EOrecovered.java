@@ -11,7 +11,8 @@ package org.eolang;
  * <p>Resolves {@code value} to its normal form; if that is a terminated
  * computation (a terminator), behaves as {@code alternative}, otherwise as {@code value}.
  * A terminator on both sides stays a terminator, so an outer recovery can still
- * intercept it. This is the only way to intercept a terminator and keep going.</p>
+ * intercept it. The message the terminator carried is dropped; {@link EOcaught}
+ * hands it to its alternative instead.</p>
  *
  * <p>A terminator arrives in two shapes. It is a {@link PhTerminator} when nothing
  * forced it on the way here, and it is an {@link ExFailure} when something did:

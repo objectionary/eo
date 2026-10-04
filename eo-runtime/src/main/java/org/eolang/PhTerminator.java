@@ -31,8 +31,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * runtime attempts on every take (via {@link AtWithRho}) is silently ignored,
  * since a terminator has no ρ; this keeps its cause from being masked by a
  * ρ-rejection while it propagates. The cause is write-once and never handed back
- * by {@link #take(String)}, so EO code can neither read it nor catch it — it
- * exists only to explain the termination at the very top.</p>
+ * by {@link #take(String)}, so a dispatch can neither read it nor catch it — it
+ * explains the termination at the very top, and {@link EOcaught} hands it to an
+ * alternative, which is the only way EO code sees it.</p>
  *
  * @since 0.73.1
  */
@@ -163,7 +164,13 @@ public final class PhTerminator implements Phi {
         return "⊥";
     }
 
-    private Phi reason() {
+    /**
+     * The reason this computation terminated, either the cause it was given
+     * or the default it was born with.
+     *
+     * @return The reason, as an object holding a string
+     */
+    Phi reason() {
         final Phi reason;
         final Phi carried = this.cause.get();
         if (carried != null) {

@@ -1,0 +1,79 @@
+# Recovers from a terminated computation and says why it terminated.
+# Resolves `value` to its normal form; if that resolution terminates, behaves
+# as `alternative` applied to the message the termination carried, otherwise
+# as `value`. The message goes to the alternative by position, the way an atom
+# hands one to a fallback, so `caught x I` answers the message itself:
+#
+# ```
+# caught (2.as-i64.div 0.as-i64) I  # "i64 cannot be divided by zero"
+# ```
+#
+# `recovered` drops the message and this one keeps it, which is what lets a
+# test say which failure it expects rather than only that there was one. An
+# alternative with no void to take the message aborts, instead of losing it.
+#
+# The message is the one the termination would print at the top of the
+# program, so a termination that something forced on the way, such as a step
+# of a `seq`, arrives with the location that `PhSafe` puts in front of the
+# reason. A test of such a failure asks whether the message ends with the
+# reason, rather than whether it equals it.
+#
+# @todo #9145:30min Stop skipping 'mandatory-package' here. The lint keeps
+#  the names of the objects that live directly under 'eo-runtime/src/main/eo'
+#  in a list of its own, in 'org/eolang/funcs/home-object.xsl', and 'caught'
+#  is not on it yet, so the lint asks this file for a '+package' it must not
+#  have. Remove this directive once objectionary/lints#1539 adds the name.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++rt jvm org.eolang:eo-runtime:0.0.0
++rt node eo2js-runtime:0.0.0
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint mandatory-package
++version 0.0.0
+
+[] > caught /A
+  ? > value /A?
+  ? > alternative /A
+
+  eq. ++> can-hand-the-message-of-a-division-by-zero
+    caught
+      2.as-i64.div 0.as-i64
+      I
+    "i64 cannot be divided by zero"
+
+  eq. ++> can-hand-the-message-of-a-termination-to-the-alternative
+    caught
+      T
+        "the reason it stopped"
+      I
+    "the reason it stopped"
+
+  ends-with. ++> can-hand-the-message-when-a-step-of-a-sequence-terminates
+    caught
+      seq *
+        T
+          "the step that stopped"
+        true
+      I
+    "the step that stopped"
+
+  eq. ++> can-keep-the-value-when-not-terminated
+    caught
+      42
+      I
+    42
+
+  eq. ++> can-tell-two-failures-of-one-object-apart
+    caught
+      div.
+        i64 80-00-00-00-00-00-00-00
+        -1.as-i64
+      I
+    "the smallest i64 divided by minus one is past the largest i64"
+
+  caught --> stops-on-an-alternative-that-terminates-too
+    T
+      "the value that stopped"
+    T
