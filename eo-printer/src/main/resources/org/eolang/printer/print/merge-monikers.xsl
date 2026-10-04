@@ -221,7 +221,11 @@
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
   sequence when `$ref` hosts no binding (not a bare reference, no eligible
-  binding, or not the first hosting reference).
+  binding, or not the first hosting reference). A binding an applied reference
+  already hosts as a "| args" pipe (`eo:applied-hosted`) is not hosted here too,
+  or it would be printed twice, once at each reference, with the same handle
+  name, which the parser refuses as a duplicate (#9166); its bare readers keep
+  the readable handle instead (`eo:kept-local-ref`).
   -->
   <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
@@ -237,7 +241,7 @@
       <xsl:otherwise>
         <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
         <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', $name), root($ref))[1]"/>
-        <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+        <xsl:sequence select="if (exists($binding) and not(eo:applied-hosted($binding)) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -357,7 +361,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[eo:const-handle(.)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or eo:applied-hosted($binding) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   Whether the bare name of `$binding` would read as something else at `$ref`:
@@ -419,7 +423,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or eo:applied-hosted($binding) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   The binding, out of those candidates, that a reference actually keeps: not
