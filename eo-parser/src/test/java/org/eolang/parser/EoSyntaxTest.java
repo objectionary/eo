@@ -232,6 +232,18 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @Timeout(60L)
+    void reportsDeeplyChainedDispatchesInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a dispatch chain longer than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(new InputOf(EoSyntaxTest.chained(Stack.DEEPEST * 3)))
+                .parsed()
+                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = "[] > x-н, 1".concat(String.valueOf((char) 10));
         MatcherAssert.assertThat(
@@ -962,6 +974,10 @@ final class EoSyntaxTest {
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
         );
+    }
+
+    private static String chained(final int hops) {
+        return String.format("+package foo%n%n[] > app%n  x%s > @%n", ".y".repeat(hops));
     }
 
     private static String nested(final int depth) {

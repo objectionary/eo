@@ -23,6 +23,13 @@ import java.util.List;
  * Errors thrown are {@link ParseError} with the canonical message
  * texts from §9.9.</p>
  *
+ * <p>A dispatch chain is refused past {@link Stack#DEEPEST} hops (R-3.5.3c),
+ * since every hop becomes one more level of the emitted tree even though the
+ * source holds them all on one flat line. The limit is the one R-5.2.7a puts
+ * on indentation, and it is there for the same reason: the XSL chain behind
+ * the parser walks that tree recursively and dies on a few hundred levels
+ * with an overflow no caller can report (#9184).</p>
+ *
  * @since 0.1
  */
 final class Tokens {
@@ -387,6 +394,12 @@ final class Tokens {
             int dot = this.span.indent() + this.cursor;
             if (fragile) {
                 dot = dot + 1;
+            }
+            if (chain.size() >= Stack.DEEPEST) {
+                throw new ParseError(
+                    this.span.line(), dot,
+                    String.format("object nested deeper than %d levels", Stack.DEEPEST)
+                );
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
