@@ -57,7 +57,7 @@
     <op λ="L_bytes_and" type="byte[]" args="byte[] byte[]">new BytesOf(⟨1⟩).and(new BytesOf(⟨2⟩)).take()</op>
     <op λ="L_bytes_or" type="byte[]" args="byte[] byte[]">new BytesOf(⟨1⟩).or(new BytesOf(⟨2⟩)).take()</op>
     <op λ="L_bytes_not" type="byte[]" args="byte[]">new BytesOf(⟨1⟩).not().take()</op>
-    <op λ="L_bytes_right" type="byte[]" args="byte[] double">new BytesOf(⟨1⟩).shift((int) ⟨2⟩).take()</op>
+    <op λ="L_bytes_right" type="byte[]" args="byte[] double">new BytesOf(⟨1⟩).shift(new Int("b", new Data.ToPhi(⟨2⟩)).it()).take()</op>
     <op λ="L_bytes_concat" type="byte[]" args="byte[] byte[]">java.nio.ByteBuffer.allocate(⟨1⟩.length + ⟨2⟩.length).put(⟨1⟩).put(⟨2⟩).array()</op>
     <op λ="L_dataized" type="byte[]" args="byte[]">⟨1⟩</op>
   </xsl:variable>
