@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -193,16 +194,21 @@ public final class MjLower extends MjSafe {
     }
 
     private static void repoint(final TjsForeign tojos, final Path home) {
-        final Collection<String> fresh = new ListOf<>(
-            new Mapped<>(
-                Text::asString,
-                new Split(new TextOf(home.resolve("patched.tsv")), "\\R")
-            )
+        final Map<String, String> fresh = new HashMap<>(0);
+        final Iterable<String> rows = new Mapped<>(
+            Text::asString,
+            new Split(new TextOf(home.resolve("patched.tsv")), "\\R")
         );
+        for (final String row : rows) {
+            final String[] cells = row.split("\t", 2);
+            if (cells.length == 2) {
+                fresh.put(cells[0], cells[1]);
+            }
+        }
         for (final TjForeign tojo : tojos.standalone()) {
-            final String name = tojo.xmir().getFileName().toString();
-            if (fresh.contains(name)) {
-                tojo.withXmir(home.resolve("4-patched").resolve(name));
+            final String source = tojo.xmir().toString();
+            if (fresh.containsKey(source)) {
+                tojo.withXmir(home.resolve("4-patched").resolve(fresh.get(source)));
             }
         }
     }
