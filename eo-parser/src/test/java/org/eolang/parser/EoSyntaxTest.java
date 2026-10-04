@@ -16,6 +16,7 @@ import fixtures.LargeProgram;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -227,6 +228,25 @@ final class EoSyntaxTest {
             new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
                 .parsed()
                 .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    @Timeout(60L)
+    void reportsDeeplyNestedApplicationsInsteadOfOverflowing() throws Exception {
+        final int depth = Stack.DEEPEST * 5;
+        MatcherAssert.assertThat(
+            "arguments nested deeper than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(
+                new InputOf(
+                    String.format(
+                        "[] > app%n  f%s x%s > @%n",
+                        String.join("", Collections.nCopies(depth, " (f")),
+                        String.join("", Collections.nCopies(depth, ")"))
+                    )
+                )
+            ).parsed().xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
             Matchers.hasSize(1)
         );
     }
