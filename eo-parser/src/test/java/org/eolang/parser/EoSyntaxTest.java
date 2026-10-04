@@ -232,6 +232,18 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @Timeout(60L)
+    void reportsDeeplyNestedGroupsInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a line whose paren groups nest deeper than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(new InputOf(EoSyntaxTest.wrapped(Stack.DEEPEST * 2)))
+                .parsed()
+                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
     void printsProperListingEvenWhenSyntaxIsBroken() throws Exception {
         final String src = "[] > x-н, 1".concat(String.valueOf((char) 10));
         MatcherAssert.assertThat(
@@ -961,6 +973,13 @@ final class EoSyntaxTest {
             String.join(eol.concat(eol), "1 > x", "2 > y"),
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
+        );
+    }
+
+    private static String wrapped(final int depth) {
+        return String.format(
+            "+package foo%n%n[] > app%n  f%s x%s > @%n",
+            " (f".repeat(depth), ")".repeat(depth)
         );
     }
 

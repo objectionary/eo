@@ -23,6 +23,13 @@ import java.util.List;
  * Errors thrown are {@link ParseError} with the canonical message
  * texts from §9.9.</p>
  *
+ * <p>Paren groups are refused past {@link Stack#DEEPEST} levels of nesting
+ * (R-3.6.5a), while the line is still one unbroken scan and nothing has
+ * recursed into it yet. The limit is the one R-5.2.7a puts on indentation,
+ * and it is there for the same reason: the XSL chain behind the parser walks
+ * the emitted tree recursively and dies on a few hundred levels with an
+ * overflow no caller can report (#9183).</p>
+ *
  * @since 0.1
  */
 final class Tokens {
@@ -801,6 +808,14 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                if (depth > Stack.DEEPEST) {
+                    throw new ParseError(
+                        this.span.line(), this.span.indent() + this.cursor,
+                        String.format(
+                            "object nested deeper than %d levels", Stack.DEEPEST
+                        )
+                    );
+                }
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
