@@ -7,6 +7,8 @@ package org.eolang.printer;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -159,6 +161,43 @@ final class Node {
             }
         }
         return best;
+    }
+
+    /**
+     * Split a reversed dispatch with an inline binding into its receiver
+     * and a method continuation, when the receiver has no one-line
+     * spelling.
+     *
+     * <p>The vertical head of such a dispatch would read {@code plus.:z},
+     * which the grammar does not accept, and the suffix shape of
+     * {@link #print(Style, int)} needs the receiver on one line. So the
+     * receiver goes on a line of its own and the dispatch follows it as
+     * {@code .plus:z}, a continuation that keeps the binding after a name,
+     * where it parses (#9173).</p>
+     *
+     * @return The receiver and the continuation, or empty if not needed
+     */
+    List<Node> continued() {
+        final List<Node> result;
+        if (this.labelled() && !this.children.isEmpty() && !this.suffixed().isPresent()) {
+            final String dot;
+            if (this.base.endsWith("?.")) {
+                dot = "?.";
+            } else {
+                dot = ".";
+            }
+            result = Arrays.asList(
+                this.children.get(0),
+                new Node(
+                    dot.concat(this.base.substring(0, this.base.length() - dot.length())),
+                    this.tail, this.abstractt, this.test, false, false,
+                    this.children.subList(1, this.children.size())
+                )
+            );
+        } else {
+            result = Collections.emptyList();
+        }
+        return result;
     }
 
     /**

@@ -57,7 +57,11 @@ final class Vertical {
             .append(this.head);
         for (int idx = 0; idx < this.kids.size(); ++idx) {
             final Node kid = this.kids.get(idx);
-            if (idx + 1 < this.kids.size() && this.kids.get(idx + 1).continuation()) {
+            final List<Node> split = kid.continued();
+            if (!split.isEmpty()) {
+                block.append(split.get(0).stacked(style, indent + 1))
+                    .append(split.get(1).indented(style, indent + 1));
+            } else if (idx + 1 < this.kids.size() && this.kids.get(idx + 1).continuation()) {
                 block.append(kid.stacked(style, indent + 1));
             } else {
                 block.append(kid.indented(style, indent + 1));
