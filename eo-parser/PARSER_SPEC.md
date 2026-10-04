@@ -383,6 +383,8 @@ R-3.6.1. Argument separation is by single space.
 R-3.6.2. Inline binding `:label` or `:N` may follow an argument (§6.6).
 R-3.6.3. All-or-nothing binding rule (§6.6.2) applies to the argument list.
 R-3.6.4. The shape detector that classifies the line ignores characters inside parens and string literals — only top-level spaces and dots count.
+R-3.6.5a. **Depth limit.** Paren groups on one line may nest 256 deep at the most. Otherwise: error `object nested deeper than 256 levels`, reported at the parenthesis that goes too deep. The limit is the one R-5.2.7a puts on indentation, and it is there for the same reason: the XSL chain behind the parser walks the emitted tree recursively and dies on a few hundred levels with an overflow no caller can report.
+
 R-3.6.5. **Horizontal formations are not arguments.** A `[params]`-headed expression is legal as a *top-of-line construct* (a `bare-formation` line, §3.4) — which includes appearing **as a vertical argument at deeper indent under another expression**. It is also legal as the inline-phi parameter list (`> [params] >`, §3.10). What is **rejected** is the horizontal anonym form: `[x]` (or `[x] body`) as a *horizontal* argument token inside another expression — typically wrapped in parens. The current ANTLR grammar admits the horizontal form via `scope : LB (happlication | hanonym) RB`; the new spec deliberately removes it.
 
 Legal — formation as a vertical arg:
@@ -1376,7 +1378,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
-| Nesting past 256 levels, by indentation (R-5.2.7a) or by a dispatch chain (R-3.5.3c) | `object nested deeper than 256 levels` |
+| Nesting past 256 levels, by indentation (R-5.2.7a), by parentheses (R-3.6.5a) or by a dispatch chain (R-3.5.3c) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
