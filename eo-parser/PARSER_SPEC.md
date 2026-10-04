@@ -129,6 +129,7 @@ A property of a level record. One of:
 
 R-2.1.1. Source is UTF-8.
 R-2.1.2. Line endings are `\n` or `\r\n`. The parser normalises both to `\n` internally.
+R-2.1.3. A byte order mark (U+FEFF) at the very start of the source is dropped before the lines are split, the way a carriage return is, since some editors write one into a UTF-8 file. A U+FEFF anywhere else is an ordinary character of the program.
 
 ### 2.2 Indentation
 

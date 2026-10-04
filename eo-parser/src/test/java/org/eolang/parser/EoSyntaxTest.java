@@ -93,6 +93,24 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesAFileThatStartsWithAByteOrderMark() throws Exception {
+        MatcherAssert.assertThat(
+            "a byte order mark in front of the first line must not reach the parser, but it did",
+            XhtmlMatchers.xhtml(
+                new EoSyntax(
+                    Character.toString(0xFEFF).concat(
+                        String.format("# The app.%n%n+package foo%n%n[] > app%n  42 > x%n")
+                    )
+                ).parsed().toString()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']"
+            )
+        );
+    }
+
+    @Test
     void measuresRealParsingTime() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
