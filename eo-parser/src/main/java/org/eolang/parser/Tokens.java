@@ -378,6 +378,11 @@ final class Tokens {
      * Read zero or more {@code .NAME} chain links following the
      * cursor.
      *
+     * <p>Every link wraps the object before it into one more level, so a
+     * chain longer than {@link Stack#DEEPEST} links is refused, the same
+     * way a formation nested that deep is, instead of a tree the XSL chain
+     * cannot walk.</p>
+     *
      * @return Chain links in source order
      */
     List<MethodChain> readChain() {
@@ -387,6 +392,12 @@ final class Tokens {
             int dot = this.span.indent() + this.cursor;
             if (fragile) {
                 dot = dot + 1;
+            }
+            if (chain.size() >= Stack.DEEPEST) {
+                throw new ParseError(
+                    this.span.line(), dot,
+                    String.format("object nested deeper than %d levels", Stack.DEEPEST)
+                );
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
