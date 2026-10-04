@@ -67,9 +67,10 @@ public final class Reduced implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
+        final Pairs pairs = new Pairs(new XMLDocument(tables.resolve("links.xml")));
         final Map<String, String> behaves = new Behaved(
             given,
-            new Ends(new Pairs(new XMLDocument(tables.resolve("links.xml"))).all()).names()
+            new Ends(pairs.all()).names(), pairs.filled()
         ).all();
         for (final XML row : given.nodes("/provides/type")) {
             final String found = behaves.get(new Noted(row).says("id"));

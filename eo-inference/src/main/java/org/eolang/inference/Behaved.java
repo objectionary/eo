@@ -75,14 +75,35 @@ final class Behaved {
     private final Map<String, String> names;
 
     /**
+     * The voids every object fills, by its locator.
+     */
+    private final Map<String, Collection<String>> filled;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table, as {@link Provides} wrote it
      * @param aliases The name every type goes by, from {@link Ends}
      */
     Behaved(final XML provides, final Map<String, String> aliases) {
+        this(provides, aliases, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param provides The provides table, as {@link Provides} wrote it
+     * @param aliases The name every type goes by, from {@link Ends}
+     * @param bindings The voids every object fills, from {@link Pairs}
+     */
+    Behaved(
+        final XML provides,
+        final Map<String, String> aliases,
+        final Map<String, Collection<String>> bindings
+    ) {
         this.table = provides;
         this.names = aliases;
+        this.filled = bindings;
     }
 
     /**
@@ -99,7 +120,7 @@ final class Behaved {
         );
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final String type : rows.keySet()) {
-            final String behaves = Behaved.walked(type, rows, owned);
+            final String behaves = Behaved.walked(type, rows, owned, this.names, this.filled);
             if (!behaves.equals(type)) {
                 found.put(type, behaves);
             }
@@ -110,13 +131,16 @@ final class Behaved {
     private static String walked(
         final String type,
         final Map<String, Collection<Map<String, String>>> rows,
-        final Provided owned
+        final Provided owned,
+        final Map<String, String> aliases,
+        final Map<String, Collection<String>> filled
     ) {
         final Collection<String> walked = new HashSet<>(0);
         String found = type;
         String hop = type;
         while (walked.add(hop)
-            && Behaved.bare(rows.getOrDefault(hop, Collections.emptyList()))) {
+            && Behaved.bare(rows.getOrDefault(hop, Collections.emptyList()))
+            && !Behaved.partial(hop, rows, owned, aliases, filled)) {
             final String behind = owned.behind(hop);
             if (behind.isEmpty()) {
                 break;
@@ -124,6 +148,27 @@ final class Behaved {
             hop = behind;
             if (rows.containsKey(hop) && Behaved.open(hop)) {
                 found = hop;
+            }
+        }
+        return found;
+    }
+
+    private static boolean partial(
+        final String type,
+        final Map<String, Collection<Map<String, String>>> rows,
+        final Provided owned,
+        final Map<String, String> aliases,
+        final Map<String, Collection<String>> filled
+    ) {
+        final String body = owned.body(type);
+        final String base = aliases.getOrDefault(body, body);
+        final Collection<String> bound = filled.getOrDefault(body, Collections.emptyList());
+        boolean found = false;
+        for (final Map<String, String> row : rows.getOrDefault(base, Collections.emptyList())) {
+            if ("true".equals(row.get("void"))
+                && bound.contains(row.getOrDefault("type", ""))) {
+                found = true;
+                break;
             }
         }
         return found;
