@@ -162,13 +162,15 @@ final class Behaved {
     ) {
         final String body = owned.body(type);
         final String base = aliases.getOrDefault(body, body);
-        final Collection<String> bound = filled.getOrDefault(body, Collections.emptyList());
         boolean found = false;
-        for (final Map<String, String> row : rows.getOrDefault(base, Collections.emptyList())) {
-            if ("true".equals(row.get("void"))
-                && bound.contains(row.getOrDefault("type", ""))) {
-                found = true;
-                break;
+        if (!type.contains(".φ.α") && !base.contains(".φ.α")) {
+            final Collection<String> bound = filled.getOrDefault(body, Collections.emptyList());
+            for (final Map<String, String> row : rows.getOrDefault(base, Collections.emptyList())) {
+                if ("true".equals(row.get("void"))
+                    && bound.contains(row.getOrDefault("type", ""))) {
+                    found = true;
+                    break;
+                }
             }
         }
         return found;
