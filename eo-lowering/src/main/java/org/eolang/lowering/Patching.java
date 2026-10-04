@@ -9,6 +9,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -53,8 +54,9 @@ import org.cactoos.iterable.Sorted;
  * atom any more. This is why this stage also writes every file it changed
  * in this build into the file {@code patched.tsv}, next to
  * {@code rendered.tsv}, as the path of the source and the path of its copy
- * inside the directory of patched sources, split by a tab. The Maven goal uses only the copies in that
- * list, and an old copy that is not in the list is ignored.</p>
+ * inside the directory of patched sources, split by a tab. The Maven goal
+ * uses only the copies in that list, and an old copy that is not in the
+ * list is ignored.</p>
  *
  * @since 0.64.0
  */
@@ -129,7 +131,11 @@ final class Patching implements Proc<Path> {
                 final Path file = this.patched.resolve(copy);
                 Files.createDirectories(file.getParent());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
-                files.add(String.format("%s\t%s%n", source, copy));
+                files.add(
+                    String.format(
+                        "%s\t%s%n", source, copy.toString().replace(File.separatorChar, '/')
+                    )
+                );
                 atoms += locs.size();
                 Logger.info(
                     this, "Patched %[file]s: %s",
