@@ -16,6 +16,7 @@ import fixtures.LargeProgram;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -227,6 +228,23 @@ final class EoSyntaxTest {
             new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
                 .parsed()
                 .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    @Timeout(60L)
+    void reportsLongDispatchChainsInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a chain of dispatches longer than the walk allows must answer a parser error, not a failed shift",
+            new EoSyntax(
+                new InputOf(
+                    String.format(
+                        "[] > app%n  x%s > @%n",
+                        String.join("", Collections.nCopies(Stack.DEEPEST * 3, ".y"))
+                    )
+                )
+            ).parsed().xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
             Matchers.hasSize(1)
         );
     }
