@@ -801,6 +801,12 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                if (depth > Stack.DEEPEST) {
+                    throw new ParseError(
+                        this.span.line(), this.span.indent() + this.cursor,
+                        String.format("object nested deeper than %d levels", Stack.DEEPEST)
+                    );
+                }
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
