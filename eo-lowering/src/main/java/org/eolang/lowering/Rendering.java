@@ -76,9 +76,11 @@ import org.cactoos.text.TextOf;
  * @todo #9222:30min Bump phino to the release that writes "of" and "with"
  *  in its deferred records, as asked in objectionary/phino#1732. The
  *  pinned 0.0.145 writes no deferred records at all, so no entry gets a
- *  deferred symbol yet. After the bump, the entry of "Φ.string.joined"
- *  should become an atom, and "with-delimiter" should get an entry of
- *  its own.
+ *  deferred symbol yet. After the bump, check which entries of
+ *  eo-runtime get deferred symbols, and that each of them is rendered or
+ *  tainted as the tables of eo:inference say. The entry of
+ *  "Φ.string.joined" stays a taint, since inference does not type what
+ *  "with-delimiter" returns.
  */
 final class Rendering implements Proc<Path> {
 
@@ -88,12 +90,20 @@ final class Rendering implements Proc<Path> {
     private final Path atoms;
 
     /**
+     * The directory with the tables of {@code eo:inference}, which say what
+     * an object copied by a deferred symbol returns.
+     */
+    private final Path tables;
+
+    /**
      * Ctor.
      *
      * @param dir The directory where the Java atoms are written
+     * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir) {
+    Rendering(final Path dir, final Path tbls) {
         this.atoms = dir;
+        this.tables = tbls;
     }
 
     @Override
@@ -115,7 +125,8 @@ final class Rendering implements Proc<Path> {
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
         ).with((href, base) -> new StreamSource(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+            .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("inference", this.tables.toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;

@@ -15,7 +15,10 @@
   symbol is one statement under the operation of its λ, a known one is a
   literal, a joined one is a blank final that each branch of an "if"
   assigns, and a deferred one is the dataized copy of an object of the entry
-  with its arguments bound, which phino left for the run to work out. A
+  with its arguments bound, which phino left for the run to work out. Such
+  a copy is dataized only when the tables of "eo:inference" say that the
+  object returns a number or a string, since dataizing any other object may
+  do what EO never does there. A
   statement is placed as deep inside the branches as all of its readers let
   it, so that what one branch alone needs is computed in that branch alone. The symbols are walked from the highest number down, since
   phino mints a symbol only after the symbols it is made of, so by the time a
@@ -39,6 +42,15 @@
   <xsl:param name="source" as="xs:string" select="''"/>
   <!-- The table of voids the planting wrote, as a URI. -->
   <xsl:param name="voids" as="xs:string" select="''"/>
+  <!--
+  The directory with the tables of "eo:inference", as a URI. The tables are
+  opened only when an entry has a deferred symbol, since the table of
+  eo-runtime is large and most entries have none.
+  -->
+  <xsl:param name="inference" as="xs:string" select="''"/>
+  <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
+  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
+  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:phi" select="'φ'"/>
   <!--
@@ -66,6 +78,8 @@
   <xsl:key name="eo:known" match="known" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
   <xsl:key name="eo:deferred" match="deferred" use="@symbol"/>
+  <xsl:key name="eo:type" match="type" use="@id"/>
+  <xsl:key name="eo:atom" match="atom" use="@loc"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
     <xsl:map>
@@ -333,10 +347,22 @@
       <xsl:when test="$names[1] = 'φ'">
         <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
+      <xsl:when test="not(eo:data($of))">
+        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which inference does not say returns a number or a string'))"/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!--
+  An object returns data when every type the tables of "eo:inference" give
+  its "φ" is a number or a string, an atom counting as the type it gives.
+  -->
+  <xsl:function name="eo:data" as="xs:boolean">
+    <xsl:param name="loc" as="xs:string"/>
+    <xsl:variable name="types" as="xs:string*" select="for $r in key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc return string((key('eo:atom', $r, $eo:atoms)/@forma, $r)[1])"/>
+    <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string'))"/>
   </xsl:function>
   <!-- The Java of a symbol as an object a copy takes: a void as it is, anything else as data. -->
   <xsl:function name="eo:argument" as="xs:string">

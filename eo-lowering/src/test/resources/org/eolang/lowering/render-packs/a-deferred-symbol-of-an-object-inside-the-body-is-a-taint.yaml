@@ -20,6 +20,12 @@ voids:
   - "𝜎53\t54\titems.length\tnumber"
   - "𝜎54\t54\titems.head\tobject"
   - "𝜎55\t54\titems.tail\ttuple"
+links: |
+  <links>
+    <type id="Φ.joined.with-delimiter.φ">
+      <ref loc="Φ.string"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e54">

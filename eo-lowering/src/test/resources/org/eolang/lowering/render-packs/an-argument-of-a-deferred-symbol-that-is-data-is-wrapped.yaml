@@ -3,7 +3,9 @@
 ---
 # yamllint disable rule:line-length
 # An argument of the copy that the atom computes, and not a void, is data,
-# so it is wrapped back into an object before the copy takes it.
+# so it is wrapped back into an object before the copy takes it. The copy
+# returns what the atom "Φ.number.plus" gives, which inference says is a
+# number.
 locator: Φ.joined
 number: 54
 eo:
@@ -19,6 +21,16 @@ voids:
   - "𝜎53\t54\titems.length\tnumber"
   - "𝜎54\t54\titems.head\tobject"
   - "𝜎55\t54\titems.tail\ttuple"
+links: |
+  <links>
+    <type id="Φ.joined.with-delimiter.φ">
+      <ref loc="Φ.number.plus"/>
+    </type>
+  </links>
+atoms: |
+  <atoms>
+    <atom forma="Φ.number" loc="Φ.number.plus"/>
+  </atoms>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e54">
