@@ -73,6 +73,12 @@ import org.cactoos.text.TextOf;
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
  *  simply return those bytes.
+ * @todo #9222:30min Bump phino to the release that writes "of" and "with"
+ *  in its deferred records, as asked in objectionary/phino#1732. The
+ *  pinned 0.0.145 writes no deferred records at all, so no entry gets a
+ *  deferred symbol yet. After the bump, the entry of "Φ.string.joined"
+ *  should become an atom, and "with-delimiter" should get an entry of
+ *  its own.
  */
 final class Rendering implements Proc<Path> {
 
