@@ -400,8 +400,8 @@ final class MjParseTest {
             .execute(new PpParse());
         final FakeMaven warm = new FakeMaven(temp.resolve("warm"))
             .withHelloWorld()
-            .with("cache", cache)
-            .execute(new PpParse());
+            .with("cache", cache);
+        warm.execute(new PpParse());
         MatcherAssert.assertThat(
             "the stage after a parse from cache is not numbered as after a fresh parse",
             warm.dirName("lint"),

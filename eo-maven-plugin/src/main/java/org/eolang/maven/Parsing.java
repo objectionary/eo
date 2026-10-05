@@ -168,8 +168,7 @@ final class Parsing implements Step {
         final GlobalCache store
     ) throws Exception {
         final Path source = tojo.source();
-        final String name = tojo.identifier();
-        final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
+        final Path xmir = new Place(tojo.identifier()).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
             base.relativize(xmir),
