@@ -73,14 +73,6 @@ import org.cactoos.text.TextOf;
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
  *  simply return those bytes.
- * @todo #9222:30min Bump phino to the release that writes "of" and "with"
- *  in its deferred records, as asked in objectionary/phino#1732. The
- *  pinned 0.0.145 writes no deferred records at all, so no entry gets a
- *  deferred symbol yet. After the bump, check which entries of
- *  eo-runtime get deferred symbols, and that each of them is rendered or
- *  tainted as the tables of eo:inference say. The entry of
- *  "Φ.string.joined" stays a taint, since inference does not type what
- *  "with-delimiter" returns.
  */
 final class Rendering implements Proc<Path> {
 
