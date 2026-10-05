@@ -2,7 +2,7 @@
 
 <img alt="logo" src="https://www.objectionary.com/cactus.svg" height="100px" />
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parser.svg)](https://maven-badges.herokuapp.com/maven-central/org.eolang/eo-parser)
+[![Maven Central](https://img.shields.io/maven-central/v/org.eolang/eo-parser.svg)](https://central.sonatype.com/artifact/org.eolang/eo-parser)
 [![Javadoc](https://www.javadoc.io/badge/org.eolang/eo-parser.svg)](https://www.javadoc.io/doc/org.eolang/eo-parser)
 
 # eo-parser
@@ -99,7 +99,7 @@ input: |
 ```yaml
 line: 1
 message: |-
-  [1:5] error: 'meta parts must be separated by exactly one space'
+  [1:5] error: 'meta parts must be separated by a single ASCII space'
 input: |
   +meta with  spaces
 ```

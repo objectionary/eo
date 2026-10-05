@@ -5,17 +5,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ cant-convert] > as-i64
+[^data cant-convert] > as-i64
   if. > @
-    ^.size.eq 8
-    i64 ^
+    data.size.eq 8
+    i64 data
     cant-convert
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
-        * ^
+        * data
 
   00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> can-convert-bytes-to-i64
 

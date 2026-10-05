@@ -41,6 +41,7 @@ final class Horizontal {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head
      * @param suffix The rendered suffix
      * @param arguments The arguments
@@ -53,6 +54,7 @@ final class Horizontal {
 
     /**
      * Render the line at the given indentation level.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The single line, or empty if inlining is impossible

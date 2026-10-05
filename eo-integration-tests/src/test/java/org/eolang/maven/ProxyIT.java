@@ -47,6 +47,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * one missing from the local repository fails the sandbox before the proxy
  * is ever exercised.</p>
  *
+ * <p>The runtime is ignored for the same reason. Without it, {@code resolve}
+ * asks for the latest {@code eo-runtime} released to Maven Central, which the
+ * local repository holds only when another test happened to download it
+ * earlier in the same build, so the sandbox passed or failed by test order.</p>
+ *
  * @since 0.60
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -160,7 +165,9 @@ final class ProxyIT {
             .file("src/main/eo/foo/x/y/main.eo")
             .write(ProxyIT.program().getBytes(StandardCharsets.UTF_8));
         new AppendedPlugin(farea).value()
-            .goals("register", "assemble", "resolve", "place");
+            .goals("register", "assemble", "resolve", "place")
+            .configuration()
+            .set("ignoreRuntime", "true");
         farea.withOpt("-s");
         farea.withOpt(
             farea.files().file("settings.xml").write(

@@ -4,262 +4,237 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.log.Logger;
 import com.yegor256.Jaxec;
 import com.yegor256.Result;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.time.Duration;
+import java.util.stream.Stream;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.Trimmed;
+import org.cactoos.text.UncheckedText;
 
 /**
- * The phino binary on this machine.
+ * The phino program installed on this computer.
  *
- * <p>Everything this module knows about φ-calculus lives in the external
- * {@code phino} executable, and this is the only class that talks to it.
- * The binary is trusted only when its version equals the one pinned in
- * the {@code phino-version.txt} resource, since the dialect it reads and
- * the rewriting it does change between releases. A dataization is bounded
- * by an explicit step budget, and its output is accepted only when it
- * looks like data — phino has been seen reporting an error on stdout with
- * a zero exit code, so the exit code alone proves nothing.</p>
+ * <p>phino is an external program that knows the math of EO, which is
+ * called the "phi-calculus". This module knows nothing about that math by
+ * itself, and this class is the only place that runs phino. Every new
+ * release of phino may read its input a little differently and may give
+ * different results. So, this module trusts phino only when its version is
+ * exactly the one written in the resource file
+ * {@code phino-version.txt}.</p>
  *
- * <p>The subprocess runs through {@link Jaxec}, with both of its streams
- * redirected to files: hundreds of fragments are tried per build and most
- * refusals are expected, so nothing the binary prints may reach the build
- * log, where a line saying {@code ERROR} would alarm for no reason. The
- * scratch files live in a directory the caller names, such as the target
- * directory of the build, never in the world-shared temporary one.</p>
+ * <p>phino is started as a separate process through {@link Jaxec}. What it
+ * prints is not shown in the log of the build. Its normal output is thrown
+ * away, and its error output is shown only when phino fails. A reader of
+ * the log should not be worried by lines that do not matter.</p>
  *
- * @since 0.76.0
+ * @since 0.64.0
  */
-public final class Phino {
+final class Phino {
 
     /**
-     * What dataized bytes look like: empty, one byte, or dash-joined pairs.
-     */
-    private static final Pattern HEX = Pattern.compile(
-        "--|[0-9A-F]{2}-|[0-9A-F]{2}(-[0-9A-F]{2})+"
-    );
-
-    /**
-     * The name or path of the executable.
+     * The name of the phino program, or the path to it.
      */
     private final String binary;
 
     /**
-     * The most rewriting steps one dataization may take.
-     */
-    private final int steps;
-
-    /**
-     * The directory for the scratch files of the subprocess.
-     */
-    private final Path work;
-
-    /**
      * Ctor.
-     * @param exe The name or path of the executable
-     * @param budget The most rewriting steps one dataization may take
-     * @param dir The directory for the scratch files of the subprocess
+     *
+     * @param exe The name of the phino program, or the path to it
      */
-    public Phino(final String exe, final int budget, final Path dir) {
+    Phino(final String exe) {
         this.binary = exe;
-        this.steps = budget;
-        this.work = dir;
+    }
+
+    @Override
+    public String toString() {
+        return this.binary;
     }
 
     /**
-     * The version the executable reports.
-     * @return The trimmed output of {@code phino --version}
-     * @throws IOException If the executable cannot be run
-     */
-    public String version() throws IOException {
-        return this.executed(this.binary, "--version");
-    }
-
-    /**
-     * Whether the executable is present and of the pinned version.
-     * @return True if every answer of this binary can be trusted
-     */
-    public boolean suitable() {
-        boolean good;
-        try {
-            good = this.version().equals(this.pin());
-        } catch (final IOException | IllegalStateException ex) {
-            good = false;
-        }
-        return good;
-    }
-
-    /**
-     * The version this module is pinned to.
-     * @return The trimmed content of the {@code phino-version.txt} resource
-     */
-    public String pin() {
-        try (InputStream stream = this.getClass().getResourceAsStream("phino-version.txt")) {
-            return new String(
-                stream.readAllBytes(), StandardCharsets.UTF_8
-            ).trim();
-        } catch (final IOException ex) {
-            throw new IllegalStateException(
-                "Failed to read phino-version.txt from classpath", ex
-            );
-        }
-    }
-
-    /**
-     * Dataize the merge of the given φ-calculus expressions.
+     * The version of the phino program on this computer.
      *
-     * <p>Each expression must be complete on its own; {@code phino merge}
-     * joins their root formations into one document, which is then
-     * dataized. This is how a fragment meets the universe that holds the
-     * method tables its references resolve against. The run also writes a
-     * protocol of atom evaluations, and the term the last atom returned
-     * names the carrier of the whole value, since the outermost atom
-     * fires last; a run that fired no atom yields a value of unknown
-     * forma, the way {@link Datum} explains.</p>
-     *
-     * @param expressions The expressions, in phi syntax
-     * @return The value: its bytes and the term of the last evaluation
-     * @throws IOException If the executable cannot be run
+     * @return What {@code phino --version} prints, without spaces around it
+     * @throws IOException If phino cannot be started
      */
-    public Datum dataize(final String... expressions) throws IOException {
-        final Path place = this.workspace();
-        final Collection<Path> files = new ArrayList<>(expressions.length);
+    String version() throws IOException {
+        final Path out = Files.createTempFile("phino", ".txt");
         try {
-            final Path merged = this.merged(place, files, expressions);
-            final Path protocol = Files.createTempFile(place, "evaluations", ".tsv");
-            files.add(protocol);
-            final String output = this.executed(
-                this.binary, "dataize",
-                "--max-steps", Integer.toString(this.steps),
-                "--evaluations", protocol.toString(),
-                merged.toString()
+            final Result result = this.result(
+                new Jaxec(this.binary, "--version")
+                    .withStdout(ProcessBuilder.Redirect.to(out.toFile()))
+                    .withStderr(ProcessBuilder.Redirect.DISCARD)
             );
-            if (!Phino.HEX.matcher(output).matches()) {
-                throw new IllegalStateException(
+            if (result.code() != 0) {
+                throw new IOException(
                     String.format(
-                        "The dataization printed '%s', which is not data",
-                        output
+                        "The binary '%s' exited with code %d",
+                        this.binary,
+                        result.code()
                     )
                 );
             }
-            return new Datum(output, Phino.answer(protocol));
+            return new UncheckedText(new Trimmed(new TextOf(out))).asString();
         } finally {
-            for (final Path file : files) {
-                Files.deleteIfExists(file);
-            }
+            Files.deleteIfExists(out);
         }
     }
 
     /**
-     * Partially dataize the merge of the given φ-calculus expressions.
+     * Join many XMIR files into one phi-expression, which is the world.
      *
-     * <p>Under {@code --partial} an atom that cannot fire — a marker, or
-     * a known atom whose input reaches one — parks in place instead of
-     * failing the run, and lands in the protocol as a record with no
-     * result term. The run then ends successfully either way: with data
-     * when everything fired, with the residual expression when something
-     * parked, and the records tell which sites did what. A genuinely
-     * wrong expression, such as one reaching an error terminator, still
-     * fails.</p>
+     * <p>The world is written in the short form of the phi-calculus, which
+     * is called "sweet". phino reads this file again once for every entry,
+     * and there are thousands of entries, so every character saved in this
+     * file saves a lot of work.</p>
      *
-     * @param expressions The expressions, in phi syntax
-     * @return The trace of the run: whether it was total, and its records
-     * @throws IOException If the executable cannot be run
+     * @param xmirs The XMIR files, in the order their objects must appear
+     * @param world The file to write the world into
+     * @throws IOException If phino cannot be started
      */
-    public Trace partial(final String... expressions) throws IOException {
-        final Path place = this.workspace();
-        final Collection<Path> files = new ArrayList<>(expressions.length);
+    void merge(final Iterable<Path> xmirs, final Path world) throws IOException {
+        this.run(
+            new Jaxec(
+                this.binary,
+                "merge",
+                "--input=xmir",
+                "--sweet",
+                "--target",
+                world.toString()
+            ).with(new Mapped<>(Path::toString, xmirs)),
+            String.format("merging the world into '%s'", world)
+        );
+    }
+
+    /**
+     * Ask phino to compute one entry of the world, with symbols as inputs.
+     *
+     * <p>This is called "morphing". The stage {@link Planting} put every
+     * entry into an object named {@code l🌵}, under the name {@code e} plus
+     * the number of the entry, and this method asks phino to work on
+     * exactly that one. When phino meets an atom whose work is listed in
+     * the table of operations, such as adding two numbers, it does not run
+     * the atom, but writes down "here the two symbols were added". When
+     * phino cannot go further, it leaves that part as it is. When phino
+     * sees that it is going around in a circle, it stops that circle. phino
+     * writes down every step it takes into the protocol file, and it writes
+     * nothing else. One entry that never ends must not stop the whole build,
+     * so phino is told how many seconds it may work, and it stops by itself
+     * when they are over. Then it closes the protocol with a {@code timeout}
+     * element and fails. This class never kills phino, because a killed phino
+     * leaves a protocol cut in the middle, which nobody can read.</p>
+     *
+     * @param world The world, which {@link Merging} wrote
+     * @param atoms The table of operations phino may write down
+     * @param entry The number of the entry to work on
+     * @param protocol The file for the steps, in XML because its name ends with .xml
+     * @param steps The largest number of steps phino may take inside one another
+     * @param budget The time phino may work, rounded up to whole seconds
+     * @throws IOException If phino cannot be started, or a
+     *  {@link KilledException} if phino stopped because its time was over
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void morph(
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final int steps, final Duration budget
+    ) throws IOException {
+        final String task = String.format("morphing the entry %d of '%s'", entry, world);
         try {
-            final Path merged = this.merged(place, files, expressions);
-            final Path protocol = Files.createTempFile(place, "evaluations", ".tsv");
-            files.add(protocol);
-            final String output = this.executed(
-                this.binary, "dataize",
-                "--partial",
-                "--max-steps", Integer.toString(this.steps),
-                "--evaluations", protocol.toString(),
-                merged.toString()
+            this.run(
+                new Jaxec(
+                    this.binary,
+                    "morph",
+                    "--deep",
+                    "--acyclic=plausible",
+                    "--partial",
+                    "--quiet",
+                    "--sweet",
+                    "--hide-rho",
+                    "--abridged",
+                    String.format("--symbolic=%s", atoms),
+                    String.format("--locator=Q.l🌵.e%d", entry),
+                    String.format("--protocol=%s", protocol),
+                    String.format("--max-steps=%d", steps),
+                    String.format(
+                        "--max-seconds=%d",
+                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
+                    ),
+                    world.toString()
+                ),
+                task
             );
-            final List<Evaluation> records = new ArrayList<>(0);
-            for (final String line : Files.readAllLines(protocol, StandardCharsets.UTF_8)) {
-                if (!line.isEmpty()) {
-                    records.add(new Evaluation(line));
+        } catch (final IllegalStateException ex) {
+            if (Files.notExists(protocol)) {
+                throw ex;
+            }
+            try (Stream<String> lines = Files.lines(protocol)) {
+                if (lines.noneMatch(line -> line.contains("<timeout "))) {
+                    throw ex;
                 }
             }
-            return new Trace(Phino.HEX.matcher(output).matches(), records);
-        } finally {
-            for (final Path file : files) {
-                Files.deleteIfExists(file);
-            }
+            throw new KilledException(
+                Logger.format(
+                    "The binary '%s' ran out of its budget of %[ms]s while %s",
+                    this.binary, budget.toMillis(), task
+                ),
+                ex
+            );
         }
     }
 
-    private Path merged(final Path place, final Collection<Path> files,
-        final String... expressions) throws IOException {
-        final Collection<String> command = new ArrayList<>(expressions.length + 4);
-        command.add(this.binary);
-        command.add("merge");
-        for (final String expression : expressions) {
-            final Path file = Files.createTempFile(place, "expression", ".phi");
-            Files.write(file, expression.getBytes(StandardCharsets.UTF_8));
-            files.add(file);
-            command.add(file.toString());
-        }
-        final Path merged = Files.createTempFile(place, "merged", ".phi");
-        files.add(merged);
-        command.add("-t");
-        command.add(merged.toString());
-        this.executed(command.toArray(new String[0]));
-        return merged;
+    /**
+     * The only version of phino that this module accepts.
+     *
+     * @return The content of {@code phino-version.txt}, without spaces around it
+     */
+    String pin() {
+        return new UncheckedText(
+            new Trimmed(
+                new TextOf(
+                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
+                )
+            )
+        ).asString();
     }
 
-    private static String answer(final Path protocol) throws IOException {
-        final List<String> lines = Files.readAllLines(protocol, StandardCharsets.UTF_8);
-        final String term;
-        if (lines.isEmpty()) {
-            term = "";
-        } else {
-            final String last = lines.get(lines.size() - 1);
-            term = last.substring(last.lastIndexOf('\t') + 1);
-        }
-        return term;
-    }
-
-    private String executed(final String... command) throws IOException {
-        final Path place = this.workspace();
-        final Path out = Files.createTempFile(place, "phino", ".out");
-        final Path err = Files.createTempFile(place, "phino", ".err");
+    private void run(final Jaxec command, final String task) throws IOException {
+        final Path err = Files.createTempFile("phino", ".err");
         try {
-            final Result result = new Jaxec(command)
-                .withCheck(false)
-                .withStdout(ProcessBuilder.Redirect.to(out.toFile()))
-                .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
-                .execUnsafe();
+            final Result result = this.result(
+                command
+                    .withStdout(ProcessBuilder.Redirect.DISCARD)
+                    .withStderr(ProcessBuilder.Redirect.to(err.toFile()))
+            );
             if (result.code() != 0) {
                 throw new IllegalStateException(
                     String.format(
-                        "The binary '%s' exited with code %d: %s",
+                        "The binary '%s' exited with code %d instead of %s: %s",
                         this.binary,
                         result.code(),
-                        Files.readString(err, StandardCharsets.UTF_8).trim()
+                        task,
+                        new UncheckedText(new Trimmed(new TextOf(err))).asString()
                     )
                 );
             }
-            return Files.readString(out, StandardCharsets.UTF_8).trim();
         } finally {
-            Files.deleteIfExists(out);
             Files.deleteIfExists(err);
         }
     }
 
-    private Path workspace() throws IOException {
-        return Files.createDirectories(this.work);
+    private Result result(final Jaxec command) throws IOException {
+        try {
+            return command.withCheck(false).execUnsafe();
+        } catch (final IOException ex) {
+            throw new IOException(
+                String.format("The binary '%s' cannot be started", this.binary),
+                ex
+            );
+        }
     }
 }

@@ -7,49 +7,57 @@ package org.eolang.maven;
 import com.jcabi.log.Logger;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Collection;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.lowering.Phino;
+import org.cactoos.Text;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.eolang.lowering.Lowering;
+import org.eolang.lowering.Scope;
 
 /**
- * Compute the constant fragments of a program at build time.
+ * Fold the formations of a program into Java atoms.
  *
- * <p>An expression decided by data alone, such as {@code 1.plus 1}, pays
- * the full object-graph cost at runtime for a value the compiler could
- * know. This goal computes such fragments through the external
- * {@code phino} binary and splices the values back as literals, so the
- * graphs are never built. A pure formation whose voids are witnessed as
- * data goes further: its body is reduced symbolically into a protocol,
- * the protocol becomes the Java body of a synthetic atom in a sidecar
- * file under {@link Lowering#ATOMS}, and the formation keeps only its
- * voids and a {@code λ} marker. The goal runs after {@link MjMerge} and
- * before {@link MjTranspile}, reading the XMIR of each object and
- * repointing it at the rewritten copy in {@link Lowering#DIR} — only when
- * something in it was actually folded or lowered.</p>
+ * <p>A formation whose behaviour is decided at compile time pays the full
+ * cost of the object graph at runtime, for an answer the compiler could
+ * have known. Lowering computes such a formation through the external
+ * {@code phino} binary, which is the only thing here that knows the
+ * calculus, and keeps the answer as the body of a Java atom, so that the
+ * graph is never built while the program runs.</p>
  *
- * <p>The goal is part of the normal chain but soft by default: without a
- * {@code phino} of the pinned version on the PATH it warns once and does
- * nothing, so a machine without it builds fine, only without the
- * folding. Setting {@code eo.loweringRequired} turns that skip into a
- * build failure, which is what our own CI does, so that a release is
- * never silently unlowered. Setting {@code eo.lowering} to false turns
- * the goal off entirely.</p>
+ * <p>This goal is the entry point of that pipeline. It runs after
+ * {@code inference-report}, by which time a program has said everything
+ * the lowering needs to hear about it, and before {@code transpile}, the
+ * last moment at which the Java of a program can still be changed.</p>
  *
- * <p>Whether lowering ran changes the Java that {@link MjTranspile}
- * eventually generates from the same sources, so the goal leaves
- * {@link Lowering#MARKER} behind saying what ran, and the transpile
- * cache key folds that file in — two machines with and without phino
- * then never share a slot. When the goal skips or is disabled, the
- * marker is removed.</p>
+ * <p>The goal folds by default; {@code -Deo.lowering=false} turns it off.
+ * When phino cannot be started on this computer, the goal prints a warning
+ * and does nothing, so the build goes on without atoms. With
+ * {@code -Deo.skipWithoutPhino=false} the goal fails the build instead.
+ * When it runs it makes sure that the binary on this machine is the one
+ * the pin names, since an answer of another version cannot be trusted,
+ * and then plants the entries of the build. It hands the lowering the
+ * XMIR of every standalone object, the directory where {@code eo:inference}
+ * left its tables, because an entry is a formation applied to what the
+ * tables say its voids hold, and one home directory, which {@link Subdir}
+ * numbers as {@code NN-lowering}. There the lowering keeps the world, the
+ * sources with their tests cut out in {@code 1-planting}, and the protocol
+ * of every object morphed in {@code 2-protocols}. The atoms the lowering
+ * renders land in {@code 3-atoms}, which this goal hands to javac as a
+ * source root, and every XMIR file with an atom in the place of a body
+ * lands in {@code 4-patched}, where this goal points the tojo of that
+ * object, so the transpiler reads the patched copy and every other object
+ * stays where it was. The copies stay
+ * from build to build, so only a copy listed in {@code patched.tsv}, one
+ * patched in this very build, is handed to the transpiler.</p>
  *
- * <p>Every dataization runs under a step budget of ten thousand
- * rewrites, enough for any fragment a human writes and little enough
- * that a diverging one is refused in milliseconds.</p>
- *
- * @since 0.76.0
+ * @since 0.64.0
  */
 @Mojo(
     name = "lower",
@@ -59,21 +67,10 @@ import org.eolang.lowering.Phino;
 public final class MjLower extends MjSafe {
 
     /**
-     * Whether constant fragments are folded at all.
+     * Whether formations are lowered at all.
      */
     @Parameter(property = "eo.lowering", defaultValue = "true")
     private boolean lowering;
-
-    /**
-     * Whether a missing or mismatched phino binary fails the build
-     * instead of skipping the goal.
-     */
-    @Parameter(
-        alias = "loweringRequired",
-        property = "eo.loweringRequired",
-        defaultValue = "false"
-    )
-    private boolean demanded;
 
     /**
      * The name or path of the phino executable.
@@ -86,18 +83,65 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
-     * The directory with the tables that {@link MjInference} writes, read
-     * to learn which formations are pure and what data forma every void
-     * of them was witnessed as. A build that skips {@code eo:inference}
-     * leaves the directory absent, and then no formation is lowered while
-     * the constants still fold.
+     * Whether the goal skips, instead of failing the build, when phino
+     * cannot be started on this computer.
      */
     @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
+        alias = "skipWithoutPhino",
+        property = "eo.skipWithoutPhino",
+        defaultValue = "true"
     )
+    private boolean optional;
+
+    /**
+     * The seconds one run of phino may take on one entry before it is killed.
+     */
+    @Parameter(
+        alias = "loweringBudget",
+        property = "eo.loweringBudget",
+        defaultValue = "10"
+    )
+    private int budget;
+
+    /**
+     * The largest number of steps inside one another that one run of phino
+     * on one entry may take.
+     */
+    @Parameter(
+        alias = "maxMorphingSteps",
+        property = "eo.maxMorphingSteps",
+        defaultValue = "32"
+    )
+    private int steps;
+
+    /**
+     * The regular expression that the whole locator of an entry, such as
+     * {@code Φ.string.printf}, must match for phino to run on it.
+     */
+    @Parameter(
+        alias = "lowerOnly",
+        property = "eo.lowerOnly",
+        defaultValue = ".*"
+    )
+    private String only;
+
+    /**
+     * The regular expression that the whole locator of an entry must not
+     * match for phino to run on it. By default it matches nothing.
+     */
+    @Parameter(
+        alias = "lowerNever",
+        property = "eo.lowerNever",
+        defaultValue = "(?!)"
+    )
+    private String never;
+
+    /**
+     * The directory with the tables of {@code eo:inference}. When it is not
+     * set, the goal uses the directory that {@link Subdir} gives to the name
+     * "inference", which is where {@code eo:inference} saves the tables.
+     */
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -109,52 +153,57 @@ public final class MjLower extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = this.targetDir.toPath().resolve(Lowering.DIR);
-        final Path marker = home.resolve(Lowering.MARKER);
         if (this.lowering) {
-            final Phino phino = new Phino(this.binary, 10_000, home.resolve("phino"));
-            if (phino.suitable()) {
-                try (TjsForeign tojos = this.tojos()) {
-                    new Timed(
-                        new Lowering(tojos.standalone(), home, phino, this.tables.toPath())
-                    ).exec();
+            final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
+            final Path atoms = home.resolve("3-atoms");
+            try (TjsForeign tojos = this.tojos()) {
+                final Lowering pipeline = new Lowering(
+                    new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
+                    new Subdir(this.target, "inference").orConfigured(this.tables),
+                    home,
+                    this.binary,
+                    this.caching("lowered"),
+                    atoms,
+                    home.resolve("4-patched"),
+                    new Scope(this.only, this.never),
+                    this.steps,
+                    Duration.ofSeconds(this.budget)
+                );
+                if (this.optional && !pipeline.available()) {
+                    Logger.warn(
+                        this,
+                        "Lowering is skipped, since phino '%s' cannot be started, set -Deo.skipWithoutPhino=false to fail instead",
+                        this.binary
+                    );
+                } else {
+                    pipeline.exec();
+                    MjLower.repoint(tojos, home);
+                    this.project.addCompileSourceRoot(atoms.toString());
+                    Logger.info(
+                        this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
+                    );
                 }
-                new Saved(
-                    String.format(
-                        "lower-%s-%s",
-                        phino.pin(),
-                        new Fingerprint(
-                            "/org/eolang/lowering/universe.phi",
-                            "/org/eolang/lowering/ops.tsv"
-                        ).get()
-                    ),
-                    marker
-                ).value();
-            } else {
-                this.skipped(marker, phino);
             }
         } else {
-            Files.deleteIfExists(marker);
-            Logger.info(this, "Lowering is disabled by eo.lowering");
+            Logger.info(
+                this,
+                "Lowering is disabled with -Deo.lowering=false"
+            );
         }
     }
 
-    private void skipped(final Path marker, final Phino phino) throws IOException {
-        if (this.demanded) {
-            throw new IllegalStateException(
-                String.format(
-                    "The phino binary '%s' is absent or not of version %s, while eo.loweringRequired is set",
-                    this.binary,
-                    phino.pin()
-                )
-            );
-        }
-        Files.deleteIfExists(marker);
-        Logger.warn(
-            this,
-            "The phino binary '%s' is absent or not of version %s, so no constant fragment is folded",
-            this.binary,
-            phino.pin()
+    private static void repoint(final TjsForeign tojos, final Path home) {
+        final Collection<String> fresh = new ListOf<>(
+            new Mapped<>(
+                Text::asString,
+                new Split(new TextOf(home.resolve("patched.tsv")), "\\R")
+            )
         );
+        for (final TjForeign tojo : tojos.standalone()) {
+            final String name = tojo.xmir().getFileName().toString();
+            if (fresh.contains(name)) {
+                tojo.withXmir(home.resolve("4-patched").resolve(name));
+            }
+        }
     }
 }

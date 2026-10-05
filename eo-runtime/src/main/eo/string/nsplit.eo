@@ -8,11 +8,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ delimiter limit cant-split] > nsplit
+[^text delimiter limit cant-split] > nsplit
   if. > @
     or.
       eq.
@@ -33,17 +33,17 @@
               string limit.as-scientific
     if.
       1.eq limit
-      * ^
+      * text
       [^ accum start current count] >> rec-nsplit
         if. > @
-          ^.^.size.eq current
+          ^.text.size.eq current
           appended
           if.
             or.
               size.eq 0
               gt.
                 current.plus size
-                ^.^.size
+                ^.text.size
             ^.rec-nsplit
               accum
               start
@@ -81,7 +81,7 @@
         0
         0
         0
-  ^.as-bytes >> bts!
+  text.as-bytes >> bts!
 
   eq. ++> can-format-the-error-message-of-a-fractional-limit
     "Invalid limit 1.500000 for nsplit, must be at least 1"

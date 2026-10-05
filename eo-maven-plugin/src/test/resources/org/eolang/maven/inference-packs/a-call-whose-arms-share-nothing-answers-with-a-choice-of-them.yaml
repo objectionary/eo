@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Where the two fillings of a void are copies of one object, a call rooted at
+# the void goes on past it to that object. Where they are copies of nothing in
+# common, as a `dial` and a `clock` are, there is no one object to go on to,
+# and the call is still one of the two arguments it was handed. So the row
+# keeps the void it was rooted at and writes the arms inside it: true of every
+# caller on the outside, and on the inside the whole of what this one caller
+# may come back with.
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        size > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.choice.pick.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.dial.listen']"
+  - "/links/type[@id='Φ.app.φ']/ref/union/ref[@loc='Φ.clock.listen']"

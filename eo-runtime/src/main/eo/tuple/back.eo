@@ -4,17 +4,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ index] > back
+[^list index] > back
   index.is-integer.if > @
     if.
       0.gt
-        ^.length.minus index! >> start!
-      ^
-      ^.reducedi
+        list.length.minus index! >> start!
+      list
+      list.reducedi
         *
         if. > [^ accum item idx] >>
           idx.gte start

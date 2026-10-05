@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A formation that decorates its own receiver, `[^] (^ > @)`, is not an
+# identity object (#6834): it hands its owner back, while the `I` glyph
+# spells `[x] (x > @)` and waits for an argument nobody passes, so the
+# printer keeps the formation, in its inline-phi shape, instead of
+# folding it into `I`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    [^] > compiled
+      ^ > @
+
+printed: |
+  [] > app
+    ^ > [^] > compiled

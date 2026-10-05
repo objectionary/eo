@@ -12,6 +12,7 @@ import com.yegor256.xsline.TrEnvelope;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import java.nio.file.Path;
+import org.eolang.cache.Saved;
 
 /**
  * Train that spies.
@@ -28,6 +29,7 @@ final class TrSpy extends TrEnvelope {
 
     /**
      * Ctor.
+     *
      * @param train Original one
      * @param dir The dir to save
      */

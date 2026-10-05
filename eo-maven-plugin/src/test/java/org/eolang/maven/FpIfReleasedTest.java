@@ -12,6 +12,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link FpIfReleased}.
+ *
  * @since 0.57
  */
 final class FpIfReleasedTest {

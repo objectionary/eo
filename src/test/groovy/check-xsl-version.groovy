@@ -15,7 +15,7 @@ File project = new File('.')
 project.traverse(
   type: FileType.FILES,
   preDir: { file ->
-    if (file.name == 'target') {
+    if (file.name == 'target' || file.name.startsWith('.')) {
       return FileVisitResult.SKIP_SUBTREE
     }
   },
@@ -24,7 +24,7 @@ project.traverse(
   file ->
     if (file.name == 'xs3p.xsl') { return }
     String version = new XmlSlurper().parse(file).@version
-    assert version == '2.0'
+    assert version == '3.0'
 }
 
 true

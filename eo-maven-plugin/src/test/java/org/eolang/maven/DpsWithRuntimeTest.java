@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link DpsWithRuntime}.
+ *
  * @since 0.28.11
  */
 final class DpsWithRuntimeTest {

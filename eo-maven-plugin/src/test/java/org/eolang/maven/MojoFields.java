@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * refused, since a test must not fail over the shape of somebody's
  * classpath.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class MojoFields {
 
@@ -46,6 +46,7 @@ final class MojoFields {
 
     /**
      * Ctor.
+     *
      * @param mark The prefix every mojo class name carries
      */
     MojoFields(final String mark) {
@@ -54,6 +55,7 @@ final class MojoFields {
 
     /**
      * Every name declared by a mojo of the plugin.
+     *
      * @return The names, empty when the mojos cannot be found
      */
     Set<String> all() {

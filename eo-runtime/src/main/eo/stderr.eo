@@ -14,9 +14,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [text] > stderr
   seq * > @
@@ -37,12 +37,8 @@
                     ^.^.output-block
                   code
                   remainder
-                code. > code
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.name
-                    ^.^.^.sys.descriptor
-                    buffer
-                    buffer.size
+                as-number. > code
+                  ^.^.^.sys.write ^.^.^.sys.descriptor buffer buffer.size >>!
                 if. > remainder
                   code.lt buffer.size
                   ^.^.output-block.write
@@ -51,13 +47,11 @@
         |
           []
             win32.stderr > descriptor
-            "_write" > name
-            win32 > raw
+            win32.write > write
         impl
           []
             posix.stderr > descriptor
-            "write" > name
-            posix > raw
+            posix.write > write
       text
     true
 

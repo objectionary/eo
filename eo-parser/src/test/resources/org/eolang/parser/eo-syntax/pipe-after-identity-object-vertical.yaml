@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The vertical form of a pipe (R-3.14.3) accepts the identity object `I` as its
+# predecessor exactly as the horizontal form does: the kind of the predecessor
+# is checked before the pipe splits into its two forms.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='app']/o[@name='five' and @base='Φ.number']
+  - //o[@base='ξ.foo']/o[@base='ξ.five']
+input: |
+  [] > app
+    I > foo
+    | >>
+      5 > five

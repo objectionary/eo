@@ -15,10 +15,15 @@
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
-    <!-- Don't upgrade to 2.x: there is no maven-resolver-supplier there and Maven 3.9 ships resolver 1.x -->
-    <maven.resolver.version>1.9.27</maven.resolver.version>
+    <!-- Keep in line with the resolver that the Maven 3.10.0 artifacts below ship -->
+    <maven.resolver.version>2.0.24</maven.resolver.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-cache</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>eo-inference</artifactId>
@@ -42,7 +47,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.8</version>
+      <version>0.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -92,7 +97,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-supplier</artifactId>
+      <artifactId>maven-resolver-supplier-mvn3</artifactId>
       <version>${maven.resolver.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -105,25 +110,25 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-resolver-provider</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -142,13 +147,13 @@
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.15.2</version>
+      <version>3.16.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -160,7 +165,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -250,7 +255,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
-      <version>2.0.18</version>
+      <version>2.0.19</version>
       <scope>provided</scope>
       <!--
       This dependency must precede jcabi-maven-slf4j in order
@@ -308,7 +313,7 @@
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit</artifactId>
-      <version>1.5.0</version>
+      <version>1.5.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -482,7 +487,7 @@
           <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-            <version>5.1.1</version>
+            <version>6.0.0</version>
           </dependency>
         </dependencies>
       </plugin>

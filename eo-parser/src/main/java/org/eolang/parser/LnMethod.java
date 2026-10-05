@@ -70,6 +70,7 @@ final class LnMethod implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnMethod(final Span source) {

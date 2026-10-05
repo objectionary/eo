@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 /**
  * This wrapper helps us explain our expectations in an error
  * message that we throw.
+ *
  * @param <T> The type of result
  * @since 0.41.0
  */
@@ -28,6 +29,7 @@ public class Expect<T> {
 
     /**
      * Ctor.
+     *
      * @param subj The subject
      * @param supplier The supplier
      */
@@ -38,6 +40,7 @@ public class Expect<T> {
 
     /**
      * Starting point.
+     *
      * @param phi The object
      * @param attr Attribute name
      * @return Expect pipeline
@@ -52,6 +55,7 @@ public class Expect<T> {
 
     /**
      * Assert that it passes.
+     *
      * @param fun The function to transform
      * @param <R> Type of result
      * @return New object
@@ -71,6 +75,7 @@ public class Expect<T> {
 
     /**
      * Fail with this message otherwise.
+     *
      * @param message The error message
      * @return Next object
      */
@@ -83,6 +88,7 @@ public class Expect<T> {
 
     /**
      * Assert on it.
+     *
      * @param fun The check
      * @return Next object
      */
@@ -103,6 +109,7 @@ public class Expect<T> {
 
     /**
      * Return it.
+     *
      * @return The token
      */
     public T it() {

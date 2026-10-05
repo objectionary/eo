@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link OnDefault}.
+ *
  * @since 0.60
  */
 final class OnDefaultTest {

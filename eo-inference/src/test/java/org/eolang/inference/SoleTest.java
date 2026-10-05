@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Sole}.
+ *
  * @since 0.71.0
  */
 final class SoleTest {

@@ -32,6 +32,7 @@ final class Noted {
 
     /**
      * Ctor.
+     *
      * @param element The node
      */
     Noted(final XML element) {
@@ -40,6 +41,7 @@ final class Noted {
 
     /**
      * Ctor.
+     *
      * @param element The node
      */
     Noted(final Xnav element) {
@@ -48,6 +50,7 @@ final class Noted {
 
     /**
      * What the node says about one of its attributes.
+     *
      * @param attribute The name of the attribute
      * @return What it says, empty when it says nothing
      */

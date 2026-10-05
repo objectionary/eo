@@ -15,6 +15,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Pieces}.
+ *
  * @since 0.70.0
  */
 final class PiecesTest {
@@ -105,9 +106,69 @@ final class PiecesTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "/line/bit[.='[']",
-                "/line/bit[text='if'][@band='rooted']",
+                "/line/bit[text='if'][@band='unfilled']",
                 "/line/bit[.='] > bool']"
             )
+        );
+    }
+
+    @Test
+    void marksTheNameAFormationIsBoundTo() {
+        MatcherAssert.assertThat(
+            "a formation must be marked on its name, but the bracket that opens it was marked",
+            PiecesTest.drawn(
+                "[x] > foo",
+                Collections.singletonList(
+                    new Written("Φ.foo", 0, "foo", new Answer("Φ.foo", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[.='[x] > '][not(@band)]",
+                "/line/bit[text='foo'][@band]"
+            )
+        );
+    }
+
+    @Test
+    void marksTheNameAnAtomIsBoundTo() {
+        MatcherAssert.assertThat(
+            "an atom and its body must share the mark on its name, but they didnt",
+            PiecesTest.drawn(
+                "  [] > div /Q.number",
+                Arrays.asList(
+                    new Written("Φ.number.div", 2, "div", new Answer("Φ.number.div", 3)),
+                    new Written("Φ.number.div.λ", 2, "λ", new Answer("Φ.number.div.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='div'][@band='blank'][count(told)=2]")
+        );
+    }
+
+    @Test
+    void marksTheNameAFormationIsBoundToTwice() {
+        MatcherAssert.assertThat(
+            "a formation behind a double arrow must be marked on its name, but it wasnt",
+            PiecesTest.drawn(
+                "  [ü] >> ñame",
+                Collections.singletonList(
+                    new Written("Φ.ñame", 2, "ñame", new Answer("Φ.ñame", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='ñame'][@band]")
+        );
+    }
+
+    @Test
+    void keepsTheBracketOfAFormationBoundToNoName() {
+        MatcherAssert.assertThat(
+            "a formation with no name must stay marked on its bracket, but it vanished",
+            PiecesTest.drawn(
+                "  seq * > [^ m] >>",
+                Collections.singletonList(
+                    new Written("Φ.f.@.α1", 10, "", new Answer("Φ.f.@.α1.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='['][@band='blank']")
         );
     }
 
@@ -179,6 +240,74 @@ final class PiecesTest {
                 "/line/bit/told/seen/ref[@loc='Φ.true']",
                 "/line/bit/told/seen/ref[@loc='Φ.false']"
             )
+        );
+    }
+
+    @Test
+    void warnsAboutTheWorstObjectUnderOneMark() {
+        MatcherAssert.assertThat(
+            "a mark over an object nobody can name must say so, but the name beside it hid it",
+            PiecesTest.drawn(
+                "  [] > pour /Q.mug",
+                Arrays.asList(
+                    new Written("Φ.cup.pour", 2, "pour", new Answer("Φ.cup.pour", 3)),
+                    new Written("Φ.cup.pour.λ", 2, "λ", new Answer("Φ.cup.pour.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[@band='blank'][count(told)=2]")
+        );
+    }
+
+    @Test
+    void marksAVoidAnAtomFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void filled inside an atom must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  size",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.info.size", 2, "size",
+                        new Answer(
+                            "Φ.posix.return.output.size", 1, Collections.emptyList(), true
+                        )
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='size'][@band='atom']")
+        );
+    }
+
+    @Test
+    void marksAVoidNobodyFillsApartFromTheRest() {
+        MatcherAssert.assertThat(
+            "a void nothing was ever put into must get a band of its own, but it took the amber one",
+            PiecesTest.drawn(
+                "  cant-convert",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.@.α2", 2, "",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='cant-convert'][@band='unfilled']")
+        );
+    }
+
+    @Test
+    void saysAVoidNobodyFillsIsStillAVoid() {
+        MatcherAssert.assertThat(
+            "a void nobody fills is still a void and must be said to be one, but it wasnt",
+            PiecesTest.drawn(
+                "[cant-convert] > as-i16",
+                Collections.singletonList(
+                    new Written(
+                        "Φ.bytes.as-i16.cant-convert", 1, "cant-convert",
+                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
         );
     }
 
