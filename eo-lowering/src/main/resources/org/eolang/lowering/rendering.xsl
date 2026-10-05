@@ -15,8 +15,9 @@
   symbol is one statement under the operation of its λ, a known one is a
   literal, a joined one is a blank final that each branch of an "if"
   assigns, and a deferred one is the dataized copy of an object of the entry
-  with its arguments bound, which phino left for the run to work out. Such
-  a copy is dataized only when the tables of "eo:inference" say that the
+  with its arguments bound, which phino left for the run to work out. A
+  looped one, which phino answered when it cut a loop, is the same. Such a
+  copy is dataized only when the tables of "eo:inference" say that the
   object returns a number, a string, a bool or bytes, since dataizing any
   other object may do what EO never does there. A statement is placed as
   deep inside the branches as all of its readers let it, so that what one
@@ -80,7 +81,7 @@
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
   <xsl:key name="eo:known" match="known" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
-  <xsl:key name="eo:deferred" match="deferred" use="@symbol"/>
+  <xsl:key name="eo:deferred" match="deferred | looped[@symbol]" use="@symbol"/>
   <xsl:key name="eo:type" match="type" use="@id"/>
   <xsl:key name="eo:atom" match="atom" use="@loc"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
@@ -225,7 +226,7 @@
   -->
   <xsl:function name="eo:placed" as="map(xs:string, xs:string*)">
     <xsl:param name="root" as="xs:string"/>
-    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred)/@symbol, map:keys($eo:voids)))"/>
+    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred | looped)/@symbol, map:keys($eo:voids)))"/>
     <xsl:iterate select="sort($all, (), function($s) { -eo:serial($s) })">
       <xsl:param name="at" as="map(xs:string, xs:string*)" select="map {$root: ()}"/>
       <xsl:on-completion>
@@ -321,10 +322,10 @@
   -->
   <xsl:function name="eo:arguments" as="xs:string*">
     <xsl:param name="deferred" as="element()"/>
-    <xsl:if test="empty($deferred/@with)">
+    <xsl:if test="empty($deferred/with)">
       <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' does not say which symbols its arguments are'))"/>
     </xsl:if>
-    <xsl:variable name="arguments" select="tokenize(normalize-space($deferred/@with), ' ')"/>
+    <xsl:variable name="arguments" select="$deferred/with/attr ! concat(@name, ':', normalize-space(.))"/>
     <xsl:for-each select="$arguments[not(starts-with(substring-after(., ':'), '𝜎'))][1]">
       <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' has the argument ', substring-before(., ':'), ', which is no symbol'))"/>
     </xsl:for-each>

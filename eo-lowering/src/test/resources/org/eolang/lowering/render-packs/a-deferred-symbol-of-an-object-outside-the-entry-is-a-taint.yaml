@@ -35,7 +35,7 @@ protocol: |
           <bind meta="𝛿2.2">00-00-00-00-00-00-00-00</bind>
           <minted symbol="𝜎133">𝜎53 00-00-00-00-00-00-00-00</minted>
         </evaluate>
-        <deferred symbol="𝜎134" by="morph" at="Φ.a🌵1.φ" of="Φ.other.with-delimiter" with="acc:𝜎54 tup:𝜎55">⟦ φ ↦ acc, +2 ⟧</deferred>
+        <deferred symbol="𝜎134" by="morph" at="Φ.a🌵1.φ" of="Φ.other.with-delimiter"><with><attr name="acc">𝜎54</attr><attr name="tup">𝜎55</attr></with><e>⟦ φ ↦ acc, +2 ⟧</e></deferred>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l🌵.e54">
         <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
