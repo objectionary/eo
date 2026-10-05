@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
-import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -90,7 +89,7 @@ final class Planting implements Proc<Path> {
         final XML planted = new XSLDocument(
             Planting.class.getResource("/org/eolang/lowering/entries.xsl"),
             "/org/eolang/lowering/entries.xsl"
-        ).with((href, base) -> new StreamSource(href))
+        ).with(new Hrefs())
             .with("inference", this.tables.toUri().toString())
             .transform(Planting.manifest(sources));
         Files.createDirectories(home);

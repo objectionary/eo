@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
@@ -116,7 +115,7 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
+        ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);

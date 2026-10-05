@@ -76,7 +76,7 @@ final class RenderingTest {
                 .getBytes(StandardCharsets.UTF_8)
         );
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>")
+            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
         ).exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
@@ -116,7 +116,7 @@ final class RenderingTest {
             );
         }
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>")
+            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
         ).exec(temp);
         MatcherAssert.assertThat(
             "two entries whose atoms ask for one class must both be taints, but some were rendered",
@@ -143,7 +143,8 @@ final class RenderingTest {
             "an entry with no protocol must be logged as left in EO, but it isnt",
             RenderingTest.logged(
                 new Rendering(
-                    temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>")
+                    temp.resolve("atoms"),
+                    RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
                 ),
                 temp
             ),
@@ -156,11 +157,13 @@ final class RenderingTest {
         );
     }
 
-    private static Path tables(final Path temp, final String links, final String atoms)
-        throws IOException {
+    private static Path tables(
+        final Path temp, final String links, final String atoms, final String provides
+    ) throws IOException {
         final Path made = Files.createDirectories(temp.resolve("tables"));
         Files.write(made.resolve("links.xml"), links.getBytes(StandardCharsets.UTF_8));
         Files.write(made.resolve("atoms.xml"), atoms.getBytes(StandardCharsets.UTF_8));
+        Files.write(made.resolve("provides.xml"), provides.getBytes(StandardCharsets.UTF_8));
         return made;
     }
 
@@ -203,11 +206,12 @@ final class RenderingTest {
      *
      * <p>The file has EO sources, one entry, its protocol, and the whole
      * text of the Java atom of that entry, which the rendering must write
-     * exactly. The keys {@code links} and {@code atoms} may hold the tables
-     * of {@code eo:inference}, which are empty otherwise. When the file
-     * names no Java file, the entry must be a taint, and no atom may be
-     * written. Then the key {@code taint} may hold a part of the line the
-     * log must have about it, which says why.</p>
+     * exactly. The keys {@code links}, {@code atoms} and {@code provides}
+     * may hold the tables of {@code eo:inference}, which are empty
+     * otherwise. When the file names no Java file, the entry must be a
+     * taint, and no atom may be written. Then the key {@code taint} may
+     * hold a part of the line the log must have about it, which says
+     * why.</p>
      *
      * @since 0.64.0
      */
@@ -244,8 +248,8 @@ final class RenderingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "locator", "number", "eo", "voids", "links", "atoms", "protocol", "file",
-                    "java", "taint"
+                    "locator", "number", "eo", "voids", "links", "atoms", "provides",
+                    "protocol", "file", "java", "taint"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
                 }
@@ -329,7 +333,8 @@ final class RenderingTest {
                         RenderingTest.tables(
                             this.temp,
                             this.story.map().getOrDefault("links", "<links/>").toString(),
-                            this.story.map().getOrDefault("atoms", "<atoms/>").toString()
+                            this.story.map().getOrDefault("atoms", "<atoms/>").toString(),
+                            this.story.map().getOrDefault("provides", "<provides/>").toString()
                         )
                     ),
                     this.temp

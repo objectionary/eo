@@ -32,6 +32,7 @@
   every reference to the atom by that rule and javac finds the class only
   under that one name.
   -->
+  <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- The number of the entry, the one "entries.tsv" gives it. -->
   <xsl:param name="number" as="xs:string" select="''"/>
@@ -50,6 +51,7 @@
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
+  <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
   <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
   <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
@@ -82,8 +84,6 @@
   <xsl:key name="eo:known" match="known" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
   <xsl:key name="eo:deferred" match="deferred | looped[@symbol]" use="@symbol"/>
-  <xsl:key name="eo:type" match="type" use="@id"/>
-  <xsl:key name="eo:atom" match="atom" use="@loc"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
     <xsl:map>
@@ -360,13 +360,13 @@
     </xsl:choose>
   </xsl:function>
   <!--
-  An object returns data when every type the tables of "eo:inference" give
-  its "φ" is a number, a string, a bool or bytes, an atom counting as the
-  type it gives.
+  An object returns data when every type its body may be, as "eo:returns"
+  reads it off the tables of "eo:inference", is a number, a string, a bool
+  or bytes.
   -->
   <xsl:function name="eo:data" as="xs:boolean">
     <xsl:param name="loc" as="xs:string"/>
-    <xsl:variable name="types" as="xs:string*" select="for $r in key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc return string((key('eo:atom', $r, $eo:atoms)/@forma, $r)[1])"/>
+    <xsl:variable name="types" as="xs:string*" select="eo:returns($loc)"/>
     <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))"/>
   </xsl:function>
   <!-- The Java of a symbol as an object a copy takes: a void as it is, anything else as data. -->
