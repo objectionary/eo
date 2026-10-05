@@ -81,7 +81,7 @@
     <rendered>
       <xsl:try>
         <xsl:variable name="root" select="eo:root()"/>
-        <xsl:variable name="at" select="eo:placed($root)"/>
+        <xsl:variable name="at" select="if (eo:constant($root)) then map {} else eo:placed($root)"/>
         <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))])}">
           <xsl:value-of select="eo:java($root, $at)"/>
         </atom>
@@ -130,17 +130,12 @@
   </xsl:function>
   <!--
   Stop the rendering of an entry whose root dataized no symbol, saying what
-  the protocol shows instead: a constant the root dataized, a body that was
-  ⊥ from the start, the last step phino got no answer for, or the last λ
+  the protocol shows instead: a body that was ⊥ from the start, the last step phino got no answer for, or the last λ
   phino left unfinished.
   -->
   <xsl:function name="eo:rootless">
-    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:variable name="unanswered" select="string(($eo:doc//unanswered)[last()])"/>
     <xsl:choose>
-      <xsl:when test="exists($constant)">
-        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $constant, ', and an atom that only returns a constant is not written yet'))"/>
-      </xsl:when>
       <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
         <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
       </xsl:when>
@@ -161,26 +156,51 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- The symbol the root of the entry dataizes. -->
+  <!-- The symbol the root of the entry dataizes, or the bytes it binds when they are known in advance. -->
   <xsl:function name="eo:root" as="xs:string">
     <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
     <xsl:if test="exists($timeout)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
     </xsl:if>
     <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
-    <xsl:if test="empty($root)">
-      <xsl:sequence select="eo:rootless()"/>
-    </xsl:if>
-    <xsl:variable name="symbol" select="substring-before(concat(string($root), ':'), ':')"/>
-    <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
-      <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
-    </xsl:if>
-    <xsl:sequence select="$symbol"/>
+    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:choose>
+      <xsl:when test="exists($root)">
+        <xsl:sequence select="substring-before(concat(string($root), ':'), ':')"/>
+      </xsl:when>
+      <xsl:when test="exists($constant)">
+        <xsl:sequence select="normalize-space($constant)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:rootless()"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- The object a void is, as a chain of takes off the atom. -->
   <xsl:function name="eo:object" as="xs:string">
     <xsl:param name="void" as="xs:string"/>
     <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', tokenize($eo:voids($void)[1], '\.') ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
+  </xsl:function>
+  <!--
+  The Java of the bool a constant root always gives. The bytes alone tell a
+  bool and nothing else, so a constant of another type is a taint, since bare
+  bytes would lose every attribute of a number or a string. So are "true"
+  and "false" themselves, whose atom would return the object it stands in.
+  -->
+  <xsl:function name="eo:fixed" as="xs:string">
+    <xsl:param name="root" as="xs:string"/>
+    <xsl:variable name="bytes" select="upper-case(eo:bytes($root))"/>
+    <xsl:choose>
+      <xsl:when test="not($bytes = ('FF-', '00-'))">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $bytes, ', which is not a bool, and its atom does not know the type to wrap it into'))"/>
+      </xsl:when>
+      <xsl:when test="$locator = ('Φ.true', 'Φ.false')">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the bool it is itself, so its atom would return the object it stands in'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:literal-of($bytes, 'boolean')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- The whole Java file of the atom. -->
   <xsl:function name="eo:java" as="xs:string">
@@ -190,6 +210,9 @@
       <xsl:choose>
         <xsl:when test="map:contains($eo:voids, $root)">
           <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
+        </xsl:when>
+        <xsl:when test="eo:constant($root)">
+          <xsl:value-of select="concat('        return new Data.ToPhi(', eo:fixed($root), ');&#10;')"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', eo:local($root), ');&#10;')"/>
