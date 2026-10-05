@@ -17,13 +17,13 @@
   assigns, and a deferred one is the dataized copy of an object of the entry
   with its arguments bound, which phino left for the run to work out. Such
   a copy is dataized only when the tables of "eo:inference" say that the
-  object returns a number, a string or a bool, since dataizing any other
-  object may do what EO never does there. A statement is placed as deep
-  inside the branches as all of its readers let it, so that what one branch
-  alone needs is computed in that branch alone. The symbols are walked from
-  the highest number down, since phino mints a symbol only after the symbols
-  it is made of, so by the time a symbol is reached every symbol that reads
-  it has already said where it is read.
+  object returns a number, a string, a bool or bytes, since dataizing any
+  other object may do what EO never does there. A statement is placed as
+  deep inside the branches as all of its readers let it, so that what one
+  branch alone needs is computed in that branch alone. The symbols are
+  walked from the highest number down, since phino mints a symbol only after
+  the symbols it is made of, so by the time a symbol is reached every symbol
+  that reads it has already said where it is read.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -348,7 +348,7 @@
         <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
       <xsl:when test="not(eo:data($of))">
-        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which inference does not say returns a number, a string or a bool'))"/>
+        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which inference does not say returns a number, a string, a bool or bytes'))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
@@ -357,13 +357,13 @@
   </xsl:function>
   <!--
   An object returns data when every type the tables of "eo:inference" give
-  its "φ" is a number, a string or a bool, an atom counting as the type it
-  gives.
+  its "φ" is a number, a string, a bool or bytes, an atom counting as the
+  type it gives.
   -->
   <xsl:function name="eo:data" as="xs:boolean">
     <xsl:param name="loc" as="xs:string"/>
     <xsl:variable name="types" as="xs:string*" select="for $r in key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc return string((key('eo:atom', $r, $eo:atoms)/@forma, $r)[1])"/>
-    <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false'))"/>
+    <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))"/>
   </xsl:function>
   <!-- The Java of a symbol as an object a copy takes: a void as it is, anything else as data. -->
   <xsl:function name="eo:argument" as="xs:string">
