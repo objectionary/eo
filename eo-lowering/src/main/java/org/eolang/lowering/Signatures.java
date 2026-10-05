@@ -34,6 +34,11 @@ import org.cactoos.scalar.Unchecked;
  * type is shown as {@code ?}.</p>
  *
  * @since 0.64.0
+ * @todo #9224:30min Read the type of the body the way entries.xsl reads it.
+ *  The planting now takes the "reduced" cell of provides.xml before the
+ *  links, so an object whose body is a decorator of a number gets an entry,
+ *  while the log still shows the decorator, or "?", as the type of its body.
+ *  Both should ask the tables the same question.
  */
 final class Signatures {
 
