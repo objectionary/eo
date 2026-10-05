@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link Threaded}.
+ *
  * @since 0.56.5
  */
 final class ThreadedTest {

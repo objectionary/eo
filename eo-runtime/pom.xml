@@ -20,17 +20,26 @@
     <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
-    runs to its end instead of being skipped.
+    runs to its end instead of being skipped. The "transpile" goal reads the
+    same property and writes it into the @Timeout of every test it makes out
+    of an .eo file, while the hand-written tests get it from surefire below.
     -->
     <eo.deadline>1</eo.deadline>
     <!--
     How much memory a single test may allocate before Maxmem terminates it
     and reports it as skipped. The suffixes of -Xmx are understood: "2G",
     "512M", "65536K", or plain bytes. Empty, or zero, means no limit at all
-    and no watching either, which is the default: a box with memory to
-    spare should run every test to its end.
+    and no watching either: a box with memory to spare should run every
+    test to its end. The value here sits above the band an ordinary test
+    occupies — a directory walk passes about 300M through the allocator
+    without ever holding much — so that the guard fires on a runaway test
+    rather than on the population (#8341). It binds one test, while tests
+    run as wide as the box has cores, so a job raising it from the command
+    line must keep the value times the workers under -Xmx. The "transpile"
+    goal reads the same property and writes it into the @Budget of every
+    test it makes out of an .eo file, which wins over the system property.
     -->
-    <eo.maxmem>256M</eo.maxmem>
+    <eo.maxmem>1G</eo.maxmem>
   </properties>
   <dependencies>
     <dependency>
@@ -60,19 +69,19 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jul-to-slf4j</artifactId>
-      <version>2.0.18</version>
+      <version>2.0.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.18</version>
+      <version>2.0.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.6.3</version>
+      <version>1.6.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -130,10 +139,17 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!--
+      Deadline, Maxmem, and Budget guard every test the transpiler makes out
+      of an .eo file, so they live among the classes of the runtime and need
+      JUnit to compile (#9074). The scope is "provided": a test that uses them
+      brings JUnit along, while a program that only runs EO objects must not
+      get JUnit on its classpath through eo-runtime.
+      -->
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
@@ -142,10 +158,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- Deadline and Watched throw its TestAbortedException, see junit-jupiter-api above. -->
       <groupId>org.opentest4j</groupId>
       <artifactId>opentest4j</artifactId>
       <!-- version from parent POM -->
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.yegor256</groupId>
@@ -203,7 +220,7 @@
     <dependency>
       <groupId>codes.ivanov</groupId>
       <artifactId>ephpo</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -256,7 +273,6 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
-          <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--
@@ -267,6 +283,10 @@
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
+          <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
+          <loweringBudget>60</loweringBudget>
+          <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
+          <maxMorphingSteps>100</maxMorphingSteps>
         </configuration>
         <executions>
           <execution>
@@ -276,8 +296,9 @@
               <goal>format</goal>
               <goal>compile</goal>
               <goal>inference</goal>
+              <goal>dealpha</goal>
               <goal>inference-report</goal>
-              <goal>merge</goal>
+              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
@@ -285,10 +306,6 @@
             </goals>
             <configuration>
               <skipSourceLints>
-                <!-- https://github.com/objectionary/lints/issues/1279 -->
-                <lint>mandatory-package</lint>
-                <!-- https://github.com/objectionary/lints/issues/1273 -->
-                <lint>package-member-without-void</lint>
                 <!--
                 'redundant-object' sees one file at a time and counts only the
                 references written relative to the current object, so every
@@ -297,26 +314,105 @@
                 -->
                 <lint>redundant-object</lint>
                 <!--
-                @todo #6985:30min Stop skipping 'redundant-attachment' here. A
-                declared 'ρ' counts as one of the object's own voids, so
-                'outer-refs' comes back empty for formations that do reach into
-                the enclosing scope, and their '&gt;&gt;' names look
-                unreferenced. Dropping those names made the formatter reshape
-                the call sites and broke 'map', 'while', 'range' and 'input'.
-                Remove this entry once objectionary/lints#1301 treats the
-                receiver as reaching outward even when the head declares it.
-                -->
-                <lint>redundant-attachment</lint>
-                <!--
                 @todo #6985:30min Stop skipping 'many-void-attributes' here.
                 The rule caps a formation at five voids to keep it callable,
-                but it counts 'ρ' among them, and 'string.regex.matched' has
-                five real ones. Writing the receiver down did not add an
+                but it counts 'ρ' among them, and 'string.regex.pattern.yes'
+                has five real ones. Writing the receiver down did not add an
                 argument, so the cap now bites any head honest enough to
                 declare what it already had. Remove this entry once
                 objectionary/lints#1299 leaves the receiver out of the count.
                 -->
                 <lint>many-void-attributes</lint>
+                <!--
+                @todo #8654:30min Stop skipping 'unit-test-is-not-verb' here.
+                The lint wants a test name to hold a verb in singular form,
+                and in 155 names it finds none: its tagger reads 'format',
+                'print', 'scan', or 'floor' in 'can-format' and its siblings
+                as nouns, and names like 'can-or' or 'can-upper' have no verb.
+                -->
+                <lint>unit-test-is-not-verb</lint>
+                <!--
+                @todo #8654:30min Stop skipping 'invalid-name-notation' here.
+                The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no
+                room for the digit in 'bytes/as-u8.eo:12' or in its siblings
+                from 'as-i8' to 'as-u64'.
+                -->
+                <lint>invalid-name-notation</lint>
+                <!--
+                'broad-scope' asks for a private attribute read by one sibling
+                to move inside it, which for a recursive head means computing
+                it again on every step: 'i64.div' hoists 'bit' and 'dividend'
+                out of 'looped' on purpose. Thirty-four of its forty-five
+                reports sit in 'string/regex.eo', whose objects share one
+                vocabulary across the whole parser, and #8654 holds the rest.
+                -->
+                <lint>broad-scope</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'long-live-object' here.
+                The lint warns when more than five lines separate an attribute
+                from its last use in the same formation, and it does so 68
+                times in 27 files, twenty of them in 'net/uri.eo' and ten in
+                'number/sine.eo'. Each place is real, but moving the
+                attribute closer needs the formation to be split, not just
+                its lines to be reordered, because the printer puts a private
+                handle at its first use.
+                -->
+                <lint>long-live-object</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'cyclomatic-complexity' here.
+                The lint counts every 'if', 'and', 'or', and 'while' as a
+                decision point and complains about seven formations, from
+                'file.touched' with twelve to 'number.power' with
+                twenty-five. Each of them has to be split into smaller
+                objects.
+                -->
+                <lint>cyclomatic-complexity</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'direct-phi' here.
+                The lint forbids reading '@' directly and reports 24 errors.
+                Some are tests like '123.@.eq 123.@' in 'i64.eo', where '@'
+                is the void of 'number'. Others are deliberate, like the
+                '@. > @' heads of 'console', 'stdin', 'file', and 'map'
+                (#5747, #5748). Each place needs its own decision.
+                -->
+                <lint>direct-phi</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'unoptimizable-recursion' here.
+                Thirteen of its 24 reports, in 'u8' to 'u64', 'i8' to 'i64',
+                'buffer', 'set', 'map', 'path', and 'stdin', are methods that
+                build a new copy of their owner, not recursion at all
+                (objectionary/lints#1528). The other eleven, from
+                'directory.listed' to 'seq', are real and must be rewritten
+                to call themselves in a tail position.
+                -->
+                <lint>unoptimizable-recursion</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'excessive-visibility' here.
+                The lint wants every method that no test refers to be made
+                private, and it complains 152 times. In 71 of them the
+                method is already private, as a constant made with '!'
+                (objectionary/lints#1526). The rest are methods like
+                'i64.as-i16', which other files use but no test touches.
+                -->
+                <lint>excessive-visibility</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'no-attribute-formation' here.
+                The lint rejects a formation without void attributes, and 125
+                of its 150 reports are tests, which take no arguments by
+                design (objectionary/lints#1527). The other 25, like 'clock',
+                'console', 'os', 'stdin', or 'malloc', are objects with no
+                arguments on purpose.
+                -->
+                <lint>no-attribute-formation</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'missed-obfuscation' here.
+                The lint wants a formation that decorates another object to
+                make its void attributes private, and it complains 595 times,
+                87 of them about top-level objects. Making their voids
+                private changes the public interface of the runtime, which
+                only the architect may decide.
+                -->
+                <lint>missed-obfuscation</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
@@ -512,7 +608,7 @@
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.1.1</version>
+                <version>6.0.0</version>
               </dependency>
             </dependencies>
           </plugin>

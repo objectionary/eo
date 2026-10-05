@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Reach}.
+ *
  * @since 0.70.0
  */
 final class ReachTest {
@@ -65,6 +66,15 @@ final class ReachTest {
             "the dispatch .as-bytes is nine characters counting its dot, but it wasnt",
             new Reach("first.as-bytes").from(5),
             Matchers.equalTo(9)
+        );
+    }
+
+    @Test
+    void keepsADispatchOfTheCaretWithItsDot() {
+        MatcherAssert.assertThat(
+            "the dispatch .^ is two characters counting its dot, but it wasnt",
+            new Reach("* ^.^").from(3),
+            Matchers.equalTo(2)
         );
     }
 

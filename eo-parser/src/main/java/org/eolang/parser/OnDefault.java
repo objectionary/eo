@@ -28,6 +28,7 @@ public final class OnDefault implements ObjectName {
 
     /**
      * Ctor.
+     *
      * @param xml XML document
      */
     public OnDefault(final XML xml) {
@@ -36,6 +37,7 @@ public final class OnDefault implements ObjectName {
 
     /**
      * Ctor.
+     *
      * @param nav Navigator
      */
     public OnDefault(final Xnav nav) {

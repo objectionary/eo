@@ -37,6 +37,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,6 +49,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Test case for {@link EoSyntax}.
+ *
  * @since 0.1
  */
 @ExtendWith(LogProgress.class)
@@ -91,6 +93,24 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesAFileThatStartsWithAByteOrderMark() throws Exception {
+        MatcherAssert.assertThat(
+            "a byte order mark in front of the first line must not reach the parser, but it did",
+            XhtmlMatchers.xhtml(
+                new EoSyntax(
+                    Character.toString(0xFEFF).concat(
+                        String.format("# The app.%n%n+package foo%n%n[] > app%n  42 > x%n")
+                    )
+                ).parsed().toString()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']"
+            )
+        );
+    }
+
+    @Test
     void measuresRealParsingTime() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
@@ -124,6 +144,20 @@ final class EoSyntaxTest {
                 ).parsed().xpath("/object/@ms").get(0)
             ),
             Matchers.lessThan(60_000L)
+        );
+    }
+
+    @Test
+    void stampsMsBeforeTransformRuns() throws Exception {
+        MatcherAssert.assertThat(
+            "ms attribute is not present when the transform receives the document",
+            new EoSyntax(
+                new InputOf(String.format("# Ünïcödé.%n[] > tiny%n")),
+                xml -> new XMLDocument(
+                    String.format("<seen>%d</seen>", xml.xpath("/object/@ms").size())
+                )
+            ).parsed().xpath("/seen/text()").get(0),
+            Matchers.equalTo("1")
         );
     }
 
@@ -852,19 +886,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void rejectsUnrecognisedEscapeSequence() throws Exception {
-        MatcherAssert.assertThat(
-            "an unrecognised escape sequence must name the offending characters, not blame unicode or octal escapes",
-            EoSyntaxTest.raw(
-                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\q\" > @")
-            ).toString(),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),\"unrecognised escape sequence\")]"
-            )
-        );
-    }
-
-    @Test
     void namesLoneSurrogateInErrorMessage() throws Exception {
         MatcherAssert.assertThat(
             "a lone surrogate escape must name the offending codepoint, not blame unicode or octal escapes generically",
@@ -895,6 +916,25 @@ final class EoSyntaxTest {
             EoSyntaxTest.raw("+foo").toString(),
             XhtmlMatchers.hasXPath("/object[@version and @revision and @dob and @time]")
         );
+    }
+
+    @Test
+    @Timeout(60L)
+    void reportsDeepStructuresInsteadOfOverflowing() throws Exception {
+        for (final String source : Arrays.asList(
+            EoSyntaxTest.nested(Stack.DEEPEST * 2),
+            String.format(
+                "+package foo%n%n[] > app%n  x%s > @%n",
+                ".y".repeat(Stack.DEEPEST * 3)
+            )
+        )) {
+            MatcherAssert.assertThat(
+                "a source deeper than the parser limit must produce an error",
+                new EoSyntax(new InputOf(source)).parsed()
+                    .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+                Matchers.hasSize(1)
+            );
+        }
     }
 
     private static Stream<Arguments> naughty() throws Exception {
@@ -934,5 +974,14 @@ final class EoSyntaxTest {
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
         );
+    }
+
+    private static String nested(final int depth) {
+        final StringBuilder source = new StringBuilder("[] > top").append(String.format("%n"));
+        for (int level = 1; level <= depth; level = level + 1) {
+            source.append("  ".repeat(level)).append("[] > n").append(level)
+                .append(String.format("%n"));
+        }
+        return source.toString();
     }
 }

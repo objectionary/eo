@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * It deletes binary files, which were previously copied by "place" mojo so
  * these binaries are not got into result JAR.
+ *
  * @since 0.11
  */
 @Mojo(
@@ -30,12 +31,10 @@ public final class MjUnplace extends MjSafe {
     @Override
     public void exec() throws IOException {
         try (TjsPlaced placed = this.placed()) {
-            new Timed(
-                new Unplacing(
-                    placed,
-                    this.classesDir.toPath(),
-                    this.keepBinaries
-                )
+            new Unplacing(
+                placed,
+                this.classes.toPath(),
+                this.keepBinaries
             ).exec();
         }
     }

@@ -11,56 +11,53 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [as-bytes] > u64
   as-bytes > @
-  if. > [^] > as-number
+  if. > [^num] > as-number
     eq.
-      ^.as-bytes.and 80-00-00-00-00-00-00-00
+      num.as-bytes.and 80-00-00-00-00-00-00-00
       80-00-00-00-00-00-00-00
     times.
       as-number.
         i64
           or.
-            ^.as-bytes.right 1
-            ^.as-bytes.and 00-00-00-00-00-00-00-01
+            num.as-bytes.right 1
+            num.as-bytes.and 00-00-00-00-00-00-00-01
       2
     as-number.
-      i64 ^.as-bytes
+      i64 num.as-bytes
   as-bytes.xor 80-00-00-00-00-00-00-00 > flip
-  gt. > [^ x] > gt
-    i64 ^.flip
-    i64 x.as-u64.flip
-  gte. > [^ x] > gte
-    i64 ^.flip
-    i64 x.as-u64.flip
-  lt. > [^ x] > lt
-    i64 ^.flip
-    i64 x.as-u64.flip
-  lte. > [^ x] > lte
-    i64 ^.flip
-    i64 x.as-u64.flip
-  [^ x] > minus
-    u64 > @
-      as-bytes.
-        minus. >>
-          i64 ^.as-bytes
-          i64 x.as-u64.as-bytes
-  [^ x] > plus
-    u64 > @
-      as-bytes.
-        plus. >>
-          i64 ^.as-bytes
-          i64 x.as-u64.as-bytes
-  [^ x] > times
-    u64 > @
-      as-bytes.
-        times. >>
-          i64 ^.as-bytes
-          i64 x.as-u64.as-bytes
+  gt. > [^num b] > gt
+    i64 num.flip
+    i64 b.as-u64.flip
+  gte. > [^num b] > gte
+    i64 num.flip
+    i64 b.as-u64.flip
+  lt. > [^num b] > lt
+    i64 num.flip
+    i64 b.as-u64.flip
+  lte. > [^num b] > lte
+    i64 num.flip
+    i64 b.as-u64.flip
+  u64 > [^num b] > minus
+    as-bytes.
+      minus.
+        i64 num.as-bytes
+        i64 b.as-u64.as-bytes
+  u64 > [^num b] > plus
+    as-bytes.
+      plus.
+        i64 num.as-bytes
+        i64 b.as-u64.as-bytes
+  u64 > [^num b] > times
+    as-bytes.
+      times.
+        i64 num.as-bytes
+        i64 b.as-u64.as-bytes
 
   eq. ++> can-add-one-to-one
     00-00-00-00-00-00-00-01.as-u64.plus 00-00-00-00-00-00-00-01.as-u64

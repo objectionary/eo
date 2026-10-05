@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# phino came to a step that reduced to ⊥ and could not go on, so the root
+# firing never came.
+locator: Φ.text.lower
+number: 52
+taint: phino came to a step that reduced to ⊥ and could not go on
+eo:
+  text.eo: |
+    [] > text
+      [] > lower
+        ^.at > @
+protocol: |
+  <protocol>
+    <morph at="Φ.l🌵.e52">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e52">
+        <unanswered>⊥</unanswered>
+        <unfinished/>
+      </evaluate>
+    </morph>
+    <msec>332</msec>
+    <firings>1</firings>
+    <fps>3</fps>
+  </protocol>

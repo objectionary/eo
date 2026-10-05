@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnMethod}.
+ *
  * @since 0.1
  */
 final class LnMethodTest {
@@ -178,6 +179,21 @@ final class LnMethodTest {
             "a `+>` test attribute on a method-continuation line with no blank line above must emit an R-6.5.3 error",
             LnMethodTest.render(emit),
             XhtmlMatchers.hasXPath("/object/errors/error[@line='2']")
+        );
+    }
+
+    @Test
+    void rejectsContinuationOnTruthyAttribute() {
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        globals.blank();
+        new LnFormation(new Span("  ++> t", 2)).into(stack, globals, new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span("  .bar > x", 3))
+                .into(stack, globals, new Emit()),
+            "a `.method` continuation on a test attribute must be rejected per R-6.3.3"
         );
     }
 

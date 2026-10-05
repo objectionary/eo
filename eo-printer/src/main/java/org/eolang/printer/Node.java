@@ -80,6 +80,7 @@ final class Node {
 
     /**
      * Ctor, from a {@code <line>} element.
+     *
      * @param line The {@code <line>} element
      */
     Node(final Xnav line) {
@@ -98,6 +99,7 @@ final class Node {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head
      * @param suffix The rendered suffix
      * @param formation Whether it is a formation
@@ -143,6 +145,14 @@ final class Node {
      * suffix shape puts the receiver in front of the dot and leaves the
      * binding after a name, where it parses.</p>
      *
+     * <p>A receiver too long to sit in front of that dot leaves no suffix
+     * shape at all, and the binding used to be glued onto the reversed head
+     * after all (#9173). The dispatch is then written the way the source
+     * wrote it: the receiver on its own lines, and a {@code .method:hey}
+     * continuation under the same head, which dispatches on the lines above
+     * it. Only a receiver-only dispatch is spelled that way, since the
+     * grammar takes no arguments under a continuation line.</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -155,6 +165,8 @@ final class Node {
             if (this.labelled() || style.points(alt) <= style.points(best)) {
                 best = alt;
             }
+        } else if (this.labelled() && this.children.size() == 1) {
+            best = this.continued(style, indent);
         }
         return best;
     }
@@ -163,6 +175,7 @@ final class Node {
      * Print this node on the lines below the head of its parent: the block
      * itself, preceded by the newline that opens it and, for a test
      * attribute, by the blank line R-6.5.3 requires in front of it.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block with its leading newlines
@@ -198,6 +211,7 @@ final class Node {
      * Whether this node is a nameless method-dispatch continuation
      * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
      * instead of carrying a receiver of its own.
+     *
      * @return True when this node continues the sibling above it
      */
     boolean continuation() {
@@ -207,6 +221,7 @@ final class Node {
 
     /**
      * Print this node with its children laid out beneath its head.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -397,6 +412,7 @@ final class Node {
      * inline-phi form: not a formation, whose children are bindings rather
      * than arguments, and not a bare token, which has nothing to lay out
      * beneath a marker.
+     *
      * @return True when this node applies arguments
      */
     boolean applied() {
@@ -406,6 +422,7 @@ final class Node {
     /**
      * Whether no line in this node's children carries a name suffix, so
      * their subtrees are safe to fold into a compact only-phi formation.
+     *
      * @return True when every child subtree is nameless
      * @see #nameless()
      */
@@ -555,6 +572,22 @@ final class Node {
 
     private boolean constant() {
         return "!".equals(this.tail);
+    }
+
+    private String continued(final Style style, final int indent) {
+        final String dot;
+        if (this.base.endsWith("?.")) {
+            dot = "?.";
+        } else {
+            dot = ".";
+        }
+        return new StringBuilder(this.children.get(0).print(style, indent))
+            .append('\n')
+            .append(style.indent(indent))
+            .append(dot)
+            .append(this.base, 0, this.base.length() - dot.length())
+            .append(this.tail)
+            .toString();
     }
 
     private boolean labelled() {

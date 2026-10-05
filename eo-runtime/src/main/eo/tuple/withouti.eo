@@ -1,22 +1,35 @@
 # Create a new list without the i-th element of `list`.
+# The `i` must be an integer, otherwise the object terminates. A negative
+# index counts from the end, the way `tuple.at` counts it, and an index
+# that names no element terminates too.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ i] > withouti
+[^list i] > withouti
   i.is-integer.if > @
-    ^.reducedi
-      *
-      if. > [^ accum item index] >>
-        ^.i.eq index
-        accum
-        accum.with item
+    if.
+      or.
+        0.gt index
+        list.length.lte index
+      T
+        "Given index is out of tuple bounds"
+      list.reducedi
+        *
+        if. > [^ accum item position] >>
+          ^.index.eq position
+          accum
+          accum.with item
     T
       "Given index must be an integer"
+  if. > index
+    0.gt i
+    list.length.plus i
+    i
 
   eq. ++> can-drop-an-item-by-index
     withouti.
@@ -52,8 +65,44 @@
       "smthg"
       27
 
+  eq. ++> can-drop-the-first-item-by-a-negative-index
+    withouti.
+      *
+        1
+        2
+        3
+      -3
+    *
+      2
+      3
+
+  eq. ++> can-drop-the-last-item-by-a-negative-index
+    withouti.
+      *
+        1
+        2
+        3
+      -1
+    *
+      1
+      2
+
   withouti. --> stops-on-a-fractional-index-when-dropping-an-item
     *
       "a"
       "b"
     0.5
+
+  withouti. --> stops-on-a-negative-index-before-the-first-item
+    *
+      1
+      2
+      3
+    -4
+
+  withouti. --> stops-on-an-index-past-the-last-item
+    *
+      1
+      2
+      3
+    3

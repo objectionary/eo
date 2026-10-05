@@ -9,6 +9,7 @@ import org.cactoos.Scalar;
 
 /**
  * Offline runtime dependency from the current project manifest.
+ *
  * @since 0.62.0
  */
 final class RtOffline implements Scalar<Dep> {

@@ -5,17 +5,17 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ cant-convert] > as-u16
+[^data cant-convert] > as-u16
   if. > @
-    ^.size.eq 2
-    u16 ^
+    data.size.eq 2
+    u16 data
     cant-convert
       "Can't convert non 2 length bytes to u16, bytes are %x".printf
-        * ^
+        * data
 
   00-33.as-u16.as-bytes.eq 00-33 ++> can-convert-bytes-to-u16-and-back
 

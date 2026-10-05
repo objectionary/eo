@@ -9,6 +9,7 @@ package org.eolang.parser;
  * {@link Emit#rollback(Savepoint)} — bundles the sink size with
  * {@link Emit}'s depth and the owed atom signature so a rollback puts all
  * three back in step (#7539).
+ *
  * @since 0.1
  */
 final class Savepoint {
@@ -33,6 +34,7 @@ final class Savepoint {
 
     /**
      * Ctor.
+     *
      * @param sink Sink size at the savepoint
      * @param depth Open element depth at the savepoint
      * @param signature Owed atom signature at the savepoint
@@ -54,6 +56,7 @@ final class Savepoint {
 
     /**
      * Sink size at the savepoint.
+     *
      * @return Sink size
      */
     int sink() {
@@ -63,6 +66,7 @@ final class Savepoint {
     /**
      * Put {@link Emit}'s depth and owed atom signature back to what they
      * were at this savepoint.
+     *
      * @param emit Emitter to restore
      */
     void restore(final Emit emit) {

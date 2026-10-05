@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PenaltyKey} weights and their overrides.
+ *
  * @since 0.57.0
  */
 final class PenaltyKeyTest {

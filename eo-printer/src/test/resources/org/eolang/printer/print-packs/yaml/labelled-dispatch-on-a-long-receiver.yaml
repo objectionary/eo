@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A method on a receiver too long for one line has no suffix shape to put
+# its inline binding after, and gluing the binding onto the reversed head
+# writes `plus.:z`, which the parser refuses (#9173). The dispatch goes back
+# to the shape the source wrote: the receiver on its own lines, and a
+# `.plus:z` continuation under the same head.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package foo
+
+  [] > app
+    if. >> n0
+      foo 59 bar
+      *
+        false
+    qux > @
+      n0
+      .plus:z
+
+printed: |
+  +package foo
+
+  [] > app
+    qux > @
+      if.
+        foo 59 bar
+        * false
+      .plus:z

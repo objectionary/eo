@@ -23,11 +23,29 @@ import org.cactoos.set.SetOf;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eolang.cache.Caching;
+import org.eolang.cache.GlobalCache;
 import org.slf4j.impl.StaticLoggerBinder;
 
 /**
  * Abstract Mojo for all others.
+ *
  * @since 0.1
+ * @todo #8968:60min Give the last fourteen parameters one-word names too.
+ *  Every one of them wants a word that is already spent. {@code foreign}
+ *  and {@code placed} each hold the word their {@code Format} sibling
+ *  wants; {@code cache} holds the one {@code cacheEnabled} wants;
+ *  {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
+ *  {@code MjAtomsTable} both declare; the three binary filters
+ *  ({@code placeBinaries}, {@code skipBinaries}, {@code keepBinaries})
+ *  want one word between them, as do the three lint flags
+ *  ({@code skipSourceLints}, {@code skipProgramLints},
+ *  {@code skipLinting}); and {@code ignoreRuntime},
+ *  {@code failOnWarning}, {@code lintAsPackage} and
+ *  {@code resolveInCentral} each want a word this class reads as
+ *  something else. A file with its format, a cache with its switch, the
+ *  binary filters and the lint flags are four groups, and once each one
+ *  is an object of its own the names come free.
  */
 abstract class MjSafe extends AbstractMojo {
 
@@ -42,6 +60,7 @@ abstract class MjSafe extends AbstractMojo {
      * Do NOT move this field to a subclass: it is used in both
      * {@link MjResolve} and {@link MjCompile} (indirectly), so it
      * must be injected once here in the base class.
+     *
      * @checkstyle VisibilityModifierCheck (5 lines)
      */
     @Component
@@ -65,14 +84,13 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Directory where classes are stored in target.
-     * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
         defaultValue = "${project.build.directory}/classes",
         readonly = true,
         required = true
     )
-    protected File classesDir;
+    protected File classes;
 
     /**
      * File with foreign "tojos".
@@ -86,6 +104,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Format of "foreign" file ("json" or "csv").
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.foreignFormat", required = true, defaultValue = "csv")
@@ -93,6 +112,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Directory in which .eo files are located.
+     *
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
@@ -104,14 +124,14 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Target directory.
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
+        alias = "targetDir",
         property = "eo.targetDir",
         required = true,
         defaultValue = "${project.build.directory}/eo"
     )
-    protected File targetDir;
+    protected File target;
 
     /**
      * Current scope (either "compile" or "test").
@@ -122,6 +142,7 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * The path to a text file where paths of all added
      * .class (and maybe others) files are placed.
+     *
      * @since 0.11.0
      */
     @Parameter(
@@ -133,6 +154,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Format of "placed" file ("json" or "csv").
+     *
      * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
@@ -140,20 +162,20 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Generated sourced directory.
-     * @checkstyle MemberNameCheck (7 lines)
      */
     @Parameter(
+        alias = "generatedDir",
         property = "eo.generatedDir",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
-    protected File generatedDir;
+    protected File generated;
 
     /**
      * The path of the file where XSL measurements (time of execution
      * in milliseconds) will be stored.
+     *
      * @since 0.41.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "xslMeasuresFile",
@@ -161,7 +183,7 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
     )
-    protected File xslMeasures;
+    protected File measures;
 
     /**
      * Mojo execution timeout in seconds.
@@ -173,7 +195,8 @@ abstract class MjSafe extends AbstractMojo {
      * sixty eight years, which meant the deadline never fired and the
      * thread and the {@link java.util.concurrent.FutureTask} behind it were
      * started for nothing. A build whose goals legitimately take longer
-     * raises it through {@code eo.timeout}.</p>
+     * raises it through {@code eo.timeout}, and one that wants no deadline
+     * at all sets it to zero.</p>
      *
      * @since 0.28.12
      */
@@ -182,8 +205,8 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Track optimization steps into intermediate XMIR files?
+     *
      * @since 0.24.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "trackTransformationSteps",
@@ -191,16 +214,16 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean trackSteps;
+    protected boolean tracking;
 
     /**
      * If set to TRUE, the exception on exit will be printed in details
      * to the log.
+     *
      * @since 0.29.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.unrollExitError")
-    protected boolean unrollExitError = true;
+    @Parameter(alias = "unrollExitError", property = "eo.unrollExitError")
+    protected boolean unroll = true;
 
     /**
      * EO cache directory.
@@ -210,6 +233,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Use global caching or not.
+     *
      * @since 0.55.0
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -218,14 +242,19 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Rewrite binaries in output directory or not.
+     *
      * @since 0.32.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.rewriteBinaries", defaultValue = "true")
-    protected boolean rewriteBinaries = true;
+    @Parameter(
+        alias = "rewriteBinaries",
+        property = "eo.rewriteBinaries",
+        defaultValue = "true"
+    )
+    protected boolean rewrite = true;
 
     /**
      * If we are offline and not able to download anything from the internet.
+     *
      * @since 0.32.0
      */
     @Parameter(property = "eo.offline", required = true, defaultValue = "false")
@@ -233,6 +262,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * The Git tag to pull objects from, in objectionary.
+     *
      * @since 0.21.0
      */
     @Parameter(property = "eo.tag", required = true, defaultValue = "master")
@@ -240,8 +270,8 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * If set to TRUE, experimental lints are skipped during the linting.
+     *
      * @since 0.57.0
-     * @checkstyle MemberNameCheck (9 lines)
      */
     @Parameter(
         alias = "skipExperimentalLints",
@@ -249,28 +279,38 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean skipExperimental;
+    protected boolean experimental;
 
     /**
      * Pull again even if the .eo file is already present?
+     *
      * @since 0.10.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.overWrite", required = true, defaultValue = "false")
-    protected boolean overWrite;
+    @Parameter(
+        alias = "overWrite",
+        property = "eo.overWrite",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean overwrite;
 
     /**
      * Skip artifact with the version 0.0.0.
+     *
      * @since 0.9.0
-     * @checkstyle MemberNameCheck (7 lines)
      */
-    @Parameter(property = "eo.skipZeroVersions", required = true, defaultValue = "true")
-    protected boolean skipZeroVersions;
+    @Parameter(
+        alias = "skipZeroVersions",
+        property = "eo.skipZeroVersions",
+        required = true,
+        defaultValue = "true"
+    )
+    protected boolean zeros;
 
     /**
      * Fail resolution process on conflicting dependencies.
+     *
      * @since 0.1.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(
         alias = "ignoreVersionConflicts",
@@ -278,19 +318,25 @@ abstract class MjSafe extends AbstractMojo {
         required = true,
         defaultValue = "false"
     )
-    protected boolean ignoreConflicts;
+    protected boolean conflicts;
 
     /**
      * Shall we discover JAR artifacts for .EO sources?
+     *
      * @since 0.12.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.discoverSelf", required = true, defaultValue = "false")
-    protected boolean discoverSelf;
+    @Parameter(
+        alias = "discoverSelf",
+        property = "eo.discoverSelf",
+        required = true,
+        defaultValue = "false"
+    )
+    protected boolean discover;
 
     /**
      * List of inclusion GLOB filters for finding class files while placing them from where
      * they were resolved to classes directory.
+     *
      * @since 0.15
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -299,6 +345,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * List of individual lints which must be skipped during the linting.
+     *
      * @since 0.57
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -307,6 +354,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * List of WPA lints which must be skipped during the linting.
+     *
      * @since 0.57
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -316,6 +364,7 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * List of exclusion GLOB filters for finding class files while placing them from where
      * they were resolved to classed directory.
+     *
      * @since 0.15
      * @checkstyle MemberNameCheck (10 lines)
      */
@@ -324,6 +373,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * List of inclusion GLOB filters for unplacing and unspiling (ONLY these files will stay).
+     *
      * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
      * @since 0.24
      * @checkstyle MemberNameCheck (7 lines)
@@ -348,6 +398,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should fail on warning.
+     *
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
@@ -355,6 +406,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should lint all the sources together as package.
+     *
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
@@ -362,6 +414,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Whether we should skip linting at all.
+     *
      * @checkstyle MemberNameCheck (10 lines)
      */
     @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
@@ -397,24 +450,30 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Resolve default JNA dependency or not.
-     * @checkstyle MemberNameCheck (7 lines)
-     * @checkstyle VisibilityModifierCheck (7 lines)
+     *
+     * @checkstyle VisibilityModifierCheck (6 lines)
      */
-    protected boolean resolveJna = true;
+    protected boolean jna = true;
 
     /**
      * Resolve dependencies in central or not.
+     *
      * @checkstyle MemberNameCheck (7 lines)
      * @checkstyle VisibilityModifierCheck (7 lines)
      */
     protected boolean resolveInCentral = true;
 
     /**
-     * Objectionary.
+     * The Objectionary this Mojo pulls from.
+     *
+     * <p>It is a {@link Scalar} because the hash and the settings it is
+     * built from are injected after the Mojo is made, so the chain behind it
+     * waits for the first request. A test hands over a fake one instead, the
+     * way {@code Moja} hands over every other attribute here.</p>
+     *
      * @since 0.50
      */
-    @SuppressWarnings("PMD.ImmutableField")
-    private Scalar<Objectionary> objectionary = new OyConfigured(
+    private final Scalar<Objectionary> objectionary = new OyConfigured(
         () -> this.hash,
         () -> this.settings
     );
@@ -441,14 +500,14 @@ abstract class MjSafe extends AbstractMojo {
             }
         } else {
             final long start = System.nanoTime();
-            new Deadline(this, this.timeout, this.unrollExitError).spent(
+            new Deadline(this, this.timeout, this.unroll).spent(
                 () -> {
                     this.exec();
                     return new Object();
                 }
             );
-            if (Logger.isDebugEnabled(this)) {
-                Logger.debug(
+            if (Logger.isInfoEnabled(this)) {
+                Logger.info(
                     this,
                     "Execution of %s took %[nano]s",
                     this.getClass().getSimpleName(),
@@ -461,6 +520,7 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * A fresh foreign catalog in this mojo's scope, to be closed by the
      * caller once the mojo is done with it.
+     *
      * @return The catalog
      */
     protected final TjsForeign tojos() {
@@ -473,6 +533,7 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * A fresh placed catalog, to be closed by the caller once the mojo is
      * done with it.
+     *
      * @return The catalog
      */
     protected final TjsPlaced placed() {
@@ -483,6 +544,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Tojos to use, in "compile" scope only.
+     *
      * @return Tojos to use
      */
     protected final TjsForeign compileTojos() {
@@ -494,6 +556,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Exec it.
+     *
      * @throws IOException If fails
      */
     abstract void exec() throws IOException;
@@ -504,6 +567,7 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Select the Maven EO runtime dependency source.
+     *
      * @return Scalar supplying the runtime dependency
      */
     Scalar<Dep> runtime() {
@@ -512,35 +576,30 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * Build the assembling step from this mojo's configuration.
+     *
      * @param tojos The foreign catalog to assemble through
      * @return Configured Assembling instance
      */
     Assembling assembling(final TjsForeign tojos) {
         return new Assembling(
             tojos,
-            new Timed(
-                new Parsing(
-                    tojos,
-                    this.targetDir.toPath(),
-                    this.sourcesDir.toPath(),
-                    this.caching(Parsing.CACHE)
-                )
+            new Parsing(
+                tojos,
+                this.target.toPath(),
+                this.sourcesDir.toPath(),
+                this.caching(Parsing.CACHE)
             ),
-            new Timed(
-                new Probing(tojos, this.objectionary(), !this.offline)
-            ),
-            new Timed(
-                new Pulling(
-                    tojos,
-                    this.targetDir.toPath().resolve(Pulling.DIR),
-                    this.hash,
-                    this.objectionary(),
-                    this.cache.toPath().resolve(Pulling.CACHE),
-                    this.plugin.getVersion(),
-                    this.overWrite,
-                    this.cacheEnabled,
-                    this.offline
-                )
+            new Probing(tojos, this.objectionary(), !this.offline),
+            new Pulling(
+                tojos,
+                this.target.toPath(),
+                this.hash,
+                this.objectionary(),
+                this.cache.toPath().resolve(Pulling.CACHE),
+                this.plugin.getVersion(),
+                this.overwrite,
+                this.cacheEnabled,
+                this.offline
             )
         );
     }
@@ -549,6 +608,7 @@ abstract class MjSafe extends AbstractMojo {
      * The cache of one step, as configured by the user. This is the only
      * place where {@code eo.cacheEnabled} is read, so that no step below
      * has to know that the option exists.
+     *
      * @param sub Directory of that step inside the machine-wide cache
      * @return The cache of that step
      */

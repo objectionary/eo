@@ -8,14 +8,15 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Maxmem}.
+ *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class MaxmemTest {
 
     @ParameterizedTest
@@ -45,6 +46,35 @@ final class MaxmemTest {
             "A property that is not set at all must mean no limit, but it didnt",
             Maxmem.limit(null),
             Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    @Budget("3G")
+    void takesLimitFromOwnBudget(final TestInfo info) {
+        MatcherAssert.assertThat(
+            "The budget written on a test was not taken as its limit",
+            Maxmem.budget(info.getTestMethod().orElseThrow()),
+            Matchers.equalTo(3L * 1024L * 1024L * 1024L)
+        );
+    }
+
+    @Test
+    @Budget("0")
+    void takesNoLimitFromZeroBudget(final TestInfo info) {
+        MatcherAssert.assertThat(
+            "A budget of zero on a test was not taken as no limit",
+            Maxmem.budget(info.getTestMethod().orElseThrow()),
+            Matchers.equalTo(0L)
+        );
+    }
+
+    @Test
+    void takesLimitFromPropertyWithoutBudget(final TestInfo info) {
+        MatcherAssert.assertThat(
+            "A test with no budget of its own did not get the limit of the property",
+            Maxmem.budget(info.getTestMethod().orElseThrow()),
+            Matchers.equalTo(Maxmem.limit(System.getProperty("eo.maxmem")))
         );
     }
 

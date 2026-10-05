@@ -40,6 +40,7 @@ public final class Attrs extends AbstractMap<String, Attribute> {
 
     /**
      * Ctor.
+     *
      * @param initial Entries to populate the map with
      */
     public Attrs(final Attr... initial) {

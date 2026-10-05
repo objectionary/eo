@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Only an object whose body is a number, a string or a bool gets an entry.
+# The atom of any other object would give back its data without the object
+# around it, so the object stays in EO.
+eo:
+  wrap.eo: |
+    [q] > wrap
+      q.as-bytes > @
+links: |
+  <links>
+    <type id="Φ.wrap.φ">
+      <ref loc="Φ.bytes"/>
+    </type>
+  </links>
+xmir:
+  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"

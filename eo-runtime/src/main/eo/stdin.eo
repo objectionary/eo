@@ -37,14 +37,14 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint unit-test-missing
++version 0.0.0
 
 [] > stdin
   all-lines > @
-  [^] > all-lines
+  [^stream] > all-lines
     [^ scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
@@ -59,7 +59,7 @@
                 scan.line
             false
     | > @
-      ^.line-or-eof
+      stream.line-or-eof
       ""
       true
   [] > line-or-eof
@@ -85,4 +85,4 @@
         @. > next
           input.read 1
       | first --
-  ^.line-or-eof.line > [^] > next-line
+  stream.line-or-eof.line > [^stream] > next-line

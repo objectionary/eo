@@ -15,6 +15,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link Emit}.
+ *
  * @since 0.1
  */
 final class EmitTest {
@@ -280,6 +281,21 @@ final class EmitTest {
             EmitTest.render(emit),
             XhtmlMatchers.hasXPath(
                 "/object/o[@name='foo']/o[@name='x' and @base='∅']"
+            )
+        );
+    }
+
+    @Test
+    void emitsHandleOfVoidParam() {
+        final Emit emit = new Emit();
+        emit.baselessObject("foo", 1, 0);
+        emit.voidParam("ρ", "me", 1, 1);
+        emit.close();
+        MatcherAssert.assertThat(
+            "voidParam must mark a void that carries a handle with @local",
+            EmitTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='foo']/o[@name='ρ' and @base='∅' and @local='me']"
             )
         );
     }

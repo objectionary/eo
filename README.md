@@ -299,6 +299,19 @@ You will also need [git] installed and on your `PATH`,
   since some of the quality checks the `qulice` profile runs shell out to it.
 Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
 
+The site is built one module at a time, and only once the artifacts exist:
+
+```bash
+mvn clean install -DskipTests
+mvn clean site -Psite -pl eo-maven-plugin
+```
+
+The `site` lifecycle holds no `package` phase, so no module in the reactor
+  ever produces a jar of its own, and `eo-parser` is never published as a
+  snapshot for one to be downloaded instead.
+A plain `mvn clean site` in a fresh clone therefore has nothing to resolve
+  `org.eolang:eo-parser:1.0-SNAPSHOT` against and stops at `eo-printer`.
+
 A few rules we ask you to follow:
 
 * name your branch after the issue you are working on, e.g. `42`
