@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A constant made of nothing but a bare "^", read only inside a deeper scope.
+# Folded into that reference, "^!" would be dataized again in every copy of
+# "bar" (#9122), so the constant stays standing in "foo" and keeps reading its
+# receiver there, without the extra hop a fold needed (#9106).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [^] > foo
+    ^ >> d!
+    [x] > bar
+      x.plus ^.d > @
+
+printed: |
+  [^] > foo
+    x.plus d > [x] > bar
+    ^ >> d!

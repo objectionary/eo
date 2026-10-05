@@ -146,7 +146,10 @@ final class LnFormation implements Line {
         }
         int column = this.span.indent() + 1;
         for (final String param : params) {
-            emit.voidParam(param, this.span.line(), column);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(),
+                this.span.line(), column
+            );
             column = column + param.length() + 1;
         }
         if (suffix.atom()) {
@@ -184,9 +187,8 @@ final class LnFormation implements Line {
                 end = end + 1;
             }
             final String raw = inside.substring(idx, end);
-            out.add(
-                LnFormation.mapParam(raw, span, span.indent() + 1 + idx)
-            );
+            Emissions.validParam(raw, span.line(), span.indent() + 1 + idx);
+            out.add(raw);
             if (end < inside.length()) {
                 if (end + 1 < inside.length() && inside.charAt(end + 1) == ' ') {
                     throw new ParseError(
@@ -200,10 +202,5 @@ final class LnFormation implements Line {
             }
         }
         return out;
-    }
-
-    private static String mapParam(final String raw, final Span span, final int pos) {
-        Emissions.validParam(raw, span.line(), pos);
-        return new VoidName(raw).asString();
     }
 }

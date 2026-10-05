@@ -39,7 +39,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 26
-      - uses: actions/cache@v6
+      # Restored, never saved: the `mvn` job saves this very key on master,
+      # where every pull request can read it, while a cache saved here is
+      # scoped to one pull request and pushes master's out of the quota.
+      - uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
@@ -128,14 +131,11 @@ jobs:
           cat "${report}"
       # Nothing is said on the pull request from here. This job builds the code
       # of a branch that may come from a fork, and a job that does so must have
-      # a read-only token; the numbers travel to `ladder-comment.yml` instead,
-      # which builds nothing and can be trusted with the write.
-      - env:
-          NUMBER: ${{ github.event.pull_request.number }}
-        run: echo "${NUMBER}" > "${RUNNER_TEMP}/pr-number"
+      # a read-only token; the table travels to `ladder-comment.yml` instead,
+      # which builds nothing and can be trusted with the write. The number of
+      # the pull request does not travel with it: that job asks GitHub for it,
+      # since anything written here is the branch's to choose (#9042).
       - uses: actions/upload-artifact@v7
         with:
           name: ladder
-          path: |
-            ${{ runner.temp }}/ladder.md
-            ${{ runner.temp }}/pr-number
+          path: ${{ runner.temp }}/ladder.md

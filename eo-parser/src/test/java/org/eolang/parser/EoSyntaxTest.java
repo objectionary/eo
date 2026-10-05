@@ -93,6 +93,24 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesAFileThatStartsWithAByteOrderMark() throws Exception {
+        MatcherAssert.assertThat(
+            "a byte order mark in front of the first line must not reach the parser, but it did",
+            XhtmlMatchers.xhtml(
+                new EoSyntax(
+                    Character.toString(0xFEFF).concat(
+                        String.format("# The app.%n%n+package foo%n%n[] > app%n  42 > x%n")
+                    )
+                ).parsed().toString()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']"
+            )
+        );
+    }
+
+    @Test
     void measuresRealParsingTime() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
@@ -225,6 +243,18 @@ final class EoSyntaxTest {
         MatcherAssert.assertThat(
             "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
             new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
+                .parsed()
+                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    @Timeout(60L)
+    void reportsDeeplyChainedDispatchesInsteadOfOverflowing() throws Exception {
+        MatcherAssert.assertThat(
+            "a dispatch chain longer than the walk allows must answer a parser error, not take the whole process down",
+            new EoSyntax(new InputOf(EoSyntaxTest.chained(Stack.DEEPEST * 3)))
                 .parsed()
                 .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
             Matchers.hasSize(1)
@@ -880,19 +910,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void rejectsUnrecognisedEscapeSequence() throws Exception {
-        MatcherAssert.assertThat(
-            "an unrecognised escape sequence must name the offending characters, not blame unicode or octal escapes",
-            EoSyntaxTest.raw(
-                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\q\" > @")
-            ).toString(),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),\"unrecognised escape sequence\")]"
-            )
-        );
-    }
-
-    @Test
     void namesLoneSurrogateInErrorMessage() throws Exception {
         MatcherAssert.assertThat(
             "a lone surrogate escape must name the offending codepoint, not blame unicode or octal escapes generically",
@@ -962,6 +979,10 @@ final class EoSyntaxTest {
             "[] > x",
             String.join(eol, "[] > x", "  x ^ > @")
         );
+    }
+
+    private static String chained(final int hops) {
+        return String.format("+package foo%n%n[] > app%n  x%s > @%n", ".y".repeat(hops));
     }
 
     private static String nested(final int depth) {

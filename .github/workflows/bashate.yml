@@ -7,9 +7,15 @@ name: bashate
   push:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/bashate.yml'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/bashate.yml'
 permissions:
   contents: read
 concurrency:

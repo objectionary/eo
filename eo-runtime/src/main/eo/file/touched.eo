@@ -16,9 +16,9 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > touched
+[^entry] > touched
   reachable.if > @
-    ^
+    entry
     if.
       or.
         descriptor.gte 0
@@ -32,16 +32,16 @@
             win32.close descriptor
             posix.close descriptor
           0
-        ^
+        entry
       T
         "Cant touch the file '%s': %s".printf
-          * ^.path opened.message
+          * entry.path opened.message
   os.is-windows.if > accessible
     win32.access
-      ^.path
+      entry.path
       0
     posix.access
-      ^.path
+      entry.path
       0
   opened.code > descriptor
   os.is-windows.if > eexist
@@ -53,17 +53,17 @@
   linked.not.if > exclusive
     posix.exclusive
     0
-  ^.is-symlink false > linked
+  entry.is-symlink false > linked
   called. > opened
     os.is-windows.if
       win32.open
-        ^.path
+        entry.path
         plus.
           win32.creat.plus win32.exclusive
           win32.wronly
         win32.mode
       posix.open
-        ^.path
+        entry.path
         plus.
           posix.creat.plus exclusive
           posix.wronly
