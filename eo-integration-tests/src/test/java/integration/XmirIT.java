@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration test for checking validity of parsed EO as XMIR documents.
+ *
  * @since 0.58.3
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -29,15 +30,21 @@ final class XmirIT {
     @ExtendWith(WeAreOnline.class)
     @ExtendWith(MayBeSlow.class)
     void validatesWithXsd() throws IOException {
-        try (
-            Stream<Path> stream = Files.walk(
-                Paths.get("").toAbsolutePath().getParent()
-                    .resolve("eo-runtime")
-                    .resolve("target")
-                    .resolve("eo")
-                    .resolve("1-parse")
-            )
-        ) {
+        final Path stages = Paths.get("").toAbsolutePath().getParent()
+            .resolve("eo-runtime")
+            .resolve("target")
+            .resolve("eo");
+        final Path parsed;
+        try (Stream<Path> kids = Files.list(stages)) {
+            parsed = kids
+                .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
+                .findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No parse directory found under %s", stages)
+                    )
+                );
+        }
+        try (Stream<Path> stream = Files.walk(parsed)) {
             stream.filter(Files::isRegularFile).forEach(
                 xmir -> {
                     try {

@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * <p>This goal goes through all objects from "foreign" catalog and looks for those without
  * sources and pulls them from Objectionary remote repository.
- * The pulled sources are stored in the {@link Pulling#DIR} directory.</p>
+ * The pulled sources are stored in a directory {@link Subdir} numbers "pull".</p>
  *
  * @since 0.1
  */
@@ -36,12 +36,12 @@ public final class MjPull extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Pulling(
                 tojos,
-                this.targetDir.toPath().resolve(Pulling.DIR),
+                this.target.toPath(),
                 this.hash,
                 this.objectionary(),
                 this.cache.toPath().resolve(Pulling.CACHE),
                 this.plugin.getVersion(),
-                this.overWrite,
+                this.overwrite,
                 this.cacheEnabled,
                 this.offline
             ).exec();

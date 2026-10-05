@@ -3,8 +3,8 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="to-java" version="2.0">
-  <!-- A code transpiler; its 27 match templates form one cohesive module. -->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="to-java" version="3.0">
+  <!-- A code transpiler; its 26 match templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:import href="/org/eolang/maven/transpile/_java-names.xsl"/>
@@ -12,6 +12,8 @@
   <xsl:param name="trackLocations" select="'true'"/>
   <xsl:param name="coverage" select="'false'"/>
   <xsl:param name="phiDefaultClass" select="'PhDefault'"/>
+  <xsl:param name="deadline" select="'1'"/>
+  <xsl:param name="maxmem" select="'1G'"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- VARIABLES -->
   <xsl:variable name="TAB">
@@ -111,6 +113,10 @@
     <xsl:apply-templates select="/object" mode="package"/>
     <xsl:text>import java.util.function.Function;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.Optional;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+    <xsl:text>import java.util.function.Supplier;</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
     <xsl:text>import org.eolang.*;</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
@@ -153,14 +159,6 @@
         </java>
       </xsl:if>
     </xsl:copy>
-  </xsl:template>
-  <!--
-  A class that "lowered.xsl" rendered already carries its Java, so it
-  passes through untouched: the templates below would try to render its
-  absent attributes and lose the finished text.
-  -->
-  <xsl:template match="class[@lowered]" priority="2">
-    <xsl:copy-of select="."/>
   </xsl:template>
   <!-- Class name -->
   <xsl:template match="class/@name">
@@ -214,14 +212,65 @@
     </xsl:if>
     <xsl:text> {</xsl:text>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="eo:class-name(@name)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="nested"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(0)"/>
+  </xsl:template>
+  <!--
+  The set of hits every PhCoverage wrapper of the class shares. A wrapper
+  is built anew each time the attribute holding it is composed, so a set
+  of its own would let the same location reach the file once per instance
+  of the object (#6508). One static set per class outlives them all, and
+  the nested classes read it as well.
+  -->
+  <xsl:template name="hits">
+    <xsl:if test="$coverage='true'">
+      <xsl:text>private static final java.util.Set&lt;String&gt; HITS = java.util.concurrent.ConcurrentHashMap.newKeySet();</xsl:text>
+      <xsl:value-of select="eo:eol(1)"/>
+    </xsl:if>
+  </xsl:template>
+  <!--
+  The ctor and the factory a class extending PhOnce needs, so that a copy of
+  it stays its own type instead of decaying into a bare wrapper (#7062).
+  -->
+  <xsl:template name="wrapper">
+    <xsl:param name="class"/>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>/**</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * Ctor.</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param obj The object to wrap</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> * @param phrase Supplier of the term</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text> */</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:value-of select="concat('private ', $class, '(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {')"/>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:text>super(obj, phrase);</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>}</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>@Override</xsl:text>
+    <xsl:value-of select="eo:eol(1)"/>
+    <xsl:text>public Phi wrapped(final Supplier&lt;Phi&gt; obj, final Optional&lt;Supplier&lt;String&gt;&gt; phrase) {</xsl:text>
+    <xsl:value-of select="eo:eol(2)"/>
+    <xsl:value-of select="concat('return new ', $class, '(obj, phrase);')"/>
+    <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
   <!-- Nested classes for anonymous abstract objects -->
   <xsl:template match="nested">
-    <xsl:variable name="name" select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+    <xsl:variable name="name" select="eo:loc-to-class(eo:unmarked(@loc))"/>
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:text>private static class </xsl:text>
     <xsl:value-of select="$name"/>
@@ -354,12 +403,6 @@
   So we can't compile nested-blah-test from true.eo.
   We haven't reported the bug to openjdk yet, but we will
   2. it just works faster because dynamic dispatch is not happened
-  An atom whose formation the "lower" goal folded carries the @pure the
-  goal wrote (the formation is copied whole into "atom", so it sits at
-  "o[1]"), and its instance is wrapped in PhSticky, the same way the
-  "abstract" template below wraps a pure formation: the class of such an
-  atom is a straight-line computation rendered by "lowered.xsl", and its
-  result is decided by its inputs alone.
   -->
   <xsl:template match="atom">
     <xsl:param name="name"/>
@@ -370,9 +413,9 @@
     The class is named after the chain of formations from the top-level
     class down, not after the threaded "$parent": the two agree in the
     main body, but a test body threads its own "Test"-prefixed root, and
-    the one atom class "lowered.xsl" declares carries the main name - so
-    a lowered atom under a test attribute must reach for that class, the
-    way the test body already reaches for every other main-side class.
+    the atom class carries the main name - so an atom under a test
+    attribute must reach for that class, the way the test body already
+    reaches for every other main-side class.
     -->
     <xsl:variable name="class" select="string-join((eo:class-name(ancestor::class[1]/@name), for $a in ancestor::abstract return eo:class-name(eo:attr-name($a/@name, false())), eo:class-name($name)), '$')"/>
     <xsl:variable name="variable">
@@ -396,13 +439,6 @@
     <xsl:text> = new </xsl:text>
     <xsl:value-of select="$class"/>
     <xsl:text>();</xsl:text>
-    <xsl:if test="$argument/@pure='true'">
-      <xsl:value-of select="eo:eol($indent + 2)"/>
-      <xsl:value-of select="$variable"/>
-      <xsl:text> = new PhSticky(</xsl:text>
-      <xsl:value-of select="$variable"/>
-      <xsl:text>);</xsl:text>
-    </xsl:if>
     <xsl:apply-templates select="$argument" mode="located">
       <xsl:with-param name="indent" select="$indent + 2"/>
       <xsl:with-param name="name" select="$variable"/>
@@ -543,7 +579,7 @@
     <xsl:choose>
       <xsl:when test="o">
         <xsl:text>new </xsl:text>
-        <xsl:value-of select="eo:loc-to-class(eo:escape-plus(@loc))"/>
+        <xsl:value-of select="eo:loc-to-class(eo:unmarked(@loc))"/>
         <xsl:text>()</xsl:text>
       </xsl:when>
       <xsl:otherwise>
@@ -654,7 +690,7 @@
   <xsl:template match="*" mode="located">
     <xsl:param name="indent"/>
     <xsl:param name="name"/>
-    <xsl:if test="$trackLocations='true' and @line and @pos and not(contains(@loc, '+'))">
+    <xsl:if test="$trackLocations='true' and @line and @pos and not(contains(@loc, concat('.', $eo:positive)))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhSafe(</xsl:text>
@@ -670,15 +706,15 @@
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
       <xsl:text>, "</xsl:text>
-      <xsl:value-of select="eo:literal(eo:escape-plus(@original-name))"/>
+      <xsl:value-of select="eo:literal(eo:unmarked(@original-name))"/>
       <xsl:text>");</xsl:text>
     </xsl:if>
-    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, '+')) and not(contains(@loc, '.-'))">
+    <xsl:if test="$coverage='true' and @line and @pos and not(contains(@loc, concat('.', $eo:positive))) and not(contains(@loc, concat('.', $eo:negative)))">
       <xsl:value-of select="eo:eol($indent)"/>
       <xsl:value-of select="$name"/>
       <xsl:text> = new PhCoverage(</xsl:text>
       <xsl:value-of select="$name"/>
-      <xsl:text>, "</xsl:text>
+      <xsl:text>, HITS, "</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>:</xsl:text>
       <xsl:value-of select="@line"/>
@@ -761,9 +797,15 @@
   <!-- Test suite for given class. -->
   <xsl:template match="class" mode="testing">
     <xsl:if test="attr[eo:test-attr(.)]">
+      <xsl:text>import java.util.concurrent.TimeUnit;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.Timeout;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.extension.ExtendWith;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
     <xsl:value-of select="eo:eol(0)"/>
@@ -792,7 +834,13 @@
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="eo:eol(1)"/>
+    <xsl:call-template name="hits"/>
     <xsl:apply-templates select="." mode="testing-ctors"/>
+    <xsl:if test="@base">
+      <xsl:call-template name="wrapper">
+        <xsl:with-param name="class" select="eo:test-class-name(@name)"/>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="." mode="tests"/>
     <xsl:apply-templates select="nested"/>
     <xsl:text>}</xsl:text>
@@ -861,7 +909,7 @@
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>.add("</xsl:text>
-      <xsl:value-of select="eo:literal(eo:escape-plus($name))"/>
+      <xsl:value-of select="eo:literal(eo:unmarked($name))"/>
       <xsl:text>", </xsl:text>
       <xsl:apply-templates select="void|bound|atom|abstract">
         <xsl:with-param name="indent" select="$indent"/>
@@ -872,7 +920,14 @@
       <xsl:text>);</xsl:text>
     </xsl:if>
   </xsl:template>
-  <!-- Class for tests -->
+  <!--
+  Class for tests.
+
+  Every test carries its own deadline and memory budget, so that it keeps them
+  in any build that compiles it, even one that tells JUnit nothing: a runaway
+  test is stopped and reported as skipped, instead of eating the heap of the
+  whole build (#9074).
+  -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:for-each select="attr">
@@ -882,12 +937,18 @@
       <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Budget(&quot;', eo:literal($maxmem), '&quot;)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="eo:identifier(replace(eo:escape-plus(@name), '-', '_'))"/>
+        <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
-          <xsl:when test="starts-with(@name, '-')">
+          <xsl:when test="starts-with(@name, $eo:negative)">
             <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
             <xsl:apply-templates select="." mode="dataized">
               <xsl:with-param name="indent" select="3"/>
@@ -916,7 +977,7 @@
     <xsl:param name="indent"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(this.take(</xsl:text>
-    <xsl:value-of select="eo:attr-name(eo:escape-plus(@name), true())"/>
+    <xsl:value-of select="eo:attr-name(eo:unmarked(@name), true())"/>
     <xsl:text>)).asBool()</xsl:text>
   </xsl:template>
   <!-- Package -->

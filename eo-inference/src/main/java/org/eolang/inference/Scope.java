@@ -49,6 +49,7 @@ final class Scope {
 
     /**
      * Ctor.
+     *
      * @param all The locator of every object of the program
      * @param made The locators of its formations
      */
@@ -59,6 +60,7 @@ final class Scope {
 
     /**
      * The locator the given reference points at.
+     *
      * @param reference The locator of the reference itself
      * @param base The base it carries, {@code ξ.t} or {@code Φ.number}
      * @return The locator, or an empty string when the name is not found

@@ -82,6 +82,14 @@ import java.util.stream.Collectors;
  * walks behind a delegation, so a name asked of it is answered once and for
  * all rather than left to a caller.</p>
  *
+ * <p>A void may also say what will be handed to whatever goes into it.
+ * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
+ * its {@code scope} with a chunk, which is what {@code EOmalloc$EOof} then
+ * does, and the row keeps that list as it stands. Nobody else in the program
+ * says it: the formation {@code malloc.for} hands in is copied by Java alone,
+ * so without the annotation its void is filled by nobody and looks empty to
+ * every reader (#8380). {@link Handed} is where the list is spent.</p>
+ *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
  * belongs to {@code Φ.number} without ever appearing among its children,
@@ -94,6 +102,12 @@ import java.util.stream.Collectors;
  * everything has one, and since #6657 neither half holds: a formation says
  * outright what it is dispatched on, and one that says nothing has no
  * {@code ρ} at all for anybody to name.</p>
+ *
+ * <p>What goes into the {@code ρ} a formation does declare is written down,
+ * which is a different claim and {@link Received}'s: an attribute of an
+ * {@code oak} is reached by taking it off an {@code oak}, so the void holds
+ * one. Only a formation that asked for a receiver is told what it gets, and
+ * the row was already there for the asking.</p>
  *
  * @since 0.67.0
  */
@@ -108,6 +122,7 @@ final class Provides implements Clue {
                 Provides.fill(rows, new Xnav(formation.inner()));
             }
             new Members(made, world.roots()).fill(rows);
+            new Received(made).fill(rows);
             Files.createDirectories(tables);
             Files.write(
                 tables.resolve("provides.xml"),
@@ -135,6 +150,10 @@ final class Provides implements Clue {
                 final String held = attr.says("type");
                 if (held.startsWith("Φ.")) {
                     row.set("holds", held);
+                }
+                final String args = attr.says("args");
+                if (!args.isEmpty()) {
+                    row.set("args", args);
                 }
             }
         }

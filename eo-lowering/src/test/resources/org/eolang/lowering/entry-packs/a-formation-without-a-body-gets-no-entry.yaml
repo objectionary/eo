@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation whose `φ` is void holds no computation of its own, and one with
+# no `φ` at all is a bag of attributes, the shape a package object has after
+# the merge. Evaluating either gives back the formation itself, so there is
+# nothing to ask the calculus about and nothing to enter.
+eo:
+  handed.eo: |
+    [@] > handed
+      42 > kid
+  bag.eo: |
+    [] > bag
+      42 > kid
+xmir:
+  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"
+  - "/object/o[@name='l🌵'][count(o) = 2]"

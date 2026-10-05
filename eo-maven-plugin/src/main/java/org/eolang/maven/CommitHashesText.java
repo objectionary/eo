@@ -59,6 +59,7 @@ final class CommitHashesText extends TextEnvelope {
 
     /**
      * Constructor.
+     *
      * @param source Text source, retried on its own before this class falls
      *  back to {@link CommitHashesText#FALLBACK}
      */

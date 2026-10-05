@@ -3,9 +3,10 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
++version 0.0.0
 
 [uri] > path
   os.is-windows.if > @
@@ -13,11 +14,12 @@
       string uri.as-bytes
     posix
       string uri.as-bytes
-  [^ sys uri] > impl
+  [^location sys uri] > impl
     uri > @
     directory > as-dir
       file uri
     file uri > as-file
+    basename >> base!
     [^] > basename
       string > @
         if.
@@ -103,15 +105,14 @@
               text.last-index-of "." >> index!
               text.length.minus
                 number index
-      string > text
-        ^.basename >> base!
+      string base > text
     and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
         separator
     [^] > normalized
-      ^.^.impl > @
+      ^.location.impl > @
         ^.sys
         if.
           normalized.eq
@@ -121,6 +122,10 @@
             normalized.size.eq 0
             "."
             string normalized
+      if. > closing
+        trailing.and rooted.not
+        ^.separator
+        --
       concat. > core!
         ^.drive.concat
           ^.is-absolute.if
@@ -178,16 +183,8 @@
                   ^.drive.size.gt 0
                   ^.is-absolute.not
               core.concat
-                ".".concat
-                  if.
-                    trailing.and rooted.not
-                    ^.separator
-                    --
-              core.concat
-                if.
-                  trailing.and rooted.not
-                  ^.separator
-                  --
+                ".".concat closing
+              core.concat closing
       and. > rooted
         core.size.gt 0
         eq.
@@ -198,14 +195,13 @@
       and. > trailing
         ubts.size.gt 0
         eq.
-          slice.
-            ^.uri >> ubts!
+          ubts.slice
             ubts.size.plus -1
             1
           ^.separator
     [^ other] > resolved
       normalized. > @
-        ^.^.impl
+        ^.location.impl
           ^.sys
           string
             if.
@@ -256,22 +252,23 @@
         tail
     string > [^] > trimmed
       ^.stripped ^.uri
+    uri >> ubts!
     and. > unc
       separator.eq "\\"
       and.
         driveless.size.gt 1
         driveless.starts-with
           separator.concat separator
-  [^ paths] > joined
+  [^location paths] > joined
     normalized. > @
       os.is-windows.if
-        ^.win32 jpath
-        ^.posix jpath
+        location.win32 jpath
+        location.posix jpath
     string > jpath
       as-bytes.
-        ^.separator.joined paths
-  [^ uri] > posix
-    ^.impl > @
+        location.separator.joined paths
+  [^location uri] > posix
+    location.impl > @
       sys
       uri
     "/" > separator
@@ -282,8 +279,8 @@
   os.is-windows.if > separator
     win32.separator
     posix.separator
-  [^ uri] > win32
-    ^.impl > @
+  [^location uri] > win32
+    location.impl > @
       sys
       sys.sanitized uri
     "\\" > separator

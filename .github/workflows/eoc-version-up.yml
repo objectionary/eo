@@ -9,6 +9,9 @@ name: eoc-version-up
       - master
     tags:
       - '*'
+permissions:
+  contents: write
+  pull-requests: write
 concurrency:
   group: eoc-version-up-${{ github.ref }}
   cancel-in-progress: true

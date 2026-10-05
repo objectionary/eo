@@ -15,7 +15,7 @@ import java.net.PasswordAuthentication;
  * handing them to whoever asks would send them to a host that never asked for
  * them.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class MvnCredentials extends Authenticator {
 
@@ -31,6 +31,7 @@ public final class MvnCredentials extends Authenticator {
 
     /**
      * Ctor.
+     *
      * @param name The user name
      * @param password The password
      */

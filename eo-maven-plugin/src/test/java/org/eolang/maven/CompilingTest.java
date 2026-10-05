@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.cactoos.set.SetOf;
+import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Compiling}.
+ *
  * @since 0.61.0
  */
 final class CompilingTest {
@@ -56,7 +58,7 @@ final class CompilingTest {
                     new Probing(new TjsForeign(), new Objectionary.Fake(), false),
                     new Pulling(
                         new TjsForeign(),
-                        temp.resolve(Pulling.DIR),
+                        temp,
                         CommitHash.FAKE,
                         new Objectionary.Fake(),
                         temp.resolve(Pulling.CACHE),
@@ -80,10 +82,10 @@ final class CompilingTest {
                     false,
                     true
                 ),
-                new Merging(new TjsForeign(), temp.resolve(Merging.DIR)),
+                new Merging(new TjsForeign(), temp),
                 new Resolving(
                     new TjsForeign(),
-                    temp.resolve("resolve"),
+                    temp,
                     (dep, path) -> { },
                     false,
                     false,

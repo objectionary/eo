@@ -42,6 +42,7 @@ final class UnpackedJar {
 
     /**
      * Ctor.
+     *
      * @param src Path to the JAR file
      * @param target Destination directory
      */
@@ -52,6 +53,7 @@ final class UnpackedJar {
 
     /**
      * Unpack the JAR into the destination directory.
+     *
      * @throws IOException If unpacking fails
      */
     void unpack() throws IOException {

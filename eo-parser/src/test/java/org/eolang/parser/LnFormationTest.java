@@ -14,6 +14,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link LnFormation}.
+ *
  * @since 0.1
  */
 final class LnFormationTest {
@@ -151,9 +152,9 @@ final class LnFormationTest {
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "a `+>` test attribute must emit @name='+<name>' per §9.4",
+            "a `+>` test attribute must emit @name='p🌵<name>' per §9.4",
             LnFormationTest.render(emit),
-            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo']")
+            XhtmlMatchers.hasXPath("/object/o[@name='p🌵tests-foo']")
         );
     }
 
@@ -164,9 +165,9 @@ final class LnFormationTest {
             .into(new Stack(), new Globals(), emit);
         emit.close();
         MatcherAssert.assertThat(
-            "a `++> name` shorthand must emit the same <o name='+<name>'> as `[] +> name`",
+            "a `++> name` shorthand must emit the same <o name='p🌵<name>'> as `[] +> name`",
             LnFormationTest.render(emit),
-            XhtmlMatchers.hasXPath("/object/o[@name='+tests-foo' and not(o)]")
+            XhtmlMatchers.hasXPath("/object/o[@name='p🌵tests-foo' and not(o)]")
         );
     }
 
@@ -310,6 +311,44 @@ final class LnFormationTest {
             "a `^` parameter must emit as <o name='ρ' base='∅'/> wherever it stands",
             LnFormationTest.render(emit),
             XhtmlMatchers.hasXPath("/object/o[@name='foo']/o[2][@name='ρ' and @base='∅']")
+        );
+    }
+
+    @Test
+    void emitsHandleOfRhoParameter() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[^me x] > lt", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `^me` parameter must emit as <o name='ρ' base='∅' local='me'/>",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='lt']/o[1][@name='ρ' and @base='∅' and @local='me']"
+            )
+        );
+    }
+
+    @Test
+    void placesParameterBehindHandledRho() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[^me x] > lt", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a parameter behind `^me` must keep the column it was written at",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='lt']/o[2][@name='x' and @pos='5']")
+        );
+    }
+
+    @Test
+    void rejectsRhoHandleThatIsNotName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("[^@ x] > lt", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a `^` followed by something other than a NAME must be rejected"
         );
     }
 

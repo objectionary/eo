@@ -4,5 +4,5 @@
 sheets: []
 asserts:
   - /object/errors[count(error)=1]
-  - /object/errors/error[contains(text(),'separated by exactly one space')]
+  - /object/errors/error[contains(text(),'separated by a single ASCII space')]
 input: "+rt jvm\torg.eolang:eo-runtime:0.0.0\n\n[] > app\n  42 > x\n"

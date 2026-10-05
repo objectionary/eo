@@ -61,18 +61,20 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint sprintf-constant-args
++unlint sprintf-without-formatters
++unlint wrong-sprintf-arguments
++version 0.0.0
 
-[^ args] > printf
+[^text args] > printf
   string > @
     [^ index auto acc] >> walk
       if. > @
-        gte.
-          number cursor
+        gt.
           number span
-        acc
+          number cursor
         if.
           25-.eq char
           spec
@@ -80,12 +82,12 @@
             auto
             acc
           ^.walk
-            as-number.
-              plus.
-                number cursor
-                1
+            plus.
+              number cursor
+              1
             auto
             acc.concat char
+        acc
       slice. > char!
         bytes raw
         number cursor
@@ -110,22 +112,19 @@
         57.gte
           code i
       ^.digits-end
-        as-number.
-          i.plus 1
+        i.plus 1
       i
   if. > [^ from to acc] >> digits-value
     from.gte to
     acc
     ^.digits-value
-      as-number.
-        from.plus 1
+      from.plus 1
       to
-      as-number.
-        plus.
-          acc.times 10
-          minus.
-            code from
-            48
+      plus.
+        acc.times 10
+        minus.
+          code from
+          48
   if. > [^ i] >> flags-end
     i.gte
       number span
@@ -137,13 +136,11 @@
         30-.eq
           byte i
       ^.flags-end
-        as-number.
-          i.plus 1
+        i.plus 1
       i
-  2.power 63 >> limit!
   size. >> span!
     bytes
-      ^.as-bytes >> raw!
+      text.as-bytes >> raw!
   [^ index auto acc] >> spec
     if. > @
       gte.
@@ -151,33 +148,29 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * ^.^
+          * ^.text
       if.
         25-.eq conv
         if.
           eq.
             number end
-            as-number.
-              index.plus 1
+            index.plus 1
           walk
-            as-number.
-              plus.
-                number end
-                1
-            auto
-            acc.concat 25-
-          T
-            "The escaped %% conversion does not take flags, width or precision".printf
-              * ^.^
-        walk
-          as-number.
             plus.
               number end
               1
+            auto
+            acc.concat 25-
+          T
+            "The escaped %% conversion in the format %s does not take flags, width or precision".printf
+              * ^.text
+        walk
+          plus.
+            number end
+            1
           positional.as-bool.if
             auto
-            as-number.
-              auto.plus 1
+            auto.plus 1
           seq *
             value
             acc.concat padded
@@ -206,12 +199,10 @@
             or.
               gte.
                 number numeric
-                number limit
+                9.223372036854776e18
               lt.
                 number numeric
-                times.
-                  number limit
-                  -1
+                -9223372036854775808
             T
               "The number %s doesn't fit into the long range of the '%%d' conversion".printf
                 *
@@ -246,16 +237,14 @@
     flags-end > digits!
       number flags
     digits-end > dollar!
-      as-number.
-        index.plus 1
+      index.plus 1
     digits-end > dot!
       number digits
     precise.as-bool.if > end!
       digits-end
-        as-number.
-          plus.
-            number dot
-            1
+        plus.
+          number dot
+          1
       number dot
     as-bytes. > filled!
       padded-zeros.
@@ -263,21 +252,35 @@
         number width
         I
     positional.as-bool.if > flags!
-      as-number.
-        plus.
-          number dollar
-          1
-      as-number.
-        index.plus 1
+      plus.
+        number dollar
+        1
+      index.plus 1
+    if. > guarded!
+      precise.as-bool.and
+        64-.eq conv
+      T
+        "A precision of %d can't be applied to the %%d conversion".printf
+          *
+            number precision
+      if.
+        zero.as-bool.and
+          not.
+            or.
+              64-.eq conv
+              66-.eq conv
+        T
+          "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
+            *
+              string conv
+        converted
     positional.as-bool.if > idx!
-      as-number.
-        minus.
-          digits-value
-            as-number.
-              index.plus 1
-            number dollar
-            0
-          1
+      minus.
+        digits-value
+          index.plus 1
+          number dollar
+          0
+        1
       auto
     number arg > numeric!
     if. > padded!
@@ -290,8 +293,7 @@
             byte i
           true
           ^.flagged
-            as-number.
-              i.plus 1
+            i.plus 1
             c
       | (number flags) 2D-
       as-bytes.
@@ -328,10 +330,9 @@
           number dot
     precise.as-bool.if > precision!
       digits-value
-        as-number.
-          plus.
-            number dot
-            1
+        plus.
+          number dot
+          1
         number end
         0
       0
@@ -343,7 +344,7 @@
             index.plus 1
       T
         "The positional argument index in the format %s is too large".printf
-          * ^.^
+          * ^.text
       if.
         positional.as-bool.and
           lt.
@@ -366,24 +367,7 @@
                   number idx
                   1
                 ^.args.length
-          if.
-            precise.as-bool.and
-              64-.eq conv
-            T
-              "A precision of %d can't be applied to the %%d conversion".printf
-                *
-                  number precision
-            if.
-              zero.as-bool.and
-                not.
-                  or.
-                    64-.eq conv
-                    66-.eq conv
-              T
-                "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
-                  *
-                    string conv
-              converted
+          guarded
     digits-value > width!
       number digits
       number dot
@@ -621,7 +605,7 @@
   eq. ++> can-write-the-negative-long-boundary-as-a-decimal
     "-9223372036854775808"
     "%d".printf
-      * -9.223372036854776e18
+      * -9223372036854775808
 
   printf. --> stops-on-a-boolean-as-a-string
     "%s"
@@ -659,12 +643,24 @@
     "%(s"
     * "Jeff"
 
+  printf. --> stops-on-a-positional-index-before-an-escaped-percent
+    "%1$%s"
+    * "x"
+
+  printf. --> stops-on-a-precision-before-an-escaped-percent
+    "%.2%s"
+    * "x"
+
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
 
   printf. --> stops-on-a-width-before-an-escaped-percent
     "%5%s"
+    * "x"
+
+  printf. --> stops-on-a-zero-flag-before-an-escaped-percent
+    "%0%s"
     * "x"
 
   printf. --> stops-on-a-zero-flag-with-x

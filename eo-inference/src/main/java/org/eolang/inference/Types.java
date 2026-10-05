@@ -48,6 +48,7 @@ final class Types {
 
     /**
      * Ctor.
+     *
      * @param types What every object turns out to be, by its locator
      */
     Types(final Map<String, Type> types) {
@@ -56,6 +57,7 @@ final class Types {
 
     /**
      * This table as an XML document.
+     *
      * @return The document
      */
     XML asXml() {

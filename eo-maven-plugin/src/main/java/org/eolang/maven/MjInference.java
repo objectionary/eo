@@ -39,9 +39,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  * them for mistakes.</p>
  *
  * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
- * tables in {@link #tables}, a document each. Not one of them fails the
- * build. The pages a reader opens are drawn by {@link MjInferenceReport},
- * a goal of its own, from those same two directories.</p>
+ * tables in {@link #tables}, a document each, with {@code ladder.txt} beside
+ * them saying how much of the program they turned out to describe. Not one of
+ * them fails the build. The pages a reader opens are drawn by
+ * {@link MjInferenceReport}, a goal of its own, from those same two
+ * directories.</p>
  *
  * @since 0.67.0
  */
@@ -53,25 +55,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class MjInference extends MjSafe {
 
     /**
-     * The directory where the XMIR prepared for the rules is saved.
+     * The directory where the XMIR prepared for the rules is saved, falling
+     * back to a directory {@link Subdir} numbers "pre-inference" when unset.
      */
-    @Parameter(
-        alias = "preInferenceDir",
-        property = "eo.preInferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-pre-inference"
-    )
+    @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
     private File prepared;
 
     /**
-     * The directory where the tables are saved.
+     * The directory where the tables are saved, falling back to a directory
+     * {@link Subdir} numbers "inference" when unset.
      */
-    @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
-    )
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -83,12 +77,10 @@ public final class MjInference extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Timed(
-            new Inferring(
-                this.targetDir.toPath().resolve(Parsing.DIR),
-                this.prepared.toPath(),
-                this.tables.toPath()
-            )
+        new Inferring(
+            new Subdir(this.target, "parse").path(),
+            new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
+            new Subdir(this.target, "inference").orConfigured(this.tables)
         ).exec();
     }
 }

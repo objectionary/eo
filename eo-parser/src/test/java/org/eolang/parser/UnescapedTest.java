@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Unescaped}.
+ *
  * @since 0.1
  */
 final class UnescapedTest {
@@ -34,6 +35,27 @@ final class UnescapedTest {
                 () -> new Unescaped("r\\c", 7, 3).bytes()
             ).getMessage(),
             Matchers.equalTo("unrecognised escape sequence '\\c'")
+        );
+    }
+
+    @Test
+    void decodesUnicodeEscape() {
+        MatcherAssert.assertThat(
+            "a unicode escape must decode to the character its four digits name",
+            new String(new Unescaped("\\u0424", 7, 3).bytes(), StandardCharsets.UTF_8),
+            Matchers.equalTo("Ф")
+        );
+    }
+
+    @Test
+    void refusesUnicodeEscapeWithSecondMarker() {
+        MatcherAssert.assertThat(
+            "a second 'u' must not be swallowed as part of the escape, but it was",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Unescaped("\\uu0424", 7, 3).bytes()
+            ).getMessage(),
+            Matchers.equalTo("unicode escape \\uu042 is not exactly four hexadecimal digits")
         );
     }
 

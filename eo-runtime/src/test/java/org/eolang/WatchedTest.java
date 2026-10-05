@@ -5,6 +5,7 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -14,9 +15,9 @@ import org.opentest4j.TestAbortedException;
 
 /**
  * Test case for {@link Watched}.
+ *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class WatchedTest {
 
     @Test
@@ -63,6 +64,92 @@ final class WatchedTest {
     }
 
     @Test
+    void saysWhenBodyRefusesToStop() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        try {
+            MatcherAssert.assertThat(
+                "A body ignoring the interrupt must be named as holding the heap, but it wasnt",
+                Assertions.assertThrows(
+                    TestAbortedException.class,
+                    () -> new Watched(1024L * 1024L, 100L).through(
+                        () -> {
+                            final byte[][] junk = new byte[1][];
+                            while (!release.get()) {
+                                junk[0] = new byte[256 * 1024];
+                                Thread.interrupted();
+                                WatchedTest.rest(1L);
+                            }
+                            return null;
+                        }
+                    ),
+                    "A body that would not stop must still be skipped, but it wasnt"
+                ).getMessage(),
+                Matchers.containsString("would not stop")
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void reportsInterruptOfFrugalBodyThatWillNotStop() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        final Thread watcher = Thread.currentThread();
+        final Thread bell = new Thread(
+            () -> {
+                WatchedTest.rest(100L);
+                watcher.interrupt();
+            }
+        );
+        bell.setDaemon(true);
+        bell.start();
+        try {
+            Assertions.assertThrows(
+                InterruptedException.class,
+                () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                    () -> {
+                        while (!release.get()) {
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A body holding no heap must stay a skip when it will not stop, but it didnt"
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void interruptsBodyThatSwallowsTheFirstInterrupt() {
+        final AtomicInteger jolts = new AtomicInteger();
+        Assertions.assertThrows(
+            TestAbortedException.class,
+            () -> new Watched(1024L * 1024L).through(
+                () -> {
+                    final byte[][] junk = new byte[1][];
+                    while (jolts.get() < 2) {
+                        junk[0] = new byte[256 * 1024];
+                        try {
+                            Thread.sleep(5L);
+                        } catch (final InterruptedException ex) {
+                            jolts.incrementAndGet();
+                        }
+                    }
+                    return null;
+                }
+            ),
+            "A body that swallows the interrupt must be interrupted again, but it wasnt"
+        );
+        MatcherAssert.assertThat(
+            "The group must be interrupted on every turn of the wait, but it wasnt",
+            jolts.get(),
+            Matchers.greaterThanOrEqualTo(2)
+        );
+    }
+
+    @Test
     void skipsBodyThatAteTooMuchAndFinished() {
         Assertions.assertThrows(
             TestAbortedException.class,
@@ -77,6 +164,81 @@ final class WatchedTest {
             ),
             "A body that ate more than it was given must be reported as skipped, but it wasnt"
         );
+    }
+
+    @Test
+    void stopsThreadTheBodyLeftBehind() {
+        MatcherAssert.assertThat(
+            "A thread the body left behind must be gone before the guard returns, but it wasnt",
+            WatchedTest.lingering(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void skipsTerminatedBodyThatLeftAThread() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        final Watched watched = new Watched(1024L * 1024L, 100L);
+        try {
+            Assertions.assertThrows(
+                TestAbortedException.class,
+                () -> watched.through(
+                    () -> {
+                        final Thread extra = new Thread(
+                            () -> {
+                                while (!release.get()) {
+                                    WatchedTest.rest(1L);
+                                }
+                            }
+                        );
+                        extra.setDaemon(true);
+                        extra.start();
+                        final byte[][] junk = new byte[1][];
+                        while (!Thread.currentThread().isInterrupted()) {
+                            junk[0] = new byte[256 * 1024];
+                            WatchedTest.rest(1L);
+                        }
+                        return null;
+                    }
+                ),
+                "A terminated body that left a thread must stay a skip, but it didnt"
+            );
+        } finally {
+            release.set(true);
+        }
+    }
+
+    @Test
+    void namesThreadThatOutlivedItsBody() {
+        final AtomicBoolean release = new AtomicBoolean(false);
+        final Watched watched = new Watched(64L * 1024L * 1024L, 100L);
+        try {
+            MatcherAssert.assertThat(
+                "The thread that outlived the test must be named, but it wasnt",
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> watched.through(
+                        () -> {
+                            final Thread extra = new Thread(
+                                () -> {
+                                    while (!release.get()) {
+                                        WatchedTest.rest(1L);
+                                    }
+                                },
+                                "deaf-worker"
+                            );
+                            extra.setDaemon(true);
+                            extra.start();
+                            return null;
+                        }
+                    ),
+                    "A thread outliving the body it was started by must fail, but it didnt"
+                ).getMessage(),
+                Matchers.containsString("deaf-worker")
+            );
+        } finally {
+            release.set(true);
+        }
     }
 
     @Test
@@ -128,6 +290,29 @@ final class WatchedTest {
             "A body that never stops allocating must be terminated, but it wasnt"
         );
         return WatchedTest.awaited(stopped);
+    }
+
+    private static boolean lingering() {
+        final AtomicBoolean stopped = new AtomicBoolean(false);
+        Assertions.assertDoesNotThrow(
+            () -> new Watched(64L * 1024L * 1024L).through(
+                () -> {
+                    final Thread extra = new Thread(
+                        () -> {
+                            while (!Thread.currentThread().isInterrupted()) {
+                                WatchedTest.rest(1L);
+                            }
+                            stopped.set(true);
+                        }
+                    );
+                    extra.setDaemon(true);
+                    extra.start();
+                    return null;
+                }
+            ),
+            "A body leaving a thread that stops when told must not fail, but it did"
+        );
+        return stopped.get();
     }
 
     private static boolean interrupted() {

@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link VoidName}.
- * @since 0.74.0
+ *
+ * @since 0.64.0
  */
 final class VoidNameTest {
 
@@ -28,6 +29,15 @@ final class VoidNameTest {
         MatcherAssert.assertThat(
             "a `^` parameter must be emitted as `ρ` per R-3.4.11 / R-9.3",
             new VoidName("^").asString(),
+            Matchers.equalTo("ρ")
+        );
+    }
+
+    @Test
+    void promotesRhoTokenWithHandle() {
+        MatcherAssert.assertThat(
+            "a `^name` parameter must be emitted as `ρ`, since it declares the receiver",
+            new VoidName("^wf7").asString(),
             Matchers.equalTo("ρ")
         );
     }

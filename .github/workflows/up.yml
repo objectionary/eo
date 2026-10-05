@@ -9,6 +9,9 @@ name: up
       - master
     tags:
       - '*'
+permissions:
+  contents: write
+  pull-requests: write
 concurrency:
   group: up-${{ github.ref }}
   cancel-in-progress: true

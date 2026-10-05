@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 /**
  * List of dependencies.
+ *
  * @since 0.54
  */
 @FunctionalInterface
@@ -22,9 +23,20 @@ interface Dependencies extends Iterable<Dep> {
 
     /**
      * Fake dependencies.
+     *
      * @since 0.54.0
      */
     final class Fake implements Dependencies {
+
+        /**
+         * The source of the random parts of a fake dependency.
+         *
+         * <p>One instance serves every call: a {@link SecureRandom} seeds
+         * itself from the operating system, and building a new one per
+         * dependency pays for that seeding again and, on a machine short of
+         * entropy, blocks while it waits for more.</p>
+         */
+        private static final Random RANDOM = new SecureRandom();
 
         /**
          * Dependencies.
@@ -44,6 +56,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param size Number of fake dependencies
          */
         Fake(final int size) {
@@ -56,6 +69,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param deps Dependencies
          */
         Fake(final Dep... deps) {
@@ -64,6 +78,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Ctor.
+         *
          * @param deps Dependencies
          */
         private Fake(final Collection<Dep> deps) {
@@ -77,6 +92,7 @@ interface Dependencies extends Iterable<Dep> {
 
         /**
          * Create a random dependency with specified scope.
+         *
          * @param scope Scope
          * @return Dependency
          */
@@ -84,13 +100,14 @@ interface Dependencies extends Iterable<Dep> {
             return Dependencies.Fake.dep(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
-                String.valueOf(new SecureRandom().nextInt(Integer.MAX_VALUE)),
+                String.valueOf(Dependencies.Fake.RANDOM.nextInt(Integer.MAX_VALUE)),
                 scope
             );
         }
 
         /**
          * Create a eo-runtime dependency.
+         *
          * @return Dependency
          */
         static Dep runtimeDep() {
@@ -103,12 +120,9 @@ interface Dependencies extends Iterable<Dep> {
         }
 
         private static Dep randDep() {
-            final Random rand = new SecureRandom();
-            return Dependencies.Fake.dep(
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                String.valueOf(rand.nextInt(Integer.MAX_VALUE)),
-                    new String[]{"test", "compiled", "runtime"}[rand.nextInt(3)]
+            final String[] scopes = {"test", "compiled", "runtime"};
+            return Dependencies.Fake.randDep(
+                scopes[Dependencies.Fake.RANDOM.nextInt(scopes.length)]
             );
         }
 

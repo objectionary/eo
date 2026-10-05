@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test cases for {@link Merging}.
+ *
  * @since 0.68.0
  */
 final class MergingTest {
@@ -33,12 +34,13 @@ final class MergingTest {
             member,
             new EoSyntax("[] > bar").parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path merge = temp.resolve("4-merge");
-        final Path target = new Place("foo").make(merge, MjAssemble.XMIR);
-        this.merge(pkg, member, merge);
+        final Path target = new Place("foo").make(
+            new Subdir(temp, "merge").path(), MjAssemble.XMIR
+        );
+        this.merge(pkg, member, temp);
         final FileTime before = Files.getLastModifiedTime(target);
         Thread.sleep(1_100L);
-        this.merge(pkg, member, merge);
+        this.merge(pkg, member, temp);
         MatcherAssert.assertThat(
             "Merged XMIR should not be rewritten when its content hasn't changed",
             Files.getLastModifiedTime(target),
@@ -47,11 +49,11 @@ final class MergingTest {
     }
 
     private void merge(
-        final Path pkg, final Path member, final Path merge
+        final Path pkg, final Path member, final Path base
     ) throws IOException {
         final TjsForeign tojos = new TjsForeign();
         tojos.add("foo").withXmir(pkg);
         tojos.add("foo.bar").withXmir(member);
-        new Merging(tojos, merge).exec();
+        new Merging(tojos, base).exec();
     }
 }

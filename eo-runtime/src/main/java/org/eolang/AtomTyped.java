@@ -43,6 +43,7 @@ public final class AtomTyped implements Atom {
 
     /**
      * Ctor.
+     *
      * @param atom The atom to dispatch
      * @param forma The declared forma
      */
