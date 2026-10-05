@@ -14,17 +14,19 @@
   Java local is: a void is read off the object the atom lives in, a minted
   symbol is one statement under the operation of its λ, a known one is a
   literal, a joined one is a blank final that each branch of an "if"
-  assigns, and a deferred one is the dataized copy of an object of the entry
-  with its arguments bound, which phino left for the run to work out. A
-  looped one, which phino answered when it cut a loop, is the same. Such a
-  copy is dataized only when the tables of "eo:inference" say that the
-  object returns a number, a string, a bool or bytes, since dataizing any
-  other object may do what EO never does there. A statement is placed as
-  deep inside the branches as all of its readers let it, so that what one
-  branch alone needs is computed in that branch alone. The symbols are
-  walked from the highest number down, since phino mints a symbol only after
-  the symbols it is made of, so by the time a symbol is reached every symbol
-  that reads it has already said where it is read.
+  assigns, and a deferred one is the copy of an object of the entry with
+  its arguments bound, which phino left for the run to work out. A looped
+  one, which phino answered when it cut a loop, is the same. The copy is
+  made where phino defers it, and dataized only where it is read as data:
+  in a join, in an operand of a λ, or as the root. A copy is allowed only
+  when the tables of "eo:inference" say that the object returns a number, a
+  string, a bool or bytes, since dataizing any other object may do what EO
+  never does there. A statement is placed as deep inside the branches as
+  all of its readers let it, so that what one branch alone needs is
+  computed in that branch alone. The symbols are walked from the highest
+  number down, since phino mints a symbol only after the symbols it is made
+  of, so by the time a symbol is reached every symbol that reads it has
+  already said where it is read.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -209,7 +211,7 @@
           <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', eo:local($root), ');&#10;')"/>
+          <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', if (eo:type($root) = 'Phi') then eo:cast(eo:local($root), 'Phi', 'byte[]') else eo:local($root), ');&#10;')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -369,10 +371,13 @@
     <xsl:variable name="types" as="xs:string*" select="eo:returns($loc)"/>
     <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))"/>
   </xsl:function>
-  <!-- The Java of a symbol as an object a copy takes: a void as it is, anything else as data. -->
+  <!--
+  The Java of a symbol as an object a copy takes: a void and a copy as they
+  are, anything else as data.
+  -->
   <xsl:function name="eo:argument" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
-    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else concat('new Data.ToPhi(', if (eo:constant($symbol)) then eo:literal-of(eo:bytes($symbol), 'byte[]') else eo:local($symbol), ')')"/>
+    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else if (not(eo:constant($symbol)) and eo:type($symbol) = 'Phi') then eo:local($symbol) else concat('new Data.ToPhi(', if (eo:constant($symbol)) then eo:literal-of(eo:bytes($symbol), 'byte[]') else eo:local($symbol), ')')"/>
   </xsl:function>
   <!-- The operation a minted symbol was minted by. -->
   <xsl:function name="eo:operation" as="element()">
@@ -398,11 +403,11 @@
         <xsl:sequence select="(map {'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
       </xsl:when>
       <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
-        <xsl:sequence select="'byte[]'"/>
+        <xsl:sequence select="'Phi'"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="branches" select="(eo:branch($joined, 1), eo:branch($joined, 2))"/>
-        <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.))"/>
+        <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.) ! (if (. = 'Phi') then 'byte[]' else .))"/>
         <xsl:choose>
           <xsl:when test="count($types) = 1">
             <xsl:sequence select="$types"/>
@@ -464,6 +469,9 @@
       <xsl:when test="$from = $to">
         <xsl:sequence select="$java"/>
       </xsl:when>
+      <xsl:when test="$from = 'Phi'">
+        <xsl:sequence select="concat('new Dataized(', $java, ').', map {'byte[]': 'take()', 'double': 'asNumber()', 'boolean': 'asBool()'}($to))"/>
+      </xsl:when>
       <xsl:when test="$from = 'byte[]' and $to = 'double'">
         <xsl:sequence select="concat('(double) new BytesOf(', $java, ').asNumber()')"/>
       </xsl:when>
@@ -507,7 +515,7 @@
       </xsl:when>
       <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
         <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
-        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! concat('new Bind(&quot;', eo:literal(substring-before(., ':')), '&quot;, ', eo:argument(substring-after(., ':')), ')')), ', '), ')).take();&#10;')"/>
+        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! concat('new Bind(&quot;', eo:literal(substring-before(., ':')), '&quot;, ', eo:argument(substring-after(., ':')), ')')), ', '), ');&#10;')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="op" select="eo:operation($symbol)"/>

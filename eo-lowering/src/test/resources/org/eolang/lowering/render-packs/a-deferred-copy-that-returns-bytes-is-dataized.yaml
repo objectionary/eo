@@ -76,8 +76,8 @@ java: |
           if (s133) {
               s136 = new byte[0];
           } else {
-              final byte[] s134 = new Dataized(new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")))).take();
-              s136 = s134;
+              final Phi s134 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")));
+              s136 = new Dataized(s134).take();
           }
           return new Data.ToPhi(s136);
       }
