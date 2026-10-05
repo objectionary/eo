@@ -43,9 +43,11 @@
   <!--
   What every λ the atom can spell is: the type of what it mints, the types of
   its operands in the order phino lists them, and the Java of the operation
-  with a numbered hole for each operand. There is no "L_bytes_slice" here,
-  since out of its range the atom returns the "cant-slice" its caller binds,
-  which the protocol does not hold, so an entry that slices is a taint.
+  with a numbered hole for each operand. Out of its range, the atom of
+  "L_bytes_slice" returns the "cant-slice" its caller binds, which the
+  protocol does not hold. No object of eo-runtime binds it, so reading it
+  fails, and "Slice" fails the same way. A caller that binds it loses its
+  fallback, and this is accepted.
   -->
   <xsl:variable name="eo:operations" as="element()*">
     <op λ="L_number_plus" type="double" args="double double">⟨1⟩ + ⟨2⟩</op>
@@ -59,6 +61,7 @@
     <op λ="L_bytes_not" type="byte[]" args="byte[]">new BytesOf(⟨1⟩).not().take()</op>
     <op λ="L_bytes_right" type="byte[]" args="byte[] double">new BytesOf(⟨1⟩).shift((int) ⟨2⟩).take()</op>
     <op λ="L_bytes_concat" type="byte[]" args="byte[] byte[]">java.nio.ByteBuffer.allocate(⟨1⟩.length + ⟨2⟩.length).put(⟨1⟩).put(⟨2⟩).array()</op>
+    <op λ="L_bytes_slice" type="byte[]" args="byte[] double double">new Slice(⟨1⟩, ⟨2⟩, ⟨3⟩).delta()</op>
     <op λ="L_dataized" type="byte[]" args="byte[]">⟨1⟩</op>
   </xsl:variable>
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
