@@ -12,7 +12,7 @@ import java.util.List;
  *
  * <p>The stack carries one {@link Level} per occupied indent level. Indents
  * grow strictly bottom-to-top in steps of exactly two (R-5.1.1, R-5.1.2);
- * the caller enforces the step (R-5.1.3) before calling
+ * the caller enforces the step (R-5.2.7) before calling
  * {@link #push(int, int, Kind, Openness)}. The bottom entry's
  * {@code parent} is always {@link Kind#TOP_LEVEL}; higher entries carry the
  * kind of the entry directly below them as their parent.</p>
@@ -27,6 +27,18 @@ import java.util.List;
  * @since 0.1
  */
 final class Stack {
+
+    /**
+     * How deep the walk nests before it refuses to go deeper — §5.
+     *
+     * <p>The stack itself costs one entry per level, but the XSL chain
+     * behind the walk recurses once per level of the tree it is handed,
+     * and a few hundred levels overflow it: the walk would hand over a
+     * document that kills the process instead of an error the caller can
+     * report. Real EO stays far below this — the deepest object in
+     * eo-runtime sits at level 41.</p>
+     */
+    static final int DEEPEST = 256;
 
     /**
      * The levels, bottom-to-top.
@@ -66,6 +78,7 @@ final class Stack {
 
     /**
      * Ctor with only a closer; opener defaults to no-op.
+     *
      * @param hook Close-time check hook
      */
     Stack(final Closer hook) {
@@ -74,6 +87,7 @@ final class Stack {
 
     /**
      * Primary ctor.
+     *
      * @param closer Close-time check hook
      * @param opener Pre-child hook
      */
@@ -86,6 +100,7 @@ final class Stack {
 
     /**
      * Whether the stack has no entries.
+     *
      * @return True if empty
      */
     boolean empty() {
@@ -94,6 +109,7 @@ final class Stack {
 
     /**
      * Number of entries currently on the stack.
+     *
      * @return Depth
      */
     int depth() {
@@ -102,6 +118,7 @@ final class Stack {
 
     /**
      * The top entry.
+     *
      * @return Top
      */
     Level top() {
@@ -141,6 +158,7 @@ final class Stack {
      * a line that threw a {@link ParseError} (R-7.3) — the closer is
      * <em>not</em> invoked here because the rolled-back open directives
      * never reached the sink.
+     *
      * @param snapshot A snapshot taken earlier via {@link #snapshot()}
      */
     void restore(final List<Level> snapshot) {
@@ -152,6 +170,7 @@ final class Stack {
      * The entry directly below the top, or the bottom sentinel when the
      * stack holds fewer than two entries. Used by the FSM to read a new
      * entry's parent during the push step (R-5.2.8).
+     *
      * @return Entry below top, never null
      */
     Level below() {
@@ -169,6 +188,7 @@ final class Stack {
      * or the bottom sentinel when nothing has been pushed yet. Read by
      * R-6.3.3, which admits a {@code +>} test attribute only under a
      * top-level object that is a formation.
+     *
      * @return Outermost entry, never null
      */
     Level root() {
@@ -190,6 +210,11 @@ final class Stack {
      * {@code parent} is read from the entry below; if the stack was
      * empty, the parent is {@link Kind#TOP_LEVEL}.</p>
      *
+     * <p>A push that would take the stack past {@link #DEEPEST} entries
+     * is refused with a {@link ParseError}, so the caller reports the
+     * line and skips the block under it instead of emitting a tree the
+     * XSL chain cannot walk.</p>
+     *
      * @param indent New indent
      * @param line Start line
      * @param kind Initial outer kind
@@ -200,6 +225,12 @@ final class Stack {
     Level push(
         final int indent, final int line, final Kind kind, final Openness openness
     ) {
+        if (this.levels.size() >= Stack.DEEPEST) {
+            throw new ParseError(
+                line, indent,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            );
+        }
         final Kind parent;
         final boolean patom;
         final boolean argues;
@@ -230,7 +261,7 @@ final class Stack {
             fresh.argues(owner);
         }
         this.levels.add(fresh);
-        if (parent == Kind.BARE_REVERSED) {
+        if (parent == Kind.BARE_REVERSED || parent == Kind.ONLY_PHI) {
             final Level host = this.levels.get(this.levels.size() - 2);
             if (!host.taken()) {
                 host.consumeReceiver();
@@ -246,6 +277,7 @@ final class Stack {
      * indent {@code target} - 2 (a step occurred), its openness is
      * downgraded from {@link Openness#OPEN OPEN} to
      * {@link Openness#VCOMPLETED VCOMPLETED} per R-5.2.2.
+     *
      * @param target Target indent
      */
     void popDeeperThan(final int target) {
@@ -264,6 +296,7 @@ final class Stack {
      * Replace the top entry with a fresh one at the same indent
      * (R-5.2.4), invoking the closer on the entry being replaced. The
      * new entry's {@code parent} comes from the entry below.
+     *
      * @param line Start line of the new entry
      * @param kind Initial outer kind
      * @param openness Initial openness
@@ -347,6 +380,7 @@ final class Stack {
 
         /**
          * Run close-time checks on a popped, replaced or sealed level.
+         *
          * @param level The level being closed
          * @param naming Whether the naming requirement applies to it
          */
@@ -370,6 +404,7 @@ final class Stack {
 
         /**
          * React to a new child being pushed under {@code parent}.
+         *
          * @param parent The parent level (current top before push)
          */
         void beforeChild(Level parent);

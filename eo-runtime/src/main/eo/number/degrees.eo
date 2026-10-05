@@ -4,14 +4,14 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > degrees
+[^num] > degrees
   times. > @
     div.
-      number ^.as-bytes
+      number num.as-bytes
       pi
     180
 

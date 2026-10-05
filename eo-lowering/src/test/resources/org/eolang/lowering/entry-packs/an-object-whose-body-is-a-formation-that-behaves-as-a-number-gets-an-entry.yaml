@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The object `dozen` binds `word` besides its body, so it behaves as nothing
+# but itself and its row has no `reduced` cell. Its body, though, is a
+# formation that binds nothing but a body of its own, and the row of that
+# formation says it behaves as a number, which is the type of the body.
+eo:
+  dozen.eo: |
+    [] > dozen
+      [] > @
+        12 > @
+      "twelve" > word
+provides: |
+  <provides>
+    <type complete="false" id="Φ.dozen">
+      <attr name="word" type="Φ.dozen.word"/>
+      <attr name="φ" type="Φ.dozen.φ"/>
+    </type>
+    <type complete="false" id="Φ.dozen.φ" reduced="Φ.number">
+      <attr name="φ" type="Φ.dozen.φ.φ"/>
+    </type>
+  </provides>
+entries:
+  - "1\tΦ.dozen"

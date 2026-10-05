@@ -8,19 +8,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ cant-read] > as-ascii
+[^text cant-read] > as-ascii
   if. > @
-    ^.as-bytes.size.eq 1
+    text.as-bytes.size.eq 1
     as-number.
       as-i16.
-        00-.concat ^.as-bytes
+        00-.concat text.as-bytes
     cant-read
       "Can't read %x as an ASCII code, it is not a single byte".printf
-        * ^.as-bytes
+        * text.as-bytes
 
   97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 

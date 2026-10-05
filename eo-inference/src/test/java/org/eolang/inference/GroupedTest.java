@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Grouped}.
+ *
  * @since 0.67.0
  */
 final class GroupedTest {

@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `temp` reads `exists` off the object in `dir`'s void and chooses on it, so
+# what `temp` is worth looks like it waits on that void. It does not. One arm
+# of the choice terminates and never hands anything back, so the other arm is
+# the whole answer, and reading that arm asks nothing about `exists`. Until
+# `temp` is settled the void has two witnesses and stays a void, `temp` being
+# one of them, and the two wait on each other forever. With `temp` settled off
+# its arms the void is a `leaf`, and `there` and the receiver of the choice
+# both say so.
+eo:
+  leaf.eo: |
+    [path] > leaf
+      path > @
+      path > exists
+  dir.eo: |
+    [file] > dir
+      file > @
+      file.exists > there
+      [^] > temp
+        ^.exists.if > @
+          leaf "tmp"
+          T
+            "no such dir"
+  app.eo: |
+    [] > app
+      outer.temp > @
+      dir > outer
+        inner.temp
+      dir > inner
+        leaf "a"
+links:
+  - "/links/type[@id='Φ.dir.there']/ref[@loc='Φ.leaf.exists']"
+  - "/links/type[@id='Φ.dir.temp.φ.ρ']/ref[@loc='Φ.leaf.exists']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.dir.temp']"

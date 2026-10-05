@@ -6,17 +6,22 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.util.function.Supplier;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpEnvelope;
+import org.eolang.cache.FpFork;
 
 /**
  * Footprint that behaves like one of the given footprints depending on
  * hash of provided cache.
  * Similar to {@link FpFork} but the condition is based on hash.
+ *
  * @since 0.41
  */
 final class FpIfReleased extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param hash Git hash
      * @param first First footprint to use if a version is released and a hash is present
      * @param second Second footprint to use if a version is not released or a hash is not present
@@ -31,6 +36,7 @@ final class FpIfReleased extends FpEnvelope {
 
     /**
      * Ctor.
+     *
      * @param hash Git hash
      * @param first First footprint to use if a version is released and a hash is present
      * @param second Second footprint to use if a version is not released or a hash is not present

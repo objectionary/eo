@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# This is the shape that asked for the rule. `Φ.bytes.as-bytes` hands back the
+# object it was dispatched on and does nothing else, so it is a `Φ.bytes` and
+# 736 objects of eo-runtime should stop settling on the alias. Two facts meet
+# here to say so: the receiver holds the object the attribute belongs to, and a
+# formation with nothing public but its body is what stands behind that body.
+eo:
+  tree.eo: |
+    [] > tree
+      [^] > mine
+        ^ > @
+provides:
+  - "/provides/type[@id='Φ.tree.mine' and @reduced='Φ.tree']"
+  - "/provides/type[@id='Φ.tree' and not(@reduced)]"

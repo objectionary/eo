@@ -16,7 +16,9 @@ import java.util.Map;
  * every application of the program and the pairs themselves. {@link Refs} joins
  * them, {@link Bound} works out what went where and {@link Provided} says which
  * voids there were to fill; this is the four of them wired up, so that whoever
- * has pairs and wants rows says so in one line.</p>
+ * has pairs and wants rows says so in one line. {@link Forked} gives every arm
+ * of a choice the receiver it is read off, which only the rows can know, since
+ * the choices are worked out once the pairs are (#8885).</p>
  *
  * <p>Rows are asked for twice over. Once at the end, for the table the build
  * writes down, and once for every provisional table a fact is read off before
@@ -40,7 +42,7 @@ final class Woven {
     private final Given applied;
 
     /**
-     * What every dispatch takes its attribute from, from {@link Xmirs}.
+     * What every dispatch takes its attribute from, from {@link Taken}.
      */
     private final Map<String, String> receivers;
 
@@ -50,40 +52,86 @@ final class Woven {
     private final Collection<String> hollows;
 
     /**
+     * Every dispatch and read of the program.
+     */
+    private final Collection<Site> all;
+
+    /**
      * Ctor.
+     *
      * @param provides The provides table, as {@link Provides} wrote it
      * @param applications What every application of the program gives
      * @param taken What every dispatch takes its attribute from
      * @param voids The locator of every void
+     * @param dispatches Every dispatch and read of the program
      */
     Woven(
         final XML provides,
         final Given applications,
         final Map<String, String> taken,
-        final Collection<String> voids
+        final Collection<String> voids,
+        final Collection<Site> dispatches
     ) {
         this.given = provides;
         this.applied = applications;
         this.receivers = taken;
         this.hollows = voids;
+        this.all = dispatches;
     }
 
     /**
      * These pairs as the rows of the links table.
+     *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param chosen What every call on a void may come back with, from
+     *  {@link Dispatched}
+     * @param certain The pairs the passes settle when no void is named by
+     *  what its callers put there, which is how a row tells what it knows
+     *  from what it was told by the callers of a void (#8914)
      * @return The types, by the locator of the object they are about, in the
      *  order the pairs came in
      */
-    Map<String, Type> rows(final Map<String, String> pairs) {
+    Map<String, Type> rows(
+        final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
+        final Map<String, String> certain
+    ) {
+        final Provided owned = new Provided(this.given, new Ends(pairs).names(), this.hollows);
+        final Bound bound = new Bound(
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            owned, new Copied(this.all, chosen).all()
+        );
         return new Refs(
             pairs,
-            new Bound(
-                this.applied.arguments(),
-                this.applied.named(),
-                this.receivers,
-                pairs,
-                new Provided(this.given, new Ends(pairs).names(), this.hollows)
-            ).all()
+            bound.all(),
+            new Forked(
+                chosen, new Stamped(pairs, this.receivers, owned), owned, this.hollows
+            ).all(),
+            bound.relays(),
+            certain
+        ).all();
+    }
+
+    /**
+     * What every one of these pairs put into the voids of what it copies.
+     *
+     * <p>This is the half of a row that {@link Bound} works out, and a rule
+     * that reads it does not need the row: {@link Promoted} asks what the
+     * program puts into every void, which is this read the other way round,
+     * and rendering it into a document first only to read it back out again is
+     * a second of every pass of a fixpoint that runs a hundred of them.</p>
+     *
+     * @param pairs The pairs, each object against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link Dispatched}
+     * @return The objects put in, by the locator of the void, by the locator of
+     *  the object that put them there
+     */
+    Map<String, Map<String, String>> binds(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
+        return new Bound(
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            new Provided(this.given, new Ends(pairs).names(), this.hollows), copied
         ).all();
     }
 }

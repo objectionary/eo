@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='a']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='b']]
+input: |
+  [] > main
+    q.f (if. false 1:a 2:b) > z

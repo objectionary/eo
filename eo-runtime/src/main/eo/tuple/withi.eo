@@ -6,26 +6,26 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ index item] > withi
+[^list index item] > withi
   index.is-integer.if > @
     concat.
       with.
-        ^.front bounded
+        list.front bounded
         item
-      ^.back
-        ^.length.minus bounded
+      list.back
+        list.length.minus bounded
     T
       "Given index must be an integer"
   if. > bounded
     0.gt index
     0
     if.
-      index.gt ^.length
-      ^.length
+      index.gt list.length
+      list.length
       index
 
   eq. ++> can-clamp-a-negative-index-to-the-front-without-duplicating

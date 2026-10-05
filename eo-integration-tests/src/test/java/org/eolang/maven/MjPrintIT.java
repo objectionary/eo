@@ -12,7 +12,9 @@ import com.yegor256.farea.Farea;
 import com.yegor256.farea.RequisiteMatcher;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:parse goal.
+ *
  * @since 0.52
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -39,9 +42,7 @@ final class MjPrintIT {
                 f.exec("compile");
                 f.files()
                     .file("src/main/xmir/foo.xmir").save(
-                        f.files()
-                            .file("target/eo/1-parse/foo.xmir")
-                            .path()
+                        MjPrintIT.parsed(temp).resolve("foo.xmir")
                     );
                 f.exec("eo:print");
                 MjPrintIT.succeeds(f);
@@ -52,6 +53,18 @@ final class MjPrintIT {
             temp.resolve("target/generated-sources/eo/foo.eo").toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    private static Path parsed(final Path home) throws IOException {
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            return kids
+                .filter(kid -> kid.getFileName().toString().endsWith("-parse"))
+                .findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No parse directory found under %s", home)
+                    )
+                );
+        }
     }
 
     private static void succeeds(final Farea farea) throws IOException {

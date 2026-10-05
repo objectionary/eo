@@ -7,9 +7,17 @@ name: shellcheck
   push:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+permissions:
+  contents: read
 concurrency:
   group: shellcheck-${{ github.ref }}
   cancel-in-progress: true
@@ -19,4 +27,4 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: ludeeus/action-shellcheck@master
+      - uses: ludeeus/action-shellcheck@00b27aa7cb85167568cb48a3838b75f4265f2bca # master

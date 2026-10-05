@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Ends}.
+ *
  * @since 0.68.0
  */
 final class EndsTest {
@@ -68,6 +69,33 @@ final class EndsTest {
             "a name that is a copy of itself is nothing new and must answer with itself, but it didnt",
             new Ends(this.pairs("a", "a")).names(),
             Matchers.hasEntry("a", "a")
+        );
+    }
+
+    @Test
+    void walksOneNameToTheEndOfItsChain() {
+        MatcherAssert.assertThat(
+            "a name asked on its own must arrive where the whole chain arrives, but it didnt",
+            new Ends(this.pairs("a", "b", "b", "c")).name("a"),
+            Matchers.equalTo("c")
+        );
+    }
+
+    @Test
+    void answersForARingWhicheverOfItsNamesIsAsked() {
+        MatcherAssert.assertThat(
+            "a ring asked at one of its names must answer with the name the ring goes by, but it didnt",
+            new Ends(this.pairs("b", "c", "c", "a", "a", "b")).name("c"),
+            Matchers.equalTo("a")
+        );
+    }
+
+    @Test
+    void keepsANameTheTableSaysNothingAbout() {
+        MatcherAssert.assertThat(
+            "a name that is a copy of nothing must come back as it went in, but it didnt",
+            new Ends(this.pairs("a", "b")).name("z"),
+            Matchers.equalTo("z")
         );
     }
 

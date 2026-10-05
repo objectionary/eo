@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link MjProbe}.
+ *
  * @since 0.28.11
  */
 @ExtendWith(WeAreOnline.class)
@@ -48,6 +50,7 @@ final class MjProbeTest {
 
     /**
      * Finds probes in objectionary remote repository.
+     *
      * @param temp Temporary folder
      * @throws IOException If some problem inside
      */

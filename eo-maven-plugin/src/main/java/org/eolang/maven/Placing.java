@@ -14,13 +14,18 @@ import java.util.Set;
 import java.util.function.Supplier;
 import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpFork;
+import org.eolang.cache.FpGenerated;
+import org.eolang.cache.FpIfTargetExists;
+import org.eolang.cache.FpIgnore;
 
 /**
  * Core placing logic: copies binary files from the resolved dependency directory
  * into the classes output directory.
  *
- * <p>Input directory is the resolved-deps folder ({@link MjResolve#DIR}).
- * Output directory is the classes directory.</p>
+ * <p>Input directory is the resolved-deps folder (a directory {@link Subdir}
+ * numbers "resolve"). Output directory is the classes directory.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.61.0
@@ -33,7 +38,7 @@ final class Placing implements Step {
     private final TjsPlaced placed;
 
     /**
-     * Home directory where resolved deps live (targetDir / MjResolve.DIR).
+     * Home directory where resolved deps live.
      */
     private final Path home;
 
@@ -59,6 +64,7 @@ final class Placing implements Step {
 
     /**
      * Constructor.
+     *
      * @param placedtojos Catalog of placed binaries
      * @param homedir Home directory of resolved deps
      * @param classesdir Output classes directory
@@ -130,6 +136,7 @@ final class Placing implements Step {
 
     /**
      * Dependency whose binaries are being placed.
+     *
      * @since 0.61.0
      */
     private final class PlacedDependency implements Supplier<Long> {
@@ -151,6 +158,7 @@ final class Placing implements Step {
 
         /**
          * Ctor.
+         *
          * @param directory The directory to read from
          * @param dependency The name of the dependency
          * @param rewrite Rewrite binaries in output directory or not
