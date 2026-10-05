@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
+# #9047: `_` mapped to `__` beside `-` to `_`, so `a-_b` and `a_-b` both came
+# out as `a___b` and the two anonymous formations were declared twice under
+# the same name in one file.
 sheets:
   - /org/eolang/parser/parse/set-locators.xsl
   - /org/eolang/maven/transpile/set-original-names.xsl
@@ -12,17 +15,15 @@ sheets:
   - /org/eolang/maven/transpile/to-java.xsl
 asserts:
   - /object[not(errors)]
-  - /object/class/java[contains(text(), 'private static class EOΦ$main$a_b$φ$α0 extends PhDefault')]
-  - /object/class/java[contains(text(), 'private static class EOΦ$main$a$u00005Fb$φ$α0 extends PhDefault')]
-  - /object/class/java[contains(text(), 'new EOΦ$main$a_b$φ$α0();')]
-  - /object/class/java[contains(text(), 'new EOΦ$main$a$u00005Fb$φ$α0();')]
+  - /object/class/java[contains(text(), 'private static class EOΦ$main$a_$u00005Fb$φ$α0 extends PhDefault')]
+  - /object/class/java[contains(text(), 'private static class EOΦ$main$a$u00005F_b$φ$α0 extends PhDefault')]
 input: |
   [] > main
-    [] > a-b
+    [] > a-_b
       foo > @
         []
           42 > @
-    [] > a_b
+    [] > a_-b
       foo > @
         []
           43 > @

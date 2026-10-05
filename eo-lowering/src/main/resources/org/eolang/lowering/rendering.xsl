@@ -43,9 +43,11 @@
   <!--
   What every λ the atom can spell is: the type of what it mints, the types of
   its operands in the order phino lists them, and the Java of the operation
-  with a numbered hole for each operand. There is no "L_bytes_slice" here,
-  since out of its range the atom returns the "cant-slice" its caller binds,
-  which the protocol does not hold, so an entry that slices is a taint.
+  with a numbered hole for each operand. Out of its range, the atom of
+  "L_bytes_slice" returns the "cant-slice" its caller binds, which the
+  protocol does not hold. No object of eo-runtime binds it, so reading it
+  fails, and "Slice" fails the same way. A caller that binds it loses its
+  fallback, and this is accepted.
   -->
   <xsl:variable name="eo:operations" as="element()*">
     <op λ="L_number_plus" type="double" args="double double">⟨1⟩ + ⟨2⟩</op>
@@ -59,6 +61,7 @@
     <op λ="L_bytes_not" type="byte[]" args="byte[]">new BytesOf(⟨1⟩).not().take()</op>
     <op λ="L_bytes_right" type="byte[]" args="byte[] double">new BytesOf(⟨1⟩).shift((int) ⟨2⟩).take()</op>
     <op λ="L_bytes_concat" type="byte[]" args="byte[] byte[]">java.nio.ByteBuffer.allocate(⟨1⟩.length + ⟨2⟩.length).put(⟨1⟩).put(⟨2⟩).array()</op>
+    <op λ="L_bytes_slice" type="byte[]" args="byte[] double double">new Slice(⟨1⟩, ⟨2⟩, ⟨3⟩).delta()</op>
     <op λ="L_dataized" type="byte[]" args="byte[]">⟨1⟩</op>
   </xsl:variable>
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
@@ -301,13 +304,18 @@
     </xsl:if>
     <xsl:sequence select="$op"/>
   </xsl:function>
-  <!-- The Java type of a symbol. -->
+  <!--
+  The Java type of a symbol. A void that holds a number is bytes, like a
+  void of any carrier but a bool, since a number may hold any bytes and a
+  double holds exactly eight. The bytes are read as a double only where an
+  operation wants one, which is where EO reads them as a number too.
+  -->
   <xsl:function name="eo:type" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="(map {'number': 'double', 'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
+        <xsl:sequence select="(map {'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="branches" select="(eo:branch($joined, 1), eo:branch($joined, 2))"/>
@@ -408,7 +416,7 @@
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'double': 'asNumber()', 'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="place" select="$at($symbol)"/>
@@ -425,11 +433,15 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <!--
+  Unicode escape of a character Java forbids in an identifier. Six digits,
+  not four: four dropped everything above the sixteenth bit of a code point,
+  so U+1F600 and U+F600 both read as "$uF600" (#9047).
+  -->
   <xsl:function name="eo:escape-char" as="xs:string">
     <xsl:param name="c" as="xs:string"/>
     <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
-    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (1048576, 65536, 4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
   </xsl:function>
   <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
   <xsl:function name="eo:identifier" as="xs:string">
@@ -451,10 +463,15 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
-  <!-- Get clean escaped object name -->
+  <!--
+  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
+  its own, which no "-" can produce: mapping "_" to "__" beside them made
+  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
+  that the escape is never read as a dollar the name itself carried.
+  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -538,10 +555,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">

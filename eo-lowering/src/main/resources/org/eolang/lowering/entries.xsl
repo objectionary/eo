@@ -93,17 +93,34 @@
   goes by its place is out too: "eo:dealpha" found no void to name that
   argument after, and the calculus has no step to a place, so there is no
   path to walk to the formation. The last two reasons are about the type
-  of the body, which must be a number, a string or a bool, as "links.xml"
-  says, where a body that is an atom is what "atoms.xml" says that atom
-  gives. The Java atom of an entry gives back the data of the body, and
-  nothing else, so for a body of any other type, an "i16" for example, the
-  atom would lose the object around that data. A body the tables say
-  nothing about is left out as well, for the same reason.
+  of the body, which must be a number, a string or a bool, as
+  "eo:returns" reads it off the tables. The Java atom of an entry gives
+  back the data of the body, and nothing else, so for a body of any other
+  type, an "i16" for example, the atom would lose the object around that
+  data. A body the tables say nothing about is left out as well, for the
+  same reason.
   -->
   <xsl:function name="eo:reason" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:variable name="types" as="xs:string*" select="for $r in key('eo:type', concat($o/@loc, '.φ'), $eo:links)/ref/@loc return string((key('eo:atom', $r, $eo:atoms)/@forma, $r)[1])"/>
+    <xsl:variable name="types" as="xs:string*" select="eo:returns(string($o/@loc))"/>
     <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false'))) then 'typed' else ''"/>
+  </xsl:function>
+  <!--
+  The types the body of the object with this locator may be, as the tables
+  of "eo:inference" say, or none where they say nothing. An object that
+  binds nothing but its body behaves as that body, and "eo:inference"
+  writes what it behaves as into the "reduced" cell of its row in
+  "provides.xml", after chasing the body through all its copies, so that
+  cell answers first. A body that is a formation has no row in "links.xml"
+  but a row of its own in "provides.xml", so its "reduced" cell answers
+  next. Otherwise every link of the body arrives at one type. Whatever the
+  answer, an atom counts as the type "atoms.xml" says it gives, and a
+  formation counts as the type its "reduced" cell names, if it has one.
+  -->
+  <xsl:function name="eo:returns" as="xs:string*">
+    <xsl:param name="loc" as="xs:string"/>
+    <xsl:variable name="reduced" as="xs:string?" select="(key('eo:type', $loc, $eo:provides)[1]/@reduced, key('eo:type', concat($loc, '.φ'), $eo:provides)[1]/@reduced)[1]"/>
+    <xsl:sequence select="for $t in (if (exists($reduced)) then $reduced else key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc) return string((key('eo:atom', $t, $eo:atoms)/@forma, key('eo:type', $t, $eo:provides)[1]/@reduced, $t)[1])"/>
   </xsl:function>
   <!--
   The path the calculus walks to reach an object, one step per ancestor: the

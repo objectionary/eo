@@ -3,8 +3,9 @@
 ---
 # yamllint disable rule:line-length
 # The body of neg is one firing of times over its receiver and the literal
-# minus one, so the atom reads the void into a double, multiplies it by the
-# bits of minus one in one statement, and returns the product as a number.
+# minus one, so the atom reads the void as its bytes, multiplies them as a
+# double by the bits of minus one in one statement, and returns the product
+# as a number.
 locator: Φ.number.neg
 number: 217
 eo:
@@ -53,8 +54,8 @@ java: |
 
       @Override
       public Phi lambda() {
-          final double s200 = new Dataized(this.take("ρ").take("ρ")).asNumber();
-          final double s752 = s200 * Double.longBitsToDouble(0xBFF0000000000000L);
+          final byte[] s200 = new Dataized(this.take("ρ").take("ρ")).take();
+          final double s752 = (double) new BytesOf(s200).asNumber() * Double.longBitsToDouble(0xBFF0000000000000L);
           return new Data.ToPhi(s752);
       }
   }

@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The body of `slashed` is a copy of `Φ.string.joined`, a formation that
+# binds nothing but its body and voids, and the row of that formation says
+# it behaves as a string. So the link of the body arrives at a string, even
+# though `slashed` binds `separator` besides and has no `reduced` cell.
+eo:
+  slashed.eo: |
+    [parts] > slashed
+      separator.joined parts > @
+      "/" > separator
+provides: |
+  <provides>
+    <type complete="false" id="Φ.slashed">
+      <attr name="parts" type="Φ.slashed.parts" void="true"/>
+      <attr name="separator" type="Φ.slashed.separator"/>
+      <attr name="φ" type="Φ.slashed.φ"/>
+    </type>
+    <type complete="false" id="Φ.string.joined" reduced="Φ.string">
+      <attr name="items" type="Φ.string.joined.items" void="true"/>
+      <attr name="φ" type="Φ.string.joined.φ"/>
+    </type>
+  </provides>
+links: |
+  <links>
+    <type id="Φ.slashed.φ">
+      <ref loc="Φ.string.joined"/>
+    </type>
+  </links>
+entries:
+  - "1\tΦ.slashed"
