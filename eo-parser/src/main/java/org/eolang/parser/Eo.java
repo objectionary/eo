@@ -170,6 +170,7 @@ final class Eo implements Iterable<Directive> {
      * {@code .method} continuation's suffix — rather than deferred to
      * close time, since only that call site knows the line the name
      * actually appeared on.
+     *
      * @param level The freshly named level
      * @param emit Directive sink
      * @param naming Span of the line that named it
