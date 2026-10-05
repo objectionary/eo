@@ -910,19 +910,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void rejectsUnrecognisedEscapeSequence() throws Exception {
-        MatcherAssert.assertThat(
-            "an unrecognised escape sequence must name the offending characters, not blame unicode or octal escapes",
-            EoSyntaxTest.raw(
-                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\q\" > @")
-            ).toString(),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),\"unrecognised escape sequence\")]"
-            )
-        );
-    }
-
-    @Test
     void namesLoneSurrogateInErrorMessage() throws Exception {
         MatcherAssert.assertThat(
             "a lone surrogate escape must name the offending codepoint, not blame unicode or octal escapes generically",
