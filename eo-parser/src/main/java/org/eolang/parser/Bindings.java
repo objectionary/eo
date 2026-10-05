@@ -142,6 +142,7 @@ final class Bindings {
      * does not push a fresh child onto the stack, so it cannot reach
      * {@link #observeChild}; this covers the one branch of that rule
      * a continuation still needs.
+     *
      * @param parent The chain's parent level
      * @param outer Outer binding label, empty when the line carries none
      * @param span Source span of the continuation line
